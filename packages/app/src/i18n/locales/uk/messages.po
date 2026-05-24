@@ -39,11 +39,11 @@ msgstr "{autoCandidateCount, plural, one {# пара переказів із в�
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# стовпець доступний} few {# стовпці доступні} many {# стовпців доступні} other {# стовпця доступні}}"
 
-#: src/budget/service/budget-alert-monitor.service.ts:108
+#: src/budget/service/budget-alert-monitor.service.ts:112
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% витрачено"
 
-#: src/budget/service/budget-alert-monitor.service.ts:108
+#: src/budget/service/budget-alert-monitor.service.ts:112
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: ліміт досягнуто"
 
@@ -88,7 +88,7 @@ msgid "{manualReviewCandidateCount, plural, one {# lower-confidence pair} other 
 msgstr "{manualReviewCandidateCount, plural, one {# пара з нижчою впевненістю} few {# пари з нижчою впевненістю} many {# пар з нижчою впевненістю} other {# пари з нижчою впевненістю}}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:36
-#: src/rule/components/rules-list-page/rules-list-page.tsx:41
+#: src/rule/components/rules-list-page/rules-list-page.tsx:37
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# відповідне правило} few {# відповідні правила} many {# відповідних правил} other {# відповідного правила}}"
 
@@ -158,8 +158,7 @@ msgstr "100% офлайн і приватно"
 msgid "A default currency is required before you can manage budgets."
 msgstr "Перед керуванням бюджетами потрібно вибрати валюту за замовчуванням."
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
 msgid "A rule with the same conditions already exists."
 msgstr "Правило з такими ж умовами вже існує."
 
@@ -309,7 +308,7 @@ msgstr "Усі ваші фінансові дані зберігаються л�
 msgid "Already syncing"
 msgstr "Вже синхронізується"
 
-#: src/app/(tabs)/settings/import.tsx:199
+#: src/app/(tabs)/settings/import.tsx:197
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:16
 #: src/rule/constant/rule-condition-field.constant.ts:8
 msgid "Amount"
@@ -461,7 +460,7 @@ msgstr "Бюджет"
 msgid "Budget currency"
 msgstr "Валюта бюджету"
 
-#: src/budget/service/budget-alert-monitor.service.ts:99
+#: src/budget/service/budget-alert-monitor.service.ts:103
 msgid "Budget limit reached"
 msgstr "Ліміт бюджету досягнуто"
 
@@ -482,12 +481,11 @@ msgstr "Budgie"
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
 #: src/app/(main)/budget/index.tsx:52
 #: src/app/(tabs)/settings/import.tsx:258
-#: src/app/(tabs)/settings/import.tsx:260
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:133
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:44
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -516,10 +514,8 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:34
 #: src/app/(tabs)/settings/import.tsx:181
-#: src/budget/service/budget-alert-monitor.service.ts:107
+#: src/budget/service/budget-alert-monitor.service.ts:111
 #: src/category/components/category-form-selector/category-form-selector.tsx:34
-#: src/app/(tabs)/settings/import.tsx:183
-#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx:35
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:176
 msgid "Category"
 msgstr "Категорія"
@@ -595,7 +591,7 @@ msgstr "Закрити меню"
 msgid "Coinbase"
 msgstr "Coinbase"
 
-#: src/app/(tabs)/settings/import.tsx:243
+#: src/app/(tabs)/settings/import.tsx:241
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:15
 #: src/rule/constant/rule-condition-field.constant.ts:7
 msgid "Comment"
@@ -693,12 +689,11 @@ msgstr "Не вдалося консолідувати перекази"
 msgid "Could not create budget"
 msgstr "Не вдалося створити бюджет"
 
-#: src/category/components/category-form/category-form.tsx:166
 #: src/category/components/category-form/category-form.tsx:167
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:177
 #: src/rule/hooks/use-rule-form.hook.ts:158
 msgid "Could not create rule"
 msgstr "Не вдалося створити правило"
@@ -740,7 +735,7 @@ msgstr "Не вдалося видалити тег"
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
-#: src/export/components/export-csv/export-csv.tsx:18
+#: src/export/components/export-csv/export-csv.tsx:16
 msgid "Could not export CSV"
 msgstr "Не вдалося експортувати CSV"
 
@@ -752,7 +747,7 @@ msgstr "Не вдалося експортувати базу даних"
 msgid "Could not fetch accounts"
 msgstr "Не вдалося отримати рахунки"
 
-#: src/app/(tabs)/settings/import.tsx:145
+#: src/app/(tabs)/settings/import.tsx:143
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
 
@@ -768,7 +763,7 @@ msgstr "Не вдалося об'єднати категорію"
 msgid "Could not merge tag"
 msgstr "Не вдалося об'єднати тег"
 
-#: src/app/(tabs)/settings/import.tsx:114
+#: src/app/(tabs)/settings/import.tsx:112
 msgid "Could not read CSV file"
 msgstr "Не вдалося прочитати CSV-файл"
 
@@ -805,7 +800,6 @@ msgstr "Не вдалося зберегти бюджет"
 msgid "Could not save budget: a default currency is required."
 msgstr "Не вдалося зберегти бюджет: потрібна валюта за замовчуванням."
 
-#: src/category/components/category-form/category-form.tsx:166
 #: src/category/components/category-form/category-form.tsx:167
 msgid "Could not save category"
 msgstr "Не вдалося зберегти категорію"
@@ -868,7 +862,7 @@ msgstr "Створити та скопіювати персональний то
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:133
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:135
 msgid "Create anyway"
 msgstr "Все одно створити"
 
@@ -901,7 +895,7 @@ msgstr "Створіть один, щоб розпочати."
 msgid "Create Rule"
 msgstr "Створити правило"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:91
+#: src/rule/components/rules-list-page/rules-list-page.tsx:86
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Створюйте правила для автоматичної категоризації та тегування банківських транзакцій"
 
@@ -933,7 +927,7 @@ msgstr "Криптовалюта"
 msgid "CSV"
 msgstr "CSV"
 
-#: src/export/components/export-csv/export-csv.tsx:16
+#: src/export/components/export-csv/export-csv.tsx:14
 msgid "CSV exported"
 msgstr "CSV експортовано"
 
@@ -964,7 +958,7 @@ msgstr "Базу даних експортовано"
 
 #: src/@generic/component/date-filter/date-filter.tsx:35
 #: src/@generic/component/date-filter/date-filter.tsx:56
-#: src/app/(tabs)/settings/import.tsx:191
+#: src/app/(tabs)/settings/import.tsx:189
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:132
 msgid "Date"
 msgstr "Дата"
@@ -1057,7 +1051,7 @@ msgstr "Завантаження моделей ШІ…"
 msgid "Downloading models"
 msgstr "Завантаження моделей"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
 msgid "Duplicate rule"
 msgstr "Дублювати правило"
 
@@ -1094,12 +1088,11 @@ msgstr "напр. Ощадний рахунок"
 msgid "Edit budget"
 msgstr "Редагувати бюджет"
 
-#: src/category/components/category-form/category-form.tsx:67
 #: src/category/components/category-form/category-form.tsx:69
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:134
 msgid "Edit existing"
 msgstr "Редагувати наявне"
 
@@ -1267,11 +1260,11 @@ msgstr "Витрата"
 msgid "Expenses"
 msgstr "Витрати"
 
-#: src/export/components/export-csv/export-csv.tsx:24
+#: src/export/components/export-csv/export-csv.tsx:22
 msgid "Export all transactions to a CSV file"
 msgstr "Експортувати всі транзакції до CSV-файлу"
 
-#: src/export/components/export-csv/export-csv.tsx:23
+#: src/export/components/export-csv/export-csv.tsx:21
 msgid "Export CSV"
 msgstr "Експортувати CSV"
 
@@ -1283,7 +1276,7 @@ msgstr "Експортувати базу даних"
 msgid "Export your transactions to Excel"
 msgstr "Експортуйте транзакції в Excel"
 
-#: src/app/(tabs)/settings/import.tsx:215
+#: src/app/(tabs)/settings/import.tsx:213
 msgid "External ID"
 msgstr "Зовнішній ID"
 
@@ -1324,7 +1317,7 @@ msgstr "Поле"
 msgid "Fill in the account details"
 msgstr "Заповніть деталі рахунку"
 
-#: src/app/(tabs)/settings/import.tsx:153
+#: src/app/(tabs)/settings/import.tsx:151
 msgid "Fix Errors"
 msgstr "Виправити помилки"
 
@@ -1344,15 +1337,15 @@ msgstr "від"
 msgid "From"
 msgstr "З"
 
-#: src/app/(tabs)/settings/import.tsx:222
+#: src/app/(tabs)/settings/import.tsx:220
 msgid "From Account"
 msgstr "З рахунку"
 
-#: src/app/(tabs)/settings/import.tsx:236
+#: src/app/(tabs)/settings/import.tsx:234
 msgid "From Amount"
 msgstr "Сума з"
 
-#: src/app/(tabs)/settings/import.tsx:229
+#: src/app/(tabs)/settings/import.tsx:227
 msgid "From Currency"
 msgstr "Валюта з"
 
@@ -1481,7 +1474,7 @@ msgstr "Індексування {done} з {total}"
 msgid "Invalid file"
 msgstr "Невірний файл"
 
-#: src/app/(tabs)/settings/import.tsx:251
+#: src/app/(tabs)/settings/import.tsx:249
 msgid "Is Planned"
 msgstr "Заплановано"
 
@@ -1585,7 +1578,7 @@ msgstr "Керування тегами"
 msgid "Manual"
 msgstr "Вручну"
 
-#: src/app/(tabs)/settings/import.tsx:159
+#: src/app/(tabs)/settings/import.tsx:157
 msgid "Map CSV Columns"
 msgstr "Зіставлення стовпців CSV"
 
@@ -1597,7 +1590,7 @@ msgstr "Усі збігаються"
 msgid "Match Any"
 msgstr "Будь-яка збігається"
 
-#: src/app/(tabs)/settings/import.tsx:160
+#: src/app/(tabs)/settings/import.tsx:158
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
@@ -1609,8 +1602,8 @@ msgstr "збігається"
 msgid "Matches Regex"
 msgstr "Відповідає регулярному виразу"
 
-#: src/app/(tabs)/settings/import.tsx:247
-#: src/app/(tabs)/settings/import.tsx:255
+#: src/app/(tabs)/settings/import.tsx:245
+#: src/app/(tabs)/settings/import.tsx:253
 msgid "MCC"
 msgstr "MCC"
 
@@ -1796,7 +1789,7 @@ msgstr "Повторювані платежі не виявлено"
 msgid "No Results"
 msgstr "Немає результатів"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:89
+#: src/rule/components/rules-list-page/rules-list-page.tsx:84
 msgid "No Rules Yet"
 msgstr "Правил ще немає"
 
@@ -1915,7 +1908,7 @@ msgstr "Початкові імпортовані транзакції буде 
 msgid "Original transaction"
 msgstr "Початкова транзакція"
 
-#: src/budget/service/budget-alert-monitor.service.ts:99
+#: src/budget/service/budget-alert-monitor.service.ts:103
 msgid "Overall budget: {threshold}% spent"
 msgstr "Загальний бюджет: {threshold}% витрачено"
 
@@ -1923,7 +1916,6 @@ msgstr "Загальний бюджет: {threshold}% витрачено"
 msgid "Overall monthly limit"
 msgstr "Загальний місячний ліміт"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:59
 #: src/transaction/components/statistics-content/statistics-content.tsx:61
 msgid "Overview"
 msgstr "Огляд"
@@ -2021,8 +2013,7 @@ msgstr "ПриватБанк"
 msgid "Push notifications are disabled"
 msgstr "Push-сповіщення вимкнено"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:171
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
 msgid "Quick rule"
 msgstr "Швидке правило"
 
@@ -2159,7 +2150,7 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Правило"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:174
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:176
 msgid "Rule created"
 msgstr "Правило створено"
 
@@ -2167,7 +2158,7 @@ msgstr "Правило створено"
 msgid "Rule updated"
 msgstr "Правило оновлено"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:72
+#: src/rule/components/rules-list-page/rules-list-page.tsx:68
 msgid "Rules"
 msgstr "Правила"
 
@@ -2274,11 +2265,11 @@ msgstr "Виберіть контакт"
 msgid "Select a tag to merge into"
 msgstr "Виберіть тег для об'єднання"
 
-#: src/app/(tabs)/settings/import.tsx:58
+#: src/app/(tabs)/settings/import.tsx:56
+#: src/app/(tabs)/settings/import.tsx:59
+#: src/app/(tabs)/settings/import.tsx:60
 #: src/app/(tabs)/settings/import.tsx:61
 #: src/app/(tabs)/settings/import.tsx:62
-#: src/app/(tabs)/settings/import.tsx:63
-#: src/app/(tabs)/settings/import.tsx:64
 msgid "Select a valid column"
 msgstr "Виберіть дійсний стовпець"
 
@@ -2482,7 +2473,7 @@ msgstr "Витрачено"
 msgid "Split"
 msgstr "Розділити"
 
-#: src/app/(tabs)/settings/import.tsx:153
+#: src/app/(tabs)/settings/import.tsx:151
 msgid "Start Import"
 msgstr "Почати імпорт"
 
@@ -2656,11 +2647,11 @@ msgstr "до"
 msgid "To"
 msgstr "На"
 
-#: src/app/(tabs)/settings/import.tsx:175
+#: src/app/(tabs)/settings/import.tsx:173
 msgid "To Account"
 msgstr "На рахунок"
 
-#: src/app/(tabs)/settings/import.tsx:207
+#: src/app/(tabs)/settings/import.tsx:205
 msgid "To Currency"
 msgstr "Валюта на"
 
@@ -2690,15 +2681,15 @@ msgstr "Всього: {formattedAmountToReturn}"
 msgid "Touch ID"
 msgstr "Touch ID"
 
-#: src/transaction/service/transaction-transfer.service.ts:169
+#: src/transaction/service/transaction-transfer.service.ts:168
 msgid "Transaction must have a destination account"
 msgstr "Транзакція повинна мати рахунок призначення"
 
-#: src/transaction/service/transaction-transfer.service.ts:166
+#: src/transaction/service/transaction-transfer.service.ts:165
 msgid "Transaction must have a source account"
 msgstr "Транзакція повинна мати рахунок-джерело"
 
-#: src/transaction/service/transaction-transfer.service.ts:118
+#: src/transaction/service/transaction-transfer.service.ts:117
 msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
 
@@ -2898,11 +2889,11 @@ msgstr "Вчора"
 msgid "You gave money"
 msgstr "Ви дали гроші"
 
-#: src/budget/service/budget-alert-monitor.service.ts:100
+#: src/budget/service/budget-alert-monitor.service.ts:104
 msgid "You have used {spentPercent}% of your overall budget."
 msgstr "Ви витратили {spentPercent}% загального бюджету."
 
-#: src/budget/service/budget-alert-monitor.service.ts:109
+#: src/budget/service/budget-alert-monitor.service.ts:113
 msgid "You have used {threshold}% of the limit for {categoryName}."
 msgstr "Ви витратили {threshold}% ліміту для {categoryName}."
 
@@ -2923,6 +2914,6 @@ msgstr "Ваша резервна копія бази даних готова д
 msgid "Your token is stored securely in the database. Sync continues in the background."
 msgstr "Ваш токен зберігається в безпечній базі даних. Синхронізація продовжується у фоновому режимі."
 
-#: src/export/components/export-csv/export-csv.tsx:17
+#: src/export/components/export-csv/export-csv.tsx:15
 msgid "Your transaction file is ready to share."
 msgstr "Ваш файл транзакцій готовий до поширення."
