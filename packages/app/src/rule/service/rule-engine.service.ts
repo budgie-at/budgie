@@ -41,11 +41,12 @@ type ApplyRuleResultType = {
 
 class RuleEngineService {
     @Log(
-        (transactionIds, transactionInputs) => `enter transactionIds=${transactionIds.join(',')} inputCount=${transactionInputs.length}`,
+        (transactionIds, transactionInputs) =>
+            `enter transactionIds=${transactionIds.slice(0, 5).join(',')} transactionCount=${transactionIds.length} inputCount=${transactionInputs.length}`,
         (_result, transactionIds, transactionInputs) =>
-            `done transactionIds=${transactionIds.join(',')} inputCount=${transactionInputs.length}`,
+            `done transactionIds=${transactionIds.slice(0, 5).join(',')} transactionCount=${transactionIds.length} inputCount=${transactionInputs.length}`,
         (error, transactionIds, transactionInputs) =>
-            `throw transactionIds=${transactionIds.join(',')} inputCount=${transactionInputs.length} error=${getErrorMessage(error)}`
+            `throw transactionIds=${transactionIds.slice(0, 5).join(',')} transactionCount=${transactionIds.length} inputCount=${transactionInputs.length} error=${getErrorMessage(error)}`
     )
     async applyRulesToTransactions(transactionIds: number[], transactionInputs: TransactionCreateInputInterface[]): Promise<void> {
         const rules = await ruleRepository.findEnabledWithRelations();
@@ -64,11 +65,23 @@ class RuleEngineService {
     }
 
     @Log(
-        transactionInputs => `enter externalIds=${transactionInputs.map(input => input.externalId).join(',')}`,
+        transactionInputs =>
+            `enter count=${transactionInputs.length} externalIds=${transactionInputs
+                .slice(0, 5)
+                .map(input => input.externalId)
+                .join(',')}`,
         (result, transactionInputs) =>
-            `done externalIds=${transactionInputs.map(input => input.externalId).join(',')} postCreateIndexes=${result.postCreateIndexes.join(',')}`,
+            `done count=${transactionInputs.length} externalIds=${transactionInputs
+                .slice(0, 5)
+                .map(input => input.externalId)
+                .join(
+                    ','
+                )} postCreateIndexes=${result.postCreateIndexes.slice(0, 5).join(',')} postCreateCount=${result.postCreateIndexes.length}`,
         (error, transactionInputs) =>
-            `throw externalIds=${transactionInputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
+            `throw count=${transactionInputs.length} externalIds=${transactionInputs
+                .slice(0, 5)
+                .map(input => input.externalId)
+                .join(',')} error=${getErrorMessage(error)}`
     )
     async prepareCreateInputsForRules(transactionInputs: TransactionCreateInputInterface[]): Promise<RuleCreatePreparationResultInterface> {
         const rules = await ruleRepository.findEnabledWithRelations();

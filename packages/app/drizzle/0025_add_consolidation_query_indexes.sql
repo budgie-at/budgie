@@ -1,0 +1,4 @@
+CREATE INDEX `transaction_entries_live_account_amount_transaction_idx` ON `transaction_entries` (`account_id`,`amount`,`transaction_id`) WHERE `deleted_at` IS NULL AND `original_transaction_id` IS NULL;--> statement-breakpoint
+CREATE INDEX `transaction_entries_live_transaction_account_amount_idx` ON `transaction_entries` (`transaction_id`,`account_id`,`amount`) WHERE `deleted_at` IS NULL AND `original_transaction_id` IS NULL;--> statement-breakpoint
+CREATE INDEX `transactions_visible_type_from_operated_idx` ON `transactions` (`type`,`from_account_id`,`operated_at`) WHERE `deleted_at` IS NULL AND `consolidation_parent_transaction_id` IS NULL AND `from_account_id` IS NOT NULL;--> statement-breakpoint
+CREATE INDEX `transactions_visible_type_to_operated_idx` ON `transactions` (`type`,`to_account_id`,`operated_at`) WHERE `deleted_at` IS NULL AND `consolidation_parent_transaction_id` IS NULL AND `to_account_id` IS NOT NULL;

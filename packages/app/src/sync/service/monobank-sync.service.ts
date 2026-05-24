@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings, max-lines -- Sync orchestration requires sequential awaits and many log tags */
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Log, getLogger } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -28,6 +28,8 @@ import { transferConsolidationDrainerService } from './transfer-consolidation-dr
 import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
 import type { AccountEntityInterface, BankSyncEntityInterface, MccCategoryLookupInterface } from '@budgie/contracts';
 
+const logger = getLogger('AppMonobankSyncService');
+
 class AppMonobankSyncService {
     private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
 
@@ -37,7 +39,10 @@ class AppMonobankSyncService {
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
+        const startedAt = Date.now();
         if (this.isRunning) {
+            logger.log('sync:skip', { reason: 'already-running' });
+
             return BackgroundTask.BackgroundTaskResult.Success;
         }
         this.isRunning = true;
@@ -46,6 +51,7 @@ class AppMonobankSyncService {
 
             return await this.executeSyncLoop();
         } finally {
+            logger.log('sync:done', { durationMs: Date.now() - startedAt });
             this.isRunning = false;
         }
     }
@@ -156,13 +162,23 @@ class AppMonobankSyncService {
 
     @Log(
         (sync, result) =>
-            `enter syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} completed=${result.completed}`,
+            `enter syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} transactionIds=${result.transactions
+                .slice(0, 5)
+                .map(transaction => transaction.id)
+                .join(',')} completed=${result.completed}`,
         (doneResult, sync, result) =>
-            `done result=${String(doneResult)} syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} completed=${result.completed}`,
+            `done result=${String(doneResult)} syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} transactionIds=${result.transactions
+                .slice(0, 5)
+                .map(transaction => transaction.id)
+                .join(',')} completed=${result.completed}`,
         (error, sync, result) =>
-            `throw syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} error=${getErrorMessage(error)}`
+            `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} transactionIds=${result.transactions
+                .slice(0, 5)
+                .map(transaction => transaction.id)
+                .join(',')} error=${getErrorMessage(error)}`
     )
     private async updateSyncProgress(sync: BankSyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
+        const startedAt = Date.now();
         const now = new Date();
         const baseUpdate = { transactionCount: sync.transactionCount + result.transactions.length, errorCount: 0, lastError: null };
         const nextBackwardSyncedAt = isNotEmptyArray(result.transactions) ? null : (sync.backwardSyncedAt ?? result.nextTo);
@@ -196,30 +212,66 @@ class AppMonobankSyncService {
                 forwardSyncFromAt: result.nextFrom
             });
         }
+        logger.log('updateSyncProgress:duration', {
+            completed: result.completed,
+            durationMs: Date.now() - startedAt,
+            mode: sync.mode,
+            syncId: sync.id,
+            transactionCount: result.transactions.length
+        });
     }
 
     @Log(
         sync => `enter syncId=${sync.id} mode=${sync.mode}`,
         (result, sync) =>
-            `done syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} completed=${result.completed}`,
+            `done syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} transactionIds=${result.transactions
+                .slice(0, 5)
+                .map(transaction => transaction.id)
+                .join(',')} completed=${result.completed}`,
         (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
     )
+    // eslint-disable-next-line max-statements -- Sync batch keeps adjacent phase timing logs for live performance debugging
     private async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
+        const startedAt = Date.now();
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
+            logger.log('executeSyncBatch:missing-account', {
+                accountId: sync.accountId,
+                durationMs: Date.now() - startedAt,
+                syncId: sync.id
+            });
+
             return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
         }
 
+        const fetchStartedAt = Date.now();
         const result = await this.fetchTransactionBatch(sync, account.externalId);
+        logger.log('executeSyncBatch:fetch', {
+            completed: result.completed,
+            durationMs: Date.now() - fetchStartedAt,
+            mode: sync.mode,
+            syncId: sync.id,
+            transactionCount: result.transactions.length
+        });
         await microPause();
 
+        const processStartedAt = Date.now();
         const changedTransactionCount = await this.processFetchedTransactions(result.transactions, account.id);
+        logger.log('executeSyncBatch:process', {
+            accountId: account.id,
+            changedTransactionCount,
+            durationMs: Date.now() - processStartedAt,
+            syncId: sync.id,
+            transactionCount: result.transactions.length
+        });
 
         if (isPositiveNumber(changedTransactionCount)) {
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC);
+            logger.log('executeSyncBatch:consolidation-enqueued', { changedTransactionCount, syncId: sync.id });
         }
 
         await microPause();
+        logger.log('executeSyncBatch:done', { durationMs: Date.now() - startedAt, syncId: sync.id });
 
         return result;
     }
@@ -262,42 +314,86 @@ class AppMonobankSyncService {
     }
 
     private async processPendingSyncs(): Promise<BackgroundTask.BackgroundTaskResult> {
+        const startedAt = Date.now();
         const pendingSync = await this.getNextPendingSync();
         if (!isDefined(pendingSync)) {
+            logger.log('processPendingSyncs:empty', { durationMs: Date.now() - startedAt });
+
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
         const result = await this.executeSyncBatch(pendingSync);
         await this.updateSyncProgress(pendingSync, result);
+        logger.log('processPendingSyncs:batch', {
+            completed: result.completed,
+            durationMs: Date.now() - startedAt,
+            mode: pendingSync.mode,
+            syncId: pendingSync.id,
+            transactionCount: result.transactions.length
+        });
         await microPause(MONOBANK_RATE_LIMIT_MS);
 
         return await this.executeSyncLoop();
     }
 
+    // eslint-disable-next-line max-statements -- Sync import path keeps adjacent phase timing logs for live performance debugging
     private async processFetchedTransactions(
         transactions: BankSyncBatchResultInterface['transactions'],
         accountId: number
     ): Promise<number> {
+        const startedAt = Date.now();
         if (!isNotEmptyArray(transactions)) {
+            logger.log('processFetchedTransactions:empty', { accountId, durationMs: Date.now() - startedAt });
+
             return 0;
         }
 
+        const existingStartedAt = Date.now();
         const existingIds = await transactionService.findByExternalSource(this.provider);
+        logger.log('processFetchedTransactions:existing-ids', {
+            accountId,
+            durationMs: Date.now() - existingStartedAt,
+            existingCount: existingIds.size,
+            fetchedCount: transactions.length
+        });
         const newTransactions = transactions.filter(bankTransaction => !existingIds.has(bankTransaction.id));
         const existingTransactions = transactions.filter(bankTransaction => existingIds.has(bankTransaction.id));
+        logger.log('processFetchedTransactions:classified', {
+            accountId,
+            existingCount: existingTransactions.length,
+            fetchedCount: transactions.length,
+            newCount: newTransactions.length
+        });
 
         const createdTransactionCount = await this.createNewTransactions(newTransactions, accountId);
         const updatedTransactionCount = await this.updateExistingTransactions(existingTransactions, accountId);
 
         if (isPositiveNumber(updatedTransactionCount)) {
+            const balanceStartedAt = Date.now();
             await transactionService.updateAllBalances();
+            logger.log('processFetchedTransactions:balances', {
+                accountId,
+                durationMs: Date.now() - balanceStartedAt,
+                updatedTransactionCount
+            });
         }
+
+        logger.log('processFetchedTransactions:done', {
+            accountId,
+            createdTransactionCount,
+            durationMs: Date.now() - startedAt,
+            updatedTransactionCount
+        });
 
         return createdTransactionCount + updatedTransactionCount;
     }
 
+    // eslint-disable-next-line max-statements -- Sync create path keeps adjacent phase timing logs for live performance debugging
     private async createNewTransactions(newTransactions: BankSyncBatchResultInterface['transactions'], accountId: number): Promise<number> {
+        const startedAt = Date.now();
         if (!isNotEmptyArray(newTransactions)) {
+            logger.log('createNewTransactions:empty', { accountId, durationMs: Date.now() - startedAt });
+
             return 0;
         }
 
@@ -306,14 +402,33 @@ class AppMonobankSyncService {
 
             return mapBankTransactionToCreateInput(bankTransaction, accountId, lookup, this.provider);
         });
+        const prepareStartedAt = Date.now();
         const prepared = await ruleEngineService.prepareCreateInputsForRules(inputs);
+        logger.log('createNewTransactions:rules', {
+            accountId,
+            durationMs: Date.now() - prepareStartedAt,
+            inputCount: inputs.length,
+            postCreateCount: prepared.postCreateIndexes.length
+        });
+        const createStartedAt = Date.now();
         const createdTransactions = await transactionService.bulkCreate(prepared.transactionInputs);
+        logger.log('createNewTransactions:bulk-create', {
+            accountId,
+            createdCount: createdTransactions.length,
+            durationMs: Date.now() - createStartedAt
+        });
         const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
         const postCreateTransactionInputs = prepared.postCreateIndexes.map(index => prepared.transactionInputs[index]).filter(isDefined);
 
         if (isNotEmptyArray(postCreateTransactionIds)) {
             ruleApplicationDrainerService.enqueueTransactions(postCreateTransactionIds, postCreateTransactionInputs);
         }
+        logger.log('createNewTransactions:done', {
+            accountId,
+            createdCount: createdTransactions.length,
+            durationMs: Date.now() - startedAt,
+            postCreateCount: postCreateTransactionIds.length
+        });
 
         return createdTransactions.length;
     }
@@ -322,7 +437,10 @@ class AppMonobankSyncService {
         existingTransactions: BankSyncBatchResultInterface['transactions'],
         accountId: number
     ): Promise<number> {
+        const startedAt = Date.now();
         if (!isNotEmptyArray(existingTransactions)) {
+            logger.log('updateExistingTransactions:empty', { accountId, durationMs: Date.now() - startedAt });
+
             return 0;
         }
 
@@ -330,17 +448,32 @@ class AppMonobankSyncService {
             await transactionService.update(mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider));
             await microPause();
         }
+        logger.log('updateExistingTransactions:done', {
+            accountId,
+            durationMs: Date.now() - startedAt,
+            updatedCount: existingTransactions.length
+        });
 
         return existingTransactions.length;
     }
 
     private async fetchTransactionBatch(sync: BankSyncEntityInterface, extAccId: string): Promise<BankSyncBatchResultInterface> {
+        const startedAt = Date.now();
         const svc = new MonobankSyncService(sync.token);
         const isForward = sync.mode === BankSyncModeEnum.FORWARD;
 
-        return isForward
+        const result = isForward
             ? await svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date())
             : await svc.syncTransactionsBackward(extAccId, sync.backwardSyncFromAt ?? new Date(), sync.backwardSyncedAt);
+        logger.log('fetchTransactionBatch:done', {
+            completed: result.completed,
+            durationMs: Date.now() - startedAt,
+            mode: sync.mode,
+            syncId: sync.id,
+            transactionCount: result.transactions.length
+        });
+
+        return result;
     }
 
     private async getOrCreateAccount(bankAccount: BankAccountInterface): Promise<AccountEntityInterface> {
