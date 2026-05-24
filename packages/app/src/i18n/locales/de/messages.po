@@ -39,11 +39,11 @@ msgstr "{autoCandidateCount, plural, one {# Überweisungspaar mit hoher Trefferq
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verfügbar}}"
 
-#: src/budget/service/budget-alert-monitor.service.ts:108
+#: src/budget/service/budget-alert-monitor.service.ts:112
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% ausgegeben"
 
-#: src/budget/service/budget-alert-monitor.service.ts:108
+#: src/budget/service/budget-alert-monitor.service.ts:112
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: Limit erreicht"
 
@@ -88,7 +88,7 @@ msgid "{manualReviewCandidateCount, plural, one {# lower-confidence pair} other 
 msgstr "{manualReviewCandidateCount, plural, one {# Paar mit niedrigerer Trefferquote} other {# Paare mit niedrigerer Trefferquote}}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:36
-#: src/rule/components/rules-list-page/rules-list-page.tsx:41
+#: src/rule/components/rules-list-page/rules-list-page.tsx:37
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# passende Regel} other {# passende Regeln}}"
 
@@ -158,8 +158,7 @@ msgstr "100% Offline & Privat"
 msgid "A default currency is required before you can manage budgets."
 msgstr "Eine Standardwährung ist erforderlich, bevor Sie Budgets verwalten können."
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
 msgid "A rule with the same conditions already exists."
 msgstr "Eine Regel mit denselben Bedingungen existiert bereits."
 
@@ -309,7 +308,7 @@ msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Keine C
 msgid "Already syncing"
 msgstr "Synchronisiert bereits"
 
-#: src/app/(tabs)/settings/import.tsx:199
+#: src/app/(tabs)/settings/import.tsx:197
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:16
 #: src/rule/constant/rule-condition-field.constant.ts:8
 msgid "Amount"
@@ -461,7 +460,7 @@ msgstr "Budget"
 msgid "Budget currency"
 msgstr "Budget-Währung"
 
-#: src/budget/service/budget-alert-monitor.service.ts:99
+#: src/budget/service/budget-alert-monitor.service.ts:103
 msgid "Budget limit reached"
 msgstr "Budgetlimit erreicht"
 
@@ -482,12 +481,11 @@ msgstr "Budgie"
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
 #: src/app/(main)/budget/index.tsx:52
 #: src/app/(tabs)/settings/import.tsx:258
-#: src/app/(tabs)/settings/import.tsx:260
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:133
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:44
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -516,10 +514,8 @@ msgstr "Kategorien ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:34
 #: src/app/(tabs)/settings/import.tsx:181
-#: src/budget/service/budget-alert-monitor.service.ts:107
+#: src/budget/service/budget-alert-monitor.service.ts:111
 #: src/category/components/category-form-selector/category-form-selector.tsx:34
-#: src/app/(tabs)/settings/import.tsx:183
-#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx:35
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:176
 msgid "Category"
 msgstr "Kategorie"
@@ -595,7 +591,7 @@ msgstr "Menü schließen"
 msgid "Coinbase"
 msgstr "Coinbase"
 
-#: src/app/(tabs)/settings/import.tsx:243
+#: src/app/(tabs)/settings/import.tsx:241
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:15
 #: src/rule/constant/rule-condition-field.constant.ts:7
 msgid "Comment"
@@ -693,12 +689,11 @@ msgstr "Transfers konnten nicht konsolidiert werden"
 msgid "Could not create budget"
 msgstr "Budget konnte nicht erstellt werden"
 
-#: src/category/components/category-form/category-form.tsx:166
 #: src/category/components/category-form/category-form.tsx:167
 msgid "Could not create category"
 msgstr "Kategorie konnte nicht erstellt werden"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:177
 #: src/rule/hooks/use-rule-form.hook.ts:158
 msgid "Could not create rule"
 msgstr "Regel konnte nicht erstellt werden"
@@ -740,7 +735,7 @@ msgstr "Tag konnte nicht gelöscht werden"
 msgid "Could not delete transaction."
 msgstr "Transaktion konnte nicht gelöscht werden."
 
-#: src/export/components/export-csv/export-csv.tsx:18
+#: src/export/components/export-csv/export-csv.tsx:16
 msgid "Could not export CSV"
 msgstr "CSV konnte nicht exportiert werden"
 
@@ -752,7 +747,7 @@ msgstr "Datenbank konnte nicht exportiert werden"
 msgid "Could not fetch accounts"
 msgstr "Konten konnten nicht abgerufen werden"
 
-#: src/app/(tabs)/settings/import.tsx:145
+#: src/app/(tabs)/settings/import.tsx:143
 msgid "Could not import CSV file"
 msgstr "CSV-Datei konnte nicht importiert werden"
 
@@ -768,7 +763,7 @@ msgstr "Kategorie konnte nicht zusammengeführt werden"
 msgid "Could not merge tag"
 msgstr "Tag konnte nicht zusammengeführt werden"
 
-#: src/app/(tabs)/settings/import.tsx:114
+#: src/app/(tabs)/settings/import.tsx:112
 msgid "Could not read CSV file"
 msgstr "CSV-Datei konnte nicht gelesen werden"
 
@@ -805,7 +800,6 @@ msgstr "Budget konnte nicht gespeichert werden"
 msgid "Could not save budget: a default currency is required."
 msgstr "Budget konnte nicht gespeichert werden: Standardwährung erforderlich."
 
-#: src/category/components/category-form/category-form.tsx:166
 #: src/category/components/category-form/category-form.tsx:167
 msgid "Could not save category"
 msgstr "Kategorie konnte nicht gespeichert werden"
@@ -868,7 +862,7 @@ msgstr "Persönlichen Token erstellen und kopieren"
 msgid "Create and organize transaction tags"
 msgstr "Transaktions-Tags erstellen und organisieren"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:133
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:135
 msgid "Create anyway"
 msgstr "Trotzdem erstellen"
 
@@ -901,7 +895,7 @@ msgstr "Erstellen Sie eines, um zu beginnen."
 msgid "Create Rule"
 msgstr "Regel erstellen"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:91
+#: src/rule/components/rules-list-page/rules-list-page.tsx:86
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Regeln erstellen, um Banktransaktionen automatisch zu kategorisieren und zu taggen"
 
@@ -933,7 +927,7 @@ msgstr "Krypto"
 msgid "CSV"
 msgstr "CSV"
 
-#: src/export/components/export-csv/export-csv.tsx:16
+#: src/export/components/export-csv/export-csv.tsx:14
 msgid "CSV exported"
 msgstr "CSV exportiert"
 
@@ -964,7 +958,7 @@ msgstr "Datenbank exportiert"
 
 #: src/@generic/component/date-filter/date-filter.tsx:35
 #: src/@generic/component/date-filter/date-filter.tsx:56
-#: src/app/(tabs)/settings/import.tsx:191
+#: src/app/(tabs)/settings/import.tsx:189
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:132
 msgid "Date"
 msgstr "Datum"
@@ -1057,7 +1051,7 @@ msgstr "KI-Modelle werden heruntergeladen…"
 msgid "Downloading models"
 msgstr "Modelle werden heruntergeladen"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
 msgid "Duplicate rule"
 msgstr "Regel duplizieren"
 
@@ -1094,12 +1088,11 @@ msgstr "z. B. Sparkonto"
 msgid "Edit budget"
 msgstr "Budget bearbeiten"
 
-#: src/category/components/category-form/category-form.tsx:67
 #: src/category/components/category-form/category-form.tsx:69
 msgid "Edit Category"
 msgstr "Kategorie bearbeiten"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:134
 msgid "Edit existing"
 msgstr "Bestehende bearbeiten"
 
@@ -1267,11 +1260,11 @@ msgstr "Ausgabe"
 msgid "Expenses"
 msgstr "Ausgaben"
 
-#: src/export/components/export-csv/export-csv.tsx:24
+#: src/export/components/export-csv/export-csv.tsx:22
 msgid "Export all transactions to a CSV file"
 msgstr "Alle Transaktionen in eine CSV-Datei exportieren"
 
-#: src/export/components/export-csv/export-csv.tsx:23
+#: src/export/components/export-csv/export-csv.tsx:21
 msgid "Export CSV"
 msgstr "CSV exportieren"
 
@@ -1283,7 +1276,7 @@ msgstr "Datenbank exportieren"
 msgid "Export your transactions to Excel"
 msgstr "Transaktionen nach Excel exportieren"
 
-#: src/app/(tabs)/settings/import.tsx:215
+#: src/app/(tabs)/settings/import.tsx:213
 msgid "External ID"
 msgstr "Externe ID"
 
@@ -1324,7 +1317,7 @@ msgstr "Feld"
 msgid "Fill in the account details"
 msgstr "Füllen Sie die Kontodetails aus"
 
-#: src/app/(tabs)/settings/import.tsx:153
+#: src/app/(tabs)/settings/import.tsx:151
 msgid "Fix Errors"
 msgstr "Fehler beheben"
 
@@ -1344,15 +1337,15 @@ msgstr "von"
 msgid "From"
 msgstr "Von"
 
-#: src/app/(tabs)/settings/import.tsx:222
+#: src/app/(tabs)/settings/import.tsx:220
 msgid "From Account"
 msgstr "Von Konto"
 
-#: src/app/(tabs)/settings/import.tsx:236
+#: src/app/(tabs)/settings/import.tsx:234
 msgid "From Amount"
 msgstr "Von Betrag"
 
-#: src/app/(tabs)/settings/import.tsx:229
+#: src/app/(tabs)/settings/import.tsx:227
 msgid "From Currency"
 msgstr "Von Währung"
 
@@ -1481,7 +1474,7 @@ msgstr "Indexierung {done} von {total}"
 msgid "Invalid file"
 msgstr "Ungültige Datei"
 
-#: src/app/(tabs)/settings/import.tsx:251
+#: src/app/(tabs)/settings/import.tsx:249
 msgid "Is Planned"
 msgstr "Ist geplant"
 
@@ -1585,7 +1578,7 @@ msgstr "Tags verwalten"
 msgid "Manual"
 msgstr "Manuell"
 
-#: src/app/(tabs)/settings/import.tsx:159
+#: src/app/(tabs)/settings/import.tsx:157
 msgid "Map CSV Columns"
 msgstr "CSV-Spalten zuordnen"
 
@@ -1597,7 +1590,7 @@ msgstr "Alle übereinstimmen"
 msgid "Match Any"
 msgstr "Beliebige übereinstimmen"
 
-#: src/app/(tabs)/settings/import.tsx:160
+#: src/app/(tabs)/settings/import.tsx:158
 msgid "Match each field to a column from your CSV file"
 msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 
@@ -1609,8 +1602,8 @@ msgstr "entspricht"
 msgid "Matches Regex"
 msgstr "Entspricht Regex"
 
-#: src/app/(tabs)/settings/import.tsx:247
-#: src/app/(tabs)/settings/import.tsx:255
+#: src/app/(tabs)/settings/import.tsx:245
+#: src/app/(tabs)/settings/import.tsx:253
 msgid "MCC"
 msgstr "MCC"
 
@@ -1796,7 +1789,7 @@ msgstr "Keine wiederkehrenden Zahlungen erkannt"
 msgid "No Results"
 msgstr "Keine Ergebnisse"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:89
+#: src/rule/components/rules-list-page/rules-list-page.tsx:84
 msgid "No Rules Yet"
 msgstr "Noch keine Regeln"
 
@@ -1915,7 +1908,7 @@ msgstr "Ursprünglich importierte Transaktionen werden wiederhergestellt und die
 msgid "Original transaction"
 msgstr "Ursprüngliche Transaktion"
 
-#: src/budget/service/budget-alert-monitor.service.ts:99
+#: src/budget/service/budget-alert-monitor.service.ts:103
 msgid "Overall budget: {threshold}% spent"
 msgstr "Gesamtbudget: {threshold}% ausgegeben"
 
@@ -1923,7 +1916,6 @@ msgstr "Gesamtbudget: {threshold}% ausgegeben"
 msgid "Overall monthly limit"
 msgstr "Monatliches Gesamtlimit"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:59
 #: src/transaction/components/statistics-content/statistics-content.tsx:61
 msgid "Overview"
 msgstr "Übersicht"
@@ -2021,8 +2013,7 @@ msgstr "PrivatBank"
 msgid "Push notifications are disabled"
 msgstr "Push-Benachrichtigungen sind deaktiviert"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:171
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
 msgid "Quick rule"
 msgstr "Schnellregel"
 
@@ -2159,7 +2150,7 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Regel"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:174
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:176
 msgid "Rule created"
 msgstr "Regel erstellt"
 
@@ -2167,7 +2158,7 @@ msgstr "Regel erstellt"
 msgid "Rule updated"
 msgstr "Regel aktualisiert"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:72
+#: src/rule/components/rules-list-page/rules-list-page.tsx:68
 msgid "Rules"
 msgstr "Regeln"
 
@@ -2274,11 +2265,11 @@ msgstr "Wählen Sie einen Kontakt"
 msgid "Select a tag to merge into"
 msgstr "Wählen Sie einen Tag zum Zusammenführen"
 
-#: src/app/(tabs)/settings/import.tsx:58
+#: src/app/(tabs)/settings/import.tsx:56
+#: src/app/(tabs)/settings/import.tsx:59
+#: src/app/(tabs)/settings/import.tsx:60
 #: src/app/(tabs)/settings/import.tsx:61
 #: src/app/(tabs)/settings/import.tsx:62
-#: src/app/(tabs)/settings/import.tsx:63
-#: src/app/(tabs)/settings/import.tsx:64
 msgid "Select a valid column"
 msgstr "Wählen Sie eine gültige Spalte"
 
@@ -2482,7 +2473,7 @@ msgstr "Ausgegeben"
 msgid "Split"
 msgstr "Aufteilen"
 
-#: src/app/(tabs)/settings/import.tsx:153
+#: src/app/(tabs)/settings/import.tsx:151
 msgid "Start Import"
 msgstr "Import starten"
 
@@ -2656,11 +2647,11 @@ msgstr "nach"
 msgid "To"
 msgstr "Nach"
 
-#: src/app/(tabs)/settings/import.tsx:175
+#: src/app/(tabs)/settings/import.tsx:173
 msgid "To Account"
 msgstr "Auf Konto"
 
-#: src/app/(tabs)/settings/import.tsx:207
+#: src/app/(tabs)/settings/import.tsx:205
 msgid "To Currency"
 msgstr "In Währung"
 
@@ -2690,15 +2681,15 @@ msgstr "Gesamt: {formattedAmountToReturn}"
 msgid "Touch ID"
 msgstr "Touch ID"
 
-#: src/transaction/service/transaction-transfer.service.ts:169
+#: src/transaction/service/transaction-transfer.service.ts:168
 msgid "Transaction must have a destination account"
 msgstr "Transaktion muss ein Zielkonto haben"
 
-#: src/transaction/service/transaction-transfer.service.ts:166
+#: src/transaction/service/transaction-transfer.service.ts:165
 msgid "Transaction must have a source account"
 msgstr "Transaktion muss ein Quellkonto haben"
 
-#: src/transaction/service/transaction-transfer.service.ts:118
+#: src/transaction/service/transaction-transfer.service.ts:117
 msgid "Transaction not found"
 msgstr "Transaktion nicht gefunden"
 
@@ -2898,11 +2889,11 @@ msgstr "Gestern"
 msgid "You gave money"
 msgstr "Sie haben Geld gegeben"
 
-#: src/budget/service/budget-alert-monitor.service.ts:100
+#: src/budget/service/budget-alert-monitor.service.ts:104
 msgid "You have used {spentPercent}% of your overall budget."
 msgstr "Sie haben {spentPercent}% Ihres Gesamtbudgets verbraucht."
 
-#: src/budget/service/budget-alert-monitor.service.ts:109
+#: src/budget/service/budget-alert-monitor.service.ts:113
 msgid "You have used {threshold}% of the limit for {categoryName}."
 msgstr "Sie haben {threshold}% des Limits für {categoryName} verbraucht."
 
@@ -2923,6 +2914,6 @@ msgstr "Ihre Datenbanksicherung kann geteilt werden."
 msgid "Your token is stored securely in the database. Sync continues in the background."
 msgstr "Ihr Token wird sicher in der Datenbank gespeichert. Die Synchronisation läuft im Hintergrund weiter."
 
-#: src/export/components/export-csv/export-csv.tsx:17
+#: src/export/components/export-csv/export-csv.tsx:15
 msgid "Your transaction file is ready to share."
 msgstr "Ihre Transaktionsdatei kann geteilt werden."
