@@ -2,7 +2,7 @@ import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/cont
 import { t } from '@lingui/core/macro';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
@@ -37,7 +37,7 @@ export const ConsolidationSourceModalContent = ({
     const footerClassName = showRevert ? 'flex-row gap-x-md' : '';
     const sourceRows = sources.map((source, index) => (
         <View key={source.entryId}>
-            {index > 0 ? <ListItemSeparator /> : null}
+            {isPositiveNumber(index) ? <ListItemSeparator /> : null}
             <ConsolidationSourceRow
                 source={source}
                 index={index}

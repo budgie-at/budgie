@@ -35,15 +35,14 @@ const openTransactionListTransferConversion = (
     openConvertToTransfer: ReturnType<typeof useConvertToTransferModal>[0]
 ) => {
     const [sourceEntry] = transaction.entries;
-    const sourceAccount = sourceEntry.account;
 
     openConvertToTransfer({
         transactionId: transaction.id,
         transactionType: getConvertTransactionType(transaction),
         excludeAccountId: sourceEntry.accountId,
         sourceAmount: convertFromMicroUnits(sourceEntry.amount),
-        sourceInstrumentId: sourceAccount.instrumentId,
-        sourceCode: sourceAccount.instrument.code,
+        sourceInstrumentId: sourceEntry.account.instrumentId,
+        sourceCode: sourceEntry.account.instrument.code,
         skipPostConvertNavigation: true
     }).catch(emptyFn);
 };
