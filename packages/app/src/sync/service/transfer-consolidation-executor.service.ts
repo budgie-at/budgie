@@ -329,7 +329,7 @@ class TransferConsolidationExecutorService {
     }
 
     private async isExistingTransferStillEligible(transactionId: number, tx: DB): Promise<boolean> {
-        const transaction = await transactionRepository.getById(transactionId, tx);
+        const transaction = await transactionRepository.getByIdRaw(transactionId, tx);
 
         return isDefined(transaction) && !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt);
     }
