@@ -30,6 +30,8 @@ const EUR_TO_UAH_RATE = UAH_AMOUNT / EUR_AMOUNT;
 const APPROXIMATE_SOURCE_AMOUNT = 290_300_000;
 const APPROXIMATE_TRANSFER_TARGET_AMOUNT = 14_840_136_000;
 const APPROXIMATE_PRIVAT_INCOME_AMOUNT = 14_790_780_000;
+const SAME_BANK_CURRENCY_SOURCE_AMOUNT = 276_500_000;
+const SAME_BANK_CURRENCY_TARGET_AMOUNT = 13_272_000_000;
 
 const seedExchangeRate = (baseInstrumentId: number, quoteInstrumentId: number, rate: number): void => {
     testDb
@@ -193,14 +195,25 @@ const fetchLiveDebitEntry = (transactionId: number) =>
         )
         .get();
 
-const expectSingleIbanBridgeCanonical = (fromAccountId: number, toAccountId: number): number => {
-    const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
+const expectSingleCanonicalOfType = (
+    consolidationType: TransactionConsolidationTypeEnum,
+    fromAccountId: number,
+    toAccountId: number
+): number => {
+    const canonicals = fetchCanonicalsOfType(consolidationType);
 
     expect(canonicals).toHaveLength(1);
     expect(canonicals[0].fromAccountId).toBe(fromAccountId);
     expect(canonicals[0].toAccountId).toBe(toAccountId);
 
     return canonicals[0].id;
+};
+
+const expectSingleIbanBridgeCanonical = (fromAccountId: number, toAccountId: number): number =>
+    expectSingleCanonicalOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER, fromAccountId, toAccountId);
+
+const expectSingleTransferPairCanonical = (fromAccountId: number, toAccountId: number): number => {
+    return expectSingleCanonicalOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR, fromAccountId, toAccountId);
 };
 
 const expectParentedToCanonical = (canonicalId: number, transactionIds: readonly number[]): void => {
@@ -247,6 +260,38 @@ const expectExistingTransferBridgeConsolidated = async (
 };
 
 describe('consolidation/historical-transfer-leftovers', () => {
+    it('consolidates a same-bank FOP currency conversion with bank-derived amounts', async () => {
+        const operatedAt = new Date(2025, 9, 14, 12, 27, 41);
+        const eur = seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
+        const sourceAccount = seed.account({
+            title: 'Monobank Fop EUR',
+            type: AccountTypeEnum.BANK_SYNC,
+            externalSource: ExternalSourceEnum.MONOBANK,
+            iban: SOURCE_IBAN,
+            instrumentId: eur.id
+        });
+        const targetAccount = seed.account({
+            title: 'Monobank Fop UAH',
+            type: AccountTypeEnum.BANK_SYNC,
+            iban: BRIDGE_IBAN
+        });
+        const sourceExpense = seedBankPair.expense(
+            { externalId: 'fop-eur-sale', operatedAt },
+            { accountId: sourceAccount.id, amount: SAME_BANK_CURRENCY_SOURCE_AMOUNT }
+        );
+        const targetIncome = seedBankPair.income(
+            { externalId: 'fop-uah-receipt', operatedAt },
+            { accountId: targetAccount.id, amount: SAME_BANK_CURRENCY_TARGET_AMOUNT }
+        );
+
+        const result = await transferConsolidationService.consolidate();
+
+        expect(result).toEqual({ found: 1, consolidated: 1 });
+        const canonicalId = expectSingleTransferPairCanonical(sourceAccount.id, targetAccount.id);
+        expectParentedToCanonical(canonicalId, [sourceExpense.id, targetIncome.id]);
+        expect(fetchMovedSourceIds(canonicalId)).toEqual([sourceExpense.id, targetIncome.id]);
+    });
+
     it('folds a past currency-exchange bridge leftover into the existing card transfer', async () => {
         const candidate = seedExistingTransferBridgeCandidate(
             'eur-to-uah',
