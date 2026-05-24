@@ -4,7 +4,6 @@ import { useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { ConvertToRefundModalSelector } from '../../../app/convert-to-refund-modal.selector';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useConvertToRefundAction } from '../../hooks/use-convert-to-refund-action.hook';
@@ -34,8 +33,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
     };
 
     const handleRevertSuccess = () => {
-        resolveConvertToRefund(null, { skipBack: true });
-        dismissAllOrReplace('/');
+        resolveConvertToRefund(null);
     };
 
     const revertRefund = useRevertConsolidation(canonicalTransactionId, handleRevertSuccess);
