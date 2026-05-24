@@ -102,13 +102,16 @@ class TransactionRefundService {
 
         const sourceTags = await Promise.all(sourceTransactionIds.map(async id => transactionTagsRepository.findByTransactionId(id, tx)));
         const uniqueTagIds = [...new Set(sourceTags.flat().map(tag => tag.tagId))];
+        const existingTags = await transactionTagsRepository.findByTransactionId(canonicalTransactionId, tx);
+        const existingTagIds = new Set(existingTags.map(tag => tag.tagId));
+        const missingTagIds = uniqueTagIds.filter(tagId => !existingTagIds.has(tagId));
 
-        if (!isNotEmptyArray(uniqueTagIds)) {
+        if (!isNotEmptyArray(missingTagIds)) {
             return;
         }
 
         await transactionTagsRepository.bulkCreate(
-            uniqueTagIds.map(tagId => ({
+            missingTagIds.map(tagId => ({
                 transactionId: canonicalTransactionId,
                 tagId,
                 isPrimary: false
