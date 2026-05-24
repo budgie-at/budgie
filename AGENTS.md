@@ -478,6 +478,21 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 4. **Before PR:** Run all validation commands
 5. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 
+## Simulator Dev Testing
+
+1. For dev-client feature checks and debugging, use the local `serve-sim` skill and the Codex in-app browser.
+2. Read `.agents/skills/serve-sim/SKILL.md` before using serve-sim. Follow its referenced workflow files when interacting with the simulator.
+3. Always check existing serve-sim state first: `npx --yes serve-sim --list -q`. Reuse a matching running device when it exists.
+4. Understand the two layers: `npx --yes serve-sim <device>` starts a browser preview UI; `npx --yes serve-sim --detach -q <device>` may start only the per-device stream helper. If `http://localhost:<port>/` returns 404, that URL is a raw helper, not the preview UI.
+5. For manual testing in the in-app browser, start or keep one foreground preview server: `npx --yes serve-sim -p <free-preview-port> <udid-or-name>`. The preview URL is the browser URL to open.
+6. One preview server can manage multiple simulators if several device UDIDs/names are passed. Each simulator still has its own helper and raw stream; discover those with `--list -q`.
+7. For separate manual sessions, use separate preview ports, for example `-p 3200` and `-p 3210`.
+8. Do not hardcode serve-sim ports. Use the returned `url`, `streamUrl`, and `wsUrl`; ports differ when multiple simulators or sessions are running.
+9. When several simulators are booted, target the requested device with `-d <udid|name>` for taps, buttons, rotation, permissions, and other subcommands.
+10. Run serve-sim with project Node `>=22`; taps can fail on older shell Node versions.
+11. Use `serve-sim tap` for taps. Use normalized coordinates only.
+12. Do not use Maestro for dev-client checks. Maestro is only acceptance evidence against a clean E2E build.
+
 ## E2E Testing
 
 1. Prefer black-box E2E flows over app-owned test hooks.
