@@ -133,13 +133,6 @@ export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = `
                     AND existing_transfer.consolidation_parent_transaction_id IS NULL
                     AND existing_transfer.from_account_id IS NOT NULL
                     AND existing_transfer.to_account_id IS NOT NULL
-                    AND NOT EXISTS (
-                        SELECT 1
-                        FROM transaction_entries existing_source_entry
-                        WHERE existing_source_entry.transaction_id = existing_transfer.id
-                            AND existing_source_entry.deleted_at IS NULL
-                            AND existing_source_entry.original_transaction_id IS NOT NULL
-                    )
                     AND source_account.id != bridge_account.id
                     AND bridge_account.id != target_account.id
                     AND source_account.id != target_account.id
