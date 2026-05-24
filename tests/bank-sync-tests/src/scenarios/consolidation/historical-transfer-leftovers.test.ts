@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 
 import {
     AccountTypeEnum,
     ExchangeRateCreateEntityInterface,
     ExchangeRateEntityTable,
+    ExternalSourceEnum,
     TransactionConsolidationTypeEnum,
     TransactionCreateEntityInterface,
     TransactionEntityInterface,
@@ -26,6 +27,9 @@ const PRIVAT_IBAN = 'UA-PRIVAT-UAH';
 const EUR_AMOUNT = 238_000_000;
 const UAH_AMOUNT = 11_745_300_000;
 const EUR_TO_UAH_RATE = UAH_AMOUNT / EUR_AMOUNT;
+const APPROXIMATE_SOURCE_AMOUNT = 290_300_000;
+const APPROXIMATE_TRANSFER_TARGET_AMOUNT = 14_840_136_000;
+const APPROXIMATE_PRIVAT_INCOME_AMOUNT = 14_790_780_000;
 
 const seedExchangeRate = (baseInstrumentId: number, quoteInstrumentId: number, rate: number): void => {
     testDb
@@ -175,6 +179,20 @@ const fetchMovedSourceIds = (canonicalId: number): number[] =>
         .all()
         .flatMap(entry => (entry.originalTransactionId ? [entry.originalTransactionId] : []));
 
+const fetchLiveDebitEntry = (transactionId: number) =>
+    testDb
+        .select()
+        .from(TransactionEntryEntityTable)
+        .where(
+            and(
+                eq(TransactionEntryEntityTable.transactionId, transactionId),
+                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
+                isNull(TransactionEntryEntityTable.originalTransactionId),
+                isNull(TransactionEntryEntityTable.deletedAt)
+            )
+        )
+        .get();
+
 const expectSingleIbanBridgeCanonical = (fromAccountId: number, toAccountId: number): number => {
     const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
 
@@ -318,5 +336,66 @@ describe('consolidation/historical-transfer-leftovers', () => {
         );
 
         await expectIncomeDuplicateConsolidated(existingTransfer, duplicateIncome);
+    });
+
+    it('retargets an approximate cross-currency Privat income to an existing Monobank transfer', async () => {
+        const operatedAt = new Date(2026, 0, 28, 18, 17, 48);
+        const transferMcc = findMccByCode('4829');
+        const eur = seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
+        const sourceAccount = seed.account({
+            title: 'Monobank Black EUR',
+            type: AccountTypeEnum.BANK_SYNC,
+            iban: SOURCE_IBAN,
+            instrumentId: eur.id
+        });
+        const oldTargetAccount = seed.account({ title: 'приватбанк UAH', type: AccountTypeEnum.BANK });
+        const privatAccount = seed.account({
+            title: 'Privatbank',
+            type: AccountTypeEnum.BANK_SYNC,
+            iban: PRIVAT_IBAN,
+            externalSource: ExternalSourceEnum.PRIVATBANK
+        });
+        const existingTransfer = seedTransfer(
+            'приват сина 3',
+            operatedAt,
+            sourceAccount.id,
+            oldTargetAccount.id,
+            APPROXIMATE_TRANSFER_TARGET_AMOUNT
+        );
+
+        testDb
+            .update(TransactionEntityTable)
+            .set({
+                exchangeRate: APPROXIMATE_SOURCE_AMOUNT / APPROXIMATE_TRANSFER_TARGET_AMOUNT,
+                externalSource: ExternalSourceEnum.MONOBANK
+            })
+            .where(eq(TransactionEntityTable.id, existingTransfer.id))
+            .run();
+        testDb
+            .update(TransactionEntryEntityTable)
+            .set({ amount: APPROXIMATE_SOURCE_AMOUNT })
+            .where(
+                and(
+                    eq(TransactionEntryEntityTable.transactionId, existingTransfer.id),
+                    eq(TransactionEntryEntityTable.accountId, sourceAccount.id)
+                )
+            )
+            .run();
+
+        const privatIncome = seedBankPair.income(
+            { externalId: 'approximate-privat-income', operatedAt: new Date(operatedAt.getTime() + 60 * 60 * 1000 + 1000) },
+            { accountId: privatAccount.id, amount: APPROXIMATE_PRIVAT_INCOME_AMOUNT, mccCategoryId: transferMcc.id }
+        );
+
+        testDb
+            .update(TransactionEntityTable)
+            .set({ externalSource: ExternalSourceEnum.PRIVATBANK, title: 'від IHOR YEHOROV' })
+            .where(eq(TransactionEntityTable.id, privatIncome.id))
+            .run();
+
+        await expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
+        expect(fetchTransactionById(existingTransfer.id).toAccountId).toBe(privatAccount.id);
+        expect(fetchLiveDebitEntry(existingTransfer.id)?.accountId).toBe(privatAccount.id);
+        expect(fetchLiveDebitEntry(existingTransfer.id)?.amount).toBe(APPROXIMATE_PRIVAT_INCOME_AMOUNT);
     });
 });
