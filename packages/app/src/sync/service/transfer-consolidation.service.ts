@@ -2,8 +2,9 @@ import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { THIRTY_MINUTES_IN_SECONDS } from '../constant/time.constant';
 import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-task.constant';
@@ -16,6 +17,7 @@ import type { ConsolidationPreviewInterface } from '../interface/consolidation-p
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 
 class TransferConsolidationService {
+    private activeOperation: Promise<unknown> | null = null;
     private isRunning = false;
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -35,15 +37,7 @@ class TransferConsolidationService {
         error => `throw error=${getErrorMessage(error)}`
     )
     async preview(): Promise<ConsolidationPreviewInterface> {
-        const candidates = await transferConsolidationCandidateService.findGroups();
-
-        return {
-            autoCandidateCount: this.countAutoCandidates(candidates),
-            manualReviewCandidateCount:
-                candidates.manualReviewCandidates.length +
-                candidates.atmCashWithdrawalReviewCandidates.length +
-                candidates.refundReviewCandidates.length
-        };
+        return this.runExclusive(() => this.buildPreview());
     }
 
     @Log(
@@ -52,17 +46,7 @@ class TransferConsolidationService {
         error => `throw error=${getErrorMessage(error)}`
     )
     async consolidate(): Promise<ConsolidationResultInterface> {
-        if (this.isRunning) {
-            return { found: 0, consolidated: 0 };
-        }
-
-        this.isRunning = true;
-
-        try {
-            return await this.runConsolidation();
-        } finally {
-            this.isRunning = false;
-        }
+        return this.runExclusive(() => this.runConsolidationIfIdle());
     }
 
     @Log(
@@ -84,6 +68,56 @@ class TransferConsolidationService {
         };
 
         return result;
+    }
+
+    private async buildPreview(): Promise<ConsolidationPreviewInterface> {
+        const candidates = await transferConsolidationCandidateService.findGroups();
+
+        return {
+            autoCandidateCount: this.countAutoCandidates(candidates),
+            manualReviewCandidateCount:
+                candidates.manualReviewCandidates.length +
+                candidates.atmCashWithdrawalReviewCandidates.length +
+                candidates.refundReviewCandidates.length
+        };
+    }
+
+    private async runConsolidationIfIdle(): Promise<ConsolidationResultInterface> {
+        if (this.isRunning) {
+            return { found: 0, consolidated: 0 };
+        }
+
+        this.isRunning = true;
+
+        try {
+            return await this.runConsolidation();
+        } finally {
+            this.isRunning = false;
+        }
+    }
+
+    private async runExclusive<T>(work: () => Promise<T>): Promise<T> {
+        const { activeOperation } = this;
+        if (isDefined(activeOperation)) {
+            await activeOperation;
+
+            return this.runExclusive(work);
+        }
+
+        return this.runActiveOperation(work);
+    }
+
+    private async runActiveOperation<T>(work: () => Promise<T>): Promise<T> {
+        const operation = foregroundWorkloadService.run(work);
+        this.activeOperation = operation;
+
+        try {
+            return await operation;
+        } finally {
+            if (this.activeOperation === operation) {
+                this.activeOperation = null;
+            }
+        }
     }
 
     private countAutoCandidates(candidates: ConsolidationCandidateGroupsInterface): number {
