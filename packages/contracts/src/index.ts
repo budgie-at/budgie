@@ -131,6 +131,13 @@ export { CategoryUpdateEntitySchema } from './category/schema/category-update-en
 
 export { CategoryRepository } from './category/repository/category.repository';
 
+export { DefaultCategoryTranslationEntityTable } from './category-translation/table/default-category-translation-entity.table';
+export { DefaultCategoryTranslationEntityRelations } from './category-translation/relations/default-category-translation-entity.relations';
+
+export { DefaultCategoryTranslationEntitySchema } from './category-translation/schema/default-category-translation-entity.schema';
+
+export type { DefaultCategoryTranslationEntityInterface } from './category-translation/entity/default-category-translation-entity.interface';
+
 export { MCC_GROUP_TYPE_MAX_LENGTH } from './mcc-group/constant/mcc-group-type-max-length.constant';
 export { MCC_GROUP_DESCRIPTION_MAX_LENGTH } from './mcc-group/constant/mcc-group-description-max-length.constant';
 

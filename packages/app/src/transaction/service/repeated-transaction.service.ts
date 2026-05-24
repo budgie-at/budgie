@@ -1,4 +1,4 @@
-import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { LanguageEnum, RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
@@ -19,6 +19,7 @@ import { patternCacheService } from './pattern-cache/pattern-cache.service';
 interface GetSuggestionsParamsInterface {
     readonly currentTime: Date;
     readonly type: TransactionTypeEnum;
+    readonly language: LanguageEnum;
     readonly accountId?: number;
     readonly amount?: number;
     readonly categoryId?: number;
@@ -51,7 +52,7 @@ class RepeatedTransactionService {
             `throw type=${params.type} accountId=${params.accountId ?? 0} amount=${params.amount ?? 0} error=${getErrorMessage(error)}`
     )
     async getSuggestions(params: GetSuggestionsParamsInterface): Promise<SuggestionsResultInterface> {
-        const { currentTime, type, accountId, amount, categoryId } = params;
+        const { currentTime, type, language, accountId, amount, categoryId } = params;
         const timeWindow = calculateTimeWindow(currentTime);
 
         const repeatedQuery = {
@@ -61,12 +62,12 @@ class RepeatedTransactionService {
             ...(isPositiveNumber(categoryId) && { categoryId }),
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
         };
-        const repeatedCacheKey = `repeated:${JSON.stringify(repeatedQuery)}`;
+        const repeatedCacheKey = `repeated:${language}:${JSON.stringify(repeatedQuery)}`;
         const timeQuery = patternCacheService.memoizeRepeated(repeatedCacheKey, () =>
-            transactionPatternRepository.findRepeatedPatterns(repeatedQuery)
+            transactionPatternRepository.findRepeatedPatterns(repeatedQuery, language)
         );
 
-        const amountQuery = this.buildAmountQuery(type, amount, accountId, categoryId);
+        const amountQuery = this.buildAmountQuery(type, language, amount, accountId, categoryId);
 
         const [timePatterns, amountPatterns] = await Promise.all([timeQuery, amountQuery]);
 
@@ -87,8 +88,10 @@ class RepeatedTransactionService {
         return convertFromMicroUnits(bestAmount);
     }
 
+    // eslint-disable-next-line @typescript-eslint/max-params -- positional args preserved per CLAUDE.md rule 33
     private buildAmountQuery(
         type: TransactionTypeEnum,
+        language: LanguageEnum,
         amount: number | undefined,
         accountId: number | undefined,
         categoryId: number | undefined
@@ -108,9 +111,11 @@ class RepeatedTransactionService {
             ...(isPositiveNumber(categoryId) && { categoryId }),
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
         };
-        const amountCacheKey = `amount:${JSON.stringify(amountQuery)}`;
+        const amountCacheKey = `amount:${language}:${JSON.stringify(amountQuery)}`;
 
-        return patternCacheService.memoizeAmount(amountCacheKey, () => transactionPatternRepository.findAmountBasedPatterns(amountQuery));
+        return patternCacheService.memoizeAmount(amountCacheKey, () =>
+            transactionPatternRepository.findAmountBasedPatterns(amountQuery, language)
+        );
     }
 }
 

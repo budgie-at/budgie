@@ -173,15 +173,22 @@
         {
             "idx": 24,
             "version": "6",
-            "when": 1779235200000,
-            "tag": "0024_add_budget_planning",
+            "when": 1779148900000,
+            "tag": "0024_default_category_translations",
             "breakpoints": true
         },
         {
             "idx": 25,
             "version": "6",
+            "when": 1779235200000,
+            "tag": "0025_add_budget_planning",
+            "breakpoints": true
+        },
+        {
+            "idx": 26,
+            "version": "6",
             "when": 1779321600000,
-            "tag": "0025_budget_planning_followups",
+            "tag": "0026_budget_planning_followups",
             "breakpoints": true
         }
     ]
