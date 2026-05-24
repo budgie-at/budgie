@@ -1,5 +1,4 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import { LegendList } from '@legendapp/list';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { useRouter } from 'expo-router';
 import { ReactElement, useState } from 'react';
@@ -8,11 +7,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
+import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { TRANSACTION_LIST_ESTIMATED_ITEM_SIZE } from '../../constant/transaction-list.constant';
+import { TRANSACTION_LIST_SIZING } from '../../constant/transaction-list.constant';
 import { TransactionMenuStateInterface } from '../../interface/transaction-menu-state.interface';
 import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.type';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
@@ -31,7 +31,6 @@ interface Props {
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
-const getItemType = (item: TransactionListItemType | undefined) => item?.type ?? '';
 
 const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
@@ -114,20 +113,18 @@ export const TransactionSectionsList = ({
     return (
         <>
             <View className="flex-1">
-                <LegendList
+                <BudgieLegendList
                     style={LIST_STYLE}
                     data={flatData}
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
-                    estimatedItemSize={TRANSACTION_LIST_ESTIMATED_ITEM_SIZE}
-                    stickyIndices={getStickyIndices(flatData)}
-                    recycleItems
+                    estimatedItemSize={TRANSACTION_LIST_SIZING.estimatedItemSize}
+                    stickyHeaderIndices={getStickyIndices(flatData)}
                     onEndReached={onEndReached}
                     onEndReachedThreshold={0.3}
-                    showsVerticalScrollIndicator={false}
                     contentContainerStyle={contentContainerStyle}
                     ListEmptyComponent={listEmptyState}
-                    getItemType={getItemType}
+                    getItemType={TRANSACTION_LIST_SIZING.getItemType}
                 />
             </View>
             <TransactionListContextMenu

@@ -1,5 +1,7 @@
 import { and, asc, eq, isNull } from 'drizzle-orm';
 
+import { LanguageEnum } from '../../@generic/enum/language.enum';
+import { buildTranslatedCategoryRelation } from '../../@generic/util/build-translated-category-relation.util';
 import { RuleCreateEntityInterface } from '../entity/rule-create-entity.interface';
 import { RuleUpdateEntityInterface } from '../entity/rule-update-entity.interface';
 import { RuleAssociationEnum } from '../enum/rule-association.enum';
@@ -51,7 +53,7 @@ export class RuleRepository {
         });
     }
 
-    findAllWithActionsAndCategories() {
+    findAllWithActionsAndCategories(language: LanguageEnum) {
         return this.db.query.RuleEntityTable.findMany({
             where: isNull(RuleEntityTable.deletedAt),
             orderBy: [asc(RuleEntityTable.id)],
@@ -59,7 +61,7 @@ export class RuleRepository {
                 [RuleAssociationEnum.CONDITIONS]: true,
                 [RuleAssociationEnum.ACTIONS]: {
                     with: {
-                        category: true,
+                        category: buildTranslatedCategoryRelation(language),
                         tag: true
                     }
                 }
