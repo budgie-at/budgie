@@ -18,9 +18,16 @@ import type { RefundableExpenseCandidateRowInterface } from '../interface/refund
 import type { RefundableExpenseCandidateInterface } from '../interface/refundable-expense-candidate.interface';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
-
 export class RefundPairRepository {
-    private static readonly AUTO_TITLE_PREFIXES = ['Скасування. ', 'Скасування.', 'Скасування '] as const;
+    private static readonly AUTO_TITLE_PREFIXES = [
+        'Скасування. ',
+        'Скасування.',
+        'Скасування ',
+        'ПОВЕРНЕННЯ КОШТІВ, ',
+        'Повернення коштів, ',
+        'Повернення, ',
+        'Повернення '
+    ] as const;
 
     private static readonly REVIEW_TITLE_PREFIXES = [
         ...RefundPairRepository.AUTO_TITLE_PREFIXES,
@@ -36,7 +43,6 @@ export class RefundPairRepository {
     ] as const;
 
     constructor(private db: DB) {}
-
     async findCandidates(): Promise<RefundCandidateInterface[]> {
         const sql = this.buildAutoBucketSql();
         const rows = await this.db.$client.getAllAsync<RefundCandidateRowInterface>(sql);
@@ -67,8 +73,7 @@ export class RefundPairRepository {
     private buildAutoBucketSql(): string {
         return `
             SELECT
-                confidenceBucket,
-                matchType,
+                confidenceBucket, matchType,
                 expenseTxId AS expenseTransactionId,
                 accountId,
                 expenseAmount AS expenseEntryAmount,
@@ -77,7 +82,7 @@ export class RefundPairRepository {
             FROM (${this.buildRankedCandidateSql()})
             WHERE refundCandidateCount = 1
                 AND refundRank = 1
-                AND confidenceBucket IN ('AUTO_REFUND_EXACT_TITLE', 'AUTO_REFUND_LOCALIZED_CANCELLATION_TITLE')
+                AND confidenceBucket IN ('AUTO_REFUND_EXACT_TITLE', 'AUTO_REFUND_LOCALIZED_REFUND_TITLE')
             GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
             HAVING SUM(refundAmount) <= expenseAmount
         `;
@@ -87,8 +92,7 @@ export class RefundPairRepository {
         return `
             SELECT
                 expenseTxId AS expenseTransactionId,
-                confidenceBucket,
-                matchType,
+                confidenceBucket, matchType,
                 accountId,
                 expenseAmount AS expenseEntryAmount,
                 SUM(refundAmount) AS refundsTotal,
@@ -160,7 +164,6 @@ export class RefundPairRepository {
             income_entries AS (
                 SELECT
                     income_tx.id AS txId,
-                    income_tx.title AS txTitle,
                     income_tx.operated_at AS operatedAt,
                     income_entry.account_id AS accountId,
                     income_entry.amount AS amount,
@@ -194,28 +197,25 @@ export class RefundPairRepository {
                     inc.operatedAt - exp.operatedAt AS timeDiff,
                     CASE
                         WHEN inc.rawNormTitle = exp.rawNormTitle
-                            AND inc.rawNormTitle != ''
-                            AND inc.operatedAt > exp.operatedAt
+                            AND inc.rawNormTitle != '' AND inc.operatedAt > exp.operatedAt
                             AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
                         THEN 'AUTO_REFUND_EXACT_TITLE'
                         WHEN inc.autoNormTitle = exp.autoNormTitle
                             AND inc.autoNormTitle != ''
-                            AND inc.rawNormTitle != exp.rawNormTitle
-                            AND inc.operatedAt > exp.operatedAt
+                            AND inc.rawNormTitle != exp.rawNormTitle AND inc.operatedAt > exp.operatedAt
                             AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
-                        THEN 'AUTO_REFUND_LOCALIZED_CANCELLATION_TITLE'
+                        THEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
                         WHEN inc.reviewNormTitle = exp.reviewNormTitle
                             AND inc.reviewNormTitle != ''
                             AND inc.mccCategoryId = exp.mccCategoryId
-                            AND inc.rawNormTitle != exp.rawNormTitle
-                            AND inc.operatedAt > exp.operatedAt
+                            AND inc.rawNormTitle != exp.rawNormTitle AND inc.operatedAt > exp.operatedAt
                             AND (inc.operatedAt - exp.operatedAt) <= ${MANUAL_REVIEW_TIME_WINDOW_SECONDS}
                         THEN 'REVIEW_REFUND_PREFIX_TITLE_MCC'
                         ELSE NULL
                     END AS confidenceBucket,
                     CASE
                         WHEN inc.rawNormTitle = exp.rawNormTitle THEN 'exact-title'
-                        WHEN inc.autoNormTitle = exp.autoNormTitle THEN 'localized-cancellation-title'
+                        WHEN inc.autoNormTitle = exp.autoNormTitle THEN 'localized-refund-title'
                         ELSE 'prefix-title-mcc'
                     END AS matchType
                 FROM income_entries inc
@@ -238,7 +238,7 @@ export class RefundPairRepository {
                         ORDER BY
                             CASE confidenceBucket
                                 WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
-                                WHEN 'AUTO_REFUND_LOCALIZED_CANCELLATION_TITLE' THEN 2
+                                WHEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' THEN 2
                                 WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 3
                                 ELSE 99
                             END,
