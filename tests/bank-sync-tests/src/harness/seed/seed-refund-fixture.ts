@@ -16,6 +16,7 @@ import type {
 
 interface SeedRefundedExpenseInput {
     readonly accountId: number;
+    readonly refundAccountId?: number;
     readonly expenseAmount: number;
     readonly refundAmounts: readonly number[];
     readonly title?: string;
@@ -39,6 +40,7 @@ const DEFAULT_OPERATED_AT = new Date(2026, 0, 15, 12, 0, 0);
 export const seedRefundedExpense = (input: SeedRefundedExpenseInput): SeedRefundedExpenseResult => {
     const title = input.title ?? DEFAULT_TITLE;
     const refundTitle = input.refundTitle ?? title;
+    const refundAccountId = input.refundAccountId ?? input.accountId;
     const expenseOperatedAt = input.expenseOperatedAt ?? DEFAULT_OPERATED_AT;
     const refundDelaySeconds = input.refundDelaySeconds ?? DEFAULT_DELAY_SECONDS;
     const externalIdPrefix = input.externalIdPrefix ?? 'rf';
@@ -80,14 +82,14 @@ export const seedRefundedExpense = (input: SeedRefundedExpenseInput): SeedRefund
             operatedAt,
             exchangeRate: 1,
             fromAccountId: null,
-            toAccountId: input.accountId,
+            toAccountId: refundAccountId,
             comment: '',
             updatedBy: null
         } satisfies TransactionCreateEntityInterface);
 
         insertOne(TransactionEntryEntityTable, {
             transactionId: refund.id,
-            accountId: input.accountId,
+            accountId: refundAccountId,
             type: TransactionEntryTypeEnum.DEBIT,
             amount: refundAmount,
             externalId: `${externalIdPrefix}-refund-${index}`,
