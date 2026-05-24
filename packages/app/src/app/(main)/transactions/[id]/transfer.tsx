@@ -120,7 +120,11 @@ export default function UpdateTransferTransactionPage() {
     }
 
     if (isDefined(transaction.consolidationParentTransactionId)) {
-        return isParentLoading || !isDefined(parentTransaction) ? null : <Redirect href={getTransactionHref(parentTransaction)} />;
+        if (isParentLoading) {
+            return null;
+        }
+
+        return isDefined(parentTransaction) ? <Redirect href={getTransactionHref(parentTransaction)} /> : <Redirect href="/" />;
     }
 
     return <UpdateTransferForm transaction={transaction} transactionId={transactionId} />;
