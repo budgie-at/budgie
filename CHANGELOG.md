@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.23.1](https://github.com/budgie-at/budgie/compare/v5.23.0...v5.23.1) (2026-05-24)
+
+### Bug Fixes
+
+- **app:** allow nested historical transfer anchors ([d7f3f4c](https://github.com/budgie-at/budgie/commit/d7f3f4caeff07672bba9eead37c8707c0ed9b871))
+- **app:** consolidate historical transfer leftovers ([7e20e33](https://github.com/budgie-at/budgie/commit/7e20e3387da9fd8ac05d2578729b2ed74dc9a922))
+- **app:** coordinate consolidation workload ([33a19e1](https://github.com/budgie-at/budgie/commit/33a19e1db73ff9eaf8c3f3d24e97a8830a3eed2a))
+- **app:** harden consolidation eligibility ([4e84660](https://github.com/budgie-at/budgie/commit/4e846606fd5075b2f1cc2b001df4428e17071684))
+- **app:** restore historical transfer candidates ([55e5b1a](https://github.com/budgie-at/budgie/commit/55e5b1ae1a807861e21a38f7556307daae49f194))
+- **bank-sync:** stabilize PrivatBank import identity ([0017c84](https://github.com/budgie-at/budgie/commit/0017c84e42ec9dfa4b36c5bada6f219af1498d33))
+- speed up historical transfer consolidation ([badf789](https://github.com/budgie-at/budgie/commit/badf7899a37200f4c0c702b7301a64f0516a1fc0))
+
 # [5.23.0](https://github.com/budgie-at/budgie/compare/v5.22.7...v5.23.0) (2026-05-23)
 
 ### Bug Fixes
