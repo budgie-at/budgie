@@ -4,7 +4,7 @@ import { EntryParamsInterface } from './entry-params.interface';
 
 export interface CreateEntriesParamsInterface {
     readonly type: TransactionTypeEnum;
-    readonly categoryId: number;
+    readonly categoryId: number | null;
     readonly categorySource: CategorySourceEnum;
     readonly source: EntryParamsInterface;
     readonly dest: EntryParamsInterface | null;
