@@ -1,4 +1,4 @@
-import { Log } from '@budgie/logger';
+import { Log, getLogger } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -15,6 +15,8 @@ import { transferConsolidationCandidateService } from './transfer-consolidation-
 import type { ConsolidationCandidateGroupsInterface } from '../interface/consolidation-candidate-groups.interface';
 import type { ConsolidationPreviewInterface } from '../interface/consolidation-preview.interface';
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
+
+const logger = getLogger('TransferConsolidationService');
 
 class TransferConsolidationService {
     private activeOperation: Promise<unknown> | null = null;
@@ -55,30 +57,65 @@ class TransferConsolidationService {
         error => `throw error=${getErrorMessage(error)}`
     )
     private async runConsolidation(): Promise<ConsolidationResultInterface> {
-        const candidates = await transferConsolidationCandidateService.findGroups();
-        const consolidated = await transferConsolidationAutoCandidateService.processGroups(candidates);
+        const startedAt = Date.now();
+        const candidates = await this.findCandidateGroupsWithProfiling();
+        const consolidated = await this.processCandidateGroupsWithProfiling(candidates);
 
-        if (isPositiveNumber(consolidated)) {
-            await accountBalanceIncrementalService.updateAllBalances(true);
-        }
+        await this.updateBalancesAfterConsolidation(consolidated);
 
         const result = {
             found: this.countAutoCandidates(candidates),
             consolidated
         };
+        logger.log('consolidate:duration', { durationMs: Date.now() - startedAt, found: result.found, consolidated });
 
         return result;
     }
 
-    private async buildPreview(): Promise<ConsolidationPreviewInterface> {
+    private async findCandidateGroupsWithProfiling(): Promise<ConsolidationCandidateGroupsInterface> {
+        const startedAt = Date.now();
         const candidates = await transferConsolidationCandidateService.findGroups();
+        logger.log('findGroups:duration', {
+            autoCandidateCount: this.countAutoCandidates(candidates),
+            durationMs: Date.now() - startedAt,
+            manualReviewCandidateCount: this.countManualReviewCandidates(candidates)
+        });
+
+        return candidates;
+    }
+
+    private async processCandidateGroupsWithProfiling(candidates: ConsolidationCandidateGroupsInterface): Promise<number> {
+        const startedAt = Date.now();
+        const consolidated = await transferConsolidationAutoCandidateService.processGroups(candidates);
+        logger.log('processGroups:duration', { consolidated, durationMs: Date.now() - startedAt });
+
+        return consolidated;
+    }
+
+    private async updateBalancesAfterConsolidation(consolidated: number): Promise<void> {
+        if (!isPositiveNumber(consolidated)) {
+            return;
+        }
+
+        const startedAt = Date.now();
+        await accountBalanceIncrementalService.updateAllBalances(true);
+        logger.log('balanceUpdate:duration', { durationMs: Date.now() - startedAt });
+    }
+
+    private async buildPreview(): Promise<ConsolidationPreviewInterface> {
+        const startedAt = Date.now();
+        const candidates = await transferConsolidationCandidateService.findGroups();
+        const autoCandidateCount = this.countAutoCandidates(candidates);
+        const manualReviewCandidateCount = this.countManualReviewCandidates(candidates);
+        logger.log('preview:duration', {
+            autoCandidateCount,
+            durationMs: Date.now() - startedAt,
+            manualReviewCandidateCount
+        });
 
         return {
-            autoCandidateCount: this.countAutoCandidates(candidates),
-            manualReviewCandidateCount:
-                candidates.manualReviewCandidates.length +
-                candidates.atmCashWithdrawalReviewCandidates.length +
-                candidates.refundReviewCandidates.length
+            autoCandidateCount,
+            manualReviewCandidateCount
         };
     }
 
@@ -130,6 +167,14 @@ class TransferConsolidationService {
             candidates.ibanBridgeTransferCandidates.length +
             candidates.atmCashWithdrawalCandidates.length +
             candidates.refundCandidates.length
+        );
+    }
+
+    private countManualReviewCandidates(candidates: ConsolidationCandidateGroupsInterface): number {
+        return (
+            candidates.manualReviewCandidates.length +
+            candidates.atmCashWithdrawalReviewCandidates.length +
+            candidates.refundReviewCandidates.length
         );
     }
 }
