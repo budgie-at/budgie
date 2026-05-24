@@ -10,6 +10,7 @@ const buildManualRecommendedSql = (): string => `
         WHEN LOWER(candidate.title) = LOWER(current_tx.title) THEN 1
         WHEN LOWER(candidate.title) = LOWER('Скасування. ' || current_tx.title) THEN 1
         WHEN LOWER(current_tx.title) = LOWER('Скасування. ' || candidate.title) THEN 1
+        WHEN LOWER(current_tx.title) LIKE LOWER('Скасування. ' || candidate.title || ',%') THEN 1
         WHEN LOWER(candidate.title) = LOWER('ПОВЕРНЕННЯ КОШТІВ, ' || current_tx.title) THEN 1
         WHEN LOWER(current_tx.title) = LOWER('ПОВЕРНЕННЯ КОШТІВ, ' || candidate.title) THEN 1
         WHEN LOWER(current_tx.title) = LOWER('Повернення коштів, ' || candidate.title) THEN 1
