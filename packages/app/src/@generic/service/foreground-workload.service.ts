@@ -1,3 +1,5 @@
+import { emptyFn } from '@rnw-community/shared';
+
 class ForegroundWorkloadService {
     private activeCount = 0;
     private readonly listeners = new Set<() => void>();
@@ -36,7 +38,11 @@ class ForegroundWorkloadService {
 
     private emit(): void {
         this.listeners.forEach(listener => {
-            listener();
+            try {
+                listener();
+            } catch {
+                emptyFn();
+            }
         });
     }
 }

@@ -131,6 +131,7 @@ export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = `
                 WHERE existing_transfer.type = '${TransactionTypeEnum.TRANSFER}'
                     AND existing_transfer.deleted_at IS NULL
                     AND existing_transfer.consolidation_parent_transaction_id IS NULL
+                    AND existing_transfer.consolidation_type IS NULL
                     AND existing_transfer.from_account_id IS NOT NULL
                     AND existing_transfer.to_account_id IS NOT NULL
                     AND source_account.id != bridge_account.id

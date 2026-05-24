@@ -39,6 +39,22 @@ const seedExchangeRate = (baseInstrumentId: number, quoteInstrumentId: number, r
         .run();
 };
 
+const seedHistoricalBridgeAccounts = () => {
+    const eur = seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
+    const sourceAccount = seed.account({
+        title: 'Monobank Fop EUR',
+        type: AccountTypeEnum.BANK_SYNC,
+        iban: SOURCE_IBAN,
+        instrumentId: eur.id
+    });
+    const bridgeAccount = seed.account({ title: 'Monobank Fop UAH', type: AccountTypeEnum.BANK_SYNC, iban: BRIDGE_IBAN });
+    const targetAccount = seed.account({ title: 'Monobank Black', type: AccountTypeEnum.BANK_SYNC, iban: BLACK_IBAN });
+
+    seedExchangeRate(eur.id, bridgeAccount.instrumentId, EUR_TO_UAH_RATE);
+
+    return { sourceAccount, bridgeAccount, targetAccount };
+};
+
 const seedTransfer = (
     title: string,
     operatedAt: Date,
@@ -110,17 +126,8 @@ const fetchMovedSourceIds = (canonicalId: number): number[] =>
 describe('consolidation/historical-transfer-leftovers', () => {
     it('folds a past currency-exchange bridge leftover into the existing card transfer', async () => {
         const operatedAt = new Date(2026, 0, 5, 13, 56, 33);
-        const eur = seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
-        const sourceAccount = seed.account({
-            title: 'Monobank Fop EUR',
-            type: AccountTypeEnum.BANK_SYNC,
-            iban: SOURCE_IBAN,
-            instrumentId: eur.id
-        });
-        const bridgeAccount = seed.account({ title: 'Monobank Fop UAH', type: AccountTypeEnum.BANK_SYNC, iban: BRIDGE_IBAN });
-        const targetAccount = seed.account({ title: 'Monobank Black', type: AccountTypeEnum.BANK_SYNC, iban: BLACK_IBAN });
+        const { bridgeAccount, sourceAccount, targetAccount } = seedHistoricalBridgeAccounts();
 
-        seedExchangeRate(eur.id, bridgeAccount.instrumentId, EUR_TO_UAH_RATE);
         const sourceExpense = seedBankPair.expense(
             { externalId: 'eur-to-uah-expense', operatedAt: new Date(operatedAt.getTime() + 1000) },
             { accountId: sourceAccount.id, amount: EUR_AMOUNT }
@@ -145,6 +152,35 @@ describe('consolidation/historical-transfer-leftovers', () => {
         expect(fetchMovedSourceIds(canonicals[0].id).sort((left, right) => left - right)).toEqual(
             [sourceExpense.id, bridgeIncome.id, existingCardTransfer.id, existingCardTransfer.id].sort((left, right) => left - right)
         );
+    });
+
+    it('does not fold an already canonical transfer into another canonical transfer', async () => {
+        const operatedAt = new Date(2026, 0, 5, 13, 56, 33);
+        const { bridgeAccount, sourceAccount, targetAccount } = seedHistoricalBridgeAccounts();
+
+        const sourceExpense = seedBankPair.expense(
+            { externalId: 'canonical-bridge-expense', operatedAt: new Date(operatedAt.getTime() + 1000) },
+            { accountId: sourceAccount.id, amount: EUR_AMOUNT }
+        );
+        const bridgeIncome = seedBankPair.income(
+            { externalId: 'canonical-bridge-income', operatedAt },
+            { accountId: bridgeAccount.id, amount: UAH_AMOUNT }
+        );
+        const existingCanonicalTransfer = seedTransfer('Canonical transfer', operatedAt, bridgeAccount.id, targetAccount.id, UAH_AMOUNT);
+
+        testDb
+            .update(TransactionEntityTable)
+            .set({ consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR })
+            .where(eq(TransactionEntityTable.id, existingCanonicalTransfer.id))
+            .run();
+
+        const result = await transferConsolidationService.consolidate();
+
+        expect(result).toEqual({ found: 0, consolidated: 0 });
+        expect(fetchTransactionById(sourceExpense.id).consolidationParentTransactionId).toBeNull();
+        expect(fetchTransactionById(bridgeIncome.id).consolidationParentTransactionId).toBeNull();
+        expect(fetchTransactionById(existingCanonicalTransfer.id).consolidationParentTransactionId).toBeNull();
+        expect(fetchMovedSourceIds(existingCanonicalTransfer.id)).toEqual([]);
     });
 
     it('parents the closest past income duplicate to an existing same-currency transfer', async () => {

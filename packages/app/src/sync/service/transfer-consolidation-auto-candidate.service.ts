@@ -101,11 +101,11 @@ class TransferConsolidationAutoCandidateService {
         return this.reduceConsolidations(candidates, candidate => transferConsolidationExecutorService.consolidateRefund(candidate));
     }
 
-    private async reduceConsolidations<T>(candidates: T[], consolidate: (candidate: T) => Promise<void>): Promise<number> {
+    private async reduceConsolidations<T>(candidates: T[], consolidate: (candidate: T) => Promise<boolean>): Promise<number> {
         return candidates.reduce(async (consolidatedPromise, candidate) => {
             const consolidated = await consolidatedPromise;
             const success = await consolidate(candidate).then(
-                () => true,
+                result => result,
                 () => false
             );
 
