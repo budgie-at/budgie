@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
@@ -34,7 +34,7 @@ export const TransactionPicker = (props: TransactionPickerPropsInterface) => {
     return (
         <View className="flex-1 pt-2xl" collapsable={false} testID={testID}>
             <View className="flex-1">
-                {isDefined(errorMessage) ? (
+                {isNotEmptyString(errorMessage) ? (
                     <Text className="px-xl pb-md pt-xl text-sm text-destructive-foreground">{errorMessage}</Text>
                 ) : null}
 

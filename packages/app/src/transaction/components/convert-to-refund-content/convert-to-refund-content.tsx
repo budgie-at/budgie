@@ -28,21 +28,17 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
     const selectedCandidateId = selectedCandidate?.id ?? null;
     const searchPlaceholder = t`Search expenses refunded by this income`;
 
-    const handleClose = () => {
+    const handleResolve = () => {
         resolveConvertToRefund(null);
     };
 
-    const handleRevertSuccess = () => {
-        resolveConvertToRefund(null);
-    };
-
-    const revertRefund = useRevertConsolidation(canonicalTransactionId, handleRevertSuccess);
+    const revertRefund = useRevertConsolidation(canonicalTransactionId, handleResolve);
     const convertToRefund = useConvertToRefundAction(refundIncomeTransactionId, selectedCandidate, resolveConvertToRefund);
     const footer = (
         <ConvertToRefundFooter
             selectedCandidate={selectedCandidate}
             showRevert={showRevert}
-            onClose={handleClose}
+            onClose={handleResolve}
             onConvert={convertToRefund}
             onRevert={revertRefund}
         />
