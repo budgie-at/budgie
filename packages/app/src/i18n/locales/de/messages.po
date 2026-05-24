@@ -31,9 +31,9 @@ msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt und in den G
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:27
-msgid "{autoCandidateCount, plural, one {# high-confidence transfer pair} other {# high-confidence transfer pairs}}"
-msgstr "{autoCandidateCount, plural, one {# Überweisungspaar mit hoher Trefferquote} other {# Überweisungspaare mit hoher Trefferquote}}"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:35
+msgid "{autoCandidateCount, plural, one {# high-confidence match} other {# high-confidence matches}}"
+msgstr "{autoCandidateCount, plural, one {# Treffer mit hoher Sicherheit} other {# Treffer mit hoher Sicherheit}}"
 
 #: src/app/import-column-mapper.tsx:31
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
@@ -67,17 +67,17 @@ msgstr "{formattedRemaining} noch zuzuweisen"
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} über Budget"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:56
-msgid "{found, plural, one {# high-confidence pair} other {# high-confidence pairs}}"
-msgstr "{found, plural, one {# Paar mit hoher Trefferquote} other {# Paare mit hoher Trefferquote}}"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:65
+msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
+msgstr "{found, plural, one {# Treffer mit hoher Sicherheit} other {# Treffer mit hoher Sicherheit}}"
 
 #: src/app/transaction-type-filter.tsx:46
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Alle Typen anzeigen} one {# Typ anzeigen} other {# Typen anzeigen}}"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:33
-msgid "{manualReviewCandidateCount, plural, one {# lower-confidence pair} other {# lower-confidence pairs}}"
-msgstr "{manualReviewCandidateCount, plural, one {# Paar mit niedrigerer Trefferquote} other {# Paare mit niedrigerer Trefferquote}}"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:41
+msgid "{manualReviewCandidateCount, plural, one {# review match} other {# review matches}}"
+msgstr "{manualReviewCandidateCount, plural, one {# Treffer zur Prüfung} other {# Treffer zur Prüfung}}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:36
 #: src/rule/components/rules-list-page/rules-list-page.tsx:37
@@ -448,7 +448,7 @@ msgstr "Budgie"
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:133
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:44
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:52
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
@@ -579,18 +579,14 @@ msgstr "Tag-Auswahl bestätigen"
 msgid "Connect Monobank"
 msgstr "Monobank verbinden"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:43
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:51
 msgid "Consolidate"
 msgstr "Konsolidieren"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:41
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:80
-msgid "Consolidate Transfers"
-msgstr "Überweisungen konsolidieren"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:66
-msgid "Consolidated {consolidated} of {foundPairsText}."
-msgstr "{consolidated} von {foundPairsText} konsolidiert."
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:49
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:89
+msgid "Consolidate Matches"
+msgstr "Treffer konsolidieren"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:22
 msgid "Contact (optional)"
@@ -649,9 +645,9 @@ msgstr "Konto konnte nicht archiviert werden"
 msgid "Could not clear data"
 msgstr "Daten konnten nicht gelöscht werden"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:71
-msgid "Could not consolidate transfers"
-msgstr "Transfers konnten nicht konsolidiert werden"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:80
+msgid "Could not consolidate matches"
+msgstr "Treffer konnten nicht konsolidiert werden"
 
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts:45
 msgid "Could not convert to refund"
@@ -1014,7 +1010,7 @@ msgstr "Kategorie bearbeiten"
 msgid "Edit existing"
 msgstr "Bestehende bearbeiten"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:72
+#: src/app/(main)/transactions/[id]/expense.tsx:73
 msgid "Edit Expense"
 msgstr "Ausgabe bearbeiten"
 
@@ -1504,6 +1500,10 @@ msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 msgid "matches"
 msgstr "entspricht"
 
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:74
+msgid "Matches consolidated"
+msgstr "Treffer konsolidiert"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:61
 msgid "Matches Regex"
 msgstr "Entspricht Regex"
@@ -1525,10 +1525,6 @@ msgstr "MCC-Code"
 msgid "Merchant code"
 msgstr "Händlercode"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:81
-msgid "Merge high-confidence duplicate transfer transactions"
-msgstr "Doppelte Überweisungstransaktionen mit hoher Sicherheit zusammenführen"
-
 #: src/category/components/category-form/category-form.tsx:214
 msgid "Merge into another category"
 msgstr "In eine andere Kategorie zusammenführen"
@@ -1536,6 +1532,14 @@ msgstr "In eine andere Kategorie zusammenführen"
 #: src/tag/components/tag-form/tag-form.tsx:202
 msgid "Merge into another tag"
 msgstr "In einen anderen Tag zusammenführen"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:90
+msgid "Merge matching transfers and refunds"
+msgstr "Passende Überweisungen und Rückerstattungen zusammenführen"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:75
+msgid "Merged {consolidated} of {foundPairsText}."
+msgstr "{consolidated} von {foundPairsText} zusammengeführt."
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
 msgid "Missing categories"
@@ -2477,10 +2481,6 @@ msgstr "Diese Woche"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Dadurch werden alle zwischengespeicherten Kontostände gelöscht und anhand Ihrer Transaktionen neu berechnet. Dies kann einen Moment dauern."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:42
-msgid "This will consolidate {autoCandidateText}. {manualReviewCandidateText} will be logged for review only."
-msgstr "Dies konsolidiert {autoCandidateText}. Zur Überprüfung protokolliert: {manualReviewCandidateText}."
-
 #: src/app/convert-to-transfer.tsx:64
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Dies wandelt die Ausgabe in eine Überweisung zwischen Konten um."
@@ -2492,6 +2492,10 @@ msgstr "Dadurch wird das Einkommen in eine Überweisung zwischen Konten umgewand
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts:28
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Dadurch wird die ausgewählte Ausgabe mit dieser Rückerstattungseinnahme verknüpft. Du kannst dies im Rückerstattungsquellen-Dialog rückgängig machen."
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:50
+msgid "This will merge {autoCandidateText}. {manualReviewCandidateText} will be kept for review."
+msgstr "Dies führt {autoCandidateText} zusammen. {manualReviewCandidateText} bleiben zur Prüfung."
 
 #: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
@@ -2592,10 +2596,6 @@ msgstr "Vom Konto übertragen"
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:34
 msgid "Transfer To Account"
 msgstr "Auf Konto übertragen"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:65
-msgid "Transfers consolidated"
-msgstr "Überweisungen konsolidiert"
 
 #: src/ai/service/ai-system-status.service.ts:233
 msgid "Translating {translationPending} of {total}{trailer}"
