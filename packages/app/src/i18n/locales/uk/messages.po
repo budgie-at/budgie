@@ -31,9 +31,9 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} буде відновлено у вашому головному перегляді."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:27
-msgid "{autoCandidateCount, plural, one {# high-confidence transfer pair} other {# high-confidence transfer pairs}}"
-msgstr "{autoCandidateCount, plural, one {# пара переказів із високою впевненістю} few {# пари переказів із високою впевненістю} many {# пар переказів із високою впевненістю} other {# пари переказів із високою впевненістю}}"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:35
+msgid "{autoCandidateCount, plural, one {# high-confidence match} other {# high-confidence matches}}"
+msgstr "{autoCandidateCount, plural, one {# збіг з високою впевненістю} few {# збіги з високою впевненістю} many {# збігів з високою впевненістю} other {# збігу з високою впевненістю}}"
 
 #: src/app/import-column-mapper.tsx:31
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
@@ -67,17 +67,17 @@ msgstr "{formattedRemaining} залишилось розподілити"
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} понад бюджет"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:56
-msgid "{found, plural, one {# high-confidence pair} other {# high-confidence pairs}}"
-msgstr "{found, plural, one {# пара з високою впевненістю} few {# пари з високою впевненістю} many {# пар з високою впевненістю} other {# пари з високою впевненістю}}"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:65
+msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
+msgstr "{found, plural, one {# збіг з високою впевненістю} few {# збіги з високою впевненістю} many {# збігів з високою впевненістю} other {# збігу з високою впевненістю}}"
 
 #: src/app/transaction-type-filter.tsx:46
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Показати всі типи} one {Показати # тип} few {Показати # типи} many {Показати # типів} other {Показати # типу}}"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:33
-msgid "{manualReviewCandidateCount, plural, one {# lower-confidence pair} other {# lower-confidence pairs}}"
-msgstr "{manualReviewCandidateCount, plural, one {# пара з нижчою впевненістю} few {# пари з нижчою впевненістю} many {# пар з нижчою впевненістю} other {# пари з нижчою впевненістю}}"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:41
+msgid "{manualReviewCandidateCount, plural, one {# review match} other {# review matches}}"
+msgstr "{manualReviewCandidateCount, plural, one {# збіг для перевірки} few {# збіги для перевірки} many {# збігів для перевірки} other {# збігу для перевірки}}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:36
 #: src/rule/components/rules-list-page/rules-list-page.tsx:37
@@ -448,7 +448,7 @@ msgstr "Budgie"
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:133
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:44
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:52
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
@@ -579,18 +579,14 @@ msgstr "Підтвердити вибір тегів"
 msgid "Connect Monobank"
 msgstr "Підключити Монобанк"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:43
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:51
 msgid "Consolidate"
 msgstr "Консолідувати"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:41
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:80
-msgid "Consolidate Transfers"
-msgstr "Консолідувати перекази"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:66
-msgid "Consolidated {consolidated} of {foundPairsText}."
-msgstr "Консолідовано {consolidated} з {foundPairsText}."
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:49
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:89
+msgid "Consolidate Matches"
+msgstr "Консолідувати збіги"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:22
 msgid "Contact (optional)"
@@ -649,9 +645,9 @@ msgstr "Не вдалося архівувати рахунок"
 msgid "Could not clear data"
 msgstr "Не вдалося очистити дані"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:71
-msgid "Could not consolidate transfers"
-msgstr "Не вдалося консолідувати перекази"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:80
+msgid "Could not consolidate matches"
+msgstr "Не вдалося консолідувати збіги"
 
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts:45
 msgid "Could not convert to refund"
@@ -1014,7 +1010,7 @@ msgstr "Редагувати категорію"
 msgid "Edit existing"
 msgstr "Редагувати наявне"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:72
+#: src/app/(main)/transactions/[id]/expense.tsx:73
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
@@ -1504,6 +1500,10 @@ msgstr "Зіставте кожне поле зі стовпцем вашого 
 msgid "matches"
 msgstr "збігається"
 
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:74
+msgid "Matches consolidated"
+msgstr "Збіги консолідовано"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:61
 msgid "Matches Regex"
 msgstr "Відповідає регулярному виразу"
@@ -1525,10 +1525,6 @@ msgstr "MCC-код"
 msgid "Merchant code"
 msgstr "Код торговця"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:81
-msgid "Merge high-confidence duplicate transfer transactions"
-msgstr "Об'єднати дублікати переказів із високою впевненістю"
-
 #: src/category/components/category-form/category-form.tsx:214
 msgid "Merge into another category"
 msgstr "Об'єднати з іншою категорією"
@@ -1536,6 +1532,14 @@ msgstr "Об'єднати з іншою категорією"
 #: src/tag/components/tag-form/tag-form.tsx:202
 msgid "Merge into another tag"
 msgstr "Об'єднати з іншим тегом"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:90
+msgid "Merge matching transfers and refunds"
+msgstr "Об'єднати відповідні перекази та повернення"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:75
+msgid "Merged {consolidated} of {foundPairsText}."
+msgstr "Об'єднано {consolidated} з {foundPairsText}."
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
 msgid "Missing categories"
@@ -2477,10 +2481,6 @@ msgstr "Цього тижня"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:42
-msgid "This will consolidate {autoCandidateText}. {manualReviewCandidateText} will be logged for review only."
-msgstr "Це консолідує {autoCandidateText}. Лише для перевірки буде записано: {manualReviewCandidateText}."
-
 #: src/app/convert-to-transfer.tsx:64
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Це конвертує витрату у переказ між рахунками."
@@ -2492,6 +2492,10 @@ msgstr "Це конвертує дохід у переказ між рахунк
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts:28
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Це прив’яже вибрану витрату до цього доходу-повернення. Ви можете скасувати це на аркуші джерел повернення."
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:50
+msgid "This will merge {autoCandidateText}. {manualReviewCandidateText} will be kept for review."
+msgstr "Це об'єднає {autoCandidateText}. {manualReviewCandidateText} буде збережено для перевірки."
 
 #: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
@@ -2592,10 +2596,6 @@ msgstr "Переказ з рахунку"
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:34
 msgid "Transfer To Account"
 msgstr "Переказ на рахунок"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:65
-msgid "Transfers consolidated"
-msgstr "Перекази об'єднано"
 
 #: src/ai/service/ai-system-status.service.ts:233
 msgid "Translating {translationPending} of {total}{trailer}"
