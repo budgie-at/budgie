@@ -132,8 +132,7 @@ export class RefundPairRepository {
         return `
             expense_entries AS (
                 SELECT
-                    expense_tx.id AS txId,
-                    expense_tx.title AS txTitle,
+                    expense_tx.id AS expenseTxId,
                     expense_tx.operated_at AS operatedAt,
                     expense_entry.account_id AS accountId,
                     expense_entry.amount AS amount,
@@ -141,8 +140,8 @@ export class RefundPairRepository {
                     UPPER(TRIM(expense_tx.title)) AS rawNormTitle,
                     ${autoTitle} AS autoNormTitle,
                     ${reviewTitle} AS reviewNormTitle
-                FROM transactions expense_tx
-                INNER JOIN transaction_entries expense_entry
+                FROM transactions expense_tx INDEXED BY transactions_visible_type_operated_idx
+                INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
                     ON expense_entry.transaction_id = expense_tx.id
                     AND expense_entry.deleted_at IS NULL
                     AND expense_entry.original_transaction_id IS NULL
@@ -169,8 +168,8 @@ export class RefundPairRepository {
                     UPPER(TRIM(income_tx.title)) AS rawNormTitle,
                     ${autoTitle} AS autoNormTitle,
                     ${reviewTitle} AS reviewNormTitle
-                FROM transactions income_tx
-                INNER JOIN transaction_entries income_entry
+                FROM transactions income_tx INDEXED BY transactions_visible_type_operated_idx
+                INNER JOIN transaction_entries income_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
                     ON income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL
@@ -187,7 +186,7 @@ export class RefundPairRepository {
         return `
             compatible_pairs AS (
                 SELECT
-                    exp.txId AS expenseTxId,
+                    exp.expenseTxId AS expenseTxId,
                     exp.accountId AS accountId,
                     exp.amount AS expenseAmount,
                     inc.txId AS refundTxId,
@@ -219,9 +218,11 @@ export class RefundPairRepository {
                         WHEN inc.autoNormTitle = exp.autoNormTitle THEN 'localized-cancellation-title'
                         ELSE 'prefix-title-mcc'
                     END AS matchType
-                FROM expense_entries exp
-                INNER JOIN income_entries inc
-                    ON inc.accountId = exp.accountId
+                FROM income_entries inc
+                INNER JOIN expense_entries exp
+                    ON exp.accountId = inc.accountId
+                    AND exp.operatedAt < inc.operatedAt
+                    AND exp.operatedAt >= inc.operatedAt - ${MANUAL_REVIEW_TIME_WINDOW_SECONDS}
             )
         `;
     }

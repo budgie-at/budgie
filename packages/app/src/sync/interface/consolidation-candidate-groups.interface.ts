@@ -1,6 +1,8 @@
 import type {
     AtmCashWithdrawalCandidateInterface,
     AtmCashWithdrawalReviewCandidateInterface,
+    ExistingTransferBridgeCandidateInterface,
+    ExistingTransferIncomeDuplicateCandidateInterface,
     IbanBridgeCanonicalDuplicateCandidateInterface,
     IbanBridgeChainTransferCandidateInterface,
     IbanBridgeTransferCandidateInterface,
@@ -13,6 +15,8 @@ import type {
 export interface ConsolidationCandidateGroupsInterface {
     readonly atmCashWithdrawalCandidates: AtmCashWithdrawalCandidateInterface[];
     readonly atmCashWithdrawalReviewCandidates: AtmCashWithdrawalReviewCandidateInterface[];
+    readonly existingTransferBridgeCandidates: ExistingTransferBridgeCandidateInterface[];
+    readonly existingTransferIncomeDuplicateCandidates: ExistingTransferIncomeDuplicateCandidateInterface[];
     readonly ibanBridgeCanonicalDuplicateCandidates: IbanBridgeCanonicalDuplicateCandidateInterface[];
     readonly ibanBridgeChainTransferCandidates: IbanBridgeChainTransferCandidateInterface[];
     readonly ibanBridgeTransferCandidates: IbanBridgeTransferCandidateInterface[];

@@ -20,10 +20,18 @@ export const ConsolidateTransfers = () => {
 
     // eslint-disable-next-line max-statements -- Action handler runs preview, confirm, execute, and toast feedback in sequence
     const handleConsolidate = async () => {
+        const startedAt = Date.now();
+
+        logger.log('press');
         setIsLoading(true);
         try {
+            logger.log('preview:start');
             const { autoCandidateCount, manualReviewCandidateCount } = await transferConsolidationService.preview();
-            logger.log('preview', { autoCandidateCount, manualReviewCandidateCount });
+            logger.log('preview:done', {
+                autoCandidateCount,
+                manualReviewCandidateCount,
+                durationMs: Date.now() - startedAt
+            });
             const autoCandidateText = t({
                 message: plural(autoCandidateCount, {
                     one: '# high-confidence transfer pair',
@@ -51,8 +59,9 @@ export const ConsolidateTransfers = () => {
             }
 
             logger.log('confirm:result', { confirmed: true });
+            const consolidateStartedAt = Date.now();
             const { consolidated, found } = await transferConsolidationService.consolidate();
-            logger.log('consolidated', { found, consolidated });
+            logger.log('consolidated', { found, consolidated, durationMs: Date.now() - consolidateStartedAt });
             const foundPairsText = t({
                 message: plural(found, {
                     one: '# high-confidence pair',
