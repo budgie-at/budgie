@@ -2,7 +2,7 @@ import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -99,7 +99,7 @@ class TransferConsolidationService {
     private async runExclusive<T>(work: () => Promise<T>): Promise<T> {
         const { activeOperation } = this;
         if (isDefined(activeOperation)) {
-            await activeOperation;
+            await activeOperation.catch(emptyFn);
 
             return this.runExclusive(work);
         }
