@@ -30,57 +30,38 @@ export class RefundPairRepository {
 
     private buildAutoBucketSql(): string {
         return `
-            WITH expense_entries AS (
+            WITH candidate_pairs AS (
                 SELECT
-                    expense_tx.id AS txId,
-                    expense_tx.title AS txTitle,
-                    expense_tx.operated_at AS operatedAt,
+                    expense_tx.id AS expenseTxId,
                     expense_entry.account_id AS accountId,
-                    expense_entry.amount AS amount,
-                    UPPER(TRIM(expense_tx.title)) AS normTitle
-                FROM transactions expense_tx
-                INNER JOIN transaction_entries expense_entry
-                    ON expense_entry.transaction_id = expense_tx.id
-                    AND expense_entry.deleted_at IS NULL
-                    AND expense_entry.original_transaction_id IS NULL
-                    AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
-                    AND expense_entry.amount > 0
-                WHERE expense_tx.deleted_at IS NULL
-                    AND expense_tx.consolidation_parent_transaction_id IS NULL
-                    AND expense_tx.consolidation_type IS NULL
-                    AND expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
-            ),
-            income_entries AS (
-                SELECT
-                    income_tx.id AS txId,
-                    income_tx.operated_at AS operatedAt,
-                    income_entry.account_id AS accountId,
-                    income_entry.amount AS amount,
-                    UPPER(TRIM(income_tx.title)) AS normTitle
-                FROM transactions income_tx
-                INNER JOIN transaction_entries income_entry
+                    expense_entry.amount AS expenseAmount,
+                    income_tx.id AS refundTxId,
+                    income_entry.amount AS refundAmount
+                FROM transactions income_tx INDEXED BY transactions_visible_type_operated_idx
+                INNER JOIN transaction_entries income_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
                     ON income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL
                     AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
                     AND income_entry.amount > 0
+                CROSS JOIN transactions expense_tx INDEXED BY transactions_visible_type_operated_idx
+                INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
+                    ON expense_entry.transaction_id = expense_tx.id
+                    AND expense_entry.deleted_at IS NULL
+                    AND expense_entry.original_transaction_id IS NULL
+                    AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND expense_entry.account_id = income_entry.account_id
+                    AND expense_entry.amount > 0
                 WHERE income_tx.deleted_at IS NULL
                     AND income_tx.consolidation_parent_transaction_id IS NULL
                     AND income_tx.type = '${TransactionTypeEnum.INCOME}'
-            ),
-            candidate_pairs AS (
-                SELECT
-                    exp.txId AS expenseTxId,
-                    exp.accountId AS accountId,
-                    exp.amount AS expenseAmount,
-                    inc.txId AS refundTxId,
-                    inc.amount AS refundAmount
-                FROM expense_entries exp
-                INNER JOIN income_entries inc
-                    ON inc.accountId = exp.accountId
-                    AND inc.normTitle = exp.normTitle
-                    AND inc.operatedAt > exp.operatedAt
-                    AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
+                    AND expense_tx.deleted_at IS NULL
+                    AND expense_tx.consolidation_parent_transaction_id IS NULL
+                    AND expense_tx.consolidation_type IS NULL
+                    AND expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
+                    AND expense_tx.operated_at >= income_tx.operated_at - ${REFUND_TIME_WINDOW_SECONDS}
+                    AND expense_tx.operated_at < income_tx.operated_at
+                    AND UPPER(TRIM(expense_tx.title)) = UPPER(TRIM(income_tx.title))
             ),
             unambiguous_refunds AS (
                 SELECT refundTxId
@@ -103,69 +84,51 @@ export class RefundPairRepository {
     }
 
     private buildReviewBucketSql(): string {
-        const stripPrefixesExp = this.buildStripPrefixesSql('UPPER(TRIM(exp.txTitle))');
-        const stripPrefixesInc = this.buildStripPrefixesSql('UPPER(TRIM(inc.txTitle))');
+        const stripPrefixesExp = this.buildStripPrefixesSql('UPPER(TRIM(expense_tx.title))');
+        const stripPrefixesInc = this.buildStripPrefixesSql('UPPER(TRIM(income_tx.title))');
 
         return `
-            WITH expense_entries AS (
+            WITH candidate_pairs AS (
                 SELECT
-                    expense_tx.id AS txId,
-                    expense_tx.title AS txTitle,
-                    expense_tx.operated_at AS operatedAt,
+                    expense_tx.id AS expenseTxId,
                     expense_entry.account_id AS accountId,
-                    expense_entry.amount AS amount,
-                    expense_entry.mcc_category_id AS mccCategoryId
-                FROM transactions expense_tx
-                INNER JOIN transaction_entries expense_entry
-                    ON expense_entry.transaction_id = expense_tx.id
-                    AND expense_entry.deleted_at IS NULL
-                    AND expense_entry.original_transaction_id IS NULL
-                    AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
-                    AND expense_entry.amount > 0
-                WHERE expense_tx.deleted_at IS NULL
-                    AND expense_tx.consolidation_parent_transaction_id IS NULL
-                    AND expense_tx.consolidation_type IS NULL
-                    AND expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
-            ),
-            income_entries AS (
-                SELECT
-                    income_tx.id AS txId,
-                    income_tx.title AS txTitle,
-                    income_tx.operated_at AS operatedAt,
-                    income_entry.account_id AS accountId,
-                    income_entry.amount AS amount,
-                    income_entry.mcc_category_id AS mccCategoryId
-                FROM transactions income_tx
-                INNER JOIN transaction_entries income_entry
+                    expense_entry.amount AS expenseAmount,
+                    income_tx.id AS refundTxId,
+                    income_entry.amount AS refundAmount
+                FROM transactions income_tx INDEXED BY transactions_visible_type_operated_idx
+                INNER JOIN transaction_entries income_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
                     ON income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL
                     AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
                     AND income_entry.amount > 0
+                CROSS JOIN transactions expense_tx INDEXED BY transactions_visible_type_operated_idx
+                INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
+                    ON expense_entry.transaction_id = expense_tx.id
+                    AND expense_entry.deleted_at IS NULL
+                    AND expense_entry.original_transaction_id IS NULL
+                    AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+                    AND expense_entry.account_id = income_entry.account_id
+                    AND expense_entry.mcc_category_id = income_entry.mcc_category_id
+                    AND expense_entry.amount > 0
                 WHERE income_tx.deleted_at IS NULL
                     AND income_tx.consolidation_parent_transaction_id IS NULL
                     AND income_tx.type = '${TransactionTypeEnum.INCOME}'
-            ),
-            candidate_pairs AS (
-                SELECT
-                    exp.txId AS expenseTxId,
-                    exp.accountId AS accountId,
-                    exp.amount AS expenseAmount,
-                    inc.txId AS refundTxId,
-                    inc.amount AS refundAmount
-                FROM expense_entries exp
-                INNER JOIN income_entries inc
-                    ON inc.accountId = exp.accountId
-                    AND inc.mccCategoryId = exp.mccCategoryId
-                    AND inc.operatedAt > exp.operatedAt
-                    AND (inc.operatedAt - exp.operatedAt) <= ${MANUAL_REVIEW_TIME_WINDOW_SECONDS}
+                    AND expense_tx.deleted_at IS NULL
+                    AND expense_tx.consolidation_parent_transaction_id IS NULL
+                    AND expense_tx.consolidation_type IS NULL
+                    AND expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
+                    AND expense_tx.operated_at >= income_tx.operated_at - ${MANUAL_REVIEW_TIME_WINDOW_SECONDS}
+                    AND expense_tx.operated_at < income_tx.operated_at
+                    AND ${stripPrefixesInc} != ''
+                    AND ${stripPrefixesExp} != ''
                     AND (
-                        UPPER(TRIM(inc.txTitle)) LIKE '%' || ${stripPrefixesExp} || '%'
-                        OR UPPER(TRIM(exp.txTitle)) LIKE '%' || ${stripPrefixesInc} || '%'
+                        UPPER(TRIM(income_tx.title)) LIKE '%' || ${stripPrefixesExp} || '%'
+                        OR UPPER(TRIM(expense_tx.title)) LIKE '%' || ${stripPrefixesInc} || '%'
                     )
                     AND NOT (
-                        UPPER(TRIM(inc.txTitle)) = UPPER(TRIM(exp.txTitle))
-                        AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
+                        UPPER(TRIM(income_tx.title)) = UPPER(TRIM(expense_tx.title))
+                        AND expense_tx.operated_at >= income_tx.operated_at - ${REFUND_TIME_WINDOW_SECONDS}
                     )
             )
             SELECT

@@ -3,6 +3,7 @@ import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 
@@ -12,6 +13,8 @@ class TransferConsolidationDrainerService {
     private static readonly DRAIN_DELAY_MS_BY_REASON: Record<TransferConsolidationDrainReasonEnum, number> = {
         [TransferConsolidationDrainReasonEnum.MONOBANK_SYNC]: 1500
     };
+
+    private static readonly FOREGROUND_BUSY_RESCHEDULE_MS = 1000;
 
     private hasPendingRun = false;
     private isRunning = false;
@@ -32,11 +35,17 @@ class TransferConsolidationDrainerService {
             return;
         }
 
-        this.schedule(reason);
+        this.scheduleAfter(TransferConsolidationDrainerService.DRAIN_DELAY_MS_BY_REASON[reason]);
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async run(): Promise<void> {
+        if (foregroundWorkloadService.isActive()) {
+            this.scheduleAfter(TransferConsolidationDrainerService.FOREGROUND_BUSY_RESCHEDULE_MS);
+
+            return;
+        }
+
         if (this.isRunning) {
             return;
         }
@@ -53,12 +62,10 @@ class TransferConsolidationDrainerService {
         }
     }
 
-    private schedule(reason: TransferConsolidationDrainReasonEnum): void {
+    private scheduleAfter(delay: number): void {
         if (isDefined(this.timer)) {
             clearTimeout(this.timer);
         }
-
-        const delay = TransferConsolidationDrainerService.DRAIN_DELAY_MS_BY_REASON[reason];
 
         this.timerFiresAt = Date.now() + delay;
         this.timer = setTimeout(() => {

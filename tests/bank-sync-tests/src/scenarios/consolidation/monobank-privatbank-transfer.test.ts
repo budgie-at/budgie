@@ -54,6 +54,7 @@ describe('consolidation/monobank-privatbank-transfer', () => {
 
         const categoryMap = await privatbankCategoryMatcherMatch([PRIVATBANK_TRANSFER_CATEGORY]);
         const privatbankTransaction = privatbankTransactionMapper({
+            rawDate: '20.05.2026 15:00:00',
             date: new Date(operatedAt.getTime() + SLOW_WINDOW_OFFSET_MS),
             category: PRIVATBANK_TRANSFER_CATEGORY,
             card: privatbankCardId,
