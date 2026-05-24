@@ -38,11 +38,24 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     } as const;
 
     @Log(
-        (inputs, tx) => `enter hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')}`,
+        (inputs, tx) =>
+            `enter hasTx=${String(isDefined(tx))} count=${inputs.length} externalIds=${inputs
+                .slice(0, 5)
+                .map(input => input.externalId)
+                .join(',')}`,
         (result, inputs, tx) =>
-            `done hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')} insertedIds=${result.map(row => row.id).join(',')}`,
+            `done hasTx=${String(isDefined(tx))} count=${inputs.length} externalIds=${inputs
+                .slice(0, 5)
+                .map(input => input.externalId)
+                .join(',')} insertedIds=${result
+                .slice(0, 5)
+                .map(row => row.id)
+                .join(',')}`,
         (error, inputs, tx) =>
-            `throw hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
+            `throw hasTx=${String(isDefined(tx))} count=${inputs.length} externalIds=${inputs
+                .slice(0, 5)
+                .map(input => input.externalId)
+                .join(',')} error=${getErrorMessage(error)}`
     )
     async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
@@ -137,7 +150,8 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     @Log(
         externalSource => `enter externalSource=${externalSource}`,
-        (result, externalSource) => `done externalSource=${externalSource} externalIds=${result.join(',')}`,
+        (result, externalSource) =>
+            `done externalSource=${externalSource} count=${result.length} externalIds=${result.slice(0, 5).join(',')}`,
         (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
     )
     async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {

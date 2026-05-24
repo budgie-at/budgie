@@ -4,6 +4,7 @@ import { PRECISION } from '@budgie/contracts';
 
 import { fetchTransactionById, findMccByCode, seed, seedRefundedExpense } from '../../harness';
 
+import { refundPairRepository } from '@app/@generic/drizzle/db/db';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 describe('consolidation/refund-pair-manual-review', () => {
@@ -28,5 +29,24 @@ describe('consolidation/refund-pair-manual-review', () => {
         expect(result.consolidated).toBe(0);
         expect(fetchTransactionById(expense.id).consolidationType).toBeNull();
         expect(fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
+    });
+
+    it('does not treat prefix-only refund titles as broad manual-review matches', async () => {
+        const account = seed.account({ externalId: 'mono-card' });
+        const mcc = findMccByCode('5814');
+
+        seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [120 * PRECISION],
+            title: 'STARBUCKS #1234',
+            refundTitle: 'REFUND',
+            mccCategoryId: mcc.id,
+            refundMccCategoryId: mcc.id
+        });
+
+        const reviewCandidates = await refundPairRepository.findReviewCandidates();
+
+        expect(reviewCandidates).toHaveLength(0);
     });
 });
