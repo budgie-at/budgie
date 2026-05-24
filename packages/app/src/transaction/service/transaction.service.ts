@@ -36,11 +36,11 @@ import type {
 class TransactionService {
     @Log(
         (inputs, tx, batchSize) =>
-            `enter externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize}`,
+            `enter count=${inputs.length} firstExternalId=${inputs[0]?.externalId ?? ''} hasTx=${String(isDefined(tx))} batchSize=${batchSize}`,
         (result, inputs, tx, batchSize) =>
-            `done externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize} insertedIds=${result.map(row => row.id).join(',')}`,
+            `done count=${inputs.length} firstExternalId=${inputs[0]?.externalId ?? ''} hasTx=${String(isDefined(tx))} batchSize=${batchSize} firstInsertedId=${result[0]?.id ?? ''}`,
         (error, inputs, tx, batchSize) =>
-            `throw externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize} error=${getErrorMessage(error)}`
+            `throw count=${inputs.length} firstExternalId=${inputs[0]?.externalId ?? ''} hasTx=${String(isDefined(tx))} batchSize=${batchSize} error=${getErrorMessage(error)}`
     )
     async bulkCreate(
         inputs: TransactionCreateInputInterface[],
