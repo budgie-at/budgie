@@ -99,6 +99,14 @@ appId: ${APP_ID}
     direction: DOWN
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
+- longPressOn:
+    id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionContextMenu.ConvertToRefundButton'
+    timeout: 3000
+- tapOn:
+    point: '10%,10%'
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 - scrollUntilVisible:
