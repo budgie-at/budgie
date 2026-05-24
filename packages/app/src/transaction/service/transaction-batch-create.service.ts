@@ -11,11 +11,24 @@ import type { DB } from '@budgie/contracts';
 
 class TransactionBatchCreateService {
     @Log(
-        (batch, tx) => `enter externalIds=${batch.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))}`,
+        (batch, tx) =>
+            `enter count=${batch.length} externalIds=${batch
+                .slice(0, 5)
+                .map(input => input.externalId)
+                .join(',')} hasTx=${String(isDefined(tx))}`,
         (result, batch, tx) =>
-            `done externalIds=${batch.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} insertedIds=${result.map(row => row.id).join(',')}`,
+            `done count=${batch.length} externalIds=${batch
+                .slice(0, 5)
+                .map(input => input.externalId)
+                .join(',')} hasTx=${String(isDefined(tx))} insertedIds=${result
+                .slice(0, 5)
+                .map(row => row.id)
+                .join(',')}`,
         (error, batch, tx) =>
-            `throw externalIds=${batch.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+            `throw count=${batch.length} externalIds=${batch
+                .slice(0, 5)
+                .map(input => input.externalId)
+                .join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async create(batch: readonly TransactionCreateInputInterface[], tx: DB): Promise<TransactionEntityInterface[]> {
         const transactions = await transactionRepository.bulkCreate([...batch], tx);

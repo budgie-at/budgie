@@ -40,8 +40,8 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = `
                             ABS(income_tx.operated_at - existing_transfer.operated_at),
                             existing_transfer.id
                     ) as incomeRank
-                FROM transactions existing_transfer
-                INNER JOIN transaction_entries source_entry ON
+                FROM transactions existing_transfer INDEXED BY transactions_visible_type_to_operated_idx
+                INNER JOIN transaction_entries source_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     source_entry.transaction_id = existing_transfer.id
                     AND source_entry.deleted_at IS NULL
                     AND source_entry.original_transaction_id IS NULL
@@ -49,7 +49,7 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = `
                 INNER JOIN accounts source_account ON
                     source_account.id = source_entry.account_id
                     AND source_account.deleted_at IS NULL
-                INNER JOIN transaction_entries target_entry ON
+                INNER JOIN transaction_entries target_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     target_entry.transaction_id = existing_transfer.id
                     AND target_entry.deleted_at IS NULL
                     AND target_entry.original_transaction_id IS NULL
@@ -59,12 +59,13 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = `
                     target_account.id = target_entry.account_id
                     AND target_account.deleted_at IS NULL
                     AND target_account.instrument_id = source_account.instrument_id
-                INNER JOIN transactions income_tx ON
-                    income_tx.type = '${TransactionTypeEnum.INCOME}'
+                CROSS JOIN transactions income_tx INDEXED BY transactions_visible_type_operated_idx
+                    ON income_tx.type = '${TransactionTypeEnum.INCOME}'
                     AND income_tx.deleted_at IS NULL
                     AND income_tx.consolidation_parent_transaction_id IS NULL
-                    AND ABS(income_tx.operated_at - existing_transfer.operated_at) <= ${EXISTING_TRANSFER_DUPLICATE_TIME_WINDOW_SECONDS}
-                INNER JOIN transaction_entries income_entry ON
+                    AND income_tx.operated_at BETWEEN existing_transfer.operated_at - ${EXISTING_TRANSFER_DUPLICATE_TIME_WINDOW_SECONDS}
+                        AND existing_transfer.operated_at + ${EXISTING_TRANSFER_DUPLICATE_TIME_WINDOW_SECONDS}
+                INNER JOIN transaction_entries income_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL

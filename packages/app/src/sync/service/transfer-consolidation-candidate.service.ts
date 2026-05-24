@@ -1,4 +1,4 @@
-import { Log } from '@budgie/logger';
+import { Log, getLogger } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
@@ -19,11 +19,13 @@ import type {
     TransferPairReviewCandidateInterface
 } from '@budgie/contracts';
 
+const logger = getLogger('TransferConsolidationCandidateService');
+
 class TransferConsolidationCandidateService {
     @Log(
         'enter',
         result =>
-            `done manualExpenseTransactionIds=${result.manualReviewCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmReviewTransactionIds=${result.atmCashWithdrawalReviewCandidates.map(candidate => candidate.transactionId).join(',')} pairExpenseTransactionIds=${result.pairCandidates.map(candidate => candidate.expenseTransactionId).join(',')} ibanBridgeChainSourceExpenseTransactionIds=${result.ibanBridgeChainTransferCandidates.map(candidate => candidate.sourceExpenseTransactionId).join(',')} ibanBridgeDuplicateExpenseTransactionIds=${result.ibanBridgeCanonicalDuplicateCandidates.map(candidate => candidate.expenseTransactionId).join(',')} existingTransferBridgeSourceExpenseTransactionIds=${result.existingTransferBridgeCandidates.map(candidate => candidate.sourceExpenseTransactionId).join(',')} existingTransferIncomeDuplicateIncomeTransactionIds=${result.existingTransferIncomeDuplicateCandidates.map(candidate => candidate.incomeTransactionId).join(',')} ibanBridgeExpenseTransactionIds=${result.ibanBridgeTransferCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmTransactionIds=${result.atmCashWithdrawalCandidates.map(candidate => candidate.transactionId).join(',')} refundExpenseTransactionIds=${result.refundCandidates.map(candidate => candidate.expenseTransactionId).join(',')} refundReviewExpenseTransactionIds=${result.refundReviewCandidates.map(candidate => candidate.expenseTransactionId).join(',')}`,
+            `done manualCount=${result.manualReviewCandidates.length} atmReviewCount=${result.atmCashWithdrawalReviewCandidates.length} pairCount=${result.pairCandidates.length} ibanBridgeChainCount=${result.ibanBridgeChainTransferCandidates.length} ibanBridgeDuplicateCount=${result.ibanBridgeCanonicalDuplicateCandidates.length} existingTransferBridgeCount=${result.existingTransferBridgeCandidates.length} existingTransferIncomeDuplicateCount=${result.existingTransferIncomeDuplicateCandidates.length} ibanBridgeCount=${result.ibanBridgeTransferCandidates.length} atmCount=${result.atmCashWithdrawalCandidates.length} refundCount=${result.refundCandidates.length} refundReviewCount=${result.refundReviewCandidates.length}`,
         error => `throw error=${getErrorMessage(error)}`
     )
     async findGroups(): Promise<ConsolidationCandidateGroupsInterface> {
@@ -68,103 +70,106 @@ class TransferConsolidationCandidateService {
         };
     }
 
-    @Log(
-        'enter',
-        result => `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     private async findPairCandidates(): Promise<TransferPairCandidateInterface[]> {
-        return transferPairRepository.findCandidates();
+        const startedAt = Date.now();
+        const candidates = await transferPairRepository.findCandidates();
+
+        logger.log('findPairCandidates:duration', { count: candidates.length, durationMs: Date.now() - startedAt });
+
+        return candidates;
     }
 
-    @Log(
-        'enter',
-        result => `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     private async findManualReviewCandidates(): Promise<TransferPairReviewCandidateInterface[]> {
-        return transferPairRepository.findManualReviewCandidates();
+        const startedAt = Date.now();
+        const candidates = await transferPairRepository.findManualReviewCandidates();
+
+        logger.log('findManualReviewCandidates:duration', { count: candidates.length, durationMs: Date.now() - startedAt });
+
+        return candidates;
     }
 
-    @Log(
-        'enter',
-        result => `done transactionIds=${result.map(candidate => candidate.transactionId).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     private async findAtmCashWithdrawalCandidates(): Promise<AtmCashWithdrawalCandidateInterface[]> {
-        return transferPairRepository.findAtmCashWithdrawalCandidates();
+        const startedAt = Date.now();
+        const candidates = await transferPairRepository.findAtmCashWithdrawalCandidates();
+
+        logger.log('findAtmCashWithdrawalCandidates:duration', { count: candidates.length, durationMs: Date.now() - startedAt });
+
+        return candidates;
     }
 
-    @Log(
-        'enter',
-        result => `done transactionIds=${result.map(candidate => candidate.transactionId).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     private async findAtmCashWithdrawalReviewCandidates(): Promise<AtmCashWithdrawalReviewCandidateInterface[]> {
-        return transferPairRepository.findAtmCashWithdrawalReviewCandidates();
+        const startedAt = Date.now();
+        const candidates = await transferPairRepository.findAtmCashWithdrawalReviewCandidates();
+
+        logger.log('findAtmCashWithdrawalReviewCandidates:duration', { count: candidates.length, durationMs: Date.now() - startedAt });
+
+        return candidates;
     }
 
-    @Log(
-        'enter',
-        result => `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     private async findIbanBridgeTransferCandidates(): Promise<IbanBridgeTransferCandidateInterface[]> {
-        return transferPairRepository.findIbanBridgeTransferCandidates();
+        const startedAt = Date.now();
+        const candidates = await transferPairRepository.findIbanBridgeTransferCandidates();
+
+        logger.log('findIbanBridgeTransferCandidates:duration', { count: candidates.length, durationMs: Date.now() - startedAt });
+
+        return candidates;
     }
 
-    @Log(
-        'enter',
-        result => `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     private async findIbanBridgeCanonicalDuplicateCandidates(): Promise<IbanBridgeCanonicalDuplicateCandidateInterface[]> {
-        return transferPairRepository.findIbanBridgeCanonicalDuplicateCandidates();
+        const startedAt = Date.now();
+        const candidates = await transferPairRepository.findIbanBridgeCanonicalDuplicateCandidates();
+
+        logger.log('findIbanBridgeCanonicalDuplicateCandidates:duration', { count: candidates.length, durationMs: Date.now() - startedAt });
+
+        return candidates;
     }
 
-    @Log(
-        'enter',
-        result => `done sourceExpenseTransactionIds=${result.map(candidate => candidate.sourceExpenseTransactionId).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     private async findExistingTransferBridgeCandidates(): Promise<ExistingTransferBridgeCandidateInterface[]> {
-        return transferPairRepository.findExistingTransferBridgeCandidates();
+        const startedAt = Date.now();
+        const candidates = await transferPairRepository.findExistingTransferBridgeCandidates();
+
+        logger.log('findExistingTransferBridgeCandidates:duration', { count: candidates.length, durationMs: Date.now() - startedAt });
+
+        return candidates;
     }
 
-    @Log(
-        'enter',
-        result => `done incomeTransactionIds=${result.map(candidate => candidate.incomeTransactionId).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     private async findExistingTransferIncomeDuplicateCandidates(): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
-        return transferPairRepository.findExistingTransferIncomeDuplicateCandidates();
+        const startedAt = Date.now();
+        const candidates = await transferPairRepository.findExistingTransferIncomeDuplicateCandidates();
+
+        logger.log('findExistingTransferIncomeDuplicateCandidates:duration', {
+            count: candidates.length,
+            durationMs: Date.now() - startedAt
+        });
+
+        return candidates;
     }
 
-    @Log(
-        'enter',
-        result => `done sourceExpenseTransactionIds=${result.map(candidate => candidate.sourceExpenseTransactionId).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     private async findIbanBridgeChainTransferCandidates(): Promise<IbanBridgeChainTransferCandidateInterface[]> {
-        return transferPairRepository.findIbanBridgeChainTransferCandidates();
+        const startedAt = Date.now();
+        const candidates = await transferPairRepository.findIbanBridgeChainTransferCandidates();
+
+        logger.log('findIbanBridgeChainTransferCandidates:duration', { count: candidates.length, durationMs: Date.now() - startedAt });
+
+        return candidates;
     }
 
-    @Log(
-        'enter',
-        result => `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     private async findRefundCandidates(): Promise<RefundCandidateInterface[]> {
-        return refundPairRepository.findCandidates();
+        const startedAt = Date.now();
+        const candidates = await refundPairRepository.findCandidates();
+
+        logger.log('findRefundCandidates:duration', { count: candidates.length, durationMs: Date.now() - startedAt });
+
+        return candidates;
     }
 
-    @Log(
-        'enter',
-        result => `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     private async findRefundReviewCandidates(): Promise<RefundReviewCandidateInterface[]> {
-        return refundPairRepository.findReviewCandidates();
+        const startedAt = Date.now();
+        const candidates = await refundPairRepository.findReviewCandidates();
+
+        logger.log('findRefundReviewCandidates:duration', { count: candidates.length, durationMs: Date.now() - startedAt });
+
+        return candidates;
     }
 
     private filterPairCandidates(
