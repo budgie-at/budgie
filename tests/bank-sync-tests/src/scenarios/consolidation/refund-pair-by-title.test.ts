@@ -1,11 +1,20 @@
 import { describe, expect, it } from 'vitest';
+import { eq } from 'drizzle-orm';
 
-import { PRECISION, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    PRECISION,
+    TagEntityTable,
+    TransactionConsolidationTypeEnum,
+    TransactionTagsEntityTable,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
-import { fetchTransactionById, runRefundScenario, seed, seedRefundedExpense } from '../../harness';
+import { fetchTransactionById, runRefundScenario, seed, seedRefundedExpense, testDb } from '../../harness';
+import { insertOne } from '../../harness/db/insert-one';
 
 import { refundPairRepository } from '@app/@generic/drizzle/db/db';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { transactionRefundService } from '@app/transaction/service/transaction-refund.service';
 
 describe('consolidation/refund-pair-by-title', () => {
     it.each([
@@ -80,6 +89,39 @@ describe('consolidation/refund-pair-by-title', () => {
 
         expect(incomeCandidates).toMatchObject([{ id: expense.id, type: TransactionTypeEnum.EXPENSE }]);
         expect(expenseCandidates).toEqual([]);
+    });
+
+    it('manually converts when the income and expense already share a tag', async () => {
+        const account = seed.account({ externalId: 'mono-card' });
+        const { expense, refunds } = seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [40 * PRECISION]
+        });
+        const tag = insertOne(TagEntityTable, {
+            title: 'Shared',
+            titleSearch: 'shared',
+            titleEn: null,
+            titleTags: null,
+            tagsGeneratedAt: null
+        });
+
+        insertOne(TransactionTagsEntityTable, { transactionId: expense.id, tagId: tag.id, isPrimary: false });
+        insertOne(TransactionTagsEntityTable, { transactionId: refunds[0].id, tagId: tag.id, isPrimary: false });
+
+        const canonicalTransactionId = await transactionRefundService.convertToRefund({
+            refundIncomeTransactionId: refunds[0].id,
+            expenseTransactionId: expense.id
+        });
+        const canonicalTags = testDb
+            .select()
+            .from(TransactionTagsEntityTable)
+            .where(eq(TransactionTagsEntityTable.transactionId, expense.id))
+            .all();
+
+        expect(canonicalTransactionId).toBe(expense.id);
+        expect(fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+        expect(canonicalTags).toHaveLength(1);
     });
 
     it('promotes the original expense when a localized cancellation prefix leaves the same title', async () => {
