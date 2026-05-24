@@ -10,6 +10,8 @@ export {
     TagEntityRelations,
     CategoryEntityTable,
     CategoryEntityRelations,
+    DefaultCategoryTranslationEntityTable,
+    DefaultCategoryTranslationEntityRelations,
     TransactionTagsEntityRelations,
     AccountBalanceEntityTable,
     AccountBalanceEntityRelations,

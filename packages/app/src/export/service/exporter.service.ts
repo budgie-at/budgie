@@ -57,7 +57,7 @@ class ExporterService {
         const [accounts, deletedAccounts, categories, instruments, mccCategories] = await Promise.all([
             accountRepository.getAll(),
             accountRepository.getAllArchived(),
-            categoryRepository.findAll(),
+            categoryRepository.findAllNonSystem(),
             instrumentRepository.getAll(),
             mccCategoryRepository.findAll()
         ]);
