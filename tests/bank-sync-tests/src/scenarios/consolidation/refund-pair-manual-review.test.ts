@@ -53,6 +53,30 @@ describe('consolidation/refund-pair-manual-review', () => {
         expect(manualCandidates).toMatchObject([{ title: 'Seezona', isRecommended: true }]);
     });
 
+    it('recommends same-currency refunds from another account for manual review', async () => {
+        const expenseAccount = seed.account({ title: 'Expense Card', externalId: 'mono-expense-card' });
+        const refundAccount = seed.account({ title: 'Refund Card', externalId: 'mono-refund-card' });
+        const mcc = findMccByCode('5621');
+        const { refunds } = seedRefundedExpense({
+            accountId: expenseAccount.id,
+            refundAccountId: refundAccount.id,
+            expenseAmount: 103.2 * PRECISION,
+            refundAmounts: [102 * PRECISION],
+            title: 'Seezona',
+            refundTitle: 'Скасування. Seezona,Stockholm,SE',
+            mccCategoryId: mcc.id,
+            refundMccCategoryId: mcc.id,
+            refundDelaySeconds: 50 * 24 * 60 * 60
+        });
+
+        const preview = await transferConsolidationService.preview();
+        const manualCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '');
+
+        expect(preview.autoCandidateCount).toBe(0);
+        expect(preview.manualReviewCandidateCount).toBeGreaterThanOrEqual(1);
+        expect(manualCandidates).toMatchObject([{ title: 'Seezona', accountTitle: 'Expense Card', isRecommended: true }]);
+    });
+
     it('does not treat prefix-only refund titles as broad manual-review matches', async () => {
         const account = seed.account({ externalId: 'mono-card' });
         const mcc = findMccByCode('5814');
