@@ -47,14 +47,22 @@ export class RefundPairRepository {
         const sql = this.buildAutoBucketSql();
         const rows = await this.db.$client.getAllAsync<RefundCandidateRowInterface>(sql);
 
-        return rows.map(row => this.mapCandidateRow(row));
+        return rows.map(row => ({
+            ...this.mapCandidateBaseRow(row),
+            confidenceBucket: row.confidenceBucket,
+            matchType: row.matchType
+        }));
     }
 
     async findReviewCandidates(): Promise<RefundReviewCandidateInterface[]> {
         const sql = this.buildReviewBucketSql();
         const rows = await this.db.$client.getAllAsync<RefundReviewCandidateRowInterface>(sql);
 
-        return rows.map(row => this.mapReviewCandidateRow(row));
+        return rows.map(row => ({
+            ...this.mapCandidateBaseRow(row),
+            confidenceBucket: row.confidenceBucket,
+            matchType: row.matchType
+        }));
     }
 
     async findRefundableExpenseCandidates(
@@ -122,17 +130,19 @@ export class RefundPairRepository {
             'UPPER(TRIM(income_tx.title))',
             RefundPairRepository.REVIEW_TITLE_PREFIXES
         );
+        const expenseReviewMerchantTitle = RefundPairRepository.buildStripCommaSuffixSql(expenseReviewTitle);
+        const incomeReviewMerchantTitle = RefundPairRepository.buildStripCommaSuffixSql(incomeReviewTitle);
 
         return `
-            WITH ${this.buildExpenseEntriesSql(expenseAutoTitle, expenseReviewTitle)},
-            ${this.buildIncomeEntriesSql(incomeAutoTitle, incomeReviewTitle)},
+            WITH ${this.buildExpenseEntriesSql(expenseAutoTitle, expenseReviewTitle, expenseReviewMerchantTitle)},
+            ${this.buildIncomeEntriesSql(incomeAutoTitle, incomeReviewTitle, incomeReviewMerchantTitle)},
             ${this.buildCompatiblePairsSql()},
             ${this.buildRankedPairsSql()}
             SELECT * FROM ranked_pairs
         `;
     }
 
-    private buildExpenseEntriesSql(autoTitle: string, reviewTitle: string): string {
+    private buildExpenseEntriesSql(autoTitle: string, reviewTitle: string, reviewMerchantTitle: string): string {
         return `
             expense_entries AS (
                 SELECT
@@ -143,7 +153,8 @@ export class RefundPairRepository {
                     expense_entry.mcc_category_id AS mccCategoryId,
                     UPPER(TRIM(expense_tx.title)) AS rawNormTitle,
                     ${autoTitle} AS autoNormTitle,
-                    ${reviewTitle} AS reviewNormTitle
+                    ${reviewTitle} AS reviewNormTitle,
+                    ${reviewMerchantTitle} AS reviewMerchantNormTitle
                 FROM transactions expense_tx INDEXED BY transactions_visible_type_operated_idx
                 INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
                     ON expense_entry.transaction_id = expense_tx.id
@@ -159,7 +170,7 @@ export class RefundPairRepository {
         `;
     }
 
-    private buildIncomeEntriesSql(autoTitle: string, reviewTitle: string): string {
+    private buildIncomeEntriesSql(autoTitle: string, reviewTitle: string, reviewMerchantTitle: string): string {
         return `
             income_entries AS (
                 SELECT
@@ -170,7 +181,8 @@ export class RefundPairRepository {
                     income_entry.mcc_category_id AS mccCategoryId,
                     UPPER(TRIM(income_tx.title)) AS rawNormTitle,
                     ${autoTitle} AS autoNormTitle,
-                    ${reviewTitle} AS reviewNormTitle
+                    ${reviewTitle} AS reviewNormTitle,
+                    ${reviewMerchantTitle} AS reviewMerchantNormTitle
                 FROM transactions income_tx INDEXED BY transactions_visible_type_operated_idx
                 INNER JOIN transaction_entries income_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
                     ON income_entry.transaction_id = income_tx.id
@@ -205,8 +217,8 @@ export class RefundPairRepository {
                             AND inc.rawNormTitle != exp.rawNormTitle AND inc.operatedAt > exp.operatedAt
                             AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
                         THEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
-                        WHEN inc.reviewNormTitle = exp.reviewNormTitle
-                            AND inc.reviewNormTitle != ''
+                        WHEN (inc.reviewNormTitle = exp.reviewNormTitle OR inc.reviewMerchantNormTitle = exp.reviewMerchantNormTitle)
+                            AND inc.reviewMerchantNormTitle != ''
                             AND inc.mccCategoryId = exp.mccCategoryId
                             AND inc.rawNormTitle != exp.rawNormTitle AND inc.operatedAt > exp.operatedAt
                             AND (inc.operatedAt - exp.operatedAt) <= ${MANUAL_REVIEW_TIME_WINDOW_SECONDS}
@@ -250,22 +262,6 @@ export class RefundPairRepository {
         `;
     }
 
-    private mapCandidateRow(row: RefundCandidateRowInterface): RefundCandidateInterface {
-        return {
-            ...this.mapCandidateBaseRow(row),
-            confidenceBucket: row.confidenceBucket,
-            matchType: row.matchType
-        };
-    }
-
-    private mapReviewCandidateRow(row: RefundReviewCandidateRowInterface): RefundReviewCandidateInterface {
-        return {
-            ...this.mapCandidateBaseRow(row),
-            confidenceBucket: row.confidenceBucket,
-            matchType: row.matchType
-        };
-    }
-
     private mapCandidateBaseRow(row: RefundCandidateBaseRowInterface): RefundCandidateBaseInterface {
         return {
             accountId: row.accountId,
@@ -296,5 +292,9 @@ export class RefundPairRepository {
 
     private static buildStripPrefixesSql(seedExpression: string, prefixes: readonly string[]): string {
         return `TRIM(${prefixes.reduce((acc, prefix) => `REPLACE(${acc}, '${prefix}', '')`, seedExpression)})`;
+    }
+
+    private static buildStripCommaSuffixSql(seedExpression: string): string {
+        return `TRIM(CASE WHEN INSTR(${seedExpression}, ',') > 0 THEN SUBSTR(${seedExpression}, 1, INSTR(${seedExpression}, ',') - 1) ELSE ${seedExpression} END)`;
     }
 }
