@@ -60,7 +60,8 @@ const seedTransfer = (
     operatedAt: Date,
     fromAccountId: number,
     toAccountId: number,
-    amount: number
+    amount: number,
+    consolidationType: TransactionConsolidationTypeEnum | null = null
 ): TransactionEntityInterface => {
     const transfer = testDb
         .insert(TransactionEntityTable)
@@ -76,7 +77,7 @@ const seedTransfer = (
             comment: '',
             needsEmbedding: false,
             consolidationParentTransactionId: null,
-            consolidationType: null,
+            consolidationType,
             updatedBy: null
         } satisfies TransactionCreateEntityInterface)
         .returning()
@@ -115,6 +116,37 @@ const seedTransfer = (
     return transfer;
 };
 
+const seedMovedSourceEntry = (canonicalTransactionId: number, accountId: number): TransactionEntityInterface => {
+    const movedSource = seedBankPair.expense(
+        { externalId: 'already-moved-source', operatedAt: new Date(2026, 0, 4) },
+        { accountId, amount: 1_000_000 }
+    );
+
+    testDb
+        .insert(TransactionEntryEntityTable)
+        .values({
+            transactionId: canonicalTransactionId,
+            accountId,
+            categoryId: null,
+            mccCategoryId: null,
+            type: TransactionEntryTypeEnum.CREDIT,
+            amount: 1_000_000,
+            externalId: 'already-moved-source',
+            exchangeRate: 1,
+            toIban: null,
+            originalTransactionId: movedSource.id
+        } satisfies TransactionEntryCreateEntityInterface)
+        .run();
+
+    testDb
+        .update(TransactionEntityTable)
+        .set({ consolidationParentTransactionId: canonicalTransactionId })
+        .where(eq(TransactionEntityTable.id, movedSource.id))
+        .run();
+
+    return movedSource;
+};
+
 const fetchMovedSourceIds = (canonicalId: number): number[] =>
     testDb
         .select()
@@ -136,7 +168,14 @@ describe('consolidation/historical-transfer-leftovers', () => {
             { externalId: 'eur-to-uah-income', operatedAt },
             { accountId: bridgeAccount.id, amount: UAH_AMOUNT }
         );
-        const existingCardTransfer = seedTransfer('На чорну картку', operatedAt, bridgeAccount.id, targetAccount.id, UAH_AMOUNT);
+        const existingCardTransfer = seedTransfer(
+            'На чорну картку',
+            operatedAt,
+            bridgeAccount.id,
+            targetAccount.id,
+            UAH_AMOUNT,
+            TransactionConsolidationTypeEnum.TRANSFER_PAIR
+        );
 
         const result = await transferConsolidationService.consolidate();
 
@@ -166,13 +205,15 @@ describe('consolidation/historical-transfer-leftovers', () => {
             { externalId: 'canonical-bridge-income', operatedAt },
             { accountId: bridgeAccount.id, amount: UAH_AMOUNT }
         );
-        const existingCanonicalTransfer = seedTransfer('Canonical transfer', operatedAt, bridgeAccount.id, targetAccount.id, UAH_AMOUNT);
-
-        testDb
-            .update(TransactionEntityTable)
-            .set({ consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR })
-            .where(eq(TransactionEntityTable.id, existingCanonicalTransfer.id))
-            .run();
+        const existingCanonicalTransfer = seedTransfer(
+            'Canonical transfer',
+            operatedAt,
+            bridgeAccount.id,
+            targetAccount.id,
+            UAH_AMOUNT,
+            TransactionConsolidationTypeEnum.TRANSFER_PAIR
+        );
+        const movedSource = seedMovedSourceEntry(existingCanonicalTransfer.id, bridgeAccount.id);
 
         const result = await transferConsolidationService.consolidate();
 
@@ -180,7 +221,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
         expect(fetchTransactionById(sourceExpense.id).consolidationParentTransactionId).toBeNull();
         expect(fetchTransactionById(bridgeIncome.id).consolidationParentTransactionId).toBeNull();
         expect(fetchTransactionById(existingCanonicalTransfer.id).consolidationParentTransactionId).toBeNull();
-        expect(fetchMovedSourceIds(existingCanonicalTransfer.id)).toEqual([]);
+        expect(fetchMovedSourceIds(existingCanonicalTransfer.id)).toEqual([movedSource.id]);
     });
 
     it('parents the closest past income duplicate to an existing same-currency transfer', async () => {

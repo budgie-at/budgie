@@ -333,12 +333,11 @@ class TransferConsolidationExecutorService {
             return false;
         }
 
-        return fresh.every(
-            transaction =>
-                !isDefined(transaction.consolidationParentTransactionId) &&
-                !isDefined(transaction.consolidationType) &&
-                !isDefined(transaction.deletedAt)
-        );
+        if (await transactionEntryRepository.hasMovedSourceEntries(sourceTransactionIds, tx)) {
+            return false;
+        }
+
+        return fresh.every(transaction => !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt));
     }
 
     private async isExistingTransferStillEligible(transactionId: number, tx: DB): Promise<boolean> {
