@@ -34,6 +34,7 @@ export const ConsolidationSourceModalContent = ({
     const useFlexibleContainer = isLoading || showEmptyState || (hasSources && !useCompactSourceList);
     const containerClassName = useFlexibleContainer ? 'flex-1' : '';
     const sourceListContentClassName = isRefund ? 'px-xl pt-3xl pb-2xl' : 'px-xl pt-xl pb-2xl';
+    const footerClassName = showRevert ? 'flex-row gap-x-md' : '';
     const sourceRows = sources.map((source, index) => (
         <View key={source.entryId}>
             {index > 0 ? <ListItemSeparator /> : null}
@@ -63,13 +64,12 @@ export const ConsolidationSourceModalContent = ({
             ) : null}
 
             {showEmptyState ? (
-                <View className="flex-1 items-center justify-center">
-                    <EmptyState
-                        circleIcon={UserIconNameEnum.GitMerge}
-                        title={t`No source transactions`}
-                        description={t`This consolidated transfer has no moved source entries.`}
-                    />
-                </View>
+                <EmptyState
+                    circleIcon={UserIconNameEnum.GitMerge}
+                    title={t`No source transactions`}
+                    description={t`This consolidated transfer has no moved source entries.`}
+                    className="flex-1 px-xl"
+                />
             ) : null}
 
             {hasSources && useCompactSourceList ? <View className={sourceListContentClassName}>{sourceRows}</View> : null}
@@ -85,25 +85,29 @@ export const ConsolidationSourceModalContent = ({
                 </ScrollView>
             ) : null}
 
-            <View className="px-xl pb-xl gap-y-md">
-                {showRevert ? (
+            <View className="px-xl pb-xl">
+                <View className={footerClassName}>
                     <Button
-                        content={t`Revert`}
-                        variant="destructive"
+                        content={t`Done`}
+                        variant="secondary"
                         size="md"
-                        leftIcon={UserIconNameEnum.Undo2}
-                        onPress={revertConsolidation}
-                        testID={ConsolidationSourceModalSelector.RevertButton}
+                        onPress={onClose}
+                        testID={ConsolidationSourceModalSelector.DoneButton}
+                        className="flex-1"
                     />
-                ) : null}
 
-                <Button
-                    content={t`Done`}
-                    variant="secondary"
-                    size="md"
-                    onPress={onClose}
-                    testID={ConsolidationSourceModalSelector.DoneButton}
-                />
+                    {showRevert ? (
+                        <Button
+                            content={t`Revert`}
+                            variant="destructive"
+                            size="md"
+                            leftIcon={UserIconNameEnum.Undo2}
+                            onPress={revertConsolidation}
+                            testID={ConsolidationSourceModalSelector.RevertButton}
+                            className="flex-1"
+                        />
+                    ) : null}
+                </View>
             </View>
         </View>
     );
