@@ -180,6 +180,7 @@ SET
         FROM monobank_privatbank_target_repair_candidates candidate
         WHERE candidate.transfer_transaction_id = transactions.id
     ),
+    consolidation_type = 'TRANSFER_PAIR',
     updated_at = unixepoch()
 WHERE id IN (
     SELECT transfer_transaction_id
@@ -214,6 +215,37 @@ WHERE transaction_id IN (
     AND deleted_at IS NULL
     AND original_transaction_id IS NULL;
 
+UPDATE transaction_entries
+SET
+    original_transaction_id = transaction_id,
+    transaction_id = (
+        SELECT candidate.transfer_transaction_id
+        FROM monobank_privatbank_target_repair_candidates candidate
+        WHERE candidate.privatbank_income_transaction_id = transaction_entries.transaction_id
+    ),
+    updated_at = unixepoch()
+WHERE transaction_id IN (
+    SELECT privatbank_income_transaction_id
+    FROM monobank_privatbank_target_repair_candidates
+)
+    AND deleted_at IS NULL
+    AND original_transaction_id IS NULL;
+
+UPDATE transactions
+SET
+    consolidation_parent_transaction_id = (
+        SELECT candidate.transfer_transaction_id
+        FROM monobank_privatbank_target_repair_candidates candidate
+        WHERE candidate.privatbank_income_transaction_id = transactions.id
+    ),
+    updated_at = unixepoch()
+WHERE id IN (
+    SELECT privatbank_income_transaction_id
+    FROM monobank_privatbank_target_repair_candidates
+)
+    AND deleted_at IS NULL
+    AND consolidation_parent_transaction_id IS NULL;
+
 SELECT
     'transfer_targets_repaired' AS repair_step,
     COUNT(*) AS repaired_transfer_targets
@@ -232,6 +264,14 @@ INNER JOIN monobank_privatbank_target_repair_candidates candidate ON
 WHERE target_entry.type = 'DEBIT'
     AND target_entry.deleted_at IS NULL
     AND target_entry.original_transaction_id IS NULL;
+
+SELECT
+    'income_sources_moved' AS repair_step,
+    COUNT(*) AS moved_income_sources
+FROM transactions source
+INNER JOIN monobank_privatbank_target_repair_candidates candidate ON
+    candidate.privatbank_income_transaction_id = source.id
+    AND source.consolidation_parent_transaction_id = candidate.transfer_transaction_id;
 
 DROP TABLE IF EXISTS temp.monobank_privatbank_target_repair_candidates;
 
