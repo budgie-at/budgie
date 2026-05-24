@@ -100,8 +100,7 @@ export class RefundPairRepository {
         return `
             SELECT
                 expenseTxId AS expenseTransactionId,
-                confidenceBucket, matchType,
-                accountId,
+                confidenceBucket, matchType, accountId,
                 expenseAmount AS expenseEntryAmount,
                 SUM(refundAmount) AS refundsTotal,
                 GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
@@ -147,10 +146,9 @@ export class RefundPairRepository {
             expense_entries AS (
                 SELECT
                     expense_tx.id AS expenseTxId,
-                    expense_tx.operated_at AS operatedAt,
-                    expense_entry.account_id AS accountId,
-                    expense_entry.amount AS amount,
-                    expense_entry.mcc_category_id AS mccCategoryId,
+                    expense_tx.operated_at AS operatedAt, expense_entry.account_id AS accountId,
+                    expense_account.instrument_id AS instrumentId,
+                    expense_entry.amount AS amount, expense_entry.mcc_category_id AS mccCategoryId,
                     UPPER(TRIM(expense_tx.title)) AS rawNormTitle,
                     ${autoTitle} AS autoNormTitle,
                     ${reviewTitle} AS reviewNormTitle,
@@ -162,6 +160,7 @@ export class RefundPairRepository {
                     AND expense_entry.original_transaction_id IS NULL
                     AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
                     AND expense_entry.amount > 0
+                INNER JOIN accounts expense_account ON expense_account.id = expense_entry.account_id
                 WHERE expense_tx.deleted_at IS NULL
                     AND expense_tx.consolidation_parent_transaction_id IS NULL
                     AND expense_tx.consolidation_type IS NULL
@@ -175,10 +174,9 @@ export class RefundPairRepository {
             income_entries AS (
                 SELECT
                     income_tx.id AS txId,
-                    income_tx.operated_at AS operatedAt,
-                    income_entry.account_id AS accountId,
-                    income_entry.amount AS amount,
-                    income_entry.mcc_category_id AS mccCategoryId,
+                    income_tx.operated_at AS operatedAt, income_entry.account_id AS accountId,
+                    income_account.instrument_id AS instrumentId,
+                    income_entry.amount AS amount, income_entry.mcc_category_id AS mccCategoryId,
                     UPPER(TRIM(income_tx.title)) AS rawNormTitle,
                     ${autoTitle} AS autoNormTitle,
                     ${reviewTitle} AS reviewNormTitle,
@@ -190,6 +188,7 @@ export class RefundPairRepository {
                     AND income_entry.original_transaction_id IS NULL
                     AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
                     AND income_entry.amount > 0
+                INNER JOIN accounts income_account ON income_account.id = income_entry.account_id
                 WHERE income_tx.deleted_at IS NULL
                     AND income_tx.consolidation_parent_transaction_id IS NULL
                     AND income_tx.type = '${TransactionTypeEnum.INCOME}'
@@ -208,11 +207,11 @@ export class RefundPairRepository {
                     inc.amount AS refundAmount,
                     inc.operatedAt - exp.operatedAt AS timeDiff,
                     CASE
-                        WHEN inc.rawNormTitle = exp.rawNormTitle
+                        WHEN inc.rawNormTitle = exp.rawNormTitle AND inc.accountId = exp.accountId
                             AND inc.rawNormTitle != '' AND inc.operatedAt > exp.operatedAt
                             AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
                         THEN 'AUTO_REFUND_EXACT_TITLE'
-                        WHEN inc.autoNormTitle = exp.autoNormTitle
+                        WHEN inc.autoNormTitle = exp.autoNormTitle AND inc.accountId = exp.accountId
                             AND inc.autoNormTitle != ''
                             AND inc.rawNormTitle != exp.rawNormTitle AND inc.operatedAt > exp.operatedAt
                             AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
@@ -232,7 +231,7 @@ export class RefundPairRepository {
                     END AS matchType
                 FROM income_entries inc
                 INNER JOIN expense_entries exp
-                    ON exp.accountId = inc.accountId
+                    ON exp.instrumentId = inc.instrumentId
                     AND exp.operatedAt < inc.operatedAt
                     AND exp.operatedAt >= inc.operatedAt - ${MANUAL_REVIEW_TIME_WINDOW_SECONDS}
             )
