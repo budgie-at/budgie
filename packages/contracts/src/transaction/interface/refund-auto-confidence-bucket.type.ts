@@ -1,1 +1,1 @@
-export type RefundAutoConfidenceBucket = 'AUTO_REFUND_EXACT_TITLE' | 'AUTO_REFUND_LOCALIZED_CANCELLATION_TITLE';
+export type RefundAutoConfidenceBucket = 'AUTO_REFUND_EXACT_TITLE' | 'AUTO_REFUND_LOCALIZED_REFUND_TITLE';
