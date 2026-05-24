@@ -246,7 +246,7 @@ class TransferConsolidationExecutorService {
             fromEntryToIban: candidate.sourceExpenseEntryToIban
         };
 
-        return this.executeConsolidation(sourceTransactionIds, canonicalInput, tx);
+        return this.executeConsolidation(sourceTransactionIds, canonicalInput, tx, [candidate.existingTransferId]);
     }
 
     private async consolidateExistingTransferIncomeDuplicateInner(
@@ -312,9 +312,10 @@ class TransferConsolidationExecutorService {
     private async executeConsolidation(
         sourceTransactionIds: number[],
         canonicalInput: CanonicalTransferInputInterface,
-        tx: DB
+        tx: DB,
+        allowedMovedSourceTransactionIds: number[] = []
     ): Promise<boolean> {
-        if (!(await this.areCandidatesStillEligible(sourceTransactionIds, tx))) {
+        if (!(await this.areCandidatesStillEligible(sourceTransactionIds, tx, allowedMovedSourceTransactionIds))) {
             return false;
         }
 
@@ -326,14 +327,22 @@ class TransferConsolidationExecutorService {
         return true;
     }
 
-    private async areCandidatesStillEligible(sourceTransactionIds: number[], tx: DB): Promise<boolean> {
+    private async areCandidatesStillEligible(
+        sourceTransactionIds: number[],
+        tx: DB,
+        allowedMovedSourceTransactionIds: number[] = []
+    ): Promise<boolean> {
         const fresh = await transactionRepository.findByIds(sourceTransactionIds, tx);
 
         if (fresh.length !== sourceTransactionIds.length) {
             return false;
         }
 
-        if (await transactionEntryRepository.hasMovedSourceEntries(sourceTransactionIds, tx)) {
+        const movedEntryBlockedTransactionIds = sourceTransactionIds.filter(
+            transactionId => !allowedMovedSourceTransactionIds.includes(transactionId)
+        );
+
+        if (await transactionEntryRepository.hasMovedSourceEntries(movedEntryBlockedTransactionIds, tx)) {
             return false;
         }
 
