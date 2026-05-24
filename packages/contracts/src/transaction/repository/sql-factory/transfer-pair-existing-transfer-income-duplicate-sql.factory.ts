@@ -54,11 +54,9 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = `
                     AND target_entry.deleted_at IS NULL
                     AND target_entry.original_transaction_id IS NULL
                     AND target_entry.account_id = existing_transfer.to_account_id
-                    AND target_entry.amount = source_entry.amount
                 INNER JOIN accounts target_account ON
                     target_account.id = target_entry.account_id
                     AND target_account.deleted_at IS NULL
-                    AND target_account.instrument_id = source_account.instrument_id
                 CROSS JOIN transactions income_tx INDEXED BY transactions_visible_type_operated_idx
                     ON income_tx.type = '${TransactionTypeEnum.INCOME}'
                     AND income_tx.deleted_at IS NULL

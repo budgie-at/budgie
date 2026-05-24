@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 import {
     AccountTypeEnum,
@@ -197,6 +197,18 @@ const expectMovedSourceIds = (canonicalId: number, transactionIds: readonly numb
     );
 };
 
+const expectIncomeDuplicateConsolidated = async (
+    existingTransfer: TransactionEntityInterface,
+    duplicateIncome: TransactionEntityInterface
+): Promise<void> => {
+    const result = await transferConsolidationService.consolidate();
+
+    expect(result).toEqual({ found: 1, consolidated: 1 });
+    expect(fetchTransactionById(existingTransfer.id).consolidationType).toBe(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+    expect(fetchTransactionById(duplicateIncome.id).consolidationParentTransactionId).toBe(existingTransfer.id);
+    expect(fetchMovedSourceIds(existingTransfer.id)).toEqual([duplicateIncome.id]);
+};
+
 const expectExistingTransferBridgeConsolidated = async (
     candidate: ReturnType<typeof seedExistingTransferBridgeCandidate>
 ): Promise<number> => {
@@ -279,12 +291,32 @@ describe('consolidation/historical-transfer-leftovers', () => {
             { accountId: targetAccount.id, amount: UAH_AMOUNT, mccCategoryId: transferMcc.id }
         );
 
-        const result = await transferConsolidationService.consolidate();
-
-        expect(result).toEqual({ found: 1, consolidated: 1 });
-        expect(fetchTransactionById(existingTransfer.id).consolidationType).toBe(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-        expect(fetchTransactionById(closestIncome.id).consolidationParentTransactionId).toBe(existingTransfer.id);
+        await expectIncomeDuplicateConsolidated(existingTransfer, closestIncome);
         expect(fetchTransactionById(laterIncome.id).consolidationParentTransactionId).toBeNull();
-        expect(fetchMovedSourceIds(existingTransfer.id)).toEqual([closestIncome.id]);
+    });
+
+    it('parents a target income duplicate to an existing cross-currency transfer', async () => {
+        const operatedAt = new Date(2026, 0, 30, 8, 52, 7);
+        const transferMcc = findMccByCode('4829');
+        const { sourceAccount, targetAccount } = seedHistoricalBridgeAccounts();
+        const existingTransfer = seedTransfer('Приват Сина', operatedAt, sourceAccount.id, targetAccount.id, 10_144_000_000);
+
+        testDb
+            .update(TransactionEntryEntityTable)
+            .set({ amount: 200_000_000 })
+            .where(
+                and(
+                    eq(TransactionEntryEntityTable.transactionId, existingTransfer.id),
+                    eq(TransactionEntryEntityTable.accountId, sourceAccount.id)
+                )
+            )
+            .run();
+
+        const duplicateIncome = seedBankPair.income(
+            { externalId: 'privat-income-cross-currency', operatedAt: new Date(operatedAt.getTime() + 60 * 60 * 1000) },
+            { accountId: targetAccount.id, amount: 10_144_000_000, mccCategoryId: transferMcc.id }
+        );
+
+        await expectIncomeDuplicateConsolidated(existingTransfer, duplicateIncome);
     });
 });
