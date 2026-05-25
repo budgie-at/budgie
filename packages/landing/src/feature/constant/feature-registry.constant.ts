@@ -324,7 +324,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             },
             {
                 question: msg`Can I edit a transaction after saving?`,
-                answer: msg`Always. Long-press the row in the list for a context menu with Edit, Delete, Split, and Convert to Transfer actions.`
+                answer: msg`Always. Long-press the row in the list for a context menu with Edit, Delete, Split, Convert to Transfer, and Convert to Refund actions when they apply.`
             },
             {
                 question: msg`Does Budgie distinguish transfers from expenses?`,
@@ -343,9 +343,9 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         slug: 'transaction-long-press-menu',
         tier: FeatureTierEnum.CORE,
         title: msg`Long-Press Quick Actions on Every Transaction`,
-        tagline: msg`Long-press any transaction card to edit, delete, convert to transfer, or split — no need to open the full edit form for common actions.`,
+        tagline: msg`Long-press any transaction card to edit, delete, split, convert to transfer, or convert income to a refund — no full edit form required.`,
         metaTitle: msg`Quick Edit Transaction App — Long-Press Menu — Budgie`,
-        metaDescription: msg`Long-press any transaction in Budgie for a native context menu: edit, delete, convert to transfer, split. Two taps where the rest of the market needs five.`,
+        metaDescription: msg`Long-press any transaction in Budgie for a native context menu: edit, delete, split, convert to transfer, or convert income to refund. Two taps where the rest of the market needs five.`,
         primaryKeyword: 'quick edit transaction app',
         seoKeywords: [
             'quick edit transaction app',
@@ -357,6 +357,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         relatedFeatureSlugs: [
             'expense-tracking',
             'convert-to-transfer',
+            'convert-to-refund',
             'split-transactions',
             'transaction-tags',
             'ai-transaction-suggestions'
@@ -369,7 +370,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             },
             {
                 question: msg`What actions are available?`,
-                answer: msg`Edit, Delete, Convert to Transfer, and Split. The exact set depends on the transaction type — transfers don't show "Convert to Transfer", for example.`
+                answer: msg`Edit, Delete, Split, Convert to Transfer, and Convert to Refund. The exact set depends on the transaction type — only income can become a refund, for example.`
             },
             {
                 question: msg`Can I customize the menu?`,
@@ -998,24 +999,25 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
     {
         slug: 'transfer-pair-detection',
         tier: FeatureTierEnum.POWER,
-        title: msg`Smart Transfer Consolidation`,
-        tagline: msg`Two debits aren't a transfer. Budgie knows — IBAN-aware, cross-currency-aware, automatic.`,
-        metaTitle: msg`Smart Transfer Consolidation — Budgie`,
-        metaDescription: msg`When the same amount leaves account A and arrives at account B, Budgie merges them into one transfer. Counter-IBAN matching plus cross-currency tolerance.`,
+        title: msg`Smart Transfer and Refund Consolidation`,
+        tagline: msg`Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review.`,
+        metaTitle: msg`Smart Transfer and Refund Consolidation — Budgie`,
+        metaDescription: msg`Budgie merges obvious transfer pairs and merchant refunds so bank imports do not inflate spending or income. Counter-IBAN, amount, date, and title matching run on-device.`,
         primaryKeyword: 'duplicate transaction merger',
         seoKeywords: [
             'duplicate transaction merger',
             'transfer pair detection',
             'auto-merge transfers',
+            'automatic refund matching',
             'IBAN match transfer',
             'cross-currency transfer detection'
         ],
-        relatedFeatureSlugs: ['account-transfers', 'bank-resync-window', 'convert-to-transfer'],
+        relatedFeatureSlugs: ['account-transfers', 'convert-to-refund', 'bank-resync-window', 'convert-to-transfer'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
         faqs: [
             {
-                question: msg`What if the algorithm misidentifies a transfer?`,
-                answer: msg`Manual override is one tap. Tap the auto-merged transaction, choose "Split back into two", and it reverts to two separate entries with their original categories.`
+                question: msg`What if the algorithm misidentifies a match?`,
+                answer: msg`Manual override is one tap. Open the consolidated transaction, choose Revert, and Budgie restores the original entries with their original categories.`
             },
             {
                 question: msg`Does this work across two different banks?`,
@@ -1027,7 +1029,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             },
             {
                 question: msg`Will old (already-imported) transactions get re-matched?`,
-                answer: msg`Yes. Each new sync rescans recent entries against existing ones, so old debits-and-credits that didn't have counter-IBAN can still match retroactively when the matching info arrives.`
+                answer: msg`Yes. Each consolidation run rescans recent entries against existing ones, so transfers and refunds can match retroactively when enough matching info arrives.`
             }
         ],
         publishedAt: '2026-05-01',
@@ -1386,43 +1388,43 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         ogTags: ['transfer', 'convert', 'reclassify']
     },
     {
-        slug: 'income-to-transfer-conversion',
+        slug: 'convert-to-refund',
         tier: FeatureTierEnum.NICHE,
-        title: msg`Convert Income to Transfer — Clean Up Refunds`,
-        tagline: msg`An income transaction (a refund, a reimbursement) can be converted to a transfer in one tap — your income totals stay accurate.`,
-        metaTitle: msg`Convert Income to Transfer in Expense App — Budgie`,
-        metaDescription: msg`Refunds, reimbursements, and cross-account top-ups can now be converted from Income to Transfer in one tap, keeping your income reports clean.`,
-        primaryKeyword: 'convert income to transfer',
+        title: msg`Convert Income to Refund`,
+        tagline: msg`Link refund income back to the expense it reverses — full or partial, automatic or manual, always reversible.`,
+        metaTitle: msg`Convert Income to Refund in Expense App — Budgie`,
+        metaDescription: msg`Budgie links refund income back to the original expense, supports partial refunds, searches same-currency expenses across accounts, and keeps analytics clean.`,
+        primaryKeyword: 'convert income to refund',
         seoKeywords: [
-            'convert income to transfer',
+            'convert income to refund',
             'refund handling expense tracker',
-            'reimbursement budget app',
+            'partial refund tracker',
             'fix miscategorized income',
-            'income to transfer conversion'
+            'refund matching expense app'
         ],
-        relatedFeatureSlugs: ['convert-to-transfer', 'account-transfers', 'expense-tracking', 'transfer-pair-detection'],
+        relatedFeatureSlugs: ['transfer-pair-detection', 'expense-tracking', 'transaction-long-press-menu', 'spending-analytics'],
         relatedArticleSlugs: ['budgie-offline-financial-data'],
         faqs: [
             {
-                question: msg`Why would I want to convert income to a transfer?`,
-                answer: msg`Some "income" entries are actually internal moves — a refund landing back on your card, a friend repaying you in cash that you then deposit. Recording them as transfers keeps your income totals reflecting actual income.`
+                question: msg`Why would I convert income to a refund?`,
+                answer: msg`Merchant refunds arrive as positive income, but they usually reverse an earlier expense. Linking the income to that expense keeps income and spending analytics honest.`
             },
             {
-                question: msg`Can I undo the conversion?`,
-                answer: msg`Yes — open the transfer and convert it back to income.`
+                question: msg`Can I refund only part of an expense?`,
+                answer: msg`Yes. Pick the original expense and Budgie marks the refund as partial when the refunded amount is lower than the expense amount.`
             },
             {
-                question: msg`Does this rebuild my analytics?`,
-                answer: msg`Statistics recompute live; the converted entry leaves the income column and joins the transfers list immediately.`
+                question: msg`Can I undo a refund link?`,
+                answer: msg`Yes. Open the refunded transaction and tap Revert. The income and expense return to their original standalone state.`
             },
             {
-                question: msg`What if the matching transfer side already exists?`,
-                answer: msg`The conversion uses the existing pair-detection logic to merge with the matching expense or transfer leg if one is found within the same window.`
+                question: msg`What if the expense is on another account?`,
+                answer: msg`Manual refund search can find same-currency expenses across accounts. Budgie sorts likely matches by amount and date so the closest refund target appears first.`
             }
         ],
-        publishedAt: '2026-05-07',
-        updatedAt: '2026-05-07',
-        ogTags: ['transfers', 'edit', 'cleanup']
+        publishedAt: '2026-05-25',
+        updatedAt: '2026-05-25',
+        ogTags: ['refunds', 'analytics', 'cleanup']
     },
     {
         slug: 'screenshot-protection',

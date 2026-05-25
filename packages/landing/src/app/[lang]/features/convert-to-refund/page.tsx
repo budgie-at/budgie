@@ -26,7 +26,7 @@ import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import type { Metadata } from 'next';
 
-const SLUG = 'income-to-transfer-conversion';
+const SLUG = 'convert-to-refund';
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
@@ -48,7 +48,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     });
 }
 
-export default async function IncomeToTransferConversionFeaturePage(props: PageLangParam) {
+export default async function ConvertToRefundFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
     const entry = getFeatureBySlug(SLUG);
@@ -81,8 +81,8 @@ export default async function IncomeToTransferConversionFeaturePage(props: PageL
                 locale={lang}
                 tagline={
                     <Trans>
-                        Refunds, reimbursements, and internal top-ups often land as income when they are really just money moving between
-                        accounts. Convert them to transfers in one tap and keep your income totals accurate.
+                        Refund income should reduce the expense it reverses, not inflate your income. Link it back to the original purchase
+                        in one tap.
                     </Trans>
                 }
             />
@@ -95,38 +95,31 @@ export default async function IncomeToTransferConversionFeaturePage(props: PageL
                     <Trans>
                         When a merchant refunds a purchase, the money reappears on your card as a positive transaction. Most expense
                         trackers record it as income — which is technically accurate in a cash-flow sense but misleading for actual income
-                        analysis. A month where you returned a laptop and got paid your salary looks like you earned twice as much as usual.
-                        The same problem affects reimbursements from an employer, a friend paying back a shared dinner, or a cash withdrawal
-                        that you then deposited into a savings account.
+                        analysis.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The correct classification is a transfer: money moving from one source to another without representing net new
-                        income. Budgie lets you convert any income transaction to a transfer directly from the transaction detail screen.
-                        The income total drops immediately, the transfer pair links to the appropriate destination account if one matches,
-                        and your analytics reflect actual earned income again.
+                        Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports
+                        partial refunds, and keeps the audit trail visible from the transaction detail screen.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>One tap, fully reversible</Trans>
+                    <Trans>Automatic when obvious, manual when it needs review</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Open the income transaction, choose Convert to Transfer, and pick the destination account. Budgie creates the
-                        transfer pair and immediately recalculates affected statistics. If Budgie&apos;s transfer-pair detection already
-                        knows about a matching entry — an expense on the same day for the same amount on the source account — it
-                        consolidates both legs automatically rather than creating a duplicate.
+                        High-confidence refund matches consolidate automatically during the same matching pass that handles transfers. When
+                        the match is ambiguous, open the income transaction and choose Convert to Refund.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The conversion is reversible: open the resulting transfer and convert it back to income at any time. No data is
-                        permanently altered; the operation is a reclassification that updates the type field and rebuilds the transfer link,
-                        not a deletion and re-creation.
+                        The picker searches same-currency expenses across accounts and sorts likely matches by date and amount. Choose the
+                        expense, confirm, and Budgie shows whether the refund is full or partial.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -137,50 +130,54 @@ export default async function IncomeToTransferConversionFeaturePage(props: PageL
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Clean income totals — refunds and reimbursements move out of income into transfers in one tap</Trans>
+                        <Trans>Clean income totals — refund income links back to the expense instead of counting as earnings</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Fully reversible — convert back to income any time without losing data</Trans>
+                        <Trans>Partial and full refunds — Budgie compares the refund amount with the original expense</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Live analytics update — the income column recalculates the moment the conversion is confirmed</Trans>
+                        <Trans>Cross-account manual search — find same-currency expenses even when the refund lands elsewhere</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Pair-detection aware — auto-consolidates with a matching expense leg when one is found</Trans>
+                        <Trans>Reversible audit trail — Revert restores the original income and expense rows</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 <FeaturePageFaqItem
-                    question={<Trans>Why would I want to convert income to a transfer?</Trans>}
+                    question={<Trans>Why would I convert income to a refund?</Trans>}
                     answer={
                         <Trans>
-                            Some &ldquo;income&rdquo; entries are actually internal moves — a refund landing back on your card, a friend
-                            repaying you in cash that you then deposit. Recording them as transfers keeps your income totals reflecting
-                            actual income.
+                            Merchant refunds arrive as positive income, but they usually reverse an earlier expense. Linking the income to
+                            that expense keeps income and spending analytics honest.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can I undo the conversion?</Trans>}
-                    answer={<Trans>Yes — open the transfer and convert it back to income.</Trans>}
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Does this rebuild my analytics?</Trans>}
+                    question={<Trans>Can I refund only part of an expense?</Trans>}
                     answer={
                         <Trans>
-                            Statistics recompute live; the converted entry leaves the income column and joins the transfers list
-                            immediately.
+                            Yes. Pick the original expense and Budgie marks the refund as partial when the refunded amount is lower than the
+                            expense amount.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What if the matching transfer side already exists?</Trans>}
+                    question={<Trans>Can I undo a refund link?</Trans>}
                     answer={
                         <Trans>
-                            The conversion uses the existing pair-detection logic to merge with the matching expense or transfer leg if one
-                            is found within the same window.
+                            Yes. Open the refunded transaction and tap Revert. The income and expense return to their original standalone
+                            state.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What if the expense is on another account?</Trans>}
+                    answer={
+                        <Trans>
+                            Manual refund search can find same-currency expenses across accounts. Budgie sorts likely matches by amount and
+                            date so the closest refund target appears first.
                         </Trans>
                     }
                 />
