@@ -175,9 +175,11 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                         ELSE 0
                     END as sameCurrency,
                     CASE
-                        WHEN expense_entries.expenseExternalSource IS NOT NULL
-                            AND expense_entries.expenseExternalSource != ''
-                            AND expense_entries.expenseExternalSource = income_entries.incomeExternalSource
+                        WHEN expense_entries.expenseBankSource IS NOT NULL
+                            AND expense_entries.expenseBankSource != ''
+                            AND income_entries.incomeBankSource IS NOT NULL
+                            AND income_entries.incomeBankSource != ''
+                            AND expense_entries.expenseBankSource = income_entries.incomeBankSource
                         THEN 1
                         WHEN expense_entries.expenseAccountBankHint IS NOT NULL
                             AND expense_entries.expenseAccountBankHint != ''
