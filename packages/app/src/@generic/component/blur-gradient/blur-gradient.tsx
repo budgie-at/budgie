@@ -1,4 +1,4 @@
-import MaskedView from '@react-native-masked-view/masked-view';
+import { MaskedView } from '@expo/ui/community/masked-view';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode } from 'react';
