@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.25.0](https://github.com/budgie-at/budgie/compare/v5.24.1...v5.25.0) (2026-05-25)
+
+### Features
+
+- **landing:** add refund handling feature page ([#488](https://github.com/budgie-at/budgie/issues/488)) ([d48cd65](https://github.com/budgie-at/budgie/commit/d48cd65ac3d36654d4d38f138762794d6343a3e9))
+
+# [5.23.0](https://github.com/budgie-at/budgie/compare/v5.22.7...v5.23.0) (2026-05-23)
+
+### Features
+
+- **app:** translate default category titles via id-keyed message map ([0605bd9](https://github.com/budgie-at/budgie/commit/0605bd9fa3370b21ea536b1133425271d30d0c79)), closes [#438](https://github.com/budgie-at/budgie/issues/438)
+
 ## [5.20.1](https://github.com/budgie-at/budgie/compare/v5.20.0...v5.20.1) (2026-05-20)
 
 ### Bug Fixes
