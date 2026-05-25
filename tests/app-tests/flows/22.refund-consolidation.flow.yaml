@@ -4,16 +4,109 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ROW_ID_MATCH: '22.db(, db)?'
+        FIXTURE_ROW_ID_MATCH: '.*22\.db, db.*'
+        FILE_PICKER_SEARCH_TEXT: '22.db'
+        FILE_PICKER_REPEAT_TAP: 'true'
+
+- openLink: 'budgie://transactions/3/income'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.TriggerButton'
+    timeout: 10000
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.ConvertToRefundButton'
+    timeout: 3000
+- tapOn:
+    id: 'TransactionActionsMenu.ConvertToRefundButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ConvertToRefund.Page'
+    timeout: 10000
+- assertVisible:
+    id: 'ConvertToRefund.CandidateRow.2'
+- tapOn:
+    id: 'ConvertToRefund.CandidateRow.2'
+- tapOn:
+    id: 'ConvertToRefund.ConvertButton'
+- extendedWaitUntil:
+    visible: 'Convert to Refund?'
+    timeout: 10000
+- tapOn:
+    point: '68%,60%'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.RefundedPill.2'
+    timeout: 10000
+- tapOn:
+    id: 'TransactionCard.RefundedPill.2'
+- extendedWaitUntil:
+    visible:
+      id: 'ConsolidationSourceModal.Row.0'
+    timeout: 10000
+- assertVisible:
+    text: 'E2E Refund Partial, .*\+₴40'
+- tapOn:
+    id: 'ConsolidationSourceModal.RevertButton'
+- runFlow: subflows/transactions/confirm-revert-consolidation.flow.yaml
+- openLink: 'budgie://transactions/3/income'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.TriggerButton'
+    timeout: 10000
+- extendedWaitUntil:
+    notVisible:
+      id: 'TransactionCard.RefundedPill.2'
+    timeout: 10000
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.ConvertToTransferButton'
+    timeout: 3000
+- assertVisible:
+    id: 'TransactionActionsMenu.ConvertToRefundButton'
+- tapOn:
+    point: '10%,10%'
+- tapOn:
+    id: 'PageHeader.BackButton'
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Refund_Localized'
+    direction: DOWN
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Refund_Localized'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Refund_Partial'
+    direction: DOWN
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Partial'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Refund_Full'
+    direction: DOWN
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Full'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
+    direction: DOWN
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
+- longPressOn:
+    id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionContextMenu.ConvertToRefundButton'
+    timeout: 3000
+- tapOn:
+    point: '10%,10%'
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 - scrollUntilVisible:
@@ -33,21 +126,40 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.E2E_Refund_Partial'
-    timeout: 10000
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Refund_Localized'
+    direction: UP
+- assertVisible:
+    text: 'E2E Refund Localized, Refunded.*'
+- assertNotVisible:
+    id: 'TransactionCard.Amount.10'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Refund_Localized'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.RefundedPill.4'
+    direction: DOWN
 - assertVisible:
     id: 'TransactionCard.RefundedPill.4'
 - assertNotVisible:
     id: 'TransactionCard.Amount.3'
 - assertNotVisible:
     id: 'TransactionCard.Amount.5'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
+    direction: DOWN
 - assertVisible:
     id: 'TransactionCard.Amount.8'
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
 
+- openLink: 'budgie://transactions/4/expense'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.RefundedPill.4'
+    timeout: 10000
 - tapOn:
     id: 'TransactionCard.RefundedPill.4'
 - extendedWaitUntil:
@@ -55,9 +167,7 @@ appId: ${APP_ID}
       id: 'ConsolidationSourceModal.Row.0'
     timeout: 10000
 - assertVisible:
-    id: 'ConsolidationSourceModal.RowTitle.0.E2E_Refund_Full'
-- assertVisible:
-    id: 'ConsolidationSourceModal.RowAmount.0.DEBIT.55000000'
+    text: 'E2E Refund Full, .*\+₴55'
 - tapOn:
     id: 'ConsolidationSourceModal.DoneButton'
 - extendedWaitUntil:
@@ -65,6 +175,30 @@ appId: ${APP_ID}
       id: 'ConsolidationSourceModal.Row.0'
     timeout: 5000
 
+- openLink: 'budgie://transactions/9/expense'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.RefundedPill.9'
+    timeout: 10000
+- tapOn:
+    id: 'TransactionCard.RefundedPill.9'
+- extendedWaitUntil:
+    visible:
+      id: 'ConsolidationSourceModal.Row.0'
+    timeout: 10000
+- assertVisible:
+    text: 'Скасування\. E2E Refund Localized, .*\+₴18'
+- tapOn:
+    id: 'ConsolidationSourceModal.DoneButton'
+- extendedWaitUntil:
+    notVisible:
+      id: 'ConsolidationSourceModal.Row.0'
+    timeout: 5000
+
+- tapOn:
+    id: 'PageHeader.BackButton'
+- tapOn:
+    id: 'PageHeader.BackButton'
 - tapOn:
     id: 'TabBar.Analytics'
 - extendedWaitUntil:

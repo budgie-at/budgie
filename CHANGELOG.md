@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.25.0](https://github.com/budgie-at/budgie/compare/v5.24.1...v5.25.0) (2026-05-25)
+
+### Features
+
+- **landing:** add refund handling feature page ([#488](https://github.com/budgie-at/budgie/issues/488)) ([d48cd65](https://github.com/budgie-at/budgie/commit/d48cd65ac3d36654d4d38f138762794d6343a3e9))
+
+## [5.24.1](https://github.com/budgie-at/budgie/compare/v5.24.0...v5.24.1) (2026-05-25)
+
+### Bug Fixes
+
+- **bank-sync:** stabilize erste import identity ([15f506f](https://github.com/budgie-at/budgie/commit/15f506fdaca7ce4c1d9fa0cc4f207d9783022409))
+- consolidate cross-currency transfer income duplicates ([4626b7f](https://github.com/budgie-at/budgie/commit/4626b7fd36786a0387ab7af287a6678325617975))
+- consolidate same-bank currency conversions ([76846de](https://github.com/budgie-at/budgie/commit/76846dea33d752488bb3a6bc099fc083e050dee0))
+- **contracts:** match cancellation refund reversals ([2fe7ad9](https://github.com/budgie-at/budgie/commit/2fe7ad93517e07195339a6ee8d13748a1f20229f))
+- document grouped transfer repair ([0d23053](https://github.com/budgie-at/budgie/commit/0d2305355346db8c9d028b916fb11c540de5fd0d))
+- match approximate cross-currency transfer receipts ([cd74644](https://github.com/budgie-at/budgie/commit/cd7464476e1d8957d498f0bf7c1abcb8d8f03f2a))
+- move repaired privatbank transfer sources ([a6cec45](https://github.com/budgie-at/budgie/commit/a6cec45f0a9d6c9e30ddd3ac2e5ed8e20736801c))
+
+# [5.24.0](https://github.com/budgie-at/budgie/compare/v5.23.1...v5.24.0) (2026-05-25)
+
+### Bug Fixes
+
+- **app:** address refund review feedback ([308e8cf](https://github.com/budgie-at/budgie/commit/308e8cfd324ec3dc4b189c0dba480292c9d09210))
+- **app:** avoid duplicate refund tags ([68b0b3a](https://github.com/budgie-at/budgie/commit/68b0b3a08aae4960db0ffec542ce6da21dd2f0c2))
+- **app:** generalize consolidation copy ([2d72de9](https://github.com/budgie-at/budgie/commit/2d72de90778be990c71be8c5410ca7612b7e466e))
+- **app:** keep transaction open after refund revert ([f2626a8](https://github.com/budgie-at/budgie/commit/f2626a8ee4410541fd610a0af0c78da02e3a9489))
+- **app:** polish refund actions ([c8dd535](https://github.com/budgie-at/budgie/commit/c8dd535a9d405cda6c35d0d71c2c4d8844fbd751))
+- **app:** restrict refund conversion to income ([ac9e3ac](https://github.com/budgie-at/budgie/commit/ac9e3acc5117bb50eb6167fe4aa9debaa2f061f1))
+- **app:** smooth refund picker search sheet ([cd86130](https://github.com/budgie-at/budgie/commit/cd861308b0a596cd07aa7a5e273aea866d8166ad))
+- **app:** stabilize income refund conversion ([f5f581e](https://github.com/budgie-at/budgie/commit/f5f581ef6572b6ac7c00264619a7d9e10b7a78fa))
+- **contracts:** allow cross-account refund review matches ([3e655d7](https://github.com/budgie-at/budgie/commit/3e655d756c35a516a6caf25e41f3ac971fe76dbc))
+- **contracts:** recognize PrivatBank refund titles ([957b27b](https://github.com/budgie-at/budgie/commit/957b27b09c66260a30e2fe716df551ebaa394531))
+- **contracts:** recommend location-suffixed refund titles ([9ab5070](https://github.com/budgie-at/budgie/commit/9ab5070a2f0f65570a74cadfc7b48268d4e123d8))
+
+### Features
+
+- **app:** add manual refund conversion ([8ee5815](https://github.com/budgie-at/budgie/commit/8ee5815728508fcf213286c8098e9a42b95f38e1))
+
 ## [5.23.1](https://github.com/budgie-at/budgie/compare/v5.23.0...v5.23.1) (2026-05-24)
 
 ### Bug Fixes

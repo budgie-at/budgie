@@ -31,21 +31,13 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} буде відновлено у вашому головному перегляді."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:27
-msgid "{autoCandidateCount, plural, one {# high-confidence transfer pair} other {# high-confidence transfer pairs}}"
-msgstr "{autoCandidateCount, plural, one {# пара переказів із високою впевненістю} few {# пари переказів із високою впевненістю} many {# пар переказів із високою впевненістю} other {# пари переказів із високою впевненістю}}"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:35
+msgid "{autoCandidateCount, plural, one {# high-confidence match} other {# high-confidence matches}}"
+msgstr "{autoCandidateCount, plural, one {# збіг з високою впевненістю} few {# збіги з високою впевненістю} many {# збігів з високою впевненістю} other {# збігу з високою впевненістю}}"
 
 #: src/app/import-column-mapper.tsx:31
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# стовпець доступний} few {# стовпці доступні} many {# стовпців доступні} other {# стовпця доступні}}"
-
-#: src/budget/service/budget-alert-monitor.service.ts:112
-msgid "{categoryName}: {threshold}% spent"
-msgstr "{categoryName}: {threshold}% витрачено"
-
-#: src/budget/service/budget-alert-monitor.service.ts:112
-msgid "{categoryName}: limit reached"
-msgstr "{categoryName}: ліміт досягнуто"
 
 #: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
@@ -53,7 +45,7 @@ msgstr "{count, plural, one {# наявна транзакція відпові�
 
 #: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
 msgid "{count, plural, one {# missing category} other {# missing categories}}"
-msgstr "{count, plural, one {# транзакція без категорії} few {# транзакції без категорії} many {# транзакцій без категорії} other {# транзакцій без категорії}}"
+msgstr "{count, plural, one {# відсутня категорія} few {# відсутні категорії} many {# відсутніх категорій} other {# відсутньої категорії}}"
 
 #: src/app/(tabs)/settings/categories.tsx:42
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -75,17 +67,17 @@ msgstr "{formattedRemaining} залишилось розподілити"
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} понад бюджет"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:56
-msgid "{found, plural, one {# high-confidence pair} other {# high-confidence pairs}}"
-msgstr "{found, plural, one {# пара з високою впевненістю} few {# пари з високою впевненістю} many {# пар з високою впевненістю} other {# пари з високою впевненістю}}"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:65
+msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
+msgstr "{found, plural, one {# збіг з високою впевненістю} few {# збіги з високою впевненістю} many {# збігів з високою впевненістю} other {# збігу з високою впевненістю}}"
 
 #: src/app/transaction-type-filter.tsx:46
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Показати всі типи} one {Показати # тип} few {Показати # типи} many {Показати # типів} other {Показати # типу}}"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:33
-msgid "{manualReviewCandidateCount, plural, one {# lower-confidence pair} other {# lower-confidence pairs}}"
-msgstr "{manualReviewCandidateCount, plural, one {# пара з нижчою впевненістю} few {# пари з нижчою впевненістю} many {# пар з нижчою впевненістю} other {# пари з нижчою впевненістю}}"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:41
+msgid "{manualReviewCandidateCount, plural, one {# review match} other {# review matches}}"
+msgstr "{manualReviewCandidateCount, plural, one {# збіг для перевірки} few {# збіги для перевірки} many {# збігів для перевірки} other {# збігу для перевірки}}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:36
 #: src/rule/components/rules-list-page/rules-list-page.tsx:37
@@ -126,10 +118,6 @@ msgstr "Не вдалося виконати {source}: {message}"
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# елемент} few {# елементи} many {# елементів} other {# елемента}}"
 
-#: src/budget/components/budget-widget/budget-widget.tsx:68
-msgid "+{hiddenCategoryCount} more"
-msgstr "+{hiddenCategoryCount} ще"
-
 #: src/rule/constant/rule-condition-operator.constant.ts:12
 msgid "<"
 msgstr "<"
@@ -137,10 +125,6 @@ msgstr "<"
 #: src/rule/constant/rule-condition-operator.constant.ts:11
 msgid ">"
 msgstr ">"
-
-#: src/budget/components/budget-period-start-day-field/budget-period-start-day-field.tsx:33
-msgid "1"
-msgstr "1"
 
 #: src/@generic/component/currency-selector/currency-selector.tsx:66
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -150,19 +134,15 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/app/(tabs)/settings/index.tsx:71
+#: src/app/(tabs)/settings/index.tsx:70
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
-
-#: src/budget/components/budget-integrity-guard/budget-integrity-guard.tsx:78
-msgid "A default currency is required before you can manage budgets."
-msgstr "Перед керуванням бюджетами потрібно вибрати валюту за замовчуванням."
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
 msgid "A rule with the same conditions already exists."
 msgstr "Правило з такими ж умовами вже існує."
 
-#: src/app/(tabs)/settings/index.tsx:216
+#: src/app/(tabs)/settings/index.tsx:208
 msgid "About"
 msgstr "Про застосунок"
 
@@ -254,7 +234,7 @@ msgstr "Додайте свій перший рахунок, щоб почати
 msgid "Adjustment"
 msgstr "Коригування"
 
-#: src/app/(tabs)/settings/index.tsx:111
+#: src/app/(tabs)/settings/index.tsx:110
 msgid "AI"
 msgstr "ШІ"
 
@@ -276,7 +256,7 @@ msgstr "ШІ вимкнено"
 msgid "AI-Generated Metadata"
 msgstr "Метадані, згенеровані ШІ"
 
-#: src/app/(tabs)/settings/index.tsx:220
+#: src/app/(tabs)/settings/index.tsx:212
 msgid "AI-powered budgeting app with complete privacy. All data processing happens locally on your device."
 msgstr "Бюджетний застосунок на базі ШІ з повною приватністю. Усі дані обробляються локально на вашому пристрої."
 
@@ -300,7 +280,7 @@ msgstr "Усе готово"
 msgid "All Time"
 msgstr "Весь час"
 
-#: src/app/(tabs)/settings/index.tsx:72
+#: src/app/(tabs)/settings/index.tsx:71
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
 
@@ -315,7 +295,7 @@ msgid "Amount"
 msgstr "Сума"
 
 #: src/app/(main)/create-transaction/transfer.tsx:60
-#: src/app/(main)/transactions/[id]/transfer.tsx:69
+#: src/app/(main)/transactions/[id]/transfer.tsx:70
 msgid "Amount exceeds debt account balance"
 msgstr "Сума перевищує баланс боргового рахунку"
 
@@ -332,11 +312,11 @@ msgstr "API токен"
 msgid "App Lock"
 msgstr "Блокування додатка"
 
-#: src/app/(tabs)/settings/index.tsx:224
+#: src/app/(tabs)/settings/index.tsx:216
 msgid "App Version"
 msgstr "Версія застосунку"
 
-#: src/app/(tabs)/settings/index.tsx:175
+#: src/app/(tabs)/settings/index.tsx:167
 msgid "Appearance"
 msgstr "Вигляд"
 
@@ -362,7 +342,7 @@ msgid "Archive Account?"
 msgstr "Архівувати рахунок?"
 
 #: src/app/(tabs)/settings/archived.tsx:57
-#: src/app/(tabs)/settings/index.tsx:156
+#: src/app/(tabs)/settings/index.tsx:148
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
@@ -384,7 +364,7 @@ msgstr "Ви впевнені?"
 msgid "Auto-assign categories from MCC"
 msgstr "Автоматично призначати категорії за MCC"
 
-#: src/app/(tabs)/settings/index.tsx:143
+#: src/app/(tabs)/settings/index.tsx:142
 msgid "Auto-categorize transactions"
 msgstr "Автоматично категоризувати транзакції"
 
@@ -451,24 +431,7 @@ msgstr "Біометрична автентифікація"
 msgid "Borrowed"
 msgstr "Позичено"
 
-#: src/app/(main)/budget/index.tsx:69
-#: src/app/(tabs)/settings/index.tsx:149
-msgid "Budget"
-msgstr "Бюджет"
-
-#: src/budget/components/budget-currency-chip/budget-currency-chip.tsx:20
-msgid "Budget currency"
-msgstr "Валюта бюджету"
-
-#: src/budget/service/budget-alert-monitor.service.ts:103
-msgid "Budget limit reached"
-msgstr "Ліміт бюджету досягнуто"
-
-#: src/budget/components/budget-integrity-guard/budget-integrity-guard.tsx:75
-msgid "Budget setup incomplete"
-msgstr "Налаштування бюджету неповне"
-
-#: src/app/(tabs)/settings/index.tsx:218
+#: src/app/(tabs)/settings/index.tsx:210
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -479,20 +442,21 @@ msgstr "Budgie"
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
-#: src/app/(main)/budget/index.tsx:52
 #: src/app/(tabs)/settings/import.tsx:258
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:133
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:44
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:52
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:42
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:67
 #: src/transaction/hook/use-delete-transaction.hook.ts:27
 #: src/transaction/hook/use-revert-consolidation.hook.ts:19
+#: src/transaction/hooks/use-convert-to-refund-action.hook.ts:30
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -514,8 +478,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:34
 #: src/app/(tabs)/settings/import.tsx:181
-#: src/budget/service/budget-alert-monitor.service.ts:111
-#: src/category/components/category-form-selector/category-form-selector.tsx:34
+#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx:35
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:176
 msgid "Category"
 msgstr "Категорія"
@@ -523,11 +486,6 @@ msgstr "Категорія"
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx:20
 msgid "Category → {categoryTitle}"
 msgstr "Категорія → {categoryTitle}"
-
-#: src/budget/components/budget-category-limits-card/budget-category-limits-card.tsx:18
-#: src/budget/components/budget-category-limits-field/budget-category-limits-field.tsx:29
-msgid "Category limits"
-msgstr "Ліміти за категоріями"
 
 #: src/category/components/category-title-input/category-title-input.tsx:23
 msgid "Category Name"
@@ -597,7 +555,7 @@ msgstr "Coinbase"
 msgid "Comment"
 msgstr "Коментар"
 
-#: src/rule/components/rule-condition-row/rule-condition-row.tsx:24
+#: src/rule/components/rule-condition-row/rule-condition-row.tsx:29
 msgid "Condition"
 msgstr "Умова"
 
@@ -621,18 +579,14 @@ msgstr "Підтвердити вибір тегів"
 msgid "Connect Monobank"
 msgstr "Підключити Монобанк"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:43
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:51
 msgid "Consolidate"
 msgstr "Консолідувати"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:41
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:80
-msgid "Consolidate Transfers"
-msgstr "Консолідувати перекази"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:66
-msgid "Consolidated {consolidated} of {foundPairsText}."
-msgstr "Консолідовано {consolidated} з {foundPairsText}."
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:49
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:89
+msgid "Consolidate Matches"
+msgstr "Консолідувати збіги"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:22
 msgid "Contact (optional)"
@@ -655,13 +609,23 @@ msgid "Conversion failed"
 msgstr "Помилка конвертації"
 
 #: src/app/convert-to-transfer.tsx:76
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:24
+#: src/transaction/hooks/use-convert-to-refund-action.hook.ts:29
 msgid "Convert"
 msgstr "Конвертувати"
 
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:27
+msgid "Convert to Refund"
+msgstr "Перетворити на повернення"
+
+#: src/transaction/hooks/use-convert-to-refund-action.hook.ts:27
+msgid "Convert to Refund?"
+msgstr "Перетворити на повернення?"
+
 #: src/app/convert-to-transfer.tsx:121
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
-#: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:21
 #: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:19
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:34
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
 
@@ -681,13 +645,13 @@ msgstr "Не вдалося архівувати рахунок"
 msgid "Could not clear data"
 msgstr "Не вдалося очистити дані"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:71
-msgid "Could not consolidate transfers"
-msgstr "Не вдалося консолідувати перекази"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:80
+msgid "Could not consolidate matches"
+msgstr "Не вдалося консолідувати збіги"
 
-#: src/budget/hooks/use-budget-form.hook.ts:105
-msgid "Could not create budget"
-msgstr "Не вдалося створити бюджет"
+#: src/transaction/hooks/use-convert-to-refund-action.hook.ts:45
+msgid "Could not convert to refund"
+msgstr "Не вдалося перетворити на повернення"
 
 #: src/category/components/category-form/category-form.tsx:167
 msgid "Could not create category"
@@ -713,10 +677,6 @@ msgstr "Не вдалося створити транзакцію. Будь ла
 #: src/app/(tabs)/settings/archived.tsx:43
 msgid "Could not delete account."
 msgstr "Не вдалося видалити рахунок."
-
-#: src/app/(main)/budget/index.tsx:64
-msgid "Could not delete budget"
-msgstr "Не вдалося видалити бюджет"
 
 #: src/app/(tabs)/settings/categories.tsx:74
 msgid "Could not delete category"
@@ -751,7 +711,7 @@ msgstr "Не вдалося отримати рахунки"
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:39
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:55
 msgid "Could not load sources. Please try again."
 msgstr "Не вдалося завантажити джерела. Спробуйте ще раз."
 
@@ -790,15 +750,7 @@ msgstr "Не вдалося відновити рахунок."
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:33
 msgid "Could not revert consolidation."
-msgstr ""
-
-#: src/budget/hooks/use-budget-form.hook.ts:105
-msgid "Could not save budget"
-msgstr "Не вдалося зберегти бюджет"
-
-#: src/budget/hooks/use-budget-form.hook.ts:75
-msgid "Could not save budget: a default currency is required."
-msgstr "Не вдалося зберегти бюджет: потрібна валюта за замовчуванням."
+msgstr "Не вдалося скасувати об'єднання."
 
 #: src/category/components/category-form/category-form.tsx:167
 msgid "Could not save category"
@@ -858,17 +810,13 @@ msgstr "Створити рахунки"
 msgid "Create and copy the personal token"
 msgstr "Створити та скопіювати персональний токен"
 
-#: src/app/(tabs)/settings/index.tsx:134
+#: src/app/(tabs)/settings/index.tsx:133
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:135
 msgid "Create anyway"
 msgstr "Все одно створити"
-
-#: src/app/(main)/budget/setup.tsx:44
-msgid "Create budget"
-msgstr "Створити бюджет"
 
 #: src/app/transaction-category-filter.tsx:80
 msgid "Create Categories"
@@ -911,10 +859,6 @@ msgstr "Створити теги"
 msgid "Create tags to organize your transactions"
 msgstr "Створюйте теги для організації транзакцій"
 
-#: src/budget/components/budget-empty-state/budget-empty-state.tsx:21
-msgid "Create your budget"
-msgstr "Створіть свій бюджет"
-
 #: src/app/transaction-account-filter.tsx:91
 msgid "Create your first account to start tracking your finances"
 msgstr "Створіть свій перший рахунок, щоб почати відстежувати свої фінанси"
@@ -948,7 +892,7 @@ msgstr "Власні категорії, які ви створите, з'явл
 msgid "Dark Mode"
 msgstr "Темний режим"
 
-#: src/app/(tabs)/settings/index.tsx:201
+#: src/app/(tabs)/settings/index.tsx:193
 msgid "Data management"
 msgstr "Управління даними"
 
@@ -982,7 +926,6 @@ msgid "Default Account"
 msgstr "Рахунок за замовчуванням"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
-#: src/app/(main)/budget/index.tsx:51
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:66
 #: src/transaction/hook/use-delete-transaction.hook.ts:20
 msgid "Delete"
@@ -995,14 +938,6 @@ msgstr "Видалити рахунок назавжди?"
 #: src/settings/components/truncate-data/truncate-data.tsx:48
 msgid "Delete all transactions and settings"
 msgstr "Видалити всі транзакції та налаштування"
-
-#: src/app/(main)/budget/index.tsx:94
-msgid "Delete budget"
-msgstr "Видалити бюджет"
-
-#: src/app/(main)/budget/index.tsx:49
-msgid "Delete budget?"
-msgstr "Видалити бюджет?"
 
 #: src/settings/components/truncate-data/truncate-data.tsx:21
 msgid "Delete data"
@@ -1026,12 +961,8 @@ msgstr "Видалити транзакцію"
 msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
-#: src/budget/components/budget-widget-enabled-field/budget-widget-enabled-field.tsx:25
-msgid "Display this budget on the home screen"
-msgstr "Показувати цей бюджет на головному екрані"
-
 #: src/app/import-column-mapper.tsx:97
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:88
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:101
 msgid "Done"
 msgstr "Готово"
 
@@ -1059,14 +990,6 @@ msgstr "Дублювати правило"
 msgid "Dutch (Netherlands)"
 msgstr "Нідерландська (Нідерланди)"
 
-#: src/budget/components/budget-overall-limit-field/budget-overall-limit-field.tsx:23
-msgid "e.g. 1000"
-msgstr "напр. 1000"
-
-#: src/budget/components/budget-category-limit-amount-input/budget-category-limit-amount-input.tsx:19
-msgid "e.g. 200"
-msgstr "напр. 200"
-
 #: src/tag/components/tag-form/tag-form.tsx:176
 msgid "e.g. Business, Personal, Vacation"
 msgstr "напр. Бізнес, Особисте, Відпустка"
@@ -1075,18 +998,9 @@ msgstr "напр. Бізнес, Особисте, Відпустка"
 msgid "e.g. Groceries, Entertainment"
 msgstr "напр. Продукти, Розваги"
 
-#: src/budget/components/budget-name-field/budget-name-field.tsx:17
-msgid "e.g. Household, Personal"
-msgstr "напр. Дім, Особисте"
-
 #: src/@generic/component/account-details-field/account-details-field.tsx:61
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
-
-#: src/app/(main)/budget/index.tsx:87
-#: src/app/(main)/budget/setup.tsx:44
-msgid "Edit budget"
-msgstr "Редагувати бюджет"
 
 #: src/category/components/category-form/category-form.tsx:69
 msgid "Edit Category"
@@ -1096,11 +1010,11 @@ msgstr "Редагувати категорію"
 msgid "Edit existing"
 msgstr "Редагувати наявне"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:87
+#: src/app/(main)/transactions/[id]/expense.tsx:73
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:87
+#: src/app/(main)/transactions/[id]/income.tsx:75
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -1116,7 +1030,7 @@ msgstr "Редагувати тег"
 msgid "Edit Transaction"
 msgstr "Редагувати транзакцію"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:80
+#: src/app/(main)/transactions/[id]/transfer.tsx:81
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
 
@@ -1136,10 +1050,6 @@ msgstr "Увімкнути біометричне розблокування?"
 #: src/auth/util/get-pin-setup-meta.util.ts:10
 msgid "Enable Face ID unlock?"
 msgstr "Увімкнути розблокування Face ID?"
-
-#: src/budget/components/budget-push-enabled-field/budget-push-enabled-field.tsx:35
-msgid "Enable them in device settings to receive budget alerts."
-msgstr "Увімкніть їх у налаштуваннях пристрою, щоб отримувати сповіщення про бюджет."
 
 #: src/auth/util/get-pin-setup-meta.util.ts:17
 msgid "Enable Touch ID unlock?"
@@ -1349,7 +1259,7 @@ msgstr "Сума з"
 msgid "From Currency"
 msgstr "Валюта з"
 
-#: src/app/(tabs)/settings/index.tsx:100
+#: src/app/(tabs)/settings/index.tsx:99
 msgid "General"
 msgstr "Загальне"
 
@@ -1365,15 +1275,11 @@ msgstr "Німецька (Німеччина)"
 msgid "Get API Token"
 msgstr "Отримати API-токен"
 
-#: src/budget/components/budget-push-enabled-field/budget-push-enabled-field.tsx:50
-msgid "Get notified when the app is closed and a budget threshold is crossed"
-msgstr "Отримуйте сповіщення, коли додаток закрито і перевищено ліміт бюджету"
-
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:62
 msgid "Greater Than"
 msgstr "Більше ніж"
 
-#: src/app/(tabs)/settings/index.tsx:84
+#: src/app/(tabs)/settings/index.tsx:83
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
 
@@ -1434,7 +1340,7 @@ msgid "In List"
 msgstr "У списку"
 
 #: src/app/(tabs)/settings/inactive.tsx:30
-#: src/app/(tabs)/settings/index.tsx:164
+#: src/app/(tabs)/settings/index.tsx:156
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
 
@@ -1534,10 +1440,6 @@ msgstr "Позичено"
 msgid "Less Than"
 msgstr "Менше ніж"
 
-#: src/budget/components/budget-category-limit-amount-input/budget-category-limit-amount-input.tsx:18
-msgid "Limit"
-msgstr "Ліміт"
-
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx:58
 msgid "Listening..."
 msgstr "Слухаю..."
@@ -1562,15 +1464,15 @@ msgstr "Завантаження..."
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(tabs)/settings/index.tsx:125
+#: src/app/(tabs)/settings/index.tsx:124
 msgid "Manage Categories"
 msgstr "Керування категоріями"
 
-#: src/app/(tabs)/settings/index.tsx:142
+#: src/app/(tabs)/settings/index.tsx:141
 msgid "Manage Rules"
 msgstr "Керувати правилами"
 
-#: src/app/(tabs)/settings/index.tsx:133
+#: src/app/(tabs)/settings/index.tsx:132
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
@@ -1598,6 +1500,10 @@ msgstr "Зіставте кожне поле зі стовпцем вашого 
 msgid "matches"
 msgstr "збігається"
 
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:74
+msgid "Matches consolidated"
+msgstr "Збіги консолідовано"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:61
 msgid "Matches Regex"
 msgstr "Відповідає регулярному виразу"
@@ -1619,10 +1525,6 @@ msgstr "MCC-код"
 msgid "Merchant code"
 msgstr "Код торговця"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:81
-msgid "Merge high-confidence duplicate transfer transactions"
-msgstr "Об'єднати дублікати переказів із високою впевненістю"
-
 #: src/category/components/category-form/category-form.tsx:214
 msgid "Merge into another category"
 msgstr "Об'єднати з іншою категорією"
@@ -1630,6 +1532,14 @@ msgstr "Об'єднати з іншою категорією"
 #: src/tag/components/tag-form/tag-form.tsx:202
 msgid "Merge into another tag"
 msgstr "Об'єднати з іншим тегом"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:90
+msgid "Merge matching transfers and refunds"
+msgstr "Об'єднати відповідні перекази та повернення"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:75
+msgid "Merged {consolidated} of {foundPairsText}."
+msgstr "Об'єднано {consolidated} з {foundPairsText}."
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
 msgid "Missing categories"
@@ -1645,14 +1555,6 @@ msgstr "Позичені або надані гроші"
 msgid "Monobank"
 msgstr "Монобанк"
 
-#: src/budget/components/budget-widget/budget-widget.tsx:45
-msgid "Monthly budget"
-msgstr "Місячний бюджет"
-
-#: src/budget/hooks/use-budget-form.hook.ts:41
-msgid "Monthly Budget"
-msgstr "Місячний бюджет"
-
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:30
 msgid "Monthly Costs"
 msgstr "Місячні витрати"
@@ -1660,10 +1562,6 @@ msgstr "Місячні витрати"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:95
 msgid "Monthly Total"
 msgstr "Місячний підсумок"
-
-#: src/budget/components/budget-name-field/budget-name-field.tsx:16
-msgid "Name (optional)"
-msgstr "Назва (необов'язково)"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx:17
 msgid "Navigate to Account → Statements"
@@ -1764,6 +1662,10 @@ msgstr "Немає елементів для збереження"
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:61
+msgid "No matching expenses"
+msgstr "Немає відповідних витрат"
+
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
 #: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
@@ -1793,7 +1695,7 @@ msgstr "Немає результатів"
 msgid "No Rules Yet"
 msgstr "Правил ще немає"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:53
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:69
 msgid "No source transactions"
 msgstr "Немає вихідних транзакцій"
 
@@ -1814,6 +1716,10 @@ msgstr "Жоден тег не відповідає вашому пошуку"
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
+
+#: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx:44
+msgid "No title"
+msgstr "Без назви"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "No transactions yet"
@@ -1876,10 +1782,6 @@ msgstr "Відкрийте George (онлайн-банкінг Erste Bank)"
 msgid "Open Monobank to get your token"
 msgstr "Відкрийте Монобанк, щоб отримати токен"
 
-#: src/budget/components/budget-integrity-guard/budget-integrity-guard.tsx:80
-msgid "Open settings"
-msgstr "Відкрити налаштування"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:17
 msgid "Open the Privatbank24 app"
 msgstr "Відкрийте додаток Приват24"
@@ -1888,15 +1790,11 @@ msgstr "Відкрийте додаток Приват24"
 msgid "Operator"
 msgstr "Оператор"
 
-#: src/budget/components/budget-category-limits-field/budget-category-limits-field.tsx:37
-msgid "Optional per-category caps within this budget"
-msgstr "Опційні обмеження за категоріями у межах цього бюджету"
-
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx:15
 msgid "or"
 msgstr "або"
 
-#: src/app/(tabs)/settings/index.tsx:121
+#: src/app/(tabs)/settings/index.tsx:120
 msgid "Organization"
 msgstr "Організація"
 
@@ -1904,17 +1802,9 @@ msgstr "Організація"
 msgid "Original imported transactions will be restored and the consolidated transaction will be removed."
 msgstr "Початкові імпортовані транзакції буде відновлено, а консолідовану транзакцію буде видалено."
 
-#: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx:36
+#: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx:25
 msgid "Original transaction"
 msgstr "Початкова транзакція"
-
-#: src/budget/service/budget-alert-monitor.service.ts:103
-msgid "Overall budget: {threshold}% spent"
-msgstr "Загальний бюджет: {threshold}% витрачено"
-
-#: src/budget/components/budget-overall-limit-field/budget-overall-limit-field.tsx:18
-msgid "Overall monthly limit"
-msgstr "Загальний місячний ліміт"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx:61
 msgid "Overview"
@@ -1943,10 +1833,6 @@ msgstr "Прогрес платежу"
 #: src/sync/component/create-erste-account/create-erste-account.tsx:19
 msgid "PDF statement"
 msgstr "PDF-виписка"
-
-#: src/budget/components/budget-period-start-day-field/budget-period-start-day-field.tsx:32
-msgid "Period start day (1–28)"
-msgstr "День початку періоду (1–28)"
 
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
@@ -1996,7 +1882,7 @@ msgstr "Португальська (Португалія)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Шаблон застосовано. За потреби налаштуйте стовпці нижче."
 
-#: src/app/(tabs)/settings/index.tsx:68
+#: src/app/(tabs)/settings/index.tsx:67
 msgid "Privacy"
 msgstr "Конфіденційність"
 
@@ -2008,10 +1894,6 @@ msgstr "Приватбанк"
 #: src/account/constant/bank-provider-title.constant.ts:7
 msgid "PrivatBank"
 msgstr "ПриватБанк"
-
-#: src/budget/components/budget-push-enabled-field/budget-push-enabled-field.tsx:34
-msgid "Push notifications are disabled"
-msgstr "Push-сповіщення вимкнено"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
 msgid "Quick rule"
@@ -2094,6 +1976,14 @@ msgstr "Регулярні"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
 
+#: src/transaction/service/transaction-refund.service.ts:81
+msgid "Refund amount cannot exceed the expense"
+msgstr "Сума повернення не може перевищувати витрату"
+
+#: src/transaction/service/transaction-refund.service.ts:64
+msgid "Refund conversion starts from an income"
+msgstr "Перетворення на повернення починається з доходу"
+
 #: src/transaction/components/refunded-pill/refunded-pill.tsx:78
 msgid "Refunded"
 msgstr "Повернено"
@@ -2101,14 +1991,6 @@ msgstr "Повернено"
 #: src/transaction/components/refunded-pill/refunded-pill.tsx:78
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Повернено {formattedRefundedAmount}"
-
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:27
-msgid "Refunds"
-msgstr "Повернення"
-
-#: src/budget/components/budget-use-last-day-field/budget-use-last-day-field.tsx:24
-msgid "Reset on the last calendar day each month"
-msgstr "Скидати в останній календарний день кожного місяця"
 
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
@@ -2131,16 +2013,17 @@ msgstr "Відновити з файлу резервної копії"
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:78
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:34
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
 #: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
 #: src/transaction/hook/use-revert-consolidation.hook.ts:18
 msgid "Revert"
-msgstr ""
+msgstr "Відновити"
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:16
 msgid "Revert consolidation?"
-msgstr ""
+msgstr "Скасувати об'єднання?"
 
 #: src/rule/constant/external-source.constant.ts:10
 msgid "Revolut"
@@ -2180,7 +2063,7 @@ msgstr "Заощадження"
 msgid "Savings Account"
 msgstr "Ощадний рахунок"
 
-#: src/app/(tabs)/settings/index.tsx:83
+#: src/app/(tabs)/settings/index.tsx:82
 msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
 
@@ -2210,6 +2093,10 @@ msgstr "Шукати контакти..."
 #: src/app/currency-selector.tsx:61
 msgid "Search currencies..."
 msgstr "Пошук валют..."
+
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:30
+msgid "Search expenses refunded by this income"
+msgstr "Пошук витрат для цього повернення"
 
 #: src/app/icon-selector.tsx:106
 msgid "Search icons (e.g., money, travel, food)..."
@@ -2245,7 +2132,7 @@ msgstr "Другорядне значення"
 msgid "Secure your app with PIN & Face ID"
 msgstr "Захистіть свій додаток за допомогою PIN-коду та Face ID"
 
-#: src/app/(tabs)/settings/index.tsx:77
+#: src/app/(tabs)/settings/index.tsx:76
 msgid "Security"
 msgstr "Безпека"
 
@@ -2299,7 +2186,7 @@ msgstr "Оберіть усі категорії"
 msgid "Select category"
 msgstr "Обрати категорію"
 
-#: src/category/components/category-form-selector/category-form-selector.tsx:34
+#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx:36
 msgid "Select Category"
 msgstr "Вибрати категорію"
 
@@ -2365,21 +2252,13 @@ msgstr "Вибрати тип"
 msgid "Selected"
 msgstr "Вибрано"
 
-#: src/budget/components/budget-push-enabled-field/budget-push-enabled-field.tsx:47
-msgid "Send push notifications"
-msgstr "Надсилати push-сповіщення"
+#: src/transaction/service/transaction-refund.service.ts:73
+msgid "Selected transaction is already consolidated"
+msgstr "Вибрану транзакцію вже об'єднано"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:115
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
-
-#: src/app/(tabs)/settings/index.tsx:150
-msgid "Set a monthly limit and track spending"
-msgstr "Встановіть місячний ліміт та відстежуйте витрати"
-
-#: src/budget/components/budget-empty-state/budget-empty-state.tsx:25
-msgid "Set a monthly limit and track your spending"
-msgstr "Встановіть місячний ліміт та відстежуйте свої витрати"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:35
 msgid "Set Category"
@@ -2389,11 +2268,11 @@ msgstr "Встановити категорію"
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
 
-#: src/app/(tabs)/settings/index.tsx:61
+#: src/app/(tabs)/settings/index.tsx:60
 msgid "Settings"
 msgstr "Налаштування"
 
-#: src/app/(tabs)/settings/index.tsx:184
+#: src/app/(tabs)/settings/index.tsx:176
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
@@ -2401,7 +2280,7 @@ msgstr "Показувати $1 234,56 замість $1 235"
 msgid "Show all dates"
 msgstr "Показати всі дати"
 
-#: src/app/(tabs)/settings/index.tsx:183
+#: src/app/(tabs)/settings/index.tsx:175
 msgid "Show Cents"
 msgstr "Показати копійки"
 
@@ -2412,10 +2291,6 @@ msgstr "Показати вибраний діапазон"
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:38
 msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
-
-#: src/budget/components/budget-widget-enabled-field/budget-widget-enabled-field.tsx:22
-msgid "Show widget on home"
-msgstr "Показувати віджет на головній"
 
 #: src/rule/hooks/use-rule-form.hook.ts:133
 msgid "Skip"
@@ -2441,7 +2316,7 @@ msgstr "Щось пішло не так. Будь ласка, спробуйте
 msgid "Source"
 msgstr "Джерело"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:27
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:51
 msgid "Source transactions"
 msgstr "Вихідні транзакції"
 
@@ -2582,7 +2457,7 @@ msgstr "Цей рахунок буде приховано з головного 
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:54
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:70
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Цей консолідований переказ не має перенесених вихідних записів."
 
@@ -2606,10 +2481,6 @@ msgstr "Цього тижня"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:42
-msgid "This will consolidate {autoCandidateText}. {manualReviewCandidateText} will be logged for review only."
-msgstr "Це консолідує {autoCandidateText}. Лише для перевірки буде записано: {manualReviewCandidateText}."
-
 #: src/app/convert-to-transfer.tsx:64
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Це конвертує витрату у переказ між рахунками."
@@ -2618,9 +2489,13 @@ msgstr "Це конвертує витрату у переказ між раху
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 
-#: src/app/(main)/budget/index.tsx:50
-msgid "This will remove your monthly budget. You can create a new one anytime."
-msgstr "Це видалить ваш місячний бюджет. Ви можете створити новий у будь-який час."
+#: src/transaction/hooks/use-convert-to-refund-action.hook.ts:28
+msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
+msgstr "Це прив’яже вибрану витрату до цього доходу-повернення. Ви можете скасувати це на аркуші джерел повернення."
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:50
+msgid "This will merge {autoCandidateText}. {manualReviewCandidateText} will be kept for review."
+msgstr "Це об'єднає {autoCandidateText}. {manualReviewCandidateText} буде збережено для перевірки."
 
 #: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
@@ -2628,7 +2503,7 @@ msgstr "Це скине історію синхронізації та повт�
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:17
 msgid "This will restore the original transactions and remove the consolidated transaction."
-msgstr ""
+msgstr "Початкові транзакції буде відновлено, а об'єднану транзакцію буде видалено."
 
 #: src/@generic/constant/date-period.constant.ts:12
 msgid "This Year"
@@ -2689,6 +2564,8 @@ msgstr "Транзакція повинна мати рахунок призна
 msgid "Transaction must have a source account"
 msgstr "Транзакція повинна мати рахунок-джерело"
 
+#: src/transaction/service/transaction-refund.service.ts:53
+#: src/transaction/service/transaction-refund.service.ts:77
 #: src/transaction/service/transaction-transfer.service.ts:117
 msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
@@ -2720,10 +2597,6 @@ msgstr "Переказ з рахунку"
 msgid "Transfer To Account"
 msgstr "Переказ на рахунок"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:65
-msgid "Transfers consolidated"
-msgstr "Перекази об'єднано"
-
 #: src/ai/service/ai-system-status.service.ts:233
 msgid "Translating {translationPending} of {total}{trailer}"
 msgstr "Переклад {translationPending} з {total}{trailer}"
@@ -2739,6 +2612,10 @@ msgstr "Переклад"
 #: src/ai/service/ai-translation-status.service.ts:55
 msgid "Translations ready"
 msgstr "Переклади готові"
+
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:62
+msgid "Try a different merchant, amount, or date."
+msgstr "Спробуйте іншого продавця, суму або дату."
 
 #: src/account/component/account-select-content/account-select-content.tsx:42
 #: src/app/contact-selector.tsx:40
@@ -2790,7 +2667,6 @@ msgstr "Розконсолідувати"
 msgid "Unconsolidate transaction?"
 msgstr "Розконсолідувати транзакцію?"
 
-#: src/budget/components/budget-currency-chip/budget-currency-chip.tsx:17
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:36
 msgid "Unknown"
 msgstr "Невідомо"
@@ -2814,7 +2690,7 @@ msgstr "Оновити рахунок"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx:64
 msgid "Update rule?"
-msgstr "Оновити правило?"
+msgstr "Оновити?"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:34
 #: src/auth/util/get-pin-setup-meta.util.ts:24
@@ -2824,10 +2700,6 @@ msgstr "Використовуйте Face ID або Touch ID для швидко
 #: src/auth/util/get-pin-setup-meta.util.ts:11
 msgid "Use Face ID to unlock your app quickly and securely"
 msgstr "Використовуйте Face ID для швидкого та безпечного розблокування вашого додатку"
-
-#: src/budget/components/budget-use-last-day-field/budget-use-last-day-field.tsx:21
-msgid "Use last day of month"
-msgstr "Використовувати останній день місяця"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:18
 msgid "Use Touch ID to unlock your app quickly and securely"
@@ -2841,15 +2713,15 @@ msgstr "Використовуйте Touch ID для швидкого та бе�
 msgid "Value"
 msgstr "Значення"
 
-#: src/app/(tabs)/settings/index.tsx:165
+#: src/app/(tabs)/settings/index.tsx:157
 msgid "View and activate hidden accounts"
 msgstr "Переглянути та активувати приховані рахунки"
 
-#: src/app/(tabs)/settings/index.tsx:126
+#: src/app/(tabs)/settings/index.tsx:125
 msgid "View and delete custom categories"
 msgstr "Перегляд та видалення власних категорій"
 
-#: src/app/(tabs)/settings/index.tsx:157
+#: src/app/(tabs)/settings/index.tsx:149
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
@@ -2888,14 +2760,6 @@ msgstr "Вчора"
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"
 msgstr "Ви дали гроші"
-
-#: src/budget/service/budget-alert-monitor.service.ts:104
-msgid "You have used {spentPercent}% of your overall budget."
-msgstr "Ви витратили {spentPercent}% загального бюджету."
-
-#: src/budget/service/budget-alert-monitor.service.ts:113
-msgid "You have used {threshold}% of the limit for {categoryName}."
-msgstr "Ви витратили {threshold}% ліміту для {categoryName}."
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:19
 #: src/account/constant/debt-section-kind-label.constant.ts:7

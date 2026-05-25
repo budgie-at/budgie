@@ -259,7 +259,10 @@ export type { ExistingTransferIncomeDuplicateCandidateInterface } from './transa
 export type { IbanBridgeCanonicalDuplicateCandidateInterface } from './transaction/interface/iban-bridge-canonical-duplicate-candidate.interface';
 export type { IbanBridgeChainTransferCandidateInterface } from './transaction/interface/iban-bridge-chain-transfer-candidate.interface';
 export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
+export type { RefundAutoConfidenceBucket } from './transaction/interface/refund-auto-confidence-bucket.type';
 export type { RefundCandidateInterface } from './transaction/interface/refund-candidate.interface';
+export type { RefundableExpenseCandidateInterface } from './transaction/interface/refundable-expense-candidate.interface';
+export type { RefundReviewConfidenceBucket } from './transaction/interface/refund-review-confidence-bucket.type';
 export type { RefundReviewCandidateInterface } from './transaction/interface/refund-review-candidate.interface';
 
 export { TransferPairRepository } from './transaction/repository/transfer-pair.repository';

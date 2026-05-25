@@ -23,6 +23,7 @@ import { ScreenshotProtectionController } from '../@generic/component/screenshot
 import { APP_TOAST_CONFIG } from '../@generic/constant/app-toast-config.constant';
 import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-modal-options.constant';
 import { CONSOLIDATION_SOURCE_MODAL_OPTIONS } from '../@generic/constant/consolidation-source-modal-options.constant';
+import { CONVERT_TO_REFUND_MODAL_OPTIONS } from '../@generic/constant/convert-to-refund-modal-options.constant';
 import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
@@ -122,6 +123,10 @@ export const RootLayoutContent = () => {
                                                                 <Stack.Screen
                                                                     name="convert-to-transfer"
                                                                     options={CONVERT_TO_TRANSFER_MODAL_OPTIONS}
+                                                                />
+                                                                <Stack.Screen
+                                                                    name="convert-to-refund"
+                                                                    options={CONVERT_TO_REFUND_MODAL_OPTIONS}
                                                                 />
                                                                 <Stack.Screen name="icon-selector" options={ICON_SELECTOR_MODAL_OPTIONS} />
                                                                 <Stack.Screen name="split-entries" options={SPLIT_ENTRIES_MODAL_OPTIONS} />
