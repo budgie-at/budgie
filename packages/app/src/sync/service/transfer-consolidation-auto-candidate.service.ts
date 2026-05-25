@@ -1,4 +1,4 @@
-import { Log } from '@budgie/logger';
+import { Log, getLogger } from '@budgie/logger';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
@@ -16,6 +16,8 @@ import type {
     TransferPairCandidateInterface
 } from '@budgie/contracts';
 
+const logger = getLogger('TransferConsolidationAutoCandidateService');
+
 class TransferConsolidationAutoCandidateService {
     @Log(
         candidates =>
@@ -26,20 +28,38 @@ class TransferConsolidationAutoCandidateService {
             `throw pairCandidateCount=${candidates.pairCandidates.length} bridgeCandidateCount=${candidates.ibanBridgeTransferCandidates.length} error=${getErrorMessage(error)}`
     )
     async processGroups(candidates: ConsolidationCandidateGroupsInterface): Promise<number> {
-        const bridgeChainConsolidated = await this.processIbanBridgeChainTransferCandidates(candidates.ibanBridgeChainTransferCandidates);
-        const existingTransferBridgeConsolidated = await this.processExistingTransferBridgeCandidates(
-            candidates.existingTransferBridgeCandidates
+        const bridgeChainConsolidated = await this.profileConsolidationBatch(
+            'ibanBridgeChain',
+            candidates.ibanBridgeChainTransferCandidates,
+            entries => this.processIbanBridgeChainTransferCandidates(entries)
         );
-        const bridgeDuplicateConsolidated = await this.processIbanBridgeCanonicalDuplicateCandidates(
-            candidates.ibanBridgeCanonicalDuplicateCandidates
+        const existingTransferBridgeConsolidated = await this.profileConsolidationBatch(
+            'existingTransferBridge',
+            candidates.existingTransferBridgeCandidates,
+            entries => this.processExistingTransferBridgeCandidates(entries)
         );
-        const bridgeConsolidated = await this.processIbanBridgeTransferCandidates(candidates.ibanBridgeTransferCandidates);
-        const existingTransferIncomeDuplicateConsolidated = await this.processExistingTransferIncomeDuplicateCandidates(
-            candidates.existingTransferIncomeDuplicateCandidates
+        const bridgeDuplicateConsolidated = await this.profileConsolidationBatch(
+            'ibanBridgeDuplicate',
+            candidates.ibanBridgeCanonicalDuplicateCandidates,
+            entries => this.processIbanBridgeCanonicalDuplicateCandidates(entries)
         );
-        const pairConsolidated = await this.processPairCandidates(candidates.pairCandidates);
-        const atmConsolidated = await this.processAtmCashWithdrawalCandidates(candidates.atmCashWithdrawalCandidates);
-        const refundConsolidated = await this.processRefundCandidates(candidates.refundCandidates);
+        const bridgeConsolidated = await this.profileConsolidationBatch('ibanBridge', candidates.ibanBridgeTransferCandidates, entries =>
+            this.processIbanBridgeTransferCandidates(entries)
+        );
+        const existingTransferIncomeDuplicateConsolidated = await this.profileConsolidationBatch(
+            'existingTransferIncomeDuplicate',
+            candidates.existingTransferIncomeDuplicateCandidates,
+            entries => this.processExistingTransferIncomeDuplicateCandidates(entries)
+        );
+        const pairConsolidated = await this.profileConsolidationBatch('pair', candidates.pairCandidates, entries =>
+            this.processPairCandidates(entries)
+        );
+        const atmConsolidated = await this.profileConsolidationBatch('atm', candidates.atmCashWithdrawalCandidates, entries =>
+            this.processAtmCashWithdrawalCandidates(entries)
+        );
+        const refundConsolidated = await this.profileConsolidationBatch('refund', candidates.refundCandidates, entries =>
+            this.processRefundCandidates(entries)
+        );
 
         return (
             bridgeChainConsolidated +
@@ -111,6 +131,18 @@ class TransferConsolidationAutoCandidateService {
 
             return success ? consolidated + 1 : consolidated;
         }, Promise.resolve(0));
+    }
+
+    private async profileConsolidationBatch<T>(
+        label: string,
+        candidates: T[],
+        processBatch: (entries: T[]) => Promise<number>
+    ): Promise<number> {
+        const startedAt = Date.now();
+        const consolidated = await processBatch(candidates);
+        logger.log('batch:duration', { label, count: candidates.length, consolidated, durationMs: Date.now() - startedAt });
+
+        return consolidated;
     }
 }
 
