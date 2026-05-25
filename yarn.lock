@@ -1218,7 +1218,7 @@ __metadata:
     "@formatjs/intl": "npm:^3.1.8"
     "@formatjs/intl-pluralrules": "npm:^6.3.7"
     "@hookform/resolvers": "npm:^5.2.2"
-    "@legendapp/list": "npm:^2.0.18"
+    "@legendapp/list": "npm:^3.0.0-beta.56"
     "@lingui/babel-plugin-lingui-macro": "npm:^5.7.0"
     "@lingui/core": "npm:^5.7.0"
     "@lingui/react": "npm:^5.7.0"
@@ -1305,6 +1305,7 @@ __metadata:
   dependencies:
     "@budgie/bank-sync": "workspace:*"
     "@budgie/contracts": "workspace:*"
+    "@rnw-community/shared": "npm:^2.0.0"
     "@types/better-sqlite3": "npm:^7.6.12"
     "@types/node": "npm:^22.0.0"
     better-sqlite3: "npm:^11.7.0"
@@ -3993,15 +3994,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@legendapp/list@npm:^2.0.18":
-  version: 2.0.18
-  resolution: "@legendapp/list@npm:2.0.18"
+"@legendapp/list@npm:^3.0.0-beta.56":
+  version: 3.0.0-beta.56
+  resolution: "@legendapp/list@npm:3.0.0-beta.56"
   dependencies:
     use-sync-external-store: "npm:^1.5.0"
   peerDependencies:
     react: "*"
-    react-native: "*"
-  checksum: 10/8d4e6514ffb3462c30a3c5e8b33c7e4902585b1925fad99c6876498b7e1095464f6d6fbf2a4f00dd519d486a93125da6c569c24b76a0484bdb341febb19650bc
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 10/eef5722e99310210d0442a68434386fecb1b8e4555e92b3d7bcfa6bf3436b560b7410a9e3196ddf69a2be4685093b8f63a6adf4126ea92eda4a41ce6a14f358d
   languageName: node
   linkType: hard
 

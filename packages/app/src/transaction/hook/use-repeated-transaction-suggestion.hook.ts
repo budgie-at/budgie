@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 const logger = getLogger('useRepeatedTransactionSuggestion');
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result.interface';
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
 
@@ -23,6 +24,7 @@ interface UseRepeatedTransactionSuggestionParams {
 // eslint-disable-next-line max-statements -- Hook coordinates debounce, focus refresh, and async suggestion fetch lifecycle
 export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionSuggestionParams): PatternSuggestionsResultInterface => {
     const { enabled, type, accountId, amount, categoryId } = params;
+    const language = useSetting('language');
 
     const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
     const [timePatterns, setTimePatterns] = useState<RepeatedTransactionPatternInterface[]>([]);
@@ -73,6 +75,7 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
                 const queryParams = {
                     currentTime: currentTimeRef.current,
                     type,
+                    language,
                     accountId,
                     ...(isDefined(amountOrNull) && { amount: amountOrNull }),
                     ...(isDefined(categoryIdOrNull) && { categoryId: categoryIdOrNull })
@@ -112,7 +115,7 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
             cancelled = true;
             clearDebounceTimer();
         };
-    }, [isReady, type, accountId, amountOrNull, categoryIdOrNull, refreshVersion]);
+    }, [isReady, type, accountId, amountOrNull, categoryIdOrNull, refreshVersion, language]);
 
     const isInitializing = enabled && !isReady && internalStatus === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;

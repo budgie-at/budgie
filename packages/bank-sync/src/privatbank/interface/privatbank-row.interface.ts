@@ -1,4 +1,5 @@
 export interface PrivatbankRowInterface {
+    readonly rawDate: string;
     readonly date: Date;
     readonly category: string;
     readonly card: string;

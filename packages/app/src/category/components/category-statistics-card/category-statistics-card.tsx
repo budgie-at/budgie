@@ -16,7 +16,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { CategoryStatisticsCardSelector } from './category-statistics-card.selector';
 
 interface Props {
-    readonly category: Pick<CategoryEntityInterface, 'icon' | 'title'> & { id?: CategoryEntityInterface['id'] };
+    readonly category: Pick<CategoryEntityInterface, 'id' | 'icon' | 'title' | 'isDefault'>;
     readonly amount: number;
     readonly percentage: number;
     readonly variant: ColorPaletteVariant;

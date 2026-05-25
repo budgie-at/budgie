@@ -1,10 +1,11 @@
-import { RuleActionTypeEnum } from '@budgie/contracts';
+import { LanguageEnum, RuleActionTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ruleRepository } from '../../../@generic/drizzle/db/db';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { UpdateRuleDataInterface } from '../../interface/update-rule-data.interface';
 import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { ruleService } from '../../service/rule.service';
@@ -16,8 +17,8 @@ interface Props {
     readonly onDismiss: () => void;
 }
 
-const updateRule = async (updateRuleData: UpdateRuleDataInterface): Promise<void> => {
-    const allRules = await ruleRepository.findAllWithActionsAndCategories();
+const updateRule = async (updateRuleData: UpdateRuleDataInterface, language: LanguageEnum): Promise<void> => {
+    const allRules = await ruleRepository.findAllWithActionsAndCategories(language);
     const existingRule = allRules.find(rule => rule.id === updateRuleData.ruleId);
 
     if (!isDefined(existingRule)) {
@@ -54,8 +55,9 @@ const updateRule = async (updateRuleData: UpdateRuleDataInterface): Promise<void
 
 export const RuleUpdateCard = (props: Props) => {
     const { updateRuleData, onRuleUpdated, onDismiss } = props;
+    const language = useSetting('language');
 
-    const handleYes = async (): Promise<void> => updateRule(updateRuleData);
+    const handleYes = async (): Promise<void> => updateRule(updateRuleData, language);
 
     return (
         <SwipeableRuleCard
