@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.25.0](https://github.com/budgie-at/budgie/compare/v5.24.1...v5.25.0) (2026-05-25)
+
+### Features
+
+- **landing:** add refund handling feature page ([#488](https://github.com/budgie-at/budgie/issues/488)) ([d48cd65](https://github.com/budgie-at/budgie/commit/d48cd65ac3d36654d4d38f138762794d6343a3e9))
+
 ## [5.24.1](https://github.com/budgie-at/budgie/compare/v5.24.0...v5.24.1) (2026-05-25)
 
 ### Bug Fixes
