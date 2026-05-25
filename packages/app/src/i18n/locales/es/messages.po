@@ -32,8 +32,8 @@ msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} se restaurará en tu vista principal."
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:35
-msgid "{autoCandidateCount, plural, one {# high-confidence transfer pair} other {# high-confidence transfer pairs}}"
-msgstr "{autoCandidateCount, plural, one {# par de transferencias de alta confianza} other {# pares de transferencias de alta confianza}}"
+msgid "{autoCandidateCount, plural, one {# high-confidence match} other {# high-confidence matches}}"
+msgstr "{autoCandidateCount, plural, one {# coincidencia de alta confianza} other {# coincidencias de alta confianza}}"
 
 #: src/app/import-column-mapper.tsx:31
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
@@ -45,7 +45,7 @@ msgstr "{count, plural, one {# transacción existente coincide con esta regla.} 
 
 #: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
 msgid "{count, plural, one {# missing category} other {# missing categories}}"
-msgstr "{count, plural, one {# categoría pendiente} other {# categorías pendientes}}"
+msgstr "{count, plural, one {# categoría faltante} other {# categorías faltantes}}"
 
 #: src/app/(tabs)/settings/categories.tsx:42
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -68,16 +68,16 @@ msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} por encima del presupuesto"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:65
-msgid "{found, plural, one {# high-confidence pair} other {# high-confidence pairs}}"
-msgstr "{found, plural, one {# par de alta confianza} other {# pares de alta confianza}}"
+msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
+msgstr "{found, plural, one {# coincidencia de alta confianza} other {# coincidencias de alta confianza}}"
 
 #: src/app/transaction-type-filter.tsx:46
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Mostrar todos los tipos} one {Mostrar # tipo} other {Mostrar # tipos}}"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:41
-msgid "{manualReviewCandidateCount, plural, one {# lower-confidence pair} other {# lower-confidence pairs}}"
-msgstr "{manualReviewCandidateCount, plural, one {# par de menor confianza} other {# pares de menor confianza}}"
+msgid "{manualReviewCandidateCount, plural, one {# review match} other {# review matches}}"
+msgstr "{manualReviewCandidateCount, plural, one {# coincidencia para revisar} other {# coincidencias para revisar}}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:36
 #: src/rule/components/rules-list-page/rules-list-page.tsx:37
@@ -295,7 +295,7 @@ msgid "Amount"
 msgstr "Cantidad"
 
 #: src/app/(main)/create-transaction/transfer.tsx:60
-#: src/app/(main)/transactions/[id]/transfer.tsx:69
+#: src/app/(main)/transactions/[id]/transfer.tsx:70
 msgid "Amount exceeds debt account balance"
 msgstr "El monto excede el saldo de la cuenta de deuda"
 
@@ -452,9 +452,11 @@ msgstr "Budgie"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:67
 #: src/transaction/hook/use-delete-transaction.hook.ts:27
 #: src/transaction/hook/use-revert-consolidation.hook.ts:19
+#: src/transaction/hooks/use-convert-to-refund-action.hook.ts:30
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -583,12 +585,8 @@ msgstr "Consolidar"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:49
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:89
-msgid "Consolidate Transfers"
-msgstr "Consolidar transferencias"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:75
-msgid "Consolidated {consolidated} of {foundPairsText}."
-msgstr "Se consolidaron {consolidated} de {foundPairsText}."
+msgid "Consolidate Matches"
+msgstr "Consolidar coincidencias"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:22
 msgid "Contact (optional)"
@@ -611,13 +609,24 @@ msgid "Conversion failed"
 msgstr "Error en la conversión"
 
 #: src/app/convert-to-transfer.tsx:76
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:38
+#: src/transaction/hooks/use-convert-to-refund-action.hook.ts:29
 msgid "Convert"
 msgstr "Convertir"
 
+#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:27
+msgid "Convert to Refund"
+msgstr "Convertir en reembolso"
+
+#: src/transaction/hooks/use-convert-to-refund-action.hook.ts:27
+msgid "Convert to Refund?"
+msgstr "¿Convertir en reembolso?"
+
 #: src/app/convert-to-transfer.tsx:121
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
-#: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:21
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:19
+#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:34
 msgid "Convert to Transfer"
 msgstr "Convertir a transferencia"
 
@@ -638,8 +647,12 @@ msgid "Could not clear data"
 msgstr "No se pudieron borrar los datos"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:80
-msgid "Could not consolidate transfers"
-msgstr "No se pudieron consolidar las transferencias"
+msgid "Could not consolidate matches"
+msgstr "No se pudieron consolidar las coincidencias"
+
+#: src/transaction/hooks/use-convert-to-refund-action.hook.ts:45
+msgid "Could not convert to refund"
+msgstr "No se pudo convertir en reembolso"
 
 #: src/category/components/category-form/category-form.tsx:167
 msgid "Could not create category"
@@ -699,7 +712,7 @@ msgstr "No se pudieron obtener las cuentas"
 msgid "Could not import CSV file"
 msgstr "No se pudo importar el archivo CSV"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:34
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:52
 msgid "Could not load sources. Please try again."
 msgstr "No se pudieron cargar las fuentes. Inténtalo de nuevo."
 
@@ -738,7 +751,7 @@ msgstr "No se pudo restaurar la cuenta."
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:33
 msgid "Could not revert consolidation."
-msgstr ""
+msgstr "No se pudo revertir la consolidación."
 
 #: src/category/components/category-form/category-form.tsx:167
 msgid "Could not save category"
@@ -941,7 +954,7 @@ msgid "Delete rule"
 msgstr "Eliminar regla"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 msgid "Delete Transaction"
 msgstr "Eliminar transacción"
 
@@ -950,7 +963,8 @@ msgid "Disable App Lock"
 msgstr "Desactivar bloqueo"
 
 #: src/app/import-column-mapper.tsx:97
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:83
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:87
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 msgid "Done"
 msgstr "Listo"
 
@@ -998,11 +1012,11 @@ msgstr "Editar categoría"
 msgid "Edit existing"
 msgstr "Editar existente"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:87
+#: src/app/(main)/transactions/[id]/expense.tsx:73
 msgid "Edit Expense"
 msgstr "Editar gasto"
 
-#: src/app/(main)/transactions/[id]/income.tsx:87
+#: src/app/(main)/transactions/[id]/income.tsx:75
 msgid "Edit Income"
 msgstr "Editar ingreso"
 
@@ -1014,11 +1028,11 @@ msgstr "Editar regla"
 msgid "Edit Tag"
 msgstr "Editar etiqueta"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:115
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:131
 msgid "Edit Transaction"
 msgstr "Editar transacción"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:80
+#: src/app/(main)/transactions/[id]/transfer.tsx:81
 msgid "Edit Transfer"
 msgstr "Editar transferencia"
 
@@ -1488,6 +1502,10 @@ msgstr "Asigna cada campo a una columna de tu archivo CSV"
 msgid "matches"
 msgstr "coincide"
 
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:74
+msgid "Matches consolidated"
+msgstr "Coincidencias consolidadas"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:61
 msgid "Matches Regex"
 msgstr "Coincide con regex"
@@ -1509,10 +1527,6 @@ msgstr "Código MCC"
 msgid "Merchant code"
 msgstr "Código de comercio"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:90
-msgid "Merge high-confidence duplicate transfer transactions"
-msgstr "Fusionar transacciones de transferencia duplicadas de alta confianza"
-
 #: src/category/components/category-form/category-form.tsx:214
 msgid "Merge into another category"
 msgstr "Fusionar con otra categoría"
@@ -1520,6 +1534,14 @@ msgstr "Fusionar con otra categoría"
 #: src/tag/components/tag-form/tag-form.tsx:202
 msgid "Merge into another tag"
 msgstr "Fusionar con otra etiqueta"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:90
+msgid "Merge matching transfers and refunds"
+msgstr "Unir transferencias y reembolsos coincidentes"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:75
+msgid "Merged {consolidated} of {foundPairsText}."
+msgstr "Se unieron {consolidated} de {foundPairsText}."
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
 msgid "Missing categories"
@@ -1642,6 +1664,10 @@ msgstr "No hay elementos para guardar"
 msgid "No languages found"
 msgstr "No se encontraron idiomas"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:55
+msgid "No matching expenses"
+msgstr "No hay gastos coincidentes"
+
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
 #: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
@@ -1671,7 +1697,7 @@ msgstr "Sin resultados"
 msgid "No Rules Yet"
 msgstr "Aún no hay reglas"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:48
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:65
 msgid "No source transactions"
 msgstr "No hay transacciones de origen"
 
@@ -1692,6 +1718,10 @@ msgstr "Ninguna etiqueta coincide con tu búsqueda"
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Tags Yet"
 msgstr "Aún no hay etiquetas"
+
+#: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx:44
+msgid "No title"
+msgstr "Sin título"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "No transactions yet"
@@ -1774,7 +1804,7 @@ msgstr "Organización"
 msgid "Original imported transactions will be restored and the consolidated transaction will be removed."
 msgstr "Las transacciones importadas originales serán restauradas y la transacción consolidada será eliminada."
 
-#: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx:36
+#: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx:25
 msgid "Original transaction"
 msgstr "Transacción original"
 
@@ -1948,6 +1978,14 @@ msgstr "Recurrentes"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Los pagos recurrentes aparecerán aquí cuando se detecten patrones en tus transacciones"
 
+#: src/transaction/service/transaction-refund.service.ts:81
+msgid "Refund amount cannot exceed the expense"
+msgstr "El importe del reembolso no puede superar el gasto"
+
+#: src/transaction/service/transaction-refund.service.ts:64
+msgid "Refund conversion starts from an income"
+msgstr "La conversión a reembolso empieza desde un ingreso"
+
 #: src/transaction/components/refunded-pill/refunded-pill.tsx:78
 msgid "Refunded"
 msgstr "Reembolsado"
@@ -1977,16 +2015,17 @@ msgstr "Restaurar desde un archivo de copia de seguridad"
 msgid "Resuming AI…"
 msgstr "Reanudando IA…"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:73
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:97
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:28
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 #: src/transaction/hook/use-revert-consolidation.hook.ts:18
 msgid "Revert"
-msgstr ""
+msgstr "Revertir"
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:16
 msgid "Revert consolidation?"
-msgstr ""
+msgstr "¿Revertir consolidación?"
 
 #: src/rule/constant/external-source.constant.ts:10
 msgid "Revolut"
@@ -2056,6 +2095,10 @@ msgstr "Buscar contactos..."
 #: src/app/currency-selector.tsx:61
 msgid "Search currencies..."
 msgstr "Buscar monedas..."
+
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:29
+msgid "Search expenses refunded by this income"
+msgstr "Buscar gastos reembolsados por este ingreso"
 
 #: src/app/icon-selector.tsx:106
 msgid "Search icons (e.g., money, travel, food)..."
@@ -2210,6 +2253,10 @@ msgstr "Seleccionar tipo"
 #: src/app/import-column-mapper.tsx:61
 msgid "Selected"
 msgstr "Seleccionado"
+
+#: src/transaction/service/transaction-refund.service.ts:73
+msgid "Selected transaction is already consolidated"
+msgstr "La transacción seleccionada ya está consolidada"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:115
 msgid "Sending {fromCode}"
@@ -2408,7 +2455,7 @@ msgstr "Esta cuenta se ocultará de tu vista principal y no se incluirá en los 
 msgid "This action cannot be undone."
 msgstr "Esta acción no se puede deshacer."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:49
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:66
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Esta transferencia consolidada no tiene movimientos de origen movidos."
 
@@ -2432,10 +2479,6 @@ msgstr "Esta semana"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Esto borrará todos los saldos de cuentas en caché y los recalculará a partir de tus transacciones. Esto puede tomar un momento."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:50
-msgid "This will consolidate {autoCandidateText}. {manualReviewCandidateText} will be logged for review only."
-msgstr "Esto consolidará {autoCandidateText}. Se registrarán solo para revisión: {manualReviewCandidateText}."
-
 #: src/app/convert-to-transfer.tsx:64
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Esto convertirá el gasto en una transferencia entre cuentas."
@@ -2444,13 +2487,21 @@ msgstr "Esto convertirá el gasto en una transferencia entre cuentas."
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Esto convertirá el ingreso en una transferencia entre cuentas."
 
+#: src/transaction/hooks/use-convert-to-refund-action.hook.ts:28
+msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
+msgstr "Esto vinculará el gasto seleccionado con este ingreso de reembolso. Puedes revertirlo desde la hoja de fuentes de reembolso."
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:50
+msgid "This will merge {autoCandidateText}. {manualReviewCandidateText} will be kept for review."
+msgstr "Esto unirá {autoCandidateText}. {manualReviewCandidateText} quedarán para revisar."
+
 #: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Esto restablecerá el historial de sincronización y volverá a sincronizar todas las transacciones de esta cuenta bancaria. Tus transacciones, etiquetas y categorías existentes se conservarán y se actualizarán con cualquier dato nuevo."
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:17
 msgid "This will restore the original transactions and remove the consolidated transaction."
-msgstr ""
+msgstr "Esto restaurará las transacciones originales y eliminará la transacción consolidada."
 
 #: src/@generic/constant/date-period.constant.ts:12
 msgid "This Year"
@@ -2511,6 +2562,8 @@ msgstr "La transacción debe tener una cuenta de destino"
 msgid "Transaction must have a source account"
 msgstr "La transacción debe tener una cuenta de origen"
 
+#: src/transaction/service/transaction-refund.service.ts:53
+#: src/transaction/service/transaction-refund.service.ts:77
 #: src/transaction/service/transaction-transfer.service.ts:117
 msgid "Transaction not found"
 msgstr "Transacción no encontrada"
@@ -2542,10 +2595,6 @@ msgstr "Transferencia desde cuenta"
 msgid "Transfer To Account"
 msgstr "Transferencia a cuenta"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:74
-msgid "Transfers consolidated"
-msgstr "Transferencias consolidadas"
-
 #: src/ai/service/ai-system-status.service.ts:233
 msgid "Translating {translationPending} of {total}{trailer}"
 msgstr "Traduciendo {translationPending} de {total}{trailer}"
@@ -2561,6 +2610,10 @@ msgstr "Traducción"
 #: src/ai/service/ai-translation-status.service.ts:55
 msgid "Translations ready"
 msgstr "Traducciones listas"
+
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:56
+msgid "Try a different merchant, amount, or date."
+msgstr "Prueba con otro comercio, importe o fecha."
 
 #: src/account/component/account-select-content/account-select-content.tsx:42
 #: src/app/contact-selector.tsx:40

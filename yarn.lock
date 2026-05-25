@@ -1309,6 +1309,7 @@ __metadata:
   dependencies:
     "@budgie/bank-sync": "workspace:*"
     "@budgie/contracts": "workspace:*"
+    "@rnw-community/shared": "npm:^2.0.0"
     "@types/better-sqlite3": "npm:^7.6.12"
     "@types/node": "npm:^22.0.0"
     better-sqlite3: "npm:^11.7.0"

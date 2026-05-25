@@ -6,19 +6,18 @@ import { TransactionListContextMenuSelector } from '../transaction-list-context-
 
 import type { TransactionListConvertMenuItemPropsInterface } from '../../interface/transaction-list-convert-menu-item-props.interface';
 
-export const TransactionListConvertMenuItem = ({ isVisible, onConvert }: TransactionListConvertMenuItemPropsInterface) => {
+export const TransactionListConvertMenuItem = ({ isVisible, isRefund, onConvert }: TransactionListConvertMenuItemPropsInterface) => {
     const { t } = useLingui();
 
     if (!isVisible) {
         return null;
     }
 
-    return (
-        <PopoverMenuItem
-            icon={UserIconNameEnum.ArrowRightLeft}
-            label={t`Convert to Transfer`}
-            onPress={onConvert}
-            testID={TransactionListContextMenuSelector.ConvertToTransferButton}
-        />
-    );
+    const icon = isRefund ? UserIconNameEnum.ReceiptText : UserIconNameEnum.ArrowRightLeft;
+    const label = isRefund ? t`Convert to Refund` : t`Convert to Transfer`;
+    const testID = isRefund
+        ? TransactionListContextMenuSelector.ConvertToRefundButton
+        : TransactionListContextMenuSelector.ConvertToTransferButton;
+
+    return <PopoverMenuItem icon={icon} label={label} onPress={onConvert} testID={testID} />;
 };
