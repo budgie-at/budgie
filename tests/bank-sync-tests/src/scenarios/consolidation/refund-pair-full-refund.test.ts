@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { DEFAULT_TRANSACTION_FILTER, PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
+import {
+    DEFAULT_TRANSACTION_FILTER,
+    LanguageEnum,
+    PRECISION,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 
 import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario } from '../../harness';
 
@@ -35,7 +41,9 @@ describe('consolidation/refund-pair-full-refund', () => {
         await transferConsolidationService.consolidate();
 
         const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).get();
-        const categoryRows = statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).all();
+        const categoryRows = statisticsRepository
+            .getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId, LanguageEnum.EN)
+            .all();
         const categoryAmount = categoryRows.find(row => row.category?.id === category.id)?.amount;
 
         expect([totals?.income, totals?.expense, categoryAmount]).toStrictEqual([0, 0, 0]);

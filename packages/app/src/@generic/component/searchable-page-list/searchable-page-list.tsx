@@ -1,4 +1,3 @@
-import { LegendList } from '@legendapp/list';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
@@ -7,17 +6,18 @@ import { isDefined } from '@rnw-community/shared';
 
 import {
     LEGEND_LIST_CONTENT_GAP,
-    LEGEND_LIST_ESTIMATED_ITEM_SIZE,
     LEGEND_LIST_HEADER_HEIGHT,
     LEGEND_LIST_STYLE,
     legendListKeyExtractor
 } from '../../constant/legend-list.constant';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
+import { BudgieLegendList } from '../budgie-legend-list/budgie-legend-list';
 import { DeletableRow } from '../deletable-row/deletable-row';
 
 import { SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM, SEARCHABLE_LIST_FOOTER_HEIGHT } from './searchable-page-list.constant';
 
+import type { LegendListSizingInterface } from '../../interface/legend-list-sizing.interface';
 import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 interface Props<T extends IdInterface> {
@@ -26,6 +26,7 @@ interface Props<T extends IdInterface> {
     renderCard: (item: T) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     children?: ReactNode;
+    sizing?: LegendListSizingInterface<T>;
 }
 
 const CONTENT_CONTAINER_STYLE = { gap: LEGEND_LIST_CONTENT_GAP, paddingBottom: SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM };
@@ -36,7 +37,14 @@ const FOOTER_SPACER_STYLE = { height: SEARCHABLE_LIST_FOOTER_HEIGHT };
 const listHeader = <View style={HEADER_SPACER_STYLE} />;
 const listFooter = <View style={FOOTER_SPACER_STYLE} />;
 
-export const SearchablePageList = <T extends IdInterface>({ data, onDelete, renderCard, getDeleteConfirmation, children }: Props<T>) => {
+export const SearchablePageList = <T extends IdInterface>({
+    data,
+    onDelete,
+    renderCard,
+    getDeleteConfirmation,
+    children,
+    sizing
+}: Props<T>) => {
     const [notify] = useVibration();
 
     const handleDeleteItem = async (id: number) => {
@@ -70,16 +78,16 @@ export const SearchablePageList = <T extends IdInterface>({ data, onDelete, rend
 
     return (
         <>
-            <LegendList
+            <BudgieLegendList
                 style={LEGEND_LIST_STYLE}
                 data={data}
                 contentContainerStyle={CONTENT_CONTAINER_STYLE}
                 ListHeaderComponent={listHeader}
+                estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
                 renderItem={renderItem}
                 keyExtractor={legendListKeyExtractor}
-                estimatedItemSize={LEGEND_LIST_ESTIMATED_ITEM_SIZE}
-                recycleItems
-                showsVerticalScrollIndicator={false}
+                estimatedItemSize={sizing?.estimatedItemSize}
+                getItemType={sizing?.getItemType}
                 keyboardShouldPersistTaps="handled"
                 ListFooterComponent={listFooter}
             />

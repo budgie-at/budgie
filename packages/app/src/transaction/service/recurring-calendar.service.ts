@@ -1,4 +1,4 @@
-import { MonthlyPatternRawRowInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { LanguageEnum, MonthlyPatternRawRowInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { getDaysInMonth } from 'date-fns';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -17,7 +17,8 @@ class RecurringCalendarService {
     async getMonthlyRecurringPayments(
         defaultInstrumentId: number,
         displayYear: number,
-        displayMonth: number
+        displayMonth: number,
+        language: LanguageEnum
     ): Promise<RecurringCalendarDataInterface> {
         const timezoneOffsetSeconds = new Date().getTimezoneOffset() * MINUTES_TO_SECONDS;
         const monthDate = new Date(displayYear, displayMonth);
@@ -30,9 +31,9 @@ class RecurringCalendarService {
             timezoneOffsetSeconds,
             displayMonth: displayMonthString
         };
-        const cacheKey = `monthly:${JSON.stringify(monthlyQuery)}`;
+        const cacheKey = `monthly:${language}:${JSON.stringify(monthlyQuery)}`;
         const patterns = await patternCacheService.memoizeMonthly(cacheKey, () =>
-            transactionPatternRepository.findMonthlyRecurringPatterns(monthlyQuery)
+            transactionPatternRepository.findMonthlyRecurringPatterns(monthlyQuery, language)
         );
 
         const now = new Date();

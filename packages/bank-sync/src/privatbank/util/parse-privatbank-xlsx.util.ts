@@ -44,6 +44,7 @@ const parsePrivatbankDate = (dateString: string): Date => {
 };
 
 const mapRawRowToPrivatbankRow = (row: unknown[]): PrivatbankRowInterface => ({
+    rawDate: String(row[PRIVATBANK_DATE_COLUMN_INDEX]),
     date: parsePrivatbankDate(String(row[PRIVATBANK_DATE_COLUMN_INDEX])),
     category: String(row[PRIVATBANK_CATEGORY_COLUMN_INDEX]),
     card: String(row[PRIVATBANK_CARD_COLUMN_INDEX]),

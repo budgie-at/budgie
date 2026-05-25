@@ -3,6 +3,75 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.24.1](https://github.com/budgie-at/budgie/compare/v5.24.0...v5.24.1) (2026-05-25)
+
+### Bug Fixes
+
+- match approximate cross-currency transfer receipts ([cd74644](https://github.com/budgie-at/budgie/commit/cd7464476e1d8957d498f0bf7c1abcb8d8f03f2a))
+
+# [5.24.0](https://github.com/budgie-at/budgie/compare/v5.23.1...v5.24.0) (2026-05-25)
+
+### Bug Fixes
+
+- **app:** address refund review feedback ([308e8cf](https://github.com/budgie-at/budgie/commit/308e8cfd324ec3dc4b189c0dba480292c9d09210))
+- **app:** avoid duplicate refund tags ([68b0b3a](https://github.com/budgie-at/budgie/commit/68b0b3a08aae4960db0ffec542ce6da21dd2f0c2))
+- **app:** generalize consolidation copy ([2d72de9](https://github.com/budgie-at/budgie/commit/2d72de90778be990c71be8c5410ca7612b7e466e))
+- **app:** keep transaction open after refund revert ([f2626a8](https://github.com/budgie-at/budgie/commit/f2626a8ee4410541fd610a0af0c78da02e3a9489))
+- **app:** polish refund actions ([c8dd535](https://github.com/budgie-at/budgie/commit/c8dd535a9d405cda6c35d0d71c2c4d8844fbd751))
+- **app:** restrict refund conversion to income ([ac9e3ac](https://github.com/budgie-at/budgie/commit/ac9e3acc5117bb50eb6167fe4aa9debaa2f061f1))
+- **app:** smooth refund picker search sheet ([cd86130](https://github.com/budgie-at/budgie/commit/cd861308b0a596cd07aa7a5e273aea866d8166ad))
+- **app:** stabilize income refund conversion ([f5f581e](https://github.com/budgie-at/budgie/commit/f5f581ef6572b6ac7c00264619a7d9e10b7a78fa))
+- **contracts:** recognize PrivatBank refund titles ([957b27b](https://github.com/budgie-at/budgie/commit/957b27b09c66260a30e2fe716df551ebaa394531))
+
+### Features
+
+- **app:** add manual refund conversion ([8ee5815](https://github.com/budgie-at/budgie/commit/8ee5815728508fcf213286c8098e9a42b95f38e1))
+
+## [5.23.1](https://github.com/budgie-at/budgie/compare/v5.23.0...v5.23.1) (2026-05-24)
+
+### Bug Fixes
+
+- **app:** allow nested historical transfer anchors ([d7f3f4c](https://github.com/budgie-at/budgie/commit/d7f3f4caeff07672bba9eead37c8707c0ed9b871))
+- **app:** consolidate historical transfer leftovers ([7e20e33](https://github.com/budgie-at/budgie/commit/7e20e3387da9fd8ac05d2578729b2ed74dc9a922))
+- **app:** coordinate consolidation workload ([33a19e1](https://github.com/budgie-at/budgie/commit/33a19e1db73ff9eaf8c3f3d24e97a8830a3eed2a))
+- **app:** harden consolidation eligibility ([4e84660](https://github.com/budgie-at/budgie/commit/4e846606fd5075b2f1cc2b001df4428e17071684))
+- **app:** restore historical transfer candidates ([55e5b1a](https://github.com/budgie-at/budgie/commit/55e5b1ae1a807861e21a38f7556307daae49f194))
+- speed up historical transfer consolidation ([badf789](https://github.com/budgie-at/budgie/commit/badf7899a37200f4c0c702b7301a64f0516a1fc0))
+
+# [5.23.0](https://github.com/budgie-at/budgie/compare/v5.22.7...v5.23.0) (2026-05-23)
+
+### Bug Fixes
+
+- **app:** widen categoriesMap value type so categoryId nullability flows ([8c33537](https://github.com/budgie-at/budgie/commit/8c335378059af63e87f989c40437832c7ac268b7))
+- localize default category titles across pattern queries and exports ([1618e17](https://github.com/budgie-at/budgie/commit/1618e1751ed4908e6a85c560592077c31955fb02))
+
+### Features
+
+- **app:** translate default category titles via id-keyed message map ([0605bd9](https://github.com/budgie-at/budgie/commit/0605bd9fa3370b21ea536b1133425271d30d0c79)), closes [#438](https://github.com/budgie-at/budgie/issues/438)
+
+### Reverts
+
+- **contracts:** drop LanguageEnum IT/PL/PT/NL expansion ([60d842e](https://github.com/budgie-at/budgie/commit/60d842e014091d5be4d9e088c20528c66121722f))
+
+## [5.22.7](https://github.com/budgie-at/budgie/compare/v5.22.6...v5.22.7) (2026-05-23)
+
+### Bug Fixes
+
+- **app:** centralize LegendList v3 defaults ([ad62226](https://github.com/budgie-at/budgie/commit/ad622262b573d9c25c62155b61e18bcff513ae03))
+- **app:** migrate LegendList to v3 beta ([88e295c](https://github.com/budgie-at/budgie/commit/88e295cad477c4074f7f7a202f073fde92bafe66))
+
+## [5.22.6](https://github.com/budgie-at/budgie/compare/v5.22.5...v5.22.6) (2026-05-23)
+
+### Bug Fixes
+
+- **app:** stabilize list item sizing ([2f7f24c](https://github.com/budgie-at/budgie/commit/2f7f24cf80fb28d54ca8de1a15dd125640950a6e))
+
+## [5.22.5](https://github.com/budgie-at/budgie/compare/v5.22.4...v5.22.5) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** keep generated rules SQL-pushable ([198229c](https://github.com/budgie-at/budgie/commit/198229ce50193f559bda8c23c245de63fbb4bfad))
+
 ## [5.22.4](https://github.com/budgie-at/budgie/compare/v5.22.3...v5.22.4) (2026-05-22)
 
 ### Bug Fixes

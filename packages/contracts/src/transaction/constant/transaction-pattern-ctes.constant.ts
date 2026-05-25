@@ -1,7 +1,7 @@
-// Params: tzOffset, tzOffset, type, entryType, recencyTimestamp
+// Params: tzOffset, tzOffset, language, type, entryType, recencyTimestamp
 export const PATTERN_GROUPS_CTE = `
     SELECT t.title, a.id AS account_id, a.instrument_id,
-           te.category_id, cat.title AS cat_title, cat.icon AS cat_icon,
+           te.category_id, COALESCE(dct.title, cat.title) AS cat_title, cat.icon AS cat_icon,
            mcc.short_description AS mcc_short_description,
            CAST(strftime('%d', t.operated_at + ?, 'unixepoch') AS INTEGER) AS day_of_month,
            strftime('%Y-%m', t.operated_at + ?, 'unixepoch') AS year_month,
@@ -10,6 +10,7 @@ export const PATTERN_GROUPS_CTE = `
     INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL AND te.original_transaction_id IS NULL
     INNER JOIN accounts a ON a.id = te.account_id
     LEFT JOIN categories cat ON cat.id = te.category_id
+    LEFT JOIN default_category_translations dct ON dct.category_id = cat.id AND dct.language = ?
     LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
     WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL AND t.consolidation_parent_transaction_id IS NULL
       AND a.type != 'DEBT' AND t.operated_at >= ? AND t.title != ''
@@ -55,16 +56,17 @@ export const PATTERN_FILTERED_CTE = `
       AND m.mode_day_count * ? >= oa.total_tx_count * ?
 `;
 
-// Params: type, entryType
+// Params: language, type, entryType
 export const PATTERN_ALL_TIME_CTE = `
     SELECT t.title, a.id AS account_id,
-           te.category_id, cat.title AS cat_title, cat.icon AS cat_icon,
+           te.category_id, COALESCE(dct.title, cat.title) AS cat_title, cat.icon AS cat_icon,
            mcc.short_description AS mcc_short_description,
            a.instrument_id, t.id AS tx_id, te.amount, t.operated_at
     FROM transactions t
     INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL AND te.original_transaction_id IS NULL
     INNER JOIN accounts a ON a.id = te.account_id
     LEFT JOIN categories cat ON cat.id = te.category_id
+    LEFT JOIN default_category_translations dct ON dct.category_id = cat.id AND dct.language = ?
     LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
     WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL AND t.consolidation_parent_transaction_id IS NULL
       AND a.type != 'DEBT' AND t.title != ''

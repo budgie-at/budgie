@@ -99,7 +99,8 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                 <FeaturePageProse>
                     <Trans>
                         Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a
-                        context menu. Edit, delete, split, or convert to a transfer without leaving the screen.
+                        context menu. Edit, delete, split, convert to a transfer, or link income back to a refunded expense without leaving
+                        the screen.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -116,7 +117,7 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                         <Trans>Three first-class transaction types: expense, income, transfer — never confused, never miscounted</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Long-press any row for context actions: edit, delete, split, convert to transfer</Trans>
+                        <Trans>Long-press any row for context actions: edit, delete, split, convert to transfer, convert to refund</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>MCC pre-fill on bank-synced transactions; AI category suggestion on manual entries</Trans>
@@ -153,8 +154,8 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     question={<Trans>Can I edit a transaction after saving?</Trans>}
                     answer={
                         <Trans>
-                            Always. Long-press the row in the list for a context menu with Edit, Delete, Split, and Convert to Transfer
-                            actions.
+                            Always. Long-press the row in the list for a context menu with Edit, Delete, Split, Convert to Transfer, and
+                            Convert to Refund actions when they apply.
                         </Trans>
                     }
                 />

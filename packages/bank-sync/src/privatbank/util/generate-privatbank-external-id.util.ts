@@ -38,7 +38,17 @@ const fnv1aHash = (input: string): string => {
 /* eslint-enable no-bitwise, no-plusplus, max-statements */
 
 export const generatePrivatbankExternalId = (input: PrivatbankExternalIdInputInterface): string =>
-    fnv1aHash(`${input.date.toISOString()}|${input.card}|${input.cardAmount}|${input.operationAmount}|${input.description}`).slice(
-        0,
-        PRIVATBANK_EXTERNAL_ID_LENGTH
-    );
+    fnv1aHash(
+        [
+            input.rawDate,
+            input.card,
+            input.category,
+            input.description,
+            input.cardAmount,
+            input.cardCurrency,
+            input.operationAmount,
+            input.operationCurrency,
+            input.endBalance,
+            input.balanceCurrency
+        ].join('|')
+    ).slice(0, PRIVATBANK_EXTERNAL_ID_LENGTH);

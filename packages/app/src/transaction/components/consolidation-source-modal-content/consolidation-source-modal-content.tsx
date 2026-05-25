@@ -2,7 +2,7 @@ import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/cont
 import { t } from '@lingui/core/macro';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
@@ -16,6 +16,8 @@ import { ConsolidationSourceModalSelector } from './consolidation-source-modal-c
 
 import type { ConsolidationSourceModalContentPropsInterface } from '../../interface/consolidation-source-modal-content-props.interface';
 
+const COMPACT_SOURCE_LIST_LIMIT = 2;
+
 export const ConsolidationSourceModalContent = ({
     transactionId,
     onClose,
@@ -24,15 +26,30 @@ export const ConsolidationSourceModalContent = ({
     const { sources, consolidationType, hasError, isLoading } = useGetConsolidationSourcesQuery(transactionId);
     const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
 
-    const headerTitle = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Refunds` : t`Source transactions`;
-
+    const isRefund = consolidationType === TransactionConsolidationTypeEnum.REFUND;
     const hasSources = isNotEmptyArray(sources);
     const showEmptyState = isEmptyArray(sources) && !isLoading && !hasError;
     const showRevert = isDefined(consolidationType);
+    const useCompactSourceList = sources.length <= COMPACT_SOURCE_LIST_LIMIT;
+    const useFlexibleContainer = isLoading || showEmptyState || (hasSources && !useCompactSourceList);
+    const containerClassName = useFlexibleContainer ? 'flex-1' : '';
+    const sourceListContentClassName = isRefund ? 'px-xl pt-3xl pb-2xl' : 'px-xl pt-xl pb-2xl';
+    const footerClassName = showRevert ? 'flex-row gap-x-md' : '';
+    const sourceRows = sources.map((source, index) => (
+        <View key={source.entryId}>
+            {isPositiveNumber(index) ? <ListItemSeparator /> : null}
+            <ConsolidationSourceRow
+                source={source}
+                index={index}
+                consolidationType={consolidationType}
+                testID={ConsolidationSourceModalSelector.Row(index)}
+            />
+        </View>
+    ));
 
     return (
-        <View className="flex-1">
-            <FormsheetHeader size="md" title={headerTitle} />
+        <View className={containerClassName}>
+            {isRefund ? null : <FormsheetHeader size="md" title={t`Source transactions`} />}
 
             {hasError ? (
                 <Text className="px-xl pb-md pt-xl text-sm text-destructive-foreground">
@@ -47,50 +64,50 @@ export const ConsolidationSourceModalContent = ({
             ) : null}
 
             {showEmptyState ? (
-                <View className="flex-1 items-center justify-center">
-                    <EmptyState
-                        circleIcon={UserIconNameEnum.GitMerge}
-                        title={t`No source transactions`}
-                        description={t`This consolidated transfer has no moved source entries.`}
-                    />
-                </View>
+                <EmptyState
+                    circleIcon={UserIconNameEnum.GitMerge}
+                    title={t`No source transactions`}
+                    description={t`This consolidated transfer has no moved source entries.`}
+                    className="flex-1 px-xl"
+                />
             ) : null}
 
-            {hasSources ? (
+            {hasSources && useCompactSourceList ? <View className={sourceListContentClassName}>{sourceRows}</View> : null}
+
+            {hasSources && !useCompactSourceList ? (
                 <ScrollView
                     className="flex-1"
-                    contentContainerClassName="px-xl pt-xl pb-xl"
+                    contentContainerClassName={sourceListContentClassName}
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
-                    {sources.map((source, index) => (
-                        <View key={source.entryId}>
-                            {index > 0 ? <ListItemSeparator /> : null}
-                            <ConsolidationSourceRow source={source} index={index} testID={ConsolidationSourceModalSelector.Row(index)} />
-                        </View>
-                    ))}
+                    {sourceRows}
                 </ScrollView>
             ) : null}
 
-            <View className="px-xl pb-xl gap-y-md">
-                {showRevert ? (
+            <View className="px-xl pb-xl">
+                <View className={footerClassName}>
                     <Button
-                        content={t`Revert`}
-                        variant="destructive"
+                        content={t`Done`}
+                        variant="secondary"
                         size="md"
-                        leftIcon={UserIconNameEnum.Undo2}
-                        onPress={revertConsolidation}
-                        testID={ConsolidationSourceModalSelector.RevertButton}
+                        onPress={onClose}
+                        testID={ConsolidationSourceModalSelector.DoneButton}
+                        className="flex-1"
                     />
-                ) : null}
 
-                <Button
-                    content={t`Done`}
-                    variant="secondary"
-                    size="md"
-                    onPress={onClose}
-                    testID={ConsolidationSourceModalSelector.DoneButton}
-                />
+                    {showRevert ? (
+                        <Button
+                            content={t`Revert`}
+                            variant="destructive"
+                            size="md"
+                            leftIcon={UserIconNameEnum.Undo2}
+                            onPress={revertConsolidation}
+                            testID={ConsolidationSourceModalSelector.RevertButton}
+                            className="flex-1"
+                        />
+                    ) : null}
+                </View>
             </View>
         </View>
     );

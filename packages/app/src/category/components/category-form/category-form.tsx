@@ -16,6 +16,7 @@ import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
@@ -44,6 +45,7 @@ interface Props {
 export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
+    const language = useSetting('language');
     const [openCategorySelector] = useCategorySelectorModal();
     const [openNoteInput] = useNoteInputModal();
     const [openIconSelector] = useIconSelectorModal();
@@ -113,7 +115,7 @@ export const CategoryForm = (props: Props) => {
         }
 
         try {
-            const targetCategory = await categoryRepository.findById(targetCategoryId);
+            const [targetCategory] = await categoryRepository.findById(targetCategoryId, language);
             await categoryService.mergeInto(category.id, targetCategoryId);
 
             if (isDefined(targetCategory)) {
@@ -135,11 +137,10 @@ export const CategoryForm = (props: Props) => {
     };
 
     const handleEditSubmit = async (categoryId: number, values: CategoryCreateEntityInterface): Promise<void> => {
-        const updatedCategory = await categoryRepository.updateById(categoryId, values);
+        await categoryRepository.updateById(categoryId, values);
         await saveCategoryTranslation(categoryId);
 
-        const translatedCategory = await categoryRepository.findById(categoryId);
-        const savedCategory = translatedCategory ?? updatedCategory;
+        const [savedCategory] = await categoryRepository.findById(categoryId, language);
 
         onSuccess({ category: savedCategory, action: 'updated' });
     };

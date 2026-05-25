@@ -1,5 +1,4 @@
 import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { LegendList } from '@legendapp/list';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { ReactElement } from 'react';
@@ -7,17 +6,14 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SearchablePageEmptyState } from '../../../@generic/component/searchagle-page-empty-state/searchagle-page-empty-state';
-import {
-    LEGEND_LIST_CONTENT_GAP,
-    LEGEND_LIST_ESTIMATED_ITEM_SIZE,
-    LEGEND_LIST_HEADER_HEIGHT,
-    LEGEND_LIST_STYLE
-} from '../../../@generic/constant/legend-list.constant';
+import { LEGEND_LIST_CONTENT_GAP, LEGEND_LIST_HEADER_HEIGHT, LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
+import { RULES_LIST_SIZING } from '../../constant/rules-list-sizing.constant';
 import { useRulesListPageActions } from '../../hooks/use-rules-list-page-actions.hook';
 import { RulesPageSelector } from '../../selector/rules-page.selector';
 import { RuleCard } from '../rule-card/rule-card';
@@ -71,16 +67,15 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: RulesListPageP
     return (
         <Page testID={RulesPageSelector.Page} header={<PageHeader onGoBack={onGoBack} title={t`Rules`} />} withBlur>
             {isNotEmptyArray(visibleRules) ? (
-                <LegendList
+                <BudgieLegendList
                     style={LEGEND_LIST_STYLE}
                     contentContainerStyle={CONTENT_CONTAINER_STYLE}
                     ListHeaderComponent={listHeaderComponent}
+                    estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
                     data={visibleRules}
                     renderItem={renderItem}
                     keyExtractor={getKeyExtractor}
-                    estimatedItemSize={LEGEND_LIST_ESTIMATED_ITEM_SIZE}
-                    recycleItems
-                    showsVerticalScrollIndicator={false}
+                    estimatedItemSize={RULES_LIST_SIZING.estimatedItemSize}
                     ListFooterComponent={listFooter}
                 />
             ) : (
