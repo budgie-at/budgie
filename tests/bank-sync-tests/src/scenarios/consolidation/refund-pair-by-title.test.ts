@@ -1,17 +1,50 @@
 import { describe, expect, it } from 'vitest';
+import { eq } from 'drizzle-orm';
 
-import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import {
+    PRECISION,
+    TagEntityTable,
+    TransactionConsolidationTypeEnum,
+    TransactionTagsEntityTable,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
-import { fetchTransactionById, runRefundScenario, seed, seedRefundedExpense } from '../../harness';
+import { fetchTransactionById, runRefundScenario, seed, seedRefundedExpense, testDb } from '../../harness';
+import { insertOne } from '../../harness/db/insert-one';
 
+import { refundPairRepository } from '@app/@generic/drizzle/db/db';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { transactionRefundService } from '@app/transaction/service/transaction-refund.service';
 
 describe('consolidation/refund-pair-by-title', () => {
-    it('promotes the original expense in place when title matches exactly within 30 days', async () => {
-        const { expense, refunds, result } = await runRefundScenario({
-            expenseAmount: 120 * PRECISION,
-            refundAmounts: [120 * PRECISION]
-        });
+    it.each([
+        {
+            name: 'title matches exactly within 30 days',
+            scenario: { expenseAmount: 120 * PRECISION, refundAmounts: [120 * PRECISION] },
+            checksParent: true
+        },
+        {
+            name: 'a localized cancellation prefix leaves the same title',
+            scenario: {
+                expenseAmount: 898 * PRECISION,
+                refundAmounts: [898 * PRECISION],
+                title: 'Lime',
+                refundTitle: 'Скасування. Lime'
+            },
+            checksParent: false
+        },
+        {
+            name: 'a PrivatBank refund prefix leaves the same title',
+            scenario: {
+                expenseAmount: 85 * PRECISION,
+                refundAmounts: [85 * PRECISION],
+                title: 'Послуги',
+                refundTitle: 'ПОВЕРНЕННЯ КОШТІВ, Послуги'
+            },
+            checksParent: false
+        }
+    ])('promotes the original expense when $name', async ({ scenario, checksParent }) => {
+        const { expense, refunds, result } = await runRefundScenario(scenario);
 
         expect(result.consolidated).toBe(1);
 
@@ -20,7 +53,112 @@ describe('consolidation/refund-pair-by-title', () => {
 
         const promotedExpense = fetchTransactionById(expense.id);
         expect(promotedExpense.consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(promotedExpense.consolidationParentTransactionId).toBeNull();
+
+        if (checksParent) {
+            expect(promotedExpense.consolidationParentTransactionId).toBeNull();
+        }
+    });
+
+    it('ranks a localized refund prefix as a single automatic refund candidate', async () => {
+        const account = seed.account({ externalId: 'mono-card' });
+        const { expense, refunds } = seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: 898 * PRECISION,
+            refundAmounts: [898 * PRECISION],
+            title: 'Lime',
+            refundTitle: 'Скасування. Lime'
+        });
+
+        const candidates = await refundPairRepository.findCandidates();
+
+        expect(candidates).toEqual([
+            {
+                confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
+                matchType: 'localized-refund-title',
+                accountId: account.id,
+                expenseTransactionId: expense.id,
+                expenseEntryAmount: 898 * PRECISION,
+                refundIncomeTransactionIds: [refunds[0].id],
+                refundsTotal: 898 * PRECISION
+            }
+        ]);
+    });
+
+    it('ranks a PrivatBank refund prefix as a single automatic refund candidate', async () => {
+        const account = seed.account({ externalId: 'privat-card' });
+        const { expense, refunds } = seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: 85 * PRECISION,
+            refundAmounts: [85 * PRECISION],
+            title: 'Послуги',
+            refundTitle: 'ПОВЕРНЕННЯ КОШТІВ, Послуги'
+        });
+
+        const candidates = await refundPairRepository.findCandidates();
+        const incomeCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '');
+
+        expect(candidates).toEqual([
+            {
+                confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
+                matchType: 'localized-refund-title',
+                accountId: account.id,
+                expenseTransactionId: expense.id,
+                expenseEntryAmount: 85 * PRECISION,
+                refundIncomeTransactionIds: [refunds[0].id],
+                refundsTotal: 85 * PRECISION
+            }
+        ]);
+        expect(incomeCandidates).toMatchObject([{ id: expense.id, isRecommended: true }]);
+    });
+
+    it('finds manual refund candidates only from refund income transactions', async () => {
+        const account = seed.account({ externalId: 'mono-card' });
+        const { expense, refunds } = seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [40 * PRECISION],
+            title: 'Apple Store',
+            refundTitle: 'Apple Store refund'
+        });
+
+        const incomeCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '');
+        const expenseCandidates = await refundPairRepository.findRefundableExpenseCandidates(expense.id, '');
+
+        expect(incomeCandidates).toMatchObject([{ id: expense.id, type: TransactionTypeEnum.EXPENSE }]);
+        expect(expenseCandidates).toEqual([]);
+    });
+
+    it('manually converts when the income and expense already share a tag', async () => {
+        const account = seed.account({ externalId: 'mono-card' });
+        const { expense, refunds } = seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [40 * PRECISION]
+        });
+        const tag = insertOne(TagEntityTable, {
+            title: 'Shared',
+            titleSearch: 'shared',
+            titleEn: null,
+            titleTags: null,
+            tagsGeneratedAt: null
+        });
+
+        insertOne(TransactionTagsEntityTable, { transactionId: expense.id, tagId: tag.id, isPrimary: false });
+        insertOne(TransactionTagsEntityTable, { transactionId: refunds[0].id, tagId: tag.id, isPrimary: false });
+
+        const canonicalTransactionId = await transactionRefundService.convertToRefund({
+            refundIncomeTransactionId: refunds[0].id,
+            expenseTransactionId: expense.id
+        });
+        const canonicalTags = testDb
+            .select()
+            .from(TransactionTagsEntityTable)
+            .where(eq(TransactionTagsEntityTable.transactionId, expense.id))
+            .all();
+
+        expect(canonicalTransactionId).toBe(expense.id);
+        expect(fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+        expect(canonicalTags).toHaveLength(1);
     });
 
     it('does NOT consolidate when titles differ', async () => {
