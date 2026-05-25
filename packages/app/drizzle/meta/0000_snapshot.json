@@ -564,7 +564,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": true
+          "default": false
         }
       },
       "indexes": {},

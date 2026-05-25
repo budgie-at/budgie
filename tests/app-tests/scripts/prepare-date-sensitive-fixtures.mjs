@@ -348,16 +348,19 @@ const generateRefundConsolidationFixture = () => {
     const tAmbiguousFirstExpense = now - 15 * 60;
     const tAmbiguousSecondExpense = now - 14 * 60;
     const tAmbiguousRefund = now - 13 * 60;
+    const tLocalizedExpense = now - 2 * 60;
+    const tLocalizedRefund = now - 1 * 60;
 
     const uahId = 33;
 
     const u30 = 30_000_000;
     const u40 = 40_000_000;
     const u55 = 55_000_000;
+    const u18 = 18_000_000;
     const u120 = 120_000_000;
     const u1000 = 1_000_000_000;
 
-    const balance = u1000 - u120 + u40 - u55 + u55 - u30 - u30 + u30;
+    const balance = u1000 - u120 + u40 - u55 + u55 - u30 - u30 + u30 - u18 + u18;
 
     backupFixture(sourcePath, targetPath);
 
@@ -391,7 +394,9 @@ const generateRefundConsolidationFixture = () => {
             (5, ${tFullRefund},              ${tFullRefund},              'INCOME',     'E2E Refund Full',      '', ${tFullRefund},              1.0, NULL, 1,    'MONOBANK', 'e2e-refund-full-income'),
             (6, ${tAmbiguousFirstExpense},   ${tAmbiguousFirstExpense},   'EXPENSE',    'E2E Refund Ambiguous', '', ${tAmbiguousFirstExpense},   1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-ambiguous-expense-first'),
             (7, ${tAmbiguousSecondExpense},  ${tAmbiguousSecondExpense},  'EXPENSE',    'E2E Refund Ambiguous', '', ${tAmbiguousSecondExpense},  1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-ambiguous-expense-second'),
-            (8, ${tAmbiguousRefund},         ${tAmbiguousRefund},         'INCOME',     'E2E Refund Ambiguous', '', ${tAmbiguousRefund},         1.0, NULL, 1,    'MONOBANK', 'e2e-refund-ambiguous-income');
+            (8, ${tAmbiguousRefund},         ${tAmbiguousRefund},         'INCOME',     'E2E Refund Ambiguous', '', ${tAmbiguousRefund},         1.0, NULL, 1,    'MONOBANK', 'e2e-refund-ambiguous-income'),
+            (9, ${tLocalizedExpense},        ${tLocalizedExpense},        'EXPENSE',    'E2E Refund Localized', '', ${tLocalizedExpense},        1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-localized-expense'),
+            (10, ${tLocalizedRefund},        ${tLocalizedRefund},        'INCOME',     'Скасування. E2E Refund Localized', '', ${tLocalizedRefund}, 1.0, NULL, 1,    'MONOBANK', 'e2e-refund-localized-income');
 
         INSERT INTO transaction_entries (transaction_id, account_id, type, amount, external_id, category_id, mcc_category_id, created_at, updated_at)
         VALUES
@@ -402,7 +407,9 @@ const generateRefundConsolidationFixture = () => {
             (5, 1, 'DEBIT',  ${u55},   'e2e-refund-full-income',      13,   NULL, ${tFullRefund},             ${tFullRefund}),
             (6, 1, 'CREDIT', ${u30},   'e2e-refund-ambiguous-first',  NULL, NULL, ${tAmbiguousFirstExpense},  ${tAmbiguousFirstExpense}),
             (7, 1, 'CREDIT', ${u30},   'e2e-refund-ambiguous-second', NULL, NULL, ${tAmbiguousSecondExpense}, ${tAmbiguousSecondExpense}),
-            (8, 1, 'DEBIT',  ${u30},   'e2e-refund-ambiguous-income', NULL, NULL, ${tAmbiguousRefund},        ${tAmbiguousRefund});
+            (8, 1, 'DEBIT',  ${u30},   'e2e-refund-ambiguous-income', NULL, NULL, ${tAmbiguousRefund},        ${tAmbiguousRefund}),
+            (9, 1, 'CREDIT', ${u18},   'e2e-refund-localized-expense', 12,   NULL, ${tLocalizedExpense},       ${tLocalizedExpense}),
+            (10, 1, 'DEBIT', ${u18},   'e2e-refund-localized-income',  12,   NULL, ${tLocalizedRefund},        ${tLocalizedRefund});
 
         INSERT INTO account_balances (account_id, amount, created_at, updated_at)
         VALUES
