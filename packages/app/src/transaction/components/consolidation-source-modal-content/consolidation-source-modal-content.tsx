@@ -1,4 +1,4 @@
-import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
@@ -6,7 +6,6 @@ import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared'
 
 import { Button } from '../../../@generic/component/button/button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
@@ -24,16 +23,12 @@ export const ConsolidationSourceModalContent = ({
     const { sources, consolidationType, hasError, isLoading } = useGetConsolidationSourcesQuery(transactionId);
     const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
 
-    const headerTitle = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Refunds` : t`Source transactions`;
-
     const hasSources = isNotEmptyArray(sources);
     const showEmptyState = isEmptyArray(sources) && !isLoading && !hasError;
     const showRevert = isDefined(consolidationType);
 
     return (
-        <View className="flex-1">
-            <FormsheetHeader size="md" title={headerTitle} />
-
+        <View className="flex-1 pt-3xl">
             {hasError ? (
                 <Text className="px-xl pb-md pt-xl text-sm text-destructive-foreground">
                     {t`Could not load sources. Please try again.`}
