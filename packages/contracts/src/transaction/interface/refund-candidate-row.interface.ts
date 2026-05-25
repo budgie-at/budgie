@@ -1,7 +1,8 @@
-export interface RefundCandidateRowInterface {
-    readonly accountId: number;
-    readonly expenseTransactionId: number;
-    readonly expenseEntryAmount: number;
-    readonly refundIncomeTransactionIds: string;
-    readonly refundsTotal: number;
+import type { RefundAutoConfidenceBucket } from './refund-auto-confidence-bucket.type';
+import type { RefundCandidateBaseRowInterface } from './refund-candidate-base-row.interface';
+import type { RefundCandidateInterface } from './refund-candidate.interface';
+
+export interface RefundCandidateRowInterface extends RefundCandidateBaseRowInterface {
+    readonly confidenceBucket: RefundAutoConfidenceBucket;
+    readonly matchType: RefundCandidateInterface['matchType'];
 }
