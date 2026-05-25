@@ -1,159 +1,80 @@
-import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
-import { REFUND_TIME_WINDOW_SECONDS } from '../constant/refund-time-window.constant';
-import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import { REFUND_AUTO_CANDIDATES_SQL, REFUND_REVIEW_CANDIDATES_SQL } from './sql-factory/refund-ranked-candidate-sql.factory';
+import {
+    REFUNDABLE_EXPENSE_CANDIDATES_SQL,
+    buildRefundableExpenseCandidateParams
+} from './sql-factory/refundable-expense-candidate-sql.factory';
 
 import type { DB } from '../../@generic/type/db.type';
+import type { RefundCandidateBaseRowInterface } from '../interface/refund-candidate-base-row.interface';
+import type { RefundCandidateBaseInterface } from '../interface/refund-candidate-base.interface';
 import type { RefundCandidateRowInterface } from '../interface/refund-candidate-row.interface';
 import type { RefundCandidateInterface } from '../interface/refund-candidate.interface';
 import type { RefundReviewCandidateRowInterface } from '../interface/refund-review-candidate-row.interface';
 import type { RefundReviewCandidateInterface } from '../interface/refund-review-candidate.interface';
-
-const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
-const TITLE_PREFIXES = ['REFUND', 'RETURN', 'REVERSAL', 'CHARGEBACK', 'CR '] as const;
+import type { RefundableExpenseCandidateRowInterface } from '../interface/refundable-expense-candidate-row.interface';
+import type { RefundableExpenseCandidateInterface } from '../interface/refundable-expense-candidate.interface';
 
 export class RefundPairRepository {
     constructor(private db: DB) {}
 
     async findCandidates(): Promise<RefundCandidateInterface[]> {
-        const sql = this.buildAutoBucketSql();
-        const rows = await this.db.$client.getAllAsync<RefundCandidateRowInterface>(sql);
+        const rows = await this.db.$client.getAllAsync<RefundCandidateRowInterface>(REFUND_AUTO_CANDIDATES_SQL);
 
-        return rows.map(row => this.mapRow(row));
+        return rows.map(row => ({
+            ...this.mapCandidateBaseRow(row),
+            confidenceBucket: row.confidenceBucket,
+            matchType: row.matchType
+        }));
     }
 
     async findReviewCandidates(): Promise<RefundReviewCandidateInterface[]> {
-        const sql = this.buildReviewBucketSql();
-        const rows = await this.db.$client.getAllAsync<RefundReviewCandidateRowInterface>(sql);
+        const rows = await this.db.$client.getAllAsync<RefundReviewCandidateRowInterface>(REFUND_REVIEW_CANDIDATES_SQL);
 
-        return rows.map(row => this.mapRow(row));
+        return rows.map(row => ({
+            ...this.mapCandidateBaseRow(row),
+            confidenceBucket: row.confidenceBucket,
+            matchType: row.matchType
+        }));
     }
 
-    private buildAutoBucketSql(): string {
-        return `
-            WITH candidate_pairs AS (
-                SELECT
-                    expense_tx.id AS expenseTxId,
-                    expense_entry.account_id AS accountId,
-                    expense_entry.amount AS expenseAmount,
-                    income_tx.id AS refundTxId,
-                    income_entry.amount AS refundAmount
-                FROM transactions income_tx INDEXED BY transactions_visible_type_operated_idx
-                INNER JOIN transaction_entries income_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
-                    ON income_entry.transaction_id = income_tx.id
-                    AND income_entry.deleted_at IS NULL
-                    AND income_entry.original_transaction_id IS NULL
-                    AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
-                    AND income_entry.amount > 0
-                CROSS JOIN transactions expense_tx INDEXED BY transactions_visible_type_operated_idx
-                INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
-                    ON expense_entry.transaction_id = expense_tx.id
-                    AND expense_entry.deleted_at IS NULL
-                    AND expense_entry.original_transaction_id IS NULL
-                    AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
-                    AND expense_entry.account_id = income_entry.account_id
-                    AND expense_entry.amount > 0
-                WHERE income_tx.deleted_at IS NULL
-                    AND income_tx.consolidation_parent_transaction_id IS NULL
-                    AND income_tx.type = '${TransactionTypeEnum.INCOME}'
-                    AND expense_tx.deleted_at IS NULL
-                    AND expense_tx.consolidation_parent_transaction_id IS NULL
-                    AND expense_tx.consolidation_type IS NULL
-                    AND expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
-                    AND expense_tx.operated_at >= income_tx.operated_at - ${REFUND_TIME_WINDOW_SECONDS}
-                    AND expense_tx.operated_at < income_tx.operated_at
-                    AND UPPER(TRIM(expense_tx.title)) = UPPER(TRIM(income_tx.title))
-            ),
-            unambiguous_refunds AS (
-                SELECT refundTxId
-                FROM candidate_pairs
-                GROUP BY refundTxId
-                HAVING COUNT(DISTINCT expenseTxId) = 1
-            )
-            SELECT
-                candidate_pairs.expenseTxId AS expenseTransactionId,
-                candidate_pairs.accountId AS accountId,
-                candidate_pairs.expenseAmount AS expenseEntryAmount,
-                SUM(candidate_pairs.refundAmount) AS refundsTotal,
-                GROUP_CONCAT(candidate_pairs.refundTxId, ',' ORDER BY candidate_pairs.refundTxId) AS refundIncomeTransactionIds
-            FROM candidate_pairs
-            INNER JOIN unambiguous_refunds
-                ON unambiguous_refunds.refundTxId = candidate_pairs.refundTxId
-            GROUP BY candidate_pairs.expenseTxId
-            HAVING SUM(candidate_pairs.refundAmount) <= candidate_pairs.expenseAmount
-        `;
+    async findRefundableExpenseCandidates(
+        refundIncomeTransactionId: number,
+        search: string
+    ): Promise<RefundableExpenseCandidateInterface[]> {
+        const searchPattern = `%${search.trim().toLowerCase()}%`;
+        const rows = await this.db.$client.getAllAsync<RefundableExpenseCandidateRowInterface>(
+            REFUNDABLE_EXPENSE_CANDIDATES_SQL,
+            buildRefundableExpenseCandidateParams(refundIncomeTransactionId, searchPattern)
+        );
+
+        return rows.map(row => this.mapRefundableExpenseCandidateRow(row));
     }
 
-    private buildReviewBucketSql(): string {
-        const stripPrefixesExp = this.buildStripPrefixesSql('UPPER(TRIM(expense_tx.title))');
-        const stripPrefixesInc = this.buildStripPrefixesSql('UPPER(TRIM(income_tx.title))');
-
-        return `
-            WITH candidate_pairs AS (
-                SELECT
-                    expense_tx.id AS expenseTxId,
-                    expense_entry.account_id AS accountId,
-                    expense_entry.amount AS expenseAmount,
-                    income_tx.id AS refundTxId,
-                    income_entry.amount AS refundAmount
-                FROM transactions income_tx INDEXED BY transactions_visible_type_operated_idx
-                INNER JOIN transaction_entries income_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
-                    ON income_entry.transaction_id = income_tx.id
-                    AND income_entry.deleted_at IS NULL
-                    AND income_entry.original_transaction_id IS NULL
-                    AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
-                    AND income_entry.amount > 0
-                CROSS JOIN transactions expense_tx INDEXED BY transactions_visible_type_operated_idx
-                INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
-                    ON expense_entry.transaction_id = expense_tx.id
-                    AND expense_entry.deleted_at IS NULL
-                    AND expense_entry.original_transaction_id IS NULL
-                    AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
-                    AND expense_entry.account_id = income_entry.account_id
-                    AND expense_entry.mcc_category_id = income_entry.mcc_category_id
-                    AND expense_entry.amount > 0
-                WHERE income_tx.deleted_at IS NULL
-                    AND income_tx.consolidation_parent_transaction_id IS NULL
-                    AND income_tx.type = '${TransactionTypeEnum.INCOME}'
-                    AND expense_tx.deleted_at IS NULL
-                    AND expense_tx.consolidation_parent_transaction_id IS NULL
-                    AND expense_tx.consolidation_type IS NULL
-                    AND expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
-                    AND expense_tx.operated_at >= income_tx.operated_at - ${MANUAL_REVIEW_TIME_WINDOW_SECONDS}
-                    AND expense_tx.operated_at < income_tx.operated_at
-                    AND ${stripPrefixesInc} != ''
-                    AND ${stripPrefixesExp} != ''
-                    AND (
-                        UPPER(TRIM(income_tx.title)) LIKE '%' || ${stripPrefixesExp} || '%'
-                        OR UPPER(TRIM(expense_tx.title)) LIKE '%' || ${stripPrefixesInc} || '%'
-                    )
-                    AND NOT (
-                        UPPER(TRIM(income_tx.title)) = UPPER(TRIM(expense_tx.title))
-                        AND expense_tx.operated_at >= income_tx.operated_at - ${REFUND_TIME_WINDOW_SECONDS}
-                    )
-            )
-            SELECT
-                expenseTxId AS expenseTransactionId,
-                accountId AS accountId,
-                expenseAmount AS expenseEntryAmount,
-                SUM(refundAmount) AS refundsTotal,
-                GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
-            FROM candidate_pairs
-            GROUP BY expenseTxId
-            HAVING SUM(refundAmount) <= expenseAmount
-        `;
-    }
-
-    private buildStripPrefixesSql(seedExpression: string): string {
-        return `TRIM(${TITLE_PREFIXES.reduce((acc, prefix) => `REPLACE(${acc}, '${prefix}', '')`, seedExpression)})`;
-    }
-
-    private mapRow(row: RefundCandidateRowInterface): RefundCandidateInterface {
+    private mapCandidateBaseRow(row: RefundCandidateBaseRowInterface): RefundCandidateBaseInterface {
         return {
             accountId: row.accountId,
             expenseTransactionId: row.expenseTransactionId,
             expenseEntryAmount: row.expenseEntryAmount,
             refundIncomeTransactionIds: row.refundIncomeTransactionIds.split(',').map(item => Number(item)),
             refundsTotal: row.refundsTotal
+        };
+    }
+
+    private mapRefundableExpenseCandidateRow(row: RefundableExpenseCandidateRowInterface): RefundableExpenseCandidateInterface {
+        return {
+            id: row.id,
+            type: row.type,
+            title: row.title,
+            comment: row.comment,
+            operatedAt: new Date(row.operatedAtMs),
+            amount: row.amount,
+            accountTitle: row.accountTitle,
+            currencyCode: row.currencyCode,
+            currencySymbol: row.currencySymbol,
+            categoryTitle: row.categoryTitle,
+            categoryTitleEn: row.categoryTitleEn,
+            categoryIcon: row.categoryIcon,
+            isRecommended: row.isRecommended === 1
         };
     }
 }
