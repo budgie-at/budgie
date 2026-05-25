@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.24.0](https://github.com/budgie-at/budgie/compare/v5.23.1...v5.24.0) (2026-05-25)
+
+### Bug Fixes
+
+- **app:** restrict refund conversion to income ([ac9e3ac](https://github.com/budgie-at/budgie/commit/ac9e3acc5117bb50eb6167fe4aa9debaa2f061f1))
+- **app:** stabilize income refund conversion ([f5f581e](https://github.com/budgie-at/budgie/commit/f5f581ef6572b6ac7c00264619a7d9e10b7a78fa))
+- **contracts:** allow cross-account refund review matches ([3e655d7](https://github.com/budgie-at/budgie/commit/3e655d756c35a516a6caf25e41f3ac971fe76dbc))
+- **contracts:** recognize PrivatBank refund titles ([957b27b](https://github.com/budgie-at/budgie/commit/957b27b09c66260a30e2fe716df551ebaa394531))
+- **contracts:** recommend location-suffixed refund titles ([9ab5070](https://github.com/budgie-at/budgie/commit/9ab5070a2f0f65570a74cadfc7b48268d4e123d8))
+
+### Features
+
+- **app:** add manual refund conversion ([8ee5815](https://github.com/budgie-at/budgie/commit/8ee5815728508fcf213286c8098e9a42b95f38e1))
+
 ## [5.23.1](https://github.com/budgie-at/budgie/compare/v5.23.0...v5.23.1) (2026-05-24)
 
 ### Bug Fixes
