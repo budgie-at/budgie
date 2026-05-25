@@ -1,40 +1,24 @@
-import DateTimePicker, { DateTimePickerChangeEvent } from '@expo/ui/community/datetime-picker';
-import { StyleSheet } from 'react-native';
+import { DateType } from 'react-native-ui-datepicker';
 
-import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
-import { useThemeContext } from '../../../theme/context/theme.context';
+import { isDefined } from '@rnw-community/shared';
+
+import { dateTypeToDate } from '../../utils/date/date-type-to-date.util';
+
+import { DatePicker } from './date-picker';
 
 interface Props {
     readonly date: Date | null;
     readonly onChange: (value: Date) => void;
 }
 
-const styles = StyleSheet.create({
-    picker: {
-        width: '100%'
-    }
-});
-
 export const SingleDatePicker = ({ date, onChange }: Props) => {
-    const { languageTag } = useLocaleInfo();
-    const { isDarkColorSchema } = useThemeContext();
-    const themeVariant = isDarkColorSchema ? 'dark' : 'light';
-    const value = date ?? new Date();
+    const handleChange = (value: { date: DateType }) => {
+        const resolved = dateTypeToDate(value.date);
 
-    const handleChange = (_event: DateTimePickerChangeEvent, selectedDate: Date) => {
-        onChange(selectedDate);
+        if (isDefined(resolved)) {
+            onChange(resolved);
+        }
     };
 
-    return (
-        <DateTimePicker
-            value={value}
-            mode="date"
-            display="inline"
-            presentation="inline"
-            locale={languageTag}
-            themeVariant={themeVariant}
-            onValueChange={handleChange}
-            style={styles.picker}
-        />
-    );
+    return <DatePicker date={date ?? new Date()} mode="single" onChange={handleChange} />;
 };
