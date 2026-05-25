@@ -1,3 +1,4 @@
+import { LanguageEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
@@ -6,7 +7,8 @@ import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { budgetCategoryLimitRepository, budgetRepository, categoryRepository } from '../../@generic/drizzle/db/db';
+
+import { budgetCategoryLimitRepository, budgetRepository, categoryRepository, settingsRepository } from '../../@generic/drizzle/db/db';
 import { postLocalNotification } from '../../@generic/utils/request-push-permission.util';
 import { BUDGET_ALERT_MONITOR_TASK } from '../constant/budget-alert-monitor-task.constant';
 import { BudgetAlertScopeEnum } from '../enum/budget-alert-scope.enum';
@@ -107,7 +109,9 @@ class BudgetAlertMonitorService {
     }
 
     private async postCategoryAlert(threshold: number, categoryId: number): Promise<void> {
-        const category = await categoryRepository.findById(categoryId);
+        const settings = await settingsRepository.findSettings();
+        const language = settings?.language ?? LanguageEnum.EN;
+        const [category] = await categoryRepository.findById(categoryId, language);
         const categoryName = isDefined(category) ? category.title : i18n._(msg`Category`);
         const title = threshold >= 100 ? i18n._(msg`${categoryName}: limit reached`) : i18n._(msg`${categoryName}: ${threshold}% spent`);
         const body = i18n._(msg`You have used ${threshold}% of the limit for ${categoryName}.`);
