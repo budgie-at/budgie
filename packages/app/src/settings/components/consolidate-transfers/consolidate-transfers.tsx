@@ -34,20 +34,20 @@ export const ConsolidateTransfers = () => {
             });
             const autoCandidateText = t({
                 message: plural(autoCandidateCount, {
-                    one: '# high-confidence transfer pair',
-                    other: '# high-confidence transfer pairs'
+                    one: '# high-confidence match',
+                    other: '# high-confidence matches'
                 })
             });
             const manualReviewCandidateText = t({
                 message: plural(manualReviewCandidateCount, {
-                    one: '# lower-confidence pair',
-                    other: '# lower-confidence pairs'
+                    one: '# review match',
+                    other: '# review matches'
                 })
             });
 
             const confirmed = await confirmAlert({
-                title: t`Consolidate Transfers`,
-                message: t`This will consolidate ${autoCandidateText}. ${manualReviewCandidateText} will be logged for review only.`,
+                title: t`Consolidate Matches`,
+                message: t`This will merge ${autoCandidateText}. ${manualReviewCandidateText} will be kept for review.`,
                 confirmText: t`Consolidate`,
                 cancelText: t`Cancel`
             });
@@ -64,20 +64,20 @@ export const ConsolidateTransfers = () => {
             logger.log('consolidated', { found, consolidated, durationMs: Date.now() - consolidateStartedAt });
             const foundPairsText = t({
                 message: plural(found, {
-                    one: '# high-confidence pair',
-                    other: '# high-confidence pairs'
+                    one: '# high-confidence match',
+                    other: '# high-confidence matches'
                 })
             });
 
             Toast.show({
                 type: 'success',
-                text1: t`Transfers consolidated`,
-                text2: t`Consolidated ${consolidated} of ${foundPairsText}.`
+                text1: t`Matches consolidated`,
+                text2: t`Merged ${consolidated} of ${foundPairsText}.`
             });
         } catch (error) {
             const errorMessage = getErrorMessage(error);
             logger.error('failed', { errorMessage });
-            Toast.show({ type: 'error', text1: t`Could not consolidate transfers`, text2: errorMessage });
+            Toast.show({ type: 'error', text1: t`Could not consolidate matches`, text2: errorMessage });
         } finally {
             setIsLoading(false);
         }
@@ -86,8 +86,8 @@ export const ConsolidateTransfers = () => {
     return (
         <SettingsCard
             onPress={handleConsolidate}
-            title={t`Consolidate Transfers`}
-            description={t`Merge high-confidence duplicate transfer transactions`}
+            title={t`Consolidate Matches`}
+            description={t`Merge matching transfers and refunds`}
             icon={UserIconNameEnum.ArrowLeftRight}
             variant="positive"
             isLoading={isLoading}

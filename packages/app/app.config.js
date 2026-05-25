@@ -6,7 +6,8 @@ const IS_E2E = APP_VARIANT === 'e2e';
 const IS_PREVIEW = APP_VARIANT === 'preview';
 const IS_AI_DISABLED = process.env.EXPO_PUBLIC_AI_DISABLE === 'true';
 const IS_LOGGING_DISABLED = process.env.EXPO_PUBLIC_LOGGING_DISABLE === 'true';
-const IS_LOGGING_ENABLED = IS_DEV && !IS_LOGGING_DISABLED;
+const IS_PROFILING_ENABLED = process.env.EXPO_PUBLIC_PROFILING_ENABLE === 'true';
+const IS_LOGGING_ENABLED = (IS_DEV || IS_PROFILING_ENABLED) && !IS_LOGGING_DISABLED;
 
 const getUniqueIdentifier = isAndroid => {
     const prefix = isAndroid ? 'com.vitaliiyehorov.budgie' : 'com.vitalyiegorov.budgie';
