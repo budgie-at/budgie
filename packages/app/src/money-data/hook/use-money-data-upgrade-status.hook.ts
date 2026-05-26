@@ -11,8 +11,6 @@ import { MoneyDataUpgradeRuntimeSnapshotInterface } from '../interface/money-dat
 import { MoneyDataUpgradeStatusSnapshotInterface } from '../interface/money-data-upgrade-status-snapshot.interface';
 import { moneyDataUpgradeService } from '../service/money-data-upgrade.service';
 
-type TranslationFunction = ReturnType<typeof useLingui>['t'];
-
 const EMPTY_RUNTIME_SNAPSHOT: MoneyDataUpgradeRuntimeSnapshotInterface = {
     isRunning: false,
     pendingEntryCount: 0,
@@ -57,7 +55,7 @@ const getStepState = (isRunning: boolean, percent: number): MoneyDataUpgradeProg
 const getStatusText = (
     runtimeSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface,
     hasPendingWork: boolean,
-    t: TranslationFunction
+    t: ReturnType<typeof useLingui>['t']
 ): string => {
     if (isDefined(runtimeSnapshot.lastError)) {
         return runtimeSnapshot.lastError;
@@ -73,7 +71,7 @@ const getStatusText = (
 const getPrimaryActionText = (
     runtimeSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface,
     hasPendingWork: boolean,
-    t: TranslationFunction
+    t: ReturnType<typeof useLingui>['t']
 ): string => {
     if (isDefined(runtimeSnapshot.lastError)) {
         return t`Retry`;

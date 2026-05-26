@@ -22,6 +22,8 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeo
     const { snapshot, handlePrimaryAction } = useMoneyDataUpgradeStatus();
     const percentText = `${snapshot.percent}%`;
     const isWorking = snapshot.state === MoneyDataUpgradeProgressStateEnum.WORKING;
+    const isActionable =
+        snapshot.state === MoneyDataUpgradeProgressStateEnum.READY || snapshot.state === MoneyDataUpgradeProgressStateEnum.ERROR;
     const primaryActionTestID = isDefined(testID) ? `${testID}.PrimaryAction.${snapshot.state}` : testID;
     const statusTestID = isDefined(testID) ? `${testID}.Status.${snapshot.state}` : testID;
     const handlePress = () => {
@@ -32,7 +34,7 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeo
         <>
             <HorizontalCell
                 testID={testID}
-                {...(!isWorking && { onPress: handlePress })}
+                {...(isActionable && { onPress: handlePress })}
                 left={<CircleIcon icon={UserIconNameEnum.Database} variant="positive" border={false} size={36} iconSize={20} />}
                 right={<Text className={`text-sm font-medium text-right w-12 ${STATE_TEXT_CLASS[snapshot.state]}`}>{percentText}</Text>}
                 variant="secondary"

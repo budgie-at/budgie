@@ -10,7 +10,6 @@ import { transferConsolidationService } from '../../sync/service/transfer-consol
 
 import { entryBaseValuationService } from './entry-base-valuation.service';
 
-import type { MoneyDataUpgradeBucketsInputInterface } from '../interface/money-data-upgrade-buckets-input.interface';
 import type { MoneyDataUpgradeRuntimeSnapshotInterface } from '../interface/money-data-upgrade-runtime-snapshot.interface';
 import type { DB, PendingBaseValuationBucketInterface } from '@budgie/contracts';
 
@@ -115,28 +114,40 @@ class MoneyDataUpgradeService {
         );
 
         await transactionAsync(db, async tx => {
-            await this.valuePendingEntryBuckets({ buckets, bucketIndex: 0, baseInstrumentId: baseInstrument.id, onProgress }, tx);
+            await this.valuePendingEntryBuckets(buckets, baseInstrument.id, tx, onProgress);
         });
 
         await accountBalanceIncrementalService.updateAllBalances(true);
     }
 
-    private async valuePendingEntryBuckets(input: MoneyDataUpgradeBucketsInputInterface, tx: DB): Promise<void> {
-        const bucket = input.buckets[input.bucketIndex];
+    private async valuePendingEntryBuckets(
+        buckets: PendingBaseValuationBucketInterface[],
+        baseInstrumentId: number,
+        tx: DB,
+        onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
+    ): Promise<void> {
+        await buckets.reduce(
+            (previousBucketPromise, bucket) =>
+                previousBucketPromise.then(() => this.valuePendingEntryBucket(bucket, baseInstrumentId, tx, onProgress)),
+            Promise.resolve()
+        );
+    }
 
-        if (!isDefined(bucket)) {
-            return;
-        }
-
+    private async valuePendingEntryBucket(
+        bucket: PendingBaseValuationBucketInterface,
+        baseInstrumentId: number,
+        tx: DB,
+        onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
+    ): Promise<void> {
         const operatedAt = new Date(bucket.rateDate);
         operatedAt.setHours(0, 0, 0, 0);
 
         const baseExchangeRate =
-            bucket.sourceInstrumentId === input.baseInstrumentId
+            bucket.sourceInstrumentId === baseInstrumentId
                 ? 1
                 : await entryBaseValuationService.resolveHistoricalBaseExchangeRate(
                       bucket.sourceInstrumentId,
-                      input.baseInstrumentId,
+                      baseInstrumentId,
                       operatedAt,
                       tx
                   );
@@ -145,7 +156,7 @@ class MoneyDataUpgradeService {
             {
                 rateDate: bucket.rateDate,
                 sourceInstrumentId: bucket.sourceInstrumentId,
-                baseInstrumentId: input.baseInstrumentId,
+                baseInstrumentId,
                 baseExchangeRate
             },
             tx
@@ -157,10 +168,8 @@ class MoneyDataUpgradeService {
                 pendingEntryCount: Math.max(this.snapshot.pendingEntryCount - bucket.entryCount, 0),
                 processedEntryCount: this.snapshot.processedEntryCount + bucket.entryCount
             },
-            input.onProgress
+            onProgress
         );
-
-        await this.valuePendingEntryBuckets({ ...input, bucketIndex: input.bucketIndex + 1 }, tx);
     }
 
     private sumBucketEntries(buckets: PendingBaseValuationBucketInterface[]): number {
