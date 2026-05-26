@@ -77,9 +77,26 @@ class ErsteMapper {
     }
 
     private generateExternalId(row: ErsteRowInterface, iban: string): string {
-        const seed = `${row.date.toISOString()}|${iban}|${row.amount}|${row.reference}|${row.details}`;
+        const seed = [
+            this.buildStatementDateKey(row.date),
+            iban,
+            row.amount,
+            row.reference,
+            row.description,
+            row.details,
+            row.city ?? '',
+            row.countryAlpha2 ?? ''
+        ].join('|');
 
         return this.fnv1aHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
+    }
+
+    private buildStatementDateKey(date: Date): string {
+        const year = String(date.getFullYear()).padStart(4, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
     }
 
     /* jscpd:ignore-start */
