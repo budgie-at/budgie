@@ -139,6 +139,8 @@ export default ({ config }) => ({
             {
                 icon: './assets/icons/ios-light.png',
                 color: '#ffffff',
+                defaultChannel: 'budget-alerts',
+                enableBackgroundRemoteNotifications: true,
                 sounds: []
             }
         ],
