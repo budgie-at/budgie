@@ -81,15 +81,14 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 locale={lang}
                 tagline={
                     <Trans>
-                        When the same amount leaves account A and arrives at account B, Budgie merges them into one transfer — IBAN-aware,
-                        cross-currency-aware.
+                        Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review.
                     </Trans>
                 }
             />
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why two synced banks double-count your transfers</Trans>
+                    <Trans>Why imported transactions need consolidation</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
@@ -99,8 +98,9 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Cross-currency consolidation works too: $1000 sent and €925 received within a 3-day window match if the FX rate is
-                        plausible. Manual override is one tap if the algorithm gets it wrong.
+                        Refunds have the opposite problem: a merchant credit can look like income even though it reverses an earlier
+                        expense. Budgie consolidates clear refund matches automatically and keeps uncertain cases available for manual
+                        review.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -114,16 +114,16 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                         <Trans>Counter-IBAN stored per leg — primary signal for cross-account matching</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Amount + time-window matching catches transfers without IBAN data</Trans>
+                        <Trans>Amount + time-window matching catches transfers and refunds without perfect bank metadata</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Cross-currency: $1000 → €925 within 3 days matches when the FX rate is plausible</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>One-tap manual override if the algorithm guesses wrong</Trans>
+                        <Trans>Manual review for ambiguous refund matches instead of silent guesses</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Original entries stay linked under the merged transfer for full audit trail</Trans>
+                        <Trans>Original entries stay linked under the consolidated transaction for full audit trail</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -134,19 +134,20 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        On every bank-sync run, Budgie scans new entries against existing ones for matching counter-IBAN + amount + sign +
-                        time window. Matches collapse into a single Transfer transaction; the original entries link back for audit.
+                        On every consolidation run, Budgie scans new entries against existing ones for matching counter-IBAN, amount, sign,
+                        title, and time window. Transfer matches become one transfer. Refund matches link income back to the expense they
+                        reverse.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 <FeaturePageFaqItem
-                    question={<Trans>What if the algorithm misidentifies a transfer?</Trans>}
+                    question={<Trans>What if the algorithm misidentifies a match?</Trans>}
                     answer={
                         <Trans>
-                            Manual override is one tap. Tap the auto-merged transaction, choose &quot;Split back into two&quot;, and it
-                            reverts to two separate entries with their original categories.
+                            Manual override is one tap. Open the consolidated transaction, choose Revert, and Budgie restores the original
+                            entries with their original categories.
                         </Trans>
                     }
                 />
@@ -174,8 +175,8 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     question={<Trans>Will old (already-imported) transactions get re-matched?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Each new sync rescans recent entries against existing ones, so old debits-and-credits that didn&apos;t have
-                            counter-IBAN can still match retroactively when the matching info arrives.
+                            Yes. Each consolidation run rescans recent entries against existing ones, so transfers and refunds can match
+                            retroactively when enough matching info arrives.
                         </Trans>
                     }
                 />

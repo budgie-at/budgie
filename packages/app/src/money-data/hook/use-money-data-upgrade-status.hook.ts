@@ -71,8 +71,8 @@ export const useMoneyDataUpgradeStatus = () => {
             statusText = t`Recalculating balances`;
         } else if (runtimeSnapshot.isRunning) {
             if (isPositiveNumber(runtimeSnapshot.totalEntryCount)) {
-                const {processedEntryCount} = runtimeSnapshot;
-                const {totalEntryCount} = runtimeSnapshot;
+                const { processedEntryCount } = runtimeSnapshot;
+                const { totalEntryCount } = runtimeSnapshot;
 
                 statusText = t`Valuing ${processedEntryCount} of ${totalEntryCount} transactions`;
             } else {

@@ -195,4 +195,36 @@ describe('consolidation/refund-pair-by-title', () => {
         const result = await transferConsolidationService.consolidate();
         expect(result.consolidated).toBe(0);
     });
+
+    it('auto-consolidates cancellation-prefixed card reversals to the nearest same-amount expense', async () => {
+        const account = seed.account({ externalId: 'mono-card' });
+        const amount = 3_963_900_000;
+        const first = seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: amount,
+            refundAmounts: [amount],
+            title: 'OBB',
+            refundTitle: 'Скасування. OBB',
+            expenseOperatedAt: new Date(2024, 11, 10, 19, 40, 59),
+            refundDelaySeconds: 68,
+            externalIdPrefix: 'obb-first'
+        });
+        const second = seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: amount,
+            refundAmounts: [amount],
+            title: 'OBB',
+            refundTitle: 'Скасування. OBB',
+            expenseOperatedAt: new Date(2024, 11, 10, 19, 43, 29),
+            refundDelaySeconds: 71,
+            externalIdPrefix: 'obb-second'
+        });
+
+        const result = await transferConsolidationService.consolidate();
+        expect(result.consolidated).toBe(2);
+        expect(fetchTransactionById(first.expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+        expect(fetchTransactionById(first.refunds[0].id).consolidationParentTransactionId).toBe(first.expense.id);
+        expect(fetchTransactionById(second.expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+        expect(fetchTransactionById(second.refunds[0].id).consolidationParentTransactionId).toBe(second.expense.id);
+    });
 });
