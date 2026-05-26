@@ -51,7 +51,8 @@ class MoneyDataUpgradeService {
             this.publishSnapshot(
                 {
                     ...this.snapshot,
-                    isRunning: false
+                    isRunning: false,
+                    isUpdatingBalances: false
                 },
                 onProgress
             );
@@ -62,6 +63,7 @@ class MoneyDataUpgradeService {
                 {
                     ...this.snapshot,
                     isRunning: false,
+                    isUpdatingBalances: false,
                     lastError: getErrorMessage(error)
                 },
                 onProgress
@@ -94,6 +96,14 @@ class MoneyDataUpgradeService {
         await transactionAsync(db, async tx => {
             await this.valuePendingEntryBuckets(buckets, baseInstrument.id, tx, onProgress);
         });
+
+        this.publishSnapshot(
+            {
+                ...this.snapshot,
+                isUpdatingBalances: true
+            },
+            onProgress
+        );
 
         await accountBalanceIncrementalService.updateAllBalances(true);
     }
@@ -157,6 +167,7 @@ class MoneyDataUpgradeService {
     private createInitialSnapshot(): MoneyDataUpgradeRuntimeSnapshotInterface {
         return {
             isRunning: false,
+            isUpdatingBalances: false,
             pendingEntryCount: 0,
             processedEntryCount: 0,
             totalEntryCount: 0,

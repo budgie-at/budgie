@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
@@ -12,6 +12,7 @@ import { moneyDataUpgradeService } from '../service/money-data-upgrade.service';
 
 const EMPTY_RUNTIME_SNAPSHOT: MoneyDataUpgradeRuntimeSnapshotInterface = {
     isRunning: false,
+    isUpdatingBalances: false,
     pendingEntryCount: 0,
     processedEntryCount: 0,
     totalEntryCount: 0,
@@ -41,38 +42,6 @@ const getState = (
     return hasPendingWork ? MoneyDataUpgradeProgressStateEnum.READY : MoneyDataUpgradeProgressStateEnum.COMPLETE;
 };
 
-const getStatusText = (
-    runtimeSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface,
-    hasPendingWork: boolean,
-    t: ReturnType<typeof useLingui>['t']
-): string => {
-    if (isDefined(runtimeSnapshot.lastError)) {
-        return runtimeSnapshot.lastError;
-    }
-
-    if (runtimeSnapshot.isRunning) {
-        return t`Valuation running`;
-    }
-
-    return hasPendingWork ? t`Base values need update` : t`Base values ready`;
-};
-
-const getPrimaryActionText = (
-    runtimeSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface,
-    hasPendingWork: boolean,
-    t: ReturnType<typeof useLingui>['t']
-): string => {
-    if (isDefined(runtimeSnapshot.lastError)) {
-        return t`Retry`;
-    }
-
-    if (runtimeSnapshot.isRunning) {
-        return t`Running`;
-    }
-
-    return hasPendingWork ? t`Value` : t`Done`;
-};
-
 export const useMoneyDataUpgradeStatus = () => {
     const { t } = useLingui();
     const [runtimeSnapshot, setRuntimeSnapshot] = useState<MoneyDataUpgradeRuntimeSnapshotInterface>(EMPTY_RUNTIME_SNAPSHOT);
@@ -94,13 +63,28 @@ export const useMoneyDataUpgradeStatus = () => {
         const percent = calculatePercent(runtimeSnapshot.processedEntryCount, runtimeSnapshot.totalEntryCount);
         const hasPendingWork = runtimeSnapshot.pendingEntryCount > 0 || runtimeSnapshot.isRunning;
         const state = getState(runtimeSnapshot, hasPendingWork);
+        let statusText = t`Press to re-evaluate transactions`;
+
+        if (isDefined(runtimeSnapshot.lastError)) {
+            statusText = runtimeSnapshot.lastError;
+        } else if (runtimeSnapshot.isUpdatingBalances) {
+            statusText = t`Recalculating balances`;
+        } else if (runtimeSnapshot.isRunning) {
+            if (isPositiveNumber(runtimeSnapshot.totalEntryCount)) {
+                const processedEntryCount = runtimeSnapshot.processedEntryCount;
+                const totalEntryCount = runtimeSnapshot.totalEntryCount;
+
+                statusText = t`Valuing ${processedEntryCount} of ${totalEntryCount} transactions`;
+            } else {
+                statusText = t`Preparing valuation`;
+            }
+        }
 
         return {
             title: t`Value Historical Entries`,
-            statusText: getStatusText(runtimeSnapshot, hasPendingWork, t),
+            statusText,
             percent,
-            state,
-            primaryActionText: getPrimaryActionText(runtimeSnapshot, hasPendingWork, t)
+            state
         };
     }, [runtimeSnapshot, t]);
 

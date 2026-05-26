@@ -5,5 +5,4 @@ export interface MoneyDataUpgradeStatusSnapshotInterface {
     readonly statusText: string;
     readonly percent: number;
     readonly state: MoneyDataUpgradeProgressStateEnum;
-    readonly primaryActionText: string;
 }

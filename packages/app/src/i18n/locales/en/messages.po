@@ -407,7 +407,7 @@ msgstr "Base currency"
 
 #: src/money-data/service/entry-base-valuation.service.ts:191
 #: src/money-data/service/money-data-upgrade.service.ts:27
-#: src/money-data/service/money-data-upgrade.service.ts:78
+#: src/money-data/service/money-data-upgrade.service.ts:80
 msgid "Base instrument not found"
 msgstr "Base instrument not found"
 
@@ -439,7 +439,7 @@ msgstr "Borrowed"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:110
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:91
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 
@@ -458,7 +458,7 @@ msgstr "Budgie will merge high-confidence transfer and refund matches. Ambiguous
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
-#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:112
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:93
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:133
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:50
@@ -1302,8 +1302,8 @@ msgstr "Greater Than"
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
-#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:89
-#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:122
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:58
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:103
 msgid "Historical valuation failed"
 msgstr "Historical valuation failed"
 
@@ -1894,9 +1894,17 @@ msgstr "Polish (Poland)"
 msgid "Portuguese (Portugal)"
 msgstr "Portuguese (Portugal)"
 
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:76
+msgid "Preparing valuation"
+msgstr "Preparing valuation"
+
 #: src/import/components/import-preset-picker/import-preset-picker.tsx:30
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset applied. Adjust columns below if needed."
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:66
+msgid "Press to re-evaluate transactions"
+msgstr "Press to re-evaluate transactions"
 
 #: src/app/(tabs)/settings/index.tsx:68
 msgid "Privacy"
@@ -1979,6 +1987,10 @@ msgstr "Recalculate"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
 msgid "Recalculate Balances"
 msgstr "Recalculate Balances"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:71
+msgid "Recalculating balances"
+msgstr "Recalculating balances"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:116
 msgid "Receiving {toCode}"
@@ -2717,7 +2729,7 @@ msgstr "Use Face ID to unlock your app quickly and securely"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Use Touch ID to unlock your app quickly and securely"
 
-#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:111
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:92
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx:49
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx:40
 #: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:15
@@ -2726,13 +2738,19 @@ msgstr "Use Touch ID to unlock your app quickly and securely"
 msgid "Value"
 msgstr "Value"
 
-#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:99
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:81
 msgid "Value Historical Entries"
 msgstr "Value Historical Entries"
 
-#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:109
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:90
 msgid "Value historical entries?"
 msgstr "Value historical entries?"
+
+#. placeholder {0}: runtimeSnapshot.processedEntryCount
+#. placeholder {1}: runtimeSnapshot.totalEntryCount
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:74
+msgid "Valuing {0} of {1} transactions"
+msgstr "Valuing {0} of {1} transactions"
 
 #: src/app/(tabs)/settings/index.tsx:158
 msgid "View and activate hidden accounts"
