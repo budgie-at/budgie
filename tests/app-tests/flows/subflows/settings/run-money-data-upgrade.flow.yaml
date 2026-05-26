@@ -10,9 +10,9 @@ appId: ${APP_ID}
 - tapOn:
       id: 'SettingsPage.MoneyDataUpgradeCard'
 - extendedWaitUntil:
-      visible: 'Upgrade money data?'
+      visible: 'Value historical entries?'
       timeout: 10000
-- tapOn: 'Upgrade'
+- tapOn: 'Value'
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.MoneyDataUpgradeCard.PrimaryAction.COMPLETE'

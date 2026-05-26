@@ -6,7 +6,6 @@ import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/sha
 import { db, transactionEntryRepository } from '../../@generic/drizzle/db/db';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
-import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
 
 import { entryBaseValuationService } from './entry-base-valuation.service';
 
@@ -22,13 +21,9 @@ class MoneyDataUpgradeService {
         }
 
         const baseInstrument = await exchangeRatesService.getBaseInstrument();
-        const consolidationSnapshot = await transferConsolidationService.getProgressSnapshot();
-
         if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
             return {
                 ...this.createInitialSnapshot(),
-                consolidationRemainingCount: consolidationSnapshot.autoCandidateCount,
-                consolidationTotalCount: consolidationSnapshot.autoCandidateCount,
                 lastError: t`Base instrument not found`
             };
         }
@@ -38,9 +33,7 @@ class MoneyDataUpgradeService {
         return {
             ...this.createInitialSnapshot(),
             pendingEntryCount,
-            totalEntryCount: pendingEntryCount,
-            consolidationRemainingCount: consolidationSnapshot.autoCandidateCount,
-            consolidationTotalCount: consolidationSnapshot.autoCandidateCount
+            totalEntryCount: pendingEntryCount
         };
     }
 
@@ -55,24 +48,9 @@ class MoneyDataUpgradeService {
 
         try {
             await this.valuePendingEntries(onProgress);
-            const consolidationSnapshot = await transferConsolidationService.getProgressSnapshot();
-            const consolidationTotalCount = consolidationSnapshot.autoCandidateCount;
-            const consolidationResult = await transferConsolidationService.runForMoneyDataUpgrade(processedCandidateGroupCount => {
-                this.publishSnapshot(
-                    {
-                        ...this.snapshot,
-                        consolidationRemainingCount: Math.max(consolidationTotalCount - processedCandidateGroupCount, 0),
-                        consolidationTotalCount
-                    },
-                    onProgress
-                );
-            });
-
             this.publishSnapshot(
                 {
                     ...this.snapshot,
-                    consolidationRemainingCount: consolidationResult.after.autoCandidateCount,
-                    consolidationTotalCount: consolidationResult.before.autoCandidateCount,
                     isRunning: false
                 },
                 onProgress
@@ -182,8 +160,6 @@ class MoneyDataUpgradeService {
             pendingEntryCount: 0,
             processedEntryCount: 0,
             totalEntryCount: 0,
-            consolidationRemainingCount: 0,
-            consolidationTotalCount: 0,
             lastError: null
         };
     }
