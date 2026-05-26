@@ -39,11 +39,11 @@ msgstr "{autoCandidateCount, plural, one {# збіг з високою впев�
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# стовпець доступний} few {# стовпці доступні} many {# стовпців доступні} other {# стовпця доступні}}"
 
-#: src/budget/service/budget-alert-monitor.service.ts:112
+#: src/budget/service/budget-alert-monitor.service.ts:116
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% витрачено"
 
-#: src/budget/service/budget-alert-monitor.service.ts:112
+#: src/budget/service/budget-alert-monitor.service.ts:116
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: ліміт досягнуто"
 
@@ -62,6 +62,10 @@ msgstr "{count, plural, one {Ця категорія має # транзакці
 #: src/app/(tabs)/settings/tags.tsx:42
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Цей тег має # транзакцію. Виберіть інший тег, щоб перепризначити її.} few {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.} many {Цей тег має # транзакцій. Виберіть інший тег, щоб перепризначити їх.} other {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.}}"
+
+#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:16
+msgid "{count} configured"
+msgstr "Налаштовано: {count}"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -304,6 +308,10 @@ msgstr "Весь час"
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
 
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:53
+msgid "Allocated"
+msgstr "Розподілено"
+
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx:34
 msgid "Already syncing"
 msgstr "Вже синхронізується"
@@ -460,7 +468,7 @@ msgstr "Бюджет"
 msgid "Budget currency"
 msgstr "Валюта бюджету"
 
-#: src/budget/service/budget-alert-monitor.service.ts:103
+#: src/budget/service/budget-alert-monitor.service.ts:105
 msgid "Budget limit reached"
 msgstr "Ліміт бюджету досягнуто"
 
@@ -516,7 +524,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:34
 #: src/app/(tabs)/settings/import.tsx:181
-#: src/budget/service/budget-alert-monitor.service.ts:111
+#: src/budget/service/budget-alert-monitor.service.ts:115
 #: src/category/components/category-form-selector/category-form-selector.tsx:34
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:176
 msgid "Category"
@@ -526,8 +534,10 @@ msgstr "Категорія"
 msgid "Category → {categoryTitle}"
 msgstr "Категорія → {categoryTitle}"
 
+#: src/app/(main)/budget/edit/category-limits.tsx:30
 #: src/budget/components/budget-category-limits-card/budget-category-limits-card.tsx:18
 #: src/budget/components/budget-category-limits-field/budget-category-limits-field.tsx:29
+#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:18
 msgid "Category limits"
 msgstr "Ліміти за категоріями"
 
@@ -879,7 +889,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create anyway"
 msgstr "Все одно створити"
 
-#: src/app/(main)/budget/setup.tsx:44
+#: src/app/(main)/budget/edit/index.tsx:37
 msgid "Create budget"
 msgstr "Створити бюджет"
 
@@ -1043,6 +1053,7 @@ msgstr "Вимкнути блокування"
 msgid "Display this budget on the home screen"
 msgstr "Показувати цей бюджет на головному екрані"
 
+#: src/app/(main)/budget/edit/category-limits.tsx:24
 #: src/app/import-column-mapper.tsx:97
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
@@ -1097,8 +1108,8 @@ msgstr "напр. Дім, Особисте"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
+#: src/app/(main)/budget/edit/index.tsx:37
 #: src/app/(main)/budget/index.tsx:87
-#: src/app/(main)/budget/setup.tsx:44
 msgid "Edit budget"
 msgstr "Редагувати бюджет"
 
@@ -1786,6 +1797,10 @@ msgstr "Немає елементів для збереження"
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
+#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:16
+msgid "No limits configured"
+msgstr "Ліміти не налаштовано"
+
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:55
 msgid "No matching expenses"
 msgstr "Немає відповідних витрат"
@@ -1938,7 +1953,11 @@ msgstr "Початкові імпортовані транзакції буде 
 msgid "Original transaction"
 msgstr "Початкова транзакція"
 
-#: src/budget/service/budget-alert-monitor.service.ts:103
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:48
+msgid "Over by"
+msgstr "Перевищено на"
+
+#: src/budget/service/budget-alert-monitor.service.ts:105
 msgid "Overall budget: {threshold}% spent"
 msgstr "Загальний бюджет: {threshold}% витрачено"
 
@@ -2139,6 +2158,10 @@ msgstr "Повернено"
 #: src/transaction/components/refunded-pill/refunded-pill.tsx:78
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Повернено {formattedRefundedAmount}"
+
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:48
+msgid "Remaining"
+msgstr "Залишилось"
 
 #: src/budget/components/budget-use-last-day-field/budget-use-last-day-field.tsx:24
 msgid "Reset on the last calendar day each month"
@@ -2938,11 +2961,11 @@ msgstr "Вчора"
 msgid "You gave money"
 msgstr "Ви дали гроші"
 
-#: src/budget/service/budget-alert-monitor.service.ts:104
+#: src/budget/service/budget-alert-monitor.service.ts:106
 msgid "You have used {spentPercent}% of your overall budget."
 msgstr "Ви витратили {spentPercent}% загального бюджету."
 
-#: src/budget/service/budget-alert-monitor.service.ts:113
+#: src/budget/service/budget-alert-monitor.service.ts:117
 msgid "You have used {threshold}% of the limit for {categoryName}."
 msgstr "Ви витратили {threshold}% ліміту для {categoryName}."
 

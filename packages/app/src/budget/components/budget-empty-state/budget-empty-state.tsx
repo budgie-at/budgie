@@ -6,7 +6,7 @@ import { Text, View } from 'react-native';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 
-const handleNavigate = () => void router.push('/budget/setup');
+const handleNavigate = () => void router.push('/budget/edit');
 
 interface Props {
     readonly testID?: string;

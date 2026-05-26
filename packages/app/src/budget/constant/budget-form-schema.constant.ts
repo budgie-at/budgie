@@ -19,6 +19,9 @@ export const BudgetFormSchema = z
         isWidgetEnabled: z.boolean(),
         instrumentId: z.number().int().positive()
     })
+    .refine(values => values.categoryLimits.reduce((sum, limit) => sum + limit.limitAmount, 0) <= values.overallLimit, {
+        path: ['categoryLimits']
+    })
     .transform(values => ({
         ...values,
         periodStartDay: values.useLastDayOfMonth ? MIN_PERIOD_START_DAY : values.periodStartDay
