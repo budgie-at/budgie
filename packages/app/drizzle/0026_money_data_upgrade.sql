@@ -6,7 +6,7 @@ CREATE TABLE `historical_exchange_rates` (
 	`source_instrument_id` integer NOT NULL,
 	`target_instrument_id` integer NOT NULL,
 	`rate_date` text NOT NULL,
-	`rate` real NOT NULL,
+	`rate` integer NOT NULL,
 	FOREIGN KEY (`source_instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE cascade,
 	FOREIGN KEY (`target_instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE cascade
 );
