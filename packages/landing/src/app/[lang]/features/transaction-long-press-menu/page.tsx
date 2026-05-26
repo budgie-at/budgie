@@ -81,8 +81,8 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                 locale={lang}
                 tagline={
                     <Trans>
-                        Long-press any transaction card for a native context menu — edit, delete, convert to transfer, or split without ever
-                        opening the full edit form.
+                        Long-press any transaction card for a native context menu — edit, delete, split, convert to transfer, or convert
+                        income to a refund without opening the full edit form.
                     </Trans>
                 }
             />
@@ -103,7 +103,7 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                     <Trans>
                         The context menu uses native platform APIs — the system menu component on iPadOS and a bottom sheet on iPhone and
                         Android — so the interaction is immediately familiar. There is no modal, no full-screen form, and no intermediate
-                        navigation step for the four most common actions.
+                        navigation step for the common actions.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -116,9 +116,10 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                     <Trans>
                         Gesture detection activates after approximately 300 milliseconds of sustained contact on a transaction card. The
                         menu appears anchored to the card, listing only the actions that are valid for that specific transaction type.
-                        Expense cards show Edit, Delete, Convert to Transfer, and Split. Transfer cards omit Convert to Transfer since it is
-                        already one. Split transactions expose a Merge Back option instead. This context-aware filtering prevents presenting
-                        actions that would be no-ops or errors for the current entry type.
+                        Expense cards show Edit, Delete, Convert to Transfer, and Split. Income cards can also show Convert to Refund when
+                        they are not already consolidated. Transfer cards omit Convert to Transfer since they are already transfers. Split
+                        transactions expose a Merge Back option instead. This context-aware filtering prevents presenting actions that would
+                        be no-ops or errors for the current entry type.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -156,8 +157,8 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                     question={<Trans>What actions are available?</Trans>}
                     answer={
                         <Trans>
-                            Edit, Delete, Convert to Transfer, and Split. The exact set depends on the transaction type — transfers do not
-                            show &ldquo;Convert to Transfer&rdquo;, for example.
+                            Edit, Delete, Split, Convert to Transfer, and Convert to Refund. The exact set depends on the transaction type —
+                            only income can become a refund, for example.
                         </Trans>
                     }
                 />

@@ -84,11 +84,11 @@ class TransferConsolidationExecutorService {
 
     @Log(
         candidate =>
-            `enter existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} amount=${candidate.amount} timeDiff=${candidate.timeDiff}`,
+            `enter existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff}`,
         (result, candidate) =>
-            `done result=${String(result)} existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} amount=${candidate.amount} timeDiff=${candidate.timeDiff}`,
+            `done result=${String(result)} existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff}`,
         (error, candidate) =>
-            `throw existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} amount=${candidate.amount} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
+            `throw existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
     )
     async consolidateExistingTransferIncomeDuplicate(candidate: ExistingTransferIncomeDuplicateCandidateInterface): Promise<boolean> {
         return transactionAsync(db, async tx => this.consolidateExistingTransferIncomeDuplicateInner(candidate, tx));
@@ -263,6 +263,23 @@ class TransferConsolidationExecutorService {
             return false;
         }
 
+        await transactionRepository.updateById(
+            candidate.existingTransferId,
+            {
+                exchangeRate: candidate.exchangeRate,
+                toAccountId: candidate.targetAccountId
+            },
+            tx
+        );
+        await transactionEntryRepository.updateById(
+            candidate.existingTransferTargetEntryId,
+            {
+                accountId: candidate.targetAccountId,
+                amount: candidate.amount,
+                exchangeRate: 1
+            },
+            tx
+        );
         await transactionRepository.setConsolidationType(candidate.existingTransferId, TransactionConsolidationTypeEnum.TRANSFER_PAIR, tx);
         await this.copySourceTags(sourceTransactionIds, candidate.existingTransferId, tx);
         await this.moveSourcesToCanonical(sourceTransactionIds, candidate.existingTransferId, tx);

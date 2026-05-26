@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.24.1](https://github.com/budgie-at/budgie/compare/v5.24.0...v5.24.1) (2026-05-25)
+
+### Bug Fixes
+
+- consolidate cross-currency transfer income duplicates ([4626b7f](https://github.com/budgie-at/budgie/commit/4626b7fd36786a0387ab7af287a6678325617975))
+- consolidate same-bank currency conversions ([76846de](https://github.com/budgie-at/budgie/commit/76846dea33d752488bb3a6bc099fc083e050dee0))
+- **contracts:** match cancellation refund reversals ([2fe7ad9](https://github.com/budgie-at/budgie/commit/2fe7ad93517e07195339a6ee8d13748a1f20229f))
+- match approximate cross-currency transfer receipts ([cd74644](https://github.com/budgie-at/budgie/commit/cd7464476e1d8957d498f0bf7c1abcb8d8f03f2a))
+
 # [5.24.0](https://github.com/budgie-at/budgie/compare/v5.23.1...v5.24.0) (2026-05-25)
 
 ### Bug Fixes

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.24.1](https://github.com/budgie-at/budgie/compare/v5.24.0...v5.24.1) (2026-05-25)
+
+### Bug Fixes
+
+- **bank-sync:** stabilize erste import identity ([15f506f](https://github.com/budgie-at/budgie/commit/15f506fdaca7ce4c1d9fa0cc4f207d9783022409))
+
 ## [5.23.1](https://github.com/budgie-at/budgie/compare/v5.23.0...v5.23.1) (2026-05-24)
 
 ### Bug Fixes
