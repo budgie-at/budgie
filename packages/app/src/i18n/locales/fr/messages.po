@@ -39,11 +39,11 @@ msgstr "{autoCandidateCount, plural, one {# correspondance fiable} other {# corr
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# colonne disponible} other {# colonnes disponibles}}"
 
-#: src/budget/service/budget-alert-monitor.service.ts:112
+#: src/budget/service/budget-alert-monitor.service.ts:116
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% dépensé"
 
-#: src/budget/service/budget-alert-monitor.service.ts:112
+#: src/budget/service/budget-alert-monitor.service.ts:116
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: limite atteinte"
 
@@ -62,6 +62,10 @@ msgstr "{count, plural, one {Cette catégorie contient # transaction. Sélection
 #: src/app/(tabs)/settings/tags.tsx:42
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Ce tag contient # transaction. Sélectionnez un autre tag pour la réaffecter.} other {Ce tag contient # transactions. Sélectionnez un autre tag pour les réaffecter.}}"
+
+#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:16
+msgid "{count} configured"
+msgstr "{count} configuré"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -304,6 +308,10 @@ msgstr "Tout le temps"
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Toutes vos données financières sont stockées localement sur votre appareil. Pas de synchronisation cloud, pas de suivi, aucun partage de données."
 
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:53
+msgid "Allocated"
+msgstr "Alloué"
+
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx:34
 msgid "Already syncing"
 msgstr "Déjà en cours de synchronisation"
@@ -460,7 +468,7 @@ msgstr "Budget"
 msgid "Budget currency"
 msgstr "Devise du budget"
 
-#: src/budget/service/budget-alert-monitor.service.ts:103
+#: src/budget/service/budget-alert-monitor.service.ts:105
 msgid "Budget limit reached"
 msgstr "Limite de budget atteinte"
 
@@ -516,7 +524,7 @@ msgstr "Catégories ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:34
 #: src/app/(tabs)/settings/import.tsx:181
-#: src/budget/service/budget-alert-monitor.service.ts:111
+#: src/budget/service/budget-alert-monitor.service.ts:115
 #: src/category/components/category-form-selector/category-form-selector.tsx:34
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:176
 msgid "Category"
@@ -526,8 +534,10 @@ msgstr "Catégorie"
 msgid "Category → {categoryTitle}"
 msgstr "Catégorie → {categoryTitle}"
 
+#: src/app/(main)/budget/edit/category-limits.tsx:30
 #: src/budget/components/budget-category-limits-card/budget-category-limits-card.tsx:18
 #: src/budget/components/budget-category-limits-field/budget-category-limits-field.tsx:29
+#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:18
 msgid "Category limits"
 msgstr "Limites par catégorie"
 
@@ -879,7 +889,7 @@ msgstr "Créer et organiser les étiquettes de transaction"
 msgid "Create anyway"
 msgstr "Créer quand même"
 
-#: src/app/(main)/budget/setup.tsx:44
+#: src/app/(main)/budget/edit/index.tsx:37
 msgid "Create budget"
 msgstr "Créer un budget"
 
@@ -1043,6 +1053,7 @@ msgstr "Désactiver le verrouillage"
 msgid "Display this budget on the home screen"
 msgstr "Afficher ce budget sur l'écran d'accueil"
 
+#: src/app/(main)/budget/edit/category-limits.tsx:24
 #: src/app/import-column-mapper.tsx:97
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
@@ -1097,8 +1108,8 @@ msgstr "p. ex. Foyer, Personnel"
 msgid "e.g. Savings Account"
 msgstr "ex. Compte d'épargne"
 
+#: src/app/(main)/budget/edit/index.tsx:37
 #: src/app/(main)/budget/index.tsx:87
-#: src/app/(main)/budget/setup.tsx:44
 msgid "Edit budget"
 msgstr "Modifier le budget"
 
@@ -1786,6 +1797,10 @@ msgstr "Aucun élément à enregistrer"
 msgid "No languages found"
 msgstr "Aucune langue trouvée"
 
+#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:16
+msgid "No limits configured"
+msgstr "Aucune limite configurée"
+
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:55
 msgid "No matching expenses"
 msgstr "Aucune dépense correspondante"
@@ -1938,7 +1953,11 @@ msgstr "Les transactions importées d'origine seront restaurées et la transacti
 msgid "Original transaction"
 msgstr "Transaction d’origine"
 
-#: src/budget/service/budget-alert-monitor.service.ts:103
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:48
+msgid "Over by"
+msgstr "Dépassé de"
+
+#: src/budget/service/budget-alert-monitor.service.ts:105
 msgid "Overall budget: {threshold}% spent"
 msgstr "Budget global: {threshold}% dépensé"
 
@@ -2139,6 +2158,10 @@ msgstr "Remboursé"
 #: src/transaction/components/refunded-pill/refunded-pill.tsx:78
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Remboursé {formattedRefundedAmount}"
+
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:48
+msgid "Remaining"
+msgstr "Restant"
 
 #: src/budget/components/budget-use-last-day-field/budget-use-last-day-field.tsx:24
 msgid "Reset on the last calendar day each month"
@@ -2938,11 +2961,11 @@ msgstr "Hier"
 msgid "You gave money"
 msgstr "Vous avez donné de l'argent"
 
-#: src/budget/service/budget-alert-monitor.service.ts:104
+#: src/budget/service/budget-alert-monitor.service.ts:106
 msgid "You have used {spentPercent}% of your overall budget."
 msgstr "Vous avez utilisé {spentPercent}% de votre budget global."
 
-#: src/budget/service/budget-alert-monitor.service.ts:113
+#: src/budget/service/budget-alert-monitor.service.ts:117
 msgid "You have used {threshold}% of the limit for {categoryName}."
 msgstr "Vous avez utilisé {threshold}% de la limite pour {categoryName}."
 

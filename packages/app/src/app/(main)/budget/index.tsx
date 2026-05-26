@@ -42,7 +42,7 @@ export default function BudgetDetailScreen() {
     const spentByCategoryMap = new Map(spent.spentByCategory.map(entry => [entry.categoryId, entry.spent]));
     const hasCategoryLimits = isNotEmptyArray(categoryLimits);
 
-    const handleEdit = () => void router.push({ pathname: '/budget/setup', params: { id: String(budget.id) } });
+    const handleEdit = () => void router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
 
     const handleDelete = async () => {
         const confirmed = await confirmAlert({

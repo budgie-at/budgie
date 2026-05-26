@@ -41,11 +41,11 @@ msgstr "{autoCandidateCount, plural, one {# high-confidence match} other {# high
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# column available} other {# columns available}}"
 
-#: src/budget/service/budget-alert-monitor.service.ts:112
+#: src/budget/service/budget-alert-monitor.service.ts:116
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% spent"
 
-#: src/budget/service/budget-alert-monitor.service.ts:112
+#: src/budget/service/budget-alert-monitor.service.ts:116
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: limit reached"
 
@@ -64,6 +64,10 @@ msgstr "{count, plural, one {This category has # transaction. Select another cat
 #: src/app/(tabs)/settings/tags.tsx:42
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
+
+#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:16
+msgid "{count} configured"
+msgstr "{count} configured"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -306,6 +310,10 @@ msgstr "All Time"
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:53
+msgid "Allocated"
+msgstr "Allocated"
+
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx:34
 msgid "Already syncing"
 msgstr "Already syncing"
@@ -462,7 +470,7 @@ msgstr "Budget"
 msgid "Budget currency"
 msgstr "Budget currency"
 
-#: src/budget/service/budget-alert-monitor.service.ts:103
+#: src/budget/service/budget-alert-monitor.service.ts:105
 msgid "Budget limit reached"
 msgstr "Budget limit reached"
 
@@ -518,7 +526,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:34
 #: src/app/(tabs)/settings/import.tsx:181
-#: src/budget/service/budget-alert-monitor.service.ts:111
+#: src/budget/service/budget-alert-monitor.service.ts:115
 #: src/category/components/category-form-selector/category-form-selector.tsx:34
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:176
 msgid "Category"
@@ -528,8 +536,10 @@ msgstr "Category"
 msgid "Category → {categoryTitle}"
 msgstr "Category → {categoryTitle}"
 
+#: src/app/(main)/budget/edit/category-limits.tsx:30
 #: src/budget/components/budget-category-limits-card/budget-category-limits-card.tsx:18
 #: src/budget/components/budget-category-limits-field/budget-category-limits-field.tsx:29
+#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:18
 msgid "Category limits"
 msgstr "Category limits"
 
@@ -881,7 +891,7 @@ msgstr "Create and organize transaction tags"
 msgid "Create anyway"
 msgstr "Create anyway"
 
-#: src/app/(main)/budget/setup.tsx:44
+#: src/app/(main)/budget/edit/index.tsx:37
 msgid "Create budget"
 msgstr "Create budget"
 
@@ -1045,6 +1055,7 @@ msgstr "Disable App Lock"
 msgid "Display this budget on the home screen"
 msgstr "Display this budget on the home screen"
 
+#: src/app/(main)/budget/edit/category-limits.tsx:24
 #: src/app/import-column-mapper.tsx:97
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
@@ -1099,8 +1110,8 @@ msgstr "e.g. Household, Personal"
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
 
+#: src/app/(main)/budget/edit/index.tsx:37
 #: src/app/(main)/budget/index.tsx:87
-#: src/app/(main)/budget/setup.tsx:44
 msgid "Edit budget"
 msgstr "Edit budget"
 
@@ -1788,6 +1799,10 @@ msgstr "No items to save"
 msgid "No languages found"
 msgstr "No languages found"
 
+#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:16
+msgid "No limits configured"
+msgstr "No limits configured"
+
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:55
 msgid "No matching expenses"
 msgstr "No matching expenses"
@@ -1940,7 +1955,11 @@ msgstr "Original imported transactions will be restored and the consolidated tra
 msgid "Original transaction"
 msgstr "Original transaction"
 
-#: src/budget/service/budget-alert-monitor.service.ts:103
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:48
+msgid "Over by"
+msgstr "Over by"
+
+#: src/budget/service/budget-alert-monitor.service.ts:105
 msgid "Overall budget: {threshold}% spent"
 msgstr "Overall budget: {threshold}% spent"
 
@@ -2141,6 +2160,10 @@ msgstr "Refunded"
 #: src/transaction/components/refunded-pill/refunded-pill.tsx:78
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Refunded {formattedRefundedAmount}"
+
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:48
+msgid "Remaining"
+msgstr "Remaining"
 
 #: src/budget/components/budget-use-last-day-field/budget-use-last-day-field.tsx:24
 msgid "Reset on the last calendar day each month"
@@ -2940,11 +2963,11 @@ msgstr "Yesterday"
 msgid "You gave money"
 msgstr "You gave money"
 
-#: src/budget/service/budget-alert-monitor.service.ts:104
+#: src/budget/service/budget-alert-monitor.service.ts:106
 msgid "You have used {spentPercent}% of your overall budget."
 msgstr "You have used {spentPercent}% of your overall budget."
 
-#: src/budget/service/budget-alert-monitor.service.ts:113
+#: src/budget/service/budget-alert-monitor.service.ts:117
 msgid "You have used {threshold}% of the limit for {categoryName}."
 msgstr "You have used {threshold}% of the limit for {categoryName}."
 
