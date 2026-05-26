@@ -21,8 +21,8 @@ const STATE_TEXT_CLASS: Record<MoneyDataUpgradeProgressStateEnum, string> = {
 export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeof HorizontalCell>, 'testID'>) => {
     const { snapshot, handlePrimaryAction } = useMoneyDataUpgradeStatus();
     const percentText = `${snapshot.percent}%`;
-    const isActionable =
-        snapshot.state === MoneyDataUpgradeProgressStateEnum.READY || snapshot.state === MoneyDataUpgradeProgressStateEnum.ERROR;
+    const isWorking = snapshot.state === MoneyDataUpgradeProgressStateEnum.WORKING;
+    const isActionable = !isWorking;
     const statusTestID = isDefined(testID) ? `${testID}.Status.${snapshot.state}` : testID;
     const percentTestID = isDefined(testID) ? `${testID}.Percent.${snapshot.state}` : testID;
     const handlePress = () => {
@@ -34,11 +34,13 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeo
             testID={testID}
             {...(isActionable && { onPress: handlePress })}
             left={<CircleIcon icon={UserIconNameEnum.Database} variant="positive" border={false} size={36} iconSize={20} />}
-            right={
-                <Text testID={percentTestID} className={`text-sm font-medium text-right w-12 ${STATE_TEXT_CLASS[snapshot.state]}`}>
-                    {percentText}
-                </Text>
-            }
+            {...(isWorking && {
+                right: (
+                    <Text testID={percentTestID} className={`text-sm font-medium text-right w-12 ${STATE_TEXT_CLASS[snapshot.state]}`}>
+                        {percentText}
+                    </Text>
+                )
+            })}
             variant="secondary"
             contentClassName="gap-y-xs"
         >
@@ -46,7 +48,7 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeo
             <Text testID={statusTestID} className="text-xs font-medium text-secondary-foreground">
                 {snapshot.statusText}
             </Text>
-            <AiProgressBar progress={snapshot.percent} />
+            {isWorking ? <AiProgressBar progress={snapshot.percent} /> : null}
         </HorizontalCell>
     );
 };
