@@ -6,7 +6,6 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { MoneyDataUpgradeProgressStateEnum } from '../enum/money-data-upgrade-progress-state.enum';
-import { MoneyDataUpgradeStepEnum } from '../enum/money-data-upgrade-step.enum';
 import { MoneyDataUpgradeRuntimeSnapshotInterface } from '../interface/money-data-upgrade-runtime-snapshot.interface';
 import { MoneyDataUpgradeStatusSnapshotInterface } from '../interface/money-data-upgrade-status-snapshot.interface';
 import { moneyDataUpgradeService } from '../service/money-data-upgrade.service';
@@ -16,8 +15,6 @@ const EMPTY_RUNTIME_SNAPSHOT: MoneyDataUpgradeRuntimeSnapshotInterface = {
     pendingEntryCount: 0,
     processedEntryCount: 0,
     totalEntryCount: 0,
-    consolidationRemainingCount: 0,
-    consolidationTotalCount: 0,
     lastError: null
 };
 
@@ -44,14 +41,6 @@ const getState = (
     return hasPendingWork ? MoneyDataUpgradeProgressStateEnum.READY : MoneyDataUpgradeProgressStateEnum.COMPLETE;
 };
 
-const getStepState = (isRunning: boolean, percent: number): MoneyDataUpgradeProgressStateEnum => {
-    if (percent === 100) {
-        return MoneyDataUpgradeProgressStateEnum.COMPLETE;
-    }
-
-    return isRunning ? MoneyDataUpgradeProgressStateEnum.WORKING : MoneyDataUpgradeProgressStateEnum.READY;
-};
-
 const getStatusText = (
     runtimeSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface,
     hasPendingWork: boolean,
@@ -62,10 +51,10 @@ const getStatusText = (
     }
 
     if (runtimeSnapshot.isRunning) {
-        return t`Upgrade running`;
+        return t`Valuation running`;
     }
 
-    return hasPendingWork ? t`Upgrade available` : t`Ready`;
+    return hasPendingWork ? t`Base values need update` : t`Base values ready`;
 };
 
 const getPrimaryActionText = (
@@ -81,7 +70,7 @@ const getPrimaryActionText = (
         return t`Running`;
     }
 
-    return hasPendingWork ? t`Upgrade` : t`Done`;
+    return hasPendingWork ? t`Value` : t`Done`;
 };
 
 export const useMoneyDataUpgradeStatus = () => {
@@ -97,56 +86,29 @@ export const useMoneyDataUpgradeStatus = () => {
             .getSnapshot()
             .then(setRuntimeSnapshot)
             .catch((error: unknown) => {
-                showErrorToast(t`Money data upgrade failed`, getErrorMessage(error));
+                showErrorToast(t`Historical valuation failed`, getErrorMessage(error));
             });
     }, [t]);
 
     const snapshot = useMemo<MoneyDataUpgradeStatusSnapshotInterface>(() => {
-        const baseValuesPercent = calculatePercent(runtimeSnapshot.processedEntryCount, runtimeSnapshot.totalEntryCount);
-        const consolidationProcessedCount = runtimeSnapshot.consolidationTotalCount - runtimeSnapshot.consolidationRemainingCount;
-        const consolidationPercent = calculatePercent(consolidationProcessedCount, runtimeSnapshot.consolidationTotalCount);
-        const hasPendingWork =
-            runtimeSnapshot.pendingEntryCount > 0 || runtimeSnapshot.consolidationRemainingCount > 0 || runtimeSnapshot.isRunning;
+        const percent = calculatePercent(runtimeSnapshot.processedEntryCount, runtimeSnapshot.totalEntryCount);
+        const hasPendingWork = runtimeSnapshot.pendingEntryCount > 0 || runtimeSnapshot.isRunning;
         const state = getState(runtimeSnapshot, hasPendingWork);
-        const percent = Math.round((baseValuesPercent + consolidationPercent) / 2);
 
         return {
-            title: t`Money Data`,
+            title: t`Value Historical Entries`,
             statusText: getStatusText(runtimeSnapshot, hasPendingWork, t),
             percent,
             state,
-            primaryActionText: getPrimaryActionText(runtimeSnapshot, hasPendingWork, t),
-            steps: [
-                {
-                    key: MoneyDataUpgradeStepEnum.HISTORICAL_RATES,
-                    title: t`Historical rates`,
-                    statusText: t`Ready`,
-                    percent: 100,
-                    state: MoneyDataUpgradeProgressStateEnum.COMPLETE
-                },
-                {
-                    key: MoneyDataUpgradeStepEnum.BASE_VALUES,
-                    title: t`Base values`,
-                    statusText: `${runtimeSnapshot.processedEntryCount}/${runtimeSnapshot.totalEntryCount}`,
-                    percent: baseValuesPercent,
-                    state: getStepState(runtimeSnapshot.isRunning, baseValuesPercent)
-                },
-                {
-                    key: MoneyDataUpgradeStepEnum.TRANSFER_CONSOLIDATION,
-                    title: t`Transfer consolidation`,
-                    statusText: `${consolidationProcessedCount}/${runtimeSnapshot.consolidationTotalCount}`,
-                    percent: consolidationPercent,
-                    state: getStepState(runtimeSnapshot.isRunning, consolidationPercent)
-                }
-            ]
+            primaryActionText: getPrimaryActionText(runtimeSnapshot, hasPendingWork, t)
         };
     }, [runtimeSnapshot, t]);
 
     const handlePrimaryAction = useCallback(async () => {
         const confirmed = await confirmAlert({
-            title: t`Upgrade money data?`,
-            message: t`Budgie will prepare historical values and transfer matching. Analytics may be unavailable until this finishes.`,
-            confirmText: t`Upgrade`,
+            title: t`Value historical entries?`,
+            message: t`Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes.`,
+            confirmText: t`Value`,
             cancelText: t`Cancel`
         });
 
@@ -157,7 +119,7 @@ export const useMoneyDataUpgradeStatus = () => {
         try {
             setRuntimeSnapshot(await moneyDataUpgradeService.run(handleProgress));
         } catch (error: unknown) {
-            showErrorToast(t`Money data upgrade failed`, getErrorMessage(error));
+            showErrorToast(t`Historical valuation failed`, getErrorMessage(error));
         }
     }, [handleProgress, t]);
 

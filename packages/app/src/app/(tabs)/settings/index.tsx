@@ -22,6 +22,7 @@ import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { MoneyDataUpgradeStatusCard } from '../../../money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card';
 import { AutoAssignMccCategory } from '../../../settings/components/auto-assign-mcc-category/auto-assign-mcc-category';
+import { ConsolidateTransfers } from '../../../settings/components/consolidate-transfers/consolidate-transfers';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
@@ -116,14 +117,6 @@ export default function SettingsPage() {
                     </SettingsGroup>
                 </View>
 
-                <View {...anchorLayout('money-data')}>
-                    <SettingsGroup title={t`Money Data`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('money-data')}>
-                            <MoneyDataUpgradeStatusCard testID={SettingsPageSelector.MoneyDataUpgradeCard} />
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
-
                 <View {...anchorLayout('organization')}>
                     <SettingsGroup title={t`Organization`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('organization')}>
@@ -204,6 +197,8 @@ export default function SettingsPage() {
                             <ExportCsv />
                             <ImportDatabase />
                             <ExportDatabase />
+                            <MoneyDataUpgradeStatusCard testID={SettingsPageSelector.MoneyDataUpgradeCard} />
+                            <ConsolidateTransfers />
                             <RecalculateBalances />
                             <Animated.View {...anchorLayout('clear-data')} {...anchorHighlight('clear-data')}>
                                 <TruncateData />

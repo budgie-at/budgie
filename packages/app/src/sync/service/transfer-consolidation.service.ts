@@ -15,7 +15,6 @@ import { transferConsolidationCandidateService } from './transfer-consolidation-
 import type { ConsolidationCandidateGroupsInterface } from '../interface/consolidation-candidate-groups.interface';
 import type { ConsolidationPreviewInterface } from '../interface/consolidation-preview.interface';
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
-import type { TransferConsolidationMoneyDataUpgradeResultInterface } from '../interface/transfer-consolidation-money-data-upgrade-result.interface';
 import type { TransferConsolidationProgressSnapshotInterface } from '../interface/transfer-consolidation-progress-snapshot.interface';
 
 const logger = getLogger('TransferConsolidationService');
@@ -61,18 +60,6 @@ class TransferConsolidationService {
     )
     async getProgressSnapshot(): Promise<TransferConsolidationProgressSnapshotInterface> {
         return this.runExclusive(() => this.buildProgressSnapshot());
-    }
-
-    @Log(
-        onProgress => `enter hasOnProgress=${String(isDefined(onProgress))}`,
-        (result, onProgress) =>
-            `done hasOnProgress=${String(isDefined(onProgress))} beforeRemainingCandidateGroupCount=${result.before.remainingCandidateGroupCount} afterRemainingCandidateGroupCount=${result.after.remainingCandidateGroupCount} found=${result.found} consolidated=${result.consolidated}`,
-        (error, onProgress) => `throw hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
-    )
-    async runForMoneyDataUpgrade(
-        onProgress?: (processedCandidateGroupCount: number) => void
-    ): Promise<TransferConsolidationMoneyDataUpgradeResultInterface> {
-        return this.runExclusive(() => this.runMoneyDataUpgradeBatch(onProgress));
     }
 
     @Log(
@@ -166,21 +153,6 @@ class TransferConsolidationService {
             isRunning: this.isRunning,
             manualReviewCandidateCount,
             remainingCandidateGroupCount
-        };
-    }
-
-    private async runMoneyDataUpgradeBatch(
-        onProgress?: (processedCandidateGroupCount: number) => void
-    ): Promise<TransferConsolidationMoneyDataUpgradeResultInterface> {
-        const before = await this.buildProgressSnapshot();
-        const { found, consolidated } = await this.runConsolidationIfIdle(onProgress);
-        const after = await this.buildProgressSnapshot();
-
-        return {
-            after,
-            before,
-            consolidated,
-            found
         };
     }
 
