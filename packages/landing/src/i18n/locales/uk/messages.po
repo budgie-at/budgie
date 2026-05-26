@@ -67,6 +67,7 @@ msgstr "© {date} Budgie. Всі права захищено."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:97
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:97
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:97
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:95
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:93
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:95
@@ -250,6 +251,14 @@ msgstr "<0>Синхронізація з банком</0>: Так (обов'яз
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:343
 msgid "<0>Bank TOS violations</0>: Most banks explicitly prohibit sharing credentials with third parties"
 msgstr "<0>Порушення умов обслуговування банку</0>: Більшість банків прямо забороняють надання облікових даних третім сторонам"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:200
+msgid "<0>Base amount</0> — The value of that entry in your current reporting currency, calculated from the exchange rate that belongs to the transaction date."
+msgstr ""
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:206
+msgid "<0>Base exchange rate</0> — The rate used for that calculation, stored beside the entry so analytics do not need to recalculate every chart on every screen."
+msgstr ""
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:578
 msgid "<0>Best case</0>: Data is deleted per the privacy policy"
@@ -947,6 +956,10 @@ msgstr "<0>Firefly III</0>: Так"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:963
 msgid "<0>Multi-device sync</0>: Your data exists on one device unless you manually transfer it"
 msgstr "<0>Синхронізація між пристроями</0>: Ваші дані існують на одному пристрої, якщо ви не перенесете їх вручну"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:194
+msgid "<0>Native amount</0> — The exact amount in the account currency. This is what you spent, received, or transferred, and it never changes when rates refresh."
+msgstr ""
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1016
 msgid "<0>Native Apple design.</0> Feels right at home on iOS and macOS."
@@ -1925,6 +1938,10 @@ msgstr "Загальнодоступний FX-потік. Жодного обл�
 msgid "A source-available license that lets you read, fork, and modify the code. The official app builds remain ours to monetize, which keeps development sustainable."
 msgstr "Ліцензія з доступним вихідним кодом, що дозволяє читати, форкати та змінювати код. Офіційні збірки додатку залишаються нашою власністю для монетизації, що забезпечує стійкий розвиток."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:117
+msgid "A spending report should compare what money meant on the day you spent it. Budgie values each imported and newly saved transaction in your base currency using the exchange rate from the transaction date."
+msgstr ""
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:52
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:79
 #: src/blog/constant/article-registry.constant.ts:15
@@ -2321,6 +2338,7 @@ msgstr "Архітектура з офлайн-першим підходом у�
 msgid "An open-source project is more than just public code. It’s a community of users, contributors, and maintainers working together toward shared goals. How that community is governed matters for the project’s long-term health and trustworthiness."
 msgstr "Проєкт з відкритим кодом — це більше, ніж просто публічний код. Це спільнота користувачів, учасників та мейнтейнерів, які працюють разом над спільними цілями. Те, як ця спільнота управляється, має значення для довгострокового здоров'я та надійності проєкту."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:137
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx:16
 #: src/app/[lang]/features/tag-analytics/opengraph-image.tsx:17
 #: src/app/[lang]/features/transaction-tags/opengraph-image.tsx:18
@@ -2683,6 +2701,7 @@ msgstr "банківська виписка"
 msgid "Bank statements from Ukrainian, Greek, or Arabic-script banks come back full of unreadable merchant names — useless for search or analytics. Budgie's on-device normalizer runs each merchant string through the LLM, gets a clean Latin name plus search keywords, and stores both."
 msgstr "Банківські виписки від українських, грецьких або арабськомовних банків повні нечитабельних назв продавців — марних для пошуку чи аналітики. Нормалізатор Budgie на пристрої обробляє кожну назву продавця через LLM, отримує чисту латинську назву і ключові слова для пошуку та зберігає обидва варіанти."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:143
 #: src/app/[lang]/features/bank-resync-window/opengraph-image.tsx:16
 #: src/app/[lang]/features/mcc-auto-category/opengraph-image.tsx:18
 #: src/app/[lang]/features/monobank-sync/opengraph-image.tsx:18
@@ -2981,6 +3000,8 @@ msgstr "Block, материнська компанія Cash App, розкрил�
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:105
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:77
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:105
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:77
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:105
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:75
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:103
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:75
@@ -3251,6 +3272,10 @@ msgstr "Budgie — це наш внесок у це майбутнє: засто
 msgid "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
 msgstr "Budgie — не єдиний варіант з відкритим кодом для управління фінансами. Існує здорова екосистема альтернатив, і ми вважаємо за правильне чесно їх згадати. Різні інструменти підходять для різних потреб, і найкращий вибір залежить від ваших конкретних вимог."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:324
+msgid "Budgie leaves the base value empty until a suitable rate exists. That is safer than inventing a value, because analytics can identify unvalued rows instead of silently mixing guessed totals with real totals."
+msgstr ""
+
 #: src/generic/component/logo/logo.tsx:19
 msgid "Budgie logo"
 msgstr "Логотип Budgie"
@@ -3308,6 +3333,10 @@ msgstr "Budgie запускає Qwen3 1.7B та 768-вимірну модель 
 #: src/feature/constant/pillar-hub-registry.constant.ts:113
 msgid "Budgie runs Qwen3 1.7B and a 768-dim embedding model locally. AI auto-categorization, voice transaction entry, and merchant translation without sending data to the cloud."
 msgstr "Budgie запускає Qwen3 1.7B і 768-вимірну модель вкладень локально. AI-автокатегоризація, введення транзакцій голосом і переклад назв продавців без надсилання даних у хмару."
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:243
+msgid "Budgie ships historical daily exchange-rate seeds in the local database migration."
+msgstr ""
 
 #: src/feature/component/open-source-pillar-hub-content/open-source-pillar-hub-content.tsx:32
 msgid "Budgie ships under a source-available license that lets you read every line, fork it, and run your own build. Your financial data belongs to you — not to a vendor who can change terms, raise prices, or shut down. If Budgie ever stops meeting your needs, you take your data and your build with you."
@@ -3447,6 +3476,10 @@ msgstr "Budgie: Приватність без компромісів"
 msgid "Budgie: Privacy-First, Offline-First Mobile Budgeting"
 msgstr "Budgie: конфіденційність на першому місці, офлайн-перший мобільний бюджетний додаток"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:161
+msgid "Budgie’s answer is transaction-date valuation. Each transaction entry keeps its original amount and currency, then stores a nullable base-currency value calculated from the best historical rate available for that date. The original record stays intact, while analytics can sum one consistent value."
+msgstr ""
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:992
 msgid "Budgie’s Approach"
 msgstr "Без серверної обробки: Обчислення, категоризація та аналітика відбуваються на пристрої"
@@ -3572,6 +3605,10 @@ msgstr "Можуть зламати або вилучити за повістк�
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:972
 msgid "Can be overwhelming for casual users"
 msgstr "Може бути перевантаженим для звичайних користувачів"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:337
+msgid "Can historical values be rebuilt after changing my main currency?"
+msgstr ""
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx:174
 #: src/feature/constant/feature-registry.constant.ts:207
@@ -4643,6 +4680,10 @@ msgstr "CSV для таблиць. Зашифрована резервна ко�
 msgid "CSV for spreadsheets. Encrypted database backup for restore. Both yours, never ours."
 msgstr "CSV для таблиць. Зашифрована резервна копія бази даних для відновлення. Обидва — ваші, ніколи наші."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:140
+msgid "CSV import"
+msgstr ""
+
 #: src/app/[lang]/features/csv-import/opengraph-image.tsx:15
 #: src/generic/component/integrations-section/integrations-section-cards.tsx:66
 msgid "CSV Import"
@@ -5138,6 +5179,10 @@ msgstr "Чи працює синхронізація з банком офлай�
 msgid "Does Budgie auto-backup?"
 msgstr "Чи робить Budgie резервні копії автоматично?"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:316
+msgid "Does Budgie change my original imported amounts?"
+msgstr ""
+
 #: src/app/[lang]/features/expense-tracking/page.tsx:162
 #: src/feature/constant/feature-registry.constant.ts:330
 msgid "Does Budgie distinguish transfers from expenses?"
@@ -5361,6 +5406,10 @@ msgstr "Кожен рахунок має фіксовану нативну ва�
 #: src/app/[lang]/features/custom-categories/page.tsx:133
 msgid "Each category has a name, an icon, a color, and an optional MCC mapping. The Categories screen in Settings supports drag-to-reorder and bulk merge. Deleting a category prompts you to migrate its transactions or wipe them."
 msgstr "Кожна категорія має назву, іконку, колір та необов'язкове відображення MCC. Екран «Категорії» в налаштуваннях підтримує перетягування для переупорядкування та масове злиття. Видалення категорії пропонує перенести транзакції або видалити їх."
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:252
+msgid "Each group is updated in bulk, which keeps large imports practical even when years of transactions need valuation."
+msgstr ""
 
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx:137
 msgid "Each new transaction's title flows through a translation queue. The LLM proposes (translatedName, keywords); both are saved alongside the original. Embeddings then index the translated form for semantic search."
@@ -5626,6 +5675,10 @@ msgstr "Кожна гривня. Кожен рахунок. Один додат�
 msgid "Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a context menu. Edit, delete, split, or convert to a transfer without leaving the screen."
 msgstr "Кожен запис містить суму + рахунок + категорію + теги + коментар + дату. Затисніть будь-яку транзакцію у списку для контекстного меню. Редагуйте, видаляйте, розділяйте або конвертуйте на переказ, не залишаючи екрана."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:186
+msgid "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
+msgstr ""
+
 #: src/feature/constant/pillar-hub-registry.constant.ts:156
 msgid "Every time you accept, edit, or reject a category suggestion, the embedding model index updates locally. The more you use Budgie, the more accurately the embedding model mirrors your personal spending patterns."
 msgstr "Щоразу, коли ви приймаєте, редагуєте або відхиляєте підказку категорії, індекс моделі вкладень оновлюється локально. Що більше ви використовуєте Budgie, то точніше модель вкладень відображає ваші особисті шаблони витрат."
@@ -5702,6 +5755,10 @@ msgstr "Відмінний API для власних інтеграцій"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1056
 msgid "Excellent user experience"
 msgstr "Відмінний користувацький досвід"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:134
+msgid "exchange rates"
+msgstr ""
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:90
 msgid "Exchange rates are fetched and cached locally when you have connectivity. You can continue converting currencies offline using the last-fetched rates, with a visible timestamp so you always know their age."
@@ -6095,6 +6152,10 @@ msgstr "Для розробників:"
 msgid "For Firefly III:"
 msgstr "Для Firefly III:"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:291
+msgid "For historical spending, Budgie keeps the transaction-date base value stable. If you change your main reporting currency, the app can rebuild those stored values against the new base currency. If a better historical data source is added, the same nullable columns can be recalculated without changing your original transaction amounts."
+msgstr ""
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:659
 msgid "For indie developers and small teams, this changes the economics of software development. You can build sustainable software without venture capital to fund server infrastructure."
 msgstr "Для незалежних розробників та невеликих команд це змінює економіку розробки програмного забезпечення. Ви можете створювати стійке програмне забезпечення без венчурного капіталу для фінансування серверної інфраструктури."
@@ -6206,6 +6267,7 @@ msgstr "Фриланс-дизайнер"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:889
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:1132
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:312
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:1075
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1801
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:437
@@ -6422,6 +6484,23 @@ msgstr "Високий рівень налаштування"
 msgid "Historical data isn’t critical for your goals"
 msgstr "Історичні дані не є критичними для ваших цілей"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:56
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:84
+msgid "historical exchange rates budget app, multi currency expense tracker analytics, transaction date exchange rate, CSV import currency conversion"
+msgstr ""
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:92
+msgid "Historical exchange rates in budget analytics"
+msgstr ""
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:61
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:89
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:108
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:113
+#: src/blog/constant/article-registry.constant.ts:155
+msgid "Historical Exchange Rates in Budget Analytics"
+msgstr ""
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:352
 msgid "Hobbyist security researchers and bug hunters"
 msgstr "Ентузіастів безпеки та мисливців за помилками"
@@ -6442,6 +6521,8 @@ msgstr "Позиції об'єднуються в чисті активи раз
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:102
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:82
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:102
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:82
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:102
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:80
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:100
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:80
@@ -6714,6 +6795,10 @@ msgstr "На який термін поширюється прогноз?"
 #: src/feature/constant/feature-registry.constant.ts:322
 msgid "How fast is the quick-entry form?"
 msgstr "Наскільки швидка форма швидкого введення?"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:226
+msgid "How Imported History Gets Repaired"
+msgstr ""
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:471
 msgid "How is Budgie different from a cloud budgeting app?"
@@ -7383,6 +7468,10 @@ msgstr "Дізнайтеся, як AI на пристрої зберігає в�
 msgid "Learn More"
 msgstr "Дізнатися більше"
 
+#: src/blog/constant/article-registry.constant.ts:164
+msgid "Learn why budget analytics should value each transaction using the exchange rate from its real transaction date. Budgie stores base-currency values for accurate multi-currency history."
+msgstr ""
+
 #: src/blog/constant/article-registry.constant.ts:70
 msgid "Learn why offline-first architecture is the only way to guarantee financial privacy. Discover the hidden dangers of cloud apps and how Budgie protects your data."
 msgstr "Дізнайтеся, чому офлайн-орієнтована архітектура є єдиним способом гарантувати фінансову конфіденційність. Відкрийте приховані небезпеки хмарних додатків та як Budgie захищає ваші дані."
@@ -7981,6 +8070,10 @@ msgstr "Помилки трапляються. Ви записуєте пере�
 msgid "mobile"
 msgstr "мобільний"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:331
+msgid "Mobile analytics need to be fast. Storing the base amount lets Budgie sum large histories directly in SQL, while keeping the exchange rate available for audit and future rebuilds."
+msgstr ""
+
 #: src/feature/constant/feature-registry.constant.ts:1854
 msgid "Mobile experience"
 msgstr "Мобільний досвід"
@@ -8206,6 +8299,7 @@ msgstr "Управління грошима на кількох рахунках
 msgid "Multi-Account Money Management — Budgie"
 msgstr "Управління грошима на кількох рахунках — Budgie"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:131
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx:17
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx:16
 #: src/app/[lang]/features/net-worth-tracker/opengraph-image.tsx:17
@@ -8229,6 +8323,10 @@ msgstr "Мультивалютні рахунки з актуальними ку
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx:122
 msgid "Multi-currency aware — euro-denominated ETF + dollar stocks + UAH cash all reconcile"
 msgstr "Підтримка мультивалютності — ETF у євро + акції в доларах + готівка в UAH — все узгоджується"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:153
+msgid "Multi-currency budgets fail quietly when they convert old spending with today’s rate. A coffee bought in hryvnia ten years ago, a rent payment in dollars last month, and a bank import from yesterday cannot be added together fairly unless every row carries a value in the same reporting currency."
+msgstr ""
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:79
 msgid "Multi-currency exchange rates cached locally for offline use"
@@ -8302,6 +8400,10 @@ msgstr "чисті активи"
 msgid "Net Worth"
 msgstr "Чисті активи"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:283
+msgid "Net worth and account balances answer a different question from spending analytics. Net worth asks, “What are my holdings worth now?” Spending analytics asks, “What did this cost me then?” Those questions should not share the same conversion rule."
+msgstr ""
+
 #: src/app/[lang]/features/debt-tracking/page.tsx:101
 msgid "Net worth respects debt direction: liabilities reduce, receivables increase. Settling the debt is just a transfer to or from the debt account; balance hits zero, you can archive."
 msgstr "Чисті активи враховують напрямок боргу: зобов'язання зменшують, дебіторська заборгованість збільшує. Погашення боргу — це просто переказ на борговий рахунок або з нього; баланс обнуляється, рахунок можна заархівувати."
@@ -8346,6 +8448,10 @@ msgstr "Ніколи не вживати юридичних дій проти д
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:315
 msgid "Never worry about service availability"
 msgstr "Ніколи не турбуйтеся про доступність сервісу"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:266
+msgid "New transactions follow the same rule at write time. Manual entries, CSV imports, and <0>bank sync</0> transactions save their base amount as they are inserted when the source does not already provide a usable valuation."
+msgstr ""
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:981
 msgid "Newer app, still building feature parity with established players"
@@ -8605,6 +8711,10 @@ msgstr "Ні. Захист знімків екрана автоматично р
 msgid "No. Switching language re-renders the UI in-place, no reinstall or relaunch."
 msgstr "Ні. Перемикання мови перерендеровує інтерфейс на місці — без перевстановлення або перезапуску."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:317
+msgid "No. The account-currency amount remains the source of truth. Base-currency fields are derived values used for reporting and can be recalculated later."
+msgstr ""
+
 #: src/feature/constant/feature-registry.constant.ts:243
 msgid "No. The microphone stream feeds Whisper directly in-process; the audio buffer is discarded after transcription. Nothing is saved, sent, or logged."
 msgstr "Ні. Потік з мікрофону подається безпосередньо в Whisper у процесі; аудіобуфер видаляється після транскрипції. Нічого не зберігається, не надсилається і не реєструється."
@@ -8852,6 +8962,10 @@ msgstr "Часто ні"
 #: src/feature/constant/feature-registry.constant.ts:1914
 msgid "Often yes"
 msgstr "Часто так"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:230
+msgid "Older exports often contain the account currency and amount, but no exchange-rate snapshot. Budgie treats that as incomplete valuation data, not as corrupt transaction data. The entry is still usable; it simply needs a base value before it should affect multi-currency charts."
+msgstr ""
 
 #: src/app/[lang]/features/dark-mode/page.tsx:146
 #: src/feature/constant/feature-registry.constant.ts:1525
@@ -11203,6 +11317,14 @@ msgstr "Той рахунок у супермаркеті на 87 € — про
 msgid "That daily coffee? $150/month. Forgotten subscriptions? $80/month. Budgie exposes every spending leak so you can finally plug them and keep more money in your pocket."
 msgstr "Та щоденна кава? $150/місяць. Забуті підписки? $80/місяць. Budgie виявляє кожен витік грошей, щоб ви нарешті могли їх зупинити й тримати більше грошей у кишені."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:214
+msgid "That gives Budgie two strengths at once. You can audit the original bank or CSV data, and <0>spending analytics</0> can still sum categories, tags, and periods without guessing which rate to use."
+msgstr ""
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:300
+msgid "That is the point of <0>multi-currency accounts</0>: show today’s portfolio with today’s rates, but show historical expenses with historical rates."
+msgstr ""
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:708
 msgid "That last point is significant. Your data, in aggregate form, may inform products you never agreed to."
 msgstr "Останній пункт є значущим. Ваші дані в агрегованій формі можуть впливати на продукти, на які ви ніколи не погоджувались."
@@ -11478,6 +11600,10 @@ msgstr "Рух Local-First: чому розробники створюють о�
 msgid "The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually."
 msgstr "Транзакції об'єднаної категорії переназначаються до цільової категорії, і порожня категорія видаляється. Зворотне виконання лише через ручну перекатегоризацію."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:246
+msgid "The Money Data upgrade scans entries where the base currency value is missing and groups them by date, account currency, and base currency."
+msgstr ""
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:568
 msgid "The most private way to get bank data into Budgie is manual import. Most banks allow you to download transaction history in standard formats like CSV, OFX, or QIF. You download this file directly from your bank, and Budgie imports it locally on your device."
 msgstr "Найбільш приватний спосіб отримати банківські дані в Budgie — це ручний імпорт. Більшість банків дозволяють завантажити історію транзакцій у стандартних форматах, таких як CSV, OFX або QIF. Ви завантажуєте цей файл безпосередньо з вашого банку, і Budgie імпортує його локально на вашому пристрої."
@@ -11623,6 +11749,10 @@ msgstr "Результат полягає в тому, що Budgie може за
 msgid "The risky approach"
 msgstr "Ризикований підхід"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:182
+msgid "The Rule: Store Original Truth and Reporting Value"
+msgstr ""
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:1028
 msgid "The security architecture is designed for users who understand the risks described in this article and want an alternative."
 msgstr "[Архітектура безпеки](/{lang}#security) розроблена для користувачів, які розуміють ризики, описані в цій статті, і хочуть альтернативу."
@@ -11733,6 +11863,10 @@ msgstr "Відро «Без тегів» — це не стан помилки, 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx:125
 msgid "The Untagged total recomputes live as you tag transactions, so the number shrinks in real time during a labeling pass. Combined with AI tag suggestions, a short review session can close most gaps without the usual manual-tag tedium."
 msgstr "Загальна сума «Без тегів» перераховується в реальному часі під час тегування транзакцій, тому число зменшується в режимі реального часу під час сеансу маркування. У поєднанні з AI-підказками тегів коротка сесія перегляду може закрити більшість прогалин без звичайного ручного занудства."
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:238
+msgid "The Upgrade Flow"
+msgstr ""
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:262
 msgid "The write completes locally with no network activity"
@@ -11902,6 +12036,10 @@ msgstr "Це також спрощує реалізацію. Без вимог �
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:283
 msgid "This manifesto resonated deeply with developers who had grown frustrated with the limitations and lock-in of cloud services. It sparked renewed interest in technologies that could make local-first software practical at scale."
 msgstr "Цей маніфест знайшов глибокий відгук серед розробників, які були розчаровані обмеженнями та прив'язкою до хмарних сервісів. Він спровокував відновлений інтерес до технологій, що могли б зробити local-first програмне забезпечення практичним у масштабі."
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:169
+msgid "This matters most after a migration. If you import years of spending from a previous app through <0>CSV import</0>, Budgie can rebuild the base values from historical exchange rates instead of treating old rows as if they happened today."
+msgstr ""
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:402
 msgid "This means more than just a privacy policy. True privacy requires:"
@@ -12726,6 +12864,10 @@ msgstr "Що сталося з усіма моїми даними в Mint?"
 msgid "What happens during a cross-currency transfer?"
 msgstr "Що відбувається під час міжвалютного переказу?"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:323
+msgid "What happens if a historical rate is missing?"
+msgstr ""
+
 #: src/app/[lang]/features/csv-import/page.tsx:155
 #: src/feature/constant/feature-registry.constant.ts:664
 msgid "What happens if I import the same file twice?"
@@ -13271,6 +13413,10 @@ msgstr "Яка альтернатива YNAB має найкращий мобі�
 msgid "While Figma is primarily cloud-hosted, its underlying technology demonstrates CRDT principles at scale. Their engineering team has published extensively about their multiplayer architecture and the CRDT-like structures they use."
 msgstr "Хоча Figma переважно розміщується в хмарі, її базова технологія демонструє принципи CRDT у масштабі. Інженерна команда опублікувала численні матеріали про їхню багатокористувацьку архітектуру та CRDT-подібні структури, які вони використовують."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:258
+msgid "While the upgrade runs, the settings screen shows progress and blocks interaction so analytics cannot be read halfway through a rebuild."
+msgstr ""
+
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:398
 msgid "Whisper running on your device never sends audio anywhere. The model receives your audio buffer, produces a transcript, and that is the end of the data flow. No audio log, no remote API call, no third party involved."
 msgstr "Whisper, що працює на вашому пристрої, ніколи не надсилає аудіо нікуди. Модель отримує ваш аудіобуфер, видає транскрипт, і на цьому потік даних закінчується. Жодного аудіожурналу, жодного віддаленого API-виклику, жодної третьої сторони."
@@ -13316,6 +13462,12 @@ msgstr "Чому фінансовий додаток опівночі має з�
 msgid "Why a full re-sync is the wrong fix"
 msgstr "Чому повна повторна синхронізація — неправильне виправлення"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:52
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:79
+#: src/blog/constant/article-registry.constant.ts:156
+msgid "Why a multi-currency expense tracker needs transaction-date valuation, not today's exchange rate, and how Budgie keeps imported history comparable in your base currency."
+msgstr ""
+
 #: src/app/[lang]/features/multi-currency/page.tsx:92
 msgid "Why a single-currency app can't model real life"
 msgstr "Чому однова людний додаток не може моделювати реальне життя"
@@ -13331,6 +13483,10 @@ msgstr "Чому трекер витрат повинен також бути б
 #: src/app/[lang]/features/biometric-authentication/page.tsx:91
 msgid "Why biometrics belong on a finance app you check ten times a day"
 msgstr "Чому біометрія доречна у фінансовому додатку, який ви перевіряєте десять разів на день"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:279
+msgid "Why Budgie Does Not Revalue Everything Every Day"
+msgstr ""
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1419
 msgid "Why Budgie Takes a Different Approach"
@@ -13531,6 +13687,10 @@ msgstr "Чому шукати один тег у довгому списку с�
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:197
 msgid "Why SQLite Over Cloud Databases"
 msgstr "Чому SQLite, а не хмарні бази даних"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:330
+msgid "Why store the base amount if it can be recalculated?"
+msgstr ""
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx:91
 msgid "Why subscriptions need their own view"
@@ -14094,6 +14254,10 @@ msgstr "Так. Плашка рахує лише транзакції без к�
 #: src/feature/constant/feature-registry.constant.ts:1822
 msgid "Yes. The repository ships with build instructions for iOS and Android."
 msgstr "Так. Репозиторій постачається з інструкціями зі збирання для iOS та Android."
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:338
+msgid "Yes. The stored base fields are nullable derived data. Budgie can clear and rebuild them from historical rates while preserving the original transaction amounts."
+msgstr ""
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx:174
 #: src/feature/constant/feature-registry.constant.ts:173

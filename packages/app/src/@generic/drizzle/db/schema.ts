@@ -19,6 +19,7 @@ export {
     BankSyncEntityRelations,
     ExchangeRateEntityTable,
     ExchangeRateEntityRelations,
+    HistoricalExchangeRateEntityTable,
     InstrumentEntityTable,
     InstrumentEntityRelations,
     SettingsEntityTable,

@@ -33,10 +33,6 @@ msgstr "{accountTitle} will be restored to your main view and included in totals
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} will be restored to your main view."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:35
-msgid "{autoCandidateCount, plural, one {# high-confidence match} other {# high-confidence matches}}"
-msgstr "{autoCandidateCount, plural, one {# high-confidence match} other {# high-confidence matches}}"
-
 #: src/app/import-column-mapper.tsx:31
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# column available} other {# columns available}}"
@@ -69,17 +65,9 @@ msgstr "{formattedRemaining} left to assign"
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} over budget"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:65
-msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
-msgstr "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
-
 #: src/app/transaction-type-filter.tsx:46
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:41
-msgid "{manualReviewCandidateCount, plural, one {# review match} other {# review matches}}"
-msgstr "{manualReviewCandidateCount, plural, one {# review match} other {# review matches}}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:36
 #: src/rule/components/rules-list-page/rules-list-page.tsx:37
@@ -144,7 +132,7 @@ msgstr "100% Offline & Private"
 msgid "A rule with the same conditions already exists."
 msgstr "A rule with the same conditions already exists."
 
-#: src/app/(tabs)/settings/index.tsx:208
+#: src/app/(tabs)/settings/index.tsx:215
 msgid "About"
 msgstr "About"
 
@@ -154,6 +142,10 @@ msgstr "About"
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx:52
 msgid "Account"
 msgstr "Account"
+
+#: src/money-data/service/entry-base-valuation.service.ts:166
+msgid "Account {accountId} not found"
+msgstr "Account {accountId} not found"
 
 #: src/@generic/component/account-details-field/account-details-field.tsx:49
 msgid "Account Name & Icon"
@@ -258,7 +250,7 @@ msgstr "AI off"
 msgid "AI-Generated Metadata"
 msgstr "AI-Generated Metadata"
 
-#: src/app/(tabs)/settings/index.tsx:212
+#: src/app/(tabs)/settings/index.tsx:219
 msgid "AI-powered budgeting app with complete privacy. All data processing happens locally on your device."
 msgstr "AI-powered budgeting app with complete privacy. All data processing happens locally on your device."
 
@@ -314,11 +306,11 @@ msgstr "API Token"
 msgid "App Lock"
 msgstr "App Lock"
 
-#: src/app/(tabs)/settings/index.tsx:216
+#: src/app/(tabs)/settings/index.tsx:223
 msgid "App Version"
 msgstr "App Version"
 
-#: src/app/(tabs)/settings/index.tsx:167
+#: src/app/(tabs)/settings/index.tsx:175
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -344,7 +336,7 @@ msgid "Archive Account?"
 msgstr "Archive Account?"
 
 #: src/app/(tabs)/settings/archived.tsx:57
-#: src/app/(tabs)/settings/index.tsx:148
+#: src/app/(tabs)/settings/index.tsx:156
 msgid "Archived Accounts"
 msgstr "Archived Accounts"
 
@@ -366,7 +358,7 @@ msgstr "Are you sure?"
 msgid "Auto-assign categories from MCC"
 msgstr "Auto-assign categories from MCC"
 
-#: src/app/(tabs)/settings/index.tsx:142
+#: src/app/(tabs)/settings/index.tsx:150
 msgid "Auto-categorize transactions"
 msgstr "Auto-categorize transactions"
 
@@ -409,6 +401,16 @@ msgstr "Bank sync reset"
 msgid "Base currency"
 msgstr "Base currency"
 
+#: src/money-data/service/entry-base-valuation.service.ts:170
+#: src/money-data/service/money-data-upgrade.service.ts:33
+#: src/money-data/service/money-data-upgrade.service.ts:101
+msgid "Base instrument not found"
+msgstr "Base instrument not found"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:131
+msgid "Base values"
+msgstr "Base values"
+
 #: src/rule/constant/rule-condition-operator.constant.ts:13
 msgid "between"
 msgstr "between"
@@ -433,9 +435,13 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/app/(tabs)/settings/index.tsx:210
+#: src/app/(tabs)/settings/index.tsx:217
 msgid "Budgie"
 msgstr "Budgie"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:150
+msgid "Budgie will prepare historical values and transfer matching. Analytics may be unavailable until this finishes."
+msgstr "Budgie will prepare historical values and transfer matching. Analytics may be unavailable until this finishes."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:41
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx:12
@@ -448,13 +454,13 @@ msgstr "Budgie"
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:152
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:133
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:52
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:42
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:67
 #: src/transaction/hook/use-delete-transaction.hook.ts:27
 #: src/transaction/hook/use-revert-consolidation.hook.ts:19
@@ -581,15 +587,6 @@ msgstr "Confirm tag selection"
 msgid "Connect Monobank"
 msgstr "Connect Monobank"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:51
-msgid "Consolidate"
-msgstr "Consolidate"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:49
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:89
-msgid "Consolidate Matches"
-msgstr "Consolidate Matches"
-
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:22
 msgid "Contact (optional)"
 msgstr "Contact (optional)"
@@ -611,11 +608,12 @@ msgid "Conversion failed"
 msgstr "Conversion failed"
 
 #: src/app/convert-to-transfer.tsx:76
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:24
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:38
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts:29
 msgid "Convert"
 msgstr "Convert"
 
+#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:27
 msgid "Convert to Refund"
 msgstr "Convert to Refund"
@@ -626,7 +624,7 @@ msgstr "Convert to Refund?"
 
 #: src/app/convert-to-transfer.tsx:121
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:19
+#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:34
 msgid "Convert to Transfer"
 msgstr "Convert to Transfer"
@@ -646,10 +644,6 @@ msgstr "Could not archive account"
 #: src/settings/components/truncate-data/truncate-data.tsx:36
 msgid "Could not clear data"
 msgstr "Could not clear data"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:80
-msgid "Could not consolidate matches"
-msgstr "Could not consolidate matches"
 
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts:45
 msgid "Could not convert to refund"
@@ -713,7 +707,7 @@ msgstr "Could not fetch accounts"
 msgid "Could not import CSV file"
 msgstr "Could not import CSV file"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:55
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:56
 msgid "Could not load sources. Please try again."
 msgstr "Could not load sources. Please try again."
 
@@ -812,7 +806,7 @@ msgstr "Create Accounts"
 msgid "Create and copy the personal token"
 msgstr "Create and copy the personal token"
 
-#: src/app/(tabs)/settings/index.tsx:133
+#: src/app/(tabs)/settings/index.tsx:141
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
@@ -894,7 +888,7 @@ msgstr "Custom categories you create will appear here"
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
-#: src/app/(tabs)/settings/index.tsx:193
+#: src/app/(tabs)/settings/index.tsx:201
 msgid "Data management"
 msgstr "Data management"
 
@@ -955,7 +949,7 @@ msgid "Delete rule"
 msgstr "Delete rule"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 msgid "Delete Transaction"
 msgstr "Delete Transaction"
 
@@ -964,7 +958,8 @@ msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
 #: src/app/import-column-mapper.tsx:97
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:101
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 msgid "Done"
 msgstr "Done"
 
@@ -1028,7 +1023,7 @@ msgstr "Edit Rule"
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:115
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:131
 msgid "Edit Transaction"
 msgstr "Edit Transaction"
 
@@ -1150,6 +1145,10 @@ msgstr "Erste Bank"
 #: src/app/(main)/create-account/index.tsx:27
 msgid "Everyday transactions and spending"
 msgstr "Everyday transactions and spending"
+
+#: src/money-data/service/entry-base-valuation.service.ts:111
+msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
+msgstr "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx:33
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
@@ -1285,6 +1284,10 @@ msgstr "Greater Than"
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:124
+msgid "Historical rates"
+msgstr "Historical rates"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:70
 msgid "History synced"
 msgstr "History synced"
@@ -1342,7 +1345,7 @@ msgid "In List"
 msgstr "In List"
 
 #: src/app/(tabs)/settings/inactive.tsx:30
-#: src/app/(tabs)/settings/index.tsx:156
+#: src/app/(tabs)/settings/index.tsx:164
 msgid "Inactive Accounts"
 msgstr "Inactive Accounts"
 
@@ -1466,15 +1469,15 @@ msgstr "Loading..."
 msgid "Main Currency"
 msgstr "Main Currency"
 
-#: src/app/(tabs)/settings/index.tsx:124
+#: src/app/(tabs)/settings/index.tsx:132
 msgid "Manage Categories"
 msgstr "Manage Categories"
 
-#: src/app/(tabs)/settings/index.tsx:141
+#: src/app/(tabs)/settings/index.tsx:149
 msgid "Manage Rules"
 msgstr "Manage Rules"
 
-#: src/app/(tabs)/settings/index.tsx:132
+#: src/app/(tabs)/settings/index.tsx:140
 msgid "Manage Tags"
 msgstr "Manage Tags"
 
@@ -1501,10 +1504,6 @@ msgstr "Match each field to a column from your CSV file"
 #: src/rule/constant/rule-condition-operator.constant.ts:10
 msgid "matches"
 msgstr "matches"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:74
-msgid "Matches consolidated"
-msgstr "Matches consolidated"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:61
 msgid "Matches Regex"
@@ -1535,17 +1534,19 @@ msgstr "Merge into another category"
 msgid "Merge into another tag"
 msgstr "Merge into another tag"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:90
-msgid "Merge matching transfers and refunds"
-msgstr "Merge matching transfers and refunds"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:75
-msgid "Merged {consolidated} of {foundPairsText}."
-msgstr "Merged {consolidated} of {foundPairsText}."
-
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
 msgid "Missing categories"
 msgstr "Missing categories"
+
+#: src/app/(tabs)/settings/index.tsx:120
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:116
+msgid "Money Data"
+msgstr "Money Data"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:102
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:162
+msgid "Money data upgrade failed"
+msgstr "Money data upgrade failed"
 
 #: src/app/(main)/create-account/index.tsx:39
 msgid "Money lent or borrowed"
@@ -1664,7 +1665,7 @@ msgstr "No items to save"
 msgid "No languages found"
 msgstr "No languages found"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:61
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:55
 msgid "No matching expenses"
 msgstr "No matching expenses"
 
@@ -1796,7 +1797,7 @@ msgstr "Operator"
 msgid "or"
 msgstr "or"
 
-#: src/app/(tabs)/settings/index.tsx:120
+#: src/app/(tabs)/settings/index.tsx:128
 msgid "Organization"
 msgstr "Organization"
 
@@ -1937,6 +1938,10 @@ msgstr "Re-sync of last 90 days will start on next sync."
 msgid "Re-sync transactions"
 msgstr "Re-sync transactions"
 
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:125
+msgid "Ready"
+msgstr "Ready"
+
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:52
 msgid "Rebuild"
 msgstr "Rebuild"
@@ -2015,10 +2020,10 @@ msgstr "Restore from a backup file"
 msgid "Resuming AI…"
 msgstr "Resuming AI…"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:34
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:101
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:28
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 #: src/transaction/hook/use-revert-consolidation.hook.ts:18
 msgid "Revert"
 msgstr "Revert"
@@ -2096,7 +2101,7 @@ msgstr "Search contacts..."
 msgid "Search currencies..."
 msgstr "Search currencies..."
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:30
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:29
 msgid "Search expenses refunded by this income"
 msgstr "Search expenses refunded by this income"
 
@@ -2274,7 +2279,7 @@ msgstr "Set Return Date"
 msgid "Settings"
 msgstr "Settings"
 
-#: src/app/(tabs)/settings/index.tsx:176
+#: src/app/(tabs)/settings/index.tsx:184
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
@@ -2282,7 +2287,7 @@ msgstr "Show $1,234.56 instead of $1,235"
 msgid "Show all dates"
 msgstr "Show all dates"
 
-#: src/app/(tabs)/settings/index.tsx:175
+#: src/app/(tabs)/settings/index.tsx:183
 msgid "Show Cents"
 msgstr "Show Cents"
 
@@ -2318,7 +2323,7 @@ msgstr "Something went wrong. Please try again later."
 msgid "Source"
 msgstr "Source"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:51
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:52
 msgid "Source transactions"
 msgstr "Source transactions"
 
@@ -2495,10 +2500,6 @@ msgstr "This will convert the income to a transfer between accounts."
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:50
-msgid "This will merge {autoCandidateText}. {manualReviewCandidateText} will be kept for review."
-msgstr "This will merge {autoCandidateText}. {manualReviewCandidateText} will be kept for review."
-
 #: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
@@ -2558,17 +2559,17 @@ msgstr "Total: {formattedAmountToReturn}"
 msgid "Touch ID"
 msgstr "Touch ID"
 
-#: src/transaction/service/transaction-transfer.service.ts:168
+#: src/transaction/service/transaction-transfer.service.ts:194
 msgid "Transaction must have a destination account"
 msgstr "Transaction must have a destination account"
 
-#: src/transaction/service/transaction-transfer.service.ts:165
+#: src/transaction/service/transaction-transfer.service.ts:191
 msgid "Transaction must have a source account"
 msgstr "Transaction must have a source account"
 
 #: src/transaction/service/transaction-refund.service.ts:53
 #: src/transaction/service/transaction-refund.service.ts:77
-#: src/transaction/service/transaction-transfer.service.ts:117
+#: src/transaction/service/transaction-transfer.service.ts:139
 msgid "Transaction not found"
 msgstr "Transaction not found"
 
@@ -2590,6 +2591,10 @@ msgstr "Transcription failed"
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Transfer"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:138
+msgid "Transfer consolidation"
+msgstr "Transfer consolidation"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:34
 msgid "Transfer From Account"
@@ -2615,7 +2620,7 @@ msgstr "Translation"
 msgid "Translations ready"
 msgstr "Translations ready"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:62
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:56
 msgid "Try a different merchant, amount, or date."
 msgstr "Try a different merchant, amount, or date."
 
@@ -2694,6 +2699,14 @@ msgstr "Update Account"
 msgid "Update rule?"
 msgstr "Update rule?"
 
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:151
+msgid "Upgrade"
+msgstr "Upgrade"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:149
+msgid "Upgrade money data?"
+msgstr "Upgrade money data?"
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:34
 #: src/auth/util/get-pin-setup-meta.util.ts:24
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
@@ -2715,15 +2728,15 @@ msgstr "Use Touch ID to unlock your app quickly and securely"
 msgid "Value"
 msgstr "Value"
 
-#: src/app/(tabs)/settings/index.tsx:157
+#: src/app/(tabs)/settings/index.tsx:165
 msgid "View and activate hidden accounts"
 msgstr "View and activate hidden accounts"
 
-#: src/app/(tabs)/settings/index.tsx:125
+#: src/app/(tabs)/settings/index.tsx:133
 msgid "View and delete custom categories"
 msgstr "View and delete custom categories"
 
-#: src/app/(tabs)/settings/index.tsx:149
+#: src/app/(tabs)/settings/index.tsx:157
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 

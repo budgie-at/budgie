@@ -291,6 +291,7 @@ export type { TransactionEntryEntityInterface } from './transaction-entry/entity
 export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';
 export type { TransactionEntryWithMccCategoryEntityInterface } from './transaction-entry/entity/transaction-entry-with-mcc-category-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
+export type { PendingBaseValuationBucketInterface } from './transaction-entry/interface/pending-base-valuation-bucket.interface';
 
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
 
@@ -306,6 +307,16 @@ export type { ExchangeRateEntityInterface } from './exchange-rate/entity/exchang
 export type { ExchangeRateCreateEntityInterface } from './exchange-rate/entity/exchange-rate-create-entity.interface';
 
 export { ExchangeRateRepository } from './exchange-rate/repository/exchange-rate.repository';
+
+export { HistoricalExchangeRateEntityTable } from './historical-exchange-rate/table/historical-exchange-rate-entity.table';
+
+export { HistoricalExchangeRateEntitySchema } from './historical-exchange-rate/schema/historical-exchange-rate-entity.schema';
+export { HistoricalExchangeRateCreateEntitySchema } from './historical-exchange-rate/schema/historical-exchange-rate-create-entity.schema';
+
+export type { HistoricalExchangeRateEntityInterface } from './historical-exchange-rate/entity/historical-exchange-rate-entity.interface';
+export type { HistoricalExchangeRateCreateEntityInterface } from './historical-exchange-rate/entity/historical-exchange-rate-create-entity.interface';
+
+export { HistoricalExchangeRateRepository } from './historical-exchange-rate/repository/historical-exchange-rate.repository';
 
 export { SettingsAssociationEnum } from './settings/enum/settings-association.enum';
 

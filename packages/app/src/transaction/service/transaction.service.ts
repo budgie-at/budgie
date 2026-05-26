@@ -16,6 +16,7 @@ import { processInputWithBatches } from '../../@generic/utils/process-input-with
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
 import { buildAdditionalTransferEntries } from '../utils/build-additional-transfer-entries.util';
 import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
@@ -23,6 +24,7 @@ import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-t
 import { unconsolidateByIdInTransaction } from '../utils/unconsolidate-by-id-in-transaction.util';
 import { upsertTransactionEntriesAndTags } from '../utils/upsert-transaction-entries-and-tags.util';
 
+import { importedTransactionEntryUpdateService } from './imported-transaction-entry-update.service';
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
 import type {
@@ -75,7 +77,7 @@ class TransactionService {
             `throw externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')} error=${getErrorMessage(error)}`
     )
     async update(input: TransactionCreateInputInterface): Promise<void> {
-        await transactionAsync(db, async tx => this.updateImportedEntries(input.entries, input, tx));
+        await transactionAsync(db, async tx => importedTransactionEntryUpdateService.update(input.entries, input, tx));
     }
 
     @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
@@ -161,11 +163,28 @@ class TransactionService {
                 },
                 tx
             );
+            const additionalEntryValuations = await entryBaseValuationService.valueTransactionInput(input, tx);
+            const [fromValuation, toValuation] = await Promise.all([
+                entryBaseValuationService.valueMicroUnitEntry({
+                    accountId: fromEntry.accountId,
+                    amount: fromAmountInMicroUnits,
+                    operatedAt: input.operatedAt,
+                    externalSource: input.externalSource,
+                    tx
+                }),
+                entryBaseValuationService.valueMicroUnitEntry({
+                    accountId: toEntry.accountId,
+                    amount: toAmount,
+                    operatedAt: input.operatedAt,
+                    externalSource: input.externalSource,
+                    tx
+                })
+            ]);
 
             const primaryEntries = [
-                { entry: fromEntry, type: TransactionEntryTypeEnum.CREDIT, amount: fromAmountInMicroUnits },
-                { entry: toEntry, type: TransactionEntryTypeEnum.DEBIT, amount: toAmount }
-            ].map(({ entry, type, amount }) => ({
+                { entry: fromEntry, type: TransactionEntryTypeEnum.CREDIT, amount: fromAmountInMicroUnits, valuation: fromValuation },
+                { entry: toEntry, type: TransactionEntryTypeEnum.DEBIT, amount: toAmount, valuation: toValuation }
+            ].map(({ entry, type, amount, valuation }) => ({
                 transactionId: transaction.id,
                 accountId: entry.accountId,
                 categoryId: entry.categoryId,
@@ -174,11 +193,23 @@ class TransactionService {
                 amount,
                 externalId: entry.externalId ?? null,
                 exchangeRate: entry.exchangeRate ?? 1,
+                baseInstrumentId: valuation.baseInstrumentId,
+                baseExchangeRate: valuation.baseExchangeRate,
+                baseAmount: valuation.baseAmount,
                 toIban: entry.toIban ?? null
             }));
 
             await transactionEntryRepository.bulkCreate(
-                [...primaryEntries, ...buildAdditionalTransferEntries(input.entries, fromEntry, toEntry, transaction.id)],
+                [
+                    ...primaryEntries,
+                    ...buildAdditionalTransferEntries({
+                        entries: input.entries,
+                        fromEntry,
+                        toEntry,
+                        transactionId: transaction.id,
+                        valuations: additionalEntryValuations
+                    })
+                ],
                 tx
             );
 
@@ -211,7 +242,7 @@ class TransactionService {
                 tx
             );
 
-            await upsertTransactionEntriesAndTags(id, input, tx, isConsolidated);
+            await upsertTransactionEntriesAndTags({ transactionId: id, input, operatedAt: transaction.operatedAt, isConsolidated }, tx);
 
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
 
@@ -229,69 +260,6 @@ class TransactionService {
         }
 
         return { fromEntry, toEntry };
-    }
-
-    private async updateImportedEntries(
-        entries: readonly TransactionEntryCreateInputInterface[],
-        input: TransactionCreateInputInterface,
-        tx: DB
-    ): Promise<void> {
-        const [entry, ...remainingEntries] = entries;
-        if (!isDefined(entry)) {
-            return;
-        }
-
-        await this.updateImportedEntry(entry, input, tx);
-        await this.updateImportedEntries(remainingEntries, input, tx);
-    }
-
-    private async updateImportedEntry(
-        entry: TransactionEntryCreateInputInterface,
-        input: TransactionCreateInputInterface,
-        tx: DB
-    ): Promise<void> {
-        if (!isDefined(entry.externalId)) {
-            return;
-        }
-
-        const existingEntry = await transactionEntryRepository.findByExternalIdAndAccountId(entry.externalId, entry.accountId, tx);
-
-        if (!isDefined(existingEntry)) {
-            return;
-        }
-
-        const nextAmount = convertToMicroUnits(entry.amount);
-
-        if (
-            existingEntry.amount === nextAmount &&
-            existingEntry.exchangeRate === entry.exchangeRate &&
-            existingEntry.toIban === entry.toIban
-        ) {
-            return;
-        }
-
-        await transactionEntryRepository.updateByExternalIdAndAccountId(
-            entry.externalId,
-            entry.accountId,
-            {
-                amount: nextAmount,
-                exchangeRate: entry.exchangeRate,
-                toIban: entry.toIban
-            },
-            tx
-        );
-
-        const metadataTransactionId = existingEntry.originalTransactionId ?? existingEntry.transactionId;
-
-        await transactionRepository.updateById(
-            metadataTransactionId,
-            {
-                title: input.title,
-                comment: input.comment,
-                operatedAt: input.operatedAt
-            },
-            tx
-        );
     }
 }
 export const transactionService = new TransactionService();

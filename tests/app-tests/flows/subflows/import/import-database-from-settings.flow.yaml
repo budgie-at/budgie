@@ -14,21 +14,40 @@ env:
       commands:
           - tapOn: 'Open'
 
-- scrollUntilVisible:
-      element:
-          id: 'SettingsPage.ImportDatabaseCard'
-      direction: UP
-      timeout: 5000
-      centerElement: true
-      waitToSettleTimeoutMs: 1000
+- runFlow:
+      when:
+          notVisible: 'Import Database.*'
+      commands:
+          - swipe:
+                start: '50%,75%'
+                end: '50%,30%'
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
+          notVisible: 'Import Database.*'
+      commands:
+          - swipe:
+                start: '50%,75%'
+                end: '50%,30%'
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
+          notVisible: 'Import Database.*'
+      commands:
+          - swipe:
+                start: '50%,75%'
+                end: '50%,30%'
+          - waitForAnimationToEnd
 
 - extendedWaitUntil:
-      visible:
-          id: 'SettingsPage.ImportDatabaseCard'
+      visible: 'Import Database.*'
       timeout: 3000
 
 - tapOn:
-      id: 'SettingsPage.ImportDatabaseCard'
+      text: 'Import Database.*'
+      index: 0
       retryTapIfNoChange: true
 
 - runFlow:
