@@ -19,7 +19,7 @@ export const BudgetCurrencyChip = ({ instrumentId }: Props) => {
     return (
         <FormItem label={t`Budget currency`}>
             <View className="self-start rounded-2xl border border-secondary-corner bg-secondary-background px-xl py-md">
-                <Text className="text-primary-foreground text-md font-medium">{label}</Text>
+                <Text className="text-secondary-foreground text-md font-medium">{label}</Text>
             </View>
         </FormItem>
     );
