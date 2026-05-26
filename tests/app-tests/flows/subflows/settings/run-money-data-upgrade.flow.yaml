@@ -15,5 +15,5 @@ appId: ${APP_ID}
 - tapOn: 'Value'
 - extendedWaitUntil:
       visible:
-          id: 'SettingsPage.MoneyDataUpgradeCard.PrimaryAction.COMPLETE'
+          id: 'SettingsPage.MoneyDataUpgradeCard.Status.COMPLETE'
       timeout: 30000
