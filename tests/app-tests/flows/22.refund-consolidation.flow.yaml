@@ -110,6 +110,8 @@ appId: ${APP_ID}
 
 - runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
 
+- runFlow: subflows/settings/consolidate-matches.flow.yaml
+
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - scrollUntilVisible:

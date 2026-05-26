@@ -31,13 +31,17 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
 
-# 3. Run unified money data upgrade
-- runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
+# 3. Consolidate matches
+- runFlow: subflows/settings/consolidate-matches.flow.yaml
 
 # 4. Verify canonicals exist on the transactions list
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.FromAccount.E2E_Consolidation_A'
+    timeout: 60000
 - assertVisible:
     id: 'TransactionCard.FromAccount.E2E_Consolidation_A'
 - assertVisible:
