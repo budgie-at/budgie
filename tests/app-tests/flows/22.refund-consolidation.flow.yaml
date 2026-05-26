@@ -108,21 +108,7 @@ appId: ${APP_ID}
 - tapOn:
     point: '10%,10%'
 
-- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.ConsolidateTransfersCard'
-    direction: DOWN
-- tapOn:
-    id: 'SettingsPage.ConsolidateTransfersCard'
-- extendedWaitUntil:
-    visible: 'Consolidate Transfers'
-    timeout: 10000
-- tapOn: 'Consolidate'
-
-- extendedWaitUntil:
-    visible: 'Transfers consolidated'
-    timeout: 10000
+- runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
