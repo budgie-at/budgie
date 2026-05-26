@@ -4,6 +4,7 @@ import { Log } from '@budgie/logger';
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
+import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
 
@@ -31,9 +32,10 @@ class TransactionBatchCreateService {
                 .join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async create(batch: readonly TransactionCreateInputInterface[], tx: DB): Promise<TransactionEntityInterface[]> {
+        const valuations = await Promise.all(batch.map(input => entryBaseValuationService.valueTransactionInput(input, tx)));
         const transactions = await transactionRepository.bulkCreate([...batch], tx);
         const batchEntries = transactions.flatMap((transaction, index) =>
-            batch[index].entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transaction.id))
+            batch[index].entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transaction.id, valuations[index].get(entry)))
         );
         const batchTags = transactions.flatMap((transaction, index) =>
             transactionMapTagIdsToCreateEntities(batch[index].tagIds, transaction.id)

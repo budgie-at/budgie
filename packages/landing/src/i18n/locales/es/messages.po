@@ -67,6 +67,7 @@ msgstr "© {date} Budgie. Todos los derechos reservados."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:97
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:97
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:97
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:95
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:93
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:95
@@ -250,6 +251,14 @@ msgstr "<0>Sincronización bancaria</0>: Sí (obligatoria)"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:343
 msgid "<0>Bank TOS violations</0>: Most banks explicitly prohibit sharing credentials with third parties"
 msgstr "<0>Violacion de los terminos del banco</0>: La mayoria de los bancos prohiben explicitamente compartir credenciales con terceros"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:200
+msgid "<0>Base amount</0> — The value of that entry in your current reporting currency, calculated from the exchange rate that belongs to the transaction date."
+msgstr ""
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:206
+msgid "<0>Base exchange rate</0> — The rate used for that calculation, stored beside the entry so analytics do not need to recalculate every chart on every screen."
+msgstr ""
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:578
 msgid "<0>Best case</0>: Data is deleted per the privacy policy"
@@ -947,6 +956,10 @@ msgstr "<0>Firefly III</0>: Sí"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:963
 msgid "<0>Multi-device sync</0>: Your data exists on one device unless you manually transfer it"
 msgstr "<0>Sincronizacion multi-dispositivo</0>: Tus datos existen en un solo dispositivo a menos que los transfieras manualmente"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:194
+msgid "<0>Native amount</0> — The exact amount in the account currency. This is what you spent, received, or transferred, and it never changes when rates refresh."
+msgstr ""
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1016
 msgid "<0>Native Apple design.</0> Feels right at home on iOS and macOS."
@@ -1925,6 +1938,10 @@ msgstr "Una fuente de tipos de cambio de dominio público. Sin cuenta de proveed
 msgid "A source-available license that lets you read, fork, and modify the code. The official app builds remain ours to monetize, which keeps development sustainable."
 msgstr "Una licencia con código fuente disponible que te permite leer, bifurcar y modificar el código. Las compilaciones oficiales de la app siguen siendo nuestras para monetizar, lo que mantiene el desarrollo sostenible."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:117
+msgid "A spending report should compare what money meant on the day you spent it. Budgie values each imported and newly saved transaction in your base currency using the exchange rate from the transaction date."
+msgstr ""
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:52
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:79
 #: src/blog/constant/article-registry.constant.ts:15
@@ -2321,6 +2338,7 @@ msgstr "Una arquitectura offline-first aborda el riesgo del agregador a nivel es
 msgid "An open-source project is more than just public code. It’s a community of users, contributors, and maintainers working together toward shared goals. How that community is governed matters for the project’s long-term health and trustworthiness."
 msgstr "Un proyecto de código abierto es más que solo código público. Es una comunidad de usuarios, contribuidores y mantenedores trabajando juntos hacia objetivos compartidos. Cómo se gobierna esa comunidad importa para la salud a largo plazo y la confiabilidad del proyecto."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:137
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx:16
 #: src/app/[lang]/features/tag-analytics/opengraph-image.tsx:17
 #: src/app/[lang]/features/transaction-tags/opengraph-image.tsx:18
@@ -2683,6 +2701,7 @@ msgstr "extracto bancario"
 msgid "Bank statements from Ukrainian, Greek, or Arabic-script banks come back full of unreadable merchant names — useless for search or analytics. Budgie's on-device normalizer runs each merchant string through the LLM, gets a clean Latin name plus search keywords, and stores both."
 msgstr "Los extractos bancarios de bancos ucranianos, griegos o en escritura árabe vuelven llenos de nombres de comercios ilegibles — inútiles para búsqueda o análisis. El normalizador en el dispositivo de Budgie pasa cada cadena de comercio por el LLM, obtiene un nombre latino limpio más palabras clave de búsqueda y almacena ambos."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:143
 #: src/app/[lang]/features/bank-resync-window/opengraph-image.tsx:16
 #: src/app/[lang]/features/mcc-auto-category/opengraph-image.tsx:18
 #: src/app/[lang]/features/monobank-sync/opengraph-image.tsx:18
@@ -2981,6 +3000,8 @@ msgstr "Block, la empresa matriz de Cash App, revelo que un exempleado descargo 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:105
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:77
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:105
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:77
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:105
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:75
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:103
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:75
@@ -3251,6 +3272,10 @@ msgstr "Budgie es nuestra contribución a este futuro: una aplicación de finanz
 msgid "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
 msgstr "Budgie no es la única opción de código abierto para la gestión financiera. Existe un ecosistema saludable de alternativas, y creemos en mencionarlas de manera justa. Diferentes herramientas se adaptan a diferentes necesidades, y la mejor elección depende de tus requisitos específicos."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:324
+msgid "Budgie leaves the base value empty until a suitable rate exists. That is safer than inventing a value, because analytics can identify unvalued rows instead of silently mixing guessed totals with real totals."
+msgstr ""
+
 #: src/generic/component/logo/logo.tsx:19
 msgid "Budgie logo"
 msgstr "Logo de Budgie"
@@ -3308,6 +3333,10 @@ msgstr "Budgie ejecuta Qwen3 1.7B + un modelo de embedding de 768 dimensiones en
 #: src/feature/constant/pillar-hub-registry.constant.ts:113
 msgid "Budgie runs Qwen3 1.7B and a 768-dim embedding model locally. AI auto-categorization, voice transaction entry, and merchant translation without sending data to the cloud."
 msgstr "Budgie ejecuta Qwen3 1.7B y un modelo de embedding de 768 dimensiones localmente. Auto-categorización con IA, entrada de transacciones por voz y traducción de comercios sin enviar datos a la nube."
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:243
+msgid "Budgie ships historical daily exchange-rate seeds in the local database migration."
+msgstr ""
 
 #: src/feature/component/open-source-pillar-hub-content/open-source-pillar-hub-content.tsx:32
 msgid "Budgie ships under a source-available license that lets you read every line, fork it, and run your own build. Your financial data belongs to you — not to a vendor who can change terms, raise prices, or shut down. If Budgie ever stops meeting your needs, you take your data and your build with you."
@@ -3447,6 +3476,10 @@ msgstr "Budgie: Privacidad sin compromisos"
 msgid "Budgie: Privacy-First, Offline-First Mobile Budgeting"
 msgstr "Budgie: privacidad primero, presupuesto móvil offline-first"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:161
+msgid "Budgie’s answer is transaction-date valuation. Each transaction entry keeps its original amount and currency, then stores a nullable base-currency value calculated from the best historical rate available for that date. The original record stays intact, while analytics can sum one consistent value."
+msgstr ""
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:992
 msgid "Budgie’s Approach"
 msgstr "Sin procesamiento del lado del servidor: Los calculos, categorizacion y analisis se realizan en el dispositivo"
@@ -3572,6 +3605,10 @@ msgstr "Puede ser hackeado o citado judicialmente"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:972
 msgid "Can be overwhelming for casual users"
 msgstr "Puede resultar abrumador para usuarios casuales"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:337
+msgid "Can historical values be rebuilt after changing my main currency?"
+msgstr ""
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx:174
 #: src/feature/constant/feature-registry.constant.ts:207
@@ -4643,6 +4680,10 @@ msgstr "CSV para hojas de cálculo. Copia de seguridad cifrada para restauració
 msgid "CSV for spreadsheets. Encrypted database backup for restore. Both yours, never ours."
 msgstr "CSV para hojas de cálculo. Copia de seguridad cifrada de la base de datos para restauración. Ambas son tuyas, nunca nuestras."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:140
+msgid "CSV import"
+msgstr ""
+
 #: src/app/[lang]/features/csv-import/opengraph-image.tsx:15
 #: src/generic/component/integrations-section/integrations-section-cards.tsx:66
 msgid "CSV Import"
@@ -5138,6 +5179,10 @@ msgstr "¿Funciona la sincronización bancaria sin conexión?"
 msgid "Does Budgie auto-backup?"
 msgstr "¿Budgie hace copias de seguridad automáticamente?"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:316
+msgid "Does Budgie change my original imported amounts?"
+msgstr ""
+
 #: src/app/[lang]/features/expense-tracking/page.tsx:162
 #: src/feature/constant/feature-registry.constant.ts:330
 msgid "Does Budgie distinguish transfers from expenses?"
@@ -5361,6 +5406,10 @@ msgstr "Cada cuenta tiene una divisa nativa fija: fiat, cripto o cualquier otra"
 #: src/app/[lang]/features/custom-categories/page.tsx:133
 msgid "Each category has a name, an icon, a color, and an optional MCC mapping. The Categories screen in Settings supports drag-to-reorder and bulk merge. Deleting a category prompts you to migrate its transactions or wipe them."
 msgstr "Cada categoría tiene nombre, icono, color y un mapeo MCC opcional. La pantalla de Categorías en Ajustes permite arrastrar para reordenar, fusionar y ver la cuenta de transacciones."
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:252
+msgid "Each group is updated in bulk, which keeps large imports practical even when years of transactions need valuation."
+msgstr ""
 
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx:137
 msgid "Each new transaction's title flows through a translation queue. The LLM proposes (translatedName, keywords); both are saved alongside the original. Embeddings then index the translated form for semantic search."
@@ -5626,6 +5675,10 @@ msgstr "Cada Dólar. Cada Cuenta. Una App."
 msgid "Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a context menu. Edit, delete, split, or convert to a transfer without leaving the screen."
 msgstr "Cada entrada es importe + cuenta + categoría + etiquetas + comentario + fecha. Mantén pulsada cualquier transacción en la lista para obtener un menú contextual con Editar, Eliminar, Dividir y Convertir."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:186
+msgid "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
+msgstr ""
+
 #: src/feature/constant/pillar-hub-registry.constant.ts:156
 msgid "Every time you accept, edit, or reject a category suggestion, the embedding model index updates locally. The more you use Budgie, the more accurately the embedding model mirrors your personal spending patterns."
 msgstr "Cada vez que aceptas, editas o rechazas una sugerencia de categoría, el índice del modelo de embedding se actualiza localmente. Cuanto más uses Budgie, más fielmente refleja el modelo de embedding tus patrones personales de gasto."
@@ -5702,6 +5755,10 @@ msgstr "Excelente API para integraciones personalizadas"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1056
 msgid "Excellent user experience"
 msgstr "Excelente experiencia de usuario"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:134
+msgid "exchange rates"
+msgstr ""
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:90
 msgid "Exchange rates are fetched and cached locally when you have connectivity. You can continue converting currencies offline using the last-fetched rates, with a visible timestamp so you always know their age."
@@ -6095,6 +6152,10 @@ msgstr "Para desarrolladores:"
 msgid "For Firefly III:"
 msgstr "Para Firefly III:"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:291
+msgid "For historical spending, Budgie keeps the transaction-date base value stable. If you change your main reporting currency, the app can rebuild those stored values against the new base currency. If a better historical data source is added, the same nullable columns can be recalculated without changing your original transaction amounts."
+msgstr ""
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:659
 msgid "For indie developers and small teams, this changes the economics of software development. You can build sustainable software without venture capital to fund server infrastructure."
 msgstr "Para desarrolladores independientes y equipos pequeños, esto cambia la economía del desarrollo de software. Puedes construir software sostenible sin capital de riesgo para financiar infraestructura de servidores."
@@ -6206,6 +6267,7 @@ msgstr "Diseñadora freelance"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:889
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:1132
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:312
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:1075
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1801
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:437
@@ -6422,6 +6484,23 @@ msgstr "Altamente personalizable"
 msgid "Historical data isn’t critical for your goals"
 msgstr "Los datos históricos no son críticos para tus objetivos"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:56
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:84
+msgid "historical exchange rates budget app, multi currency expense tracker analytics, transaction date exchange rate, CSV import currency conversion"
+msgstr ""
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:92
+msgid "Historical exchange rates in budget analytics"
+msgstr ""
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:61
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:89
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:108
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:113
+#: src/blog/constant/article-registry.constant.ts:155
+msgid "Historical Exchange Rates in Budget Analytics"
+msgstr ""
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:352
 msgid "Hobbyist security researchers and bug hunters"
 msgstr "Investigadores de seguridad aficionados y cazadores de bugs"
@@ -6442,6 +6521,8 @@ msgstr "Las posiciones se consolidan en el patrimonio neto junto a las cuentas f
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:102
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:82
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:102
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:82
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:102
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:80
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:100
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:80
@@ -6714,6 +6795,10 @@ msgstr "¿Hasta dónde llega la previsión?"
 #: src/feature/constant/feature-registry.constant.ts:322
 msgid "How fast is the quick-entry form?"
 msgstr "¿Qué tan rápido es el formulario de entrada rápida?"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:226
+msgid "How Imported History Gets Repaired"
+msgstr ""
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:471
 msgid "How is Budgie different from a cloud budgeting app?"
@@ -7383,6 +7468,10 @@ msgstr "Aprende cómo la IA en el dispositivo mantiene tus datos de gasto privad
 msgid "Learn More"
 msgstr "Saber más"
 
+#: src/blog/constant/article-registry.constant.ts:164
+msgid "Learn why budget analytics should value each transaction using the exchange rate from its real transaction date. Budgie stores base-currency values for accurate multi-currency history."
+msgstr ""
+
 #: src/blog/constant/article-registry.constant.ts:70
 msgid "Learn why offline-first architecture is the only way to guarantee financial privacy. Discover the hidden dangers of cloud apps and how Budgie protects your data."
 msgstr "Aprende por qué la arquitectura offline-first es la única forma de garantizar la privacidad financiera. Descubre los peligros ocultos de las apps en la nube y cómo Budgie protege tus datos."
@@ -7981,6 +8070,10 @@ msgstr "Los errores ocurren. Registras una transferencia como gasto, las estadí
 msgid "mobile"
 msgstr "móvil"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:331
+msgid "Mobile analytics need to be fast. Storing the base amount lets Budgie sum large histories directly in SQL, while keeping the exchange rate available for audit and future rebuilds."
+msgstr ""
+
 #: src/feature/constant/feature-registry.constant.ts:1854
 msgid "Mobile experience"
 msgstr "Experiencia móvil"
@@ -8206,6 +8299,7 @@ msgstr "Gestión del dinero en múltiples cuentas"
 msgid "Multi-Account Money Management — Budgie"
 msgstr "Gestión del dinero en múltiples cuentas — Budgie"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:131
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx:17
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx:16
 #: src/app/[lang]/features/net-worth-tracker/opengraph-image.tsx:17
@@ -8229,6 +8323,10 @@ msgstr "Cuentas multidivisa con tipos en tiempo real"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx:122
 msgid "Multi-currency aware — euro-denominated ETF + dollar stocks + UAH cash all reconcile"
 msgstr "Compatible con multidivisa: ETF en euros + acciones en dólares + efectivo en UAH, todo conciliado"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:153
+msgid "Multi-currency budgets fail quietly when they convert old spending with today’s rate. A coffee bought in hryvnia ten years ago, a rent payment in dollars last month, and a bank import from yesterday cannot be added together fairly unless every row carries a value in the same reporting currency."
+msgstr ""
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:79
 msgid "Multi-currency exchange rates cached locally for offline use"
@@ -8302,6 +8400,10 @@ msgstr "patrimonio neto"
 msgid "Net Worth"
 msgstr "Patrimonio neto"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:283
+msgid "Net worth and account balances answer a different question from spending analytics. Net worth asks, “What are my holdings worth now?” Spending analytics asks, “What did this cost me then?” Those questions should not share the same conversion rule."
+msgstr ""
+
 #: src/app/[lang]/features/debt-tracking/page.tsx:101
 msgid "Net worth respects debt direction: liabilities reduce, receivables increase. Settling the debt is just a transfer to or from the debt account; balance hits zero, you can archive."
 msgstr "El patrimonio neto respeta la dirección de la deuda: los pasivos reducen, los créditos aumentan. Liquidar la deuda es solo una transferencia hacia o desde la cuenta de deuda."
@@ -8346,6 +8448,10 @@ msgstr "Nunca emprender acciones legales contra investigación de seguridad de b
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:315
 msgid "Never worry about service availability"
 msgstr "Nunca te preocupes por la disponibilidad del servicio"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:266
+msgid "New transactions follow the same rule at write time. Manual entries, CSV imports, and <0>bank sync</0> transactions save their base amount as they are inserted when the source does not already provide a usable valuation."
+msgstr ""
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:981
 msgid "Newer app, still building feature parity with established players"
@@ -8605,6 +8711,10 @@ msgstr "No. La protección de capturas de pantalla desenfoca automáticamente to
 msgid "No. Switching language re-renders the UI in-place, no reinstall or relaunch."
 msgstr "No. Cambiar de idioma re-renderiza la interfaz en su lugar, sin reinstalación ni reinicio."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:317
+msgid "No. The account-currency amount remains the source of truth. Base-currency fields are derived values used for reporting and can be recalculated later."
+msgstr ""
+
 #: src/feature/constant/feature-registry.constant.ts:243
 msgid "No. The microphone stream feeds Whisper directly in-process; the audio buffer is discarded after transcription. Nothing is saved, sent, or logged."
 msgstr "No. El flujo del micrófono alimenta Whisper directamente en proceso; el buffer de audio se descarta tras la transcripción. Nada se guarda ni se envía."
@@ -8852,6 +8962,10 @@ msgstr "A menudo no"
 #: src/feature/constant/feature-registry.constant.ts:1914
 msgid "Often yes"
 msgstr "A menudo sí"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:230
+msgid "Older exports often contain the account currency and amount, but no exchange-rate snapshot. Budgie treats that as incomplete valuation data, not as corrupt transaction data. The entry is still usable; it simply needs a base value before it should affect multi-currency charts."
+msgstr ""
 
 #: src/app/[lang]/features/dark-mode/page.tsx:146
 #: src/feature/constant/feature-registry.constant.ts:1525
@@ -11203,6 +11317,14 @@ msgstr "Esa factura del supermercado de 87 € era para comida y un cargador de 
 msgid "That daily coffee? $150/month. Forgotten subscriptions? $80/month. Budgie exposes every spending leak so you can finally plug them and keep more money in your pocket."
 msgstr "¿Ese café diario? $150/mes. ¿Suscripciones olvidadas? $80/mes. Budgie expone cada fuga de gasto para que finalmente puedas taparlas y mantener más dinero en tu bolsillo."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:214
+msgid "That gives Budgie two strengths at once. You can audit the original bank or CSV data, and <0>spending analytics</0> can still sum categories, tags, and periods without guessing which rate to use."
+msgstr ""
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:300
+msgid "That is the point of <0>multi-currency accounts</0>: show today’s portfolio with today’s rates, but show historical expenses with historical rates."
+msgstr ""
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:708
 msgid "That last point is significant. Your data, in aggregate form, may inform products you never agreed to."
 msgstr "Este ultimo punto es significativo. Tus datos, en forma agregada, pueden alimentar productos a los que nunca diste tu consentimiento."
@@ -11478,6 +11600,10 @@ msgstr "El movimiento Local-First: por qué los desarrolladores crean aplicacion
 msgid "The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually."
 msgstr "Las transacciones de la categoría de origen se reasignan a la categoría de destino, y la categoría vacía se elimina. Reversible antes de confirmar."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:246
+msgid "The Money Data upgrade scans entries where the base currency value is missing and groups them by date, account currency, and base currency."
+msgstr ""
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:568
 msgid "The most private way to get bank data into Budgie is manual import. Most banks allow you to download transaction history in standard formats like CSV, OFX, or QIF. You download this file directly from your bank, and Budgie imports it locally on your device."
 msgstr "La forma mas privada de incorporar datos bancarios en Budgie es la importacion manual. La mayoria de los bancos permiten descargar el historial de transacciones en formatos estandar como CSV, OFX o QIF. Descargas este archivo directamente de tu banco, y Budgie lo importa localmente en tu dispositivo."
@@ -11623,6 +11749,10 @@ msgstr "El resultado es que Budgie puede ejecutar un modelo de lenguaje capaz en
 msgid "The risky approach"
 msgstr "El enfoque riesgoso"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:182
+msgid "The Rule: Store Original Truth and Reporting Value"
+msgstr ""
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:1028
 msgid "The security architecture is designed for users who understand the risks described in this article and want an alternative."
 msgstr "La [arquitectura de seguridad](/{lang}#security) esta disenada para usuarios que entienden los riesgos descritos en este articulo y quieren una alternativa."
@@ -11733,6 +11863,10 @@ msgstr "El apartado Sin Etiquetar no es un estado de error — es una herramient
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx:125
 msgid "The Untagged total recomputes live as you tag transactions, so the number shrinks in real time during a labeling pass. Combined with AI tag suggestions, a short review session can close most gaps without the usual manual-tag tedium."
 msgstr "El total de Sin Etiquetar se recalcula en vivo a medida que etiquetas transacciones, por lo que el número se reduce en tiempo real durante una sesión de etiquetado. Combinado con las sugerencias de etiquetas de IA, una breve sesión de revisión puede cerrar la mayoría de los huecos sin el tedioso etiquetado manual habitual."
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:238
+msgid "The Upgrade Flow"
+msgstr ""
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:262
 msgid "The write completes locally with no network activity"
@@ -11902,6 +12036,10 @@ msgstr "Esto también simplifica la implementación. Sin requisitos de colaborac
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:283
 msgid "This manifesto resonated deeply with developers who had grown frustrated with the limitations and lock-in of cloud services. It sparked renewed interest in technologies that could make local-first software practical at scale."
 msgstr "Este manifiesto resonó profundamente entre los desarrolladores frustrados con las limitaciones y la dependencia de los servicios en la nube. Despertó un renovado interés en tecnologías que podrían hacer viable el software local-first a gran escala."
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:169
+msgid "This matters most after a migration. If you import years of spending from a previous app through <0>CSV import</0>, Budgie can rebuild the base values from historical exchange rates instead of treating old rows as if they happened today."
+msgstr ""
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:402
 msgid "This means more than just a privacy policy. True privacy requires:"
@@ -12726,6 +12864,10 @@ msgstr "¿Qué pasó con todos mis datos de Mint?"
 msgid "What happens during a cross-currency transfer?"
 msgstr "¿Qué ocurre durante una transferencia entre divisas?"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:323
+msgid "What happens if a historical rate is missing?"
+msgstr ""
+
 #: src/app/[lang]/features/csv-import/page.tsx:155
 #: src/feature/constant/feature-registry.constant.ts:664
 msgid "What happens if I import the same file twice?"
@@ -13271,6 +13413,10 @@ msgstr "¿Qué alternativa a YNAB tiene la mejor aplicación móvil?"
 msgid "While Figma is primarily cloud-hosted, its underlying technology demonstrates CRDT principles at scale. Their engineering team has published extensively about their multiplayer architecture and the CRDT-like structures they use."
 msgstr "Aunque Figma está principalmente alojado en la nube, su tecnología subyacente demuestra los principios de los CRDTs a escala. Su equipo de ingeniería ha publicado extensamente sobre su arquitectura multijugador y las estructuras similares a CRDTs que utilizan."
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:258
+msgid "While the upgrade runs, the settings screen shows progress and blocks interaction so analytics cannot be read halfway through a rebuild."
+msgstr ""
+
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:398
 msgid "Whisper running on your device never sends audio anywhere. The model receives your audio buffer, produces a transcript, and that is the end of the data flow. No audio log, no remote API call, no third party involved."
 msgstr "Whisper ejecutándose en tu dispositivo nunca envía audio a ningún lugar. El modelo recibe tu búfer de audio, produce una transcripción, y eso es el fin del flujo de datos. Sin registro de audio, sin llamada a API remota, sin terceros involucrados."
@@ -13316,6 +13462,12 @@ msgstr "Por qué importa una app financiera a medianoche"
 msgid "Why a full re-sync is the wrong fix"
 msgstr "Por qué una resincronización completa es la solución equivocada"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:52
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:79
+#: src/blog/constant/article-registry.constant.ts:156
+msgid "Why a multi-currency expense tracker needs transaction-date valuation, not today's exchange rate, and how Budgie keeps imported history comparable in your base currency."
+msgstr ""
+
 #: src/app/[lang]/features/multi-currency/page.tsx:92
 msgid "Why a single-currency app can't model real life"
 msgstr "Por qué una app de una sola divisa no puede modelar la vida real"
@@ -13331,6 +13483,10 @@ msgstr "Por qué un rastreador de gastos también debe ser un balance"
 #: src/app/[lang]/features/biometric-authentication/page.tsx:91
 msgid "Why biometrics belong on a finance app you check ten times a day"
 msgstr "Por qué la biometría pertenece a una app financiera que abres diez veces al día"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:279
+msgid "Why Budgie Does Not Revalue Everything Every Day"
+msgstr ""
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1419
 msgid "Why Budgie Takes a Different Approach"
@@ -13531,6 +13687,10 @@ msgstr "Por qué escanear una lista larga buscando una etiqueta es difícil"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:197
 msgid "Why SQLite Over Cloud Databases"
 msgstr "Por que SQLite en lugar de bases de datos en la nube"
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:330
+msgid "Why store the base amount if it can be recalculated?"
+msgstr ""
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx:91
 msgid "Why subscriptions need their own view"
@@ -14094,6 +14254,10 @@ msgstr "Sí. La píldora cuenta solo transacciones sin categorizar dentro de los
 #: src/feature/constant/feature-registry.constant.ts:1822
 msgid "Yes. The repository ships with build instructions for iOS and Android."
 msgstr "Sí. El repositorio incluye instrucciones de compilación para iOS y Android."
+
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx:338
+msgid "Yes. The stored base fields are nullable derived data. Budgie can clear and rebuild them from historical rates while preserving the original transaction amounts."
+msgstr ""
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx:174
 #: src/feature/constant/feature-registry.constant.ts:173

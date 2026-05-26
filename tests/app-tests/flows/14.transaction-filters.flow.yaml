@@ -5,6 +5,22 @@ appId: ${APP_ID}
       env:
           FIXTURE_ROW_ID_MATCH: '14.db(, db)?'
 
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+- scrollUntilVisible:
+      element:
+          id: 'SettingsPage.MoneyDataUpgradeCard'
+      direction: DOWN
+- tapOn:
+      id: 'SettingsPage.MoneyDataUpgradeCard'
+- extendedWaitUntil:
+      visible: 'Upgrade money data?'
+      timeout: 10000
+- tapOn: 'Upgrade'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.MoneyDataUpgradeCard.PrimaryAction.COMPLETE'
+      timeout: 30000
+
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - assertVisible:
@@ -305,6 +321,17 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.ClearAllButton'
 - assertVisible:
-      id: 'TransactionAnalyticsCard.Amount.Spent.30'
+      id: 'TransactionAnalyticsCard.Amount.Spent.40'
 - assertVisible:
-      id: 'CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.30000000'
+      id: 'CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.40000000'
+- tapOn:
+      id: 'CategoryStatisticsCard.E2E_Filter_Expense_Category'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Historical_UAH_2026'
+      timeout: 5000
+- scrollUntilVisible:
+      element:
+          id: 'TransactionCard.Label.E2E_Historical_UAH_2011'
+      direction: DOWN
+      speed: 20
