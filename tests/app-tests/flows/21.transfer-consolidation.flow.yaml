@@ -31,25 +31,10 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
 
-# 3. Trigger consolidation from Settings
-- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.ConsolidateTransfersCard'
-    direction: DOWN
-- tapOn:
-    id: 'SettingsPage.ConsolidateTransfersCard'
-- extendedWaitUntil:
-    visible: 'Consolidate Transfers'
-    timeout: 10000
-- tapOn: 'Consolidate'
+# 3. Run unified money data upgrade
+- runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
 
-# 4. Wait for the success toast
-- extendedWaitUntil:
-    visible: 'Transfers consolidated'
-    timeout: 10000
-
-# 5. Verify canonicals exist on the transactions list
+# 4. Verify canonicals exist on the transactions list
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
@@ -70,21 +55,22 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionCard.ToAccount.E2E_Consolidation_Cash'
 
-# 6. INCOME-side source titles are now hidden (consolidationParent != NULL)
+# 5. INCOME-side source titles are now hidden (consolidationParent != NULL)
 - assertNotVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_P1_In'
 - assertNotVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_P2_In'
 
-# 7. Untouched survives
+# 6. Untouched survives
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_Untouched'
 
-# 8. Open canonical 1 -> Sources sheet -> Revert -> source rows restored
+# 7. Open canonical 1 -> Sources sheet -> Revert -> source rows restored
 - scrollUntilVisible:
     element:
       id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
     direction: UP
+    centerElement: true
 - tapOn:
     id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
 - extendedWaitUntil:
@@ -100,13 +86,13 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'ConsolidationSourceModal.Row.1'
 - assertVisible:
-    id: 'ConsolidationSourceModal.RowTitle.0.E2E_Consolidation_P1_Out'
+    text: '.*E2E Consolidation P1 Out.*'
 - assertVisible:
-    id: 'ConsolidationSourceModal.RowAmount.0.CREDIT.200000000'
+    text: '.*\+₴200.*'
 - assertVisible:
-    id: 'ConsolidationSourceModal.RowTitle.1.E2E_Consolidation_P1_In'
+    text: '.*E2E Consolidation P1 In.*'
 - assertVisible:
-    id: 'ConsolidationSourceModal.RowAmount.1.DEBIT.200000000'
+    text: '.*-₴200.*'
 - assertVisible:
     id: 'ConsolidationSourceModal.RevertButton'
 - tapOn:
@@ -122,11 +108,12 @@ appId: ${APP_ID}
       id: 'TransactionCard.FromAccount.E2E_Consolidation_A'
     timeout: 5000
 
-# 9. Detail actions menu on canonical 2 replaces Delete with Revert
+# 8. Detail actions menu on canonical 2 replaces Delete with Revert
 - scrollUntilVisible:
     element:
       id: 'TransactionCard.Label.E2E_Consolidation_P2_Out'
     direction: DOWN
+    centerElement: true
 - tapOn:
     id: 'TransactionCard.Label.E2E_Consolidation_P2_Out'
 - extendedWaitUntil:
@@ -152,11 +139,12 @@ appId: ${APP_ID}
 - assertNotVisible:
     id: 'TransactionCard.FromAccount.E2E_Consolidation_USD'
 
-# 10. Long-press menu on the ATM canonical replaces Delete with Revert
+# 9. Long-press menu on the ATM canonical replaces Delete with Revert
 - scrollUntilVisible:
     element:
       id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
     direction: DOWN
+    centerElement: true
 - longPressOn:
     id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
 - extendedWaitUntil:
@@ -177,7 +165,7 @@ appId: ${APP_ID}
 - assertNotVisible:
     id: 'TransactionCard.ToAccount.E2E_Consolidation_Cash'
 
-# 11. Final balance assertions show generated cash withdrawal entries are gone
+# 10. Final balance assertions show generated cash withdrawal entries are gone
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:

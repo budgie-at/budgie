@@ -5,21 +5,7 @@ appId: ${APP_ID}
       env:
           FIXTURE_ROW_ID_MATCH: '14.db(, db)?'
 
-- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
-- scrollUntilVisible:
-      element:
-          id: 'SettingsPage.MoneyDataUpgradeCard'
-      direction: DOWN
-- tapOn:
-      id: 'SettingsPage.MoneyDataUpgradeCard'
-- extendedWaitUntil:
-      visible: 'Upgrade money data?'
-      timeout: 10000
-- tapOn: 'Upgrade'
-- extendedWaitUntil:
-      visible:
-          id: 'SettingsPage.MoneyDataUpgradeCard.PrimaryAction.COMPLETE'
-      timeout: 30000
+- runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
