@@ -23,6 +23,7 @@ vi.mock('@app/@generic/drizzle/db/db', async () => {
         categoryRepository: new contracts.CategoryRepository(testDb as never),
         instrumentRepository: new contracts.InstrumentRepository(testDb as never),
         exchangeRateRepository: new contracts.ExchangeRateRepository(testDb as never),
+        historicalExchangeRateRepository: new contracts.HistoricalExchangeRateRepository(testDb as never),
         accountBalanceRepository: new contracts.AccountBalanceRepository(testDb as never),
         bankSyncRepository: new contracts.BankSyncRepository(testDb as never),
         ruleRepository: new contracts.RuleRepository(testDb as never),

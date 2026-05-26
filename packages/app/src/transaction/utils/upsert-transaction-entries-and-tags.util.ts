@@ -1,17 +1,17 @@
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionEntryRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
+import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 
 import { transactionMapEntryInputToCreateEntity } from './transaction-map-entry-input-to-create-entity.util';
 import { transactionMapTagIdsToCreateEntities } from './transaction-map-tag-ids-to-create-entities.util';
 
-import type { DB, TransactionUpdateServiceInputInterface } from '@budgie/contracts';
+import type { UpsertTransactionEntriesAndTagsInputInterface } from '../interface/upsert-transaction-entries-and-tags-input.interface';
+import type { DB } from '@budgie/contracts';
 
 export const upsertTransactionEntriesAndTags = async (
-    transactionId: number,
-    input: TransactionUpdateServiceInputInterface,
-    tx: DB,
-    isConsolidated = false
+    { transactionId, input, operatedAt, isConsolidated }: UpsertTransactionEntriesAndTagsInputInterface,
+    tx: DB
 ): Promise<void> => {
     if (isConsolidated) {
         await transactionEntryRepository.deleteLedgerByTransactionId(transactionId, tx);
@@ -19,8 +19,10 @@ export const upsertTransactionEntriesAndTags = async (
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
     }
 
+    const valuations = await entryBaseValuationService.valueEntries(input.entries, operatedAt, null, tx);
+
     await transactionEntryRepository.bulkCreate(
-        input.entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transactionId)),
+        input.entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transactionId, valuations.get(entry))),
         tx
     );
 

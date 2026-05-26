@@ -26,5 +26,6 @@ export const SettingsPageSelector = {
     ExportDatabaseCard: 'SettingsPage.ExportDatabaseCard',
     ConsolidateTransfersCard: 'SettingsPage.ConsolidateTransfersCard',
     ClearDataCard: 'SettingsPage.ClearDataCard',
-    ManageRulesCard: 'SettingsPage.ManageRulesCard'
+    ManageRulesCard: 'SettingsPage.ManageRulesCard',
+    MoneyDataUpgradeCard: 'SettingsPage.MoneyDataUpgradeCard'
 } as const;

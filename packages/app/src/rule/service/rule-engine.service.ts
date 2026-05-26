@@ -24,6 +24,7 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
 
@@ -31,7 +32,20 @@ import { ruleMatcherService } from './rule-matcher.service';
 
 import type { RuleCreatePreparationResultInterface } from '../interface/rule-create-preparation-result.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
-import type { DB, RuleActionEntityInterface, RuleWithRelationsEntityInterface, TransactionCreateInputInterface } from '@budgie/contracts';
+import type { RuleTransferAccountIdsInterface } from '../interface/rule-transfer-account-ids.interface';
+import type { RuleTransferAccountsInterface } from '../interface/rule-transfer-accounts.interface';
+import type { RuleTransferCandidateInterface } from '../interface/rule-transfer-candidate.interface';
+import type { RuleTransferConversionBuildInputInterface } from '../interface/rule-transfer-conversion-build-input.interface';
+import type { RuleTransferConversionInterface } from '../interface/rule-transfer-conversion.interface';
+import type { RuleTransferConvertedAmountInterface } from '../interface/rule-transfer-converted-amount.interface';
+import type { RuleTransferEntriesInputInterface } from '../interface/rule-transfer-entries-input.interface';
+import type {
+    DB,
+    RuleActionEntityInterface,
+    RuleWithRelationsEntityInterface,
+    TransactionCreateInputInterface,
+    TransactionEntryCreateEntityInterface
+} from '@budgie/contracts';
 
 type ApplyRuleResultType = {
     readonly applied: number;
@@ -409,59 +423,37 @@ class RuleEngineService {
         await transactionRepository.touchUpdatedAt(transactionId, transaction);
     }
 
-    // eslint-disable-next-line max-statements -- multi-step transfer conversion absorbed from convert-transaction-to-transfer util per CLAUDE.md rule 38/51
     private async convertTransactionToTransfer(transactionId: number, targetAccountId: number, dbTransaction: DB): Promise<boolean> {
-        const transaction = await transactionRepository.getByIdWithEntries(transactionId, dbTransaction);
-        if (!isDefined(transaction)) {
+        const conversion = await this.buildRuleTransferConversion(transactionId, targetAccountId, dbTransaction);
+
+        if (!isDefined(conversion)) {
             return false;
         }
 
-        const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
-        const isIncome = transaction.type === TransactionTypeEnum.INCOME;
-
-        if (!isExpense && !isIncome) {
-            return false;
-        }
-
-        const [originalEntry] = transaction.entries;
-        if (!isDefined(originalEntry)) {
-            return false;
-        }
-
-        const originalAccountId = originalEntry.accountId;
-
-        if (originalAccountId === targetAccountId) {
-            return false;
-        }
-
-        const fromAccountId = isExpense ? originalAccountId : targetAccountId;
-        const toAccountId = isExpense ? targetAccountId : originalAccountId;
-
-        const [fromAccount, toAccount] = await Promise.all([
-            accountRepository.findById(fromAccountId, dbTransaction),
-            accountRepository.findById(toAccountId, dbTransaction)
+        const [creditValuation, debitValuation] = await Promise.all([
+            entryBaseValuationService.valueMicroUnitEntry({
+                accountId: conversion.fromAccountId,
+                amount: conversion.originalEntry.amount,
+                operatedAt: conversion.transaction.operatedAt,
+                externalSource: null,
+                tx: dbTransaction
+            }),
+            entryBaseValuationService.valueMicroUnitEntry({
+                accountId: conversion.toAccountId,
+                amount: conversion.convertedAmount,
+                operatedAt: conversion.transaction.operatedAt,
+                externalSource: null,
+                tx: dbTransaction
+            })
         ]);
-
-        if (!isDefined(fromAccount) || !isDefined(toAccount)) {
-            return false;
-        }
-
-        const { amount: convertedAmount, exchangeRate } = await exchangeRatesService.convert(
-            fromAccount.instrumentId,
-            toAccount.instrumentId,
-            originalEntry.amount
-        );
-
-        const isDebtTransaction = fromAccount.type === AccountTypeEnum.DEBT || toAccount.type === AccountTypeEnum.DEBT;
-        const newType = isDebtTransaction ? TransactionTypeEnum.DEBT : TransactionTypeEnum.TRANSFER;
 
         await transactionRepository.updateById(
             transactionId,
             {
-                type: newType,
-                fromAccountId,
-                toAccountId,
-                exchangeRate
+                type: conversion.transactionType,
+                fromAccountId: conversion.fromAccountId,
+                toAccountId: conversion.toAccountId,
+                exchangeRate: conversion.exchangeRate
             },
             dbTransaction
         );
@@ -469,32 +461,174 @@ class RuleEngineService {
         await transactionEntryRepository.deleteByTransactionId(transactionId, dbTransaction);
 
         await transactionEntryRepository.bulkCreate(
-            [
-                {
-                    transactionId,
-                    accountId: fromAccountId,
-                    type: TransactionEntryTypeEnum.CREDIT,
-                    amount: originalEntry.amount,
-                    categoryId: originalEntry.categoryId,
-                    categorySource: originalEntry.categorySource,
-                    mccCategoryId: originalEntry.mccCategoryId,
-                    externalId: null
-                },
-                {
-                    transactionId,
-                    accountId: toAccountId,
-                    type: TransactionEntryTypeEnum.DEBIT,
-                    amount: convertedAmount,
-                    categoryId: originalEntry.categoryId,
-                    categorySource: originalEntry.categorySource,
-                    mccCategoryId: null,
-                    externalId: null
-                }
-            ],
+            this.buildRuleTransferEntries({
+                transactionId,
+                originalEntry: conversion.originalEntry,
+                fromAccountId: conversion.fromAccountId,
+                toAccountId: conversion.toAccountId,
+                convertedAmount: conversion.convertedAmount,
+                creditValuation,
+                debitValuation
+            }),
             dbTransaction
         );
 
         return true;
+    }
+
+    private async buildRuleTransferConversion(
+        transactionId: number,
+        targetAccountId: number,
+        dbTransaction: DB
+    ): Promise<RuleTransferConversionInterface | null> {
+        const candidate = await this.findRuleTransferCandidate(transactionId, targetAccountId, dbTransaction);
+        if (!isDefined(candidate)) {
+            return null;
+        }
+
+        const accounts = await this.findRuleTransferAccounts(candidate.accountIds, dbTransaction);
+        if (!isDefined(accounts)) {
+            return null;
+        }
+
+        const converted = await this.convertRuleTransferAmount(accounts, candidate.originalEntry.amount);
+
+        return this.buildRuleTransferConversionResult({ ...candidate, accounts, converted });
+    }
+
+    private async findRuleTransferCandidate(
+        transactionId: number,
+        targetAccountId: number,
+        dbTransaction: DB
+    ): Promise<RuleTransferCandidateInterface | null> {
+        const transaction = await transactionRepository.getByIdWithEntries(transactionId, dbTransaction);
+        if (!isDefined(transaction) || !this.isRuleTransferConvertibleType(transaction.type)) {
+            return null;
+        }
+
+        const [originalEntry] = transaction.entries;
+        if (!isDefined(originalEntry)) {
+            return null;
+        }
+
+        const accountIds = this.resolveRuleTransferAccountIds(transaction.type, originalEntry.accountId, targetAccountId);
+        if (!isDefined(accountIds)) {
+            return null;
+        }
+
+        return { transaction, originalEntry, accountIds };
+    }
+
+    private buildRuleTransferConversionResult({
+        transaction,
+        originalEntry,
+        accountIds,
+        accounts,
+        converted
+    }: RuleTransferConversionBuildInputInterface): RuleTransferConversionInterface {
+        return {
+            transaction,
+            originalEntry,
+            fromAccountId: accountIds.fromAccountId,
+            toAccountId: accountIds.toAccountId,
+            convertedAmount: converted.convertedAmount,
+            exchangeRate: converted.exchangeRate,
+            transactionType: this.resolveRuleTransferTransactionType(accounts)
+        };
+    }
+
+    private async convertRuleTransferAmount(
+        accounts: RuleTransferAccountsInterface,
+        amount: number
+    ): Promise<RuleTransferConvertedAmountInterface> {
+        const converted = await exchangeRatesService.convert(accounts.fromAccount.instrumentId, accounts.toAccount.instrumentId, amount);
+
+        return {
+            convertedAmount: converted.amount,
+            exchangeRate: converted.exchangeRate
+        };
+    }
+
+    private isRuleTransferConvertibleType(transactionType: TransactionTypeEnum): boolean {
+        return transactionType === TransactionTypeEnum.EXPENSE || transactionType === TransactionTypeEnum.INCOME;
+    }
+
+    private resolveRuleTransferAccountIds(
+        transactionType: TransactionTypeEnum,
+        originalAccountId: number,
+        targetAccountId: number
+    ): RuleTransferAccountIdsInterface | null {
+        if (originalAccountId === targetAccountId) {
+            return null;
+        }
+
+        const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
+
+        return {
+            fromAccountId: isExpense ? originalAccountId : targetAccountId,
+            toAccountId: isExpense ? targetAccountId : originalAccountId
+        };
+    }
+
+    private async findRuleTransferAccounts(
+        accountIds: RuleTransferAccountIdsInterface,
+        dbTransaction: DB
+    ): Promise<RuleTransferAccountsInterface | null> {
+        const [fromAccount, toAccount] = await Promise.all([
+            accountRepository.findById(accountIds.fromAccountId, dbTransaction),
+            accountRepository.findById(accountIds.toAccountId, dbTransaction)
+        ]);
+
+        if (!isDefined(fromAccount) || !isDefined(toAccount)) {
+            return null;
+        }
+
+        return { fromAccount, toAccount };
+    }
+
+    private resolveRuleTransferTransactionType(accounts: RuleTransferAccountsInterface): TransactionTypeEnum {
+        return accounts.fromAccount.type === AccountTypeEnum.DEBT || accounts.toAccount.type === AccountTypeEnum.DEBT
+            ? TransactionTypeEnum.DEBT
+            : TransactionTypeEnum.TRANSFER;
+    }
+
+    private buildRuleTransferEntries({
+        transactionId,
+        originalEntry,
+        fromAccountId,
+        toAccountId,
+        convertedAmount,
+        creditValuation,
+        debitValuation
+    }: RuleTransferEntriesInputInterface): TransactionEntryCreateEntityInterface[] {
+        return [
+            {
+                transactionId,
+                accountId: fromAccountId,
+                type: TransactionEntryTypeEnum.CREDIT,
+                amount: originalEntry.amount,
+                categoryId: originalEntry.categoryId,
+                categorySource: originalEntry.categorySource,
+                mccCategoryId: originalEntry.mccCategoryId,
+                externalId: null,
+                baseInstrumentId: creditValuation.baseInstrumentId,
+                baseExchangeRate: creditValuation.baseExchangeRate,
+                baseAmount: creditValuation.baseAmount
+            },
+            {
+                transactionId,
+                accountId: toAccountId,
+                type: TransactionEntryTypeEnum.DEBIT,
+                amount: convertedAmount,
+                categoryId: originalEntry.categoryId,
+                categorySource: originalEntry.categorySource,
+                mccCategoryId: null,
+                externalId: null,
+                baseInstrumentId: debitValuation.baseInstrumentId,
+                baseExchangeRate: debitValuation.baseExchangeRate,
+                baseAmount: debitValuation.baseAmount
+            }
+        ];
     }
 }
 
