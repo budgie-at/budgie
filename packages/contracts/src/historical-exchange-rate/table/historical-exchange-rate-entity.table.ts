@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { index, int, real, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
+import { index, int, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
@@ -14,7 +14,7 @@ export const HistoricalExchangeRateEntityTable = sqliteTable(
             .notNull()
             .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
         rateDate: text('rate_date').notNull(),
-        rate: real('rate').notNull()
+        rate: int('rate', { mode: 'number' }).notNull()
     }),
     table => [
         unique().on(table.sourceInstrumentId, table.targetInstrumentId, table.rateDate),
