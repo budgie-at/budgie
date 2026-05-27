@@ -17,8 +17,6 @@ import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
 const WIDGET_CATEGORY_LIMITS_MAX = 6;
 
-const handleNavigate = () => void router.push('/budget');
-
 export const BudgetWidget = () => {
     const isEnabled = useSetting('isBudgetWidgetEnabled');
     const { budget } = useGetActiveBudgetQuery();
@@ -32,6 +30,8 @@ export const BudgetWidget = () => {
     if (!isEnabled) {
         return null;
     }
+
+    const handleNavigate = () => void router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
 
     const dateLabel = formatBudgetPeriodLabel(budget, 'short');
     const spentByCategoryMap = new Map(spent.spentByCategory.map(entry => [entry.categoryId, entry.spent]));

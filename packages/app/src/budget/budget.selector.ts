@@ -5,16 +5,13 @@ export const BudgetSelector = {
     WidgetCategoryRow: (categoryId: number) => `BudgetWidget.CategoryRow.${categoryId}` as const,
     WidgetMoreCategoriesLabel: 'BudgetWidget.MoreCategoriesLabel',
     SetupOverallLimitInput: 'BudgetSetup.OverallLimitInput',
+    SetupSpentLabel: 'BudgetSetup.SpentLabel',
     SetupSaveButton: 'BudgetSetup.SaveButton',
+    SetupDeleteButton: 'BudgetSetup.DeleteButton',
     SetupCategoryLimitsHeader: 'BudgetSetup.CategoryLimitsHeader',
     SetupCategoryLimitAddButton: 'BudgetSetup.CategoryLimitAddButton',
     SetupCategoryLimitRow: (index: number) => `BudgetSetup.CategoryLimit.${index}.Row` as const,
     SetupCategoryLimitAmountInput: (index: number) => `BudgetSetup.CategoryLimit.${index}.AmountInput` as const,
-    SetupCategoryLimitRemoveButton: (index: number) => `BudgetSetup.CategoryLimit.${index}.RemoveButton` as const,
     SetupPushToggle: 'BudgetSetup.PushToggle',
-    SetupWidgetEnabledToggle: 'BudgetSetup.WidgetEnabledToggle',
-    DetailSpentLabel: 'BudgetDetail.SpentLabel',
-    DetailEditButton: 'BudgetDetail.EditButton',
-    DetailDeleteButton: 'BudgetDetail.DeleteButton',
-    DetailCategoryRow: (categoryId: number) => `BudgetDetail.CategoryRow.${categoryId}` as const
+    SetupWidgetEnabledToggle: 'BudgetSetup.WidgetEnabledToggle'
 } as const;

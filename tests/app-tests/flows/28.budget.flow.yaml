@@ -80,13 +80,6 @@ env:
 - tapOn:
     id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetDetail.EditButton'
-    timeout: 3000
-
-- tapOn:
-    id: 'BudgetDetail.EditButton'
-- extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
 
@@ -101,14 +94,14 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'BudgetDetail.SpentLabel'
+      id: 'BudgetWidget.SpentLabel'
       text: '42.00 / 1500.00'
     timeout: 3000
 
 # --- Cancel edit discards changes ---
 
 - tapOn:
-    id: 'BudgetDetail.EditButton'
+    id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
@@ -124,14 +117,14 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'BudgetDetail.SpentLabel'
+      id: 'BudgetWidget.SpentLabel'
       text: '42.00 / 1500.00'
     timeout: 3000
 
 # --- Add per-category limits via edit ---
 
 - tapOn:
-    id: 'BudgetDetail.EditButton'
+    id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
@@ -181,41 +174,19 @@ env:
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
-# --- Detail screen renders both category rows ---
+# --- Widget renders both category rows after save ---
 
 - extendedWaitUntil:
     visible:
-      id: 'BudgetDetail.SpentLabel'
+      id: 'BudgetWidget.CategoryRow.42'
     timeout: 3000
-- assertVisible:
-    id: 'BudgetDetail.CategoryRow.42'
-- assertVisible:
-    id: 'BudgetDetail.CategoryRow.11'
-
-# --- Widget shows per-category rows ---
-
-- tapOn:
-    id: 'PageHeader.BackButton'
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.Card'
-    timeout: 3000
-- assertVisible:
-    id: 'BudgetWidget.CategoryRow.42'
 - assertVisible:
     id: 'BudgetWidget.CategoryRow.11'
 
-# --- Remove the second category limit; detail and widget update ---
+# --- Remove the second category limit; widget updates ---
 
 - tapOn:
     id: 'BudgetWidget.Card'
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetDetail.EditButton'
-    timeout: 3000
-
-- tapOn:
-    id: 'BudgetDetail.EditButton'
 - extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
@@ -245,15 +216,6 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'BudgetDetail.CategoryRow.42'
-    timeout: 3000
-- assertNotVisible:
-    id: 'BudgetDetail.CategoryRow.11'
-
-- tapOn:
-    id: 'PageHeader.BackButton'
-- extendedWaitUntil:
-    visible:
       id: 'BudgetWidget.CategoryRow.42'
     timeout: 3000
 - assertNotVisible:
@@ -263,13 +225,6 @@ env:
 
 - tapOn:
     id: 'BudgetWidget.Card'
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetDetail.EditButton'
-    timeout: 3000
-
-- tapOn:
-    id: 'BudgetDetail.EditButton'
 - extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
@@ -283,11 +238,11 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'BudgetDetail.EditButton'
+      id: 'BudgetWidget.Card'
     timeout: 3000
 
 - tapOn:
-    id: 'BudgetDetail.EditButton'
+    id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
@@ -306,11 +261,11 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'BudgetDetail.EditButton'
+      id: 'BudgetWidget.Card'
     timeout: 3000
 
 - tapOn:
-    id: 'BudgetDetail.EditButton'
+    id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
@@ -324,7 +279,7 @@ env:
 # --- Widget toggle: edit form disables widget, re-enables it ---
 
 - tapOn:
-    id: 'BudgetDetail.EditButton'
+    id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
@@ -341,13 +296,6 @@ env:
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetDetail.SpentLabel'
-    timeout: 3000
-
-- tapOn:
-    id: 'PageHeader.BackButton'
 - extendedWaitUntil:
     visible:
       id: 'TabBar.Home'
@@ -359,13 +307,6 @@ env:
 
 - openLink: 'budgie://budget'
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetDetail.EditButton'
-    timeout: 3000
-
-- tapOn:
-    id: 'BudgetDetail.EditButton'
-- extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
 
@@ -383,13 +324,6 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'BudgetDetail.SpentLabel'
-    timeout: 3000
-
-- tapOn:
-    id: 'PageHeader.BackButton'
-- extendedWaitUntil:
-    visible:
       id: 'BudgetWidget.Card'
     timeout: 3000
 
@@ -398,12 +332,16 @@ env:
 - tapOn:
     id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetDetail.DeleteButton'
+    visible: 'Edit budget'
     timeout: 3000
 
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.DeleteButton'
+    direction: DOWN
+    centerElement: true
 - tapOn:
-    id: 'BudgetDetail.DeleteButton'
+    id: 'BudgetSetup.DeleteButton'
 - extendedWaitUntil:
     visible: 'Delete budget?'
     timeout: 3000

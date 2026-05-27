@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -18,9 +19,11 @@ import { BudgetSelector } from '../../../../budget/budget.selector';
 import { BudgetAllocationSummary } from '../../../../budget/components/budget-allocation-summary/budget-allocation-summary';
 import { BudgetInlineCategoryLimits } from '../../../../budget/components/budget-inline-category-limits/budget-inline-category-limits';
 import { BudgetOverallLimitField } from '../../../../budget/components/budget-overall-limit-field/budget-overall-limit-field';
+import { BudgetProgressBar } from '../../../../budget/components/budget-progress-bar/budget-progress-bar';
 import { BudgetPushEnabledField } from '../../../../budget/components/budget-push-enabled-field/budget-push-enabled-field';
 import { BudgetWidgetEnabledField } from '../../../../budget/components/budget-widget-enabled-field/budget-widget-enabled-field';
 import { useBudgetForm } from '../../../../budget/hooks/use-budget-form.hook';
+import { useGetBudgetSpentQuery } from '../../../../budget/query/use-get-budget-spent.query';
 import { useSetting } from '../../../../settings/hook/use-setting.hook';
 
 const FORM_CONTENT_STYLE = { rowGap: 24 } as const;
@@ -28,12 +31,14 @@ const FORM_CONTENT_STYLE = { rowGap: 24 } as const;
 const handleCancel = () => void goBackOrReplace('/');
 const handleOpenSettings = () => void router.push('/settings');
 
+// eslint-disable-next-line max-statements -- Form orchestration screen owns form state, mount-time precondition, derived UI, and editing-only delete affordance
 export default function BudgetSetupScreen() {
     const { id } = useLocalSearchParams<{ id?: string }>();
     const [editingId] = useState<number | null>(() => (isDefined(id) ? Number(id) : null));
 
     const defaultInstrumentId = useSetting('defaultInstrumentId');
-    const { form, handleSubmit, isEditing, isLoading } = useBudgetForm({ editingId });
+    const { form, handleSubmit, handleDelete, isEditing, isLoading, budget } = useBudgetForm({ editingId });
+    const { spent } = useGetBudgetSpentQuery(budget);
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -52,6 +57,20 @@ export default function BudgetSetupScreen() {
 
     const { control, formState } = form;
     const headerTitle = isEditing ? t`Edit budget` : t`Create budget`;
+    const onDeletePress = () => void handleDelete();
+    const progressBar =
+        isEditing && isDefined(budget) ? (
+            <BudgetProgressBar spent={spent.spentOverall} limit={budget.overallLimit} spentTestID={BudgetSelector.SetupSpentLabel} />
+        ) : null;
+    const deleteButton = isEditing ? (
+        <Button
+            testID={BudgetSelector.SetupDeleteButton}
+            variant="destructive"
+            leftIcon={UserIconNameEnum.Trash2}
+            content={t`Delete budget`}
+            onPress={onDeletePress}
+        />
+    ) : null;
 
     const footer = (
         <View className="gap-y-md">
@@ -70,10 +89,12 @@ export default function BudgetSetupScreen() {
                 footer={footer}
                 contentContainerStyle={FORM_CONTENT_STYLE}
             >
+                {progressBar}
                 <BudgetOverallLimitField control={control} autoFocus={!isEditing} />
                 <BudgetPushEnabledField control={control} />
                 <BudgetWidgetEnabledField control={control} />
                 <BudgetInlineCategoryLimits />
+                {deleteButton}
             </FormPage>
         </FormProvider>
     );

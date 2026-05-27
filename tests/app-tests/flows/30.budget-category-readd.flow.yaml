@@ -48,13 +48,13 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'BudgetDetail.CategoryRow.11'
+      id: 'BudgetWidget.CategoryRow.11'
     timeout: 3000
 
 # --- Remove the Groceries category limit (soft-delete) ---
 
 - tapOn:
-    id: 'BudgetDetail.EditButton'
+    id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
@@ -84,16 +84,16 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'BudgetDetail.SpentLabel'
+      id: 'BudgetWidget.Card'
     timeout: 3000
 - assertNotVisible:
-    id: 'BudgetDetail.CategoryRow.11'
+    id: 'BudgetWidget.CategoryRow.11'
 
 # --- Re-add the same Groceries category with a different amount (300) ---
 # Repros bug #426: partial unique index must allow re-add after soft delete.
 
 - tapOn:
-    id: 'BudgetDetail.EditButton'
+    id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
@@ -122,12 +122,12 @@ appId: ${APP_ID}
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
-# Detail row re-appears for the same category id; no UNIQUE-constraint toast.
+# Widget row re-appears for the same category id; no UNIQUE-constraint toast.
 
 - extendedWaitUntil:
     visible:
-      id: 'BudgetDetail.CategoryRow.11'
+      id: 'BudgetWidget.CategoryRow.11'
     timeout: 3000
 - assertVisible:
-    id: 'BudgetDetail.CategoryRow.11'
+    id: 'BudgetWidget.CategoryRow.11'
     text: '0.00 / 300.00'
