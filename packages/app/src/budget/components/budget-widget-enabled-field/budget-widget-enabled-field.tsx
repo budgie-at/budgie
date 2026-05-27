@@ -11,9 +11,16 @@ interface Props {
 }
 
 export const BudgetWidgetEnabledField = ({ control }: Props) => {
-    const render = ({ field: { value, onChange } }: UseControllerReturn<BudgetFormValues, 'isWidgetEnabled'>) => (
-        <ThemedSwitch testID={BudgetSelector.SetupWidgetEnabledToggle} value={value} onValueChange={onChange} />
-    );
+    const render = ({ field: { value, onChange } }: UseControllerReturn<BudgetFormValues, 'isWidgetEnabled'>) => {
+        const stateMarkerTestID = value ? BudgetSelector.SetupWidgetEnabledToggleStateOn : BudgetSelector.SetupWidgetEnabledToggleStateOff;
+
+        return (
+            <View className="flex-row items-center gap-x-xs">
+                <View testID={stateMarkerTestID} className="h-1 w-1" />
+                <ThemedSwitch testID={BudgetSelector.SetupWidgetEnabledToggle} value={value} onValueChange={onChange} />
+            </View>
+        );
+    };
 
     return (
         <View className="flex-row items-center justify-between gap-x-md">

@@ -34,6 +34,9 @@ executionOrder:
         - 28.budget.flow
         - 29.budget-multi-currency.flow
         - 30.budget-category-readd.flow
+        - 31.budget-over-allocation.flow
+        - 32.budget-transaction-update.flow
+        - 33.budget-multi-currency-category.flow
 
 platform:
     ios:
