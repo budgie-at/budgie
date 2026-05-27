@@ -1,0 +1,125 @@
+appId: ${APP_ID}
+env:
+    ACCOUNT_NAME: Rules Test Account
+    CATEGORY_NAME: Rules Test Category
+    COMMENT: E2E Budget Update Txn
+---
+
+# Verifies that transaction create and delete drive live budget updates:
+#   - Create budget 1000.
+#   - Add an expense of 60; widget shows 60.00 / 1000.00.
+#   - Delete the expense; widget reverts to 0.00 / 1000.00.
+# (Transaction edit path is not covered: the long-press Edit Expense screen
+# does not currently render TransactionForm.AmountInput in a Maestro-tappable
+# way and needs a dedicated investigation. Tracked separately.)
+
+- runFlow:
+    file: setup/setup-budget-test.flow.yaml
+
+# --- Create budget overall 1000 ---
+
+- openLink: 'budgie://budget'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.EmptyState'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetWidget.EmptyState'
+- extendedWaitUntil:
+    visible: 'Create budget'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.OverallLimitInput'
+- inputText: '1000'
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.Card'
+    timeout: 3000
+- assertVisible:
+    id: 'BudgetWidget.SpentLabel'
+    text: '0.00 / 1000.00'
+
+# --- Create expense of 60 with a known comment for stable selector ---
+
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
+
+- tapOn:
+    id: 'TransactionKeypad.Digit.6'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
+
+- runFlow:
+    file: subflows/transactions/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+- tapOn:
+    id: 'TransactionForm.CategorySelector'
+- runFlow:
+    file: subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- runFlow:
+    file: subflows/transactions/enter-comment.flow.yaml
+    env:
+      COMMENT: ${COMMENT}
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+    timeout: 5000
+
+# --- Budget widget reflects create ---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.SpentLabel'
+      text: '60.00 / 1000.00'
+    timeout: 3000
+
+# --- Delete transaction; budget reverts ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+    timeout: 5000
+
+- runFlow:
+    file: subflows/transactions/long-press-delete-transaction.flow.yaml
+    env:
+      TRANSACTION_CARD_ID: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.SpentLabel'
+      text: '0.00 / 1000.00'
+    timeout: 3000

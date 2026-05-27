@@ -184,7 +184,7 @@ env:
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
-# --- Widget renders both category rows after save ---
+# --- Widget renders both category rows after save with the correct limits ---
 
 - extendedWaitUntil:
     visible:
@@ -192,6 +192,12 @@ env:
     timeout: 3000
 - assertVisible:
     id: 'BudgetWidget.CategoryRow.11'
+- assertVisible:
+    id: 'BudgetWidget.CategorySpentLabel.42'
+    text: '42.00 / 200.00'
+- assertVisible:
+    id: 'BudgetWidget.CategorySpentLabel.11'
+    text: '0.00 / 100.00'
 
 # --- Remove the second category limit; widget updates ---
 
@@ -231,7 +237,7 @@ env:
 - assertNotVisible:
     id: 'BudgetWidget.CategoryRow.11'
 
-# --- Push toggle: ON persists across save + reopen ---
+# --- Push toggle: starts OFF (default) ---
 
 - tapOn:
     id: 'BudgetWidget.Card'
@@ -239,9 +245,17 @@ env:
     visible: 'Edit budget'
     timeout: 3000
 
+- assertVisible:
+    id: 'BudgetSetup.PushToggle.State.Off'
+
+# --- Push toggle: ON persists across save + reopen ---
+
 - tapOn:
     id: 'BudgetSetup.PushToggle'
 - waitForAnimationToEnd
+
+- assertVisible:
+    id: 'BudgetSetup.PushToggle.State.On'
 
 - tapOn:
     id: 'BudgetSetup.SaveButton'
@@ -258,7 +272,7 @@ env:
     timeout: 3000
 
 - assertVisible:
-    id: 'BudgetSetup.PushToggle'
+    id: 'BudgetSetup.PushToggle.State.On'
 
 # --- Push toggle: OFF persists across save + reopen ---
 
@@ -266,6 +280,9 @@ env:
     id: 'BudgetSetup.PushToggle'
 - waitForAnimationToEnd
 
+- assertVisible:
+    id: 'BudgetSetup.PushToggle.State.Off'
+
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
@@ -281,7 +298,7 @@ env:
     timeout: 3000
 
 - assertVisible:
-    id: 'BudgetSetup.PushToggle'
+    id: 'BudgetSetup.PushToggle.State.Off'
 
 - tapOn:
     id: 'PageHeader.BackButton'
@@ -300,10 +317,18 @@ env:
       id: 'BudgetSetup.WidgetEnabledToggle'
     direction: DOWN
     centerElement: true
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'BudgetSetup.WidgetEnabledToggle.State.On'
 
 - tapOn:
     id: 'BudgetSetup.WidgetEnabledToggle'
 - waitForAnimationToEnd
+
+- assertVisible:
+    id: 'BudgetSetup.WidgetEnabledToggle.State.Off'
+
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
@@ -326,10 +351,18 @@ env:
       id: 'BudgetSetup.WidgetEnabledToggle'
     direction: DOWN
     centerElement: true
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'BudgetSetup.WidgetEnabledToggle.State.Off'
 
 - tapOn:
     id: 'BudgetSetup.WidgetEnabledToggle'
 - waitForAnimationToEnd
+
+- assertVisible:
+    id: 'BudgetSetup.WidgetEnabledToggle.State.On'
+
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 

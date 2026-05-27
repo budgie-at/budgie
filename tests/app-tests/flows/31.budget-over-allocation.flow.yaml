@@ -1,0 +1,98 @@
+appId: ${APP_ID}
+---
+
+# Verifies the over-allocation gate:
+#   - When sum(categoryLimits) > overallLimit the BudgetAllocationSummary flips
+#     to "Over by" and the Save button is disabled by the Zod refine.
+#   - Save attempts in over-allocated state must not navigate away.
+
+- runFlow:
+    file: setup/setup-budget-test.flow.yaml
+
+- openLink: 'budgie://budget'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.EmptyState'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetWidget.EmptyState'
+- extendedWaitUntil:
+    visible: 'Create budget'
+    timeout: 3000
+
+# --- Set overall limit to 100 ---
+
+- tapOn:
+    id: 'BudgetSetup.OverallLimitInput'
+- inputText: '100'
+
+# --- Add Groceries category limit at 150 (exceeds overall) ---
+
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.CategoryLimitAddButton'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitAddButton'
+- runFlow:
+    file: subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: 'Groceries'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetSetup.CategoryLimit.0.Row'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+- inputText: '150'
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
+
+# --- Over-by indicator appears ---
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetSetup.AllocationSummary.OverBy'
+    timeout: 3000
+
+# --- Save must be blocked: tapping it must not navigate to the budget widget ---
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+- waitForAnimationToEnd
+- assertVisible: 'Create budget'
+- assertNotVisible:
+    id: 'BudgetWidget.Card'
+
+# --- Reduce category limit to 80; gate lifts ---
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+    point: '95%,50%'
+- eraseText: 10
+- inputText: '80'
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
+
+- assertNotVisible:
+    id: 'BudgetSetup.AllocationSummary.OverBy'
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.Card'
+    timeout: 3000
+- assertVisible:
+    id: 'BudgetWidget.CategoryRow.11'
+- assertVisible:
+    id: 'BudgetWidget.CategorySpentLabel.11'
+    text: '0.00 / 80.00'

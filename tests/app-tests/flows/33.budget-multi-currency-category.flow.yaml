@@ -1,0 +1,151 @@
+appId: ${APP_ID}
+env:
+    BUDGET_LIMIT: '300'
+    EUR_ACCOUNT: E2E Foreign Account
+    CATEGORY_NAME: Groceries
+    EUR_AMOUNT: '40'
+---
+
+# Verifies multi-currency budgets handle per-category limits + live updates:
+#   - Fixture seeds 100 USD + 50 EUR uncategorized expenses with budget
+#     currency EUR. We test the per-category rollup path independently of
+#     the overall-FX assertion in 29.budget-multi-currency.
+#   - Create budget overall=300 EUR with Groceries category limit=80 EUR.
+#   - Add a NEW 40 EUR expense (rate=1) on the EUR account categorized
+#     Groceries. CategorySpentLabel must show "40.00 / 80.00".
+#   - Delete that expense; CategorySpentLabel reverts to "0.00 / 80.00".
+
+- runFlow:
+    file: setup/setup-multi-currency-budget.flow.yaml
+
+- openLink: 'budgie://budget'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.EmptyState'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetWidget.EmptyState'
+- extendedWaitUntil:
+    visible: 'Create budget'
+    timeout: 3000
+
+# --- Overall limit ---
+
+- tapOn:
+    id: 'BudgetSetup.OverallLimitInput'
+- inputText: ${BUDGET_LIMIT}
+
+# --- Groceries category limit 80 ---
+
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.CategoryLimitAddButton'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitAddButton'
+- runFlow:
+    file: subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetSetup.CategoryLimit.0.Row'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+- inputText: '80'
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.Card'
+    timeout: 3000
+
+# --- Pre-state: no Groceries spend yet, limit shows 0.00 / 80.00 ---
+
+- assertVisible:
+    id: 'BudgetWidget.CategoryRow.11'
+- assertVisible:
+    id: 'BudgetWidget.CategorySpentLabel.11'
+    text: '0.00 / 80.00'
+
+# --- Add a 40 EUR expense on the EUR account categorized Groceries ---
+
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
+
+- tapOn:
+    id: 'TransactionKeypad.Digit.4'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
+
+- runFlow:
+    file: subflows/transactions/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: ${EUR_ACCOUNT}
+
+- tapOn:
+    id: 'TransactionForm.CategorySelector'
+- runFlow:
+    file: subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- runFlow:
+    file: subflows/transactions/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Budget MC Category Txn'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Budget_MC_Category_Txn'
+    timeout: 5000
+
+# --- Per-category limit updates live with the EUR transaction ---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.CategorySpentLabel.11'
+      text: '40.00 / 80.00'
+    timeout: 3000
+
+# --- Delete the new expense; per-category spend reverts ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/long-press-delete-transaction.flow.yaml
+    env:
+      TRANSACTION_CARD_ID: 'TransactionCard.Label.E2E_Budget_MC_Category_Txn'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Budget_MC_Category_Txn'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.CategorySpentLabel.11'
+      text: '0.00 / 80.00'
+    timeout: 3000

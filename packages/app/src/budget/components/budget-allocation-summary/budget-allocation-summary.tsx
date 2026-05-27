@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
+import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 
 type AllocationStatus = 'normal' | 'over';
@@ -46,6 +47,8 @@ export const BudgetAllocationSummary = () => {
     const allocatedLabel = `${allocated.toFixed(2)} ${currencySymbol}`.trim();
     const remainingLabel = `${remaining.toFixed(2)} ${currencySymbol}`.trim();
     const remainingHeader = status === 'over' ? t`Over by` : t`Remaining`;
+    const remainingHeaderTestID =
+        status === 'over' ? BudgetSelector.SetupAllocationSummaryOverBy : BudgetSelector.SetupAllocationSummaryRemaining;
 
     return (
         <View className={containerVariants({ status })}>
@@ -54,7 +57,9 @@ export const BudgetAllocationSummary = () => {
                 <Text className="text-primary text-md font-semibold">{allocatedLabel}</Text>
             </View>
             <View className="items-end">
-                <Text className="text-secondary-foreground text-xs">{remainingHeader}</Text>
+                <Text testID={remainingHeaderTestID} className="text-secondary-foreground text-xs">
+                    {remainingHeader}
+                </Text>
                 <Text className={remainingTextVariants({ status })}>{remainingLabel}</Text>
             </View>
         </View>

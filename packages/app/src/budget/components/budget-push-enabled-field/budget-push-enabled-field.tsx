@@ -37,7 +37,14 @@ export const BudgetPushEnabledField = ({ control }: Props) => {
             }
         };
 
-        return <ThemedSwitch testID={BudgetSelector.SetupPushToggle} value={value} onValueChange={handleChange} />;
+        const stateMarkerTestID = value ? BudgetSelector.SetupPushToggleStateOn : BudgetSelector.SetupPushToggleStateOff;
+
+        return (
+            <View className="flex-row items-center gap-x-xs">
+                <View testID={stateMarkerTestID} className="h-1 w-1" />
+                <ThemedSwitch testID={BudgetSelector.SetupPushToggle} value={value} onValueChange={handleChange} />
+            </View>
+        );
     };
 
     return (
