@@ -22,8 +22,13 @@ const handleOpenSettings = () => void router.push('/settings');
 
 export const BudgetIntegrityGuard = ({ children }: Props) => {
     const [status, setStatus] = useState<BudgetIntegrityStatusEnum>(BudgetIntegrityStatusEnum.CHECKING);
+    const { isActive } = useAppState();
 
-    const runCheck = (): void => {
+    useEffect(() => {
+        if (!isActive) {
+            return;
+        }
+
         budgetRepository
             .countMissingInstrument()
             .then(missing => void setStatus(missing > 0 ? BudgetIntegrityStatusEnum.INCOMPLETE : BudgetIntegrityStatusEnum.OK))
@@ -31,19 +36,7 @@ export const BudgetIntegrityGuard = ({ children }: Props) => {
                 logger.error('check-failed', { errorMessage: getErrorMessage(error) });
                 setStatus(BudgetIntegrityStatusEnum.OK);
             });
-    };
-
-    useEffect(() => {
-        logger.log('mounted');
-        runCheck();
-         
-    }, []);
-
-    useAppState(isActive => {
-        if (isActive) {
-            runCheck();
-        }
-    });
+    }, [isActive]);
 
     if (status === BudgetIntegrityStatusEnum.INCOMPLETE) {
         return (
