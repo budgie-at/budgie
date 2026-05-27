@@ -1,22 +1,20 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../../@generic/component/button/button';
 import { FormPage } from '../../../../@generic/component/form-page/form-page';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
-import { ModalFormSaveButton } from '../../../../@generic/component/modal-form-save-button/modal-form-save-button';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { BudgetSelector } from '../../../../budget/budget.selector';
-import { BudgetAllocationSummary } from '../../../../budget/components/budget-allocation-summary/budget-allocation-summary';
+import { BudgetEditFooter } from '../../../../budget/components/budget-edit-footer/budget-edit-footer';
 import { BudgetInlineCategoryLimits } from '../../../../budget/components/budget-inline-category-limits/budget-inline-category-limits';
+import { BudgetMissingCurrencyGuard } from '../../../../budget/components/budget-missing-currency-guard/budget-missing-currency-guard';
 import { BudgetOverallLimitField } from '../../../../budget/components/budget-overall-limit-field/budget-overall-limit-field';
 import { BudgetProgressBar } from '../../../../budget/components/budget-progress-bar/budget-progress-bar';
 import { useBudgetForm } from '../../../../budget/hooks/use-budget-form.hook';
@@ -26,9 +24,7 @@ import { useSetting } from '../../../../settings/hook/use-setting.hook';
 const FORM_CONTENT_STYLE = { rowGap: 24 } as const;
 
 const handleCancel = () => void goBackOrReplace('/');
-const handleOpenSettings = () => void router.push('/settings');
 
-// eslint-disable-next-line max-statements -- Form orchestration screen owns form state, mount-time precondition, derived UI, and editing-only delete affordance
 export default function BudgetSetupScreen() {
     const { id } = useLocalSearchParams<{ id?: string }>();
     const [editingId] = useState<number | null>(() => (isDefined(id) ? Number(id) : null));
@@ -42,14 +38,7 @@ export default function BudgetSetupScreen() {
     }
 
     if (!isPositiveNumber(defaultInstrumentId)) {
-        return (
-            <View className="bg-primary-reverse flex-1 items-center justify-center gap-y-xl px-3xl">
-                <Text className="text-primary-foreground text-lg font-semibold text-center">
-                    <Trans>Set a default currency in Settings first</Trans>
-                </Text>
-                <Button variant="primary" content={t`Open settings`} onPress={handleOpenSettings} />
-            </View>
-        );
+        return <BudgetMissingCurrencyGuard />;
     }
 
     const { control, formState } = form;
@@ -68,21 +57,11 @@ export default function BudgetSetupScreen() {
         />
     ) : null;
 
-    const footer = (
-        <View className="gap-y-md">
-            <BudgetAllocationSummary />
-            <View className="flex-row gap-x-md">
-                {deleteButton}
-                <ModalFormSaveButton testID={BudgetSelector.SetupSaveButton} onPress={handleSubmit} disabled={!formState.isValid} />
-            </View>
-        </View>
-    );
-
     return (
         <FormProvider {...form}>
             <FormPage
                 header={<PageHeader title={headerTitle} onGoBack={handleCancel} />}
-                footer={footer}
+                footer={<BudgetEditFooter onSubmit={handleSubmit} disabled={!formState.isValid} deleteButton={deleteButton} />}
                 contentContainerStyle={FORM_CONTENT_STYLE}
             >
                 {progressBar}

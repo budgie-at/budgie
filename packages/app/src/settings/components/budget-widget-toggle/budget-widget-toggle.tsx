@@ -1,15 +1,14 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
+import { SettingSwitch } from '../setting-switch/setting-switch';
 import { SettingsCard } from '../settings-card/settings-card';
 
 const logger = getLogger('BudgetWidgetToggle');
@@ -27,15 +26,14 @@ export const BudgetWidgetToggle = () => {
         }
     };
 
-    const stateMarkerTestID = isWidgetEnabled
-        ? SettingsPageSelector.BudgetWidgetSwitchStateOn
-        : SettingsPageSelector.BudgetWidgetSwitchStateOff;
-
     const switchSlot = (
-        <View className="flex-row items-center gap-x-xs">
-            <View testID={stateMarkerTestID} className="h-1 w-1" />
-            <ThemedSwitch testID={SettingsPageSelector.BudgetWidgetSwitch} value={isWidgetEnabled} onValueChange={handleChange} />
-        </View>
+        <SettingSwitch
+            value={isWidgetEnabled}
+            onValueChange={handleChange}
+            testID={SettingsPageSelector.BudgetWidgetSwitch}
+            stateOnTestID={SettingsPageSelector.BudgetWidgetSwitchStateOn}
+            stateOffTestID={SettingsPageSelector.BudgetWidgetSwitchStateOff}
+        />
     );
 
     return (
