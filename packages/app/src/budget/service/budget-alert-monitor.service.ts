@@ -32,7 +32,7 @@ class BudgetAlertMonitorService {
         }
 
         const periodStartMs = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date()).periodStart.getTime();
-        const spent = await this.computeSpent(budget.periodStartDay, budget.useLastDayOfMonth, budget.instrumentId);
+        const spent = await this.computeSpent(budget);
         const categoryLimits = await budgetCategoryLimitRepository.getByBudget(budget.id);
         const newTriggers = await budgetAlertService.evaluate(budget, spent, categoryLimits);
 
@@ -53,19 +53,16 @@ class BudgetAlertMonitorService {
     }
 
     private async computeSpent(
-        periodStartDay: number,
-        useLastDayOfMonth: boolean,
-        baseInstrumentId: number
+        budget: Pick<BudgetEntityInterface, 'periodStartDay' | 'useLastDayOfMonth' | 'instrumentId'>
     ): Promise<BudgetSpentInterface> {
-        const { periodStart, nextPeriodStart } = computePeriodWindow(periodStartDay, useLastDayOfMonth, new Date());
-
-        if (!isPositiveNumber(baseInstrumentId)) {
-            return { spentOverall: 0, spentByCategory: [], fallbackCount: 0 };
+        if (!isPositiveNumber(budget.instrumentId)) {
+            return { spentOverall: 0, spentByCategory: [] };
         }
 
-        const entries = await budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, baseInstrumentId);
+        const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
+        const entries = await budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId);
 
-        return computeBudgetSpent(entries, baseInstrumentId);
+        return computeBudgetSpent(entries, budget.instrumentId);
     }
 
     private async postAndMarkTriggers(

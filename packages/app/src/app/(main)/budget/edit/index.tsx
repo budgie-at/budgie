@@ -19,8 +19,6 @@ import { BudgetAllocationSummary } from '../../../../budget/components/budget-al
 import { BudgetInlineCategoryLimits } from '../../../../budget/components/budget-inline-category-limits/budget-inline-category-limits';
 import { BudgetOverallLimitField } from '../../../../budget/components/budget-overall-limit-field/budget-overall-limit-field';
 import { BudgetProgressBar } from '../../../../budget/components/budget-progress-bar/budget-progress-bar';
-import { BudgetPushEnabledField } from '../../../../budget/components/budget-push-enabled-field/budget-push-enabled-field';
-import { BudgetWidgetEnabledField } from '../../../../budget/components/budget-widget-enabled-field/budget-widget-enabled-field';
 import { useBudgetForm } from '../../../../budget/hooks/use-budget-form.hook';
 import { useGetBudgetSpentQuery } from '../../../../budget/query/use-get-budget-spent.query';
 import { useSetting } from '../../../../settings/hook/use-setting.hook';
@@ -89,8 +87,6 @@ export default function BudgetSetupScreen() {
             >
                 {progressBar}
                 <BudgetOverallLimitField control={control} autoFocus={!isEditing} />
-                <BudgetPushEnabledField control={control} />
-                <BudgetWidgetEnabledField control={control} />
                 <BudgetInlineCategoryLimits />
             </FormPage>
         </FormProvider>

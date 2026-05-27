@@ -237,101 +237,58 @@ env:
 - assertNotVisible:
     id: 'BudgetWidget.CategoryRow.11'
 
-# --- Push toggle: starts OFF (default) ---
+# --- Push toggle (Settings → Budget alerts): off by default, toggle on, toggle off ---
 
 - tapOn:
-    id: 'BudgetWidget.Card'
-- extendedWaitUntil:
-    visible: 'Edit budget'
-    timeout: 3000
-
-- assertVisible:
-    id: 'BudgetSetup.PushToggle.State.Off'
-
-# --- Push toggle: ON persists across save + reopen ---
-
-- tapOn:
-    id: 'BudgetSetup.PushToggle'
-- waitForAnimationToEnd
-
-- assertVisible:
-    id: 'BudgetSetup.PushToggle.State.On'
-
-- tapOn:
-    id: 'BudgetSetup.SaveButton'
-
+    id: 'TabBar.Settings'
 - extendedWaitUntil:
     visible:
-      id: 'BudgetWidget.Card'
-    timeout: 3000
-
-- tapOn:
-    id: 'BudgetWidget.Card'
-- extendedWaitUntil:
-    visible: 'Edit budget'
-    timeout: 3000
-
-- assertVisible:
-    id: 'BudgetSetup.PushToggle.State.On'
-
-# --- Push toggle: OFF persists across save + reopen ---
-
-- tapOn:
-    id: 'BudgetSetup.PushToggle'
-- waitForAnimationToEnd
-
-- assertVisible:
-    id: 'BudgetSetup.PushToggle.State.Off'
-
-- tapOn:
-    id: 'BudgetSetup.SaveButton'
-
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.Card'
-    timeout: 3000
-
-- tapOn:
-    id: 'BudgetWidget.Card'
-- extendedWaitUntil:
-    visible: 'Edit budget'
-    timeout: 3000
-
-- assertVisible:
-    id: 'BudgetSetup.PushToggle.State.Off'
-
-- tapOn:
-    id: 'PageHeader.BackButton'
-- waitForAnimationToEnd
-
-# --- Widget toggle: edit form disables widget, re-enables it ---
-
-- tapOn:
-    id: 'BudgetWidget.Card'
-- extendedWaitUntil:
-    visible: 'Edit budget'
+      id: 'SettingsPage.Container'
     timeout: 3000
 
 - scrollUntilVisible:
     element:
-      id: 'BudgetSetup.WidgetEnabledToggle'
+      id: 'SettingsPage.BudgetPushCard'
     direction: DOWN
     centerElement: true
-- waitForAnimationToEnd
 
 - assertVisible:
-    id: 'BudgetSetup.WidgetEnabledToggle.State.On'
+    id: 'SettingsPage.BudgetPushSwitch.State.Off'
 
 - tapOn:
-    id: 'BudgetSetup.WidgetEnabledToggle'
-- waitForAnimationToEnd
+    id: 'SettingsPage.BudgetPushSwitch'
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.BudgetPushSwitch.State.On'
+    timeout: 3000
+
+- tapOn:
+    id: 'SettingsPage.BudgetPushSwitch'
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.BudgetPushSwitch.State.Off'
+    timeout: 3000
+
+# --- Widget toggle (Settings → Show budget on home): on → off hides widget, on shows it again ---
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.BudgetWidgetCard'
+    direction: DOWN
+    centerElement: true
 
 - assertVisible:
-    id: 'BudgetSetup.WidgetEnabledToggle.State.Off'
+    id: 'SettingsPage.BudgetWidgetSwitch.State.On'
 
 - tapOn:
-    id: 'BudgetSetup.SaveButton'
+    id: 'SettingsPage.BudgetWidgetSwitch'
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.BudgetWidgetSwitch.State.Off'
+    timeout: 3000
 
+- tapOn:
+    id: 'TabBar.Home'
 - extendedWaitUntil:
     visible:
       id: 'TabBar.Home'
@@ -341,31 +298,28 @@ env:
 - assertNotVisible:
     id: 'BudgetWidget.EmptyState'
 
-- openLink: 'budgie://budget'
+- tapOn:
+    id: 'TabBar.Settings'
 - extendedWaitUntil:
-    visible: 'Edit budget'
+    visible:
+      id: 'SettingsPage.Container'
     timeout: 3000
 
 - scrollUntilVisible:
     element:
-      id: 'BudgetSetup.WidgetEnabledToggle'
+      id: 'SettingsPage.BudgetWidgetCard'
     direction: DOWN
     centerElement: true
-- waitForAnimationToEnd
-
-- assertVisible:
-    id: 'BudgetSetup.WidgetEnabledToggle.State.Off'
 
 - tapOn:
-    id: 'BudgetSetup.WidgetEnabledToggle'
-- waitForAnimationToEnd
-
-- assertVisible:
-    id: 'BudgetSetup.WidgetEnabledToggle.State.On'
+    id: 'SettingsPage.BudgetWidgetSwitch'
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.BudgetWidgetSwitch.State.On'
+    timeout: 3000
 
 - tapOn:
-    id: 'BudgetSetup.SaveButton'
-
+    id: 'TabBar.Home'
 - extendedWaitUntil:
     visible:
       id: 'BudgetWidget.Card'

@@ -33,7 +33,6 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
     const { categoryLimits, isLoading: isCategoryLimitsLoading } = useGetBudgetCategoryLimitsQuery(
         isEditing && isDefined(budget) ? budget.id : null
     );
-    const isWidgetEnabledSetting = useSetting('isBudgetWidgetEnabled');
     const defaultInstrumentId = useSetting('defaultInstrumentId');
 
     const form = useForm<BudgetFormValues>({
@@ -45,8 +44,6 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
             useLastDayOfMonth: false,
             overallLimit: 0,
             categoryLimits: [],
-            pushEnabled: false,
-            isWidgetEnabled: true,
             instrumentId: isPositiveNumber(defaultInstrumentId) ? defaultInstrumentId : 0
         }
     });
@@ -62,12 +59,10 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
                     categoryId: limit.categoryId,
                     limitAmount: convertFromMicroUnits(limit.limitAmount)
                 })),
-                pushEnabled: budget.pushEnabled,
-                isWidgetEnabled: isWidgetEnabledSetting,
                 instrumentId: budget.instrumentId
             });
         }
-    }, [isEditing, budget, categoryLimits, isCategoryLimitsLoading, isWidgetEnabledSetting, form]);
+    }, [isEditing, budget, categoryLimits, isCategoryLimitsLoading, form]);
 
     const handleDelete = async () => {
         if (!isDefined(budget)) {
@@ -93,13 +88,12 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
 
     const handleSubmit = form.handleSubmit(async values => {
         try {
-            const payload = {
+            const basePayload = {
                 name: values.name,
                 period: BudgetPeriodEnum.MONTHLY,
                 periodStartDay: values.periodStartDay,
                 useLastDayOfMonth: values.useLastDayOfMonth,
                 overallLimit: convertToMicroUnits(values.overallLimit),
-                pushEnabled: values.pushEnabled,
                 instrumentId: values.instrumentId,
                 categoryLimits: values.categoryLimits.map(limit => ({
                     categoryId: limit.categoryId,
@@ -107,13 +101,12 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
                 }))
             };
 
-            if (isEditing && isPositiveNumber(editingId)) {
-                await budgetService.updateBudget(editingId, payload);
+            if (isPositiveNumber(editingId)) {
+                await budgetService.updateBudget(editingId, basePayload);
             } else {
-                await budgetService.createBudget(payload);
+                await budgetService.createBudget({ ...basePayload, pushEnabled: false });
+                await updateSettingsMutation({ isBudgetWidgetEnabled: true });
             }
-
-            await updateSettingsMutation({ isBudgetWidgetEnabled: values.isWidgetEnabled });
 
             goBackOrReplace('/');
         } catch (error: unknown) {

@@ -15,5 +15,5 @@ export const DEFAULT_SETTINGS = {
     language: LanguageEnum.EN,
     isScreenshotProtectionEnabled: false,
     applyMccDefaultCategory: true,
-    isBudgetWidgetEnabled: false
+    isBudgetWidgetEnabled: true
 } satisfies SettingsEntityInterface;

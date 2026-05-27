@@ -25,8 +25,6 @@ export const BudgetCategoryLimitCompactRow = ({ index, onRemove }: Props) => {
 
     const { category } = useGetCategoryByIdQuery(categoryId);
 
-    const handleDelete = (id: number) => void onRemove(id);
-
     const icon = isDefined(category) ? (
         <CircleIcon icon={category.icon} variant="ghost" size={32} iconSize={16} />
     ) : (
@@ -41,7 +39,7 @@ export const BudgetCategoryLimitCompactRow = ({ index, onRemove }: Props) => {
     };
 
     return (
-        <DeletableRow id={index} onDelete={handleDelete} confirmation={confirmation}>
+        <DeletableRow id={index} onDelete={onRemove} confirmation={confirmation}>
             <View
                 testID={BudgetSelector.SetupCategoryLimitRow(index)}
                 className="flex-row items-center gap-x-md bg-primary-reverse px-md py-sm rounded-2xl"

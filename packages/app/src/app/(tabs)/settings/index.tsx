@@ -21,6 +21,8 @@ import { ExportDatabase } from '../../../export/components/export-database/expor
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { AutoAssignMccCategory } from '../../../settings/components/auto-assign-mcc-category/auto-assign-mcc-category';
+import { BudgetPushToggle } from '../../../settings/components/budget-push-toggle/budget-push-toggle';
+import { BudgetWidgetToggle } from '../../../settings/components/budget-widget-toggle/budget-widget-toggle';
 import { ConsolidateTransfers } from '../../../settings/components/consolidate-transfers/consolidate-transfers';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
@@ -145,13 +147,6 @@ export default function SettingsPage() {
                                 variant="ghost"
                             />
                             <SettingsCard
-                                onPress={handleNavigateToBudget}
-                                title={t`Budget`}
-                                description={t`Set a monthly limit and track spending`}
-                                icon={UserIconNameEnum.PiggyBank}
-                                variant="positive"
-                            />
-                            <SettingsCard
                                 onPress={handleNavigateToArchived}
                                 title={t`Archived Accounts`}
                                 description={t`View and restore archived accounts`}
@@ -167,6 +162,23 @@ export default function SettingsPage() {
                                 variant="dark-warning"
                                 testID={SettingsPageSelector.InactiveCard}
                             />
+                        </Animated.View>
+                    </SettingsGroup>
+                </View>
+
+                <View {...anchorLayout('budget')}>
+                    <SettingsGroup title={t`Budget`}>
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('budget')}>
+                            <SettingsCard
+                                testID={SettingsPageSelector.BudgetManagementCard}
+                                onPress={handleNavigateToBudget}
+                                title={t`Manage budget`}
+                                description={t`Set a monthly limit and track spending`}
+                                icon={UserIconNameEnum.PiggyBank}
+                                variant="positive"
+                            />
+                            <BudgetWidgetToggle />
+                            <BudgetPushToggle />
                         </Animated.View>
                     </SettingsGroup>
                 </View>

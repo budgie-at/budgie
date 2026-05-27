@@ -3,5 +3,4 @@ import type { BudgetCategorySpentInterface } from './budget-category-spent.inter
 export interface BudgetSpentInterface {
     readonly spentOverall: number;
     readonly spentByCategory: readonly BudgetCategorySpentInterface[];
-    readonly fallbackCount: number;
 }
