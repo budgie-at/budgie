@@ -25,9 +25,9 @@ class BudgetAlertMonitorService {
 
     @Log('enter', result => `done newTriggers=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
     async run(): Promise<BudgetAlertTriggerInterface[]> {
-        const budget = await budgetRepository.getActive();
+        const [budget, settings] = await Promise.all([budgetRepository.getActive(), settingsRepository.findSettings()]);
 
-        if (!isDefined(budget) || !budget.pushEnabled) {
+        if (!isDefined(budget) || !(settings?.isBudgetPushEnabled ?? false)) {
             return [];
         }
 

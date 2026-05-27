@@ -22,20 +22,10 @@ class BudgetService {
     )
     async createBudget(input: BudgetCreateInputInterface): Promise<BudgetEntityInterface> {
         return transactionAsync(db, async tx => {
-            const createdBudget = await budgetRepository.create(
-                {
-                    name: input.name,
-                    period: input.period,
-                    periodStartDay: input.periodStartDay,
-                    useLastDayOfMonth: input.useLastDayOfMonth,
-                    overallLimit: input.overallLimit,
-                    pushEnabled: input.pushEnabled,
-                    instrumentId: input.instrumentId
-                },
-                tx
-            );
+            const { categoryLimits, ...budgetFields } = input;
+            const createdBudget = await budgetRepository.create(budgetFields, tx);
 
-            await this.createCategoryLimits(createdBudget.id, input.categoryLimits, tx);
+            await this.createCategoryLimits(createdBudget.id, categoryLimits, tx);
 
             return createdBudget;
         });
