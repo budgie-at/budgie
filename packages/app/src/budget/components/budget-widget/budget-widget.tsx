@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
@@ -11,11 +11,9 @@ import { useGetActiveBudgetQuery } from '../../query/use-get-active-budget.query
 import { useGetBudgetCategoryLimitsQuery } from '../../query/use-get-budget-category-limits.query';
 import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
-import { BudgetCategoryLimitRow } from '../budget-category-limit-row/budget-category-limit-row';
 import { BudgetEmptyState } from '../budget-empty-state/budget-empty-state';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
-
-const WIDGET_CATEGORY_LIMITS_MAX = 6;
+import { BudgetWidgetCategoryList } from '../budget-widget-category-list/budget-widget-category-list';
 
 export const BudgetWidget = () => {
     const isEnabled = useSetting('isBudgetWidgetEnabled');
@@ -34,9 +32,6 @@ export const BudgetWidget = () => {
     const handleNavigate = () => void router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
 
     const dateLabel = formatBudgetPeriodLabel(budget);
-    const spentByCategoryMap = new Map(spent.spentByCategory.map(entry => [entry.categoryId, entry.spent]));
-    const visibleCategoryLimits = categoryLimits.slice(0, WIDGET_CATEGORY_LIMITS_MAX);
-    const hiddenCategoryCount = categoryLimits.length - visibleCategoryLimits.length;
 
     return (
         <Card testID={BudgetSelector.WidgetCard} variant="ghost" onPress={handleNavigate} className="gap-y-lg">
@@ -49,28 +44,7 @@ export const BudgetWidget = () => {
 
             <BudgetProgressBar spent={spent.spentOverall} limit={budget.overallLimit} spentTestID={BudgetSelector.WidgetSpentLabel} />
 
-            {isNotEmptyArray(visibleCategoryLimits) && (
-                <View className="gap-y-md pt-md">
-                    {visibleCategoryLimits.map(limit => (
-                        <BudgetCategoryLimitRow
-                            key={limit.id}
-                            categoryId={limit.categoryId}
-                            limitAmount={limit.limitAmount}
-                            spent={spentByCategoryMap.get(limit.categoryId) ?? 0}
-                            testID={BudgetSelector.WidgetCategoryRow(limit.categoryId)}
-                            spentTestID={BudgetSelector.WidgetCategorySpentLabel(limit.categoryId)}
-                        />
-                    ))}
-                    {isPositiveNumber(hiddenCategoryCount) && (
-                        <Text
-                            testID={BudgetSelector.WidgetMoreCategoriesLabel}
-                            className="text-secondary-foreground text-sm text-center pt-xs"
-                        >
-                            <Trans>+{hiddenCategoryCount} more</Trans>
-                        </Text>
-                    )}
-                </View>
-            )}
+            <BudgetWidgetCategoryList categoryLimits={categoryLimits} spentByCategory={spent.spentByCategory} />
         </Card>
     );
 };
