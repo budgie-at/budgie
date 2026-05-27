@@ -16,7 +16,7 @@ interface Props {
 
 export const BudgetCategoryLimitRow = ({ categoryId, limitAmount, spent, testID, spentTestID }: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId);
-    const title = isDefined(category) ? category.title : '';
+    const title = category?.title ?? '';
 
     return (
         <View testID={testID} className="flex-row items-center gap-x-md">
