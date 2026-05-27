@@ -8,7 +8,6 @@ CREATE TABLE `budgets` (
 	`period_start_day` integer DEFAULT 1 NOT NULL,
 	`use_last_day_of_month` integer DEFAULT false NOT NULL,
 	`overall_limit` integer NOT NULL,
-	`push_enabled` integer DEFAULT 0 NOT NULL,
 	`instrument_id` integer NOT NULL,
 	FOREIGN KEY (`instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE no action
 );
@@ -29,4 +28,5 @@ CREATE UNIQUE INDEX `budget_category_limit_budget_category_unq` ON `budget_categ
 --> statement-breakpoint
 CREATE INDEX `budget_instrument_idx` ON `budgets` (`instrument_id`);
 --> statement-breakpoint
-ALTER TABLE `settings` ADD `is_budget_widget_enabled` integer NOT NULL DEFAULT false;
+ALTER TABLE `settings` ADD `is_budget_widget_enabled` integer NOT NULL DEFAULT false;--> statement-breakpoint
+ALTER TABLE `settings` ADD `is_budget_push_enabled` integer NOT NULL DEFAULT false;
