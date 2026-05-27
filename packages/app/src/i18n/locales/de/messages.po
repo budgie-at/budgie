@@ -39,11 +39,11 @@ msgstr "{autoCandidateCount, plural, one {# Treffer mit hoher Sicherheit} other 
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verfügbar}}"
 
-#: src/budget/service/budget-alert-monitor.service.ts:116
+#: src/budget/service/budget-alert-monitor.service.ts:115
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% ausgegeben"
 
-#: src/budget/service/budget-alert-monitor.service.ts:116
+#: src/budget/service/budget-alert-monitor.service.ts:115
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: Limit erreicht"
 
@@ -460,7 +460,7 @@ msgstr "Geliehen"
 msgid "Budget"
 msgstr "Budget"
 
-#: src/budget/service/budget-alert-monitor.service.ts:105
+#: src/budget/service/budget-alert-monitor.service.ts:104
 msgid "Budget limit reached"
 msgstr "Budgetlimit erreicht"
 
@@ -516,7 +516,7 @@ msgstr "Kategorien ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:34
 #: src/app/(tabs)/settings/import.tsx:181
-#: src/budget/service/budget-alert-monitor.service.ts:115
+#: src/budget/service/budget-alert-monitor.service.ts:114
 #: src/category/components/category-form-selector/category-form-selector.tsx:34
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:176
 msgid "Category"
@@ -1073,7 +1073,7 @@ msgstr "Niederländisch (Niederlande)"
 msgid "e.g. 1000"
 msgstr "z. B. 1000"
 
-#: src/budget/components/budget-category-limit-amount-input/budget-category-limit-amount-input.tsx:19
+#: src/budget/components/budget-category-limit-amount-input/budget-category-limit-amount-input.tsx:17
 msgid "e.g. 200"
 msgstr "z. B. 200"
 
@@ -1540,10 +1540,6 @@ msgstr "Verliehen"
 msgid "Less Than"
 msgstr "Kleiner als"
 
-#: src/budget/components/budget-category-limit-amount-input/budget-category-limit-amount-input.tsx:18
-msgid "Limit"
-msgstr "Grenze"
-
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx:58
 msgid "Listening..."
 msgstr "Zuhören..."
@@ -1935,7 +1931,7 @@ msgstr "Ursprüngliche Transaktion"
 msgid "Over by"
 msgstr "Über um"
 
-#: src/budget/service/budget-alert-monitor.service.ts:105
+#: src/budget/service/budget-alert-monitor.service.ts:104
 msgid "Overall budget: {threshold}% spent"
 msgstr "Gesamtbudget: {threshold}% ausgegeben"
 
@@ -2140,6 +2136,14 @@ msgstr "Erstattet {formattedRefundedAmount}"
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:48
 msgid "Remaining"
 msgstr "Übrig"
+
+#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx:40
+msgid "Remove"
+msgstr "Entfernen"
+
+#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx:38
+msgid "Remove category limit?"
+msgstr "Kategorielimit entfernen?"
 
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
@@ -2555,6 +2559,10 @@ msgstr "Konten tauschen"
 msgid "Swipe left"
 msgstr "Nach links wischen"
 
+#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx:39
+msgid "Swipe to remove this per-category cap from your budget."
+msgstr "Wische, um dieses Kategorielimit aus deinem Budget zu entfernen."
+
 #: src/settings/components/theme-switch/theme-switch.tsx:25
 msgid "Switch between light and dark themes"
 msgstr "Zwischen hellem und dunklem Design wechseln"
@@ -2934,11 +2942,11 @@ msgstr "Gestern"
 msgid "You gave money"
 msgstr "Sie haben Geld gegeben"
 
-#: src/budget/service/budget-alert-monitor.service.ts:106
+#: src/budget/service/budget-alert-monitor.service.ts:105
 msgid "You have used {spentPercent}% of your overall budget."
 msgstr "Sie haben {spentPercent}% Ihres Gesamtbudgets verbraucht."
 
-#: src/budget/service/budget-alert-monitor.service.ts:117
+#: src/budget/service/budget-alert-monitor.service.ts:116
 msgid "You have used {threshold}% of the limit for {categoryName}."
 msgstr "Sie haben {threshold}% des Limits für {categoryName} verbraucht."
 

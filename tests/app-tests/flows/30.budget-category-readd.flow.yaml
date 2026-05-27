@@ -21,41 +21,27 @@ appId: ${APP_ID}
 - tapOn:
     id: 'BudgetSetup.OverallLimitInput'
 - inputText: '1000'
-- tapOn: 'Use last day of month'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'BudgetSetup.CategoryLimitAddButton'
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
-    timeout: 3000
 
 - scrollUntilVisible:
     element:
-      id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+      id: 'BudgetSetup.CategoryLimitAddButton'
     direction: DOWN
     centerElement: true
-
 - tapOn:
-    id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+    id: 'BudgetSetup.CategoryLimitAddButton'
 - runFlow:
     file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: 'Groceries'
 
 - extendedWaitUntil:
-    notVisible:
-      id: 'CategoryPickerBottomSheet.Input'
+    visible:
+      id: 'BudgetSetup.CategoryLimit.0.Row'
     timeout: 3000
 
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '200'
-
-- tapOn:
-    id: 'BudgetSetup.CategoryLimitsHeader'
-- waitForAnimationToEnd
 
 - tapOn:
     id: 'BudgetSetup.SaveButton'
@@ -75,12 +61,22 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
     element:
-      id: 'BudgetSetup.CategoryLimit.0.RemoveButton'
+      id: 'BudgetSetup.CategoryLimit.0.Row'
     direction: DOWN
     centerElement: true
 
+- swipe:
+    from:
+      id: 'BudgetSetup.CategoryLimit.0.Row'
+    direction: LEFT
+    duration: 300
+- extendedWaitUntil:
+    visible:
+      id: 'DeletableRow.DeleteButton'
+    timeout: 3000
 - tapOn:
-    id: 'BudgetSetup.CategoryLimit.0.RemoveButton'
+    id: 'DeletableRow.DeleteButton'
+- tapOn: 'Remove'
 - waitForAnimationToEnd
 
 - tapOn:
@@ -102,38 +98,26 @@ appId: ${APP_ID}
     visible: 'Edit budget'
     timeout: 3000
 
-- tapOn:
-    id: 'BudgetSetup.CategoryLimitAddButton'
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
-    timeout: 3000
-
 - scrollUntilVisible:
     element:
-      id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+      id: 'BudgetSetup.CategoryLimitAddButton'
     direction: DOWN
     centerElement: true
-
 - tapOn:
-    id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+    id: 'BudgetSetup.CategoryLimitAddButton'
 - runFlow:
     file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: 'Groceries'
 
 - extendedWaitUntil:
-    notVisible:
-      id: 'CategoryPickerBottomSheet.Input'
+    visible:
+      id: 'BudgetSetup.CategoryLimit.0.Row'
     timeout: 3000
 
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '300'
-
-- tapOn:
-    id: 'BudgetSetup.CategoryLimitsHeader'
-- waitForAnimationToEnd
 
 - tapOn:
     id: 'BudgetSetup.SaveButton'
