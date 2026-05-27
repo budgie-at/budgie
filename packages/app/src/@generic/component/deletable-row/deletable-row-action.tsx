@@ -24,7 +24,7 @@ export const DeletableRowAction = ({ drag, onPress }: Props) => {
                 onPress={onPress}
                 className="justify-center items-center w-17.5 h-full"
             >
-                <Icon className="text-primary" icon={UserIconNameEnum.Trash} />
+                <Icon className="text-destructive-foreground" icon={UserIconNameEnum.Trash} />
             </HapticPressable>
         </Reanimated.View>
     );

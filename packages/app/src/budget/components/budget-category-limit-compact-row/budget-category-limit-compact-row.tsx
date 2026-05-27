@@ -1,10 +1,11 @@
+import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { Text, View, ViewStyle } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { RemovableFormRow } from '../../../@generic/component/removable-form-row/removable-form-row';
+import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
@@ -18,12 +19,13 @@ interface Props {
 }
 
 export const BudgetCategoryLimitCompactRow = ({ index, onRemove }: Props) => {
+    const { t } = useLingui();
     const { control } = useFormContext<BudgetFormValues>();
     const categoryId = useWatch({ control, name: `categoryLimits.${index}.categoryId` });
 
     const { category } = useGetCategoryByIdQuery(categoryId);
 
-    const handleRemove = () => void onRemove(index);
+    const handleDelete = (id: number) => void onRemove(id);
 
     const icon = isDefined(category) ? (
         <CircleIcon icon={category.icon} variant="ghost" size={32} iconSize={16} />
@@ -32,21 +34,24 @@ export const BudgetCategoryLimitCompactRow = ({ index, onRemove }: Props) => {
     );
 
     const title = isDefined(category) ? category.title : '';
+    const confirmation = {
+        title: t`Remove category limit?`,
+        description: t`Swipe to remove this per-category cap from your budget.`,
+        buttonText: t`Remove`
+    };
 
     return (
-        <RemovableFormRow
-            testID={BudgetSelector.SetupCategoryLimitRow(index)}
-            removeTestID={BudgetSelector.SetupCategoryLimitRemoveButton(index)}
-            density="compact"
-            onRemove={handleRemove}
-        >
-            <View className="flex-row items-center gap-x-md">
+        <DeletableRow id={index} onDelete={handleDelete} confirmation={confirmation}>
+            <View
+                testID={BudgetSelector.SetupCategoryLimitRow(index)}
+                className="flex-row items-center gap-x-md bg-primary-reverse px-md py-sm rounded-2xl"
+            >
                 {icon}
                 <Text className="text-primary text-md flex-1" numberOfLines={1}>
                     {title}
                 </Text>
                 <BudgetCategoryLimitAmountInput index={index} testID={BudgetSelector.SetupCategoryLimitAmountInput(index)} />
             </View>
-        </RemovableFormRow>
+        </DeletableRow>
     );
 };

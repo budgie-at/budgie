@@ -39,11 +39,11 @@ msgstr "{autoCandidateCount, plural, one {# збіг з високою впев�
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# стовпець доступний} few {# стовпці доступні} many {# стовпців доступні} other {# стовпця доступні}}"
 
-#: src/budget/service/budget-alert-monitor.service.ts:116
+#: src/budget/service/budget-alert-monitor.service.ts:115
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% витрачено"
 
-#: src/budget/service/budget-alert-monitor.service.ts:116
+#: src/budget/service/budget-alert-monitor.service.ts:115
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: ліміт досягнуто"
 
@@ -460,7 +460,7 @@ msgstr "Позичено"
 msgid "Budget"
 msgstr "Бюджет"
 
-#: src/budget/service/budget-alert-monitor.service.ts:105
+#: src/budget/service/budget-alert-monitor.service.ts:104
 msgid "Budget limit reached"
 msgstr "Ліміт бюджету досягнуто"
 
@@ -516,7 +516,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:34
 #: src/app/(tabs)/settings/import.tsx:181
-#: src/budget/service/budget-alert-monitor.service.ts:115
+#: src/budget/service/budget-alert-monitor.service.ts:114
 #: src/category/components/category-form-selector/category-form-selector.tsx:34
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:176
 msgid "Category"
@@ -1073,7 +1073,7 @@ msgstr "Нідерландська (Нідерланди)"
 msgid "e.g. 1000"
 msgstr "напр. 1000"
 
-#: src/budget/components/budget-category-limit-amount-input/budget-category-limit-amount-input.tsx:19
+#: src/budget/components/budget-category-limit-amount-input/budget-category-limit-amount-input.tsx:17
 msgid "e.g. 200"
 msgstr "напр. 200"
 
@@ -1540,10 +1540,6 @@ msgstr "Позичено"
 msgid "Less Than"
 msgstr "Менше ніж"
 
-#: src/budget/components/budget-category-limit-amount-input/budget-category-limit-amount-input.tsx:18
-msgid "Limit"
-msgstr "Ліміт"
-
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx:58
 msgid "Listening..."
 msgstr "Слухаю..."
@@ -1935,7 +1931,7 @@ msgstr "Початкова транзакція"
 msgid "Over by"
 msgstr "Перевищено на"
 
-#: src/budget/service/budget-alert-monitor.service.ts:105
+#: src/budget/service/budget-alert-monitor.service.ts:104
 msgid "Overall budget: {threshold}% spent"
 msgstr "Загальний бюджет: {threshold}% витрачено"
 
@@ -2140,6 +2136,14 @@ msgstr "Повернено {formattedRefundedAmount}"
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:48
 msgid "Remaining"
 msgstr "Залишилось"
+
+#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx:40
+msgid "Remove"
+msgstr "Видалити"
+
+#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx:38
+msgid "Remove category limit?"
+msgstr "Видалити ліміт категорії?"
 
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
@@ -2555,6 +2559,10 @@ msgstr "Поміняти рахунки"
 msgid "Swipe left"
 msgstr "Проведіть вліво"
 
+#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx:39
+msgid "Swipe to remove this per-category cap from your budget."
+msgstr "Проведіть, щоб видалити цей ліміт категорії з вашого бюджету."
+
 #: src/settings/components/theme-switch/theme-switch.tsx:25
 msgid "Switch between light and dark themes"
 msgstr "Перемикайтеся між світлою та темною темами"
@@ -2934,11 +2942,11 @@ msgstr "Вчора"
 msgid "You gave money"
 msgstr "Ви дали гроші"
 
-#: src/budget/service/budget-alert-monitor.service.ts:106
+#: src/budget/service/budget-alert-monitor.service.ts:105
 msgid "You have used {spentPercent}% of your overall budget."
 msgstr "Ви витратили {spentPercent}% загального бюджету."
 
-#: src/budget/service/budget-alert-monitor.service.ts:117
+#: src/budget/service/budget-alert-monitor.service.ts:116
 msgid "You have used {threshold}% of the limit for {categoryName}."
 msgstr "Ви витратили {threshold}% ліміту для {categoryName}."
 

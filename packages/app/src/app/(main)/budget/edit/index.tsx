@@ -71,9 +71,9 @@ export default function BudgetSetupScreen() {
                 contentContainerStyle={FORM_CONTENT_STYLE}
             >
                 <BudgetOverallLimitField control={control} autoFocus={!isEditing} />
-                <BudgetInlineCategoryLimits />
                 <BudgetPushEnabledField control={control} />
                 <BudgetWidgetEnabledField control={control} />
+                <BudgetInlineCategoryLimits />
             </FormPage>
         </FormProvider>
     );

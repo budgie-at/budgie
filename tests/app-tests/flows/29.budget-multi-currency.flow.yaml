@@ -27,8 +27,6 @@ appId: ${APP_ID}
 - tapOn:
     id: 'BudgetSetup.OverallLimitInput'
 - inputText: '200'
-- tapOn: 'Use last day of month'
-- waitForAnimationToEnd
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
