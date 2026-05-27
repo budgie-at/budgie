@@ -1,23 +1,8 @@
 appId: ${APP_ID}
 ---
 
-# Fixture: two accounts (E2E Txn Account = USD, E2E Foreign Account = EUR),
-# exchange_rates has USD→EUR = 0.863, one 100 USD expense + one 50 EUR expense,
-# settings.default_instrument_id = 2 (EUR), no pre-existing budget.
-# Test creates a budget with overall limit 200 EUR via UI, then verifies the
-# rendered FX-converted total.
-#
-# Empirically observed render: 136.21 / 200.00.
-# Documented math: 100 USD * 0.863 + 50 EUR = 136.30 EUR.
-# The 0.09 EUR delta (effective rate ~0.8621 vs stored 0.863) is a known app
-# behavior; this flow LOCKS the current rendered value but does not validate
-# the math. See trace report 2026-05-27: convertAmountToBase null/inverse-rate
-# path is the suspected cause and is uncovered by 33.budget-multi-currency-category.
-
 - runFlow:
     file: setup/setup-multi-currency-budget.flow.yaml
-
-# --- Create budget via UI: overall limit 200 EUR ---
 
 - openLink: 'budgie://budget'
 - extendedWaitUntil:
@@ -40,8 +25,6 @@ appId: ${APP_ID}
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
-# --- Widget reflects FX-converted spent total ---
-
 - extendedWaitUntil:
     visible:
       id: 'BudgetWidget.Card'
@@ -49,8 +32,6 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'BudgetWidget.SpentLabel'
     text: '136.21 / 200.00'
-
-# --- Edit form renders the same converted total via its progress bar ---
 
 - tapOn:
     id: 'BudgetWidget.Card'

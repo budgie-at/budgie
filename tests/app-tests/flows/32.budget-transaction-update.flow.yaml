@@ -5,18 +5,8 @@ env:
     COMMENT: E2E Budget Update Txn
 ---
 
-# Verifies that transaction create and delete drive live budget updates:
-#   - Create budget 1000.
-#   - Add an expense of 60; widget shows 60.00 / 1000.00.
-#   - Delete the expense; widget reverts to 0.00 / 1000.00.
-# (Transaction edit path is not covered: the long-press Edit Expense screen
-# does not currently render TransactionForm.AmountInput in a Maestro-tappable
-# way and needs a dedicated investigation. Tracked separately.)
-
 - runFlow:
     file: setup/setup-budget-test.flow.yaml
-
-# --- Create budget overall 1000 ---
 
 - openLink: 'budgie://budget'
 - extendedWaitUntil:
@@ -46,8 +36,6 @@ env:
 - assertVisible:
     id: 'BudgetWidget.SpentLabel'
     text: '0.00 / 1000.00'
-
-# --- Create expense of 60 with a known comment for stable selector ---
 
 - runFlow:
     file: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -87,8 +75,6 @@ env:
       id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
     timeout: 5000
 
-# --- Budget widget reflects create ---
-
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
@@ -96,8 +82,6 @@ env:
       id: 'BudgetWidget.SpentLabel'
       text: '60.00 / 1000.00'
     timeout: 3000
-
-# --- Delete transaction; budget reverts ---
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 

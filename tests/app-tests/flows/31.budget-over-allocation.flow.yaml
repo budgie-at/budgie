@@ -1,11 +1,6 @@
 appId: ${APP_ID}
 ---
 
-# Verifies the over-allocation gate:
-#   - When sum(categoryLimits) > overallLimit the BudgetAllocationSummary flips
-#     to "Over by" and the Save button is disabled by the Zod refine.
-#   - Save attempts in over-allocated state must not navigate away.
-
 - runFlow:
     file: setup/setup-budget-test.flow.yaml
 
@@ -21,13 +16,9 @@ appId: ${APP_ID}
     visible: 'Create budget'
     timeout: 3000
 
-# --- Set overall limit to 100 ---
-
 - tapOn:
     id: 'BudgetSetup.OverallLimitInput'
 - inputText: '100'
-
-# --- Add Groceries category limit at 150 (exceeds overall) ---
 
 - scrollUntilVisible:
     element:
@@ -54,14 +45,10 @@ appId: ${APP_ID}
     id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd
 
-# --- Over-by indicator appears ---
-
 - extendedWaitUntil:
     visible:
       id: 'BudgetSetup.AllocationSummary.OverBy'
     timeout: 3000
-
-# --- Save must be blocked: tapping it must not navigate to the budget widget ---
 
 - tapOn:
     id: 'BudgetSetup.SaveButton'
@@ -69,8 +56,6 @@ appId: ${APP_ID}
 - assertVisible: 'Create budget'
 - assertNotVisible:
     id: 'BudgetWidget.Card'
-
-# --- Reduce category limit to 80; gate lifts ---
 
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.0.AmountInput'
