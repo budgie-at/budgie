@@ -9,7 +9,6 @@ export const BudgetSelector = {
     SetupCategoryLimitsHeader: 'BudgetSetup.CategoryLimitsHeader',
     SetupCategoryLimitAddButton: 'BudgetSetup.CategoryLimitAddButton',
     SetupCategoryLimitRow: (index: number) => `BudgetSetup.CategoryLimit.${index}.Row` as const,
-    SetupCategoryLimitCategorySelector: (index: number) => `BudgetSetup.CategoryLimit.${index}.CategorySelector` as const,
     SetupCategoryLimitAmountInput: (index: number) => `BudgetSetup.CategoryLimit.${index}.AmountInput` as const,
     SetupCategoryLimitRemoveButton: (index: number) => `BudgetSetup.CategoryLimit.${index}.RemoveButton` as const,
     SetupPushToggle: 'BudgetSetup.PushToggle',

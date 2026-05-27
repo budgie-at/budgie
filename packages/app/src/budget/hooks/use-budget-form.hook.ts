@@ -69,15 +69,6 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
 
     const handleSubmit = form.handleSubmit(async values => {
         try {
-            if (!isPositiveNumber(values.instrumentId)) {
-                Toast.show({
-                    type: 'error',
-                    text1: t`Could not save budget: a default currency is required.`
-                });
-
-                return;
-            }
-
             const payload = {
                 name: values.name,
                 period: BudgetPeriodEnum.MONTHLY,
