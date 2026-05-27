@@ -1,10 +1,11 @@
 import { Log } from '@budgie/logger';
-import { and, between, desc, eq, isNull } from 'drizzle-orm';
+import { and, between, desc, eq, isNull, sql } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
+import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -82,7 +83,7 @@ export class BudgetRepository {
     findBudgetSpentEntries(periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number) {
         return this.db
             .select({
-                amount: TransactionEntryEntityTable.amount,
+                amount: this.buildRefundAdjustedAmountSql(),
                 categoryId: TransactionEntryEntityTable.categoryId,
                 instrumentId: AccountEntityTable.instrumentId,
                 rate: ExchangeRateEntityTable.rate
@@ -99,6 +100,32 @@ export class BudgetRepository {
                 )
             )
             .where(this.buildSpentWhere(periodStart, nextPeriodStart));
+    }
+
+    private buildRefundAdjustedAmountSql() {
+        return sql<number>`CASE
+            WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+            THEN ${TransactionEntryEntityTable.amount} - (
+                COALESCE((
+                    SELECT SUM(refund_entry.amount)
+                    FROM transaction_entries refund_entry
+                    WHERE refund_entry.transaction_id = ${TransactionEntryEntityTable.transactionId}
+                      AND refund_entry.original_transaction_id IS NOT NULL
+                      AND refund_entry.deleted_at IS NULL
+                      AND refund_entry.type = ${TransactionEntryTypeEnum.DEBIT}
+                ), 0)
+                * ${TransactionEntryEntityTable.amount}
+                / NULLIF(COALESCE((
+                    SELECT SUM(ledger_credit.amount)
+                    FROM transaction_entries ledger_credit
+                    WHERE ledger_credit.transaction_id = ${TransactionEntryEntityTable.transactionId}
+                      AND ledger_credit.original_transaction_id IS NULL
+                      AND ledger_credit.deleted_at IS NULL
+                      AND ledger_credit.type = ${TransactionEntryTypeEnum.CREDIT}
+                ), 0), 0)
+            )
+            ELSE ${TransactionEntryEntityTable.amount}
+        END`;
     }
 
     private buildSpentWhere(periodStart: Date, nextPeriodStart: Date) {
