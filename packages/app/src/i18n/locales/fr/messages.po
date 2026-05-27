@@ -63,10 +63,6 @@ msgstr "{count, plural, one {Cette catégorie contient # transaction. Sélection
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Ce tag contient # transaction. Sélectionnez un autre tag pour la réaffecter.} other {Ce tag contient # transactions. Sélectionnez un autre tag pour les réaffecter.}}"
 
-#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:16
-msgid "{count} configured"
-msgstr "{count} configuré"
-
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
@@ -141,10 +137,6 @@ msgstr "<"
 #: src/rule/constant/rule-condition-operator.constant.ts:11
 msgid ">"
 msgstr ">"
-
-#: src/budget/components/budget-period-start-day-field/budget-period-start-day-field.tsx:33
-msgid "1"
-msgstr "1"
 
 #: src/@generic/component/currency-selector/currency-selector.tsx:66
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -237,6 +229,10 @@ msgstr "Actif"
 #: src/app/note-input.tsx:39
 msgid "Add a note..."
 msgstr "Ajouter une note..."
+
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx:58
+msgid "Add a per-category cap"
+msgstr "Ajouter un plafond par catégorie"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:33
 msgid "Add Account"
@@ -464,10 +460,6 @@ msgstr "Emprunté"
 msgid "Budget"
 msgstr "Budget"
 
-#: src/budget/components/budget-currency-chip/budget-currency-chip.tsx:20
-msgid "Budget currency"
-msgstr "Devise du budget"
-
 #: src/budget/service/budget-alert-monitor.service.ts:105
 msgid "Budget limit reached"
 msgstr "Limite de budget atteinte"
@@ -534,10 +526,8 @@ msgstr "Catégorie"
 msgid "Category → {categoryTitle}"
 msgstr "Catégorie → {categoryTitle}"
 
-#: src/app/(main)/budget/edit/category-limits.tsx:30
 #: src/budget/components/budget-category-limits-card/budget-category-limits-card.tsx:18
-#: src/budget/components/budget-category-limits-field/budget-category-limits-field.tsx:29
-#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:18
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx:41
 msgid "Category limits"
 msgstr "Limites par catégorie"
 
@@ -708,7 +698,7 @@ msgstr "Impossible de consolider les correspondances"
 msgid "Could not convert to refund"
 msgstr "Impossible de convertir en remboursement"
 
-#: src/budget/hooks/use-budget-form.hook.ts:105
+#: src/budget/hooks/use-budget-form.hook.ts:96
 msgid "Could not create budget"
 msgstr "Impossible de créer le budget"
 
@@ -815,13 +805,9 @@ msgstr "Impossible de restaurer le compte."
 msgid "Could not revert consolidation."
 msgstr ""
 
-#: src/budget/hooks/use-budget-form.hook.ts:105
+#: src/budget/hooks/use-budget-form.hook.ts:96
 msgid "Could not save budget"
 msgstr "Impossible d'enregistrer le budget"
-
-#: src/budget/hooks/use-budget-form.hook.ts:75
-msgid "Could not save budget: a default currency is required."
-msgstr "Impossible d'enregistrer le budget : une devise par défaut est requise."
 
 #: src/category/components/category-form/category-form.tsx:167
 msgid "Could not save category"
@@ -889,7 +875,7 @@ msgstr "Créer et organiser les étiquettes de transaction"
 msgid "Create anyway"
 msgstr "Créer quand même"
 
-#: src/app/(main)/budget/edit/index.tsx:37
+#: src/app/(main)/budget/edit/index.tsx:54
 msgid "Create budget"
 msgstr "Créer un budget"
 
@@ -1053,7 +1039,6 @@ msgstr "Désactiver le verrouillage"
 msgid "Display this budget on the home screen"
 msgstr "Afficher ce budget sur l'écran d'accueil"
 
-#: src/app/(main)/budget/edit/category-limits.tsx:24
 #: src/app/import-column-mapper.tsx:97
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
@@ -1100,15 +1085,11 @@ msgstr "p. ex. Affaires, Personnel, Vacances"
 msgid "e.g. Groceries, Entertainment"
 msgstr "p. ex. Courses, Divertissement"
 
-#: src/budget/components/budget-name-field/budget-name-field.tsx:17
-msgid "e.g. Household, Personal"
-msgstr "p. ex. Foyer, Personnel"
-
 #: src/@generic/component/account-details-field/account-details-field.tsx:61
 msgid "e.g. Savings Account"
 msgstr "ex. Compte d'épargne"
 
-#: src/app/(main)/budget/edit/index.tsx:37
+#: src/app/(main)/budget/edit/index.tsx:54
 #: src/app/(main)/budget/index.tsx:87
 msgid "Edit budget"
 msgstr "Modifier le budget"
@@ -1694,10 +1675,6 @@ msgstr "Coûts mensuels"
 msgid "Monthly Total"
 msgstr "Total mensuel"
 
-#: src/budget/components/budget-name-field/budget-name-field.tsx:16
-msgid "Name (optional)"
-msgstr "Nom (facultatif)"
-
 #: src/sync/component/create-erste-account/create-erste-account.tsx:17
 msgid "Navigate to Account → Statements"
 msgstr "Allez dans Compte → Relevés"
@@ -1757,6 +1734,10 @@ msgstr "Aucune catégorie ne correspond à votre recherche"
 msgid "No Categories Yet"
 msgstr "Aucune catégorie pour le moment"
 
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx:55
+msgid "No category limits yet"
+msgstr "Aucun plafond par catégorie"
+
 #: src/app/contact-selector.tsx:39
 msgid "No contacts found"
 msgstr "Aucun contact trouvé"
@@ -1796,10 +1777,6 @@ msgstr "Aucun élément à enregistrer"
 #: src/app/language-selector.tsx:62
 msgid "No languages found"
 msgstr "Aucune langue trouvée"
-
-#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:16
-msgid "No limits configured"
-msgstr "Aucune limite configurée"
 
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:55
 msgid "No matching expenses"
@@ -1921,6 +1898,7 @@ msgstr "Ouvrez George (banque en ligne Erste Bank)"
 msgid "Open Monobank to get your token"
 msgstr "Ouvrez Monobank pour obtenir votre jeton"
 
+#: src/app/(main)/budget/edit/index.tsx:48
 #: src/budget/components/budget-integrity-guard/budget-integrity-guard.tsx:80
 msgid "Open settings"
 msgstr "Ouvrir les paramètres"
@@ -1933,7 +1911,7 @@ msgstr "Ouvrez l'application Privatbank24"
 msgid "Operator"
 msgstr "Opérateur"
 
-#: src/budget/components/budget-category-limits-field/budget-category-limits-field.tsx:37
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx:48
 msgid "Optional per-category caps within this budget"
 msgstr "Plafonds optionnels par catégorie au sein de ce budget"
 
@@ -1993,13 +1971,13 @@ msgstr "Progression du paiement"
 msgid "PDF statement"
 msgstr "Relevé PDF"
 
-#: src/budget/components/budget-period-start-day-field/budget-period-start-day-field.tsx:32
-msgid "Period start day (1–28)"
-msgstr "Jour de début de la période (1–28)"
-
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
 msgstr "La permission d'accéder aux contacts a été refusée."
+
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx:27
+msgid "Pick a category to set a limit"
+msgstr "Choisissez une catégorie pour définir une limite"
 
 #: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
@@ -2162,10 +2140,6 @@ msgstr "Remboursé {formattedRefundedAmount}"
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:48
 msgid "Remaining"
 msgstr "Restant"
-
-#: src/budget/components/budget-use-last-day-field/budget-use-last-day-field.tsx:24
-msgid "Reset on the last calendar day each month"
-msgstr "Réinitialiser le dernier jour calendaire de chaque mois"
 
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
@@ -2438,6 +2412,10 @@ msgstr "Envoyer des notifications push"
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:115
 msgid "Sending {fromCode}"
 msgstr "Envoi {fromCode}"
+
+#: src/app/(main)/budget/edit/index.tsx:46
+msgid "Set a default currency in Settings first"
+msgstr "Définissez d'abord une devise par défaut dans les paramètres"
 
 #: src/app/(tabs)/settings/index.tsx:150
 msgid "Set a monthly limit and track spending"
@@ -2862,7 +2840,6 @@ msgstr "Déconsolider"
 msgid "Unconsolidate transaction?"
 msgstr "Déconsolider la transaction ?"
 
-#: src/budget/components/budget-currency-chip/budget-currency-chip.tsx:17
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:36
 msgid "Unknown"
 msgstr "Inconnu"
@@ -2896,10 +2873,6 @@ msgstr "Utilisez Face ID ou Touch ID pour déverrouiller votre application rapid
 #: src/auth/util/get-pin-setup-meta.util.ts:11
 msgid "Use Face ID to unlock your app quickly and securely"
 msgstr "Utilisez Face ID pour déverrouiller votre application rapidement et en toute sécurité"
-
-#: src/budget/components/budget-use-last-day-field/budget-use-last-day-field.tsx:21
-msgid "Use last day of month"
-msgstr "Utiliser le dernier jour du mois"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:18
 msgid "Use Touch ID to unlock your app quickly and securely"

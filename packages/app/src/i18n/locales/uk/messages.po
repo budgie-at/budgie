@@ -63,10 +63,6 @@ msgstr "{count, plural, one {Ця категорія має # транзакці
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Цей тег має # транзакцію. Виберіть інший тег, щоб перепризначити її.} few {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.} many {Цей тег має # транзакцій. Виберіть інший тег, щоб перепризначити їх.} other {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.}}"
 
-#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:16
-msgid "{count} configured"
-msgstr "Налаштовано: {count}"
-
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
@@ -141,10 +137,6 @@ msgstr "<"
 #: src/rule/constant/rule-condition-operator.constant.ts:11
 msgid ">"
 msgstr ">"
-
-#: src/budget/components/budget-period-start-day-field/budget-period-start-day-field.tsx:33
-msgid "1"
-msgstr "1"
 
 #: src/@generic/component/currency-selector/currency-selector.tsx:66
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -237,6 +229,10 @@ msgstr "Активний"
 #: src/app/note-input.tsx:39
 msgid "Add a note..."
 msgstr "Додати нотатку..."
+
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx:58
+msgid "Add a per-category cap"
+msgstr "Додати ліміт для категорії"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:33
 msgid "Add Account"
@@ -464,10 +460,6 @@ msgstr "Позичено"
 msgid "Budget"
 msgstr "Бюджет"
 
-#: src/budget/components/budget-currency-chip/budget-currency-chip.tsx:20
-msgid "Budget currency"
-msgstr "Валюта бюджету"
-
 #: src/budget/service/budget-alert-monitor.service.ts:105
 msgid "Budget limit reached"
 msgstr "Ліміт бюджету досягнуто"
@@ -534,10 +526,8 @@ msgstr "Категорія"
 msgid "Category → {categoryTitle}"
 msgstr "Категорія → {categoryTitle}"
 
-#: src/app/(main)/budget/edit/category-limits.tsx:30
 #: src/budget/components/budget-category-limits-card/budget-category-limits-card.tsx:18
-#: src/budget/components/budget-category-limits-field/budget-category-limits-field.tsx:29
-#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:18
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx:41
 msgid "Category limits"
 msgstr "Ліміти за категоріями"
 
@@ -708,7 +698,7 @@ msgstr "Не вдалося консолідувати збіги"
 msgid "Could not convert to refund"
 msgstr "Не вдалося перетворити на повернення"
 
-#: src/budget/hooks/use-budget-form.hook.ts:105
+#: src/budget/hooks/use-budget-form.hook.ts:96
 msgid "Could not create budget"
 msgstr "Не вдалося створити бюджет"
 
@@ -815,13 +805,9 @@ msgstr "Не вдалося відновити рахунок."
 msgid "Could not revert consolidation."
 msgstr ""
 
-#: src/budget/hooks/use-budget-form.hook.ts:105
+#: src/budget/hooks/use-budget-form.hook.ts:96
 msgid "Could not save budget"
 msgstr "Не вдалося зберегти бюджет"
-
-#: src/budget/hooks/use-budget-form.hook.ts:75
-msgid "Could not save budget: a default currency is required."
-msgstr "Не вдалося зберегти бюджет: потрібна валюта за замовчуванням."
 
 #: src/category/components/category-form/category-form.tsx:167
 msgid "Could not save category"
@@ -889,7 +875,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create anyway"
 msgstr "Все одно створити"
 
-#: src/app/(main)/budget/edit/index.tsx:37
+#: src/app/(main)/budget/edit/index.tsx:54
 msgid "Create budget"
 msgstr "Створити бюджет"
 
@@ -1053,7 +1039,6 @@ msgstr "Вимкнути блокування"
 msgid "Display this budget on the home screen"
 msgstr "Показувати цей бюджет на головному екрані"
 
-#: src/app/(main)/budget/edit/category-limits.tsx:24
 #: src/app/import-column-mapper.tsx:97
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
@@ -1100,15 +1085,11 @@ msgstr "напр. Бізнес, Особисте, Відпустка"
 msgid "e.g. Groceries, Entertainment"
 msgstr "напр. Продукти, Розваги"
 
-#: src/budget/components/budget-name-field/budget-name-field.tsx:17
-msgid "e.g. Household, Personal"
-msgstr "напр. Дім, Особисте"
-
 #: src/@generic/component/account-details-field/account-details-field.tsx:61
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/app/(main)/budget/edit/index.tsx:37
+#: src/app/(main)/budget/edit/index.tsx:54
 #: src/app/(main)/budget/index.tsx:87
 msgid "Edit budget"
 msgstr "Редагувати бюджет"
@@ -1694,10 +1675,6 @@ msgstr "Місячні витрати"
 msgid "Monthly Total"
 msgstr "Місячний підсумок"
 
-#: src/budget/components/budget-name-field/budget-name-field.tsx:16
-msgid "Name (optional)"
-msgstr "Назва (необов'язково)"
-
 #: src/sync/component/create-erste-account/create-erste-account.tsx:17
 msgid "Navigate to Account → Statements"
 msgstr "Перейдіть до Рахунок → Виписки"
@@ -1757,6 +1734,10 @@ msgstr "Жодна категорія не відповідає вашому п�
 msgid "No Categories Yet"
 msgstr "Поки немає категорій"
 
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx:55
+msgid "No category limits yet"
+msgstr "Лімітів за категоріями немає"
+
 #: src/app/contact-selector.tsx:39
 msgid "No contacts found"
 msgstr "Контактів не знайдено"
@@ -1796,10 +1777,6 @@ msgstr "Немає елементів для збереження"
 #: src/app/language-selector.tsx:62
 msgid "No languages found"
 msgstr "Мов не знайдено"
-
-#: src/budget/components/budget-category-limits-nav-card/budget-category-limits-nav-card.tsx:16
-msgid "No limits configured"
-msgstr "Ліміти не налаштовано"
 
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:55
 msgid "No matching expenses"
@@ -1921,6 +1898,7 @@ msgstr "Відкрийте George (онлайн-банкінг Erste Bank)"
 msgid "Open Monobank to get your token"
 msgstr "Відкрийте Монобанк, щоб отримати токен"
 
+#: src/app/(main)/budget/edit/index.tsx:48
 #: src/budget/components/budget-integrity-guard/budget-integrity-guard.tsx:80
 msgid "Open settings"
 msgstr "Відкрити налаштування"
@@ -1933,7 +1911,7 @@ msgstr "Відкрийте додаток Приват24"
 msgid "Operator"
 msgstr "Оператор"
 
-#: src/budget/components/budget-category-limits-field/budget-category-limits-field.tsx:37
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx:48
 msgid "Optional per-category caps within this budget"
 msgstr "Опційні обмеження за категоріями у межах цього бюджету"
 
@@ -1993,13 +1971,13 @@ msgstr "Прогрес платежу"
 msgid "PDF statement"
 msgstr "PDF-виписка"
 
-#: src/budget/components/budget-period-start-day-field/budget-period-start-day-field.tsx:32
-msgid "Period start day (1–28)"
-msgstr "День початку періоду (1–28)"
-
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
 msgstr "Відмовлено в доступі до контактів."
+
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx:27
+msgid "Pick a category to set a limit"
+msgstr "Оберіть категорію для встановлення ліміту"
 
 #: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
@@ -2162,10 +2140,6 @@ msgstr "Повернено {formattedRefundedAmount}"
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx:48
 msgid "Remaining"
 msgstr "Залишилось"
-
-#: src/budget/components/budget-use-last-day-field/budget-use-last-day-field.tsx:24
-msgid "Reset on the last calendar day each month"
-msgstr "Скидати в останній календарний день кожного місяця"
 
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
@@ -2438,6 +2412,10 @@ msgstr "Надсилати push-сповіщення"
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:115
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
+
+#: src/app/(main)/budget/edit/index.tsx:46
+msgid "Set a default currency in Settings first"
+msgstr "Спочатку оберіть валюту за замовчуванням у Налаштуваннях"
 
 #: src/app/(tabs)/settings/index.tsx:150
 msgid "Set a monthly limit and track spending"
@@ -2862,7 +2840,6 @@ msgstr "Розконсолідувати"
 msgid "Unconsolidate transaction?"
 msgstr "Розконсолідувати транзакцію?"
 
-#: src/budget/components/budget-currency-chip/budget-currency-chip.tsx:17
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:36
 msgid "Unknown"
 msgstr "Невідомо"
@@ -2896,10 +2873,6 @@ msgstr "Використовуйте Face ID або Touch ID для швидко
 #: src/auth/util/get-pin-setup-meta.util.ts:11
 msgid "Use Face ID to unlock your app quickly and securely"
 msgstr "Використовуйте Face ID для швидкого та безпечного розблокування вашого додатку"
-
-#: src/budget/components/budget-use-last-day-field/budget-use-last-day-field.tsx:21
-msgid "Use last day of month"
-msgstr "Використовувати останній день місяця"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:18
 msgid "Use Touch ID to unlock your app quickly and securely"

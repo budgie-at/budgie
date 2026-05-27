@@ -7,7 +7,6 @@ import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-
 import { budgetCategoryLimitRepository, budgetRepository, categoryRepository, settingsRepository } from '../../@generic/drizzle/db/db';
 import { postLocalNotification } from '../../@generic/utils/request-push-permission.util';
 import { BUDGET_ALERT_MONITOR_TASK } from '../constant/budget-alert-monitor-task.constant';
