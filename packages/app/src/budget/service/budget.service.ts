@@ -51,21 +51,10 @@ class BudgetService {
     )
     async updateBudget(id: number, input: BudgetUpdateInputInterface): Promise<BudgetEntityInterface> {
         return transactionAsync(db, async tx => {
-            const updatedBudget = await budgetRepository.update(
-                id,
-                {
-                    ...(isDefined(input.name) && { name: input.name }),
-                    ...(isDefined(input.period) && { period: input.period }),
-                    ...(isDefined(input.periodStartDay) && { periodStartDay: input.periodStartDay }),
-                    ...(isDefined(input.useLastDayOfMonth) && { useLastDayOfMonth: input.useLastDayOfMonth }),
-                    ...(isDefined(input.overallLimit) && { overallLimit: input.overallLimit }),
-                    ...(isDefined(input.pushEnabled) && { pushEnabled: input.pushEnabled }),
-                    ...(isDefined(input.instrumentId) && { instrumentId: input.instrumentId })
-                },
-                tx
-            );
+            const { categoryLimits, ...budgetFields } = input;
+            const updatedBudget = await budgetRepository.update(id, budgetFields, tx);
 
-            await this.syncCategoryLimits(id, input.categoryLimits, tx);
+            await this.syncCategoryLimits(id, categoryLimits, tx);
 
             return updatedBudget;
         });
@@ -129,20 +118,16 @@ class BudgetService {
     }
 
     private async applyCategoryLimitDiff(budgetId: number, diff: CategoryLimitDiffInterface, tx: DB): Promise<void> {
-        if (isNotEmptyArray(diff.toCreate)) {
-            await budgetCategoryLimitRepository.bulkCreate(
-                diff.toCreate.map(limit => ({ budgetId, categoryId: limit.categoryId, limitAmount: limit.limitAmount })),
-                tx
-            );
-        }
-
-        if (isNotEmptyArray(diff.toUpdate)) {
-            await budgetCategoryLimitRepository.bulkUpdate(diff.toUpdate, tx);
-        }
-
-        if (isNotEmptyArray(diff.toDelete)) {
-            await budgetCategoryLimitRepository.bulkDelete(diff.toDelete, tx);
-        }
+        await Promise.all([
+            isNotEmptyArray(diff.toCreate)
+                ? budgetCategoryLimitRepository.bulkCreate(
+                      diff.toCreate.map(limit => ({ budgetId, categoryId: limit.categoryId, limitAmount: limit.limitAmount })),
+                      tx
+                  )
+                : null,
+            isNotEmptyArray(diff.toUpdate) ? budgetCategoryLimitRepository.bulkUpdate(diff.toUpdate, tx) : null,
+            isNotEmptyArray(diff.toDelete) ? budgetCategoryLimitRepository.bulkDelete(diff.toDelete, tx) : null
+        ]);
     }
 }
 

@@ -31,7 +31,7 @@ export const BudgetCategoryLimitCompactRow = ({ index, onRemove }: Props) => {
         <View style={ICON_PLACEHOLDER_STYLE} />
     );
 
-    const title = isDefined(category) ? category.title : '';
+    const title = category?.title ?? '';
     const confirmation = {
         title: t`Remove category limit?`,
         description: t`Swipe to remove this per-category cap from your budget.`,

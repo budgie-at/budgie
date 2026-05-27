@@ -1,6 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
+import Toast from 'react-native-toast-message';
+
+import { getErrorMessage } from '@rnw-community/shared';
 
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
@@ -8,12 +12,19 @@ import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsCard } from '../settings-card/settings-card';
 
+const logger = getLogger('BudgetWidgetToggle');
+
 export const BudgetWidgetToggle = () => {
     const { t } = useLingui();
     const isWidgetEnabled = useSetting('isBudgetWidgetEnabled');
 
     const handleChange = async (next: boolean) => {
-        await updateSettingsMutation({ isBudgetWidgetEnabled: next });
+        try {
+            await updateSettingsMutation({ isBudgetWidgetEnabled: next });
+        } catch (error: unknown) {
+            logger.error('toggle-failed', { errorMessage: getErrorMessage(error) });
+            Toast.show({ type: 'error', text1: t`Could not update widget setting`, text2: getErrorMessage(error) });
+        }
     };
 
     const stateMarkerTestID = isWidgetEnabled
