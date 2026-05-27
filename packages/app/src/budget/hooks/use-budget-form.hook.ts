@@ -104,7 +104,7 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
             if (isPositiveNumber(editingId)) {
                 await budgetService.updateBudget(editingId, basePayload);
             } else {
-                await budgetService.createBudget({ ...basePayload, pushEnabled: false });
+                await budgetService.createBudget(basePayload);
                 await updateSettingsMutation({ isBudgetWidgetEnabled: true });
             }
 

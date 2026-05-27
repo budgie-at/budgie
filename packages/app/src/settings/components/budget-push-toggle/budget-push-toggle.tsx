@@ -1,33 +1,33 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
 import * as Notifications from 'expo-notifications';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { getErrorMessage } from '@rnw-community/shared';
 
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
-import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
-import { budgetService } from '../../../budget/service/budget.service';
+import { useSetting } from '../../hook/use-setting.hook';
+import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsCard } from '../settings-card/settings-card';
+
+const logger = getLogger('BudgetPushToggle');
 
 export const BudgetPushToggle = () => {
     const { t } = useLingui();
-    const { budget } = useGetActiveBudgetQuery();
+    const isPushEnabled = useSetting('isBudgetPushEnabled');
 
-    if (!isDefined(budget)) {
-        return null;
-    }
-
-    const { pushEnabled } = budget;
     const persist = async (next: boolean): Promise<void> => {
         try {
-            await budgetService.updateBudget(budget.id, { pushEnabled: next });
+            await updateSettingsMutation({ isBudgetPushEnabled: next });
         } catch (error: unknown) {
+            logger.error('toggle-failed', { errorMessage: getErrorMessage(error) });
             Toast.show({ type: 'error', text1: t`Could not update notifications`, text2: getErrorMessage(error) });
         }
     };
+
     const handleChange = async (next: boolean) => {
         if (!next) {
             await persist(false);
@@ -48,12 +48,12 @@ export const BudgetPushToggle = () => {
         }
     };
 
-    const stateMarkerTestID = pushEnabled ? SettingsPageSelector.BudgetPushSwitchStateOn : SettingsPageSelector.BudgetPushSwitchStateOff;
+    const stateMarkerTestID = isPushEnabled ? SettingsPageSelector.BudgetPushSwitchStateOn : SettingsPageSelector.BudgetPushSwitchStateOff;
 
     const switchSlot = (
         <View className="flex-row items-center gap-x-xs">
             <View testID={stateMarkerTestID} className="h-1 w-1" />
-            <ThemedSwitch testID={SettingsPageSelector.BudgetPushSwitch} value={pushEnabled} onValueChange={handleChange} />
+            <ThemedSwitch testID={SettingsPageSelector.BudgetPushSwitch} value={isPushEnabled} onValueChange={handleChange} />
         </View>
     );
 
