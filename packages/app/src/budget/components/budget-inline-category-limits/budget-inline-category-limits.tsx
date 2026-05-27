@@ -10,6 +10,7 @@ import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
+import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetCategoryLimitCompactRow } from '../budget-category-limit-compact-row/budget-category-limit-compact-row';
 
@@ -36,11 +37,11 @@ export const BudgetInlineCategoryLimits = () => {
 
     return (
         <View className="gap-y-md">
-            <View className="flex-row items-center justify-between">
+            <View testID={BudgetSelector.SetupCategoryLimitsHeader} className="flex-row items-center justify-between">
                 <Text className="text-primary text-lg font-semibold">
                     <Trans>Category limits</Trans>
                 </Text>
-                <HapticPressable onPress={handleAddPress}>
+                <HapticPressable testID={BudgetSelector.SetupCategoryLimitAddButton} onPress={handleAddPress}>
                     <CircleIcon icon={UserIconNameEnum.Plus} variant="ghost" size={26} iconSize={14} />
                 </HapticPressable>
             </View>

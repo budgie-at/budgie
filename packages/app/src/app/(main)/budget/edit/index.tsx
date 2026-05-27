@@ -11,7 +11,6 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { Button } from '../../../../@generic/component/button/button';
 import { FormPage } from '../../../../@generic/component/form-page/form-page';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
-import { ModalFormCancelButton } from '../../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormSaveButton } from '../../../../@generic/component/modal-form-save-button/modal-form-save-button';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
@@ -67,7 +66,6 @@ export default function BudgetSetupScreen() {
             testID={BudgetSelector.SetupDeleteButton}
             variant="destructive"
             leftIcon={UserIconNameEnum.Trash2}
-            content={t`Delete budget`}
             onPress={onDeletePress}
         />
     ) : null;
@@ -76,7 +74,7 @@ export default function BudgetSetupScreen() {
         <View className="gap-y-md">
             <BudgetAllocationSummary />
             <View className="flex-row gap-x-md">
-                <ModalFormCancelButton onPress={handleCancel} />
+                {deleteButton}
                 <ModalFormSaveButton testID={BudgetSelector.SetupSaveButton} onPress={handleSubmit} disabled={!formState.isValid} />
             </View>
         </View>
@@ -94,7 +92,6 @@ export default function BudgetSetupScreen() {
                 <BudgetPushEnabledField control={control} />
                 <BudgetWidgetEnabledField control={control} />
                 <BudgetInlineCategoryLimits />
-                {deleteButton}
             </FormPage>
         </FormProvider>
     );

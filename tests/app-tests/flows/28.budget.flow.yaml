@@ -27,6 +27,9 @@ env:
     id: 'BudgetSetup.OverallLimitInput'
 - inputText: '1000'
 - tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
+- tapOn:
     id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
@@ -88,6 +91,9 @@ env:
     point: '95%,50%'
 - eraseText: 10
 - inputText: '1500'
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'BudgetSetup.SaveButton'
@@ -112,7 +118,8 @@ env:
 - eraseText: 10
 - inputText: '9999'
 
-- tapOn: 'Cancel'
+- tapOn:
+    id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
@@ -170,6 +177,9 @@ env:
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.1.AmountInput'
 - inputText: '100'
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'BudgetSetup.SaveButton'
@@ -273,7 +283,8 @@ env:
 - assertVisible:
     id: 'BudgetSetup.PushToggle'
 
-- tapOn: 'Cancel'
+- tapOn:
+    id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 
 # --- Widget toggle: edit form disables widget, re-enables it ---

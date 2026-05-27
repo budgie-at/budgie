@@ -28,6 +28,9 @@ appId: ${APP_ID}
     id: 'BudgetSetup.OverallLimitInput'
 - inputText: '200'
 - tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
+- tapOn:
     id: 'BudgetSetup.SaveButton'
 
 # --- Widget reflects FX-converted spent total ---

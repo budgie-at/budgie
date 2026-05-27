@@ -11,9 +11,10 @@ interface Props {
     readonly limitAmount: number;
     readonly spent: number;
     readonly testID?: string;
+    readonly spentTestID?: string;
 }
 
-export const BudgetCategoryLimitRow = ({ categoryId, limitAmount, spent, testID }: Props) => {
+export const BudgetCategoryLimitRow = ({ categoryId, limitAmount, spent, testID, spentTestID }: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId);
     const title = isDefined(category) ? category.title : '';
 
@@ -23,7 +24,7 @@ export const BudgetCategoryLimitRow = ({ categoryId, limitAmount, spent, testID 
 
             <View className="flex-1 gap-y-xs">
                 <Text className="text-primary text-sm font-medium">{title}</Text>
-                <BudgetProgressBar spent={spent} limit={limitAmount} />
+                <BudgetProgressBar spent={spent} limit={limitAmount} spentTestID={spentTestID} />
             </View>
         </View>
     );

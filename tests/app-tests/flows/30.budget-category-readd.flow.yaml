@@ -42,6 +42,9 @@ appId: ${APP_ID}
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '200'
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'BudgetSetup.SaveButton'
@@ -118,6 +121,9 @@ appId: ${APP_ID}
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '300'
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'BudgetSetup.SaveButton'
@@ -129,5 +135,5 @@ appId: ${APP_ID}
       id: 'BudgetWidget.CategoryRow.11'
     timeout: 3000
 - assertVisible:
-    id: 'BudgetWidget.CategoryRow.11'
+    id: 'BudgetWidget.CategorySpentLabel.11'
     text: '0.00 / 300.00'
