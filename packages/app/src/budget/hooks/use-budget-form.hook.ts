@@ -12,7 +12,6 @@ import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-u
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { useSetting } from '../../settings/hook/use-setting.hook';
-import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
 import { BudgetFormSchema, BudgetFormValues } from '../constant/budget-form-schema.constant';
 import { useGetActiveBudgetQuery } from '../query/use-get-active-budget.query';
 import { useGetBudgetCategoryLimitsQuery } from '../query/use-get-budget-category-limits.query';
@@ -105,7 +104,6 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
                 await budgetService.updateBudget(editingId, basePayload);
             } else {
                 await budgetService.createBudget(basePayload);
-                await updateSettingsMutation({ isBudgetWidgetEnabled: true });
             }
 
             goBackOrReplace('/');
