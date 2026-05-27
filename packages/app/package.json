@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "android": "expo run:android",
+        "bench:budget-spent": "yarn dlx tsx scripts/bench-budget-spent.ts",
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo .expo",
         "db:generate": "drizzle-kit generate",
         "eas-build-post-install": "cd ../.. && yarn build",
