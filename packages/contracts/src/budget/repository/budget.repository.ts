@@ -1,7 +1,4 @@
-import { Log } from '@budgie/logger';
 import { and, between, desc, eq, isNull, sql } from 'drizzle-orm';
-
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
@@ -20,38 +17,18 @@ import type { BudgetUpdateEntityInterface } from '../entity/budget-update-entity
 export class BudgetRepository {
     constructor(private db: DB) {}
 
-    @Log(
-        (input, tx) =>
-            `enter name="${input.name}" period=${input.period} overallLimit=${input.overallLimit} hasTx=${String(isDefined(tx))}`,
-        (result, input, tx) =>
-            `done name="${input.name}" period=${input.period} overallLimit=${input.overallLimit} hasTx=${String(isDefined(tx))} id=${result.id}`,
-        (error, input, tx) =>
-            `throw name="${input.name}" period=${input.period} overallLimit=${input.overallLimit} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
     async create(input: BudgetCreateEntityInterface, tx?: DB): Promise<BudgetEntityInterface> {
         const [budget] = await (tx ?? this.db).insert(BudgetEntityTable).values([input]).returning();
 
         return budget;
     }
 
-    @Log(
-        (id, input, tx) => `enter id=${id} fields=${Object.keys(input).join(',')} hasTx=${String(isDefined(tx))}`,
-        (result, id, input, tx) =>
-            `done id=${id} fields=${Object.keys(input).join(',')} hasTx=${String(isDefined(tx))} overallLimit=${result.overallLimit}`,
-        (error, id, input, tx) =>
-            `throw id=${id} fields=${Object.keys(input).join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
     async update(id: number, input: BudgetUpdateEntityInterface, tx?: DB): Promise<BudgetEntityInterface> {
         const [budget] = await (tx ?? this.db).update(BudgetEntityTable).set(input).where(eq(BudgetEntityTable.id, id)).returning();
 
         return budget;
     }
 
-    @Log(
-        tx => `enter hasTx=${String(isDefined(tx))}`,
-        (result, tx) => `done hasTx=${String(isDefined(tx))} id=${isDefined(result) ? result.id : 'null'}`,
-        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
     async getActive(tx?: DB): Promise<BudgetEntityInterface | null> {
         const budget = await (tx ?? this.db).query.BudgetEntityTable.findFirst({
             where: isNull(BudgetEntityTable.deletedAt),
@@ -61,11 +38,6 @@ export class BudgetRepository {
         return budget ?? null;
     }
 
-    @Log(
-        (id, tx) => `enter id=${id} hasTx=${String(isDefined(tx))}`,
-        (_result, id, tx) => `done id=${id} hasTx=${String(isDefined(tx))}`,
-        (error, id, tx) => `throw id=${id} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
     async delete(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(BudgetEntityTable)
