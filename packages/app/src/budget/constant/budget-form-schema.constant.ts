@@ -15,8 +15,6 @@ export const BudgetFormSchema = z
         useLastDayOfMonth: z.boolean(),
         overallLimit: z.number().positive(),
         categoryLimits: z.array(BudgetCategoryLimitFormSchema),
-        pushEnabled: z.boolean(),
-        isWidgetEnabled: z.boolean(),
         instrumentId: z.number().int().positive()
     })
     .refine(values => values.categoryLimits.reduce((sum, limit) => sum + limit.limitAmount, 0) <= values.overallLimit, {

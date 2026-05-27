@@ -26,5 +26,14 @@ export const SettingsPageSelector = {
     ExportDatabaseCard: 'SettingsPage.ExportDatabaseCard',
     ConsolidateTransfersCard: 'SettingsPage.ConsolidateTransfersCard',
     ClearDataCard: 'SettingsPage.ClearDataCard',
-    ManageRulesCard: 'SettingsPage.ManageRulesCard'
+    ManageRulesCard: 'SettingsPage.ManageRulesCard',
+    BudgetManagementCard: 'SettingsPage.BudgetManagementCard',
+    BudgetWidgetCard: 'SettingsPage.BudgetWidgetCard',
+    BudgetWidgetSwitch: 'SettingsPage.BudgetWidgetSwitch',
+    BudgetWidgetSwitchStateOn: 'SettingsPage.BudgetWidgetSwitch.State.On',
+    BudgetWidgetSwitchStateOff: 'SettingsPage.BudgetWidgetSwitch.State.Off',
+    BudgetPushCard: 'SettingsPage.BudgetPushCard',
+    BudgetPushSwitch: 'SettingsPage.BudgetPushSwitch',
+    BudgetPushSwitchStateOn: 'SettingsPage.BudgetPushSwitch.State.On',
+    BudgetPushSwitchStateOff: 'SettingsPage.BudgetPushSwitch.State.Off'
 } as const;

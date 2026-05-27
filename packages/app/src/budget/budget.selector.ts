@@ -13,12 +13,6 @@ export const BudgetSelector = {
     SetupCategoryLimitAddButton: 'BudgetSetup.CategoryLimitAddButton',
     SetupCategoryLimitRow: (index: number) => `BudgetSetup.CategoryLimit.${index}.Row` as const,
     SetupCategoryLimitAmountInput: (index: number) => `BudgetSetup.CategoryLimit.${index}.AmountInput` as const,
-    SetupPushToggle: 'BudgetSetup.PushToggle',
-    SetupPushToggleStateOn: 'BudgetSetup.PushToggle.State.On',
-    SetupPushToggleStateOff: 'BudgetSetup.PushToggle.State.Off',
-    SetupWidgetEnabledToggle: 'BudgetSetup.WidgetEnabledToggle',
-    SetupWidgetEnabledToggleStateOn: 'BudgetSetup.WidgetEnabledToggle.State.On',
-    SetupWidgetEnabledToggleStateOff: 'BudgetSetup.WidgetEnabledToggle.State.Off',
     SetupAllocationSummaryOverBy: 'BudgetSetup.AllocationSummary.OverBy',
     SetupAllocationSummaryRemaining: 'BudgetSetup.AllocationSummary.Remaining'
 } as const;

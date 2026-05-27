@@ -33,7 +33,7 @@ export const BudgetWidget = () => {
 
     const handleNavigate = () => void router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
 
-    const dateLabel = formatBudgetPeriodLabel(budget, 'short');
+    const dateLabel = formatBudgetPeriodLabel(budget);
     const spentByCategoryMap = new Map(spent.spentByCategory.map(entry => [entry.categoryId, entry.spent]));
     const visibleCategoryLimits = categoryLimits.slice(0, WIDGET_CATEGORY_LIMITS_MAX);
     const hiddenCategoryCount = categoryLimits.length - visibleCategoryLimits.length;

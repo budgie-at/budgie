@@ -14,22 +14,20 @@ interface UseGetBudgetSpentResult {
     readonly isLoading: boolean;
 }
 
-const EMPTY_SPENT: BudgetSpentInterface = { spentOverall: 0, spentByCategory: [], fallbackCount: 0 };
+const EMPTY_SPENT: BudgetSpentInterface = { spentOverall: 0, spentByCategory: [] };
+
+const EPOCH = new Date(0);
 
 export const useGetBudgetSpentQuery = (budget: BudgetEntityInterface | null): UseGetBudgetSpentResult => {
     const window = isDefined(budget) ? computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date()) : null;
-    const periodStartMs = isDefined(window) ? window.periodStart.getTime() : 0;
-    const nextPeriodStartMs = isDefined(window) ? window.nextPeriodStart.getTime() : 0;
-
-    const periodStart = new Date(periodStartMs);
-    const nextPeriodStart = new Date(nextPeriodStartMs);
-
+    const periodStart = window?.periodStart ?? EPOCH;
+    const nextPeriodStart = window?.nextPeriodStart ?? EPOCH;
     const baseInstrumentId = isDefined(budget) ? budget.instrumentId : 0;
 
     const entriesQuery = budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, baseInstrumentId);
     const { data: entriesData, updatedAt: entriesUpdatedAt } = useLiveQuery(entriesQuery, [
-        periodStartMs,
-        nextPeriodStartMs,
+        periodStart.getTime(),
+        nextPeriodStart.getTime(),
         baseInstrumentId
     ]);
 

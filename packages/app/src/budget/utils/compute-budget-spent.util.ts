@@ -17,7 +17,6 @@ interface SpentEntryRowInterface {
 
 export const computeBudgetSpent = (entries: SpentEntryRowInterface[], baseInstrumentId: number): BudgetSpentInterface => {
     let spentOverall = 0;
-    let fallbackCount = 0;
     const categoryTotals = new Map<number, number>();
     const warnedPairs = new Set<string>();
 
@@ -31,7 +30,6 @@ export const computeBudgetSpent = (entries: SpentEntryRowInterface[], baseInstru
                 logger.log('missing-rate', { fromInstrumentId: entry.instrumentId, toInstrumentId: baseInstrumentId });
                 warnedPairs.add(pairKey);
             }
-            fallbackCount += 1;
         }
 
         const { convertedAmount } = convertAmountToBase(entry.amount, rate ?? null);
@@ -47,5 +45,5 @@ export const computeBudgetSpent = (entries: SpentEntryRowInterface[], baseInstru
         spent
     }));
 
-    return { spentOverall, spentByCategory, fallbackCount };
+    return { spentOverall, spentByCategory };
 };

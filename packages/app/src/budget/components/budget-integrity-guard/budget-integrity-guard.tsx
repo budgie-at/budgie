@@ -23,50 +23,27 @@ const handleOpenSettings = () => void router.push('/settings');
 export const BudgetIntegrityGuard = ({ children }: Props) => {
     const [status, setStatus] = useState<BudgetIntegrityStatusEnum>(BudgetIntegrityStatusEnum.CHECKING);
 
-    useEffect(() => {
-        let isActive = true;
-
-        const runCheck = async (): Promise<void> => {
-            const missing = await budgetRepository.countMissingInstrument();
-            if (!isActive) {
-                return;
-            }
-            setStatus(missing > 0 ? BudgetIntegrityStatusEnum.INCOMPLETE : BudgetIntegrityStatusEnum.OK);
-        };
-
-        const handleError = (error: unknown) => {
-            logger.error('check-failed', { errorMessage: getErrorMessage(error) });
-            if (isActive) {
+    const runCheck = (): void => {
+        budgetRepository
+            .countMissingInstrument()
+            .then(missing => void setStatus(missing > 0 ? BudgetIntegrityStatusEnum.INCOMPLETE : BudgetIntegrityStatusEnum.OK))
+            .catch((error: unknown) => {
+                logger.error('check-failed', { errorMessage: getErrorMessage(error) });
                 setStatus(BudgetIntegrityStatusEnum.OK);
-            }
-        };
-
-        logger.log('mounted');
-        void runCheck().catch(handleError);
-
-        return () => {
-            isActive = false;
-        };
-    }, []);
-
-    const handleForeground = (isActive: boolean) => {
-        if (!isActive) {
-            return;
-        }
-
-        const runCheck = async (): Promise<void> => {
-            const missing = await budgetRepository.countMissingInstrument();
-            setStatus(missing > 0 ? BudgetIntegrityStatusEnum.INCOMPLETE : BudgetIntegrityStatusEnum.OK);
-        };
-
-        const handleError = (error: unknown) => {
-            logger.error('check-failed', { errorMessage: getErrorMessage(error) });
-        };
-
-        void runCheck().catch(handleError);
+            });
     };
 
-    useAppState(handleForeground);
+    useEffect(() => {
+        logger.log('mounted');
+        runCheck();
+         
+    }, []);
+
+    useAppState(isActive => {
+        if (isActive) {
+            runCheck();
+        }
+    });
 
     if (status === BudgetIntegrityStatusEnum.INCOMPLETE) {
         return (
