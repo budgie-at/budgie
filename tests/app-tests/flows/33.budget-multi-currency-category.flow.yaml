@@ -6,15 +6,6 @@ env:
     EUR_AMOUNT: '40'
 ---
 
-# Verifies multi-currency budgets handle per-category limits + live updates:
-#   - Fixture seeds 100 USD + 50 EUR uncategorized expenses with budget
-#     currency EUR. We test the per-category rollup path independently of
-#     the overall-FX assertion in 29.budget-multi-currency.
-#   - Create budget overall=300 EUR with Groceries category limit=80 EUR.
-#   - Add a NEW 40 EUR expense (rate=1) on the EUR account categorized
-#     Groceries. CategorySpentLabel must show "40.00 / 80.00".
-#   - Delete that expense; CategorySpentLabel reverts to "0.00 / 80.00".
-
 - runFlow:
     file: setup/setup-multi-currency-budget.flow.yaml
 
@@ -30,13 +21,9 @@ env:
     visible: 'Create budget'
     timeout: 3000
 
-# --- Overall limit ---
-
 - tapOn:
     id: 'BudgetSetup.OverallLimitInput'
 - inputText: ${BUDGET_LIMIT}
-
-# --- Groceries category limit 80 ---
 
 - scrollUntilVisible:
     element:
@@ -70,15 +57,11 @@ env:
       id: 'BudgetWidget.Card'
     timeout: 3000
 
-# --- Pre-state: no Groceries spend yet, limit shows 0.00 / 80.00 ---
-
 - assertVisible:
     id: 'BudgetWidget.CategoryRow.11'
 - assertVisible:
     id: 'BudgetWidget.CategorySpentLabel.11'
     text: '0.00 / 80.00'
-
-# --- Add a 40 EUR expense on the EUR account categorized Groceries ---
 
 - runFlow:
     file: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -118,8 +101,6 @@ env:
       id: 'TransactionCard.Label.E2E_Budget_MC_Category_Txn'
     timeout: 5000
 
-# --- Per-category limit updates live with the EUR transaction ---
-
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
@@ -127,8 +108,6 @@ env:
       id: 'BudgetWidget.CategorySpentLabel.11'
       text: '40.00 / 80.00'
     timeout: 3000
-
-# --- Delete the new expense; per-category spend reverts ---
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 

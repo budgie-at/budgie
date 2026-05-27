@@ -4,8 +4,6 @@ appId: ${APP_ID}
 - runFlow:
     file: setup/setup-budget-test.flow.yaml
 
-# --- Create budget with Groceries category limit 200 ---
-
 - openLink: 'budgie://budget'
 - extendedWaitUntil:
     visible:
@@ -54,8 +52,6 @@ appId: ${APP_ID}
       id: 'BudgetWidget.CategoryRow.11'
     timeout: 3000
 
-# --- Remove the Groceries category limit (soft-delete) ---
-
 - tapOn:
     id: 'BudgetWidget.Card'
 - extendedWaitUntil:
@@ -92,9 +88,6 @@ appId: ${APP_ID}
 - assertNotVisible:
     id: 'BudgetWidget.CategoryRow.11'
 
-# --- Re-add the same Groceries category with a different amount (300) ---
-# Repros bug #426: partial unique index must allow re-add after soft delete.
-
 - tapOn:
     id: 'BudgetWidget.Card'
 - extendedWaitUntil:
@@ -127,8 +120,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'BudgetSetup.SaveButton'
-
-# Widget row re-appears for the same category id; no UNIQUE-constraint toast.
 
 - extendedWaitUntil:
     visible:

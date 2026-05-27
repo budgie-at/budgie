@@ -7,15 +7,11 @@ env:
 - runFlow:
     file: setup/setup-budget-test.flow.yaml
 
-# --- Empty state when no budget ---
-
 - openLink: 'budgie://budget'
 - extendedWaitUntil:
     visible:
       id: 'BudgetWidget.EmptyState'
     timeout: 3000
-
-# --- Create budget from empty state ---
 
 - tapOn:
     id: 'BudgetWidget.EmptyState'
@@ -39,8 +35,6 @@ env:
 - assertVisible:
     id: 'BudgetWidget.SpentLabel'
     text: '0.00 / 1000.00'
-
-# --- Add an expense, widget updates ---
 
 - runFlow:
     file: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -78,8 +72,6 @@ env:
       text: '42.00 / 1000.00'
     timeout: 3000
 
-# --- Edit overall limit ---
-
 - tapOn:
     id: 'BudgetWidget.Card'
 - extendedWaitUntil:
@@ -104,8 +96,6 @@ env:
       text: '42.00 / 1500.00'
     timeout: 3000
 
-# --- Cancel edit discards changes ---
-
 - tapOn:
     id: 'BudgetWidget.Card'
 - extendedWaitUntil:
@@ -127,8 +117,6 @@ env:
       id: 'BudgetWidget.SpentLabel'
       text: '42.00 / 1500.00'
     timeout: 3000
-
-# --- Add per-category limits via edit ---
 
 - tapOn:
     id: 'BudgetWidget.Card'
@@ -184,8 +172,6 @@ env:
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
-# --- Widget renders both category rows after save with the correct limits ---
-
 - extendedWaitUntil:
     visible:
       id: 'BudgetWidget.CategoryRow.42'
@@ -198,8 +184,6 @@ env:
 - assertVisible:
     id: 'BudgetWidget.CategorySpentLabel.11'
     text: '0.00 / 100.00'
-
-# --- Remove the second category limit; widget updates ---
 
 - tapOn:
     id: 'BudgetWidget.Card'
@@ -237,8 +221,6 @@ env:
 - assertNotVisible:
     id: 'BudgetWidget.CategoryRow.11'
 
-# --- Push toggle (Settings → Budget alerts): off by default, toggle on, toggle off ---
-
 - tapOn:
     id: 'TabBar.Settings'
 - extendedWaitUntil:
@@ -268,8 +250,6 @@ env:
     visible:
       id: 'SettingsPage.BudgetPushSwitch.State.Off'
     timeout: 3000
-
-# --- Widget toggle (Settings → Show budget on home): on → off hides widget, on shows it again ---
 
 - scrollUntilVisible:
     element:
@@ -324,8 +304,6 @@ env:
     visible:
       id: 'BudgetWidget.Card'
     timeout: 3000
-
-# --- Delete budget, cascade to category limits, revert to empty state ---
 
 - tapOn:
     id: 'BudgetWidget.Card'
