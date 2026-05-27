@@ -58,6 +58,7 @@ export const BudgetWidget = () => {
                             limitAmount={limit.limitAmount}
                             spent={spentByCategoryMap.get(limit.categoryId) ?? 0}
                             testID={BudgetSelector.WidgetCategoryRow(limit.categoryId)}
+                            spentTestID={BudgetSelector.WidgetCategorySpentLabel(limit.categoryId)}
                         />
                     ))}
                     {isPositiveNumber(hiddenCategoryCount) && (

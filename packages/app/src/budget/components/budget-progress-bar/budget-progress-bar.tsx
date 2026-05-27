@@ -41,7 +41,7 @@ export const BudgetProgressBar = ({ spent, limit, testID, spentTestID }: Props) 
     return (
         <View testID={testID} className="gap-y-md">
             <View className="flex-row items-center justify-between">
-                <Text className="text-primary font-semibold text-md" testID={spentTestID}>
+                <Text className="text-primary font-semibold text-md" testID={spentTestID} accessible accessibilityLabel={amountLabel}>
                     {amountLabel}
                 </Text>
 

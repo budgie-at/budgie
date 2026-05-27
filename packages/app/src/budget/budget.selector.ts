@@ -3,6 +3,7 @@ export const BudgetSelector = {
     WidgetCard: 'BudgetWidget.Card',
     WidgetSpentLabel: 'BudgetWidget.SpentLabel',
     WidgetCategoryRow: (categoryId: number) => `BudgetWidget.CategoryRow.${categoryId}` as const,
+    WidgetCategorySpentLabel: (categoryId: number) => `BudgetWidget.CategorySpentLabel.${categoryId}` as const,
     WidgetMoreCategoriesLabel: 'BudgetWidget.MoreCategoriesLabel',
     SetupOverallLimitInput: 'BudgetSetup.OverallLimitInput',
     SetupSpentLabel: 'BudgetSetup.SpentLabel',
