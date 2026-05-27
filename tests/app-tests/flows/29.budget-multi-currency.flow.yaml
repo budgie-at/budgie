@@ -40,14 +40,14 @@ appId: ${APP_ID}
     id: 'BudgetWidget.SpentLabel'
     text: '136.21 / 200.00'
 
-# --- Detail screen renders the same converted total ---
+# --- Edit form renders the same converted total via its progress bar ---
 
 - tapOn:
     id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible:
-      id: 'BudgetDetail.SpentLabel'
+      id: 'BudgetSetup.SpentLabel'
     timeout: 3000
 - assertVisible:
-    id: 'BudgetDetail.SpentLabel'
+    id: 'BudgetSetup.SpentLabel'
     text: '136.21 / 200.00'

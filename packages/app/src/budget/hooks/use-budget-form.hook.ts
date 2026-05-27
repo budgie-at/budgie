@@ -7,6 +7,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
@@ -23,6 +24,7 @@ interface UseBudgetFormOptionsInterface {
     readonly editingId: number | null;
 }
 
+// eslint-disable-next-line max-lines-per-function -- Form orchestration hook owns defaults, reset effect, delete confirmation, and submit lifecycle
 export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
     const { t } = useLingui();
     const isEditing = isPositiveNumber(editingId);
@@ -67,6 +69,28 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
         }
     }, [isEditing, budget, categoryLimits, isCategoryLimitsLoading, isWidgetEnabledSetting, form]);
 
+    const handleDelete = async () => {
+        if (!isDefined(budget)) {
+            return;
+        }
+        const confirmed = await confirmAlert({
+            title: t`Delete budget?`,
+            message: t`This will remove your monthly budget. You can create a new one anytime.`,
+            confirmText: t`Delete`,
+            cancelText: t`Cancel`,
+            isDestructive: true
+        });
+        if (!confirmed) {
+            return;
+        }
+        try {
+            await budgetService.deleteBudget(budget.id);
+            goBackOrReplace('/');
+        } catch (error: unknown) {
+            Toast.show({ type: 'error', text1: t`Could not delete budget`, text2: getErrorMessage(error) });
+        }
+    };
+
     const handleSubmit = form.handleSubmit(async values => {
         try {
             const payload = {
@@ -101,7 +125,9 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
     return {
         form,
         handleSubmit,
+        handleDelete,
         isEditing,
+        budget,
         isLoading: isEditing && (isLoading || isCategoryLimitsLoading)
     };
 };
