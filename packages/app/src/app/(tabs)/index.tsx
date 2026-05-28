@@ -23,6 +23,7 @@ import { isBankProviderSection } from '../../account/type-guard/is-bank-provider
 import { isDebtSection } from '../../account/type-guard/is-debt-section.type-guard';
 import { HomeSectionInterface, buildHomePageSections } from '../../account/utils/build-home-page-sections.util';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 
 const getSectionAccountType = (section: HomeSectionInterface): AccountTypeEnum => {
     if (isBankProviderSection(section)) {
@@ -36,15 +37,11 @@ const getSectionAccountType = (section: HomeSectionInterface): AccountTypeEnum =
     return section.type;
 };
 
-const listHeaderComponent = (
-    <View className="mb-3xl">
-        <BudgetWidget />
-    </View>
-);
-
+// eslint-disable-next-line max-statements -- Screen orchestration component with 6 hooks and multiple render helpers
 export default function HomePage() {
     const { accounts } = useAccountsWithBankSyncQuery();
     const { bottom } = useSafeAreaInsets();
+    const language = useSetting('language');
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
@@ -61,6 +58,12 @@ export default function HomePage() {
         activeAccounts.length > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
             <CollapsibleNetWorthHeaderScrollSpacer />
         ) : null;
+    // Remount the widget on language change: the frozen Home tab plus the memoized list header otherwise keep stale category translations.
+    const listHeaderComponent = (
+        <View className="mb-3xl">
+            <BudgetWidget key={language} />
+        </View>
+    );
 
     const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => {
         if (isBankProviderSection(section)) {
