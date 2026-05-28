@@ -37,6 +37,7 @@ executionOrder:
         - 31.budget-over-allocation.flow
         - 32.budget-transaction-update.flow
         - 33.budget-multi-currency-category.flow
+        - 34.budget-refund-netting.flow
 
 platform:
     ios:
