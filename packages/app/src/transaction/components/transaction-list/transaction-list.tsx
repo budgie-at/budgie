@@ -1,14 +1,16 @@
 import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
 import { AnalyticsTransactionsModeEnum } from '../../enum/analytics-transactions-mode.enum';
+import { useGetTransactionCountQuery } from '../../query/use-get-transaction-count.query';
 import { useGetTransactionsQuery } from '../../query/use-get-transactions.query';
 import { useGetUncategorizedTransactionCountQuery } from '../../query/use-get-uncategorized-transaction-count.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
@@ -56,6 +58,7 @@ const buildUncategorizedRouteParams = (activeFilters: TransactionFilterInterface
     };
 };
 
+// eslint-disable-next-line max-statements -- List orchestration component with multiple query hooks and handlers
 export const TransactionList = ({ accountId = null, filters: externalFilters, showFilters = true, footerSpacerMultiplier }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
@@ -64,6 +67,7 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
     const hasFiltersSelected = checkIfFiltersSelected(accountId, activeFilters);
     const { sections, loadMore, isLoading } = useGetTransactionsQuery(activeFilters);
     const { count: uncategorizedTransactionCount } = useGetUncategorizedTransactionCountQuery(activeFilters);
+    const { count: transactionCount } = useGetTransactionCountQuery(activeFilters);
 
     const balanceAdjustmentLabel = t`Balance Adjustment`;
     const categoriesLabel = t`Categories`;
@@ -73,8 +77,10 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
               title: t`No transactions yet`,
               description: t`Start tracking your spending by using the mic button or adding transactions manually`
           };
-    const hasCategoryFilter = isDefined(activeFilters.categoryIds);
-    const canShowUncategorizedPill = !hasCategoryFilter && isPositiveNumber(uncategorizedTransactionCount);
+    const canShowUncategorizedPill = !isDefined(activeFilters.categoryIds) && isPositiveNumber(uncategorizedTransactionCount);
+    const canShowTransactionCount = isPositiveNumber(transactionCount);
+    const canShowListMeta = canShowUncategorizedPill || canShowTransactionCount;
+    const transactionCountText = t({ message: plural(transactionCount, { one: '# transaction', other: '# transactions' }) });
 
     const handleUncategorizedPress = () => {
         router.push({
@@ -109,9 +115,16 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
                 />
             )}
 
-            {canShowUncategorizedPill ? (
-                <View className="pt-2 pb-1">
-                    <UncategorizedTransactionsPill count={uncategorizedTransactionCount} onPress={handleUncategorizedPress} />
+            {canShowListMeta ? (
+                <View className="pt-2 pb-1 flex-row items-center gap-x-md">
+                    {canShowUncategorizedPill ? (
+                        <UncategorizedTransactionsPill count={uncategorizedTransactionCount} onPress={handleUncategorizedPress} />
+                    ) : null}
+                    {canShowTransactionCount ? (
+                        <Text className="ml-auto text-sm text-secondary-foreground" numberOfLines={1}>
+                            {transactionCountText}
+                        </Text>
+                    ) : null}
                 </View>
             ) : null}
 
