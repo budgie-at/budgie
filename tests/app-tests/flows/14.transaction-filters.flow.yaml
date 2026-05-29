@@ -317,3 +317,36 @@ appId: ${APP_ID}
       id: 'TransactionAnalyticsCard.Amount.Spent.30'
 - assertVisible:
       id: 'CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.30000000'
+
+# --- Transaction counter on the account detail screen ---
+
+- tapOn:
+      id: 'TabBar.Home'
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Filter Cash A'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Filter_Expense'
+      timeout: 5000
+
+# Counter on the account screen reflects only this account's transactions
+# (original expense + transfer + the expense created earlier in this flow)
+- assertVisible: '3 transactions'
+
+- tapOn:
+      id: 'TransactionFilters.TypeChip'
+- tapOn:
+      id: 'TransactionFilters.TypeOption.EXPENSE'
+- tapOn:
+      id: 'TransactionFilters.TypeApplyButton'
+
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Transfer'
+
+# Counter on the account screen also respects an applied filter
+- assertVisible: '2 transactions'
