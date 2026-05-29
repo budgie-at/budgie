@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.27.0](https://github.com/budgie-at/budgie/compare/v5.26.0...v5.27.0) (2026-05-29)
+
+### Features
+
+- **app:** show total transaction count on transactions and account screens ([#500](https://github.com/budgie-at/budgie/issues/500)) ([443d47b](https://github.com/budgie-at/budgie/commit/443d47b3c7ddb6f1bdaa050d98df5d59f9ff60d4))
+
 ## [5.24.1](https://github.com/budgie-at/budgie/compare/v5.24.0...v5.24.1) (2026-05-25)
 
 ### Bug Fixes
