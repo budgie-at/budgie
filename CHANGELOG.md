@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.26.0](https://github.com/budgie-at/budgie/compare/v5.25.0...v5.26.0) (2026-05-29)
+
+### Features
+
+- **app:** add select all toggle to bank account import selection ([#498](https://github.com/budgie-at/budgie/issues/498)) ([b0566ec](https://github.com/budgie-at/budgie/commit/b0566ecb94220a56d50a16719d818c32442a7051))
+
 # [5.25.0](https://github.com/budgie-at/budgie/compare/v5.24.1...v5.25.0) (2026-05-25)
 
 ### Features
