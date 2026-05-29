@@ -454,7 +454,7 @@ msgstr "Budgie"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:42
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:67
 #: src/transaction/hook/use-delete-transaction.hook.ts:27
 #: src/transaction/hook/use-revert-consolidation.hook.ts:19
@@ -577,7 +577,7 @@ msgstr "Confirm Split"
 msgid "Confirm tag selection"
 msgstr "Confirm tag selection"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:88
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:82
 msgid "Connect Monobank"
 msgstr "Connect Monobank"
 
@@ -611,11 +611,12 @@ msgid "Conversion failed"
 msgstr "Conversion failed"
 
 #: src/app/convert-to-transfer.tsx:76
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:24
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:38
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts:29
 msgid "Convert"
 msgstr "Convert"
 
+#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:27
 msgid "Convert to Refund"
 msgstr "Convert to Refund"
@@ -626,7 +627,7 @@ msgstr "Convert to Refund?"
 
 #: src/app/convert-to-transfer.tsx:121
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:19
+#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:34
 msgid "Convert to Transfer"
 msgstr "Convert to Transfer"
@@ -705,7 +706,7 @@ msgstr "Could not export CSV"
 msgid "Could not export database"
 msgstr "Could not export database"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:53
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:51
 msgid "Could not fetch accounts"
 msgstr "Could not fetch accounts"
 
@@ -713,7 +714,7 @@ msgstr "Could not fetch accounts"
 msgid "Could not import CSV file"
 msgstr "Could not import CSV file"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:55
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:56
 msgid "Could not load sources. Please try again."
 msgstr "Could not load sources. Please try again."
 
@@ -770,7 +771,7 @@ msgstr "Could not select CSV file"
 msgid "Could not select database backup"
 msgstr "Could not select database backup"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:69
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:63
 msgid "Could not set up sync"
 msgstr "Could not set up sync"
 
@@ -955,16 +956,21 @@ msgid "Delete rule"
 msgstr "Delete rule"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 msgid "Delete Transaction"
 msgstr "Delete Transaction"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+msgid "Deselect all"
+msgstr "Deselect all"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:95
 msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
 #: src/app/import-column-mapper.tsx:97
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:101
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 msgid "Done"
 msgstr "Done"
 
@@ -1028,7 +1034,7 @@ msgstr "Edit Rule"
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:115
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:131
 msgid "Edit Transaction"
 msgstr "Edit Transaction"
 
@@ -1213,7 +1219,7 @@ msgstr "Failed to save PIN. Please try again."
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Fast-indexing {done} of {total} • tap to pause"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:78
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:72
 msgid "Fetch Accounts"
 msgstr "Fetch Accounts"
 
@@ -1317,7 +1323,7 @@ msgstr "Import Database"
 msgid "Import Erste Bank"
 msgstr "Import Erste Bank"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:81
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:75
 msgid "Import failed"
 msgstr "Import failed"
 
@@ -1378,7 +1384,7 @@ msgstr "Incorrect PIN"
 msgid "Indexing {done} of {total}"
 msgstr "Indexing {done} of {total}"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:61
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:59
 msgid "Invalid file"
 msgstr "Invalid file"
 
@@ -1664,7 +1670,7 @@ msgstr "No items to save"
 msgid "No languages found"
 msgstr "No languages found"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:61
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:55
 msgid "No matching expenses"
 msgstr "No matching expenses"
 
@@ -1853,7 +1859,7 @@ msgstr "PIN must be {PIN_LENGTH} digits"
 msgid "PINs do not match"
 msgstr "PINs do not match"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:40
 msgid "Please enter your Monobank API token"
 msgstr "Please enter your Monobank API token"
 
@@ -2015,10 +2021,10 @@ msgstr "Restore from a backup file"
 msgid "Resuming AI…"
 msgstr "Resuming AI…"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:34
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:101
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:28
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 #: src/transaction/hook/use-revert-consolidation.hook.ts:18
 msgid "Revert"
 msgstr "Revert"
@@ -2096,7 +2102,7 @@ msgstr "Search contacts..."
 msgid "Search currencies..."
 msgstr "Search currencies..."
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:30
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:29
 msgid "Search expenses refunded by this income"
 msgstr "Search expenses refunded by this income"
 
@@ -2171,13 +2177,17 @@ msgstr "Select account"
 msgid "Select Account"
 msgstr "Select Account"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:16
+#: src/sync/component/account-selection-step/account-selection-step.tsx:29
 msgid "Select accounts to sync:"
 msgstr "Select accounts to sync:"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:73
 msgid "Select Action Type"
 msgstr "Select Action Type"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+msgid "Select all"
+msgstr "Select all"
 
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:38
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:131
@@ -2205,7 +2215,7 @@ msgstr "Select External Source"
 msgid "Select Field"
 msgstr "Select Field"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:90
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:84
 msgid "Select File"
 msgstr "Select File"
 
@@ -2318,7 +2328,7 @@ msgstr "Something went wrong. Please try again later."
 msgid "Source"
 msgstr "Source"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:51
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:52
 msgid "Source transactions"
 msgstr "Source transactions"
 
@@ -2354,8 +2364,8 @@ msgstr "Split"
 msgid "Start Import"
 msgstr "Start Import"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:92
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:80
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:86
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:74
 msgid "Start Sync"
 msgstr "Start Sync"
 
@@ -2396,7 +2406,7 @@ msgstr "Switch between light and dark themes"
 msgid "Sync Failed"
 msgstr "Sync Failed"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:89
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:83
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Sync your Monobank accounts and transactions"
 
@@ -2537,7 +2547,7 @@ msgstr "To Currency"
 msgid "Today"
 msgstr "Today"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:40
 msgid "Token required"
 msgstr "Token required"
 
@@ -2615,7 +2625,7 @@ msgstr "Translation"
 msgid "Translations ready"
 msgstr "Translations ready"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:62
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:56
 msgid "Try a different merchant, amount, or date."
 msgstr "Try a different merchant, amount, or date."
 
