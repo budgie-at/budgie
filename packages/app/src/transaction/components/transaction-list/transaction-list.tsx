@@ -121,7 +121,7 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
                         <UncategorizedTransactionsPill count={uncategorizedTransactionCount} onPress={handleUncategorizedPress} />
                     ) : null}
                     {canShowTransactionCount ? (
-                        <Text className="ml-auto text-sm text-secondary" numberOfLines={1}>
+                        <Text className="ml-auto text-sm text-secondary-foreground" numberOfLines={1}>
                             {transactionCountText}
                         </Text>
                     ) : null}
