@@ -398,6 +398,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .where(this.buildUncategorizedWhere(filters, types));
     }
 
+    countAll(filters: TransactionFilterInterface) {
+        return this.db.select({ value: count() }).from(TransactionEntityTable).where(this.buildWhere(filters));
+    }
+
     getUncategorized(limit: number, filters: TransactionFilterInterface, language: LanguageEnum) {
         const types = this.getUncategorizedTransactionTypes(filters.types);
 
@@ -689,7 +693,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : [])
         ].filter(isDefined);
 
-        return isNotEmptyArray(conditions) ? and(...conditions) : null;
+        return and(...conditions);
     }
 
     private buildUncategorizedWhere({ tagIds, accountIds, date }: TransactionFilterInterface, types: TransactionTypeEnum[]) {
