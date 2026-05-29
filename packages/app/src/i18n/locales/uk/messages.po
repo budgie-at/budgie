@@ -118,6 +118,10 @@ msgstr "Не вдалося виконати {source}: {message}"
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# елемент} few {# елементи} many {# елементів} other {# елемента}}"
 
+#: src/transaction/components/transaction-list/transaction-list.tsx:83
+msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
+msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
+
 #: src/rule/constant/rule-condition-operator.constant.ts:12
 msgid "<"
 msgstr "<"
@@ -381,7 +385,7 @@ msgid "Balance"
 msgstr "Баланс"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:38
-#: src/transaction/components/transaction-list/transaction-list.tsx:68
+#: src/transaction/components/transaction-list/transaction-list.tsx:72
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
@@ -452,7 +456,7 @@ msgstr "Budgie"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:42
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:67
 #: src/transaction/hook/use-delete-transaction.hook.ts:27
 #: src/transaction/hook/use-revert-consolidation.hook.ts:19
@@ -468,7 +472,7 @@ msgstr "Готівка"
 #: src/app/(tabs)/settings/categories.tsx:92
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:39
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:69
+#: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "Categories"
 msgstr "Категорії"
 
@@ -609,11 +613,12 @@ msgid "Conversion failed"
 msgstr "Помилка конвертації"
 
 #: src/app/convert-to-transfer.tsx:76
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:24
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:38
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts:29
 msgid "Convert"
 msgstr "Конвертувати"
 
+#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:27
 msgid "Convert to Refund"
 msgstr "Перетворити на повернення"
@@ -624,7 +629,7 @@ msgstr "Перетворити на повернення?"
 
 #: src/app/convert-to-transfer.tsx:121
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:19
+#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:34
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
@@ -711,7 +716,7 @@ msgstr "Не вдалося отримати рахунки"
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:55
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:56
 msgid "Could not load sources. Please try again."
 msgstr "Не вдалося завантажити джерела. Спробуйте ще раз."
 
@@ -953,7 +958,7 @@ msgid "Delete rule"
 msgstr "Видалити правило"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
 
@@ -962,7 +967,8 @@ msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
 #: src/app/import-column-mapper.tsx:97
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:101
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 msgid "Done"
 msgstr "Готово"
 
@@ -1026,7 +1032,7 @@ msgstr "Редагувати правило"
 msgid "Edit Tag"
 msgstr "Редагувати тег"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:115
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:131
 msgid "Edit Transaction"
 msgstr "Редагувати транзакцію"
 
@@ -1662,12 +1668,12 @@ msgstr "Немає елементів для збереження"
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:61
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:55
 msgid "No matching expenses"
 msgstr "Немає відповідних витрат"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
-#: src/transaction/components/transaction-list/transaction-list.tsx:71
+#: src/transaction/components/transaction-list/transaction-list.tsx:75
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
@@ -1721,7 +1727,7 @@ msgstr "Ще немає тегів"
 msgid "No title"
 msgstr "Без назви"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:73
+#: src/transaction/components/transaction-list/transaction-list.tsx:77
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
@@ -2013,10 +2019,10 @@ msgstr "Відновити з файлу резервної копії"
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:34
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:101
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:28
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 #: src/transaction/hook/use-revert-consolidation.hook.ts:18
 msgid "Revert"
 msgstr "Відновити"
@@ -2094,7 +2100,7 @@ msgstr "Шукати контакти..."
 msgid "Search currencies..."
 msgstr "Пошук валют..."
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:30
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:29
 msgid "Search expenses refunded by this income"
 msgstr "Пошук витрат для цього повернення"
 
@@ -2316,7 +2322,7 @@ msgstr "Щось пішло не так. Будь ласка, спробуйте
 msgid "Source"
 msgstr "Джерело"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:51
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:52
 msgid "Source transactions"
 msgstr "Вихідні транзакції"
 
@@ -2357,7 +2363,7 @@ msgstr "Почати імпорт"
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:74
+#: src/transaction/components/transaction-list/transaction-list.tsx:78
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
@@ -2613,7 +2619,7 @@ msgstr "Переклад"
 msgid "Translations ready"
 msgstr "Переклади готові"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:62
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:56
 msgid "Try a different merchant, amount, or date."
 msgstr "Спробуйте іншого продавця, суму або дату."
 
@@ -2632,7 +2638,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:27
-#: src/transaction/components/transaction-list/transaction-list.tsx:71
+#: src/transaction/components/transaction-list/transaction-list.tsx:75
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 

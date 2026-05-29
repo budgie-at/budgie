@@ -118,6 +118,10 @@ msgstr "{source} fehlgeschlagen: {message}"
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# Element} other {# Elemente}}"
 
+#: src/transaction/components/transaction-list/transaction-list.tsx:83
+msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
+msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
+
 #: src/rule/constant/rule-condition-operator.constant.ts:12
 msgid "<"
 msgstr "<"
@@ -381,7 +385,7 @@ msgid "Balance"
 msgstr "Saldo"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:38
-#: src/transaction/components/transaction-list/transaction-list.tsx:68
+#: src/transaction/components/transaction-list/transaction-list.tsx:72
 msgid "Balance Adjustment"
 msgstr "Saldoanpassung"
 
@@ -452,7 +456,7 @@ msgstr "Budgie"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:42
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:67
 #: src/transaction/hook/use-delete-transaction.hook.ts:27
 #: src/transaction/hook/use-revert-consolidation.hook.ts:19
@@ -468,7 +472,7 @@ msgstr "Bargeld"
 #: src/app/(tabs)/settings/categories.tsx:92
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:39
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:69
+#: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "Categories"
 msgstr "Kategorien"
 
@@ -609,11 +613,12 @@ msgid "Conversion failed"
 msgstr "Konvertierung fehlgeschlagen"
 
 #: src/app/convert-to-transfer.tsx:76
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:24
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:38
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts:29
 msgid "Convert"
 msgstr "Umwandeln"
 
+#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:27
 msgid "Convert to Refund"
 msgstr "In Rückerstattung umwandeln"
@@ -624,7 +629,7 @@ msgstr "In Rückerstattung umwandeln?"
 
 #: src/app/convert-to-transfer.tsx:121
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:19
+#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:34
 msgid "Convert to Transfer"
 msgstr "In Überweisung umwandeln"
@@ -711,7 +716,7 @@ msgstr "Konten konnten nicht abgerufen werden"
 msgid "Could not import CSV file"
 msgstr "CSV-Datei konnte nicht importiert werden"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:55
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:56
 msgid "Could not load sources. Please try again."
 msgstr "Quellen konnten nicht geladen werden. Bitte erneut versuchen."
 
@@ -953,7 +958,7 @@ msgid "Delete rule"
 msgstr "Regel löschen"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
@@ -962,7 +967,8 @@ msgid "Disable App Lock"
 msgstr "App-Sperre deaktivieren"
 
 #: src/app/import-column-mapper.tsx:97
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:101
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 msgid "Done"
 msgstr "Fertig"
 
@@ -1026,7 +1032,7 @@ msgstr "Regel bearbeiten"
 msgid "Edit Tag"
 msgstr "Tag bearbeiten"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:115
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:131
 msgid "Edit Transaction"
 msgstr "Transaktion bearbeiten"
 
@@ -1662,12 +1668,12 @@ msgstr "Keine Einträge zum Speichern"
 msgid "No languages found"
 msgstr "Keine Sprachen gefunden"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:61
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:55
 msgid "No matching expenses"
 msgstr "Keine passenden Ausgaben"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
-#: src/transaction/components/transaction-list/transaction-list.tsx:71
+#: src/transaction/components/transaction-list/transaction-list.tsx:75
 msgid "No matching transactions"
 msgstr "Keine passenden Transaktionen"
 
@@ -1721,7 +1727,7 @@ msgstr "Noch keine Tags"
 msgid "No title"
 msgstr "Kein Titel"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:73
+#: src/transaction/components/transaction-list/transaction-list.tsx:77
 msgid "No transactions yet"
 msgstr "Noch keine Transaktionen"
 
@@ -2013,10 +2019,10 @@ msgstr "Aus einer Sicherungsdatei wiederherstellen"
 msgid "Resuming AI…"
 msgstr "KI wird fortgesetzt…"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:34
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:101
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:28
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 #: src/transaction/hook/use-revert-consolidation.hook.ts:18
 msgid "Revert"
 msgstr "Rückgängig machen"
@@ -2094,7 +2100,7 @@ msgstr "Kontakte suchen..."
 msgid "Search currencies..."
 msgstr "Währungen durchsuchen..."
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:30
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:29
 msgid "Search expenses refunded by this income"
 msgstr "Ausgaben suchen, die diese Einnahme erstattet"
 
@@ -2316,7 +2322,7 @@ msgstr "Etwas ist schief gelaufen. Bitte versuchen Sie es später erneut."
 msgid "Source"
 msgstr "Quelle"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:51
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:52
 msgid "Source transactions"
 msgstr "Quelltransaktionen"
 
@@ -2357,7 +2363,7 @@ msgstr "Import starten"
 msgid "Start Sync"
 msgstr "Synchronisation starten"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:74
+#: src/transaction/components/transaction-list/transaction-list.tsx:78
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofontaste verwenden oder Transaktionen manuell hinzufügen"
 
@@ -2613,7 +2619,7 @@ msgstr "Übersetzung"
 msgid "Translations ready"
 msgstr "Übersetzungen bereit"
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:62
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:56
 msgid "Try a different merchant, amount, or date."
 msgstr "Versuche einen anderen Händler, Betrag oder ein anderes Datum."
 
@@ -2632,7 +2638,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:27
-#: src/transaction/components/transaction-list/transaction-list.tsx:71
+#: src/transaction/components/transaction-list/transaction-list.tsx:75
 msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
