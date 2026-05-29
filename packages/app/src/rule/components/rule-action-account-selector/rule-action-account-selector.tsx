@@ -56,10 +56,7 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
 
     const hasExpenseCondition = hasTransactionTypeCondition(conditions, TransactionTypeEnum.EXPENSE);
     const hasIncomeCondition = hasTransactionTypeCondition(conditions, TransactionTypeEnum.INCOME);
-    const { label: labelDescriptor, hint: hintDescriptor } = resolveTransferCopy(hasExpenseCondition, hasIncomeCondition);
-
-    const label = t(labelDescriptor);
-    const hint = t(hintDescriptor);
+    const { label, hint } = resolveTransferCopy(hasExpenseCondition, hasIncomeCondition);
 
     const renderSelector = ({ field: { onChange } }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.accountId`>) => {
         const handleOpen = async () => {
@@ -71,7 +68,13 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
         };
 
         return (
-            <RuleSelectorField label={label} value={account?.title ?? t`Select Account`} hint={hint} onPress={handleOpen} testID={testID} />
+            <RuleSelectorField
+                label={t(label)}
+                value={account?.title ?? t`Select Account`}
+                hint={t(hint)}
+                onPress={handleOpen}
+                testID={testID}
+            />
         );
     };
 
