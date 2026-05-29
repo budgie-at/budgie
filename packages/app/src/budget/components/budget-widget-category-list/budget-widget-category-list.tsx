@@ -9,7 +9,7 @@ import { BudgetCategoryLimitRow } from '../budget-category-limit-row/budget-cate
 import type { BudgetCategorySpentInterface } from '../../interface/budget-category-spent.interface';
 import type { BudgetCategoryLimitEntityInterface } from '@budgie/contracts';
 
-const WIDGET_CATEGORY_LIMITS_MAX = 6;
+const WIDGET_CATEGORY_LIMITS_MAX = 3;
 
 interface Props {
     readonly categoryLimits: readonly BudgetCategoryLimitEntityInterface[];
