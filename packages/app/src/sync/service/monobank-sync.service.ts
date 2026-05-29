@@ -22,6 +22,7 @@ import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util'
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
+import { resolveBankFeeCategoryId } from '../util/resolve-bank-fee-category-id.util';
 
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
@@ -34,6 +35,7 @@ class AppMonobankSyncService {
     private readonly provider = ExternalSourceEnum.MONOBANK;
     private isRunning = false;
     private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
+    private bankFeeCategoryId: number | null = null;
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
@@ -43,6 +45,7 @@ class AppMonobankSyncService {
         this.isRunning = true;
         try {
             await this.loadMccCategories();
+            this.bankFeeCategoryId = await resolveBankFeeCategoryId();
 
             return await this.executeSyncLoop();
         } finally {
@@ -302,7 +305,7 @@ class AppMonobankSyncService {
         const inputs = newTransactions.map(bankTransaction => {
             const lookup = this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null;
 
-            return mapBankTransactionToCreateInput(bankTransaction, accountId, lookup, this.provider);
+            return mapBankTransactionToCreateInput(bankTransaction, accountId, lookup, this.provider, this.bankFeeCategoryId);
         });
         const prepared = await ruleEngineService.prepareCreateInputsForRules(inputs);
         const createdTransactions = await transactionService.bulkCreate(prepared.transactionInputs);
@@ -325,7 +328,9 @@ class AppMonobankSyncService {
         }
 
         for (const bankTransaction of existingTransactions) {
-            await transactionService.update(mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider));
+            await transactionService.update(
+                mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider, this.bankFeeCategoryId)
+            );
             await microPause();
         }
 

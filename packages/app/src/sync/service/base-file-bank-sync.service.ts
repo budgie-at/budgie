@@ -19,6 +19,7 @@ import { BankAccountPreviewInterface } from '../interface/bank-account-preview.i
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
+import { resolveBankFeeCategoryId } from '../util/resolve-bank-fee-category-id.util';
 
 import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
 import type { ImportContextInterface } from '../interface/import-context.interface';
@@ -111,7 +112,7 @@ export abstract class BaseFileBankSyncService {
         const transactionInputs = transactions.map(transaction => {
             const lookup = context.mccCategoryLookupMap.get(transaction.category ?? '') ?? null;
 
-            return mapBankTransactionToCreateInput(transaction, account.id, lookup, this.provider);
+            return mapBankTransactionToCreateInput(transaction, account.id, lookup, this.provider, context.bankFeeCategoryId);
         });
 
         const upsertedTransactions = await transactionImportService.bulkUpsertImported(
@@ -133,13 +134,14 @@ export abstract class BaseFileBankSyncService {
             `throw bankAccountIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
     )
     private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
-        const [mccCategoryLookupMap, existingTransactionIdMap] = await Promise.all([
+        const [mccCategoryLookupMap, existingTransactionIdMap, bankFeeCategoryId] = await Promise.all([
             this.resolveMccCategoryIdMap(client, bankAccounts),
-            transactionService.findIdMapByExternalSource(this.provider)
+            transactionService.findIdMapByExternalSource(this.provider),
+            resolveBankFeeCategoryId()
         ]);
 
         await transactionAsync(db, async tx => {
-            const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap, tx };
+            const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap, bankFeeCategoryId, tx };
 
             for (const bankAccount of bankAccounts) {
                 await this.importAccountTransactions(client, bankAccount, context);
