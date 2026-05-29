@@ -8,6 +8,7 @@ import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCurrencySelectorModal } from '../../context/currency-selector-modal.context';
+import { formatExchangeRate } from '../../utils/format-exchange-rate.util';
 import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
 import { Icon } from '../icon/icon';
 
@@ -32,7 +33,7 @@ export const CurrencySelector = ({ instrumentId, onChange, testID }: Props) => {
     const { code: selectedCurrencyCode, name, symbol } = selectedCurrency;
     const { code: defaultInstrumentCode } = defaultInstrument;
 
-    const convertedAmount = isDefined(rate) ? rate.rate : 1;
+    const convertedAmount = isDefined(rate) ? formatExchangeRate(rate.rate) : '1';
     const isBaseCurrency = !isDefined(rate);
 
     const handleOpen = async () => {
