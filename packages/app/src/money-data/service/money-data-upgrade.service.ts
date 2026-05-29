@@ -1,4 +1,5 @@
 import { transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -15,6 +16,12 @@ import type { DB, PendingBaseValuationBucketInterface } from '@budgie/contracts'
 class MoneyDataUpgradeService {
     private snapshot: MoneyDataUpgradeRuntimeSnapshotInterface = this.createInitialSnapshot();
 
+    @Log(
+        'enter',
+        result =>
+            `done isRunning=${String(result.isRunning)} pendingEntryCount=${result.pendingEntryCount} lastError=${result.lastError ?? ''}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
     async getSnapshot(): Promise<MoneyDataUpgradeRuntimeSnapshotInterface> {
         if (this.snapshot.isRunning) {
             return this.snapshot;
@@ -37,6 +44,12 @@ class MoneyDataUpgradeService {
         };
     }
 
+    @Log(
+        onProgress => `enter hasOnProgress=${String(isDefined(onProgress))}`,
+        (result, onProgress) =>
+            `done processedEntryCount=${result.processedEntryCount} totalEntryCount=${result.totalEntryCount} hasOnProgress=${String(isDefined(onProgress))}`,
+        (error, onProgress) => `throw hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
+    )
     async run(
         onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
     ): Promise<MoneyDataUpgradeRuntimeSnapshotInterface> {
@@ -48,28 +61,16 @@ class MoneyDataUpgradeService {
 
         try {
             await this.valuePendingEntries(onProgress);
-            this.publishSnapshot(
-                {
-                    ...this.snapshot,
-                    isRunning: false,
-                    isUpdatingBalances: false
-                },
-                onProgress
-            );
+            this.publishSnapshot({ ...this.snapshot, isRunning: false, isUpdatingBalances: false }, onProgress);
 
             return this.snapshot;
         } catch (error) {
             this.publishSnapshot(
-                {
-                    ...this.snapshot,
-                    isRunning: false,
-                    isUpdatingBalances: false,
-                    lastError: getErrorMessage(error)
-                },
+                { ...this.snapshot, isRunning: false, isUpdatingBalances: false, lastError: getErrorMessage(error) },
                 onProgress
             );
 
-            return this.snapshot;
+            throw error;
         }
     }
 

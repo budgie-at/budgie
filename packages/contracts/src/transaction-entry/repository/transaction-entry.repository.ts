@@ -121,14 +121,7 @@ export class TransactionEntryRepository {
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .leftJoin(originalTransaction, eq(originalTransaction.id, TransactionEntryEntityTable.originalTransactionId))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(
-                and(
-                    this.buildPendingBaseValuationWhere(baseInstrumentId),
-                    isNull(TransactionEntryEntityTable.deletedAt),
-                    isNull(TransactionEntityTable.deletedAt),
-                    isNull(AccountEntityTable.deletedAt)
-                )
-            )
+            .where(this.buildPendingBaseValuationWhere(baseInstrumentId))
             .groupBy(rateDateSql, AccountEntityTable.instrumentId);
     }
 
@@ -138,14 +131,7 @@ export class TransactionEntryRepository {
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(
-                and(
-                    this.buildPendingBaseValuationWhere(baseInstrumentId),
-                    isNull(TransactionEntryEntityTable.deletedAt),
-                    isNull(TransactionEntityTable.deletedAt),
-                    isNull(AccountEntityTable.deletedAt)
-                )
-            );
+            .where(this.buildPendingBaseValuationWhere(baseInstrumentId));
 
         return row.count;
     }
@@ -281,11 +267,16 @@ export class TransactionEntryRepository {
     }
 
     private buildPendingBaseValuationWhere(baseInstrumentId: number) {
-        return or(
-            isNull(TransactionEntryEntityTable.baseAmount),
-            isNull(TransactionEntryEntityTable.baseExchangeRate),
-            isNull(TransactionEntryEntityTable.baseInstrumentId),
-            sql`${TransactionEntryEntityTable.baseInstrumentId} != ${baseInstrumentId}`
+        return and(
+            or(
+                isNull(TransactionEntryEntityTable.baseAmount),
+                isNull(TransactionEntryEntityTable.baseExchangeRate),
+                isNull(TransactionEntryEntityTable.baseInstrumentId),
+                sql`${TransactionEntryEntityTable.baseInstrumentId} != ${baseInstrumentId}`
+            ),
+            isNull(TransactionEntryEntityTable.deletedAt),
+            isNull(TransactionEntityTable.deletedAt),
+            isNull(AccountEntityTable.deletedAt)
         );
     }
 }
