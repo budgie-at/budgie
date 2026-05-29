@@ -1,5 +1,11 @@
 import { BankTransactionTypeEnum } from '@budgie/bank-sync';
-import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    BANK_FEE_CATEGORY_ID,
+    CategorySourceEnum,
+    ExternalSourceEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
