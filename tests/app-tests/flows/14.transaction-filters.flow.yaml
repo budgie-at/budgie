@@ -14,6 +14,9 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
+# Total transaction counter reflects all visible transactions when no filter is applied
+- assertVisible: '4 transactions'
+
 - tapOn:
       id: 'TransactionFilters.TypeChip'
 - tapOn:
@@ -27,6 +30,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Income'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
+
+# Counter is filter-aware and uses the singular form for a single match
+- assertVisible: '1 transaction'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -109,6 +115,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Income'
+
+# Counter respects the account filter (matches the per-account total shown on the account screen)
+- assertVisible: '2 transactions'
 
 - tapOn:
       id: 'TransactionFilters.ClearAllButton'
