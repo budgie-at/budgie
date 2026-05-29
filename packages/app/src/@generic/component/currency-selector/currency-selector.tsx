@@ -32,7 +32,7 @@ export const CurrencySelector = ({ instrumentId, onChange, testID }: Props) => {
     const { code: selectedCurrencyCode, name, symbol } = selectedCurrency;
     const { code: defaultInstrumentCode } = defaultInstrument;
 
-    const convertedAmount = isDefined(rate) ? rate.rate : 1;
+    const convertedAmount = isDefined(rate) ? Number(rate.rate.toFixed(6)) : 1;
     const isBaseCurrency = !isDefined(rate);
 
     const handleOpen = async () => {
