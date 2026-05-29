@@ -24,8 +24,32 @@ env:
           id: 'SyncAccountSelection.Row.Privatbank_1234'
       timeout: 5000
 
+# Nothing is pre-selected on a fresh import, so the bulk toggle starts as "Select all".
+- assertVisible: 'Select all'
+
 - tapOn:
       id: 'SyncAccountSelection.Row.Privatbank_1234'
+
+# The only account is now selected, so every account is selected and the toggle flips.
+- extendedWaitUntil:
+      visible: 'Deselect all'
+      timeout: 3000
+
+# "Deselect all" clears the selection and the toggle returns to "Select all".
+- tapOn:
+      id: 'SyncAccountSelection.ToggleAll'
+
+- extendedWaitUntil:
+      visible: 'Select all'
+      timeout: 3000
+
+# "Select all" re-selects every account before continuing to sync.
+- tapOn:
+      id: 'SyncAccountSelection.ToggleAll'
+
+- extendedWaitUntil:
+      visible: 'Deselect all'
+      timeout: 3000
 
 - extendedWaitUntil:
       visible:
