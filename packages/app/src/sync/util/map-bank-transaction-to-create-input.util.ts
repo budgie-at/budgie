@@ -1,5 +1,5 @@
 import { BankTransactionTypeEnum } from '@budgie/bank-sync';
-import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -11,13 +11,11 @@ const FEE_ENTRY_EXTERNAL_ID_SUFFIX = ':fee';
 const getExchangeRate = (mainAmount: number, operationAmount: number): number =>
     isPositiveNumber(operationAmount) && mainAmount !== operationAmount ? mainAmount / operationAmount : 1;
 
-/* eslint-disable @typescript-eslint/max-params -- Existing mapping util keeps positional arguments consistent with sibling mappers */
 export const mapBankTransactionToCreateInput = (
     bankTransaction: BankTransactionInterface,
     accountId: number,
     mccCategoryLookup: MccCategoryLookupInterface | null,
-    provider: ExternalSourceEnum,
-    bankFeeCategoryId: number | null
+    provider: ExternalSourceEnum
 ): TransactionCreateInputInterface => {
     const isIncome = bankTransaction.type === BankTransactionTypeEnum.INCOME;
     const amount = Math.abs(bankTransaction.amount);
@@ -44,7 +42,7 @@ export const mapBankTransactionToCreateInput = (
         accountId,
         type: entryType,
         amount: feeAmount,
-        categoryId: bankFeeCategoryId,
+        categoryId: BANK_FEE_CATEGORY_ID,
         categorySource: CategorySourceEnum.FEE,
         mccCategoryId: null,
         externalId: `${bankTransaction.id}${FEE_ENTRY_EXTERNAL_ID_SUFFIX}`,
@@ -68,4 +66,3 @@ export const mapBankTransactionToCreateInput = (
         entries: hasFee ? [mainEntry, feeEntry] : [mainEntry]
     };
 };
-/* eslint-enable @typescript-eslint/max-params */

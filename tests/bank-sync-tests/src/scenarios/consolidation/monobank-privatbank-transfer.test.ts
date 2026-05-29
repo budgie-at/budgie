@@ -70,8 +70,7 @@ describe('consolidation/monobank-privatbank-transfer', () => {
             privatbankTransaction,
             privatbankAccount.id,
             privatbankMccCategoryId,
-            ExternalSourceEnum.PRIVATBANK,
-            null
+            ExternalSourceEnum.PRIVATBANK
         );
         const importedPrivatbankTransactions = await transactionImportService.bulkUpsertImported([privatbankInput], new Map());
         expect(importedPrivatbankTransactions).toHaveLength(1);
