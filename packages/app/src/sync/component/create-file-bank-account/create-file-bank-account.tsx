@@ -12,8 +12,7 @@ import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/f
 import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
-import { toggleSetItem } from '../../util/toggle-set-item.util';
+import { useAccountSelection } from '../../hook/use-account-selection.hook';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
@@ -34,8 +33,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
 
     const [step, setStep] = useState<SetupStep>('file');
     const [isLoading, setIsLoading] = useState(false);
-    const [accountPreviews, setAccountPreviews] = useState<BankAccountPreviewInterface[]>([]);
-    const [selectedAccounts, setSelectedAccounts] = useState<Set<string>>(new Set());
+    const { accountPreviews, selectedAccounts, setPreviews, toggleAccount, selectAllAccounts, deselectAllAccounts } = useAccountSelection();
     const [fileUri, setFileUri] = useState<string | null>(null);
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -54,18 +52,13 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
 
             const previews = await config.importPreview(uri);
             setFileUri(uri);
-            setAccountPreviews(previews);
-            setSelectedAccounts(new Set(previews.filter(preview => preview.hasBankSync).map(preview => preview.externalId)));
+            setPreviews(previews);
             setStep('accounts');
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Invalid file`, text2: getErrorMessage(error) });
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const handleToggleAccountSelection = (externalId: string) => {
-        setSelectedAccounts(prev => toggleSetItem(prev, externalId));
     };
 
     const handleSetupSync = async () => {
@@ -115,7 +108,9 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
                     <AccountSelectionStep
                         accountPreviews={accountPreviews}
                         selectedAccounts={selectedAccounts}
-                        onToggle={handleToggleAccountSelection}
+                        onToggle={toggleAccount}
+                        onSelectAll={selectAllAccounts}
+                        onDeselectAll={deselectAllAccounts}
                     />
                 )}
             </FormLayoutGroup>

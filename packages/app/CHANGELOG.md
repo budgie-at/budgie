@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.27.0](https://github.com/budgie-at/budgie/compare/v5.26.0...v5.27.0) (2026-05-29)
+
+### Bug Fixes
+
+- **app:** cap exchange rate display at 6 decimals via shared util ([#496](https://github.com/budgie-at/budgie/issues/496)) ([f5022f6](https://github.com/budgie-at/budgie/commit/f5022f6c8f23ca6d755a77393f0e1219decc2900))
+
+### Features
+
+- **app:** show total transaction count on transactions and account screens ([#500](https://github.com/budgie-at/budgie/issues/500)) ([443d47b](https://github.com/budgie-at/budgie/commit/443d47b3c7ddb6f1bdaa050d98df5d59f9ff60d4))
+
+# [5.26.0](https://github.com/budgie-at/budgie/compare/v5.25.0...v5.26.0) (2026-05-29)
+
+### Features
+
+- **app:** add select all toggle to bank account import selection ([#498](https://github.com/budgie-at/budgie/issues/498)) ([b0566ec](https://github.com/budgie-at/budgie/commit/b0566ecb94220a56d50a16719d818c32442a7051))
+
 ## [5.24.1](https://github.com/budgie-at/budgie/compare/v5.24.0...v5.24.1) (2026-05-25)
 
 ### Bug Fixes

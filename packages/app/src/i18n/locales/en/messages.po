@@ -112,6 +112,10 @@ msgstr "{source} failed: {message}"
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# item} other {# items}}"
 
+#: src/transaction/components/transaction-list/transaction-list.tsx:83
+msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
+msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
+
 #: src/rule/constant/rule-condition-operator.constant.ts:12
 msgid "<"
 msgstr "<"
@@ -120,7 +124,7 @@ msgstr "<"
 msgid ">"
 msgstr ">"
 
-#: src/@generic/component/currency-selector/currency-selector.tsx:66
+#: src/@generic/component/currency-selector/currency-selector.tsx:67
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
@@ -379,7 +383,7 @@ msgid "Balance"
 msgstr "Balance"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:38
-#: src/transaction/components/transaction-list/transaction-list.tsx:68
+#: src/transaction/components/transaction-list/transaction-list.tsx:72
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
 
@@ -401,7 +405,7 @@ msgstr "Bank Sync"
 msgid "Bank sync reset"
 msgstr "Bank sync reset"
 
-#: src/@generic/component/currency-selector/currency-selector.tsx:64
+#: src/@generic/component/currency-selector/currency-selector.tsx:65
 msgid "Base currency"
 msgstr "Base currency"
 
@@ -481,7 +485,7 @@ msgstr "Cash"
 #: src/app/(tabs)/settings/categories.tsx:92
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:39
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:69
+#: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "Categories"
 msgstr "Categories"
 
@@ -588,7 +592,7 @@ msgstr "Confirm Split"
 msgid "Confirm tag selection"
 msgstr "Confirm tag selection"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:88
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:81
 msgid "Connect Monobank"
 msgstr "Connect Monobank"
 
@@ -717,7 +721,7 @@ msgstr "Could not export CSV"
 msgid "Could not export database"
 msgstr "Could not export database"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:53
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:50
 msgid "Could not fetch accounts"
 msgstr "Could not fetch accounts"
 
@@ -782,7 +786,7 @@ msgstr "Could not select CSV file"
 msgid "Could not select database backup"
 msgstr "Could not select database backup"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:69
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:62
 msgid "Could not set up sync"
 msgstr "Could not set up sync"
 
@@ -970,6 +974,10 @@ msgstr "Delete rule"
 #: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 msgid "Delete Transaction"
 msgstr "Delete Transaction"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+msgid "Deselect all"
+msgstr "Deselect all"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:95
 msgid "Disable App Lock"
@@ -1230,7 +1238,7 @@ msgstr "Failed to save PIN. Please try again."
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Fast-indexing {done} of {total} • tap to pause"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:78
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:71
 msgid "Fetch Accounts"
 msgstr "Fetch Accounts"
 
@@ -1339,7 +1347,7 @@ msgstr "Import Database"
 msgid "Import Erste Bank"
 msgstr "Import Erste Bank"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:81
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:74
 msgid "Import failed"
 msgstr "Import failed"
 
@@ -1400,7 +1408,7 @@ msgstr "Incorrect PIN"
 msgid "Indexing {done} of {total}"
 msgstr "Indexing {done} of {total}"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:61
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:58
 msgid "Invalid file"
 msgstr "Invalid file"
 
@@ -1683,7 +1691,7 @@ msgid "No matching expenses"
 msgstr "No matching expenses"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
-#: src/transaction/components/transaction-list/transaction-list.tsx:71
+#: src/transaction/components/transaction-list/transaction-list.tsx:75
 msgid "No matching transactions"
 msgstr "No matching transactions"
 
@@ -1737,7 +1745,7 @@ msgstr "No Tags Yet"
 msgid "No title"
 msgstr "No title"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:73
+#: src/transaction/components/transaction-list/transaction-list.tsx:77
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
@@ -1867,7 +1875,7 @@ msgstr "PIN must be {PIN_LENGTH} digits"
 msgid "PINs do not match"
 msgstr "PINs do not match"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:39
 msgid "Please enter your Monobank API token"
 msgstr "Please enter your Monobank API token"
 
@@ -2197,13 +2205,17 @@ msgstr "Select account"
 msgid "Select Account"
 msgstr "Select Account"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:16
+#: src/sync/component/account-selection-step/account-selection-step.tsx:29
 msgid "Select accounts to sync:"
 msgstr "Select accounts to sync:"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:73
 msgid "Select Action Type"
 msgstr "Select Action Type"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+msgid "Select all"
+msgstr "Select all"
 
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:38
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:131
@@ -2231,7 +2243,7 @@ msgstr "Select External Source"
 msgid "Select Field"
 msgstr "Select Field"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:90
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:83
 msgid "Select File"
 msgstr "Select File"
 
@@ -2380,12 +2392,12 @@ msgstr "Split"
 msgid "Start Import"
 msgstr "Start Import"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:92
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:80
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:85
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:73
 msgid "Start Sync"
 msgstr "Start Sync"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:74
+#: src/transaction/components/transaction-list/transaction-list.tsx:78
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
 
@@ -2422,7 +2434,7 @@ msgstr "Switch between light and dark themes"
 msgid "Sync Failed"
 msgstr "Sync Failed"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:89
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:82
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Sync your Monobank accounts and transactions"
 
@@ -2559,7 +2571,7 @@ msgstr "To Currency"
 msgid "Today"
 msgstr "Today"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:39
 msgid "Token required"
 msgstr "Token required"
 
@@ -2656,7 +2668,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:27
-#: src/transaction/components/transaction-list/transaction-list.tsx:71
+#: src/transaction/components/transaction-list/transaction-list.tsx:75
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
 

@@ -5,6 +5,7 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
 
 interface Props {
@@ -20,7 +21,6 @@ interface Props {
 const ANIMATION_DELAY = 100;
 const ANIMATION_DURATION = 200;
 const ENTERING_ANIMATION = FadeInUp.delay(ANIMATION_DELAY).duration(ANIMATION_DURATION);
-const RATE_DECIMALS = 4;
 
 export const ConversionRow = (props: Props) => {
     const { destinationAmount, destinationSymbol, sourceCode, destinationCode, exchangeRate, isManualRate, onPress } = props;
@@ -28,7 +28,7 @@ export const ConversionRow = (props: Props) => {
 
     const prefix = isManualRate ? '=' : '\u2248';
     const formattedAmount = isPositiveNumber(destinationAmount) ? destinationAmount.toFixed(2) : '0.00';
-    const formattedRate = isPositiveNumber(exchangeRate) ? exchangeRate.toFixed(RATE_DECIMALS) : '—';
+    const formattedRate = isPositiveNumber(exchangeRate) ? formatExchangeRate(exchangeRate) : '—';
     const rateLabel = t`1 ${sourceCode} = ${formattedRate} ${destinationCode}`;
     const accessibilityLabel = t`Exchange rate: ${rateLabel}. Tap to edit receiving amount`;
 
