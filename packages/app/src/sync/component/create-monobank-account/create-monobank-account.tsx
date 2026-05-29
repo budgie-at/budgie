@@ -10,9 +10,8 @@ import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
+import { useAccountSelection } from '../../hook/use-account-selection.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
-import { toggleSetItem } from '../../util/toggle-set-item.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { TokenInputStep } from '../token-input-step/token-input-step';
 
@@ -29,8 +28,7 @@ export const CreateMonobankAccount = () => {
     const [step, setStep] = useState<SetupStep>('token');
     const [token, setToken] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [accountPreviews, setAccountPreviews] = useState<BankAccountPreviewInterface[]>([]);
-    const [selectedAccounts, setSelectedAccounts] = useState<Set<string>>(new Set());
+    const { accountPreviews, selectedAccounts, setPreviews, toggleAccount, selectAllAccounts, deselectAllAccounts } = useAccountSelection();
 
     const handleGoBack = () => void goBackOrReplace('/');
 
@@ -46,18 +44,13 @@ export const CreateMonobankAccount = () => {
         setIsLoading(true);
         try {
             const previews = await monobankSyncService.fetchAccountsPreview(trimmedToken);
-            setAccountPreviews(previews);
-            setSelectedAccounts(new Set(previews.filter(acc => acc.hasBankSync).map(acc => acc.externalId)));
+            setPreviews(previews);
             setStep('accounts');
         } catch (error) {
             showErrorToast(t`Could not fetch accounts`, getErrorMessage(error));
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const handleToggleAccountSelection = (externalId: string) => {
-        setSelectedAccounts(prev => toggleSetItem(prev, externalId));
     };
 
     const handleSetupSync = async () => {
@@ -100,7 +93,9 @@ export const CreateMonobankAccount = () => {
                     <AccountSelectionStep
                         accountPreviews={accountPreviews}
                         selectedAccounts={selectedAccounts}
-                        onToggle={handleToggleAccountSelection}
+                        onToggle={toggleAccount}
+                        onSelectAll={selectAllAccounts}
+                        onDeselectAll={deselectAllAccounts}
                     />
                 )}
             </FormLayoutGroup>
