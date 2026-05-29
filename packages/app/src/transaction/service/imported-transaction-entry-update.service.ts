@@ -1,4 +1,6 @@
-import { isDefined } from '@rnw-community/shared';
+import { Log } from '@budgie/logger';
+
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
@@ -7,14 +9,19 @@ import { entryBaseValuationService } from '../../money-data/service/entry-base-v
 import type { DB, TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 class ImportedTransactionEntryUpdateService {
+    @Log(
+        (entries, input, tx) =>
+            `enter externalId=${input.externalId} entryExternalIds=${entries.map(entry => entry.externalId).join(',')} hasTx=${String(isDefined(tx))}`,
+        (result, entries, input, tx) =>
+            `done result=${String(result)} externalId=${input.externalId} entryExternalIds=${entries.map(entry => entry.externalId).join(',')} hasTx=${String(isDefined(tx))}`,
+        (error, entries, input) =>
+            `throw externalId=${input.externalId} entryExternalIds=${entries.map(entry => entry.externalId).join(',')} error=${getErrorMessage(error)}`
+    )
     async update(entries: readonly TransactionEntryCreateInputInterface[], input: TransactionCreateInputInterface, tx: DB): Promise<void> {
-        const [entry, ...remainingEntries] = entries;
-        if (!isDefined(entry)) {
-            return;
-        }
-
-        await this.updateEntry(entry, input, tx);
-        await this.update(remainingEntries, input, tx);
+        await entries.reduce(
+            (previousEntryPromise, entry) => previousEntryPromise.then(() => this.updateEntry(entry, input, tx)),
+            Promise.resolve()
+        );
     }
 
     private async updateEntry(entry: TransactionEntryCreateInputInterface, input: TransactionCreateInputInterface, tx: DB): Promise<void> {

@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -9,6 +9,7 @@ import { MoneyDataUpgradeProgressStateEnum } from '../enum/money-data-upgrade-pr
 import { MoneyDataUpgradeRuntimeSnapshotInterface } from '../interface/money-data-upgrade-runtime-snapshot.interface';
 import { MoneyDataUpgradeStatusSnapshotInterface } from '../interface/money-data-upgrade-status-snapshot.interface';
 import { moneyDataUpgradeService } from '../service/money-data-upgrade.service';
+import { buildMoneyDataUpgradeStatusText } from '../utils/build-money-data-upgrade-status-text.util';
 
 const EMPTY_RUNTIME_SNAPSHOT: MoneyDataUpgradeRuntimeSnapshotInterface = {
     isRunning: false,
@@ -27,28 +28,23 @@ const calculatePercent = (processed: number, total: number): number => {
     return Math.round((processed / total) * 100);
 };
 
-const getState = (
-    runtimeSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface,
-    hasPendingWork: boolean
-): MoneyDataUpgradeProgressStateEnum => {
-    if (isDefined(runtimeSnapshot.lastError)) {
+const getState = (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface): MoneyDataUpgradeProgressStateEnum => {
+    if (isDefined(snapshot.lastError)) {
         return MoneyDataUpgradeProgressStateEnum.ERROR;
     }
 
-    if (runtimeSnapshot.isRunning) {
+    if (snapshot.isRunning) {
         return MoneyDataUpgradeProgressStateEnum.WORKING;
     }
 
-    return hasPendingWork ? MoneyDataUpgradeProgressStateEnum.READY : MoneyDataUpgradeProgressStateEnum.COMPLETE;
+    return isPositiveNumber(snapshot.pendingEntryCount)
+        ? MoneyDataUpgradeProgressStateEnum.READY
+        : MoneyDataUpgradeProgressStateEnum.COMPLETE;
 };
 
 export const useMoneyDataUpgradeStatus = () => {
     const { t } = useLingui();
     const [runtimeSnapshot, setRuntimeSnapshot] = useState<MoneyDataUpgradeRuntimeSnapshotInterface>(EMPTY_RUNTIME_SNAPSHOT);
-
-    const handleProgress = useCallback((nextRuntimeSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => {
-        setRuntimeSnapshot(nextRuntimeSnapshot);
-    }, []);
 
     useEffect(() => {
         void moneyDataUpgradeService
@@ -59,36 +55,14 @@ export const useMoneyDataUpgradeStatus = () => {
             });
     }, [t]);
 
-    const snapshot = useMemo<MoneyDataUpgradeStatusSnapshotInterface>(() => {
-        const percent = calculatePercent(runtimeSnapshot.processedEntryCount, runtimeSnapshot.totalEntryCount);
-        const hasPendingWork = runtimeSnapshot.pendingEntryCount > 0 || runtimeSnapshot.isRunning;
-        const state = getState(runtimeSnapshot, hasPendingWork);
-        let statusText = t`Press to re-evaluate transactions`;
+    const snapshot: MoneyDataUpgradeStatusSnapshotInterface = {
+        title: t`Value Historical Entries`,
+        statusText: buildMoneyDataUpgradeStatusText(runtimeSnapshot),
+        percent: calculatePercent(runtimeSnapshot.processedEntryCount, runtimeSnapshot.totalEntryCount),
+        state: getState(runtimeSnapshot)
+    };
 
-        if (isDefined(runtimeSnapshot.lastError)) {
-            statusText = runtimeSnapshot.lastError;
-        } else if (runtimeSnapshot.isUpdatingBalances) {
-            statusText = t`Recalculating balances`;
-        } else if (runtimeSnapshot.isRunning) {
-            if (isPositiveNumber(runtimeSnapshot.totalEntryCount)) {
-                const { processedEntryCount } = runtimeSnapshot;
-                const { totalEntryCount } = runtimeSnapshot;
-
-                statusText = t`Valuing ${processedEntryCount} of ${totalEntryCount} transactions`;
-            } else {
-                statusText = t`Preparing valuation`;
-            }
-        }
-
-        return {
-            title: t`Value Historical Entries`,
-            statusText,
-            percent,
-            state
-        };
-    }, [runtimeSnapshot, t]);
-
-    const handlePrimaryAction = useCallback(async () => {
+    const handlePrimaryAction = async () => {
         const confirmed = await confirmAlert({
             title: t`Value historical entries?`,
             message: t`Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes.`,
@@ -101,11 +75,11 @@ export const useMoneyDataUpgradeStatus = () => {
         }
 
         try {
-            setRuntimeSnapshot(await moneyDataUpgradeService.run(handleProgress));
+            setRuntimeSnapshot(await moneyDataUpgradeService.run(setRuntimeSnapshot));
         } catch (error: unknown) {
             showErrorToast(t`Historical valuation failed`, getErrorMessage(error));
         }
-    }, [handleProgress, t]);
+    };
 
     return { snapshot, handlePrimaryAction };
 };

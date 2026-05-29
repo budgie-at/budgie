@@ -1,4 +1,6 @@
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { Log } from '@budgie/logger';
+
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
@@ -15,6 +17,13 @@ import type {
 } from '@budgie/contracts';
 
 class RefreshedImportedEntriesService {
+    @Log(
+        (input, tx) =>
+            `enter transactionId=${input.transactionId} existingCount=${input.existingEntries.length} inputCount=${input.inputEntries.length} hasTx=${String(isDefined(tx))}`,
+        (result, input, tx) =>
+            `done transactionId=${input.transactionId} status=${result.status} entries=${result.entries?.length ?? 0} hasTx=${String(isDefined(tx))}`,
+        (error, input) => `throw transactionId=${input.transactionId} error=${getErrorMessage(error)}`
+    )
     async build(input: BuildRefreshedImportedEntriesInputInterface, tx: DB): Promise<RefreshedImportedEntriesResultInterface> {
         if (input.existingEntries.length !== input.inputEntries.length) {
             return { status: RefreshedImportedEntriesStatusEnum.LENGTH_MISMATCH, entries: null };
