@@ -579,7 +579,7 @@ msgstr "Confirmar división"
 msgid "Confirm tag selection"
 msgstr "Confirmar selección de etiquetas"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:88
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:81
 msgid "Connect Monobank"
 msgstr "Conectar Monobank"
 
@@ -708,7 +708,7 @@ msgstr "No se pudo exportar el CSV"
 msgid "Could not export database"
 msgstr "No se pudo exportar la base de datos"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:53
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:50
 msgid "Could not fetch accounts"
 msgstr "No se pudieron obtener las cuentas"
 
@@ -773,7 +773,7 @@ msgstr "No se pudo seleccionar el archivo CSV"
 msgid "Could not select database backup"
 msgstr "No se pudo seleccionar la copia de seguridad de la base de datos"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:69
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:62
 msgid "Could not set up sync"
 msgstr "No se pudo configurar la sincronización"
 
@@ -961,6 +961,10 @@ msgstr "Eliminar regla"
 #: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
 msgid "Delete Transaction"
 msgstr "Eliminar transacción"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+msgid "Deselect all"
+msgstr "Deseleccionar todo"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:95
 msgid "Disable App Lock"
@@ -1217,7 +1221,7 @@ msgstr "Error al guardar el PIN. Inténtalo de nuevo."
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Indexación rápida {done} de {total} • toca para pausar"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:78
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:71
 msgid "Fetch Accounts"
 msgstr "Obtener cuentas"
 
@@ -1321,7 +1325,7 @@ msgstr "Importar base de datos"
 msgid "Import Erste Bank"
 msgstr "Importar Erste Bank"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:81
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:74
 msgid "Import failed"
 msgstr "Error de importación"
 
@@ -1382,7 +1386,7 @@ msgstr "PIN incorrecto"
 msgid "Indexing {done} of {total}"
 msgstr "Indexando {done} de {total}"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:61
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:58
 msgid "Invalid file"
 msgstr "Archivo inválido"
 
@@ -1857,7 +1861,7 @@ msgstr "El PIN debe tener {PIN_LENGTH} dígitos"
 msgid "PINs do not match"
 msgstr "Los PIN no coinciden"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:39
 msgid "Please enter your Monobank API token"
 msgstr "Por favor, ingrese su token API de Monobank"
 
@@ -2175,13 +2179,17 @@ msgstr "Seleccionar cuenta"
 msgid "Select Account"
 msgstr "Seleccionar cuenta"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:16
+#: src/sync/component/account-selection-step/account-selection-step.tsx:29
 msgid "Select accounts to sync:"
 msgstr "Seleccionar cuentas para sincronizar:"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:73
 msgid "Select Action Type"
 msgstr "Seleccionar tipo de acción"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+msgid "Select all"
+msgstr "Seleccionar todo"
 
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:38
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:131
@@ -2209,7 +2217,7 @@ msgstr "Seleccionar fuente externa"
 msgid "Select Field"
 msgstr "Seleccionar campo"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:90
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:83
 msgid "Select File"
 msgstr "Seleccionar archivo"
 
@@ -2358,8 +2366,8 @@ msgstr "Dividir"
 msgid "Start Import"
 msgstr "Iniciar importación"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:92
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:80
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:85
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:73
 msgid "Start Sync"
 msgstr "Iniciar sincronización"
 
@@ -2400,7 +2408,7 @@ msgstr "Cambiar entre temas claro y oscuro"
 msgid "Sync Failed"
 msgstr "Sincronización fallida"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:89
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:82
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Sincronice sus cuentas y transacciones de Monobank"
 
@@ -2541,7 +2549,7 @@ msgstr "Moneda destino"
 msgid "Today"
 msgstr "Hoy"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:39
 msgid "Token required"
 msgstr "Token requerido"
 
