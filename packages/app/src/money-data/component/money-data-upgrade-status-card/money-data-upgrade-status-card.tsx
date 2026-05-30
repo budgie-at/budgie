@@ -42,8 +42,10 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeo
             variant="secondary"
             contentClassName="gap-y-xs"
         >
-            <Text className="text-sm font-medium text-primary">{snapshot.title}</Text>
-            <Text testID={statusTestID} className="text-xs font-medium text-secondary-foreground">
+            <Text numberOfLines={1} className="text-sm font-medium text-primary">
+                {snapshot.title}
+            </Text>
+            <Text numberOfLines={1} testID={statusTestID} className="text-xs font-medium text-secondary-foreground">
                 {snapshot.statusText}
             </Text>
             <AiProgressBar progress={snapshot.percent} />
