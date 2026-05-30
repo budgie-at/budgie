@@ -31,7 +31,6 @@ export const ConsolidationSourceModalContent = ({
     const useCompactSourceList = sources.length <= COMPACT_SOURCE_LIST_LIMIT;
     const useFlexibleContainer = isLoading || showEmptyState || (hasSources && !useCompactSourceList);
     const containerClassName = useFlexibleContainer ? 'flex-1' : '';
-    const sourceListContentClassName = 'px-xl pt-3xl pb-2xl';
     const footerClassName = showRevert ? 'flex-row gap-x-md' : '';
     const sourceRows = sources.map((source, index) => (
         <View key={source.entryId}>
@@ -68,12 +67,12 @@ export const ConsolidationSourceModalContent = ({
                 />
             ) : null}
 
-            {hasSources && useCompactSourceList ? <View className={sourceListContentClassName}>{sourceRows}</View> : null}
+            {hasSources && useCompactSourceList ? <View className="px-xl pt-3xl pb-2xl">{sourceRows}</View> : null}
 
             {hasSources && !useCompactSourceList ? (
                 <ScrollView
                     className="flex-1"
-                    contentContainerClassName={sourceListContentClassName}
+                    contentContainerClassName="px-xl pt-3xl pb-2xl"
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
