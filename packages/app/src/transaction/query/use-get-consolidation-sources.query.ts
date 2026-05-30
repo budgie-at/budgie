@@ -1,3 +1,4 @@
+import { TransactionEntryTypeEnum } from '@budgie/contracts';
 import { getLogger } from '@budgie/logger';
 import { useEffect, useState } from 'react';
 
@@ -5,11 +6,47 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
 import { useSetting } from '../../settings/hook/use-setting.hook';
-import { orderConsolidationSourcesByChain } from '../utils/order-consolidation-sources-by-chain.util';
 
 import type { ConsolidationSourceRowInterface, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
 const logger = getLogger('useGetConsolidationSourcesQuery');
+
+const fromAccountOf = (entries: readonly ConsolidationSourceRowInterface[]): number | undefined =>
+    entries.find(entry => entry.entryType === TransactionEntryTypeEnum.DEBIT)?.accountId;
+
+const toAccountOf = (entries: readonly ConsolidationSourceRowInterface[]): number | undefined =>
+    entries.find(entry => entry.entryType === TransactionEntryTypeEnum.CREDIT)?.accountId;
+
+const groupBySourceTransaction = (rows: readonly ConsolidationSourceRowInterface[]): ConsolidationSourceRowInterface[][] => {
+    const byTransaction = new Map<number, ConsolidationSourceRowInterface[]>();
+    for (const row of rows) {
+        const entries = byTransaction.get(row.sourceTransactionId) ?? [];
+        byTransaction.set(row.sourceTransactionId, [...entries, row]);
+    }
+
+    return [...byTransaction.values()];
+};
+
+const orderSourcesByTransferChain = (rows: ConsolidationSourceRowInterface[]): ConsolidationSourceRowInterface[] => {
+    const transactions = groupBySourceTransaction(rows);
+    const ordered: ConsolidationSourceRowInterface[][] = [];
+    let current = transactions.find(entries => {
+        const fromAccount = fromAccountOf(entries);
+
+        return isDefined(fromAccount) && !transactions.some(other => toAccountOf(other) === fromAccount);
+    });
+
+    while (isDefined(current) && !ordered.includes(current)) {
+        ordered.push(current);
+        const toAccount = toAccountOf(current);
+        if (!isDefined(toAccount)) {
+            break;
+        }
+        current = transactions.find(entries => fromAccountOf(entries) === toAccount);
+    }
+
+    return [...ordered, ...transactions.filter(entries => !ordered.includes(entries))].flat();
+};
 
 export const useGetConsolidationSourcesQuery = (transactionId: number) => {
     const language = useSetting('language');
@@ -36,7 +73,7 @@ export const useGetConsolidationSourcesQuery = (transactionId: number) => {
                 transactionRepository.getById(transactionId, language)
             ]);
             if (isActive) {
-                setSources(orderConsolidationSourcesByChain(rows));
+                setSources(orderSourcesByTransferChain(rows));
                 setConsolidationType(isDefined(canonical) ? canonical.consolidationType : null);
                 setHasError(false);
                 setIsLoading(false);
