@@ -181,6 +181,7 @@ class AppMonobankSyncService {
         const startedAt = Date.now();
         const now = new Date();
         const baseUpdate = { transactionCount: sync.transactionCount + result.transactions.length, errorCount: 0, lastError: null };
+        const nextBackwardSyncedAt = isNotEmptyArray(result.transactions) ? null : (sync.backwardSyncedAt ?? result.nextTo);
 
         if (result.completed) {
             if (sync.mode === BankSyncModeEnum.FORWARD) {
@@ -202,6 +203,7 @@ class AppMonobankSyncService {
         } else if (sync.mode === BankSyncModeEnum.BACKWARD) {
             await bankSyncRepository.update(sync.id, {
                 ...baseUpdate,
+                backwardSyncedAt: nextBackwardSyncedAt,
                 backwardSyncFromAt: result.nextTo
             });
         } else {
@@ -462,7 +464,7 @@ class AppMonobankSyncService {
 
         const result = isForward
             ? await svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date())
-            : await svc.syncTransactionsBackward(extAccId, sync.backwardSyncFromAt ?? new Date());
+            : await svc.syncTransactionsBackward(extAccId, sync.backwardSyncFromAt ?? new Date(), sync.backwardSyncedAt);
         logger.log('fetchTransactionBatch:done', {
             completed: result.completed,
             durationMs: Date.now() - startedAt,

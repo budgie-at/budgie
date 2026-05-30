@@ -1,5 +1,6 @@
 export { testDb } from './scenario/setup';
 export { setupMonobankFixture } from './monobank/setup-monobank-fixture';
+export { setupBackwardSweepFixture } from './monobank/setup-backward-sweep-fixture';
 export { seed } from './seed/seed';
 export { seedBankPair } from './seed/seed-bank-pair';
 export { seedAccountPair } from './seed/seed-account-pair';
@@ -15,6 +16,8 @@ export { updateBankTransaction } from './consolidation/update-bank-transaction';
 export { fetchTransactionById } from './db/fetch-transaction-by-id';
 export { fetchExpenseEntries } from './db/fetch-expense-entries';
 export { fetchCanonicalsOfType } from './db/fetch-canonicals-of-type';
+export { fetchPersistedMonobankTransactions } from './db/fetch-persisted-monobank-transactions';
+export { fetchBankSyncById } from './db/fetch-bank-sync-by-id';
 export { findMccByCode } from './db/find-mcc-by-code';
 export { monobankStub } from './monobank/monobank-stub';
 export { buildMonobank } from './monobank/build-monobank';
