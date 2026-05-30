@@ -962,7 +962,7 @@ msgstr "Supprimer la règle"
 msgid "Delete Transaction"
 msgstr "Supprimer la transaction"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+#: src/sync/component/account-selection-step/account-selection-step.tsx:26
 msgid "Deselect all"
 msgstr "Tout désélectionner"
 
@@ -1397,6 +1397,10 @@ msgstr "Est planifié"
 #: src/i18n/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
 msgstr "Italien (Italie)"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:46
+msgid "Jars"
+msgstr "Cagnottes"
 
 #: src/settings/components/language-selector/language-selector.tsx:36
 msgid "Language"
@@ -2187,11 +2191,11 @@ msgstr "Sélectionnez une colonne valide"
 msgid "Select account"
 msgstr "Sélectionner un compte"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:74
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:73
 msgid "Select Account"
 msgstr "Sélectionner un compte"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:29
+#: src/sync/component/account-selection-step/account-selection-step.tsx:32
 msgid "Select accounts to sync:"
 msgstr "Sélectionner les comptes à synchroniser :"
 
@@ -2199,7 +2203,7 @@ msgstr "Sélectionner les comptes à synchroniser :"
 msgid "Select Action Type"
 msgstr "Sélectionner le type d'action"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+#: src/sync/component/account-selection-step/account-selection-step.tsx:26
 msgid "Select all"
 msgstr "Tout sélectionner"
 

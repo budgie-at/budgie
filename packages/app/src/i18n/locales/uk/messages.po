@@ -962,7 +962,7 @@ msgstr "Видалити правило"
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+#: src/sync/component/account-selection-step/account-selection-step.tsx:26
 msgid "Deselect all"
 msgstr "Скасувати вибір"
 
@@ -1397,6 +1397,10 @@ msgstr "Заплановано"
 #: src/i18n/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
 msgstr "Італійська (Італія)"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:46
+msgid "Jars"
+msgstr "Банки"
 
 #: src/settings/components/language-selector/language-selector.tsx:36
 msgid "Language"
@@ -2187,11 +2191,11 @@ msgstr "Виберіть дійсний стовпець"
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:74
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:73
 msgid "Select Account"
 msgstr "Вибрати рахунок"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:29
+#: src/sync/component/account-selection-step/account-selection-step.tsx:32
 msgid "Select accounts to sync:"
 msgstr "Виберіть рахунки для синхронізації:"
 
@@ -2199,7 +2203,7 @@ msgstr "Виберіть рахунки для синхронізації:"
 msgid "Select Action Type"
 msgstr "Вибрати тип дії"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+#: src/sync/component/account-selection-step/account-selection-step.tsx:26
 msgid "Select all"
 msgstr "Вибрати всі"
 

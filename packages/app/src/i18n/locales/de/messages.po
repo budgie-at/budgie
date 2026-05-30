@@ -962,7 +962,7 @@ msgstr "Regel löschen"
 msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+#: src/sync/component/account-selection-step/account-selection-step.tsx:26
 msgid "Deselect all"
 msgstr "Alle abwählen"
 
@@ -1397,6 +1397,10 @@ msgstr "Ist geplant"
 #: src/i18n/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
 msgstr "Italienisch (Italien)"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:46
+msgid "Jars"
+msgstr "Sparziele"
 
 #: src/settings/components/language-selector/language-selector.tsx:36
 msgid "Language"
@@ -2187,11 +2191,11 @@ msgstr "Wählen Sie eine gültige Spalte"
 msgid "Select account"
 msgstr "Konto auswählen"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:74
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:73
 msgid "Select Account"
 msgstr "Konto auswählen"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:29
+#: src/sync/component/account-selection-step/account-selection-step.tsx:32
 msgid "Select accounts to sync:"
 msgstr "Konten zum Synchronisieren auswählen:"
 
@@ -2199,7 +2203,7 @@ msgstr "Konten zum Synchronisieren auswählen:"
 msgid "Select Action Type"
 msgstr "Aktionstyp auswählen"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+#: src/sync/component/account-selection-step/account-selection-step.tsx:26
 msgid "Select all"
 msgstr "Alle auswählen"
 
