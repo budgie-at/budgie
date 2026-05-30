@@ -716,7 +716,7 @@ msgstr "Не вдалося отримати рахунки"
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:56
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:51
 msgid "Could not load sources. Please try again."
 msgstr "Не вдалося завантажити джерела. Спробуйте ще раз."
 
@@ -971,7 +971,7 @@ msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
 #: src/app/import-column-mapper.tsx:97
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:86
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 msgid "Done"
 msgstr "Готово"
@@ -1713,7 +1713,7 @@ msgstr "Немає результатів"
 msgid "No Rules Yet"
 msgstr "Правил ще немає"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:69
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:64
 msgid "No source transactions"
 msgstr "Немає вихідних транзакцій"
 
@@ -2035,7 +2035,7 @@ msgstr "Відновити з файлу резервної копії"
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:101
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:96
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:28
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
 #: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
@@ -2187,7 +2187,7 @@ msgstr "Виберіть дійсний стовпець"
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:74
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:73
 msgid "Select Account"
 msgstr "Вибрати рахунок"
 
@@ -2342,10 +2342,6 @@ msgstr "Щось пішло не так. Будь ласка, спробуйте
 msgid "Source"
 msgstr "Джерело"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:52
-msgid "Source transactions"
-msgstr "Вихідні транзакції"
-
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:152
 msgid "Sources"
 msgstr "Джерела"
@@ -2483,7 +2479,7 @@ msgstr "Цей рахунок буде приховано з головного 
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:70
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:65
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Цей консолідований переказ не має перенесених вихідних записів."
 
