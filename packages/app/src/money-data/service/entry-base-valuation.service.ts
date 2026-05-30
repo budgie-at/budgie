@@ -46,7 +46,6 @@ class EntryBaseValuationService {
         accountId,
         amount,
         operatedAt,
-        externalSource,
         tx
     }: EntryBaseValuationInputInterface): Promise<EntryBaseValuationInterface> {
         const [account, baseInstrument] = await Promise.all([
@@ -70,9 +69,7 @@ class EntryBaseValuationService {
             };
         }
 
-        const baseExchangeRate = isDefined(externalSource)
-            ? await this.resolveHistoricalBaseExchangeRate(account.instrumentId, baseInstrument.id, operatedAt, tx)
-            : await this.resolveCurrentBaseExchangeRate(account.instrumentId, baseInstrument.id);
+        const baseExchangeRate = await this.resolveHistoricalBaseExchangeRate(account.instrumentId, baseInstrument.id, operatedAt, tx);
 
         return {
             baseInstrumentId: baseInstrument.id,
