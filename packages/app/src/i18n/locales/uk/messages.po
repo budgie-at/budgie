@@ -185,7 +185,7 @@ msgstr "Рахунки, які ви позначите як неактивні, 
 msgid "Action"
 msgstr "Дія"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:72
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:48
 msgid "Action Type"
 msgstr "Тип дії"
 
@@ -222,7 +222,7 @@ msgstr "Додати рахунок"
 msgid "Add item"
 msgstr "Додати запис"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:36
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:17
 msgid "Add Tag"
 msgstr "Додати тег"
 
@@ -408,8 +408,8 @@ msgid "Base currency"
 msgstr "Базова валюта"
 
 #: src/money-data/service/entry-base-valuation.service.ts:62
-#: src/money-data/service/money-data-upgrade.service.ts:34
-#: src/money-data/service/money-data-upgrade.service.ts:81
+#: src/money-data/service/money-data-upgrade.service.ts:37
+#: src/money-data/service/money-data-upgrade.service.ts:84
 msgid "Base instrument not found"
 msgstr "Базову валюту не знайдено"
 
@@ -639,7 +639,7 @@ msgid "Convert to Refund?"
 msgstr "Перетворити на повернення?"
 
 #: src/app/convert-to-transfer.tsx:121
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:18
 #: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:34
 msgid "Convert to Transfer"
@@ -1170,7 +1170,7 @@ msgstr "Erste Bank"
 msgid "Everyday transactions and spending"
 msgstr "Щоденні транзакції та витрати"
 
-#: src/money-data/service/entry-base-valuation.service.ts:152
+#: src/money-data/service/entry-base-valuation.service.ts:162
 msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
 msgstr "Обмінний курс {sourceInstrumentId}->{targetInstrumentId} не знайдено"
 
@@ -1526,6 +1526,14 @@ msgstr "Будь-яка збігається"
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:35
+msgid "Matched expenses are converted into a transfer to this account."
+msgstr "Відповідні витрати перетворюються на переказ на цей рахунок."
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:39
+msgid "Matched income is converted into a transfer from this account."
+msgstr "Відповідні надходження перетворюються на переказ з цього рахунку."
+
 #: src/rule/constant/rule-condition-operator.constant.ts:10
 msgid "matches"
 msgstr "збігається"
@@ -1779,6 +1787,10 @@ msgstr "не встановлено"
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:141
 msgid "Note"
 msgstr "Нотатка"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:44
+msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
+msgstr "Перетворюються лише транзакції витрат і надходжень: витрати переказуються на цей рахунок, надходження — з нього. Інші типи залишаються без змін."
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts:6
 msgid "Only expense transactions can be converted"
@@ -2199,7 +2211,7 @@ msgstr "Виберіть дійсний стовпець"
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:45
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:73
 msgid "Select Account"
 msgstr "Вибрати рахунок"
 
@@ -2207,7 +2219,7 @@ msgstr "Вибрати рахунок"
 msgid "Select accounts to sync:"
 msgstr "Виберіть рахунки для синхронізації:"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:73
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:49
 msgid "Select Action Type"
 msgstr "Вибрати тип дії"
 
@@ -2282,7 +2294,7 @@ msgstr "Вибрати тип транзакції"
 msgid "Select type"
 msgstr "Вибрати тип"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:65
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:41
 msgid "Select Type"
 msgstr "Вибрати тип"
 
@@ -2298,7 +2310,7 @@ msgstr "Вибрану транзакцію вже об'єднано"
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:35
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:16
 msgid "Set Category"
 msgstr "Встановити категорію"
 
@@ -2617,17 +2629,24 @@ msgstr "Транзакції синхронізовано"
 msgid "Transcription failed"
 msgstr "Помилка транскрипції"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx:38
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:108
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Переказ"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:34
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx:40
+msgid "Transfer → {accountTitle}"
+msgstr "Переказ → {accountTitle}"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:43
+msgid "Transfer Account"
+msgstr "Рахунок переказу"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:39
 msgid "Transfer From Account"
 msgstr "Переказ з рахунку"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:34
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:35
 msgid "Transfer To Account"
 msgstr "Переказ на рахунок"
 
