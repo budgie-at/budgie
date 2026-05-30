@@ -2,7 +2,6 @@ import '../../../styles/globals.css';
 import { msg } from '@lingui/core/macro';
 import localFont from 'next/font/local';
 
-import linguiConfig from '../../../lingui.config.mjs';
 import { Footer } from '../../generic/component/footer/footer';
 import { Header } from '../../generic/component/header/header';
 import { JsonLd } from '../../generic/component/json-ld/json-ld';
@@ -11,6 +10,7 @@ import { buildAlternates } from '../../generic/util/build-alternates.util';
 import { allMessages, getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
+import { SUPPORTED_LOCALES } from '../../i18n/supported-locales.constant.mjs';
 import { ThemeProvider } from '../../providers/theme-provider';
 
 import type { ReactNode } from 'react';
@@ -67,7 +67,7 @@ interface Props extends PageLangParam {
 
 // eslint-disable-next-line func-style
 export async function generateStaticParams() {
-    return linguiConfig.locales.map(lang => ({ lang }));
+    return SUPPORTED_LOCALES.map(lang => ({ lang }));
 }
 
 // eslint-disable-next-line func-style

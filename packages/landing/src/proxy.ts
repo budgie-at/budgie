@@ -1,9 +1,7 @@
 import Negotiator from 'negotiator';
 import { type NextRequest, NextResponse } from 'next/server';
 
-import linguiConfig from '../lingui.config.mjs';
-
-const { locales } = linguiConfig;
+import { SUPPORTED_LOCALES as locales } from './i18n/supported-locales.constant.mjs';
 
 const PERMANENT_REDIRECT_STATUS = 301;
 

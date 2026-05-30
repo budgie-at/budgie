@@ -1,6 +1,6 @@
 # Landing Package (Next.js)
 
-Marketing website built with Next.js 15, React 19, Tailwind CSS 4, and Lingui 5.7. Supports 5 locales with server-side rendering.
+Marketing website built with Next.js 15, React 19, Tailwind CSS 4, and Lingui 6.1. Supports 5 locales with server-side rendering.
 
 ## Commands
 
