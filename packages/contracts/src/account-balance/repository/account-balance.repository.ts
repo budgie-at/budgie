@@ -1,7 +1,12 @@
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
 import { DB } from '../../@generic/type/db.type';
-import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
+import {
+    getDirectExchangeRateSql,
+    getHistoricalExchangeRateSql,
+    getInverseExchangeRateSql,
+    getInverseHistoricalExchangeRateSql
+} from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
@@ -106,12 +111,7 @@ export class AccountBalanceRepository {
     }
 
     getNetWorth(defaultInstrumentId: number) {
-        const instrumentIdRef = sql.raw('accounts.instrument_id');
-        const exchangeRateSql = sql`COALESCE(
-            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            1.0
-        )`;
+        const exchangeRateSql = this.buildExchangeRateConversionSql(defaultInstrumentId);
 
         return this.db
             .select({
@@ -123,12 +123,7 @@ export class AccountBalanceRepository {
 
     // jscpd:ignore-start
     getTotalByAccountType(defaultInstrumentId: number, accountType: AccountTypeEnum) {
-        const instrumentIdRef = sql.raw('accounts.instrument_id');
-        const exchangeRateSql = sql`COALESCE(
-            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            1.0
-        )`;
+        const exchangeRateSql = this.buildExchangeRateConversionSql(defaultInstrumentId);
 
         return this.db
             .select({
@@ -141,12 +136,7 @@ export class AccountBalanceRepository {
     }
 
     getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
-        const instrumentIdRef = sql.raw('accounts.instrument_id');
-        const exchangeRateSql = sql`COALESCE(
-            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            1.0
-        )`;
+        const exchangeRateSql = this.buildExchangeRateConversionSql(defaultInstrumentId);
 
         const remainingDebtSql = sql<number>`
             MAX(${AccountEntityTable.targetBalance} - (${this.getAccountBalanceWithTransactionsSql()}), 0)
@@ -168,12 +158,7 @@ export class AccountBalanceRepository {
     }
 
     getTotalByBankProvider(defaultInstrumentId: number, provider: ExternalSourceEnum) {
-        const instrumentIdRef = sql.raw('accounts.instrument_id');
-        const exchangeRateSql = sql`COALESCE(
-            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            1.0
-        )`;
+        const exchangeRateSql = this.buildExchangeRateConversionSql(defaultInstrumentId);
 
         return this.db
             .select({
@@ -194,6 +179,18 @@ export class AccountBalanceRepository {
 
     async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(AccountBalanceEntityTable);
+    }
+
+    private buildExchangeRateConversionSql(defaultInstrumentId: number) {
+        const instrumentIdRef = sql.raw('accounts.instrument_id');
+
+        return sql`COALESCE(
+            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            1.0
+        )`;
     }
 
     private getAccountBalanceWithTransactionsSql(accountIdReference = sql.raw('accounts.id')) {

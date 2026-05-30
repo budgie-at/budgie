@@ -187,8 +187,15 @@
         {
             "idx": 26,
             "version": "6",
+            "when": 1779149100000,
+            "tag": "0026_money_data_upgrade",
+            "breakpoints": true
+        },
+        {
+            "idx": 27,
+            "version": "6",
             "when": 1779235200000,
-            "tag": "0026_add_budget_planning",
+            "tag": "0027_add_budget_planning",
             "breakpoints": true
         }
     ]

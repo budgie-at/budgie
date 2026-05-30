@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -5,8 +6,8 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language: uk\n"
 "Language-Team: \n"
+"Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
@@ -30,10 +31,6 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} буде відновлено у вашому головному перегляді."
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "{autoCandidateCount, plural, one {# high-confidence match} other {# high-confidence matches}}"
-msgstr "{autoCandidateCount, plural, one {# збіг з високою впевненістю} few {# збіги з високою впевненістю} many {# збігів з високою впевненістю} other {# збігу з високою впевненістю}}"
 
 #: src/app/import-column-mapper.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
@@ -82,10 +79,6 @@ msgstr "{found, plural, one {# збіг з високою впевненістю
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Показати всі типи} one {Показати # тип} few {Показати # типи} many {Показати # типів} other {Показати # типу}}"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "{manualReviewCandidateCount, plural, one {# review match} other {# review matches}}"
-msgstr "{manualReviewCandidateCount, plural, one {# збіг для перевірки} few {# збіги для перевірки} many {# збігів для перевірки} other {# збігу для перевірки}}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx
 #: src/rule/components/rules-list-page/rules-list-page.tsx
@@ -168,6 +161,10 @@ msgstr "Про застосунок"
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Account"
 msgstr "Рахунок"
+
+#: src/money-data/service/entry-base-valuation.service.ts
+msgid "Account {accountId} not found"
+msgstr "Рахунок {accountId} не знайдено"
 
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
@@ -429,6 +426,11 @@ msgstr "Синхронізацію з банком скинуто"
 msgid "Base currency"
 msgstr "Базова валюта"
 
+#: src/money-data/service/entry-base-valuation.service.ts
+#: src/money-data/service/money-data-upgrade.service.ts
+msgid "Base instrument not found"
+msgstr "Базову валюту не знайдено"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
 msgstr "між"
@@ -469,6 +471,14 @@ msgstr "Ліміт бюджету досягнуто"
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
+msgstr "Budgie заповнить відсутні значення в базовій валюті за історичними курсами. Аналітика може бути недоступною, доки це не завершиться."
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
+msgstr "Budgie об'єднає надійні збіги переказів і відшкодувань. Неоднозначні збіги залишаться без змін."
+
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
@@ -481,6 +491,7 @@ msgstr "Budgie"
 #: src/app/resync-window-picker.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/import/components/import-database/import-database.tsx
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
@@ -846,7 +857,7 @@ msgstr "Не вдалося оновити транзакцію."
 
 #: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
 msgid "Could not update widget setting"
-msgstr ""
+msgstr "Не вдалося оновити налаштування віджета"
 
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
 msgid "Count this account in your net worth calculation"
@@ -1241,6 +1252,10 @@ msgstr "Erste Bank"
 msgid "Everyday transactions and spending"
 msgstr "Щоденні транзакції та витрати"
 
+#: src/money-data/service/entry-base-valuation.service.ts
+msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
+msgstr "Обмінний курс {sourceInstrumentId}->{targetInstrumentId} не знайдено"
+
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Курс обміну: {rateLabel}. Натисніть, щоб редагувати суму отримання"
@@ -1379,6 +1394,10 @@ msgstr "Більше ніж"
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
 
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Historical valuation failed"
+msgstr "Не вдалося виконати історичну оцінку"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
 msgid "History synced"
 msgstr "Історію синхронізовано"
@@ -1481,6 +1500,10 @@ msgstr "Заплановано"
 #: src/i18n/constant/locales.constant.ts
 msgid "Italian (Italy)"
 msgstr "Італійська (Італія)"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx
+msgid "Jars"
+msgstr "Банки"
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -1596,19 +1619,15 @@ msgstr "Зіставте кожне поле зі стовпцем вашого 
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
-msgstr ""
+msgstr "Відповідні витрати перетворюються на переказ на цей рахунок."
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched income is converted into a transfer from this account."
-msgstr ""
+msgstr "Відповідні надходження перетворюються на переказ із цього рахунку."
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
 msgstr "збігається"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "Matches consolidated"
-msgstr "Збіги консолідовано"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Matches Regex"
@@ -1641,10 +1660,6 @@ msgstr "Об'єднати з іншим тегом"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Об'єднати відповідні перекази та повернення"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "Merged {consolidated} of {foundPairsText}."
-msgstr "Об'єднано {consolidated} з {foundPairsText}."
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -1876,7 +1891,7 @@ msgstr "Нотатка"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
-msgstr ""
+msgstr "Перетворюються лише транзакції витрат і надходжень: витрати переказуються на цей рахунок, надходження — з нього. Інші типи залишаються без змін."
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only expense transactions can be converted"
@@ -2018,9 +2033,17 @@ msgstr "Польська (Польща)"
 msgid "Portuguese (Portugal)"
 msgstr "Португальська (Португалія)"
 
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Preparing valuation"
+msgstr "Підготовка оцінки"
+
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Шаблон застосовано. За потреби налаштуйте стовпці нижче."
+
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Press to re-evaluate transactions"
+msgstr "Натисніть, щоб переоцінити транзакції"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Privacy"
@@ -2106,6 +2129,10 @@ msgstr "Перерахувати"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Recalculate Balances"
 msgstr "Перерахувати баланси"
+
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Recalculating balances"
+msgstr "Перерахунок балансів"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving {toCode}"
@@ -2662,10 +2689,6 @@ msgstr "Це конвертує дохід у переказ між рахунк
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Це прив’яже вибрану витрату до цього доходу-повернення. Ви можете скасувати це на аркуші джерел повернення."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "This will merge {autoCandidateText}. {manualReviewCandidateText} will be kept for review."
-msgstr "Це об'єднає {autoCandidateText}. {manualReviewCandidateText} буде збережено для перевірки."
-
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "This will remove your monthly budget. You can create a new one anytime."
 msgstr "Це видалить ваш місячний бюджет. Ви можете створити новий у будь-який час."
@@ -2761,11 +2784,11 @@ msgstr "Переказ"
 
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx
 msgid "Transfer → {accountTitle}"
-msgstr ""
+msgstr "Переказ → {accountTitle}"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer Account"
-msgstr ""
+msgstr "Рахунок переказу"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer From Account"
@@ -2890,6 +2913,22 @@ msgstr "Використовуйте Touch ID для швидкого та бе�
 #: src/rule/components/rule-condition-value-enum-selector/rule-condition-value-enum-selector.tsx
 msgid "Value"
 msgstr "Значення"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Value entries"
+msgstr "Оцінити записи"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Value Historical Entries"
+msgstr "Оцінити історичні записи"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Value historical entries?"
+msgstr "Оцінити історичні записи?"
+
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Valuing {processedEntryCount} of {totalEntryCount} transactions"
+msgstr "Оцінювання {processedEntryCount} з {totalEntryCount} транзакцій"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "View and activate hidden accounts"

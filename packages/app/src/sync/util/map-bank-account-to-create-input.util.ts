@@ -1,7 +1,7 @@
-import { BankAccountInterface, BankProviderEnum } from '@budgie/bank-sync';
+import { BankAccountInterface, BankAccountTypeEnum, BankProviderEnum } from '@budgie/bank-sync';
 import { AccountTypeEnum, ExternalSourceEnum, LiabilityAccountCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 /* eslint-disable lingui/no-unlocalized-strings */
 const BANK_PROVIDER_TITLE: Record<BankProviderEnum, string> = {
@@ -14,8 +14,13 @@ const BANK_PROVIDER_TITLE: Record<BankProviderEnum, string> = {
 /* eslint-enable lingui/no-unlocalized-strings */
 
 const generateMonobankTitle = (bankAccount: BankAccountInterface): string => {
-    const cardType = bankAccount.type.charAt(0).toUpperCase() + bankAccount.type.slice(1).toLowerCase();
     const bankName = BANK_PROVIDER_TITLE[bankAccount.provider];
+
+    if (bankAccount.type === BankAccountTypeEnum.JAR && isNotEmptyString(bankAccount.title)) {
+        return `${bankName} «${bankAccount.title}»`;
+    }
+
+    const cardType = bankAccount.type.charAt(0).toUpperCase() + bankAccount.type.slice(1).toLowerCase();
 
     if (isNotEmptyArray(bankAccount.maskedPan)) {
         const lastFourDigits = bankAccount.maskedPan[0].slice(-4);
@@ -50,13 +55,17 @@ export const mapBankAccountToCreateInput = (
     bankAccount: BankAccountInterface,
     instrumentId: number,
     provider: ExternalSourceEnum
-): LiabilityAccountCreateInputInterface => ({
-    title: generateBankAccountTitle(bankAccount),
-    type: AccountTypeEnum.BANK_SYNC,
-    icon: UserIconNameEnum.Landmark,
-    instrumentId,
-    currentBalance: 0,
-    externalId: bankAccount.id,
-    externalSource: provider,
-    iban: bankAccount.iban
-});
+): LiabilityAccountCreateInputInterface => {
+    const icon = bankAccount.type === BankAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark;
+
+    return {
+        title: generateBankAccountTitle(bankAccount),
+        type: AccountTypeEnum.BANK_SYNC,
+        icon,
+        instrumentId,
+        currentBalance: 0,
+        externalId: bankAccount.id,
+        externalSource: provider,
+        iban: bankAccount.iban
+    };
+};
