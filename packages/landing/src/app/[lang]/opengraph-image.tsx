@@ -2,9 +2,9 @@
 import { msg } from '@lingui/core/macro';
 import { ImageResponse } from 'next/og';
 
-import linguiConfig from '../../../lingui.config.mjs';
 import { getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam } from '../../i18n/init-lingui';
+import { SUPPORTED_LOCALES } from '../../i18n/supported-locales.constant.mjs';
 
 export const alt = 'Budgie - Privacy-First Expense Tracker';
 export const size = { width: 1200, height: 630 };
@@ -12,7 +12,7 @@ export const contentType = 'image/png';
 
 // eslint-disable-next-line func-style
 export async function generateStaticParams() {
-    return linguiConfig.locales.map(lang => ({ lang }));
+    return SUPPORTED_LOCALES.map(lang => ({ lang }));
 }
 
 const backgroundStyle = {
