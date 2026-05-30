@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.28.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.28.0) (2026-05-30)
+
+### Features
+
+- **app:** always allow convert-to-transfer rule action and show account on rule card ([#506](https://github.com/budgie-at/budgie/issues/506)) ([83dde51](https://github.com/budgie-at/budgie/commit/83dde5191466672c30c7ed588bb0291d9bd90cfd))
+
 # [5.27.0](https://github.com/budgie-at/budgie/compare/v5.26.0...v5.27.0) (2026-05-29)
 
 ### Bug Fixes

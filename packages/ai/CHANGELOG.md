@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.28.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.28.0) (2026-05-30)
+
+**Note:** Version bump only for package @budgie/ai
+
 # [5.27.0](https://github.com/budgie-at/budgie/compare/v5.26.0...v5.27.0) (2026-05-29)
 
 **Note:** Version bump only for package @budgie/ai
