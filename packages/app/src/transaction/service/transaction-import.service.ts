@@ -8,12 +8,11 @@ import { processInputWithBatches } from '../../@generic/utils/process-input-with
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
 import { ImportedBatchPartitionInterface } from '../interface/imported-batch-partition.interface';
-import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
 import { ImportedUpdateParamInterface } from '../interface/imported-update-param.interface';
-import { RefreshedImportedEntriesResultInterface } from '../interface/refreshed-imported-entries-result.interface';
 import { RefreshedImportedEntriesStatusEnum } from '../type/refreshed-imported-entries-status.enum';
 import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
 
+import { refreshedImportedEntriesService } from './refreshed-imported-entries.service';
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
 import type { TransactionImportOptionsInterface } from '../interface/transaction-import-options.interface';
@@ -21,9 +20,6 @@ import type {
     DB,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
-    TransactionEntryCreateEntityInterface,
-    TransactionEntryCreateInputInterface,
-    TransactionEntryEntityInterface,
     TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
@@ -165,7 +161,15 @@ class TransactionImportService {
             return;
         }
 
-        const refreshedEntriesResult = this.buildRefreshedImportedEntries(existingTransaction.entries, input.entries, transactionId);
+        const refreshedEntriesResult = await refreshedImportedEntriesService.build(
+            {
+                existingEntries: existingTransaction.entries,
+                inputEntries: input.entries,
+                transactionId,
+                input
+            },
+            tx
+        );
 
         if (refreshedEntriesResult.status !== RefreshedImportedEntriesStatusEnum.REFRESHED || !isDefined(refreshedEntriesResult.entries)) {
             return;
@@ -184,108 +188,6 @@ class TransactionImportService {
 
         return new Map(
             existingTransactions.map((transaction): [number, TransactionWithEntriesEntityInterface] => [transaction.id, transaction])
-        );
-    }
-
-    private buildRefreshedImportedEntries(
-        existingEntries: TransactionEntryEntityInterface[],
-        inputEntries: TransactionEntryCreateInputInterface[],
-        transactionId: number
-    ): RefreshedImportedEntriesResultInterface {
-        if (existingEntries.length !== inputEntries.length) {
-            return { status: RefreshedImportedEntriesStatusEnum.LENGTH_MISMATCH, entries: null };
-        }
-
-        const remainingInputEntries = [...inputEntries];
-        const refreshedEntries: TransactionEntryCreateEntityInterface[] = [];
-
-        for (const existingEntry of existingEntries) {
-            const importedEntryMatch = this.findImportedEntryMatch(existingEntry, remainingInputEntries);
-
-            if (!isDefined(importedEntryMatch.matchingInputIndex)) {
-                return { status: importedEntryMatch.status, entries: null };
-            }
-
-            const [matchingInput] = remainingInputEntries.splice(importedEntryMatch.matchingInputIndex, 1);
-            refreshedEntries.push(this.buildRefreshedImportedEntry(existingEntry, matchingInput, transactionId));
-        }
-
-        return { status: RefreshedImportedEntriesStatusEnum.REFRESHED, entries: refreshedEntries };
-    }
-
-    private buildRefreshedImportedEntry(
-        existingEntry: TransactionEntryEntityInterface,
-        matchingInput: TransactionEntryCreateInputInterface,
-        transactionId: number
-    ): TransactionEntryCreateEntityInterface {
-        return {
-            transactionId,
-            accountId: existingEntry.accountId,
-            categoryId: existingEntry.categoryId,
-            categorySource: existingEntry.categorySource,
-            mccCategoryId: existingEntry.mccCategoryId,
-            type: existingEntry.type,
-            amount: existingEntry.amount,
-            externalId: matchingInput.externalId ?? existingEntry.externalId,
-            exchangeRate: matchingInput.exchangeRate ?? existingEntry.exchangeRate,
-            toIban: matchingInput.toIban ?? existingEntry.toIban
-        };
-    }
-
-    private findImportedEntryMatch(
-        existingEntry: TransactionEntryEntityInterface,
-        inputEntries: TransactionEntryCreateInputInterface[]
-    ): ImportedEntryMatchInterface {
-        const externalIdMatchIndex = this.findExternalIdMatchIndex(existingEntry, inputEntries);
-
-        if (isDefined(externalIdMatchIndex)) {
-            return {
-                status: RefreshedImportedEntriesStatusEnum.REFRESHED,
-                matchingInputIndex: externalIdMatchIndex
-            };
-        }
-
-        const fallbackMatchIndexes = this.findFallbackMatchIndexes(existingEntry, inputEntries);
-
-        if (!isNotEmptyArray(fallbackMatchIndexes)) {
-            return {
-                status: RefreshedImportedEntriesStatusEnum.NO_MATCH,
-                matchingInputIndex: null
-            };
-        }
-
-        if (fallbackMatchIndexes.length > 1) {
-            return {
-                status: RefreshedImportedEntriesStatusEnum.AMBIGUOUS_MATCH,
-                matchingInputIndex: null
-            };
-        }
-
-        return {
-            status: RefreshedImportedEntriesStatusEnum.REFRESHED,
-            matchingInputIndex: fallbackMatchIndexes[0]
-        };
-    }
-
-    private findExternalIdMatchIndex(
-        existingEntry: TransactionEntryEntityInterface,
-        inputEntries: TransactionEntryCreateInputInterface[]
-    ): number | null {
-        if (!isDefined(existingEntry.externalId)) {
-            return null;
-        }
-
-        const externalIdMatchIndex = inputEntries.findIndex(inputEntry => inputEntry.externalId === existingEntry.externalId);
-
-        return externalIdMatchIndex >= 0 ? externalIdMatchIndex : null;
-    }
-
-    private findFallbackMatchIndexes(
-        existingEntry: TransactionEntryEntityInterface,
-        inputEntries: TransactionEntryCreateInputInterface[]
-    ): number[] {
-        return inputEntries.flatMap((inputEntry, index) =>
-            inputEntry.accountId === existingEntry.accountId && inputEntry.type === existingEntry.type ? [index] : []
         );
     }
 }

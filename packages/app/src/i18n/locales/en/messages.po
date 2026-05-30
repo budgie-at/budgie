@@ -33,10 +33,6 @@ msgstr "{accountTitle} will be restored to your main view and included in totals
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} will be restored to your main view."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "{autoCandidateCount, plural, one {# high-confidence match} other {# high-confidence matches}}"
-msgstr "{autoCandidateCount, plural, one {# high-confidence match} other {# high-confidence matches}}"
-
 #: src/app/import-column-mapper.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# column available} other {# columns available}}"
@@ -76,10 +72,6 @@ msgstr "{found, plural, one {# high-confidence match} other {# high-confidence m
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "{manualReviewCandidateCount, plural, one {# review match} other {# review matches}}"
-msgstr "{manualReviewCandidateCount, plural, one {# review match} other {# review matches}}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx
 #: src/rule/components/rules-list-page/rules-list-page.tsx
@@ -158,6 +150,10 @@ msgstr "About"
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Account"
 msgstr "Account"
+
+#: src/money-data/service/entry-base-valuation.service.ts
+msgid "Account {accountId} not found"
+msgstr "Account {accountId} not found"
 
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
@@ -411,6 +407,11 @@ msgstr "Bank sync reset"
 msgid "Base currency"
 msgstr "Base currency"
 
+#: src/money-data/service/entry-base-valuation.service.ts
+#: src/money-data/service/money-data-upgrade.service.ts
+msgid "Base instrument not found"
+msgstr "Base instrument not found"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
 msgstr "between"
@@ -439,6 +440,14 @@ msgstr "Borrowed"
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
+msgstr "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
+msgstr "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
+
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
@@ -450,6 +459,7 @@ msgstr "Budgie"
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
 #: src/import/components/import-database/import-database.tsx
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
@@ -1152,6 +1162,10 @@ msgstr "Erste Bank"
 msgid "Everyday transactions and spending"
 msgstr "Everyday transactions and spending"
 
+#: src/money-data/service/entry-base-valuation.service.ts
+msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
+msgstr "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
+
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Exchange rate: {rateLabel}. Tap to edit receiving amount"
@@ -1285,6 +1299,10 @@ msgstr "Greater Than"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Historical valuation failed"
+msgstr "Historical valuation failed"
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
 msgid "History synced"
@@ -1513,10 +1531,6 @@ msgstr "Matched income is converted into a transfer from this account."
 msgid "matches"
 msgstr "matches"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "Matches consolidated"
-msgstr "Matches consolidated"
-
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Matches Regex"
 msgstr "Matches Regex"
@@ -1548,10 +1562,6 @@ msgstr "Merge into another tag"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Merge matching transfers and refunds"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "Merged {consolidated} of {foundPairsText}."
-msgstr "Merged {consolidated} of {foundPairsText}."
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -1889,9 +1899,17 @@ msgstr "Polish (Poland)"
 msgid "Portuguese (Portugal)"
 msgstr "Portuguese (Portugal)"
 
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Preparing valuation"
+msgstr "Preparing valuation"
+
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset applied. Adjust columns below if needed."
+
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Press to re-evaluate transactions"
+msgstr "Press to re-evaluate transactions"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Privacy"
@@ -1973,6 +1991,10 @@ msgstr "Recalculate"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Recalculate Balances"
 msgstr "Recalculate Balances"
+
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Recalculating balances"
+msgstr "Recalculating balances"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving {toCode}"
@@ -2497,10 +2519,6 @@ msgstr "This will convert the income to a transfer between accounts."
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "This will merge {autoCandidateText}. {manualReviewCandidateText} will be kept for review."
-msgstr "This will merge {autoCandidateText}. {manualReviewCandidateText} will be kept for review."
-
 #: src/app/resync-window-picker.tsx
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
@@ -2721,6 +2739,22 @@ msgstr "Use Touch ID to unlock your app quickly and securely"
 #: src/rule/components/rule-condition-value-enum-selector/rule-condition-value-enum-selector.tsx
 msgid "Value"
 msgstr "Value"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Value entries"
+msgstr "Value entries"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Value Historical Entries"
+msgstr "Value Historical Entries"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Value historical entries?"
+msgstr "Value historical entries?"
+
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Valuing {processedEntryCount} of {totalEntryCount} transactions"
+msgstr "Valuing {processedEntryCount} of {totalEntryCount} transactions"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "View and activate hidden accounts"

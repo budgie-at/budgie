@@ -5,6 +5,8 @@ appId: ${APP_ID}
       env:
           FIXTURE_ROW_ID_MATCH: '14.db(, db)?'
 
+- runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
+
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - assertVisible:
@@ -15,7 +17,7 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
 # Total transaction counter reflects all visible transactions when no filter is applied
-- assertVisible: '4 transactions'
+- assertVisible: '6 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -31,8 +33,8 @@ appId: ${APP_ID}
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
-# Counter is filter-aware and uses the singular form for a single match
-- assertVisible: '1 transaction'
+# Counter is filter-aware: the expense type matches the seeded expense plus the two historical UAH expenses
+- assertVisible: '3 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -177,6 +179,9 @@ appId: ${APP_ID}
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
+# Counter uses the singular form for a single match (only the seeded expense carries this tag)
+- assertVisible: '1 transaction'
+
 - scrollUntilVisible:
       element:
           id: 'TransactionFilters.ClearAllButton'
@@ -314,9 +319,25 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.ClearAllButton'
 - assertVisible:
-      id: 'TransactionAnalyticsCard.Amount.Spent.30'
+      id: 'TransactionAnalyticsCard.Amount.Spent.40'
 - assertVisible:
-      id: 'CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.30000000'
+      id: 'CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.40000000'
+- tapOn:
+      id: 'CategoryStatisticsCard.E2E_Filter_Expense_Category'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Historical_UAH_2026'
+      timeout: 5000
+- scrollUntilVisible:
+      element:
+          id: 'TransactionCard.Label.E2E_Historical_UAH_2011'
+      direction: DOWN
+      speed: 20
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AnalyticsPage.Container'
 
 # --- Transaction counter on the account detail screen ---
 

@@ -7,6 +7,7 @@ export interface TransferConversionResultInterface {
     readonly debitAmount: number;
     readonly exchangeRate: number;
     readonly fromAccountId: number;
+    readonly operatedAt: Date;
     readonly toAccountId: number;
     readonly transactionType: TransactionTypeEnum;
 }

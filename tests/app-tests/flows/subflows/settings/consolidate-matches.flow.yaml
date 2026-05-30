@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../navigation/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+      element:
+          id: 'SettingsPage.ConsolidateTransfersCard'
+      direction: DOWN
+- tapOn:
+      id: 'SettingsPage.ConsolidateTransfersCard'
+- extendedWaitUntil:
+      visible: '.*high-confidence transfer.*'
+      timeout: 10000
+- tapOn: 'Consolidate'
