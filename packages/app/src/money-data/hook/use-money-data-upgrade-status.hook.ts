@@ -66,7 +66,7 @@ export const useMoneyDataUpgradeStatus = () => {
         const confirmed = await confirmAlert({
             title: t`Value historical entries?`,
             message: t`Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes.`,
-            confirmText: t`Value`,
+            confirmText: t`Value entries`,
             cancelText: t`Cancel`
         });
 
