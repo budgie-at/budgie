@@ -500,7 +500,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 3. A deep link is acceptable only for navigation shortcuts, for example opening Settings at a specific anchor.
 4. Seed fixtures through simulator or emulator setup scripts, not through hidden app services.
 5. Run Maestro verification only against a clean E2E build installed fresh from the current branch. Dev-client or Metro runs are useful for debugging, but they are not acceptance evidence and must not be reported as passing E2E.
-6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Maestro against that bundle id.
+6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Maestro against that bundle id. Local build/run procedure and cache/stale-binary traps: `tests/app-tests/E2E-RUNBOOK.md`.
 7. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
 8. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the E2E app before rerunning the test.
 9. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.

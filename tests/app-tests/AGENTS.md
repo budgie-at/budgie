@@ -55,3 +55,5 @@ Maestro flows for Budgie.
 3. Do not duplicate native build hacks in multiple places. If a config plugin already injects a required Xcode build phase, do not repeat the same workaround in the workflow or local build commands.
 4. Run Maestro verification only against a freshly rebuilt and reinstalled `APP_VARIANT=e2e` app. Dev-client or Metro runs may reproduce/debug a symptom, but they are not valid E2E pass evidence.
 5. After changing app code, selectors, fixtures, native config, or Maestro flow assumptions, rebuild the E2E app, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures with `setup-ios-e2e-fixtures.sh`, then run the target flow or suite.
+6. `expo run:ios` can serve a STALE cached EAS binary (`buildCacheProvider: 'eas'` in `app.config.js`); `--no-build-cache` does not stop it. To verify code under test, force a local compile and confirm `MAESTRO_EXIT=0` from the actual run. Full procedure and other traps: see [E2E-RUNBOOK.md](./E2E-RUNBOOK.md).
+7. After merging `main` into a branch that changes E2E fixtures, re-run every flow touching that fixture — count/total assertions drift and `ts/lint/cpd` cannot catch it. See E2E-RUNBOOK.md.
