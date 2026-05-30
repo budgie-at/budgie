@@ -333,6 +333,11 @@ appId: ${APP_ID}
           id: 'TransactionCard.Label.E2E_Historical_UAH_2011'
       direction: DOWN
       speed: 20
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AnalyticsPage.Container'
 
 # --- Transaction counter on the account detail screen ---
 
