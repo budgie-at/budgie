@@ -1,5 +1,3 @@
-import { formatter } from '@lingui/format-po';
-
 export default {
     sourceLocale: 'en',
     fallbackLocales: {
@@ -7,7 +5,6 @@ export default {
     },
     pseudoLocale: 'pseudo',
     locales: ['uk', 'en', 'fr', 'de', 'es'],
-    format: formatter({ lineNumbers: false }),
     catalogs: [
         {
             path: '<rootDir>/src/i18n/locales/{locale}/messages',

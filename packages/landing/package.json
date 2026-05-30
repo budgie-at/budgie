@@ -14,9 +14,8 @@
         "ts": "run -T tsc -p ."
     },
     "dependencies": {
-        "@lingui/core": "^5.7.0",
-        "@lingui/macro": "^5.7.0",
-        "@lingui/react": "^5.7.0",
+        "@lingui/core": "6.1.0",
+        "@lingui/react": "6.1.0",
         "@mdx-js/loader": "^3.1.1",
         "@mdx-js/react": "^3.1.1",
         "@next/mdx": "16",
@@ -42,8 +41,8 @@
         "tailwindcss-animate": "^1.0.7"
     },
     "devDependencies": {
-        "@lingui/loader": "^5.7.0",
-        "@lingui/swc-plugin": "5.11.0",
+        "@lingui/loader": "6.1.0",
+        "@lingui/swc-plugin": "6.3.0",
         "@tailwindcss/postcss": "^4.1.14",
         "@types/mdx": "^2.0.13",
         "@types/negotiator": "^0.6.3",

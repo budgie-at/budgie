@@ -325,6 +325,8 @@ The "Lint" column marks rows enforced by `no-restricted-syntax` at `warn` severi
 
 ### i18n (Lingui) Usage
 
+> Full i18n workflow, sync rules, and catalog conflict resolution: see [docs/i18n.md](docs/i18n.md).
+
 **Use `t` macro for string props, `<Trans>` for JSX text children:**
 
 ```typescript
