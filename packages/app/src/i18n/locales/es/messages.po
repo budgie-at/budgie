@@ -2187,7 +2187,7 @@ msgstr "Selecciona una columna válida"
 msgid "Select account"
 msgstr "Seleccionar cuenta"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:74
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:73
 msgid "Select Account"
 msgstr "Seleccionar cuenta"
 

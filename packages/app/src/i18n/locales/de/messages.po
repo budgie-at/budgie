@@ -2187,7 +2187,7 @@ msgstr "Wählen Sie eine gültige Spalte"
 msgid "Select account"
 msgstr "Konto auswählen"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:74
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:73
 msgid "Select Account"
 msgstr "Konto auswählen"
 
