@@ -11,7 +11,8 @@ import { transferConsolidationService } from './transfer-consolidation.service';
 
 class TransferConsolidationDrainerService {
     private static readonly DRAIN_DELAY_MS_BY_REASON: Record<TransferConsolidationDrainReasonEnum, number> = {
-        [TransferConsolidationDrainReasonEnum.MONOBANK_SYNC]: 1500
+        [TransferConsolidationDrainReasonEnum.MONOBANK_SYNC]: 1500,
+        [TransferConsolidationDrainReasonEnum.FILE_IMPORT]: 1500
     };
 
     private static readonly FOREGROUND_BUSY_RESCHEDULE_MS = 1000;
