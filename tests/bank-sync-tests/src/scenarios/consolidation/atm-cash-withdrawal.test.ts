@@ -3,7 +3,15 @@ import { eq } from 'drizzle-orm';
 
 import { AccountTypeEnum, TransactionConsolidationTypeEnum, TransactionEntryEntityTable } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair, testDb } from '../../harness';
+import {
+    expectAtmCashWithdrawalConsolidation,
+    fetchCanonicalsOfType,
+    fetchTransactionById,
+    findMccByCode,
+    seed,
+    seedBankPair,
+    testDb
+} from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { transactionService } from '@app/transaction/service/transaction.service';
@@ -22,16 +30,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
         const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
         const expense = seedAtmExpense(bankAccount.id);
 
-        const result = await transferConsolidationService.consolidate();
-
-        expect(result.consolidated).toBe(1);
-
-        const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
-        expect(canonicals).toHaveLength(1);
-        expect(canonicals[0].fromAccountId).toBe(bankAccount.id);
-        expect(canonicals[0].toAccountId).toBe(cashAccount.id);
-
-        expect(fetchTransactionById(expense.id).consolidationParentTransactionId).toBe(canonicals[0].id);
+        await expectAtmCashWithdrawalConsolidation(bankAccount.id, cashAccount.id, expense.id);
     });
 
     it('does NOT auto-consolidate when more than one cash account shares the currency', async () => {
