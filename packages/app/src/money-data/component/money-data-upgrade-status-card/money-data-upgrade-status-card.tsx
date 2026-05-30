@@ -34,13 +34,11 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeo
             testID={testID}
             {...(isActionable && { onPress: handlePress })}
             left={<CircleIcon icon={UserIconNameEnum.Database} variant="positive" border={false} size={36} iconSize={20} />}
-            {...(isWorking && {
-                right: (
-                    <Text testID={percentTestID} className={`text-sm font-medium text-right w-12 ${STATE_TEXT_CLASS[snapshot.state]}`}>
-                        {percentText}
-                    </Text>
-                )
-            })}
+            right={
+                <Text testID={percentTestID} className={`text-sm font-medium text-right w-12 ${STATE_TEXT_CLASS[snapshot.state]}`}>
+                    {percentText}
+                </Text>
+            }
             variant="secondary"
             contentClassName="gap-y-xs"
         >
@@ -48,7 +46,7 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeo
             <Text testID={statusTestID} className="text-xs font-medium text-secondary-foreground">
                 {snapshot.statusText}
             </Text>
-            {isWorking ? <AiProgressBar progress={snapshot.percent} /> : null}
+            <AiProgressBar progress={snapshot.percent} />
         </HorizontalCell>
     );
 };
