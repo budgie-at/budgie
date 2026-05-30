@@ -629,6 +629,10 @@ Register tasks in `_layout.tsx` after migrations:
 
 Task files use `.task.ts` suffix and are defined in `[module]/task/` folders.
 
+### Long-running work must yield to the UI
+
+Any loop or multi-step process that can run long (valuing thousands of rows, bulk imports, batch consolidations) must yield to the JS event loop so the UI thread can paint — otherwise progress bars freeze at 0% and the app feels hung even when the work is succeeding. Process in batches, commit each batch in its own short transaction (never hold a write transaction open across a yield), publish progress, then `await microPause()` from `@generic/utils/micro-pause.util` before the next batch. Mirror the rule-engine batch pattern (`RULE_BATCH_SIZE` + per-batch transaction + yield).
+
 ### `emptySnapshot()` returns fresh objects
 
 Return a spread (`{ ...EMPTY_SNAPSHOT }`), not the module-level constant. The constant is a template; callers must not share a reference.
