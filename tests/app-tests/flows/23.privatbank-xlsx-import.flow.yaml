@@ -36,7 +36,7 @@ env:
       timeout: 10000
 
 - assertVisible:
-      id: 'AccountCard.Balance.Privatbank_1234.1_050'
+      id: 'AccountCard.Balance.Privatbank_1234.747'
 
 - tapOn:
       id: 'AccountCard.Privatbank •1234'
@@ -60,6 +60,17 @@ env:
       visible:
           id: 'TransactionCard.Category.Groceries'
       timeout: 3000
+
+- scrollUntilVisible:
+      element:
+          id: 'TransactionCard.Label.E2E_Privatbank_ATM'
+      direction: DOWN
+      timeout: 10000
+      speed: 20
+      visibilityPercentage: 30
+
+- assertVisible:
+      id: 'TransactionCard.EntryCategoryAmount.Bank_Fees_Charges.3'
 
 - tapOn:
       id: 'PageHeader.BackButton'
@@ -105,7 +116,7 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'AccountCard.Balance.Privatbank_1234.850'
+          id: 'AccountCard.Balance.Privatbank_1234.547'
       timeout: 5000
 
 - tapOn:
@@ -162,7 +173,7 @@ env:
       timeout: 10000
 
 - assertVisible:
-      id: 'AccountCard.Balance.Privatbank_1234.850'
+      id: 'AccountCard.Balance.Privatbank_1234.547'
 
 - longPressOn:
       id: 'AccountCard.Privatbank •1234'
@@ -175,7 +186,7 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'AccountCard.Balance.Privatbank_1234.850'
+          id: 'AccountCard.Balance.Privatbank_1234.547'
       timeout: 5000
 
 - tapOn:

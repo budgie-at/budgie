@@ -35,6 +35,7 @@
     "ignoreDependencies": [
         "husky",
         "@lingui/cli",
+        "@lingui/format-po",
         "@expo/metro-config",
         "@expo/fingerprint",
         "metro-minify-terser",

@@ -2,9 +2,7 @@ import 'server-only';
 
 import { I18n, Messages, setupI18n } from '@lingui/core';
 
-import linguiConfig from '../../lingui.config.mjs';
-
-const { locales } = linguiConfig;
+import { SUPPORTED_LOCALES as locales } from './supported-locales.constant.mjs';
 type SupportedLocales = (typeof locales)[number];
 
 export const allMessages: Record<SupportedLocales, Messages> = {};
