@@ -25,24 +25,11 @@ import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInte
 
 describe('base valuation', () => {
     it('values imported UAH entries with seeded historical NBU rates', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
-        const account = seed.account({ instrumentId: hryvnia.id });
+        await expectHistoricalUahValuation(ExternalSourceEnum.CSV);
+    });
 
-        await setDefaultInstrument(euro.id);
-
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
-            accountId: account.id,
-            amount: 50 * PRECISION,
-            operatedAt: new Date('2011-05-25T12:00:00.000Z'),
-            externalSource: ExternalSourceEnum.CSV
-        });
-
-        expect(valuation).toStrictEqual({
-            baseInstrumentId: euro.id,
-            baseExchangeRate: 0.0889028367561666,
-            baseAmount: 4_445_142
-        });
+    it('values a manually back-dated UAH entry with the historical rate, not the current one', async () => {
+        await expectHistoricalUahValuation(null);
     });
 
     it('sums analytics with historical base amounts from different periods', async () => {
@@ -66,6 +53,27 @@ describe('base valuation', () => {
 
 const setDefaultInstrument = async (defaultInstrumentId: number): Promise<void> => {
     await testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
+};
+
+const expectHistoricalUahValuation = async (externalSource: ExternalSourceEnum | null): Promise<void> => {
+    const euro = await requireInstrument(CurrencyEnum.EUR);
+    const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+    const account = seed.account({ instrumentId: hryvnia.id });
+
+    await setDefaultInstrument(euro.id);
+
+    const valuation = await entryBaseValuationService.valueMicroUnitEntry({
+        accountId: account.id,
+        amount: 50 * PRECISION,
+        operatedAt: new Date('2011-05-25T12:00:00.000Z'),
+        externalSource
+    });
+
+    expect(valuation).toStrictEqual({
+        baseInstrumentId: euro.id,
+        baseExchangeRate: 0.0889028367561666,
+        baseAmount: 4_445_142
+    });
 };
 
 const dbCategories = async () => {
