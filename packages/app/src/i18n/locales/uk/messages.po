@@ -2749,7 +2749,7 @@ msgstr "Значення"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts:69
 msgid "Value entries"
-msgstr ""
+msgstr "Оцінити записи"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts:59
 msgid "Value Historical Entries"
