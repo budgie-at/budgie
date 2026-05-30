@@ -5,6 +5,7 @@ import { t } from '@lingui/core/macro';
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository } from '../../@generic/drizzle/db/db';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
@@ -14,6 +15,8 @@ import type { MoneyDataUpgradeRuntimeSnapshotInterface } from '../interface/mone
 import type { DB, PendingBaseValuationBucketInterface } from '@budgie/contracts';
 
 class MoneyDataUpgradeService {
+    private static readonly BUCKET_BATCH_SIZE = 25;
+
     private snapshot: MoneyDataUpgradeRuntimeSnapshotInterface = this.createInitialSnapshot();
 
     @Log(
@@ -94,9 +97,7 @@ class MoneyDataUpgradeService {
             onProgress
         );
 
-        await transactionAsync(db, async tx => {
-            await this.valuePendingEntryBuckets(buckets, baseInstrument.id, tx, onProgress);
-        });
+        await this.valuePendingEntryBuckets(buckets, baseInstrument.id, onProgress);
 
         this.publishSnapshot(
             {
@@ -112,22 +113,42 @@ class MoneyDataUpgradeService {
     private async valuePendingEntryBuckets(
         buckets: PendingBaseValuationBucketInterface[],
         baseInstrumentId: number,
-        tx: DB,
         onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
     ): Promise<void> {
-        await buckets.reduce(
-            (previousBucketPromise, bucket) =>
-                previousBucketPromise.then(() => this.valuePendingEntryBucket(bucket, baseInstrumentId, tx, onProgress)),
+        await this.toBucketBatches(buckets).reduce(
+            (previousBatchPromise, batch) =>
+                previousBatchPromise.then(() => this.valuePendingEntryBatch(batch, baseInstrumentId, onProgress)),
             Promise.resolve()
         );
     }
 
-    private async valuePendingEntryBucket(
-        bucket: PendingBaseValuationBucketInterface,
+    private async valuePendingEntryBatch(
+        batch: PendingBaseValuationBucketInterface[],
         baseInstrumentId: number,
-        tx: DB,
         onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
     ): Promise<void> {
+        await transactionAsync(db, async tx => {
+            await batch.reduce(
+                (previousBucketPromise, bucket) =>
+                    previousBucketPromise.then(() => this.valuePendingEntryBucket(bucket, baseInstrumentId, tx)),
+                Promise.resolve()
+            );
+        });
+
+        const batchEntryCount = this.sumBucketEntries(batch);
+        this.publishSnapshot(
+            {
+                ...this.snapshot,
+                pendingEntryCount: Math.max(this.snapshot.pendingEntryCount - batchEntryCount, 0),
+                processedEntryCount: this.snapshot.processedEntryCount + batchEntryCount
+            },
+            onProgress
+        );
+
+        await microPause();
+    }
+
+    private async valuePendingEntryBucket(bucket: PendingBaseValuationBucketInterface, baseInstrumentId: number, tx: DB): Promise<void> {
         const operatedAt = new Date(bucket.rateDate);
         operatedAt.setHours(0, 0, 0, 0);
 
@@ -150,15 +171,16 @@ class MoneyDataUpgradeService {
             },
             tx
         );
+    }
 
-        this.publishSnapshot(
-            {
-                ...this.snapshot,
-                pendingEntryCount: Math.max(this.snapshot.pendingEntryCount - bucket.entryCount, 0),
-                processedEntryCount: this.snapshot.processedEntryCount + bucket.entryCount
-            },
-            onProgress
-        );
+    private toBucketBatches(buckets: PendingBaseValuationBucketInterface[]): PendingBaseValuationBucketInterface[][] {
+        const batches: PendingBaseValuationBucketInterface[][] = [];
+
+        for (let batchStart = 0; batchStart < buckets.length; batchStart += MoneyDataUpgradeService.BUCKET_BATCH_SIZE) {
+            batches.push(buckets.slice(batchStart, batchStart + MoneyDataUpgradeService.BUCKET_BATCH_SIZE));
+        }
+
+        return batches;
     }
 
     private sumBucketEntries(buckets: PendingBaseValuationBucketInterface[]): number {
