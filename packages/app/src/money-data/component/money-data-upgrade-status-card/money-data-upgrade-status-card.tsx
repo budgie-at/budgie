@@ -24,7 +24,7 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeo
     const isWorking = snapshot.state === MoneyDataUpgradeProgressStateEnum.WORKING;
     const isActionable = !isWorking;
     const statusTestID = isDefined(testID) ? `${testID}.Status.${snapshot.state}` : testID;
-    const percentTestID = isDefined(testID) ? `${testID}.Percent.${snapshot.state}` : testID;
+    const percentTestID = isDefined(testID) ? `${testID}.Percent` : testID;
     const handlePress = () => {
         void handlePrimaryAction();
     };

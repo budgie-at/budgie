@@ -16,24 +16,10 @@ import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates
 
 import type { EntryBaseValuationInputInterface } from '../interface/entry-base-valuation-input.interface';
 import type { EntryBaseValuationInterface } from '../interface/entry-base-valuation.interface';
-import type { DB, TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
+import type { DB, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 class EntryBaseValuationService {
     private static readonly RATE_DATE_FORMAT = 'yyyy-MM-dd';
-
-    @Log(
-        (input, tx) => `enter accountIds=${input.entries.map(entry => entry.accountId).join(',')} hasTx=${String(isDefined(tx))}`,
-        (result, input, tx) =>
-            `done accountIds=${input.entries.map(entry => entry.accountId).join(',')} valuations=${result.size} hasTx=${String(isDefined(tx))}`,
-        (error, input, tx) =>
-            `throw accountIds=${input.entries.map(entry => entry.accountId).join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async valueTransactionInput(
-        input: TransactionCreateInputInterface,
-        tx?: DB
-    ): Promise<Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>> {
-        return await this.valueEntries(input.entries, input.operatedAt, input.externalSource, tx);
-    }
 
     @Log(
         input =>
