@@ -9,6 +9,7 @@ export { seedRefundStatisticsScenario } from './seed/seed-refund-statistics-scen
 export { runRefundScenario } from './seed/run-refund-scenario';
 export { seedAmountTransferPair } from './seed/seed-amount-transfer-pair';
 export { expectSingleConsolidation } from './consolidation/expect-single-consolidation';
+export { expectAtmCashWithdrawalConsolidation } from './consolidation/expect-atm-cash-withdrawal-consolidation';
 export { seedBankSyncAccount } from './consolidation/seed-bank-sync-account';
 export { updateBankTransaction } from './consolidation/update-bank-transaction';
 export { fetchTransactionById } from './db/fetch-transaction-by-id';
