@@ -14,6 +14,16 @@ import type { PrivatbankRowInterface } from '../interface/privatbank-row.interfa
 const getTransactionType = (amount: number): BankTransactionTypeEnum =>
     isPositiveNumber(amount) ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE;
 
+const getFeeAmount = (row: PrivatbankRowInterface): number => {
+    if (row.cardCurrency !== row.operationCurrency) {
+        return 0;
+    }
+
+    const fee = Math.abs(row.cardAmount) - Math.abs(row.operationAmount);
+
+    return isPositiveNumber(fee) ? fee : 0;
+};
+
 export const privatbankTransactionMapper = (row: PrivatbankRowInterface): BankTransactionInterface => ({
     id: generatePrivatbankExternalId(row),
     provider: BankProviderEnum.PRIVATBANK,
@@ -30,5 +40,6 @@ export const privatbankTransactionMapper = (row: PrivatbankRowInterface): BankTr
     cashbackAmount: 0,
     balance: row.endBalance,
     hold: false,
-    category: row.category
+    category: row.category,
+    feeAmount: getFeeAmount(row)
 });

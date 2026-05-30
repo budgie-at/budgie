@@ -33,7 +33,7 @@ const getSourceDisplayType = (
         return source.sourceType === TransactionTypeEnum.INCOME ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
     }
 
-    return source.entryType === TransactionEntryTypeEnum.CREDIT ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
+    return source.entryType === TransactionEntryTypeEnum.CREDIT ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
 };
 
 const mapSourceToPickerItem = (
