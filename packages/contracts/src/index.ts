@@ -112,6 +112,7 @@ export type { InstrumentCreateEntityInterface } from './instrument/entity/instru
 
 export { InstrumentRepository } from './instrument/repository/instrument.repository';
 
+export { BANK_FEE_CATEGORY_ID } from './category/constant/bank-fee-category-id.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
 export { CATEGORY_TITLE_MIN_LENGTH } from './category/constant/category-title-min-length.constant';
 
