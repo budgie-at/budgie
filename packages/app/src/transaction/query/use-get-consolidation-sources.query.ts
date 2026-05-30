@@ -11,41 +11,24 @@ import type { ConsolidationSourceRowInterface, TransactionConsolidationTypeEnum 
 
 const logger = getLogger('useGetConsolidationSourcesQuery');
 
-const fromAccountOf = (entries: readonly ConsolidationSourceRowInterface[]): number | undefined =>
-    entries.find(entry => entry.entryType === TransactionEntryTypeEnum.DEBIT)?.accountId;
-
-const toAccountOf = (entries: readonly ConsolidationSourceRowInterface[]): number | undefined =>
-    entries.find(entry => entry.entryType === TransactionEntryTypeEnum.CREDIT)?.accountId;
-
-const groupBySourceTransaction = (rows: readonly ConsolidationSourceRowInterface[]): ConsolidationSourceRowInterface[][] => {
-    const byTransaction = new Map<number, ConsolidationSourceRowInterface[]>();
-    for (const row of rows) {
-        const entries = byTransaction.get(row.sourceTransactionId) ?? [];
-        byTransaction.set(row.sourceTransactionId, [...entries, row]);
-    }
-
-    return [...byTransaction.values()];
-};
-
 const orderSourcesByTransferChain = (rows: ConsolidationSourceRowInterface[]): ConsolidationSourceRowInterface[] => {
-    const transactions = groupBySourceTransaction(rows);
-    const ordered: ConsolidationSourceRowInterface[][] = [];
-    let current = transactions.find(entries => {
-        const fromAccount = fromAccountOf(entries);
+    const sendingAccounts = new Set(rows.filter(row => row.entryType === TransactionEntryTypeEnum.CREDIT).map(row => row.accountId));
+    const receivingAccounts = new Set(rows.filter(row => row.entryType === TransactionEntryTypeEnum.DEBIT).map(row => row.accountId));
+    const accounts = [...new Set(rows.map(row => row.accountId))];
 
-        return isDefined(fromAccount) && !transactions.some(other => toAccountOf(other) === fromAccount);
-    });
+    const originAccount = accounts.find(accountId => sendingAccounts.has(accountId) && !receivingAccounts.has(accountId));
+    const targetAccount = accounts.find(accountId => receivingAccounts.has(accountId) && !sendingAccounts.has(accountId));
+    const bridgeAccounts = accounts.filter(accountId => sendingAccounts.has(accountId) && receivingAccounts.has(accountId));
+    const chainAccounts = [originAccount, ...bridgeAccounts, targetAccount].filter(isDefined);
+    const orderedAccounts = [...chainAccounts, ...accounts.filter(accountId => !chainAccounts.includes(accountId))];
 
-    while (isDefined(current) && !ordered.includes(current)) {
-        ordered.push(current);
-        const toAccount = toAccountOf(current);
-        if (!isDefined(toAccount)) {
-            break;
-        }
-        current = transactions.find(entries => fromAccountOf(entries) === toAccount);
-    }
+    const rankOf = (row: ConsolidationSourceRowInterface): number => {
+        const arrivalBeforeDeparture = row.entryType === TransactionEntryTypeEnum.DEBIT ? 0 : 1;
 
-    return [...ordered, ...transactions.filter(entries => !ordered.includes(entries))].flat();
+        return orderedAccounts.indexOf(row.accountId) * 2 + arrivalBeforeDeparture;
+    };
+
+    return [...rows].sort((left, right) => rankOf(left) - rankOf(right));
 };
 
 export const useGetConsolidationSourcesQuery = (transactionId: number) => {
