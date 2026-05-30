@@ -130,7 +130,7 @@ msgstr "<"
 msgid ">"
 msgstr ">"
 
-#: src/@generic/component/currency-selector/currency-selector.tsx:66
+#: src/@generic/component/currency-selector/currency-selector.tsx:67
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
@@ -407,7 +407,7 @@ msgstr "Bank-Synchronisation"
 msgid "Bank sync reset"
 msgstr "Bank-Synchronisation zurückgesetzt"
 
-#: src/@generic/component/currency-selector/currency-selector.tsx:64
+#: src/@generic/component/currency-selector/currency-selector.tsx:65
 msgid "Base currency"
 msgstr "Basiswährung"
 
@@ -716,7 +716,7 @@ msgstr "Konten konnten nicht abgerufen werden"
 msgid "Could not import CSV file"
 msgstr "CSV-Datei konnte nicht importiert werden"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:56
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:51
 msgid "Could not load sources. Please try again."
 msgstr "Quellen konnten nicht geladen werden. Bitte erneut versuchen."
 
@@ -971,7 +971,7 @@ msgid "Disable App Lock"
 msgstr "App-Sperre deaktivieren"
 
 #: src/app/import-column-mapper.tsx:97
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:91
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:86
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:21
 msgid "Done"
 msgstr "Fertig"
@@ -1705,7 +1705,7 @@ msgstr "Keine Ergebnisse"
 msgid "No Rules Yet"
 msgstr "Noch keine Regeln"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:69
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:64
 msgid "No source transactions"
 msgstr "Keine Quelltransaktionen"
 
@@ -2023,7 +2023,7 @@ msgstr "Aus einer Sicherungsdatei wiederherstellen"
 msgid "Resuming AI…"
 msgstr "KI wird fortgesetzt…"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:101
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:96
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx:28
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
 #: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:75
@@ -2330,10 +2330,6 @@ msgstr "Etwas ist schief gelaufen. Bitte versuchen Sie es später erneut."
 msgid "Source"
 msgstr "Quelle"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:52
-msgid "Source transactions"
-msgstr "Quelltransaktionen"
-
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:152
 msgid "Sources"
 msgstr "Quellen"
@@ -2471,7 +2467,7 @@ msgstr "Dieses Konto wird in Ihrer Hauptansicht ausgeblendet und nicht in den Ge
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:70
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:65
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Dieser konsolidierte Transfer hat keine verschobenen Quelleinträge."
 
