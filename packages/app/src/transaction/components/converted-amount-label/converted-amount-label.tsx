@@ -10,12 +10,14 @@ import { useConvertedAmount } from '../../hook/use-converted-amount.hook';
 interface Props {
     readonly instrumentId: number;
     readonly amount: number;
+    readonly baseAmount: number | null;
 }
 
-export const ConvertedAmountLabel = ({ instrumentId, amount }: Props) => {
+export const ConvertedAmountLabel = ({ instrumentId, amount, baseAmount }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const convertedAmount = useConvertedAmount(instrumentId, defaultInstrument.id, amount);
+    const liveConvertedAmount = useConvertedAmount(instrumentId, defaultInstrument.id, amount);
+    const convertedAmount = isDefined(baseAmount) ? baseAmount : liveConvertedAmount;
 
     if (!isDefined(convertedAmount)) {
         return null;
