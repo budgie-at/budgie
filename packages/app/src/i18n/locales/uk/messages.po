@@ -1387,6 +1387,10 @@ msgstr "Заплановано"
 msgid "Italian (Italy)"
 msgstr "Італійська (Італія)"
 
+#: src/sync/component/account-selection-step/account-selection-step.tsx
+msgid "Jars"
+msgstr "Банки"
+
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Мова"
@@ -1497,11 +1501,11 @@ msgstr "Зіставте кожне поле зі стовпцем вашого 
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
-msgstr ""
+msgstr "Відповідні витрати перетворюються на переказ на цей рахунок."
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched income is converted into a transfer from this account."
-msgstr ""
+msgstr "Відповідні надходження перетворюються на переказ із цього рахунку."
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
@@ -1765,7 +1769,7 @@ msgstr "Нотатка"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
-msgstr ""
+msgstr "Перетворюються лише транзакції витрат і надходжень: витрати переказуються на цей рахунок, надходження — з нього. Інші типи залишаються без змін."
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only expense transactions can be converted"
@@ -2586,11 +2590,11 @@ msgstr "Переказ"
 
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx
 msgid "Transfer → {accountTitle}"
-msgstr ""
+msgstr "Переказ → {accountTitle}"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer Account"
-msgstr ""
+msgstr "Рахунок переказу"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer From Account"

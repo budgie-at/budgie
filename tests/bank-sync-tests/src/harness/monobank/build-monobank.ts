@@ -1,8 +1,15 @@
 import { MonobankAccountTypeEnum, MonobankCashbackTypeEnum } from '@budgie/bank-sync';
 
-import type { MonobankAccountApiInterface, MonobankClientInfoApiInterface, MonobankTransactionApiInterface } from '@budgie/bank-sync';
+import type {
+    MonobankAccountApiInterface,
+    MonobankClientInfoApiInterface,
+    MonobankJarApiInterface,
+    MonobankTransactionApiInterface
+} from '@budgie/bank-sync';
 
 type MonobankAccountOverrides = Partial<MonobankAccountApiInterface> & Pick<MonobankAccountApiInterface, 'id'>;
+
+type MonobankJarOverrides = Partial<MonobankJarApiInterface> & Pick<MonobankJarApiInterface, 'id'>;
 
 type MonobankTxOverrides = Partial<MonobankTransactionApiInterface> & Pick<MonobankTransactionApiInterface, 'id' | 'amount' | 'hold'>;
 
@@ -16,6 +23,15 @@ export const buildMonobank = {
         maskedPan: ['*1234'],
         type: MonobankAccountTypeEnum.BLACK,
         iban: 'UA000000000000000000000000000',
+        ...overrides
+    }),
+    jar: (overrides: MonobankJarOverrides): MonobankJarApiInterface => ({
+        sendId: 'jar-send-1',
+        title: 'Test Jar',
+        description: '',
+        currencyCode: 980,
+        balance: 0,
+        goal: 0,
         ...overrides
     }),
     clientInfoWith: (accountIds: string[]): MonobankClientInfoApiInterface => ({
