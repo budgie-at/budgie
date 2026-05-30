@@ -129,6 +129,7 @@ class TransactionService {
         });
     }
 
+    // eslint-disable-next-line max-lines-per-function -- Transfer orchestration: valuation, custom rate, debt handling, balance update
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         // eslint-disable-next-line max-statements -- Transfer creation with optional custom exchange rate
         return await transactionAsync(db, async tx => {
@@ -163,7 +164,12 @@ class TransactionService {
                 },
                 tx
             );
-            const additionalEntryValuations = await entryBaseValuationService.valueTransactionInput(input, tx);
+            const additionalEntryValuations = await entryBaseValuationService.valueEntries(
+                input.entries,
+                input.operatedAt,
+                input.externalSource,
+                tx
+            );
             const [fromValuation, toValuation] = await Promise.all([
                 entryBaseValuationService.valueMicroUnitEntry({
                     accountId: fromEntry.accountId,
