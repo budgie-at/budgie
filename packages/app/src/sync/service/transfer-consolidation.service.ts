@@ -15,6 +15,7 @@ import { transferConsolidationCandidateService } from './transfer-consolidation-
 import type { ConsolidationCandidateGroupsInterface } from '../interface/consolidation-candidate-groups.interface';
 import type { ConsolidationPreviewInterface } from '../interface/consolidation-preview.interface';
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
+import type { TransferConsolidationProgressSnapshotInterface } from '../interface/transfer-consolidation-progress-snapshot.interface';
 
 const logger = getLogger('TransferConsolidationService');
 
@@ -53,13 +54,24 @@ class TransferConsolidationService {
 
     @Log(
         'enter',
-        result => `done found=${result.found} consolidated=${result.consolidated}`,
+        result =>
+            `done autoCandidateCount=${result.autoCandidateCount} manualReviewCandidateCount=${result.manualReviewCandidateCount} remainingCandidateGroupCount=${result.remainingCandidateGroupCount} isRunning=${String(result.isRunning)}`,
         error => `throw error=${getErrorMessage(error)}`
     )
-    private async runConsolidation(): Promise<ConsolidationResultInterface> {
+    async getProgressSnapshot(): Promise<TransferConsolidationProgressSnapshotInterface> {
+        return this.runExclusive(() => this.buildProgressSnapshot());
+    }
+
+    @Log(
+        onProgress => `enter hasOnProgress=${String(isDefined(onProgress))}`,
+        (result, onProgress) =>
+            `done hasOnProgress=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
+        (error, onProgress) => `throw hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
+    )
+    private async runConsolidation(onProgress?: (processedCandidateGroupCount: number) => void): Promise<ConsolidationResultInterface> {
         const startedAt = Date.now();
         const candidates = await this.findCandidateGroupsWithProfiling();
-        const consolidated = await this.processCandidateGroupsWithProfiling(candidates);
+        const consolidated = await this.processCandidateGroupsWithProfiling(candidates, onProgress);
 
         await this.updateBalancesAfterConsolidation(consolidated);
 
@@ -84,9 +96,12 @@ class TransferConsolidationService {
         return candidates;
     }
 
-    private async processCandidateGroupsWithProfiling(candidates: ConsolidationCandidateGroupsInterface): Promise<number> {
+    private async processCandidateGroupsWithProfiling(
+        candidates: ConsolidationCandidateGroupsInterface,
+        onProgress?: (processedCandidateGroupCount: number) => void
+    ): Promise<number> {
         const startedAt = Date.now();
-        const consolidated = await transferConsolidationAutoCandidateService.processGroups(candidates);
+        const consolidated = await transferConsolidationAutoCandidateService.processGroups(candidates, onProgress);
         logger.log('processGroups:duration', { consolidated, durationMs: Date.now() - startedAt });
 
         return consolidated;
@@ -119,7 +134,31 @@ class TransferConsolidationService {
         };
     }
 
-    private async runConsolidationIfIdle(): Promise<ConsolidationResultInterface> {
+    private async buildProgressSnapshot(): Promise<TransferConsolidationProgressSnapshotInterface> {
+        const startedAt = Date.now();
+        const candidates = await transferConsolidationCandidateService.findGroups();
+        const autoCandidateCount = this.countAutoCandidates(candidates);
+        const manualReviewCandidateCount = this.countManualReviewCandidates(candidates);
+        const remainingCandidateGroupCount = autoCandidateCount + manualReviewCandidateCount;
+        logger.log('progressSnapshot:duration', {
+            autoCandidateCount,
+            durationMs: Date.now() - startedAt,
+            isRunning: this.isRunning,
+            manualReviewCandidateCount,
+            remainingCandidateGroupCount
+        });
+
+        return {
+            autoCandidateCount,
+            isRunning: this.isRunning,
+            manualReviewCandidateCount,
+            remainingCandidateGroupCount
+        };
+    }
+
+    private async runConsolidationIfIdle(
+        onProgress?: (processedCandidateGroupCount: number) => void
+    ): Promise<ConsolidationResultInterface> {
         if (this.isRunning) {
             return { found: 0, consolidated: 0 };
         }
@@ -127,7 +166,7 @@ class TransferConsolidationService {
         this.isRunning = true;
 
         try {
-            return await this.runConsolidation();
+            return await this.runConsolidation(onProgress);
         } finally {
             this.isRunning = false;
         }

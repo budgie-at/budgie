@@ -27,6 +27,12 @@ const backupFixture = (sourcePath, targetPath) => {
 const shiftTransactionsFixtureToNow = () => {
     const sourcePath = path.join(fixturesDirectoryPath, '14.db');
     const targetPath = path.join(outputDirectoryPath, '14.db');
+    const historicalAccountId = 10;
+    const historicalTimestamp2011 = 1_306_324_800;
+    const historicalTimestamp2026 = 1_779_710_400;
+    const historicalAmount2011 = 39_975_247;
+    const historicalAmount2026 = 220_435_025;
+    const historicalBalance = -(historicalAmount2011 + historicalAmount2026);
 
     backupFixture(sourcePath, targetPath);
     runSqlite(
@@ -94,6 +100,106 @@ const shiftTransactionsFixtureToNow = () => {
         UPDATE account_balances
         SET amount = amount + 7000000
         WHERE account_id = 2;
+
+        INSERT INTO accounts (
+            id,
+            created_at,
+            updated_at,
+            icon,
+            "order",
+            title,
+            type,
+            nature,
+            instrument_id,
+            include_in_net_worth,
+            is_active,
+            title_search
+        )
+        VALUES (
+            ${historicalAccountId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'Wallet',
+            10,
+            'E2E Historical UAH',
+            'CASH',
+            'ASSET',
+            33,
+            1,
+            1,
+            'e2e historical uah'
+        );
+
+        INSERT INTO account_balances (
+            created_at,
+            updated_at,
+            account_id,
+            amount
+        )
+        VALUES (
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            ${historicalAccountId},
+            ${historicalBalance}
+        );
+
+        INSERT INTO transactions (
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            comment,
+            from_account_id,
+            exchange_rate,
+            external_source
+        )
+        VALUES
+            (
+                ${historicalTimestamp2011},
+                ${historicalTimestamp2011},
+                'EXPENSE',
+                '',
+                ${historicalTimestamp2011},
+                'E2E Historical UAH 2011',
+                ${historicalAccountId},
+                1.0,
+                'CSV'
+            ),
+            (
+                ${historicalTimestamp2026},
+                ${historicalTimestamp2026},
+                'EXPENSE',
+                '',
+                ${historicalTimestamp2026},
+                'E2E Historical UAH 2026',
+                ${historicalAccountId},
+                1.0,
+                'CSV'
+            );
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            created_at,
+            updated_at,
+            'CREDIT',
+            ${historicalAccountId},
+            40,
+            id,
+            CASE comment
+                WHEN 'E2E Historical UAH 2011' THEN ${historicalAmount2011}
+                ELSE ${historicalAmount2026}
+            END
+        FROM transactions
+        WHERE comment IN ('E2E Historical UAH 2011', 'E2E Historical UAH 2026');
 
         UPDATE settings
         SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);

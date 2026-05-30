@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -5,8 +6,8 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language: de\n"
 "Language-Team: \n"
+"Language: de\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -30,10 +31,6 @@ msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt und in den G
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt."
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "{autoCandidateCount, plural, one {# high-confidence match} other {# high-confidence matches}}"
-msgstr "{autoCandidateCount, plural, one {# Treffer mit hoher Sicherheit} other {# Treffer mit hoher Sicherheit}}"
 
 #: src/app/import-column-mapper.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
@@ -74,10 +71,6 @@ msgstr "{found, plural, one {# Treffer mit hoher Sicherheit} other {# Treffer mi
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Alle Typen anzeigen} one {# Typ anzeigen} other {# Typen anzeigen}}"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "{manualReviewCandidateCount, plural, one {# review match} other {# review matches}}"
-msgstr "{manualReviewCandidateCount, plural, one {# Treffer zur Prüfung} other {# Treffer zur Prüfung}}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx
 #: src/rule/components/rules-list-page/rules-list-page.tsx
@@ -156,6 +149,10 @@ msgstr "Über"
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Account"
 msgstr "Konto"
+
+#: src/money-data/service/entry-base-valuation.service.ts
+msgid "Account {accountId} not found"
+msgstr "Konto {accountId} nicht gefunden"
 
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
@@ -409,6 +406,11 @@ msgstr "Bank-Synchronisation zurückgesetzt"
 msgid "Base currency"
 msgstr "Basiswährung"
 
+#: src/money-data/service/entry-base-valuation.service.ts
+#: src/money-data/service/money-data-upgrade.service.ts
+msgid "Base instrument not found"
+msgstr "Basiswährung nicht gefunden"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
 msgstr "zwischen"
@@ -437,6 +439,14 @@ msgstr "Geliehen"
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
+msgstr "Budgie füllt fehlende Werte in der Basiswährung mit historischen Wechselkursen. Analysen sind möglicherweise nicht verfügbar, bis dies abgeschlossen ist."
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
+msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
+msgstr "Budgie führt sichere Überweisungs- und Rückerstattungs-Treffer zusammen. Mehrdeutige Treffer bleiben unverändert."
+
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
@@ -448,6 +458,7 @@ msgstr "Budgie"
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
 #: src/import/components/import-database/import-database.tsx
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
@@ -1150,6 +1161,10 @@ msgstr "Erste Bank"
 msgid "Everyday transactions and spending"
 msgstr "Alltägliche Transaktionen und Ausgaben"
 
+#: src/money-data/service/entry-base-valuation.service.ts
+msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
+msgstr "Wechselkurs {sourceInstrumentId}->{targetInstrumentId} nicht gefunden"
+
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Wechselkurs: {rateLabel}. Tippen, um den Empfangsbetrag zu bearbeiten"
@@ -1283,6 +1298,10 @@ msgstr "Größer als"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Kontostände und Gesamtvermögen bei Screenshots ausblenden"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Historical valuation failed"
+msgstr "Historische Bewertung fehlgeschlagen"
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
 msgid "History synced"
@@ -1511,10 +1530,6 @@ msgstr "Passende Einnahmen werden in eine Überweisung von diesem Konto umgewand
 msgid "matches"
 msgstr "entspricht"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "Matches consolidated"
-msgstr "Treffer konsolidiert"
-
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Matches Regex"
 msgstr "Entspricht Regex"
@@ -1546,10 +1561,6 @@ msgstr "In einen anderen Tag zusammenführen"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Passende Überweisungen und Rückerstattungen zusammenführen"
-
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "Merged {consolidated} of {foundPairsText}."
-msgstr "{consolidated} von {foundPairsText} zusammengeführt."
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -1887,9 +1898,17 @@ msgstr "Polnisch (Polen)"
 msgid "Portuguese (Portugal)"
 msgstr "Portugiesisch (Portugal)"
 
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Preparing valuation"
+msgstr "Bewertung wird vorbereitet"
+
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Vorlage angewendet. Passen Sie die Spalten bei Bedarf unten an."
+
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Press to re-evaluate transactions"
+msgstr "Drücken, um Transaktionen neu zu bewerten"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Privacy"
@@ -1971,6 +1990,10 @@ msgstr "Neu berechnen"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Recalculate Balances"
 msgstr "Salden neu berechnen"
+
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Recalculating balances"
+msgstr "Salden werden neu berechnet"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving {toCode}"
@@ -2495,10 +2518,6 @@ msgstr "Dadurch wird das Einkommen in eine Überweisung zwischen Konten umgewand
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Dadurch wird die ausgewählte Ausgabe mit dieser Rückerstattungseinnahme verknüpft. Du kannst dies im Rückerstattungsquellen-Dialog rückgängig machen."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
-msgid "This will merge {autoCandidateText}. {manualReviewCandidateText} will be kept for review."
-msgstr "Dies führt {autoCandidateText} zusammen. {manualReviewCandidateText} bleiben zur Prüfung."
-
 #: src/app/resync-window-picker.tsx
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Dadurch wird der Synchronisationsverlauf zurückgesetzt und alle Transaktionen dieses Bankkontos erneut synchronisiert. Ihre bestehenden Transaktionen, Tags und Kategorien bleiben erhalten und werden mit neuen Daten aktualisiert."
@@ -2719,6 +2738,22 @@ msgstr "Verwenden Sie Touch ID, um Ihre App schnell und sicher zu entsperren"
 #: src/rule/components/rule-condition-value-enum-selector/rule-condition-value-enum-selector.tsx
 msgid "Value"
 msgstr "Wert"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Value entries"
+msgstr "Einträge bewerten"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Value Historical Entries"
+msgstr "Historische Einträge bewerten"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+msgid "Value historical entries?"
+msgstr "Historische Einträge bewerten?"
+
+#: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
+msgid "Valuing {processedEntryCount} of {totalEntryCount} transactions"
+msgstr "{processedEntryCount} von {totalEntryCount} Transaktionen werden bewertet"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "View and activate hidden accounts"
