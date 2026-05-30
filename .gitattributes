@@ -1,0 +1,2 @@
+packages/*/src/i18n/locales/**/messages.po  linguist-generated=true
+packages/*/src/i18n/locales/**/messages.ts  linguist-generated=true merge=union

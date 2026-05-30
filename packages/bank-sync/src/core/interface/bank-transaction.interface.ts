@@ -6,4 +6,5 @@ export interface BankTransactionInterface extends BaseTransactionFieldsInterface
     readonly provider: BankProviderEnum;
     readonly accountId: string;
     readonly type: BankTransactionTypeEnum;
+    readonly feeAmount: number;
 }
