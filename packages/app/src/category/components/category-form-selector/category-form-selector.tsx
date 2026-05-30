@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { FormSelectorField } from '../../../@generic/component/form-selector-field/form-selector-field';
+import { RuleSelectorField } from '../../../rule/components/rule-selector-field/rule-selector-field';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../query/use-get-category-by-id.query';
 
@@ -31,6 +31,6 @@ export const CategoryFormSelector = ({ categoryId, onChange, excludeCategoryIds,
     };
 
     return (
-        <FormSelectorField label={t`Category`} value={selectedCategory?.title ?? t`Select Category`} onPress={handleOpen} testID={testID} />
+        <RuleSelectorField label={t`Category`} value={selectedCategory?.title ?? t`Select Category`} onPress={handleOpen} testID={testID} />
     );
 };

@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { addSeconds, fromUnixTime, getUnixTime } from 'date-fns';
+import { addMonths, addSeconds, fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
@@ -48,11 +48,17 @@ export class BaseBankSyncService {
     }
 
     @Log(
-        (accountId, to) => `enter accountId=${accountId} to=${to.toISOString()}`,
+        (accountId, to, firstEmptyFromInStreak) =>
+            `enter accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'}`,
         result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, accountId, to) => `throw accountId=${accountId} to=${to.toISOString()} error=${getErrorMessage(error)}`
+        (error, accountId, to, firstEmptyFromInStreak) =>
+            `throw accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'} error=${getErrorMessage(error)}`
     )
-    async syncTransactionsBackward(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
+    async syncTransactionsBackward(
+        accountId: string,
+        to: Date,
+        firstEmptyFromInStreak: Date | null
+    ): Promise<BankSyncBatchResultInterface> {
         const from = addSeconds(to, -this.options.maxPeriodSeconds);
         const transactions = await this.fetchTransactions(accountId, from, to);
         const oldestTransaction = transactions.at(-1);
@@ -66,11 +72,16 @@ export class BaseBankSyncService {
             };
         }
 
+        const reachedDormancyBoundary =
+            isEmptyArray(transactions) &&
+            isDefined(firstEmptyFromInStreak) &&
+            from <= addMonths(firstEmptyFromInStreak, -this.options.dormancyMonths);
+
         return {
             nextTo: from,
             nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
             transactions,
-            completed: isEmptyArray(transactions)
+            completed: reachedDormancyBoundary
         };
     }
 

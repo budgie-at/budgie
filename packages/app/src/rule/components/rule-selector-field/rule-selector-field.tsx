@@ -1,18 +1,19 @@
 import { Text } from 'react-native';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
-import { FormItem } from '../form-item/form-item';
-import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 
 interface Props {
     readonly label: string;
     readonly value: string;
     readonly onPress: EmptyFn;
+    readonly hint?: string;
     readonly testID?: string;
 }
 
-export const FormSelectorField = ({ label, value, onPress, testID }: Props) => (
+export const RuleSelectorField = ({ label, value, onPress, hint, testID }: Props) => (
     <FormItem label={label}>
         <HapticPressable
             testID={testID}
@@ -21,5 +22,7 @@ export const FormSelectorField = ({ label, value, onPress, testID }: Props) => (
         >
             <Text className="text-primary text-sm">{value}</Text>
         </HapticPressable>
+
+        {isNotEmptyString(hint) ? <Text className="text-secondary-foreground text-xs">{hint}</Text> : null}
     </FormItem>
 );
