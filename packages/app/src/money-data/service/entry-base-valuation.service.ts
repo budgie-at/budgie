@@ -81,23 +81,16 @@ class EntryBaseValuationService {
         };
     }
 
-    async valueEntries(
-        entries: TransactionEntryCreateInputInterface[],
-        operatedAt: Date,
-        externalSource: ExternalSourceEnum | null,
-        tx?: DB
-    ): Promise<Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>> {
-        const valuations = new Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>();
-
-        await Promise.all(
-            entries.map(async entry => {
-                valuations.set(entry, await this.resolveEntryValuation(entry, operatedAt, externalSource, tx));
-            })
-        );
-
-        return valuations;
-    }
-
+    @Log(
+        (sourceInstrumentId, targetInstrumentId, operatedAt, tx) =>
+            `enter sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))}`,
+        // eslint-disable-next-line @typescript-eslint/max-params -- Log hooks intentionally keep positional arguments
+        (result, sourceInstrumentId, targetInstrumentId, operatedAt, tx) =>
+            `done sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} baseExchangeRate=${result} hasTx=${String(isDefined(tx))}`,
+        // eslint-disable-next-line @typescript-eslint/max-params -- Log hooks intentionally keep positional arguments
+        (error, sourceInstrumentId, targetInstrumentId, operatedAt, tx) =>
+            `throw sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async resolveHistoricalBaseExchangeRate(
         sourceInstrumentId: number,
         targetInstrumentId: number,
@@ -134,6 +127,23 @@ class EntryBaseValuationService {
         }
 
         return await this.resolveCurrentBaseExchangeRate(sourceInstrumentId, targetInstrumentId);
+    }
+
+    async valueEntries(
+        entries: TransactionEntryCreateInputInterface[],
+        operatedAt: Date,
+        externalSource: ExternalSourceEnum | null,
+        tx?: DB
+    ): Promise<Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>> {
+        const valuations = new Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>();
+
+        await Promise.all(
+            entries.map(async entry => {
+                valuations.set(entry, await this.resolveEntryValuation(entry, operatedAt, externalSource, tx));
+            })
+        );
+
+        return valuations;
     }
 
     private async resolveCurrentBaseExchangeRate(sourceInstrumentId: number, targetInstrumentId: number): Promise<number> {
