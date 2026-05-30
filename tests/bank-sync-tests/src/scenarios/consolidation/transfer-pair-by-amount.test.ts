@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
 import {
+    expectTransferPairConsolidation,
     fetchCanonicalsOfType,
-    fetchTransactionById,
     findMccByCode,
     seedAccountPair,
     seedAmountTransferPair,
@@ -20,15 +20,7 @@ describe('consolidation/transfer-pair-by-amount', () => {
     it('falls back to amount + transfer-MCC matching when neither side has an IBAN', async () => {
         const { expense, income } = seedAmountTransferPair(250 * PRECISION);
 
-        const result = await transferConsolidationService.consolidate();
-
-        expect(result.consolidated).toBe(1);
-
-        const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-        expect(canonicals).toHaveLength(1);
-
-        expect(fetchTransactionById(expense.id).consolidationParentTransactionId).toBe(canonicals[0].id);
-        expect(fetchTransactionById(income.id).consolidationParentTransactionId).toBe(canonicals[0].id);
+        await expectTransferPairConsolidation(expense.id, income.id);
     });
 
     it('keeps moved source entries out of account balance calculations', async () => {

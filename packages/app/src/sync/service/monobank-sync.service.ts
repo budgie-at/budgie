@@ -62,7 +62,7 @@ class AppMonobankSyncService {
         (error, token) => `throw tokenLen=${token.length} error=${getErrorMessage(error)}`
     )
     async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
-        const bankAccounts = await new MonobankSyncService(token).syncAccounts();
+        const bankAccounts = await this.fetchBankAccountsAndJars(token);
         if (!isNotEmptyArray(bankAccounts)) {
             return [];
         }
@@ -277,7 +277,7 @@ class AppMonobankSyncService {
     }
 
     async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
-        const bankAccounts = await new MonobankSyncService(token).syncAccounts();
+        const bankAccounts = await this.fetchBankAccountsAndJars(token);
 
         for (const externalId of externalIds) {
             const bankAccount = bankAccounts.find(acc => acc.id === externalId);
@@ -474,6 +474,14 @@ class AppMonobankSyncService {
         });
 
         return result;
+    }
+
+    private async fetchBankAccountsAndJars(token: string): Promise<BankAccountInterface[]> {
+        const service = new MonobankSyncService(token);
+        const accounts = await service.syncAccounts();
+        const jars = await service.syncJars();
+
+        return [...accounts, ...jars];
     }
 
     private async getOrCreateAccount(bankAccount: BankAccountInterface): Promise<AccountEntityInterface> {

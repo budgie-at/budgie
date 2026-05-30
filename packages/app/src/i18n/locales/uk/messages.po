@@ -1406,6 +1406,10 @@ msgstr "Заплановано"
 msgid "Italian (Italy)"
 msgstr "Італійська (Італія)"
 
+#: src/sync/component/account-selection-step/account-selection-step.tsx
+msgid "Jars"
+msgstr "Банки"
+
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Мова"
@@ -1520,7 +1524,7 @@ msgstr "Відповідні витрати перетворюються на п
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched income is converted into a transfer from this account."
-msgstr "Відповідні надходження перетворюються на переказ з цього рахунку."
+msgstr "Відповідні надходження перетворюються на переказ із цього рахунку."
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
