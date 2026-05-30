@@ -10,6 +10,7 @@ export interface BankAccountInterface {
     readonly balance: number;
     readonly creditLimit: number;
     readonly type: BankAccountTypeEnum;
+    readonly title?: string;
     readonly iban?: string;
     readonly maskedPan?: string[];
     readonly cashbackType?: CashbackTypeEnum;

@@ -23,6 +23,7 @@ export const mapBankAccountsToPreview = async (
         return {
             externalId: bankAccount.id,
             title: generateBankAccountTitle(bankAccount),
+            type: bankAccount.type,
             currencyCode: bankAccount.currencyCode,
             iban: bankAccount.iban ?? null,
             existingAccountId: existingAccount?.id ?? null,
