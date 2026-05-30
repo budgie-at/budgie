@@ -432,7 +432,9 @@ class TransferConsolidationExecutorService {
 
     private async copySourceTags(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
         const sourceTags = await this.findSourceTags(sourceTransactionIds, tx);
-        const uniqueTagIds = [...new Set(sourceTags.map(tag => tag.tagId))];
+        const existingTags = await transactionTagsRepository.findByTransactionId(canonicalTransactionId, tx);
+        const existingTagIds = new Set(existingTags.map(tag => tag.tagId));
+        const uniqueTagIds = [...new Set(sourceTags.map(tag => tag.tagId))].filter(tagId => !existingTagIds.has(tagId));
 
         if (isEmptyArray(uniqueTagIds)) {
             return;
