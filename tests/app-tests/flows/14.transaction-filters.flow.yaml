@@ -17,7 +17,7 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
 # Total transaction counter reflects all visible transactions when no filter is applied
-- assertVisible: '4 transactions'
+- assertVisible: '6 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
