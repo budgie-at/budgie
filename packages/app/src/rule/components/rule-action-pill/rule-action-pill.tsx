@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const RuleActionPill = ({ action }: Props) => {
-    const { type, category, tag } = action;
+    const { type, category, tag, account } = action;
 
     if (type === RuleActionTypeEnum.SET_CATEGORY && isDefined(category)) {
         const categoryTitle = category.title;
@@ -32,10 +32,12 @@ export const RuleActionPill = ({ action }: Props) => {
         );
     }
 
-    if (type === RuleActionTypeEnum.CONVERT_TO_TRANSFER) {
+    if (type === RuleActionTypeEnum.CONVERT_TO_TRANSFER && isDefined(account)) {
+        const accountTitle = account.title;
+
         return (
             <RuleActionPillContainer icon={UserIconNameEnum.ArrowRightLeft}>
-                <Trans>Transfer</Trans>
+                <Trans>Transfer → {accountTitle}</Trans>
             </RuleActionPillContainer>
         );
     }

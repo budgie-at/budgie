@@ -132,7 +132,7 @@ msgstr "<"
 msgid ">"
 msgstr ">"
 
-#: src/@generic/component/currency-selector/currency-selector.tsx:66
+#: src/@generic/component/currency-selector/currency-selector.tsx:67
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
@@ -191,7 +191,7 @@ msgstr "Accounts you mark as inactive will appear here. They won't be shown on t
 msgid "Action"
 msgstr "Action"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:72
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:48
 msgid "Action Type"
 msgstr "Action Type"
 
@@ -228,7 +228,7 @@ msgstr "Add Account"
 msgid "Add item"
 msgstr "Add item"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:36
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:17
 msgid "Add Tag"
 msgstr "Add Tag"
 
@@ -409,7 +409,7 @@ msgstr "Bank Sync"
 msgid "Bank sync reset"
 msgstr "Bank sync reset"
 
-#: src/@generic/component/currency-selector/currency-selector.tsx:64
+#: src/@generic/component/currency-selector/currency-selector.tsx:65
 msgid "Base currency"
 msgstr "Base currency"
 
@@ -630,7 +630,7 @@ msgid "Convert to Refund?"
 msgstr "Convert to Refund?"
 
 #: src/app/convert-to-transfer.tsx:121
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:18
 #: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:17
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx:34
 msgid "Convert to Transfer"
@@ -1508,6 +1508,14 @@ msgstr "Match Any"
 msgid "Match each field to a column from your CSV file"
 msgstr "Match each field to a column from your CSV file"
 
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:35
+msgid "Matched expenses are converted into a transfer to this account."
+msgstr "Matched expenses are converted into a transfer to this account."
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:39
+msgid "Matched income is converted into a transfer from this account."
+msgstr "Matched income is converted into a transfer from this account."
+
 #: src/rule/constant/rule-condition-operator.constant.ts:10
 msgid "matches"
 msgstr "matches"
@@ -1769,6 +1777,10 @@ msgstr "not set"
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:141
 msgid "Note"
 msgstr "Note"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:44
+msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
+msgstr "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts:6
 msgid "Only expense transactions can be converted"
@@ -2177,7 +2189,7 @@ msgstr "Select a valid column"
 msgid "Select account"
 msgstr "Select account"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:45
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:74
 msgid "Select Account"
 msgstr "Select Account"
 
@@ -2185,7 +2197,7 @@ msgstr "Select Account"
 msgid "Select accounts to sync:"
 msgstr "Select accounts to sync:"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:73
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:49
 msgid "Select Action Type"
 msgstr "Select Action Type"
 
@@ -2260,7 +2272,7 @@ msgstr "Select Transaction Type"
 msgid "Select type"
 msgstr "Select type"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:65
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:41
 msgid "Select Type"
 msgstr "Select Type"
 
@@ -2276,7 +2288,7 @@ msgstr "Selected transaction is already consolidated"
 msgid "Sending {fromCode}"
 msgstr "Sending {fromCode}"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:35
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:16
 msgid "Set Category"
 msgstr "Set Category"
 
@@ -2599,17 +2611,24 @@ msgstr "Transactions synced"
 msgid "Transcription failed"
 msgstr "Transcription failed"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx:38
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:108
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Transfer"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:34
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx:40
+msgid "Transfer → {accountTitle}"
+msgstr "Transfer → {accountTitle}"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:43
+msgid "Transfer Account"
+msgstr "Transfer Account"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:39
 msgid "Transfer From Account"
 msgstr "Transfer From Account"
 
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:34
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:35
 msgid "Transfer To Account"
 msgstr "Transfer To Account"
 
