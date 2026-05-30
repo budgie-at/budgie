@@ -1497,6 +1497,14 @@ msgstr "Match Any"
 msgid "Match each field to a column from your CSV file"
 msgstr "Match each field to a column from your CSV file"
 
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
+msgid "Matched expenses are converted into a transfer to this account."
+msgstr "Matched expenses are converted into a transfer to this account."
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
+msgid "Matched income is converted into a transfer from this account."
+msgstr "Matched income is converted into a transfer from this account."
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
 msgstr "matches"
@@ -1756,6 +1764,10 @@ msgstr "not set"
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Note"
 msgstr "Note"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
+msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
+msgstr "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only expense transactions can be converted"
@@ -2573,11 +2585,18 @@ msgstr "Transactions synced"
 msgid "Transcription failed"
 msgstr "Transcription failed"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Transfer"
 msgstr "Transfer"
+
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx
+msgid "Transfer → {accountTitle}"
+msgstr "Transfer → {accountTitle}"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
+msgid "Transfer Account"
+msgstr "Transfer Account"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer From Account"

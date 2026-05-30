@@ -1495,6 +1495,14 @@ msgstr "Beliebige übereinstimmen"
 msgid "Match each field to a column from your CSV file"
 msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
+msgid "Matched expenses are converted into a transfer to this account."
+msgstr ""
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
+msgid "Matched income is converted into a transfer from this account."
+msgstr ""
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
 msgstr "entspricht"
@@ -1754,6 +1762,10 @@ msgstr "nicht gesetzt"
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Note"
 msgstr "Notiz"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
+msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
+msgstr ""
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only expense transactions can be converted"
@@ -2571,11 +2583,18 @@ msgstr "Transaktionen synchronisiert"
 msgid "Transcription failed"
 msgstr "Transkription fehlgeschlagen"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Transfer"
 msgstr "Überweisung"
+
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx
+msgid "Transfer → {accountTitle}"
+msgstr ""
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
+msgid "Transfer Account"
+msgstr ""
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer From Account"

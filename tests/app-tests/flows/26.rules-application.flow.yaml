@@ -479,7 +479,7 @@ env:
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
-# --- Convert to Transfer Action (TRANSACTION_TYPE + comment -> CONVERT_TO_TRANSFER) ---
+# --- Convert to Transfer Action (comment -> CONVERT_TO_TRANSFER, offered without a transaction-type condition) ---
 
 - runFlow:
     file: subflows/transactions/create-expense.flow.yaml
@@ -506,33 +506,23 @@ env:
 
 - tapOn:
     id: 'RuleForm.Condition.0.FieldSelector'
-- tapOn:
-    id: RuleForm.SelectorCard.TRANSACTION_TYPE
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-- tapOn: 'Expense'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RuleForm.ConditionSection.AddButton'
-
-- tapOn:
-    id: 'RuleForm.Condition.1.FieldSelector'
 - tapOn: 'Comment'
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Condition.1.ValueInput'
+    id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Auto Transfer'
 
 - tapOn:
     text: 'return'
 - waitForAnimationToEnd
 
+# Convert to Transfer is selectable even without a Transaction Type condition
 - tapOn:
     id: 'RuleForm.Action.0.TypeSelector'
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.SelectorCard.CONVERT_TO_TRANSFER'
 - tapOn:
     id: 'RuleForm.SelectorCard.CONVERT_TO_TRANSFER'
 - waitForAnimationToEnd
@@ -575,6 +565,7 @@ env:
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
+- assertVisible: 'Transfer → Test22 Destination'
 
 - tapOn:
     id: 'TabBar.Transactions'
