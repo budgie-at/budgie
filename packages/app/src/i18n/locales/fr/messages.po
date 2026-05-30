@@ -2318,10 +2318,6 @@ msgstr "Quelque chose s'est mal passé. Veuillez réessayer plus tard."
 msgid "Source"
 msgstr "Source"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "Source transactions"
-msgstr "Transactions sources"
-
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Sources"
 msgstr "Sources"

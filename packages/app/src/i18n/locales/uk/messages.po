@@ -2318,10 +2318,6 @@ msgstr "Щось пішло не так. Будь ласка, спробуйте
 msgid "Source"
 msgstr "Джерело"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-msgid "Source transactions"
-msgstr "Вихідні транзакції"
-
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Sources"
 msgstr "Джерела"
