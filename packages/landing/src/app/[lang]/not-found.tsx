@@ -5,10 +5,8 @@ import { BookOpen, Home } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
-import linguiConfig from '../../../lingui.config.mjs';
+import { SUPPORTED_LOCALES as locales } from '../../i18n/supported-locales.constant.mjs';
 import { Button } from '../../ui/button';
-
-const { locales } = linguiConfig;
 
 export default function NotFound() {
     const params = useParams();
