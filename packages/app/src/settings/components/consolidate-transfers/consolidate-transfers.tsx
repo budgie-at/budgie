@@ -14,66 +14,53 @@ import { SettingsCard } from '../settings-card/settings-card';
 
 const logger = getLogger('ConsolidateTransfers');
 
+const showConsolidationSuccessToast = (consolidated: number, found: number, t: ReturnType<typeof useLingui>['t']): void => {
+    const foundPairsText = t({
+        message: plural(found, {
+            one: '# high-confidence match',
+            other: '# high-confidence matches'
+        })
+    });
+
+    Toast.show({
+        type: 'success',
+        text1: t`Matches consolidated`,
+        text2: t`Merged ${consolidated} of ${foundPairsText}.`
+    });
+};
+
+const runConsolidation = async (t: ReturnType<typeof useLingui>['t']): Promise<void> => {
+    const consolidateStartedAt = Date.now();
+    const { consolidated, found } = await transferConsolidationService.consolidate();
+    logger.log('consolidated', { found, consolidated, durationMs: Date.now() - consolidateStartedAt });
+    showConsolidationSuccessToast(consolidated, found, t);
+};
+
 export const ConsolidateTransfers = () => {
     const { t } = useLingui();
     const [isLoading, setIsLoading] = useState(false);
 
-    // eslint-disable-next-line max-statements -- Action handler runs preview, confirm, execute, and toast feedback in sequence
     const handleConsolidate = async () => {
-        const startedAt = Date.now();
-
         logger.log('press');
+
+        const confirmed = await confirmAlert({
+            title: t`Consolidate Matches`,
+            message: t`Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged.`,
+            confirmText: t`Consolidate`,
+            cancelText: t`Cancel`
+        });
+
+        if (!confirmed) {
+            logger.log('confirm:result', { confirmed: false });
+
+            return;
+        }
+
+        logger.log('confirm:result', { confirmed: true });
         setIsLoading(true);
+
         try {
-            logger.log('preview:start');
-            const { autoCandidateCount, manualReviewCandidateCount } = await transferConsolidationService.preview();
-            logger.log('preview:done', {
-                autoCandidateCount,
-                manualReviewCandidateCount,
-                durationMs: Date.now() - startedAt
-            });
-            const autoCandidateText = t({
-                message: plural(autoCandidateCount, {
-                    one: '# high-confidence match',
-                    other: '# high-confidence matches'
-                })
-            });
-            const manualReviewCandidateText = t({
-                message: plural(manualReviewCandidateCount, {
-                    one: '# review match',
-                    other: '# review matches'
-                })
-            });
-
-            const confirmed = await confirmAlert({
-                title: t`Consolidate Matches`,
-                message: t`This will merge ${autoCandidateText}. ${manualReviewCandidateText} will be kept for review.`,
-                confirmText: t`Consolidate`,
-                cancelText: t`Cancel`
-            });
-
-            if (!confirmed) {
-                logger.log('confirm:result', { confirmed: false });
-
-                return;
-            }
-
-            logger.log('confirm:result', { confirmed: true });
-            const consolidateStartedAt = Date.now();
-            const { consolidated, found } = await transferConsolidationService.consolidate();
-            logger.log('consolidated', { found, consolidated, durationMs: Date.now() - consolidateStartedAt });
-            const foundPairsText = t({
-                message: plural(found, {
-                    one: '# high-confidence match',
-                    other: '# high-confidence matches'
-                })
-            });
-
-            Toast.show({
-                type: 'success',
-                text1: t`Matches consolidated`,
-                text2: t`Merged ${consolidated} of ${foundPairsText}.`
-            });
+            await runConsolidation(t);
         } catch (error) {
             const errorMessage = getErrorMessage(error);
             logger.error('failed', { errorMessage });

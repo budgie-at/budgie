@@ -16,7 +16,9 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 import { accountService } from '../../account/service/account.service';
 import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { TRANSFER_CONVERSION_ERROR_MESSAGE } from '../constant/transfer-conversion-error-message.constant';
+import { BuildTransferEntryCreateEntityInputInterface } from '../interface/build-transfer-entry-create-entity-input.interface';
 import { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
 import { TransferConversionResultInterface } from '../interface/transfer-conversion-result.interface';
 
@@ -48,21 +50,40 @@ class TransactionTransferService {
                 tx
             );
 
+            const [creditValuation, debitValuation] = await Promise.all([
+                entryBaseValuationService.valueMicroUnitEntry({
+                    accountId: conversion.creditAccountId,
+                    amount: conversion.creditAmount,
+                    operatedAt: conversion.operatedAt,
+                    externalSource: null,
+                    tx
+                }),
+                entryBaseValuationService.valueMicroUnitEntry({
+                    accountId: conversion.debitAccountId,
+                    amount: conversion.debitAmount,
+                    operatedAt: conversion.operatedAt,
+                    externalSource: null,
+                    tx
+                })
+            ]);
+
             await transactionEntryRepository.deleteByTransactionId(params.id, tx);
             await transactionEntryRepository.bulkCreate(
                 [
-                    this.buildTransferEntryCreateEntity(
-                        params.id,
-                        conversion.creditAccountId,
-                        TransactionEntryTypeEnum.CREDIT,
-                        conversion.creditAmount
-                    ),
-                    this.buildTransferEntryCreateEntity(
-                        params.id,
-                        conversion.debitAccountId,
-                        TransactionEntryTypeEnum.DEBIT,
-                        conversion.debitAmount
-                    )
+                    this.buildTransferEntryCreateEntity({
+                        transactionId: params.id,
+                        accountId: conversion.creditAccountId,
+                        type: TransactionEntryTypeEnum.CREDIT,
+                        amount: conversion.creditAmount,
+                        valuation: creditValuation
+                    }),
+                    this.buildTransferEntryCreateEntity({
+                        transactionId: params.id,
+                        accountId: conversion.debitAccountId,
+                        type: TransactionEntryTypeEnum.DEBIT,
+                        amount: conversion.debitAmount,
+                        valuation: debitValuation
+                    })
                 ],
                 tx
             );
@@ -105,6 +126,7 @@ class TransactionTransferService {
             debitAmount: isExpense ? convertedAmount : amount,
             exchangeRate,
             fromAccountId,
+            operatedAt: transaction.operatedAt,
             toAccountId,
             transactionType: this.resolveTransferTransactionType(fromAccount.type, toAccount.type)
         };
@@ -131,12 +153,13 @@ class TransactionTransferService {
         return transaction;
     }
 
-    private buildTransferEntryCreateEntity(
-        transactionId: number,
-        accountId: number,
-        type: TransactionEntryTypeEnum,
-        amount: number
-    ): TransactionEntryCreateEntityInterface {
+    private buildTransferEntryCreateEntity({
+        transactionId,
+        accountId,
+        type,
+        amount,
+        valuation
+    }: BuildTransferEntryCreateEntityInputInterface): TransactionEntryCreateEntityInterface {
         return {
             transactionId,
             accountId,
@@ -146,6 +169,9 @@ class TransactionTransferService {
             mccCategoryId: null,
             externalId: null,
             exchangeRate: 1,
+            baseInstrumentId: valuation.baseInstrumentId,
+            baseExchangeRate: valuation.baseExchangeRate,
+            baseAmount: valuation.baseAmount,
             toIban: null
         };
     }
