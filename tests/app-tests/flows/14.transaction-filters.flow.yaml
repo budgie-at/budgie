@@ -33,8 +33,8 @@ appId: ${APP_ID}
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
-# Counter is filter-aware and uses the singular form for a single match
-- assertVisible: '1 transaction'
+# Counter is filter-aware: the expense type matches the seeded expense plus the two historical UAH expenses
+- assertVisible: '3 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -178,6 +178,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Income'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
+
+# Counter uses the singular form for a single match (only the seeded expense carries this tag)
+- assertVisible: '1 transaction'
 
 - scrollUntilVisible:
       element:
