@@ -465,10 +465,10 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 | Package       | Stack                                                                              |
 | ------------- | ---------------------------------------------------------------------------------- |
-| **app**       | Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, Lingui 5.7 |
+| **app**       | Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, Lingui 6.1 |
 | **ai**        | Pure TypeScript, Zod                                                               |
 | **contracts** | Drizzle ORM, Zod, drizzle-zod                                                      |
-| **landing**   | Next.js 15, React 19, Tailwind CSS 4, Lingui 5.7                                   |
+| **landing**   | Next.js 15, React 19, Tailwind CSS 4, Lingui 6.1                                   |
 | **bank-sync** | ky HTTP client, date-fns                                                           |
 | **Build**     | Yarn 4.12 (PnP), Node >= 22, Lerna 8, TurboRepo 2, TypeScript 5.9, ESLint 9        |
 
