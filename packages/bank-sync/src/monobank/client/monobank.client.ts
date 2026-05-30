@@ -6,6 +6,7 @@ import { BaseBankProviderClient } from '../../core/client/base-bank-provider.cli
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { MONOBANK_API_BASE_URL } from '../constant/monobank-api-base-url.constant';
 import { monobankAccountMapper } from '../mapper/monobank-account.mapper';
+import { monobankJarMapper } from '../mapper/monobank-jar.mapper';
 import { monobankTransactionMapper } from '../mapper/monobank-transaction.mapper';
 
 import type { BankAccountInterface } from '../../core/interface/bank-account.interface';
@@ -46,6 +47,18 @@ export class MonobankClient extends BaseBankProviderClient {
         const accounts = result.data.accounts.map(monobankAccountMapper);
 
         return this.success(accounts);
+    }
+
+    async getJars(): Promise<BankSyncResultInterface<BankAccountInterface[]>> {
+        const result = await this.fetchClientInfoApi();
+
+        if (!result.success) {
+            return result;
+        }
+
+        const jars = result.data.jars.map(monobankJarMapper);
+
+        return this.success(jars);
     }
 
     async getTransactions(accountId: string, from: number, to?: number): Promise<BankSyncResultInterface<BankTransactionInterface[]>> {
