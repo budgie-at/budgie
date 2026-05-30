@@ -2739,7 +2739,6 @@ msgstr "Utilisez Face ID pour déverrouiller votre application rapidement et en 
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Utilisez Touch ID pour déverrouiller votre application rapidement et en toute sécurité"
 
-#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:69
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx:49
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx:40
 #: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:15
@@ -2747,6 +2746,10 @@ msgstr "Utilisez Touch ID pour déverrouiller votre application rapidement et en
 #: src/rule/components/rule-condition-value-enum-selector/rule-condition-value-enum-selector.tsx:26
 msgid "Value"
 msgstr "Valeur"
+
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts:69
+msgid "Value entries"
+msgstr ""
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts:59
 msgid "Value Historical Entries"
