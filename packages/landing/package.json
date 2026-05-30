@@ -41,6 +41,7 @@
         "tailwindcss-animate": "^1.0.7"
     },
     "devDependencies": {
+        "@lingui/format-po": "6.1.0",
         "@lingui/loader": "6.1.0",
         "@lingui/swc-plugin": "6.3.0",
         "@tailwindcss/postcss": "^4.1.14",
