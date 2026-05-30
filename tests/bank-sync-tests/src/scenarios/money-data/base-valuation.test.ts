@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { instrumentRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { statisticsRepository } from '@app/@generic/drizzle/db/db';
 import { entryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
 import {
     CategoryEntityTable,
@@ -15,8 +15,8 @@ import {
     TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { isDefined } from '@rnw-community/shared';
 
+import { requireInstrument } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -66,16 +66,6 @@ describe('base valuation', () => {
 
 const setDefaultInstrument = async (defaultInstrumentId: number): Promise<void> => {
     await testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
-};
-
-const requireInstrument = async (code: CurrencyEnum) => {
-    const instrument = await instrumentRepository.findByCode(code);
-
-    if (!isDefined(instrument)) {
-        throw new Error(`Instrument ${code} not found`);
-    }
-
-    return instrument;
 };
 
 const dbCategories = async () => {
