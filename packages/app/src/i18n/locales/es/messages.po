@@ -1406,6 +1406,10 @@ msgstr "Es planificado"
 msgid "Italian (Italy)"
 msgstr "Italiano (Italia)"
 
+#: src/sync/component/account-selection-step/account-selection-step.tsx
+msgid "Jars"
+msgstr "Huchas"
+
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Idioma"
@@ -1776,7 +1780,7 @@ msgstr "Nota"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
-msgstr "Solo se convierten las transacciones de gastos e ingresos: los gastos se transfieren a esta cuenta y los ingresos desde ella. Los demás tipos permanecen sin cambios."
+msgstr "Solo se convierten las transacciones de gastos e ingresos: los gastos se transfieren a esta cuenta y los ingresos desde ella. Los demás tipos no se modifican."
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only expense transactions can be converted"

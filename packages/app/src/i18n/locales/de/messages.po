@@ -1406,6 +1406,10 @@ msgstr "Ist geplant"
 msgid "Italian (Italy)"
 msgstr "Italienisch (Italien)"
 
+#: src/sync/component/account-selection-step/account-selection-step.tsx
+msgid "Jars"
+msgstr "Sparziele"
+
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Sprache"
@@ -1516,11 +1520,11 @@ msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
-msgstr "Zutreffende Ausgaben werden in eine Überweisung auf dieses Konto umgewandelt."
+msgstr "Passende Ausgaben werden in eine Überweisung auf dieses Konto umgewandelt."
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched income is converted into a transfer from this account."
-msgstr "Zutreffende Einnahmen werden in eine Überweisung von diesem Konto umgewandelt."
+msgstr "Passende Einnahmen werden in eine Überweisung von diesem Konto umgewandelt."
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
@@ -1776,7 +1780,7 @@ msgstr "Notiz"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
-msgstr "Nur Ausgaben- und Einnahmentransaktionen werden umgewandelt: Ausgaben werden auf dieses Konto überwiesen, Einnahmen von diesem Konto. Andere Typen bleiben unverändert."
+msgstr "Nur Ausgaben- und Einnahmentransaktionen werden umgewandelt: Ausgaben werden auf dieses Konto überwiesen, Einnahmen von ihm. Andere Typen bleiben unverändert."
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only expense transactions can be converted"
