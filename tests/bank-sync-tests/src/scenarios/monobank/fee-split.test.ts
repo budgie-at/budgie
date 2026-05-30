@@ -1,5 +1,5 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, PRECISION, TransactionEntryEntityTable } from '@budgie/contracts';
+import { BANK_FEE_CATEGORY_ID, CategoryEntityTable, CategorySourceEnum, PRECISION, TransactionEntryEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
@@ -23,10 +23,13 @@ describe('monobank/fee-split', () => {
             .where(eq(TransactionEntryEntityTable.externalId, 'tx-fee:fee'))
             .all();
 
+        const [feeCategory] = testDb.select().from(CategoryEntityTable).where(eq(CategoryEntityTable.id, BANK_FEE_CATEGORY_ID)).all();
+
         expect(mainEntry.amount).toBe(50 * PRECISION);
         expect(feeEntry.amount).toBe(10 * PRECISION);
         expect(feeEntry.categoryId).toBe(BANK_FEE_CATEGORY_ID);
         expect(feeEntry.categorySource).toBe(CategorySourceEnum.FEE);
+        expect(feeCategory.title).toBe('Bank Fees & Charges');
     });
 
     it('keeps a single entry when there is no commission', async () => {
