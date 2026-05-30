@@ -2749,7 +2749,7 @@ msgstr "Wert"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts:69
 msgid "Value entries"
-msgstr ""
+msgstr "Einträge bewerten"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts:59
 msgid "Value Historical Entries"
