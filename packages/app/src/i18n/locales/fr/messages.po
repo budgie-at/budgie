@@ -1387,6 +1387,10 @@ msgstr "Est planifié"
 msgid "Italian (Italy)"
 msgstr "Italien (Italie)"
 
+#: src/sync/component/account-selection-step/account-selection-step.tsx
+msgid "Jars"
+msgstr "Cagnottes"
+
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Langue"
@@ -1497,11 +1501,11 @@ msgstr "Associez chaque champ à une colonne de votre fichier CSV"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
-msgstr ""
+msgstr "Les dépenses correspondantes sont converties en virement vers ce compte."
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched income is converted into a transfer from this account."
-msgstr ""
+msgstr "Les revenus correspondants sont convertis en virement depuis ce compte."
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
@@ -1765,7 +1769,7 @@ msgstr "Note"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
-msgstr ""
+msgstr "Seules les transactions de dépenses et de revenus sont converties : les dépenses sont transférées vers ce compte, les revenus en proviennent. Les autres types restent inchangés."
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only expense transactions can be converted"
@@ -2586,11 +2590,11 @@ msgstr "Virement"
 
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx
 msgid "Transfer → {accountTitle}"
-msgstr ""
+msgstr "Virement → {accountTitle}"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer Account"
-msgstr ""
+msgstr "Compte de virement"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer From Account"
