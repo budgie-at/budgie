@@ -1,10 +1,21 @@
 import { BankTransactionTypeEnum } from '@budgie/bank-sync';
-import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    BANK_FEE_CATEGORY_ID,
+    CategorySourceEnum,
+    ExternalSourceEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import type { BankTransactionInterface } from '@budgie/bank-sync';
-import type { MccCategoryLookupInterface, TransactionCreateInputInterface } from '@budgie/contracts';
+import type { MccCategoryLookupInterface, TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
+
+const FEE_ENTRY_EXTERNAL_ID_SUFFIX = ':fee';
+
+const getExchangeRate = (mainAmount: number, operationAmount: number): number =>
+    isPositiveNumber(operationAmount) && mainAmount !== operationAmount ? mainAmount / operationAmount : 1;
 
 export const mapBankTransactionToCreateInput = (
     bankTransaction: BankTransactionInterface,
@@ -14,12 +25,36 @@ export const mapBankTransactionToCreateInput = (
 ): TransactionCreateInputInterface => {
     const isIncome = bankTransaction.type === BankTransactionTypeEnum.INCOME;
     const amount = Math.abs(bankTransaction.amount);
-    const operationAmount = Math.abs(bankTransaction.operationAmount);
     const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
 
-    const exchangeRate = isPositiveNumber(operationAmount) && amount !== operationAmount ? amount / operationAmount : 1;
-    const hasMccDefault = isPositiveNumber(mccCategoryLookup?.defaultCategoryId);
-    const categorySource = hasMccDefault ? CategorySourceEnum.MCC_DEFAULT : CategorySourceEnum.USER;
+    const { feeAmount } = bankTransaction;
+    const hasFee = isPositiveNumber(feeAmount) && feeAmount < amount;
+    const mainAmount = hasFee ? amount - feeAmount : amount;
+    const exchangeRate = getExchangeRate(mainAmount, Math.abs(bankTransaction.operationAmount));
+
+    const mainEntry: TransactionEntryCreateInputInterface = {
+        accountId,
+        type: entryType,
+        amount: mainAmount,
+        categoryId: mccCategoryLookup?.defaultCategoryId ?? null,
+        categorySource: isPositiveNumber(mccCategoryLookup?.defaultCategoryId) ? CategorySourceEnum.MCC_DEFAULT : CategorySourceEnum.USER,
+        mccCategoryId: mccCategoryLookup?.id ?? null,
+        externalId: bankTransaction.id,
+        exchangeRate,
+        toIban: bankTransaction.counterIban ?? null
+    };
+
+    const feeEntry: TransactionEntryCreateInputInterface = {
+        accountId,
+        type: entryType,
+        amount: feeAmount,
+        categoryId: BANK_FEE_CATEGORY_ID,
+        categorySource: CategorySourceEnum.FEE,
+        mccCategoryId: null,
+        externalId: `${bankTransaction.id}${FEE_ENTRY_EXTERNAL_ID_SUFFIX}`,
+        exchangeRate: 1,
+        toIban: null
+    };
 
     return {
         amount,
@@ -34,18 +69,6 @@ export const mapBankTransactionToCreateInput = (
         fromAccountId: isIncome ? null : accountId,
         toAccountId: isIncome ? accountId : null,
         tagIds: [],
-        entries: [
-            {
-                accountId,
-                type: entryType,
-                amount,
-                categoryId: mccCategoryLookup?.defaultCategoryId ?? null,
-                categorySource,
-                mccCategoryId: mccCategoryLookup?.id ?? null,
-                externalId: bankTransaction.id,
-                exchangeRate,
-                toIban: bankTransaction.counterIban ?? null
-            }
-        ]
+        entries: hasFee ? [mainEntry, feeEntry] : [mainEntry]
     };
 };

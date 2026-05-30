@@ -26,6 +26,7 @@ export const monobankTransactionMapper = (transaction: MonobankTransactionApiInt
     balance: transaction.balance / MONOBANK_BALANCE_DIVISOR,
     hold: transaction.hold,
     type: getTransactionType(transaction.amount),
+    feeAmount: Math.abs(transaction.commissionRate) / MONOBANK_BALANCE_DIVISOR,
     receiptId: transaction.receiptId,
     invoiceId: transaction.invoiceId,
     counterEdrpou: transaction.counterEdrpou,
