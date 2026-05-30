@@ -1407,6 +1407,10 @@ msgstr "Is Planned"
 msgid "Italian (Italy)"
 msgstr "Italian (Italy)"
 
+#: src/sync/component/account-selection-step/account-selection-step.tsx
+msgid "Jars"
+msgstr "Jars"
+
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Language"
