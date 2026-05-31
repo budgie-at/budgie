@@ -1,0 +1,95 @@
+appId: ${APP_ID}
+env:
+    ACCOUNT_NAME: Rules Test Account
+    CATEGORY_NAME: Rules Test Category
+---
+- runFlow:
+      file: setup/setup-rules-test.flow.yaml
+
+- runFlow:
+      file: subflows/navigate-to-rules.flow.yaml
+
+- tapOn:
+      id: 'ActionButton'
+- extendedWaitUntil:
+      visible:
+          id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+      id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+      visible: 'Create Rule'
+
+- tapOn:
+      id: 'RuleForm.Condition.0.ValueInput'
+- inputText: Netflix
+
+- tapOn: return
+
+- tapOn:
+      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+      id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+      when:
+          visible: 'Apply to existing transactions?'
+      commands:
+          - tapOn: 'Skip'
+- extendedWaitUntil:
+      visible:
+          id: 'RulesPage.Page'
+
+- assertVisible:
+      id: 'RulesPage.RuleCard.0'
+- assertVisible:
+      id: 'RulesPage.RuleCardConditions.0'
+- assertVisible:
+      id: 'RulesPage.RuleCardActions.0'
+
+- tapOn:
+      id: 'RulesPage.SearchInput'
+- inputText: Netflix
+- assertVisible:
+      id: 'RulesPage.RuleCard.0'
+- assertVisible:
+      id: 'RulesPage.RuleCardConditions.0'
+
+- eraseText
+- inputText: ${CATEGORY_NAME}
+- assertVisible:
+      id: 'RulesPage.RuleCard.0'
+- assertVisible:
+      id: 'RulesPage.RuleCardActions.0'
+
+- eraseText
+- inputText: MissingRuleSearch
+- assertVisible:
+      id: 'RulesPage.EmptyState'
+- assertVisible:
+      text: 'No Results'
+- assertVisible:
+      text: 'Try a different search term'
+
+- eraseText
+- assertVisible:
+      id: 'RulesPage.RuleCard.0'
+- tapOn: return
+
+- swipe:
+      from:
+          id: 'RulesPage.RuleCard.0'
+      direction: LEFT
+      duration: 300
+
+- tapOn:
+      id: DeletableRow.DeleteButton
+
+- tapOn: Delete
+
+- assertVisible:
+      id: 'RulesPage.EmptyState'

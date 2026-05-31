@@ -26,6 +26,7 @@ interface Props<T extends IdInterface> {
     renderCard: (item: T, index: number) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     listHeader?: ReactElement | null;
+    estimatedHeaderSize?: number;
     children?: ReactNode;
     sizing?: LegendListSizingInterface<T>;
 }
@@ -44,6 +45,7 @@ export const SearchablePageList = <T extends IdInterface>({
     renderCard,
     getDeleteConfirmation,
     listHeader: customListHeader,
+    estimatedHeaderSize = LEGEND_LIST_HEADER_HEIGHT,
     children,
     sizing
 }: Props<T>) => {
@@ -85,7 +87,7 @@ export const SearchablePageList = <T extends IdInterface>({
                 data={data}
                 contentContainerStyle={CONTENT_CONTAINER_STYLE}
                 ListHeaderComponent={customListHeader ?? listHeader}
-                estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
+                estimatedHeaderSize={estimatedHeaderSize}
                 renderItem={renderItem}
                 keyExtractor={legendListKeyExtractor}
                 estimatedItemSize={sizing?.estimatedItemSize}
