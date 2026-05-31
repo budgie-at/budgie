@@ -9,14 +9,12 @@ import { AccountSelectorModalSelector } from '../../../app/account-selector-moda
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
-import { AccountVisibilityStatusEnum } from '../../enum/account-visibility-status.enum';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
-import { getAccountVisibilityStatus } from '../../utils/get-account-visibility-status.util';
-import { AccountStatusBadge } from '../account-status-badge/account-status-badge';
+import { AccountInactiveBadge } from '../account-inactive-badge/account-inactive-badge';
 
 interface Props extends Pick<
     AccountWithInstrumentEntityInterface,
-    'id' | 'icon' | 'type' | 'title' | 'isActive' | 'deletedAt' | AccountAssociationEnum.INSTRUMENT
+    'id' | 'icon' | 'type' | 'title' | 'isActive' | AccountAssociationEnum.INSTRUMENT
 > {
     readonly onSelect: (id: number) => void;
     readonly isSelected: boolean;
@@ -24,16 +22,14 @@ interface Props extends Pick<
 }
 
 export const AccountSelectorCard = (props: Props) => {
-    const { className, isSelected, title, onSelect, id, icon, type, instrument, isActive, deletedAt } = props;
+    const { className, isSelected, title, onSelect, id, icon, type, instrument, isActive } = props;
 
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
     const { balance } = useAccountBalanceQuery(id);
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const status = getAccountVisibilityStatus({ isActive, deletedAt });
-    const isHidden = status !== AccountVisibilityStatusEnum.ACTIVE;
-    const iconSlotClassName = isHidden ? 'opacity-50' : '';
+    const iconSlotClassName = isActive ? '' : 'opacity-50';
 
     return (
         <SelectorCard
@@ -51,7 +47,7 @@ export const AccountSelectorCard = (props: Props) => {
             title={title}
             subtitle={
                 <View className="flex-row items-center gap-sm">
-                    {isHidden && <AccountStatusBadge status={status} />}
+                    {!isActive && <AccountInactiveBadge />}
                     <View className="flex-row items-center flex-shrink">
                         <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
                             {t(ACCOUNT_TYPE[type])}
