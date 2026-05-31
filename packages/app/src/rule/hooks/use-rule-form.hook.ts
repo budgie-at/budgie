@@ -27,6 +27,7 @@ type UseRuleFormOptionsInterface = {
     readonly defaultValues?: RuleCreateInputInterface | null;
     readonly prefillData?: RulePrefillDataInterface | null;
     readonly onSuccess?: (result: RuleFormResultType) => void;
+    readonly applyToExistingOnSave?: boolean;
 };
 
 const DEFAULT_VALUES: RuleCreateInputInterface = {
@@ -95,7 +96,7 @@ const resolveDefaultValues = (
 
 export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     const { t } = useLingui();
-    const { ruleId, defaultValues: providedDefaultValues, prefillData, onSuccess } = options;
+    const { ruleId, defaultValues: providedDefaultValues, prefillData, onSuccess, applyToExistingOnSave } = options;
 
     const defaultValues: RuleCreateInputInterface = resolveDefaultValues(providedDefaultValues, prefillData);
     const isEditing = isDefined(ruleId);
@@ -142,7 +143,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
 
     const handleSubmit = async (values: RuleCreateInputInterface) => {
         try {
-            const shouldApply = await confirmApplyToExisting(values);
+            const shouldApply = isDefined(applyToExistingOnSave) ? applyToExistingOnSave : await confirmApplyToExisting(values);
 
             if (isEditing && isDefined(ruleId)) {
                 await ruleService.updateById(ruleId, values);
