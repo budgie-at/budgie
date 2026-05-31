@@ -23,8 +23,9 @@ import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 interface Props<T extends IdInterface> {
     data: T[];
     onDelete?: (id: number) => Promise<void>;
-    renderCard: (item: T) => ReactNode;
+    renderCard: (item: T, index: number) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
+    listHeaderComponent?: ReactNode;
     children?: ReactNode;
     sizing?: LegendListSizingInterface<T>;
 }
@@ -42,6 +43,7 @@ export const SearchablePageList = <T extends IdInterface>({
     onDelete,
     renderCard,
     getDeleteConfirmation,
+    listHeaderComponent = listHeader,
     children,
     sizing
 }: Props<T>) => {
@@ -61,8 +63,8 @@ export const SearchablePageList = <T extends IdInterface>({
         }
     };
 
-    const renderItem = ({ item }: { item: T }) => {
-        const card = renderCard(item);
+    const renderItem = ({ item, index }: { item: T; index: number }) => {
+        const card = renderCard(item, index);
         if (!isDefined(onDelete)) {
             return card;
         }
@@ -82,7 +84,7 @@ export const SearchablePageList = <T extends IdInterface>({
                 style={LEGEND_LIST_STYLE}
                 data={data}
                 contentContainerStyle={CONTENT_CONTAINER_STYLE}
-                ListHeaderComponent={listHeader}
+                ListHeaderComponent={listHeaderComponent}
                 estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
                 renderItem={renderItem}
                 keyExtractor={legendListKeyExtractor}
