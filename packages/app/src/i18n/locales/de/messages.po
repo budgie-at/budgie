@@ -36,6 +36,14 @@ msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt."
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verfügbar}}"
 
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "{count, plural, one {# duplicate imported transaction} other {# duplicate imported transactions}}"
+msgstr "{count, plural, one {# doppelte importierte Transaktion} other {# doppelte importierte Transaktionen}}"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "{count, plural, one {# duplicate transaction removed} other {# duplicate transactions removed}}"
+msgstr "{count, plural, one {# doppelte Transaktion entfernt} other {# doppelte Transaktionen entfernt}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# vorhandene Transaktion passt zu dieser Regel.} other {# vorhandene Transaktionen passen zu dieser Regel.}}"
@@ -398,6 +406,10 @@ msgstr "Bank-Synchronisation"
 msgid "Bank Sync"
 msgstr "Bank-Synchronisation"
 
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Bank sync data repaired"
+msgstr "Bank-Sync-Daten repariert"
+
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
 msgstr "Bank-Synchronisation zurückgesetzt"
@@ -439,6 +451,10 @@ msgstr "Geliehen"
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Budgie can find duplicate transactions created by bank sync import issues and soft-delete only the extra imported copies."
+msgstr "Budgie kann doppelte Transaktionen finden, die durch Bank-Sync-Importprobleme entstanden sind, und nur die zusätzlichen importierten Kopien als gelöscht markieren."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie füllt fehlende Werte in der Basiswährung mit historischen Wechselkursen. Analysen sind möglicherweise nicht verfügbar, bis dies abgeschlossen ist."
@@ -446,6 +462,10 @@ msgstr "Budgie füllt fehlende Werte in der Basiswährung mit historischen Wechs
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
 msgstr "Budgie führt sichere Überweisungs- und Rückerstattungs-Treffer zusammen. Mehrdeutige Treffer bleiben unverändert."
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
+msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen bleiben unverändert."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
@@ -511,6 +531,10 @@ msgstr "Ändern"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Change PIN"
 msgstr "PIN ändern"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Checking"
+msgstr "Prüfen"
 
 #: src/account/component/create-bank-account/create-bank-account.tsx
 #: src/app/(main)/create-account/index.tsx
@@ -653,6 +677,10 @@ msgstr "Konto konnte nicht aktiviert werden."
 msgid "Could not archive account"
 msgstr "Konto konnte nicht archiviert werden"
 
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Could not check bank sync data"
+msgstr "Bank-Sync-Daten konnten nicht geprüft werden"
+
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Could not clear data"
 msgstr "Daten konnten nicht gelöscht werden"
@@ -750,6 +778,10 @@ msgstr "Tag konnte nicht neu zugewiesen werden"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Salden konnten nicht neu berechnet werden"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Could not repair bank sync data"
+msgstr "Bank-Sync-Daten konnten nicht repariert werden"
 
 #: src/app/resync-window-picker.tsx
 msgid "Could not reset bank sync"
@@ -995,6 +1027,10 @@ msgstr "KI-Modelle werden heruntergeladen…"
 #: src/ai/service/ai-system-status.service.ts
 msgid "Downloading models"
 msgstr "Modelle werden heruntergeladen"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Duplicate imported transactions"
+msgstr "Doppelte importierte Transaktionen"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Duplicate rule"
@@ -1663,6 +1699,10 @@ msgstr "Keine Währungen gefunden"
 msgid "No Custom Categories"
 msgstr "Keine benutzerdefinierten Kategorien"
 
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "No duplicate imported transactions found."
+msgstr "Keine doppelten importierten Transaktionen gefunden."
+
 #: src/app/icon-selector.tsx
 msgid "No icons found"
 msgstr "Keine Symbole gefunden"
@@ -1704,6 +1744,10 @@ msgstr "Keine MCC-Codes gefunden"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "No recurring payments detected"
 msgstr "Keine wiederkehrenden Zahlungen erkannt"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "No repairs needed"
+msgstr "Keine Reparaturen erforderlich"
 
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 #: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
@@ -2022,6 +2066,19 @@ msgstr "Erstattet"
 #: src/transaction/components/refunded-pill/refunded-pill.tsx
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Erstattet {formattedRefundedAmount}"
+
+#: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
+msgid "Remove duplicate imported bank transactions"
+msgstr "Doppelte importierte Banktransaktionen entfernen"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Repair"
+msgstr "Reparieren"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+#: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
+msgid "Repair Bank Sync Data"
+msgstr "Bank-Sync-Daten reparieren"
 
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
@@ -2663,6 +2720,7 @@ msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
 #: src/ai/component/voice-input-error/voice-input-error.tsx
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
 msgid "Try Again"
 msgstr "Erneut versuchen"
 

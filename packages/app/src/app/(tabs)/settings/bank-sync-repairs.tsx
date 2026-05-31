@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
+import { msg, plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
@@ -44,9 +44,9 @@ const confirmRepair = async (count: number, t: ReturnType<typeof useLingui>['t']
     const countText = getDuplicateImportedTransactionText(count, t);
 
     return confirmAlert({
-        title: t`Repair Bank Sync Data`,
-        message: t`Budgie will soft-delete ${countText}. This keeps your manual transactions unchanged.`,
-        confirmText: t`Repair`,
+        title: t(msg`Repair Bank Sync Data`),
+        message: t(msg`Budgie will soft-delete ${countText}. This keeps your manual transactions unchanged.`),
+        confirmText: t(msg`Repair`),
         cancelText: t`Cancel`,
         isDestructive: true
     });
@@ -60,7 +60,7 @@ const previewAndConfirmRepair = async (refresh: () => Promise<void>, t: ReturnTy
         return confirmRepair(freshCount, t);
     }
 
-    Toast.show({ type: 'success', text1: t`No repairs needed` });
+    Toast.show({ type: 'success', text1: t(msg`No repairs needed`) });
     await refresh();
 
     return false;
@@ -70,7 +70,7 @@ const removeDuplicatesAndRefresh = async (refresh: () => Promise<void>, t: Retur
     const result = await bankSyncRepairService.removeDuplicates();
     const repairedText = getRemovedTransactionText(result.repairedTransactionCount, t);
 
-    Toast.show({ type: 'success', text1: t`Bank sync data repaired`, text2: repairedText });
+    Toast.show({ type: 'success', text1: t(msg`Bank sync data repaired`), text2: repairedText });
     await refresh();
 };
 
