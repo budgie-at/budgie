@@ -4,14 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { BankAccountTypeEnum, BankProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 
-import { testDb } from '../../harness';
-
-import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
+import { StubFileBankSyncService, testDb } from '../../harness';
 
 import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
-import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
 import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';
-import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
 const ERSTE_ACCOUNT_ID = 'AT123';
 const ERSTE_EXTERNAL_ID = 'erste-transaction-1';
@@ -63,21 +59,8 @@ class StubErsteFileClient implements FileBasedBankSyncClientInterface {
     }
 }
 
-class StubErsteFileSyncService extends BaseFileBankSyncService {
-    constructor(private readonly externalIds = [ERSTE_EXTERNAL_ID]) {
-        super(ExternalSourceEnum.ERSTE);
-    }
-
-    protected parseFile(): Promise<ParsedFileResultInterface> {
-        const client = new StubErsteFileClient(this.externalIds);
-
-        return Promise.resolve({ client, bankAccounts: client.getAccounts() });
-    }
-
-    protected resolveMccCategoryIdMap(): Promise<Map<string, MccCategoryLookupInterface | null>> {
-        return Promise.resolve(new Map());
-    }
-}
+const buildErsteSyncService = (externalIds = [ERSTE_EXTERNAL_ID]): StubFileBankSyncService =>
+    new StubFileBankSyncService(ExternalSourceEnum.ERSTE, new StubErsteFileClient(externalIds));
 
 const fetchImportedErsteTransactionCount = (externalId = ERSTE_EXTERNAL_ID): number =>
     testDb
@@ -91,7 +74,7 @@ const fetchImportedErsteTransactionTotalCount = (): number =>
 
 describe('erste/file-import-idempotency', () => {
     it('keeps one transaction when the same statement import starts twice', async () => {
-        const syncService = new StubErsteFileSyncService();
+        const syncService = buildErsteSyncService();
 
         await Promise.all([
             syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]),
@@ -102,8 +85,8 @@ describe('erste/file-import-idempotency', () => {
     });
 
     it('keeps one transaction when the same statement receives a new generated external id', async () => {
-        const legacySyncService = new StubErsteFileSyncService([ERSTE_LEGACY_EXTERNAL_ID]);
-        const currentSyncService = new StubErsteFileSyncService([ERSTE_EXTERNAL_ID]);
+        const legacySyncService = buildErsteSyncService([ERSTE_LEGACY_EXTERNAL_ID]);
+        const currentSyncService = buildErsteSyncService([ERSTE_EXTERNAL_ID]);
 
         await legacySyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
         await currentSyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
@@ -113,8 +96,8 @@ describe('erste/file-import-idempotency', () => {
     });
 
     it('does not collapse ambiguous current statement rows into one semantic match', async () => {
-        const legacySyncService = new StubErsteFileSyncService([ERSTE_LEGACY_EXTERNAL_ID]);
-        const currentSyncService = new StubErsteFileSyncService([ERSTE_EXTERNAL_ID, ERSTE_SECOND_EXTERNAL_ID]);
+        const legacySyncService = buildErsteSyncService([ERSTE_LEGACY_EXTERNAL_ID]);
+        const currentSyncService = buildErsteSyncService([ERSTE_EXTERNAL_ID, ERSTE_SECOND_EXTERNAL_ID]);
 
         await legacySyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
         await currentSyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
