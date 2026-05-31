@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.29.1](https://github.com/budgie-at/budgie/compare/v5.29.0...v5.29.1) (2026-05-31)
+
+### Bug Fixes
+
+- **ai:** deduplicate generated keywords ([f8a2b31](https://github.com/budgie-at/budgie/commit/f8a2b310ca748a19af3f69a364b216e17f36da82))
+- **app:** allow inactive accounts in rules ([f7a6b29](https://github.com/budgie-at/budgie/commit/f7a6b29ad02bf7f1ce59e03829589938c099201b))
+
 # [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
 
 ### Bug Fixes
