@@ -97,6 +97,14 @@ class TransferConsolidationAutoCandidateService {
         );
     }
 
+    async processExistingTransferIncomeDuplicateCandidates(
+        candidates: ExistingTransferIncomeDuplicateCandidateInterface[]
+    ): Promise<number> {
+        return this.reduceConsolidations(candidates, candidate =>
+            transferConsolidationExecutorService.consolidateExistingTransferIncomeDuplicate(candidate)
+        );
+    }
+
     private async processPairCandidates(candidates: TransferPairCandidateInterface[]): Promise<number> {
         return this.reduceConsolidations(candidates, candidate => transferConsolidationExecutorService.consolidatePair(candidate));
     }
@@ -124,14 +132,6 @@ class TransferConsolidationAutoCandidateService {
     private async processExistingTransferBridgeCandidates(candidates: ExistingTransferBridgeCandidateInterface[]): Promise<number> {
         return this.reduceConsolidations(candidates, candidate =>
             transferConsolidationExecutorService.consolidateExistingTransferBridge(candidate)
-        );
-    }
-
-    private async processExistingTransferIncomeDuplicateCandidates(
-        candidates: ExistingTransferIncomeDuplicateCandidateInterface[]
-    ): Promise<number> {
-        return this.reduceConsolidations(candidates, candidate =>
-            transferConsolidationExecutorService.consolidateExistingTransferIncomeDuplicate(candidate)
         );
     }
 
