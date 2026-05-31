@@ -70,11 +70,11 @@ const isFuzzyMatch = (text: string, token: string) => {
 };
 const getTokenScore = (text: string, token: string) => {
     if (text === token) {
-        return 120;
+        return 100;
     }
 
     if (text.startsWith(token)) {
-        return 90;
+        return 80;
     }
 
     if (text.includes(` ${token}`)) {
