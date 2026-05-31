@@ -2,6 +2,8 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { FormProvider } from 'react-hook-form';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { Button } from '../../../@generic/component/button/button';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
@@ -41,7 +43,7 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
     };
 
     const status = useRuleApplyStatus(rule);
-    const hasPending = status.available && status.pending > 0;
+    const hasPending = status.available && isPositiveNumber(status.pending);
     const submitLabel = hasPending ? t`Save & Apply` : t`Save`;
 
     const { form, handleSubmit, handleDelete } = useRuleForm({
