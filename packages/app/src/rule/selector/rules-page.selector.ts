@@ -3,6 +3,7 @@ export const RulesPageSelector = {
     CreateButton: 'RulesPage.CreateButton',
     EmptyState: 'RulesPage.EmptyState',
     MatchingRulesFilter: 'RulesPage.MatchingRulesFilter',
+    SearchInput: 'RulesPage.SearchInput',
     RuleCard: (index: number) => `RulesPage.RuleCard.${index}`,
     RuleCardEnabledSwitch: (index: number) => `RulesPage.RuleCardEnabledSwitch.${index}`,
     RuleCardConditions: (index: number) => `RulesPage.RuleCardConditions.${index}`,
