@@ -12,10 +12,15 @@ import { useRefundableExpenseCandidatesQuery } from '../../query/use-refundable-
 import { ConvertToRefundFooter } from '../convert-to-refund-footer/convert-to-refund-footer';
 import { TransactionPicker } from '../transaction-picker/transaction-picker';
 
-import type { ConvertToRefundContentPropsInterface } from '../../interface/convert-to-refund-content-props.interface';
+import type { ConvertToRefundModalResolveType } from '../../interface/convert-to-refund-modal-resolve.type';
 import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
 
-export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConvertToRefund }: ConvertToRefundContentPropsInterface) => {
+interface Props {
+    readonly refundIncomeTransactionId: number;
+    readonly resolveConvertToRefund: ConvertToRefundModalResolveType;
+}
+
+export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConvertToRefund }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
     const [selectedCandidate, setSelectedCandidate] = useState<TransactionPickerItemInterface | null>(null);
