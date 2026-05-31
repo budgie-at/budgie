@@ -16,7 +16,7 @@ import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates
 
 import type { EntryBaseValuationInputInterface } from '../interface/entry-base-valuation-input.interface';
 import type { EntryBaseValuationInterface } from '../interface/entry-base-valuation.interface';
-import type { DB, TransactionEntryCreateInputInterface } from '@budgie/contracts';
+import type { DB, HistoricalExchangeRateEntityInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 class EntryBaseValuationService {
     private static readonly RATE_DATE_FORMAT = 'yyyy-MM-dd';
@@ -81,26 +81,24 @@ class EntryBaseValuationService {
         tx?: DB
     ): Promise<number> {
         const rateDate = format(operatedAt, EntryBaseValuationService.RATE_DATE_FORMAT);
-        const exchangeRate = await historicalExchangeRateRepository.findForDateOrBefore(
+        const dateRate = await this.resolveDirectOrInverseRate(
+            (sourceId, targetId) => historicalExchangeRateRepository.findForDateOrBefore(sourceId, targetId, rateDate, tx),
             sourceInstrumentId,
-            targetInstrumentId,
-            rateDate,
-            tx
+            targetInstrumentId
         );
 
-        if (isDefined(exchangeRate)) {
-            return exchangeRate.rate;
+        if (isDefined(dateRate)) {
+            return dateRate;
         }
 
-        const inverseExchangeRate = await historicalExchangeRateRepository.findForDateOrBefore(
-            targetInstrumentId,
+        const oldestRate = await this.resolveDirectOrInverseRate(
+            (sourceId, targetId) => historicalExchangeRateRepository.findEarliest(sourceId, targetId, tx),
             sourceInstrumentId,
-            rateDate,
-            tx
+            targetInstrumentId
         );
 
-        if (isDefined(inverseExchangeRate)) {
-            return 1 / inverseExchangeRate.rate;
+        if (isDefined(oldestRate)) {
+            return oldestRate;
         }
 
         const bridgeExchangeRate = await this.resolveHistoricalBridgeExchangeRate(sourceInstrumentId, targetInstrumentId, rateDate, tx);
@@ -127,6 +125,26 @@ class EntryBaseValuationService {
         );
 
         return valuations;
+    }
+
+    private async resolveDirectOrInverseRate(
+        lookup: (sourceInstrumentId: number, targetInstrumentId: number) => Promise<HistoricalExchangeRateEntityInterface | undefined>,
+        sourceInstrumentId: number,
+        targetInstrumentId: number
+    ): Promise<number | null> {
+        const direct = await lookup(sourceInstrumentId, targetInstrumentId);
+
+        if (isDefined(direct)) {
+            return direct.rate;
+        }
+
+        const inverse = await lookup(targetInstrumentId, sourceInstrumentId);
+
+        if (isDefined(inverse)) {
+            return 1 / inverse.rate;
+        }
+
+        return null;
     }
 
     private async resolveCurrentBaseExchangeRate(sourceInstrumentId: number, targetInstrumentId: number): Promise<number> {
