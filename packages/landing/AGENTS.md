@@ -39,6 +39,18 @@ src/
     └── ...
 ```
 
+## Load on demand
+
+Before starting any of the work areas below, read the corresponding doc first.
+
+| When working on… | Read first |
+|---|---|
+| Blog articles, feature pages, pillar hubs, legal pages, sitemap entries, `generateMetadata`, JSON-LD helpers, anything SEO-related | `docs/seo-pages.md` |
+| `<Trans>` / `t` / `msg`, `generateMetadata` i18n strings, catalog `.po`/`.ts` files, RSC i18n setup, dispatching translation subagents | `docs/lingui-rsc.md` |
+| IndexNow key file, GSC/Bing sitemap submission, merge-to-main URL submission, root `.txt` proxy bypass rules | `docs/indexnow.md` |
+
+---
+
 ## React 19 Rules
 
 1. **No manual memoization** - Never use `useCallback`, `useMemo`, `React.memo` (React 19 Compiler handles this)
