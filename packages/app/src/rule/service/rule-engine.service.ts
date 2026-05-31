@@ -194,21 +194,12 @@ class RuleEngineService {
     }
 
     private async applyMatchedRulesInBatch(matches: RuleTransactionMatchInterface[], transaction: DB): Promise<void> {
-        const convertedAny = await matches.reduce(
-            (previousMatch, { transactionId, matchingRules }) =>
-                previousMatch.then(async previousConverted => {
-                    const converted = await this.applyMatchingRulesSequentially(transactionId, matchingRules, transaction);
-
-                    await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
-
-                    return previousConverted || converted;
-                }),
-            Promise.resolve(false)
+        await this.applyRuleItemsInBatch(
+            matches,
+            transaction,
+            match => match.transactionId,
+            match => this.applyMatchingRulesSequentially(match.transactionId, match.matchingRules, transaction)
         );
-
-        if (convertedAny) {
-            await accountBalanceIncrementalService.updateAllBalances(true, transaction);
-        }
     }
 
     private async applyRuleToMatchingTransactionBatches(
@@ -252,10 +243,25 @@ class RuleEngineService {
         actions: RuleActionEntityInterface[],
         transaction: DB
     ): Promise<void> {
-        const convertedAny = await batchIds.reduce(
-            (previousTransaction, transactionId) =>
-                previousTransaction.then(async previousConverted => {
-                    const converted = await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
+        await this.applyRuleItemsInBatch(
+            batchIds,
+            transaction,
+            transactionId => transactionId,
+            transactionId => this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>())
+        );
+    }
+
+    private async applyRuleItemsInBatch<Item>(
+        items: Item[],
+        transaction: DB,
+        getTransactionId: (item: Item) => number,
+        applyRuleItem: (item: Item) => Promise<boolean>
+    ): Promise<void> {
+        const convertedAny = await items.reduce(
+            (previousItem, item) =>
+                previousItem.then(async previousConverted => {
+                    const transactionId = getTransactionId(item);
+                    const converted = await applyRuleItem(item);
 
                     await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
 
