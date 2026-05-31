@@ -6,6 +6,5 @@ export const BankSyncRepairsPageSelector = {
     ErrorRetryButton: 'BankSyncRepairsPage.ErrorRetryButton',
     ErrorText: 'BankSyncRepairsPage.ErrorText',
     RepairButton: 'BankSyncRepairsPage.RepairButton',
-    CandidateRow: (transactionId: number) => `BankSyncRepairsPage.CandidateRow.${transactionId}` as const,
     SourceRow: (source: string) => `BankSyncRepairsPage.SourceRow.${normalizePart(source)}` as const
 } as const;

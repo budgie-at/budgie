@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { eq } from 'drizzle-orm';
 
-import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { AccountEntityTable, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
 import {
     expectTransferPairConsolidation,
@@ -8,7 +9,8 @@ import {
     findMccByCode,
     seedAccountPair,
     seedAmountTransferPair,
-    seedBankPair
+    seedBankPair,
+    testDb
 } from '../../harness';
 
 import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
@@ -64,6 +66,24 @@ describe('consolidation/transfer-pair-by-amount', () => {
         const operatedAt = new Date(2026, 0, 15, 12, 0, 0);
         seedBankPair.expense({ externalId: 'tx-expense', operatedAt }, { accountId: fromAccount.id, amount: 250 * PRECISION });
         seedBankPair.income({ externalId: 'tx-income', operatedAt }, { accountId: toAccount.id, amount: 250 * PRECISION });
+
+        const result = await transferConsolidationService.consolidate();
+        expect(result.consolidated).toBe(0);
+    });
+
+    it('does NOT consolidate an amount transfer from an archived source account', async () => {
+        const { fromAccount } = seedAmountTransferPair(250 * PRECISION);
+
+        testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, fromAccount.id)).run();
+
+        const result = await transferConsolidationService.consolidate();
+        expect(result.consolidated).toBe(0);
+    });
+
+    it('does NOT consolidate an amount transfer to an archived target account', async () => {
+        const { toAccount } = seedAmountTransferPair(250 * PRECISION);
+
+        testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, toAccount.id)).run();
 
         const result = await transferConsolidationService.consolidate();
         expect(result.consolidated).toBe(0);

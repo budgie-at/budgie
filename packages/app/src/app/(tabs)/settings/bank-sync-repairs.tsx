@@ -7,6 +7,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -20,42 +21,32 @@ import { bankSyncRepairService } from '../../../sync/service/bank-sync-repair.se
 
 import { BankSyncRepairsPageSelector } from './bank-sync-repairs-page.selector';
 
-import type { BankSyncDuplicateRepairCandidatePreviewInterface } from '../../../sync/interface/bank-sync-duplicate-repair-candidate-preview.interface';
 import type { BankSyncDuplicateRepairSourcePreviewInterface } from '../../../sync/interface/bank-sync-duplicate-repair-source-preview.interface';
 
 const handleGoBack = () => void goBackOrReplace('/settings');
 
-const getDuplicateImportedTransactionText = (count: number, t: ReturnType<typeof useLingui>['t']) =>
+const getBankSyncRepairText = (count: number, t: ReturnType<typeof useLingui>['t']) =>
     t({
         message: plural(count, {
-            one: '# duplicate imported transaction',
-            other: '# duplicate imported transactions'
+            one: '# bank sync repair',
+            other: '# bank sync repairs'
         })
     });
 
-const getRemovedTransactionText = (count: number, t: ReturnType<typeof useLingui>['t']) =>
+const getRepairedTransactionText = (count: number, t: ReturnType<typeof useLingui>['t']) =>
     t({
         message: plural(count, {
-            one: '# duplicate transaction removed',
-            other: '# duplicate transactions removed'
+            one: '# bank sync item repaired',
+            other: '# bank sync items repaired'
         })
     });
-
-const getCandidateReference = (externalId: string | null, transactionId: number) => externalId ?? `#${transactionId}`;
-
-const getCandidateDescription = (candidate: BankSyncDuplicateRepairCandidatePreviewInterface, t: ReturnType<typeof useLingui>['t']) => {
-    const duplicateReference = getCandidateReference(candidate.duplicateExternalId, candidate.duplicateTransactionId);
-    const keptReference = getCandidateReference(candidate.keptExternalId, candidate.keptTransactionId);
-
-    return t(msg`Remove ${duplicateReference}; keep ${keptReference}`);
-};
 
 const confirmRepair = async (count: number, t: ReturnType<typeof useLingui>['t']): Promise<boolean> => {
-    const countText = getDuplicateImportedTransactionText(count, t);
+    const countText = getBankSyncRepairText(count, t);
 
     return confirmAlert({
         title: t(msg`Repair Bank Sync Data`),
-        message: t(msg`Budgie will soft-delete ${countText}. This keeps your manual transactions unchanged.`),
+        message: t(msg`Budgie will apply ${countText}: soft-delete duplicate imports and repair duplicated transfer consolidations.`),
         confirmText: t(msg`Repair`),
         cancelText: t(msg`Cancel`),
         isDestructive: true
@@ -78,7 +69,7 @@ const previewAndConfirmRepair = async (refresh: () => Promise<void>, t: ReturnTy
 
 const removeDuplicatesAndRefresh = async (refresh: () => Promise<void>, t: ReturnType<typeof useLingui>['t']): Promise<void> => {
     const result = await bankSyncRepairService.removeDuplicates();
-    const repairedText = getRemovedTransactionText(result.repairedTransactionCount, t);
+    const repairedText = getRepairedTransactionText(result.repairedTransactionCount, t);
 
     Toast.show({ type: 'success', text1: t(msg`Bank sync data repaired`), text2: repairedText });
     await refresh();
@@ -95,35 +86,19 @@ const repairDuplicates = async (refresh: () => Promise<void>, t: ReturnType<type
 };
 
 const renderSourceRow = (source: BankSyncDuplicateRepairSourcePreviewInterface, t: ReturnType<typeof useLingui>['t']) => {
-    const sourceDescription = getDuplicateImportedTransactionText(source.duplicateTransactionCount, t);
+    const sourceDescription = getBankSyncRepairText(source.duplicateTransactionCount, t);
 
     return (
         <SimpleHorizontalCell
             key={source.externalSource}
+            size="lg"
             testID={BankSyncRepairsPageSelector.SourceRow(source.externalSource)}
-            left={<CircleIcon icon={UserIconNameEnum.DatabaseZap} variant="warning" border={false} size={40} iconSize={20} />}
+            left={<BankLogo bankProvider={source.externalSource} />}
             title={source.title}
             description={sourceDescription}
         />
     );
 };
-
-const renderCandidateRow = (candidate: BankSyncDuplicateRepairCandidatePreviewInterface, t: ReturnType<typeof useLingui>['t']) => (
-    <SimpleHorizontalCell
-        key={candidate.duplicateTransactionId}
-        testID={BankSyncRepairsPageSelector.CandidateRow(candidate.duplicateTransactionId)}
-        left={<CircleIcon icon={UserIconNameEnum.ArrowRightLeft} variant="ghost" border={false} size={36} iconSize={18} />}
-        title={candidate.title}
-        description={getCandidateDescription(candidate, t)}
-    />
-);
-
-const renderSourceSection = (source: BankSyncDuplicateRepairSourcePreviewInterface, t: ReturnType<typeof useLingui>['t']) => (
-    <View key={source.externalSource} className="gap-y-sm">
-        {renderSourceRow(source, t)}
-        <View className="gap-y-sm pl-3xl">{source.candidates.map(candidate => renderCandidateRow(candidate, t))}</View>
-    </View>
-);
 
 const INTRO_CARD = (
     <Card className="gap-y-3xl" variant="primary">
@@ -131,12 +106,11 @@ const INTRO_CARD = (
 
         <View className="gap-y-sm">
             <Text className="text-primary text-base font-semibold">
-                <Trans>Duplicate imported transactions</Trans>
+                <Trans>Bank sync data repairs</Trans>
             </Text>
             <Text className="text-secondary-foreground text-sm">
                 <Trans>
-                    Budgie can find duplicate transactions created by bank sync import issues and soft-delete only the extra imported
-                    copies.
+                    Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts.
                 </Trans>
             </Text>
         </View>
@@ -147,7 +121,7 @@ const EMPTY_STATE_CARD = (
     <Card testID={BankSyncRepairsPageSelector.EmptyState} className="items-center gap-y-2xl" variant="positive">
         <CircleIcon icon={UserIconNameEnum.CircleCheck} variant="positive" border={false} size={44} iconSize={22} />
         <Text className="text-positive-foreground text-sm font-medium text-center">
-            <Trans>No duplicate imported transactions found.</Trans>
+            <Trans>No bank sync repairs found.</Trans>
         </Text>
     </Card>
 );
@@ -217,7 +191,7 @@ export default function BankSyncRepairsPage() {
 
                 {shouldShowEmptyState ? EMPTY_STATE_CARD : null}
 
-                {shouldShowSources ? <View className="gap-y-lg">{sources.map(source => renderSourceSection(source, t))}</View> : null}
+                {shouldShowSources ? <View className="gap-y-lg">{sources.map(source => renderSourceRow(source, t))}</View> : null}
 
                 <Button
                     testID={BankSyncRepairsPageSelector.RepairButton}
