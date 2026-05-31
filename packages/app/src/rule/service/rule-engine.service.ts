@@ -9,7 +9,7 @@ import {
     TransactionUpdatedByEnum,
     transactionAsync
 } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Log, getLogger } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -32,6 +32,7 @@ import { ruleMatcherService } from './rule-matcher.service';
 
 import type { RuleCreatePreparationResultInterface } from '../interface/rule-create-preparation-result.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
+import type { RuleTransactionMatchInterface } from '../interface/rule-transaction-match.interface';
 import type { RuleTransferAccountIdsInterface } from '../interface/rule-transfer-account-ids.interface';
 import type { RuleTransferAccountsInterface } from '../interface/rule-transfer-accounts.interface';
 import type { RuleTransferCandidateInterface } from '../interface/rule-transfer-candidate.interface';
@@ -52,6 +53,8 @@ type ApplyRuleResultType = {
     readonly failed: number;
     readonly total: number;
 };
+
+const logger = getLogger('RuleEngineService');
 
 class RuleEngineService {
     @Log(
@@ -156,11 +159,50 @@ class RuleEngineService {
         await this.waitForNextBatch();
 
         const batchIds = transactionIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
-        await Promise.all(
-            batchIds.map((transactionId, offset) =>
-                this.applyRulesToTransaction(transactionId, evaluationInputs[batchStart + offset], rules)
+        const matches = batchIds
+            .map(
+                (transactionId, offset): RuleTransactionMatchInterface => ({
+                    transactionId,
+                    matchingRules: rules.filter(rule => ruleMatcherService.evaluateRule(rule, evaluationInputs[batchStart + offset]))
+                })
             )
-        );
+            .filter(match => isNotEmptyArray(match.matchingRules));
+
+        if (!isNotEmptyArray(matches)) {
+            return;
+        }
+
+        try {
+            await transactionAsync(db, async transaction => this.applyMatchedRulesInBatch(matches, transaction));
+        } catch (error: unknown) {
+            logger.error('applyRulesToTransactionsBatch:throw', {
+                transactionIds: batchIds.join(','),
+                errorMessage: getErrorMessage(error)
+            });
+        }
+    }
+
+    private async applyMatchedRulesInBatch(matches: RuleTransactionMatchInterface[], transaction: DB): Promise<void> {
+        let convertedAny = false;
+
+        for (const { transactionId, matchingRules } of matches) {
+            try {
+                // eslint-disable-next-line no-await-in-loop -- one shared transaction; sequential applies avoid concurrent SQLite connections (see issue #509)
+                const converted = await this.applyMatchingRulesSequentially(transactionId, matchingRules, transaction);
+                // eslint-disable-next-line no-await-in-loop -- same shared transaction
+                await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
+                convertedAny ||= converted;
+            } catch (error: unknown) {
+                logger.error('applyMatchedRulesInBatch:itemThrow', {
+                    transactionId,
+                    errorMessage: getErrorMessage(error)
+                });
+            }
+        }
+
+        if (convertedAny) {
+            await accountBalanceIncrementalService.updateAllBalances(true, transaction);
+        }
     }
 
     private async applyRuleToMatchingTransactionBatches(
@@ -193,30 +235,47 @@ class RuleEngineService {
     private async applyRuleToMatchingTransactionBatch(batchIds: number[], actions: RuleActionEntityInterface[]): Promise<number> {
         await this.waitForNextBatch();
 
-        const results = await Promise.allSettled(batchIds.map(transactionId => this.applyRuleActionsToTransaction(transactionId, actions)));
+        try {
+            return await transactionAsync(db, async transaction => this.applyRuleActionsToTransactionBatch(batchIds, actions, transaction));
+        } catch (error: unknown) {
+            logger.error('applyRuleToMatchingTransactionBatch:throw', {
+                transactionIds: batchIds.join(','),
+                errorMessage: getErrorMessage(error)
+            });
 
-        return results.filter(result => result.status === 'rejected').length;
+            return batchIds.length;
+        }
     }
 
-    private async applyRulesToTransaction(
-        transactionId: number,
-        input: RuleEvaluationInputInterface,
-        rules: RuleWithRelationsEntityInterface[]
-    ): Promise<void> {
-        const matchingRules = rules.filter(rule => ruleMatcherService.evaluateRule(rule, input));
+    private async applyRuleActionsToTransactionBatch(
+        batchIds: number[],
+        actions: RuleActionEntityInterface[],
+        transaction: DB
+    ): Promise<number> {
+        let failed = 0;
+        let convertedAny = false;
 
-        if (!isNotEmptyArray(matchingRules)) {
-            return;
+        for (const transactionId of batchIds) {
+            try {
+                // eslint-disable-next-line no-await-in-loop -- one shared transaction; sequential applies avoid concurrent SQLite connections (see issue #509)
+                const converted = await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
+                // eslint-disable-next-line no-await-in-loop -- same shared transaction
+                await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
+                convertedAny ||= converted;
+            } catch (error: unknown) {
+                failed += 1;
+                logger.error('applyRuleActionsToTransactionBatch:itemThrow', {
+                    transactionId,
+                    errorMessage: getErrorMessage(error)
+                });
+            }
         }
 
-        await transactionAsync(db, async transaction => {
-            const convertedToTransfer = await this.applyMatchingRulesSequentially(transactionId, matchingRules, transaction);
-            await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
+        if (convertedAny) {
+            await accountBalanceIncrementalService.updateAllBalances(true, transaction);
+        }
 
-            if (convertedToTransfer) {
-                await accountBalanceIncrementalService.updateAllBalances(true, transaction);
-            }
-        });
+        return failed;
     }
 
     private async applyMatchingRulesSequentially(
@@ -243,17 +302,6 @@ class RuleEngineService {
     private async waitForNextBatch(): Promise<void> {
         await new Promise<void>(resolve => {
             setTimeout(resolve, RULE_BATCH_DELAY_MS);
-        });
-    }
-
-    private async applyRuleActionsToTransaction(transactionId: number, actions: RuleActionEntityInterface[]): Promise<void> {
-        await transactionAsync(db, async transaction => {
-            const convertedToTransfer = await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
-            await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
-
-            if (convertedToTransfer) {
-                await accountBalanceIncrementalService.updateAllBalances(true, transaction);
-            }
         });
     }
 
