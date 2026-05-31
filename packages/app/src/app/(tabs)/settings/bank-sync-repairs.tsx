@@ -20,6 +20,7 @@ import { bankSyncRepairService } from '../../../sync/service/bank-sync-repair.se
 
 import { BankSyncRepairsPageSelector } from './bank-sync-repairs-page.selector';
 
+import type { BankSyncDuplicateRepairCandidatePreviewInterface } from '../../../sync/interface/bank-sync-duplicate-repair-candidate-preview.interface';
 import type { BankSyncDuplicateRepairSourcePreviewInterface } from '../../../sync/interface/bank-sync-duplicate-repair-source-preview.interface';
 
 const handleGoBack = () => void goBackOrReplace('/settings');
@@ -39,6 +40,15 @@ const getRemovedTransactionText = (count: number, t: ReturnType<typeof useLingui
             other: '# duplicate transactions removed'
         })
     });
+
+const getCandidateReference = (externalId: string | null, transactionId: number) => externalId ?? `#${transactionId}`;
+
+const getCandidateDescription = (candidate: BankSyncDuplicateRepairCandidatePreviewInterface, t: ReturnType<typeof useLingui>['t']) => {
+    const duplicateReference = getCandidateReference(candidate.duplicateExternalId, candidate.duplicateTransactionId);
+    const keptReference = getCandidateReference(candidate.keptExternalId, candidate.keptTransactionId);
+
+    return t(msg`Remove ${duplicateReference}; keep ${keptReference}`);
+};
 
 const confirmRepair = async (count: number, t: ReturnType<typeof useLingui>['t']): Promise<boolean> => {
     const countText = getDuplicateImportedTransactionText(count, t);
@@ -97,6 +107,23 @@ const renderSourceRow = (source: BankSyncDuplicateRepairSourcePreviewInterface, 
         />
     );
 };
+
+const renderCandidateRow = (candidate: BankSyncDuplicateRepairCandidatePreviewInterface, t: ReturnType<typeof useLingui>['t']) => (
+    <SimpleHorizontalCell
+        key={candidate.duplicateTransactionId}
+        testID={BankSyncRepairsPageSelector.CandidateRow(candidate.duplicateTransactionId)}
+        left={<CircleIcon icon={UserIconNameEnum.ArrowRightLeft} variant="ghost" border={false} size={36} iconSize={18} />}
+        title={candidate.title}
+        description={getCandidateDescription(candidate, t)}
+    />
+);
+
+const renderSourceSection = (source: BankSyncDuplicateRepairSourcePreviewInterface, t: ReturnType<typeof useLingui>['t']) => (
+    <View key={source.externalSource} className="gap-y-sm">
+        {renderSourceRow(source, t)}
+        <View className="gap-y-sm pl-3xl">{source.candidates.map(candidate => renderCandidateRow(candidate, t))}</View>
+    </View>
+);
 
 const INTRO_CARD = (
     <Card className="gap-y-3xl" variant="primary">
@@ -190,7 +217,7 @@ export default function BankSyncRepairsPage() {
 
                 {shouldShowEmptyState ? EMPTY_STATE_CARD : null}
 
-                {shouldShowSources ? <View className="gap-y-lg">{sources.map(source => renderSourceRow(source, t))}</View> : null}
+                {shouldShowSources ? <View className="gap-y-lg">{sources.map(source => renderSourceSection(source, t))}</View> : null}
 
                 <Button
                     testID={BankSyncRepairsPageSelector.RepairButton}
