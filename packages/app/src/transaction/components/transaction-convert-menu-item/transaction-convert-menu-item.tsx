@@ -1,9 +1,17 @@
+
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
 
-import type { TransactionConvertMenuItemPropsInterface } from '../../interface/transaction-convert-menu-item-props.interface';
+import type { UserIconNameEnum } from '@budgie/contracts';
 
-export const TransactionConvertMenuItem = ({ icon, label, onConvert, testID }: TransactionConvertMenuItemPropsInterface) => {
+interface Props {
+    readonly icon: UserIconNameEnum;
+    readonly label: string;
+    readonly onConvert: () => void;
+    readonly testID: string;
+}
+
+export const TransactionConvertMenuItem = ({ icon, label, onConvert, testID }: Props) => {
     const closeMenu = useTransactionActionsMenu();
 
     const handlePress = () => {

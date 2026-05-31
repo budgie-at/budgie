@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { type ReactNode } from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -8,9 +9,26 @@ import { ListItemSeparator } from '../../../@generic/component/list-item-separat
 import { TransactionPickerRow } from '../transaction-picker-row/transaction-picker-row';
 import { TransactionPickerSearchDock } from '../transaction-picker-search-dock/transaction-picker-search-dock';
 
-import type { TransactionPickerPropsInterface } from '../../interface/transaction-picker-props.interface';
+import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
 
-export const TransactionPicker = (props: TransactionPickerPropsInterface) => {
+interface Props {
+    readonly items: readonly TransactionPickerItemInterface[];
+    readonly selectedItemId: number | null;
+    readonly search: string;
+    readonly searchPlaceholder: string;
+    readonly isLoading: boolean;
+    readonly errorMessage: string | null;
+    readonly emptyTitle: string;
+    readonly emptyDescription: string;
+    readonly footer: ReactNode;
+    readonly onSearchChange: (value: string) => void;
+    readonly onSelectItem: (item: TransactionPickerItemInterface) => void;
+    readonly testID: string;
+    readonly searchTestID: string;
+    readonly rowTestID: (id: number) => string;
+}
+
+export const TransactionPicker = (props: Props) => {
     const {
         items,
         selectedItemId,

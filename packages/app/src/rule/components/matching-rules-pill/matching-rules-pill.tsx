@@ -13,9 +13,12 @@ import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
 
 import { MatchingRulesPillSelector } from './matching-rules-pill.selector';
 
-import type { MatchingRulesPillPropsInterface } from '../../interface/matching-rules-pill-props.interface';
+interface Props {
+    readonly matchingRulesCount: number;
+    readonly matchingRuleIds: readonly number[];
+}
 
-export const MatchingRulesPill = ({ matchingRulesCount, matchingRuleIds }: MatchingRulesPillPropsInterface) => {
+export const MatchingRulesPill = ({ matchingRulesCount, matchingRuleIds }: Props) => {
     const router = useRouter();
     const { t } = useLingui();
     const { openRuleForm } = useRuleFormModal();
