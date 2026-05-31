@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.30.0](https://github.com/budgie-at/budgie/compare/v5.29.1...v5.30.0) (2026-05-31)
+
+### Bug Fixes
+
+- **app:** address rules search review ([f236d82](https://github.com/budgie-at/budgie/commit/f236d824effe28f0d766a1adbb55dc84d407231c))
+- **app:** hide weak rules search matches ([027d93f](https://github.com/budgie-at/budgie/commit/027d93fc501ebe64fdf32e5fd001680002724547))
+
+### Features
+
+- **app:** add rules page search ([1c61aaf](https://github.com/budgie-at/budgie/commit/1c61aafab37fd3b71a8788d2277a25a4373a4a05))
+
 ## [5.29.1](https://github.com/budgie-at/budgie/compare/v5.29.0...v5.29.1) (2026-05-31)
 
 ### Bug Fixes
