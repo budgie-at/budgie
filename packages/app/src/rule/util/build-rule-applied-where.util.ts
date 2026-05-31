@@ -1,7 +1,7 @@
 import { RuleActionTypeEnum, TransactionEntityTable, TransactionEntryEntityTable, TransactionTagsEntityTable } from '@budgie/contracts';
 import { SQL, and, sql } from 'drizzle-orm';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import type { RuleActionEntityInterface } from '@budgie/contracts';
 
@@ -36,5 +36,5 @@ const buildActionPredicate = (action: RuleActionEntityInterface): SQL | null => 
 export const buildRuleAppliedWhere = (actions: RuleActionEntityInterface[]): SQL => {
     const predicates = actions.map(buildActionPredicate).filter(isDefined);
 
-    return predicates.length > 0 ? (and(...predicates) ?? sql`1 = 1`) : sql`1 = 1`;
+    return isNotEmptyArray(predicates) ? (and(...predicates) ?? sql`1 = 1`) : sql`1 = 1`;
 };
