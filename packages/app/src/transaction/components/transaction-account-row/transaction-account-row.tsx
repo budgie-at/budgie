@@ -12,10 +12,9 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { AccountStatusBadge } from '../../../account/component/account-status-badge/account-status-badge';
+import { AccountInactiveBadge } from '../../../account/component/account-inactive-badge/account-inactive-badge';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
-import { getAccountVisibilityStatus } from '../../../account/utils/get-account-visibility-status.util';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 
 const ANIMATION_DELAY = 170;
@@ -41,10 +40,10 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
     useImperativeHandle(ref, () => ({ shake }));
 
     const accountId = useWatch({ control, name: fieldName });
-    const { account } = useGetAccountByIdQuery(accountId ?? 0, true);
+    const { account } = useGetAccountByIdQuery(accountId ?? 0);
 
     const handlePress = async () => {
-        const selectedAccountId = await openAccountSelector({ initialAccountId: accountId });
+        const selectedAccountId = await openAccountSelector({ initialAccountId: accountId, onlyActive: false });
 
         if (isDefined(selectedAccountId)) {
             setValue(fieldName, selectedAccountId);
@@ -53,7 +52,7 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
 
     const displayLabel = label ?? t`Account`;
     const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Select`}`;
-    const accountStatus = isDefined(account) ? getAccountVisibilityStatus(account) : null;
+    const isInactiveAccount = isDefined(account) && !account.isActive;
 
     return (
         <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)}>
@@ -77,7 +76,7 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
                             >
                                 {account?.title ?? t`Select account`}
                             </Text>
-                            {isDefined(accountStatus) && <AccountStatusBadge status={accountStatus} />}
+                            {isInactiveAccount && <AccountInactiveBadge />}
                         </View>
                     </View>
 

@@ -111,13 +111,6 @@ export class AccountRepository {
         });
     }
 
-    findByIdIncludingArchived(id: number, tx?: DB) {
-        return (tx ?? this.db).query.AccountEntityTable.findFirst({
-            where: eq(AccountEntityTable.id, id),
-            with: { [AccountAssociationEnum.INSTRUMENT]: true }
-        });
-    }
-
     async findByIds(ids: number[]): Promise<AccountEntityInterface[]> {
         if (!isNotEmptyArray(ids)) {
             return [];

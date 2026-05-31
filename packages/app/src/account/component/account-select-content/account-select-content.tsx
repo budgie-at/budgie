@@ -29,7 +29,6 @@ export const AccountSelectContent = (props: Props) => {
             isSelected={item.id === initialAccountId}
             instrument={item.instrument}
             isActive={item.isActive}
-            deletedAt={item.deletedAt}
             onSelect={onSelect}
             title={item.title}
             icon={item.icon}
