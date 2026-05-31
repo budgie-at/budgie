@@ -3,16 +3,6 @@ import type { TransactionCreateEntityInterface } from '../entity/transaction-cre
 export type TransactionUpdateInputInterface = Partial<
     Pick<
         TransactionCreateEntityInterface,
-        | 'title'
-        | 'comment'
-        | 'type'
-        | 'externalId'
-        | 'operatedAt'
-        | 'fromAccountId'
-        | 'toAccountId'
-        | 'exchangeRate'
-        | 'externalSource'
-        | 'needsEmbedding'
-        | 'updatedBy'
+        'title' | 'comment' | 'type' | 'operatedAt' | 'fromAccountId' | 'toAccountId' | 'exchangeRate' | 'needsEmbedding' | 'updatedBy'
     >
 >;
