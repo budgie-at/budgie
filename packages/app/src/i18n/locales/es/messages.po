@@ -320,6 +320,10 @@ msgstr "Versión de la app"
 msgid "Appearance"
 msgstr "Apariencia"
 
+#: src/rule/components/rule-apply-status-block/rule-apply-status-block.tsx
+msgid "Applied"
+msgstr "Aplicadas"
+
 #: src/app/note-input.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Apply"
@@ -1518,6 +1522,10 @@ msgstr "Coincidir cualquiera"
 msgid "Match each field to a column from your CSV file"
 msgstr "Asigna cada campo a una columna de tu archivo CSV"
 
+#: src/rule/components/rule-apply-status-block/rule-apply-status-block.tsx
+msgid "Matched"
+msgstr "Coincidencias"
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
 msgstr "Los gastos coincidentes se convierten en una transferencia a esta cuenta."
@@ -1687,6 +1695,7 @@ msgstr "No se encontraron idiomas"
 msgid "No matching expenses"
 msgstr "No hay gastos coincidentes"
 
+#: src/rule/components/rule-apply-status-block/rule-apply-status-block.tsx
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "No matching transactions"
@@ -1857,6 +1866,10 @@ msgstr "Progreso del pago"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
 msgstr "Extracto PDF"
+
+#: src/rule/components/rule-apply-status-block/rule-apply-status-block.tsx
+msgid "Pending"
+msgstr "Pendientes"
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Permission to access contacts was denied."
@@ -2077,6 +2090,7 @@ msgid "Rules"
 msgstr "Reglas"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 msgid "Save"
 msgstr "Guardar"
@@ -2084,6 +2098,10 @@ msgstr "Guardar"
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Save {count}"
 msgstr "Guardar {count}"
+
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
+msgid "Save & Apply"
+msgstr "Guardar y aplicar"
 
 #: src/account/constant/account-type.constant.ts
 msgid "Savings"
