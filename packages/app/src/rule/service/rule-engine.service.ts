@@ -9,7 +9,7 @@ import {
     TransactionUpdatedByEnum,
     transactionAsync
 } from '@budgie/contracts';
-import { Log, getLogger } from '@budgie/logger';
+import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -53,8 +53,6 @@ type ApplyRuleResultType = {
     readonly failed: number;
     readonly total: number;
 };
-
-const logger = getLogger('RuleEngineService');
 
 class RuleEngineService {
     @Log(
@@ -150,6 +148,26 @@ class RuleEngineService {
         return { applied, failed, total };
     }
 
+    @Log(
+        matches => `enter transactionIds=${matches.map(match => match.transactionId).join(',')}`,
+        (_result, matches) => `done transactionIds=${matches.map(match => match.transactionId).join(',')}`,
+        (error, matches) => `throw transactionIds=${matches.map(match => match.transactionId).join(',')} error=${getErrorMessage(error)}`
+    )
+    private async applyMatchedRulesInBatchTransaction(matches: RuleTransactionMatchInterface[]): Promise<void> {
+        await transactionAsync(db, async transaction => this.applyMatchedRulesInBatch(matches, transaction));
+    }
+
+    @Log(
+        (batchIds, actions) => `enter transactionIds=${batchIds.join(',')} actionTypes=${actions.map(action => action.type).join(',')}`,
+        (_result, batchIds, actions) =>
+            `done transactionIds=${batchIds.join(',')} actionTypes=${actions.map(action => action.type).join(',')}`,
+        (error, batchIds, actions) =>
+            `throw transactionIds=${batchIds.join(',')} actionTypes=${actions.map(action => action.type).join(',')} error=${getErrorMessage(error)}`
+    )
+    private async applyRuleActionsToTransactionBatchTransaction(batchIds: number[], actions: RuleActionEntityInterface[]): Promise<void> {
+        await transactionAsync(db, async transaction => this.applyRuleActionsToTransactionBatch(batchIds, actions, transaction));
+    }
+
     private async applyRulesToTransactionsBatch(
         batchStart: number,
         transactionIds: number[],
@@ -172,33 +190,21 @@ class RuleEngineService {
             return;
         }
 
-        try {
-            await transactionAsync(db, async transaction => this.applyMatchedRulesInBatch(matches, transaction));
-        } catch (error: unknown) {
-            logger.error('applyRulesToTransactionsBatch:throw', {
-                transactionIds: batchIds.join(','),
-                errorMessage: getErrorMessage(error)
-            });
-        }
+        await this.applyMatchedRulesInBatchTransaction(matches);
     }
 
     private async applyMatchedRulesInBatch(matches: RuleTransactionMatchInterface[], transaction: DB): Promise<void> {
-        let convertedAny = false;
+        const convertedAny = await matches.reduce(
+            (previousMatch, { transactionId, matchingRules }) =>
+                previousMatch.then(async previousConverted => {
+                    const converted = await this.applyMatchingRulesSequentially(transactionId, matchingRules, transaction);
 
-        for (const { transactionId, matchingRules } of matches) {
-            try {
-                // eslint-disable-next-line no-await-in-loop -- one shared transaction; sequential applies avoid concurrent SQLite connections (see issue #509)
-                const converted = await this.applyMatchingRulesSequentially(transactionId, matchingRules, transaction);
-                // eslint-disable-next-line no-await-in-loop -- same shared transaction
-                await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
-                convertedAny ||= converted;
-            } catch (error: unknown) {
-                logger.error('applyMatchedRulesInBatch:itemThrow', {
-                    transactionId,
-                    errorMessage: getErrorMessage(error)
-                });
-            }
-        }
+                    await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
+
+                    return previousConverted || converted;
+                }),
+            Promise.resolve(false)
+        );
 
         if (convertedAny) {
             await accountBalanceIncrementalService.updateAllBalances(true, transaction);
@@ -235,47 +241,32 @@ class RuleEngineService {
     private async applyRuleToMatchingTransactionBatch(batchIds: number[], actions: RuleActionEntityInterface[]): Promise<number> {
         await this.waitForNextBatch();
 
-        try {
-            return await transactionAsync(db, async transaction => this.applyRuleActionsToTransactionBatch(batchIds, actions, transaction));
-        } catch (error: unknown) {
-            logger.error('applyRuleToMatchingTransactionBatch:throw', {
-                transactionIds: batchIds.join(','),
-                errorMessage: getErrorMessage(error)
-            });
-
-            return batchIds.length;
-        }
+        return this.applyRuleActionsToTransactionBatchTransaction(batchIds, actions).then(
+            () => 0,
+            () => batchIds.length
+        );
     }
 
     private async applyRuleActionsToTransactionBatch(
         batchIds: number[],
         actions: RuleActionEntityInterface[],
         transaction: DB
-    ): Promise<number> {
-        let failed = 0;
-        let convertedAny = false;
+    ): Promise<void> {
+        const convertedAny = await batchIds.reduce(
+            (previousTransaction, transactionId) =>
+                previousTransaction.then(async previousConverted => {
+                    const converted = await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
 
-        for (const transactionId of batchIds) {
-            try {
-                // eslint-disable-next-line no-await-in-loop -- one shared transaction; sequential applies avoid concurrent SQLite connections (see issue #509)
-                const converted = await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
-                // eslint-disable-next-line no-await-in-loop -- same shared transaction
-                await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
-                convertedAny ||= converted;
-            } catch (error: unknown) {
-                failed += 1;
-                logger.error('applyRuleActionsToTransactionBatch:itemThrow', {
-                    transactionId,
-                    errorMessage: getErrorMessage(error)
-                });
-            }
-        }
+                    await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
+
+                    return previousConverted || converted;
+                }),
+            Promise.resolve(false)
+        );
 
         if (convertedAny) {
             await accountBalanceIncrementalService.updateAllBalances(true, transaction);
         }
-
-        return failed;
     }
 
     private async applyMatchingRulesSequentially(
