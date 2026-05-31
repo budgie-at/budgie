@@ -6,7 +6,9 @@ import { Button } from '../../../@generic/component/button/button';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { RuleFormResultType } from '../../context/rule-form-modal.context';
+import { useRuleApplyStatus } from '../../hooks/use-rule-apply-status.hook';
 import { useRuleForm } from '../../hooks/use-rule-form.hook';
+import { RuleApplyStatusBlock } from '../rule-apply-status-block/rule-apply-status-block';
 import { RuleFormButtons } from '../rule-form-buttons/rule-form-buttons';
 import { RuleFormLayout } from '../rule-form-layout/rule-form-layout';
 import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
@@ -38,7 +40,16 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
         }))
     };
 
-    const { form, handleSubmit, handleDelete } = useRuleForm({ ruleId: rule.id, defaultValues, onSuccess });
+    const status = useRuleApplyStatus(rule);
+    const hasPending = status.available && status.pending > 0;
+    const submitLabel = hasPending ? t`Save & Apply` : t`Save`;
+
+    const { form, handleSubmit, handleDelete } = useRuleForm({
+        ruleId: rule.id,
+        defaultValues,
+        onSuccess,
+        ...(status.available && { applyToExistingOnSave: hasPending })
+    });
     const { isSubmitting } = form.formState;
 
     const handleDeleteConfirm = async () => {
@@ -58,7 +69,7 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
     const header = <PageHeader title={t`Edit Rule`} onGoBack={onCancel} />;
 
     const footer = (
-        <RuleFormButtons onCancel={onCancel} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
+        <RuleFormButtons onCancel={onCancel} onSubmit={handleSubmit} isSubmitting={isSubmitting} submitLabel={submitLabel}>
             <Button
                 testID={RuleFormSelector.DeleteButton}
                 leftIcon={UserIconNameEnum.Trash2}
@@ -69,9 +80,11 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
         </RuleFormButtons>
     );
 
+    const topContent = <RuleApplyStatusBlock status={status} />;
+
     return (
         <FormProvider {...form}>
-            <RuleFormLayout header={header} footer={footer} ruleId={rule.id} />
+            <RuleFormLayout header={header} footer={footer} ruleId={rule.id} topContent={topContent} />
         </FormProvider>
     );
 };
