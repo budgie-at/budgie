@@ -16,7 +16,6 @@ import { AccountSelectorModalSelector } from './account-selector-modal.selector'
 const BG_LIGHT = '#FFFFFF';
 const BG_DARK = '#000000';
 
-// eslint-disable-next-line max-statements -- Selector modal orchestrating search, filters and pinned current selection
 export default function AccountSelectorModal() {
     const { t } = useLingui();
     const [, resolveAccountSelector, currentParams] = useAccountSelectorModal();
@@ -24,8 +23,7 @@ export default function AccountSelectorModal() {
 
     const [search, setSearch] = useState('');
 
-    const backgroundColor = isDarkColorSchema ? BG_DARK : BG_LIGHT;
-    const containerStyle = { flex: 1, backgroundColor };
+    const containerStyle = { flex: 1, backgroundColor: isDarkColorSchema ? BG_DARK : BG_LIGHT };
 
     const initialAccountId = currentParams?.initialAccountId ?? null;
     const excludeAccountId = currentParams?.excludeAccountId;
@@ -36,9 +34,9 @@ export default function AccountSelectorModal() {
     const { accounts } = useSearchAccountsSortedQuery(search, { excludeAccountId, excludeTypes: excludeAccountTypes, onlyActive });
     const { account: currentAccount } = useGetAccountByIdQuery(initialAccountId ?? 0, true);
 
-    const isCurrentAccountListed = isDefined(currentAccount) && accounts.some(account => account.id === currentAccount.id);
-    const pinnedAccounts = isDefined(currentAccount) && !isCurrentAccountListed && !isNotEmptyString(search) ? [currentAccount] : [];
-    const data = [...pinnedAccounts, ...accounts];
+    const shouldPinCurrentAccount =
+        isDefined(currentAccount) && !isNotEmptyString(search) && !accounts.some(account => account.id === currentAccount.id);
+    const data = shouldPinCurrentAccount && isDefined(currentAccount) ? [currentAccount, ...accounts] : accounts;
 
     return (
         <View style={containerStyle} collapsable={false}>
