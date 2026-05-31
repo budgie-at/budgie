@@ -2,7 +2,9 @@ import { isDefined } from '@rnw-community/shared';
 
 import { PillarHubPageShell } from '../../../feature/component/pillar-hub-page-shell/pillar-hub-page-shell';
 import { buildPillarHubMetadata } from '../../../feature/util/build-pillar-hub-metadata.util';
+import { buildSoftwareSourceCodeJsonLd } from '../../../feature/util/build-software-source-code-json-ld.util';
 import { getPillarHubBySlug } from '../../../feature/util/get-pillar-hub-by-slug.util';
+import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 
 import type { PageLangParam } from '../../../i18n/init-lingui';
@@ -33,5 +35,10 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 export default async function OpenSourcePillarHubPage(props: PageLangParam) {
     const { lang } = await props.params;
 
-    return <PillarHubPageShell locale={lang} slug={SLUG} />;
+    return (
+        <>
+            <JsonLd data={buildSoftwareSourceCodeJsonLd(lang)} />
+            <PillarHubPageShell locale={lang} slug={SLUG} />
+        </>
+    );
 }

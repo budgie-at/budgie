@@ -131,7 +131,8 @@ export default async function RootLayout({ params, children }: Props) {
         '@type': 'Organization',
         name: 'Budgie',
         url: BASE_URL,
-        logo: `${BASE_URL}/logo/black-on-white.svg`,
+        description: 'Developer of Budgie, a privacy-first offline expense tracker for iOS and Android.',
+        logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo/black-on-white.svg`, width: 200, height: 60 },
         sameAs: ['https://github.com/budgie-at/budgie', 'https://x.com/budgie_at']
     };
 
@@ -139,7 +140,12 @@ export default async function RootLayout({ params, children }: Props) {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: 'Budgie',
-        url: BASE_URL
+        url: BASE_URL,
+        potentialAction: {
+            '@type': 'SearchAction',
+            target: { '@type': 'EntryPoint', urlTemplate: `${BASE_URL}/en/blog?q={search_term_string}` },
+            'query-input': 'required name=search_term_string'
+        }
     };
     /* eslint-enable lingui/no-unlocalized-strings */
 
