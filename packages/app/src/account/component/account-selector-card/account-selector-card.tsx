@@ -10,7 +10,7 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
-import { AccountInactiveBadge } from '../account-inactive-badge/account-inactive-badge';
+import { AccountInactiveIcon } from '../account-inactive-icon/account-inactive-icon';
 
 interface Props extends Pick<
     AccountWithInstrumentEntityInterface,
@@ -29,8 +29,6 @@ export const AccountSelectorCard = (props: Props) => {
     const { balance } = useAccountBalanceQuery(id);
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const iconSlotClassName = isActive ? '' : 'opacity-50';
-
     return (
         <SelectorCard
             identifier={id}
@@ -40,23 +38,20 @@ export const AccountSelectorCard = (props: Props) => {
             className={className}
             testID={AccountSelectorModalSelector.Option(title)}
             iconSlot={
-                <View className={iconSlotClassName}>
+                <AccountInactiveIcon isInactive={!isActive} size={48}>
                     <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
-                </View>
+                </AccountInactiveIcon>
             }
             title={title}
             subtitle={
-                <View className="flex-row items-center gap-sm">
-                    {!isActive && <AccountInactiveBadge />}
-                    <View className="flex-row items-center flex-shrink">
-                        <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
-                            {t(ACCOUNT_TYPE[type])}
-                        </Text>
-                        <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
-                        <ProtectedText className="text-sm font-medium text-primary" numberOfLines={1}>
-                            {formatDigits(balance, instrument.symbol)}
-                        </ProtectedText>
-                    </View>
+                <View className="flex-row items-center">
+                    <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
+                        {t(ACCOUNT_TYPE[type])}
+                    </Text>
+                    <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
+                    <ProtectedText className="text-sm font-medium text-primary" numberOfLines={1}>
+                        {formatDigits(balance, instrument.symbol)}
+                    </ProtectedText>
                 </View>
             }
         />
