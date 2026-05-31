@@ -5,7 +5,6 @@ import { Icon } from '../../../@generic/component/icon/icon';
 
 import type { UserIconNameEnum } from '@budgie/contracts';
 
-
 interface Props {
     readonly direction: 'from' | 'to';
     readonly icon: UserIconNameEnum;
