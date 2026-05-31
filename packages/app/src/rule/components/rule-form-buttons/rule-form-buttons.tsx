@@ -9,15 +9,16 @@ interface Props {
     readonly onCancel: () => void;
     readonly onSubmit: () => void;
     readonly isSubmitting: boolean;
+    readonly submitLabel?: string;
     readonly children?: ReactNode;
 }
 
-export const RuleFormButtons = ({ onCancel, onSubmit, isSubmitting, children }: Props) => (
+export const RuleFormButtons = ({ onCancel, onSubmit, isSubmitting, submitLabel, children }: Props) => (
     <View className="px-3xl pb-3xl gap-y-md pt-xl">
         {children}
         <View className="flex-row gap-x-md">
             <ModalFormCancelButton onPress={onCancel} />
-            <ModalFormSaveButton testID={RuleFormSelector.SubmitButton} onPress={onSubmit} disabled={isSubmitting} />
+            <ModalFormSaveButton testID={RuleFormSelector.SubmitButton} onPress={onSubmit} disabled={isSubmitting} content={submitLabel} />
         </View>
     </View>
 );
