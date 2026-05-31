@@ -70,6 +70,16 @@ class TransferConsolidationCandidateService {
         };
     }
 
+    @Log('enter', result => `done existingTransferIncomeDuplicateCount=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
+    async findExistingTransferIncomeDuplicateRepairCandidates(): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
+        const existingTransferBridgeCandidates = await this.findExistingTransferBridgeCandidates();
+
+        return this.filterExistingTransferIncomeDuplicateCandidates(
+            await this.findExistingTransferIncomeDuplicateCandidates(),
+            existingTransferBridgeCandidates
+        );
+    }
+
     private async findPairCandidates(): Promise<TransferPairCandidateInterface[]> {
         const startedAt = Date.now();
         const candidates = await transferPairRepository.findCandidates();
