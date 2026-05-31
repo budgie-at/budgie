@@ -1,13 +1,14 @@
 import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { LEGEND_LIST_HEADER_HEIGHT } from '../../../@generic/constant/legend-list.constant';
+import { rankSearchableItems } from '../../../@generic/utils/rank-searchable-items.util';
 import { RULES_LIST_SIZING } from '../../constant/rules-list-sizing.constant';
 import { useRulesListPageActions } from '../../hooks/use-rules-list-page-actions.hook';
 import { RulesPageSelector } from '../../selector/rules-page.selector';
@@ -20,73 +21,9 @@ interface Props {
     readonly onGoBack: () => void;
 }
 
-const COMBINING_MARK_REGEX = /\p{Diacritic}/gu;
 const DISABLED_SEARCH_VALUE = 'disabled';
 const ENABLED_SEARCH_VALUE = 'enabled';
 const HEADER_SPACER_STYLE = { height: LEGEND_LIST_HEADER_HEIGHT };
-const MIN_FUZZY_TOKEN_LENGTH = 4;
-const SEARCH_TOKEN_SEPARATOR = /\s+/u;
-
-const normalizeSearchValue = (value: string) => value.normalize('NFKD').replace(COMBINING_MARK_REGEX, '').toLowerCase().trim();
-
-const getSearchTokens = (search: string) => normalizeSearchValue(search).split(SEARCH_TOKEN_SEPARATOR).filter(isNotEmptyString);
-
-const isFuzzyMatch = (value: string, token: string) => {
-    if (token.length < MIN_FUZZY_TOKEN_LENGTH) {
-        return false;
-    }
-
-    let valueIndex = 0;
-
-    for (const tokenCharacter of token) {
-        const matchedIndex = value.indexOf(tokenCharacter, valueIndex);
-        if (matchedIndex < 0) {
-            return false;
-        }
-
-        valueIndex = matchedIndex + 1;
-    }
-
-    return true;
-};
-
-const getSearchValueScore = (value: string, token: string) => {
-    const normalizedValue = normalizeSearchValue(value);
-
-    if (normalizedValue === token) {
-        return 100;
-    }
-
-    if (normalizedValue.startsWith(token)) {
-        return 70;
-    }
-
-    if (normalizedValue.includes(token)) {
-        return 40;
-    }
-
-    if (isFuzzyMatch(normalizedValue, token)) {
-        return 10;
-    }
-
-    return 0;
-};
-
-const getSearchScore = (values: string[], tokens: string[]) => {
-    let score = 0;
-
-    for (const token of tokens) {
-        const tokenScore = Math.max(...values.map(value => getSearchValueScore(value, token)));
-
-        if (!isPositiveNumber(tokenScore)) {
-            return 0;
-        }
-
-        score += tokenScore;
-    }
-
-    return score;
-};
 
 const getRuleStatusSearchValue = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'enabled'>) =>
     rule.enabled ? ENABLED_SEARCH_VALUE : DISABLED_SEARCH_VALUE;
@@ -140,23 +77,7 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
         </View>
     ) : null;
 
-    const searchedRules = useMemo(() => {
-        if (!isDefined(visibleRules)) {
-            return visibleRules;
-        }
-
-        const tokens = getSearchTokens(search);
-
-        if (!isNotEmptyArray(tokens)) {
-            return visibleRules;
-        }
-
-        return visibleRules
-            .map((rule, index) => ({ rule, index, score: getSearchScore(getRuleSearchValues(rule), tokens) }))
-            .filter(({ score }) => isPositiveNumber(score))
-            .sort((left, right) => right.score - left.score || left.index - right.index)
-            .map(({ rule }) => rule);
-    }, [search, visibleRules]);
+    const searchedRules = rankSearchableItems(visibleRules, search, getRuleSearchValues);
 
     const renderCard = (rule: RuleWithActionsRelationsEntityInterface, index: number) => (
         <RuleCard
@@ -184,6 +105,7 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
             searchInputTestID={RulesPageSelector.SearchInput}
             emptyState={<RuleEmptyState search={search} />}
             listHeader={listHeaderComponent}
+            estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
             sizing={RULES_LIST_SIZING}
         />
     );
