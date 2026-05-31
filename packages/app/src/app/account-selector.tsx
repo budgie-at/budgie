@@ -2,12 +2,9 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
-
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { AccountSelectContent } from '../account/component/account-select-content/account-select-content';
 import { useAccountSelectorModal } from '../account/context/account-selector-modal.context';
-import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
 import { useSearchAccountsSortedQuery } from '../account/query/use-search-accounts-sorted.query';
 import { useThemeContext } from '../theme/context/theme.context';
 
@@ -23,7 +20,8 @@ export default function AccountSelectorModal() {
 
     const [search, setSearch] = useState('');
 
-    const containerStyle = { flex: 1, backgroundColor: isDarkColorSchema ? BG_DARK : BG_LIGHT };
+    const backgroundColor = isDarkColorSchema ? BG_DARK : BG_LIGHT;
+    const containerStyle = { flex: 1, backgroundColor };
 
     const initialAccountId = currentParams?.initialAccountId ?? null;
     const excludeAccountId = currentParams?.excludeAccountId;
@@ -32,11 +30,6 @@ export default function AccountSelectorModal() {
     const onlyActive = currentParams?.onlyActive ?? true;
 
     const { accounts } = useSearchAccountsSortedQuery(search, { excludeAccountId, excludeTypes: excludeAccountTypes, onlyActive });
-    const { account: currentAccount } = useGetAccountByIdQuery(initialAccountId ?? 0, true);
-
-    const shouldPinCurrentAccount =
-        isDefined(currentAccount) && !isNotEmptyString(search) && !accounts.some(account => account.id === currentAccount.id);
-    const data = shouldPinCurrentAccount && isDefined(currentAccount) ? [currentAccount, ...accounts] : accounts;
 
     return (
         <View style={containerStyle} collapsable={false}>
@@ -48,7 +41,7 @@ export default function AccountSelectorModal() {
             />
 
             <AccountSelectContent
-                data={data}
+                data={accounts}
                 initialAccountId={initialAccountId}
                 search={search}
                 onSelect={resolveAccountSelector}
