@@ -12,6 +12,7 @@ import { ImportedUpdateParamInterface } from '../interface/imported-update-param
 import { RefreshedImportedEntriesStatusEnum } from '../type/refreshed-imported-entries-status.enum';
 import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
 
+import { importedTransactionSemanticMatchService } from './imported-transaction-semantic-match.service';
 import { refreshedImportedEntriesService } from './refreshed-imported-entries.service';
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
@@ -67,6 +68,8 @@ class TransactionImportService {
         existingTransactionIdMap: Map<string, number>,
         tx: DB
     ): Promise<TransactionEntityInterface[]> {
+        await importedTransactionSemanticMatchService.addMatches(batch, existingTransactionIdMap, tx);
+
         const partition = this.partitionImportedBatch(batch, existingTransactionIdMap);
         const existingTransactionsMap = await this.getExistingTransactionsMap(partition.updateParams, tx);
         const createdTransactions = await transactionBatchCreateService.create(partition.newInputs, tx);
@@ -141,7 +144,9 @@ class TransactionImportService {
             {
                 title: input.title,
                 comment,
-                operatedAt: input.operatedAt
+                operatedAt: input.operatedAt,
+                externalId: input.externalId,
+                externalSource: input.externalSource
             },
             tx
         );
