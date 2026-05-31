@@ -10,9 +10,10 @@ interface Props {
     readonly header: ReactNode;
     readonly footer: ReactNode;
     readonly ruleId?: number;
+    readonly topContent?: ReactNode;
 }
 
-export const RuleFormLayout = ({ header, footer, ruleId }: Props) => (
+export const RuleFormLayout = ({ header, footer, ruleId, topContent }: Props) => (
     <ModalPage header={header}>
         <KeyboardAwareScrollView
             contentContainerClassName="pb-5xl"
@@ -20,6 +21,7 @@ export const RuleFormLayout = ({ header, footer, ruleId }: Props) => (
             showsVerticalScrollIndicator={false}
         >
             <View className="px-3xl gap-y-3xl">
+                {topContent}
                 <RuleConditionsSection />
                 <RuleActionsSection ruleId={ruleId} />
             </View>
