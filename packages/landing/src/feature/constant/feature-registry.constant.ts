@@ -24,7 +24,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'local-first expense tracker'
         ],
         relatedFeatureSlugs: ['monobank-sync', 'ai-auto-categorization', 'pin-app-lock', 'database-backup', 'biometric-authentication'],
-        relatedArticleSlugs: ['offline-first-privacy-financial-app', 'budgie-offline-financial-data'],
+        relatedArticleSlugs: ['offline-first-privacy-financial-app', 'budgie-offline-financial-data', 'mint-shutdown-private-alternative'],
         faqs: [
             {
                 question: msg`Does Budgie work without internet?`,
@@ -63,7 +63,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'erste-bank-pdf-import',
             'privatbank-import'
         ],
-        relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'budgie-offline-financial-data'],
+        relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'budgie-offline-financial-data', 'offline-first-bank-data-safety'],
         faqs: [
             {
                 question: msg`How is this different from Plaid-based apps?`,
@@ -109,7 +109,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'uncategorized-transactions',
             'recurring-payments-calendar'
         ],
-        relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+        relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app', 'on-device-ai-budget-app-explainer'],
         faqs: [
             {
                 question: msg`Does the AI work offline?`,
@@ -655,7 +655,11 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'bank statement importer'
         ],
         relatedFeatureSlugs: ['erste-bank-pdf-import', 'privatbank-import', 'monobank-sync', 'data-export', 'bank-resync-window'],
-        relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
+        relatedArticleSlugs: [
+            'mint-alternatives-developers',
+            'budgie-offline-financial-data',
+            'historical-exchange-rates-budget-analytics'
+        ],
         faqs: [
             {
                 question: msg`Will it work with my bank?`,
@@ -1130,7 +1134,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'foreign currency tracker'
         ],
         relatedFeatureSlugs: ['account-management', 'net-worth-tracker', 'account-transfers', 'crypto-investment-tracking'],
-        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers', 'historical-exchange-rates-budget-analytics'],
         faqs: [
             {
                 question: msg`How often do FX rates refresh?`,
@@ -1638,7 +1642,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'no aggregator budget app'
         ],
         relatedFeatureSlugs: ['offline-first-expense-tracker', 'monobank-sync', 'database-backup', 'pin-app-lock'],
-        relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'budgie-offline-financial-data'],
+        relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'budgie-offline-financial-data', 'mint-shutdown-private-alternative'],
         comparisonCategoryLabel: msg`Cloud-based PFM apps`,
         comparisonRows: [
             {
@@ -1754,7 +1758,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'privatbank-import',
             'private-budget-app-alternative'
         ],
-        relatedArticleSlugs: ['cloud-budgeting-privacy-risks'],
+        relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'offline-first-bank-data-safety'],
         comparisonCategoryLabel: msg`Aggregator-based PFM apps`,
         comparisonRows: [
             { label: msg`Bank credentials`, budgieValue: msg`Never shared`, competitorValue: msg`Held by aggregator` },
@@ -1907,7 +1911,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'ai-tag-suggestions',
             'ai-merchant-translation'
         ],
-        relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+        relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app', 'on-device-ai-budget-app-explainer'],
         comparisonCategoryLabel: msg`Cloud AI budget assistants`,
         comparisonRows: [
             { label: msg`Where AI runs`, budgieValue: msg`On your phone`, competitorValue: msg`Vendor's cloud / remote AI service` },
