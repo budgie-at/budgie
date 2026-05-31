@@ -161,6 +161,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 ? this.buildDateCondition(filters.date)
                 : null;
         const conditions = [
+            this.buildVisibleTransactionCondition(),
             ...(isDefined(dateCondition) ? [dateCondition] : []),
             ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : []),
             ...(isDefined(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : [])
