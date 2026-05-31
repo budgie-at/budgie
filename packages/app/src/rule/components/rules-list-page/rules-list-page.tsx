@@ -141,12 +141,11 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
     const { rules, handleDeleteRule, handleOpenRule, handleToggleRule } = useRulesListPageActions();
-    const matchingRulesCount = matchingRuleIds.length;
     const isMatchingRulesFilterActive = isNotEmptyArray(matchingRuleIds);
     const searchTokens = splitSearchTokens(search);
     const visibleRules = getVisibleRules(rules, matchingRuleIds, searchTokens, t);
     const matchingRulesFilterLabel = t({
-        message: plural(matchingRulesCount, {
+        message: plural(matchingRuleIds.length, {
             one: '# matching rule',
             other: '# matching rules'
         })
