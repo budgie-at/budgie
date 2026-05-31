@@ -151,6 +151,20 @@ class RuleMatcherService {
         return this.evaluateConditions(rule.conditions, rule.conditionMatchType, input);
     }
 
+    buildMatchedWhere(rule: RuleWithRelationsEntityInterface): SQL | null {
+        if (!isNotEmptyArray(rule.conditions)) {
+            return null;
+        }
+
+        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
+
+        if (isNotEmptyArray(fallbackConditions) || !isDefined(sqlWhere)) {
+            return null;
+        }
+
+        return sqlWhere;
+    }
+
     private buildRuleConditionsWhere(
         conditions: RuleConditionInputInterface[],
         conditionMatchType: RuleConditionMatchTypeEnum
