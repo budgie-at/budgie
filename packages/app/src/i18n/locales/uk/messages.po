@@ -465,7 +465,7 @@ msgstr "Budgie об'єднає надійні збіги переказів і �
 
 #: src/app/(tabs)/settings/bank-sync-repairs.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
-msgstr "Budgie виконає м’яке видалення для {countText}. Ваші ручні транзакції залишаться без змін."
+msgstr "Budgie позначить як видалені такі записи: {countText}. Ваші ручні транзакції залишаться без змін."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
@@ -474,6 +474,7 @@ msgstr "Budgie виконає м’яке видалення для {countText}.
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx

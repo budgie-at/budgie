@@ -13,11 +13,48 @@ export const useBankSyncDuplicateRepairPreviewQuery = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    const isCurrentRequest = useCallback(
+        (requestId: number) => isMountedRef.current && requestIdRef.current === requestId,
+        []
+    );
+
+    const handleRefreshSuccess = useCallback(
+        (requestId: number, nextPreview: BankSyncDuplicateRepairPreviewInterface) => {
+            if (!isCurrentRequest(requestId)) {
+                return;
+            }
+
+            setPreview(nextPreview);
+        },
+        [isCurrentRequest]
+    );
+
+    const handleRefreshError = useCallback(
+        (requestId: number, error: unknown) => {
+            if (!isCurrentRequest(requestId)) {
+                return;
+            }
+
+            setPreview(null);
+            setErrorMessage(getErrorMessage(error));
+        },
+        [isCurrentRequest]
+    );
+
+    const handleRefreshComplete = useCallback(
+        (requestId: number) => {
+            if (isCurrentRequest(requestId)) {
+                setIsLoading(false);
+            }
+        },
+        [isCurrentRequest]
+    );
+
     const refresh = useCallback(async () => {
         const requestId = requestIdRef.current + 1;
         requestIdRef.current = requestId;
 
-        if (!isMountedRef.current) {
+        if (!isCurrentRequest(requestId)) {
             return;
         }
 
@@ -26,25 +63,13 @@ export const useBankSyncDuplicateRepairPreviewQuery = () => {
 
         try {
             const nextPreview = await bankSyncRepairService.previewDuplicates();
-
-            if (!isMountedRef.current || requestIdRef.current !== requestId) {
-                return;
-            }
-
-            setPreview(nextPreview);
+            handleRefreshSuccess(requestId, nextPreview);
         } catch (error) {
-            if (!isMountedRef.current || requestIdRef.current !== requestId) {
-                return;
-            }
-
-            setPreview(null);
-            setErrorMessage(getErrorMessage(error));
+            handleRefreshError(requestId, error);
         } finally {
-            if (isMountedRef.current && requestIdRef.current === requestId) {
-                setIsLoading(false);
-            }
+            handleRefreshComplete(requestId);
         }
-    }, []);
+    }, [handleRefreshComplete, handleRefreshError, handleRefreshSuccess, isCurrentRequest]);
 
     useEffect(() => {
         isMountedRef.current = true;

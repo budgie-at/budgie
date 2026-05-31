@@ -47,7 +47,7 @@ const confirmRepair = async (count: number, t: ReturnType<typeof useLingui>['t']
         title: t(msg`Repair Bank Sync Data`),
         message: t(msg`Budgie will soft-delete ${countText}. This keeps your manual transactions unchanged.`),
         confirmText: t(msg`Repair`),
-        cancelText: t`Cancel`,
+        cancelText: t(msg`Cancel`),
         isDestructive: true
     });
 };
