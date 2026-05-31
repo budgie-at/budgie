@@ -26,8 +26,9 @@ interface Props<T extends IdInterface> {
     emptyState: ReactNode;
     onSearchChange: (search: string) => void;
     onDelete?: (id: number) => Promise<void>;
-    renderCard: (item: T) => ReactNode;
+    renderCard: (item: T, index: number) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
+    listHeaderComponent?: ReactNode;
     searchInputTestID?: string;
     testID?: string;
     children?: ReactNode;
@@ -45,6 +46,7 @@ export const SearchablePage = <T extends IdInterface>({
     emptyState,
     onGoBack,
     getDeleteConfirmation,
+    listHeaderComponent,
     searchInputTestID,
     testID,
     children,
@@ -63,6 +65,7 @@ export const SearchablePage = <T extends IdInterface>({
                         data={data}
                         renderCard={renderCard}
                         getDeleteConfirmation={getDeleteConfirmation}
+                        listHeaderComponent={listHeaderComponent}
                         sizing={sizing}
                     >
                         {children}
