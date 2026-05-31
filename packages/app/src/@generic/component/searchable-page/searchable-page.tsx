@@ -31,6 +31,7 @@ interface Props<T extends IdInterface> {
     searchInputTestID?: string;
     testID?: string;
     listHeader?: ReactElement | null;
+    estimatedHeaderSize?: number;
     children?: ReactNode;
     sizing?: LegendListSizingInterface<T>;
 }
@@ -49,6 +50,7 @@ export const SearchablePage = <T extends IdInterface>({
     searchInputTestID,
     testID,
     listHeader,
+    estimatedHeaderSize,
     children,
     sizing
 }: Props<T>) => {
@@ -66,6 +68,7 @@ export const SearchablePage = <T extends IdInterface>({
                         renderCard={renderCard}
                         getDeleteConfirmation={getDeleteConfirmation}
                         listHeader={listHeader}
+                        estimatedHeaderSize={estimatedHeaderSize}
                         sizing={sizing}
                     >
                         {children}
