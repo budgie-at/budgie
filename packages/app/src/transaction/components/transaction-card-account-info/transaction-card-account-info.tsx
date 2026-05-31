@@ -2,6 +2,7 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+
 import { TransactionAccountLine } from '../transaction-account-line/transaction-account-line';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
