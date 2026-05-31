@@ -8,6 +8,7 @@ import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useI18nContext } from '../../../i18n/context/i18n.context';

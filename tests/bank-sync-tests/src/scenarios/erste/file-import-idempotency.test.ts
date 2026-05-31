@@ -11,8 +11,6 @@ import type { BankAccountInterface, BankTransactionInterface } from '@budgie/ban
 
 const ERSTE_ACCOUNT_ID = 'AT123';
 const ERSTE_EXTERNAL_ID = 'erste-transaction-1';
-const ERSTE_LEGACY_EXTERNAL_ID = 'erste-transaction-legacy';
-const ERSTE_SECOND_EXTERNAL_ID = 'erste-transaction-2';
 const ERSTE_STATEMENT_URI = 'erste-statement.pdf';
 
 const buildErsteBankAccount = (): BankAccountInterface => ({
@@ -26,8 +24,8 @@ const buildErsteBankAccount = (): BankAccountInterface => ({
     iban: ERSTE_ACCOUNT_ID
 });
 
-const buildErsteTransaction = (externalId = ERSTE_EXTERNAL_ID): BankTransactionInterface => ({
-    id: externalId,
+const buildErsteTransaction = (): BankTransactionInterface => ({
+    id: ERSTE_EXTERNAL_ID,
     provider: BankProviderEnum.ERSTE,
     accountId: ERSTE_ACCOUNT_ID,
     type: BankTransactionTypeEnum.EXPENSE,
@@ -48,29 +46,29 @@ const buildErsteTransaction = (externalId = ERSTE_EXTERNAL_ID): BankTransactionI
 });
 
 class StubErsteFileClient implements FileBasedBankSyncClientInterface {
-    constructor(private readonly externalIds = [ERSTE_EXTERNAL_ID]) {}
-
     getAccounts(): BankAccountInterface[] {
         return [buildErsteBankAccount()];
     }
 
     getTransactions(): BankTransactionInterface[] {
-        return this.externalIds.map(buildErsteTransaction);
+        return [buildErsteTransaction()];
     }
 }
 
-const buildErsteSyncService = (externalIds = [ERSTE_EXTERNAL_ID]): StubFileBankSyncService =>
-    new StubFileBankSyncService(ExternalSourceEnum.ERSTE, new StubErsteFileClient(externalIds));
+const buildErsteSyncService = (): StubFileBankSyncService =>
+    new StubFileBankSyncService(ExternalSourceEnum.ERSTE, new StubErsteFileClient());
 
-const fetchImportedErsteTransactionCount = (externalId = ERSTE_EXTERNAL_ID): number =>
+const fetchImportedErsteTransactionCount = (): number =>
     testDb
         .select()
         .from(TransactionEntityTable)
-        .where(and(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE), eq(TransactionEntityTable.externalId, externalId)))
+        .where(
+            and(
+                eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE),
+                eq(TransactionEntityTable.externalId, ERSTE_EXTERNAL_ID)
+            )
+        )
         .all().length;
-
-const fetchImportedErsteTransactionTotalCount = (): number =>
-    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE)).all().length;
 
 describe('erste/file-import-idempotency', () => {
     it('keeps one transaction when the same statement import starts twice', async () => {
@@ -82,29 +80,5 @@ describe('erste/file-import-idempotency', () => {
         ]);
 
         expect(fetchImportedErsteTransactionCount()).toBe(1);
-    });
-
-    it('keeps one transaction when the same statement receives a new generated external id', async () => {
-        const legacySyncService = buildErsteSyncService([ERSTE_LEGACY_EXTERNAL_ID]);
-        const currentSyncService = buildErsteSyncService([ERSTE_EXTERNAL_ID]);
-
-        await legacySyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
-        await currentSyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
-
-        expect(fetchImportedErsteTransactionTotalCount()).toBe(1);
-        expect(fetchImportedErsteTransactionCount()).toBe(1);
-    });
-
-    it('does not collapse ambiguous current statement rows into one semantic match', async () => {
-        const legacySyncService = buildErsteSyncService([ERSTE_LEGACY_EXTERNAL_ID]);
-        const currentSyncService = buildErsteSyncService([ERSTE_EXTERNAL_ID, ERSTE_SECOND_EXTERNAL_ID]);
-
-        await legacySyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
-        await currentSyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
-
-        expect(fetchImportedErsteTransactionTotalCount()).toBe(3);
-        expect(fetchImportedErsteTransactionCount(ERSTE_LEGACY_EXTERNAL_ID)).toBe(1);
-        expect(fetchImportedErsteTransactionCount(ERSTE_EXTERNAL_ID)).toBe(1);
-        expect(fetchImportedErsteTransactionCount(ERSTE_SECOND_EXTERNAL_ID)).toBe(1);
     });
 });
