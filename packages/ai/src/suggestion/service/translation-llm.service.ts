@@ -1,6 +1,6 @@
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { containsNonLatin } from '../../embedding/util/contains-non-latin.util';
@@ -30,7 +30,7 @@ export class TranslationLlmService {
     private async generateTags(titleEn: string): Promise<string> {
         const tags = await this.chat.generate(TAG_GENERATION_SYSTEM_PROMPT, titleEn, { temperature: TRANSLATION_TEMPERATURE });
 
-        return tags.trim().toLowerCase();
+        return this.normalizeTags(tags);
     }
 
     @Log(
@@ -46,5 +46,16 @@ export class TranslationLlmService {
         const titleEn = await this.chat.generate(TRANSLATION_SYSTEM_PROMPT, title, { temperature: TRANSLATION_TEMPERATURE });
 
         return titleEn.trim().toLowerCase();
+    }
+
+    private normalizeTags(tags: string): string {
+        const normalizedTags = tags
+            .split(',')
+            .map(tag => tag.trim().toLowerCase())
+            .filter(isNotEmptyString);
+
+        const uniqueTags = [...new Set(normalizedTags)];
+
+        return uniqueTags.join(', ');
     }
 }
