@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
+import { cn } from '../../../@generic/utils/cn.util';
+
 interface Props {
     readonly value: number;
     readonly className: string;
@@ -9,7 +11,7 @@ interface Props {
 
 export const RuleApplyStatusChip = ({ value, className, children }: Props) => (
     <View className="bg-secondary-background border-secondary-corner flex-1 items-center rounded-2xl border px-md py-md">
-        <Text className={`text-2xl font-bold ${className}`}>{value}</Text>
+        <Text className={cn('text-2xl font-bold', className)}>{value}</Text>
         <Text className="text-secondary-foreground mt-xs text-xs uppercase">{children}</Text>
     </View>
 );
