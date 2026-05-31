@@ -13,10 +13,7 @@ export const useBankSyncDuplicateRepairPreviewQuery = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const isCurrentRequest = useCallback(
-        (requestId: number) => isMountedRef.current && requestIdRef.current === requestId,
-        []
-    );
+    const isCurrentRequest = useCallback((requestId: number) => isMountedRef.current && requestIdRef.current === requestId, []);
 
     const handleRefreshSuccess = useCallback(
         (requestId: number, nextPreview: BankSyncDuplicateRepairPreviewInterface) => {
