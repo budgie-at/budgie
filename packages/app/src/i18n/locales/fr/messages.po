@@ -341,6 +341,10 @@ msgstr "Archiver"
 msgid "Archive Account?"
 msgstr "Archiver le compte ?"
 
+#: src/account/component/account-status-badge/account-status-badge.tsx
+msgid "Archived"
+msgstr "Archivé"
+
 #: src/app/(tabs)/settings/archived.tsx
 #: src/app/(tabs)/settings/index.tsx
 msgid "Archived Accounts"
@@ -1357,7 +1361,7 @@ msgstr "dans"
 msgid "In List"
 msgstr "Dans la liste"
 
-#: src/account/component/account-inactive-badge/account-inactive-badge.tsx
+#: src/account/component/account-status-badge/account-status-badge.tsx
 msgid "Inactive"
 msgstr "Inactif"
 
