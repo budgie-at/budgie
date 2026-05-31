@@ -2074,6 +2074,10 @@ msgid "Remove duplicate imported bank transactions"
 msgstr "Remove duplicate imported bank transactions"
 
 #: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Remove {duplicateReference}; keep {keptReference}"
+msgstr "Remove {duplicateReference}; keep {keptReference}"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
 msgid "Repair"
 msgstr "Repair"
 
