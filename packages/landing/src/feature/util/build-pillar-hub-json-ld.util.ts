@@ -1,7 +1,7 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { BASE_URL } from '../../generic/constant/seo.constant';
+import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 
 interface BuildPillarHubJsonLdInput {
     readonly locale: string;
@@ -25,6 +25,7 @@ export const buildPillarHubJsonLd = ({
     updatedAt
 }: BuildPillarHubJsonLdInput): readonly [Record<string, unknown>, Record<string, unknown>, Record<string, unknown>?] => {
     const url = `${BASE_URL}/${locale}/${slug}`;
+    const languageTag = OG_LOCALE_MAP[locale].replace('_', '-');
 
     const breadcrumbSchema = {
         '@context': 'https://schema.org',
@@ -44,7 +45,7 @@ export const buildPillarHubJsonLd = ({
         url,
         datePublished: publishedAt,
         dateModified: updatedAt,
-        inLanguage: locale,
+        inLanguage: languageTag,
         isPartOf: { '@type': 'WebSite', name: 'Budgie', url: BASE_URL },
         breadcrumb: { '@id': `${url}#breadcrumb` }
     };

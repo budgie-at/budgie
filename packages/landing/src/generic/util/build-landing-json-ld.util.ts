@@ -44,14 +44,20 @@ export const buildLandingJsonLd = (i18n: I18n): { softwareApplication: Record<st
         '@type': 'SoftwareApplication',
         name: 'Budgie',
         applicationCategory: 'FinanceApplication',
+        applicationSubCategory: 'PersonalFinance',
         operatingSystem: 'iOS, Android',
         description: i18n._(msg`Privacy-first expense tracker that keeps your financial data on your device.`),
         url: BASE_URL,
         image: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`,
+        featureList:
+            'Offline-first expense tracking, On-device AI auto-categorization, Voice transaction entry, Monobank bank sync, CSV and PDF import, Net worth tracker, Multi-currency, On-device encryption, PIN and biometric lock, Screenshot protection, Database backup and restore',
+        author: { '@type': 'Organization', name: 'Budgie', url: BASE_URL },
         offers: {
             '@type': 'Offer',
             price: '0',
-            priceCurrency: 'USD'
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/PreOrder',
+            url: `${BASE_URL}/en`
         }
     };
 
