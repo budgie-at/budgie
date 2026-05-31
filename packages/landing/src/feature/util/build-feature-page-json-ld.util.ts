@@ -1,7 +1,7 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { BASE_URL } from '../../generic/constant/seo.constant';
+import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 
 interface BuildFeaturePageJsonLdInput {
     readonly locale: string;
@@ -29,6 +29,7 @@ export const buildFeaturePageJsonLd = ({
     updatedAt
 }: BuildFeaturePageJsonLdInput): readonly Record<string, unknown>[] => {
     const url = `${BASE_URL}/${locale}/features/${slug}`;
+    const languageTag = OG_LOCALE_MAP[locale].replace('_', '-');
 
     const breadcrumbList = {
         '@context': 'https://schema.org',
@@ -49,7 +50,7 @@ export const buildFeaturePageJsonLd = ({
         url,
         datePublished: publishedAt,
         dateModified: updatedAt,
-        inLanguage: locale,
+        inLanguage: languageTag,
         isPartOf: { '@type': 'WebSite', name: 'Budgie', url: BASE_URL },
         breadcrumb: { '@id': `${url}#breadcrumb` },
         mainEntity: {
