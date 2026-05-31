@@ -26,4 +26,15 @@ export class TransactionRuleRepository {
 
         return result.map(row => row.id);
     }
+
+    buildApplyStatusQuery(matchedWhere: SQL, appliedWhere: SQL) {
+        return this.db
+            .select({
+                matched: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`,
+                applied: sql<number>`COUNT(DISTINCT CASE WHEN ${appliedWhere} THEN ${TransactionEntityTable.id} END)`
+            })
+            .from(TransactionEntityTable)
+            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .where(and(isNull(TransactionEntityTable.deletedAt), matchedWhere));
+    }
 }
