@@ -19,7 +19,10 @@ import { RulesPageSelector } from '../../selector/rules-page.selector';
 import { RuleCard } from '../rule-card/rule-card';
 import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
 
-import type { RulesListPagePropsInterface } from '../../interface/rules-list-page-props.interface';
+interface Props {
+    readonly matchingRuleIds?: readonly number[];
+    readonly onGoBack: () => void;
+}
 
 const CONTENT_CONTAINER_STYLE = { gap: LEGEND_LIST_CONTENT_GAP };
 const HEADER_SPACER_STYLE = { height: LEGEND_LIST_HEADER_HEIGHT };
@@ -28,7 +31,7 @@ const listHeader = <View style={HEADER_SPACER_STYLE} />;
 const listFooter = <MenuSpacer />;
 const getKeyExtractor = (item: Pick<RuleWithActionsRelationsEntityInterface, 'id'>) => item.id.toString();
 
-export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: RulesListPagePropsInterface) => {
+export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
     const { t } = useLingui();
     const { rules, handleDeleteRule, handleOpenRule, handleToggleRule } = useRulesListPageActions();
     const matchingRulesCount = matchingRuleIds.length;

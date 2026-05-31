@@ -18,9 +18,17 @@ import { TransactionListConvertMenuItem } from '../transaction-list-convert-menu
 
 import { TransactionListContextMenuSelector } from './transaction-list-context-menu.selector';
 
-import type { TransactionListContextMenuPropsInterface } from '../../interface/transaction-list-context-menu-props.interface';
+import type { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { EmptyFn } from '@rnw-community/shared';
+
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface | null;
+    readonly anchor?: PopoverMenuAnchor;
+    readonly isOpen: boolean;
+    readonly onClose: EmptyFn;
+    readonly onCloseComplete: EmptyFn;
+}
 
 const isConvertibleTransaction = (transaction: TransactionWithRelationsEntityInterface): boolean =>
     isExpenseTransaction(transaction) || isIncomeTransaction(transaction);
@@ -48,13 +56,7 @@ const openTransactionListTransferConversion = (
 };
 
 // eslint-disable-next-line max-statements -- Context menu component with deferred action pattern and multiple handlers
-export const TransactionListContextMenu = ({
-    transaction,
-    anchor,
-    isOpen,
-    onClose,
-    onCloseComplete
-}: TransactionListContextMenuPropsInterface) => {
+export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClose, onCloseComplete }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
     const deleteTransaction = useDeleteTransaction();

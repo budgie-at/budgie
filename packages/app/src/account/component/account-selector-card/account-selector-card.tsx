@@ -10,15 +10,19 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+import { AccountInactiveIcon } from '../account-inactive-icon/account-inactive-icon';
 
-interface Props extends Pick<AccountWithInstrumentEntityInterface, 'id' | 'icon' | 'type' | 'title' | AccountAssociationEnum.INSTRUMENT> {
+interface Props extends Pick<
+    AccountWithInstrumentEntityInterface,
+    'id' | 'icon' | 'type' | 'title' | 'isActive' | AccountAssociationEnum.INSTRUMENT
+> {
     readonly onSelect: (id: number) => void;
     readonly isSelected: boolean;
     readonly className?: string;
 }
 
 export const AccountSelectorCard = (props: Props) => {
-    const { className, isSelected, title, onSelect, id, icon, type, instrument } = props;
+    const { className, isSelected, title, onSelect, id, icon, type, instrument, isActive } = props;
 
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
@@ -33,13 +37,21 @@ export const AccountSelectorCard = (props: Props) => {
             onSelect={onSelect}
             className={className}
             testID={AccountSelectorModalSelector.Option(title)}
-            iconSlot={<CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />}
+            iconSlot={
+                <AccountInactiveIcon isInactive={!isActive} size={48}>
+                    <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
+                </AccountInactiveIcon>
+            }
             title={title}
             subtitle={
                 <View className="flex-row items-center">
-                    <Text className="text-secondary-foreground text-xs">{t(ACCOUNT_TYPE[type])}</Text>
+                    <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
+                        {t(ACCOUNT_TYPE[type])}
+                    </Text>
                     <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
-                    <ProtectedText className="text-sm font-medium text-primary">{formatDigits(balance, instrument.symbol)}</ProtectedText>
+                    <ProtectedText className="text-sm font-medium text-primary" numberOfLines={1}>
+                        {formatDigits(balance, instrument.symbol)}
+                    </ProtectedText>
                 </View>
             }
         />

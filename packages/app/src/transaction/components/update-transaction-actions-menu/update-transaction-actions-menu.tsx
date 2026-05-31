@@ -7,15 +7,15 @@ import { TransactionActionsMenu } from '../transaction-actions-menu/transaction-
 import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
 import { TransactionConvertMenuItem } from '../transaction-convert-menu-item/transaction-convert-menu-item';
 
-import type { UpdateTransactionActionsMenuPropsInterface } from '../../interface/update-transaction-actions-menu-props.interface';
+import type { TransactionActionsMenuPropsInterface } from '../../interface/transaction-actions-menu-props.interface';
 
-export const UpdateTransactionActionsMenu = ({
-    onDelete,
-    isConsolidated,
-    onRevert,
-    onConvertToRefund,
-    onConvertToTransfer
-}: UpdateTransactionActionsMenuPropsInterface) => {
+interface Props extends Pick<TransactionActionsMenuPropsInterface, 'onDelete' | 'isConsolidated'> {
+    readonly onRevert: () => void;
+    readonly onConvertToRefund?: () => void;
+    readonly onConvertToTransfer: () => void;
+}
+
+export const UpdateTransactionActionsMenu = ({ onDelete, isConsolidated, onRevert, onConvertToRefund, onConvertToTransfer }: Props) => {
     const { t } = useLingui();
     const showConvertToRefund = isDefined(onConvertToRefund);
 
