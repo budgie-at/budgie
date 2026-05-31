@@ -12,6 +12,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { AccountInactiveBadge } from '../../../account/component/account-inactive-badge/account-inactive-badge';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
@@ -42,7 +43,7 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
 
     const handlePress = async () => {
-        const selectedAccountId = await openAccountSelector({ initialAccountId: accountId });
+        const selectedAccountId = await openAccountSelector({ initialAccountId: accountId, onlyActive: false });
 
         if (isDefined(selectedAccountId)) {
             setValue(fieldName, selectedAccountId);
@@ -51,6 +52,7 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
 
     const displayLabel = label ?? t`Account`;
     const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Select`}`;
+    const isInactiveAccount = isDefined(account) && !account.isActive;
 
     return (
         <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)}>
@@ -66,13 +68,16 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
 
                     <View className="flex-1">
                         <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>
-                        <Text
-                            className="text-md font-medium text-primary"
-                            numberOfLines={1}
-                            {...(isDefined(account?.title) && { testID: SimpleQuickFormSelector.SelectedAccount(account.title) })}
-                        >
-                            {account?.title ?? t`Select account`}
-                        </Text>
+                        <View className="flex-row items-center gap-sm">
+                            <Text
+                                className="text-md font-medium text-primary flex-shrink"
+                                numberOfLines={1}
+                                {...(isDefined(account?.title) && { testID: SimpleQuickFormSelector.SelectedAccount(account.title) })}
+                            >
+                                {account?.title ?? t`Select account`}
+                            </Text>
+                            {isInactiveAccount && <AccountInactiveBadge />}
+                        </View>
                     </View>
 
                     <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
