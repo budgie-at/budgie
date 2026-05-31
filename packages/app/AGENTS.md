@@ -314,6 +314,21 @@ export const MyComponent = (props: Props) => {
 
 ### Props Patterns
 
+**Naming** - A component's props type is named exactly `Props` and declared inline in the component file — never `*PropsInterface`. Promote to a named `*PropsInterface` in `/interface` only when 2+ components share the same props shape; a single-consumer `*PropsInterface` is prohibited (inline it as `interface Props`, per rule 51).
+
+```typescript
+// Good - inline, named Props
+interface Props {
+    readonly title: string;
+    readonly onPress: () => void;
+}
+export const MyComponent = ({ title, onPress }: Props) => { ... };
+
+// Bad - *PropsInterface for a single component
+import type { MyComponentPropsInterface } from '../../interface/my-component-props.interface';
+export const MyComponent = ({ title, onPress }: MyComponentPropsInterface) => { ... };
+```
+
 **Destructuring** - For 5+ props, destructure in function body:
 
 ```typescript

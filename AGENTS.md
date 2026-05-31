@@ -107,7 +107,7 @@ packages/
 16. **No redundant wrapper functions** - Don't create functions that only delegate to another function without adding logic. If a lint rule prevents inline callbacks, the wrapper is acceptable
 17. **Use microunits utility functions** - Use `convertFromMicroUnits()` and `convertToMicroUnits()` for amount conversion instead of manual `/ PRECISION` or `* PRECISION`
 18. **Spread syntax for optional params** - Use `...(isPositiveNumber(x) && { x })` instead of `x: isPositiveNumber(x) ? x : undefined` with eslint-disable
-19. **Interfaces and types in separate files** - Never define interfaces or type aliases inline above classes, hooks, components, services, or repositories. Put them in the module's `/interface` folder with the proper `.interface.ts` or `.type.ts` suffix.
+19. **Interfaces and types in separate files** - Never define interfaces or type aliases inline above classes, hooks, components, services, or repositories. Put them in the module's `/interface` folder with the proper `.interface.ts` or `.type.ts` suffix. **Exception — React component props:** a component's props type is named exactly `Props` (no `*Interface` suffix) and declared inline in the component file. A named `*PropsInterface` in `/interface` is allowed **only** when the same props shape is consumed by 2+ components (single-consumer = inline, per rule 51). A `*PropsInterface` imported by exactly one component is prohibited — inline it as `interface Props`.
 20. **Type guards in separate files** - Type guards go in `/type-guard` folder with `.type-guard.ts` suffix
 21. **Group useWatch calls together** - In React components, keep all `useWatch` calls together near other hooks, not scattered throughout the component
 22. **Services use classes, not utility functions** - Service files (`.service.ts`) should export a class instance, not standalone functions
@@ -153,13 +153,16 @@ packages/
 
 ### Naming Conventions
 
-| Type      | Convention               | Example                  |
-| --------- | ------------------------ | ------------------------ |
-| Interface | `*Interface` suffix      | `AccountFilterInterface` |
-| Enum      | `*Enum` suffix           | `AccountTypeEnum`        |
-| Function  | module prefix            | `exchangeRatesFetchApi`  |
-| Class     | PascalCase               | `AccountRepository`      |
-| File      | kebab-case + type suffix | `account.service.ts`     |
+| Type             | Convention                | Example                  |
+| ---------------- | ------------------------- | ------------------------ |
+| Interface        | `*Interface` suffix       | `AccountFilterInterface` |
+| React props      | exactly `Props`, inline   | `interface Props { ... }`|
+| Enum             | `*Enum` suffix            | `AccountTypeEnum`        |
+| Function         | module prefix             | `exchangeRatesFetchApi`  |
+| Class            | PascalCase                | `AccountRepository`      |
+| File             | kebab-case + type suffix  | `account.service.ts`     |
+
+> **React props naming (overrides the `*Interface` suffix rule):** a component's props type is always named `Props` and declared inline. Never name it `*PropsInterface` for a single component. Promote to a shared `*PropsInterface` in `/interface` only when 2+ components consume the same shape (see rule 19 + rule 51).
 
 ### Type Guards and Validation
 
