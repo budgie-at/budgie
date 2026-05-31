@@ -1,12 +1,19 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
-import type { TransactionListConvertMenuItemPropsInterface } from '../../interface/transaction-list-convert-menu-item-props.interface';
+import type { EmptyFn } from '@rnw-community/shared';
 
-export const TransactionListConvertMenuItem = ({ isVisible, isRefund, onConvert }: TransactionListConvertMenuItemPropsInterface) => {
+interface Props {
+    readonly isVisible: boolean;
+    readonly isRefund?: boolean;
+    readonly onConvert: EmptyFn;
+}
+
+export const TransactionListConvertMenuItem = ({ isVisible, isRefund, onConvert }: Props) => {
     const { t } = useLingui();
 
     if (!isVisible) {

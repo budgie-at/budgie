@@ -15,7 +15,9 @@ import { BankSyncTokenSection } from '../bank-sync-token-section/bank-sync-token
 import { ResyncBankSyncAccount } from '../resync-bank-sync-account/resync-bank-sync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
 
-import type { AccountBankSyncCardPropsInterface } from '../../interface/account-bank-sync-card-props.interface';
+interface Props {
+    readonly accountId: number;
+}
 
 const statusTextVariants = cva('text-xs font-medium', {
     variants: {
@@ -27,7 +29,7 @@ const statusTextVariants = cva('text-xs font-medium', {
     }
 });
 
-export const AccountBankSyncCard = ({ accountId }: AccountBankSyncCardPropsInterface) => {
+export const AccountBankSyncCard = ({ accountId }: Props) => {
     const { t } = useLingui();
     const { bankSync, hasBankSync } = useAccountBankSync(accountId);
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();

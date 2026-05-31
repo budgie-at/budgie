@@ -16,7 +16,13 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { RefundedSummaryKindEnum } from '../../enum/refunded-summary-kind.enum';
 import { computeRefundedSummary } from '../../utils/compute-refunded-summary.util';
 
-import type { RefundedPillPropsInterface } from '../../interface/refunded-pill-props.interface';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly onPress?: () => void;
+    readonly testID?: string;
+}
 
 const PILL_ICON_SIZE = 12;
 const ENTER_DURATION_MS = 200;
@@ -25,7 +31,7 @@ const labelClassName = 'text-xs text-secondary-foreground';
 const continuousBorder = { borderCurve: 'continuous' as const };
 const logger = getLogger('RefundedPill');
 
-export const RefundedPill = ({ transaction, onPress, testID }: RefundedPillPropsInterface) => {
+export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const isRefund = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
