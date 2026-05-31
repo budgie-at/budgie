@@ -3,9 +3,17 @@ import { Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 
-import type { TransactionAccountLinePropsInterface } from '../../interface/transaction-account-line-props.interface';
+import type { UserIconNameEnum } from '@budgie/contracts';
 
-export const TransactionAccountLine = ({ direction, icon, title, testID }: TransactionAccountLinePropsInterface) => {
+
+interface Props {
+    readonly direction: 'from' | 'to';
+    readonly icon: UserIconNameEnum;
+    readonly title: string;
+    readonly testID?: string;
+}
+
+export const TransactionAccountLine = ({ direction, icon, title, testID }: Props) => {
     const directionLabel = direction === 'from' ? <Trans>from</Trans> : <Trans>to</Trans>;
 
     return (

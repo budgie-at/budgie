@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { EmptyFn, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
@@ -13,15 +13,15 @@ import { ConsolidationSourceRow } from '../consolidation-source-row/consolidatio
 
 import { ConsolidationSourceModalSelector } from './consolidation-source-modal-content.selector';
 
-import type { ConsolidationSourceModalContentPropsInterface } from '../../interface/consolidation-source-modal-content-props.interface';
+interface Props {
+    readonly transactionId: number;
+    readonly onClose: EmptyFn;
+    readonly onRevertSuccess: EmptyFn;
+}
 
 const COMPACT_SOURCE_LIST_LIMIT = 2;
 
-export const ConsolidationSourceModalContent = ({
-    transactionId,
-    onClose,
-    onRevertSuccess
-}: ConsolidationSourceModalContentPropsInterface) => {
+export const ConsolidationSourceModalContent = ({ transactionId, onClose, onRevertSuccess }: Props) => {
     const { sources, consolidationType, hasError, isLoading } = useGetConsolidationSourcesQuery(transactionId);
     const revertConsolidation = useRevertConsolidation(transactionId, onRevertSuccess);
 
