@@ -9,7 +9,9 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { AccountInactiveBadge } from '../../../account/component/account-inactive-badge/account-inactive-badge';
+import { AccountStatusBadge } from '../../../account/component/account-status-badge/account-status-badge';
+import { AccountVisibilityStatusEnum } from '../../../account/enum/account-visibility-status.enum';
+import { getAccountVisibilityStatus } from '../../../account/utils/get-account-visibility-status.util';
 
 interface Props {
     readonly label: string;
@@ -35,9 +37,10 @@ export const TransferAccountPicker = ({ label, account, variant, animatedStyle, 
         titleFontSize.set(withSpring(hasAccount ? TITLE_FONT_SIZE_SELECTED : TITLE_FONT_SIZE_UNSELECTED, SPRING_CONFIG));
     }, [hasAccount, titleFontSize]);
 
-    const isInactiveAccount = hasAccount && !account.isActive;
+    const accountStatus = hasAccount ? getAccountVisibilityStatus(account) : AccountVisibilityStatusEnum.ACTIVE;
+    const isHiddenAccount = accountStatus !== AccountVisibilityStatusEnum.ACTIVE;
     const titleClassName = hasAccount ? 'font-medium text-primary' : 'font-medium text-secondary-foreground';
-    const iconClassName = isInactiveAccount ? 'opacity-50' : '';
+    const iconClassName = isHiddenAccount ? 'opacity-50' : '';
     const titleAnimatedStyle = useAnimatedStyle(() => ({
         fontSize: titleFontSize.value
     }));
@@ -64,7 +67,7 @@ export const TransferAccountPicker = ({ label, account, variant, animatedStyle, 
                     >
                         {account?.title ?? label}
                     </Animated.Text>
-                    {isInactiveAccount && <AccountInactiveBadge />}
+                    <AccountStatusBadge status={accountStatus} />
                 </View>
 
                 <Icon icon={UserIconNameEnum.ChevronDown} size={14} className="text-secondary-foreground" />

@@ -15,8 +15,8 @@ export const useTransferAccounts = (): UseTransferAccountsResult => {
 
     const [fromAccountId, toAccountId] = useWatch({ control, name: ['fromAccountId', 'toAccountId'] });
 
-    const { account: fromAccount } = useGetAccountByIdQuery(fromAccountId ?? 0);
-    const { account: toAccount } = useGetAccountByIdQuery(toAccountId ?? 0);
+    const { account: fromAccount } = useGetAccountByIdQuery(fromAccountId ?? 0, true);
+    const { account: toAccount } = useGetAccountByIdQuery(toAccountId ?? 0, true);
 
     return { fromAccountId, toAccountId, fromAccount, toAccount };
 };
