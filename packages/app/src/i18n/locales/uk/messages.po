@@ -1357,7 +1357,7 @@ msgstr "в"
 msgid "In List"
 msgstr "У списку"
 
-#: src/account/component/account-inactive-badge/account-inactive-badge.tsx
+#: src/account/component/account-inactive-icon/account-inactive-icon.tsx
 msgid "Inactive"
 msgstr "Неактивний"
 

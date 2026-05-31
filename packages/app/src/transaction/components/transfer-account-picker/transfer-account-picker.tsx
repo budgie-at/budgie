@@ -9,7 +9,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { AccountInactiveBadge } from '../../../account/component/account-inactive-badge/account-inactive-badge';
+import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
 
 interface Props {
     readonly label: string;
@@ -37,7 +37,6 @@ export const TransferAccountPicker = ({ label, account, variant, animatedStyle, 
 
     const isInactiveAccount = hasAccount && !account.isActive;
     const titleClassName = hasAccount ? 'font-medium text-primary' : 'font-medium text-secondary-foreground';
-    const iconClassName = isInactiveAccount ? 'opacity-50' : '';
     const titleAnimatedStyle = useAnimatedStyle(() => ({
         fontSize: titleFontSize.value
     }));
@@ -51,11 +50,11 @@ export const TransferAccountPicker = ({ label, account, variant, animatedStyle, 
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="button"
             >
-                <View className={iconClassName}>
+                <AccountInactiveIcon isInactive={isInactiveAccount} size={28}>
                     <CircleIcon icon={icon} variant={variant} size={28} iconSize={14} radius={8} />
-                </View>
+                </AccountInactiveIcon>
 
-                <View className="flex-1 justify-center gap-xxs">
+                <View className="flex-1 justify-center">
                     <Animated.Text
                         style={titleAnimatedStyle}
                         className={titleClassName}
@@ -64,7 +63,6 @@ export const TransferAccountPicker = ({ label, account, variant, animatedStyle, 
                     >
                         {account?.title ?? label}
                     </Animated.Text>
-                    {isInactiveAccount && <AccountInactiveBadge />}
                 </View>
 
                 <Icon icon={UserIconNameEnum.ChevronDown} size={14} className="text-secondary-foreground" />
