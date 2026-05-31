@@ -1358,7 +1358,7 @@ msgstr "in"
 msgid "In List"
 msgstr "In List"
 
-#: src/account/component/account-inactive-badge/account-inactive-badge.tsx
+#: src/account/component/account-inactive-icon/account-inactive-icon.tsx
 msgid "Inactive"
 msgstr "Inactive"
 
