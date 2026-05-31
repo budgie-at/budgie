@@ -8,7 +8,7 @@ import {
 } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
@@ -30,6 +30,8 @@ import type { BankAccountInterface } from '@budgie/bank-sync';
 import type { DB, MccCategoryLookupInterface } from '@budgie/contracts';
 
 export abstract class BaseFileBankSyncService {
+    private importQueue: Promise<void> = Promise.resolve();
+
     constructor(protected readonly provider: ExternalSourceEnum) {}
 
     @Log(
@@ -54,35 +56,16 @@ export abstract class BaseFileBankSyncService {
             `throw uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')} error=${getErrorMessage(error)}`
     )
     async executeImportForSelectedAccounts(uri: string, selectedAccountIds: string[]): Promise<void> {
-        const { client, bankAccounts } = await this.parseFile(uri);
-        const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
-
-        if (!isNotEmptyArray(selectedBankAccounts)) {
-            return;
-        }
-
-        await this.executeImport(client, selectedBankAccounts);
+        return this.runQueuedImport(async () => {
+            await this.executeImportForSelectedAccountsInner(uri, selectedAccountIds);
+        });
     }
 
     @Log(uri => `enter uri=${uri}`, (_result, uri) => `done uri=${uri}`, (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`)
     async quickImport(uri: string): Promise<void> {
-        const { client, bankAccounts } = await this.parseFile(uri);
-
-        if (!isNotEmptyArray(bankAccounts)) {
-            return;
-        }
-
-        const enabledExternalIds = await this.getEnabledExternalIds();
-        if (enabledExternalIds.size === 0) {
-            return;
-        }
-
-        const enabledBankAccounts = bankAccounts.filter(account => enabledExternalIds.has(account.id));
-        if (!isNotEmptyArray(enabledBankAccounts)) {
-            return;
-        }
-
-        await this.executeImport(client, enabledBankAccounts);
+        return this.runQueuedImport(async () => {
+            await this.quickImportInner(uri);
+        });
     }
 
     @Log(
@@ -163,6 +146,44 @@ export abstract class BaseFileBankSyncService {
         if (isPositiveNumber(newImportedCount)) {
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT);
         }
+    }
+
+    private async executeImportForSelectedAccountsInner(uri: string, selectedAccountIds: string[]): Promise<void> {
+        const { client, bankAccounts } = await this.parseFile(uri);
+        const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
+
+        if (!isNotEmptyArray(selectedBankAccounts)) {
+            return;
+        }
+
+        await this.executeImport(client, selectedBankAccounts);
+    }
+
+    private async quickImportInner(uri: string): Promise<void> {
+        const { client, bankAccounts } = await this.parseFile(uri);
+
+        if (!isNotEmptyArray(bankAccounts)) {
+            return;
+        }
+
+        const enabledExternalIds = await this.getEnabledExternalIds();
+        if (enabledExternalIds.size === 0) {
+            return;
+        }
+
+        const enabledBankAccounts = bankAccounts.filter(account => enabledExternalIds.has(account.id));
+        if (!isNotEmptyArray(enabledBankAccounts)) {
+            return;
+        }
+
+        await this.executeImport(client, enabledBankAccounts);
+    }
+
+    private async runQueuedImport(handler: () => Promise<void>): Promise<void> {
+        const queuedImport = this.importQueue.then(handler, handler);
+        this.importQueue = queuedImport.catch(emptyFn);
+
+        return queuedImport;
     }
 
     private async getEnabledExternalIds(): Promise<Set<string>> {
