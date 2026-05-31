@@ -24,31 +24,11 @@ const COMBINING_MARK_REGEX = /\p{Diacritic}/gu;
 const DISABLED_SEARCH_VALUE = 'disabled';
 const ENABLED_SEARCH_VALUE = 'enabled';
 const HEADER_SPACER_STYLE = { height: LEGEND_LIST_HEADER_HEIGHT };
-const MIN_FUZZY_TOKEN_LENGTH = 4;
 const SEARCH_TOKEN_SEPARATOR = /\s+/u;
 
 const normalizeSearchValue = (value: string) => value.normalize('NFKD').replace(COMBINING_MARK_REGEX, '').toLowerCase().trim();
 
 const getSearchTokens = (search: string) => normalizeSearchValue(search).split(SEARCH_TOKEN_SEPARATOR).filter(isNotEmptyString);
-
-const isFuzzyMatch = (value: string, token: string) => {
-    if (token.length < MIN_FUZZY_TOKEN_LENGTH) {
-        return false;
-    }
-
-    let valueIndex = 0;
-
-    for (const tokenCharacter of token) {
-        const matchedIndex = value.indexOf(tokenCharacter, valueIndex);
-        if (matchedIndex < 0) {
-            return false;
-        }
-
-        valueIndex = matchedIndex + 1;
-    }
-
-    return true;
-};
 
 const getSearchValueScore = (value: string, token: string) => {
     const normalizedValue = normalizeSearchValue(value);
@@ -63,10 +43,6 @@ const getSearchValueScore = (value: string, token: string) => {
 
     if (normalizedValue.includes(token)) {
         return 40;
-    }
-
-    if (isFuzzyMatch(normalizedValue, token)) {
-        return 10;
     }
 
     return 0;

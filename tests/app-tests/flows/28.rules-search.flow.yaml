@@ -22,7 +22,7 @@ env:
 
 - tapOn:
       id: 'RuleForm.Condition.0.ValueInput'
-- inputText: Netflix
+- inputText: Toolsense
 
 - tapOn: return
 
@@ -52,12 +52,54 @@ env:
       id: 'RulesPage.RuleCardActions.0'
 
 - tapOn:
+      id: 'ActionButton'
+- extendedWaitUntil:
+      visible:
+          id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+      id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+      visible: 'Create Rule'
+
+- tapOn:
+      id: 'RuleForm.Condition.0.ValueInput'
+- inputText: Tango office loan service new salary entry
+
+- tapOn: return
+
+- tapOn:
+      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+      id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+      when:
+          visible: 'Apply to existing transactions?'
+      commands:
+          - tapOn: 'Skip'
+- extendedWaitUntil:
+      visible:
+          id: 'RulesPage.Page'
+
+- assertVisible:
+      id: 'RulesPage.RuleCard.0'
+- assertVisible:
+      id: 'RulesPage.RuleCard.1'
+
+- tapOn:
       id: 'RulesPage.SearchInput'
-- inputText: Netflix
+- inputText: Toolsense
 - assertVisible:
       id: 'RulesPage.RuleCard.0'
 - assertVisible:
       id: 'RulesPage.RuleCardConditions.0'
+- assertNotVisible:
+      id: 'RulesPage.RuleCard.1'
 
 - eraseText
 - inputText: ${CATEGORY_NAME}
@@ -65,6 +107,8 @@ env:
       id: 'RulesPage.RuleCard.0'
 - assertVisible:
       id: 'RulesPage.RuleCardActions.0'
+- assertVisible:
+      id: 'RulesPage.RuleCard.1'
 
 - eraseText
 - inputText: MissingRuleSearch
@@ -79,6 +123,17 @@ env:
 - assertVisible:
       id: 'RulesPage.RuleCard.0'
 - tapOn: return
+
+- swipe:
+      from:
+          id: 'RulesPage.RuleCard.0'
+      direction: LEFT
+      duration: 300
+
+- tapOn:
+      id: DeletableRow.DeleteButton
+
+- tapOn: Delete
 
 - swipe:
       from:
