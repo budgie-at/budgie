@@ -39,7 +39,7 @@ Allowed registry fields are stable metadata and relationships:
 - author, image, reading time, category, tier, keywords, and relationship slugs
 - metadata descriptors such as title and description only when they are imported from the page-owned metadata sidecar
 
-Listing pages and sitemap are legitimate enumeration endpoints. Related-content components may consume relationship slugs from registries. Route pages may look up their own entry by a module-level `SLUG` constant for metadata, dates, related links, or listing-card information.
+Listing pages and sitemap are legitimate enumeration endpoints. Related-content components may consume relationship slugs from metadata aggregators. Route pages must not look up their own entry by a module-level `SLUG` constant; explicit SEO routes import their sibling `metadata.ts` directly and use that object for metadata, dates, related links, and listing-card information.
 
 ### 4. Page-owned metadata sidecars
 
@@ -54,6 +54,8 @@ src/app/[lang]/features/ai-auto-categorization/
   metadata.ts
   page.tsx
 ```
+
+Blog articles, feature pages, and pillar hubs all follow this shape. A central `ARTICLE_REGISTRY`, `FEATURE_REGISTRY`, or pillar metadata index may aggregate sidecars for lists and sitemap output, but the route page never calls `.find(...)` against that aggregate to rediscover itself.
 
 ```ts
 import { msg } from '@lingui/core/macro';
@@ -105,6 +107,8 @@ Feature page breadcrumb JSON-LD is written as explicit JSX in the route page:
 ```
 
 The component generates the `BreadcrumbList` script from its child items. Pair it with `<FeaturePageWebPageJsonLd ... />` for the page-level `WebPage` schema. Do not rebuild feature page schema with a `buildFeaturePageJsonLd({ ... })` object helper.
+
+Pillar hub JSON-LD follows the same rule: prefer typed JSX schema components that receive already-resolved strings over `buildPillarHubJsonLd({ ... })`-style object builders hidden inside a shell. A shell may place schema components and repeated chrome, but the route still owns the page metadata and body composition.
 
 If a current JSON-LD helper still requires resolved strings, keep the duplicate data local to the page or its metadata sidecar during migration; do not move FAQ bodies into a registry.
 
@@ -231,10 +235,10 @@ Path: `src/app/[lang]/features/<slug>/page.tsx`
 
 Feature pages follow the same sidecar pattern. Metadata, listing-card labels, dates, and relationship slugs live in `metadata.ts`; visible feature copy and FAQ bodies stay inline in `page.tsx`.
 
-The route may resolve related features from registry metadata:
+The route may resolve related features from its sidecar metadata:
 
 ```ts
-const related = getRelatedFeatures(meta.slug);
+const related = getRelatedFeatures(meta);
 ```
 
 It must not render feature body copy from `FEATURE_REGISTRY`.

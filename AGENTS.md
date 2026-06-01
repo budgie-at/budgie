@@ -80,6 +80,10 @@ packages/
 └── bank-sync/          # Bank integration package
 ```
 
+## Package-Specific Instructions
+
+Before changing `packages/landing` SEO pages, blog articles, feature pages, pillar hubs, legal pages, metadata helpers, JSON-LD, sitemap entries, or Lingui catalogs, read `packages/landing/AGENTS.md` and its referenced `packages/landing/docs/seo-pages.md` / `packages/landing/docs/lingui-rsc.md`. Landing SEO routes use explicit TSX composition, page-owned sibling `metadata.ts` sidecars, Lingui-safe RSC setup, and SSG-safe metadata by default.
+
 ## Architecture Layers
 
 1. **API** - External service calls (fetch, ky)
