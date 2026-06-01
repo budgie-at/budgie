@@ -12,12 +12,12 @@ Every server-rendered **page** must perform both calls at the top of its render 
 
 ```ts
 // 1. Build an isolated i18n instance for this locale
-const i18n = getI18nInstance(lang);        // src/i18n/app-router-i18n.ts
+const i18n = getI18nInstance(lang); // src/i18n/app-router-i18n.ts
 
 // 2. Activate it in this React cache scope so <Trans> resolves correctly
-setI18n(i18n);                              // @lingui/react/server
+setI18n(i18n); // @lingui/react/server
 // — OR use the convenience helper that does both:
-initLingui(lang);                           // src/i18n/init-lingui.ts
+initLingui(lang); // src/i18n/init-lingui.ts
 ```
 
 `initLingui(lang)` calls `getI18nInstance(lang)` then `setI18n(i18n)` and returns `i18n`. Use it when you need the instance immediately (JSON-LD, metadata strings). Use the `setI18n`-only pattern when you only need `<Trans>` to work in children.
@@ -32,14 +32,14 @@ initLingui(lang);                           // src/i18n/init-lingui.ts
 
 ## 2. `<Trans>` for JSX children — `t`/`msg` for string props and metadata
 
-| Context | Use | Example |
-|---------|-----|---------|
-| JSX text children | `<Trans>…</Trans>` from `@lingui/react/macro` | `<h1><Trans>Track Expenses</Trans></h1>` |
-| Attribute / string prop | `t\`…\`` from `@lingui/core/macro` | `alt={t\`App screenshot\`}` |
-| JSON-LD / metadata strings (inside `generateMetadata` or `buildLandingJsonLd`) | `i18n._(msg\`…\`)` | `i18n._(msg\`Budgie - Expense Tracker\`)` |
-| Static descriptor registries (article registry, feature registry) | `msg\`…\`` descriptor only; resolve at render/call site | `title: msg\`Article Title\`` |
+| Context                                                                                                | Use                                                     | Example                                   |
+| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- | ----------------------------------------- |
+| JSX text children                                                                                      | `<Trans>…</Trans>` from `@lingui/react/macro`           | `<h1><Trans>Track Expenses</Trans></h1>`  |
+| Attribute / string prop                                                                                | `t\`…\``from`@lingui/core/macro`                        | `alt={t\`App screenshot\`}`               |
+| JSON-LD / metadata strings (inside `generateMetadata`, metadata sidecars, or structured-data builders) | `i18n._(msg\`…\`)`                                      | `i18n._(msg\`Budgie - Expense Tracker\`)` |
+| Page-owned metadata sidecars                                                                           | `msg\`…\`` descriptor only; resolve at render/call site | `metaTitle: msg\`Article Title\``         |
 
-The pattern `<p>{t\`Hello\`}</p>` is a lint-level violation (`lingui/no-unlocalized-strings` catches a subset; the macro mismatch is caught by `@lingui/swc-plugin`). Always write `<p><Trans>Hello</Trans></p>`.
+The pattern `<p>{t\`Hello\`}</p>` is a lint-level violation (`lingui/no-unlocalized-strings`catches a subset; the macro mismatch is caught by`@lingui/swc-plugin`). Always write `<p><Trans>Hello</Trans></p>`.
 
 ---
 
@@ -55,29 +55,32 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 
     return {
         title: { absolute: i18n._(msg`Budgie - Privacy-First Expense Tracker`) },
-        description: i18n._(msg`Track expenses, sync banks…`),
+        description: i18n._(msg`Track expenses, sync banks…`)
     };
 }
 ```
 
-Never write `t\`…\`` directly inside `generateMetadata` — `t` compiles to a call on the active i18n instance, which is undefined in the metadata thunk's execution context.
+Never write `t\`…\``directly inside`generateMetadata`—`t` compiles to a call on the active i18n instance, which is undefined in the metadata thunk's execution context.
 
 ---
 
-## 4. Static descriptor registries use `msg` — resolve at the call site
+## 4. Page-owned metadata sidecars use `msg` — resolve at the call site
 
-Files like `src/blog/constant/article-registry.constant.ts` and `src/feature/constant/feature-registry.constant.ts` run at module init — no i18n instance is active. They store `MessageDescriptor` objects built with `msg\`…\``:
+Static route sidecars like `src/app/[lang]/privacy/metadata.ts` run at module init — no i18n instance is active. They store `MessageDescriptor` objects built with `msg\`…\``:
 
 ```ts
-// article-registry.constant.ts
-{
-    slug: 'budgie-offline-financial-data',
-    title: msg`How Budgie Keeps Your Financial Data Off the Cloud`,
-    description: msg`A technical deep-dive into Budgie's offline-first architecture…`,
-}
+// metadata.ts
+export const PRIVACY_PILLAR_HUB_METADATA = {
+    slug: 'privacy',
+    title: msg`Private Expense Tracker`,
+    metaTitle: msg`Private Expense Tracker — Budgie`,
+    metaDescription: msg`Budget privately with encrypted on-device storage.`
+};
 ```
 
 Resolve at the call site with `i18n._(entry.title)` or `getI18nInstance(lang)._(entry.title)`.
+
+Registries are only for route enumeration, relationships, or aggregator metadata. They must not hold rendered body copy, FAQ lists, comparison rows, or page-specific content maps. Visible SEO page copy belongs inline in the route's JSX so translators, reviewers, and agents can read the page top-to-bottom.
 
 ---
 
@@ -118,13 +121,13 @@ The `lingui.config.mjs` `sourceLocale` is `en`. Never hardcode the locale list; 
 
 ## 7. Supported locales
 
-| Code | Language | Role |
-|------|----------|------|
-| `en` | English | **Source locale** (extracted from macros via `yarn i18n:extract`) |
-| `uk` | Ukrainian | Translation |
-| `fr` | French | Translation |
-| `de` | German | Translation |
-| `es` | Spanish | Translation |
+| Code | Language  | Role                                                              |
+| ---- | --------- | ----------------------------------------------------------------- |
+| `en` | English   | **Source locale** (extracted from macros via `yarn i18n:extract`) |
+| `uk` | Ukrainian | Translation                                                       |
+| `fr` | French    | Translation                                                       |
+| `de` | German    | Translation                                                       |
+| `es` | Spanish   | Translation                                                       |
 
 Catalog location: `src/i18n/locales/{locale}/messages.po` + compiled `messages.ts`.
 
@@ -136,12 +139,13 @@ Catalog location: `src/i18n/locales/{locale}/messages.po` + compiled `messages.t
 yarn i18n:sync        # = yarn i18n:extract && yarn i18n:compile
 ```
 
-- `yarn i18n:extract` — scans `src/` for `<Trans>`, `t\`…\``, `msg\`…\`` macros and writes/updates all `.po` files (overwrites; cleans stale entries with `--clean`).
+- `yarn i18n:extract` — scans `src/` for `<Trans>`, `t\`…\``, `msg\`…\``macros and writes/updates all`.po`files (overwrites; cleans stale entries with`--clean`).
 - `yarn i18n:compile` — compiles `.po` → `.ts` (TypeScript message maps) for each locale.
 
 **Both `.po` and `.ts` files must be committed.** The `.ts` files are required at runtime; omitting them breaks the build.
 
 After adding or changing any user-visible string:
+
 1. Run `yarn i18n:sync`.
 2. Open each non-`en` `.po` file and fill in empty `msgstr ""` entries.
 3. Run `yarn i18n:sync` again to recompile.
@@ -171,24 +175,26 @@ Do not translate brand names: "Budgie", app store names, crypto/bank names. Pres
 **Pattern A — page-per-agent, parallel waves** (preferred for ≤ ~250 new strings per locale):
 
 1. The orchestrating agent runs:
-   ```bash
-   grep -B1 'msgstr ""' src/i18n/locales/<locale>/messages.po | grep '^#:' | sort -u
-   ```
-   to enumerate source files that have empty entries.
+    ```bash
+    grep -B1 'msgstr ""' src/i18n/locales/<locale>/messages.po | grep '^#:' | sort -u
+    ```
+    to enumerate source files that have empty entries.
 2. Dispatches one subagent **per source file** (or per small cluster of related files) per locale. Each subagent's prompt names the exact source file(s) it owns and the expected count of empty entries.
 3. Subagents use the `Edit` tool only — never Python, sed, or shell scripting on `.po` files (those corrupt encoding and multiline `msgstr` values).
 4. After all subagents return, the controller verifies:
-   ```bash
-   grep -c 'msgstr ""' src/i18n/locales/<locale>/messages.po
-   ```
-   Result should be `1` (the PO header only). Re-dispatch for any remaining source files.
+    ```bash
+    grep -c 'msgstr ""' src/i18n/locales/<locale>/messages.po
+    ```
+    Result should be `1` (the PO header only). Re-dispatch for any remaining source files.
 
 **Pattern B — rolling waves** (for > 250 new strings per locale, or when Pattern A still hangs):
+
 1. Controller dispatches wave 1: 5 locales × first source file.
 2. On completion, wave 2: 5 locales × second source file.
 3. Each subagent owns exactly one (file, locale) pair.
 
 **Hard rules for the dispatching agent:**
+
 - Never put "translate all empty entries" in a subagent prompt without scoping it to specific source files.
 - Always tell the subagent the exact target empty count for its scope.
 - Always re-verify totals with `grep -c 'msgstr ""'` after each wave.
@@ -211,6 +217,8 @@ Until the script exists, per-entry `Edit` is the fallback for small additions (<
 
 ---
 
-## 12. No compound-JSX children-walker (budgie does not use it)
+## 12. FAQ JSON-LD follows JSX children
 
-The knee-doctor pattern of parsing `<Trans>` children via `extractTransMessage(node, i18n)` to produce JSON-LD strings does not exist in budgie. Budgie resolves JSON-LD strings via `i18n._(msg\`…\`)` directly inside util functions like `buildLandingJsonLd(i18n)`. Do not add the children-walker pattern without explicit approval.
+FAQ sections use `FeaturePageFaqSection` and `FeaturePageFaqItem`. The visible question and answer stay inline in the page as JSX, and `FeaturePageFaqSection` extracts those children to produce the `FAQPage` JSON-LD.
+
+Do not add a second FAQ registry or duplicate FAQ array just to feed structured data. If the FAQ is rendered on the page, the JSX children are the source of truth.

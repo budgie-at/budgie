@@ -1,6 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
-import { isNotEmptyArray } from '@rnw-community/shared';
-
+/* eslint-disable lingui/no-unlocalized-strings -- schema.org keys, not user-facing copy */
 import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 
 interface BuildPillarHubJsonLdInput {
@@ -9,7 +7,6 @@ interface BuildPillarHubJsonLdInput {
     readonly title: string;
     readonly description: string;
     readonly homeLabel: string;
-    readonly faqs: readonly { readonly question: string; readonly answer: string }[];
     readonly publishedAt: string;
     readonly updatedAt: string;
 }
@@ -20,10 +17,9 @@ export const buildPillarHubJsonLd = ({
     title,
     description,
     homeLabel,
-    faqs,
     publishedAt,
     updatedAt
-}: BuildPillarHubJsonLdInput): readonly [Record<string, unknown>, Record<string, unknown>, Record<string, unknown>?] => {
+}: BuildPillarHubJsonLdInput): readonly [Record<string, unknown>, Record<string, unknown>] => {
     const url = `${BASE_URL}/${locale}/${slug}`;
     const languageTag = OG_LOCALE_MAP[locale].replace('_', '-');
 
@@ -50,19 +46,5 @@ export const buildPillarHubJsonLd = ({
         breadcrumb: { '@id': `${url}#breadcrumb` }
     };
 
-    if (!isNotEmptyArray(faqs)) {
-        return [breadcrumbSchema, webPageSchema];
-    }
-
-    const faqSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        mainEntity: faqs.map(faq => ({
-            '@type': 'Question',
-            name: faq.question,
-            acceptedAnswer: { '@type': 'Answer', text: faq.answer }
-        }))
-    };
-
-    return [breadcrumbSchema, webPageSchema, faqSchema];
+    return [breadcrumbSchema, webPageSchema];
 };
