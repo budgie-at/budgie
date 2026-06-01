@@ -117,6 +117,8 @@ Registries are metadata and enumeration sources only. Listing pages, sitemap gen
 
 FAQ/JSON-LD should be generated from JSX children where possible so visible FAQ content and schema share one page-local source. Legal pages should be plain Next.js TSX pages in the same explicit JSX style and remain `noindex, follow` unless code changes the source of truth.
 
+Feature page JSON-LD uses explicit JSX composition in the page body. Write breadcrumb schema as `<FeaturePageBreadcrumbsJsonLd><FeaturePageBreadcrumbsJsonLd.Item ... /></FeaturePageBreadcrumbsJsonLd>` and the page schema as `<FeaturePageWebPageJsonLd ... />`; do not recreate `buildFeaturePageJsonLd`-style object builders in route pages.
+
 Static pages and metadata should remain SSG-safe by default. Do not read request headers, cookies, host, or other runtime context unless the page explicitly needs dynamic request behavior and declares the matching Next.js caching/dynamic behavior.
 
 ## i18n (Lingui)
