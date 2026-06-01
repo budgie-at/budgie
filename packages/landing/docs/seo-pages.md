@@ -94,6 +94,18 @@ Iteration is allowed for runtime or enumerated listing data, such as a blog inde
 
 FAQ JSON-LD should be generated from the same JSX children that render the visible FAQ when the primitive can walk children and extract translated text. Do not duplicate FAQ arrays in registries.
 
+Feature page breadcrumb JSON-LD is written as explicit JSX in the route page:
+
+```tsx
+<FeaturePageBreadcrumbsJsonLd locale={lang} slug={SLUG}>
+    <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={homePath} />
+    <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Features`} path={featuresPath} />
+    <FeaturePageBreadcrumbsJsonLd.Item name={featureName} path={featurePath} />
+</FeaturePageBreadcrumbsJsonLd>
+```
+
+The component generates the `BreadcrumbList` script from its child items. Pair it with `<FeaturePageWebPageJsonLd ... />` for the page-level `WebPage` schema. Do not rebuild feature page schema with a `buildFeaturePageJsonLd({ ... })` object helper.
+
 If a current JSON-LD helper still requires resolved strings, keep the duplicate data local to the page or its metadata sidecar during migration; do not move FAQ bodies into a registry.
 
 All JSON-LD utilities receive already-resolved strings or parse page-local JSX children. Pages resolve descriptors through `i18n._()` after `initLingui(lang)`.
