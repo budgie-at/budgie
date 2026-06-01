@@ -6,7 +6,19 @@ import { cn } from '../../utils/cn.util';
 import { TEXT_AREA_BASE_HEIGHTS } from './constant/text-area-base-heights.constant';
 import { TEXT_AREA_LINE_DELTAS } from './constant/text-area-line-deltas.constant';
 
-import type { TextAreaProps } from './interface/text-area-props.interface';
+import type { FormFieldStatus } from '../../type/form-field-status.type';
+import type { ComponentProps, RefObject } from 'react';
+
+type BaseTextInputProps = Omit<ComponentProps<typeof TextInput>, 'multiline' | 'style' | 'ref'>;
+
+interface Props extends BaseTextInputProps {
+    readonly status?: FormFieldStatus;
+    readonly borderless?: boolean;
+    readonly size?: 'sm' | 'md' | 'lg';
+    readonly minLines?: 1 | 2;
+    readonly maxLines?: 2 | 3 | 4 | 5;
+    readonly ref?: RefObject<TextInput | null>;
+}
 
 const textAreaVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
     variants: {
@@ -26,7 +38,7 @@ const textAreaVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
     }
 });
 
-export const TextArea = (props: TextAreaProps) => {
+export const TextArea = (props: Props) => {
     const { size = 'sm', status = 'default', borderless = false, minLines = 1, maxLines = 2, className, ref, ...rest } = props;
 
     const baseHeight = TEXT_AREA_BASE_HEIGHTS[size];

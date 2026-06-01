@@ -43,7 +43,8 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
     const handleFromPress = async () => {
         const selectedAccountId = await openAccountSelector({
             initialAccountId: fromAccountId,
-            excludeAccountId: toAccountId
+            excludeAccountId: toAccountId,
+            onlyActive: false
         });
 
         if (isDefined(selectedAccountId)) {
@@ -54,7 +55,8 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
     const handleToPress = async () => {
         const selectedAccountId = await openAccountSelector({
             initialAccountId: toAccountId,
-            excludeAccountId: fromAccountId
+            excludeAccountId: fromAccountId,
+            onlyActive: false
         });
 
         if (isDefined(selectedAccountId)) {

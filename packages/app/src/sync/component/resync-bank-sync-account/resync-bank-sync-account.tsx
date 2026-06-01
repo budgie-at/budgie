@@ -3,9 +3,11 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Button } from '../../../@generic/component/button/button';
 import { useResyncWindowPickerModal } from '../../context/resync-window-picker-modal.context';
 
-import type { ResyncBankSyncAccountPropsInterface } from '../../interface/resync-bank-sync-account-props.interface';
+interface Props {
+    readonly accountId: number;
+}
 
-export const ResyncBankSyncAccount = ({ accountId }: ResyncBankSyncAccountPropsInterface) => {
+export const ResyncBankSyncAccount = ({ accountId }: Props) => {
     const [openResyncWindowPicker] = useResyncWindowPickerModal();
 
     const handleResync = () => {

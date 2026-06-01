@@ -107,7 +107,7 @@ packages/
 16. **No redundant wrapper functions** - Don't create functions that only delegate to another function without adding logic. If a lint rule prevents inline callbacks, the wrapper is acceptable
 17. **Use microunits utility functions** - Use `convertFromMicroUnits()` and `convertToMicroUnits()` for amount conversion instead of manual `/ PRECISION` or `* PRECISION`
 18. **Spread syntax for optional params** - Use `...(isPositiveNumber(x) && { x })` instead of `x: isPositiveNumber(x) ? x : undefined` with eslint-disable
-19. **Interfaces and types in separate files** - Never define interfaces or type aliases inline above classes, hooks, components, services, or repositories. Put them in the module's `/interface` folder with the proper `.interface.ts` or `.type.ts` suffix.
+19. **Interfaces and types in separate files** - Never define interfaces or type aliases inline above classes, hooks, components, services, or repositories. Put them in the module's `/interface` folder with the proper `.interface.ts` or `.type.ts` suffix. **Exception — React component props:** a component's props type is named exactly `Props` (no `*Interface` suffix) and declared inline in the component file. A named `*PropsInterface` in `/interface` is allowed **only** when the same props shape is consumed by 2+ components (single-consumer = inline, per rule 51). A `*PropsInterface` imported by exactly one component is prohibited — inline it as `interface Props`.
 20. **Type guards in separate files** - Type guards go in `/type-guard` folder with `.type-guard.ts` suffix
 21. **Group useWatch calls together** - In React components, keep all `useWatch` calls together near other hooks, not scattered throughout the component
 22. **Services use classes, not utility functions** - Service files (`.service.ts`) should export a class instance, not standalone functions
@@ -120,9 +120,9 @@ packages/
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `yarn cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
 31. **Every manual condition is reviewed against the canonical `@rnw-community/shared` guard table.** See `Type Guards and Validation → Canonical Mapping` below.
-32. **Class-method lifecycle logs use `@Log` decorator from `@budgie/logger`.** Free-function / component / hook logs use `getLogger(context)` from the same package. Do not import `console.log` / `console.debug` / `console.error` directly in service code — route through the transport so app builds can gate logging consistently.
+32. **Class-method lifecycle logs use `@Log` decorator from `@budgie/logger`.** Free-function / component / hook logs use `getLogger(context)`. If an array callback needs lifecycle or error logging, extract the real work into a named private handler and decorate it. Never use `console.*` in service code.
 33. **Do not reshape public method arguments to satisfy lint.** Never convert existing positional arguments into an object, array, tuple/rest tuple, or new interface unless explicitly requested. Prefer splitting implementation into smaller private methods when it improves design; otherwise use a narrow `@typescript-eslint/max-params` lint disable with justification.
-34. **No log-only abstractions.** Do not add helpers, wrapper decorators, or shared constants whose only purpose is to build or reuse lifecycle log strings. Keep `@Log` usage directly on the method so argument usage stays obvious.
+34. **No log-only abstractions.** Do not add helpers, wrapper decorators, shared constants, or one-line wrappers whose only purpose is logging. Put `@Log` on the method that owns the batch, transaction, or error boundary.
 35. **No internal catch-and-log inside `@Log` class methods.** If a decorated class method can fail, let `@Log` record the throw and handle intentional suppression at the call site with `.catch(...)`.
 36. **Update inputs derive from entity types.** Use `Partial<Pick<*CreateEntityInterface, 'fieldA' | 'fieldB'>>` — never hand-write update field shapes. Pick from `*CreateEntityInterface` (already filtered to user-settable columns), not from `*EntityInterface` (which includes auto-managed fields like id/createdAt/deletedAt).
 37. **Service signatures encode invariants — no silent field-dropping.** If a method ignores or strips fields from its input before calling deeper, narrow the parameter type so dropped fields are unrepresentable. Never accept a wide input "for convenience" and quietly filter.
@@ -130,7 +130,7 @@ packages/
 39. **Class-owned constants are `private static readonly` fields**, not module-level. Module-level `const` is reserved for values shared by multiple classes/functions in the same file.
 40. **Domain-specific shapes carry the domain prefix.** Parser state, layout types, row interfaces specific to one bank/source/feature: `Erste*`, `Monobank*`. Bank-agnostic shapes (raw native-module output, generic transaction interfaces) stay neutral. Drop legacy qualifiers (`Modern`, `Classic`) once only one variant remains.
 41. **Don't double-log a flow.** If a service method already carries `@Log` (enter/done/throw), don't add `getLogger` calls in the hook/component that triggers it. Service-level decorators record the lifecycle; hook-level logs of the same flow are noise duplication.
-42. **Do not create single-use utilities to appease lint.** PR review fixes should address the root design issue, not move code into one-off `.util.ts` files, one-off interfaces, or wrappers used by a single service. Keep service-owned orchestration as private methods on the service, keep reusable pure helpers in `/utils`, and get explicit human approval before using a targeted lint disable when a cohesive service legitimately exceeds a size rule.
+42. **Do not create single-use utilities to appease lint.** PR review fixes should address the root design issue, not move code into one-off `.util.ts` files, one-off interfaces, or wrappers used by a single service. Keep service orchestration private, dedupe repeated batch/reducer/update flows inside the owning class, and reserve `/utils` for genuinely shared pure helpers.
 43. **No module-level helpers for class-internal use.** If a free function/const is consumed only by one class in the same file, it belongs inside the class — pure helpers as `private` (or `private static`) methods, value constants as `private static readonly` fields. Module-level scope is reserved for shapes shared by 2+ top-level declarations in the file.
 44. **No single-field interfaces.** If an interface or type alias has exactly one field, pass that field's value directly. `interface Options { language?: string }` → `language: string | null` parameter. Wrappers cost one indirection per consumer for no payoff and rot when fields are added.
 45. **Magic strings that name a thing become an enum.** Subsystem names, error sources, telemetry channels, storage keys, **hook return states (`'idle' | 'recording' | ...`), and reducer action types** that are referenced by ≥2 sites — define an enum (rule 28) and use it everywhere. `'chat' | 'embedding' | 'stt'` literal unions, hook state-machine unions, and string returns from `getSomeKind()` are red flags.
@@ -153,13 +153,16 @@ packages/
 
 ### Naming Conventions
 
-| Type      | Convention               | Example                  |
-| --------- | ------------------------ | ------------------------ |
-| Interface | `*Interface` suffix      | `AccountFilterInterface` |
-| Enum      | `*Enum` suffix           | `AccountTypeEnum`        |
-| Function  | module prefix            | `exchangeRatesFetchApi`  |
-| Class     | PascalCase               | `AccountRepository`      |
-| File      | kebab-case + type suffix | `account.service.ts`     |
+| Type             | Convention                | Example                  |
+| ---------------- | ------------------------- | ------------------------ |
+| Interface        | `*Interface` suffix       | `AccountFilterInterface` |
+| React props      | exactly `Props`, inline   | `interface Props { ... }`|
+| Enum             | `*Enum` suffix            | `AccountTypeEnum`        |
+| Function         | module prefix             | `exchangeRatesFetchApi`  |
+| Class            | PascalCase                | `AccountRepository`      |
+| File             | kebab-case + type suffix  | `account.service.ts`     |
+
+> **React props naming (overrides the `*Interface` suffix rule):** a component's props type is always named `Props` and declared inline. Never name it `*PropsInterface` for a single component. Promote to a shared `*PropsInterface` in `/interface` only when 2+ components consume the same shape (see rule 19 + rule 51).
 
 ### Type Guards and Validation
 
@@ -438,6 +441,7 @@ Mix freely: any of the three hooks can independently be a string or a function.
 13. **Objects** → destructure their identifying scalars; do not stringify the whole object.
 14. **Errors** → `getErrorMessage(error)` from `@rnw-community/shared`. Never `String(error)` or `error.message`.
 15. **`enter`, `done`, and `throw` each show every method arg.** `done` additionally surfaces result data. `throw` additionally surfaces `error=${getErrorMessage(error)}`. Don't drop arg context from `done` or `throw` to "minimize" — debugging needs the call identity.
+16. **Extract for logging only when it names a real boundary.** Good candidates: batch transaction handlers, retry/error boundaries, and public-to-private orchestration steps. Bad candidates: one-line wrappers whose only job is to satisfy `@Log`.
 
 ### `getLogger(context)` (free-form / non-class)
 
