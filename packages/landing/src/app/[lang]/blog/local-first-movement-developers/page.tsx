@@ -22,7 +22,6 @@ import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-i
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
 import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
 import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
-import { ARTICLE_REGISTRY } from '../../../../blog/constant/article-registry.constant';
 import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FEATURE_REGISTRY } from '../../../../feature/constant/feature-registry.constant';
@@ -30,16 +29,9 @@ import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
 
+import { ARTICLE_METADATA } from './metadata';
+
 import type { Metadata } from 'next';
-
-const SLUG = 'local-first-movement-developers';
-const DATE = '2025-01-29';
-// eslint-disable-next-line lingui/no-unlocalized-strings
-const AUTHOR = 'Budgie Team';
-const IMAGE = '/images/design-mode/ai-budgeting-app-4x.jpg';
-const READING_TIME = 18;
-
-const RELATED_SLUGS = ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'] as const;
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
@@ -47,16 +39,14 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     const i18n = getI18nInstance(lang);
 
     return buildBlogArticleMetadata({
-        author: AUTHOR,
-        date: DATE,
-        description: t(
-            i18n
-        )`Explore the local-first software movement, from CRDTs to sync engines. Learn why developers are choosing offline-first architecture and how it transforms personal finance apps.`,
-        image: IMAGE,
+        author: ARTICLE_METADATA.author,
+        date: ARTICLE_METADATA.date,
+        description: i18n._(ARTICLE_METADATA.seoDescription),
+        image: ARTICLE_METADATA.image,
         keywords: t(i18n)`local-first software, offline-first architecture, CRDTs explained, sync engines, local-first personal finance`,
         locale: lang,
-        slug: SLUG,
-        title: t(i18n)`The Local-First Movement: Why Developers Are Building Offline Apps`
+        slug: ARTICLE_METADATA.slug,
+        title: i18n._(ARTICLE_METADATA.title)
     });
 }
 
@@ -64,30 +54,26 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const articleEntry = ARTICLE_REGISTRY.find(item => item.slug === SLUG);
-    const relatedFeatures =
-        articleEntry?.relatedFeatureSlugs.map(slug => FEATURE_REGISTRY.find(feature => feature.slug === slug)).filter(isDefined) ?? [];
+    const relatedFeatures = ARTICLE_METADATA.relatedFeatureSlugs
+        .map(slug => FEATURE_REGISTRY.find(feature => feature.slug === slug))
+        .filter(isDefined);
 
     return (
         <main className="flex-1">
             <BlogPostingJsonLd
-                author={AUTHOR}
+                author={ARTICLE_METADATA.author}
                 blogLabel={t(i18n)`Blog`}
-                date={DATE}
-                description={t(
-                    i18n
-                )`Explore the local-first software movement, from CRDTs to sync engines. Learn why developers are choosing offline-first architecture and how it transforms personal finance apps.`}
+                date={ARTICLE_METADATA.date}
+                description={i18n._(ARTICLE_METADATA.description)}
                 homeLabel={t(i18n)`Home`}
-                image={IMAGE}
-                keywords={t(
-                    i18n
-                )`local-first software, offline-first architecture, CRDTs explained, sync engines, local-first personal finance`}
+                image={ARTICLE_METADATA.image}
+                keywords={ARTICLE_METADATA.seoKeywords.join(', ')}
                 locale={lang}
-                slug={SLUG}
-                title={t(i18n)`The Local-First Movement: Why Developers Are Building Offline Apps`}
+                slug={ARTICLE_METADATA.slug}
+                title={i18n._(ARTICLE_METADATA.title)}
             />
 
-            <BlogArticleHero image={IMAGE} imageAlt={t(i18n)`The local-first movement for developers`}>
+            <BlogArticleHero image={ARTICLE_METADATA.image} imageAlt={i18n._(ARTICLE_METADATA.title)}>
                 <Link
                     className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
                     href={`/${lang}/blog`}
@@ -119,10 +105,10 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                 </p>
 
                 <BlogArticleMeta
-                    author={AUTHOR}
-                    date={DATE}
+                    author={ARTICLE_METADATA.author}
+                    date={ARTICLE_METADATA.date}
                     locale={lang}
-                    readingTimeMinutes={READING_TIME}
+                    readingTimeMinutes={ARTICLE_METADATA.readingTimeMinutes}
                     tags={
                         <>
                             <Badge variant="secondary">
@@ -1156,7 +1142,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                 </BlogArticleSection>
             </BlogArticleContent>
 
-            <RelatedArticles locale={lang} slugs={RELATED_SLUGS} />
+            <RelatedArticles locale={lang} slugs={ARTICLE_METADATA.relatedArticleSlugs} />
 
             <FeaturePageRelated features={relatedFeatures} locale={lang} />
 
