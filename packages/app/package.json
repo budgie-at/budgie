@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "5.30.0",
+    "version": "5.30.1",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -25,6 +25,7 @@
     "dependencies": {
         "@budgie/ai": "workspace:^",
         "@budgie/bank-sync": "workspace:*",
+        "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/logger": "workspace:*",
         "@expo/fingerprint": "~0.16.7",

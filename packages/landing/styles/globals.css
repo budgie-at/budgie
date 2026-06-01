@@ -10,8 +10,8 @@
     margin-inline: auto;
     padding-inline: 2rem;
     @media (width >= --theme(--breakpoint-sm)) {
-    max-width: none;
-}
+        max-width: none;
+    }
     @media (width >= 1400px) {
         max-width: 1400px;
     }
@@ -76,7 +76,6 @@
             height: 0;
         }
     }
-
 }
 
 /*
@@ -145,9 +144,25 @@
 }
 
 @layer base {
+    html {
+        background-color: hsl(var(--background));
+        color-scheme: light;
+    }
+
+    html.dark {
+        color-scheme: dark;
+    }
+
+    html,
+    body {
+        min-height: 100%;
+    }
+
     body {
         @apply bg-background text-foreground;
-        font-feature-settings: "rlig" 1, "calt" 1;
+        font-feature-settings:
+            'rlig' 1,
+            'calt' 1;
     }
 
     section {

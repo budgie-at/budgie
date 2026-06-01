@@ -27,7 +27,7 @@ export const buildPillarHubMetadata = ({
     const socialImage = image ?? DEFAULT_SOCIAL_IMAGE_PATH;
 
     return {
-        title,
+        title: { absolute: title },
         description,
         keywords,
         alternates: buildAlternates(locale, `/${slug}`),
