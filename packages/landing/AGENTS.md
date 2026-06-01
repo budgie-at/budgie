@@ -47,7 +47,7 @@ Before starting any of the work areas below, read the corresponding doc first.
 | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
 | Blog articles, feature pages, pillar hubs, legal pages, sitemap entries, `generateMetadata`, JSON-LD helpers, anything SEO-related     | `docs/seo-pages.md`  |
 | `<Trans>` / `t` / `msg`, `generateMetadata` i18n strings, catalog `.po`/`.ts` files, RSC i18n setup, dispatching translation subagents | `docs/lingui-rsc.md` |
-| IndexNow key file, GSC/Bing sitemap submission, merge-to-main URL submission, root `.txt` proxy bypass rules                           | `docs/indexnow.md`   |
+| IndexNow key file, GSC/Bing sitemap submission, merge-to-main URL submission, API/root `.txt` proxy bypass rules                       | `docs/indexnow.md`   |
 
 ---
 
