@@ -24,16 +24,15 @@ class BankSyncDuplicateSoftDeleteService {
             return this.buildEmptyResult();
         }
 
-        const repairedEntryCount = await this.softDeleteEntries(tx, updatedTransactionIds);
+        await this.softDeleteEntries(tx, updatedTransactionIds);
 
         await accountBalanceIncrementalService.updateAllBalances(true, tx);
 
-        return { repairedEntryCount, updatedTransactionIds };
+        return { updatedTransactionIds };
     }
 
     private buildEmptyResult(): BankSyncDuplicateSoftDeleteResultInterface {
         return {
-            repairedEntryCount: 0,
             updatedTransactionIds: []
         };
     }
@@ -65,22 +64,22 @@ class BankSyncDuplicateSoftDeleteService {
         return this.softDeleteTransactionChunks(tx, chunks, index + 1, updatedIds);
     }
 
-    private async softDeleteEntries(tx: DB, updatedTransactionIds: readonly number[]): Promise<number> {
+    private async softDeleteEntries(tx: DB, updatedTransactionIds: readonly number[]): Promise<void> {
         const chunks = this.chunkIds(updatedTransactionIds);
 
-        return this.softDeleteEntryChunks(tx, chunks);
+        await this.softDeleteEntryChunks(tx, chunks);
     }
 
-    private async softDeleteEntryChunks(tx: DB, chunks: readonly number[][], index = 0, repairedEntryCount = 0): Promise<number> {
+    private async softDeleteEntryChunks(tx: DB, chunks: readonly number[][], index = 0): Promise<void> {
         const chunk = chunks[index];
 
         if (!isDefined(chunk)) {
-            return repairedEntryCount;
+            return;
         }
 
-        const entryResult = await tx.$client.runAsync(this.buildTransactionEntryDeleteSql(chunk), chunk);
+        await tx.$client.runAsync(this.buildTransactionEntryDeleteSql(chunk), chunk);
 
-        return this.softDeleteEntryChunks(tx, chunks, index + 1, repairedEntryCount + entryResult.changes);
+        await this.softDeleteEntryChunks(tx, chunks, index + 1);
     }
 
     private chunkIds(ids: readonly number[]): number[][] {
