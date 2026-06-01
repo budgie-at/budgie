@@ -1394,6 +1394,10 @@ msgstr "в"
 msgid "In List"
 msgstr "У списку"
 
+#: src/account/component/account-inactive-icon/account-inactive-icon.tsx
+msgid "Inactive"
+msgstr "Неактивний"
+
 #: src/app/(tabs)/settings/inactive.tsx
 #: src/app/(tabs)/settings/index.tsx
 msgid "Inactive Accounts"
