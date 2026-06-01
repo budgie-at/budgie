@@ -1,9 +1,10 @@
 import { ARTICLE_REGISTRY } from '../blog/constant/article-registry.constant';
-import { FEATURE_REGISTRY } from '../feature/constant/feature-registry.constant';
 import { FeatureTierEnum } from '../feature/constant/feature-tier.enum';
 import { PILLAR_HUB_REGISTRY } from '../feature/constant/pillar-hub-registry.constant';
 import { BASE_URL, LOCALES } from '../generic/constant/seo.constant';
 import { SITEMAP_STATIC_LAST_MODIFIED } from '../generic/constant/sitemap-last-modified.constant';
+
+import { FEATURE_METADATA_LIST } from './[lang]/features/metadata';
 
 import type { MetadataRoute } from 'next';
 
@@ -49,7 +50,7 @@ const sitemap = (): MetadataRoute.Sitemap => {
     );
 
     const featureEntries = LOCALES.flatMap(locale =>
-        FEATURE_REGISTRY.map(entry => ({
+        FEATURE_METADATA_LIST.map(entry => ({
             url: `${BASE_URL}/${locale}/features/${entry.slug}`,
             lastModified: new Date(entry.updatedAt),
             changeFrequency: 'monthly' as const,
