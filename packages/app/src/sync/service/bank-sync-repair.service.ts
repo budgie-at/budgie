@@ -1,14 +1,15 @@
 import { ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
-import { Log, getLogger } from '@budgie/logger';
+import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { db } from '../../@generic/drizzle/db/db';
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '../constant/privatbank-duplicate-candidate-sql.constant';
 
 import { bankSyncDuplicateSoftDeleteService } from './bank-sync-duplicate-soft-delete.service';
+import { ersteDuplicateRepairSourceService } from './erste-duplicate-repair-source.service';
+import { privatbankDuplicateRepairSourceService } from './privatbank-duplicate-repair-source.service';
 import { transferConsolidationAutoCandidateService } from './transfer-consolidation-auto-candidate.service';
 import { transferConsolidationCandidateService } from './transfer-consolidation-candidate.service';
 
@@ -16,28 +17,13 @@ import type { BankSyncDuplicateCandidateRowInterface } from '../interface/bank-s
 import type { BankSyncDuplicateRepairPreviewInterface } from '../interface/bank-sync-duplicate-repair-preview.interface';
 import type { BankSyncDuplicateRepairResultInterface } from '../interface/bank-sync-duplicate-repair-result.interface';
 import type { BankSyncDuplicateRepairSourcePreviewInterface } from '../interface/bank-sync-duplicate-repair-source-preview.interface';
-import type { BankSyncDuplicateRepairSourceInterface } from '../interface/bank-sync-duplicate-repair-source.interface';
+import type { BankSyncDuplicateRepairSourceStrategyInterface } from '../interface/bank-sync-duplicate-repair-source-strategy.interface';
 import type { DB, ExistingTransferIncomeDuplicateCandidateInterface } from '@budgie/contracts';
 
-const logger = getLogger('BankSyncRepairService');
-
 class BankSyncRepairService {
-    private static readonly ERSTE_DUPLICATE_CANDIDATE_SQL = String.raw`
-WITH erste_rows AS (SELECT tx.id AS transaction_id, tx.created_at, tx.operated_at, date(tx.operated_at, 'unixepoch') AS operated_day, tx.type AS transaction_type, tx.title, tx.comment, entry.account_id, entry.type AS entry_type, entry.amount FROM transactions tx INNER JOIN transaction_entries entry ON entry.transaction_id = tx.id AND entry.deleted_at IS NULL AND entry.original_transaction_id IS NULL WHERE tx.external_source = 'ERSTE' AND tx.deleted_at IS NULL AND tx.consolidation_parent_transaction_id IS NULL),
-semantic_pairs AS (SELECT CASE WHEN newer.created_at > older.created_at THEN newer.transaction_id WHEN newer.created_at < older.created_at THEN older.transaction_id ELSE MAX(newer.transaction_id, older.transaction_id) END AS duplicateTransactionId, CASE WHEN newer.created_at > older.created_at THEN older.transaction_id WHEN newer.created_at < older.created_at THEN newer.transaction_id ELSE MIN(newer.transaction_id, older.transaction_id) END AS keptTransactionId, 'semantic_duplicate' AS reason FROM erste_rows older INNER JOIN erste_rows newer ON newer.transaction_id > older.transaction_id AND newer.account_id = older.account_id AND newer.transaction_type = older.transaction_type AND newer.entry_type = older.entry_type AND newer.operated_day = older.operated_day AND newer.amount = older.amount AND newer.title = older.title AND newer.comment = older.comment),
-ranked_candidates AS (SELECT duplicateTransactionId, keptTransactionId, reason, ROW_NUMBER() OVER (PARTITION BY duplicateTransactionId ORDER BY keptTransactionId) AS candidate_rank FROM semantic_pairs)
-SELECT 'ERSTE' AS externalSource, duplicateTransactionId, keptTransactionId, reason FROM ranked_candidates WHERE candidate_rank = 1
-`;
-
-    private static readonly SOURCES: readonly BankSyncDuplicateRepairSourceInterface[] = [
-        {
-            externalSource: ExternalSourceEnum.PRIVATBANK,
-            candidateSql: PRIVATBANK_DUPLICATE_CANDIDATE_SQL
-        },
-        {
-            externalSource: ExternalSourceEnum.ERSTE,
-            candidateSql: BankSyncRepairService.ERSTE_DUPLICATE_CANDIDATE_SQL
-        }
+    private static readonly SOURCE_STRATEGIES: readonly BankSyncDuplicateRepairSourceStrategyInterface[] = [
+        privatbankDuplicateRepairSourceService,
+        ersteDuplicateRepairSourceService
     ];
 
     private activeOperation: Promise<unknown> | null = null;
@@ -60,8 +46,50 @@ SELECT 'ERSTE' AS externalSource, duplicateTransactionId, keptTransactionId, rea
         return this.runExclusive(() => foregroundWorkloadService.run(() => this.removeDuplicatesInner()));
     }
 
+    @Log(
+        database => `enter database=${String(isDefined(database))}`,
+        (result, database) =>
+            `done database=${String(isDefined(database))} duplicateTransactionIds=${result.map(candidate => candidate.duplicateTransactionId).join(',')}`,
+        (error, database) => `throw database=${String(isDefined(database))} error=${getErrorMessage(error)}`
+    )
+    private async findDuplicateCandidates(database: DB): Promise<BankSyncDuplicateCandidateRowInterface[]> {
+        const candidateGroups = await Promise.all(
+            BankSyncRepairService.SOURCE_STRATEGIES.map(strategy => strategy.findDuplicateCandidates(database))
+        );
+
+        return candidateGroups.flat();
+    }
+
+    @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    private async repairConsolidationDuplicates(): Promise<number> {
+        const repairedCount = await transferConsolidationAutoCandidateService.processExistingTransferIncomeDuplicateCandidates(
+            await this.findConsolidationRepairCandidates()
+        );
+
+        if (isPositiveNumber(repairedCount)) {
+            await accountBalanceIncrementalService.updateAllBalances(true);
+        }
+
+        return repairedCount;
+    }
+
+    @Log(
+        tx => `enter tx=${String(isDefined(tx))}`,
+        (result, tx) => `done tx=${String(isDefined(tx))} repairedTransactionCount=${result.repairedTransactionCount}`,
+        (error, tx) => `throw tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    private async removeDuplicatesInTransaction(tx: DB): Promise<BankSyncDuplicateRepairResultInterface> {
+        const candidates = await this.findDuplicateCandidates(tx);
+        const duplicateTransactionIds = candidates.map(candidate => candidate.duplicateTransactionId);
+        const result = await bankSyncDuplicateSoftDeleteService.remove(tx, duplicateTransactionIds);
+
+        return {
+            repairedTransactionCount: result.updatedTransactionIds.length
+        };
+    }
+
     private async buildPreview(): Promise<BankSyncDuplicateRepairPreviewInterface> {
-        const candidates = await this.findDuplicateCandidates();
+        const candidates = await this.findDuplicateCandidates(db);
         const consolidationRepairCount = await this.countConsolidationRepairCandidates();
 
         return this.buildPreviewFromCandidates(candidates, consolidationRepairCount);
@@ -71,22 +99,12 @@ SELECT 'ERSTE' AS externalSource, duplicateTransactionId, keptTransactionId, rea
         return (await this.findConsolidationRepairCandidates()).length;
     }
 
-    private async findDuplicateCandidates(database: DB = db): Promise<BankSyncDuplicateCandidateRowInterface[]> {
-        const candidateGroups = await Promise.all(
-            BankSyncRepairService.SOURCES.map(source =>
-                database.$client.getAllAsync<BankSyncDuplicateCandidateRowInterface>(source.candidateSql)
-            )
-        );
-
-        return candidateGroups.flat();
-    }
-
     private buildPreviewFromCandidates(
         candidates: readonly BankSyncDuplicateCandidateRowInterface[],
         consolidationRepairCount = 0
     ): BankSyncDuplicateRepairPreviewInterface {
-        const duplicateSources = BankSyncRepairService.SOURCES.map(source => this.buildSourcePreview(source, candidates)).filter(source =>
-            isPositiveNumber(source.duplicateTransactionCount)
+        const duplicateSources = BankSyncRepairService.SOURCE_STRATEGIES.map(source => this.buildSourcePreview(source, candidates)).filter(
+            source => isPositiveNumber(source.duplicateTransactionCount)
         );
         const sources = this.addConsolidationRepairPreview(duplicateSources, consolidationRepairCount);
         const duplicateTransactionCount = sources.reduce((total, source) => total + source.duplicateTransactionCount, 0);
@@ -127,7 +145,7 @@ SELECT 'ERSTE' AS externalSource, duplicateTransactionId, keptTransactionId, rea
     }
 
     private buildSourcePreview(
-        source: BankSyncDuplicateRepairSourceInterface,
+        source: BankSyncDuplicateRepairSourceStrategyInterface,
         candidates: readonly BankSyncDuplicateCandidateRowInterface[]
     ): BankSyncDuplicateRepairSourcePreviewInterface {
         const sourceCandidates = candidates.filter(candidate => candidate.externalSource === source.externalSource);
@@ -169,18 +187,6 @@ SELECT 'ERSTE' AS externalSource, duplicateTransactionId, keptTransactionId, rea
         return this.mergeConsolidationRepairResult(duplicateResult, consolidationRepairCount);
     }
 
-    private async repairConsolidationDuplicates(): Promise<number> {
-        const repairedCount = await transferConsolidationAutoCandidateService.processExistingTransferIncomeDuplicateCandidates(
-            await this.findConsolidationRepairCandidates()
-        );
-
-        if (isPositiveNumber(repairedCount)) {
-            await accountBalanceIncrementalService.updateAllBalances(true);
-        }
-
-        return repairedCount;
-    }
-
     private async findConsolidationRepairCandidates(): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
         return transferConsolidationCandidateService.findExistingTransferIncomeDuplicateRepairCandidates();
     }
@@ -195,22 +201,6 @@ SELECT 'ERSTE' AS externalSource, duplicateTransactionId, keptTransactionId, rea
 
         return {
             repairedTransactionCount: result.repairedTransactionCount + consolidationRepairCount
-        };
-    }
-
-    private async removeDuplicatesInTransaction(tx: DB): Promise<BankSyncDuplicateRepairResultInterface> {
-        const candidates = await this.findDuplicateCandidates(tx);
-        const duplicateTransactionIds = candidates.map(candidate => candidate.duplicateTransactionId);
-
-        logger.log('removeDuplicates:candidates', {
-            duplicateTransactionIds: duplicateTransactionIds.join(','),
-            keptTransactionIds: candidates.map(candidate => candidate.keptTransactionId).join(',')
-        });
-
-        const result = await bankSyncDuplicateSoftDeleteService.remove(tx, duplicateTransactionIds);
-
-        return {
-            repairedTransactionCount: result.updatedTransactionIds.length
         };
     }
 }
