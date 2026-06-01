@@ -1494,6 +1494,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@budgie/consolidation@workspace:packages/consolidation":
+  version: 0.0.0-use.local
+  resolution: "@budgie/consolidation@workspace:packages/consolidation"
+  dependencies:
+    "@budgie/contracts": "workspace:*"
+    "@budgie/logger": "workspace:*"
+    "@rnw-community/shared": "npm:^2.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@budgie/contracts@workspace:*, @budgie/contracts@workspace:^, @budgie/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
