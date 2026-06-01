@@ -1,6 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
-import { isNotEmptyArray } from '@rnw-community/shared';
-
+/* eslint-disable lingui/no-unlocalized-strings -- schema.org keys, not user-facing copy */
 import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 
 interface BuildFeaturePageJsonLdInput {
@@ -11,7 +9,6 @@ interface BuildFeaturePageJsonLdInput {
     readonly featureName: string;
     readonly featuresLabel: string;
     readonly homeLabel: string;
-    readonly faqs: readonly { readonly question: string; readonly answer: string }[];
     readonly publishedAt: string;
     readonly updatedAt: string;
 }
@@ -24,7 +21,6 @@ export const buildFeaturePageJsonLd = ({
     featureName,
     featuresLabel,
     homeLabel,
-    faqs,
     publishedAt,
     updatedAt
 }: BuildFeaturePageJsonLdInput): readonly Record<string, unknown>[] => {
@@ -65,19 +61,5 @@ export const buildFeaturePageJsonLd = ({
         }
     };
 
-    const result: Record<string, unknown>[] = [breadcrumbList, webPage];
-
-    if (isNotEmptyArray(faqs)) {
-        result.push({
-            '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            mainEntity: faqs.map(faq => ({
-                '@type': 'Question',
-                name: faq.question,
-                acceptedAnswer: { '@type': 'Answer', text: faq.answer }
-            }))
-        });
-    }
-
-    return result;
+    return [breadcrumbList, webPage];
 };

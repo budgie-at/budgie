@@ -57,7 +57,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
     }
 
     const related = getRelatedFeatures(SLUG);
-    const [breadcrumbSchema, webPageSchema, faqSchema] = buildFeaturePageJsonLd({
+    const [breadcrumbSchema, webPageSchema] = buildFeaturePageJsonLd({
         locale: lang,
         slug: SLUG,
         title: i18n._(entry.metaTitle),
@@ -65,7 +65,6 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
         featureName: i18n._(entry.title),
         featuresLabel: i18n._(msg`Features`),
         homeLabel: i18n._(msg`Home`),
-        faqs: entry.faqs.map(faq => ({ question: i18n._(faq.question), answer: i18n._(faq.answer) })),
         publishedAt: entry.publishedAt,
         updatedAt: entry.updatedAt
     });
@@ -74,7 +73,6 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
         <main className="flex-1">
             <JsonLd data={breadcrumbSchema} />
             <JsonLd data={webPageSchema} />
-            {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
                 heading={i18n._(entry.title)}
@@ -141,7 +139,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 </FeaturePageProse>
             </FeaturePageSection>
 
-            <FeaturePageFaqSection>
+            <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
                     question={<Trans>What if the algorithm misidentifies a match?</Trans>}
                     answer={
