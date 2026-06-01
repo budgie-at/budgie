@@ -2,8 +2,6 @@
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
@@ -19,54 +17,45 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getFeatureBySlug } from '../../../../feature/util/get-feature-by-slug.util';
 import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
-import type { Metadata } from 'next';
+import { FEATURE_METADATA } from './metadata';
 
-const SLUG = 'spending-analytics';
+import type { Metadata } from 'next';
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
     const { lang } = await props.params;
     const i18n = getI18nInstance(lang);
-    const entry = getFeatureBySlug(SLUG);
-    if (!isDefined(entry)) {
-        return {};
-    }
 
     return buildFeaturePageMetadata({
         locale: lang,
-        slug: SLUG,
-        title: i18n._(entry.metaTitle),
-        description: i18n._(entry.metaDescription),
-        keywords: entry.seoKeywords.join(', '),
-        publishedAt: entry.publishedAt,
-        updatedAt: entry.updatedAt
+        slug: FEATURE_METADATA.slug,
+        title: i18n._(FEATURE_METADATA.metaTitle),
+        description: i18n._(FEATURE_METADATA.metaDescription),
+        keywords: FEATURE_METADATA.seoKeywords.join(', '),
+        publishedAt: FEATURE_METADATA.publishedAt,
+        updatedAt: FEATURE_METADATA.updatedAt
     });
 }
 
 export default async function SpendingAnalyticsFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
-    const entry = getFeatureBySlug(SLUG);
-    if (!isDefined(entry)) {
-        return null;
-    }
 
-    const related = getRelatedFeatures(SLUG);
-    const description = i18n._(entry.metaDescription);
-    const featureName = i18n._(entry.title);
-    const title = i18n._(entry.metaTitle);
+    const related = getRelatedFeatures(FEATURE_METADATA);
+    const description = i18n._(FEATURE_METADATA.metaDescription);
+    const featureName = i18n._(FEATURE_METADATA.title);
+    const title = i18n._(FEATURE_METADATA.metaTitle);
     const homePath = `/${lang}`;
     const featuresPath = `/${lang}/features`;
-    const featurePath = `/${lang}/features/${SLUG}`;
+    const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
 
     return (
         <main className="flex-1">
-            <FeaturePageBreadcrumbsJsonLd locale={lang} slug={SLUG}>
+            <FeaturePageBreadcrumbsJsonLd locale={lang} slug={FEATURE_METADATA.slug}>
                 <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={homePath} />
                 <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Features`} path={featuresPath} />
                 <FeaturePageBreadcrumbsJsonLd.Item name={featureName} path={featurePath} />
@@ -75,10 +64,10 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 description={description}
                 featureName={featureName}
                 locale={lang}
-                publishedAt={entry.publishedAt}
-                slug={SLUG}
+                publishedAt={FEATURE_METADATA.publishedAt}
+                slug={FEATURE_METADATA.slug}
                 title={title}
-                updatedAt={entry.updatedAt}
+                updatedAt={FEATURE_METADATA.updatedAt}
             />
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
@@ -182,7 +171,7 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
             </FeaturePageFaqSection>
 
             <FeaturePageRelated features={related} locale={lang} />
-            <FeaturePageRelatedArticles locale={lang} slugs={entry.relatedArticleSlugs} />
+            <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
 
             <FeaturePageCta locale={lang} />
         </main>

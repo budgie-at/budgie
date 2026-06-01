@@ -115,6 +115,8 @@ Static SEO pages are one file per route. Visible page copy, FAQ copy, hero bulle
 
 Registries are metadata and enumeration sources only. Listing pages, sitemap generation, related links, and metadata helpers may import registry/index aggregators, but registries must not own visible body copy. For SEO page families whose metadata is currently centralized, move metadata into page-owned sibling sidecars such as `metadata.ts`; those sidecars use `msg` descriptors and dates, and registries/index aggregators import those sidecars instead of owning page metadata themselves.
 
+Feature route pages import their own sibling `metadata.ts` directly and pass that object through metadata helpers, JSON-LD components, and related-link helpers. Do not call `getFeatureBySlug(SLUG)` or add a defensive null branch inside explicit feature routes; the folder itself is the route contract. Sitemap and site URL generation import the feature metadata index built from route sidecars, not a slug lookup registry.
+
 FAQ/JSON-LD should be generated from JSX children where possible so visible FAQ content and schema share one page-local source. Legal pages should be plain Next.js TSX pages in the same explicit JSX style and remain `noindex, follow` unless code changes the source of truth.
 
 Feature page JSON-LD uses explicit JSX composition in the page body. Write breadcrumb schema as `<FeaturePageBreadcrumbsJsonLd><FeaturePageBreadcrumbsJsonLd.Item ... /></FeaturePageBreadcrumbsJsonLd>` and the page schema as `<FeaturePageWebPageJsonLd ... />`; do not recreate `buildFeaturePageJsonLd`-style object builders in route pages.
