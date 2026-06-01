@@ -35,6 +35,11 @@ import type {
 } from '@budgie/contracts';
 
 export class TestSeedService {
+    private static readonly DEFAULT_REFUND_TITLE = 'STARBUCKS #1234';
+    private static readonly DEFAULT_REFUND_DELAY_SECONDS = 86_400;
+    private static readonly DEFAULT_TRANSFER_OPERATED_AT = new Date(2026, 0, 15, 12, 0, 0);
+    private static readonly DEFAULT_BASE_INSTRUMENT_ID = 1;
+
     constructor(private readonly database: DB) {}
 
     instrument(input: Partial<InstrumentCreateEntityInterface> = {}): InstrumentEntityInterface {
@@ -129,7 +134,7 @@ export class TestSeedService {
     amountTransferPair(
         amount: number,
         mccCategoryId: number,
-        operatedAt: Date = new Date(2026, 0, 15, 12, 0, 0)
+        operatedAt: Date = TestSeedService.DEFAULT_TRANSFER_OPERATED_AT
     ): {
         readonly expense: TransactionEntityInterface;
         readonly fromAccount: AccountEntityInterface;
@@ -149,6 +154,60 @@ export class TestSeedService {
         return { fromAccount, toAccount, expense, income };
     }
 
+    refundedExpense(input: {
+        readonly accountId: number;
+        readonly expenseAmount: number;
+        readonly refundAmounts: readonly number[];
+        readonly expenseOperatedAt?: Date;
+        readonly externalIdPrefix?: string;
+        readonly mccCategoryId?: number | null;
+        readonly refundAccountId?: number;
+        readonly refundDelaySeconds?: number;
+        readonly refundMccCategoryId?: number | null;
+        readonly refundTitle?: string;
+        readonly title?: string;
+    }): {
+        readonly expense: TransactionEntityInterface;
+        readonly refunds: TransactionEntityInterface[];
+    } {
+        const title = input.title ?? TestSeedService.DEFAULT_REFUND_TITLE;
+        const refundTitle = input.refundTitle ?? title;
+        const refundAccountId = input.refundAccountId ?? input.accountId;
+        const expenseOperatedAt = input.expenseOperatedAt ?? TestSeedService.DEFAULT_TRANSFER_OPERATED_AT;
+        const refundDelaySeconds = input.refundDelaySeconds ?? TestSeedService.DEFAULT_REFUND_DELAY_SECONDS;
+        const externalIdPrefix = input.externalIdPrefix ?? 'rf';
+        const expense = this.expenseTransaction(
+            {
+                externalId: `${externalIdPrefix}-expense`,
+                operatedAt: expenseOperatedAt,
+                title
+            },
+            {
+                accountId: input.accountId,
+                amount: input.expenseAmount,
+                mccCategoryId: input.mccCategoryId ?? null
+            }
+        );
+        const refunds = input.refundAmounts.map((refundAmount, index) => {
+            const operatedAt = new Date(expenseOperatedAt.getTime() + refundDelaySeconds * 1000 * (index + 1));
+
+            return this.incomeTransaction(
+                {
+                    externalId: `${externalIdPrefix}-refund-${index}`,
+                    operatedAt,
+                    title: refundTitle
+                },
+                {
+                    accountId: refundAccountId,
+                    amount: refundAmount,
+                    mccCategoryId: input.refundMccCategoryId ?? input.mccCategoryId ?? null
+                }
+            );
+        });
+
+        return { expense, refunds };
+    }
+
     bankPairExpense(
         transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt'>,
         entry: SeedBankPairEntryInputType
@@ -163,6 +222,35 @@ export class TestSeedService {
         return this.bankPairSide(TransactionTypeEnum.INCOME, transaction, entry);
     }
 
+    private expenseTransaction(
+        transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt' | 'title'>,
+        entry: SeedBankPairEntryInputType
+    ): TransactionEntityInterface {
+        return this.singleSideTransaction(TransactionTypeEnum.EXPENSE, transaction, entry);
+    }
+
+    private incomeTransaction(
+        transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt' | 'title'>,
+        entry: SeedBankPairEntryInputType
+    ): TransactionEntityInterface {
+        return this.singleSideTransaction(TransactionTypeEnum.INCOME, transaction, entry);
+    }
+
+    private singleSideTransaction(
+        type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
+        transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt' | 'title'>,
+        entry: SeedBankPairEntryInputType
+    ): TransactionEntityInterface {
+        const fromAccountId = type === TransactionTypeEnum.EXPENSE ? entry.accountId : null;
+        const toAccountId = type === TransactionTypeEnum.INCOME ? entry.accountId : null;
+        const entryType = type === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+        const inserted = this.insertTransaction(type, transaction, fromAccountId, toAccountId, entry.exchangeRate ?? 1);
+
+        this.insertEntry(inserted.id, entryType, transaction.externalId, entry);
+
+        return inserted;
+    }
+
     private bankPairSide(
         type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
         transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt'>,
@@ -171,15 +259,38 @@ export class TestSeedService {
         const entryType = type === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
         const fromAccountId = type === TransactionTypeEnum.EXPENSE ? entry.accountId : null;
         const toAccountId = type === TransactionTypeEnum.INCOME ? entry.accountId : null;
+        const inserted = this.insertTransaction(
+            type,
+            {
+                ...transaction,
+                title: `${type} ${transaction.externalId}`
+            },
+            fromAccountId,
+            toAccountId,
+            entry.exchangeRate ?? 1
+        );
+
+        this.insertEntry(inserted.id, entryType, transaction.externalId, entry);
+
+        return inserted;
+    }
+
+    private insertTransaction(
+        type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
+        transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt' | 'title'>,
+        fromAccountId: number | null,
+        toAccountId: number | null,
+        exchangeRate: number
+    ): TransactionEntityInterface {
         const transactionRows = this.database
             .insert(TransactionEntityTable)
             .values({
                 type,
-                title: `${type} ${transaction.externalId}`,
+                title: transaction.title,
                 externalId: transaction.externalId,
                 externalSource: ExternalSourceEnum.MONOBANK,
                 operatedAt: transaction.operatedAt,
-                exchangeRate: entry.exchangeRate ?? 1,
+                exchangeRate,
                 fromAccountId,
                 toAccountId,
                 comment: '',
@@ -189,15 +300,27 @@ export class TestSeedService {
             .all();
         const inserted = this.requireInserted(transactionRows, 'transactions');
 
+        return inserted;
+    }
+
+    private insertEntry(
+        transactionId: number,
+        entryType: TransactionEntryTypeEnum,
+        externalId: string | null,
+        entry: SeedBankPairEntryInputType
+    ): void {
         const entryRows = this.database
             .insert(TransactionEntryEntityTable)
             .values({
-                transactionId: inserted.id,
+                transactionId,
                 accountId: entry.accountId,
                 type: entryType,
                 amount: entry.amount,
-                externalId: transaction.externalId,
+                externalId,
                 exchangeRate: entry.exchangeRate ?? 1,
+                baseInstrumentId: TestSeedService.DEFAULT_BASE_INSTRUMENT_ID,
+                baseExchangeRate: 1,
+                baseAmount: entry.amount,
                 toIban: entry.toIban ?? null,
                 categoryId: null,
                 mccCategoryId: entry.mccCategoryId ?? null,
@@ -207,8 +330,6 @@ export class TestSeedService {
             .all();
 
         this.requireInserted(entryRows, 'transaction_entries');
-
-        return inserted;
     }
 
     private requireInserted<T>(rows: readonly T[], tableName: string): T {

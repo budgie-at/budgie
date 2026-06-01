@@ -1,10 +1,16 @@
 import { eq } from 'drizzle-orm';
 
-import { MccCategoryEntityTable, TransactionEntityTable } from '@budgie/contracts';
+import { MccCategoryEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
-import type { DB, MccCategoryEntityInterface, TransactionConsolidationTypeEnum, TransactionEntityInterface } from '@budgie/contracts';
+import type {
+    DB,
+    MccCategoryEntityInterface,
+    TransactionConsolidationTypeEnum,
+    TransactionEntityInterface,
+    TransactionEntryEntityInterface
+} from '@budgie/contracts';
 
 export class TestQueryService {
     constructor(private readonly database: DB) {}
@@ -22,6 +28,28 @@ export class TestQueryService {
 
         if (!isDefined(row)) {
             throw new Error(`Transaction ${id} not found`);
+        }
+
+        return row;
+    }
+
+    fetchEntriesByTransactionId(transactionId: number): TransactionEntryEntityInterface[] {
+        return this.database
+            .select()
+            .from(TransactionEntryEntityTable)
+            .where(eq(TransactionEntryEntityTable.transactionId, transactionId))
+            .all();
+    }
+
+    fetchEntryByExternalId(externalId: string): TransactionEntryEntityInterface {
+        const row = this.database
+            .select()
+            .from(TransactionEntryEntityTable)
+            .where(eq(TransactionEntryEntityTable.externalId, externalId))
+            .all()[0];
+
+        if (!isDefined(row)) {
+            throw new Error(`Transaction entry ${externalId} not found`);
         }
 
         return row;

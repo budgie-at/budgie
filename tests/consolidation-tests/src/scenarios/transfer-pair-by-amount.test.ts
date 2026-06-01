@@ -2,27 +2,74 @@ import { describe, expect, it } from 'vitest';
 
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import {
-    consolidationAutoCandidateService,
-    consolidationCandidateService,
-    testQueryService,
-    testSeedService
-} from '../harness/test-context';
+import { runConsolidation } from '../harness/run-consolidation';
+import { accountBalanceRepository, testQueryService, testSeedService } from '../harness/test-context';
+
+const SLOW_WINDOW_OFFSET_MS = 30 * 60 * 1000;
 
 describe('consolidation/transfer-pair-by-amount', () => {
     it('consolidates amount and transfer-MCC matches through consolidation services', async () => {
         const transferMcc = testQueryService.findMccByCode('4829');
         const { expense, income } = testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
-        const groups = await consolidationCandidateService.findGroups();
-        expect(groups.pairCandidates).toHaveLength(1);
-
-        const consolidated = await consolidationAutoCandidateService.processGroups(groups);
-        expect(consolidated).toBe(1);
+        const result = await runConsolidation();
+        expect(result.groups.pairCandidates).toHaveLength(1);
+        expect(result.consolidated).toBe(1);
 
         const canonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
         expect(canonicals).toHaveLength(1);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBe(canonicals[0].id);
         expect(testQueryService.fetchTransactionById(income.id).consolidationParentTransactionId).toBe(canonicals[0].id);
+    });
+
+    it('keeps moved source entries out of account balance calculations', async () => {
+        const transferMcc = testQueryService.findMccByCode('4829');
+        const { fromAccount, toAccount } = testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
+
+        await runConsolidation();
+
+        const fromBalance = accountBalanceRepository.getByAccountId(fromAccount.id).get();
+        const toBalance = accountBalanceRepository.getByAccountId(toAccount.id).get();
+
+        expect(fromBalance?.balance).toBe(-250 * PRECISION);
+        expect(toBalance?.balance).toBe(250 * PRECISION);
+    });
+
+    it('auto-consolidates amount and transfer-MCC matches outside the fast window', async () => {
+        const { fromAccount, toAccount } = testSeedService.accountPair();
+        const transferMcc = testQueryService.findMccByCode('4829');
+        const operatedAt = new Date(2026, 0, 15, 12, 0, 0);
+        const slowOperatedAt = new Date(operatedAt.getTime() + SLOW_WINDOW_OFFSET_MS);
+
+        testSeedService.bankPairExpense(
+            { externalId: 'slow-expense', operatedAt },
+            { accountId: fromAccount.id, amount: 250 * PRECISION, mccCategoryId: transferMcc.id }
+        );
+        testSeedService.bankPairIncome(
+            { externalId: 'slow-income', operatedAt: slowOperatedAt },
+            { accountId: toAccount.id, amount: 250 * PRECISION, mccCategoryId: transferMcc.id }
+        );
+
+        const result = await runConsolidation();
+        expect(result.groups.pairCandidates).toHaveLength(1);
+        expect(result.consolidated).toBe(1);
+        expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
+    });
+
+    it('leaves matching amounts unconsolidated without IBAN or transfer MCC evidence', async () => {
+        const { fromAccount, toAccount } = testSeedService.accountPair();
+        const operatedAt = new Date(2026, 0, 15, 12, 0, 0);
+
+        testSeedService.bankPairExpense(
+            { externalId: 'missing-evidence-expense', operatedAt },
+            { accountId: fromAccount.id, amount: 250 * PRECISION }
+        );
+        testSeedService.bankPairIncome(
+            { externalId: 'missing-evidence-income', operatedAt },
+            { accountId: toAccount.id, amount: 250 * PRECISION }
+        );
+
+        const result = await runConsolidation();
+        expect(result.consolidated).toBe(0);
     });
 });
