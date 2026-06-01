@@ -1,4 +1,9 @@
-import { ConsolidationAutoCandidateService, ConsolidationCandidateService, ConsolidationExecutorService } from '@budgie/consolidation';
+import {
+    ConsolidationAutoCandidateService,
+    ConsolidationCandidateService,
+    ConsolidationExecutorService,
+    UnconsolidationService
+} from '@budgie/consolidation';
 
 import { buildTestDb, createTestRepositories, createTestTransactionRunner, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
 
@@ -6,6 +11,8 @@ export const testDb = buildTestDb();
 
 const repositories = createTestRepositories(testDb);
 const transactionRunner = createTestTransactionRunner();
+
+export const accountBalanceRepository = repositories.accountBalanceRepository;
 
 const consolidationExecutorService = new ConsolidationExecutorService({
     database: testDb,
@@ -21,6 +28,12 @@ export const consolidationCandidateService = new ConsolidationCandidateService({
 });
 
 export const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationExecutorService);
+
+export const unconsolidationService = new UnconsolidationService({
+    transactionRepository: repositories.transactionRepository,
+    transactionEntryRepository: repositories.transactionEntryRepository,
+    transactionTagsRepository: repositories.transactionTagsRepository
+});
 
 export const testQueryService = new TestQueryService(testDb);
 
