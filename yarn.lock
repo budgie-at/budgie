@@ -1457,6 +1457,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@budgie-at/test-kit@workspace:tests/test-kit":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/test-kit@workspace:tests/test-kit"
+  dependencies:
+    "@budgie/contracts": "workspace:*"
+    "@rnw-community/shared": "npm:^2.0.0"
+    "@types/better-sqlite3": "npm:^7.6.12"
+    "@types/node": "npm:^22.0.0"
+    better-sqlite3: "npm:^11.7.0"
+    drizzle-orm: "npm:^0.45.2"
+    typescript: "npm:^5.9.3"
+  languageName: unknown
+  linkType: soft
+
 "@budgie/ai@workspace:^, @budgie/ai@workspace:packages/ai":
   version: 0.0.0-use.local
   resolution: "@budgie/ai@workspace:packages/ai"
