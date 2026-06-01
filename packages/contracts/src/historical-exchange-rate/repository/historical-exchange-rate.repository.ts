@@ -58,11 +58,7 @@ export class HistoricalExchangeRateRepository {
         );
     }
 
-    private async findFirstRate(
-        where: SQL | undefined,
-        order: SQL,
-        tx?: DB
-    ): Promise<HistoricalExchangeRateEntityInterface | undefined> {
+    private async findFirstRate(where: SQL | undefined, order: SQL, tx?: DB): Promise<HistoricalExchangeRateEntityInterface | undefined> {
         return await (tx ?? this.db).query.HistoricalExchangeRateEntityTable.findFirst({ where, orderBy: order });
     }
 }
