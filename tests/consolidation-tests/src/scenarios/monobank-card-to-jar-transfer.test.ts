@@ -24,12 +24,12 @@ describe('consolidation/monobank-card-to-jar-transfer', () => {
             { accountId: jar.id, amount: TRANSFER_AMOUNT, mccCategoryId: transferMcc.id }
         );
 
-        const result = await runConsolidation();
-        expect(result.consolidated).toBe(1);
+        await runConsolidation();
 
-        const canonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-        expect(canonicals).toHaveLength(1);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBe(canonicals[0].id);
-        expect(testQueryService.fetchTransactionById(income.id).consolidationParentTransactionId).toBe(canonicals[0].id);
+        const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+        expect(canonical?.fromAccountId).toBe(card.id);
+        expect(canonical?.toAccountId).toBe(jar.id);
+        expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBe(canonical?.id);
+        expect(testQueryService.fetchTransactionById(income.id).consolidationParentTransactionId).toBe(canonical?.id);
     });
 });

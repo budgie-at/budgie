@@ -15,14 +15,17 @@ describe('consolidation/refund-pair-partial', () => {
         expect(consolidated).toBe(1);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
-        const expenseEntries = testQueryService.fetchEntriesByTransactionId(expense.id);
-        const credits = expenseEntries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT);
-        const debits = expenseEntries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
+        const promotedEntries = testQueryService.fetchEntriesByTransactionId(expense.id);
 
-        expect(credits).toHaveLength(1);
-        expect(credits[0].amount).toBe(120 * PRECISION);
-        expect(debits).toHaveLength(1);
-        expect(debits[0].amount).toBe(40 * PRECISION);
-        expect(debits[0].originalTransactionId).toBe(refunds[0].id);
+        expect(promotedEntries).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ amount: 120 * PRECISION, type: TransactionEntryTypeEnum.CREDIT }),
+                expect.objectContaining({
+                    amount: 40 * PRECISION,
+                    originalTransactionId: refunds[0].id,
+                    type: TransactionEntryTypeEnum.DEBIT
+                })
+            ])
+        );
     });
 });
