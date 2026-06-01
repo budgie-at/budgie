@@ -1,4 +1,9 @@
-import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    ConsolidationSourceRowInterface,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 
@@ -6,9 +11,14 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { TransactionPickerRow } from '../transaction-picker-row/transaction-picker-row';
 
-import type { ConsolidationSourceRowPropsInterface } from '../../interface/consolidation-source-row-props.interface';
 import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
-import type { ConsolidationSourceRowInterface } from '@budgie/contracts';
+
+interface Props {
+    readonly source: ConsolidationSourceRowInterface;
+    readonly index: number;
+    readonly consolidationType: TransactionConsolidationTypeEnum | null;
+    readonly testID?: string;
+}
 
 const ANIMATION_STAGGER_MS = 60;
 const ANIMATION_STAGGER_MAX_INDEX = 4;
@@ -33,7 +43,7 @@ const getSourceDisplayType = (
         return source.sourceType === TransactionTypeEnum.INCOME ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
     }
 
-    return source.entryType === TransactionEntryTypeEnum.CREDIT ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
+    return source.entryType === TransactionEntryTypeEnum.CREDIT ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
 };
 
 const mapSourceToPickerItem = (
@@ -52,7 +62,7 @@ const mapSourceToPickerItem = (
     isRecommended: false
 });
 
-export const ConsolidationSourceRow = ({ source, index, consolidationType, testID }: ConsolidationSourceRowPropsInterface) => {
+export const ConsolidationSourceRow = ({ source, index, consolidationType, testID }: Props) => {
     const staggerIndex = Math.min(index, ANIMATION_STAGGER_MAX_INDEX);
     const item = mapSourceToPickerItem(source, consolidationType);
 

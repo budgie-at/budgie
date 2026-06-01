@@ -3,19 +3,21 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import Link from 'next/link';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { Motion } from '../../../generic/component/motion/motion';
+import { FEATURE_REGISTRY } from '../../constant/feature-registry.constant';
 import { FeaturePageHeading } from '../feature-page-heading/feature-page-heading';
 import { FeaturePageSection } from '../feature-page-section/feature-page-section';
 
-import type { FeatureRegistryEntryInterface } from '../../interface/feature-registry-entry.interface';
-
 interface Props {
     readonly locale: string;
-    readonly features: readonly FeatureRegistryEntryInterface[];
+    readonly slugs: readonly string[];
 }
 
-export const FeaturePageRelated = ({ locale, features }: Props) => {
+export const FeaturePageRelated = ({ locale, slugs }: Props) => {
     const { i18n } = useLingui();
+    const features = slugs.map(slug => FEATURE_REGISTRY.find(feature => feature.slug === slug)).filter(isDefined);
 
     return (
         <FeaturePageSection>

@@ -2,7 +2,6 @@ import '../../../styles/globals.css';
 import { msg } from '@lingui/core/macro';
 import localFont from 'next/font/local';
 
-import linguiConfig from '../../../lingui.config.mjs';
 import { Footer } from '../../generic/component/footer/footer';
 import { Header } from '../../generic/component/header/header';
 import { JsonLd } from '../../generic/component/json-ld/json-ld';
@@ -11,6 +10,7 @@ import { buildAlternates } from '../../generic/util/build-alternates.util';
 import { allMessages, getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
+import { SUPPORTED_LOCALES } from '../../i18n/supported-locales.constant.mjs';
 import { ThemeProvider } from '../../providers/theme-provider';
 
 import type { ReactNode } from 'react';
@@ -67,7 +67,7 @@ interface Props extends PageLangParam {
 
 // eslint-disable-next-line func-style
 export async function generateStaticParams() {
-    return linguiConfig.locales.map(lang => ({ lang }));
+    return SUPPORTED_LOCALES.map(lang => ({ lang }));
 }
 
 // eslint-disable-next-line func-style
@@ -131,7 +131,8 @@ export default async function RootLayout({ params, children }: Props) {
         '@type': 'Organization',
         name: 'Budgie',
         url: BASE_URL,
-        logo: `${BASE_URL}/logo/black-on-white.svg`,
+        description: 'Developer of Budgie, a privacy-first offline expense tracker for iOS and Android.',
+        logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo/black-on-white.svg`, width: 200, height: 60 },
         sameAs: ['https://github.com/budgie-at/budgie', 'https://x.com/budgie_at']
     };
 

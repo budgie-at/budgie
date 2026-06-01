@@ -21,6 +21,7 @@
         },
         "build": {
             "dependsOn": ["^build"],
+            "env": ["ADMIN_SECRET", "INDEXNOW_KEY"],
             "outputs": ["dist/**", ".next/**"]
         },
         "test": {

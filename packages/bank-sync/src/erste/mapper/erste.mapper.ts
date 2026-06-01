@@ -60,7 +60,8 @@ class ErsteMapper {
             cashbackAmount: 0,
             balance: 0,
             hold: false,
-            category: ''
+            category: '',
+            feeAmount: 0
         };
     }
 

@@ -20,6 +20,7 @@ import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
+import { MoneyDataUpgradeStatusCard } from '../../../money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card';
 import { AutoAssignMccCategory } from '../../../settings/components/auto-assign-mcc-category/auto-assign-mcc-category';
 import { ConsolidateTransfers } from '../../../settings/components/consolidate-transfers/consolidate-transfers';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
@@ -196,6 +197,7 @@ export default function SettingsPage() {
                             <ExportCsv />
                             <ImportDatabase />
                             <ExportDatabase />
+                            <MoneyDataUpgradeStatusCard testID={SettingsPageSelector.MoneyDataUpgradeCard} />
                             <ConsolidateTransfers />
                             <RecalculateBalances />
                             <Animated.View {...anchorLayout('clear-data')} {...anchorHighlight('clear-data')}>

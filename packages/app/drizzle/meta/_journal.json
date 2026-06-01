@@ -183,6 +183,13 @@
             "when": 1779149000000,
             "tag": "0025_add_consolidation_query_indexes",
             "breakpoints": true
+        },
+        {
+            "idx": 26,
+            "version": "6",
+            "when": 1779149100000,
+            "tag": "0026_money_data_upgrade",
+            "breakpoints": true
         }
     ]
 }

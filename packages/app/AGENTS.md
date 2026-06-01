@@ -1,6 +1,6 @@
 # App Package (React Native)
 
-Main mobile application built with Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, and Lingui 5.7.
+Main mobile application built with Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, and Lingui 6.1.
 
 ## Commands
 
@@ -313,6 +313,21 @@ export const MyComponent = (props: Props) => {
 ```
 
 ### Props Patterns
+
+**Naming** - A component's props type is named exactly `Props` and declared inline in the component file — never `*PropsInterface`. Promote to a named `*PropsInterface` in `/interface` only when 2+ components share the same props shape; a single-consumer `*PropsInterface` is prohibited (inline it as `interface Props`, per rule 51).
+
+```typescript
+// Good - inline, named Props
+interface Props {
+    readonly title: string;
+    readonly onPress: () => void;
+}
+export const MyComponent = ({ title, onPress }: Props) => { ... };
+
+// Bad - *PropsInterface for a single component
+import type { MyComponentPropsInterface } from '../../interface/my-component-props.interface';
+export const MyComponent = ({ title, onPress }: MyComponentPropsInterface) => { ... };
+```
 
 **Destructuring** - For 5+ props, destructure in function body:
 
@@ -628,6 +643,10 @@ Register tasks in `_layout.tsx` after migrations:
 - Monobank sync
 
 Task files use `.task.ts` suffix and are defined in `[module]/task/` folders.
+
+### Long-running work must yield to the UI
+
+Any loop or multi-step process that can run long (valuing thousands of rows, bulk imports, batch consolidations) must yield to the JS event loop so the UI thread can paint — otherwise progress bars freeze at 0% and the app feels hung even when the work is succeeding. Process in batches, commit each batch in its own short transaction (never hold a write transaction open across a yield), publish progress, then `await microPause()` from `@generic/utils/micro-pause.util` before the next batch. Mirror the rule-engine batch pattern (`RULE_BATCH_SIZE` + per-batch transaction + yield).
 
 ### `emptySnapshot()` returns fresh objects
 

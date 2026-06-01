@@ -1,7 +1,8 @@
-import { msg, t } from '@lingui/core/macro';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeaturesHubGrid } from '../../../feature/component/features-hub-grid/features-hub-grid';
+import { buildFeaturesItemListJsonLd } from '../../../feature/util/build-features-item-list-json-ld.util';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { BASE_URL } from '../../../generic/constant/seo.constant';
 import { buildAlternates } from '../../../generic/util/build-alternates.util';
@@ -45,15 +46,18 @@ export default async function FeaturesHubPage(props: PageLangParam) {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: [
-            { '@type': 'ListItem', position: 1, name: i18n._(msg`Home`), item: `${BASE_URL}/${lang}` },
-            { '@type': 'ListItem', position: 2, name: i18n._(msg`Features`), item: `${BASE_URL}/${lang}${PATH}` }
+            { '@type': 'ListItem', position: 1, name: t(i18n)`Home`, item: `${BASE_URL}/${lang}` },
+            { '@type': 'ListItem', position: 2, name: t(i18n)`Features`, item: `${BASE_URL}/${lang}${PATH}` }
         ]
     };
     /* eslint-enable lingui/no-unlocalized-strings */
 
+    const itemList = buildFeaturesItemListJsonLd(i18n, lang);
+
     return (
         <main className="flex-1">
             <JsonLd data={breadcrumb} />
+            <JsonLd data={itemList} />
             <section className="w-full pt-12 pb-8 md:pt-20 md:pb-12">
                 <div className="container px-4 md:px-6 max-w-5xl">
                     <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
