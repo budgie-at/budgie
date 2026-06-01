@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.30.1](https://github.com/budgie-at/budgie/compare/v5.30.0...v5.30.1) (2026-06-01)
+
+### Bug Fixes
+
+- **app:** prevent duplicate Erste PDF imports ([f98e2c9](https://github.com/budgie-at/budgie/commit/f98e2c97f302903a4e4b64b3e88fbc78794bc0d7))
+
 # [5.30.0](https://github.com/budgie-at/budgie/compare/v5.29.1...v5.30.0) (2026-05-31)
 
 ### Bug Fixes
