@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { sql } from 'drizzle-orm';
 
 import {
@@ -13,7 +13,9 @@ import {
 import { insertOne } from '../../harness/db/insert-one';
 import { seed, testDb } from '../../harness';
 
+import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '@app/sync/constant/privatbank-duplicate-candidate-sql.constant';
+import { bankSyncRepairService } from '@app/sync/service/bank-sync-repair.service';
 
 import type { BankSyncDuplicateCandidateRowInterface } from '@app/sync/interface/bank-sync-duplicate-candidate-row.interface';
 import type {
@@ -402,6 +404,25 @@ describe('privatbank/duplicate-repair', () => {
                 reason: 'hidden_source_duplicate'
             })
         ]);
+    });
+
+    it('rebuilds balances after duplicate soft deletes leave the write transaction', async () => {
+        const account = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
+
+        seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-kept' });
+        seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-duplicate' });
+
+        const updateAllBalancesSpy = vi.spyOn(accountBalanceIncrementalService, 'updateAllBalances').mockResolvedValue(undefined);
+
+        try {
+            const result = await bankSyncRepairService.removeDuplicates();
+
+            expect(result.repairedTransactionCount).toBe(1);
+            expect(updateAllBalancesSpy).toHaveBeenCalledTimes(1);
+            expect(updateAllBalancesSpy).toHaveBeenCalledWith(true);
+        } finally {
+            updateAllBalancesSpy.mockRestore();
+        }
     });
 
     it('detects a duplicate when the kept transaction was converted to a debt payment', async () => {

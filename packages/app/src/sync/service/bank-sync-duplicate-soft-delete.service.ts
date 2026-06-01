@@ -2,8 +2,6 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
-import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-
 import type { BankSyncDuplicateCandidateRowInterface } from '../interface/bank-sync-duplicate-candidate-row.interface';
 import type { BankSyncDuplicateSoftDeleteResultInterface } from '../interface/bank-sync-duplicate-soft-delete-result.interface';
 import type { DB } from '@budgie/contracts';
@@ -30,8 +28,6 @@ class BankSyncDuplicateSoftDeleteService {
         }
 
         await this.softDeleteEntries(tx, updatedTransactionIds);
-
-        await accountBalanceIncrementalService.updateAllBalances(true, tx);
 
         return { updatedTransactionIds };
     }

@@ -61,15 +61,20 @@ class BankSyncRepairService {
 
     @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
     private async repairConsolidationDuplicates(): Promise<number> {
-        const repairedCount = await transferConsolidationAutoCandidateService.processExistingTransferIncomeDuplicateCandidates(
+        return await transferConsolidationAutoCandidateService.processExistingTransferIncomeDuplicateCandidates(
             await this.findConsolidationRepairCandidates()
         );
+    }
 
-        if (isPositiveNumber(repairedCount)) {
+    @Log(
+        result => `enter repairedTransactionCount=${result.repairedTransactionCount}`,
+        (done, result) => `done repairedTransactionCount=${result.repairedTransactionCount} result=${String(done)}`,
+        (error, result) => `throw repairedTransactionCount=${result.repairedTransactionCount} error=${getErrorMessage(error)}`
+    )
+    private async rebuildBalancesWhenNeeded(result: BankSyncDuplicateRepairResultInterface): Promise<void> {
+        if (isPositiveNumber(result.repairedTransactionCount)) {
             await accountBalanceIncrementalService.updateAllBalances(true);
         }
-
-        return repairedCount;
     }
 
     @Log(
@@ -179,8 +184,11 @@ class BankSyncRepairService {
     private async removeDuplicatesInner(): Promise<BankSyncDuplicateRepairResultInterface> {
         const duplicateResult = await transactionAsync(db, tx => this.removeDuplicatesInTransaction(tx));
         const consolidationRepairCount = await this.repairConsolidationDuplicates();
+        const result = this.mergeConsolidationRepairResult(duplicateResult, consolidationRepairCount);
 
-        return this.mergeConsolidationRepairResult(duplicateResult, consolidationRepairCount);
+        await this.rebuildBalancesWhenNeeded(result);
+
+        return result;
     }
 
     private async findConsolidationRepairCandidates(): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
