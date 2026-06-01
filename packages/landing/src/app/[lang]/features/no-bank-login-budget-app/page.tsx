@@ -18,7 +18,6 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -46,46 +45,12 @@ export default async function NoBankLoginBudgetAppPage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const related = getRelatedFeatures(FEATURE_METADATA);
     const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
     const title = i18n._(FEATURE_METADATA.metaTitle);
     const homePath = `/${lang}`;
     const featuresPath = `/${lang}/features`;
     const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
-    const comparisonCategoryLabel = <Trans>Aggregator-based PFM apps</Trans>;
-    const comparisonRows = [
-        {
-            label: <Trans>Bank credentials</Trans>,
-            budgieValue: <Trans>Never shared</Trans>,
-            competitorValue: <Trans>Held by aggregator</Trans>
-        },
-        {
-            label: <Trans>Sync method</Trans>,
-            budgieValue: <Trans>Direct API tokens or PDF/CSV</Trans>,
-            competitorValue: <Trans>OAuth via aggregator</Trans>
-        },
-        {
-            label: <Trans>Aggregator middleman</Trans>,
-            budgieValue: <Trans>None</Trans>,
-            competitorValue: <Trans>Third-party aggregator service</Trans>
-        },
-        {
-            label: <Trans>Bank breach impact</Trans>,
-            budgieValue: <Trans>Bank-level only</Trans>,
-            competitorValue: <Trans>Bank + aggregator + app</Trans>
-        },
-        {
-            label: <Trans>Works with offline-only banks</Trans>,
-            budgieValue: <Trans>Yes (statement import)</Trans>,
-            competitorValue: <Trans>Often no</Trans>
-        },
-        {
-            label: <Trans>Sync interval</Trans>,
-            budgieValue: <Trans>Manual or scheduled</Trans>,
-            competitorValue: <Trans>Aggregator&apos;s clock</Trans>
-        }
-    ];
 
     return (
         <main className="flex-1">
@@ -163,7 +128,38 @@ export default async function NoBankLoginBudgetAppPage(props: PageLangParam) {
                 <FeaturePageHeading>
                     <Trans>Feature comparison</Trans>
                 </FeaturePageHeading>
-                <FeaturePageCategoryComparison categoryLabel={comparisonCategoryLabel} rows={comparisonRows} />
+                <FeaturePageCategoryComparison categoryLabel={<Trans>Aggregator-based PFM apps</Trans>}>
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Never shared</Trans>}
+                        competitorValue={<Trans>Held by aggregator</Trans>}
+                        label={<Trans>Bank credentials</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Direct API tokens or PDF/CSV</Trans>}
+                        competitorValue={<Trans>OAuth via aggregator</Trans>}
+                        label={<Trans>Sync method</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>None</Trans>}
+                        competitorValue={<Trans>Third-party aggregator service</Trans>}
+                        label={<Trans>Aggregator middleman</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Bank-level only</Trans>}
+                        competitorValue={<Trans>Bank + aggregator + app</Trans>}
+                        label={<Trans>Bank breach impact</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Yes (statement import)</Trans>}
+                        competitorValue={<Trans>Often no</Trans>}
+                        label={<Trans>Works with offline-only banks</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Manual or scheduled</Trans>}
+                        competitorValue={<Trans>Aggregator&apos;s clock</Trans>}
+                        label={<Trans>Sync interval</Trans>}
+                    />
+                </FeaturePageCategoryComparison>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -205,7 +201,7 @@ export default async function NoBankLoginBudgetAppPage(props: PageLangParam) {
                 />
             </FeaturePageFaqSection>
 
-            <FeaturePageRelated features={related} locale={lang} />
+            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
             <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
 
             <FeaturePageCta locale={lang} />

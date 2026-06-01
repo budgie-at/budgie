@@ -30,14 +30,6 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 export default async function PrivacyPillarHubPage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
-    const featureSlugs = [
-        'offline-first-expense-tracker',
-        'pin-app-lock',
-        'biometric-authentication',
-        'screenshot-protection',
-        'data-export',
-        'database-backup'
-    ];
 
     return (
         <PillarHubPageShell
@@ -80,7 +72,44 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
             </PillarHubHero>
 
             <PillarHubSection>
-                <PillarHubFeatureGrid locale={lang} slugs={featureSlugs} />
+                <PillarHubFeatureGrid>
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/offline-first-expense-tracker`}
+                        index={0}
+                        tagline={<Trans>Every transaction lives on your device. No cloud account, no sign-up.</Trans>}
+                        title={<Trans>Offline-First Expense Tracker</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/pin-app-lock`}
+                        index={1}
+                        tagline={<Trans>The PIN unlocks the app and unlocks SQLCipher — no PIN, no readable database.</Trans>}
+                        title={<Trans>PIN App Lock — Locks With the Encryption Key</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/biometric-authentication`}
+                        index={2}
+                        tagline={<Trans>Bank-grade biometric unlock — same Secure Enclave, same encryption key.</Trans>}
+                        title={<Trans>Face ID / Touch ID Authentication</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/screenshot-protection`}
+                        index={3}
+                        tagline={<Trans>Accidental shares stay private — balances blur in screenshots and the app switcher.</Trans>}
+                        title={<Trans>Screenshot Protection — Hide Bank Balance from Previews</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/data-export`}
+                        index={4}
+                        tagline={<Trans>CSV for spreadsheets. Encrypted database backup for restore. Both yours, never ours.</Trans>}
+                        title={<Trans>Export Every Transaction You&apos;ve Logged</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/database-backup`}
+                        index={5}
+                        tagline={<Trans>One encrypted file. No account. Restore on any device in seconds.</Trans>}
+                        title={<Trans>Database Backup &amp; Restore</Trans>}
+                    />
+                </PillarHubFeatureGrid>
             </PillarHubSection>
 
             <FeaturePageFaqSection locale={lang}>

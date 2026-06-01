@@ -18,7 +18,6 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -46,46 +45,12 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const related = getRelatedFeatures(FEATURE_METADATA);
     const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
     const title = i18n._(FEATURE_METADATA.metaTitle);
     const homePath = `/${lang}`;
     const featuresPath = `/${lang}/features`;
     const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
-    const comparisonCategoryLabel = <Trans>Cloud-based PFM apps</Trans>;
-    const comparisonRows = [
-        {
-            label: <Trans>Where transactions live</Trans>,
-            budgieValue: <Trans>Encrypted on your device</Trans>,
-            competitorValue: <Trans>Vendor&apos;s cloud + aggregator</Trans>
-        },
-        {
-            label: <Trans>Account required</Trans>,
-            budgieValue: <Trans>No</Trans>,
-            competitorValue: <Trans>Yes — email + password</Trans>
-        },
-        {
-            label: <Trans>Bank login</Trans>,
-            budgieValue: <Trans>Optional, direct API tokens</Trans>,
-            competitorValue: <Trans>Required, via aggregator</Trans>
-        },
-        {
-            label: <Trans>Subscription</Trans>,
-            budgieValue: <Trans>Free for core, optional one-time unlock</Trans>,
-            competitorValue: <Trans>Monthly recurring</Trans>
-        },
-        {
-            label: <Trans>AI runs</Trans>,
-            budgieValue: <Trans>On your phone</Trans>,
-            competitorValue: <Trans>In the vendor cloud</Trans>
-        },
-        {
-            label: <Trans>Public source</Trans>,
-            budgieValue: <Trans>Yes</Trans>,
-            competitorValue: <Trans>No</Trans>
-        }
-    ];
 
     return (
         <main className="flex-1">
@@ -160,7 +125,38 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                 <FeaturePageHeading>
                     <Trans>Feature comparison</Trans>
                 </FeaturePageHeading>
-                <FeaturePageCategoryComparison categoryLabel={comparisonCategoryLabel} rows={comparisonRows} />
+                <FeaturePageCategoryComparison categoryLabel={<Trans>Cloud-based PFM apps</Trans>}>
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Encrypted on your device</Trans>}
+                        competitorValue={<Trans>Vendor&apos;s cloud + aggregator</Trans>}
+                        label={<Trans>Where transactions live</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>No</Trans>}
+                        competitorValue={<Trans>Yes — email + password</Trans>}
+                        label={<Trans>Account required</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Optional, direct API tokens</Trans>}
+                        competitorValue={<Trans>Required, via aggregator</Trans>}
+                        label={<Trans>Bank login</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Free for core, optional one-time unlock</Trans>}
+                        competitorValue={<Trans>Monthly recurring</Trans>}
+                        label={<Trans>Subscription</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>On your phone</Trans>}
+                        competitorValue={<Trans>In the vendor cloud</Trans>}
+                        label={<Trans>AI runs</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Yes</Trans>}
+                        competitorValue={<Trans>No</Trans>}
+                        label={<Trans>Public source</Trans>}
+                    />
+                </FeaturePageCategoryComparison>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -199,7 +195,7 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                 />
             </FeaturePageFaqSection>
 
-            <FeaturePageRelated features={related} locale={lang} />
+            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
             <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
 
             <FeaturePageCta locale={lang} />

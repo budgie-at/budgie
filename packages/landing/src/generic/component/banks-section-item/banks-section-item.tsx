@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react';
+
 interface Props {
-    name: string;
+    readonly name: ReactNode;
 }
 
 export const BanksSectionItem = ({ name }: Props) => (

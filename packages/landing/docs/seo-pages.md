@@ -235,10 +235,10 @@ Path: `src/app/[lang]/features/<slug>/page.tsx`
 
 Feature pages follow the same sidecar pattern. Metadata, listing-card labels, dates, and relationship slugs live in `metadata.ts`; visible feature copy and FAQ bodies stay inline in `page.tsx`.
 
-The route may resolve related features from its sidecar metadata:
+The route passes related feature slugs from its sidecar metadata into the related-links component:
 
-```ts
-const related = getRelatedFeatures(meta);
+```tsx
+<FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
 ```
 
 It must not render feature body copy from `FEATURE_REGISTRY`.

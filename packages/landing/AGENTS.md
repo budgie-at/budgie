@@ -1,6 +1,6 @@
 # Landing Package (Next.js)
 
-Marketing website built with Next.js 15, React 19, Tailwind CSS 4, and Lingui 6.1. Supports 5 locales with server-side rendering.
+Marketing website built with Next.js 16, React 19, Tailwind CSS 4, and Lingui 6.1. Supports 5 locales with SSG-first rendering and small client islands for runtime interactions.
 
 ## Commands
 
@@ -115,7 +115,7 @@ Static SEO pages are one file per route. Visible page copy, FAQ copy, hero bulle
 
 Registries are metadata and enumeration sources only. Listing pages, sitemap generation, related links, and metadata helpers may import registry/index aggregators, but registries must not own visible body copy. For SEO page families whose metadata is currently centralized, move metadata into page-owned sibling sidecars such as `metadata.ts`; those sidecars use `msg` descriptors and dates, and registries/index aggregators import those sidecars instead of owning page metadata themselves.
 
-Route pages import their own sibling `metadata.ts` directly and pass that object through metadata helpers, JSON-LD components, and related-link helpers. Do not call `getFeatureBySlug(SLUG)`, `ARTICLE_REGISTRY.find(...)`, or add a defensive null branch inside explicit SEO routes; the folder itself is the route contract. Sitemap, listing pages, and site URL generation import metadata indexes built from route sidecars, not slug lookup registries that own entries inline.
+Route pages import their own sibling `metadata.ts` directly and pass that object through metadata helpers, JSON-LD components, and related-link helpers. Do not call `getFeatureBySlug(SLUG)`, `ARTICLE_REGISTRY.find(...)`, or add a defensive null branch inside explicit SEO routes; the folder itself is the route contract. Sitemap and listing pages import metadata indexes built from route sidecars, not slug lookup registries that own entries inline. IndexNow URL generation derives from the sitemap so there is one source of truth for indexable URLs.
 
 FAQ/JSON-LD should be generated from JSX children where possible so visible FAQ content and schema share one page-local source. Legal pages should be plain Next.js TSX pages in the same explicit JSX style and remain `noindex, follow` unless code changes the source of truth.
 
@@ -355,7 +355,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
 Add JSON-LD for rich snippets where appropriate.
 
-## SOTA Bar — Next.js 15+ / React 19+
+## SOTA Bar — Next.js 16+ / React 19+
 
 **Server components are async functions.** A page is `export default async function Page(props)`. No HOF page builders, no service classes wrapping single helpers.
 
@@ -371,7 +371,7 @@ Blog articles are static routes under `app/[lang]/blog/<slug>/page.tsx`. Each ar
 
 **No MDX.** Articles are pure TSX with `<Trans>` tags for all visible text. Lingui extracts strings to `.po` catalogs for translation.
 
-**No dynamic routes.** Each article has its own `page.tsx` — no `[slug]` pattern. All routes are fully SSG at build time.
+**No dynamic routes.** Each article has its own `page.tsx` — no `[slug]` pattern. SEO routes stay SSG at build time. Runtime interactions live in client islands and must not depend on URL search params for fixed static routes.
 
 **Composition pattern:**
 

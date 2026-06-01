@@ -18,7 +18,6 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -46,46 +45,12 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const related = getRelatedFeatures(FEATURE_METADATA);
     const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
     const title = i18n._(FEATURE_METADATA.metaTitle);
     const homePath = `/${lang}`;
     const featuresPath = `/${lang}/features`;
     const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
-    const comparisonCategoryLabel = <Trans>Server-based finance apps</Trans>;
-    const comparisonRows = [
-        {
-            label: <Trans>Where data lives</Trans>,
-            budgieValue: <Trans>Encrypted on your phone</Trans>,
-            competitorValue: <Trans>Your VPS / Docker host</Trans>
-        },
-        {
-            label: <Trans>Server to maintain</Trans>,
-            budgieValue: <Trans>None</Trans>,
-            competitorValue: <Trans>Yes — updates, certs, backups</Trans>
-        },
-        {
-            label: <Trans>Mobile experience</Trans>,
-            budgieValue: <Trans>Native iOS + Android</Trans>,
-            competitorValue: <Trans>Web wrapper or none</Trans>
-        },
-        {
-            label: <Trans>Backup</Trans>,
-            budgieValue: <Trans>To your own iCloud / Google Drive</Trans>,
-            competitorValue: <Trans>Manual server snapshots</Trans>
-        },
-        {
-            label: <Trans>Multi-device sync</Trans>,
-            budgieValue: <Trans>Backup file copied via your cloud</Trans>,
-            competitorValue: <Trans>Built-in via your server</Trans>
-        },
-        {
-            label: <Trans>Setup time</Trans>,
-            budgieValue: <Trans>Install + open</Trans>,
-            competitorValue: <Trans>Hours of ops</Trans>
-        }
-    ];
 
     return (
         <main className="flex-1">
@@ -160,7 +125,38 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                 <FeaturePageHeading>
                     <Trans>Feature comparison</Trans>
                 </FeaturePageHeading>
-                <FeaturePageCategoryComparison categoryLabel={comparisonCategoryLabel} rows={comparisonRows} />
+                <FeaturePageCategoryComparison categoryLabel={<Trans>Server-based finance apps</Trans>}>
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Encrypted on your phone</Trans>}
+                        competitorValue={<Trans>Your VPS / Docker host</Trans>}
+                        label={<Trans>Where data lives</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>None</Trans>}
+                        competitorValue={<Trans>Yes — updates, certs, backups</Trans>}
+                        label={<Trans>Server to maintain</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Native iOS + Android</Trans>}
+                        competitorValue={<Trans>Web wrapper or none</Trans>}
+                        label={<Trans>Mobile experience</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>To your own iCloud / Google Drive</Trans>}
+                        competitorValue={<Trans>Manual server snapshots</Trans>}
+                        label={<Trans>Backup</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Backup file copied via your cloud</Trans>}
+                        competitorValue={<Trans>Built-in via your server</Trans>}
+                        label={<Trans>Multi-device sync</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Install + open</Trans>}
+                        competitorValue={<Trans>Hours of ops</Trans>}
+                        label={<Trans>Setup time</Trans>}
+                    />
+                </FeaturePageCategoryComparison>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -197,7 +193,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                 />
             </FeaturePageFaqSection>
 
-            <FeaturePageRelated features={related} locale={lang} />
+            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
             <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
 
             <FeaturePageCta locale={lang} />

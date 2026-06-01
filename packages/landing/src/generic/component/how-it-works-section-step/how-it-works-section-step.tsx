@@ -1,9 +1,11 @@
 import { Motion } from '../motion/motion';
 
+import type { ReactNode } from 'react';
+
 interface Props {
     step: string;
-    title: string;
-    description: string;
+    title: ReactNode;
+    description: ReactNode;
     index: number;
 }
 

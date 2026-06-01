@@ -5,74 +5,35 @@ import { BASE_URL } from '../constant/seo.constant';
 
 import type { I18n } from '@lingui/core';
 
-export const buildLandingJsonLd = (i18n: I18n): { softwareApplication: Record<string, unknown>; faqPage: Record<string, unknown> } => {
-    const faqItems = [
-        {
-            question: i18n._(msg`How is my financial data kept private?`),
-            answer: i18n._(
-                msg`Your data never leaves your device unless you explicitly sync with your own cloud storage. We don't have servers storing your financial information, and we can't see your transactions. Everything is encrypted locally on your device.`
-            )
-        },
-        {
-            question: i18n._(msg`Does bank sync work offline?`),
-            answer: i18n._(
-                msg`Bank sync requires an internet connection to fetch new transactions, but once synced, you can view and categorize everything offline. The app works completely offline for manual expense entry and viewing your data.`
-            )
-        },
-        {
-            question: i18n._(msg`What cryptocurrencies and assets can I track?`),
-            answer: i18n._(
-                msg`Budgie supports manual tracking of Bitcoin, Ethereum, other crypto, stocks, ETFs, and traditional bank accounts. Import positions and transactions via CSV. There are no automatic exchange or brokerage API integrations — your data stays on-device.`
-            )
-        },
-        {
-            question: i18n._(msg`Can I use Budgie across multiple devices?`),
-            answer: i18n._(
-                msg`Yes — export your encrypted database as a single file, save it to any storage you control (iCloud, Google Drive, Dropbox, anywhere), and import it on another device. The file stays encrypted with your PIN; we never see it because we have no servers.`
-            )
-        },
-        {
-            question: i18n._(msg`How does the source-available license work?`),
-            answer: i18n._(
-                msg`Budgie uses a custom source-available license that lets you read, fork, and contribute to the code, while reserving commercial distribution to the project. The full source is on GitHub — you can audit every line.`
-            )
-        }
-    ];
-
-    const softwareApplication = {
-        '@context': 'https://schema.org',
-        '@type': 'SoftwareApplication',
-        name: 'Budgie',
-        applicationCategory: 'FinanceApplication',
-        applicationSubCategory: 'PersonalFinance',
-        operatingSystem: 'iOS, Android',
-        description: i18n._(msg`Privacy-first expense tracker that keeps your financial data on your device.`),
-        url: BASE_URL,
-        image: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`,
-        featureList:
-            'Offline-first expense tracking, On-device AI auto-categorization, Voice transaction entry, Monobank bank sync, CSV and PDF import, Net worth tracker, Multi-currency, On-device encryption, PIN and biometric lock, Screenshot protection, Database backup and restore',
-        author: { '@type': 'Organization', name: 'Budgie', url: BASE_URL },
-        offers: {
-            '@type': 'Offer',
-            price: '0',
-            priceCurrency: 'USD',
-            availability: 'https://schema.org/PreOrder',
-            url: `${BASE_URL}/en`
-        }
-    };
-
-    const faqPage = {
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        mainEntity: faqItems.map(item => ({
-            '@type': 'Question',
-            name: item.question,
-            acceptedAnswer: {
-                '@type': 'Answer',
-                text: item.answer
-            }
-        }))
-    };
-
-    return { softwareApplication, faqPage };
-};
+export const buildLandingJsonLd = (i18n: I18n): Record<string, unknown> => ({
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Budgie',
+    applicationCategory: 'FinanceApplication',
+    applicationSubCategory: 'PersonalFinance',
+    operatingSystem: 'iOS, Android',
+    description: i18n._(msg`Privacy-first expense tracker that keeps your financial data on your device.`),
+    url: BASE_URL,
+    image: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`,
+    featureList: [
+        i18n._(msg`Offline-first expense tracking`),
+        i18n._(msg`On-device AI auto-categorization`),
+        i18n._(msg`Voice transaction entry`),
+        i18n._(msg`Monobank bank sync`),
+        i18n._(msg`CSV and PDF import`),
+        i18n._(msg`Net worth tracker`),
+        i18n._(msg`Multi-currency`),
+        i18n._(msg`On-device encryption`),
+        i18n._(msg`PIN and biometric lock`),
+        i18n._(msg`Screenshot protection`),
+        i18n._(msg`Database backup and restore`)
+    ],
+    author: { '@type': 'Organization', name: 'Budgie', url: BASE_URL },
+    offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/PreOrder',
+        url: `${BASE_URL}/en`
+    }
+});

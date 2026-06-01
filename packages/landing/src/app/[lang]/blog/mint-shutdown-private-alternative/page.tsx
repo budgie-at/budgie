@@ -3,8 +3,6 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import Link from 'next/link';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { BlogArticleContent } from '../../../../blog/component/blog-article-content/blog-article-content';
 import { BlogArticleCta } from '../../../../blog/component/blog-article-cta/blog-article-cta';
 import { BlogArticleHeading } from '../../../../blog/component/blog-article-heading/blog-article-heading';
@@ -24,7 +22,6 @@ import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-
 import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
 import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
-import { FEATURE_REGISTRY } from '../../../../feature/constant/feature-registry.constant';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
@@ -53,10 +50,6 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 export default async function MintShutdownPrivateAlternativePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
-
-    const relatedFeatures = ARTICLE_METADATA.relatedFeatureSlugs
-        .map(slug => FEATURE_REGISTRY.find(feature => feature.slug === slug))
-        .filter(isDefined);
 
     return (
         <main className="flex-1">
@@ -423,7 +416,7 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         <Trans>Frequently Asked Questions</Trans>
                     </BlogArticleHeading>
 
-                    <BlogFaqSection>
+                    <BlogFaqSection locale={lang}>
                         <BlogFaqItem question={<Trans>Is Budgie really free to use?</Trans>}>
                             <Trans>
                                 Budgie has a free tier that covers core expense tracking. Unlike ad-supported models, the free tier does not
@@ -470,7 +463,7 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
 
             <RelatedArticles locale={lang} slugs={ARTICLE_METADATA.relatedArticleSlugs} />
 
-            <FeaturePageRelated features={relatedFeatures} locale={lang} />
+            <FeaturePageRelated locale={lang} slugs={ARTICLE_METADATA.relatedFeatureSlugs} />
         </main>
     );
 }

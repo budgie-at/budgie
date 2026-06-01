@@ -18,7 +18,6 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -46,41 +45,12 @@ export default async function OpenSourceBudgetAppMobilePage(props: PageLangParam
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const related = getRelatedFeatures(FEATURE_METADATA);
     const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
     const title = i18n._(FEATURE_METADATA.metaTitle);
     const homePath = `/${lang}`;
     const featuresPath = `/${lang}/features`;
     const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
-    const comparisonCategoryLabel = <Trans>Closed-source budget apps</Trans>;
-    const comparisonRows = [
-        {
-            label: <Trans>Source code</Trans>,
-            budgieValue: <Trans>Public on GitHub</Trans>,
-            competitorValue: <Trans>Closed</Trans>
-        },
-        {
-            label: <Trans>Privacy claims</Trans>,
-            budgieValue: <Trans>Verifiable in source</Trans>,
-            competitorValue: <Trans>Marketing copy only</Trans>
-        },
-        {
-            label: <Trans>Forkable</Trans>,
-            budgieValue: <Trans>Yes</Trans>,
-            competitorValue: <Trans>No</Trans>
-        },
-        {
-            label: <Trans>Community PRs accepted</Trans>,
-            budgieValue: <Trans>Yes</Trans>,
-            competitorValue: <Trans>No</Trans>
-        },
-        {
-            label: <Trans>Vendor risk</Trans>,
-            budgieValue: <Trans>Low — fork survives</Trans>,
-            competitorValue: <Trans>High — shutdown = data loss risk</Trans>
-        }
-    ];
 
     return (
         <main className="flex-1">
@@ -151,7 +121,33 @@ export default async function OpenSourceBudgetAppMobilePage(props: PageLangParam
                 <FeaturePageHeading>
                     <Trans>Feature comparison</Trans>
                 </FeaturePageHeading>
-                <FeaturePageCategoryComparison categoryLabel={comparisonCategoryLabel} rows={comparisonRows} />
+                <FeaturePageCategoryComparison categoryLabel={<Trans>Closed-source budget apps</Trans>}>
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Public on GitHub</Trans>}
+                        competitorValue={<Trans>Closed</Trans>}
+                        label={<Trans>Source code</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Verifiable in source</Trans>}
+                        competitorValue={<Trans>Marketing copy only</Trans>}
+                        label={<Trans>Privacy claims</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Yes</Trans>}
+                        competitorValue={<Trans>No</Trans>}
+                        label={<Trans>Forkable</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Yes</Trans>}
+                        competitorValue={<Trans>No</Trans>}
+                        label={<Trans>Community PRs accepted</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Low — fork survives</Trans>}
+                        competitorValue={<Trans>High — shutdown = data loss risk</Trans>}
+                        label={<Trans>Vendor risk</Trans>}
+                    />
+                </FeaturePageCategoryComparison>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -184,7 +180,7 @@ export default async function OpenSourceBudgetAppMobilePage(props: PageLangParam
                 />
             </FeaturePageFaqSection>
 
-            <FeaturePageRelated features={related} locale={lang} />
+            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
             <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
 
             <FeaturePageCta locale={lang} />

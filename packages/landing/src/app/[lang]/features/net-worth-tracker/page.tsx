@@ -18,37 +18,12 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import { FEATURE_METADATA } from './metadata';
 
-import type { ComparisonRowInterface } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import type { Metadata } from 'next';
-
-const COMPARISON_ROWS: ComparisonRowInterface[] = [
-    {
-        concern: <Trans>Asset coverage</Trans>,
-        rival: <Trans>Bank only</Trans>,
-        budgie: <Trans>Bank + cash + crypto + stocks + ETFs + debt</Trans>
-    },
-    {
-        concern: <Trans>FX support</Trans>,
-        rival: <Trans>One currency, often hardcoded</Trans>,
-        budgie: <Trans>Per-account currency, daily auto-conversion</Trans>
-    },
-    {
-        concern: <Trans>Liability accounts</Trans>,
-        rival: <Trans>Treated as expenses</Trans>,
-        budgie: <Trans>First-class — subtract from net worth</Trans>
-    },
-    {
-        concern: <Trans>Time series</Trans>,
-        rival: <Trans>Spending only</Trans>,
-        budgie: <Trans>Net worth trendline alongside</Trans>
-    }
-];
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
@@ -70,7 +45,6 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const related = getRelatedFeatures(FEATURE_METADATA);
     const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
     const title = i18n._(FEATURE_METADATA.metaTitle);
@@ -164,7 +138,28 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 <FeaturePageHeading>
                     <Trans>Most expense apps vs. Budgie</Trans>
                 </FeaturePageHeading>
-                <FeaturePageComparisonTable rivalLabel={<Trans>Most expense apps</Trans>} rows={COMPARISON_ROWS} />
+                <FeaturePageComparisonTable rivalLabel={<Trans>Most expense apps</Trans>}>
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>Bank + cash + crypto + stocks + ETFs + debt</Trans>}
+                        concern={<Trans>Asset coverage</Trans>}
+                        rival={<Trans>Bank only</Trans>}
+                    />
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>Per-account currency, daily auto-conversion</Trans>}
+                        concern={<Trans>FX support</Trans>}
+                        rival={<Trans>One currency, often hardcoded</Trans>}
+                    />
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>First-class — subtract from net worth</Trans>}
+                        concern={<Trans>Liability accounts</Trans>}
+                        rival={<Trans>Treated as expenses</Trans>}
+                    />
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>Net worth trendline alongside</Trans>}
+                        concern={<Trans>Time series</Trans>}
+                        rival={<Trans>Spending only</Trans>}
+                    />
+                </FeaturePageComparisonTable>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -206,7 +201,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 />
             </FeaturePageFaqSection>
 
-            <FeaturePageRelated features={related} locale={lang} />
+            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
             <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
 
             <FeaturePageCta locale={lang} />

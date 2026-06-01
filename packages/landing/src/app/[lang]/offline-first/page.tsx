@@ -30,7 +30,6 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
-    const featureSlugs = ['offline-first-expense-tracker', 'csv-import', 'erste-bank-pdf-import', 'multi-currency', 'database-backup'];
 
     return (
         <PillarHubPageShell
@@ -73,7 +72,38 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
             </PillarHubHero>
 
             <PillarHubSection>
-                <PillarHubFeatureGrid locale={lang} slugs={featureSlugs} />
+                <PillarHubFeatureGrid>
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/offline-first-expense-tracker`}
+                        index={0}
+                        tagline={<Trans>Every transaction lives on your device. No cloud account, no sign-up.</Trans>}
+                        title={<Trans>Offline-First Expense Tracker</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/csv-import`}
+                        index={1}
+                        tagline={<Trans>Any bank, any column order — set it up once per source, then it&apos;s two taps from there.</Trans>}
+                        title={<Trans>CSV Bank Statement Import</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/erste-bank-pdf-import`}
+                        index={2}
+                        tagline={<Trans>Classic and modern PDF formats — full statement import in seconds.</Trans>}
+                        title={<Trans>Erste Bank PDF Import</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/multi-currency`}
+                        index={3}
+                        tagline={<Trans>Track in any currency. Sum in yours. Daily FX-rate refresh keeps the math fair.</Trans>}
+                        title={<Trans>Multi-Currency Accounts With Live Rates</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/database-backup`}
+                        index={4}
+                        tagline={<Trans>One encrypted file. No account. Restore on any device in seconds.</Trans>}
+                        title={<Trans>Database Backup &amp; Restore</Trans>}
+                    />
+                </PillarHubFeatureGrid>
             </PillarHubSection>
 
             <FeaturePageFaqSection locale={lang}>
