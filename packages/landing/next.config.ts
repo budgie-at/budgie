@@ -1,5 +1,3 @@
-import createMDX from '@next/mdx';
-
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -9,7 +7,6 @@ const nextConfig: NextConfig = {
         inlineCss: true,
         swcPlugins: [['@lingui/swc-plugin', {}]]
     },
-    pageExtensions: ['mdx', 'ts', 'tsx'],
     async headers() {
         return [
             {
@@ -27,6 +24,4 @@ const nextConfig: NextConfig = {
     }
 };
 
-const withMDX = createMDX({});
-
-export default withMDX(nextConfig);
+export default nextConfig;

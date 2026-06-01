@@ -1,6 +1,6 @@
 # Landing Package (Next.js)
 
-Marketing website built with Next.js 15, React 19, Tailwind CSS 4, and Lingui 6.1. Supports 5 locales with server-side rendering.
+Marketing website built with Next.js 16, React 19, Tailwind CSS 4, and Lingui 6.1. Supports 5 locales with SSG-first rendering and small client islands for runtime interactions.
 
 ## Commands
 
@@ -22,8 +22,8 @@ src/
 │       ├── page.tsx          # Main landing page
 │       ├── blog/             # Blog routes
 │       │   ├── page.tsx
-│       │   └── [slug]/page.tsx
-│       └── legal/            # Legal pages
+│       │   └── <slug>/page.tsx
+│       └── legal/            # Legal TSX pages
 ├── components/               # Page sections
 │   ├── hero-section/
 │   ├── features-section/
@@ -39,21 +39,34 @@ src/
     └── ...
 ```
 
+## Load on demand
+
+Before starting any of the work areas below, read the corresponding doc first.
+
+| When working on…                                                                                                                       | Read first           |
+| -------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| Blog articles, feature pages, pillar hubs, legal pages, sitemap entries, `generateMetadata`, JSON-LD helpers, anything SEO-related     | `docs/seo-pages.md`  |
+| `<Trans>` / `t` / `msg`, `generateMetadata` i18n strings, catalog `.po`/`.ts` files, RSC i18n setup, dispatching translation subagents | `docs/lingui-rsc.md` |
+| IndexNow key file, GSC/Bing sitemap submission, merge-to-main URL submission, root `.txt` proxy bypass rules                           | `docs/indexnow.md`   |
+
+---
+
 ## React 19 Rules
 
 1. **No manual memoization** - Never use `useCallback`, `useMemo`, `React.memo` (React 19 Compiler handles this)
 2. **No displayName** - Never use `Component.displayName`
 3. **No forwardRef** - React 19 handles ref forwarding natively. Accept `ref` as a regular prop:
-   ```typescript
-   // Good - React 19 native ref
-   interface Props {
-       ref?: React.Ref<HTMLButtonElement>;
-   }
-   export const Button = ({ ref, ...props }: Props) => { ... };
 
-   // Bad - forwardRef (currently in codebase, should be migrated)
-   export const Button = forwardRef<HTMLButtonElement, Props>((props, ref) => { ... });
-   ```
+    ```typescript
+    // Good - React 19 native ref
+    interface Props {
+        ref?: React.Ref<HTMLButtonElement>;
+    }
+    export const Button = ({ ref, ...props }: Props) => { ... };
+
+    // Bad - forwardRef (currently in codebase, should be migrated)
+    export const Button = forwardRef<HTMLButtonElement, Props>((props, ref) => { ... });
+    ```
 
 ## Routing
 
@@ -66,9 +79,11 @@ app/
 └── [lang]/
     ├── page.tsx              # / → /en, /uk, /fr, etc.
     ├── blog/page.tsx         # /blog
-    ├── blog/[slug]/page.tsx  # /blog/article-slug
+    ├── blog/<slug>/page.tsx  # /blog/article-slug
     └── legal/layout.tsx      # Legal pages wrapper
 ```
+
+SEO pages use explicit static route folders. Do not add `blog/[slug]/page.tsx`, `features/[slug]/page.tsx`, or legal MDX routes for static SEO content. Each route owns its readable JSX body in its `page.tsx`.
 
 ### Static Params
 
@@ -89,12 +104,28 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
     return {
         title: t`Budgie - Expense Tracker`,
-        description: t`Track your expenses offline`,
+        description: t`Track your expenses offline`
     };
 };
 ```
 
+### SEO Page Architecture
+
+Static SEO pages are one file per route. Visible page copy, FAQ copy, hero bullet copy, and rendered body content must be inline readable JSX composition in the route page, not hidden in registries, keyed maps, dispatcher prop bags, or slug-based shells. Composition shells may provide chrome, but they must not branch by slug or choose page content from a registry.
+
+Registries are metadata and enumeration sources only. Listing pages, sitemap generation, related links, and metadata helpers may import registry/index aggregators, but registries must not own visible body copy. For SEO page families whose metadata is currently centralized, move metadata into page-owned sibling sidecars such as `metadata.ts`; those sidecars use `msg` descriptors and dates, and registries/index aggregators import those sidecars instead of owning page metadata themselves.
+
+Route pages import their own sibling `metadata.ts` directly and pass that object through metadata helpers, JSON-LD components, and related-link helpers. Do not call `getFeatureBySlug(SLUG)`, `ARTICLE_REGISTRY.find(...)`, or add a defensive null branch inside explicit SEO routes; the folder itself is the route contract. Sitemap and listing pages import metadata indexes built from route sidecars, not slug lookup registries that own entries inline. IndexNow URL generation derives from the sitemap so there is one source of truth for indexable URLs.
+
+FAQ/JSON-LD should be generated from JSX children where possible so visible FAQ content and schema share one page-local source. Legal pages should be plain Next.js TSX pages in the same explicit JSX style and remain `noindex, follow` unless code changes the source of truth.
+
+Page JSON-LD uses explicit JSX composition in the page body where practical. Write breadcrumb schema as compound children, for example `<FeaturePageBreadcrumbsJsonLd><FeaturePageBreadcrumbsJsonLd.Item ... /></FeaturePageBreadcrumbsJsonLd>`, and the page schema as a dedicated JSX component such as `<FeaturePageWebPageJsonLd ... />`. Do not recreate `buildFeaturePageJsonLd`- or `buildPillarHubJsonLd`-style object builders in route pages or shells when a typed schema component can express the same contract.
+
+Static pages and metadata should remain SSG-safe by default. Do not read request headers, cookies, host, or other runtime context unless the page explicitly needs dynamic request behavior and declares the matching Next.js caching/dynamic behavior.
+
 ## i18n (Lingui)
+
+Read `docs/lingui-rsc.md` before changing Lingui, metadata strings, catalogs, or RSC i18n setup.
 
 ### Server Components
 
@@ -114,6 +145,10 @@ export const MyServerComponent = async ({ params }: Props) => {
 };
 ```
 
+Every page render calls `initLingui(lang)` before returning JSX unless a full-page shell owns the entire render and calls it internally. `generateMetadata` runs outside the render tree, so it uses `getI18nInstance(lang)` and resolves page-owned metadata sidecar descriptors at the helper call site.
+
+JSX text uses `<Trans>`. String props, OG image text, JSON-LD labels, and other non-JSX string literals use `t(i18n)`. Do not write ``i18n._(msg`Home`)`` inside page render code when `` t(i18n)`Home` `` is available. Page-owned metadata sidecars store descriptors with `msg`; resolve those descriptors with `i18n._(entry.title)`/`i18n._(entry.metaTitle)`, not at module scope.
+
 ### Client Components
 
 Wrap with `LinguiClientProvider`:
@@ -127,13 +162,13 @@ Wrap with `LinguiClientProvider`:
 
 ### Supported Locales
 
-| Code | Language |
-|------|----------|
+| Code | Language         |
+| ---- | ---------------- |
 | `en` | English (source) |
-| `uk` | Ukrainian |
-| `fr` | French |
-| `de` | German |
-| `es` | Spanish |
+| `uk` | Ukrainian        |
+| `fr` | French           |
+| `de` | German           |
+| `es` | Spanish          |
 
 ### After Changes
 
@@ -150,31 +185,28 @@ Use `class-variance-authority` for component variants:
 ```typescript
 import { cva } from 'class-variance-authority';
 
-const buttonVariants = cva(
-    'inline-flex items-center justify-center rounded-md font-medium transition-colors',
-    {
-        variants: {
-            variant: {
-                default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-                destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-                outline: 'border border-input bg-background hover:bg-accent',
-                secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-                ghost: 'hover:bg-accent hover:text-accent-foreground',
-                link: 'text-primary underline-offset-4 hover:underline',
-            },
-            size: {
-                default: 'h-10 px-4 py-2',
-                sm: 'h-9 rounded-md px-3',
-                lg: 'h-11 rounded-md px-8',
-                icon: 'h-10 w-10',
-            },
+const buttonVariants = cva('inline-flex items-center justify-center rounded-md font-medium transition-colors', {
+    variants: {
+        variant: {
+            default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+            destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+            outline: 'border border-input bg-background hover:bg-accent',
+            secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+            ghost: 'hover:bg-accent hover:text-accent-foreground',
+            link: 'text-primary underline-offset-4 hover:underline'
         },
-        defaultVariants: {
-            variant: 'default',
-            size: 'default',
-        },
+        size: {
+            default: 'h-10 px-4 py-2',
+            sm: 'h-9 rounded-md px-3',
+            lg: 'h-11 rounded-md px-8',
+            icon: 'h-10 w-10'
+        }
+    },
+    defaultVariants: {
+        variant: 'default',
+        size: 'default'
     }
-);
+});
 ```
 
 ### Utility Function
@@ -190,6 +222,7 @@ className={cn('base-classes', isActive && 'active-classes', className)}
 ### Design Tokens
 
 Semantic color tokens in CSS variables:
+
 - `--primary`, `--primary-foreground`
 - `--secondary`, `--secondary-foreground`
 - `--destructive`, `--destructive-foreground`
@@ -260,9 +293,7 @@ export const middleware = (request: NextRequest) => {
     const pathname = request.nextUrl.pathname;
 
     // Check if locale is missing
-    const pathnameIsMissingLocale = locales.every(
-        locale => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
-    );
+    const pathnameIsMissingLocale = locales.every(locale => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`);
 
     if (pathnameIsMissingLocale) {
         const locale = getLocale(request);
@@ -308,14 +339,14 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
     return {
         title: {
             default: t`Budgie - Expense Tracker`,
-            template: `%s | Budgie`,
+            template: `%s | Budgie`
         },
         description: t`Track your expenses offline with Budgie`,
         openGraph: {
             title: t`Budgie - Expense Tracker`,
             description: t`Track your expenses offline`,
-            locale: lang,
-        },
+            locale: lang
+        }
     };
 };
 ```
@@ -324,7 +355,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
 Add JSON-LD for rich snippets where appropriate.
 
-## SOTA Bar — Next.js 15+ / React 19+
+## SOTA Bar — Next.js 16+ / React 19+
 
 **Server components are async functions.** A page is `export default async function Page(props)`. No HOF page builders, no service classes wrapping single helpers.
 
@@ -340,7 +371,7 @@ Blog articles are static routes under `app/[lang]/blog/<slug>/page.tsx`. Each ar
 
 **No MDX.** Articles are pure TSX with `<Trans>` tags for all visible text. Lingui extracts strings to `.po` catalogs for translation.
 
-**No dynamic routes.** Each article has its own `page.tsx` — no `[slug]` pattern. All routes are fully SSG at build time.
+**No dynamic routes.** Each article has its own `page.tsx` — no `[slug]` pattern. SEO routes stay SSG at build time. Runtime interactions live in client islands and must not depend on URL search params for fixed static routes.
 
 **Composition pattern:**
 
@@ -362,7 +393,7 @@ Blog articles are static routes under `app/[lang]/blog/<slug>/page.tsx`. Each ar
 </main>
 ```
 
-**Article registry:** `src/blog/constant/article-registry.constant.ts` is the single source of truth for listing pages, sitemap, and blog section. Each entry stores slug, date, author, image, and Lingui `msg` descriptors for title/description.
+**Article metadata:** each article owns a sibling `metadata.ts` sidecar. `src/blog/constant/article-registry.constant.ts` is only an aggregator for listing pages, sitemap, and blog previews; it imports article sidecars and must not own metadata entries inline. Article route pages import their own sidecar directly and never look themselves up in `ARTICLE_REGISTRY`.
 
 **SEO pages can use `/* eslint-disable max-lines-per-function */`** at the top since article pages are content-heavy.
 
@@ -370,17 +401,17 @@ Blog articles are static routes under `app/[lang]/blog/<slug>/page.tsx`. Each ar
 
 ## Dependencies
 
-| Package | Purpose |
-|---------|---------|
-| `next` | Framework |
-| `react` | UI Library |
-| `@lingui/*` | i18n |
-| `framer-motion` | Animations |
-| `@radix-ui/*` | UI Primitives |
-| `tailwindcss` | Styling |
-| `class-variance-authority` | CVA variants |
-| `next-themes` | Dark mode |
-| `negotiator` | Locale detection |
+| Package                    | Purpose          |
+| -------------------------- | ---------------- |
+| `next`                     | Framework        |
+| `react`                    | UI Library       |
+| `@lingui/*`                | i18n             |
+| `framer-motion`            | Animations       |
+| `@radix-ui/*`              | UI Primitives    |
+| `tailwindcss`              | Styling          |
+| `class-variance-authority` | CVA variants     |
+| `next-themes`              | Dark mode        |
+| `negotiator`               | Locale detection |
 
 ## Experimental Features
 

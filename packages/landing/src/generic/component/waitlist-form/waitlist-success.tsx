@@ -1,6 +1,6 @@
 'use client';
 
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { CheckCircle2, Sparkles } from 'lucide-react';
 
@@ -32,8 +32,6 @@ const discountTextVariants = cva('text-sm', {
 const WAITLIST_BASE_POSITION = 847;
 
 export const WaitlistSuccess = ({ variant, position }: Props) => {
-    const { t } = useLingui();
-
     const displayPosition = WAITLIST_BASE_POSITION + (position ?? 0);
 
     return (
@@ -48,7 +46,7 @@ export const WaitlistSuccess = ({ variant, position }: Props) => {
 
             {isPositiveNumber(position) && (
                 <p className={positionTextVariants({ variant })}>
-                    {t`You're #${displayPosition} on the waitlist. We'll notify you when Budgie launches!`}
+                    <Trans>You&apos;re #{displayPosition} on the waitlist. We&apos;ll notify you when Budgie launches!</Trans>
                 </p>
             )}
 
