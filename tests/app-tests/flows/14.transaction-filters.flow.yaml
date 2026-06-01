@@ -5,6 +5,8 @@ appId: ${APP_ID}
       env:
           FIXTURE_ROW_ID_MATCH: '14.db(, db)?'
 
+- runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
+
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - assertVisible:
@@ -13,6 +15,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Income'
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
+
+# Total transaction counter reflects all visible transactions when no filter is applied
+- assertVisible: '6 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -27,6 +32,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Income'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
+
+# Counter is filter-aware: the expense type matches the seeded expense plus the two historical UAH expenses
+- assertVisible: '3 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -110,6 +118,9 @@ appId: ${APP_ID}
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Income'
 
+# Counter respects the account filter (matches the per-account total shown on the account screen)
+- assertVisible: '2 transactions'
+
 - tapOn:
       id: 'TransactionFilters.ClearAllButton'
 
@@ -167,6 +178,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Income'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
+
+# Counter uses the singular form for a single match (only the seeded expense carries this tag)
+- assertVisible: '1 transaction'
 
 - scrollUntilVisible:
       element:
@@ -305,6 +319,55 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.ClearAllButton'
 - assertVisible:
-      id: 'TransactionAnalyticsCard.Amount.Spent.30'
+      id: 'TransactionAnalyticsCard.Amount.Spent.40'
 - assertVisible:
-      id: 'CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.30000000'
+      id: 'CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.40000000'
+- tapOn:
+      id: 'CategoryStatisticsCard.E2E_Filter_Expense_Category'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Historical_UAH_2026'
+      timeout: 5000
+- scrollUntilVisible:
+      element:
+          id: 'TransactionCard.Label.E2E_Historical_UAH_2011'
+      direction: DOWN
+      speed: 20
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AnalyticsPage.Container'
+
+# --- Transaction counter on the account detail screen ---
+
+- tapOn:
+      id: 'TabBar.Home'
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Filter Cash A'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Filter_Expense'
+      timeout: 5000
+
+# Counter on the account screen reflects only this account's transactions
+# (original expense + transfer + the expense created earlier in this flow)
+- assertVisible: '3 transactions'
+
+- tapOn:
+      id: 'TransactionFilters.TypeChip'
+- tapOn:
+      id: 'TransactionFilters.TypeOption.EXPENSE'
+- tapOn:
+      id: 'TransactionFilters.TypeApplyButton'
+
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Transfer'
+
+# Counter on the account screen also respects an applied filter
+- assertVisible: '2 transactions'

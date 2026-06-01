@@ -62,7 +62,7 @@ class AppMonobankSyncService {
         (error, token) => `throw tokenLen=${token.length} error=${getErrorMessage(error)}`
     )
     async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
-        const bankAccounts = await new MonobankSyncService(token).syncAccounts();
+        const bankAccounts = await this.fetchBankAccountsAndJars(token);
         if (!isNotEmptyArray(bankAccounts)) {
             return [];
         }
@@ -181,6 +181,7 @@ class AppMonobankSyncService {
         const startedAt = Date.now();
         const now = new Date();
         const baseUpdate = { transactionCount: sync.transactionCount + result.transactions.length, errorCount: 0, lastError: null };
+        const nextBackwardSyncedAt = isNotEmptyArray(result.transactions) ? null : (sync.backwardSyncedAt ?? result.nextTo);
 
         if (result.completed) {
             if (sync.mode === BankSyncModeEnum.FORWARD) {
@@ -202,6 +203,7 @@ class AppMonobankSyncService {
         } else if (sync.mode === BankSyncModeEnum.BACKWARD) {
             await bankSyncRepository.update(sync.id, {
                 ...baseUpdate,
+                backwardSyncedAt: nextBackwardSyncedAt,
                 backwardSyncFromAt: result.nextTo
             });
         } else {
@@ -275,7 +277,7 @@ class AppMonobankSyncService {
     }
 
     async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
-        const bankAccounts = await new MonobankSyncService(token).syncAccounts();
+        const bankAccounts = await this.fetchBankAccountsAndJars(token);
 
         for (const externalId of externalIds) {
             const bankAccount = bankAccounts.find(acc => acc.id === externalId);
@@ -462,7 +464,7 @@ class AppMonobankSyncService {
 
         const result = isForward
             ? await svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date())
-            : await svc.syncTransactionsBackward(extAccId, sync.backwardSyncFromAt ?? new Date());
+            : await svc.syncTransactionsBackward(extAccId, sync.backwardSyncFromAt ?? new Date(), sync.backwardSyncedAt);
         logger.log('fetchTransactionBatch:done', {
             completed: result.completed,
             durationMs: Date.now() - startedAt,
@@ -472,6 +474,14 @@ class AppMonobankSyncService {
         });
 
         return result;
+    }
+
+    private async fetchBankAccountsAndJars(token: string): Promise<BankAccountInterface[]> {
+        const service = new MonobankSyncService(token);
+        const accounts = await service.syncAccounts();
+        const jars = await service.syncJars();
+
+        return [...accounts, ...jars];
     }
 
     private async getOrCreateAccount(bankAccount: BankAccountInterface): Promise<AccountEntityInterface> {

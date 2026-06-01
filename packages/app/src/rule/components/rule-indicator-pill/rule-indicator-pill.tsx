@@ -3,14 +3,24 @@ import { Text, View } from 'react-native';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 
-import type { RuleIndicatorPillPropsInterface } from '../../interface/rule-indicator-pill-props.interface';
+import type { UserIconNameEnum } from '@budgie/contracts';
+import type { ReactNode } from 'react';
+
+interface Props {
+    readonly children: ReactNode;
+    readonly icon: UserIconNameEnum;
+    readonly className?: string;
+    readonly iconClassName?: string;
+    readonly textClassName?: string;
+    readonly trailingContent?: ReactNode;
+}
 
 const ICON_SIZE = 14;
 const baseClassName = 'flex-row items-center gap-xs rounded-full border border-secondary-corner bg-secondary-background px-md py-xs';
 const baseIconClassName = 'text-secondary-foreground';
 const baseTextClassName = 'text-xs text-secondary-foreground font-medium shrink';
 
-export const RuleIndicatorPill = (props: RuleIndicatorPillPropsInterface) => {
+export const RuleIndicatorPill = (props: Props) => {
     const { children, icon, className, iconClassName, textClassName, trailingContent } = props;
 
     return (

@@ -1,19 +1,22 @@
 import Negotiator from 'negotiator';
 import { type NextRequest, NextResponse } from 'next/server';
 
-import linguiConfig from '../lingui.config.mjs';
+import { isNotEmptyString } from '@rnw-community/shared';
 
-const { locales } = linguiConfig;
+import { SUPPORTED_LOCALES as locales } from './i18n/supported-locales.constant.mjs';
 
 const PERMANENT_REDIRECT_STATUS = 301;
 
 const getRequestLocale = (requestHeaders: Headers): string => {
-    // eslint-disable-next-line no-undefined
-    const langHeader = requestHeaders.get('accept-language') || undefined;
+    const langHeader = requestHeaders.get('accept-language');
+
+    if (!isNotEmptyString(langHeader)) {
+        return 'en';
+    }
 
     const languages = new Negotiator({ headers: { 'accept-language': langHeader } }).languages(locales.slice());
 
-    return languages[0] || locales[0] || 'en';
+    return languages[0] || 'en';
 };
 
 // eslint-disable-next-line func-style,no-implicit-globals
@@ -35,6 +38,6 @@ export function proxy(request: NextRequest) {
 
 export const config = {
     matcher: [
-        '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|.well-known|[^.]*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
+        '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|.well-known|[^/]+\\.txt$|[^.]*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
     ]
 };

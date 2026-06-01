@@ -10,5 +10,6 @@ export enum BankAccountTypeEnum {
     SAVINGS = 'SAVINGS',
     CREDIT = 'CREDIT',
     CARD = 'CARD',
+    JAR = 'JAR',
     UNKNOWN = 'UNKNOWN'
 }

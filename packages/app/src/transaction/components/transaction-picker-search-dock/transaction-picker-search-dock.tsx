@@ -1,21 +1,21 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { TextInput, View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 
-import type { TransactionPickerSearchDockPropsInterface } from '../../interface/transaction-picker-search-dock-props.interface';
+interface Props {
+    readonly search: string;
+    readonly searchPlaceholder: string;
+    readonly footer: ReactNode;
+    readonly onSearchChange: (value: string) => void;
+    readonly searchTestID: string;
+}
 
 const keyboardOffset = { closed: 0, opened: 8 };
 
-export const TransactionPickerSearchDock = ({
-    search,
-    searchPlaceholder,
-    footer,
-    onSearchChange,
-    searchTestID
-}: TransactionPickerSearchDockPropsInterface) => {
+export const TransactionPickerSearchDock = ({ search, searchPlaceholder, footer, onSearchChange, searchTestID }: Props) => {
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const showFooter = !isSearchFocused;
 

@@ -39,7 +39,7 @@ export const buildBlogArticleMetadata = ({
         locale: OG_LOCALE_MAP[locale] ?? 'en_US',
         publishedTime: date,
         authors: [author],
-        ...(isDefined(image) && { images: [{ url: `${BASE_URL}${image}`, width: 1280, height: 720 }] })
+        ...(isDefined(image) && { images: [{ url: `${BASE_URL}${image}`, width: 1200, height: 630 }] })
     },
     twitter: {
         card: 'summary_large_image',

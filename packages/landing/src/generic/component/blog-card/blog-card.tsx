@@ -1,4 +1,4 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { Calendar, Clock } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -23,8 +23,6 @@ interface Props {
 const whileInView = { opacity: 1, y: 0 };
 
 export const BlogCard = ({ slug, title, description, date, tags, image, locale, readingTimeMinutes, index = 0 }: Props) => {
-    const { t } = useLingui();
-
     const formattedDate = new Date(date).toLocaleDateString(locale, {
         year: 'numeric',
         month: 'long',
@@ -70,9 +68,7 @@ export const BlogCard = ({ slug, title, description, date, tags, image, locale, 
                             <div className="flex items-center gap-1">
                                 <Clock className="size-4" />
 
-                                <span>
-                                    {readingTimeMinutes} {t`min read`}
-                                </span>
+                                <Trans>{readingTimeMinutes} min read</Trans>
                             </div>
                         </div>
                     </CardContent>

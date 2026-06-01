@@ -62,7 +62,8 @@ export class RuleRepository {
                 [RuleAssociationEnum.ACTIONS]: {
                     with: {
                         category: buildTranslatedCategoryRelation(language),
-                        tag: true
+                        tag: true,
+                        account: true
                     }
                 }
             }

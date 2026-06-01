@@ -5,6 +5,7 @@ import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-dr
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { CategorySourceEnum } from '../enum/category-source.enum';
@@ -31,6 +32,11 @@ export const TransactionEntryEntityTable = sqliteTable(
         amount: int('amount', { mode: 'number' }).notNull(),
         externalId: text('external_id'),
         exchangeRate: real('exchange_rate').notNull().default(1),
+        baseInstrumentId: int('base_instrument_id', { mode: 'number' }).references(() => InstrumentEntityTable.id, {
+            onDelete: 'set null'
+        }),
+        baseExchangeRate: real('base_exchange_rate'),
+        baseAmount: int('base_amount', { mode: 'number' }),
         toIban: text('to_iban'),
         originalTransactionId: int('original_transaction_id', { mode: 'number' }).references(() => TransactionEntityTable.id, {
             onDelete: 'set null'
@@ -59,6 +65,9 @@ export const TransactionEntryEntityTable = sqliteTable(
             .where(sql`${table.categoryId} IS NULL AND ${table.deletedAt} IS NULL AND ${table.originalTransactionId} IS NULL`),
         index('transaction_entries_category_type_idx')
             .on(table.categoryId, table.type)
-            .where(sql`${table.categoryId} IS NOT NULL`)
+            .where(sql`${table.categoryId} IS NOT NULL`),
+        index('transaction_entries_base_valuation_idx')
+            .on(table.baseInstrumentId, table.baseAmount)
+            .where(sql`${table.deletedAt} IS NULL`)
     ]
 );

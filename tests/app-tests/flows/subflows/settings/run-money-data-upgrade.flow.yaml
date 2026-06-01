@@ -1,0 +1,19 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../navigation/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+      element:
+          id: 'SettingsPage.MoneyDataUpgradeCard'
+      direction: DOWN
+- tapOn:
+      id: 'SettingsPage.MoneyDataUpgradeCard'
+- extendedWaitUntil:
+      visible: 'Value historical entries?'
+      timeout: 10000
+- tapOn: 'Value'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.MoneyDataUpgradeCard.Status.COMPLETE'
+      timeout: 30000

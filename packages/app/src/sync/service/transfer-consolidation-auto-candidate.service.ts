@@ -27,38 +27,62 @@ class TransferConsolidationAutoCandidateService {
         (error, candidates) =>
             `throw pairCandidateCount=${candidates.pairCandidates.length} bridgeCandidateCount=${candidates.ibanBridgeTransferCandidates.length} error=${getErrorMessage(error)}`
     )
-    async processGroups(candidates: ConsolidationCandidateGroupsInterface): Promise<number> {
+    async processGroups(
+        candidates: ConsolidationCandidateGroupsInterface,
+        onProgress?: (processedCandidateGroupCount: number) => void
+    ): Promise<number> {
+        let processedCandidateGroupCount = 0;
+        const publishProgress = (processedCount: number) => {
+            processedCandidateGroupCount += processedCount;
+            onProgress?.(processedCandidateGroupCount);
+        };
         const bridgeChainConsolidated = await this.profileConsolidationBatch(
             'ibanBridgeChain',
             candidates.ibanBridgeChainTransferCandidates,
-            entries => this.processIbanBridgeChainTransferCandidates(entries)
+            entries => this.processIbanBridgeChainTransferCandidates(entries),
+            publishProgress
         );
         const existingTransferBridgeConsolidated = await this.profileConsolidationBatch(
             'existingTransferBridge',
             candidates.existingTransferBridgeCandidates,
-            entries => this.processExistingTransferBridgeCandidates(entries)
+            entries => this.processExistingTransferBridgeCandidates(entries),
+            publishProgress
         );
         const bridgeDuplicateConsolidated = await this.profileConsolidationBatch(
             'ibanBridgeDuplicate',
             candidates.ibanBridgeCanonicalDuplicateCandidates,
-            entries => this.processIbanBridgeCanonicalDuplicateCandidates(entries)
+            entries => this.processIbanBridgeCanonicalDuplicateCandidates(entries),
+            publishProgress
         );
-        const bridgeConsolidated = await this.profileConsolidationBatch('ibanBridge', candidates.ibanBridgeTransferCandidates, entries =>
-            this.processIbanBridgeTransferCandidates(entries)
+        const bridgeConsolidated = await this.profileConsolidationBatch(
+            'ibanBridge',
+            candidates.ibanBridgeTransferCandidates,
+            entries => this.processIbanBridgeTransferCandidates(entries),
+            publishProgress
         );
         const existingTransferIncomeDuplicateConsolidated = await this.profileConsolidationBatch(
             'existingTransferIncomeDuplicate',
             candidates.existingTransferIncomeDuplicateCandidates,
-            entries => this.processExistingTransferIncomeDuplicateCandidates(entries)
+            entries => this.processExistingTransferIncomeDuplicateCandidates(entries),
+            publishProgress
         );
-        const pairConsolidated = await this.profileConsolidationBatch('pair', candidates.pairCandidates, entries =>
-            this.processPairCandidates(entries)
+        const pairConsolidated = await this.profileConsolidationBatch(
+            'pair',
+            candidates.pairCandidates,
+            entries => this.processPairCandidates(entries),
+            publishProgress
         );
-        const atmConsolidated = await this.profileConsolidationBatch('atm', candidates.atmCashWithdrawalCandidates, entries =>
-            this.processAtmCashWithdrawalCandidates(entries)
+        const atmConsolidated = await this.profileConsolidationBatch(
+            'atm',
+            candidates.atmCashWithdrawalCandidates,
+            entries => this.processAtmCashWithdrawalCandidates(entries),
+            publishProgress
         );
-        const refundConsolidated = await this.profileConsolidationBatch('refund', candidates.refundCandidates, entries =>
-            this.processRefundCandidates(entries)
+        const refundConsolidated = await this.profileConsolidationBatch(
+            'refund',
+            candidates.refundCandidates,
+            entries => this.processRefundCandidates(entries),
+            publishProgress
         );
 
         return (
@@ -136,10 +160,12 @@ class TransferConsolidationAutoCandidateService {
     private async profileConsolidationBatch<T>(
         label: string,
         candidates: T[],
-        processBatch: (entries: T[]) => Promise<number>
+        processBatch: (entries: T[]) => Promise<number>,
+        onProgress?: (processedCandidateGroupCount: number) => void
     ): Promise<number> {
         const startedAt = Date.now();
         const consolidated = await processBatch(candidates);
+        onProgress?.(candidates.length);
         logger.log('batch:duration', { label, count: candidates.length, consolidated, durationMs: Date.now() - startedAt });
 
         return consolidated;

@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
+
+### Bug Fixes
+
+- **app:** value pre-range transactions at the oldest historical rate ([#514](https://github.com/budgie-at/budgie/issues/514)) ([8eddce2](https://github.com/budgie-at/budgie/commit/8eddce2f16d7cf9232ac255a421228ab2f417368))
+- **contracts:** fall back to historical rate for net worth, never 1:1 ([e679484](https://github.com/budgie-at/budgie/commit/e679484036052164a89c5e92c9d51690d89d7d37))
+- **contracts:** stop analytics from dropping unvalued entries ([#513](https://github.com/budgie-at/budgie/issues/513)) ([9b0c68f](https://github.com/budgie-at/budgie/commit/9b0c68f33a689654027580e55bd374212df24d2f))
+- exclude deleted-account data from analytics and batch rule application ([#516](https://github.com/budgie-at/budgie/issues/516)) ([51a2f4e](https://github.com/budgie-at/budgie/commit/51a2f4e354fc3d5a8d54c2986e56c20a3ca1ade9)), closes [#509](https://github.com/budgie-at/budgie/issues/509)
+
+### Features
+
+- add historical money data valuation ([998187d](https://github.com/budgie-at/budgie/commit/998187d3d21f1400e80947cbbf20c5931d62fe6c))
+- **app:** always allow convert-to-transfer rule action and show account on rule card ([#506](https://github.com/budgie-at/budgie/issues/506)) ([83dde51](https://github.com/budgie-at/budgie/commit/83dde5191466672c30c7ed588bb0291d9bd90cfd))
+- capture bank fees as a categorized split on sync and import ([#502](https://github.com/budgie-at/budgie/issues/502)) ([2a8a3f7](https://github.com/budgie-at/budgie/commit/2a8a3f7dd57202b0fe08a17d9aa3cad9a3bf29c2))
+
+# [5.28.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.28.0) (2026-05-30)
+
+### Features
+
+- **app:** always allow convert-to-transfer rule action and show account on rule card ([#506](https://github.com/budgie-at/budgie/issues/506)) ([83dde51](https://github.com/budgie-at/budgie/commit/83dde5191466672c30c7ed588bb0291d9bd90cfd))
+
+# [5.27.0](https://github.com/budgie-at/budgie/compare/v5.26.0...v5.27.0) (2026-05-29)
+
+### Features
+
+- **app:** show total transaction count on transactions and account screens ([#500](https://github.com/budgie-at/budgie/issues/500)) ([443d47b](https://github.com/budgie-at/budgie/commit/443d47b3c7ddb6f1bdaa050d98df5d59f9ff60d4))
+
 ## [5.24.1](https://github.com/budgie-at/budgie/compare/v5.24.0...v5.24.1) (2026-05-25)
 
 ### Bug Fixes

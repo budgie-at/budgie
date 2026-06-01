@@ -27,10 +27,28 @@ import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-fi
 
 import { TransactionFieldIconsSelector } from './transaction-field-icons.selector';
 
-import type { TransactionFieldIconsPropsInterface } from '../../interface/transaction-field-icons-props.interface';
+import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import type { TransactionFieldIconsRefInterface } from '../../interface/transaction-field-icons-ref.interface';
+import type { EmptyFn } from '@rnw-community/shared';
+import type { RefObject } from 'react';
+
+interface Props {
+    readonly ref?: RefObject<TransactionFieldIconsRefInterface | null>;
+    readonly variant: ColorPaletteVariant;
+    readonly transactionType: TransactionTypeEnum;
+    readonly splitEntryCount?: number;
+    readonly isAmountPositive?: boolean;
+    readonly onCommentPress: EmptyFn;
+    readonly onDatePress: EmptyFn;
+    readonly onConsolidationPress?: EmptyFn;
+    readonly onSplitPress?: EmptyFn;
+    readonly categoryTestID?: string;
+    readonly tagsTestID?: string;
+    readonly commentTestID?: string;
+}
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
-export const TransactionFieldIcons = (props: TransactionFieldIconsPropsInterface) => {
+export const TransactionFieldIcons = (props: Props) => {
     const {
         ref,
         variant,

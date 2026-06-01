@@ -28,6 +28,7 @@ export const AccountSelectContent = (props: Props) => {
         <AccountSelectorCard
             isSelected={item.id === initialAccountId}
             instrument={item.instrument}
+            isActive={item.isActive}
             onSelect={onSelect}
             title={item.title}
             icon={item.icon}

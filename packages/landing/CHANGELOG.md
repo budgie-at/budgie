@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
+
+### Features
+
+- add historical money data valuation ([998187d](https://github.com/budgie-at/budgie/commit/998187d3d21f1400e80947cbbf20c5931d62fe6c))
+
 # [5.25.0](https://github.com/budgie-at/budgie/compare/v5.24.1...v5.25.0) (2026-05-25)
 
 ### Features

@@ -7,14 +7,17 @@ import { Page } from '../../../@generic/component/page/page';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
 import { TransactionFilterPageHeader } from '../transactions-page-header/transaction-filter-page-header';
 
-import type { AnalyticsTransactionsPageContentPropsInterface } from '../../interface/analytics-transactions-page-content-props.interface';
+import type { TransactionFilterPageHeaderPropsInterface } from '../../interface/transaction-filter-page-header-props.interface';
+import type { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.type';
 
-export const AnalyticsTransactionsPageContent = ({
-    headerProps,
-    sections,
-    isLoading,
-    onLoadMore
-}: AnalyticsTransactionsPageContentPropsInterface) => {
+interface Props {
+    readonly headerProps: TransactionFilterPageHeaderPropsInterface;
+    readonly sections: TransactionsByMonthSection[];
+    readonly isLoading: boolean;
+    readonly onLoadMore: () => void;
+}
+
+export const AnalyticsTransactionsPageContent = ({ headerProps, sections, isLoading, onLoadMore }: Props) => {
     const { t } = useLingui();
 
     const listEmptyState = isLoading ? (
