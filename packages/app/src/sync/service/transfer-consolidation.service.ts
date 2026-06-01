@@ -12,10 +12,12 @@ import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-
 import { transferConsolidationAutoCandidateService } from './transfer-consolidation-auto-candidate.service';
 import { transferConsolidationCandidateService } from './transfer-consolidation-candidate.service';
 
-import type { ConsolidationCandidateGroupsInterface } from '../interface/consolidation-candidate-groups.interface';
-import type { ConsolidationPreviewInterface } from '../interface/consolidation-preview.interface';
-import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
-import type { TransferConsolidationProgressSnapshotInterface } from '../interface/transfer-consolidation-progress-snapshot.interface';
+import type {
+    ConsolidationCandidateGroupsInterface,
+    ConsolidationPreviewInterface,
+    ConsolidationProgressSnapshotInterface,
+    ConsolidationResultInterface
+} from '@budgie/consolidation';
 
 const logger = getLogger('TransferConsolidationService');
 
@@ -58,7 +60,7 @@ class TransferConsolidationService {
             `done autoCandidateCount=${result.autoCandidateCount} manualReviewCandidateCount=${result.manualReviewCandidateCount} remainingCandidateGroupCount=${result.remainingCandidateGroupCount} isRunning=${String(result.isRunning)}`,
         error => `throw error=${getErrorMessage(error)}`
     )
-    async getProgressSnapshot(): Promise<TransferConsolidationProgressSnapshotInterface> {
+    async getProgressSnapshot(): Promise<ConsolidationProgressSnapshotInterface> {
         return this.runExclusive(() => this.buildProgressSnapshot());
     }
 
@@ -134,7 +136,7 @@ class TransferConsolidationService {
         };
     }
 
-    private async buildProgressSnapshot(): Promise<TransferConsolidationProgressSnapshotInterface> {
+    private async buildProgressSnapshot(): Promise<ConsolidationProgressSnapshotInterface> {
         const startedAt = Date.now();
         const candidates = await transferConsolidationCandidateService.findGroups();
         const autoCandidateCount = this.countAutoCandidates(candidates);

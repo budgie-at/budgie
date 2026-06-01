@@ -1,4 +1,4 @@
-export interface TransferConsolidationProgressSnapshotInterface {
+export interface ConsolidationProgressSnapshotInterface {
     readonly autoCandidateCount: number;
     readonly isRunning: boolean;
     readonly manualReviewCandidateCount: number;
