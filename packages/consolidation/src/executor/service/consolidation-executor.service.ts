@@ -2,7 +2,9 @@
 import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
+
+import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
 
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
@@ -16,7 +18,6 @@ import type {
     IbanBridgeTransferCandidateInterface,
     RefundCandidateInterface,
     TransactionEntityInterface,
-    TransactionTagsEntityInterface,
     TransferPairCandidateInterface
 } from '@budgie/contracts';
 
@@ -456,36 +457,11 @@ export class ConsolidationExecutorService {
     }
 
     private async copySourceTags(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
-        const sourceTags = await this.findSourceTags(sourceTransactionIds, tx);
-        const existingTags = await this.dependencies.transactionTagsRepository.findByTransactionId(canonicalTransactionId, tx);
-        const existingTagIds = new Set(existingTags.map(tag => tag.tagId));
-        const uniqueTagIds = [...new Set(sourceTags.map(tag => tag.tagId))].filter(tagId => !existingTagIds.has(tagId));
-
-        if (isEmptyArray(uniqueTagIds)) {
-            return;
-        }
-
-        await this.dependencies.transactionTagsRepository.bulkCreate(
-            uniqueTagIds.map(tagId => ({
-                transactionId: canonicalTransactionId,
-                tagId,
-                isPrimary: false
-            })),
+        await consolidationCopySourceTransactionTags(
+            this.dependencies.transactionTagsRepository,
+            sourceTransactionIds,
+            canonicalTransactionId,
             tx
         );
-    }
-
-    private async findSourceTags(sourceTransactionIds: number[], tx: DB): Promise<TransactionTagsEntityInterface[]> {
-        if (!isNotEmptyArray(sourceTransactionIds)) {
-            return [];
-        }
-
-        const tagCollections = await Promise.all(
-            sourceTransactionIds.map(async transactionId =>
-                this.dependencies.transactionTagsRepository.findByTransactionId(transactionId, tx)
-            )
-        );
-
-        return tagCollections.flat();
     }
 }
