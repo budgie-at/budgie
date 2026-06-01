@@ -1,20 +1,21 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { msg, plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { Button } from '../../../@generic/component/button/button';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { BankSyncRepairSourceList } from '../../../settings/components/bank-sync-repair-source-list/bank-sync-repair-source-list';
+import { BankSyncRepairSourceRow } from '../../../settings/components/bank-sync-repair-source-row/bank-sync-repair-source-row';
 import { BankSyncRepairsEmptyStateCard } from '../../../settings/components/bank-sync-repairs-empty-state-card/bank-sync-repairs-empty-state-card';
 import { BankSyncRepairsErrorCard } from '../../../settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card';
 import { BankSyncRepairsIntroCard } from '../../../settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card';
-import { BankSyncRepairsRepairButton } from '../../../settings/components/bank-sync-repairs-repair-button/bank-sync-repairs-repair-button';
 import { getBankSyncRepairText } from '../../../settings/utils/get-bank-sync-repair-text.util';
 import { useBankSyncDuplicateRepairPreviewQuery } from '../../../sync/query/use-bank-sync-duplicate-repair-preview.query';
 import { bankSyncRepairService } from '../../../sync/service/bank-sync-repair.service';
@@ -122,13 +123,22 @@ export default function BankSyncRepairsPage() {
 
                 {shouldShowEmptyState ? <BankSyncRepairsEmptyStateCard /> : null}
 
-                <BankSyncRepairSourceList isVisible={shouldShowSources} sources={sources} />
+                {shouldShowSources ? (
+                    <View className="gap-y-lg">
+                        {sources.map(source => (
+                            <BankSyncRepairSourceRow key={source.externalSource} {...source} />
+                        ))}
+                    </View>
+                ) : null}
 
-                <BankSyncRepairsRepairButton
+                <Button
+                    testID={BankSyncRepairsPageSelector.RepairButton}
                     onPress={handleRepair}
                     disabled={isRepairButtonDisabled}
                     isLoading={isRepairing}
                     content={buttonContent}
+                    leftIcon={UserIconNameEnum.Wrench}
+                    variant="destructive"
                 />
             </ScrollView>
         </Page>

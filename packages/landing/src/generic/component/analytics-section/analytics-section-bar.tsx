@@ -1,7 +1,9 @@
 import { AlertTriangle } from 'lucide-react';
 
+import type { ReactNode } from 'react';
+
 interface Props {
-    label: string;
+    label: ReactNode;
     value: string;
     width: string;
     color: string;

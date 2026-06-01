@@ -40,12 +40,11 @@ export default async function LandingPage(props: PageLangParam) {
     initLingui(lang);
 
     const i18n = getI18nInstance(lang);
-    const { softwareApplication, faqPage } = buildLandingJsonLd(i18n);
+    const softwareApplication = buildLandingJsonLd(i18n);
 
     return (
         <main className="flex-1">
             <JsonLd data={softwareApplication} />
-            <JsonLd data={faqPage} />
 
             {/* Hero + Trust */}
             <HeroSection />

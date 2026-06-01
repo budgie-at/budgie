@@ -5,13 +5,15 @@ import { BookOpen, Home } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
+import { isString } from '@rnw-community/shared';
+
 import { SUPPORTED_LOCALES as locales } from '../../i18n/supported-locales.constant.mjs';
 import { Button } from '../../ui/button';
 
 export default function NotFound() {
     const params = useParams();
     const rawLang = params.lang;
-    const detectedLang = typeof rawLang === 'string' && locales.includes(rawLang) ? rawLang : 'en';
+    const detectedLang = isString(rawLang) && locales.includes(rawLang) ? rawLang : 'en';
 
     return (
         <main className="flex-1 flex items-center justify-center py-20 md:py-32">
