@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.31.0](https://github.com/budgie-at/budgie/compare/v5.30.1...v5.31.0) (2026-06-01)
+
+### Bug Fixes
+
+- address bank sync repair review ([a568946](https://github.com/budgie-at/budgie/commit/a5689460d52dfb3f24e35f120a89efa3eeb4ab00))
+- **app:** avoid locked database during bank sync repair ([4b87461](https://github.com/budgie-at/budgie/commit/4b87461e3e5f334460b564a7bf46e44566dc1e10))
+- **app:** clean up bank sync repair flow ([14e8be0](https://github.com/budgie-at/budgie/commit/14e8be0df5929977629bda6ffb97423b5125d42f))
+- **app:** harden bank sync repair preview ([214c0ef](https://github.com/budgie-at/budgie/commit/214c0ef8eb3dab9b6816713cb62303150c0f9b84))
+- **app:** repair bank sync duplicate consolidations ([c8be995](https://github.com/budgie-at/budgie/commit/c8be995d2362b8490c309f43cec02d8724a95ae9))
+- clear bank sync repair ci checks ([87553c9](https://github.com/budgie-at/budgie/commit/87553c9e9cb63e436f686c1ace6aa6c391e57e03))
+
+### Features
+
+- **app:** add bank sync repair interfaces ([19c898e](https://github.com/budgie-at/budgie/commit/19c898ecb094400939be7eaeda14897324ceb753))
+- **app:** add bank sync repair preview query ([44fd81b](https://github.com/budgie-at/budgie/commit/44fd81b9e1ccc738a5ac64e7271875adf4696f80))
+- **app:** add bank sync repair screen ([2c628cb](https://github.com/budgie-at/budgie/commit/2c628cb6df5c343b3eb070b2dd5e6908250fcdef))
+- **app:** add bank sync repair service ([50713f0](https://github.com/budgie-at/budgie/commit/50713f08dbf36d9d2041883bd3c0a0e545cce570))
+- **app:** add bank sync repair settings card ([248a4ec](https://github.com/budgie-at/budgie/commit/248a4ecf7c8a79a48d7c3779ef6b5b7983c99e42))
+- **app:** add bank sync repair translations ([d8f30ff](https://github.com/budgie-at/budgie/commit/d8f30ff4ef8298a88f52395cb64ccdee8f9971f9))
+
 ## [5.30.1](https://github.com/budgie-at/budgie/compare/v5.30.0...v5.30.1) (2026-06-01)
 
 ### Bug Fixes
