@@ -41,8 +41,8 @@ const buildExecuteSyncResult = <T>(
     raw: boolean
 ): ExpoSqliteExecuteSyncResult<T> => {
     const normalizedParams = normalizeSqliteParams(params);
-    const iterator = sqlite.prepare<unknown[], T>(sqlText).iterate(...normalizedParams);
     let runResult: Database.RunResult | null = null;
+    let iterator: IterableIterator<T> | null = null;
 
     const getRunResult = (): Database.RunResult => {
         if (!isDefined(runResult)) {
@@ -50,6 +50,14 @@ const buildExecuteSyncResult = <T>(
         }
 
         return runResult;
+    };
+
+    const getIteratorResult = (): IterableIterator<T> => {
+        if (!isDefined(iterator)) {
+            iterator = sqlite.prepare<unknown[], T>(sqlText).iterate(...normalizedParams);
+        }
+
+        return iterator;
     };
 
     const getIterator = (): ExpoSqliteExecuteSyncResult<T> => result;
@@ -68,7 +76,7 @@ const buildExecuteSyncResult = <T>(
                 .raw(raw)
                 .all(...normalizedParams),
         resetSync: emptyFn,
-        next: () => iterator.next(),
+        next: () => getIteratorResult().next(),
         [Symbol.iterator]: getIterator
     };
 
