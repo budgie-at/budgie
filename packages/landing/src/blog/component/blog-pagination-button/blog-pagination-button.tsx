@@ -10,9 +10,7 @@ export const BlogPaginationButton = ({ currentPage, onPageChange, page }: Props)
     const isActive = page === currentPage;
     const ariaCurrent = isActive && 'page';
 
-     
     const className = isActive ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80 text-foreground';
-     
 
     const handleClick = () => {
         onPageChange(page);
