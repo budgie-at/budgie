@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@budgie/bank-sync": "workspace:*",
+        "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:*",
         "@rnw-community/shared": "^2.0.0",
         "better-sqlite3": "^11.7.0",

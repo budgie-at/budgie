@@ -3,7 +3,7 @@ import { transferConsolidationService } from '@app/sync/service/transfer-consoli
 import { seed } from './seed';
 import { seedRefundedExpense } from './seed-refund-fixture';
 
-import type { ConsolidationResultInterface } from '@app/sync/interface/consolidation-result.interface';
+import type { ConsolidationResultInterface } from '@budgie/consolidation';
 
 type RunRefundScenarioInput = Omit<Parameters<typeof seedRefundedExpense>[0], 'accountId'>;
 
