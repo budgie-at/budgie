@@ -28,7 +28,7 @@ msgstr "\"Wie synchronisiere ich zwischen Geräten?\""
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "“Include in net worth” toggle per account for partial-truth balance sheets"
-msgstr "„In Nettovermögen einschließen“-Schalter pro Konto für selektive Bilanzsichten"
+msgstr "„In Nettovermögen einbeziehen“-Schalter pro Konto, damit nur die Salden zählen, die du wirklich im Gesamtwert sehen willst"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "“Isn’t cloud more convenient?”"
@@ -299,7 +299,7 @@ msgstr "<0>Am besten für:</0> Power-User, die granulare Kontrolle über jeden A
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Best for:</0> Power users with server experience who want a comprehensive, self-hosted financial management system."
-msgstr "<0>Am besten für:</0> Power-User mit Servererfahrung, die ein umfassendes, selbst gehostetes Finanzmanagementsystem wünschen."
+msgstr "<0>Am besten für:</0> Menschen, die gern einen Server betreiben und ein tiefes, selbst gehostetes Finanzsystem wollen."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Best for:</0> Technical users comfortable with self-hosting who want maximum control and don’t mind a steeper learning curve."
@@ -359,7 +359,7 @@ msgstr "<0>Am besten für</0>: Datenschutz-Maximalisten mit Wunsch nach moderner
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Best For</0>: Privacy-first users"
-msgstr "<0>Budgie</0>: Datenschutz-fokussierte Nutzer"
+msgstr "<0>Am besten für</0>: Nutzer, die Datenschutz standardmäßig erwarten"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Best For</0>: Self-hosters"
@@ -753,7 +753,7 @@ msgstr "<0>Wenn Sie zu Credit Karma migriert sind:</0> Ihre Transaktionshistorie
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Incredibly comprehensive</0>: Tracks assets, liabilities, budgets, piggy banks, bills, and more. If you can think of a financial scenario, Firefly III probably handles it."
-msgstr "<0>Unglaublich umfassend</0>: Verfolgt Vermögenswerte, Verbindlichkeiten, Budgets, Sparschweine, Rechnungen und mehr. Wenn Sie sich ein finanzielles Szenario vorstellen können, kann Firefly III es wahrscheinlich abbilden."
+msgstr "<0>Extrem umfangreich</0>: Erfasst Vermögenswerte, Verbindlichkeiten, Budgets, Sparschweine, Rechnungen und mehr. Wenn du den Finanz-Workflow benennen kannst, unterstützt Firefly III ihn wahrscheinlich."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "<0>Inference logging</0> — Most cloud AI providers log inputs for model improvement, safety review, and abuse detection. Your transaction descriptions become training data."
@@ -833,7 +833,7 @@ msgstr "<0>Lokale Datenspeicherung</0> — Ihre Transaktionshistorie lebt auf Ih
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Local decryption</0>: The receiving device uses key exchange protocols to establish the ability to decrypt the transferred data"
-msgstr "<0>Lokale Entschlüsselung</0>: Das empfangende Gerät verwendet Schlüsselaustauschprotokolle, um die Fähigkeit zur Entschlüsselung der übertragenen Daten herzustellen"
+msgstr "<0>Lokale Entschlüsselung</0>: Die Geräte schließen einen Schlüsselaustausch ab, damit das empfangende Gerät die übertragenen Daten lokal entschlüsseln kann"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Local spreadsheet apps.</0> LibreOffice Calc, Numbers (offline mode)"
@@ -1307,7 +1307,7 @@ msgstr ""
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Powerful reporting.</0> Detailed charts and insights about your spending."
-msgstr "<0>Leistungsstarke Berichte.</0> Detaillierte Diagramme und Einblicke in Ihre Ausgaben."
+msgstr "<0>Nützliche Berichte.</0> Detaillierte Diagramme und Einblicke in deine Ausgaben."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>PowerSync</0> offers real-time sync for mobile and web applications with Postgres backends."
@@ -1512,7 +1512,7 @@ msgstr "<0>RGA (Replicated Growable Array)</0> behandelt geordnete Sequenzen wie
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Rule engine</0>: Powerful automation rules can categorize transactions, add tags, and update fields based on custom logic."
-msgstr "<0>Regel-Engine</0>: Leistungsstarke Automatisierungsregeln können Transaktionen kategorisieren, Tags hinzufügen und Felder basierend auf individueller Logik aktualisieren."
+msgstr "<0>Regel-Engine</0>: Nützliche Automatisierungsregeln können Transaktionen kategorisieren, Tags hinzufügen und Felder anhand eigener Logik aktualisieren."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Rule-based automation.</0> Automatic categorization and tagging."
@@ -1544,7 +1544,7 @@ msgstr "<0>Begrenzte Berechtigungen</0> — Das Token gewährt nur Zugriff auf T
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>Seamless collaboration with colleagues.</0> Local-first does not mean single-user. Real-time collaboration should work smoothly when connected."
-msgstr "<0>Nahtlose Zusammenarbeit mit Kollegen.</0> Local-First bedeutet nicht Einzelnutzer. Echtzeit-Zusammenarbeit sollte bei bestehender Verbindung reibungslos funktionieren."
+msgstr "<0>Reibungslose Zusammenarbeit mit Kolleginnen und Kollegen.</0> Local-first heißt nicht Single-User. Echtzeit-Zusammenarbeit sollte online sauber funktionieren."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Secondary use</0>: Using aggregated data to build credit scoring and identity products"
@@ -1620,7 +1620,7 @@ msgstr "<0>Standard-Exportformate</0> — CSV-, JSON- oder SQL-Exporte, die Sie 
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Stay informed</0>: Follow fintech security news and breach disclosures"
-msgstr "<0>Informiert bleiben</0>: Verfolgen Sie Fintech-Sicherheitsnachrichten und Bekanntmachungen zu Datenpannen"
+msgstr "<0>Bleib auf dem Laufenden</0>: Verfolge Fintech-Sicherheitsnews und Meldungen zu Datenpannen"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "<0>Stored locally</0> — In an offline-first app, the token lives on your device, not on an aggregator server. Revoking it from your bank also removes the only remaining access path."
@@ -1712,7 +1712,7 @@ msgstr ""
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "<0>Universal compatibility</0> — Every bank that has ever existed can produce a statement. CSV and PDF exports work with every financial institution on the planet, with no API access required."
-msgstr "<0>Universelle Kompatibilität</0> — Jede Bank, die je existiert hat, kann einen Kontoauszug erstellen. CSV- und PDF-Exporte funktionieren mit jedem Finanzinstitut der Welt, ohne API-Zugang."
+msgstr "<0>Breite Kompatibilität</0> — Die meisten Banken stellen Kontoauszüge zum Download bereit. CSV- und PDF-Exporte funktionieren mit vielen Finanzinstituten, ganz ohne API-Zugang."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Upselling financial products</0>: The app becomes a distribution channel for insurance, banking, and investment services"
@@ -1808,7 +1808,7 @@ msgstr "<0>Ihre komplette Finanzhistorie liegt auf deren Servern.</0> Jede Trans
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>Your work is not trapped on one device.</0> Despite data being local, you should be able to access your work from multiple devices seamlessly."
-msgstr "<0>Ihre Arbeit ist nicht auf ein Gerät beschränkt.</0> Obwohl die Daten lokal sind, sollten Sie nahtlos von mehreren Geräten auf Ihre Arbeit zugreifen können."
+msgstr "<0>Deine Arbeit steckt nicht auf einem Gerät fest.</0> Lokale Daten sollten trotzdem sauber zwischen den Geräten wechseln, die du wirklich nutzt."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>Your-cloud backup</0> — Encrypted backups that you store in your own cloud storage (iCloud, Google Drive, Dropbox) or locally, not on the developer's servers."
@@ -2187,7 +2187,7 @@ msgstr ""
 
 #: src/generic/component/features-section/features-section-grid.tsx
 msgid "A 1.7B-parameter LLM and 768-dim embedding model categorize every transaction on your phone."
-msgstr "Ein LLM mit 1,7 Milliarden Parametern und ein 768-dim Embedding-Modell kategorisieren jede Transaktion auf Ihrem Smartphone."
+msgstr "Budgie kategorisiert Transaktionen direkt auf deinem Smartphone mit lokaler KI, damit deine Ausgabendaten privat bleiben."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "A 4–6 digit PIN unlocks the app and unlocks the SQLCipher database. Without the PIN, the database file is unreadable — even with full filesystem access."
@@ -2203,7 +2203,7 @@ msgstr "Ein Cloud-Assistent sendet Ihre Transaktionsbeschreibungen an ein Remote
 
 #: src/app/[lang]/blog/mint-alternatives-developers/metadata.ts
 msgid "A comprehensive developer's guide to Mint alternatives after the shutdown. Detailed comparison of Budgie, Actual Budget, Firefly III, Lunch Money, YNAB, and more."
-msgstr "Ein umfassender Entwickler-Leitfaden zu Mint-Alternativen nach der Einstellung. Detaillierter Vergleich von Budgie, Actual Budget, Firefly III, Lunch Money, YNAB und mehr."
+msgstr "Ein praktischer Entwicklerleitfaden zu Mint-Alternativen nach der Abschaltung, mit einem klaren Vergleich von Budgie, Actual Budget, Firefly III, Lunch Money, YNAB und mehr."
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "A conflict picker appears for every edited row before write. You choose to keep your edit, take the bank's version, or merge fields."
@@ -2219,7 +2219,7 @@ msgstr "Eine tägliche Hintergrundaufgabe ruft Kurse aus einer frei verfügbaren
 
 #: src/app/[lang]/features/tag-analytics/metadata.ts
 msgid "A dedicated Tags tab in analytics with per-tag totals and a drillable Untagged bucket that surfaces every gap in your labeling."
-msgstr "Ein dedizierter Tags-Reiter in der Analyse mit Summen pro Tag und einem aufklappbaren „Nicht markiert“-Bereich, der jede Lücke in Ihrer Kennzeichnung aufzeigt."
+msgstr "Ein eigener Tags-Tab zeigt Summen pro Tag plus eine Ansicht „Ohne Tag“ für Transaktionen, die noch Labels brauchen."
 
 #: src/app/[lang]/features/statistics-tags-tab/metadata.ts
 msgid "A dedicated Tags tab in Statistics with sortable per-tag totals and a drillable Untagged bucket that surfaces every transaction missing a label."
@@ -2247,11 +2247,11 @@ msgstr "Eine langlebige persönliche Finanz-App hat Eigenschaften, die nicht dav
 
 #: src/app/[lang]/features/uncategorized-transactions/metadata.ts
 msgid "A filter-aware missing-category pill surfaces uncategorized transactions before they distort your budget analytics."
-msgstr "Ein filterbezogener Fehlende-Kategorien-Hinweis zeigt nicht kategorisierte Transaktionen an, bevor sie Ihre Budgetanalysen verzerren."
+msgstr "Eine filterbewusste Abkürzung zeigt unkategorisierte Transaktionen, bevor sie deine Budgetberichte verzerren."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "A finance app you check at midnight should not blast your retinas. Budgie's dark theme is OLED-friendly black, not a dimmed gray, and respects the system preference by default."
-msgstr "Eine Finanz-App, die Sie um Mitternacht öffnen, sollte Ihre Augen nicht blenden. Budgies Dunkelmodus ist OLED-freundliches Schwarz – kein abgedunkeltes Grau – und berücksichtigt standardmäßig die Systemeinstellung."
+msgstr "Eine Finanz-App, die du um Mitternacht öffnest, sollte angenehm für die Augen sein. Budgies Dark Theme ist OLED-freundlich schwarz, nicht nur abgedunkelt grau, und respektiert standardmäßig die Systemeinstellung."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "A financial data aggregator that services millions of users holds credentials or access tokens for millions of bank accounts in one system. From an attacker perspective, this is a far more attractive target than any individual bank, because:"
@@ -2279,11 +2279,11 @@ msgstr ""
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
 msgid "A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
-msgstr "Ein technischer Tiefgang in Budgies Offline-First-Architektur: Wie SQLite, AES-256-Verschlüsselung und Gerät-zu-Gerät-Synchronisierung Ihre Finanzdaten vollständig privat halten."
+msgstr "Ein technischer Blick auf Budgies Offline-first-Architektur: SQLite, AES-256-Verschlüsselung und Gerät-zu-Gerät-Sync halten deine Finanzdaten auf deinem Gerät."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "A technical deep-dive into Budgie’s offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
-msgstr "Ein technischer Tiefgang in Budgies Offline-First-Architektur: Wie SQLite, AES-256-Verschlüsselung und Gerät-zu-Gerät-Synchronisierung Ihre Finanzdaten vollständig privat halten."
+msgstr "Ein technischer Blick auf Budgies Offline-first-Architektur: SQLite, AES-256-Verschlüsselung und Gerät-zu-Gerät-Sync halten deine Finanzdaten auf deinem Gerät."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction so you can label them retroactively."
@@ -2473,7 +2473,7 @@ msgstr "Nach der Einstellung von Mint brauchen Entwickler eine Finanz-App, die D
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/metadata.ts
 msgid "After picking a category, the on-device LLM proposes up to three tags as tappable pills. Embedding-first fallback when the LLM is busy."
-msgstr "Nach der Auswahl einer Kategorie schlägt das geräteeigene LLM bis zu drei Tags als tippbare Chips vor. Embedding-zuerst-Fallback, wenn das LLM beschäftigt ist."
+msgstr "Nachdem du eine Kategorie gewählt hast, schlägt das On-device-LLM bis zu drei Tags vor, die du mit einem Tap hinzufügen kannst. Wenn das LLM beschäftigt ist, hält die Embedding-Suche Vorschläge verfügbar."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "After selecting a category, the on-device LLM proposes up to three tags as tappable pill chips — with an embedding fallback that stays instant even when the model is still warming up."
@@ -2601,27 +2601,27 @@ msgstr "Alle Transaktionen"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "All while keeping your data completely private."
-msgstr "Alles bei vollständiger Privatsphäre Ihrer Daten."
+msgstr "Und deine Daten bleiben dort, wo sie hingehören: bei dir."
 
 #: src/generic/component/security-section/security-section-cards.tsx
 msgid "All your data is stored locally on your device. We have no servers storing your information—because we never see it in the first place."
-msgstr "Alle Ihre Daten werden lokal auf Ihrem Gerät gespeichert. Wir haben keine Server, die Ihre Informationen speichern – weil wir sie von Anfang an nie sehen."
+msgstr "Deine Daten werden lokal auf deinem Gerät gespeichert. Wir behalten keine Serverkopie, weil wir sie gar nicht erst sehen."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "All your financial data is stored exclusively on your device. Your transactions, accounts, budgets, and insights never touch our servers because <0>we don’t have any</0>."
-msgstr "Alle Ihre Finanzdaten werden ausschließlich auf Ihrem Gerät gespeichert. Ihre Transaktionen, Konten, Budgets und Erkenntnisse berühren niemals unsere Server, weil <0>wir keine haben</0>."
+msgstr "Deine Finanzdaten leben auf deinem Gerät. Transaktionen, Konten, Budgets und Insights berühren keine Budgie-Server, weil <0>keine Budgie-Server sie speichern</0>."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "All your financial data is stored locally on your device using industry-standard encryption. We utilize device-level security features including:"
-msgstr ""
+msgstr "Ihre Finanzdaten werden lokal auf Ihrem Gerät mit Standardverschlüsselung gespeichert. Budgie nutzt dabei Sicherheitsfunktionen des Geräts, darunter:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "All your financial data, including transactions, accounts, budgets, and categories, is stored in a local SQLite database on your device. We use Drizzle ORM for type-safe database operations, ensuring data integrity while keeping everything local."
-msgstr "Alle Ihre Finanzdaten, einschließlich Transaktionen, Konten, Budgets und Kategorien, werden in einer lokalen SQLite-Datenbank auf Ihrem Gerät gespeichert. Wir verwenden Drizzle ORM für typsichere Datenbankoperationen und gewährleisten Datenintegrität, während alles lokal bleibt."
+msgstr "Transaktionen, Konten, Budgets und Kategorien liegen in einer lokalen SQLite-Datenbank auf deinem Gerät. Drizzle ORM gibt uns typsichere Datenbankoperationen, ohne deine Daten vom Gerät zu bewegen."
 
 #: src/generic/component/features-section/features-section-header.tsx
 msgid "All-in-One"
-msgstr "Alles-in-Einem"
+msgstr "Alles zusammen"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Allow reasonable time for fixes before public disclosure"
@@ -2654,7 +2654,7 @@ msgstr "Immer. Tippen Sie auf eine beliebige aggregierte Zahl, um in die nativen
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Among privacy-focused options, Budgie offers the best mobile experience as it was built mobile-first. Copilot has an excellent iOS app but requires Apple ecosystem and bank sync. Most open-source alternatives (Actual, Firefly III) have web interfaces that work on mobile but aren’t native apps, which can feel less polished on a phone."
-msgstr "Unter den datenschutzorientierten Optionen bietet Budgie die beste mobile Erfahrung, da es mobil-zuerst entwickelt wurde. Copilot hat eine ausgezeichnete iOS-App, erfordert aber das Apple-Ökosystem und Banksynchronisierung. Die meisten Open-Source-Alternativen (Actual, Firefly III) haben Weboberflächen, die auf Mobilgeräten funktionieren, aber keine nativen Apps sind, was sich auf einem Telefon weniger geschliffen anfühlen kann."
+msgstr "Unter den datenschutzorientierten Optionen fühlt sich Budgie am nativsten auf dem Smartphone an, weil es mobile-first gebaut wurde. Copilot hat eine starke iOS-App, setzt aber Apple plus Banksync voraus. Die meisten Open-Source-Alternativen, darunter Actual und Firefly III, laufen mobil im Web, was sich auf dem Phone weniger rund anfühlen kann."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Amount"
@@ -2759,7 +2759,7 @@ msgstr ""
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Any future solution will maintain our core principle: your financial data remains on your device, encrypted, and under your control."
-msgstr "Jede zukünftige Lösung wird unser Kernprinzip bewahren: Ihre Finanzdaten bleiben auf Ihrem Gerät, verschlüsselt und unter Ihrer Kontrolle."
+msgstr "Jede zukünftige Lösung hält an unserem Kernprinzip fest: Deine Finanzdaten bleiben auf deinem Gerät, verschlüsselt und unter deiner Kontrolle."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Any SDK that requires network connectivity for basic functionality"
@@ -2872,7 +2872,7 @@ msgstr "Werden Nutzerbedenken respektvoll und gründlich behandelt?"
 
 #: src/app/[lang]/blog/page.tsx
 msgid "Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking."
-msgstr "Artikel über finanzielle Privatsphäre, bewährte Sicherheitspraktiken, Offline-First-Architektur und Tipps für eine bessere Ausgabenverfolgung."
+msgstr "Klare Guides zu finanzieller Privatsphäre, sichererer App-Architektur und saubererem Ausgabentracking."
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "As a freelancer earning in multiple currencies, Budgie handles it properly. I can finally see my real financial picture without spreadsheet gymnastics."
@@ -2997,7 +2997,7 @@ msgstr "Blenden Sie sensible Salden beim Erstellen von Screenshots automatisch a
 
 #: src/generic/component/integrations-section/integrations-section-header.tsx
 msgid "Automatically sync transactions from your favorite banks, fintech apps, and crypto exchanges. Or import your data via CSV—we support it all."
-msgstr "Synchronisieren Sie Transaktionen automatisch von Ihren bevorzugten Banken, Fintech-Apps und Krypto-Börsen. Oder importieren Sie Ihre Daten per CSV – wir unterstützen alles."
+msgstr "Synchronisiere unterstützte Banken direkt oder importiere aus PDF, Excel und CSV. Krypto und Investments bleiben manuell und auf dem Gerät."
 
 #: src/app/[lang]/features/data-export/opengraph-image.tsx
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
@@ -3161,11 +3161,11 @@ msgstr ""
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
 msgid "Bank-grade biometric unlock — same Secure Enclave, same encryption key."
-msgstr "Biometrisches Entsperren auf Bankniveau – dieselbe Secure Enclave, derselbe Verschlüsselungsschlüssel."
+msgstr "Biometrisches Entsperren, gestützt durch dieselbe Plattform-Hardware, die auch deine Banking-App nutzt."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Bank-grade biometric unlock that drives the same encryption key as your PIN — frictionless and uncompromising."
-msgstr "Biometrisches Entsperren auf Bankniveau, das denselben Verschlüsselungsschlüssel wie Ihre PIN verwendet – reibungslos und kompromisslos."
+msgstr "Biometrisches Entsperren ist an denselben Verschlüsselungsschlüssel wie deine PIN gebunden, damit Budgie schnell öffnet, ohne den Tresor zu schwächen."
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/metadata.ts
@@ -3347,7 +3347,7 @@ msgstr "Biometrische Authentifizierung — Budgie"
 
 #: src/generic/component/hero-section/hero-section-header.tsx
 msgid "Biometric Encrypted"
-msgstr "Biometrisch verschlüsselt"
+msgstr "Biometrische Sperre"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "biometric finance app"
@@ -3371,11 +3371,11 @@ msgstr "Biometrisch gesperrt"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Biometrics are the right balance for an expense app you open ten times a day. Budgie hooks into the platform Secure Enclave / TEE so the device, not Budgie, vouches for you."
-msgstr "Biometrie ist das richtige Gleichgewicht für eine Ausgaben-App, die Sie zehnmal täglich öffnen. Budgie bindet sich in die Secure Enclave / TEE der Plattform ein, sodass das Gerät – nicht Budgie – für Sie bürgt."
+msgstr "Biometrie ergibt Sinn für eine Ausgaben-App, die du oft öffnest. Budgie nutzt die Secure Enclave / TEE der Plattform, sodass der biometrische Abgleich auf dem Gerät bleibt."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Biometrics unlock a key fragment in the platform Secure Enclave / Keystore that combines with your PIN-derived key. The platform vouches for biometric matching using the same hardware your bank app uses."
-msgstr "Biometrie entsperrt ein Schlüsselfragment in der plattformeigenen Secure Enclave / im Keystore, das mit Ihrem PIN-abgeleiteten Schlüssel kombiniert wird. Die Plattform bestätigt die biometrische Übereinstimmung mit derselben Hardware, die Ihre Bank-App verwendet."
+msgstr "Biometrie entsperrt ein Schlüsselfragment in der Secure Enclave / Keystore der Plattform, dann kombiniert Budgie es mit deinem PIN-abgeleiteten Schlüssel. Die biometrische Prüfung nutzt denselben hardwaregestützten Pfad, auf den auch deine Banking-App setzt."
 
 #: src/generic/component/integrations-section/integrations-section-investments-card.tsx
 msgid "Bitcoin"
@@ -3517,7 +3517,7 @@ msgstr "Budgie - Ausgaben-Tracker mit Datenschutz-Fokus"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Budgie (\"we,\" \"our,\" or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application and website (collectively, the \"Service\"). We are a privacy-first financial tracking application that operates on an offline-first basis, meaning your financial data stays on your device."
-msgstr ""
+msgstr "Budgie („wir“, „unser“ oder „uns“) verpflichtet sich, Ihre Privatsphäre zu schützen. Diese Datenschutzrichtlinie erklärt, wie wir Ihre Informationen erfassen, verwenden, offenlegen und schützen, wenn Sie unsere mobile Anwendung und Website (zusammen der „Service“) nutzen. Wir sind eine private Finanztracking-App, die offline-first arbeitet, das heißt: Ihre Finanzdaten bleiben auf Ihrem Gerät."
 
 #: src/generic/component/problem-solution-section/problem-solution-card.tsx
 msgid "Budgie (Offline-First)"
@@ -3594,7 +3594,7 @@ msgstr "Budgie hat einen kostenlosen Tarif, der die grundlegende Ausgabenverfolg
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie has a minimal learning curve with a familiar interface and quick setup. Actual Budget is moderate as envelope budgeting takes adjustment. Firefly III has a steep curve but is powerful and feature-rich. Lunch Money is low with a clean, intuitive interface. YNAB is moderate to steep as the methodology requires commitment. Monarch provides a low curve with a very Mint-like experience."
-msgstr "Budgie hat eine minimale Lernkurve mit einer vertrauten Oberfläche und schneller Einrichtung. Actual Budget ist moderat, da Umschlag-Budgetierung Eingewöhnung erfordert. Firefly III hat eine steile Kurve, ist aber leistungsstark und funktionsreich. Lunch Money ist niedrig mit einer klaren, intuitiven Oberfläche. YNAB ist moderat bis steil, da die Methodik Engagement erfordert. Monarch bietet eine niedrige Kurve mit einer sehr Mint-ähnlichen Erfahrung."
+msgstr "Budgie ist schnell gelernt, weil es sich wie eine normale Mobile-App anfühlt. Actual Budget braucht mehr Eingewöhnung, wenn Envelope Budgeting neu für dich ist. Firefly III ist am steilsten, aber auch am tiefsten. Lunch Money ist mit einer klaren Weboberfläche leicht zu starten. YNAB verlangt Commitment zur Methode. Monarch fühlt sich vertraut an, wenn du Mint mochtest."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Budgie implements offline-first architecture with no compromises:"
@@ -3627,7 +3627,7 @@ msgstr "Budgie ist eine vollständig offline nutzbare Haushaltsbuch-App. Fügen 
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Budgie is a privacy-first, offline-first mobile application designed to help users track expenses, manage budgets, sync bank accounts (optional), monitor investments (stocks and cryptocurrency), track debts and loans, set financial goals, and access AI-powered financial insights. The Service operates primarily on your device, with optional cloud features that require explicit user consent."
-msgstr ""
+msgstr "Budgie ist eine Offline-first-Mobile-App zum Nachverfolgen von Ausgaben, Budgets, optionalem Banksync, Investments, Schulden, Zielen und KI-gestützten Finanznotizen. Der Service läuft hauptsächlich auf Ihrem Gerät. Optionale Cloud-Funktionen erfordern Ihre ausdrückliche Einwilligung."
 
 #: src/app/[lang]/privacy/metadata.ts
 msgid "Budgie is a private expense tracker by architecture: encrypted on-device storage, no account, no aggregator, biometric lock, screenshot protection, and your own cloud backups."
@@ -3755,7 +3755,7 @@ msgstr "Budgie schützt Ihre Finanzen mit AES-256-verschlüsseltem SQLite, biome
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Budgie proves that you don’t have to choose between powerful features and privacy. You can have:"
-msgstr "Budgie beweist, dass Sie nicht zwischen leistungsstarken Funktionen und Privatsphäre wählen müssen. Sie können haben:"
+msgstr "Budgie baut auf eine einfache Wette: Nützliche Finanztools und Privatsphäre können in derselben App leben. Du bekommst:"
 
 #: src/app/[lang]/features/on-device-ai-budget-app/metadata.ts
 msgid "Budgie runs a 1.7B-parameter LLM and 768-dim embedding model on your phone for categorization, tag suggestions, and voice entry. No cloud AI, ever."
@@ -3855,7 +3855,7 @@ msgstr "Budgie-Team"
 
 #: src/app/[lang]/legal/terms-of-service/metadata.ts
 msgid "Budgie Terms of Service - Read our terms and conditions for using our privacy-first expense tracking app"
-msgstr ""
+msgstr "Budgie Terms of Service - Bedingungen für die Nutzung von Budgie, der privaten Ausgaben-App"
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports partial refunds, and keeps the audit trail visible from the transaction detail screen."
@@ -3948,11 +3948,11 @@ msgstr "Budgies Gerät-zu-Gerät-Synchronisierung erfordert mehr Beteiligung des
 
 #: src/app/[lang]/features/ai-tag-suggestions/metadata.ts
 msgid "Budgie's local LLM suggests up to three tags per transaction so heavy taggers stop typing. Embedding fallback keeps it instant offline."
-msgstr "Budgies lokales LLM schlägt bis zu drei Tags pro Transaktion vor, damit viel taggenden Nutzern das Tippen erspart bleibt. Embedding-Fallback hält es sofort offline."
+msgstr "Budgies lokales LLM schlägt bis zu drei Tags pro Transaktion vor, damit intensive Tag-Nutzer Labels ohne Tippen hinzufügen können. Der Embedding-Fallback hält Vorschläge offline schnell."
 
 #: src/app/[lang]/security/page.tsx
 msgid "Budgie's PIN and biometric lock gate every app launch. Even if the device is unlocked, no financial data is visible until the correct PIN or biometric challenge is passed."
-msgstr "Budgies PIN- und biometrische Sperre schützt jeden App-Start. Selbst wenn das Gerät entsperrt ist, sind keine Finanzdaten sichtbar, bis die korrekte PIN oder die biometrische Herausforderung bestanden wird."
+msgstr "Budgies PIN- und Biometrie-Sperre schützt jeden App-Start. Selbst auf einem entsperrten Smartphone bleiben Finanzdaten verborgen, bis PIN oder Biometrieprüfung bestanden sind."
 
 #: src/app/[lang]/features/pin-app-lock/metadata.ts
 msgid "Budgie's PIN doesn't just gate the screen — it derives the SQLCipher encryption key. Without the PIN, the database file is unreadable, even with full filesystem access."
@@ -4004,7 +4004,7 @@ msgstr "Der Bau von Local-First-Software erfordert die Lösung schwieriger Probl
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx
 msgid "Built Different. Built Better."
-msgstr "Anders gebaut. Besser gebaut."
+msgstr "Privat im Design. Schnell von Haus aus."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Built-in via your server"
@@ -4491,7 +4491,7 @@ msgstr "Cloud-KI (Andere)"
 
 #: src/generic/component/ai-section/ai-section.tsx
 msgid "Cloud AI apps expose: your income, rent, debts, and every purchase you make"
-msgstr "Cloud-KI-Apps offenbaren: Ihr Einkommen, Miete, Schulden und jeden Einkauf, den Sie tätigen"
+msgstr "Cloud-KI kann dein Einkommen, deine Miete, deine Schulden und deine Einkäufe offenlegen."
 
 #: src/app/[lang]/features/on-device-ai-budget-app/metadata.ts
 msgid "Cloud AI assistants for budgeting send every transaction to a remote server for \"intelligence\". Budgie runs the LLM and embeddings on your phone — your data never leaves."
@@ -4737,7 +4737,7 @@ msgstr "Vollständige Datenhoheit und Kontrolle"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Complete REST API with comprehensive documentation"
-msgstr "Vollständige REST-API mit umfassender Dokumentation"
+msgstr "Vollständige REST-API mit klarer Dokumentation"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Completely free and open source"
@@ -4749,7 +4749,7 @@ msgstr "Umfassende API-Dokumentation"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/metadata.ts
 msgid "Comprehensive comparison of privacy-focused YNAB alternatives. Detailed reviews of Budgie, Actual Budget, Firefly III, and more with migration guide."
-msgstr "Umfassender Vergleich datenschutzorientierter YNAB-Alternativen. Detaillierte Bewertungen von Budgie, Actual Budget, Firefly III und mehr mit Migrationsleitfaden."
+msgstr "Klarer Vergleich datenschutzorientierter YNAB-Alternativen. Detaillierte Reviews von Budgie, Actual Budget, Firefly III und mehr, plus Migrationsleitfaden."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/metadata.ts
 msgid "Comprehensive developer's guide to Mint alternatives: detailed comparison of privacy-focused budget apps including Budgie, Actual Budget, Firefly III, and more."
@@ -5209,7 +5209,7 @@ msgstr "Benutzerdefinierte Ausgabenkategorien — Budgie"
 #: src/app/[lang]/features/custom-categories/metadata.ts
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Custom Spending Categories That Bend To You"
-msgstr "Benutzerdefinierte Ausgabenkategorien, die sich Ihnen anpassen"
+msgstr "Benutzerdefinierte Ausgabenkategorien, die zu deinem Budgetstil passen"
 
 #: src/generic/component/features-section/features-section-grid.tsx
 msgid "Custom tags layered on top of categories. Drillable analytics and AI-suggested tags built in."
@@ -5246,7 +5246,7 @@ msgstr "Kyrillisch, Griechisch, Arabisch, CJK und mehr – jedes nicht-lateinisc
 
 #: src/app/[lang]/features/ai-merchant-translation/metadata.ts
 msgid "Cyrillic, Greek, or Cyrillic-script merchant names get normalized to Latin so your transaction list reads cleanly. Runs on-device."
-msgstr "Kyrillische, griechische oder arabischsprachige Händlernamen werden zu Latein normiert, damit Ihre Transaktionsliste sauber lesbar ist. Läuft auf dem Gerät."
+msgstr "Kyrillische, griechische oder arabische Händlernamen werden in lateinische Schrift normalisiert, damit deine Transaktionsliste leichter lesbar ist. Läuft auf dem Gerät."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Daily background FX-rate refresh converts every account to your base currency"
@@ -5571,7 +5571,7 @@ msgstr "Erfahren Sie genau, wie Budgie Ihre Finanzdaten von der Cloud fernhält.
 
 #: src/generic/component/blog-section/blog-section.tsx
 msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
-msgstr "Entdecken Sie Einblicke in finanzielle Privatsphäre, Sicherheits-Best-Practices und wie Sie die Kontrolle über Ihr Geld übernehmen."
+msgstr "Scharfe, nützliche Reads zu Datenschutz, Sicherheit und dazu, wohin dein Geld geht."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Discover the hidden privacy risks of cloud-based budgeting apps and learn why offline-first architecture is the safer alternative for your financial data."
@@ -5857,7 +5857,7 @@ msgstr "Die Tag-Liste jeder Transaktion hat ein isPrimary-Flag für höchstens e
 
 #: src/generic/component/waitlist-form/waitlist-success.tsx
 msgid "Early access members get 50% off lifetime"
-msgstr "Early-Access-Mitglieder erhalten 50% Rabatt lebenslang"
+msgstr "Early-Access-Mitglieder erhalten 50% Rabatt auf lebenslangen Zugriff"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Easy to make formula errors"
@@ -5929,7 +5929,7 @@ msgstr "EN, UK, FR, DE, ES – vollständige Benutzeroberfläche."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Enable in Settings → PIN → \"Unlock with biometrics\". The platform stores a biometric-bound key fragment in the Secure Enclave/Keystore; Budgie combines it with your PIN-derived key to unlock SQLCipher."
-msgstr "In Einstellungen → PIN → „Mit Biometrie entsperren\" aktivieren. Die Plattform speichert ein biometrisch gebundenes Schlüsselfragment in der Secure Enclave/Keystore; Budgie kombiniert es mit Ihrem PIN-abgeleiteten Schlüssel, um SQLCipher zu entsperren."
+msgstr "Schalte es unter Einstellungen → PIN → \"Unlock with biometrics\" ein. Die Plattform speichert ein biometrisch gebundenes Schlüsselfragment in Secure Enclave/Keystore; Budgie kombiniert es mit deinem PIN-abgeleiteten Schlüssel, um SQLCipher zu entsperren."
 
 #: src/app/[lang]/opengraph-image.tsx
 msgid "Encrypted"
@@ -6170,7 +6170,7 @@ msgstr "Alles, was wir in diesem Artikel beschrieben haben, kann durch Prüfung 
 
 #: src/generic/component/faq-section/faq-section.tsx
 msgid "Everything you need to know about Budgie's privacy-first approach to expense tracking."
-msgstr "Alles, was Sie über Budgies Datenschutz-zuerst-Ansatz zur Ausgabenverfolgung wissen müssen."
+msgstr "So hält Budgie Ausgabentracking standardmäßig privat."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Excalidraw"
@@ -6219,11 +6219,11 @@ msgstr "Ausgabenverfolgung"
 #: src/app/[lang]/features/expense-tracking/metadata.ts
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Expense Tracking, Reimagined"
-msgstr "Ausgabenverfolgung, neu gedacht"
+msgstr "Ausgabentracking, ohne Cloud-Ballast"
 
 #: src/app/[lang]/features/expense-tracking/metadata.ts
 msgid "Expense Tracking, Reimagined — Budgie"
-msgstr "Ausgabenverfolgung, neu gedacht — Budgie"
+msgstr "Ausgabentracking, ohne Cloud-Ballast — Budgie"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Expensive at $14/month"
@@ -6296,7 +6296,7 @@ msgstr "Face ID / Touch ID-Authentifizierung"
 
 #: src/app/[lang]/features/biometric-authentication/metadata.ts
 msgid "Face ID / Touch ID unlock that drives the same SQLCipher encryption key as your PIN. Frictionless, falls back to PIN when needed, respects platform lockout policy."
-msgstr "Face ID / Touch ID-Entsperrung, die denselben SQLCipher-Verschlüsselungsschlüssel wie Ihre PIN verwendet. Reibungslos, fällt bei Bedarf auf PIN zurück, respektiert die Plattform-Sperrrichtlinie."
+msgstr "Face ID / Touch ID ist an denselben SQLCipher-Verschlüsselungsschlüssel wie deine PIN gebunden. Schnell, wenn es klappt, PIN-Fallback, wenn es sinnvoll ist, und Plattform-Sperrregeln, wenn sie greifen müssen."
 
 #: src/app/[lang]/security/page.tsx
 msgid "Face ID and fingerprint authentication on every supported device"
@@ -6312,7 +6312,7 @@ msgstr "Face ID steuert den Verschlüsselungsschlüssel."
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx
 msgid "Face ID, Touch ID, or PIN unlock your encrypted vault. Hardware-backed in iOS Keychain and Android Keystore."
-msgstr "Face ID, Touch ID oder PIN entsperren deinen verschlüsselten Datentresor. Hardware-gesichert in iOS Keychain und Android Keystore."
+msgstr "Face ID, Touch ID oder PIN öffnen deinen verschlüsselten Tresor, gestützt durch iOS Keychain und Android Keystore."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
@@ -6517,15 +6517,15 @@ msgstr "Firefly III: Ja"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Firefly III is a comprehensive personal finance manager designed for self-hosting. It goes beyond simple budgeting to provide a complete view of your finances."
-msgstr "Firefly III ist ein umfassender persönlicher Finanzmanager, der für Selbst-Hosting konzipiert wurde. Er geht über einfache Budgetierung hinaus und bietet einen vollständigen Überblick über Ihre Finanzen."
+msgstr "Firefly III ist ein tiefes Personal-Finance-System fürs Self-Hosting. Es geht weit über einfaches Budgetieren hinaus und gibt dir einen detaillierten Blick auf deine Finanzen."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Firefly III is a comprehensive personal finance manager designed for self-hosting. It offers detailed transaction tracking, budgeting features, and extensive reporting. If you’re comfortable managing your own server infrastructure and want maximum control, Firefly III provides powerful capabilities."
-msgstr "Firefly III ist ein umfassender persönlicher Finanzmanager, der für Selbst-Hosting konzipiert ist. Er bietet detaillierte Transaktionsverfolgung, Budgetierungsfunktionen und umfangreiche Berichterstattung. Wenn Sie sich mit der Verwaltung Ihrer eigenen Serverinfrastruktur wohlfühlen und maximale Kontrolle wünschen, bietet Firefly III leistungsstarke Möglichkeiten."
+msgstr "Firefly III ist ein tiefes Personal-Finance-System fürs Self-Hosting. Es bietet detailliertes Transaktionstracking, Budgetierung und umfangreiche Reports. Wenn du gern deinen eigenen Server betreibst und maximale Kontrolle willst, gibt dir Firefly III viel Werkzeug an die Hand."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Firefly III is the Linux of personal finance apps: incredibly powerful, deeply customizable, and requires some investment to set up properly. For developers who want complete control, it’s hard to beat."
-msgstr "Firefly III ist das Linux unter den Apps für persönliche Finanzen: unglaublich leistungsfähig, tief anpassbar und erfordert einiges an Aufwand für die richtige Einrichtung. Für Entwickler, die vollständige Kontrolle wollen, ist es schwer zu übertreffen."
+msgstr "Firefly III ist die Linux-artige Wahl für persönliche Finanzen: nützlich, tief anpassbar und die Einrichtungszeit wert, wenn du volle Kontrolle willst."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Firefly III: Maximum Customization"
@@ -6864,7 +6864,7 @@ msgstr "Erhalten Sie vollständige Kontrolle über Ihre Finanzen mit nur wenigen
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
 msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; your cloud handles backups. Zero ops, full ownership."
-msgstr "Erhalten Sie die Privatsphäre von selbst gehosteten Finanz-Apps, ohne einen Server zu betreiben. Budgies Daten leben auf Ihrem Smartphone; Ihre Cloud übernimmt die Backups. Null Betrieb, volle Eigenverantwortung."
+msgstr "Bekomme Privatsphäre wie bei selbst gehosteten Finanz-Apps, ohne einen Server zu betreiben. Budgie behält Daten auf deinem Smartphone, während dein eigener Cloud-Speicher Backups übernimmt."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Getting Started with Local-First Development"
@@ -7657,7 +7657,7 @@ msgstr "In diesem Artikel werden wir genau erläutern, wie Budgie Ihre Finanzdat
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "In this comprehensive guide, we’ll explore why people are leaving YNAB, what to look for in a privacy-focused alternative, and provide honest reviews of the top options available in 2025. Whether you’re concerned about cloud data storage, subscription fatigue, or simply want more control over your financial information, we’ve got you covered."
-msgstr "In diesem umfassenden Leitfaden untersuchen wir, warum Menschen YNAB verlassen, worauf man bei einer datenschutzorientierten Alternative achten sollte, und liefern ehrliche Bewertungen der besten verfügbaren Optionen im Jahr 2025. Ob Sie sich Sorgen um Cloud-Datenspeicherung machen, der Abo-Müdigkeit überdrüssig sind oder einfach mehr Kontrolle über Ihre Finanzinformationen wünschen — wir haben alles abgedeckt."
+msgstr "Dieser Guide zeigt, warum Menschen YNAB verlassen, was du von einer datenschutzorientierten Alternative erwarten kannst und wie die stärksten Optionen 2025 abschneiden. Wenn Cloud-Speicherung, Abo-Müdigkeit oder Datenkontrolle dein Thema ist, fang hier an."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "In your platform's secure keystore (iOS Keychain / Android Keystore), never in plaintext or our servers (we have none)."
@@ -8201,7 +8201,7 @@ msgstr "Drücke eine Transaktionskarte lange, um zu bearbeiten, zu löschen, auf
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Long-press any transaction in Budgie for a native context menu: edit, delete, split, convert to transfer, or convert income to refund. Two taps where the rest of the market needs five."
-msgstr "Drücke eine Transaktion in Budgie lange für ein natives Kontextmenü: bearbeiten, löschen, aufteilen, in Überweisung umwandeln oder Einnahmen in Rückerstattung umwandeln. Zwei Taps, wo andere Apps fünf brauchen."
+msgstr "Drücke eine beliebige Transaktion in Budgie lange, um ein natives Kontextmenü zu öffnen: bearbeiten, löschen, aufteilen, in Überweisung umwandeln oder Einnahme in Rückerstattung umwandeln. Häufige Korrekturen brauchen nur ein paar Taps."
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Long-Press Quick Actions on Every Transaction"
@@ -8291,7 +8291,7 @@ msgstr "Verwaltung"
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Manual backups only by default — for the privacy-first crowd that doesn't want surprise file writes. You can schedule reminders in Settings."
-msgstr "Standardmäßig nur manuelle Backups – für datenschutzbewusste Nutzer, die keine unerwarteten Dateischreibvorgänge möchten. Sie können Erinnerungen in den Einstellungen planen."
+msgstr "Standardmäßig manuelle Backups, für Menschen, die keine überraschenden Dateischreibvorgänge wollen. Erinnerungen kannst du in den Einstellungen planen."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Manual budgeting is simpler than it sounds. Check accounts daily—it takes 2-3 minutes to enter new transactions. Use receipts and enter transactions as you make purchases. Do weekly reconciliation to match your app against bank statements. Embrace the awareness—manual entry makes you more conscious of spending. Many users find manual entry actually improves their financial awareness compared to automatic sync."
@@ -8315,7 +8315,7 @@ msgstr "Manuelle Einträge haben keinen MCC; einige Bank-Sync-Abläufe lassen ih
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations."
-msgstr "Manuelle Ausgabeneingabe, Bank-PDF/CSV-Importe, Mehrwährung, Schulden-Tracking und Analysen sind kostenlos. Der optionale Freischalt umfasst KI-Funktionen und direkte Bank-Sync-Integrationen."
+msgstr "Manuelle Ausgabenerfassung, Bankimporte per PDF/CSV, Mehrwährung, Schulden-Tracking und Analysen sind kostenlos. Der optionale einmalige Unlock deckt KI-Funktionen und direkte Banksync-Integrationen ab."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Manual import takes more effort, but it ensures that your bank data follows the same privacy guarantees as the rest of Budgie: it never leaves your device, and no third party ever has access."
@@ -8666,7 +8666,7 @@ msgstr "Geld raus, Geld rein – erstklassige Konten mit Zielsalden, Rückgabeda
 
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx
 msgid "Monitor expenses, set goals, track debts, and gain insights—all while keeping your data private."
-msgstr "Überwachen Sie Ausgaben, setzen Sie Ziele, verfolgen Sie Schulden und gewinnen Sie Einblicke – alles bei gleichzeitiger Wahrung Ihrer Privatsphäre."
+msgstr "Behalte Ausgaben im Blick, setze Ziele, tracke Schulden und erkenne Muster – während deine Daten privat bleiben."
 
 #: src/generic/component/debt-section/debt-section-content.tsx
 msgid "Monitor what you owe to others"
@@ -9140,7 +9140,7 @@ msgstr "Keine Self-Hosting-Option"
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx
 msgid "No server round-trips. Every action is instant. The app works even in airplane mode."
-msgstr "Keine Server-Roundtrips. Jede Aktion ist sofort. Die App funktioniert sogar im Flugmodus."
+msgstr "Alles passiert auf deinem Gerät, sodass Budgie selbst im Flugmodus schnell bleibt."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No servers to hack"
@@ -9349,7 +9349,7 @@ msgstr "Nichts passiert – Ihre Daten sind sicher auf dem Gerät. Sie können w
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Nothing happens to your data because Budgie does not have your data. Everything is stored locally on your device. If Budgie as a company ceased to exist, your app would continue to function with all your data intact. You can export data at any time in standard formats. There is no server to shut down, no migration to worry about, no acquisition that could change data handling. Your data remains yours permanently."
-msgstr "Mit Ihren Daten passiert nichts, weil Budgie Ihre Daten nicht hat. Alles wird lokal auf Ihrem Gerät gespeichert. Wenn Budgie als Unternehmen aufhören würde zu existieren, würde Ihre App weiterhin mit all Ihren Daten funktionieren. Sie können Daten jederzeit in Standardformaten exportieren. Es gibt keinen Server, der abgeschaltet werden müsste, keine Migration, über die Sie sich Sorgen machen müssten, keine Uebernahme, die den Umgang mit Daten ändern könnte. Ihre Daten bleiben dauerhaft Ihre."
+msgstr "Mit deinen Daten passiert nichts, weil Budgie deine Daten nicht hat. Alles wird lokal auf deinem Gerät gespeichert. Wenn Budgie als Unternehmen aufhören würde zu existieren, würde deine App mit allen Daten intakt weiter funktionieren. Du kannst Daten jederzeit in Standardformaten exportieren. Es gibt keinen Server zum Abschalten, keine Migration, um die du dich sorgen musst, keine Übernahme, die den Umgang mit Daten ändern könnte. Deine Daten bleiben dauerhaft deine."
 
 #: src/app/[lang]/legal/license/metadata.ts
 #: src/app/[lang]/legal/privacy-policy/metadata.ts
@@ -9379,7 +9379,7 @@ msgstr "OAuth über Aggregator"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "OAuth-based API with comprehensive documentation"
-msgstr "OAuth-basierte API mit umfassender Dokumentation"
+msgstr "OAuth API mit klarer Dokumentation"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Obsidian"
@@ -9395,7 +9395,7 @@ msgstr "Standardmäßig für die Kategorien- und Analysen-Bildschirme deaktivier
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Offer comprehensive export functionality (CSV, JSON, SQL)"
-msgstr "Umfassende Exportfunktionalität bieten (CSV, JSON, SQL)"
+msgstr "Sauberer Export nach CSV, JSON und SQL"
 
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "offline AI finance app"
@@ -9692,7 +9692,7 @@ msgstr "Eine der häufigsten Fragen zu Offline-First-Apps lautet: Wie bekomme ic
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "One of the most powerful aspects of open-source software is the ability to verify privacy claims against actual implementation. While you may not be able to read code yourself, you can look for:"
-msgstr "Einer der wirkungsvollsten Aspekte von Open-Source-Software ist die Möglichkeit, Datenschutzbehauptungen gegen die tatsächliche Implementierung zu prüfen. Auch wenn Sie den Code nicht selbst lesen können, achten Sie auf:"
+msgstr "Einer der besten Aspekte von Open-Source-Software ist, dass sich Datenschutzversprechen an der echten Implementierung prüfen lassen. Auch wenn du selbst keinen Code liest, kannst du achten auf:"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "One per transaction — never ambiguous, always quick to scan"
@@ -10022,7 +10022,7 @@ msgstr "Menschen verfolgen ihre Finanzen über Jahre oder Jahrzehnte. Sie brauch
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Per-account “include in net worth” toggle — partial-truth balance is your call"
-msgstr "Pro-Konto-Schalter „In Nettovermögen einschließen“ – selektive Bilanz ist Ihre Entscheidung"
+msgstr "Pro-Konto-Schalter „In Nettovermögen einbeziehen“, damit nur die Salden zählen, die du wirklich im Gesamtwert sehen willst"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Per-account currency, daily auto-conversion"
@@ -10385,7 +10385,7 @@ msgstr "Datenschutzbewertung: Gut (Apple-Ökosystem)"
 
 #: src/generic/component/cta-section/cta-section.tsx
 msgid "Privacy-first design"
-msgstr "Datenschutz-orientiertes Design"
+msgstr "Standardmäßig privates Design"
 
 #: src/app/[lang]/opengraph-image.tsx
 msgid "Privacy-First Expense Tracker"
@@ -10393,11 +10393,11 @@ msgstr "Datenschutzfreundlicher Ausgabentracker"
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "Privacy-first expense tracker that keeps your financial data on your device."
-msgstr "Datenschutzorientierter Ausgabentracker, der Ihre Finanzdaten auf Ihrem Gerät speichert."
+msgstr "Privater Ausgabentracker, der deine Finanzdaten auf deinem Gerät hält."
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Privacy-first finance tools are usually English-only. Budgie ships full translations across five languages so non-English-first speakers don't lose features in translation."
-msgstr "Datenschutzorientierte Finanztools sind normalerweise nur auf Englisch. Budgie enthält vollständige Übersetzungen in fünf Sprachen, damit Nicht-Englisch-Muttersprachler keine Funktionen in der Übersetzung verlieren."
+msgstr "Standardmäßig private Finanztools sind oft nur auf Englisch verfügbar. Budgie liefert vollständige Übersetzungen in fünf Sprachen, damit Menschen ohne Englisch als Erstsprache keine Funktionen in der Übersetzung verlieren."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Privacy-focused organizations and advocacy groups"
@@ -10599,7 +10599,7 @@ msgstr "Einen Zeitraum erneut abrufen. Ihre Bearbeitungen behalten."
 
 #: src/app/[lang]/features/bank-resync-window/metadata.ts
 msgid "Re-pull a slice. Keep your edits. No nuke-from-orbit."
-msgstr "Einen Zeitraum erneut abrufen. Ihre Bearbeitungen behalten. Kein radikales Zurücksetzen."
+msgstr "Einen Zeitraum neu synchronisieren, ohne deine Bearbeitungen zu verlieren."
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Re-pull just the last N days of bank history without nuking your manual edits or category overrides."
@@ -10607,7 +10607,7 @@ msgstr "Nur die letzten N Tage der Bankhistorie erneut abrufen, ohne manuelle Be
 
 #: src/app/[lang]/features/bank-resync-window/metadata.ts
 msgid "Re-pull just the last N days of bank history without nuking your manual edits or category overrides. Conflict picker for edited rows."
-msgstr "Nur die letzten N Tage der Bankhistorie erneut abrufen, ohne manuelle Bearbeitungen oder Kategorieüberschreibungen zu löschen. Konfliktauswähler für bearbeitete Zeilen."
+msgstr "Synchronisiere nur die letzten N Tage der Bankhistorie neu, ohne manuelle Bearbeitungen oder Kategorie-Overrides zu überschreiben. Bearbeitete Zeilen öffnen sich in einem Konflikt-Picker."
 
 #: src/app/[lang]/features/bank-resync-window/opengraph-image.tsx
 msgid "re-sync"
@@ -10659,11 +10659,11 @@ msgstr "Bereit, Budgie auszuprobieren?"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Ready to take control of your financial data? Join the Budgie waitlist and experience truly private expense tracking."
-msgstr "Bereit, die Kontrolle über Ihre Finanzdaten zu übernehmen? [Treten Sie der Budgie-Warteliste bei](/{lang}#waitlist) und erleben Sie wirklich privates Ausgabentracking."
+msgstr "Bereit für Ausgabentracking, bei dem deine Finanzdaten bei dir bleiben? Trag dich in die Budgie-Warteliste ein."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Ready to take control of your financial privacy?"
-msgstr "Bereit, die Kontrolle über Ihre finanzielle Privatsphäre zu übernehmen?"
+msgstr "Bereit für finanzielle Privatsphäre, die du überprüfen kannst?"
 
 #: src/blog/component/blog-article-cta/blog-article-cta.tsx
 msgid "Ready to Take Control of Your Financial Privacy?"
@@ -10736,7 +10736,7 @@ msgstr "Wiederkehrende Einträge werden auf dem Kalender in Ihrer Heimwährung a
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own."
-msgstr "Monatlich wiederkehrende Gebühren machen das Budgetieren selbst zur Rechnung. Budgies Kern ist kostenlos; erweiterte Funktionen schalten Sie mit einem einmaligen Kauf frei, den Sie wirklich besitzen."
+msgstr "Monatliche Gebühren machen Budgetieren selbst zur Rechnung. Budgies Kern ist kostenlos; erweiterte Funktionen schaltest du einmal frei und behältst sie."
 
 #: src/app/[lang]/features/recurring-payments-calendar/metadata.ts
 msgid "Recurring Payments Calendar"
@@ -11126,7 +11126,7 @@ msgstr "Sehen Sie Prozentsätze für Essen, Transport, Shopping – wissen Sie g
 
 #: src/generic/component/features-section/features-section-grid.tsx
 msgid "See where every dollar goes. Drillable category and tag breakdowns find what's eating your budget."
-msgstr "Sehen Sie, wohin jeder Euro fließt. Aufklappbare Kategorie- und Tag-Aufschlüsselungen finden, was Ihr Budget aufzehrt."
+msgstr "Sieh, wohin jeder Euro geht, mit Kategorie- und Tag-Aufschlüsselungen, die zeigen, was dein Budget auffrisst."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Select your Mint CSV export file"
@@ -11244,7 +11244,7 @@ msgstr "Durch Überweisung an ein echtes Konto begleichen – keine umständlich
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Setup in Settings → PIN. Choose 4-6 digits. Optional biometric unlock binds Face ID / Touch ID to the same encryption key. The lock screen appears every cold launch and after a configurable inactivity window."
-msgstr "Einrichten in Einstellungen → PIN. 4-6 Ziffern wählen. Optionales biometrisches Entsperren bindet Face ID / Touch ID an denselben Verschlüsselungsschlüssel. Der Sperrbildschirm erscheint bei jedem Kaltstart und nach einem konfigurierbaren Inaktivitätsfenster."
+msgstr "Richte es unter Einstellungen → PIN ein. Wähle 4-6 Ziffern. Optionales biometrisches Entsperren bindet Face ID / Touch ID an denselben Verschlüsselungsschlüssel. Der Sperrbildschirm erscheint bei jedem Kaltstart und nach deinem gewählten Inaktivitätsfenster."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Setup is non-trivial"
@@ -11545,7 +11545,7 @@ msgstr "Projekt sponsern"
 
 #: src/app/[lang]/features/recurring-payments-calendar/metadata.ts
 msgid "Spot the slow leak before it bills — subscription patterns plotted on a month calendar with forecasted upcoming."
-msgstr "Das langsame Leck erkennen, bevor es abgerechnet wird – Abonnementmuster auf einem Monatskalender mit prognostiziertem Ausblick dargestellt."
+msgstr "Erkenne wiederkehrende Abbuchungen, bevor sie zuschlagen: Budgie zeichnet Abomuster und anstehende Zahlungen in einem Monatskalender ein."
 
 #: src/app/[lang]/features/recurring-payments-calendar/opengraph-image.tsx
 msgid "Spot the slow leak before it bills."
@@ -11565,7 +11565,7 @@ msgstr "Tabellenkalkulationen: Die Option der absoluten Kontrolle"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "SQLCipher with a strong PIN protects against filesystem-level access, but a jailbroken device with active malware can capture the PIN at entry time. Don't unlock Budgie on a compromised device."
-msgstr "SQLCipher mit einer starken PIN schützt vor Dateisystem-Zugriff, aber ein gejailbreaktes Gerät mit aktiver Malware kann die PIN beim Eingeben erfassen. Entsperren Sie Budgie nicht auf einem kompromittierten Gerät."
+msgstr "SQLCipher plus starke PIN schützt vor Zugriff auf Dateisystemebene, aber ein gejailbreaktes Gerät mit aktiver Malware kann die PIN weiterhin beim Tippen mitschneiden. Entsperre Budgie nicht auf einem kompromittierten Gerät."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "SQLite database you own and control"
@@ -11573,7 +11573,7 @@ msgstr "SQLite-Datenbank, die Sie besitzen und kontrollieren"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "SQLite eliminates all of these problems. The database file lives on your device, operations happen in microseconds, and your data remains under your physical control."
-msgstr "SQLite beseitigt all diese Probleme. Die Datenbankdatei befindet sich auf Ihrem Gerät, Operationen erfolgen in Mikrosekunden, und Ihre Daten bleiben unter Ihrer physischen Kontrolle."
+msgstr "SQLite beseitigt all diese Probleme. Die Datenbankdatei liegt auf deinem Gerät, Operationen laufen in Mikrosekunden, und deine Daten bleiben unter deiner physischen Kontrolle."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Stage 1: Embedding-Based Pattern Matching"
@@ -11605,7 +11605,7 @@ msgstr "Statisch, plus Ihre Daten trainieren ihr Modell"
 
 #: src/app/[lang]/blog/page.tsx
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
-msgstr "Bleiben Sie über finanzielle Privatsphäre, Sicherheits-Best-Practices und die neuesten Funktionen in Budgie informiert."
+msgstr "Praktische Notizen zu Datenschutz, Sicherheit und dem Bau einer ruhigeren Geld-App."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Steep learning curve"
@@ -11661,7 +11661,7 @@ msgstr "Aktien & ETFs"
 
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
 msgid "Stop paying monthly to track your money. Budgie's core features are free; the optional one-time unlock is yours forever. Offline-first and private."
-msgstr "Hören Sie auf, monatlich für das Tracken Ihres Geldes zu zahlen. Budgies Kernfunktionen sind kostenlos; der optionale einmalige Freischalt gehört Ihnen für immer. Offline-First und privat."
+msgstr "Hör auf, monatlich nur fürs Geldtracking zu zahlen. Budgies Kernfunktionen sind kostenlos, und der optionale einmalige Unlock bleibt deiner. Offline-first und privat."
 
 #: src/generic/component/features-section/features-section-header.tsx
 msgid "Stop switching between apps. Budgie tracks your bank accounts, credit cards, cash, crypto, and investments together—so you finally see the complete picture of your finances."
@@ -11852,7 +11852,7 @@ msgstr "Tags sind flach, wiederverwendbar und kombinierbar – keine starre Hier
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Tags are the most powerful dimension in Budgie analytics — they let you slice spending by project, trip, person, or purpose rather than just merchant or category. But their value only materializes when tagging is consistent. Keyboards are slow, spelling varies, and the right tag name is easy to forget. The result is an analytics view full of labeling gaps that make the data less actionable."
-msgstr "Tags sind die leistungsstärkste Dimension in Budgie-Analysen – sie ermöglichen es Ihnen, Ausgaben nach Projekt, Reise, Person oder Zweck aufzuschlüsseln, nicht nur nach Händler oder Kategorie. Aber ihr Wert materialisiert sich nur, wenn das Taggen konsistent ist. Tastaturen sind langsam, Schreibweisen variieren, und der richtige Tag-Name ist leicht zu vergessen. Das Ergebnis ist eine Analyseansicht voller Beschriftungslücken, die die Daten weniger handlungsorientiert machen."
+msgstr "Tags sind eine der schärfsten Möglichkeiten, Ausgaben in Budgie zu verstehen. Du kannst nach Projekt, Reise, Person oder Zweck schneiden, statt nur nach Händler oder Kategorie. Der Haken ist Konsistenz: Tastaturen sind langsam, Schreibweisen driften, und der richtige Tag-Name ist leicht vergessen. Schnell hat die Analyseansicht Label-Lücken, die die Daten weniger nützlich machen."
 
 #: src/app/[lang]/features/statistics-tags-tab/metadata.ts
 msgid "Tags Tab in Statistics — Per-Tag Income, Expense, and Net"
@@ -11864,7 +11864,7 @@ msgstr "Reiter „Tags“: Pro-Tag-Einnahmen und -Ausgaben, plus ein „Ohne Tag
 
 #: src/generic/component/cta-section/cta-section.tsx
 msgid "Take Control of Your Finances — Without Giving Up Your Privacy"
-msgstr "Übernimm die Kontrolle über deine Finanzen – ohne Abstriche beim Datenschutz"
+msgstr "Tracke dein Geld, ohne deine Privatsphäre aufzugeben"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Take Control of Your Financial Privacy Today"
@@ -12087,7 +12087,7 @@ msgstr "Das Einwilligungsmodell"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The consent you provide to the app does not limit what Plaid collects. Plaid’s systems pull comprehensive data, and the app requests subsets through the API. The delta between what Plaid collects and what the app needs sits in Plaid’s infrastructure."
-msgstr "Die Einwilligung, die Sie der App erteilen, beschränkt nicht, was Plaid sammelt. Plaids Systeme ziehen umfassende Daten, und die App fordert Teilmengen über die API an. Die Differenz zwischen dem, was Plaid sammelt, und dem, was die App benötigt, verbleibt in Plaids Infrastruktur."
+msgstr "Die Einwilligung, die Sie einer App geben, begrenzt nicht zwingend, was Plaid sammelt. Plaid kann breite Kontodaten abrufen, während die App kleinere Teilmengen über die API anfordert. Die Lücke zwischen dem, was Plaid hat, und dem, was die App benötigt, bleibt in Plaids Infrastruktur."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "The context menu uses native platform APIs — the system menu component on iPadOS and a bottom sheet on iPhone and Android — so the interaction is immediately familiar. There is no modal, no full-screen form, and no intermediate navigation step for the common actions."
@@ -12347,11 +12347,11 @@ msgstr "Die oben beschriebenen Datenschutzprobleme haben eine gemeinsame Ursache
 
 #: src/generic/component/footer/footer.tsx
 msgid "The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device."
-msgstr "Der Datenschutz-zuerst-Ausgaben-Tracker, der Ihre Finanzdaten genau dort hält, wo sie hingehören – auf Ihrem Gerät."
+msgstr "Der private Ausgabentracker, der deine Finanzdaten genau dort hält, wo sie hingehören: auf deinem Gerät."
 
 #: src/generic/component/hero-section/hero-section-header.tsx
 msgid "The privacy-first offline expense tracker — open source budget app for iOS & Android."
-msgstr "Der datenschutzorientierte Offline-Ausgaben-Tracker — Open-Source-Budget-App für iOS & Android."
+msgstr "Der private Offline-first-Ausgabentracker für iOS und Android."
 
 #: src/generic/component/problem-solution-section/problem-solution-card.tsx
 msgid "The private approach"
@@ -12631,7 +12631,7 @@ msgstr "Dieser Ansatz eliminiert die Angst vor \"was, wenn ich die falsche Wahl 
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "This architecture means that even if someone steals your device, they cannot read your financial data without also compromising your device’s security (unlocking it with your biometrics or passcode)."
-msgstr "Diese Architektur bedeutet, dass selbst wenn jemand Ihr Gerät stiehlt, er Ihre Finanzdaten nicht lesen kann, ohne auch die Sicherheit Ihres Geräts zu kompromittieren (es mit Ihrer Biometrie oder Ihrem Zugangscode zu entsperren)."
+msgstr "Mit dieser Architektur reicht ein gestohlenes Gerät nicht aus. Ein Angreifer muss zusätzlich die Gerätesicherheit überwinden, etwa deinen Code oder deine Biometrie, bevor deine Finanzdaten lesbar werden."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "This article explains what on-device AI means technically, why it matters for financial privacy, and how Budgie implements it end to end."
@@ -12667,7 +12667,7 @@ msgstr "Dieser Leitfaden wurde von Entwicklern für Entwickler geschrieben. Wir 
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "This is a common concern, but security research consistently shows that obscurity provides weak protection. Determined attackers can reverse-engineer closed-source applications, find vulnerabilities through fuzzing and probing, or exploit the same bugs that internal developers missed. Meanwhile, legitimate security researchers are blocked from helping. Open source assumes adversaries will study the code and designs security that works anyway. This produces more robust systems than hoping attackers won’t look too closely."
-msgstr "Das ist eine häufige Sorge, aber Sicherheitsforschung zeigt konsequent, dass Verschleierung schwachen Schutz bietet. Entschlossene Angreifer können Closed-Source-Anwendungen per Reverse Engineering analysieren, Schwachstellen durch Fuzzing und Probing finden oder dieselben Bugs ausnutzen, die interne Entwickler übersehen haben. Gleichzeitig werden legitime Sicherheitsforscher daran gehindert zu helfen. Open Source geht davon aus, dass Gegner den Code studieren werden, und entwirft Sicherheit, die trotzdem funktioniert. Das erzeugt robustere Systeme als die Hoffnung, dass Angreifer nicht zu genau hinschauen."
+msgstr "Das ist eine berechtigte Sorge, aber Sicherheitsforschung zeigt immer wieder, dass Verschleierung schwachen Schutz bietet. Entschlossene Angreifer können Closed-Source-Apps per Reverse Engineering analysieren, fuzzing betreiben, sie sondieren oder dieselben Bugs ausnutzen, die interne Teams übersehen haben. Gleichzeitig werden legitime Forschende daran gehindert zu helfen. Open Source geht davon aus, dass Angreifer den Code studieren, und entwirft Sicherheit, die trotzdem hält."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "This is a valid concern known as “build verification.” Budgie uses reproducible builds where possible, allowing anyone to verify that the published app matches the source code. For mobile apps, additional trust is required in the app store distribution, but the public source code ensures you can build the app yourself if you want maximum verification. We also provide checksums for releases so you can verify download integrity."
@@ -12827,7 +12827,7 @@ msgstr "Heute, Gestern, Diese Woche, Letzte Woche, Diesen Monat, Letzten Monat, 
 
 #: src/app/[lang]/features/date-filter-presets/metadata.ts
 msgid "Today, Yesterday, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window. Locale-aware."
-msgstr "Heute, Gestern, Diese Woche, Letzte Woche, Diesen Monat, Letzten Monat, Dieses Jahr, Gesamtzeitraum – jeder Bildschirm mit einer Liste, zwei Tipp-Aktionen bis zum richtigen Fenster. Gebietsschemabewusst."
+msgstr "Heute, Gestern, Diese Woche, Letzte Woche, Dieser Monat, Letzter Monat, Dieses Jahr und Gesamtzeitraum sind überall verfügbar, wo Budgie eine Liste zeigt, mit lokalem Wochenstart."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Toggle “include in net worth” per account. A daily background task pulls fresh exchange rates so a Euro savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency."
@@ -12871,27 +12871,27 @@ msgstr "Verfolgen Sie Bitcoin, Ethereum, Aktien und ETFs neben Bargeldkonten. Ma
 
 #: src/app/[lang]/features/account-management/metadata.ts
 msgid "Track checking, savings, credit cards, cash, and brokerage accounts in one private app. Multi-currency, offline-first, no bank login required."
-msgstr "Verfolgen Sie Girokonten, Sparkonten, Kreditkarten, Bargeld und Broker-Konten in einer privaten App. Mehrwährung, Offline-First, kein Bank-Login erforderlich."
+msgstr "Girokonto, Sparkonto, Karten, Bargeld und Brokerkonten in einer privaten App. Mehrwährung, offline bereit, kein Bank-Login erforderlich."
 
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx
 msgid "Track Everything"
-msgstr "Alles verfolgen"
+msgstr "Alles im Blick"
 
 #: src/generic/component/features-section/features-section-grid.tsx
 msgid "Track expenses in any currency with daily exchange rates baked in. Built for travelers and remote workers."
-msgstr "Verfolgen Sie Ausgaben in jeder Währung mit integrierten täglichen Wechselkursen. Gebaut für Reisende und Remote-Arbeiter."
+msgstr "Erfasse Ausgaben in jeder Währung mit eingebauten täglichen Wechselkursen. Gemacht für Reisen, Remote Work und das echte, chaotische Leben."
 
 #: src/app/[lang]/layout.tsx
 msgid "Track expenses, sync banks, and manage crypto with full privacy. Multi-currency, debt tracking, and on-device AI insights — stored on your device."
-msgstr "Verfolgen Sie Ausgaben, synchronisieren Sie Banken und verwalten Sie Krypto mit vollständiger Privatsphäre. Mehrwährung, Schulden-Tracking und geräteeigene KI-Einblicke – auf Ihrem Gerät gespeichert."
+msgstr "Tracke Ausgaben, importiere Bankdaten, verwalte Krypto und nutze On-device-KI — alles auf deinem Smartphone."
 
 #: src/app/[lang]/opengraph-image.tsx
 msgid "Track expenses, sync banks, manage crypto & investments — all offline, encrypted, and on your device."
-msgstr "Ausgaben verfolgen, Banken synchronisieren, Krypto und Investitionen verwalten — alles offline, verschlüsselt und auf Ihrem Gerät."
+msgstr "Tracke Ausgaben, Bankdaten, Krypto und Investments — offline, verschlüsselt und auf deinem Gerät."
 
 #: src/app/[lang]/layout.tsx
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
-msgstr "Verfolgen Sie Ausgaben, synchronisieren Sie Banken, verwalten Sie Krypto & Aktien mit vollständiger Privatsphäre. Multi-Währungsunterstützung, Schuldenverfolgung und KI-Einblicke."
+msgstr "Tracke Ausgaben, importiere Banken, verfolge Krypto und Aktien — ohne dein Finanzleben der Cloud zu geben."
 
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx
 msgid "Track in any currency. Sum in yours."
@@ -13223,7 +13223,7 @@ msgstr "Dateneigentum der Nutzer"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Users control their own backup strategy. This might include local device backups (iCloud, Google backup), manual exports, or sync to a service of the user’s choice. Some local-first apps offer optional cloud backup services for convenience, but these are additive rather than required. Your data remains accessible through local backups even if any cloud service disappears."
-msgstr "Nutzer kontrollieren ihre eigene Backup-Strategie. Das kann lokale Gerätesicherungen (iCloud, Google Backup), manuelle Exporte oder Synchronisation mit einem Dienst ihrer Wahl umfassen. Einige Local-First-Apps bieten optionale Cloud-Backup-Dienste zur Bequemlichkeit an, aber diese sind Ergänzungen und keine Voraussetzungen. Ihre Daten bleiben über lokale Backups zugänglich, selbst wenn ein Cloud-Dienst verschwindet."
+msgstr "Nutzer kontrollieren ihre eigene Backup-Strategie. Dazu können lokale Gerätesicherungen (iCloud, Google Backup), manuelle Exporte oder Sync mit einem Dienst ihrer Wahl gehören. Manche Local-first-Apps bieten optionale Cloud-Backups aus Komfortgründen an, aber sie sind Ergänzung, keine Voraussetzung. Deine Daten bleiben über lokale Backups zugänglich, selbst wenn ein Cloud-Dienst verschwindet."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Users notice the difference immediately. Applications feel “snappy“ or “responsive” in ways that are hard to articulate but immediately apparent. This is not optimization; it is a fundamental architectural advantage."
@@ -13450,7 +13450,7 @@ msgstr "Wir denken, dass im Ökosystem Platz für all diese Tools ist. Nutzer pr
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx
 msgid "We took the opposite approach to every other budgeting app. Here's why that matters for you."
-msgstr "Wir haben den entgegengesetzten Ansatz zu jeder anderen Budget-App gewählt. Hier ist, warum das für Sie wichtig ist."
+msgstr "Budgie hält deine Daten lokal, deinen Workflow schnell und deine Privatsphäre leicht überprüfbar."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "We use the limited information we collect to:"
@@ -13647,7 +13647,7 @@ msgstr "Was passiert, wenn ich aufhöre zu zahlen?"
 
 #: src/app/[lang]/security/page.tsx
 msgid "What happens if someone picks up my unlocked phone?"
-msgstr "Was passiert, wenn jemand mein entsperrtes Smartphone aufhebt?"
+msgstr "Was, wenn jemand mein entsperrtes Smartphone nimmt?"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "What happens to AI suggestions if I am offline?"
@@ -14390,7 +14390,7 @@ msgstr "Warum vorgefertigte Kategoriebäume nie passen"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Why privacy-first finance shouldn't be English-only"
-msgstr "Warum datenschutzorientierte Finanzen nicht nur auf Englisch sein sollten"
+msgstr "Warum private Finanzen nicht nur auf Englisch sein sollten"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Why real life is multi-account"
@@ -14524,7 +14524,7 @@ msgstr "Mit Local-First gibt es keinen „Offline-Modus\", der Funktionalität e
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "With offline-first, bank data flows directly to your device. No intermediate servers store your transactions. No aggregators retain your history."
-msgstr "Mit Offline-First fließen Bankdaten direkt auf Ihr Gerät. Keine Zwischenserver speichern Ihre Transaktionen. Keine Aggregatoren bewahren Ihre Historie auf."
+msgstr "Mit direktem Offline-first-Sync fließen Bankdaten auf dein Gerät, ohne auf Budgie-Servern oder Aggregator-Servern gespeichert zu werden."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "With service providers who assist in operating the Service (bound by strict confidentiality agreements)"
@@ -14627,7 +14627,7 @@ msgstr "XLSX"
 
 #: src/app/[lang]/features/privatbank-import/metadata.ts
 msgid "XLSX, MCC-mapped, two taps — long-press an account card to re-import."
-msgstr "XLSX, MCC-zugeordnet, zwei Tipp-Aktionen – Kontokarte lange drücken zum erneuten Importieren."
+msgstr "Importiere einen PrivatBank XLSX-Export mit MCC-Mapping und drücke später lange auf die Kontokarte, um erneut zu importieren."
 
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "XLSX, MCC-mapped, two taps."
@@ -14771,7 +14771,7 @@ msgstr "Ja, zeige mir die Details"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Yes, with consent. When you agree to terms of service and privacy policies, you typically grant broad data collection and sharing rights. The legal framework in most jurisdictions allows extensive data use if disclosed in policies most users never read. GDPR in Europe provides stronger protections, including data minimization requirements, but enforcement varies. In the US, financial data protection is fragmented across state laws with no comprehensive federal standard."
-msgstr "Ja, mit Einwilligung. Wenn Sie Nutzungsbedingungen und Datenschutzrichtlinien zustimmen, gewähren Sie typischerweise umfassende Rechte zur Datenerfassung und -weitergabe. Der rechtliche Rahmen in den meisten Rechtsgebieten erlaubt eine umfangreiche Datennutzung, wenn sie in Richtlinien offengelegt wird, die die meisten Nutzer nie lesen. Die DSGVO in Europa bietet stärkeren Schutz, einschließlich Anforderungen zur Datenminimierung, aber die Durchsetzung variiert. In den USA ist der Schutz von Finanzdaten auf einzelstaatliche Gesetze verteilt, ohne einen umfassenden Bundesstandard."
+msgstr "Ja, mit Einwilligung. Wenn Sie Nutzungsbedingungen und Datenschutzrichtlinien akzeptieren, räumen Sie oft weitreichende Rechte zur Datenerfassung und -weitergabe ein. In vielen Rechtsordnungen ist umfangreiche Datennutzung legal, wenn sie in Richtlinien offengelegt wird, die die meisten Nutzer nie lesen. GDPR (DSGVO) in Europa bietet stärkeren Schutz, einschließlich Anforderungen an Datenminimierung, aber die Durchsetzung variiert. In den USA ist der Schutz von Finanzdaten über einzelstaatliche Gesetze fragmentiert, ohne breiten Bundesstandard."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Yes, YNAB supports manual transaction entry. However, the app is designed around bank sync, and some users find the manual-only experience less polished. If you’re using YNAB without bank sync for privacy reasons, you might consider an app that was designed for manual entry from the start."
@@ -15048,7 +15048,7 @@ msgstr "Sie können die App für Ihren eigenen Gebrauch modifizieren"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "You can request deletion, and under CCPA (California) and GDPR (Europe), companies must comply. However, there are exceptions for compliance, fraud prevention, and legitimate business interests that can justify retention. The process typically requires contacting each aggregator directly, not just the app you used. Plaid provides a portal at my.plaid.com for viewing and managing connections. Full deletion verification is difficult to confirm."
-msgstr "Sie können die Lösung beantragen, und nach CCPA (Kalifornien) und DSGVO (Europa) müssen Unternehmen dem nachkommen. Es gibt jedoch Ausnahmen für Compliance, Betrugsprävention und berechtigte Geschäftsinteressen, die eine Aufbewahrung rechtfertigen können. Der Prozess erfordert typischerweise die direkte Kontaktaufnahme mit jedem Aggregator, nicht nur mit der App, die Sie genutzt haben. Plaid bietet unter my.plaid.com ein Portal zum Einsehen und Verwalten von Verbindungen. Eine vollständige Überprüfung der Lösung ist schwer zu bestätigen."
+msgstr "Sie können Löschung beantragen, und nach Gesetzen wie CCPA in Kalifornien und GDPR (DSGVO) in Europa müssen Unternehmen in der Regel auf qualifizierte Löschanfragen reagieren. Ausnahmen für Compliance, Betrugsprävention und berechtigte Geschäftsinteressen können jedoch eine Aufbewahrung rechtfertigen. Der Prozess erfordert meist die direkte Kontaktaufnahme mit jedem Aggregator, nicht nur mit der App, die Sie genutzt haben. Plaid bietet unter my.plaid.com ein Portal zum Einsehen und Verwalten von Verbindungen. Eine vollständige Überprüfung der Löschung ist schwer zu bestätigen."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "You can share your modifications with others"
@@ -15116,7 +15116,7 @@ msgstr ""
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You Need A Budget (YNAB) has been a household name in personal finance software for over a decade. Its zero-based budgeting methodology has helped millions take control of their finances. But in recent years, a growing number of users have started looking for alternatives—and privacy is often the driving factor."
-msgstr "You Need A Budget (YNAB) ist seit über einem Jahrzehnt ein fester Begriff in der Welt der persönlichen Finanzsoftware. Seine Null-basierte Budgetierungsmethode hat Millionen Menschen geholfen, ihre Finanzen in den Griff zu bekommen. Doch in den letzten Jahren haben immer mehr Nutzer begonnen, nach Alternativen zu suchen — und der Datenschutz ist oft der ausschlaggebende Faktor."
+msgstr "You Need A Budget (YNAB) ist seit über einem Jahrzehnt eine der bekanntesten Apps für persönliche Finanzen. Die Zero-based-Budgeting-Methode hat Millionen Menschen geholfen, ihr Geld zu planen. Doch inzwischen suchen mehr Nutzer nach Alternativen, und Privatsphäre ist oft der Grund."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You need advanced reporting"
@@ -15164,7 +15164,7 @@ msgstr "Sie absolute Kontrolle wünschen"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You want comprehensive finance management"
-msgstr "Sie umfassendes Finanzmanagement wünschen"
+msgstr "Sie tiefes Finanzmanagement wünschen"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You want modern mobile UX"
@@ -15184,7 +15184,7 @@ msgstr "Sie eine YNAB-ähnliche Erfahrung wünschen"
 
 #: src/generic/component/waitlist-form/waitlist-success.tsx
 msgid "You're #{displayPosition} on the waitlist. We'll notify you when Budgie launches!"
-msgstr "Sie sind #{displayPosition} auf der Warteliste. Wir benachrichtigen Sie, wenn Budgie startet!"
+msgstr "Sie sind #{displayPosition} auf der Warteliste. Wir sagen Ihnen Bescheid, wenn Budgie startet."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You’re a power user"
@@ -15240,7 +15240,7 @@ msgstr "Ihre Bank-Anmeldedaten werden auf Ihrem Gerät verschlüsselt"
 
 #: src/generic/component/hero-section/hero-section-header.tsx
 msgid "Your bank knows everything. Mint sold your data. YNAB stores it on their servers. Budgie keeps your finances on your device—encrypted, offline, and yours alone."
-msgstr "Ihre Bank weiß alles. Mint hat Ihre Daten verkauft. YNAB speichert sie auf deren Servern. Budgie bewahrt Ihre Finanzen auf Ihrem Gerät – verschlüsselt, offline und nur Ihnen gehörend."
+msgstr "Die meisten Finanz-Apps verlangen, dass du Privatsphäre gegen Komfort tauschst. Budgie hält deine Finanzen auf deinem Gerät — verschlüsselt, offline und nur deine."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Your banking credentials are encrypted and stored locally on your device"
@@ -15285,7 +15285,7 @@ msgstr "Ihre Daten nicht an Dritte verkauft werden"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a full SQLCipher database file for full restore. Both are user-initiated and saved through the OS share sheet."
-msgstr "Ihre Daten, Ihre Entscheidung. Budgie enthält zwei Exporte: ein flaches CSV für Tabellen und eine vollständige SQLCipher-Datenbankdatei für die vollständige Wiederherstellung. Beide werden vom Benutzer initiiert und über das OS-Teilen-Blatt gespeichert."
+msgstr "Deine Daten bleiben portabel. Budgie exportiert ein flaches CSV für Tabellen und eine vollständige SQLCipher-Datenbankdatei zur Wiederherstellung. Beide Exporte startest du selbst und speicherst sie über das Teilen-Menü des Betriebssystems."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Your Device is the Database"
@@ -15313,7 +15313,7 @@ msgstr "Ihre Finanzdaten verdienen dieses Maß an Transparenz. Die Muster Ihrer 
 
 #: src/generic/component/security-section/security-section-header.tsx
 msgid "Your financial data never leaves your device. No servers, no cloud, no tracking—just complete privacy with enterprise-grade security features."
-msgstr "Ihre Finanzdaten verlassen niemals Ihr Gerät. Keine Server, keine Cloud, kein Tracking – nur vollständige Privatsphäre mit Sicherheitsfunktionen auf Unternehmensniveau."
+msgstr "Deine Finanzdaten verlassen dein Gerät nie. Keine Server, keine Cloud-Kopie, kein Tracking — nur lokale Speicherung mit ernsthaften Sicherheitskontrollen."
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx
 msgid "Your financial data never leaves your phone. No servers, no cloud, no risk of data breaches."
@@ -15321,7 +15321,7 @@ msgstr "Ihre Finanzdaten verlassen niemals Ihr Telefon. Keine Server, keine Clou
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Your financial data remains on your device until you choose to delete it. If you use optional cloud features, we retain your data only as long as necessary to provide the Service or as required by law. Anonymous analytics data may be retained indefinitely in aggregated form."
-msgstr ""
+msgstr "Ihre Finanzdaten bleiben auf Ihrem Gerät, bis Sie sie löschen. Wenn Sie optionale Cloud-Funktionen nutzen, bewahren wir Ihre Daten nur so lange auf, wie es zur Bereitstellung des Service erforderlich oder gesetzlich vorgeschrieben ist. Anonyme Analysedaten können in aggregierter Form unbegrenzt aufbewahrt werden."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Your financial data tells a complete story about your life. Where you live, where you shop, what you care about, what struggles you face, what hopes you have. This data is valuable precisely because it is so revealing."
