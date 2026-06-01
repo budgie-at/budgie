@@ -1,5 +1,5 @@
 {
-    "name": "@budgie-at/bank-sync-tests",
+    "name": "@budgie-at/consolidation-tests",
     "version": "1.18.0",
     "private": true,
     "type": "module",
@@ -11,17 +11,11 @@
     },
     "dependencies": {
         "@budgie-at/test-kit": "workspace:*",
-        "@budgie/bank-sync": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:*",
-        "@rnw-community/shared": "^2.0.0",
-        "better-sqlite3": "^11.7.0",
-        "drizzle-orm": "^0.45.2",
-        "msw": "^2.7.0",
         "vitest": "^3.0.0"
     },
     "devDependencies": {
-        "@types/better-sqlite3": "^7.6.12",
         "@types/node": "^22.0.0",
         "typescript": "^5.9.3"
     }

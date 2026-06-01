@@ -7,13 +7,10 @@ const here = (relative: string) => resolve(__dirname, relative);
 
 export default defineConfig({
     plugins: [createTestInlineShimPlugin(true)],
-    resolve: {
-        alias: [{ find: /^@app\/(.*)$/, replacement: here('../../packages/app/src/$1') }]
-    },
     test: {
         environment: 'node',
         globals: false,
-        setupFiles: [here('src/harness/scenario/setup.ts')],
+        setupFiles: [here('src/harness/setup.ts')],
         include: ['src/scenarios/**/*.test.ts'],
         pool: 'forks',
         poolOptions: { forks: { singleFork: true } }

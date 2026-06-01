@@ -8,12 +8,18 @@
             "types": "./src/index.ts",
             "import": "./src/index.ts",
             "default": "./src/index.ts"
+        },
+        "./vitest": {
+            "types": "./src/vitest/create-test-inline-shim-plugin.ts",
+            "import": "./src/vitest/create-test-inline-shim-plugin.ts",
+            "default": "./src/vitest/create-test-inline-shim-plugin.ts"
         }
     },
     "scripts": {
         "ts": "tsc --noEmit"
     },
     "dependencies": {
+        "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:*",
         "@rnw-community/shared": "^2.0.0",
         "better-sqlite3": "^11.7.0",
