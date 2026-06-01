@@ -99,6 +99,7 @@ const buildSqliteStatement = (sqlite: Database.Database, sqlText: string): ExpoS
 const buildExpoSqliteDatabase = (sqlite: Database.Database & ExpoLikeApiInterface): ExpoSqliteDatabase =>
     Object.assign(Object.create(null), {
         ...sqlite,
+        $client: sqlite,
         prepareSync: (sqlText: string) => buildSqliteStatement(sqlite, sqlText)
     });
 
