@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
-import * as schema from './schema';
+import * as schema from '@app/@generic/drizzle/db/schema';
 import type { DB } from '@budgie/contracts';
 import type { ExpoLikeApiInterface } from './expo-like-api.interface';
 

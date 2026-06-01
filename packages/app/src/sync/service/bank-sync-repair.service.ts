@@ -7,9 +7,8 @@ import { db } from '../../@generic/drizzle/db/db';
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 
+import { ersteDuplicateRepairSourceService, privatbankDuplicateRepairSourceService } from './bank-sync-duplicate-repair-source.service';
 import { bankSyncDuplicateSoftDeleteService } from './bank-sync-duplicate-soft-delete.service';
-import { ersteDuplicateRepairSourceService } from './erste-duplicate-repair-source.service';
-import { privatbankDuplicateRepairSourceService } from './privatbank-duplicate-repair-source.service';
 import { transferConsolidationAutoCandidateService } from './transfer-consolidation-auto-candidate.service';
 import { transferConsolidationCandidateService } from './transfer-consolidation-candidate.service';
 
@@ -47,10 +46,10 @@ class BankSyncRepairService {
     }
 
     @Log(
-        database => `enter database=${String(isDefined(database))}`,
+        database => `enter sourceDatabase=${String(isDefined(database))}`,
         (result, database) =>
-            `done database=${String(isDefined(database))} duplicateTransactionIds=${result.map(candidate => candidate.duplicateTransactionId).join(',')}`,
-        (error, database) => `throw database=${String(isDefined(database))} error=${getErrorMessage(error)}`
+            `done sourceDatabase=${String(isDefined(database))} duplicateTransactionIds=${result.map(candidate => candidate.duplicateTransactionId).join(',')}`,
+        (error, database) => `throw sourceDatabase=${String(isDefined(database))} error=${getErrorMessage(error)}`
     )
     private async findDuplicateCandidates(database: DB): Promise<BankSyncDuplicateCandidateRowInterface[]> {
         const candidateGroups = await Promise.all(
@@ -157,11 +156,8 @@ class BankSyncRepairService {
     }
 
     private async runExclusive<T>(work: () => Promise<T>): Promise<T> {
-        const { activeOperation } = this;
-        if (isDefined(activeOperation)) {
-            await activeOperation.catch(emptyFn);
-
-            return this.runExclusive(work);
+        if (isDefined(this.activeOperation)) {
+            return this.activeOperation.catch(emptyFn).then(() => this.runExclusive(work));
         }
 
         return this.runActiveOperation(work);

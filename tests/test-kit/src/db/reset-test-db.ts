@@ -13,7 +13,6 @@ const MUTABLE_TABLES = [
     'rules',
     'bank_syncs',
     'exchange_rates',
-    'historical_exchange_rates',
     'merchant_embeddings',
     'merchant_embedding_tags',
     'comment_embeddings',

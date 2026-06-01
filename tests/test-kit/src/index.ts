@@ -4,7 +4,7 @@ export { createTestTransactionRunner } from './db/create-test-transaction-runner
 export { resetTestDb } from './db/reset-test-db';
 export { TestQueryService } from './query/service/test-query.service';
 export { TestSeedService } from './seed/service/test-seed.service';
-export { createTestInlineShimPlugin } from './vitest/create-test-inline-shim-plugin';
+export { createTestInlineShimPlugin, createTestVitestConfig } from './vitest/create-test-inline-shim-plugin';
 export type { ExpoLikeApiInterface } from './db/expo-like-api.interface';
 export type { SeedBankPairEntryInputType } from './seed/interface/seed-bank-pair-entry-input.type';
 export type { TestInlineShimPluginInterface } from './vitest/interface/test-inline-shim-plugin.interface';

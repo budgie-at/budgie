@@ -29,6 +29,21 @@ const PRIVATBANK_DUPLICATE_OPERATED_AT = new Date('2026-05-07T08:46:37.000Z');
 const fetchPrivatbankDuplicateCandidates = async (): Promise<BankSyncDuplicateCandidateRowInterface[]> =>
     testDb.all<BankSyncDuplicateCandidateRowInterface>(sql.raw(PRIVATBANK_DUPLICATE_CANDIDATE_SQL));
 
+const expectTransferPairDuplicate = async (
+    keptTransaction: TransactionEntityInterface,
+    duplicateTransaction: TransactionEntityInterface
+): Promise<void> => {
+    const candidates = await fetchPrivatbankDuplicateCandidates();
+
+    expect(candidates).toEqual([
+        expect.objectContaining({
+            duplicateTransactionId: duplicateTransaction.id,
+            keptTransactionId: keptTransaction.id,
+            reason: 'transfer_pair_duplicate'
+        })
+    ]);
+};
+
 const seedPrivatbankIncome = ({
     accountId,
     externalId,
@@ -439,15 +454,7 @@ describe('privatbank/duplicate-repair', () => {
             toAccountId: toAccount.id
         });
 
-        const candidates = await fetchPrivatbankDuplicateCandidates();
-
-        expect(candidates).toEqual([
-            expect.objectContaining({
-                duplicateTransactionId: duplicateTransaction.id,
-                keptTransactionId: keptTransaction.id,
-                reason: 'transfer_pair_duplicate'
-            })
-        ]);
+        await expectTransferPairDuplicate(keptTransaction, duplicateTransaction);
     });
 
     it('detects duplicate PrivatBank same-bank fee transfer canonicals', async () => {
@@ -474,14 +481,6 @@ describe('privatbank/duplicate-repair', () => {
             toAccountId: toAccount.id
         });
 
-        const candidates = await fetchPrivatbankDuplicateCandidates();
-
-        expect(candidates).toEqual([
-            expect.objectContaining({
-                duplicateTransactionId: duplicateTransaction.id,
-                keptTransactionId: keptTransaction.id,
-                reason: 'transfer_pair_duplicate'
-            })
-        ]);
+        await expectTransferPairDuplicate(keptTransaction, duplicateTransaction);
     });
 });

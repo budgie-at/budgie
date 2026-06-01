@@ -56,14 +56,14 @@ class BankSyncDuplicateSoftDeleteService {
     }
 
     @Log(
-        (tx, duplicateTransactionIds) => `enter tx=${String(isDefined(tx))} duplicateTransactionIds=${duplicateTransactionIds.join(',')}`,
-        (result, tx, duplicateTransactionIds) =>
-            `done tx=${String(isDefined(tx))} duplicateTransactionIds=${duplicateTransactionIds.join(',')} result=${String(result)}`,
-        (error, tx, duplicateTransactionIds) =>
-            `throw tx=${String(isDefined(tx))} duplicateTransactionIds=${duplicateTransactionIds.join(',')} error=${getErrorMessage(error)}`
+        (tx, updatedTransactionIds) => `enter tx=${String(isDefined(tx))} updatedTransactionIds=${updatedTransactionIds.join(',')}`,
+        (result, tx, updatedTransactionIds) =>
+            `done tx=${String(isDefined(tx))} updatedTransactionIds=${updatedTransactionIds.join(',')} result=${String(result)}`,
+        (error, tx, updatedTransactionIds) =>
+            `throw tx=${String(isDefined(tx))} updatedTransactionIds=${updatedTransactionIds.join(',')} error=${getErrorMessage(error)}`
     )
-    private async softDeleteEntryChunk(tx: DB, duplicateTransactionIds: readonly number[]): Promise<void> {
-        const bindTransactionIds = [...duplicateTransactionIds];
+    private async softDeleteEntryChunk(tx: DB, updatedTransactionIds: readonly number[]): Promise<void> {
+        const bindTransactionIds = [...updatedTransactionIds];
 
         await tx.$client.runAsync(this.buildTransactionEntryDeleteSql(bindTransactionIds), bindTransactionIds);
     }
@@ -80,22 +80,13 @@ class BankSyncDuplicateSoftDeleteService {
         return this.softDeleteTransactionChunks(tx, chunks);
     }
 
-    private async softDeleteTransactionChunks(
-        tx: DB,
-        chunks: readonly number[][],
-        index = 0,
-        updatedIds: number[] = []
-    ): Promise<number[]> {
-        const chunk = chunks[index];
+    private async softDeleteTransactionChunks(tx: DB, chunks: readonly number[][]): Promise<number[]> {
+        return chunks.reduce<Promise<number[]>>(async (previousUpdatedIdsPromise, chunk) => {
+            const previousUpdatedIds = await previousUpdatedIdsPromise;
+            const rows = await this.softDeleteTransactionChunk(tx, chunk);
 
-        if (!isDefined(chunk)) {
-            return updatedIds;
-        }
-
-        const rows = await this.softDeleteTransactionChunk(tx, chunk);
-        updatedIds.push(...rows.map(row => row.duplicateTransactionId));
-
-        return this.softDeleteTransactionChunks(tx, chunks, index + 1, updatedIds);
+            return [...previousUpdatedIds, ...rows.map(row => row.duplicateTransactionId)];
+        }, Promise.resolve([]));
     }
 
     private async softDeleteEntries(tx: DB, updatedTransactionIds: readonly number[]): Promise<void> {
@@ -104,16 +95,11 @@ class BankSyncDuplicateSoftDeleteService {
         await this.softDeleteEntryChunks(tx, chunks);
     }
 
-    private async softDeleteEntryChunks(tx: DB, chunks: readonly number[][], index = 0): Promise<void> {
-        const chunk = chunks[index];
-
-        if (!isDefined(chunk)) {
-            return;
-        }
-
-        await this.softDeleteEntryChunk(tx, chunk);
-
-        await this.softDeleteEntryChunks(tx, chunks, index + 1);
+    private async softDeleteEntryChunks(tx: DB, chunks: readonly number[][]): Promise<void> {
+        await chunks.reduce<Promise<void>>(async (previousChunkPromise, chunk) => {
+            await previousChunkPromise;
+            await this.softDeleteEntryChunk(tx, chunk);
+        }, Promise.resolve());
     }
 
     private chunkIds(ids: readonly number[]): number[][] {
