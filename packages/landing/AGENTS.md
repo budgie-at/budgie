@@ -141,9 +141,9 @@ export const MyServerComponent = async ({ params }: Props) => {
 };
 ```
 
-Every page render calls `initLingui(lang)` before returning JSX unless a full-page shell owns the entire render and calls it internally. `generateMetadata` runs outside the render tree, so it uses `getI18nInstance(lang)` plus `i18n._()` and `msg` descriptors, or resolves page-owned metadata sidecar descriptors at the helper call site.
+Every page render calls `initLingui(lang)` before returning JSX unless a full-page shell owns the entire render and calls it internally. `generateMetadata` runs outside the render tree, so it uses `getI18nInstance(lang)` and resolves page-owned metadata sidecar descriptors at the helper call site.
 
-JSX text uses `<Trans>`. String props and non-JSX strings use `t(i18n)`. Page-owned metadata sidecars store descriptors with `msg`; do not resolve them at module scope.
+JSX text uses `<Trans>`. String props, OG image text, JSON-LD labels, and other non-JSX string literals use `t(i18n)`. Do not write ``i18n._(msg`Home`)`` inside page render code when `` t(i18n)`Home` `` is available. Page-owned metadata sidecars store descriptors with `msg`; resolve those descriptors with `i18n._(entry.title)`/`i18n._(entry.metaTitle)`, not at module scope.
 
 ### Client Components
 

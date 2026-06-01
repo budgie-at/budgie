@@ -1,4 +1,4 @@
-import { msg, t } from '@lingui/core/macro';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeaturesHubGrid } from '../../../feature/component/features-hub-grid/features-hub-grid';
@@ -46,8 +46,8 @@ export default async function FeaturesHubPage(props: PageLangParam) {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: [
-            { '@type': 'ListItem', position: 1, name: i18n._(msg`Home`), item: `${BASE_URL}/${lang}` },
-            { '@type': 'ListItem', position: 2, name: i18n._(msg`Features`), item: `${BASE_URL}/${lang}${PATH}` }
+            { '@type': 'ListItem', position: 1, name: t(i18n)`Home`, item: `${BASE_URL}/${lang}` },
+            { '@type': 'ListItem', position: 2, name: t(i18n)`Features`, item: `${BASE_URL}/${lang}${PATH}` }
         ]
     };
     /* eslint-enable lingui/no-unlocalized-strings */

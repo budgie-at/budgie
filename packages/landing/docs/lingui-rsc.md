@@ -32,14 +32,15 @@ initLingui(lang); // src/i18n/init-lingui.ts
 
 ## 2. `<Trans>` for JSX children — `t`/`msg` for string props and metadata
 
-| Context                                                                                                | Use                                                     | Example                                   |
-| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- | ----------------------------------------- |
-| JSX text children                                                                                      | `<Trans>…</Trans>` from `@lingui/react/macro`           | `<h1><Trans>Track Expenses</Trans></h1>`  |
-| Attribute / string prop                                                                                | `t\`…\``from`@lingui/core/macro`                        | `alt={t\`App screenshot\`}`               |
-| JSON-LD / metadata strings (inside `generateMetadata`, metadata sidecars, or structured-data builders) | `i18n._(msg\`…\`)`                                      | `i18n._(msg\`Budgie - Expense Tracker\`)` |
-| Page-owned metadata sidecars                                                                           | `msg\`…\`` descriptor only; resolve at render/call site | `metaTitle: msg\`Article Title\``         |
+| Context                                                                                 | Use                                                       | Example                                  |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------- |
+| JSX text children                                                                       | `<Trans>…</Trans>` from `@lingui/react/macro`             | `<h1><Trans>Track Expenses</Trans></h1>` |
+| Attribute / string prop                                                                 | `` t`…` `` from `@lingui/core/macro`                      | ``alt={t`App screenshot`}``              |
+| JSON-LD / metadata string literals resolved in a page render or OG image                | `` t(i18n)`…` `` from `@lingui/core/macro`                | `` name: t(i18n)`Home` ``                |
+| Metadata sidecar descriptors passed into `generateMetadata` or structured-data builders | `i18n._(descriptor)`                                      | `i18n._(entry.metaTitle)`                |
+| Page-owned metadata sidecars                                                            | `` msg`…` `` descriptor only; resolve at render/call site | `` metaTitle: msg`Article Title` ``      |
 
-The pattern `<p>{t\`Hello\`}</p>` is a lint-level violation (`lingui/no-unlocalized-strings`catches a subset; the macro mismatch is caught by`@lingui/swc-plugin`). Always write `<p><Trans>Hello</Trans></p>`.
+The pattern ``<p>{t`Hello`}</p>`` is a lint-level violation (`lingui/no-unlocalized-strings` catches a subset; the macro mismatch is caught by `@lingui/swc-plugin`). Always write `<p><Trans>Hello</Trans></p>`.
 
 ---
 
@@ -60,7 +61,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 }
 ```
 
-Never write `t\`…\``directly inside`generateMetadata`—`t` compiles to a call on the active i18n instance, which is undefined in the metadata thunk's execution context.
+Never write bare `` t`…` `` directly inside `generateMetadata` - it compiles to a call on the active i18n instance, which is undefined in the metadata thunk's execution context. Use `` t(i18n)`…` `` for literal strings when an explicit `i18n` instance is available, and `i18n._(descriptor)` when resolving a `msg` descriptor from a sidecar or registry.
 
 ---
 

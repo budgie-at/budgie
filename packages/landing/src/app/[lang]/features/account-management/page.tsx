@@ -1,5 +1,5 @@
 /* eslint-disable max-lines-per-function */
-import { msg } from '@lingui/core/macro';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -63,8 +63,8 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
         title: i18n._(entry.metaTitle),
         description: i18n._(entry.metaDescription),
         featureName: i18n._(entry.title),
-        featuresLabel: i18n._(msg`Features`),
-        homeLabel: i18n._(msg`Home`),
+        featuresLabel: t(i18n)`Features`,
+        homeLabel: t(i18n)`Home`,
         publishedAt: entry.publishedAt,
         updatedAt: entry.updatedAt
     });
