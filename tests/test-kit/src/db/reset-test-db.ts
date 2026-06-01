@@ -19,11 +19,7 @@ const MUTABLE_TABLES = [
     'comment_embedding_tags'
 ] as const;
 
-interface RunnerInterface {
-    readonly run: (query: string | SQLWrapper) => void;
-}
-
-export const resetTestDb = (db: RunnerInterface): void => {
+export const resetTestDb = (db: { readonly run: (query: string | SQLWrapper) => void }): void => {
     db.run(sql`PRAGMA foreign_keys = OFF`);
     for (const tableName of MUTABLE_TABLES) {
         db.run(sql.raw(`DELETE FROM "${tableName}"`));

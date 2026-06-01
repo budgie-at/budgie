@@ -20,6 +20,7 @@ import {
     TransactionEntryRepository,
     TransactionPatternRepository,
     TransactionRepository,
+    TransactionRuleRepository,
     TransactionTagsRepository,
     TransferPairRepository
 } from '@budgie/contracts';
@@ -44,6 +45,7 @@ export const createTestRepositories = (db: DB) => ({
     transactionEntryRepository: new TransactionEntryRepository(db),
     transactionPatternRepository: new TransactionPatternRepository(db),
     transactionRepository: new TransactionRepository(db),
+    transactionRuleRepository: new TransactionRuleRepository(db),
     transactionTagsRepository: new TransactionTagsRepository(db),
     merchantEmbeddingRepository: new MerchantEmbeddingRepository(db),
     commentEmbeddingRepository: new CommentEmbeddingRepository(db),
