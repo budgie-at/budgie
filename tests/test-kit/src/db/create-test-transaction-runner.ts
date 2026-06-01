@@ -1,5 +1,5 @@
-import type { TransactionRunnerInterface } from '@budgie/consolidation';
+import type { DB } from '@budgie/contracts';
 
-export const createTestTransactionRunner = (): TransactionRunnerInterface => ({
-    run: (database, callback) => callback(database)
+export const createTestTransactionRunner = () => ({
+    run: <T>(database: DB, callback: (transactionDatabase: DB) => Promise<T>): Promise<T> => callback(database)
 });

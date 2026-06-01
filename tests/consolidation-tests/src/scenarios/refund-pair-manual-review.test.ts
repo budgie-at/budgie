@@ -3,15 +3,13 @@ import { describe, expect, it } from 'vitest';
 import { PRECISION } from '@budgie/contracts';
 import { isDefined } from '@rnw-community/shared';
 
-import { fetchTransactionById, findMccByCode, seed, seedRefundedExpense } from '../../harness';
-
-import { refundPairRepository } from '@app/@generic/drizzle/db/db';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { runConsolidation } from '../harness/run-consolidation';
+import { consolidationCandidateService, refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
 
 const seedSeezonaRefund = (accountId: number, refundAccountId?: number) => {
-    const mcc = findMccByCode('5621');
+    const mcc = testQueryService.findMccByCode('5621');
 
-    return seedRefundedExpense({
+    return testSeedService.refundedExpense({
         accountId,
         ...(isDefined(refundAccountId) && { refundAccountId }),
         expenseAmount: 103.2 * PRECISION,
@@ -25,11 +23,11 @@ const seedSeezonaRefund = (accountId: number, refundAccountId?: number) => {
 };
 
 const expectManualSeezonaCandidate = async (refundId: number, accountTitle?: string) => {
-    const preview = await transferConsolidationService.preview();
+    const groups = await consolidationCandidateService.findGroups();
     const manualCandidates = await refundPairRepository.findRefundableExpenseCandidates(refundId, '');
 
-    expect(preview.autoCandidateCount).toBe(0);
-    expect(preview.manualReviewCandidateCount).toBeGreaterThanOrEqual(1);
+    expect(groups.refundCandidates).toHaveLength(0);
+    expect(groups.refundReviewCandidates.length).toBeGreaterThanOrEqual(1);
     expect(manualCandidates).toMatchObject([
         {
             title: 'Seezona',
@@ -40,10 +38,10 @@ const expectManualSeezonaCandidate = async (refundId: number, accountTitle?: str
 };
 
 describe('consolidation/refund-pair-manual-review', () => {
-    it('counts a prefix-stripped + same-MCC pair in manualReviewCandidateCount but does not auto-consolidate it', async () => {
-        const account = seed.account({ externalId: 'mono-card' });
-        const mcc = findMccByCode('5814');
-        const { expense, refunds } = seedRefundedExpense({
+    it('counts a prefix-stripped + same-MCC pair for manual review but does not auto-consolidate it', async () => {
+        const account = testSeedService.account({ externalId: 'mono-card' });
+        const mcc = testQueryService.findMccByCode('5814');
+        const { expense, refunds } = testSeedService.refundedExpense({
             accountId: account.id,
             expenseAmount: 120 * PRECISION,
             refundAmounts: [120 * PRECISION],
@@ -53,36 +51,36 @@ describe('consolidation/refund-pair-manual-review', () => {
             refundMccCategoryId: mcc.id
         });
 
-        const preview = await transferConsolidationService.preview();
-        expect(preview.autoCandidateCount).toBe(0);
-        expect(preview.manualReviewCandidateCount).toBeGreaterThanOrEqual(1);
+        const groups = await consolidationCandidateService.findGroups();
+        expect(groups.refundCandidates).toHaveLength(0);
+        expect(groups.refundReviewCandidates.length).toBeGreaterThanOrEqual(1);
 
-        const result = await transferConsolidationService.consolidate();
+        const result = await runConsolidation();
         expect(result.consolidated).toBe(0);
-        expect(fetchTransactionById(expense.id).consolidationType).toBeNull();
-        expect(fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
+        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBeNull();
+        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
     });
 
     it('recommends a localized cancellation with a location suffix for manual review', async () => {
-        const account = seed.account({ externalId: 'mono-card' });
+        const account = testSeedService.account({ externalId: 'mono-card' });
         const { refunds } = seedSeezonaRefund(account.id);
 
         await expectManualSeezonaCandidate(refunds[0].id);
     });
 
     it('recommends same-currency refunds from another account for manual review', async () => {
-        const expenseAccount = seed.account({ title: 'Expense Card', externalId: 'mono-expense-card' });
-        const refundAccount = seed.account({ title: 'Refund Card', externalId: 'mono-refund-card' });
+        const expenseAccount = testSeedService.account({ title: 'Expense Card', externalId: 'mono-expense-card' });
+        const refundAccount = testSeedService.account({ title: 'Refund Card', externalId: 'mono-refund-card' });
         const { refunds } = seedSeezonaRefund(expenseAccount.id, refundAccount.id);
 
         await expectManualSeezonaCandidate(refunds[0].id, 'Expense Card');
     });
 
     it('does not treat prefix-only refund titles as broad manual-review matches', async () => {
-        const account = seed.account({ externalId: 'mono-card' });
-        const mcc = findMccByCode('5814');
+        const account = testSeedService.account({ externalId: 'mono-card' });
+        const mcc = testQueryService.findMccByCode('5814');
 
-        seedRefundedExpense({
+        testSeedService.refundedExpense({
             accountId: account.id,
             expenseAmount: 120 * PRECISION,
             refundAmounts: [120 * PRECISION],

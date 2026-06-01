@@ -1477,7 +1477,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie-at/test-kit@workspace:tests/test-kit"
   dependencies:
-    "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:*"
     "@rnw-community/shared": "npm:^2.0.0"
     "@types/better-sqlite3": "npm:^7.6.12"
