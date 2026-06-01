@@ -4,8 +4,5 @@ export interface BankSyncDuplicateCandidateRowInterface {
     readonly externalSource: ExternalSourceEnum;
     readonly duplicateTransactionId: number;
     readonly keptTransactionId: number;
-    readonly title: string;
-    readonly duplicateExternalId: string | null;
-    readonly keptExternalId: string | null;
     readonly reason: string;
 }

@@ -16,6 +16,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { BANK_PROVIDER_TITLE } from '../../../account/constant/bank-provider-title.constant';
 import { useBankSyncDuplicateRepairPreviewQuery } from '../../../sync/query/use-bank-sync-duplicate-repair-preview.query';
 import { bankSyncRepairService } from '../../../sync/service/bank-sync-repair.service';
 
@@ -87,6 +88,8 @@ const repairDuplicates = async (refresh: () => Promise<void>, t: ReturnType<type
 
 const renderSourceRow = (source: BankSyncDuplicateRepairSourcePreviewInterface, t: ReturnType<typeof useLingui>['t']) => {
     const sourceDescription = getBankSyncRepairText(source.duplicateTransactionCount, t);
+    const titleDescriptor = BANK_PROVIDER_TITLE[source.externalSource];
+    const title = isDefined(titleDescriptor) ? t(titleDescriptor) : source.externalSource;
 
     return (
         <SimpleHorizontalCell
@@ -94,7 +97,7 @@ const renderSourceRow = (source: BankSyncDuplicateRepairSourcePreviewInterface, 
             size="lg"
             testID={BankSyncRepairsPageSelector.SourceRow(source.externalSource)}
             left={<BankLogo bankProvider={source.externalSource} />}
-            title={source.title}
+            title={title}
             description={sourceDescription}
         />
     );
