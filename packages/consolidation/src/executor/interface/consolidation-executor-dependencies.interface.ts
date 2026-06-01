@@ -1,10 +1,5 @@
 import type { TransactionRunnerInterface } from '../../wiring/interface/transaction-runner.interface';
-import type {
-    DB,
-    TransactionEntryRepository,
-    TransactionRepository,
-    TransactionTagsRepository
-} from '@budgie/contracts';
+import type { DB, TransactionEntryRepository, TransactionRepository, TransactionTagsRepository } from '@budgie/contracts';
 
 export interface ConsolidationExecutorDependenciesInterface {
     readonly database: DB;
