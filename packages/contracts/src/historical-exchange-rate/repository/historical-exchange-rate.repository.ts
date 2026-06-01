@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull, lte } from 'drizzle-orm';
+import { SQL, and, asc, desc, eq, isNull, lte } from 'drizzle-orm';
 
 import { HistoricalExchangeRateEntityTable } from '../table/historical-exchange-rate-entity.table';
 
@@ -15,15 +15,22 @@ export class HistoricalExchangeRateRepository {
         rateDate: string,
         tx?: DB
     ): Promise<HistoricalExchangeRateEntityInterface | undefined> {
-        return await (tx ?? this.db).query.HistoricalExchangeRateEntityTable.findFirst({
-            where: and(
-                eq(HistoricalExchangeRateEntityTable.sourceInstrumentId, sourceInstrumentId),
-                eq(HistoricalExchangeRateEntityTable.targetInstrumentId, targetInstrumentId),
-                lte(HistoricalExchangeRateEntityTable.rateDate, rateDate),
-                isNull(HistoricalExchangeRateEntityTable.deletedAt)
-            ),
-            orderBy: desc(HistoricalExchangeRateEntityTable.rateDate)
-        });
+        const where = and(
+            this.buildPairCondition(sourceInstrumentId, targetInstrumentId),
+            lte(HistoricalExchangeRateEntityTable.rateDate, rateDate)
+        );
+
+        return await this.findFirstRate(where, desc(HistoricalExchangeRateEntityTable.rateDate), tx);
+    }
+
+    async findEarliest(
+        sourceInstrumentId: number,
+        targetInstrumentId: number,
+        tx?: DB
+    ): Promise<HistoricalExchangeRateEntityInterface | undefined> {
+        const where = this.buildPairCondition(sourceInstrumentId, targetInstrumentId);
+
+        return await this.findFirstRate(where, asc(HistoricalExchangeRateEntityTable.rateDate), tx);
     }
 
     async upsert(input: HistoricalExchangeRateCreateEntityInterface, tx?: DB): Promise<void> {
@@ -41,5 +48,17 @@ export class HistoricalExchangeRateRepository {
                     updatedAt: new Date()
                 }
             });
+    }
+
+    private buildPairCondition(sourceInstrumentId: number, targetInstrumentId: number): SQL | undefined {
+        return and(
+            eq(HistoricalExchangeRateEntityTable.sourceInstrumentId, sourceInstrumentId),
+            eq(HistoricalExchangeRateEntityTable.targetInstrumentId, targetInstrumentId),
+            isNull(HistoricalExchangeRateEntityTable.deletedAt)
+        );
+    }
+
+    private async findFirstRate(where: SQL | undefined, order: SQL, tx?: DB): Promise<HistoricalExchangeRateEntityInterface | undefined> {
+        return await (tx ?? this.db).query.HistoricalExchangeRateEntityTable.findFirst({ where, orderBy: order });
     }
 }

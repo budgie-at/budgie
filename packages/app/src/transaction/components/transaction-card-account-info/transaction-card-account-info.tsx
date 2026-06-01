@@ -5,9 +5,13 @@ import { isDefined } from '@rnw-community/shared';
 import { TransactionAccountLine } from '../transaction-account-line/transaction-account-line';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
-import type { TransactionCardAccountInfoPropsInterface } from '../../interface/transaction-card-account-info-props.interface';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-export const TransactionCardAccountInfo = ({ transaction }: TransactionCardAccountInfoPropsInterface) => {
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+}
+
+export const TransactionCardAccountInfo = ({ transaction }: Props) => {
     const { toAccount, fromAccount } = transaction;
 
     if (isDefined(fromAccount) && isDefined(toAccount)) {
