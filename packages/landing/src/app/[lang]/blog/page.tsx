@@ -4,7 +4,7 @@ import { Search } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BlogSearch } from '../../../blog/component/blog-search/blog-search';
 import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
@@ -125,7 +125,7 @@ export default async function BlogPage(props: Props) {
                         </Suspense>
                     </Motion>
 
-                    {paginatedArticles.length > 0 ? (
+                    {isNotEmptyArray(paginatedArticles) ? (
                         <>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                                 {paginatedArticles.map((article, index) => (

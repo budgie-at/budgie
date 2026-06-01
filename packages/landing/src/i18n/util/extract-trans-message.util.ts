@@ -1,6 +1,6 @@
 import { Children, isValidElement } from 'react';
 
-import { isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isString } from '@rnw-community/shared';
 
 import type { TransMessagePropsInterface } from '../interface/trans-message-props.interface';
 import type { I18n } from '@lingui/core';
@@ -16,7 +16,7 @@ export const extractTransMessage = (node: ReactNode, i18n: I18n): string => {
     if (children.length === 1) {
         const [child] = children;
 
-        if (typeof child === 'string') {
+        if (isString(child)) {
             return child;
         }
 
@@ -31,5 +31,5 @@ export const extractTransMessage = (node: ReactNode, i18n: I18n): string => {
         }
     }
 
-    return children.map(child => (typeof child === 'string' ? child : extractTransMessage(child, i18n))).join('');
+    return children.map(child => (isString(child) ? child : extractTransMessage(child, i18n))).join('');
 };
