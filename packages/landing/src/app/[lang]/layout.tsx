@@ -140,12 +140,7 @@ export default async function RootLayout({ params, children }: Props) {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: 'Budgie',
-        url: BASE_URL,
-        potentialAction: {
-            '@type': 'SearchAction',
-            target: { '@type': 'EntryPoint', urlTemplate: `${BASE_URL}/en/blog?q={search_term_string}` },
-            'query-input': 'required name=search_term_string'
-        }
+        url: BASE_URL
     };
     /* eslint-enable lingui/no-unlocalized-strings */
 

@@ -18,7 +18,6 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -46,46 +45,12 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const related = getRelatedFeatures(FEATURE_METADATA);
     const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
     const title = i18n._(FEATURE_METADATA.metaTitle);
     const homePath = `/${lang}`;
     const featuresPath = `/${lang}/features`;
     const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
-    const comparisonCategoryLabel = <Trans>Cloud AI budget assistants</Trans>;
-    const comparisonRows = [
-        {
-            label: <Trans>Where AI runs</Trans>,
-            budgieValue: <Trans>On your phone</Trans>,
-            competitorValue: <Trans>Vendor&apos;s cloud / remote AI service</Trans>
-        },
-        {
-            label: <Trans>What gets sent</Trans>,
-            budgieValue: <Trans>Nothing</Trans>,
-            competitorValue: <Trans>Every transaction title, often more</Trans>
-        },
-        {
-            label: <Trans>Works offline</Trans>,
-            budgieValue: <Trans>Yes</Trans>,
-            competitorValue: <Trans>No</Trans>
-        },
-        {
-            label: <Trans>AI subscription required</Trans>,
-            budgieValue: <Trans>No</Trans>,
-            competitorValue: <Trans>Often yes</Trans>
-        },
-        {
-            label: <Trans>Privacy from AI provider</Trans>,
-            budgieValue: <Trans>Total — no provider exists</Trans>,
-            competitorValue: <Trans>Bound by their privacy policy</Trans>
-        },
-        {
-            label: <Trans>Suggestion quality</Trans>,
-            budgieValue: <Trans>Improves with your corrections</Trans>,
-            competitorValue: <Trans>Static, plus your data trains their model</Trans>
-        }
-    ];
 
     return (
         <main className="flex-1">
@@ -162,7 +127,38 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                 <FeaturePageHeading>
                     <Trans>Feature comparison</Trans>
                 </FeaturePageHeading>
-                <FeaturePageCategoryComparison categoryLabel={comparisonCategoryLabel} rows={comparisonRows} />
+                <FeaturePageCategoryComparison categoryLabel={<Trans>Cloud AI budget assistants</Trans>}>
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>On your phone</Trans>}
+                        competitorValue={<Trans>Vendor&apos;s cloud / remote AI service</Trans>}
+                        label={<Trans>Where AI runs</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Nothing</Trans>}
+                        competitorValue={<Trans>Every transaction title, often more</Trans>}
+                        label={<Trans>What gets sent</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Yes</Trans>}
+                        competitorValue={<Trans>No</Trans>}
+                        label={<Trans>Works offline</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>No</Trans>}
+                        competitorValue={<Trans>Often yes</Trans>}
+                        label={<Trans>AI subscription required</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Total — no provider exists</Trans>}
+                        competitorValue={<Trans>Bound by their privacy policy</Trans>}
+                        label={<Trans>Privacy from AI provider</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Improves with your corrections</Trans>}
+                        competitorValue={<Trans>Static, plus your data trains their model</Trans>}
+                        label={<Trans>Suggestion quality</Trans>}
+                    />
+                </FeaturePageCategoryComparison>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -203,7 +199,7 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                 />
             </FeaturePageFaqSection>
 
-            <FeaturePageRelated features={related} locale={lang} />
+            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
             <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
 
             <FeaturePageCta locale={lang} />

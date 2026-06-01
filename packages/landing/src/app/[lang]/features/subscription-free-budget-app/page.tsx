@@ -18,7 +18,6 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -46,46 +45,12 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const related = getRelatedFeatures(FEATURE_METADATA);
     const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
     const title = i18n._(FEATURE_METADATA.metaTitle);
     const homePath = `/${lang}`;
     const featuresPath = `/${lang}/features`;
     const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
-    const comparisonCategoryLabel = <Trans>Subscription budget apps</Trans>;
-    const comparisonRows = [
-        {
-            label: <Trans>Pricing</Trans>,
-            budgieValue: <Trans>Free core, optional one-time unlock</Trans>,
-            competitorValue: <Trans>Monthly recurring</Trans>
-        },
-        {
-            label: <Trans>What you keep when you stop paying</Trans>,
-            budgieValue: <Trans>Everything — full access</Trans>,
-            competitorValue: <Trans>Read-only or nothing</Trans>
-        },
-        {
-            label: <Trans>Annual cost over 5 years</Trans>,
-            budgieValue: <Trans>&lt; $30 one-time</Trans>,
-            competitorValue: <Trans>$300+ recurring</Trans>
-        },
-        {
-            label: <Trans>Bank sync</Trans>,
-            budgieValue: <Trans>Direct API or PDF/CSV</Trans>,
-            competitorValue: <Trans>Aggregator (often paid tier)</Trans>
-        },
-        {
-            label: <Trans>Offline use</Trans>,
-            budgieValue: <Trans>Full</Trans>,
-            competitorValue: <Trans>Limited or none</Trans>
-        },
-        {
-            label: <Trans>Public source</Trans>,
-            budgieValue: <Trans>Yes</Trans>,
-            competitorValue: <Trans>No</Trans>
-        }
-    ];
 
     return (
         <main className="flex-1">
@@ -160,7 +125,38 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 <FeaturePageHeading>
                     <Trans>Feature comparison</Trans>
                 </FeaturePageHeading>
-                <FeaturePageCategoryComparison categoryLabel={comparisonCategoryLabel} rows={comparisonRows} />
+                <FeaturePageCategoryComparison categoryLabel={<Trans>Subscription budget apps</Trans>}>
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Free core, optional one-time unlock</Trans>}
+                        competitorValue={<Trans>Monthly recurring</Trans>}
+                        label={<Trans>Pricing</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Everything — full access</Trans>}
+                        competitorValue={<Trans>Read-only or nothing</Trans>}
+                        label={<Trans>What you keep when you stop paying</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>&lt; $30 one-time</Trans>}
+                        competitorValue={<Trans>$300+ recurring</Trans>}
+                        label={<Trans>Annual cost over 5 years</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Direct API or PDF/CSV</Trans>}
+                        competitorValue={<Trans>Aggregator (often paid tier)</Trans>}
+                        label={<Trans>Bank sync</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Full</Trans>}
+                        competitorValue={<Trans>Limited or none</Trans>}
+                        label={<Trans>Offline use</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Yes</Trans>}
+                        competitorValue={<Trans>No</Trans>}
+                        label={<Trans>Public source</Trans>}
+                    />
+                </FeaturePageCategoryComparison>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -197,7 +193,7 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 />
             </FeaturePageFaqSection>
 
-            <FeaturePageRelated features={related} locale={lang} />
+            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
             <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
 
             <FeaturePageCta locale={lang} />

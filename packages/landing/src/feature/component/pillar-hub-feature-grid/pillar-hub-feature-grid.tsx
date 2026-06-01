@@ -1,25 +1,15 @@
-import { isDefined, isEmptyArray } from '@rnw-community/shared';
+import { PillarHubFeatureGridItem } from '../pillar-hub-feature-grid-item/pillar-hub-feature-grid-item';
 
-import { getFeatureBySlug } from '../../util/get-feature-by-slug.util';
-import { FeatureCard } from '../feature-card/feature-card';
+import type { ReactNode } from 'react';
 
 interface Props {
-    readonly locale: string;
-    readonly slugs: readonly string[];
+    readonly children: ReactNode;
 }
 
-export const PillarHubFeatureGrid = ({ locale, slugs }: Props) => {
-    if (isEmptyArray(slugs)) {
-        return null;
-    }
+const PillarHubFeatureGridRoot = ({ children }: Props) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">{children}</div>
+);
 
-    const features = slugs.map(slug => getFeatureBySlug(slug)).filter(isDefined);
-
-    return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {features.map((feature, index) => (
-                <FeatureCard feature={feature} index={index} key={feature.slug} locale={locale} />
-            ))}
-        </div>
-    );
-};
+export const PillarHubFeatureGrid = Object.assign(PillarHubFeatureGridRoot, {
+    Item: PillarHubFeatureGridItem
+});

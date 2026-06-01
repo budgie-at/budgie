@@ -1,14 +1,9 @@
 import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Search } from 'lucide-react';
-import Link from 'next/link';
 import { Suspense } from 'react';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
-
-import { BlogSearch } from '../../../blog/component/blog-search/blog-search';
+import { BlogBrowser } from '../../../blog/component/blog-browser/blog-browser';
 import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
-import { BlogCard } from '../../../generic/component/blog-card/blog-card';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../generic/component/motion/motion';
 import { BASE_URL, OG_LOCALE_MAP } from '../../../generic/constant/seo.constant';
@@ -18,14 +13,9 @@ import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
 import type { Metadata } from 'next';
 
-interface Props extends PageLangParam {
-    searchParams: Promise<{ q?: string; page?: string }>;
-}
-
 // eslint-disable-next-line func-style
-export async function generateMetadata(props: Props): Promise<Metadata> {
+export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
     const { lang } = await props.params;
-    const { q: query, page } = await props.searchParams;
     const i18n = getI18nInstance(lang);
 
     const title = i18n._(msg`Financial Privacy Blog & Insights`);
@@ -33,13 +23,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         msg`Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking.`
     );
 
-    const shouldNoIndex = isNotEmptyString(query) || Number(page) > 1;
-
     return {
         title,
         description,
         // eslint-disable-next-line lingui/no-unlocalized-strings
-        robots: shouldNoIndex ? 'noindex, follow' : 'index, follow',
+        robots: 'index, follow',
         alternates: buildAlternates(lang, '/blog'),
         openGraph: {
             title,
@@ -58,10 +46,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     };
 }
 
-// eslint-disable-next-line max-lines-per-function
-export default async function BlogPage(props: Props) {
+export default async function BlogPage(props: PageLangParam) {
     const { lang } = await props.params;
-    const { q: query = '', page = '1' } = await props.searchParams;
     const i18n = getI18nInstance(lang);
 
     initLingui(lang);
@@ -76,9 +62,6 @@ export default async function BlogPage(props: Props) {
         image: `/${lang}/blog/${entry.slug}/opengraph-image`,
         readingTimeMinutes: entry.readingTimeMinutes
     })).sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime());
-    const searchQuery = query.toLowerCase() || '';
-    const currentPage = Number.parseInt(page, 10);
-    const articlesPerPage = 9;
 
     /* eslint-disable lingui/no-unlocalized-strings */
     const breadcrumbData = {
@@ -90,19 +73,6 @@ export default async function BlogPage(props: Props) {
         ]
     };
     /* eslint-enable lingui/no-unlocalized-strings */
-
-    const filteredArticles = searchQuery
-        ? allArticles.filter(
-              article =>
-                  article.title.toLowerCase().includes(searchQuery) ||
-                  article.description.toLowerCase().includes(searchQuery) ||
-                  article.tags.some(tag => tag.toLowerCase().includes(searchQuery))
-          )
-        : allArticles;
-
-    const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
-    const startIndex = (currentPage - 1) * articlesPerPage;
-    const paginatedArticles = filteredArticles.slice(startIndex, startIndex + articlesPerPage);
 
     return (
         <main className="flex-1">
@@ -119,74 +89,11 @@ export default async function BlogPage(props: Props) {
                                 Stay informed about financial privacy, security best practices, and the latest features in Budgie.
                             </Trans>
                         </p>
-
-                        <Suspense fallback={<div className="h-12" />}>
-                            <BlogSearch currentPage={currentPage} locale={lang} searchQuery={searchQuery} />
-                        </Suspense>
                     </Motion>
 
-                    {isNotEmptyArray(paginatedArticles) ? (
-                        <>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                                {paginatedArticles.map((article, index) => (
-                                    <BlogCard
-                                        key={article.slug}
-                                        date={article.date}
-                                        description={article.description}
-                                        image={article.image}
-                                        index={index}
-                                        locale={lang}
-                                        readingTimeMinutes={article.readingTimeMinutes}
-                                        slug={article.slug}
-                                        tags={article.tags}
-                                        title={article.title}
-                                    />
-                                ))}
-                            </div>
-
-                            {totalPages > 1 && (
-                                <Motion className="flex justify-center gap-2 mt-8">
-                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
-                                        const isActive = page === currentPage;
-                                        const params = new URLSearchParams();
-
-                                        if (searchQuery) {
-                                            params.set('q', searchQuery);
-                                        }
-                                        params.set('page', page.toString());
-
-                                        /* eslint-disable lingui/no-unlocalized-strings */
-                                        const isActiveClass = isActive
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'bg-muted hover:bg-muted/80 text-foreground';
-                                        /* eslint-enable lingui/no-unlocalized-strings */
-
-                                        return (
-                                            <Link
-                                                key={page}
-                                                className={`px-4 py-2 rounded-md transition-colors ${isActiveClass}`}
-                                                href={`/${lang}/blog?${params.toString()}`}
-                                            >
-                                                {page}
-                                            </Link>
-                                        );
-                                    })}
-                                </Motion>
-                            )}
-                        </>
-                    ) : (
-                        <Motion className="text-center py-12">
-                            <Search className="size-16 mx-auto mb-4 text-muted-foreground" />
-
-                            <h3 className="text-2xl font-bold mb-2">
-                                <Trans>No articles found</Trans>
-                            </h3>
-
-                            <p className="text-muted-foreground">
-                                <Trans>Try adjusting your search query or browse all articles.</Trans>
-                            </p>
-                        </Motion>
-                    )}
+                    <Suspense fallback={<div className="h-12" />}>
+                        <BlogBrowser articles={allArticles} locale={lang} />
+                    </Suspense>
                 </div>
             </section>
         </main>
