@@ -30,7 +30,6 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 export default async function SecurityPillarHubPage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
-    const featureSlugs = ['pin-app-lock', 'biometric-authentication', 'screenshot-protection', 'database-backup'];
 
     return (
         <PillarHubPageShell
@@ -73,7 +72,32 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
             </PillarHubHero>
 
             <PillarHubSection>
-                <PillarHubFeatureGrid locale={lang} slugs={featureSlugs} />
+                <PillarHubFeatureGrid>
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/pin-app-lock`}
+                        index={0}
+                        tagline={<Trans>The PIN unlocks the app and unlocks SQLCipher — no PIN, no readable database.</Trans>}
+                        title={<Trans>PIN App Lock — Locks With the Encryption Key</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/biometric-authentication`}
+                        index={1}
+                        tagline={<Trans>Bank-grade biometric unlock — same Secure Enclave, same encryption key.</Trans>}
+                        title={<Trans>Face ID / Touch ID Authentication</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/screenshot-protection`}
+                        index={2}
+                        tagline={<Trans>Accidental shares stay private — balances blur in screenshots and the app switcher.</Trans>}
+                        title={<Trans>Screenshot Protection — Hide Bank Balance from Previews</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/database-backup`}
+                        index={3}
+                        tagline={<Trans>One encrypted file. No account. Restore on any device in seconds.</Trans>}
+                        title={<Trans>Database Backup &amp; Restore</Trans>}
+                    />
+                </PillarHubFeatureGrid>
             </PillarHubSection>
 
             <FeaturePageFaqSection locale={lang}>

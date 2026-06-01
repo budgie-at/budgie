@@ -30,14 +30,6 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
-    const featureSlugs = [
-        'ai-auto-categorization',
-        'voice-transaction-entry',
-        'ai-merchant-translation',
-        'ai-transaction-suggestions',
-        'ai-tag-suggestions',
-        'mcc-auto-category'
-    ];
 
     return (
         <PillarHubPageShell
@@ -80,7 +72,70 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
             </PillarHubHero>
 
             <PillarHubSection>
-                <PillarHubFeatureGrid locale={lang} slugs={featureSlugs} />
+                <PillarHubFeatureGrid>
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/ai-auto-categorization`}
+                        index={0}
+                        tagline={
+                            <Trans>
+                                Two on-device models — Qwen3 1.7B for chat and a 768-dim embedding model — power category, tag, and merchant
+                                suggestions privately.
+                            </Trans>
+                        }
+                        title={<Trans>On-Device AI Auto-Categorization</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/voice-transaction-entry`}
+                        index={1}
+                        tagline={
+                            <Trans>
+                                Speak it. Budgie logs it. whisper.rn (whisper.cpp backend) transcribes on-device — audio never leaves your
+                                phone.
+                            </Trans>
+                        }
+                        title={<Trans>Voice Transaction Entry</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/ai-merchant-translation`}
+                        index={2}
+                        tagline={
+                            <Trans>
+                                Cyrillic, Greek, Arabic merchant strings — the on-device LLM transliterates and adds search keywords.
+                            </Trans>
+                        }
+                        title={<Trans>AI Merchant Name Translation</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/ai-transaction-suggestions`}
+                        index={3}
+                        tagline={
+                            <Trans>
+                                Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags,
+                                comment, amount, account, all pre-filled.
+                            </Trans>
+                        }
+                        title={<Trans>Smart Transaction Suggestions — Tap and Done</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/ai-tag-suggestions`}
+                        index={4}
+                        tagline={
+                            <Trans>
+                                After picking a category, the on-device LLM proposes up to three tags as tappable pills. Embedding-first
+                                fallback when the LLM is busy.
+                            </Trans>
+                        }
+                        title={<Trans>Automatic Tag Suggestions — Tap, Don&apos;t Type</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/mcc-auto-category`}
+                        index={5}
+                        tagline={
+                            <Trans>Bank-issued codes do the work — coffee shops land in Food &amp; Drink, gas stations in Transport.</Trans>
+                        }
+                        title={<Trans>MCC Auto-Categorization</Trans>}
+                    />
+                </PillarHubFeatureGrid>
             </PillarHubSection>
 
             <FeaturePageFaqSection locale={lang}>

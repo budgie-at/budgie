@@ -18,37 +18,12 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
 import { FEATURE_METADATA } from './metadata';
 
-import type { ComparisonRowInterface } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import type { Metadata } from 'next';
-
-const COMPARISON_ROWS: ComparisonRowInterface[] = [
-    {
-        concern: <Trans>Data location</Trans>,
-        rival: <Trans>Vendor servers + Plaid</Trans>,
-        budgie: <Trans>Your device only</Trans>
-    },
-    {
-        concern: <Trans>Works offline</Trans>,
-        rival: <Trans>Read-only at best</Trans>,
-        budgie: <Trans>Yes, fully</Trans>
-    },
-    {
-        concern: <Trans>Account required</Trans>,
-        rival: <Trans>Yes</Trans>,
-        budgie: <Trans>No</Trans>
-    },
-    {
-        concern: <Trans>Subpoena risk</Trans>,
-        rival: <Trans>Vendor can be compelled</Trans>,
-        budgie: <Trans>None — no servers</Trans>
-    }
-];
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
@@ -70,7 +45,6 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const related = getRelatedFeatures(FEATURE_METADATA);
     const description = i18n._(FEATURE_METADATA.metaDescription);
     const featureName = i18n._(FEATURE_METADATA.title);
     const title = i18n._(FEATURE_METADATA.metaTitle);
@@ -166,7 +140,28 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                 <FeaturePageHeading>
                     <Trans>Cloud apps vs. Budgie</Trans>
                 </FeaturePageHeading>
-                <FeaturePageComparisonTable rivalLabel={<Trans>Cloud app</Trans>} rows={COMPARISON_ROWS} />
+                <FeaturePageComparisonTable rivalLabel={<Trans>Cloud app</Trans>}>
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>Your device only</Trans>}
+                        concern={<Trans>Data location</Trans>}
+                        rival={<Trans>Vendor servers + Plaid</Trans>}
+                    />
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>Yes, fully</Trans>}
+                        concern={<Trans>Works offline</Trans>}
+                        rival={<Trans>Read-only at best</Trans>}
+                    />
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>No</Trans>}
+                        concern={<Trans>Account required</Trans>}
+                        rival={<Trans>Yes</Trans>}
+                    />
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>None — no servers</Trans>}
+                        concern={<Trans>Subpoena risk</Trans>}
+                        rival={<Trans>Vendor can be compelled</Trans>}
+                    />
+                </FeaturePageComparisonTable>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -209,7 +204,7 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                 />
             </FeaturePageFaqSection>
 
-            <FeaturePageRelated features={related} locale={lang} />
+            <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
             <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
 
             <FeaturePageCta locale={lang} />
