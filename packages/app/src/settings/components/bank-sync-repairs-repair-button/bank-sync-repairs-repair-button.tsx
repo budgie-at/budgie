@@ -6,13 +6,13 @@ import { BankSyncRepairsPageSelector } from '../../../app/(tabs)/settings/bank-s
 import type { BankSyncRepairsRepairButtonPropsInterface } from './bank-sync-repairs-repair-button-props.interface';
 
 export const BankSyncRepairsRepairButton = ({ content, disabled, isLoading, onPress }: BankSyncRepairsRepairButtonPropsInterface) => (
-        <Button
-            testID={BankSyncRepairsPageSelector.RepairButton}
-            onPress={onPress}
-            disabled={disabled}
-            isLoading={isLoading}
-            content={content}
-            leftIcon={UserIconNameEnum.Wrench}
-            variant="destructive"
-        />
-    );
+    <Button
+        testID={BankSyncRepairsPageSelector.RepairButton}
+        onPress={onPress}
+        disabled={disabled}
+        isLoading={isLoading}
+        content={content}
+        leftIcon={UserIconNameEnum.Wrench}
+        variant="destructive"
+    />
+);
