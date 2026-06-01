@@ -1,3 +1,5 @@
+import { resolve } from 'node:path';
+
 import type { TestInlineShimPluginInterface } from './interface/test-inline-shim-plugin.interface';
 
 const VIRTUAL_PREFIX = '\0virtual:';
@@ -65,3 +67,24 @@ export const createTestInlineShimPlugin = (includeDrizzleExpoSqlite: boolean = f
         return null;
     }
 });
+
+export const createTestVitestConfig = (rootDir: string, setupFile: string, includeAppAlias = false) => {
+    const here = (relative: string) => resolve(rootDir, relative);
+
+    return {
+        plugins: [createTestInlineShimPlugin(true)],
+        ...(includeAppAlias && {
+            resolve: {
+                alias: [{ find: /^@app\/(.*)$/, replacement: here('../../packages/app/src/$1') }]
+            }
+        }),
+        test: {
+            environment: 'node',
+            globals: false,
+            setupFiles: [here(setupFile)],
+            include: ['src/scenarios/**/*.test.ts'],
+            pool: 'forks',
+            poolOptions: { forks: { singleFork: true } }
+        }
+    };
+};

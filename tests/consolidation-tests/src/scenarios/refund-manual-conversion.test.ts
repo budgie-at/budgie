@@ -6,9 +6,8 @@ import { refundConsolidationService, testQueryService, testSeedService } from '.
 
 describe('consolidation/refund-manual-conversion', () => {
     it('manually converts when the income and expense already share a tag', async () => {
-        const account = testSeedService.account({ externalId: 'mono-card' });
         const { expense, refunds } = testSeedService.refundedExpense({
-            accountId: account.id,
+            accountId: testSeedService.account({ externalId: 'mono-card' }).id,
             expenseAmount: 120 * PRECISION,
             refundAmounts: [40 * PRECISION]
         });
@@ -28,13 +27,13 @@ describe('consolidation/refund-manual-conversion', () => {
     });
 
     it('finds refundable expenses only from refund income transactions', async () => {
-        const account = testSeedService.account({ externalId: 'mono-card' });
         const { expense, refunds } = testSeedService.refundedExpense({
-            accountId: account.id,
+            accountId: testSeedService.account({ externalId: 'mono-card' }).id,
             expenseAmount: 120 * PRECISION,
+            externalIdPrefix: 'manual-refund',
             refundAmounts: [40 * PRECISION],
-            title: 'Apple Store',
-            refundTitle: 'Apple Store refund'
+            refundTitle: 'Apple Store refund',
+            title: 'Apple Store'
         });
 
         const incomeCandidates = await refundConsolidationService.findRefundableExpenses(refunds[0].id, '');

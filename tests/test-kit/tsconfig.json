@@ -4,7 +4,10 @@
         "module": "ESNext",
         "moduleResolution": "bundler",
         "noEmit": true,
-        "types": ["node"]
+        "types": ["node"],
+        "paths": {
+            "@app/*": ["../../packages/app/src/*"]
+        }
     },
     "include": ["src/**/*.ts"]
 }
