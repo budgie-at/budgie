@@ -93,23 +93,25 @@ Acceptable responses: `200 OK`, `202 Accepted`. A `403` means the key file is un
 
 ---
 
-## C. Proxy `matcher` must exclude root `.txt` files
+## C. Proxy `matcher` must exclude API routes and root `.txt` files
 
 The `config.matcher` in `src/proxy.ts` excludes:
 
 ```
-_next/static | _next/image | favicon.ico | robots.txt | sitemap.xml | manifest.webmanifest | .well-known | images (svg/png/jpg/jpeg/gif/webp)
+api | _next/static | _next/image | favicon.ico | robots.txt | sitemap.xml | manifest.webmanifest | .well-known | images (svg/png/jpg/jpeg/gif/webp)
 ```
 
-Root `.txt` files must stay excluded, otherwise IndexNow verification and LLM text files are locale-redirected to HTML pages.
+API routes and root `.txt` files must stay excluded, otherwise the IndexNow submitter and key verification file are locale-redirected to HTML pages.
 
 ```ts
 export const config = {
     matcher: [
-        '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|.well-known|[^/]+\\.txt$|[^.]*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
+        '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|.well-known|[^/]+\\.txt$|[^.]*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
     ]
 };
 ```
+
+The `api` pattern keeps `/api/indexnow` reachable as a Next.js route instead of redirecting to `/<locale>/api/indexnow`.
 
 The `[^/]+\\.txt` pattern matches any `.txt` file directly at the root path (one path segment, no slash). This covers:
 
@@ -187,13 +189,13 @@ Only submit on merge to `main` (production deployments). Do not submit on previe
 
 ## G. Related files
 
-| File                                   | Role                                                                                           |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `src/app/sitemap.ts`                   | Single source of truth for indexable URLs — IndexNow submission derives its URL list from this |
-| `src/app/robots.ts`                    | Points crawlers to `${BASE_URL}/sitemap.xml`                                                   |
-| `src/proxy.ts`                         | Locale redirect middleware — its `config.matcher` must exclude `.txt` files at the root        |
-| `src/generic/constant/seo.constant.ts` | Declares `BASE_URL` — must match the live canonical host (`budgie.at`)                     |
-| `public/<key>.txt`                     | [TO BE IMPLEMENTED] IndexNow key file served as static asset                                   |
-| `src/app/api/indexnow/route.ts`        | [TO BE IMPLEMENTED] Admin-guarded submission endpoint                                          |
+| File                                   | Role                                                                                            |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `src/app/sitemap.ts`                   | Single source of truth for indexable URLs — IndexNow submission derives its URL list from this  |
+| `src/app/robots.ts`                    | Points crawlers to `${BASE_URL}/sitemap.xml`                                                    |
+| `src/proxy.ts`                         | Locale redirect middleware — its `config.matcher` must exclude API routes and root `.txt` files |
+| `src/generic/constant/seo.constant.ts` | Declares `BASE_URL` — must match the live canonical host (`budgie.at`)                          |
+| `public/<key>.txt`                     | [TO BE IMPLEMENTED] IndexNow key file served as static asset                                    |
+| `src/app/api/indexnow/route.ts`        | [TO BE IMPLEMENTED] Admin-guarded submission endpoint                                           |
 
 See `docs/lingui-rsc.md` for the i18n contract, and `docs/seo-pages.md` for sitemap entry patterns and JSON-LD.
