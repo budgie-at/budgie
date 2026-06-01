@@ -7,32 +7,22 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { BANK_PROVIDER_TITLE } from '../../../account/constant/bank-provider-title.constant';
+import { BankSyncRepairSourceRow } from '../../../settings/components/bank-sync-repair-source-row/bank-sync-repair-source-row';
+import { BankSyncRepairsEmptyStateCard } from '../../../settings/components/bank-sync-repairs-empty-state-card/bank-sync-repairs-empty-state-card';
+import { BankSyncRepairsIntroCard } from '../../../settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card';
+import { getBankSyncRepairText } from '../../../settings/utils/get-bank-sync-repair-text.util';
 import { useBankSyncDuplicateRepairPreviewQuery } from '../../../sync/query/use-bank-sync-duplicate-repair-preview.query';
 import { bankSyncRepairService } from '../../../sync/service/bank-sync-repair.service';
 
 import { BankSyncRepairsPageSelector } from './bank-sync-repairs-page.selector';
 
-import type { BankSyncDuplicateRepairSourcePreviewInterface } from '../../../sync/interface/bank-sync-duplicate-repair-source-preview.interface';
-
 const handleGoBack = () => void goBackOrReplace('/settings');
-
-const getBankSyncRepairText = (count: number, t: ReturnType<typeof useLingui>['t']) =>
-    t({
-        message: plural(count, {
-            one: '# bank sync repair',
-            other: '# bank sync repairs'
-        })
-    });
 
 const getRepairedTransactionText = (count: number, t: ReturnType<typeof useLingui>['t']) =>
     t({
@@ -86,49 +76,6 @@ const repairDuplicates = async (refresh: () => Promise<void>, t: ReturnType<type
     await removeDuplicatesAndRefresh(refresh, t);
 };
 
-const renderSourceRow = (source: BankSyncDuplicateRepairSourcePreviewInterface, t: ReturnType<typeof useLingui>['t']) => {
-    const sourceDescription = getBankSyncRepairText(source.duplicateTransactionCount, t);
-    const titleDescriptor = BANK_PROVIDER_TITLE[source.externalSource];
-    const title = isDefined(titleDescriptor) ? t(titleDescriptor) : source.externalSource;
-
-    return (
-        <SimpleHorizontalCell
-            key={source.externalSource}
-            size="lg"
-            testID={BankSyncRepairsPageSelector.SourceRow(source.externalSource)}
-            left={<BankLogo bankProvider={source.externalSource} />}
-            title={title}
-            description={sourceDescription}
-        />
-    );
-};
-
-const INTRO_CARD = (
-    <Card className="gap-y-3xl" variant="primary">
-        <CircleIcon icon={UserIconNameEnum.Wrench} variant="dark-warning" border={false} size={48} iconSize={24} />
-
-        <View className="gap-y-sm">
-            <Text className="text-primary text-base font-semibold">
-                <Trans>Bank sync data repairs</Trans>
-            </Text>
-            <Text className="text-secondary-foreground text-sm">
-                <Trans>
-                    Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts.
-                </Trans>
-            </Text>
-        </View>
-    </Card>
-);
-
-const EMPTY_STATE_CARD = (
-    <Card testID={BankSyncRepairsPageSelector.EmptyState} className="items-center gap-y-2xl" variant="positive">
-        <CircleIcon icon={UserIconNameEnum.CircleCheck} variant="positive" border={false} size={44} iconSize={22} />
-        <Text className="text-positive-foreground text-sm font-medium text-center">
-            <Trans>No bank sync repairs found.</Trans>
-        </Text>
-    </Card>
-);
-
 export default function BankSyncRepairsPage() {
     const { t } = useLingui();
     const { errorMessage, isLoading, preview, refresh } = useBankSyncDuplicateRepairPreviewQuery();
@@ -170,7 +117,7 @@ export default function BankSyncRepairsPage() {
             header={<PageHeader title={t`Repair Bank Sync Data`} onGoBack={handleGoBack} />}
         >
             <ScrollView className="flex-1" contentContainerClassName="gap-y-xl pb-5xl pt-3xl" showsVerticalScrollIndicator={false}>
-                {INTRO_CARD}
+                <BankSyncRepairsIntroCard />
 
                 {hasError ? (
                     <Card variant="destructive" className="gap-y-lg">
@@ -192,9 +139,15 @@ export default function BankSyncRepairsPage() {
                     </Card>
                 ) : null}
 
-                {shouldShowEmptyState ? EMPTY_STATE_CARD : null}
+                {shouldShowEmptyState ? <BankSyncRepairsEmptyStateCard /> : null}
 
-                {shouldShowSources ? <View className="gap-y-lg">{sources.map(source => renderSourceRow(source, t))}</View> : null}
+                {shouldShowSources ? (
+                    <View className="gap-y-lg">
+                        {sources.map(source => (
+                            <BankSyncRepairSourceRow key={source.externalSource} {...source} />
+                        ))}
+                    </View>
+                ) : null}
 
                 <Button
                     testID={BankSyncRepairsPageSelector.RepairButton}
