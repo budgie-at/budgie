@@ -13,5 +13,5 @@ export interface RefundConsolidationDependenciesInterface {
     readonly transactionEntryRepository: Pick<TransactionEntryRepository, 'moveToConsolidatedTransaction'>;
     readonly transactionRepository: Pick<TransactionRepository, 'findByIds' | 'setConsolidationParent' | 'setConsolidationType'>;
     readonly transactionRunner: TransactionRunnerInterface;
-    readonly transactionTagsRepository: Pick<TransactionTagsRepository, 'bulkCreate' | 'findByTransactionId'>;
+    readonly transactionTagsRepository: Pick<TransactionTagsRepository, 'bulkCreate' | 'findByTransactionId' | 'findByTransactionIds'>;
 }

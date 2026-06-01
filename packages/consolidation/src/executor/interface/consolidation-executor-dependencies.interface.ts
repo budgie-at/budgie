@@ -12,5 +12,5 @@ export interface ConsolidationExecutorDependenciesInterface {
         'create' | 'findByIds' | 'getByIdRaw' | 'setConsolidationParent' | 'setConsolidationType' | 'updateById'
     >;
     readonly transactionRunner: TransactionRunnerInterface;
-    readonly transactionTagsRepository: Pick<TransactionTagsRepository, 'bulkCreate' | 'findByTransactionId'>;
+    readonly transactionTagsRepository: Pick<TransactionTagsRepository, 'bulkCreate' | 'findByTransactionId' | 'findByTransactionIds'>;
 }

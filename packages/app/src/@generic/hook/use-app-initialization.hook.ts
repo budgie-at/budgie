@@ -11,16 +11,16 @@ import { transferConsolidationService } from '../../sync/service/transfer-consol
 
 const logger = getLogger('useAppInitialization');
 
+const handleInitializationError = (error: unknown): void => {
+    logger.error('failed', { errorMessage: getErrorMessage(error) });
+};
+
+const runInitializationTask = (task: Promise<unknown>): void => {
+    void task.catch(handleInitializationError);
+};
+
 export const useAppInitialization = (success: boolean) => {
     useEffect(() => {
-        const handleInitializationError = (error: unknown): void => {
-            logger.error('failed', { errorMessage: getErrorMessage(error) });
-        };
-
-        const runInitializationTask = (task: Promise<unknown>): void => {
-            void task.catch(handleInitializationError);
-        };
-
         if (success) {
             try {
                 runInitializationTask(exchangeRatesSyncService.sync());

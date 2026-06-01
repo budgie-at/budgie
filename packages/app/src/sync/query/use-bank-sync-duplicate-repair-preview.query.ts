@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
@@ -13,70 +13,69 @@ export const useBankSyncDuplicateRepairPreviewQuery = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const isCurrentRequest = useCallback((requestId: number) => isMountedRef.current && requestIdRef.current === requestId, []);
+    const isCurrentRequest = (requestId: number) => isMountedRef.current && requestIdRef.current === requestId;
 
-    const handleRefreshSuccess = useCallback(
-        (requestId: number, nextPreview: BankSyncDuplicateRepairPreviewInterface) => {
-            if (!isCurrentRequest(requestId)) {
-                return;
-            }
+    const refreshRef = useRef<() => Promise<void>>(() => Promise.resolve());
 
-            setPreview(nextPreview);
-        },
-        [isCurrentRequest]
-    );
-
-    const handleRefreshError = useCallback(
-        (requestId: number, error: unknown) => {
-            if (!isCurrentRequest(requestId)) {
-                return;
-            }
-
-            setPreview(null);
-            setErrorMessage(getErrorMessage(error));
-        },
-        [isCurrentRequest]
-    );
-
-    const handleRefreshComplete = useCallback(
-        (requestId: number) => {
-            if (isCurrentRequest(requestId)) {
-                setIsLoading(false);
-            }
-        },
-        [isCurrentRequest]
-    );
-
-    const refresh = useCallback(async () => {
-        const requestId = requestIdRef.current + 1;
-        requestIdRef.current = requestId;
-
+    const startRefresh = (requestId: number): boolean => {
         if (!isCurrentRequest(requestId)) {
-            return;
+            return false;
         }
 
         setIsLoading(true);
         setErrorMessage(null);
 
+        return true;
+    };
+
+    const applyPreview = (requestId: number, nextPreview: BankSyncDuplicateRepairPreviewInterface): void => {
+        if (isCurrentRequest(requestId)) {
+            setPreview(nextPreview);
+        }
+    };
+
+    const applyError = (requestId: number, error: unknown): void => {
+        if (isCurrentRequest(requestId)) {
+            setPreview(null);
+            setErrorMessage(getErrorMessage(error));
+        }
+    };
+
+    const completeRefresh = (requestId: number): void => {
+        if (isCurrentRequest(requestId)) {
+            setIsLoading(false);
+        }
+    };
+
+    refreshRef.current = async () => {
+        const requestId = requestIdRef.current + 1;
+        requestIdRef.current = requestId;
+
+        if (!startRefresh(requestId)) {
+            return;
+        }
+
         try {
             const nextPreview = await bankSyncRepairService.previewDuplicates();
-            handleRefreshSuccess(requestId, nextPreview);
+            applyPreview(requestId, nextPreview);
         } catch (error) {
-            handleRefreshError(requestId, error);
+            applyError(requestId, error);
         } finally {
-            handleRefreshComplete(requestId);
+            completeRefresh(requestId);
         }
-    }, [handleRefreshComplete, handleRefreshError, handleRefreshSuccess, isCurrentRequest]);
+    };
+
+    const refresh = () => refreshRef.current();
 
     useEffect(() => {
         isMountedRef.current = true;
-        void refresh();
+        void refreshRef.current();
 
         return () => {
             isMountedRef.current = false;
             requestIdRef.current += 1;
         };
-    }, [refresh]);
+    }, []);
 
     return { errorMessage, isLoading, preview, refresh };
 };
