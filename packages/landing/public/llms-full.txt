@@ -1,0 +1,750 @@
+# Budgie — Full Content Index for LLMs
+# Source: https://budgie.at/llms.txt
+# Generated: 2026-05-31
+# This file contains the full server-rendered text of all major pages on budgie.at.
+
+---
+
+# Site Overview
+Source: https://budgie.at/en
+
+Budgie is a privacy-first, offline-first expense tracker for iOS and Android. Every transaction is stored on-device in an encrypted SQLite database — no cloud account, no aggregator, no server ever sees your financial data. Core features are free; advanced AI and bank-sync features are an optional one-time purchase. Currently in private beta with a waitlist.
+
+Your bank knows everything. Mint sold your data. YNAB stores it on their servers. Budgie keeps your finances on your device — encrypted, offline, and yours alone.
+
+Key facts: 2,847+ people on the waitlist. iOS and Android. Zero data collection. Works without internet. Source-available on GitHub.
+
+## Why Most Budgeting Apps Get It Wrong
+
+Cloud-based apps store your financial data on their servers. That means they can see everything — and so can hackers.
+
+Cloud-Based Apps (the risky approach): data stored on their servers; companies can see your transactions; vulnerable to data breaches; requires internet connection; closed source — trust blindly.
+
+Budgie (the private approach): data stays on YOUR device only; we literally cannot see your data; locked behind biometrics, encrypted with SQLCipher AES-256; works 100% offline — always fast; source-available — audit our code on GitHub.
+
+## What Makes Us Different
+
+100% Offline — Your financial data never leaves your phone. No servers, no cloud, no risk of data breaches. Blazing Fast — no server round-trips, every action is instant, works in airplane mode. Biometric Locked — Face ID, Touch ID, or PIN unlock your encrypted vault. Hardware-backed in iOS Keychain and Android Keystore. Public Source — source code is public on GitHub; security researchers can audit it.
+
+## All-in-One: Every Dollar, Every Account, One App
+
+Stop switching between apps. Budgie tracks your bank accounts, credit cards, cash, crypto, and investments together — so you finally see the complete picture of your finances.
+
+Spending Insights — see where every dollar goes, drillable category and tag breakdowns. Bank Sync — direct Monobank API sync, plus PDF/Excel/CSV imports for any bank. No aggregator in the middle. AI Auto-Categorize — a 1.7B-parameter LLM and 768-dim embedding model categorize every transaction on your phone. Voice Entry — Speak it. Budgie logs it. Whisper.rn transcribes on-device — your voice never streams to a server. Net Worth — bank, cash, crypto, stocks, debt — one number on your home screen with daily FX conversion. Crypto & Investments — track Bitcoin, Ethereum, stocks, and ETFs alongside cash accounts. Smart Tags — custom tags layered on top of categories; drillable analytics and AI-suggested tags. Multi-Currency — track expenses in any currency with daily exchange rates baked in. All Accounts — cash, savings, bank, crypto, stocks, and debt — all accounts in one private app. No bank login required. Offline-First — every transaction lives on your device; no cloud account, no sign-up. Recurring Bills — auto-detected recurring payments on a monthly calendar. Debt Payoff — track loan balances, watch the principal drop, stay motivated with progress charts.
+
+## Security & Privacy
+
+Zero Cloud Storage — all data stored locally on your device. We have no servers storing your information. Biometric Lock — Face ID or Touch ID; encrypted data only accessible after biometric or PIN verification. SQLCipher AES-256 encrypts the database file; the key lives in iOS Keychain or Android Keystore. Hardware-Backed Encryption — encryption key lives in iOS Keychain or Android Keystore, both hardware-backed where available. PIN Protection — custom PIN code for extra security. Screenshot Protection — automatically hides sensitive balances when taking screenshots.
+
+## Honest Comparison with Cloud Apps
+
+Feature | Budgie | Cloud Apps
+100% Offline | Yes | No
+Data on your device only | Yes | No
+Biometric lock + AES-256 encrypted storage | Yes | No
+Source-available code | Yes | No
+No account required | Yes | No
+Works without internet | Yes | No
+No data mining | Yes | No
+Bank sync available | Yes | Yes
+Crypto tracking | Yes | Some
+Multi-currency support | Yes | Some
+
+## On-Device AI
+
+Other apps send your financial questions to ChatGPT or Google — exposing your salary, debts, and spending habits. Budgie's AI runs 100% on your device. Your conversations never touch the internet.
+
+Qwen3 1.7B (Q4 quantized) runs entirely on your phone — your questions never reach a server. The multilingual nomic-embed-text-v2-moe embedding model handles all 5 supported languages natively. Voice transcription via Whisper Large v3 Turbo (whisper.rn) runs on-device — works in airplane mode.
+
+---
+
+# Core Product Facts
+Source: https://budgie.at/en
+
+- Platforms: iOS and Android
+- Pricing: Free core; advanced AI and bank-sync features are an optional one-time purchase (not a subscription)
+- License: Source-available (public repository at github.com/budgie-at/budgie)
+- Data storage: On-device encrypted SQLite (SQLCipher AES-256)
+- Encryption key storage: iOS Keychain / Android Keystore (hardware-backed where available)
+- Offline model: 100% — all core features work without internet; bank sync and model downloads require connectivity
+- AI stack: Qwen3 1.7B (Q4 quantized) for LLM, 768-dim nomic-embed-text-v2-moe for embeddings, Whisper Large v3 Turbo via whisper.rn for speech recognition
+- Bank integrations: Monobank (direct API, no aggregator), Erste Bank (PDF import), PrivatBank (XLSX import), any bank via CSV import
+- Supported languages: English, Ukrainian, French, German, Spanish
+- Status: Private beta, waitlist at https://budgie.at
+- Tech: React Native, Expo, Drizzle ORM, SQLite/SQLCipher, Zod
+
+---
+
+# Privacy Hub — Private Expense Tracker
+Source: https://budgie.at/en/privacy
+
+No account. No aggregator. No telemetry. Six features that make Budgie the most private expense tracker on iOS and Android.
+
+- Encrypted SQLite on your device — no cloud copy ever
+- No account required to start tracking
+- Biometric and PIN locks before any transaction view
+- Screenshot blur on balance fields and app-switcher previews
+- Backups to your own iCloud Drive, Google Drive, or Dropbox
+
+Every transaction, category, and balance lives in an encrypted SQLite database on your device. Budgie has no backend that receives financial data.
+
+No account is required. You open the app and start tracking immediately. There is no sign-up screen, no email address collected, and no session token ever sent to our servers.
+
+Backups go to your personal cloud storage — iCloud Drive on iOS, or Google Drive or Dropbox on Android. Budgie never receives a copy; you own every byte.
+
+Budgie ships with zero third-party analytics or advertising SDKs. Crash reporting is opt-in and anonymized; financial data is never included.
+
+Budgie uses SQLCipher-backed SQLite with AES-256 encryption. The encryption key is derived from your device keychain and is never transmitted off the device.
+
+## FAQ
+
+Does Budgie send any financial data to a server? No. Every transaction, category, and balance lives in an encrypted SQLite database on your device. Budgie has no backend that receives financial data.
+
+Do I need to create an account to use Budgie? No account is required. You open the app and start tracking immediately.
+
+Where are my backups stored? Backups go to your personal cloud storage — iCloud Drive on iOS, or Google Drive or Dropbox on Android. Budgie never receives a copy.
+
+Does Budgie use any analytics or crash-reporting SDKs? Budgie ships with zero third-party analytics or advertising SDKs. Crash reporting is opt-in and anonymized; financial data is never included.
+
+How is the on-device database encrypted? Budgie uses SQLCipher-backed SQLite with AES-256 encryption. The encryption key is derived from your device keychain and is never transmitted off the device.
+
+---
+
+# Offline-First Hub — Offline Budget App
+Source: https://budgie.at/en/offline-first
+
+Every transaction is stored locally. No Wi-Fi required to add expenses, view balances, or import bank data. Works anywhere.
+
+- Full expense tracking with zero internet dependency
+- Import bank CSVs and PDFs without a cloud connection
+- Multi-currency exchange rates cached locally for offline use
+- Analytics, charts, and reports work entirely on-device
+- Encrypted local backups you can restore without a server
+
+## FAQ
+
+Can I add transactions without an internet connection? Yes. The entire transaction entry flow — amount, category, tags, account — works fully offline. Your data is written directly to the on-device SQLite database with no network call.
+
+How does multi-currency work offline? Exchange rates are fetched and cached locally when you have connectivity. You can continue converting currencies offline using the last-fetched rates, with a visible timestamp.
+
+Can I import bank statements without Wi-Fi? CSV and PDF files already on your device can be imported offline. Monobank sync requires a brief network call to Monobank's API, but every other import source works locally.
+
+Will my analytics still work offline? All charts, category breakdowns, tag analytics, and net-worth calculations run against the local database. They work identically whether you are connected or not.
+
+What happens to my data if I lose internet for weeks? Nothing — your data is safe on-device. You can keep adding transactions, reviewing history, and running reports with no interruption.
+
+---
+
+# On-Device AI Hub — On-Device AI Finance
+Source: https://budgie.at/en/ai-features
+
+Qwen3 1.7B and a 768-dim embedding model run entirely on your phone. Smart suggestions, voice entry, and auto-categorization — no data leaves your device.
+
+- Qwen3 1.7B runs on your phone — no API key, no subscription
+- 768-dimensional embedding model for instant category suggestions
+- Voice transaction entry via whisper.rn — audio never leaves the device
+- Merchant name normalization for Cyrillic and foreign bank statements
+- Every AI correction improves future suggestions via on-device learning
+
+## Two-Stage Categorization Flow
+
+Embedding lookup — 768-dim Nomic model finds the nearest historical transaction instantly via sqlite-vec SIMD search.
+LLM fallback — Qwen3 1.7B Q4 handles novel transactions the embedding index has not seen, proposing category and tags from context.
+Correction loop — every accepted or edited suggestion updates the embedding index immediately so the next similar transaction lands closer without re-training.
+
+## FAQ
+
+Which AI models does Budgie use? Budgie uses two on-device models: Qwen3 1.7B for natural-language understanding and chat, and a 768-dimensional embedding model for nearest-neighbor categorization from your own transaction history. Both run locally with no external API call.
+
+How large are the model downloads? The embedding model is approximately 90 MB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features and cached on-device.
+
+Does voice entry send audio to a server? No. Voice entry uses whisper.rn — a React Native binding for whisper.cpp — which transcribes audio directly on your device. Your voice recordings are never streamed to any external server.
+
+What languages does the AI support? Categorization and suggestions work in any language because they are driven by your own history. Voice entry supports English, Ukrainian, German, French, and Spanish as primary languages.
+
+How does AI improve over time? Every time you accept, edit, or reject a category suggestion, the embedding model index updates locally. The more you use Budgie, the more accurately the embedding model mirrors your personal spending patterns.
+
+---
+
+# Security Hub — Encrypted Budget App
+Source: https://budgie.at/en/security
+
+PIN, biometrics, screenshot protection, and AES-256 encrypted storage. Budgie secures your financial data at every layer.
+
+- AES-256 encrypted SQLite — your database is unreadable without your key
+- PIN lock enforced before any transaction or balance is visible
+- Face ID and fingerprint authentication on every supported device
+- Automatic screenshot blur hides balances in the iOS and Android app switcher
+- Backups are encrypted before leaving your device — the key stays with you
+
+## FAQ
+
+How is the database encrypted? Budgie stores all financial data in an SQLCipher-backed SQLite database encrypted with AES-256. The encryption key is derived from your device keychain and never transmitted off the device.
+
+What happens if someone picks up my unlocked phone? Budgie's PIN and biometric lock gate every app launch. Even if the device is unlocked, no financial data is visible until the correct PIN or biometric challenge is passed.
+
+Can someone see my balance in the app switcher? No. Screenshot protection automatically blurs all sensitive screens when the app moves to the background.
+
+Are my encrypted backups safe if someone accesses my cloud storage? Yes. Backups are encrypted on your device before upload using your device-derived key. Anyone with access to your iCloud Drive or Google Drive would only see an encrypted blob.
+
+Does Budgie have any server-side security risks? No. Because Budgie stores all data locally and has no backend that receives financial information, there is no server to breach.
+
+---
+
+# Open-Source Hub — Source-Available Personal Finance
+Source: https://budgie.at/en/open-source
+
+Budgie's source is public. Audit the code, verify our privacy claims, and contribute — because your financial app should have nothing to hide.
+
+- Source code is publicly available — read every line that touches your data
+- Privacy claims are verifiable, not just promised
+- Community contributions welcome — features built by people who use the app
+- Source-available license — fork it, run your own build, take your data with you
+- Transparent roadmap and public issue tracker
+
+The repository includes the full React Native app, the AI service layer with on-device LLM and embedding model integrations, the contracts package, and the landing page. Nothing is hidden behind a proprietary SDK or closed binary.
+
+Public source is not just a development philosophy — it is a security property. Closed finance apps ask you to trust that they do not log your transactions, share data with advertisers, or sell behavioral profiles. Budgie asks you to check.
+
+## FAQ
+
+Where can I find Budgie's source code? Budgie's source code is hosted on GitHub at github.com/budgie-at/budgie. The repository includes the full app, AI service layer, contracts, and landing page.
+
+What license does Budgie use? Budgie ships under a source-available license that lets you read, fork, and modify the code while reserving commercial distribution to the project. There are no proprietary modules that touch your financial data.
+
+How does public source make Budgie more private? Public source means our privacy claims are verifiable. Any developer can audit the code and confirm that no financial data is transmitted to external servers.
+
+Can I contribute to Budgie? Yes. Pull requests, bug reports, and feature suggestions are welcome on the GitHub repository.
+
+Is the AI model integration also public source? Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the public repository.
+
+---
+
+# Feature: Offline-First Expense Tracker
+Source: https://budgie.at/en/features/offline-first-expense-tracker
+
+Every transaction lives on your device. No cloud account, no sign-up — your finances stay in your pocket, even on a plane or in a tunnel.
+
+Most budgeting apps push every swipe and balance to a remote server. That makes them fragile when the internet drops, and risky when those servers leak. Budgie inverts the model: an encrypted SQLite database lives on your phone, and that's the whole story. There is no backend reading your statements.
+
+What you get:
+- Works in airplane mode, tunnels, and rural areas — every feature, every time
+- No sign-up, no email, no account — install and start logging
+- AES-256 encrypted SQLite database, key derived from your PIN
+- No backend means no breach surface — there is nothing to leak
+- Optional bank sync uses your own API tokens — never a third-party aggregator
+
+How it works: On first launch, Budgie creates an encrypted SQLite database in your app sandbox. Every transaction, category, account, and tag becomes a row in that file. The optional bank sync fetches statements directly from your bank's API to your device — never via a third-party data aggregator. AI category suggestions run on a 1.7B-parameter model loaded into memory on your phone.
+
+Cloud apps vs. Budgie: Data location — vendor servers + Plaid (cloud) vs. your device only (Budgie). Works offline — read-only at best (cloud) vs. yes, fully (Budgie). Account required — yes (cloud) vs. no (Budgie). Subpoena risk — vendor can be compelled (cloud) vs. none, no servers (Budgie).
+
+## FAQ
+
+Does Budgie work without internet? Yes, fully. Every core feature runs entirely on your device. Internet is only used when you opt in to bank sync, AI model downloads, or exchange-rate updates.
+
+What happens if I lose my phone? Without a backup file, your data is gone — that's the privacy trade-off. Budgie offers a one-tap encrypted database backup you can save to iCloud Drive, Google Drive, or anywhere else.
+
+Is bank sync still offline? Bank sync requires internet to fetch new transactions, but everything else continues working offline.
+
+What's the catch with offline-first? The trade-off is multi-device sync — there's no automatic sync via our servers because we don't have any. Use a backup file copied through your own cloud storage if you need to move between devices.
+
+---
+
+# Feature: On-Device AI Auto-Categorization
+Source: https://budgie.at/en/features/ai-auto-categorization
+
+Two on-device models — Qwen3 1.7B for chat and a 768-dim Nomic embedding model — categorize transactions, suggest tags, and learn from your corrections. Your statements never leave the phone.
+
+Cloud "AI" budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees your supermarket habits. Budgie loads both models once, then keeps every inference local — same accuracy, zero data exfiltration.
+
+The two-stage pipeline runs embedding lookup first for instant nearest-neighbor categorization from your own history, then falls back to Qwen3 1.7B for novel transactions the embedding index has not seen before. Every accepted or edited suggestion updates the 768-dim index immediately — accuracy compounds over time.
+
+What you get:
+- Qwen3 1.7B Q4 model runs entirely on your phone after a one-time download
+- 768-dim Nomic embedding model + sqlite-vec for SIMD-accelerated similarity search
+- Two complementary signals: vector lookup over your history plus a generative LLM suggestion
+- Every correction updates the embedding index instantly — accuracy improves as you use it
+- Statements never leave the device — no OpenAI, no remote inference, ever
+
+## FAQ
+
+Does the AI work offline? Yes. Both models live on your device after the one-time download.
+
+How big is the model download? Roughly 1 GB combined: Qwen3 1.7B Q4 for the language model and a 768-dim Nomic embedding model.
+
+Can I correct the AI's suggestions? Always. Every transaction lets you accept, edit, or reject the suggestion. Your corrections feed back into the 768-dim embedding index immediately.
+
+Does Budgie use OpenAI or any cloud LLM? No. Inference uses ONNX Runtime locally. There is no fallback to a cloud model and no telemetry about your transactions.
+
+---
+
+# Feature: Voice Transaction Entry
+Source: https://budgie.at/en/features/voice-transaction-entry
+
+Say "twelve dollars coffee this morning" and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone.
+
+Voice is the fastest input mode for an expense — but every voice budgeting app today streams microphone data to a vendor server. Budgie keeps the audio stream entirely on the device, then runs whisper.rn for transcription and a local LLM for entity extraction. The result is a pre-filled transaction form: amount, category, account, and merchant.
+
+What you get:
+- whisper.rn (whisper.cpp backend) runs Whisper-small locally for accurate, multilingual transcription
+- On-device LLM extracts amount, merchant, date, and category from natural speech
+- Audio never leaves the device — no Siri-style cloud round-trip
+- Pre-fills the same quick-entry form — confirm or correct
+- Works during the AI model loading phase too — visual progress indicator
+
+How it works: Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts amount, merchant, and date hints from the transcription and applies the same on-device category suggestion pipeline used for typed transactions.
+
+## FAQ
+
+Which languages does voice entry support? whisper.rn ships the Whisper-small model, which covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more.
+
+Is my voice recorded anywhere? No. The microphone stream feeds whisper.rn directly in-process; the audio buffer is discarded after transcription. Nothing is saved, sent, or logged.
+
+What if Whisper mishears me? The transcription appears in the form before you save. Edit any field manually, or tap the mic again to retry.
+
+Does it work offline? Yes — once the Whisper model is cached on-device, voice entry works without any internet connection.
+
+---
+
+# Feature: Monobank Auto-Sync
+Source: https://budgie.at/en/features/monobank-sync
+
+Connect your Monobank account, pull a full transaction history straight to your device, and keep working offline. No third-party aggregator in between.
+
+Monobank exposes a clean public API, so Budgie talks to it directly from your phone using your token — no Plaid, no data broker. Every transaction lands in your local SQLite database the moment it arrives. Cross-currency transactions carry their original FX rate. Counter-party IBANs are stored, which lets Budgie auto-merge transfer pairs across two accounts you own.
+
+What you get:
+- Direct Monobank Personal API — your token, your call
+- Full historical sync on first connect, then incremental every 30 minutes
+- Cross-currency transactions preserve original FX rate per leg
+- Counter-IBAN stored from the corr_iban field, enabling smart transfer-pair consolidation
+- Windowed re-sync to fix drift without losing manual edits
+- Automatic Transfer Consolidation — both legs of a cross-bank transfer detected via counter-IBAN, merged into a single transfer entry
+
+Plaid-based apps vs. Budgie + Monobank: Token control — Plaid-managed credential vault vs. your token, in your keystore. FX preserved — often dropped (Plaid) vs. original FX kept per leg (Budgie). Counter-IBAN stored — rarely surfaced (Plaid) vs. yes, enables transfer-pair detection (Budgie). Aggregator middleman — Plaid sees every transaction vs. none, Budgie talks to Monobank directly.
+
+## FAQ
+
+How is this different from Plaid-based apps? Plaid sits between you and your bank, mirroring all your transactions to its servers. Budgie talks to Monobank's API directly from your phone using your token.
+
+Where does my Monobank token live? In your platform's secure keystore (iOS Keychain / Android Keystore), never in plaintext or our servers.
+
+Can I use multiple Monobank accounts? Yes — one token grants access to all your Monobank accounts.
+
+---
+
+# Feature: Net Worth Tracker
+Source: https://budgie.at/en/features/net-worth-tracker
+
+Bank, cash, crypto, stocks, ETFs, and debt — all roll up into a single net-worth number on your home screen, with multi-currency conversion baked in.
+
+Most expense apps stop at "this month's spending." Budgie gives you the full balance-sheet view — assets, liabilities, and the line they form between them — without spreadsheets. Toggle "include in net worth" per account. A daily background task pulls fresh exchange rates so a Euro savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency.
+
+What you get:
+- Per-account "include in net worth" toggle
+- Daily background FX-rate refresh converts every account to your base currency
+- Liability and debt accounts subtract automatically; receivables add
+- Crypto, stocks, ETFs, and commodities sit alongside fiat with the same UX
+- Tap any aggregated number to drill into the per-leg native amounts
+
+Most expense apps vs. Budgie: Asset coverage — bank only (others) vs. bank + cash + crypto + stocks + ETFs + debt (Budgie). FX support — one currency, often hardcoded (others) vs. per-account currency, daily auto-conversion (Budgie). Liability accounts — treated as expenses (others) vs. first-class, subtract from net worth (Budgie).
+
+## FAQ
+
+Where do exchange rates come from? A daily background task pulls rates from a public-domain feed and stores a snapshot per day on your device.
+
+Can I exclude an account from net worth? Yes. Each account has an "Include in net worth" toggle.
+
+How do crypto and stock holdings price? Either by manual price update or by importing your brokerage's CSV export. Live ticker integration is opt-in to keep the offline-first guarantee.
+
+---
+
+# Feature: On-Device AI Budget App
+Source: https://budgie.at/en/features/on-device-ai-budget-app
+
+Cloud AI assistants for budgeting send every transaction to a remote server for "intelligence". Budgie runs the LLM and embeddings on your phone — your data never leaves.
+
+Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run via ONNX Runtime on iOS and Android. Roughly 1 GB combined. The download is one-time, opt-in, and only triggers if you turn on AI features.
+
+Feature comparison — Budgie vs. Cloud AI budget assistants:
+- Where AI runs: on your phone vs. vendor's cloud
+- What gets sent: nothing vs. every transaction title
+- Works offline: yes vs. no
+- AI subscription required: no vs. often yes
+- Privacy from AI provider: total — no provider exists vs. bound by their privacy policy
+- Suggestion quality: improves with your corrections vs. static, plus your data trains their model
+
+## FAQ
+
+Which models does Budgie run on-device? Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run via ONNX Runtime on iOS and Android.
+
+How big is the download? Roughly 1 GB combined. One-time, opt-in.
+
+How is this different from a cloud AI assistant? A cloud assistant ships your transaction titles to a remote model and trusts the provider's privacy policy. Budgie's models live on your device — there's no provider to trust.
+
+Does on-device AI drain battery? Inference runs in milliseconds for embeddings and a few seconds for the LLM, only when you trigger it. Background impact is negligible.
+
+---
+
+# Feature: Private Budget App Alternative
+Source: https://budgie.at/en/features/private-budget-app-alternative
+
+Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure.
+
+Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank credentials. Budgie does none of this — your data stays on your device, encrypted.
+
+Budgie uses direct bank APIs (Monobank) and PDF/Excel statement imports (Erste, PrivatBank, anything CSV). No third-party touches your data. You backup to your own iCloud Drive, Google Drive, or Dropbox. Budgie never sees your data — your cloud, your keys.
+
+Feature comparison:
+- Where transactions live: encrypted on your device vs. vendor's cloud + aggregator
+- Account required: no vs. yes
+- Bank login: optional, direct API tokens vs. required, via aggregator
+- Subscription: free for core, optional one-time unlock vs. monthly recurring
+- AI runs: on your phone vs. in the vendor cloud
+- Public source: yes vs. no
+
+## FAQ
+
+How is Budgie different from cloud-based PFM apps? Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank credentials. Budgie does none of this.
+
+How does bank sync work without an aggregator? Budgie uses direct bank APIs (Monobank) and PDF/Excel statement imports (Erste, PrivatBank, anything CSV).
+
+What about multi-device sync? You backup to your own iCloud Drive, Google Drive, or Dropbox. Budgie never sees your data — your cloud, your keys.
+
+Is the privacy claim verifiable? Yes — Budgie's source is public. Read the network code yourself: github.com/budgie-at/budgie.
+
+---
+
+# Feature: Subscription-Free Budget App
+Source: https://budgie.at/en/features/subscription-free-budget-app
+
+Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own.
+
+Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations.
+
+Feature comparison:
+- Pricing: free core, optional one-time unlock vs. monthly recurring
+- What you keep when you stop paying: everything, full access vs. read-only or nothing
+- Annual cost over 5 years: less than $30 one-time vs. $300+ recurring
+- Bank sync: direct API or PDF/CSV vs. aggregator (often paid tier)
+- Offline use: full vs. limited or none
+- Public source: yes vs. no
+
+The app source is public. Even if Budgie disappeared, the community could keep building it. Most subscription apps run cloud infrastructure to mirror your transactions; Budgie doesn't run servers, so there's no need for recurring revenue.
+
+## FAQ
+
+What's free vs. paid in Budgie? Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations.
+
+What happens if I stop paying? Nothing — there's nothing to stop. The unlock is one-time, not a subscription.
+
+Is "subscription-free" really durable? The app source is public. Even if Budgie disappeared, the community could keep building it.
+
+---
+
+# Comparison: Budget App Without Bank Login
+Source: https://budgie.at/en/features/no-bank-login-budget-app
+
+Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to your bank directly via tokens or imports statements you download yourself.
+
+Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device's secure keystore; (2) PDF/CSV/Excel statement imports for anything else.
+
+Feature comparison:
+- Bank credentials: never shared vs. held by aggregator
+- Sync method: direct API tokens or PDF/CSV vs. OAuth via aggregator
+- Aggregator middleman: none vs. third-party aggregator service
+- Bank breach impact: bank-level only vs. bank + aggregator + app
+- Works with offline-only banks: yes (statement import) vs. often no
+
+## FAQ
+
+How does Budgie sync without an aggregator? Two paths: (1) direct API tokens for supported banks like Monobank; (2) PDF/CSV/Excel statement imports for anything else.
+
+Is direct API more secure than OAuth? Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream.
+
+Which banks have direct API support? Monobank today; we add direct integrations as banks publish stable APIs. For everything else, statement import (PDF, CSV, Excel) covers the gap.
+
+---
+
+# Comparison: Open-Source Budget App for Mobile
+Source: https://budgie.at/en/features/open-source-budget-app-mobile
+
+Closed-source finance apps ask you to trust marketing. Budgie's mobile app has public source, so the privacy and security claims are auditable line by line.
+
+The repository: github.com/budgie-at/budgie. The mobile app, contracts, AI services, and bank-sync integrations all live there. A source-available license that lets you read, fork, and modify the code. The official app builds remain ours to monetize, which keeps development sustainable.
+
+Feature comparison:
+- Source code: public on GitHub vs. closed
+- Privacy claims: verifiable in source vs. marketing copy only
+- Forkable: yes vs. no
+- Community PRs accepted: yes vs. no
+- Vendor risk: low — fork survives vs. high — shutdown = data loss risk
+
+## FAQ
+
+Where can I read the source? github.com/budgie-at/budgie.
+
+What license? A source-available license that lets you read, fork, and modify the code.
+
+Can I self-build? Yes. The repository ships with build instructions for iOS and Android.
+
+What if Budgie shuts down? The code stays public. The community can keep building. Your data stays on your device regardless.
+
+---
+
+# Comparison: Self-Hosted Finance App on Mobile
+Source: https://budgie.at/en/features/self-hosted-finance-app-mobile
+
+Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops — your phone is the server.
+
+Feature comparison:
+- Where data lives: encrypted on your phone vs. your VPS/Docker host
+- Server to maintain: none vs. yes — updates, certs, backups
+- Mobile experience: native iOS + Android vs. web wrapper or none
+- Backup: to your own iCloud/Google Drive vs. manual server snapshots
+- Setup time: install + open vs. hours of ops
+
+## FAQ
+
+Why not just self-host an existing finance app? If you enjoy ops work, do that. Most people don't, and a forgotten server with stale TLS is worse than a vendor's cloud. Budgie keeps the data ownership story without the ops cost.
+
+How do I sync between phone and tablet? Copy the encrypted backup file via your own iCloud Drive, Google Drive, or Dropbox. Restore on the second device with one tap.
+
+Can I keep my data backed up to my own server? Yes — the encrypted backup is just a file. Save it anywhere you control: NAS, S3, your own server, your own cloud.
+
+---
+
+# Blog: How Budgie Keeps Your Financial Data Off the Cloud
+Source: https://budgie.at/en/blog/budgie-offline-financial-data
+Published: February 10, 2025 | 15 min read | By Budgie Team
+
+A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private.
+
+When you open most expense tracking apps, something happens in the background: your transaction data, account balances, and spending habits are uploaded to servers you do not control. Budgie takes a fundamentally different approach. Your financial data never leaves your device. This is a literal description of how the app works at the code level.
+
+## The Architecture: SQLite and Local-First Design
+
+At the heart of Budgie is a local-first architecture built on SQLite. Cloud-based expense trackers typically use databases like PostgreSQL or MySQL running on remote servers, creating four problems: network dependency (no offline access), latency (every action requires a round trip), data exposure (financial data on servers that could be breached), and service dependency (if the company shuts down, your data disappears).
+
+SQLite eliminates all of these problems. The database file lives on your device, operations happen in microseconds, and your data remains under your physical control.
+
+## How Data Storage Works in Budgie
+
+When you create a transaction in Budgie: the app validates the input using Zod schemas; the transaction is written to a SQLite database stored in your device's secure app storage; the database uses Drizzle ORM for type-safe operations; the write completes locally with no network activity. There is no background sync silently uploading your data.
+
+## No Analytics, No Tracking, No Telemetry
+
+Budgie includes zero analytics SDKs. We do not use Firebase Analytics, Mixpanel, Amplitude, or any similar service. We do not collect crash reports through third-party services. We do not record which features you use, how often you open the app, or what categories you spend money in.
+
+## End-to-End Encryption
+
+AES-256 Encryption at Rest — Budgie encrypts your database using AES-256, the same encryption standard used by governments and financial institutions worldwide. When your database is encrypted, the file on disk appears as random binary data.
+
+Key derivation: your encryption key is derived from your device credentials. Secure storage: the derived key is stored in platform-specific secure enclaves — iOS Keychain and Android Keystore, hardware-backed where available. Key isolation: each device has its own encryption key. There is no master key that could decrypt all user databases.
+
+---
+
+# Blog: On-Device AI in Your Budget App
+Source: https://budgie.at/en/blog/on-device-ai-budget-app-explainer
+Published: May 7, 2026 | 11 min read | By Budgie Team
+
+Cloud AI assistants process your spending data on remote servers. On-device AI keeps every inference local. Here is how a 1.7B-param model, offline embeddings, and Whisper speech recognition work together in Budgie.
+
+## What Is On-Device AI?
+
+On-device AI means that the model weights and the inference computation both live on your device — in RAM, using your CPU or neural-engine hardware — rather than on a cloud server. When you ask for a category suggestion, the model receives your input and produces output without any network call.
+
+Cloud AI: transaction description and merchant name are serialized and sent to a remote API; the model runs on the provider's infrastructure; your data is logged for quality and safety monitoring.
+
+On-device AI: the model is bundled with the app (or downloaded once at setup); every inference call stays on your device; no network request, no server log, no third party ever sees the input.
+
+## Why Financial Data Is the Worst Thing to Send to the Cloud
+
+Your transaction stream discloses where you live, where you work, what medical conditions you may have, which political causes you support, and what your relationships look like. Sending it to a remote AI service for processing has concrete risks:
+
+Inference logging — most cloud AI providers log inputs for model improvement, safety review, and abuse detection. Your transaction descriptions become training data.
+
+Retention policies — even with privacy guarantees, data is retained for some period. Policies change. Acquisitions happen.
+
+Aggregated profiling — when millions of users send similar financial data to the same service, the aggregate reveals behavioral patterns that can be monetized.
+
+Breach surface — every server that holds user data is a potential breach target. On-device processing eliminates this surface entirely for the AI component.
+
+## How a 1.7B-Parameter LLM Fits on a Phone
+
+Three advances made it possible: Quantization (full-precision 32-bit floats reduced to 4-bit integers, shrinking the model by 4x to 8x), Neural Engine Acceleration (dedicated neural processing hardware in Apple Silicon and modern Android processors), and Efficient Inference Runtimes (runtimes optimized for constrained environments minimize peak memory usage and thermal footprint).
+
+A 1.7B parameter model quantized to 4-bit occupies roughly 900 MB — manageable on modern smartphones.
+
+## Embeddings and LLM Working Together: The Two-Stage Suggestion Stack
+
+Stage 1: Embedding-Based Pattern Matching — Budgie converts the merchant name and description into a dense vector embedding. This embedding is compared against embeddings of your historical transactions using vector similarity. If you have previously categorized transactions from the same merchant, the embedding match returns those categories with high confidence.
+
+Stage 2: LLM-Based Semantic Categorization — when the embedding stage produces low-confidence results (a new merchant or ambiguous description), the full language model takes over. The LLM receives the transaction description and your category list as context, and generates a ranked suggestion.
+
+---
+
+# Blog: Bank Data Safety — Why Offline-First Is the Only Honest Answer
+Source: https://budgie.at/en/blog/offline-first-bank-data-safety
+Published: May 7, 2026 | 10 min read | By Budgie Team
+
+Financial aggregators centralise millions of bank credentials in one place — a magnet for attackers. Offline-first architecture eliminates the target.
+
+## The Aggregator Pattern: What Plaid Does and What It Sees
+
+When you connect a bank account through an app that uses Plaid: Credential collection — Plaid historically used screen-scraping, which required your actual username and password; Transaction mirroring — Plaid pulls your transaction stream from the bank and stores it; Data sharing — Plaid data can be shared with other Plaid-connected apps, lenders, credit bureaus, and partners; Retention — transaction data is retained beyond the active period of any individual app connection.
+
+When you use any budgeting app backed by a major aggregator, your bank data exists in at least three places: your bank, the app, and the aggregator. Each is an independent breach surface.
+
+## Why Mass Aggregation Is a High-Value Breach Target
+
+A financial data aggregator that services millions of users holds credentials or access tokens for millions of bank accounts in one system. Single point of entry — compromising one system yields access to credentials spanning hundreds of different banks. Concentrated transaction history — aggregators hold not just credentials but also years of normalized transaction history. Third-party security posture — your data exposure depends on a third party you did not explicitly choose.
+
+## Offline-First as the Architectural Answer
+
+No credential escrow — your bank credentials or OAuth tokens are stored only on your device, encrypted at rest. No third-party server holds a copy. Direct bank communication — when sync runs, your device communicates directly with your bank API. No aggregator copy of your history. Breach impact is isolated — if your device is compromised, the exposure is limited to your accounts. An aggregator breach can expose every user simultaneously.
+
+## Direct API Tokens vs Aggregator OAuth
+
+Direct API tokens with scoped permissions: grant read-only access to transaction data; revocable from your bank portal at any time; no credential exposure; stored locally on your device.
+
+Aggregator OAuth routes your bank authorization through the aggregator platform. The resulting token is held by the aggregator, not by the app or your device.
+
+---
+
+# Blog: Why Cloud Budgeting Apps Are a Privacy Nightmare
+Source: https://budgie.at/en/blog/cloud-budgeting-privacy-risks
+Published: January 27, 2025 | 16 min read | By Budgie Team
+
+Discover the hidden privacy risks of cloud-based budgeting apps and learn why offline-first architecture is the safer alternative for your financial data.
+
+Your budgeting app knows more about your life than your closest friends. It knows where you eat, what you buy, when you get paid, and how much debt you carry. That data sits on servers you do not control, managed by companies whose primary business model depends on monetizing user data.
+
+## The Hidden Cost of "Free" Budgeting Apps
+
+How does a company offering a free service make money? The patterns are consistent: Data monetization — aggregated financial data is sold to market research firms, advertisers, and financial institutions; Partner referrals — apps recommend credit cards, loans, and investment products, earning affiliate commissions; Upselling financial products; Advertising — targeted ads based on your spending patterns.
+
+None of these revenue models work without collecting, analyzing, and retaining your financial data. Your transaction history is not just a feature of the product. It is the product.
+
+## The Data Collection Stack
+
+Your data flows from your bank account through a data aggregator like Plaid, Yodlee, MX, or Finicity, into the aggregator's data warehouse, and then into the budgeting app's backend. From there, it may feed into analytics pipelines, ML/AI training data, and third-party analytics services.
+
+## How Cloud Budgeting Apps Collect Your Data
+
+Method 1: Plaid and Data Aggregation APIs — Plaid collects account information, transaction data (every transaction including amount, date, merchant, category, and location), identity information, investment holdings, and liability details. In 2022, Plaid settled a $58 million class action lawsuit over allegations that they collected more data than users authorized and retained it longer than necessary.
+
+Method 2: Screen Scraping — before API-based aggregation, apps used screen scraping, which required storing your actual username and password on third-party servers. Screen scraping means a third party can do anything you can do in your bank account.
+
+Method 3: Direct API Access (Open Banking) — more controlled, but privacy concerns remain due to scope creep, persistent access, and aggregator persistence.
+
+## Real Data Breaches in Financial Apps
+
+Financial apps have been breached, and user data has been exposed. Mint (Intuit) shut down in December 2023, giving users only 90 days to export their data.
+
+---
+
+# Blog: Best YNAB Alternatives for Privacy
+Source: https://budgie.at/en/blog/ynab-alternatives-privacy
+Published: February 3, 2025 | 17 min read | By Budgie Team
+
+Compare the best YNAB alternatives for privacy-conscious users in 2025. Discover offline-first, open-source, and self-hosted budgeting apps that keep your financial data private.
+
+## Why People Are Looking for YNAB Alternatives
+
+The Price Increases — YNAB's pricing has evolved into a subscription model costing $14.99/month or $99/year. For those on tight budgets, this recurring cost is difficult to justify.
+
+Privacy and Data Concerns — YNAB is a cloud-first application: your complete financial history lives on their servers; bank sync requires sharing credentials through Plaid; data is a liability with every company holding your data presenting a potential breach target.
+
+The Cloud Dependency Problem — YNAB requires an internet connection for most functionality. Service outages mean no access. Future uncertainty about your decade of financial data if YNAB shuts down or is acquired.
+
+## What to Look for in a Privacy-Focused Budget App
+
+Data Storage Location: Local-first/Offline-first (data stored exclusively on your device) is most private. Bank Connection Requirements: manual entry only or optional bank sync. Open Source Transparency: fully open source allows code to be audited. Business Model: one-time purchase (no ongoing data motivation). Data Export Capabilities: full export in standard formats.
+
+## Comparison Table
+
+Budgie: Device only storage, optional bank sync, yes open source, free (Premium TBD), iOS and Android, best for privacy maximalists who want modern UX.
+
+Actual Budget: Local/Self-hosted storage, optional plugin bank sync, yes open source, free (self-hosted), Web and Desktop, best for technical users wanting full control.
+
+Firefly III: Self-hosted storage, optional bank sync, yes open source, free, Web, best for power users with server experience.
+
+Copilot: iCloud storage, yes bank sync (required), no open source, $10.99/mo, Apple only, best for Apple ecosystem users.
+
+Monarch Money: Cloud storage, yes bank sync, no open source, $14.99/mo, Web/iOS/Android, best for YNAB users wanting similar UX.
+
+Lunch Money: Cloud storage, optional bank sync, no open source, $10/mo, Web, best for developers and spreadsheet users.
+
+## Detailed Review: Budgie
+
+Privacy Rating: Excellent. Budgie takes a fundamentally different approach to budgeting software. Built from the ground up as an offline-first application, your financial data never leaves your device unless you explicitly choose to create a backup.
+
+---
+
+# Aggregated FAQ
+Sources: https://budgie.at/en, https://budgie.at/en/privacy, https://budgie.at/en/offline-first, https://budgie.at/en/ai-features, https://budgie.at/en/security, https://budgie.at/en/open-source
+
+## Privacy and Data
+
+Does Budgie send any financial data to a server? No. Every transaction, category, and balance lives in an encrypted SQLite database on your device. Budgie has no backend that receives financial data.
+
+Do I need to create an account to use Budgie? No account is required. You open the app and start tracking immediately. There is no sign-up screen, no email address collected, and no session token ever sent to our servers.
+
+Does Budgie use any analytics or crash-reporting SDKs? Budgie ships with zero third-party analytics or advertising SDKs. Crash reporting is opt-in and anonymized; financial data is never included.
+
+## Encryption and Security
+
+How is the on-device database encrypted? Budgie uses SQLCipher-backed SQLite with AES-256 encryption. The encryption key is derived from your device keychain and is never transmitted off the device.
+
+What happens if someone picks up my unlocked phone? Budgie's PIN and biometric lock gate every app launch. No financial data is visible until the correct PIN or biometric challenge is passed.
+
+Can someone see my balance in the app switcher? No. Screenshot protection automatically blurs all sensitive screens when the app moves to the background.
+
+Are my encrypted backups safe if someone accesses my cloud storage? Yes. Backups are encrypted on your device before upload. Anyone with access to your cloud storage would only see an encrypted blob.
+
+## Offline and Connectivity
+
+Does Budgie work without internet? Yes, fully. Every core feature runs entirely on your device. Internet is only used when you opt in to bank sync, AI model downloads, or exchange-rate updates.
+
+Can I add transactions without an internet connection? Yes. The entire transaction entry flow works fully offline. Your data is written directly to the on-device SQLite database with no network call.
+
+Will my analytics still work offline? All charts, category breakdowns, tag analytics, and net-worth calculations run against the local database. They work identically online or offline.
+
+## Backups and Data Portability
+
+Where are my backups stored? Backups go to your personal cloud storage — iCloud Drive on iOS, or Google Drive or Dropbox on Android. Budgie never receives a copy; you own every byte.
+
+What happens if I lose my phone? Without a backup file, your data is gone — that's the privacy trade-off. Budgie offers a one-tap encrypted database backup you can save to iCloud Drive, Google Drive, or anywhere else.
+
+## AI Features
+
+Which AI models does Budgie use? Budgie uses two on-device models: Qwen3 1.7B for natural-language understanding and chat, and a 768-dimensional embedding model for nearest-neighbor categorization. Both run locally with no external API call.
+
+Does the AI work offline? Yes. Both models live on your device after the one-time download.
+
+How large are the model downloads? The embedding model is approximately 90 MB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features.
+
+Does Budgie use OpenAI or any cloud LLM? No. Inference uses ONNX Runtime locally. There is no fallback to a cloud model.
+
+Does voice entry send audio to a server? No. Voice entry uses whisper.rn which transcribes audio directly on your device. Your voice recordings are never streamed to any external server.
+
+## Source Code
+
+Where can I find Budgie's source code? Budgie's source code is hosted on GitHub at github.com/budgie-at/budgie. The repository includes the full app, AI service layer, contracts, and landing page.
+
+What license does Budgie use? Budgie ships under a source-available license that lets you read, fork, and modify the code while reserving commercial distribution to the project.
+
+Can I contribute to Budgie? Yes. Pull requests, bug reports, and feature suggestions are welcome on the GitHub repository.
+
+## Bank Sync
+
+How is Budgie's Monobank sync different from Plaid-based apps? Plaid sits between you and your bank, mirroring all your transactions to its servers. Budgie talks to Monobank's API directly from your phone using your token. Monobank sees the request; nothing else.
+
+How does Budgie sync without an aggregator? Two paths: (1) direct API tokens for supported banks like Monobank; (2) PDF/CSV/Excel statement imports for anything else.
+
+## Pricing
+
+What's free vs. paid in Budgie? Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations.
+
+What happens if I stop paying? Nothing — there's nothing to stop. The unlock is one-time, not a subscription.

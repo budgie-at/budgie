@@ -1,0 +1,30 @@
+name: Landing IndexNow
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/landing/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: landing-indexnow
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    name: Submit IndexNow
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Wait for Vercel deploy to propagate
+        run: sleep 90
+      - name: Submit canonical URLs to IndexNow
+        run: |
+          code=$(curl -s -o /tmp/out.json -w '%{http_code}' -X POST https://budgie.at/api/indexnow \
+            -H "Authorization: Bearer ${{ secrets.ADMIN_SECRET }}")
+          echo "HTTP $code"; cat /tmp/out.json
+          test "$code" = "200"
