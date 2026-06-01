@@ -36,6 +36,14 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# стовпець доступний} few {# стовпці доступні} many {# стовпців доступні} other {# стовпця доступні}}"
 
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "{count, plural, one {# duplicate imported transaction} other {# duplicate imported transactions}}"
+msgstr "{count, plural, one {# дубльована імпортована транзакція} few {# дубльовані імпортовані транзакції} many {# дубльованих імпортованих транзакцій} other {# дубльованої імпортованої транзакції}}"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "{count, plural, one {# duplicate transaction removed} other {# duplicate transactions removed}}"
+msgstr "{count, plural, one {# дубльовану транзакцію видалено} few {# дубльовані транзакції видалено} many {# дубльованих транзакцій видалено} other {# дубльованої транзакції видалено}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# наявна транзакція відповідає цьому правилу.} few {# наявні транзакції відповідають цьому правилу.} many {# наявних транзакцій відповідають цьому правилу.} other {# наявної транзакції відповідають цьому правилу.}}"
@@ -398,6 +406,10 @@ msgstr "Синхронізація банку"
 msgid "Bank Sync"
 msgstr "Синхронізація з банком"
 
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Bank sync data repaired"
+msgstr "Дані банківської синхронізації виправлено"
+
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
 msgstr "Синхронізацію з банком скинуто"
@@ -439,6 +451,10 @@ msgstr "Позичено"
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Budgie can find duplicate transactions created by bank sync import issues and soft-delete only the extra imported copies."
+msgstr "Budgie може знайти дубльовані транзакції, створені через проблеми імпорту банківської синхронізації, і позначити видаленими лише зайві імпортовані копії."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie заповнить відсутні значення в базовій валюті за історичними курсами. Аналітика може бути недоступною, доки це не завершиться."
@@ -447,6 +463,10 @@ msgstr "Budgie заповнить відсутні значення в базо�
 msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
 msgstr "Budgie об'єднає надійні збіги переказів і відшкодувань. Неоднозначні збіги залишаться без змін."
 
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
+msgstr "Budgie позначить як видалені такі записи: {countText}. Ваші ручні транзакції залишаться без змін."
+
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
@@ -454,6 +474,7 @@ msgstr "Budgie об'єднає надійні збіги переказів і �
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
@@ -511,6 +532,10 @@ msgstr "Змінити"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Change PIN"
 msgstr "Змінити PIN-код"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Checking"
+msgstr "Перевірка"
 
 #: src/account/component/create-bank-account/create-bank-account.tsx
 #: src/app/(main)/create-account/index.tsx
@@ -653,6 +678,10 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account"
 msgstr "Не вдалося архівувати рахунок"
 
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Could not check bank sync data"
+msgstr "Не вдалося перевірити дані банківської синхронізації"
+
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Could not clear data"
 msgstr "Не вдалося очистити дані"
@@ -750,6 +779,10 @@ msgstr "Не вдалося перепризначити тег"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Не вдалося перерахувати баланси"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Could not repair bank sync data"
+msgstr "Не вдалося виправити дані банківської синхронізації"
 
 #: src/app/resync-window-picker.tsx
 msgid "Could not reset bank sync"
@@ -995,6 +1028,10 @@ msgstr "Завантаження моделей ШІ…"
 #: src/ai/service/ai-system-status.service.ts
 msgid "Downloading models"
 msgstr "Завантаження моделей"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Duplicate imported transactions"
+msgstr "Дубльовані імпортовані транзакції"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Duplicate rule"
@@ -1667,6 +1704,10 @@ msgstr "Не знайдено жодної валюти"
 msgid "No Custom Categories"
 msgstr "Немає власних категорій"
 
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "No duplicate imported transactions found."
+msgstr "Дубльованих імпортованих транзакцій не знайдено."
+
 #: src/app/icon-selector.tsx
 msgid "No icons found"
 msgstr "Іконки не знайдено"
@@ -1708,6 +1749,10 @@ msgstr "MCC-кодів не знайдено"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "No recurring payments detected"
 msgstr "Повторювані платежі не виявлено"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "No repairs needed"
+msgstr "Виправлення не потрібні"
 
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 #: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
@@ -2026,6 +2071,23 @@ msgstr "Повернено"
 #: src/transaction/components/refunded-pill/refunded-pill.tsx
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Повернено {formattedRefundedAmount}"
+
+#: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
+msgid "Remove duplicate imported bank transactions"
+msgstr "Видалити дубльовані імпортовані банківські транзакції"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Remove {duplicateReference}; keep {keptReference}"
+msgstr "Видалити {duplicateReference}; залишити {keptReference}"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Repair"
+msgstr "Виправити"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+#: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
+msgid "Repair Bank Sync Data"
+msgstr "Виправити дані банківської синхронізації"
 
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
@@ -2667,6 +2729,7 @@ msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
 #: src/ai/component/voice-input-error/voice-input-error.tsx
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
 msgid "Try Again"
 msgstr "Спробувати знову"
 

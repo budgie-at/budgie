@@ -84,6 +84,7 @@ export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = `
                 INNER JOIN accounts bridge_account ON
                     bridge_account.id = existing_transfer.from_account_id
                     AND bridge_account.deleted_at IS NULL
+                    AND bridge_account.is_active = 1
                 INNER JOIN transaction_entries existing_bridge_entry ON
                     existing_bridge_entry.transaction_id = existing_transfer.id
                     AND existing_bridge_entry.deleted_at IS NULL
@@ -98,6 +99,7 @@ export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = `
                 INNER JOIN accounts target_account ON
                     target_account.id = existing_target_entry.account_id
                     AND target_account.deleted_at IS NULL
+                    AND target_account.is_active = 1
                     AND target_account.instrument_id = bridge_account.instrument_id
                 INNER JOIN transaction_entries bridge_income_entry ON
                     bridge_income_entry.deleted_at IS NULL
@@ -127,6 +129,7 @@ export const EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL = `
                 INNER JOIN accounts source_account ON
                     source_account.id = source_expense_entry.account_id
                     AND source_account.deleted_at IS NULL
+                    AND source_account.is_active = 1
                     AND source_account.instrument_id != bridge_account.instrument_id
                 WHERE existing_transfer.type = '${TransactionTypeEnum.TRANSFER}'
                     AND existing_transfer.deleted_at IS NULL
