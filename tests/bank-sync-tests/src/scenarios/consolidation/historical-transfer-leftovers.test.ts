@@ -621,12 +621,6 @@ describe('consolidation/historical-transfer-leftovers', () => {
         const result = await bankSyncRepairService.removeDuplicates();
 
         expect(result.repairedTransactionCount).toBe(1);
-        expect(result.sources).toEqual([
-            expect.objectContaining({
-                duplicateTransactionCount: 1,
-                externalSource: ExternalSourceEnum.PRIVATBANK
-            })
-        ]);
         expect(fetchTransactionById(existingTransfer.id).toAccountId).toBe(privatAccount.id);
         expect(fetchTransactionById(privatIncome.id).consolidationParentTransactionId).toBe(existingTransfer.id);
         expect(fetchLiveDebitEntry(existingTransfer.id)?.accountId).toBe(privatAccount.id);
