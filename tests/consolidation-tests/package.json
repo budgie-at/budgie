@@ -14,7 +14,7 @@
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:*",
         "@rnw-community/shared": "^2.0.0",
-        "vitest": "^3.0.0"
+        "vitest": "^4.1.8"
     },
     "devDependencies": {
         "@types/node": "^22.0.0",
