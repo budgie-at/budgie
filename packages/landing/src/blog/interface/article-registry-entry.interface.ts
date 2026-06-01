@@ -11,5 +11,6 @@ export interface ArticleRegistryEntryInterface {
     readonly tags: readonly string[];
     readonly seoKeywords: readonly string[];
     readonly seoDescription: MessageDescriptor;
+    readonly relatedArticleSlugs: readonly string[];
     readonly relatedFeatureSlugs: readonly string[];
 }

@@ -115,11 +115,11 @@ Static SEO pages are one file per route. Visible page copy, FAQ copy, hero bulle
 
 Registries are metadata and enumeration sources only. Listing pages, sitemap generation, related links, and metadata helpers may import registry/index aggregators, but registries must not own visible body copy. For SEO page families whose metadata is currently centralized, move metadata into page-owned sibling sidecars such as `metadata.ts`; those sidecars use `msg` descriptors and dates, and registries/index aggregators import those sidecars instead of owning page metadata themselves.
 
-Feature route pages import their own sibling `metadata.ts` directly and pass that object through metadata helpers, JSON-LD components, and related-link helpers. Do not call `getFeatureBySlug(SLUG)` or add a defensive null branch inside explicit feature routes; the folder itself is the route contract. Sitemap and site URL generation import the feature metadata index built from route sidecars, not a slug lookup registry.
+Route pages import their own sibling `metadata.ts` directly and pass that object through metadata helpers, JSON-LD components, and related-link helpers. Do not call `getFeatureBySlug(SLUG)`, `ARTICLE_REGISTRY.find(...)`, or add a defensive null branch inside explicit SEO routes; the folder itself is the route contract. Sitemap, listing pages, and site URL generation import metadata indexes built from route sidecars, not slug lookup registries that own entries inline.
 
 FAQ/JSON-LD should be generated from JSX children where possible so visible FAQ content and schema share one page-local source. Legal pages should be plain Next.js TSX pages in the same explicit JSX style and remain `noindex, follow` unless code changes the source of truth.
 
-Feature page JSON-LD uses explicit JSX composition in the page body. Write breadcrumb schema as `<FeaturePageBreadcrumbsJsonLd><FeaturePageBreadcrumbsJsonLd.Item ... /></FeaturePageBreadcrumbsJsonLd>` and the page schema as `<FeaturePageWebPageJsonLd ... />`; do not recreate `buildFeaturePageJsonLd`-style object builders in route pages.
+Page JSON-LD uses explicit JSX composition in the page body where practical. Write breadcrumb schema as compound children, for example `<FeaturePageBreadcrumbsJsonLd><FeaturePageBreadcrumbsJsonLd.Item ... /></FeaturePageBreadcrumbsJsonLd>`, and the page schema as a dedicated JSX component such as `<FeaturePageWebPageJsonLd ... />`. Do not recreate `buildFeaturePageJsonLd`- or `buildPillarHubJsonLd`-style object builders in route pages or shells when a typed schema component can express the same contract.
 
 Static pages and metadata should remain SSG-safe by default. Do not read request headers, cookies, host, or other runtime context unless the page explicitly needs dynamic request behavior and declares the matching Next.js caching/dynamic behavior.
 
@@ -393,7 +393,7 @@ Blog articles are static routes under `app/[lang]/blog/<slug>/page.tsx`. Each ar
 </main>
 ```
 
-**Article registry:** `src/blog/constant/article-registry.constant.ts` is the single source of truth for listing pages, sitemap, and blog section. Each entry stores slug, date, author, image, and Lingui `msg` descriptors for title/description.
+**Article metadata:** each article owns a sibling `metadata.ts` sidecar. `src/blog/constant/article-registry.constant.ts` is only an aggregator for listing pages, sitemap, and blog previews; it imports article sidecars and must not own metadata entries inline. Article route pages import their own sidecar directly and never look themselves up in `ARTICLE_REGISTRY`.
 
 **SEO pages can use `/* eslint-disable max-lines-per-function */`** at the top since article pages are content-heavy.
 
