@@ -1,21 +1,20 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { msg, plural } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
-import { Card } from '../../../@generic/component/card/card';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { BankSyncRepairSourceRow } from '../../../settings/components/bank-sync-repair-source-row/bank-sync-repair-source-row';
+import { BankSyncRepairSourceList } from '../../../settings/components/bank-sync-repair-source-list/bank-sync-repair-source-list';
 import { BankSyncRepairsEmptyStateCard } from '../../../settings/components/bank-sync-repairs-empty-state-card/bank-sync-repairs-empty-state-card';
+import { BankSyncRepairsErrorCard } from '../../../settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card';
 import { BankSyncRepairsIntroCard } from '../../../settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card';
+import { BankSyncRepairsRepairButton } from '../../../settings/components/bank-sync-repairs-repair-button/bank-sync-repairs-repair-button';
 import { getBankSyncRepairText } from '../../../settings/utils/get-bank-sync-repair-text.util';
 import { useBankSyncDuplicateRepairPreviewQuery } from '../../../sync/query/use-bank-sync-duplicate-repair-preview.query';
 import { bankSyncRepairService } from '../../../sync/service/bank-sync-repair.service';
@@ -119,44 +118,17 @@ export default function BankSyncRepairsPage() {
             <ScrollView className="flex-1" contentContainerClassName="gap-y-xl pb-5xl pt-3xl" showsVerticalScrollIndicator={false}>
                 <BankSyncRepairsIntroCard />
 
-                {hasError ? (
-                    <Card variant="destructive" className="gap-y-lg">
-                        <Text className="text-destructive-foreground text-sm font-semibold">
-                            <Trans>Could not check bank sync data</Trans>
-                        </Text>
-                        <Text testID={BankSyncRepairsPageSelector.ErrorText} className="text-destructive-foreground text-sm">
-                            {errorMessage}
-                        </Text>
-                        <Button
-                            testID={BankSyncRepairsPageSelector.ErrorRetryButton}
-                            onPress={handleRefresh}
-                            disabled={isLoading}
-                            content={t`Try Again`}
-                            leftIcon={UserIconNameEnum.RefreshCw}
-                            variant="destructive"
-                            size="sm"
-                        />
-                    </Card>
-                ) : null}
+                {hasError ? <BankSyncRepairsErrorCard errorMessage={errorMessage} isLoading={isLoading} onRefresh={handleRefresh} /> : null}
 
                 {shouldShowEmptyState ? <BankSyncRepairsEmptyStateCard /> : null}
 
-                {shouldShowSources ? (
-                    <View className="gap-y-lg">
-                        {sources.map(source => (
-                            <BankSyncRepairSourceRow key={source.externalSource} {...source} />
-                        ))}
-                    </View>
-                ) : null}
+                <BankSyncRepairSourceList isVisible={shouldShowSources} sources={sources} />
 
-                <Button
-                    testID={BankSyncRepairsPageSelector.RepairButton}
+                <BankSyncRepairsRepairButton
                     onPress={handleRepair}
                     disabled={isRepairButtonDisabled}
                     isLoading={isRepairing}
                     content={buttonContent}
-                    leftIcon={UserIconNameEnum.Wrench}
-                    variant="destructive"
                 />
             </ScrollView>
         </Page>
