@@ -32,7 +32,9 @@ export class ConsolidationExecutorService {
             `throw expenseTransactionId=${candidate.expenseTransactionId} incomeTransactionId=${candidate.incomeTransactionId} matchType=${candidate.matchType} bucket=${candidate.confidenceBucket} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
     )
     async consolidatePair(candidate: TransferPairCandidateInterface): Promise<boolean> {
-        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx => this.consolidatePairInner(candidate, tx));
+        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
+            this.consolidatePairInner(candidate, tx)
+        );
     }
 
     @Log(
@@ -198,7 +200,11 @@ export class ConsolidationExecutorService {
             return false;
         }
 
-        await this.dependencies.transactionRepository.setConsolidationType(candidate.expenseTransactionId, TransactionConsolidationTypeEnum.REFUND, tx);
+        await this.dependencies.transactionRepository.setConsolidationType(
+            candidate.expenseTransactionId,
+            TransactionConsolidationTypeEnum.REFUND,
+            tx
+        );
         await this.copySourceTags(candidate.refundIncomeTransactionIds, candidate.expenseTransactionId, tx);
         await this.moveSourcesToCanonical(candidate.refundIncomeTransactionIds, candidate.expenseTransactionId, tx);
 
@@ -295,7 +301,11 @@ export class ConsolidationExecutorService {
             },
             tx
         );
-        await this.dependencies.transactionRepository.setConsolidationType(candidate.existingTransferId, TransactionConsolidationTypeEnum.TRANSFER_PAIR, tx);
+        await this.dependencies.transactionRepository.setConsolidationType(
+            candidate.existingTransferId,
+            TransactionConsolidationTypeEnum.TRANSFER_PAIR,
+            tx
+        );
         await this.copySourceTags(sourceTransactionIds, candidate.existingTransferId, tx);
         await this.moveSourcesToCanonical(sourceTransactionIds, candidate.existingTransferId, tx);
 
@@ -471,7 +481,9 @@ export class ConsolidationExecutorService {
         }
 
         const tagCollections = await Promise.all(
-            sourceTransactionIds.map(async transactionId => this.dependencies.transactionTagsRepository.findByTransactionId(transactionId, tx))
+            sourceTransactionIds.map(async transactionId =>
+                this.dependencies.transactionTagsRepository.findByTransactionId(transactionId, tx)
+            )
         );
 
         return tagCollections.flat();

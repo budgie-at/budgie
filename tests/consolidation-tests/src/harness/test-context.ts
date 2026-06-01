@@ -2,6 +2,7 @@ import {
     ConsolidationAutoCandidateService,
     ConsolidationCandidateService,
     ConsolidationExecutorService,
+    RefundConsolidationService,
     UnconsolidationService
 } from '@budgie/consolidation';
 
@@ -32,6 +33,15 @@ export const consolidationAutoCandidateService = new ConsolidationAutoCandidateS
 export const unconsolidationService = new UnconsolidationService({
     transactionRepository: repositories.transactionRepository,
     transactionEntryRepository: repositories.transactionEntryRepository,
+    transactionTagsRepository: repositories.transactionTagsRepository
+});
+
+export const refundConsolidationService = new RefundConsolidationService({
+    database: testDb,
+    refundPairRepository: repositories.refundPairRepository,
+    transactionEntryRepository: repositories.transactionEntryRepository,
+    transactionRepository: repositories.transactionRepository,
+    transactionRunner,
     transactionTagsRepository: repositories.transactionTagsRepository
 });
 

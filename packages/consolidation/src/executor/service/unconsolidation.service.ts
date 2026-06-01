@@ -12,8 +12,7 @@ export class UnconsolidationService {
     @Log(
         (transactionId, tx) => `enter transactionId=${transactionId} hasTx=${String(isDefined(tx))}`,
         (result, transactionId, tx) => `done result=${String(result)} transactionId=${transactionId} hasTx=${String(isDefined(tx))}`,
-        (error, transactionId, tx) =>
-            `throw transactionId=${transactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (error, transactionId, tx) => `throw transactionId=${transactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async unconsolidateById(transactionId: number, tx: DB): Promise<void> {
         const canonical = await this.dependencies.transactionRepository.getByIdRaw(transactionId, tx);
