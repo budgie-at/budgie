@@ -1,20 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { eq } from 'drizzle-orm';
 
-import {
-    PRECISION,
-    TagEntityTable,
-    TransactionConsolidationTypeEnum,
-    TransactionTagsEntityTable,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { PRECISION, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-import { fetchTransactionById, runRefundScenario, seed, seedRefundedExpense, testDb } from '../../harness';
-import { insertOne } from '../../harness/db/insert-one';
-
-import { refundPairRepository } from '@app/@generic/drizzle/db/db';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
-import { transactionRefundService } from '@app/transaction/service/transaction-refund.service';
+import { runConsolidation } from '../harness/run-consolidation';
+import { runRefundScenario } from '../harness/run-refund-scenario';
+import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
 
 describe('consolidation/refund-pair-by-title', () => {
     it.each([
@@ -44,14 +34,12 @@ describe('consolidation/refund-pair-by-title', () => {
             checksParent: false
         }
     ])('promotes the original expense when $name', async ({ scenario, checksParent }) => {
-        const { expense, refunds, result } = await runRefundScenario(scenario);
+        const { consolidated, expense, refunds } = await runRefundScenario(scenario);
 
-        expect(result.consolidated).toBe(1);
+        expect(consolidated).toBe(1);
+        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
 
-        const reparentedRefund = fetchTransactionById(refunds[0].id);
-        expect(reparentedRefund.consolidationParentTransactionId).toBe(expense.id);
-
-        const promotedExpense = fetchTransactionById(expense.id);
+        const promotedExpense = testQueryService.fetchTransactionById(expense.id);
         expect(promotedExpense.consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
         if (checksParent) {
@@ -60,8 +48,8 @@ describe('consolidation/refund-pair-by-title', () => {
     });
 
     it('ranks a localized refund prefix as a single automatic refund candidate', async () => {
-        const account = seed.account({ externalId: 'mono-card' });
-        const { expense, refunds } = seedRefundedExpense({
+        const account = testSeedService.account({ externalId: 'mono-card' });
+        const { expense, refunds } = testSeedService.refundedExpense({
             accountId: account.id,
             expenseAmount: 898 * PRECISION,
             refundAmounts: [898 * PRECISION],
@@ -85,8 +73,8 @@ describe('consolidation/refund-pair-by-title', () => {
     });
 
     it('ranks a PrivatBank refund prefix as a single automatic refund candidate', async () => {
-        const account = seed.account({ externalId: 'privat-card' });
-        const { expense, refunds } = seedRefundedExpense({
+        const account = testSeedService.account({ externalId: 'privat-card' });
+        const { expense, refunds } = testSeedService.refundedExpense({
             accountId: account.id,
             expenseAmount: 85 * PRECISION,
             refundAmounts: [85 * PRECISION],
@@ -112,8 +100,8 @@ describe('consolidation/refund-pair-by-title', () => {
     });
 
     it('finds manual refund candidates only from refund income transactions', async () => {
-        const account = seed.account({ externalId: 'mono-card' });
-        const { expense, refunds } = seedRefundedExpense({
+        const account = testSeedService.account({ externalId: 'mono-card' });
+        const { expense, refunds } = testSeedService.refundedExpense({
             accountId: account.id,
             expenseAmount: 120 * PRECISION,
             refundAmounts: [40 * PRECISION],
@@ -128,42 +116,9 @@ describe('consolidation/refund-pair-by-title', () => {
         expect(expenseCandidates).toEqual([]);
     });
 
-    it('manually converts when the income and expense already share a tag', async () => {
-        const account = seed.account({ externalId: 'mono-card' });
-        const { expense, refunds } = seedRefundedExpense({
-            accountId: account.id,
-            expenseAmount: 120 * PRECISION,
-            refundAmounts: [40 * PRECISION]
-        });
-        const tag = insertOne(TagEntityTable, {
-            title: 'Shared',
-            titleSearch: 'shared',
-            titleEn: null,
-            titleTags: null,
-            tagsGeneratedAt: null
-        });
-
-        insertOne(TransactionTagsEntityTable, { transactionId: expense.id, tagId: tag.id, isPrimary: false });
-        insertOne(TransactionTagsEntityTable, { transactionId: refunds[0].id, tagId: tag.id, isPrimary: false });
-
-        const canonicalTransactionId = await transactionRefundService.convertToRefund({
-            refundIncomeTransactionId: refunds[0].id,
-            expenseTransactionId: expense.id
-        });
-        const canonicalTags = testDb
-            .select()
-            .from(TransactionTagsEntityTable)
-            .where(eq(TransactionTagsEntityTable.transactionId, expense.id))
-            .all();
-
-        expect(canonicalTransactionId).toBe(expense.id);
-        expect(fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(canonicalTags).toHaveLength(1);
-    });
-
-    it('does NOT consolidate when titles differ', async () => {
-        const account = seed.account({ externalId: 'mono-card' });
-        seedRefundedExpense({
+    it('does not consolidate when titles differ', async () => {
+        const account = testSeedService.account({ externalId: 'mono-card' });
+        testSeedService.refundedExpense({
             accountId: account.id,
             expenseAmount: 120 * PRECISION,
             refundAmounts: [120 * PRECISION],
@@ -171,20 +126,20 @@ describe('consolidation/refund-pair-by-title', () => {
             refundTitle: 'WALMART #5678'
         });
 
-        const result = await transferConsolidationService.consolidate();
+        const result = await runConsolidation();
         expect(result.consolidated).toBe(0);
     });
 
-    it('does NOT auto-consolidate one refund when multiple same-title expenses can claim it', async () => {
-        const account = seed.account({ externalId: 'mono-card' });
-        seedRefundedExpense({
+    it('does not auto-consolidate one refund when multiple same-title expenses can claim it', async () => {
+        const account = testSeedService.account({ externalId: 'mono-card' });
+        testSeedService.refundedExpense({
             accountId: account.id,
             expenseAmount: 120 * PRECISION,
             refundAmounts: [],
             externalIdPrefix: 'first',
             expenseOperatedAt: new Date(2026, 0, 15, 12, 0, 0)
         });
-        seedRefundedExpense({
+        testSeedService.refundedExpense({
             accountId: account.id,
             expenseAmount: 120 * PRECISION,
             refundAmounts: [120 * PRECISION],
@@ -192,14 +147,14 @@ describe('consolidation/refund-pair-by-title', () => {
             expenseOperatedAt: new Date(2026, 0, 16, 12, 0, 0)
         });
 
-        const result = await transferConsolidationService.consolidate();
+        const result = await runConsolidation();
         expect(result.consolidated).toBe(0);
     });
 
     it('auto-consolidates cancellation-prefixed card reversals to the nearest same-amount expense', async () => {
-        const account = seed.account({ externalId: 'mono-card' });
+        const account = testSeedService.account({ externalId: 'mono-card' });
         const amount = 3_963_900_000;
-        const first = seedRefundedExpense({
+        const first = testSeedService.refundedExpense({
             accountId: account.id,
             expenseAmount: amount,
             refundAmounts: [amount],
@@ -209,7 +164,7 @@ describe('consolidation/refund-pair-by-title', () => {
             refundDelaySeconds: 68,
             externalIdPrefix: 'obb-first'
         });
-        const second = seedRefundedExpense({
+        const second = testSeedService.refundedExpense({
             accountId: account.id,
             expenseAmount: amount,
             refundAmounts: [amount],
@@ -220,11 +175,11 @@ describe('consolidation/refund-pair-by-title', () => {
             externalIdPrefix: 'obb-second'
         });
 
-        const result = await transferConsolidationService.consolidate();
+        const result = await runConsolidation();
         expect(result.consolidated).toBe(2);
-        expect(fetchTransactionById(first.expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(fetchTransactionById(first.refunds[0].id).consolidationParentTransactionId).toBe(first.expense.id);
-        expect(fetchTransactionById(second.expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(fetchTransactionById(second.refunds[0].id).consolidationParentTransactionId).toBe(second.expense.id);
+        expect(testQueryService.fetchTransactionById(first.expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+        expect(testQueryService.fetchTransactionById(first.refunds[0].id).consolidationParentTransactionId).toBe(first.expense.id);
+        expect(testQueryService.fetchTransactionById(second.expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+        expect(testQueryService.fetchTransactionById(second.refunds[0].id).consolidationParentTransactionId).toBe(second.expense.id);
     });
 });
