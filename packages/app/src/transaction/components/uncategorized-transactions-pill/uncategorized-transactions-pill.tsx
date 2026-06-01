@@ -7,16 +7,20 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from '
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { UncategorizedTransactionsPillPropsInterface } from '../../interface/uncategorized-transactions-pill-props.interface';
 
 import { UncategorizedTransactionsPillSelector } from './uncategorized-transactions-pill.selector';
+
+interface Props {
+    readonly count: number;
+    readonly onPress: () => void;
+}
 
 const ANIMATION_DURATION_MS = 180;
 const PILL_ENTER_TRANSLATE_Y = -4;
 const PILL_ENTER_SCALE = 0.98;
 const PILL_SCALE_DELTA = 0.02;
 
-export const UncategorizedTransactionsPill = ({ count, onPress }: UncategorizedTransactionsPillPropsInterface) => {
+export const UncategorizedTransactionsPill = ({ count, onPress }: Props) => {
     const { t } = useLingui();
     const animationProgress = useSharedValue(0);
 

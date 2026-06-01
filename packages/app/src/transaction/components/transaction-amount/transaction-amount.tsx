@@ -26,6 +26,7 @@ interface Props {
 
 interface AggregatedEntry {
     readonly amount: number;
+    readonly baseAmount: number | null;
     readonly account: TransactionWithRelationsEntityInterface['entries'][number]['account'];
 }
 
@@ -33,10 +34,18 @@ const amountVariants = cva('text-sm font-semibold text-right', {
     variants: { type: FOREGROUND_COLOR_PALETTE }
 });
 
+const sumEntryBaseAmounts = (entries: TransactionWithRelationsEntityInterface['entries']): number | null => {
+    if (entries.some(entry => !isDefined(entry.baseAmount))) {
+        return null;
+    }
+
+    return entries.reduce((sum, entry) => sum + (entry.baseAmount ?? 0), 0);
+};
+
 const getAggregatedEntry = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null): AggregatedEntry | null => {
     const entries = transaction.entries.filter(entry => entry.accountId === accountId);
 
-    return isNotEmptyArray(entries) ? { ...entries[0], amount: sumEntryAmounts(entries) } : null;
+    return isNotEmptyArray(entries) ? { ...entries[0], amount: sumEntryAmounts(entries), baseAmount: sumEntryBaseAmounts(entries) } : null;
 };
 
 const getAmountTestID = (isAdjustment: boolean, amount: number, transactionId: number) =>
@@ -81,7 +90,13 @@ export const TransactionAmount = ({ transaction }: Props) => {
                 <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
                     {formatDigits(amount, fromEntry.account.instrument.symbol)}
                 </Text>
-                {isCrossCurrency ? <ConvertedAmountLabel instrumentId={fromEntry.account.instrument.id} amount={fromEntry.amount} /> : null}
+                {isCrossCurrency ? (
+                    <ConvertedAmountLabel
+                        instrumentId={fromEntry.account.instrument.id}
+                        amount={fromEntry.amount}
+                        baseAmount={fromEntry.baseAmount}
+                    />
+                ) : null}
             </View>
         );
     }
@@ -96,7 +111,13 @@ export const TransactionAmount = ({ transaction }: Props) => {
                 <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
                     {formatDigits(amount, toEntry.account.instrument.symbol)}
                 </Text>
-                {isCrossCurrency ? <ConvertedAmountLabel instrumentId={toEntry.account.instrument.id} amount={toEntry.amount} /> : null}
+                {isCrossCurrency ? (
+                    <ConvertedAmountLabel
+                        instrumentId={toEntry.account.instrument.id}
+                        amount={toEntry.amount}
+                        baseAmount={toEntry.baseAmount}
+                    />
+                ) : null}
             </View>
         );
     }

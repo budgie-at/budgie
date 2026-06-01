@@ -4,7 +4,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Check, Languages } from 'lucide-react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 
-import linguiConfig from '../../../../lingui.config.mjs';
+import { SUPPORTED_LOCALES as locales } from '../../../i18n/supported-locales.constant.mjs';
 import { Button } from '../../../ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../ui/dropdown-menu/dropdown-menu';
 
@@ -19,8 +19,6 @@ const LANGUAGE_NAMES: Record<string, string> = {
     // eslint-disable-next-line lingui/no-unlocalized-strings
     es: 'Español'
 };
-
-const { locales } = linguiConfig;
 
 export const LanguageSwitcher = () => {
     const router = useRouter();
