@@ -6,9 +6,13 @@ import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
 import { BankSyncRepairsPageSelector } from '../../../app/(tabs)/settings/bank-sync-repairs-page.selector';
 
-import type { BankSyncRepairsErrorCardPropsInterface } from './bank-sync-repairs-error-card-props.interface';
+interface Props {
+    readonly errorMessage: string;
+    readonly isLoading: boolean;
+    readonly onRefresh: () => void;
+}
 
-export const BankSyncRepairsErrorCard = ({ errorMessage, isLoading, onRefresh }: BankSyncRepairsErrorCardPropsInterface) => {
+export const BankSyncRepairsErrorCard = ({ errorMessage, isLoading, onRefresh }: Props) => {
     const { t } = useLingui();
 
     return (

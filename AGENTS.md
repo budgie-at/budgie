@@ -80,6 +80,10 @@ packages/
 └── bank-sync/          # Bank integration package
 ```
 
+## Package-Specific Instructions
+
+Before changing `packages/landing` SEO pages, blog articles, feature pages, pillar hubs, legal pages, metadata helpers, JSON-LD, sitemap entries, or Lingui catalogs, read `packages/landing/AGENTS.md` and its referenced `packages/landing/docs/seo-pages.md` / `packages/landing/docs/lingui-rsc.md`. Landing SEO routes use explicit TSX composition, page-owned sibling `metadata.ts` sidecars, Lingui-safe RSC setup, and SSG-safe metadata by default.
+
 ## Architecture Layers
 
 1. **API** - External service calls (fetch, ky)
@@ -115,7 +119,7 @@ packages/
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
-27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `bank-sync`) do not host Jest/Vitest/etc. Verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. The single integration-test exception is `tests/bank-sync-tests/` (Vitest + MSW), which covers raw-SQL ranking and bank-sync pagination paths Maestro cannot reach. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
+27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `bank-sync`, `consolidation`) do not host Jest/Vitest/etc. Verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/bank-sync-tests/` for bank import/sync behavior and `tests/consolidation-tests/` for consolidation matching/execution behavior. Shared integration harness code belongs in `tests/test-kit/`, not in either scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
 28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `yarn cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
@@ -154,27 +158,30 @@ packages/
 
 ### Naming Conventions
 
-| Type             | Convention                | Example                  |
-| ---------------- | ------------------------- | ------------------------ |
-| Interface        | `*Interface` suffix       | `AccountFilterInterface` |
-| React props      | exactly `Props`, inline   | `interface Props { ... }`|
-| Enum             | `*Enum` suffix            | `AccountTypeEnum`        |
-| Function         | module prefix             | `exchangeRatesFetchApi`  |
-| Class            | PascalCase                | `AccountRepository`      |
-| File             | kebab-case + type suffix  | `account.service.ts`     |
+| Type        | Convention               | Example                   |
+| ----------- | ------------------------ | ------------------------- |
+| Interface   | `*Interface` suffix      | `AccountFilterInterface`  |
+| React props | exactly `Props`, inline  | `interface Props { ... }` |
+| Enum        | `*Enum` suffix           | `AccountTypeEnum`         |
+| Function    | module prefix            | `exchangeRatesFetchApi`   |
+| Class       | PascalCase               | `AccountRepository`       |
+| File        | kebab-case + type suffix | `account.service.ts`      |
 
 > **React props naming (overrides the `*Interface` suffix rule):** a component's props type is always named `Props` and declared inline. Never name it `*PropsInterface` for a single component. Promote to a shared `*PropsInterface` in `/interface` only when 2+ components consume the same shape (see rule 19 + rule 51).
 
 ### Type Guards and Validation
 
-**Prefer `@rnw-community/shared` type guards over manual checks:**
+**Prefer existing validators before writing manual checks.** Every package, including `landing`, should use `@rnw-community/shared` guards for common TypeScript checks before hand-writing nullish, type, length, or positive-number conditions. If a package or domain already has a validator/type guard for a shape, reuse it instead of duplicating the condition.
 
 - `isDefined(x)` instead of `x !== null && x !== undefined` or `x !== null`
 - `isNumber(x)` instead of `typeof x === 'number'`
+- `isString(x)` instead of `typeof x === 'string'`
 - `isNotEmptyArray(x)` instead of `Array.isArray(x) && x.length > 0`
 - `isEmptyArray(x)` instead of `x.length === 0`
 - `isNotEmptyString(x)` instead of `typeof x === 'string' && x.length > 0`
 - `isPositiveNumber(x)` instead of `typeof x === 'number' && x > 0` or `x > 0`
+
+Custom type guards are for domain-specific shapes only, such as repository rows, native module payloads, or bank/provider-specific objects. Do not create a custom guard just to wrap a shared primitive guard or a simple null/type/length check.
 
 **Use `isDefined` for ref checks too:**
 
@@ -211,7 +218,7 @@ const numbers: number[] = [1, 2, 3];
 numbers.filter(isDefined); // Unnecessary, array can't have nulls
 ```
 
-**Prefer Zod for complex object validation:**
+**Use Zod for complex external data validation.** Validate unknown external input at the boundary, then pass typed values inward. This includes API request bodies, webhook payloads, bank/provider responses, AI service responses, persisted JSON migrations, and other untrusted object payloads. Prefer an existing shared/domain schema before creating a new one.
 
 ```typescript
 // Good - Zod schema
