@@ -101,7 +101,9 @@ export class ConsolidationAutoCandidateService {
     }
 
     private async processAtmCashWithdrawalCandidates(candidates: AtmCashWithdrawalCandidateInterface[]): Promise<number> {
-        return this.reduceConsolidations(candidates, candidate => this.consolidationExecutorService.consolidateAtmCashWithdrawal(candidate));
+        return this.reduceConsolidations(candidates, candidate =>
+            this.consolidationExecutorService.consolidateAtmCashWithdrawal(candidate)
+        );
     }
 
     private async processIbanBridgeTransferCandidates(candidates: IbanBridgeTransferCandidateInterface[]): Promise<number> {

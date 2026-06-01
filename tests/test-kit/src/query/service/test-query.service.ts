@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 
-import { MccCategoryEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import { MccCategoryEntityTable, TransactionEntityTable, TransactionEntryEntityTable, TransactionTagsEntityTable } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -53,6 +53,15 @@ export class TestQueryService {
         }
 
         return row;
+    }
+
+    fetchTransactionTagIds(transactionId: number): number[] {
+        return this.database
+            .select({ tagId: TransactionTagsEntityTable.tagId })
+            .from(TransactionTagsEntityTable)
+            .where(eq(TransactionTagsEntityTable.transactionId, transactionId))
+            .all()
+            .map(row => row.tagId);
     }
 
     findMccByCode(mcc: string): Pick<MccCategoryEntityInterface, 'id' | 'mccGroupId'> {

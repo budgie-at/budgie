@@ -9,9 +9,11 @@ import {
     InstrumentEntityTable,
     InstrumentTypeEnum,
     MccCategoryEntityTable,
+    TagEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
+    TransactionTagsEntityTable,
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
@@ -135,6 +137,36 @@ export class TestSeedService {
             .all();
 
         return this.requireInserted(rows, 'mcc_categories');
+    }
+
+    tag(title: string): { readonly id: number } {
+        const rows = this.database
+            .insert(TagEntityTable)
+            .values({
+                title,
+                titleSearch: title.toLowerCase(),
+                titleEn: null,
+                titleTags: null,
+                tagsGeneratedAt: null
+            })
+            .returning({ id: TagEntityTable.id })
+            .all();
+
+        return this.requireInserted(rows, 'tags');
+    }
+
+    transactionTag(transactionId: number, tagId: number): void {
+        const rows = this.database
+            .insert(TransactionTagsEntityTable)
+            .values({
+                transactionId,
+                tagId,
+                isPrimary: false
+            })
+            .returning()
+            .all();
+
+        this.requireInserted(rows, 'transaction_tags');
     }
 
     accountPair(
