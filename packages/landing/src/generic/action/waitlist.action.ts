@@ -3,6 +3,8 @@
 
 import { kv } from '@vercel/kv';
 
+import { isDefined } from '@rnw-community/shared';
+
 interface WaitlistResult {
     success: boolean;
     messageKey: 'invalid_email' | 'already_registered' | 'success' | 'error';
@@ -33,7 +35,7 @@ export const joinWaitlist = async (email: string): Promise<WaitlistResult> => {
     try {
         const existingPosition = await kv.zscore('waitlist:emails', normalizedEmail);
 
-        if (existingPosition !== null) {
+        if (isDefined(existingPosition)) {
             return { success: true, messageKey: 'already_registered', position: Math.floor(existingPosition) };
         }
 

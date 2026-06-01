@@ -153,27 +153,30 @@ packages/
 
 ### Naming Conventions
 
-| Type             | Convention                | Example                  |
-| ---------------- | ------------------------- | ------------------------ |
-| Interface        | `*Interface` suffix       | `AccountFilterInterface` |
-| React props      | exactly `Props`, inline   | `interface Props { ... }`|
-| Enum             | `*Enum` suffix            | `AccountTypeEnum`        |
-| Function         | module prefix             | `exchangeRatesFetchApi`  |
-| Class            | PascalCase                | `AccountRepository`      |
-| File             | kebab-case + type suffix  | `account.service.ts`     |
+| Type        | Convention               | Example                   |
+| ----------- | ------------------------ | ------------------------- |
+| Interface   | `*Interface` suffix      | `AccountFilterInterface`  |
+| React props | exactly `Props`, inline  | `interface Props { ... }` |
+| Enum        | `*Enum` suffix           | `AccountTypeEnum`         |
+| Function    | module prefix            | `exchangeRatesFetchApi`   |
+| Class       | PascalCase               | `AccountRepository`       |
+| File        | kebab-case + type suffix | `account.service.ts`      |
 
 > **React props naming (overrides the `*Interface` suffix rule):** a component's props type is always named `Props` and declared inline. Never name it `*PropsInterface` for a single component. Promote to a shared `*PropsInterface` in `/interface` only when 2+ components consume the same shape (see rule 19 + rule 51).
 
 ### Type Guards and Validation
 
-**Prefer `@rnw-community/shared` type guards over manual checks:**
+**Prefer existing validators before writing manual checks.** Every package, including `landing`, should use `@rnw-community/shared` guards for common TypeScript checks before hand-writing nullish, type, length, or positive-number conditions. If a package or domain already has a validator/type guard for a shape, reuse it instead of duplicating the condition.
 
 - `isDefined(x)` instead of `x !== null && x !== undefined` or `x !== null`
 - `isNumber(x)` instead of `typeof x === 'number'`
+- `isString(x)` instead of `typeof x === 'string'`
 - `isNotEmptyArray(x)` instead of `Array.isArray(x) && x.length > 0`
 - `isEmptyArray(x)` instead of `x.length === 0`
 - `isNotEmptyString(x)` instead of `typeof x === 'string' && x.length > 0`
 - `isPositiveNumber(x)` instead of `typeof x === 'number' && x > 0` or `x > 0`
+
+Custom type guards are for domain-specific shapes only, such as repository rows, native module payloads, or bank/provider-specific objects. Do not create a custom guard just to wrap a shared primitive guard or a simple null/type/length check.
 
 **Use `isDefined` for ref checks too:**
 
@@ -210,7 +213,7 @@ const numbers: number[] = [1, 2, 3];
 numbers.filter(isDefined); // Unnecessary, array can't have nulls
 ```
 
-**Prefer Zod for complex object validation:**
+**Use Zod for complex external data validation.** Validate unknown external input at the boundary, then pass typed values inward. This includes API request bodies, webhook payloads, bank/provider responses, AI service responses, persisted JSON migrations, and other untrusted object payloads. Prefer an existing shared/domain schema before creating a new one.
 
 ```typescript
 // Good - Zod schema
