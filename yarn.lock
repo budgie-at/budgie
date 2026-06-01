@@ -1272,6 +1272,7 @@ __metadata:
     "@babel/core": "npm:^7.28.6"
     "@budgie/ai": "workspace:^"
     "@budgie/bank-sync": "workspace:*"
+    "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
     "@expo/fingerprint": "npm:~0.16.7"
@@ -1364,6 +1365,7 @@ __metadata:
   resolution: "@budgie-at/bank-sync-tests@workspace:tests/bank-sync-tests"
   dependencies:
     "@budgie/bank-sync": "workspace:*"
+    "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:*"
     "@rnw-community/shared": "npm:^2.0.0"
     "@types/better-sqlite3": "npm:^7.6.12"
@@ -1494,7 +1496,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/consolidation@workspace:packages/consolidation":
+"@budgie/consolidation@workspace:*, @budgie/consolidation@workspace:packages/consolidation":
   version: 0.0.0-use.local
   resolution: "@budgie/consolidation@workspace:packages/consolidation"
   dependencies:
