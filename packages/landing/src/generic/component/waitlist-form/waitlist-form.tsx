@@ -6,7 +6,7 @@ import { cva } from 'class-variance-authority';
 import { ArrowRight, Loader2, Users } from 'lucide-react';
 import { useState } from 'react';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../ui/button';
 import { joinWaitlist } from '../../action/waitlist.action';
@@ -136,7 +136,7 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
 
             {isNotEmptyString(error) && <p className={errorVariants({ variant })}>{error}</p>}
 
-            {showCount && initialCount > 0 && (
+            {showCount && isPositiveNumber(initialCount) && (
                 <div className={countTextVariants({ variant })}>
                     <Users className="size-4" />
                     <span>{countText}</span>

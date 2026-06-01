@@ -1,4 +1,4 @@
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { getFeatureBySlug } from '../../util/get-feature-by-slug.util';
 import { FeatureCard } from '../feature-card/feature-card';
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const PillarHubFeatureGrid = ({ locale, slugs }: Props) => {
-    if (slugs.length === 0) {
+    if (isEmptyArray(slugs)) {
         return null;
     }
 
