@@ -13,27 +13,31 @@ const logger = getLogger('useAppInitialization');
 
 export const useAppInitialization = (success: boolean) => {
     useEffect(() => {
-        const init = async () => {
-            if (success) {
-                try {
-                    void exchangeRatesSyncService.sync();
-                    void exchangeRatesSyncService.registerBackgroundTask();
-
-                    void accountBalanceIncrementalService.updateAllBalances(false);
-                    void accountBalanceIncrementalService.registerBackgroundTask();
-
-                    void monobankSyncService.sync();
-                    void monobankSyncService.registerBackgroundTask();
-
-                    void transferConsolidationService.registerBackgroundTask();
-                } catch (error: unknown) {
-                    logger.error('failed', { errorMessage: getErrorMessage(error) });
-                } finally {
-                    setTimeout(() => void SplashScreen.hideAsync(), 200);
-                }
-            }
+        const handleInitializationError = (error: unknown): void => {
+            logger.error('failed', { errorMessage: getErrorMessage(error) });
         };
 
-        void init();
+        const runInitializationTask = (task: Promise<unknown>): void => {
+            void task.catch(handleInitializationError);
+        };
+
+        if (success) {
+            try {
+                runInitializationTask(exchangeRatesSyncService.sync());
+                runInitializationTask(exchangeRatesSyncService.registerBackgroundTask());
+
+                runInitializationTask(accountBalanceIncrementalService.updateAllBalances(false));
+                runInitializationTask(accountBalanceIncrementalService.registerBackgroundTask());
+
+                runInitializationTask(monobankSyncService.sync());
+                runInitializationTask(monobankSyncService.registerBackgroundTask());
+
+                runInitializationTask(transferConsolidationService.registerBackgroundTask());
+            } catch (error: unknown) {
+                handleInitializationError(error);
+            } finally {
+                setTimeout(() => void SplashScreen.hideAsync(), 200);
+            }
+        }
     }, [success]);
 };
