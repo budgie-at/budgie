@@ -15,6 +15,7 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -75,6 +76,24 @@ export class TestSeedService {
             .all();
 
         return this.requireInserted(rows, 'accounts');
+    }
+
+    bankSyncAccount(
+        title: string,
+        externalSource: ExternalSourceEnum | null,
+        iban: string | null,
+        instrumentId: number = 1,
+        icon: UserIconNameEnum = UserIconNameEnum.Landmark
+    ): AccountEntityInterface {
+        return this.account({
+            title,
+            type: AccountTypeEnum.BANK_SYNC,
+            externalId: title,
+            externalSource,
+            iban,
+            icon,
+            instrumentId
+        });
     }
 
     bankSync(input: Partial<BankSyncCreateEntityInterface> & Pick<BankSyncCreateEntityInterface, 'accountId'>): BankSyncEntityInterface {
@@ -220,6 +239,20 @@ export class TestSeedService {
         entry: SeedBankPairEntryInputType
     ): TransactionEntityInterface {
         return this.bankPairSide(TransactionTypeEnum.INCOME, transaction, entry);
+    }
+
+    updateTransaction(
+        transactionId: number,
+        input: Partial<Pick<TransactionCreateEntityInterface, 'externalSource' | 'title'>>
+    ): TransactionEntityInterface {
+        const rows = this.database
+            .update(TransactionEntityTable)
+            .set(input)
+            .where(eq(TransactionEntityTable.id, transactionId))
+            .returning()
+            .all();
+
+        return this.requireInserted(rows, 'transactions');
     }
 
     private expenseTransaction(
