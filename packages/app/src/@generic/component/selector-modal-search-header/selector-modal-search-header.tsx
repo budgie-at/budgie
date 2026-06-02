@@ -6,7 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
-import { SearchInput } from '../search-input/search-input';
+import { SelectorSearchRow } from '../selector-search-row/selector-search-row';
 
 interface Props {
     readonly search: string;
@@ -23,17 +23,11 @@ export const SelectorModalSearchHeader = (props: Props) => {
     const { t } = useLingui();
 
     const hasRightAction = isDefined(rightActionIcon) && isDefined(rightActionOnPress);
+    const resolvedPlaceholder = placeholder ?? t`Search...`;
 
     return (
         <View collapsable={false} className="absolute top-0 left-0 right-0 z-10 pt-4xl pb-lg px-xl bg-primary-reverse">
-            <View className="flex-row items-center gap-x-md">
-                <SearchInput
-                    value={search}
-                    onChangeText={onSearchChange}
-                    placeholder={placeholder ?? t`Search...`}
-                    testID={testID}
-                    containerClassName="flex-1"
-                />
+            <SelectorSearchRow search={search} onSearchChange={onSearchChange} placeholder={resolvedPlaceholder} testID={testID}>
                 {hasRightAction && (
                     <HapticPressable
                         onPress={rightActionOnPress}
@@ -43,7 +37,7 @@ export const SelectorModalSearchHeader = (props: Props) => {
                         <Icon icon={rightActionIcon} size={22} className="text-black" />
                     </HapticPressable>
                 )}
-            </View>
+            </SelectorSearchRow>
         </View>
     );
 };

@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { EmptyFn, isPositiveNumber } from '@rnw-community/shared';
 
 import { SearchInput } from '../../search-input/search-input';
 import { FilterSheetApply } from '../filter-sheet-apply/filter-sheet-apply';
@@ -17,6 +17,7 @@ interface Props {
     readonly onApply: EmptyFn;
     readonly applyLabel: string;
     readonly selectedCount: number;
+    readonly isLoading?: boolean;
     readonly searchTestID?: string;
     readonly selectAllTestID?: string;
     readonly deselectAllTestID?: string;
@@ -34,15 +35,19 @@ export const FilterSheetSearchableDrawer = (props: Props) => {
         onApply,
         applyLabel,
         selectedCount,
+        isLoading = false,
         searchTestID,
         selectAllTestID,
         deselectAllTestID,
         applyTestID
     } = props;
 
+    const showSearch = showControls || isLoading;
+    const bulkToggleDisabled = isLoading && !isPositiveNumber(selectedCount);
+
     return (
         <FilterSheetDrawer>
-            {showControls ? (
+            {showSearch ? (
                 <SearchInput
                     containerClassName="h-[44px]"
                     placeholder={searchPlaceholder}
@@ -52,8 +57,9 @@ export const FilterSheetSearchableDrawer = (props: Props) => {
                 />
             ) : null}
             <View className="flex-row items-center gap-x-md">
-                {showControls ? (
+                {showSearch ? (
                     <FilterSheetBulkToggle
+                        disabled={bulkToggleDisabled}
                         selectedCount={selectedCount}
                         onSelectAll={onSelectAll}
                         onDeselectAll={onDeselectAll}

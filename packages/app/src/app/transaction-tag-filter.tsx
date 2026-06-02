@@ -1,47 +1,48 @@
 /* jscpd:ignore-start */
-import { UserIconNameEnum } from '@budgie/contracts';
+import { TagEntityInterface } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { useRouter } from 'expo-router';
-import { View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
 
-import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
-import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
-import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer/filter-sheet-searchable-drawer';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
+import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
+import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
+import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
-import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
-import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
+import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
+import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
-import { TransactionTagFilterItem } from '../transaction/components/transaction-tag-filter/transaction-tag-filter-item';
 import { useTransactionTagFilterModal } from '../transaction/context/transaction-tag-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
+const NUM_COLUMNS = 3;
+const FOOTER_BOTTOM_SPACE = 176;
+const LIST_TOP_SPACE = 88;
+
+const prepareTagData = (tags: TagEntityInterface[] | null, selectedTagIds: number[]) => {
+    const filtered = isNotEmptyArray(tags) ? tags : [];
+
+    return padFlatListData(sortSelectedFirst(filtered, selectedTagIds), NUM_COLUMNS);
+};
+
 export default function TransactionTagFilterModal() {
     const { t } = useLingui();
-    const router = useRouter();
     const [, resolveTransactionTagFilter, currentParams] = useTransactionTagFilterModal();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);
     const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
-    const { tags, total } = useSearchTagsQuery(search);
+    const { tags, isLoading } = useSearchTagsQuery(search);
 
-    const items = tags ?? [];
-    const showControls = !(isEmptyArray(items) && isEmptyString(search));
-    const showEmptySearch = isNotEmptyString(search) && isPositiveNumber(total);
+    const selectedTagIds = localValue ?? [];
+    const data = prepareTagData(tags, selectedTagIds);
 
-    const handleSelect = (selected: number) => void setLocalValue(prev => toggleFilterSelection(prev, [selected]));
-    const handleSelectAll = () => void setLocalValue(() => items.map(item => item.id));
+    const handleSelect = (selected: number) => void setLocalValue(previous => toggleFilterSelection(previous, [selected]));
+    const handleSelectAll = () => void setLocalValue(() => (tags ?? []).map(tag => tag.id));
     const handleApply = () => void resolveTransactionTagFilter({ value: localValueRef.current });
-
-    const handleNavigateToCreate = () => {
-        resolveTransactionTagFilter(null, { skipBack: true });
-        router.dismiss();
-        router.push('/settings/tags');
-    };
+    const handleClose = () => void resolveTransactionTagFilter(null);
 
     const applyLabel = t({
         message: plural(selectedCount, {
@@ -53,47 +54,28 @@ export default function TransactionTagFilterModal() {
 
     return (
         <FilterSheet>
-            <FilterSheetList alignToBottom={isNotEmptyString(search)}>
-                {isNotEmptyArray(items) ? (
-                    <View className="gap-y-sm">
-                        {items.map(tag => (
-                            <TransactionTagFilterItem
-                                tag={tag}
-                                key={tag.id}
-                                onSelect={handleSelect}
-                                isSelected={localValue?.includes(tag.id) ?? false}
-                            />
-                        ))}
-                    </View>
-                ) : null}
+            <TransactionFilterSelectorHeader title={t`Filter tags`} onClose={handleClose} />
 
-                {isEmptyArray(items) && showEmptySearch ? (
-                    <SearchableFilterEmptyResult>
-                        <Trans>No tags found</Trans>
-                    </SearchableFilterEmptyResult>
-                ) : null}
+            <TagsSelectContent
+                data={data}
+                selectedTagIds={selectedTagIds}
+                isLoading={isLoading}
+                alignToBottom={isNotEmptyString(search)}
+                additionalBottomPadding={FOOTER_BOTTOM_SPACE}
+                topOffset={LIST_TOP_SPACE}
+                onSelect={handleSelect}
+            />
 
-                {isEmptyArray(items) && !showEmptySearch ? (
-                    <TransactionFilterEmptyState
-                        icon={UserIconNameEnum.Hash}
-                        title={t`No Tags Yet`}
-                        buttonText={t`Create Tags`}
-                        onCreate={handleNavigateToCreate}
-                        description={t`Create custom tags in Settings to label and filter your transactions`}
-                    />
-                ) : null}
-            </FilterSheetList>
-
-            <FilterSheetSearchableDrawer
-                showControls={showControls}
+            <TransactionFilterSelectorFooter
                 searchValue={search}
                 searchPlaceholder={t`Search tags...`}
                 onSearchChange={setSearch}
+                isLoading={isLoading}
+                selectedCount={selectedCount}
+                applyLabel={applyLabel}
                 onSelectAll={handleSelectAll}
                 onDeselectAll={handleDeselectAll}
                 onApply={handleApply}
-                applyLabel={applyLabel}
-                selectedCount={selectedCount}
                 searchTestID={TransactionFiltersSelector.TagSearchInput}
                 selectAllTestID={TransactionFiltersSelector.TagSelectAllButton}
                 deselectAllTestID={TransactionFiltersSelector.TagDeselectAllButton}
