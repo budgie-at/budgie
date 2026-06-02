@@ -1,8 +1,9 @@
-import { TextInput, View } from 'react-native';
+import { View } from 'react-native';
 import { KeyboardStickyView, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
 import Animated, { useAnimatedStyle, useDerivedValue } from 'react-native-reanimated';
 
 import { useThemeContext } from '../../../theme/context/theme.context';
+import { SearchInput } from '../search-input/search-input';
 import {
     PAGE_BACKGROUND_DARK,
     PAGE_BACKGROUND_LIGHT,
@@ -44,12 +45,12 @@ export const KeyboardStickySearchInput = ({ search, placeholder, onSearchChange,
                     style={keyboardBackgroundStyle}
                     pointerEvents="none"
                 />
-                <TextInput
+                <SearchInput
                     value={search}
                     onChangeText={onSearchChange}
                     placeholder={placeholder}
                     testID={testID}
-                    className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
+                    containerClassName="h-[44px]"
                 />
             </View>
         </KeyboardStickyView>

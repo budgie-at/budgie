@@ -2,7 +2,7 @@ import { View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { Input } from '../../input/input';
+import { SearchInput } from '../../search-input/search-input';
 import { FilterSheetApply } from '../filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetBulkToggle } from '../filter-sheet-bulk-toggle/filter-sheet-bulk-toggle';
 import { FilterSheetDrawer } from '../filter-sheet-drawer/filter-sheet-drawer';
@@ -43,9 +43,8 @@ export const FilterSheetSearchableDrawer = (props: Props) => {
     return (
         <FilterSheetDrawer>
             {showControls ? (
-                <Input
-                    size="md"
-                    className="bg-secondary-background rounded-5xl placeholder:text-secondary-foreground"
+                <SearchInput
+                    containerClassName="h-[44px]"
                     placeholder={searchPlaceholder}
                     value={searchValue}
                     onChangeText={onSearchChange}

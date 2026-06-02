@@ -17,14 +17,14 @@ const ANIMATION_DURATION = 180;
 const ENTERING = FadeIn.duration(ANIMATION_DURATION);
 const EXITING = FadeOut.duration(ANIMATION_DURATION);
 const LAYOUT = LinearTransition.duration(ANIMATION_DURATION);
-const TOGGLE_MIN_WIDTH = 84;
+const TOGGLE_WIDTH = 116;
 
 export const FilterSheetBulkToggle = (props: Props) => {
     const { selectedCount, onSelectAll, onDeselectAll, selectAllTestID, deselectAllTestID } = props;
     const hasSelection = isPositiveNumber(selectedCount);
     const handlePress = hasSelection ? onDeselectAll : onSelectAll;
     const testID = hasSelection ? deselectAllTestID : selectAllTestID;
-    const pressableStyle = { minWidth: TOGGLE_MIN_WIDTH };
+    const pressableStyle = { width: TOGGLE_WIDTH };
 
     return (
         <HapticPressable
