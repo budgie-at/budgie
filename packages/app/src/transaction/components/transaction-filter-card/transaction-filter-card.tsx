@@ -26,7 +26,7 @@ const cardVariants = cva('h-full items-center justify-center gap-y-lg rounded-3x
     }
 });
 
-const textVariants = cva('text-center text-lg font-semibold leading-tight', {
+const textVariants = cva('text-center text-md font-medium leading-tight', {
     variants: {
         isSelected: {
             true: 'text-primary-reverse',
