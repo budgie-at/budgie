@@ -101,7 +101,8 @@ jobs:
           APP_VARIANT: development
           USE_CCACHE: "1"
         run: |
-          eas update --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
+          yarn expo export --output-dir dist --dump-assetmap --platform ios --platform android
+          eas update --skip-bundler --input-dir dist --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
 
   build-ios-e2e-app:
     needs: [code-quality]

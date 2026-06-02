@@ -42,7 +42,7 @@ export const Page = (props: Props) => {
             </View>
 
             {withBlur ? (
-                <BlurGradient position="top">
+                <BlurGradient position="top" edgeOffset={top}>
                     <View className="absolute top-0 right-0 left-0" style={style}>
                         {header}
                     </View>
