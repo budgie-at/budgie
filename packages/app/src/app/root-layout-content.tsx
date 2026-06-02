@@ -11,11 +11,6 @@ import { enableFreeze, enableScreens } from 'react-native-screens';
 import Toast from 'react-native-toast-message';
 
 import migrations from '../../drizzle/migrations';
-import '../account/task/account-balance-incremental.task';
-import '../budget/task/budget-alert-monitor.task';
-import '../exchange-rate/task/exchange-rate-sync.task';
-import '../sync/task/monobank-sync.task';
-import '../sync/task/transfer-consolidation.task';
 import '../global.css';
 import { DevMenuController } from '../@generic/component/dev-menu-controller/dev-menu-controller';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
