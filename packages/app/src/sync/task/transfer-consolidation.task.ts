@@ -5,6 +5,7 @@ import * as TaskManager from 'expo-task-manager';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-task.constant';
+import { syncWorkloadService } from '../service/sync-workload.service';
 import { transferConsolidationService } from '../service/transfer-consolidation.service';
 
 const logger = getLogger('transferConsolidationTask');
@@ -12,7 +13,9 @@ const logger = getLogger('transferConsolidationTask');
 TaskManager.defineTask(TRANSFER_CONSOLIDATION_TASK, async () => {
     logger.log('enter');
     try {
-        const { found, consolidated } = await transferConsolidationService.consolidate();
+        const { found, consolidated } = await syncWorkloadService.run('background-transfer-consolidation', () =>
+            transferConsolidationService.consolidate()
+        );
         logger.log('done', { found, consolidated });
 
         return BackgroundTask.BackgroundTaskResult.Success;

@@ -6,13 +6,14 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { monobankSyncService } from '../service/monobank-sync.service';
+import { syncWorkloadService } from '../service/sync-workload.service';
 
 const logger = getLogger('monobankSyncTask');
 
 TaskManager.defineTask(MONOBANK_SYNC_TASK, async () => {
     logger.log('enter');
     try {
-        const result = await monobankSyncService.sync();
+        const result = await syncWorkloadService.run('background-monobank', () => monobankSyncService.sync());
         logger.log('done', { result });
 
         return result;
