@@ -58,17 +58,12 @@ jobs:
         with:
           use_oidc: true
 
-  eas-deploy:
-    name: EAS Deploy
+  eas-update-preview:
+    name: EAS Update Preview
     needs: code-quality
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
-      deployments: write
-      issues: write
-    outputs:
-      deployment_url: ${{ steps.deploy-web.outputs.deployment_url }}
     steps:
       - name: Check for EXPO_TOKEN
         run: |
@@ -97,7 +92,7 @@ jobs:
         run: yarn install
 
       - name: Build internal workspace packages
-        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync
+        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation
 
       - name: Create preview
         id: create-preview
@@ -106,92 +101,8 @@ jobs:
           APP_VARIANT: development
           USE_CCACHE: "1"
         run: |
-          eas update --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
-
-      - name: Build web app
-        working-directory: packages/app
-        run: npx expo export --platform web
-
-      - name: Deploy web app
-        id: deploy-web
-        working-directory: packages/app
-        run: |
-          result="$(eas deploy --non-interactive --json)"
-          echo "$result"
-
-          # Extract the URL from the deployment result
-          url=$(echo "$result" | jq -r '.url // empty')
-          if [ -n "$url" ]; then
-            echo "deployment_url=$url" >> $GITHUB_OUTPUT
-            echo "## 🚀 Web App Deployment" >> $GITHUB_STEP_SUMMARY
-            echo "Your PR has been deployed and is available at: [$url]($url)" \
-              >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: Publish deployment metadata
-        if: steps.deploy-web.outputs.deployment_url
-        uses: actions/github-script@v8
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            const deploymentUrl = '${{ steps.deploy-web.outputs.deployment_url }}';
-            const prNumber = context.payload.pull_request.number;
-
-            const deployment = await github.rest.repos.createDeployment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: context.payload.pull_request.head.sha,
-              environment: 'preview',
-              description: 'PR Preview Deployment',
-              auto_merge: false,
-              required_contexts: []
-            });
-
-            await github.rest.repos.createDeploymentStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              deployment_id: deployment.data.id,
-              state: 'success',
-              environment_url: deploymentUrl,
-              description: 'Web app deployed successfully'
-            });
-
-            try {
-              const comments = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber
-              });
-
-              const existingComment = comments.data.find(comment =>
-                comment.user.login === 'github-actions[bot]' &&
-                comment.body.includes('🚀 Preview Deployment')
-              );
-
-              const commentBody = '## 🚀 Preview Deployment\n\n' +
-                'Your PR has been deployed! You can test the changes at:\n\n' +
-                '🌐 **[Open Preview App](' + deploymentUrl + ')**\n\n' +
-                'This deployment will be automatically updated with new commits.';
-
-              if (existingComment) {
-                await github.rest.issues.updateComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  comment_id: existingComment.id,
-                  body: commentBody
-                });
-              } else {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: prNumber,
-                  body: commentBody
-                });
-              }
-            } catch (error) {
-              core.warning(`Could not update the PR preview comment: ${error.message}`);
-            }
-
+          yarn expo export --output-dir dist --dump-assetmap --platform ios --platform android
+          eas update --skip-bundler --input-dir dist --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
 
   build-ios-e2e-app:
     needs: [code-quality]
@@ -233,7 +144,7 @@ jobs:
         run: yarn install
 
       - name: Build internal workspace packages
-        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync
+        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
@@ -538,7 +449,7 @@ jobs:
 
   e2e-android:
     if: false
-    needs: [code-quality, eas-deploy]
+    needs: [code-quality, eas-update-preview]
     name: E2E Tests on Android
     runs-on: ubuntu-latest
     steps:

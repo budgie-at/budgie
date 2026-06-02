@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -16,6 +16,17 @@ export class TransactionTagsRepository {
             .select()
             .from(TransactionTagsEntityTable)
             .where(eq(TransactionTagsEntityTable.transactionId, transactionId));
+    }
+
+    async findByTransactionIds(transactionIds: readonly number[], tx?: DB): Promise<TransactionTagsEntityInterface[]> {
+        if (!isNotEmptyArray(transactionIds)) {
+            return [];
+        }
+
+        return await (tx ?? this.db)
+            .select()
+            .from(TransactionTagsEntityTable)
+            .where(inArray(TransactionTagsEntityTable.transactionId, transactionIds));
     }
 
     async bulkCreate(inputs: TransactionTagsCreateEntityInterface[], tx?: DB): Promise<TransactionTagsEntityInterface[]> {

@@ -1,48 +1,32 @@
-/* eslint-disable @rnw-community/no-complex-jsx-logic */
-
 'use client';
 
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Search, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState, useTransition } from 'react';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../ui/button';
 
+import type { ChangeEvent } from 'react';
+
 interface Props {
-    locale: string;
-    searchQuery: string;
-    currentPage: number;
+    readonly onSearch: (value: string) => void;
+    readonly searchQuery: string;
 }
 
-export const BlogSearch = ({ locale, searchQuery }: Props) => {
+export const BlogSearch = ({ onSearch, searchQuery }: Props) => {
     const { t } = useLingui();
-    const router = useRouter();
-    const [isPending, startTransition] = useTransition();
-    const [query, setQuery] = useState(searchQuery);
 
-    const handleSearch = (value: string) => {
-        setQuery(value);
-
-        startTransition(() => {
-            const params = new URLSearchParams();
-
-            if (value) {
-                params.set('q', value);
-            }
-            params.set('page', '1');
-
-            router.push(`/${locale}/blog?${params.toString()}`);
-        });
+    const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+        onSearch(event.target.value);
     };
 
     const handleClear = () => {
-        setQuery('');
-
-        startTransition(() => {
-            router.push(`/${locale}/blog`);
-        });
+        onSearch('');
     };
+
+    const hasQuery = isNotEmptyString(searchQuery);
+    const hasSearchQuery = isNotEmptyString(searchQuery);
 
     return (
         <div className="max-w-2xl mx-auto">
@@ -51,13 +35,13 @@ export const BlogSearch = ({ locale, searchQuery }: Props) => {
 
                 <input
                     className="w-full h-12 pl-12 pr-12 rounded-full border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                    onChange={e => void handleSearch(e.target.value)}
+                    onChange={handleSearch}
                     placeholder={t`Search articles...`}
                     type="text"
-                    value={query}
+                    value={searchQuery}
                 />
 
-                {query && (
+                {hasQuery && (
                     <Button
                         className="absolute right-2 top-1/2 -translate-y-1/2 size-8 rounded-full"
                         onClick={handleClear}
@@ -67,15 +51,9 @@ export const BlogSearch = ({ locale, searchQuery }: Props) => {
                         <X className="size-4" />
                     </Button>
                 )}
-
-                {isPending && (
-                    <div className="absolute right-12 top-1/2 -translate-y-1/2">
-                        <div className="animate-spin size-4 border-2 border-primary border-t-transparent rounded-full" />
-                    </div>
-                )}
             </div>
 
-            {searchQuery && (
+            {hasSearchQuery && (
                 <p className="text-sm text-muted-foreground mt-4">
                     <Trans>
                         Showing results for: <span className="font-semibold text-foreground">{searchQuery}</span>

@@ -3,6 +3,96 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
+
+### Bug Fixes
+
+- **app:** extend blur gradients through safe areas ([9fe0e4f](https://github.com/budgie-at/budgie/commit/9fe0e4fff3d56691710630fc062303d6a5222e1f))
+
+### Reverts
+
+- Revert "refactor(app): use expo ui single date picker" ([30378d9](https://github.com/budgie-at/budgie/commit/30378d91943f609a39e83ce00b923bf41f0ad499))
+
+# [5.31.0](https://github.com/budgie-at/budgie/compare/v5.30.1...v5.31.0) (2026-06-01)
+
+### Bug Fixes
+
+- address bank sync repair review ([a568946](https://github.com/budgie-at/budgie/commit/a5689460d52dfb3f24e35f120a89efa3eeb4ab00))
+- **app:** avoid locked database during bank sync repair ([4b87461](https://github.com/budgie-at/budgie/commit/4b87461e3e5f334460b564a7bf46e44566dc1e10))
+- **app:** clean up bank sync repair flow ([14e8be0](https://github.com/budgie-at/budgie/commit/14e8be0df5929977629bda6ffb97423b5125d42f))
+- **app:** harden bank sync repair preview ([214c0ef](https://github.com/budgie-at/budgie/commit/214c0ef8eb3dab9b6816713cb62303150c0f9b84))
+- **app:** repair bank sync duplicate consolidations ([c8be995](https://github.com/budgie-at/budgie/commit/c8be995d2362b8490c309f43cec02d8724a95ae9))
+- clear bank sync repair ci checks ([87553c9](https://github.com/budgie-at/budgie/commit/87553c9e9cb63e436f686c1ace6aa6c391e57e03))
+
+### Features
+
+- **app:** add bank sync repair interfaces ([19c898e](https://github.com/budgie-at/budgie/commit/19c898ecb094400939be7eaeda14897324ceb753))
+- **app:** add bank sync repair preview query ([44fd81b](https://github.com/budgie-at/budgie/commit/44fd81b9e1ccc738a5ac64e7271875adf4696f80))
+- **app:** add bank sync repair screen ([2c628cb](https://github.com/budgie-at/budgie/commit/2c628cb6df5c343b3eb070b2dd5e6908250fcdef))
+- **app:** add bank sync repair service ([50713f0](https://github.com/budgie-at/budgie/commit/50713f08dbf36d9d2041883bd3c0a0e545cce570))
+- **app:** add bank sync repair settings card ([248a4ec](https://github.com/budgie-at/budgie/commit/248a4ecf7c8a79a48d7c3779ef6b5b7983c99e42))
+- **app:** add bank sync repair translations ([d8f30ff](https://github.com/budgie-at/budgie/commit/d8f30ff4ef8298a88f52395cb64ccdee8f9971f9))
+
+## [5.30.1](https://github.com/budgie-at/budgie/compare/v5.30.0...v5.30.1) (2026-06-01)
+
+### Bug Fixes
+
+- **app:** prevent duplicate Erste PDF imports ([f98e2c9](https://github.com/budgie-at/budgie/commit/f98e2c97f302903a4e4b64b3e88fbc78794bc0d7))
+
+# [5.30.0](https://github.com/budgie-at/budgie/compare/v5.29.1...v5.30.0) (2026-05-31)
+
+### Bug Fixes
+
+- **app:** address rules search review ([f236d82](https://github.com/budgie-at/budgie/commit/f236d824effe28f0d766a1adbb55dc84d407231c))
+- **app:** hide weak rules search matches ([027d93f](https://github.com/budgie-at/budgie/commit/027d93fc501ebe64fdf32e5fd001680002724547))
+
+### Features
+
+- **app:** add rules page search ([1c61aaf](https://github.com/budgie-at/budgie/commit/1c61aafab37fd3b71a8788d2277a25a4373a4a05))
+
+## [5.29.1](https://github.com/budgie-at/budgie/compare/v5.29.0...v5.29.1) (2026-05-31)
+
+### Bug Fixes
+
+- **app:** allow inactive accounts in rules ([f7a6b29](https://github.com/budgie-at/budgie/commit/f7a6b29ad02bf7f1ce59e03829589938c099201b))
+
+# [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
+
+### Bug Fixes
+
+- **app:** allow selecting inactive accounts in transaction forms ([9c6b874](https://github.com/budgie-at/budgie/commit/9c6b8749754c3979c7f500dba80321b631446f4f))
+- **app:** dedupe tags when consolidating refunds and transfers ([#507](https://github.com/budgie-at/budgie/issues/507)) ([7ed5f63](https://github.com/budgie-at/budgie/commit/7ed5f63e43d5b0ebb3d10f94c48b2a8421206165))
+- **app:** fill Value entries confirm-button translations ([7a14c33](https://github.com/budgie-at/budgie/commit/7a14c33c8e9d5c4607eae2ebcb6d0906d134cfa9))
+- **app:** keep valuation status text on one line to stop row jumping ([105233f](https://github.com/budgie-at/budgie/commit/105233fda5c3616a1c4dd18861fb75c98cb092dc))
+- **app:** order consolidation sources along transfer chain ([#492](https://github.com/budgie-at/budgie/issues/492)) ([282b7ee](https://github.com/budgie-at/budgie/commit/282b7eec6ea079ce2fd67906876dd66311e1b240)), closes [#491](https://github.com/budgie-at/budgie/issues/491) [#491](https://github.com/budgie-at/budgie/issues/491) [#491](https://github.com/budgie-at/budgie/issues/491)
+- **app:** scope hidden-account picker to inactive accounts only ([e549802](https://github.com/budgie-at/budgie/commit/e549802ce862413cf894c91400ddc18d68723e2c))
+- **app:** show hidden account on existing transactions via sticky selection ([abef49d](https://github.com/budgie-at/budgie/commit/abef49d36ad02d93a8fe019fc6fc6e5f2953b3e1))
+- **app:** show historical base value in transaction list, not live rate ([9fe5599](https://github.com/budgie-at/budgie/commit/9fe5599d8b8344e5719bdee078b9677216a311d2))
+- **app:** use action-verb confirm label for historical valuation ([8b29794](https://github.com/budgie-at/budgie/commit/8b2979456538cd0bc4543e8eec8e627c84991c83))
+- **app:** value back-dated manual entries at the historical rate ([f6400a0](https://github.com/budgie-at/budgie/commit/f6400a00e327fa1968ab30b58be00e79e37eefae))
+- **app:** value pre-range transactions at the oldest historical rate ([#514](https://github.com/budgie-at/budgie/issues/514)) ([8eddce2](https://github.com/budgie-at/budgie/commit/8eddce2f16d7cf9232ac255a421228ab2f417368))
+- exclude deleted-account data from analytics and batch rule application ([#516](https://github.com/budgie-at/budgie/issues/516)) ([51a2f4e](https://github.com/budgie-at/budgie/commit/51a2f4e354fc3d5a8d54c2986e56c20a3ca1ade9)), closes [#509](https://github.com/budgie-at/budgie/issues/509)
+- keep monobank backward sync past empty 31-day windows ([#434](https://github.com/budgie-at/budgie/issues/434)) ([de436b0](https://github.com/budgie-at/budgie/commit/de436b0740aa733e87a366a88c65ca7e155541cd))
+
+### Features
+
+- add historical money data valuation ([998187d](https://github.com/budgie-at/budgie/commit/998187d3d21f1400e80947cbbf20c5931d62fe6c))
+- **app:** always allow convert-to-transfer rule action and show account on rule card ([#506](https://github.com/budgie-at/budgie/issues/506)) ([83dde51](https://github.com/budgie-at/budgie/commit/83dde5191466672c30c7ed588bb0291d9bd90cfd))
+- **app:** always show valuation progress bar and percent ([346214e](https://github.com/budgie-at/budgie/commit/346214e70fc806a271b4b89e768e164a742adff3))
+- auto-consolidate file-based bank imports (Privatbank/Erste) with Cash accounts ([#503](https://github.com/budgie-at/budgie/issues/503)) ([f758a75](https://github.com/budgie-at/budgie/commit/f758a75c628e2e548c9b3b8a96d7ee66fade6d69))
+- capture bank fees as a categorized split on sync and import ([#502](https://github.com/budgie-at/budgie/issues/502)) ([2a8a3f7](https://github.com/budgie-at/budgie/commit/2a8a3f7dd57202b0fe08a17d9aa3cad9a3bf29c2))
+- sync monobank jars alongside cards ([#512](https://github.com/budgie-at/budgie/issues/512)) ([045786c](https://github.com/budgie-at/budgie/commit/045786c40fc9dc5a3b95531a5b40563dad62af4a))
+
+### Performance Improvements
+
+- **app:** yield to UI between money-data valuation batches ([d48c2e5](https://github.com/budgie-at/budgie/commit/d48c2e5ab1f8bb22454ad5c1bbbc9b270ce0680e))
+
+# [5.28.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.28.0) (2026-05-30)
+
+### Features
+
+- **app:** always allow convert-to-transfer rule action and show account on rule card ([#506](https://github.com/budgie-at/budgie/issues/506)) ([83dde51](https://github.com/budgie-at/budgie/commit/83dde5191466672c30c7ed588bb0291d9bd90cfd))
+
 # [5.27.0](https://github.com/budgie-at/budgie/compare/v5.26.0...v5.27.0) (2026-05-29)
 
 ### Bug Fixes

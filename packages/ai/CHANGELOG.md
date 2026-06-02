@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.31.0](https://github.com/budgie-at/budgie/compare/v5.30.1...v5.31.0) (2026-06-01)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.29.1](https://github.com/budgie-at/budgie/compare/v5.29.0...v5.29.1) (2026-05-31)
+
+### Bug Fixes
+
+- **ai:** deduplicate generated keywords ([f8a2b31](https://github.com/budgie-at/budgie/commit/f8a2b310ca748a19af3f69a364b216e17f36da82))
+
+# [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.28.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.28.0) (2026-05-30)
+
+**Note:** Version bump only for package @budgie/ai
+
 # [5.27.0](https://github.com/budgie-at/budgie/compare/v5.26.0...v5.27.0) (2026-05-29)
 
 **Note:** Version bump only for package @budgie/ai
