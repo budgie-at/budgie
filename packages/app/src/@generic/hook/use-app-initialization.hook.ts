@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { authService } from '../../auth/service/auth.service';
 import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
@@ -19,20 +20,24 @@ const runInitializationTask = (task: Promise<unknown>): void => {
     void task.catch(handleInitializationError);
 };
 
+const registerBackgroundTasks = async (): Promise<void> => {
+    await authService.ensurePinBackgroundAccessibility();
+    await exchangeRatesSyncService.registerBackgroundTask();
+    await accountBalanceIncrementalService.registerBackgroundTask();
+    await transferConsolidationService.registerBackgroundTask();
+    await monobankSyncService.registerBackgroundTask();
+};
+
 export const useAppInitialization = (success: boolean) => {
     useEffect(() => {
         if (success) {
             try {
                 runInitializationTask(exchangeRatesSyncService.sync());
-                runInitializationTask(exchangeRatesSyncService.registerBackgroundTask());
 
                 runInitializationTask(accountBalanceIncrementalService.updateAllBalances(false));
-                runInitializationTask(accountBalanceIncrementalService.registerBackgroundTask());
 
                 runInitializationTask(monobankSyncService.sync());
-                runInitializationTask(monobankSyncService.registerBackgroundTask());
-
-                runInitializationTask(transferConsolidationService.registerBackgroundTask());
+                runInitializationTask(registerBackgroundTasks());
             } catch (error: unknown) {
                 handleInitializationError(error);
             } finally {
