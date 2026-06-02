@@ -95,7 +95,7 @@ jobs:
         run: yarn install
 
       - name: Build internal workspace packages
-        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync
+        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation
 
       - name: Publish update
         working-directory: packages/app
