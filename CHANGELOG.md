@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.31.0](https://github.com/budgie-at/budgie/compare/v5.30.1...v5.31.0) (2026-06-01)
+
+### Bug Fixes
+
+- address bank sync repair review ([a568946](https://github.com/budgie-at/budgie/commit/a5689460d52dfb3f24e35f120a89efa3eeb4ab00))
+- **ai:** deduplicate generated keywords ([2ed0f93](https://github.com/budgie-at/budgie/commit/2ed0f93b61cc890a86b32974d14afa5655e2435a))
+- align test kit db helpers ([802e3a8](https://github.com/budgie-at/budgie/commit/802e3a8b13f510c9ff28e4768838332b27140cf0))
+- **app:** avoid locked database during bank sync repair ([4b87461](https://github.com/budgie-at/budgie/commit/4b87461e3e5f334460b564a7bf46e44566dc1e10))
+- **app:** clean up bank sync repair flow ([14e8be0](https://github.com/budgie-at/budgie/commit/14e8be0df5929977629bda6ffb97423b5125d42f))
+- **app:** harden bank sync repair preview ([214c0ef](https://github.com/budgie-at/budgie/commit/214c0ef8eb3dab9b6816713cb62303150c0f9b84))
+- **app:** repair bank sync duplicate consolidations ([c8be995](https://github.com/budgie-at/budgie/commit/c8be995d2362b8490c309f43cec02d8724a95ae9))
+- build consolidation in update workflows ([fa55cd9](https://github.com/budgie-at/budgie/commit/fa55cd9b404c34d44fa72dac68b88eade94501d8))
+- clear bank sync repair ci checks ([87553c9](https://github.com/budgie-at/budgie/commit/87553c9e9cb63e436f686c1ace6aa6c391e57e03))
+- **landing:** add blog index social image and correct OG image dimensions ([4f85354](https://github.com/budgie-at/budgie/commit/4f85354ebe9447ed5f4f43effedc9a7d2b4f5e45))
+- **landing:** align feature page lingui literals ([a033601](https://github.com/budgie-at/budgie/commit/a033601d1cba78dab4c57bb74e86982d6ec22442))
+- **landing:** deep-link newer blog articles from related features ([b8cd070](https://github.com/budgie-at/budgie/commit/b8cd070509f8bebe42ea48aee69c55672e276423))
+- **landing:** default no-preference locale to /en and serve root .txt files ([dad4e7b](https://github.com/budgie-at/budgie/commit/dad4e7b52307ceabbcdcd94f8c694eab0c28993a))
+- **landing:** keep api routes out of locale proxy ([d7cb581](https://github.com/budgie-at/budgie/commit/d7cb5818c4cb3617dde4a86701a55fed48864f80))
+- **landing:** let legal pages pass link equity with noindex, follow ([e0d1236](https://github.com/budgie-at/budgie/commit/e0d1236bcba9e0dbb0bd764b4451779343ec946b))
+- **landing:** match safari overscroll background ([2f36b06](https://github.com/budgie-at/budgie/commit/2f36b065e092efa07c42c68425d89759e64b2665))
+- **landing:** remove duplicate brand suffix from feature and pillar titles ([a17f0ab](https://github.com/budgie-at/budgie/commit/a17f0ab31871807373d6e90553ac04c461c18884))
+- repair test kit write execution ([6d12410](https://github.com/budgie-at/budgie/commit/6d12410345a45fe2e257aeca3bb5c6511774e8f7))
+
+### Features
+
+- add consolidation package shell ([66e797e](https://github.com/budgie-at/budgie/commit/66e797e0c593d2c902910b6cf32637e8bd4aeb11))
+- **app:** add bank sync repair interfaces ([19c898e](https://github.com/budgie-at/budgie/commit/19c898ecb094400939be7eaeda14897324ceb753))
+- **app:** add bank sync repair preview query ([44fd81b](https://github.com/budgie-at/budgie/commit/44fd81b9e1ccc738a5ac64e7271875adf4696f80))
+- **app:** add bank sync repair screen ([2c628cb](https://github.com/budgie-at/budgie/commit/2c628cb6df5c343b3eb070b2dd5e6908250fcdef))
+- **app:** add bank sync repair service ([50713f0](https://github.com/budgie-at/budgie/commit/50713f08dbf36d9d2041883bd3c0a0e545cce570))
+- **app:** add bank sync repair settings card ([248a4ec](https://github.com/budgie-at/budgie/commit/248a4ecf7c8a79a48d7c3779ef6b5b7983c99e42))
+- **app:** add bank sync repair translations ([d8f30ff](https://github.com/budgie-at/budgie/commit/d8f30ff4ef8298a88f52395cb64ccdee8f9971f9))
+- **landing:** add ai.txt AI crawler policy ([316c43b](https://github.com/budgie-at/budgie/commit/316c43bdabf099319345a5bb25a5cbfed06ad73c))
+- **landing:** add IndexNow submission with merge-to-main GitHub Action ([0cfe693](https://github.com/budgie-at/budgie/commit/0cfe6935b247a7965cb0668533344dc7eb552b0d))
+- **landing:** add llms.txt, llms-full.txt, and AI crawler robots rules ([4d2b437](https://github.com/budgie-at/budgie/commit/4d2b437c09ded635c4dacf3e3e821923fcbd455b))
+- **landing:** enrich structured data for SEO and AI grounding ([98ab38e](https://github.com/budgie-at/budgie/commit/98ab38e6317889df570264b7b484eeaf54ccb642))
+
 ## [5.30.1](https://github.com/budgie-at/budgie/compare/v5.30.0...v5.30.1) (2026-06-01)
 
 ### Bug Fixes

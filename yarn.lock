@@ -1051,6 +1051,7 @@ __metadata:
     "@babel/core": "npm:^7.29.7"
     "@budgie/ai": "workspace:^"
     "@budgie/bank-sync": "workspace:*"
+    "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
     "@expo/fingerprint": "npm:~0.19.3"
@@ -1145,7 +1146,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie-at/bank-sync-tests@workspace:tests/bank-sync-tests"
   dependencies:
+    "@budgie-at/test-kit": "workspace:*"
     "@budgie/bank-sync": "workspace:*"
+    "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@rnw-community/shared": "npm:^2.2.0"
     "@types/better-sqlite3": "npm:^7.6.13"
@@ -1153,6 +1156,20 @@ __metadata:
     better-sqlite3: "npm:^12.10.0"
     drizzle-orm: "npm:^0.45.2"
     msw: "npm:^2.14.6"
+    typescript: "npm:^5.9.3"
+    vitest: "npm:^4.1.7"
+  languageName: unknown
+  linkType: soft
+
+"@budgie-at/consolidation-tests@workspace:tests/consolidation-tests":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/consolidation-tests@workspace:tests/consolidation-tests"
+  dependencies:
+    "@budgie-at/test-kit": "workspace:*"
+    "@budgie/consolidation": "workspace:*"
+    "@budgie/contracts": "workspace:^"
+    "@rnw-community/shared": "npm:^2.2.0"
+    "@types/node": "npm:^24.5.2"
     typescript: "npm:^5.9.3"
     vitest: "npm:^4.1.7"
   languageName: unknown
@@ -1234,6 +1251,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@budgie-at/test-kit@workspace:*, @budgie-at/test-kit@workspace:tests/test-kit":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/test-kit@workspace:tests/test-kit"
+  dependencies:
+    "@budgie/contracts": "workspace:^"
+    "@rnw-community/shared": "npm:^2.2.0"
+    "@types/better-sqlite3": "npm:^7.6.13"
+    "@types/node": "npm:^24.5.2"
+    better-sqlite3: "npm:^12.10.0"
+    drizzle-orm: "npm:^0.45.2"
+    typescript: "npm:^5.9.3"
+  languageName: unknown
+  linkType: soft
+
 "@budgie/ai@workspace:^, @budgie/ai@workspace:packages/ai":
   version: 0.0.0-use.local
   resolution: "@budgie/ai@workspace:packages/ai"
@@ -1254,6 +1285,16 @@ __metadata:
     date-fns: "npm:^4.3.0"
     ky: "npm:^2.0.2"
     xlsx: "npm:^0.18.5"
+  languageName: unknown
+  linkType: soft
+
+"@budgie/consolidation@workspace:*, @budgie/consolidation@workspace:packages/consolidation":
+  version: 0.0.0-use.local
+  resolution: "@budgie/consolidation@workspace:packages/consolidation"
+  dependencies:
+    "@budgie/contracts": "workspace:^"
+    "@budgie/logger": "workspace:*"
+    "@rnw-community/shared": "npm:^2.2.0"
   languageName: unknown
   linkType: soft
 

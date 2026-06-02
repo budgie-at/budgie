@@ -1,0 +1,32 @@
+{
+    "name": "@budgie/consolidation",
+    "version": "5.31.0",
+    "private": true,
+    "description": "Consolidation domain services",
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "types": "./dist/esm/index.d.ts",
+            "import": "./dist/esm/index.js",
+            "react-native": "./dist/esm/index.js",
+            "default": "./dist/esm/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "main": "./dist/esm/index.js",
+    "react-native": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "scripts": {
+        "build": "run -T tsc -p tsconfig.json",
+        "build:watch": "yarn build --watch",
+        "clear": "yarn run -T rimraf dist node_modules/.cache .turbo",
+        "format": "run -T prettier --write src",
+        "lint": "run -T eslint --fix src",
+        "ts": "run -T tsc -p ."
+    },
+    "dependencies": {
+        "@budgie/contracts": "workspace:^",
+        "@budgie/logger": "workspace:*",
+        "@rnw-community/shared": "^2.2.0"
+    }
+}
