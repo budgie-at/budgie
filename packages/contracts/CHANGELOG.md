@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.31.0](https://github.com/budgie-at/budgie/compare/v5.30.1...v5.31.0) (2026-06-01)
+
+### Bug Fixes
+
+- address bank sync repair review ([a568946](https://github.com/budgie-at/budgie/commit/a5689460d52dfb3f24e35f120a89efa3eeb4ab00))
+- **app:** repair bank sync duplicate consolidations ([c8be995](https://github.com/budgie-at/budgie/commit/c8be995d2362b8490c309f43cec02d8724a95ae9))
+
 # [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
 
 ### Bug Fixes

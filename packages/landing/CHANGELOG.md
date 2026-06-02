@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.31.0](https://github.com/budgie-at/budgie/compare/v5.30.1...v5.31.0) (2026-06-01)
+
+### Bug Fixes
+
+- **landing:** add blog index social image and correct OG image dimensions ([4f85354](https://github.com/budgie-at/budgie/commit/4f85354ebe9447ed5f4f43effedc9a7d2b4f5e45))
+- **landing:** align feature page lingui literals ([a033601](https://github.com/budgie-at/budgie/commit/a033601d1cba78dab4c57bb74e86982d6ec22442))
+- **landing:** deep-link newer blog articles from related features ([b8cd070](https://github.com/budgie-at/budgie/commit/b8cd070509f8bebe42ea48aee69c55672e276423))
+- **landing:** default no-preference locale to /en and serve root .txt files ([dad4e7b](https://github.com/budgie-at/budgie/commit/dad4e7b52307ceabbcdcd94f8c694eab0c28993a))
+- **landing:** keep api routes out of locale proxy ([d7cb581](https://github.com/budgie-at/budgie/commit/d7cb5818c4cb3617dde4a86701a55fed48864f80))
+- **landing:** let legal pages pass link equity with noindex, follow ([e0d1236](https://github.com/budgie-at/budgie/commit/e0d1236bcba9e0dbb0bd764b4451779343ec946b))
+- **landing:** match safari overscroll background ([2f36b06](https://github.com/budgie-at/budgie/commit/2f36b065e092efa07c42c68425d89759e64b2665))
+- **landing:** remove duplicate brand suffix from feature and pillar titles ([a17f0ab](https://github.com/budgie-at/budgie/commit/a17f0ab31871807373d6e90553ac04c461c18884))
+
+### Features
+
+- **landing:** add ai.txt AI crawler policy ([316c43b](https://github.com/budgie-at/budgie/commit/316c43bdabf099319345a5bb25a5cbfed06ad73c))
+- **landing:** add IndexNow submission with merge-to-main GitHub Action ([0cfe693](https://github.com/budgie-at/budgie/commit/0cfe6935b247a7965cb0668533344dc7eb552b0d))
+- **landing:** add llms.txt, llms-full.txt, and AI crawler robots rules ([4d2b437](https://github.com/budgie-at/budgie/commit/4d2b437c09ded635c4dacf3e3e821923fcbd455b))
+- **landing:** enrich structured data for SEO and AI grounding ([98ab38e](https://github.com/budgie-at/budgie/commit/98ab38e6317889df570264b7b484eeaf54ccb642))
+
 # [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
 
 ### Features
