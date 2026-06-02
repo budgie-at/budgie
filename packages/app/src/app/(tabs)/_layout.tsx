@@ -42,7 +42,7 @@ export default function TabsLayout() {
                     <TabTrigger name="settings" href="/settings" />
                 </TabList>
 
-                <BlurGradient position="bottom">
+                <BlurGradient position="bottom" edgeOffset={bottom}>
                     <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none">
                         <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
                             <TabButtons />
