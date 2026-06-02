@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { Code2, Fingerprint, Github, Shield, Smartphone, Star, WifiOff, Zap } from 'lucide-react';
+import { Code2, Fingerprint, GitBranch, Shield, Smartphone, Star, WifiOff, Zap } from 'lucide-react';
 import Link from 'next/link';
 
 import { Badge } from '../../../ui/badge';
@@ -71,7 +71,7 @@ export const HeroSectionHeader = () => (
             <Button asChild className="rounded-full h-12 px-8 text-base bg-transparent hidden md:flex" size="lg" variant="outline">
                 {/* eslint-disable-next-line lingui/no-unlocalized-strings */}
                 <Link href="https://github.com/budgie-at/budgie" rel="noopener noreferrer" target="_blank">
-                    <Github className="mr-2 size-4" />
+                    <GitBranch className="mr-2 size-4" />
                     <Trans>View Source Code</Trans>
                 </Link>
             </Button>

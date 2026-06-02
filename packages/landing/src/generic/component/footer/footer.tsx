@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-max-depth */
 
 import { Trans } from '@lingui/react/macro';
-import { Github } from 'lucide-react';
+import { GitBranch } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
@@ -39,7 +39,7 @@ export const Footer = ({ lang }: Props) => {
                                 className="text-muted-foreground hover:text-foreground transition-colors"
                                 href="https://github.com/budgie-at/budgie"
                             >
-                                <Github className="size-5" />
+                                <GitBranch className="size-5" />
 
                                 <span className="sr-only">
                                     <Trans>GitHub</Trans>
