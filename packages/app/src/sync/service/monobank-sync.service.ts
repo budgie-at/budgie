@@ -308,7 +308,7 @@ class AppMonobankSyncService {
 
     async registerBackgroundTask(): Promise<void> {
         if (await TaskManager.isTaskRegisteredAsync(MONOBANK_SYNC_TASK)) {
-            return;
+            await BackgroundTask.unregisterTaskAsync(MONOBANK_SYNC_TASK);
         }
         await BackgroundTask.registerTaskAsync(MONOBANK_SYNC_TASK, { minimumInterval: FIFTEEN_MINUTES_IN_SECONDS });
     }
