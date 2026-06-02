@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
+
+### Bug Fixes
+
+- **app:** extend blur gradients through safe areas ([9fe0e4f](https://github.com/budgie-at/budgie/commit/9fe0e4fff3d56691710630fc062303d6a5222e1f))
+- avoid sourcemap export for preview updates ([73ea3e3](https://github.com/budgie-at/budgie/commit/73ea3e372b3e18b521576a87ee52ebb3878bbf52))
+
+### Reverts
+
+- Revert "refactor(app): use expo ui single date picker" ([30378d9](https://github.com/budgie-at/budgie/commit/30378d91943f609a39e83ce00b923bf41f0ad499))
+
 # [5.31.0](https://github.com/budgie-at/budgie/compare/v5.30.1...v5.31.0) (2026-06-01)
 
 ### Bug Fixes
