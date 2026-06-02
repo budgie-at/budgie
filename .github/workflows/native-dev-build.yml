@@ -28,7 +28,7 @@ jobs:
       - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
         with:
-          eas-version: latest
+          eas-version: 20.0.0
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: ASC API Key file creation
