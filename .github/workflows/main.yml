@@ -101,4 +101,5 @@ jobs:
         working-directory: packages/app
         run: |
           COMMIT_MSG=$(git log -1 --pretty=%s)
-          eas update --channel production --auto --message "${COMMIT_MSG}"
+          yarn expo export --output-dir dist --dump-assetmap --platform ios --platform android
+          eas update --skip-bundler --input-dir dist --channel production --auto --message "${COMMIT_MSG}"
