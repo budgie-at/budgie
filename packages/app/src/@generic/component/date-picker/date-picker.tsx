@@ -31,14 +31,27 @@ const defaultComponents: CalendarComponents = {
 };
 
 const DAY_PILL_RADIUS = 9999;
+const DAY_PILL_SIZE = 40;
 const TODAY_BORDER_WIDTH = 1;
 
 const buildStyles = (isDark: boolean) => {
     const primary = isDark ? '#ffffff' : '#000000';
     const rangeFill = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
 
-    const pill: ViewStyle = { backgroundColor: primary, borderRadius: DAY_PILL_RADIUS };
-    const todayRing: ViewStyle = { borderRadius: DAY_PILL_RADIUS, borderWidth: TODAY_BORDER_WIDTH, borderColor: primary };
+    const compactCircle: ViewStyle = {
+        alignSelf: 'center',
+        flex: 0,
+        height: DAY_PILL_SIZE,
+        marginVertical: 'auto',
+        width: DAY_PILL_SIZE
+    };
+    const pill: ViewStyle = { ...compactCircle, backgroundColor: primary, borderRadius: DAY_PILL_RADIUS };
+    const todayRing: ViewStyle = {
+        ...compactCircle,
+        borderRadius: DAY_PILL_RADIUS,
+        borderWidth: TODAY_BORDER_WIDTH,
+        borderColor: primary
+    };
     const rangeFillStyle: ViewStyle = { backgroundColor: rangeFill };
     const rangeFillStart: ViewStyle = {
         backgroundColor: rangeFill,
