@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -19,7 +18,6 @@ interface Props {
     readonly onDeselectAll: EmptyFn;
     readonly onApply: EmptyFn;
     readonly isLoading?: boolean;
-    readonly searchAction?: ReactNode;
     readonly searchTestID?: string;
     readonly selectAllTestID?: string;
     readonly deselectAllTestID?: string;
@@ -39,7 +37,6 @@ export const TransactionFilterSelectorFooter = (props: Props) => {
         onDeselectAll,
         onApply,
         isLoading = false,
-        searchAction,
         searchTestID,
         selectAllTestID,
         deselectAllTestID,
@@ -48,8 +45,8 @@ export const TransactionFilterSelectorFooter = (props: Props) => {
     const { bottom } = useSafeAreaInsets();
     const { backgroundColor } = useFormsheetListStyles();
 
-    const canSelectAll = !isLoading;
-    const bulkToggleDisabled = !canSelectAll && !isPositiveNumber(selectedCount);
+    const hasSelection = isPositiveNumber(selectedCount);
+    const bulkToggleDisabled = isLoading && !hasSelection;
     const style = {
         backgroundColor,
         paddingBottom: Math.max(bottom, MIN_BOTTOM_SPACING)
@@ -57,9 +54,7 @@ export const TransactionFilterSelectorFooter = (props: Props) => {
 
     return (
         <View className="absolute inset-x-0 bottom-0 gap-y-md border-t border-t-secondary-corner px-xl pt-lg" style={style}>
-            <SelectorSearchRow search={searchValue} onSearchChange={onSearchChange} placeholder={searchPlaceholder} testID={searchTestID}>
-                {searchAction}
-            </SelectorSearchRow>
+            <SelectorSearchRow search={searchValue} onSearchChange={onSearchChange} placeholder={searchPlaceholder} testID={searchTestID} />
             <View className="flex-row items-center gap-x-md">
                 <FilterSheetBulkToggle
                     disabled={bulkToggleDisabled}

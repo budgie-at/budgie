@@ -14,7 +14,6 @@ import { useTransactionCategoryFilterModal } from '../transaction/context/transa
 import { prepareTransactionFilterGridData } from '../transaction/utils/prepare-transaction-filter-grid-data.util';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-const NUM_COLUMNS = 3;
 const FOOTER_BOTTOM_SPACE = 176;
 const LIST_TOP_SPACE = 88;
 
@@ -28,7 +27,7 @@ export default function TransactionCategoryFilterModal() {
     const { categories, isLoading } = useSearchCategoriesQuery(search, true);
 
     const selectedCategoryIds = localValue ?? [];
-    const data = prepareTransactionFilterGridData(categories, selectedCategoryIds, NUM_COLUMNS);
+    const data = prepareTransactionFilterGridData(categories, selectedCategoryIds);
 
     const handleSelect = (selected: number) => void setLocalValue(previous => toggleFilterSelection(previous, [selected]));
     const handleSelectAll = () => void setLocalValue(() => (categories ?? []).map(category => category.id));
@@ -49,7 +48,7 @@ export default function TransactionCategoryFilterModal() {
 
             <CategorySelectContent
                 data={data}
-                variant="primary"
+                variant="cta"
                 initialCategoryId={null}
                 selectedCategoryIds={selectedCategoryIds}
                 isLoading={isLoading}

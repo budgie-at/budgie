@@ -14,7 +14,6 @@ import { useTransactionTagFilterModal } from '../transaction/context/transaction
 import { prepareTransactionFilterGridData } from '../transaction/utils/prepare-transaction-filter-grid-data.util';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-const NUM_COLUMNS = 3;
 const FOOTER_BOTTOM_SPACE = 176;
 const LIST_TOP_SPACE = 88;
 
@@ -28,7 +27,7 @@ export default function TransactionTagFilterModal() {
     const { tags, isLoading } = useSearchTagsQuery(search);
 
     const selectedTagIds = localValue ?? [];
-    const data = prepareTransactionFilterGridData(tags, selectedTagIds, NUM_COLUMNS);
+    const data = prepareTransactionFilterGridData(tags, selectedTagIds);
 
     const handleSelect = (selected: number) => void setLocalValue(previous => toggleFilterSelection(previous, [selected]));
     const handleSelectAll = () => void setLocalValue(() => (tags ?? []).map(tag => tag.id));

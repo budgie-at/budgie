@@ -6,6 +6,8 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { useThemeContext } from '../../../theme/context/theme.context';
+import { dark, light } from '../../../theme/provider/theme.provider';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
@@ -33,11 +35,13 @@ export const SearchInput = (props: Props) => {
         ...rest
     } = props;
     const { t } = useLingui();
+    const { isDarkColorSchema } = useThemeContext();
 
     const showClear = isNotEmptyString(value);
+    const theme = isDarkColorSchema ? dark : light;
     const resolvedAutoCapitalize = autoCapitalize ?? 'none';
     const resolvedAutoCorrect = autoCorrect ?? false;
-    const resolvedPlaceholderTextColor = placeholderTextColor ?? 'rgba(128, 128, 128, 0.6)';
+    const resolvedPlaceholderTextColor = placeholderTextColor ?? theme['--color-secondary-foreground'];
 
     const handleClear = () => {
         onChangeText('');
