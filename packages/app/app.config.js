@@ -1,5 +1,4 @@
-import rootPkg from './package.json';
-
+const NATIVE_APP_VERSION = '5.28.0';
 const APP_VARIANT = process.env.APP_VARIANT;
 const IS_DEV = APP_VARIANT === 'development';
 const IS_E2E = APP_VARIANT === 'e2e';
@@ -48,7 +47,7 @@ export default ({ config }) => ({
     name: getAppName(),
     slug: 'budgie',
     scheme: 'budgie',
-    version: rootPkg.version,
+    version: NATIVE_APP_VERSION,
     orientation: 'portrait',
     userInterfaceStyle: 'automatic',
     assetBundlePatterns: ['**/*'],
