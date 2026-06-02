@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.32.0](https://github.com/budgie-at/budgie/compare/v5.31.3...v5.32.0) (2026-06-02)
+
+### Features
+
+- **app:** improve transaction filter modals ([#531](https://github.com/budgie-at/budgie/issues/531)) ([49827dc](https://github.com/budgie-at/budgie/commit/49827dc6bbac014c7c912c5d4aa17d370a8cd984))
+
 ## [5.31.3](https://github.com/budgie-at/budgie/compare/v5.31.2...v5.31.3) (2026-06-02)
 
 ### Bug Fixes
