@@ -84,7 +84,7 @@ export const createTestVitestConfig = (rootDir: string, setupFile: string, inclu
             setupFiles: [here(setupFile)],
             include: ['src/scenarios/**/*.test.ts'],
             pool: 'forks',
-            poolOptions: { forks: { singleFork: true } }
+            fileParallelism: false
         }
     };
 };

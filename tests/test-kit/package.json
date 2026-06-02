@@ -19,14 +19,14 @@
         "ts": "tsc --noEmit"
     },
     "dependencies": {
-        "@budgie/contracts": "workspace:*",
-        "@rnw-community/shared": "^2.0.0",
-        "better-sqlite3": "^11.7.0",
+        "@budgie/contracts": "workspace:^",
+        "@rnw-community/shared": "^2.2.0",
+        "better-sqlite3": "^12.10.0",
         "drizzle-orm": "^0.45.2"
     },
     "devDependencies": {
-        "@types/better-sqlite3": "^7.6.12",
-        "@types/node": "^22.0.0",
+        "@types/better-sqlite3": "^7.6.13",
+        "@types/node": "^24.5.2",
         "typescript": "^5.9.3"
     }
 }

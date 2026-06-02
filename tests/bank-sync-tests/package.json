@@ -13,16 +13,16 @@
         "@budgie-at/test-kit": "workspace:*",
         "@budgie/bank-sync": "workspace:*",
         "@budgie/consolidation": "workspace:*",
-        "@budgie/contracts": "workspace:*",
-        "@rnw-community/shared": "^2.0.0",
-        "better-sqlite3": "^11.7.0",
+        "@budgie/contracts": "workspace:^",
+        "@rnw-community/shared": "^2.2.0",
+        "better-sqlite3": "^12.10.0",
         "drizzle-orm": "^0.45.2",
-        "msw": "^2.7.0",
-        "vitest": "^3.0.0"
+        "msw": "^2.14.6",
+        "vitest": "^4.1.7"
     },
     "devDependencies": {
-        "@types/better-sqlite3": "^7.6.12",
-        "@types/node": "^22.0.0",
+        "@types/better-sqlite3": "^7.6.13",
+        "@types/node": "^24.5.2",
         "typescript": "^5.9.3"
     }
 }
