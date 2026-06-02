@@ -61,6 +61,6 @@ export default defineConfig({
         setupFiles: [here('src/harness/scenario/setup.ts')],
         include: ['src/scenarios/**/*.test.ts'],
         pool: 'forks',
-        poolOptions: { forks: { singleFork: true } }
+        fileParallelism: false
     }
 });
