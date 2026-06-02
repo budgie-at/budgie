@@ -13,7 +13,10 @@ import { TransactionFiltersSelector } from '../transaction/components/transactio
 import { TransactionTypeFilterItem } from '../transaction/components/transaction-type-filter/transaction-type-filter-item';
 import { useTransactionTypeFilterModal } from '../transaction/context/transaction-type-filter-modal.context';
 
-const TRANSACTION_TYPES = [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME, TransactionTypeEnum.TRANSFER, TransactionTypeEnum.DEBT];
+const TRANSACTION_TYPE_ROWS = [
+    [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME],
+    [TransactionTypeEnum.TRANSFER, TransactionTypeEnum.DEBT]
+];
 
 export default function TransactionTypeFilterModal() {
     const { t } = useLingui();
@@ -53,10 +56,18 @@ export default function TransactionTypeFilterModal() {
 
     return (
         <FilterSheet>
-            <View className="-mx-sm flex-1 flex-row flex-wrap content-start gap-y-md px-md pt-2xl">
-                {TRANSACTION_TYPES.map(type => (
-                    <View className="w-1/2 px-sm" key={type}>
-                        <TransactionTypeFilterItem type={type} onSelect={handleSelect} isSelected={localValue?.includes(type) ?? false} />
+            <View className="flex-1 gap-y-md px-md pt-lg pb-md">
+                {TRANSACTION_TYPE_ROWS.map(row => (
+                    <View className="flex-1 flex-row gap-x-md" key={row.join('-')}>
+                        {row.map(type => (
+                            <View className="flex-1" key={type}>
+                                <TransactionTypeFilterItem
+                                    type={type}
+                                    onSelect={handleSelect}
+                                    isSelected={localValue?.includes(type) ?? false}
+                                />
+                            </View>
+                        ))}
                     </View>
                 ))}
             </View>
