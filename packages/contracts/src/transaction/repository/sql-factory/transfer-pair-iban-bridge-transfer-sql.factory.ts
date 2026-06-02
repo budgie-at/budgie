@@ -33,6 +33,7 @@ export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = `
                 INNER JOIN accounts bridge_account ON
                     bridge_account.id = expense_entry.account_id
                     AND bridge_account.deleted_at IS NULL
+                    AND bridge_account.is_active = 1
                 INNER JOIN transactions income_tx ON
                     income_tx.type = '${TransactionTypeEnum.INCOME}'
                     AND income_tx.deleted_at IS NULL
@@ -48,9 +49,11 @@ export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = `
                 INNER JOIN accounts source_account ON
                     source_account.iban = income_entry.to_iban
                     AND source_account.deleted_at IS NULL
+                    AND source_account.is_active = 1
                 INNER JOIN accounts target_account ON
                     target_account.iban = expense_entry.to_iban
                     AND target_account.deleted_at IS NULL
+                    AND target_account.is_active = 1
                 LEFT JOIN mcc_categories expense_mcc ON expense_mcc.id = expense_entry.mcc_category_id
                 LEFT JOIN mcc_categories income_mcc ON income_mcc.id = income_entry.mcc_category_id
                 WHERE expense_entry.deleted_at IS NULL

@@ -1,0 +1,23 @@
+{
+    "name": "@budgie-at/consolidation-tests",
+    "version": "1.18.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "test": "vitest run",
+        "test:coverage": "vitest run",
+        "test:watch": "vitest",
+        "ts": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@budgie-at/test-kit": "workspace:*",
+        "@budgie/consolidation": "workspace:*",
+        "@budgie/contracts": "workspace:^",
+        "@rnw-community/shared": "^2.2.0",
+        "vitest": "^4.1.7"
+    },
+    "devDependencies": {
+        "@types/node": "^24.5.2",
+        "typescript": "^5.9.3"
+    }
+}

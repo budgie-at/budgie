@@ -1,0 +1,57 @@
+# Budgie
+
+> Budgie is a privacy-first, offline-first expense tracker for iOS and Android. Every transaction is stored on-device in an encrypted SQLite database — no cloud account, no aggregator, no server ever sees your financial data. Core features are free; advanced AI and bank-sync features are an optional one-time purchase. Currently in private beta with a waitlist at https://budgie.at.
+
+Budgie's source code is publicly available under a source-available license (https://github.com/budgie-at/budgie). The app UI is available in English, Ukrainian, French, German, and Spanish.
+
+## Home
+
+- [Budgie — Privacy-First Expense Tracker](https://budgie.at/en): Offline-first value proposition, feature overview, on-device AI, security model, bank integrations, and FAQ.
+
+## Key Features
+
+- [Offline-First Expense Tracker](https://budgie.at/en/features/offline-first-expense-tracker): Core features run entirely on-device; no internet, no sign-up, encrypted local storage.
+- [On-Device AI Auto-Categorization](https://budgie.at/en/features/ai-auto-categorization): A local LLM plus an on-device embedding model categorize transactions; corrections feed the local index. No cloud API.
+- [Voice Transaction Entry](https://budgie.at/en/features/voice-transaction-entry): Speak an expense; on-device speech recognition transcribes it — audio never leaves the phone.
+- [Monobank Auto-Sync](https://budgie.at/en/features/monobank-sync): Direct Monobank API via your personal token — no Plaid, no aggregator.
+- [Net Worth Tracker](https://budgie.at/en/features/net-worth-tracker): Bank, cash, crypto, stocks, ETFs, and debt in one offline, multi-currency dashboard.
+- [Spending Analytics](https://budgie.at/en/features/spending-analytics): Category/tag charts, monthly trends, and drill-down to transactions — fully offline.
+- [PIN Lock + Encryption](https://budgie.at/en/features/pin-app-lock): The PIN derives the database encryption key; without it the file is unreadable.
+- [CSV Import](https://budgie.at/en/features/csv-import): Import any bank's CSV with reusable column-mapping presets and deduplication.
+- [Database Backup & Restore](https://budgie.at/en/features/database-backup): One encrypted backup to your own cloud storage; restore on a new device with your PIN.
+- [Multi-Currency](https://budgie.at/en/features/multi-currency): Accounts in any currency with daily FX-rate refresh and cross-currency transfers.
+
+## Feature Hubs
+
+- [Private Expense Tracker](https://budgie.at/en/privacy): How Budgie's architecture makes it a private expense tracker.
+- [Offline Budget App](https://budgie.at/en/offline-first): Why offline-first matters and what works without internet.
+- [On-Device AI Finance](https://budgie.at/en/ai-features): The full on-device AI stack.
+- [Encrypted Budget App](https://budgie.at/en/security): Encryption, biometric and PIN lock, screenshot protection.
+- [Source-Available Personal Finance](https://budgie.at/en/open-source): Public repository and source-available license.
+- [All Features](https://budgie.at/en/features): The complete feature grid.
+
+## Comparisons
+
+- [Private Budget App Alternative](https://budgie.at/en/features/private-budget-app-alternative): Budgie vs. cloud PFM apps.
+- [Subscription-Free Budget App](https://budgie.at/en/features/subscription-free-budget-app): Free core + optional one-time unlock vs. monthly subscriptions.
+- [Budget App Without Bank Login](https://budgie.at/en/features/no-bank-login-budget-app): Direct API tokens and PDF/CSV import instead of aggregators.
+- [On-Device AI Budget App](https://budgie.at/en/features/on-device-ai-budget-app): Local inference vs. cloud AI assistants.
+
+## Blog
+
+- [How Budgie Keeps Your Financial Data Off the Cloud](https://budgie.at/en/blog/budgie-offline-financial-data): SQLite architecture, encryption, device-to-device sync.
+- [Why Cloud Budgeting Apps Are a Privacy Nightmare](https://budgie.at/en/blog/cloud-budgeting-privacy-risks): How cloud PFM apps expose financial data.
+- [On-Device AI in Your Budget App](https://budgie.at/en/blog/on-device-ai-budget-app-explainer): How local models, embeddings, and speech recognition work together.
+- [Bank Data Safety: Why Offline-First Is the Only Honest Answer](https://budgie.at/en/blog/offline-first-bank-data-safety): Why aggregators are breach targets.
+- [Best YNAB Alternatives for Privacy](https://budgie.at/en/blog/ynab-alternatives-privacy): Privacy-focused YNAB replacements.
+- [All Blog Posts](https://budgie.at/en/blog): Full article index.
+
+## Legal
+
+- [Privacy Policy](https://budgie.at/en/legal/privacy-policy): What is (not) collected.
+- [Terms of Service](https://budgie.at/en/legal/terms-of-service): Terms of use.
+- [Source-Available License](https://budgie.at/en/legal/license): The source license.
+
+## Optional
+
+- [llms-full.txt](https://budgie.at/llms-full.txt): Expanded full-content version of this index.

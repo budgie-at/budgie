@@ -45,6 +45,14 @@ msgstr "{categoryName}: {threshold}% spent"
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: limit reached"
 
+#: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
+msgid "{count, plural, one {# bank sync item repaired} other {# bank sync items repaired}}"
+msgstr "{count, plural, one {# bank sync item repaired} other {# bank sync items repaired}}"
+
+#: src/settings/utils/get-bank-sync-repair-text.util.ts
+msgid "{count, plural, one {# bank sync repair} other {# bank sync repairs}}"
+msgstr "{count, plural, one {# bank sync repair} other {# bank sync repairs}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
@@ -376,6 +384,7 @@ msgid "Are you sure you want to delete this rule?"
 msgstr "Are you sure you want to delete this rule?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Are you sure?"
@@ -415,9 +424,14 @@ msgid "Bank sync"
 msgstr "Bank sync"
 
 #: src/app/(main)/create-account/index.tsx
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
 msgid "Bank Sync"
 msgstr "Bank Sync"
+
+#: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
+msgid "Bank sync data repairs"
+msgstr "Bank sync data repairs"
 
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
@@ -472,6 +486,10 @@ msgstr "Budget limit reached"
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
+msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
+msgstr "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -479,6 +497,10 @@ msgstr "Budgie will fill missing base-currency values from historical exchange r
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
 msgstr "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
+
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
+msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
+msgstr "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
@@ -495,6 +517,7 @@ msgstr "Budgie will merge high-confidence transfer and refund matches. Ambiguous
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
@@ -550,6 +573,10 @@ msgstr "Change"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Change PIN"
 msgstr "Change PIN"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Checking"
+msgstr "Checking"
 
 #: src/account/component/create-bank-account/create-bank-account.tsx
 #: src/app/(main)/create-account/index.tsx
@@ -692,6 +719,10 @@ msgstr "Could not activate account."
 msgid "Could not archive account"
 msgstr "Could not archive account"
 
+#: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
+msgid "Could not check bank sync data"
+msgstr "Could not check bank sync data"
+
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Could not clear data"
 msgstr "Could not clear data"
@@ -797,6 +828,10 @@ msgstr "Could not reassign tag"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Could not recalculate balances"
+
+#: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
+msgid "Could not repair bank sync data"
+msgstr "Could not repair bank sync data"
 
 #: src/app/resync-window-picker.tsx
 msgid "Could not reset bank sync"
@@ -917,7 +952,7 @@ msgstr "Create one to get started."
 msgid "Create Rule"
 msgstr "Create Rule"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Create rules to automatically categorize and tag your bank transactions"
 
@@ -1241,6 +1276,7 @@ msgstr "Equals"
 msgid "Errors"
 msgstr "Errors"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Erste"
 msgstr "Erste"
@@ -1452,6 +1488,10 @@ msgstr "in"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "In List"
 msgstr "In List"
+
+#: src/account/component/account-inactive-icon/account-inactive-icon.tsx
+msgid "Inactive"
+msgstr "Inactive"
 
 #: src/app/(tabs)/settings/inactive.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -1738,6 +1778,10 @@ msgstr "No Archived Accounts"
 msgid "No archived accounts match your search"
 msgstr "No archived accounts match your search"
 
+#: src/settings/components/bank-sync-repairs-empty-state-card/bank-sync-repairs-empty-state-card.tsx
+msgid "No bank sync repairs found."
+msgstr "No bank sync repairs found."
+
 #: src/app/transaction-category-filter.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
@@ -1820,11 +1864,12 @@ msgstr "No recurring payments detected"
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 #: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No Results"
 msgstr "No Results"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "No Rules Yet"
 msgstr "No Rules Yet"
 
@@ -2147,14 +2192,6 @@ msgstr "Recurring"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Recurring payments will appear here once patterns are detected from your transactions"
 
-#: src/transaction/service/transaction-refund.service.ts
-msgid "Refund amount cannot exceed the expense"
-msgstr "Refund amount cannot exceed the expense"
-
-#: src/transaction/service/transaction-refund.service.ts
-msgid "Refund conversion starts from an income"
-msgstr "Refund conversion starts from an income"
-
 #: src/transaction/components/refunded-pill/refunded-pill.tsx
 msgid "Refunded"
 msgstr "Refunded"
@@ -2174,6 +2211,19 @@ msgstr "Remove"
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove category limit?"
 msgstr "Remove category limit?"
+
+#: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
+msgid "Remove duplicate imported bank transactions"
+msgstr "Remove duplicate imported bank transactions"
+
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
+msgid "Repair"
+msgstr "Repair"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+#: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
+msgid "Repair Bank Sync Data"
+msgstr "Repair Bank Sync Data"
 
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
@@ -2304,6 +2354,7 @@ msgid "Search tags..."
 msgstr "Search tags..."
 
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
+#: src/rule/components/rules-list-page/rules-list-page.tsx
 msgid "Search..."
 msgstr "Search..."
 
@@ -2432,10 +2483,6 @@ msgstr "Select Type"
 #: src/app/import-column-mapper.tsx
 msgid "Selected"
 msgstr "Selected"
-
-#: src/transaction/service/transaction-refund.service.ts
-msgid "Selected transaction is already consolidated"
-msgstr "Selected transaction is already consolidated"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
@@ -2760,7 +2807,6 @@ msgstr "Transaction must have a destination account"
 msgid "Transaction must have a source account"
 msgstr "Transaction must have a source account"
 
-#: src/transaction/service/transaction-refund.service.ts
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction not found"
 msgstr "Transaction not found"
@@ -2826,6 +2872,7 @@ msgstr "Try a different merchant, amount, or date."
 #: src/app/language-selector.tsx
 #: src/app/rule-mcc-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "Try a different search term"
 msgstr "Try a different search term"
 
@@ -2839,6 +2886,7 @@ msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
 
 #: src/ai/component/voice-input-error/voice-input-error.tsx
+#: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Try Again"
 msgstr "Try Again"
 
