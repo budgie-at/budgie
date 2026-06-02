@@ -37,7 +37,7 @@ const textVariants = cva('font-medium text-xs text-center leading-tight', {
     variants: {
         isSelected: {
             true: '',
-            false: 'text-primary'
+            false: 'text-secondary-foreground'
         },
         variant: Object.fromEntries(typedObjectEntries(FOREGROUND_COLOR_PALETTE).map(([variant]) => [variant, '']))
     },
