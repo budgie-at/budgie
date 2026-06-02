@@ -27,7 +27,7 @@ export default function TransactionAccountFilterModal() {
     const state = useSearchableFilterState(currentParams?.value ?? null);
     const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
-    const { accountsGrouped, accounts, total } = useSearchAccountsGroupedQuery(search);
+    const { accountsGrouped, accounts, total, isLoading } = useSearchAccountsGroupedQuery(search);
 
     const showControls = !(isEmptyArray(accounts) && isEmptyString(search));
     const showEmptySearch = isNotEmptyString(search) && isPositiveNumber(total);
@@ -53,7 +53,7 @@ export default function TransactionAccountFilterModal() {
 
     return (
         <FilterSheet>
-            <FilterSheetList alignToBottom={isNotEmptyString(search)}>
+            <FilterSheetList alignToBottom={isNotEmptyString(search)} isLoading={isLoading}>
                 {isNotEmptyArray(accounts) ? (
                     <View className="gap-y-lg">
                         {isNotEmptyArray(accountsGrouped.BANK) ? (
