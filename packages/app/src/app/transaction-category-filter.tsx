@@ -1,30 +1,22 @@
-import { CategoryEntityInterface } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
-import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
-import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
 import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
 import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionCategoryFilterModal } from '../transaction/context/transaction-category-filter-modal.context';
+import { prepareTransactionFilterGridData } from '../transaction/utils/prepare-transaction-filter-grid-data.util';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
 const NUM_COLUMNS = 3;
 const FOOTER_BOTTOM_SPACE = 176;
 const LIST_TOP_SPACE = 88;
-
-const prepareCategoryData = (categories: CategoryEntityInterface[] | null, selectedCategoryIds: number[]) => {
-    const filtered = isNotEmptyArray(categories) ? categories : [];
-
-    return padFlatListData(sortSelectedFirst(filtered, selectedCategoryIds), NUM_COLUMNS);
-};
 
 export default function TransactionCategoryFilterModal() {
     const { t } = useLingui();
@@ -36,7 +28,7 @@ export default function TransactionCategoryFilterModal() {
     const { categories, isLoading } = useSearchCategoriesQuery(search, true);
 
     const selectedCategoryIds = localValue ?? [];
-    const data = prepareCategoryData(categories, selectedCategoryIds);
+    const data = prepareTransactionFilterGridData(categories, selectedCategoryIds, NUM_COLUMNS);
 
     const handleSelect = (selected: number) => void setLocalValue(previous => toggleFilterSelection(previous, [selected]));
     const handleSelectAll = () => void setLocalValue(() => (categories ?? []).map(category => category.id));
