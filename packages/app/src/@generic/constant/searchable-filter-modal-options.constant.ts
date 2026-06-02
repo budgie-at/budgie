@@ -23,3 +23,9 @@ export const DATE_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
     sheetCornerRadius: SHEET_CORNER_RADIUS,
     contentStyle: { backgroundColor: 'transparent' }
 };
+
+export const STACKED_FILTER_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
+    presentation: 'pageSheet',
+    headerShown: false,
+    contentStyle: { backgroundColor: 'transparent' }
+};
