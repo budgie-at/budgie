@@ -1,9 +1,9 @@
 /* eslint-disable lingui/no-unlocalized-strings -- Server action with error codes, not user-facing text */
 'use server';
 
-import { kv } from '@vercel/kv';
+import { createClient } from 'redis';
 
-import { isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 interface WaitlistResult {
     success: boolean;
@@ -12,15 +12,56 @@ interface WaitlistResult {
 }
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u;
+const WAITLIST_EMAILS_KEY = 'waitlist:emails';
+const WAITLIST_TOTAL_KEY = 'waitlist:total';
+const WAITLIST_SOURCE = 'landing';
+const memoryWaitlistEmails = new Map<string, number>();
+
+const initializeRedisClient = async () => {
+    const redisUrl = process.env.REDIS_URL;
+
+    if (!isNotEmptyString(redisUrl)) {
+        return null;
+    }
+
+    try {
+        const client = createClient({ url: redisUrl });
+        client.on('error', emptyFn);
+
+        return await client.connect();
+    } catch {
+        return null;
+    }
+};
+
+let redisClientPromise: ReturnType<typeof initializeRedisClient> | null = null;
+
+const getRedisClient = async () => {
+    if (!isDefined(redisClientPromise)) {
+        redisClientPromise = initializeRedisClient();
+    }
+
+    return await redisClientPromise;
+};
 
 const addNewWaitlistEntry = async (email: string): Promise<WaitlistResult> => {
-    const count = await kv.zcard('waitlist:emails');
+    const redisClient = await getRedisClient();
+
+    if (!isDefined(redisClient)) {
+        const position = memoryWaitlistEmails.size + 1;
+
+        memoryWaitlistEmails.set(email, position);
+
+        return { success: true, messageKey: 'success', position };
+    }
+
+    const count = await redisClient.zCard(WAITLIST_EMAILS_KEY);
     const position = count + 1;
     const timestamp = Date.now();
 
-    await kv.zadd('waitlist:emails', { score: position, member: email });
-    await kv.hset(`waitlist:user:${email}`, { email, position, joinedAt: timestamp, source: 'landing' });
-    await kv.incr('waitlist:total');
+    await redisClient.zAdd(WAITLIST_EMAILS_KEY, { score: position, value: email });
+    await redisClient.hSet(`waitlist:user:${email}`, { email, position, joinedAt: timestamp, source: WAITLIST_SOURCE });
+    await redisClient.incr(WAITLIST_TOTAL_KEY);
 
     return { success: true, messageKey: 'success', position };
 };
@@ -33,7 +74,10 @@ export const joinWaitlist = async (email: string): Promise<WaitlistResult> => {
     }
 
     try {
-        const existingPosition = await kv.zscore('waitlist:emails', normalizedEmail);
+        const redisClient = await getRedisClient();
+        const existingPosition = isDefined(redisClient)
+            ? await redisClient.zScore(WAITLIST_EMAILS_KEY, normalizedEmail)
+            : (memoryWaitlistEmails.get(normalizedEmail) ?? null);
 
         if (isDefined(existingPosition)) {
             return { success: true, messageKey: 'already_registered', position: Math.floor(existingPosition) };
@@ -47,9 +91,15 @@ export const joinWaitlist = async (email: string): Promise<WaitlistResult> => {
 
 export const getWaitlistCount = async (): Promise<number> => {
     try {
-        const count = await kv.get<number>('waitlist:total');
+        const redisClient = await getRedisClient();
 
-        return count ?? 0;
+        if (!isDefined(redisClient)) {
+            return memoryWaitlistEmails.size;
+        }
+
+        const count = await redisClient.get(WAITLIST_TOTAL_KEY);
+
+        return isNotEmptyString(count) ? Number.parseInt(count, 10) : 0;
     } catch {
         return 0;
     }
