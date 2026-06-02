@@ -27,7 +27,7 @@ export default function TransactionTagFilterModal() {
     const state = useSearchableFilterState(currentParams?.value ?? null);
     const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
-    const { tags, total } = useSearchTagsQuery(search);
+    const { tags, total, isLoading } = useSearchTagsQuery(search);
 
     const items = tags ?? [];
     const showControls = !(isEmptyArray(items) && isEmptyString(search));
@@ -53,7 +53,7 @@ export default function TransactionTagFilterModal() {
 
     return (
         <FilterSheet>
-            <FilterSheetList alignToBottom={isNotEmptyString(search)}>
+            <FilterSheetList alignToBottom={isNotEmptyString(search)} isLoading={isLoading}>
                 {isNotEmptyArray(items) ? (
                     <View className="gap-y-sm">
                         {items.map(tag => (

@@ -27,7 +27,7 @@ export default function TransactionCategoryFilterModal() {
     const state = useSearchableFilterState(currentParams?.value ?? null);
     const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
-    const { categories, total } = useSearchCategoriesQuery(search, true);
+    const { categories, total, isLoading } = useSearchCategoriesQuery(search, true);
 
     const items = categories ?? [];
     const showControls = !(isEmptyArray(items) && isEmptyString(search));
@@ -53,7 +53,7 @@ export default function TransactionCategoryFilterModal() {
 
     return (
         <FilterSheet>
-            <FilterSheetList alignToBottom={isNotEmptyString(search)}>
+            <FilterSheetList alignToBottom={isNotEmptyString(search)} isLoading={isLoading}>
                 {isNotEmptyArray(items) ? (
                     <View className="gap-y-sm">
                         {items.map(category => (
