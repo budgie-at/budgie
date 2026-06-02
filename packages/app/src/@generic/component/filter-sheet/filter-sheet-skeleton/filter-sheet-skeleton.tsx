@@ -1,24 +1,16 @@
-import { useEffect } from 'react';
 import { View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
+
+import { useSkeletonPulseStyle } from '../../../hook/use-skeleton-pulse-style/use-skeleton-pulse-style.hook';
 
 interface Props {
     readonly alignToBottom?: boolean;
 }
 
 const ROW_KEYS = ['first', 'second', 'third', 'fourth'];
-const PULSE_DURATION = 850;
-const MIN_OPACITY = 0.42;
-const MAX_OPACITY = 1;
 
 export const FilterSheetSkeleton = ({ alignToBottom = false }: Props) => {
-    const opacity = useSharedValue(MAX_OPACITY);
-
-    useEffect(() => {
-        opacity.value = withRepeat(withTiming(MIN_OPACITY, { duration: PULSE_DURATION }), -1, true);
-    }, [opacity]);
-
-    const pulseStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+    const pulseStyle = useSkeletonPulseStyle();
     const containerClassName = alignToBottom ? 'flex-1 justify-end gap-y-sm' : 'gap-y-sm';
 
     return (

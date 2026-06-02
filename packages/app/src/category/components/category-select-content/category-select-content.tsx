@@ -1,12 +1,11 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { FlatList, View, ViewStyle } from 'react-native';
+import { View } from 'react-native';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { SelectorGridSkeleton } from '../../../@generic/component/selector-grid-skeleton/selector-grid-skeleton';
-import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { SelectorGridContent } from '../../../@generic/component/selector-grid-content/selector-grid-content';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
@@ -24,7 +23,6 @@ interface Props {
     readonly cardTestID?: (title: string) => string;
 }
 
-const NUM_COLUMNS = 3;
 const CARD_HEIGHT = 72;
 
 const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: number) =>
@@ -52,12 +50,7 @@ export const CategorySelectContent = (props: Props) => {
         cardTestID
     } = props;
     const { t } = useLingui();
-    const { flatListStyle, contentContainerStyle } = useFormsheetListStyles(additionalBottomPadding, topOffset);
     const resolvedSelectedCategoryIds = getSelectedCategoryIds(initialCategoryId, selectedCategoryIds);
-    const alignedContentContainerStyle: ViewStyle = {
-        ...contentContainerStyle,
-        ...(alignToBottom && { justifyContent: 'flex-end' })
-    };
 
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
@@ -88,29 +81,17 @@ export const CategorySelectContent = (props: Props) => {
         </View>
     );
 
-    if (isLoading) {
-        return (
-            <SelectorGridSkeleton
-                itemHeight={CARD_HEIGHT}
-                additionalBottomPadding={additionalBottomPadding}
-                topOffset={topOffset}
-                alignToBottom={alignToBottom}
-            />
-        );
-    }
-
     return (
-        <FlatList
-            style={flatListStyle}
+        <SelectorGridContent
             data={data}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            numColumns={NUM_COLUMNS}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            columnWrapperClassName="gap-x-lg mb-lg"
-            contentContainerStyle={alignedContentContainerStyle}
-            ListEmptyComponent={listEmptyComponent}
+            itemHeight={CARD_HEIGHT}
+            listEmptyComponent={listEmptyComponent}
+            isLoading={isLoading}
+            alignToBottom={alignToBottom}
+            additionalBottomPadding={additionalBottomPadding}
+            topOffset={topOffset}
         />
     );
 };

@@ -1,4 +1,3 @@
-/* jscpd:ignore-start */
 import { CategoryEntityInterface } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -86,4 +85,3 @@ export default function TransactionCategoryFilterModal() {
         </FilterSheet>
     );
 }
-/* jscpd:ignore-end */

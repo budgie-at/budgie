@@ -1,4 +1,3 @@
-/* jscpd:ignore-start */
 import { TagEntityInterface } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -84,4 +83,3 @@ export default function TransactionTagFilterModal() {
         </FilterSheet>
     );
 }
-/* jscpd:ignore-end */

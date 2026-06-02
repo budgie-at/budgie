@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
 import { View, ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { useFormsheetListStyles } from '../../hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useSkeletonPulseStyle } from '../../hook/use-skeleton-pulse-style/use-skeleton-pulse-style.hook';
 
 interface Props {
     readonly itemHeight: number;
@@ -14,19 +14,10 @@ interface Props {
 const COLUMN_COUNT = 3;
 const ROW_KEYS = ['first', 'second', 'third', 'fourth'];
 const COLUMN_KEYS = ['left', 'center', 'right'];
-const PULSE_DURATION = 850;
-const MIN_OPACITY = 0.42;
-const MAX_OPACITY = 1;
 
 export const SelectorGridSkeleton = ({ itemHeight, additionalBottomPadding = 0, topOffset, alignToBottom = false }: Props) => {
-    const opacity = useSharedValue(MAX_OPACITY);
+    const pulseStyle = useSkeletonPulseStyle();
     const { flatListStyle, contentContainerStyle } = useFormsheetListStyles(additionalBottomPadding, topOffset);
-
-    useEffect(() => {
-        opacity.value = withRepeat(withTiming(MIN_OPACITY, { duration: PULSE_DURATION }), -1, true);
-    }, [opacity]);
-
-    const pulseStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
     const cardStyle: ViewStyle = { height: itemHeight };
     const outerStyle = [flatListStyle, pulseStyle];
     const contentStyle: ViewStyle = {

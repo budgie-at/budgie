@@ -152,7 +152,7 @@ export const RootLayoutContent = () => {
                                                                 />
                                                                 <Stack.Screen
                                                                     name="transaction-account-filter"
-                                                                    options={UNIFIED_FILTER_SHEET_OPTIONS}
+                                                                    options={STACKED_FILTER_MODAL_OPTIONS}
                                                                 />
                                                                 <Stack.Screen
                                                                     name="transaction-tag-filter"

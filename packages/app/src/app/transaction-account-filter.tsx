@@ -1,4 +1,3 @@
-/* jscpd:ignore-start */
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -16,9 +15,12 @@ import { useSearchAccountsGroupedQuery } from '../account/query/use-search-accou
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
 import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
+import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
+
+const LIST_TOP_SPACE = 88;
 
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
@@ -36,6 +38,7 @@ export default function TransactionAccountFilterModal() {
     const handleSelect = (...accountIds: number[]) => void setLocalValue(prev => toggleFilterSelection(prev, accountIds));
     const handleSelectAll = () => void setLocalValue(() => accounts.map(account => account.id));
     const handleApply = () => void resolveTransactionAccountFilter({ value: localValueRef.current });
+    const handleClose = () => void resolveTransactionAccountFilter(null);
 
     const handleNavigateToCreate = () => {
         resolveTransactionAccountFilter(null, { skipBack: true });
@@ -53,7 +56,9 @@ export default function TransactionAccountFilterModal() {
 
     return (
         <FilterSheet>
-            <FilterSheetList alignToBottom>
+            <TransactionFilterSelectorHeader title={t`Filter accounts`} onClose={handleClose} />
+
+            <FilterSheetList alignToBottom topSpacing={LIST_TOP_SPACE}>
                 {isLoading ? <FilterSheetSkeleton alignToBottom /> : null}
 
                 {isNotEmptyArray(accounts) && !isLoading ? (
@@ -113,4 +118,3 @@ export default function TransactionAccountFilterModal() {
         </FilterSheet>
     );
 }
-/* jscpd:ignore-end */
