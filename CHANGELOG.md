@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.31.3](https://github.com/budgie-at/budgie/compare/v5.31.2...v5.31.3) (2026-06-02)
+
+### Bug Fixes
+
+- **app:** define background tasks at app entry ([#534](https://github.com/budgie-at/budgie/issues/534)) ([92ce3e3](https://github.com/budgie-at/budgie/commit/92ce3e38fd88e4594a8c50ca913cd06f4d049a67))
+
 ## [5.31.2](https://github.com/budgie-at/budgie/compare/v5.31.1...v5.31.2) (2026-06-02)
 
 ### Bug Fixes
