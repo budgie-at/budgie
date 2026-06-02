@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.31.2](https://github.com/budgie-at/budgie/compare/v5.31.1...v5.31.2) (2026-06-02)
+
+### Bug Fixes
+
+- align production eas update for sdk 56 ([397ea91](https://github.com/budgie-at/budgie/commit/397ea9143408ee1d57bd17e689a742a0db2ba5c0))
+
 ## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
 
 ### Bug Fixes
