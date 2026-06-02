@@ -1,8 +1,8 @@
 import { ReactElement } from 'react';
 import { FlatList, ListRenderItem, ViewStyle } from 'react-native';
 
-import { SelectorGridSkeleton } from '../selector-grid-skeleton/selector-grid-skeleton';
 import { useFormsheetListStyles } from '../../hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { SelectorGridSkeleton } from '../selector-grid-skeleton/selector-grid-skeleton';
 
 interface Props<Item> {
     readonly data: Item[];
