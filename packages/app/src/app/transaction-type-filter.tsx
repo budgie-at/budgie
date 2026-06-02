@@ -56,9 +56,9 @@ export default function TransactionTypeFilterModal() {
 
     return (
         <FilterSheet>
-            <View className="flex-1 gap-y-md px-md pt-lg pb-md">
+            <View className="flex-1 justify-end gap-y-sm px-xl pt-lg pb-lg">
                 {TRANSACTION_TYPE_ROWS.map(row => (
-                    <View className="flex-1 flex-row gap-x-md" key={row.join('-')}>
+                    <View className="h-[96px] flex-row gap-x-sm" key={row.join('-')}>
                         {row.map(type => (
                             <View className="flex-1" key={type}>
                                 <TransactionTypeFilterItem

@@ -17,7 +17,7 @@ interface Props {
     readonly testID?: string;
 }
 
-const cardVariants = cva('h-full items-center justify-center gap-y-lg rounded-3xl border px-md', {
+const cardVariants = cva('h-full items-center justify-center gap-y-md rounded-3xl border px-sm py-md', {
     variants: {
         isSelected: {
             true: 'border-primary/60 bg-primary',
@@ -26,7 +26,7 @@ const cardVariants = cva('h-full items-center justify-center gap-y-lg rounded-3x
     }
 });
 
-const textVariants = cva('text-center text-md font-medium leading-tight', {
+const textVariants = cva('text-center text-sm font-medium leading-tight', {
     variants: {
         isSelected: {
             true: 'text-primary-reverse',
@@ -40,7 +40,7 @@ export const TransactionFilterCard = ({ isSelected, onPress, icon, label, varian
 
     return (
         <HapticPressable onPress={onPress} className={cardVariants({ isSelected })} testID={testID}>
-            <CircleIcon icon={icon} variant={iconVariant} size={44} iconSize={22} />
+            <CircleIcon icon={icon} variant={iconVariant} size={38} iconSize={20} />
             <Text className={textVariants({ isSelected })} numberOfLines={2}>
                 {label}
             </Text>
