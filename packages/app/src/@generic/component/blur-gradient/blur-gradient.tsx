@@ -1,11 +1,10 @@
-import MaskedView from '@react-native-masked-view/masked-view';
+import { MaskedView } from '@expo/ui/community/masked-view';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { useThemeContext } from '../../../theme/context/theme.context';
-import { cn } from '../../utils/cn.util';
 
 type BlurGradientPosition = 'top' | 'bottom';
 
@@ -13,6 +12,7 @@ interface Props {
     readonly children?: ReactNode;
     readonly position: BlurGradientPosition;
     readonly height?: number;
+    readonly edgeOffset?: number;
     readonly safeAreaTop?: number;
 }
 
@@ -33,20 +33,20 @@ const GRADIENT_CONFIG = {
 } as const;
 
 export const BlurGradient = (props: Props) => {
-    const { children, position, height, safeAreaTop = 0 } = props;
+    const { children, position, height, edgeOffset = 0, safeAreaTop = 0 } = props;
 
     const { isDarkColorSchema } = useThemeContext();
 
     const config = GRADIENT_CONFIG[position];
     const computedHeight = position === 'top' ? safeAreaTop + DEFAULT_HEADER_HEIGHT : DEFAULT_HEIGHT_BOTTOM;
-    const containerStyle = { height: height ?? computedHeight };
+    const positionStyle = position === 'top' ? { top: -edgeOffset } : { bottom: -edgeOffset };
+    const containerStyle = { height: (height ?? computedHeight) + edgeOffset, ...positionStyle };
     const gradientColors = isDarkColorSchema ? config.colors.dark : config.colors.light;
     const blurTint = isDarkColorSchema ? 'dark' : 'light';
-    const positionClassName = position === 'top' ? ' top-0' : 'bottom-0';
 
     return (
         <>
-            <View className={cn('absolute inset-x-0 ', positionClassName)} style={containerStyle} pointerEvents="none">
+            <View className="absolute inset-x-0" style={containerStyle} pointerEvents="none">
                 <MaskedView
                     style={StyleSheet.absoluteFill}
                     maskElement={<LinearGradient colors={gradientColors} locations={config.locations} style={StyleSheet.absoluteFill} />}

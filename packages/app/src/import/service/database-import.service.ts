@@ -36,14 +36,14 @@ class DatabaseImportService {
         await expoDb.closeAsync();
         this.clearDatabaseGlobals();
         this.deleteDestinationFiles(destinationPath, tempPath);
-        this.replaceDestinationFile(sourceUri, tempPath, destinationPath);
-        this.copyDatabaseSidecars(sourceUri, destinationPath);
+        await this.replaceDestinationFile(sourceUri, tempPath, destinationPath);
+        await this.copyDatabaseSidecars(sourceUri, destinationPath);
     }
 
-    private replaceDestinationFile(sourceUri: string, tempPath: string, destinationPath: string): void {
+    private async replaceDestinationFile(sourceUri: string, tempPath: string, destinationPath: string): Promise<void> {
         const tempFile = new File(tempPath);
-        new File(sourceUri).copy(tempFile);
-        tempFile.move(new File(destinationPath));
+        await new File(sourceUri).copy(tempFile);
+        await tempFile.move(new File(destinationPath));
     }
 
     private async pauseLongLivedRuntime(): Promise<void> {
@@ -55,13 +55,16 @@ class DatabaseImportService {
         aiCoordinatorService.stop();
     }
 
-    private copyDatabaseSidecars(sourceUri: string, destinationPath: string): void {
-        this.copyFileIfExists(`${sourceUri}-wal`, `${destinationPath}-wal`);
-        this.copyFileIfExists(`${sourceUri}-shm`, `${destinationPath}-shm`);
+    private async copyDatabaseSidecars(sourceUri: string, destinationPath: string): Promise<void> {
+        await this.copyFileIfExists(`${sourceUri}-wal`, `${destinationPath}-wal`);
+        await this.copyFileIfExists(`${sourceUri}-shm`, `${destinationPath}-shm`);
     }
 
     private deleteDestinationFiles(destinationPath: string, tempPath: string): void {
-        [destinationPath, `${destinationPath}-wal`, `${destinationPath}-shm`, tempPath].forEach(path => void this.deleteFileIfExists(path));
+        this.deleteFileIfExists(destinationPath);
+        this.deleteFileIfExists(`${destinationPath}-wal`);
+        this.deleteFileIfExists(`${destinationPath}-shm`);
+        this.deleteFileIfExists(tempPath);
     }
 
     private clearDatabaseGlobals() {
@@ -71,7 +74,7 @@ class DatabaseImportService {
         global.__drizzleDb__ = undefined;
     }
 
-    private deleteFileIfExists(path: string) {
+    private deleteFileIfExists(path: string): void {
         const file = new File(path);
 
         if (file.exists) {
@@ -79,15 +82,15 @@ class DatabaseImportService {
         }
     }
 
-    private copyFileIfExists(sourcePath: string, destinationPath: string) {
+    private async copyFileIfExists(sourcePath: string, destinationPath: string): Promise<void> {
         const sourceFile = new File(sourcePath);
 
         if (sourceFile.exists) {
-            sourceFile.copy(new File(destinationPath));
+            await sourceFile.copy(new File(destinationPath));
         }
     }
 
-    private getDestinationPath() {
+    private getDestinationPath(): string {
         return `${String(SQLite.defaultDatabaseDirectory)}/${DB_NAME}`;
     }
 }

@@ -1,10 +1,10 @@
 import { Trans } from '@lingui/react/macro';
-import { Github } from 'lucide-react';
+import { GitBranch } from 'lucide-react';
 
 export const OpenSourceVisualHeader = () => (
     <div className="flex items-center gap-4">
         <div className="size-16 rounded-xl bg-primary/20 flex items-center justify-center">
-            <Github className="size-8" />
+            <GitBranch className="size-8" />
         </div>
 
         <div>

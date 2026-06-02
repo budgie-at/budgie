@@ -210,9 +210,9 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
                 silenceTimeoutMs: SILENCE_TIMEOUT_MS,
                 silenceThreshold: SILENCE_THRESHOLD
             });
-            const recorder = new AudioRecorder({ sampleRate: SAMPLE_RATE, bufferLengthInSamples: BUFFER_LENGTH });
+            const recorder = new AudioRecorder();
             recorderRef.current = recorder;
-            recorder.onAudioReady(({ buffer }) => {
+            recorder.onAudioReady({ sampleRate: SAMPLE_RATE, bufferLength: BUFFER_LENGTH, channelCount: 1 }, ({ buffer }) => {
                 if (sessionId !== sessionIdRef.current) {
                     return;
                 }
