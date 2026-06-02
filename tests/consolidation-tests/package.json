@@ -12,12 +12,12 @@
     "dependencies": {
         "@budgie-at/test-kit": "workspace:*",
         "@budgie/consolidation": "workspace:*",
-        "@budgie/contracts": "workspace:*",
-        "@rnw-community/shared": "^2.0.0",
-        "vitest": "^3.0.0"
+        "@budgie/contracts": "workspace:^",
+        "@rnw-community/shared": "^2.2.0",
+        "vitest": "^4.1.7"
     },
     "devDependencies": {
-        "@types/node": "^22.0.0",
+        "@types/node": "^24.5.2",
         "typescript": "^5.9.3"
     }
 }

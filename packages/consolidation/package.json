@@ -1,6 +1,6 @@
 {
     "name": "@budgie/consolidation",
-    "version": "5.31.0",
+    "version": "5.31.1",
     "private": true,
     "description": "Consolidation domain services",
     "sideEffects": false,
@@ -25,8 +25,8 @@
         "ts": "run -T tsc -p ."
     },
     "dependencies": {
-        "@budgie/contracts": "workspace:*",
+        "@budgie/contracts": "workspace:^",
         "@budgie/logger": "workspace:*",
-        "@rnw-community/shared": "^2.0.0"
+        "@rnw-community/shared": "^2.2.0"
     }
 }
