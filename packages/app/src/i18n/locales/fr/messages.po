@@ -455,7 +455,7 @@ msgstr "Budgie"
 
 #: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
-msgstr "Budgie peut trouver les imports bancaires synchronisés en double et réparer les consolidations de virements arrivées sur des comptes inactifs."
+msgstr "Budgie peut détecter les imports de synchronisation bancaire en double et réparer les consolidations de virements associées à des comptes inactifs."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -1279,7 +1279,7 @@ msgstr "Filtrer les catégories"
 
 #: src/app/transaction-tag-filter.tsx
 msgid "Filter tags"
-msgstr "Filtrer les étiquettes"
+msgstr "Filtrer les tags"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
