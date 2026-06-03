@@ -72,7 +72,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
 
     const isConsolidated = isDefined(transaction.consolidationType);
     const isRefunded = isDefined(transaction.consolidationParentTransactionId);
-    const canConvert = !isConsolidated && isConvertibleTransaction(transaction);
+    const canConvert = !isConsolidated && isConvertibleTransaction(transaction) && transaction.entries.length === 1;
     const canConvertToRefund = !isConsolidated && !isRefunded && isIncomeTransaction(transaction);
     const actionLabel = isConsolidated ? t`Revert` : t`Delete Transaction`;
     const actionIcon = isConsolidated ? UserIconNameEnum.Undo2 : UserIconNameEnum.Trash2;

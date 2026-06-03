@@ -267,7 +267,10 @@ class AppMonobankSyncService {
 
         if (isPositiveNumber(changedTransactionCount)) {
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC);
-            logger.log('executeSyncBatch:consolidation-enqueued', { changedTransactionCount, syncId: sync.id });
+            logger.log('executeSyncBatch:consolidation-enqueued', {
+                changedTransactionCount,
+                syncId: sync.id
+            });
         }
 
         await microPause();
@@ -317,6 +320,8 @@ class AppMonobankSyncService {
         const startedAt = Date.now();
         const pendingSync = await this.getNextPendingSync();
         if (!isDefined(pendingSync)) {
+            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC);
+            logger.log('processPendingSyncs:consolidation-enqueued', { durationMs: Date.now() - startedAt });
             logger.log('processPendingSyncs:empty', { durationMs: Date.now() - startedAt });
 
             return BackgroundTask.BackgroundTaskResult.Success;
