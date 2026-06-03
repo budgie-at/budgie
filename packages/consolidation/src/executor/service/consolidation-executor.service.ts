@@ -1,10 +1,17 @@
 /* eslint-disable max-lines -- Consolidation executor keeps per-candidate logs and the write path together for debugging */
-import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    BANK_FEE_CATEGORY_ID,
+    CategorySourceEnum,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
+import { buildAtmFeeTransactionExternalId } from '../utils/build-atm-fee-transaction-external-id.util';
 
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
@@ -18,6 +25,8 @@ import type {
     IbanBridgeTransferCandidateInterface,
     RefundCandidateInterface,
     TransactionEntityInterface,
+    TransactionEntryEntityInterface,
+    TransactionWithEntriesEntityInterface,
     TransferPairCandidateInterface
 } from '@budgie/contracts';
 
@@ -191,7 +200,19 @@ export class ConsolidationExecutorService {
             fromEntryToIban: null
         };
 
-        return this.executeConsolidation(sourceTransactionIds, canonicalInput, tx);
+        const sourceTransactions = await this.findEligibleSourceTransactions(sourceTransactionIds, tx);
+
+        if (!isDefined(sourceTransactions)) {
+            return false;
+        }
+
+        const canonicalTransaction = await this.createCanonicalTransfer(canonicalInput, tx);
+
+        await this.createAtmCashWithdrawalFeeExpense(candidate, sourceTransactions, canonicalTransaction.id, tx);
+        await this.copySourceTags(sourceTransactionIds, canonicalTransaction.id, tx);
+        await this.moveSourcesToCanonical(sourceTransactionIds, canonicalTransaction.id, tx);
+
+        return true;
     }
 
     private async consolidateRefundInner(candidate: RefundCandidateInterface, tx: DB): Promise<boolean> {
@@ -358,7 +379,7 @@ export class ConsolidationExecutorService {
         tx: DB,
         allowedMovedSourceTransactionIds: number[] = []
     ): Promise<boolean> {
-        if (!(await this.areCandidatesStillEligible(sourceTransactionIds, tx, allowedMovedSourceTransactionIds))) {
+        if (!isDefined(await this.findEligibleSourceTransactions(sourceTransactionIds, tx, allowedMovedSourceTransactionIds))) {
             return false;
         }
 
@@ -375,10 +396,18 @@ export class ConsolidationExecutorService {
         tx: DB,
         allowedMovedSourceTransactionIds: number[] = []
     ): Promise<boolean> {
+        return isDefined(await this.findEligibleSourceTransactions(sourceTransactionIds, tx, allowedMovedSourceTransactionIds));
+    }
+
+    private async findEligibleSourceTransactions(
+        sourceTransactionIds: number[],
+        tx: DB,
+        allowedMovedSourceTransactionIds: number[] = []
+    ): Promise<TransactionWithEntriesEntityInterface[] | null> {
         const fresh = await this.dependencies.transactionRepository.findByIds(sourceTransactionIds, tx);
 
         if (fresh.length !== sourceTransactionIds.length) {
-            return false;
+            return null;
         }
 
         const movedEntryBlockedTransactionIds = sourceTransactionIds.filter(
@@ -386,10 +415,14 @@ export class ConsolidationExecutorService {
         );
 
         if (await this.dependencies.transactionEntryRepository.hasMovedSourceEntries(movedEntryBlockedTransactionIds, tx)) {
-            return false;
+            return null;
         }
 
-        return fresh.every(transaction => !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt));
+        if (fresh.every(transaction => !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt))) {
+            return fresh;
+        }
+
+        return null;
     }
 
     private async isExistingTransferStillEligible(transactionId: number, tx: DB): Promise<boolean> {
@@ -449,6 +482,74 @@ export class ConsolidationExecutorService {
         );
 
         return canonicalTransaction;
+    }
+
+    private async createAtmCashWithdrawalFeeExpense(
+        candidate: AtmCashWithdrawalCandidateInterface,
+        sourceTransactions: TransactionWithEntriesEntityInterface[],
+        canonicalTransactionId: number,
+        tx: DB
+    ): Promise<void> {
+        const feeEntry = this.findAtmCashWithdrawalFeeEntry(candidate, sourceTransactions);
+
+        if (!isDefined(feeEntry)) {
+            return;
+        }
+
+        const feeTransaction = await this.dependencies.transactionRepository.create(
+            {
+                type: TransactionTypeEnum.EXPENSE,
+                title: candidate.transactionTitle ?? '',
+                externalId: buildAtmFeeTransactionExternalId(canonicalTransactionId),
+                operatedAt: new Date(candidate.operatedAt * 1000),
+                comment: candidate.transactionComment ?? '',
+                toAccountId: null,
+                fromAccountId: candidate.sourceAccountId,
+                exchangeRate: 1,
+                externalSource: null,
+                needsEmbedding: false,
+                consolidationType: null,
+                consolidationParentTransactionId: null,
+                updatedBy: null
+            },
+            tx
+        );
+
+        await this.dependencies.transactionEntryRepository.bulkCreate(
+            [
+                {
+                    transactionId: feeTransaction.id,
+                    accountId: candidate.sourceAccountId,
+                    categoryId: BANK_FEE_CATEGORY_ID,
+                    categorySource: CategorySourceEnum.FEE,
+                    mccCategoryId: null,
+                    type: TransactionEntryTypeEnum.CREDIT,
+                    amount: feeEntry.amount,
+                    externalId: null,
+                    exchangeRate: 1,
+                    baseInstrumentId: feeEntry.baseInstrumentId,
+                    baseExchangeRate: feeEntry.baseExchangeRate,
+                    baseAmount: feeEntry.baseAmount,
+                    toIban: null,
+                    originalTransactionId: null
+                }
+            ],
+            tx
+        );
+    }
+
+    private findAtmCashWithdrawalFeeEntry(
+        candidate: AtmCashWithdrawalCandidateInterface,
+        sourceTransactions: TransactionWithEntriesEntityInterface[]
+    ): TransactionEntryEntityInterface | undefined {
+        return sourceTransactions
+            .flatMap(transaction => transaction.entries)
+            .find(
+                entry =>
+                    entry.accountId === candidate.sourceAccountId &&
+                    entry.categorySource === CategorySourceEnum.FEE &&
+                    isPositiveNumber(entry.amount)
+            );
     }
 
     private async moveSourcesToCanonical(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {

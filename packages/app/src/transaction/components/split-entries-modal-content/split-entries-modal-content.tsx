@@ -1,4 +1,4 @@
-import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useEffect, useRef, useState } from 'react';
@@ -10,7 +10,9 @@ import { Button } from '../../../@generic/component/button/button';
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
+import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import {
@@ -40,7 +42,8 @@ export const SplitEntriesModalContent = (props: Props) => {
     const { initialEntries, variant, entryType, currencySymbol, totalAmount, onConfirm } = props;
 
     const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const splitRemainderDecimalPlaces = Math.max(decimalPlaces, DEFAULT_DECIMAL_PLACES);
+    const formatDigits = useFormatDigits(splitRemainderDecimalPlaces);
     const [openCategorySelector] = useCategorySelectorModal();
     const [hapticNotification] = useVibration();
 
@@ -55,6 +58,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     const isOverBudget = remainingAmount < 0;
     const formattedRemaining = formatDigits(Math.abs(remainingAmount), currencySymbol);
     const canDelete = entries.length > 1;
+    const canRemoveSplit = initialEntries.length > 1 || entries.length > 1;
     const accountId = entries[0]?.accountId ?? 0;
     const allEntriesValid = entries.every(entry => isPositiveNumber(entry.categoryId) && entry.amount > 0);
     const allEntriesHaveAmount = entries.every(entry => entry.amount > 0);
@@ -103,6 +107,30 @@ export const SplitEntriesModalContent = (props: Props) => {
         onConfirm(entries.map(stripLocalId));
     };
 
+    const handleRemoveSplit = async () => {
+        const [firstEntry] = entries;
+
+        if (!isDefined(firstEntry)) {
+            return;
+        }
+
+        const confirmed = await confirmAlert({
+            title: t`Remove split?`,
+            message: t`This will keep one entry with the full transaction amount.`,
+            confirmText: t`Remove split`,
+            cancelText: t`Cancel`,
+            isDestructive: true
+        });
+
+        if (!confirmed) {
+            return;
+        }
+
+        const singleEntry = stripLocalId({ ...firstEntry, amount: totalAmount });
+
+        onConfirm([singleEntry]);
+    };
+
     const renderItem = ({ item, index }: { item: EntryWithLocalIdInterface; index: number }) => {
         const handleCategory = () => void handleCategoryPress(index);
         const handleDelete = () => void handleRemoveEntry(index);
@@ -147,8 +175,20 @@ export const SplitEntriesModalContent = (props: Props) => {
                 ItemSeparatorComponent={ListItemSeparator}
             />
 
-            <View className="px-xl pb-xl">
+            <View className="flex-row gap-x-md px-xl pb-xl">
+                {canRemoveSplit ? (
+                    <Button
+                        leftIcon={UserIconNameEnum.X}
+                        variant="destructive"
+                        size="md"
+                        className="aspect-square"
+                        onPress={handleRemoveSplit}
+                        testID={SplitEntriesModalContentSelector.RemoveSplitButton}
+                    />
+                ) : null}
+
                 <Button
+                    className="flex-1"
                     content={confirmButtonLabel}
                     variant={confirmButtonVariant}
                     size="md"
