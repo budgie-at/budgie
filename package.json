@@ -20,6 +20,8 @@
         "deps:dedupe": "yarn dedupe",
         "deps:update": "yarn dlx npm-check-updates",
         "format": "prettier --write \"**/*.{ts,tsx}\"",
+        "i18n:check": "yarn i18n:sync && git diff --name-only --exit-code HEAD -- packages/app/src/i18n/locales packages/landing/src/i18n/locales",
+        "i18n:sync": "yarn workspace @budgie-at/app i18n:sync && yarn workspace @budgie-at/landing i18n:sync",
         "lint": "turbo run lint",
         "lint:force": "turbo run lint --force",
         "release": "lerna publish --yes --conventional-commits --create-release=github -m \"chore: release %s [skip ci]\"",

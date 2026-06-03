@@ -19,7 +19,7 @@ export const useModalResolver = <TParams, TResult>(route: string): UseModalResol
         new Promise(resolve => {
             setCurrentParams((params ?? {}) as TParams);
             resolverRef.current = resolve;
-            router.push(route as never);
+            router.push(route);
         });
 
     const resolve = (result: TResult, options?: ResolveOptions) => {
