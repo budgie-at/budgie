@@ -38,7 +38,7 @@ msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verf
 
 #: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
 msgid "{count, plural, one {# bank sync item repaired} other {# bank sync items repaired}}"
-msgstr "{count, plural, one {# Bank-Sync-Element repariert} other {# Bank-Sync-Elemente repariert}}"
+msgstr "{count, plural, one {# Bank-Sync-Eintrag repariert} other {# Bank-Sync-Einträge repariert}}"
 
 #: src/settings/utils/get-bank-sync-repair-text.util.ts
 msgid "{count, plural, one {# bank sync repair} other {# bank sync repairs}}"
@@ -410,7 +410,7 @@ msgstr "Bank-Synchronisation"
 
 #: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
 msgid "Bank sync data repairs"
-msgstr "Bank-Sync-Datenreparaturen"
+msgstr "Reparaturen der Bank-Sync-Daten"
 
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
