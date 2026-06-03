@@ -1,2 +1,1 @@
-export const FIFTEEN_MINUTES_IN_SECONDS = 900;
 export const TWO_MINUTES_IN_SECONDS = 120;

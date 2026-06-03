@@ -1,1 +1,0 @@
-export const THIRTY_MINUTES_IN_SECONDS = 30 * 60;
