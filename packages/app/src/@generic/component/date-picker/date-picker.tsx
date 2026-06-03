@@ -30,6 +30,7 @@ const TODAY_BORDER_WIDTH = 1;
 
 const buildStyles = (isDark: boolean, shouldShowTodayIndicator: boolean) => {
     const primary = isDark ? '#ffffff' : '#000000';
+    const rangeFill = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
 
     const compactCircle: ViewStyle = {
         alignSelf: 'center',
@@ -46,7 +47,11 @@ const buildStyles = (isDark: boolean, shouldShowTodayIndicator: boolean) => {
         borderColor: primary
     };
     const transparentView: ViewStyle = { backgroundColor: 'transparent' };
-    const hiddenRangeFill: ViewStyle = { backgroundColor: 'transparent' };
+    const rangeFillView: ViewStyle = {
+        backgroundColor: rangeFill,
+        height: DAY_PILL_SIZE,
+        marginVertical: 'auto'
+    };
     const transparentText: TextStyle = { backgroundColor: 'transparent' };
     const today = shouldShowTodayIndicator ? todayRing : transparentView;
 
@@ -56,9 +61,9 @@ const buildStyles = (isDark: boolean, shouldShowTodayIndicator: boolean) => {
         range_start: pill,
         range_end: pill,
         range_middle: transparentText,
-        range_fill: hiddenRangeFill,
-        range_fill_weekstart: hiddenRangeFill,
-        range_fill_weekend: hiddenRangeFill
+        range_fill: rangeFillView,
+        range_fill_weekstart: rangeFillView,
+        range_fill_weekend: rangeFillView
     };
 };
 
