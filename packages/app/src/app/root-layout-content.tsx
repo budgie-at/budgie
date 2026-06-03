@@ -11,11 +11,6 @@ import { enableFreeze, enableScreens } from 'react-native-screens';
 import Toast from 'react-native-toast-message';
 
 import migrations from '../../drizzle/migrations';
-import '../account/task/account-balance-incremental.task';
-import '../budget/task/budget-alert-monitor.task';
-import '../exchange-rate/task/exchange-rate-sync.task';
-import '../sync/task/monobank-sync.task';
-import '../sync/task/transfer-consolidation.task';
 import '../global.css';
 import { DevMenuController } from '../@generic/component/dev-menu-controller/dev-menu-controller';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
@@ -32,7 +27,11 @@ import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
 import { RULE_FORM_MODAL_OPTIONS } from '../@generic/constant/rule-form-modal-options.constant';
 import { RULE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/rule-selector-modal-options.constant';
-import { DATE_FILTER_SHEET_OPTIONS, UNIFIED_FILTER_SHEET_OPTIONS } from '../@generic/constant/searchable-filter-modal-options.constant';
+import {
+    DATE_FILTER_SHEET_OPTIONS,
+    STACKED_FILTER_MODAL_OPTIONS,
+    UNIFIED_FILTER_SHEET_OPTIONS
+} from '../@generic/constant/searchable-filter-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
 import { VOICE_REVIEW_MODAL_OPTIONS } from '../@generic/constant/voice-review-modal-options.constant';
@@ -145,15 +144,15 @@ export const RootLayoutContent = () => {
                                                                 <Stack.Screen name="date-filter" options={DATE_FILTER_SHEET_OPTIONS} />
                                                                 <Stack.Screen
                                                                     name="transaction-category-filter"
-                                                                    options={UNIFIED_FILTER_SHEET_OPTIONS}
+                                                                    options={STACKED_FILTER_MODAL_OPTIONS}
                                                                 />
                                                                 <Stack.Screen
                                                                     name="transaction-account-filter"
-                                                                    options={UNIFIED_FILTER_SHEET_OPTIONS}
+                                                                    options={STACKED_FILTER_MODAL_OPTIONS}
                                                                 />
                                                                 <Stack.Screen
                                                                     name="transaction-tag-filter"
-                                                                    options={UNIFIED_FILTER_SHEET_OPTIONS}
+                                                                    options={STACKED_FILTER_MODAL_OPTIONS}
                                                                 />
                                                                 <Stack.Screen name="rule-form" options={RULE_FORM_MODAL_OPTIONS} />
                                                                 <Stack.Screen name="rule-selector" options={RULE_SELECTOR_MODAL_OPTIONS} />
