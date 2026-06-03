@@ -12,12 +12,13 @@ import type { TransactionActionsMenuPropsInterface } from '../../interface/trans
 interface Props extends Pick<TransactionActionsMenuPropsInterface, 'onDelete' | 'isConsolidated'> {
     readonly onRevert: () => void;
     readonly onConvertToRefund?: () => void;
-    readonly onConvertToTransfer: () => void;
+    readonly onConvertToTransfer?: () => void;
 }
 
 export const UpdateTransactionActionsMenu = ({ onDelete, isConsolidated, onRevert, onConvertToRefund, onConvertToTransfer }: Props) => {
     const { t } = useLingui();
     const showConvertToRefund = isDefined(onConvertToRefund);
+    const showConvertToTransfer = isDefined(onConvertToTransfer);
 
     return (
         <TransactionActionsMenu onDelete={onDelete} isConsolidated={isConsolidated} {...(isConsolidated && { onRevert })}>
@@ -29,12 +30,14 @@ export const UpdateTransactionActionsMenu = ({ onDelete, isConsolidated, onRever
                     testID={TransactionActionsMenuSelector.ConvertToRefundButton}
                 />
             ) : null}
-            <TransactionConvertMenuItem
-                icon={UserIconNameEnum.ArrowRightLeft}
-                label={t`Convert to Transfer`}
-                onConvert={onConvertToTransfer}
-                testID={TransactionActionsMenuSelector.ConvertToTransferButton}
-            />
+            {showConvertToTransfer ? (
+                <TransactionConvertMenuItem
+                    icon={UserIconNameEnum.ArrowRightLeft}
+                    label={t`Convert to Transfer`}
+                    onConvert={onConvertToTransfer}
+                    testID={TransactionActionsMenuSelector.ConvertToTransferButton}
+                />
+            ) : null}
         </TransactionActionsMenu>
     );
 };

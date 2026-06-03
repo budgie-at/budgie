@@ -64,6 +64,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
         transactionId,
         fromAccountId
     });
+    const transferConvertProps = transaction.entries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
 
     return (
         <FormProvider {...form}>
@@ -77,7 +78,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
                                 onRevert={handleRevert}
-                                onConvertToTransfer={handleOpenConvert}
+                                {...transferConvertProps}
                             />
                         }
                     />

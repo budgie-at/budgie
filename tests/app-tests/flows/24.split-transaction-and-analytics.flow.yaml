@@ -119,10 +119,22 @@ appId: ${APP_ID}
     id: 'TransactionCard.Label.E2E_Split_Expense'
 
 - tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.DeleteButton'
+- assertNotVisible:
+    id: 'TransactionActionsMenu.ConvertToTransferButton'
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+
+- tapOn:
     id: 'TransactionFieldIcon.Split'
 - extendedWaitUntil:
     visible:
       id: 'SplitEntryRow.Amount.0'
+- assertVisible:
+    id: 'SplitEntries.RemoveSplitButton'
 
 - tapOn:
     id: 'SplitEntryRow.Amount.0'
@@ -162,7 +174,58 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'AccountCard.Balance.E2E_Txn_Account.55'
 
-# --- Delete Split Expense ---
+# --- Remove Split From Expense ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Split_Expense'
+
+- tapOn:
+    id: 'TransactionFieldIcon.Split'
+- extendedWaitUntil:
+    visible:
+      id: 'SplitEntryRow.Amount.0'
+- assertVisible:
+    id: 'SplitEntries.RemoveSplitButton'
+- tapOn:
+    id: 'SplitEntries.RemoveSplitButton'
+- extendedWaitUntil:
+    visible: 'Remove split?'
+    timeout: 10000
+- tapOn:
+    text: 'Remove split'
+    index: 0
+- extendedWaitUntil:
+    notVisible: 'Remove split?'
+    timeout: 15000
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Split_Expense'
+    timeout: 5000
+- assertVisible:
+    id: 'TransactionCard.Category.Groceries'
+- assertNotVisible:
+    id: 'TransactionCard.EntryCategoryAmount.Groceries.15'
+- assertNotVisible:
+    id: 'TransactionCard.EntryCategoryAmount.Restaurants_Cafes.30'
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Split_Expense'
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.DeleteButton'
+- assertVisible:
+    id: 'TransactionActionsMenu.ConvertToTransferButton'
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+
+# --- Delete Expense ---
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 

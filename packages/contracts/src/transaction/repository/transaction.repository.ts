@@ -170,6 +170,17 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     @Log(
+        (externalId, tx) => `enter externalId="${externalId}" hasTx=${String(isDefined(tx))}`,
+        (result, externalId, tx) => `done externalId="${externalId}" hasTx=${String(isDefined(tx))} transactionId=${result?.id ?? 'none'}`,
+        (error, externalId, tx) => `throw externalId="${externalId}" hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async findByExternalId(externalId: string, tx?: DB): Promise<TransactionEntityInterface | undefined> {
+        return await (tx ?? this.db).query.TransactionEntityTable.findFirst({
+            where: and(eq(TransactionEntityTable.externalId, externalId), isNull(TransactionEntityTable.deletedAt))
+        });
+    }
+
+    @Log(
         canonicalTransactionId => `enter canonicalTransactionId=${canonicalTransactionId}`,
         (result, canonicalTransactionId) =>
             `done canonicalTransactionId=${canonicalTransactionId} sourceTransactionIds=${result.map(row => row.sourceTransactionId).join(',')}`,
