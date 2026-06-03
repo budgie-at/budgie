@@ -38,11 +38,11 @@ msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verf
 
 #: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
 msgid "{count, plural, one {# bank sync item repaired} other {# bank sync items repaired}}"
-msgstr ""
+msgstr "{count, plural, one {# Bank-Sync-Eintrag repariert} other {# Bank-Sync-Einträge repariert}}"
 
 #: src/settings/utils/get-bank-sync-repair-text.util.ts
 msgid "{count, plural, one {# bank sync repair} other {# bank sync repairs}}"
-msgstr ""
+msgstr "{count, plural, one {# Bank-Sync-Reparatur} other {# Bank-Sync-Reparaturen}}"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
@@ -410,7 +410,7 @@ msgstr "Bank-Synchronisation"
 
 #: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
 msgid "Bank sync data repairs"
-msgstr ""
+msgstr "Reparaturen der Bank-Sync-Daten"
 
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
@@ -455,7 +455,7 @@ msgstr "Budgie"
 
 #: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
-msgstr ""
+msgstr "Budgie kann doppelte Bank-Sync-Importe finden und Überweisungskonsolidierungen reparieren, die auf inaktiven Konten gelandet sind."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -1265,15 +1265,15 @@ msgstr "Füllen Sie die Kontodetails aus"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
-msgstr ""
+msgstr "Konten filtern"
 
 #: src/app/transaction-category-filter.tsx
 msgid "Filter categories"
-msgstr ""
+msgstr "Kategorien filtern"
 
 #: src/app/transaction-tag-filter.tsx
 msgid "Filter tags"
-msgstr ""
+msgstr "Tags filtern"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
@@ -1668,7 +1668,7 @@ msgstr "Keine archivierten Konten entsprechen deiner Suche"
 
 #: src/settings/components/bank-sync-repairs-empty-state-card/bank-sync-repairs-empty-state-card.tsx
 msgid "No bank sync repairs found."
-msgstr ""
+msgstr "Keine Bank-Sync-Reparaturen gefunden."
 
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
