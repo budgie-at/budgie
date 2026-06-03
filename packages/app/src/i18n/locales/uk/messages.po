@@ -36,13 +36,13 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# стовпець доступний} few {# стовпці доступні} many {# стовпців доступні} other {# стовпця доступні}}"
 
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
-msgid "{count, plural, one {# duplicate imported transaction} other {# duplicate imported transactions}}"
-msgstr "{count, plural, one {# дубльована імпортована транзакція} few {# дубльовані імпортовані транзакції} many {# дубльованих імпортованих транзакцій} other {# дубльованої імпортованої транзакції}}"
+#: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
+msgid "{count, plural, one {# bank sync item repaired} other {# bank sync items repaired}}"
+msgstr "{count, plural, one {# елемент банківської синхронізації виправлено} few {# елементи банківської синхронізації виправлено} many {# елементів банківської синхронізації виправлено} other {# елемента банківської синхронізації виправлено}}"
 
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
-msgid "{count, plural, one {# duplicate transaction removed} other {# duplicate transactions removed}}"
-msgstr "{count, plural, one {# дубльовану транзакцію видалено} few {# дубльовані транзакції видалено} many {# дубльованих транзакцій видалено} other {# дубльованої транзакції видалено}}"
+#: src/settings/utils/get-bank-sync-repair-text.util.ts
+msgid "{count, plural, one {# bank sync repair} other {# bank sync repairs}}"
+msgstr "{count, plural, one {# виправлення банківської синхронізації} few {# виправлення банківської синхронізації} many {# виправлень банківської синхронізації} other {# виправлення банківської синхронізації}}"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
@@ -363,6 +363,7 @@ msgid "Are you sure you want to delete this rule?"
 msgstr "Ви впевнені, що хочете видалити це правило?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Are you sure?"
@@ -402,13 +403,14 @@ msgid "Bank sync"
 msgstr "Синхронізація банку"
 
 #: src/app/(main)/create-account/index.tsx
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
 msgid "Bank Sync"
 msgstr "Синхронізація з банком"
 
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
-msgid "Bank sync data repaired"
-msgstr "Дані банківської синхронізації виправлено"
+#: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
+msgid "Bank sync data repairs"
+msgstr "Виправлення даних банківської синхронізації"
 
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
@@ -451,9 +453,9 @@ msgstr "Позичено"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
-msgid "Budgie can find duplicate transactions created by bank sync import issues and soft-delete only the extra imported copies."
-msgstr "Budgie може знайти дубльовані транзакції, створені через проблеми імпорту банківської синхронізації, і позначити видаленими лише зайві імпортовані копії."
+#: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
+msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
+msgstr "Budgie може знайти дублікати імпортів банківської синхронізації та виправити консолідації переказів, що потрапили на неактивні рахунки."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -463,7 +465,7 @@ msgstr "Budgie заповнить відсутні значення в базо�
 msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
 msgstr "Budgie об'єднає надійні збіги переказів і відшкодувань. Неоднозначні збіги залишаться без змін."
 
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie позначить як видалені такі записи: {countText}. Ваші ручні транзакції залишаться без змін."
 
@@ -474,7 +476,6 @@ msgstr "Budgie позначить як видалені такі записи: {
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
@@ -482,6 +483,7 @@ msgstr "Budgie позначить як видалені такі записи: {
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
@@ -678,7 +680,7 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account"
 msgstr "Не вдалося архівувати рахунок"
 
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+#: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Could not check bank sync data"
 msgstr "Не вдалося перевірити дані банківської синхронізації"
 
@@ -780,7 +782,7 @@ msgstr "Не вдалося перепризначити тег"
 msgid "Could not recalculate balances"
 msgstr "Не вдалося перерахувати баланси"
 
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+#: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
 msgid "Could not repair bank sync data"
 msgstr "Не вдалося виправити дані банківської синхронізації"
 
@@ -862,21 +864,9 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create anyway"
 msgstr "Все одно створити"
 
-#: src/app/transaction-category-filter.tsx
-msgid "Create Categories"
-msgstr "Створити категорії"
-
 #: src/category/components/category-form/category-form.tsx
 msgid "Create Category"
 msgstr "Створити категорію"
-
-#: src/app/transaction-category-filter.tsx
-msgid "Create custom categories in Settings to label and filter your transactions"
-msgstr "Створіть користувацькі категорії в Налаштуваннях для позначення та фільтрації ваших транзакцій"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create custom tags in Settings to label and filter your transactions"
-msgstr "Створіть користувацькі теги в Налаштуваннях для позначення та фільтрації ваших транзакцій"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
@@ -887,17 +877,13 @@ msgstr "Створіть один, щоб розпочати."
 msgid "Create Rule"
 msgstr "Створити правило"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Створюйте правила для автоматичної категоризації та тегування банківських транзакцій"
 
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create Tag"
 msgstr "Створити тег"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create Tags"
-msgstr "Створити теги"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "Create tags to organize your transactions"
@@ -1028,10 +1014,6 @@ msgstr "Завантаження моделей ШІ…"
 #: src/ai/service/ai-system-status.service.ts
 msgid "Downloading models"
 msgstr "Завантаження моделей"
-
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
-msgid "Duplicate imported transactions"
-msgstr "Дубльовані імпортовані транзакції"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Duplicate rule"
@@ -1186,6 +1168,7 @@ msgstr "Дорівнює"
 msgid "Errors"
 msgstr "Помилки"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Erste"
 msgstr "Erste"
@@ -1279,6 +1262,18 @@ msgstr "Поле"
 #: src/account/component/create-account-screen/create-account-screen.tsx
 msgid "Fill in the account details"
 msgstr "Заповніть деталі рахунку"
+
+#: src/app/transaction-account-filter.tsx
+msgid "Filter accounts"
+msgstr "Фільтрувати рахунки"
+
+#: src/app/transaction-category-filter.tsx
+msgid "Filter categories"
+msgstr "Фільтрувати категорії"
+
+#: src/app/transaction-tag-filter.tsx
+msgid "Filter tags"
+msgstr "Фільтрувати теги"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
@@ -1671,7 +1666,10 @@ msgstr "Немає архівованих рахунків"
 msgid "No archived accounts match your search"
 msgstr "Жоден архівований рахунок не відповідає вашому запиту"
 
-#: src/app/transaction-category-filter.tsx
+#: src/settings/components/bank-sync-repairs-empty-state-card/bank-sync-repairs-empty-state-card.tsx
+msgid "No bank sync repairs found."
+msgstr "Виправлень банківської синхронізації не знайдено."
+
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "Категорій не знайдено"
@@ -1679,10 +1677,6 @@ msgstr "Категорій не знайдено"
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "Жодна категорія не відповідає вашому пошуку"
-
-#: src/app/transaction-category-filter.tsx
-msgid "No Categories Yet"
-msgstr "Поки немає категорій"
 
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
@@ -1703,10 +1697,6 @@ msgstr "Не знайдено жодної валюти"
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No Custom Categories"
 msgstr "Немає власних категорій"
-
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
-msgid "No duplicate imported transactions found."
-msgstr "Дубльованих імпортованих транзакцій не знайдено."
 
 #: src/app/icon-selector.tsx
 msgid "No icons found"
@@ -1750,18 +1740,15 @@ msgstr "MCC-кодів не знайдено"
 msgid "No recurring payments detected"
 msgstr "Повторювані платежі не виявлено"
 
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
-msgid "No repairs needed"
-msgstr "Виправлення не потрібні"
-
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 #: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No Results"
 msgstr "Немає результатів"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "No Rules Yet"
 msgstr "Правил ще немає"
 
@@ -1769,7 +1756,6 @@ msgstr "Правил ще немає"
 msgid "No source transactions"
 msgstr "Немає вихідних транзакцій"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "Тегів не знайдено"
@@ -1782,7 +1768,6 @@ msgstr "Немає тегів за цей період"
 msgid "No tags match your search"
 msgstr "Жоден тег не відповідає вашому пошуку"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
@@ -2056,14 +2041,6 @@ msgstr "Регулярні"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
 
-#: src/transaction/service/transaction-refund.service.ts
-msgid "Refund amount cannot exceed the expense"
-msgstr "Сума повернення не може перевищувати витрату"
-
-#: src/transaction/service/transaction-refund.service.ts
-msgid "Refund conversion starts from an income"
-msgstr "Перетворення на повернення починається з доходу"
-
 #: src/transaction/components/refunded-pill/refunded-pill.tsx
 msgid "Refunded"
 msgstr "Повернено"
@@ -2076,11 +2053,7 @@ msgstr "Повернено {formattedRefundedAmount}"
 msgid "Remove duplicate imported bank transactions"
 msgstr "Видалити дубльовані імпортовані банківські транзакції"
 
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
-msgid "Remove {duplicateReference}; keep {keptReference}"
-msgstr "Видалити {duplicateReference}; залишити {keptReference}"
-
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 msgid "Repair"
 msgstr "Виправити"
 
@@ -2218,6 +2191,7 @@ msgid "Search tags..."
 msgstr "Пошук тегів..."
 
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
+#: src/rule/components/rules-list-page/rules-list-page.tsx
 msgid "Search..."
 msgstr "Пошук..."
 
@@ -2346,10 +2320,6 @@ msgstr "Вибрати тип"
 #: src/app/import-column-mapper.tsx
 msgid "Selected"
 msgstr "Вибрано"
-
-#: src/transaction/service/transaction-refund.service.ts
-msgid "Selected transaction is already consolidated"
-msgstr "Вибрану транзакцію вже об'єднано"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
@@ -2525,6 +2495,7 @@ msgstr "Теги ({selectedTagsCount})"
 msgid "Tap re-record to try again"
 msgstr "Торкніться «Записати знову», щоб спробувати ще раз"
 
+#: src/@generic/component/search-input/search-input.tsx
 #: src/app/import-column-mapper.tsx
 msgid "Tap to clear"
 msgstr "Натисніть, щоб очистити"
@@ -2650,7 +2621,6 @@ msgstr "Транзакція повинна мати рахунок призна
 msgid "Transaction must have a source account"
 msgstr "Транзакція повинна мати рахунок-джерело"
 
-#: src/transaction/service/transaction-refund.service.ts
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
@@ -2716,6 +2686,7 @@ msgstr "Спробуйте іншого продавця, суму або дат
 #: src/app/language-selector.tsx
 #: src/app/rule-mcc-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
@@ -2729,7 +2700,7 @@ msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
 #: src/ai/component/voice-input-error/voice-input-error.tsx
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+#: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Try Again"
 msgstr "Спробувати знову"
 
