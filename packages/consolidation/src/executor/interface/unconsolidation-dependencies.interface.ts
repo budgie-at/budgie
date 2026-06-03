@@ -7,7 +7,7 @@ export interface UnconsolidationDependenciesInterface {
     >;
     readonly transactionRepository: Pick<
         TransactionRepository,
-        'clearConsolidationParent' | 'deleteById' | 'findByExternalId' | 'getByIdRaw' | 'setConsolidationType'
+        'clearConsolidationParent' | 'deleteById' | 'getByIdRaw' | 'setConsolidationType'
     >;
     readonly transactionTagsRepository: Pick<TransactionTagsRepository, 'deleteByTransactionId'>;
 }

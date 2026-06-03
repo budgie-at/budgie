@@ -62,7 +62,7 @@ export const SplitEntryRow = (props: Props) => {
                         border={false}
                         variant={variant}
                     />
-                    <Text className={cn('text-md font-semibold flex-1', titleClassName)} numberOfLines={1}>
+                    <Text className={cn('text-md font-semibold flex-1', titleClassName)} numberOfLines={2} ellipsizeMode="tail">
                         {categoryTitle}
                     </Text>
                 </HapticPressable>

@@ -211,14 +211,6 @@ export const SimpleQuickForm = (props: Props) => {
         }
     };
 
-    const buildFeeEntriesFromResult = (result: TransactionFeeModalResult, accountId: number): TransactionEntryCreateInputInterface[] => {
-        if (!isDefined(result.entry) || result.shouldRemove) {
-            return [];
-        }
-
-        return [{ ...result.entry, accountId, type: TransactionEntryTypeEnum.FEE }];
-    };
-
     const applyFeeResult = (
         result: TransactionFeeModalResult,
         currentEntries: TransactionEntryCreateInputInterface[],
@@ -226,7 +218,7 @@ export const SimpleQuickForm = (props: Props) => {
         accountId: number
     ) => {
         const categoryEntries = getTransactionCategoryEntries(currentEntries);
-        const nextFeeEntries = buildFeeEntriesFromResult(result, accountId);
+        const nextFeeEntries = result.map(entry => ({ ...entry, accountId, type: TransactionEntryTypeEnum.FEE }));
         const previousFeeAmount = sumEntryAmounts(currentFeeEntries);
         const nextFeeAmount = sumEntryAmounts(nextFeeEntries);
 
