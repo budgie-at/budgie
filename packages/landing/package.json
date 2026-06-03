@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/landing",
-    "version": "5.31.1",
+    "version": "5.32.2",
     "private": true,
     "scripts": {
         "build": "next build",

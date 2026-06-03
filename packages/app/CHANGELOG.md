@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.32.3](https://github.com/budgie-at/budgie/compare/v5.32.2...v5.32.3) (2026-06-03)
+
+### Bug Fixes
+
+- **app:** refresh Monobank background sync registration ([#536](https://github.com/budgie-at/budgie/issues/536)) ([66e094b](https://github.com/budgie-at/budgie/commit/66e094bd030fbb78faf45087c6c3fdb59a639014))
+
+## [5.32.2](https://github.com/budgie-at/budgie/compare/v5.32.1...v5.32.2) (2026-06-03)
+
+**Note:** Version bump only for package @budgie-at/app
+
 ## [5.32.1](https://github.com/budgie-at/budgie/compare/v5.32.0...v5.32.1) (2026-06-03)
 
 ### Bug Fixes

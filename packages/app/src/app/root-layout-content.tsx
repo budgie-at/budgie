@@ -50,6 +50,7 @@ import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
+import { syncWorkloadService } from '../sync/service/sync-workload.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
@@ -60,7 +61,11 @@ i18n.activate(i18nGetOSLocale());
 void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
-const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
+const handleAppStateChange = (isActive: boolean): void => {
+    if (isActive) {
+        void syncWorkloadService.run('foreground-monobank', () => monobankSyncService.sync());
+    }
+};
 
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export const RootLayoutContent = () => {
