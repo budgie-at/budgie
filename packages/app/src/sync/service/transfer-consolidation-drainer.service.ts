@@ -7,6 +7,7 @@ import { foregroundWorkloadService } from '../../@generic/service/foreground-wor
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 
+import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationService } from './transfer-consolidation.service';
 
 class TransferConsolidationDrainerService {
@@ -56,7 +57,7 @@ class TransferConsolidationDrainerService {
         try {
             while (this.hasPendingRun) {
                 this.hasPendingRun = false;
-                await transferConsolidationService.consolidate();
+                await syncWorkloadService.run('transfer-consolidation-drain', () => transferConsolidationService.consolidate());
             }
         } finally {
             this.isRunning = false;
