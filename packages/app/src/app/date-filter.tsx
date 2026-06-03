@@ -15,6 +15,16 @@ import { getDateFilterByPeriod } from '../@generic/utils/date/get-date-filter-by
 import { getPeriodByDateRange } from '../@generic/utils/date/get-period-by-date-range.util';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 
+const DATE_FILTER_PERIODS: readonly DatePeriodEnum[] = [
+    DatePeriodEnum.THIS_MONTH,
+    DatePeriodEnum.LAST_MONTH,
+    DatePeriodEnum.ALL_TIME,
+    DatePeriodEnum.TODAY,
+    DatePeriodEnum.THIS_WEEK,
+    DatePeriodEnum.LAST_WEEK,
+    DatePeriodEnum.THIS_YEAR
+];
+
 export default function DateFilterModal() {
     const { t } = useLingui();
     const [, resolveDateFilter, currentParams] = useDateFilterModal();
@@ -44,7 +54,7 @@ export default function DateFilterModal() {
 
             <FilterSheetDrawer>
                 <ScrollView contentContainerClassName="gap-x-sm" showsHorizontalScrollIndicator={false} horizontal>
-                    {Object.values(DatePeriodEnum).map(period => (
+                    {DATE_FILTER_PERIODS.map(period => (
                         <DateFilterItem
                             key={period}
                             period={period}
