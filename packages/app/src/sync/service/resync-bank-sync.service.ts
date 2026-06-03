@@ -8,6 +8,7 @@ import { microPause } from '../../@generic/utils/micro-pause.util';
 import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
 
 import { monobankSyncService } from './monobank-sync.service';
+import { syncWorkloadService } from './sync-workload.service';
 
 import type { ResyncBankSyncInputInterface } from '../interface/resync-bank-sync-input.interface';
 import type { DB, TransactionEntityInterface } from '@budgie/contracts';
@@ -30,7 +31,7 @@ class ResyncBankSyncService {
             }
         });
 
-        monobankSyncService.sync().catch(emptyFn);
+        syncWorkloadService.run('manual-monobank-resync', () => monobankSyncService.sync()).catch(emptyFn);
     }
 
     private async resyncFull(accountId: number, tx: DB): Promise<void> {
