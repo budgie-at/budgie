@@ -194,8 +194,7 @@ appId: ${APP_ID}
     visible: 'Remove split?'
     timeout: 10000
 - tapOn:
-    text: 'Remove split'
-    index: 0
+    text: '^Remove split$'
 - extendedWaitUntil:
     notVisible: 'Remove split?'
     timeout: 15000

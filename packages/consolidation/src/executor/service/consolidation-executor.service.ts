@@ -496,7 +496,7 @@ export class ConsolidationExecutorService {
                     accountId: candidate.sourceAccountId,
                     categoryId: feeEntry.categoryId,
                     categorySource: feeEntry.categorySource,
-                    mccCategoryId: null,
+                    mccCategoryId: feeEntry.mccCategoryId,
                     type: TransactionEntryTypeEnum.FEE,
                     amount: feeEntry.amount,
                     externalId: null,
