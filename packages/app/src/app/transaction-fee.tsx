@@ -17,7 +17,7 @@ export default function TransactionFeeModal() {
     const hadParamsRef = useRef(isDefined(currentParams));
 
     const screenOptions = { contentStyle: { backgroundColor } };
-    const containerStyle = { flex: 1, backgroundColor };
+    const containerStyle = { backgroundColor };
 
     const handleConfirm = (result: TransactionFeeModalResult) => {
         resolveTransactionFee(result);
