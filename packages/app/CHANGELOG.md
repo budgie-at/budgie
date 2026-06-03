@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.32.1](https://github.com/budgie-at/budgie/compare/v5.32.0...v5.32.1) (2026-06-03)
+
+### Bug Fixes
+
+- **app:** ignore package scripts in fingerprint ([#537](https://github.com/budgie-at/budgie/issues/537)) ([93e3eb1](https://github.com/budgie-at/budgie/commit/93e3eb1816d72d68ce6f7449564821829aa783a6))
+
 # [5.32.0](https://github.com/budgie-at/budgie/compare/v5.31.3...v5.32.0) (2026-06-02)
 
 ### Features
