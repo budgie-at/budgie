@@ -12,10 +12,12 @@ import { DatePicker } from './date-picker';
 
 interface Props {
     readonly range: DateRangeInterface | null;
+    readonly calendarResetKey: number;
+    readonly visibleDate: Date | null;
     readonly onChange: (range: DateRangeInterface) => void;
 }
 
-export const RangeDatePicker = ({ range, onChange }: Props) => {
+export const RangeDatePicker = ({ range, calendarResetKey, visibleDate, onChange }: Props) => {
     const [, hapticImpact] = useVibration();
 
     const handleChange = (value: { startDate?: DateType; endDate?: DateType }) => {
@@ -35,5 +37,15 @@ export const RangeDatePicker = ({ range, onChange }: Props) => {
         });
     };
 
-    return <DatePicker startDate={range?.from} endDate={range?.to} mode="range" onChange={handleChange} />;
+    return (
+        <DatePicker
+            key={calendarResetKey}
+            startDate={range?.from}
+            endDate={range?.to}
+            mode="range"
+            month={visibleDate?.getMonth()}
+            year={visibleDate?.getFullYear()}
+            onChange={handleChange}
+        />
+    );
 };
