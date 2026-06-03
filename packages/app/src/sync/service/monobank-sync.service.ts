@@ -9,7 +9,7 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositi
 
 import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
+import { TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -31,6 +31,7 @@ import type { AccountEntityInterface, BankSyncEntityInterface, MccCategoryLookup
 const logger = getLogger('AppMonobankSyncService');
 
 class AppMonobankSyncService {
+    private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 15;
     private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
 
     private readonly provider = ExternalSourceEnum.MONOBANK;
@@ -68,6 +69,16 @@ class AppMonobankSyncService {
         }
 
         return mapBankAccountsToPreview(bankAccounts, this.provider);
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async registerBackgroundTask(): Promise<void> {
+        if (await TaskManager.isTaskRegisteredAsync(MONOBANK_SYNC_TASK)) {
+            await BackgroundTask.unregisterTaskAsync(MONOBANK_SYNC_TASK);
+        }
+        await BackgroundTask.registerTaskAsync(MONOBANK_SYNC_TASK, {
+            minimumInterval: AppMonobankSyncService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
+        });
     }
 
     @Log(
@@ -307,13 +318,6 @@ class AppMonobankSyncService {
         if (enabled) {
             void this.sync();
         }
-    }
-
-    async registerBackgroundTask(): Promise<void> {
-        if (await TaskManager.isTaskRegisteredAsync(MONOBANK_SYNC_TASK)) {
-            return;
-        }
-        await BackgroundTask.registerTaskAsync(MONOBANK_SYNC_TASK, { minimumInterval: FIFTEEN_MINUTES_IN_SECONDS });
     }
 
     private async processPendingSyncs(): Promise<BackgroundTask.BackgroundTaskResult> {

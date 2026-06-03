@@ -3,7 +3,7 @@ const config = {
     sourceSkips: [
         'ExpoConfigRuntimeVersionIfString',
         'ExpoConfigVersions',
-        'PackageJsonAndroidAndIosScriptsIfNotContainRun',
+        'PackageJsonScriptsAll',
         'ExpoConfigIosBundleIdentifier',
         'ExpoConfigAndroidPackage',
         'ExpoConfigNames'

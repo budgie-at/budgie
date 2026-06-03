@@ -866,21 +866,9 @@ msgstr "Transaktions-Tags erstellen und organisieren"
 msgid "Create anyway"
 msgstr "Trotzdem erstellen"
 
-#: src/app/transaction-category-filter.tsx
-msgid "Create Categories"
-msgstr "Kategorien erstellen"
-
 #: src/category/components/category-form/category-form.tsx
 msgid "Create Category"
 msgstr "Kategorie erstellen"
-
-#: src/app/transaction-category-filter.tsx
-msgid "Create custom categories in Settings to label and filter your transactions"
-msgstr "Erstellen Sie benutzerdefinierte Kategorien in den Einstellungen, um Ihre Transaktionen zu kennzeichnen und zu filtern"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create custom tags in Settings to label and filter your transactions"
-msgstr "Erstellen Sie benutzerdefinierte Tags in den Einstellungen, um Ihre Transaktionen zu kennzeichnen und zu filtern"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
@@ -898,10 +886,6 @@ msgstr "Regeln erstellen, um Banktransaktionen automatisch zu kategorisieren und
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create Tag"
 msgstr "Tag erstellen"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create Tags"
-msgstr "Tags erstellen"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "Create tags to organize your transactions"
@@ -1284,6 +1268,18 @@ msgstr "Feld"
 #: src/account/component/create-account-screen/create-account-screen.tsx
 msgid "Fill in the account details"
 msgstr "Füllen Sie die Kontodetails aus"
+
+#: src/app/transaction-account-filter.tsx
+msgid "Filter accounts"
+msgstr "Konten filtern"
+
+#: src/app/transaction-category-filter.tsx
+msgid "Filter categories"
+msgstr "Kategorien filtern"
+
+#: src/app/transaction-tag-filter.tsx
+msgid "Filter tags"
+msgstr "Tags filtern"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
@@ -1680,7 +1676,6 @@ msgstr "Keine archivierten Konten entsprechen deiner Suche"
 msgid "No bank sync repairs found."
 msgstr "Keine Bank-Sync-Reparaturen gefunden."
 
-#: src/app/transaction-category-filter.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "Keine Kategorien gefunden"
@@ -1688,10 +1683,6 @@ msgstr "Keine Kategorien gefunden"
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "Keine Kategorien entsprechen Ihrer Suche"
-
-#: src/app/transaction-category-filter.tsx
-msgid "No Categories Yet"
-msgstr "Noch keine Kategorien"
 
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
@@ -1771,7 +1762,6 @@ msgstr "Noch keine Regeln"
 msgid "No source transactions"
 msgstr "Keine Quelltransaktionen"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "Keine Tags gefunden"
@@ -1784,7 +1774,6 @@ msgstr "Keine Tags in diesem Zeitraum"
 msgid "No tags match your search"
 msgstr "Keine Tags entsprechen Ihrer Suche"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No Tags Yet"
 msgstr "Noch keine Tags"
@@ -2536,6 +2525,7 @@ msgstr "Tags ({selectedTagsCount})"
 msgid "Tap re-record to try again"
 msgstr "Auf 'Erneut aufnehmen' tippen, um es erneut zu versuchen"
 
+#: src/@generic/component/search-input/search-input.tsx
 #: src/app/import-column-mapper.tsx
 msgid "Tap to clear"
 msgstr "Tippen zum Leeren"
