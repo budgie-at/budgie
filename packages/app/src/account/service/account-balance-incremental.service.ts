@@ -6,11 +6,12 @@ import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared'
 
 import { accountBalanceRepository, accountRepository } from '../../@generic/drizzle/db/db';
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
-import { ONE_WEEK_IN_SECONDS } from '../constant/one-week-in-seconds.constant';
 
 import type { AccountBalanceCreateEntityInterface, AccountBalanceEntityInterface, DB } from '@budgie/contracts';
 
 class AccountBalanceIncrementalService {
+    private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 7 * 24 * 60;
+
     @Log(
         (truncate, tx) => `enter truncate=${String(truncate)} tx=${String(isDefined(tx))}`,
         (result, truncate, tx) => `done truncate=${String(truncate)} tx=${String(isDefined(tx))} result=${String(result)}`,
@@ -43,7 +44,7 @@ class AccountBalanceIncrementalService {
         }
 
         await BackgroundTask.registerTaskAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK, {
-            minimumInterval: ONE_WEEK_IN_SECONDS
+            minimumInterval: AccountBalanceIncrementalService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
         });
     }
 

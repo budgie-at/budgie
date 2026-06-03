@@ -11,6 +11,12 @@ if (Constants.expoConfig?.extra?.[loggingEnabledKey] !== true) {
     disableBankSyncLogging();
 }
 
+const unstableSettings = {
+    anchor: '(tabs)'
+};
+
+export { unstableSettings as 'unstable_settings' };
+
 export default function RootLayout() {
     return <RootLayoutContent />;
 }

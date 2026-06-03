@@ -866,21 +866,9 @@ msgstr "Créer et organiser les étiquettes de transaction"
 msgid "Create anyway"
 msgstr "Créer quand même"
 
-#: src/app/transaction-category-filter.tsx
-msgid "Create Categories"
-msgstr "Créer des catégories"
-
 #: src/category/components/category-form/category-form.tsx
 msgid "Create Category"
 msgstr "Créer une catégorie"
-
-#: src/app/transaction-category-filter.tsx
-msgid "Create custom categories in Settings to label and filter your transactions"
-msgstr "Créez des catégories personnalisées dans les Paramètres pour étiqueter et filtrer vos transactions"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create custom tags in Settings to label and filter your transactions"
-msgstr "Créez des étiquettes personnalisées dans les Paramètres pour étiqueter et filtrer vos transactions"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
@@ -898,10 +886,6 @@ msgstr "Créez des règles pour catégoriser et taguer automatiquement vos trans
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create Tag"
 msgstr "Créer une étiquette"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create Tags"
-msgstr "Créer des étiquettes"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "Create tags to organize your transactions"
@@ -1284,6 +1268,18 @@ msgstr "Champ"
 #: src/account/component/create-account-screen/create-account-screen.tsx
 msgid "Fill in the account details"
 msgstr "Remplissez les détails du compte"
+
+#: src/app/transaction-account-filter.tsx
+msgid "Filter accounts"
+msgstr "Filtrer les comptes"
+
+#: src/app/transaction-category-filter.tsx
+msgid "Filter categories"
+msgstr "Filtrer les catégories"
+
+#: src/app/transaction-tag-filter.tsx
+msgid "Filter tags"
+msgstr "Filtrer les étiquettes"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
@@ -1680,7 +1676,6 @@ msgstr "Aucun compte archivé ne correspond à votre recherche"
 msgid "No bank sync repairs found."
 msgstr "Aucune réparation de synchronisation bancaire trouvée."
 
-#: src/app/transaction-category-filter.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "Aucune catégorie trouvée"
@@ -1688,10 +1683,6 @@ msgstr "Aucune catégorie trouvée"
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "Aucune catégorie ne correspond à votre recherche"
-
-#: src/app/transaction-category-filter.tsx
-msgid "No Categories Yet"
-msgstr "Aucune catégorie pour le moment"
 
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
@@ -1771,7 +1762,6 @@ msgstr "Aucune règle pour l'instant"
 msgid "No source transactions"
 msgstr "Aucune transaction source"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "Aucune étiquette trouvée"
@@ -1784,7 +1774,6 @@ msgstr "Aucun tag dans cette période"
 msgid "No tags match your search"
 msgstr "Aucune étiquette ne correspond à votre recherche"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No Tags Yet"
 msgstr "Aucune étiquette pour le moment"
@@ -2536,6 +2525,7 @@ msgstr "Étiquettes ({selectedTagsCount})"
 msgid "Tap re-record to try again"
 msgstr "Appuyez sur réenregistrer pour réessayer"
 
+#: src/@generic/component/search-input/search-input.tsx
 #: src/app/import-column-mapper.tsx
 msgid "Tap to clear"
 msgstr "Appuyez pour effacer"
