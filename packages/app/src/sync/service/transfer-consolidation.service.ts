@@ -6,7 +6,6 @@ import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-comm
 
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { THIRTY_MINUTES_IN_SECONDS } from '../constant/time.constant';
 import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-task.constant';
 
 import { transferConsolidationAutoCandidateService } from './transfer-consolidation-auto-candidate.service';
@@ -22,6 +21,8 @@ import type {
 const logger = getLogger('TransferConsolidationService');
 
 class TransferConsolidationService {
+    private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 30;
+
     private activeOperation: Promise<unknown> | null = null;
     private isRunning = false;
 
@@ -32,7 +33,7 @@ class TransferConsolidationService {
         }
 
         await BackgroundTask.registerTaskAsync(TRANSFER_CONSOLIDATION_TASK, {
-            minimumInterval: THIRTY_MINUTES_IN_SECONDS
+            minimumInterval: TransferConsolidationService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
         });
     }
 
