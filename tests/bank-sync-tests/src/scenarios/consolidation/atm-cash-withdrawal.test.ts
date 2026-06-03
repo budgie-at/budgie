@@ -139,7 +139,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
         expect(restoredSourceEntries).toHaveLength(2);
     });
 
-    it('enqueues consolidation after an empty Monobank sync so historical ATM splits can be repaired', async () => {
+    it('enqueues consolidation after an empty Monobank sync so historical ATM fee entries can be repaired', async () => {
         const staleForwardSyncDate = new Date(2026, 0, 1);
         const { bankSync } = setupMonobankFixture();
         seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
