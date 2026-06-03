@@ -1,14 +1,15 @@
-import { TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useTransactionFeeModal } from '../../context/transaction-fee-modal.context';
 import { useCurrencyConversion } from '../../hook/use-currency-conversion.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
@@ -16,9 +17,13 @@ import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hoo
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { buildTransferEntries } from '../../utils/build-transfer-entries.util';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
+import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
+import { getTransactionFeeEntries } from '../../utils/get-transaction-fee-entries.util';
+import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
+import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 import {
@@ -41,15 +46,19 @@ export const TransferQuickForm = (props: Props) => {
 
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
-    const { setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
+    const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { validateAndShake } = useQuickFormValidation();
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
+    const [openTransactionFee] = useTransactionFeeModal();
 
     const [isEditingDestination, setIsEditingDestination] = useState(false);
 
     const initialAmount = getValues('amount');
     const conversion = useCurrencyConversion();
+    const entries = useWatch({ control, name: 'entries' });
+    const feeEntries = getTransactionFeeEntries(entries);
+    const feeAmount = sumEntryAmounts(feeEntries);
 
     const handleSourceAmountChange = (value: number) => {
         setValue('amount', value);
@@ -102,6 +111,7 @@ export const TransferQuickForm = (props: Props) => {
 
     const fromCode = fromAccount?.instrument.code ?? '';
     const toCode = toAccount?.instrument.code ?? '';
+    const feeCurrencySymbol = fromAccount?.instrument.symbol ?? defaultInstrument.symbol;
 
     const display = computeTransferDisplay({
         isEditingDestination,
@@ -135,6 +145,30 @@ export const TransferQuickForm = (props: Props) => {
         }
     };
 
+    const handleFeePress = async () => {
+        const currentEntries = getValues('entries');
+        const currentFeeEntries = getTransactionFeeEntries(currentEntries);
+        const sourceAccountId = fromAccountId ?? 0;
+        const result = await openTransactionFee({
+            accountId: sourceAccountId,
+            currencySymbol: feeCurrencySymbol,
+            entry: currentFeeEntries.at(0) ?? null,
+            variant
+        });
+
+        if (!isDefined(result)) {
+            return;
+        }
+
+        const categoryEntries = getTransactionCategoryEntries(currentEntries);
+        const nextFeeEntries =
+            isDefined(result.entry) && !result.shouldRemove
+                ? [{ ...result.entry, accountId: sourceAccountId, type: TransactionEntryTypeEnum.FEE }]
+                : [];
+
+        setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldValidate: false });
+    };
+
     const handleConfirm = () => {
         if (isEditingDestination) {
             finishDestinationEditing();
@@ -166,11 +200,23 @@ export const TransferQuickForm = (props: Props) => {
             amount,
             categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER
         });
+        const feeEntries = getTransactionFeeEntries(getValues('entries')).map(entry => ({
+            ...entry,
+            accountId: from,
+            type: TransactionEntryTypeEnum.FEE
+        }));
 
-        setValue('entries', transferEntries, { shouldValidate: false });
+        setValue('entries', [...transferEntries, ...feeEntries], { shouldValidate: false });
 
         onSubmit();
     };
+
+    const handleFeePillPress = () => void handleFeePress();
+    const amountTopContent = (
+        <View className="h-[38px] items-center justify-end">
+            <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} showEmptyState onPress={handleFeePillPress} />
+        </View>
+    );
 
     return (
         <View className="flex-1">
@@ -183,6 +229,7 @@ export const TransferQuickForm = (props: Props) => {
                 label={display.amountLabel}
                 isLabelFlipped={isEditingDestination}
                 testID={SimpleQuickFormSelector.AmountInput}
+                topContent={amountTopContent}
                 {...(conversion.isCrossCurrency && {
                     onLabelPress: handleConversionRowPress,
                     onSecondaryAmountPress: handleConversionRowPress

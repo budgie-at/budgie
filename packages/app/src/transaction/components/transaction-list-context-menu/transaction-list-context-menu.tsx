@@ -13,6 +13,7 @@ import { useConvertToRefundModal } from '../../context/convert-to-refund-modal.c
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
+import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { TransactionListConvertMenuItem } from '../transaction-list-convert-menu-item/transaction-list-convert-menu-item';
 
@@ -42,7 +43,7 @@ const openTransactionListTransferConversion = (
     transaction: TransactionWithRelationsEntityInterface,
     openConvertToTransfer: ReturnType<typeof useConvertToTransferModal>[0]
 ) => {
-    const [sourceEntry] = transaction.entries;
+    const [sourceEntry] = getTransactionCategoryEntries(transaction.entries);
 
     openConvertToTransfer({
         transactionId: transaction.id,
@@ -72,7 +73,8 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
 
     const isConsolidated = isDefined(transaction.consolidationType);
     const isRefunded = isDefined(transaction.consolidationParentTransactionId);
-    const canConvert = !isConsolidated && isConvertibleTransaction(transaction) && transaction.entries.length === 1;
+    const canConvert =
+        !isConsolidated && isConvertibleTransaction(transaction) && getTransactionCategoryEntries(transaction.entries).length === 1;
     const canConvertToRefund = !isConsolidated && !isRefunded && isIncomeTransaction(transaction);
     const actionLabel = isConsolidated ? t`Revert` : t`Delete Transaction`;
     const actionIcon = isConsolidated ? UserIconNameEnum.Undo2 : UserIconNameEnum.Trash2;

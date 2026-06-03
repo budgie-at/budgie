@@ -1,17 +1,10 @@
 /* eslint-disable max-lines -- Consolidation executor keeps per-candidate logs and the write path together for debugging */
-import {
-    BANK_FEE_CATEGORY_ID,
-    CategorySourceEnum,
-    TransactionConsolidationTypeEnum,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
-import { buildAtmFeeTransactionExternalId } from '../utils/build-atm-fee-transaction-external-id.util';
 
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
@@ -208,7 +201,7 @@ export class ConsolidationExecutorService {
 
         const canonicalTransaction = await this.createCanonicalTransfer(canonicalInput, tx);
 
-        await this.createAtmCashWithdrawalFeeExpense(candidate, sourceTransactions, canonicalTransaction.id, tx);
+        await this.createAtmCashWithdrawalFeeEntry(candidate, sourceTransactions, canonicalTransaction.id, tx);
         await this.copySourceTags(sourceTransactionIds, canonicalTransaction.id, tx);
         await this.moveSourcesToCanonical(sourceTransactionIds, canonicalTransaction.id, tx);
 
@@ -484,7 +477,7 @@ export class ConsolidationExecutorService {
         return canonicalTransaction;
     }
 
-    private async createAtmCashWithdrawalFeeExpense(
+    private async createAtmCashWithdrawalFeeEntry(
         candidate: AtmCashWithdrawalCandidateInterface,
         sourceTransactions: TransactionWithEntriesEntityInterface[],
         canonicalTransactionId: number,
@@ -496,37 +489,18 @@ export class ConsolidationExecutorService {
             return;
         }
 
-        const feeTransaction = await this.dependencies.transactionRepository.create(
-            {
-                type: TransactionTypeEnum.EXPENSE,
-                title: candidate.transactionTitle ?? '',
-                externalId: buildAtmFeeTransactionExternalId(canonicalTransactionId),
-                operatedAt: new Date(candidate.operatedAt * 1000),
-                comment: candidate.transactionComment ?? '',
-                toAccountId: null,
-                fromAccountId: candidate.sourceAccountId,
-                exchangeRate: 1,
-                externalSource: null,
-                needsEmbedding: false,
-                consolidationType: null,
-                consolidationParentTransactionId: null,
-                updatedBy: null
-            },
-            tx
-        );
-
         await this.dependencies.transactionEntryRepository.bulkCreate(
             [
                 {
-                    transactionId: feeTransaction.id,
+                    transactionId: canonicalTransactionId,
                     accountId: candidate.sourceAccountId,
-                    categoryId: BANK_FEE_CATEGORY_ID,
-                    categorySource: CategorySourceEnum.FEE,
+                    categoryId: feeEntry.categoryId,
+                    categorySource: feeEntry.categorySource,
                     mccCategoryId: null,
-                    type: TransactionEntryTypeEnum.CREDIT,
+                    type: TransactionEntryTypeEnum.FEE,
                     amount: feeEntry.amount,
                     externalId: null,
-                    exchangeRate: 1,
+                    exchangeRate: feeEntry.exchangeRate,
                     baseInstrumentId: feeEntry.baseInstrumentId,
                     baseExchangeRate: feeEntry.baseExchangeRate,
                     baseAmount: feeEntry.baseAmount,
@@ -547,7 +521,7 @@ export class ConsolidationExecutorService {
             .find(
                 entry =>
                     entry.accountId === candidate.sourceAccountId &&
-                    entry.categorySource === CategorySourceEnum.FEE &&
+                    entry.type === TransactionEntryTypeEnum.FEE &&
                     isPositiveNumber(entry.amount)
             );
     }

@@ -15,19 +15,24 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { RuleDetectionModeEnum } from '../../../rule/enum/rule-detection-mode.enum';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
+import { useTransactionFeeModal } from '../../context/transaction-fee-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
+import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
+import { getTransactionFeeEntries } from '../../utils/get-transaction-fee-entries.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { QuickFormBottomOverlay } from '../quick-form-bottom-overlay/quick-form-bottom-overlay';
 import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
+import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 import { SimpleQuickFormSelector } from './simple-quick-form.selector';
 
+import type { TransactionFeeModalResult } from '../../context/transaction-fee-modal.context';
 import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
 import type { TransactionFieldIconsRefInterface } from '../../interface/transaction-field-icons-ref.interface';
 
@@ -89,18 +94,23 @@ export const SimpleQuickForm = (props: Props) => {
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { displayValue, currencySymbol, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
     const [openSplitEntries] = useSplitEntriesModal();
+    const [openTransactionFee] = useTransactionFeeModal();
 
     const entryType = getEntryTypeForTransaction(transactionType);
 
     const comment = useWatch({ control, name: 'comment' });
-    const categoryId = useWatch({ control, name: 'entries.0.categoryId' });
-    const categorySource = useWatch({ control, name: 'entries.0.categorySource' });
     const tagIds = useWatch({ control, name: 'tagIds' });
     const entries = useWatch({ control, name: 'entries' });
     const amount = useWatch({ control, name: 'amount' });
     const accountId = useWatch({ control, name: accountFieldName }) ?? 0;
 
-    const splitEntryCount = entries.length;
+    const categoryEntries = getTransactionCategoryEntries(entries);
+    const feeEntries = getTransactionFeeEntries(entries);
+    const categoryEntry = categoryEntries.at(0);
+    const categoryId = categoryEntry?.categoryId ?? null;
+    const categorySource = categoryEntry?.categorySource ?? CategorySourceEnum.USER;
+    const feeAmount = sumEntryAmounts(feeEntries);
+    const splitEntryCount = categoryEntries.length;
     const isAmountPositive = amount > 0;
 
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
@@ -108,8 +118,18 @@ export const SimpleQuickForm = (props: Props) => {
     const accountRowRef = useRef<TransactionAccountRowRef>(null);
 
     const handleSelectCategory = (selectedCategoryId: number) => {
-        setValue('entries.0.categoryId', selectedCategoryId);
-        setValue('entries.0.categorySource', CategorySourceEnum.USER);
+        const currentEntries = getValues('entries');
+        const [currentCategoryEntry] = getTransactionCategoryEntries(currentEntries);
+
+        if (!isDefined(currentCategoryEntry)) {
+            return;
+        }
+
+        const updatedEntries = currentEntries.map(entry =>
+            entry === currentCategoryEntry ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER } : entry
+        );
+
+        setValue('entries', updatedEntries, { shouldValidate: false });
     };
 
     const handleSelectTag = (selectedTagId: number) => {
@@ -130,43 +150,109 @@ export const SimpleQuickForm = (props: Props) => {
         setFromNumeric(patternAmount);
     };
 
+    const buildInitialSplitEntries = (
+        currentCategoryEntries: TransactionEntryCreateInputInterface[],
+        accountId: number
+    ): TransactionEntryCreateInputInterface[] => {
+        if (currentCategoryEntries.length > 1) {
+            return currentCategoryEntries;
+        }
+
+        return [
+            {
+                accountId,
+                categoryId: currentCategoryEntries.at(0)?.categoryId ?? 0,
+                amount: 0,
+                type: entryType,
+                mccCategoryId: null,
+                externalId: null
+            }
+        ];
+    };
+
+    const applySplitResult = (
+        result: TransactionEntryCreateInputInterface[],
+        currentFeeEntries: TransactionEntryCreateInputInterface[],
+        feeTotal: number
+    ) => {
+        const hasMultipleEntries = result.length > 1;
+        const hasSingleEntryWithAmount = result.length === 1 && result[0].amount > 0;
+
+        if (!hasMultipleEntries && !hasSingleEntryWithAmount) {
+            return;
+        }
+
+        const categoryTotalAmount = sumEntryAmounts(result);
+        const totalAmount = transactionType === TransactionTypeEnum.EXPENSE ? categoryTotalAmount + feeTotal : categoryTotalAmount;
+
+        setValue('entries', [...result, ...currentFeeEntries], { shouldValidate: false });
+        setValue('amount', totalAmount);
+        setFromNumeric(totalAmount);
+    };
+
     const handleSplitPress = async () => {
         const currentEntries = getValues('entries');
-        const accountId = getValues(accountFieldName) ?? 0;
+        const currentCategoryEntries = getTransactionCategoryEntries(currentEntries);
+        const currentFeeEntries = getTransactionFeeEntries(currentEntries);
+        const feeTotal = sumEntryAmounts(currentFeeEntries);
         const currentAmount = getValues('amount');
-        const currentCategoryId = getValues('entries.0.categoryId') ?? 0;
-
-        const initialEntries =
-            currentEntries.length > 1
-                ? currentEntries
-                : [
-                      {
-                          accountId,
-                          categoryId: currentCategoryId,
-                          amount: 0,
-                          type: entryType,
-                          mccCategoryId: null,
-                          externalId: null
-                      }
-                  ];
-
+        const accountId = getValues(accountFieldName) ?? 0;
+        const splitAmount = transactionType === TransactionTypeEnum.EXPENSE ? Math.max(currentAmount - feeTotal, 0) : currentAmount;
         const result = await openSplitEntries({
-            entries: initialEntries,
+            entries: buildInitialSplitEntries(currentCategoryEntries, accountId),
             variant,
             entryType,
             currencySymbol,
-            totalAmount: currentAmount
+            totalAmount: splitAmount
         });
 
         if (isDefined(result)) {
-            const hasMultipleEntries = result.length > 1;
-            const hasSingleEntryWithAmount = result.length === 1 && result[0].amount > 0;
+            applySplitResult(result, currentFeeEntries, feeTotal);
+        }
+    };
 
-            if (hasMultipleEntries || hasSingleEntryWithAmount) {
-                setValue('entries', result, { shouldValidate: false });
-                const totalAmount = sumEntryAmounts(result);
-                setValue('amount', totalAmount);
-            }
+    const buildFeeEntriesFromResult = (result: TransactionFeeModalResult, accountId: number): TransactionEntryCreateInputInterface[] => {
+        if (!isDefined(result.entry) || result.shouldRemove) {
+            return [];
+        }
+
+        return [{ ...result.entry, accountId, type: TransactionEntryTypeEnum.FEE }];
+    };
+
+    const applyFeeResult = (
+        result: TransactionFeeModalResult,
+        currentEntries: TransactionEntryCreateInputInterface[],
+        currentFeeEntries: TransactionEntryCreateInputInterface[],
+        accountId: number
+    ) => {
+        const categoryEntries = getTransactionCategoryEntries(currentEntries);
+        const nextFeeEntries = buildFeeEntriesFromResult(result, accountId);
+        const previousFeeAmount = sumEntryAmounts(currentFeeEntries);
+        const nextFeeAmount = sumEntryAmounts(nextFeeEntries);
+
+        setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldValidate: false });
+
+        if (transactionType === TransactionTypeEnum.EXPENSE) {
+            const nextAmount = Math.max(getValues('amount') - previousFeeAmount + nextFeeAmount, 0);
+
+            setValue('amount', nextAmount);
+            setFromNumeric(nextAmount);
+        }
+    };
+
+    const handleFeePress = async () => {
+        const currentEntries = getValues('entries');
+        const currentFeeEntries = getTransactionFeeEntries(currentEntries);
+        const accountId = getValues(accountFieldName) ?? 0;
+        const result = await openTransactionFee({
+            accountId,
+            currencySymbol,
+            entry: currentFeeEntries.at(0) ?? null,
+            variant
+        });
+
+        if (isDefined(result)) {
+            applyFeeResult(result, currentEntries, currentFeeEntries, accountId);
         }
     };
 
@@ -176,11 +262,17 @@ export const SimpleQuickForm = (props: Props) => {
 
     const handleNormalConfirm = () => {
         const amount = getValues('amount');
-        const formCategoryId = getValues('entries.0.categoryId') ?? 0;
+        const currentEntries = getValues('entries');
         const accountId = getValues(accountFieldName) ?? 0;
+        const categoryEntry = getTransactionCategoryEntries(currentEntries).at(0);
+        const feeEntries = getTransactionFeeEntries(currentEntries).map(entry => ({ ...entry, accountId }));
+        const feeTotal = sumEntryAmounts(feeEntries);
+        const formCategoryId = categoryEntry?.categoryId ?? 0;
+        const categoryAmount = transactionType === TransactionTypeEnum.EXPENSE ? amount - feeTotal : amount;
 
         const isValid = validateAndShake([
             { isValid: amount > 0, shake: () => amountDisplayRef.current?.shake() },
+            { isValid: categoryAmount > 0, shake: () => amountDisplayRef.current?.shake() },
             { isValid: formCategoryId > 0, shake: () => fieldIconsRef.current?.shakeCategory() },
             { isValid: accountId > 0, shake: () => accountRowRef.current?.shake() }
         ]);
@@ -189,9 +281,9 @@ export const SimpleQuickForm = (props: Props) => {
             return;
         }
 
-        const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount, mccCategoryId });
+        const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount: categoryAmount, mccCategoryId });
 
-        setValue('entries', builtEntries, { shouldValidate: false });
+        setValue('entries', [...builtEntries, ...feeEntries], { shouldValidate: false });
 
         onSubmit();
     };
@@ -199,11 +291,15 @@ export const SimpleQuickForm = (props: Props) => {
     const handleSplitConfirm = () => {
         const accountId = getValues(accountFieldName) ?? 0;
         const currentEntries = getValues('entries');
-        const allEntriesValid = currentEntries.every(entry => entry.amount > 0 && isPositiveNumber(entry.categoryId));
-        const totalAmount = sumEntryAmounts(currentEntries);
+        const categoryEntries = getTransactionCategoryEntries(currentEntries);
+        const feeEntries = getTransactionFeeEntries(currentEntries).map(entry => ({ ...entry, accountId }));
+        const allEntriesValid = categoryEntries.every(entry => entry.amount > 0 && isPositiveNumber(entry.categoryId));
+        const categoryTotalAmount = sumEntryAmounts(categoryEntries);
+        const totalAmount =
+            transactionType === TransactionTypeEnum.EXPENSE ? categoryTotalAmount + sumEntryAmounts(feeEntries) : categoryTotalAmount;
 
         const isValid = validateAndShake([
-            { isValid: totalAmount > 0, shake: () => amountDisplayRef.current?.shake() },
+            { isValid: categoryTotalAmount > 0, shake: () => amountDisplayRef.current?.shake() },
             { isValid: allEntriesValid },
             { isValid: accountId > 0, shake: () => accountRowRef.current?.shake() }
         ]);
@@ -212,12 +308,14 @@ export const SimpleQuickForm = (props: Props) => {
             return;
         }
 
+        setValue('entries', [...categoryEntries, ...feeEntries], { shouldValidate: false });
         setValue('amount', totalAmount);
 
         onSubmit();
     };
 
     const handleSplitIconPress = () => void handleSplitPress();
+    const handleFeePillPress = () => void handleFeePress();
     const handleConfirm = isSplitActive ? handleSplitConfirm : handleNormalConfirm;
     const amountTopStack = (
         <View className="h-[76px] items-center justify-end gap-xs">
@@ -231,7 +329,10 @@ export const SimpleQuickForm = (props: Props) => {
                 onDismiss={onDismiss}
                 onCreatingChange={onCreatingChange}
             />
-            {amountTopContent}
+            <View className="flex-row flex-wrap items-center justify-center gap-xs">
+                {amountTopContent}
+                <TransactionFeePill amount={feeAmount} currencySymbol={currencySymbol} showEmptyState onPress={handleFeePillPress} />
+            </View>
         </View>
     );
 

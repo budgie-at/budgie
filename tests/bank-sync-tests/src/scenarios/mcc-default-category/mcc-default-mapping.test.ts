@@ -91,6 +91,7 @@ describe('mcc-default-category/mcc-default-mapping', () => {
         expect(result.entries[0].amount).toBe(30000);
         expect(result.entries[0].categoryId).toBe(42);
         expect(result.entries[0].exchangeRate).toBe(1);
+        expect(result.entries[1].type).toBe('FEE');
         expect(result.entries[1].amount).toBe(300);
         expect(result.entries[1].categoryId).toBe(BANK_FEE_CATEGORY_ID);
         expect(result.entries[1].categorySource).toBe(CategorySourceEnum.FEE);

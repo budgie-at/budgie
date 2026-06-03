@@ -9,8 +9,7 @@ import {
     TransactionConsolidationTypeEnum,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
-    TransactionEntityTable,
-    TransactionTypeEnum
+    TransactionEntityTable
 } from '@budgie/contracts';
 
 import {
@@ -26,7 +25,7 @@ import {
     testDb
 } from '../../harness';
 
-import { bankSyncRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { accountBalanceRepository, bankSyncRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
 import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
@@ -50,9 +49,9 @@ describe('consolidation/atm-cash-withdrawal', () => {
         await expectAtmCashWithdrawalConsolidation(bankAccount.id, cashAccount.id, expense.id);
     });
 
-    it('keeps Monobank ATM commission as a visible bank-fee expense after cash withdrawal consolidation', async () => {
+    it('keeps Monobank ATM commission as a fee entry after cash withdrawal consolidation', async () => {
         const { account: bankAccount } = setupMonobankFixture();
-        seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
+        const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
         monobankStub.statement([
             buildMonobank.transaction({
                 id: 'tx-atm-with-fee',
@@ -71,44 +70,50 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
         const [canonical] = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
         expect(canonical.fromAccountId).toBe(bankAccount.id);
-        const [canonicalBankEntry] = testDb
+        const canonicalEntries = testDb
             .select()
             .from(TransactionEntryEntityTable)
             .where(eq(TransactionEntryEntityTable.transactionId, canonical.id))
-            .all()
-            .filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT);
+            .all();
+        const [canonicalBankEntry] = canonicalEntries.filter(
+            entry => entry.type === TransactionEntryTypeEnum.CREDIT && entry.originalTransactionId === null
+        );
+        const [canonicalCashEntry] = canonicalEntries.filter(
+            entry => entry.type === TransactionEntryTypeEnum.DEBIT && entry.originalTransactionId === null
+        );
+        const [feeEntry] = canonicalEntries.filter(entry => String(entry.type) === 'FEE');
+
         expect(canonicalBankEntry.amount).toBe(400 * PRECISION);
-
-        const [feeTransaction] = testDb
-            .select()
-            .from(TransactionEntityTable)
-            .where(eq(TransactionEntityTable.externalId, `atm-fee:${canonical.id}`))
-            .all();
-        expect(feeTransaction.type).toBe(TransactionTypeEnum.EXPENSE);
-
-        const [feeEntry] = testDb
-            .select()
-            .from(TransactionEntryEntityTable)
-            .where(eq(TransactionEntryEntityTable.transactionId, feeTransaction.id))
-            .all();
-        expect(feeEntry.amount).toBe(8 * PRECISION);
-        expect(feeEntry.categoryId).toBe(BANK_FEE_CATEGORY_ID);
-
-        const categoryRows = statisticsRepository
-            .getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, bankAccount.instrumentId, LanguageEnum.EN)
-            .all();
-        const feeCategoryAmount = categoryRows.find(row => row.category?.id === BANK_FEE_CATEGORY_ID)?.amount;
-        expect(feeCategoryAmount).toBe(8 * PRECISION);
-
-        const secondResult = await transferConsolidationService.consolidate();
-        expect(secondResult.consolidated).toBe(0);
+        expect(canonicalCashEntry.amount).toBe(400 * PRECISION);
 
         const feeTransactions = testDb
             .select()
             .from(TransactionEntityTable)
             .where(eq(TransactionEntityTable.externalId, `atm-fee:${canonical.id}`))
             .all();
-        expect(feeTransactions).toHaveLength(1);
+        expect(feeTransactions).toHaveLength(0);
+        expect(feeEntry.amount).toBe(8 * PRECISION);
+        expect(feeEntry.categoryId).toBe(BANK_FEE_CATEGORY_ID);
+
+        const bankBalance = accountBalanceRepository.getByAccountId(bankAccount.id).get();
+        const cashBalance = accountBalanceRepository.getByAccountId(cashAccount.id).get();
+        const categoryRows = statisticsRepository
+            .getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, bankAccount.instrumentId, LanguageEnum.EN)
+            .all();
+        const feeCategoryAmount = categoryRows.find(row => row.category?.id === BANK_FEE_CATEGORY_ID)?.amount;
+        expect(bankBalance?.balance).toBe(-408 * PRECISION);
+        expect(cashBalance?.balance).toBe(400 * PRECISION);
+        expect(feeCategoryAmount).toBe(8 * PRECISION);
+
+        const secondResult = await transferConsolidationService.consolidate();
+        expect(secondResult.consolidated).toBe(0);
+
+        const secondFeeTransactions = testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(eq(TransactionEntityTable.externalId, `atm-fee:${canonical.id}`))
+            .all();
+        expect(secondFeeTransactions).toHaveLength(0);
 
         await transactionService.unconsolidateById(canonical.id);
 
