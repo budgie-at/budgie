@@ -866,21 +866,9 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create anyway"
 msgstr "Все одно створити"
 
-#: src/app/transaction-category-filter.tsx
-msgid "Create Categories"
-msgstr "Створити категорії"
-
 #: src/category/components/category-form/category-form.tsx
 msgid "Create Category"
 msgstr "Створити категорію"
-
-#: src/app/transaction-category-filter.tsx
-msgid "Create custom categories in Settings to label and filter your transactions"
-msgstr "Створіть користувацькі категорії в Налаштуваннях для позначення та фільтрації ваших транзакцій"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create custom tags in Settings to label and filter your transactions"
-msgstr "Створіть користувацькі теги в Налаштуваннях для позначення та фільтрації ваших транзакцій"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
@@ -898,10 +886,6 @@ msgstr "Створюйте правила для автоматичної кат
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create Tag"
 msgstr "Створити тег"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create Tags"
-msgstr "Створити теги"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "Create tags to organize your transactions"
@@ -1284,6 +1268,18 @@ msgstr "Поле"
 #: src/account/component/create-account-screen/create-account-screen.tsx
 msgid "Fill in the account details"
 msgstr "Заповніть деталі рахунку"
+
+#: src/app/transaction-account-filter.tsx
+msgid "Filter accounts"
+msgstr "Фільтрувати рахунки"
+
+#: src/app/transaction-category-filter.tsx
+msgid "Filter categories"
+msgstr "Фільтрувати категорії"
+
+#: src/app/transaction-tag-filter.tsx
+msgid "Filter tags"
+msgstr "Фільтрувати теги"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
@@ -1680,7 +1676,6 @@ msgstr "Жоден архівований рахунок не відповіда
 msgid "No bank sync repairs found."
 msgstr "Виправлень банківської синхронізації не знайдено."
 
-#: src/app/transaction-category-filter.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "Категорій не знайдено"
@@ -1688,10 +1683,6 @@ msgstr "Категорій не знайдено"
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "Жодна категорія не відповідає вашому пошуку"
-
-#: src/app/transaction-category-filter.tsx
-msgid "No Categories Yet"
-msgstr "Поки немає категорій"
 
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
@@ -1771,7 +1762,6 @@ msgstr "Правил ще немає"
 msgid "No source transactions"
 msgstr "Немає вихідних транзакцій"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "Тегів не знайдено"
@@ -1784,7 +1774,6 @@ msgstr "Немає тегів за цей період"
 msgid "No tags match your search"
 msgstr "Жоден тег не відповідає вашому пошуку"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
@@ -2536,6 +2525,7 @@ msgstr "Теги ({selectedTagsCount})"
 msgid "Tap re-record to try again"
 msgstr "Торкніться «Записати знову», щоб спробувати ще раз"
 
+#: src/@generic/component/search-input/search-input.tsx
 #: src/app/import-column-mapper.tsx
 msgid "Tap to clear"
 msgstr "Натисніть, щоб очистити"
