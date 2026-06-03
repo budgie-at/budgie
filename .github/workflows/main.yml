@@ -54,6 +54,20 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: true
         run: yarn install
 
+      - name: Sync Lingui catalogs
+        run: yarn i18n:sync
+
+      - name: Commit Lingui catalog changes
+        run: |
+          if git diff --quiet HEAD -- packages/app/src/i18n/locales packages/landing/src/i18n/locales; then
+            echo "Lingui catalogs are up to date."
+            exit 0
+          fi
+
+          git add packages/app/src/i18n/locales packages/landing/src/i18n/locales
+          git commit -m "chore: sync lingui catalogs [skip ci]"
+          git push origin HEAD:main
+
       - name: Publish a release
         run: yarn release
 
@@ -78,6 +92,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 2
+          ref: main
 
       - name: Setup Node
         uses: actions/setup-node@v6
