@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { type Href, router } from 'expo-router';
 import { useRef, useState } from 'react';
 
 interface ResolveOptions {
@@ -11,7 +11,7 @@ interface UseModalResolverResult<TParams, TResult> {
     resolve: (result: TResult, options?: ResolveOptions) => void;
 }
 
-export const useModalResolver = <TParams, TResult>(route: string): UseModalResolverResult<TParams, TResult> => {
+export const useModalResolver = <TParams, TResult>(route: Href): UseModalResolverResult<TParams, TResult> => {
     const [currentParams, setCurrentParams] = useState<TParams | null>(null);
     const resolverRef = useRef<((result: TResult) => void) | null>(null);
 
@@ -19,7 +19,7 @@ export const useModalResolver = <TParams, TResult>(route: string): UseModalResol
         new Promise(resolve => {
             setCurrentParams((params ?? {}) as TParams);
             resolverRef.current = resolve;
-            router.push(route as never);
+            router.push(route);
         });
 
     const resolve = (result: TResult, options?: ResolveOptions) => {

@@ -3,6 +3,59 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.33.0](https://github.com/budgie-at/budgie/compare/v5.32.3...v5.33.0) (2026-06-03)
+
+### Bug Fixes
+
+- **app:** add missing app translations ([f263aad](https://github.com/budgie-at/budgie/commit/f263aad7a2f6f86e0be8a81c50254d4b4fbc8fc4))
+- **app:** constrain date picker range fill ([99a9c35](https://github.com/budgie-at/budgie/commit/99a9c357e6572c5a8f19bc64d69b866fa6dd3df1))
+- **app:** constrain date picker selected cells ([80d2591](https://github.com/budgie-at/budgie/commit/80d259136b9ef7a9635ef3eed59dae1d6d844de8))
+- **app:** focus calendar on selected date range ([b1f6458](https://github.com/budgie-at/budgie/commit/b1f645833de6ccfa36bec211f5ce5f0f6a772f49))
+- **app:** format single-day date filter labels ([d5e6e29](https://github.com/budgie-at/budgie/commit/d5e6e296cd6ab0178855927e2133bffee69316c0))
+- **app:** hide date picker range fill ([d724df9](https://github.com/budgie-at/budgie/commit/d724df9ff23bfafd63544e2cec2c9a92f4b6b43a))
+- **app:** hide range picker today indicator ([efe42fb](https://github.com/budgie-at/budgie/commit/efe42fb323c420c67bb7ba05a9280041af3dea26))
+- **app:** keep transaction list footer clear of tab bar ([6ee48ab](https://github.com/budgie-at/budgie/commit/6ee48abbc8ad410340420827fcd7792ed01485e7))
+- **app:** normalize single-day date ranges ([238f1b2](https://github.com/budgie-at/budgie/commit/238f1b2763f9cb3b1c5a604e05067019673e7edc))
+- **app:** restore date picker range selection ([c740459](https://github.com/budgie-at/budgie/commit/c7404594895f9a5da655dac52360410740ca8142))
+
+### Features
+
+- **app:** add date filter haptics ([c9c9154](https://github.com/budgie-at/budgie/commit/c9c91549b0828621aa0c8162d71ba193c1c1ce29))
+
+## [5.32.3](https://github.com/budgie-at/budgie/compare/v5.32.2...v5.32.3) (2026-06-03)
+
+### Bug Fixes
+
+- **app:** refresh Monobank background sync registration ([#536](https://github.com/budgie-at/budgie/issues/536)) ([66e094b](https://github.com/budgie-at/budgie/commit/66e094bd030fbb78faf45087c6c3fdb59a639014))
+
+## [5.32.2](https://github.com/budgie-at/budgie/compare/v5.32.1...v5.32.2) (2026-06-03)
+
+**Note:** Version bump only for package @budgie-at/root
+
+## [5.32.1](https://github.com/budgie-at/budgie/compare/v5.32.0...v5.32.1) (2026-06-03)
+
+### Bug Fixes
+
+- **app:** ignore package scripts in fingerprint ([#537](https://github.com/budgie-at/budgie/issues/537)) ([93e3eb1](https://github.com/budgie-at/budgie/commit/93e3eb1816d72d68ce6f7449564821829aa783a6))
+
+# [5.32.0](https://github.com/budgie-at/budgie/compare/v5.31.3...v5.32.0) (2026-06-02)
+
+### Features
+
+- **app:** improve transaction filter modals ([#531](https://github.com/budgie-at/budgie/issues/531)) ([49827dc](https://github.com/budgie-at/budgie/commit/49827dc6bbac014c7c912c5d4aa17d370a8cd984))
+
+## [5.31.3](https://github.com/budgie-at/budgie/compare/v5.31.2...v5.31.3) (2026-06-02)
+
+### Bug Fixes
+
+- **app:** define background tasks at app entry ([#534](https://github.com/budgie-at/budgie/issues/534)) ([92ce3e3](https://github.com/budgie-at/budgie/commit/92ce3e38fd88e4594a8c50ca913cd06f4d049a67))
+
+## [5.31.2](https://github.com/budgie-at/budgie/compare/v5.31.1...v5.31.2) (2026-06-02)
+
+### Bug Fixes
+
+- align production eas update for sdk 56 ([397ea91](https://github.com/budgie-at/budgie/commit/397ea9143408ee1d57bd17e689a742a0db2ba5c0))
+
 ## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
 
 ### Bug Fixes

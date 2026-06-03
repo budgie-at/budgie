@@ -1,23 +1,26 @@
-/* jscpd:ignore-start */
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 
-import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
-import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer/filter-sheet-searchable-drawer';
+import { FilterSheetSkeleton } from '../@generic/component/filter-sheet/filter-sheet-skeleton/filter-sheet-skeleton';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { AccountsGroup } from '../account/component/accounts-group/accounts-group';
 import { useSearchAccountsGroupedQuery } from '../account/query/use-search-accounts-grouped.query';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
+import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
+import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
+
+const LIST_TOP_SPACE = 88;
 
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
@@ -27,15 +30,15 @@ export default function TransactionAccountFilterModal() {
     const state = useSearchableFilterState(currentParams?.value ?? null);
     const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
-    const { accountsGrouped, accounts, total } = useSearchAccountsGroupedQuery(search);
+    const { accountsGrouped, accounts, total, isLoading } = useSearchAccountsGroupedQuery(search);
 
-    const showControls = !(isEmptyArray(accounts) && isEmptyString(search));
-    const showEmptySearch = isNotEmptyString(search) && isPositiveNumber(total);
+    const showEmptySearch = isNotEmptyString(search) && isPositiveNumber(total) && !isLoading;
     const selectedIds = localValue ?? [];
 
     const handleSelect = (...accountIds: number[]) => void setLocalValue(prev => toggleFilterSelection(prev, accountIds));
     const handleSelectAll = () => void setLocalValue(() => accounts.map(account => account.id));
     const handleApply = () => void resolveTransactionAccountFilter({ value: localValueRef.current });
+    const handleClose = () => void resolveTransactionAccountFilter(null);
 
     const handleNavigateToCreate = () => {
         resolveTransactionAccountFilter(null, { skipBack: true });
@@ -53,8 +56,12 @@ export default function TransactionAccountFilterModal() {
 
     return (
         <FilterSheet>
-            <FilterSheetList alignToBottom={isNotEmptyString(search)}>
-                {isNotEmptyArray(accounts) ? (
+            <TransactionFilterSelectorHeader title={t`Filter accounts`} onClose={handleClose} />
+
+            <FilterSheetList alignToBottom topSpacing={LIST_TOP_SPACE}>
+                {isLoading ? <FilterSheetSkeleton alignToBottom /> : null}
+
+                {isNotEmptyArray(accounts) && !isLoading ? (
                     <View className="gap-y-lg">
                         {isNotEmptyArray(accountsGrouped.BANK) ? (
                             <AccountsGroup
@@ -82,7 +89,7 @@ export default function TransactionAccountFilterModal() {
                     </SearchableFilterEmptyResult>
                 ) : null}
 
-                {isEmptyArray(accounts) && !showEmptySearch ? (
+                {isEmptyArray(accounts) && !showEmptySearch && !isLoading ? (
                     <TransactionFilterEmptyState
                         icon={UserIconNameEnum.Wallet}
                         title={t`No Accounts Yet`}
@@ -93,8 +100,7 @@ export default function TransactionAccountFilterModal() {
                 ) : null}
             </FilterSheetList>
 
-            <FilterSheetSearchableDrawer
-                showControls={showControls}
+            <TransactionFilterSelectorFooter
                 searchValue={search}
                 searchPlaceholder={t`Search accounts...`}
                 onSearchChange={setSearch}
@@ -103,6 +109,7 @@ export default function TransactionAccountFilterModal() {
                 onApply={handleApply}
                 applyLabel={applyLabel}
                 selectedCount={selectedCount}
+                isLoading={isLoading}
                 searchTestID={TransactionFiltersSelector.AccountSearchInput}
                 selectAllTestID={TransactionFiltersSelector.AccountSelectAllButton}
                 deselectAllTestID={TransactionFiltersSelector.AccountDeselectAllButton}
@@ -111,4 +118,3 @@ export default function TransactionAccountFilterModal() {
         </FilterSheet>
     );
 }
-/* jscpd:ignore-end */

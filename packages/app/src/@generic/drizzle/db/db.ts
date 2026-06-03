@@ -34,6 +34,7 @@ import * as schema from './schema';
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 import * as SecureStore from 'expo-secure-store';
 import { PIN_KEY } from '../../../auth/constant/pin-key.constant';
+import { PIN_SECURE_STORE_OPTIONS } from '../../../auth/constant/pin-secure-store-options.constant';
 
 import type { DB } from '@budgie/contracts';
 
@@ -47,7 +48,7 @@ declare global {
 const dbInit = () => {
     global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
 
-    const pin = SecureStore.getItem(PIN_KEY);
+    const pin = SecureStore.getItem(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
     if (isNotEmptyString(pin)) {
         global.__expoSqliteDb__.execSync(`PRAGMA key = '${pin}';`);
     }

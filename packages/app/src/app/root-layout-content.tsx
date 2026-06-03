@@ -32,7 +32,11 @@ import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
 import { RULE_FORM_MODAL_OPTIONS } from '../@generic/constant/rule-form-modal-options.constant';
 import { RULE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/rule-selector-modal-options.constant';
-import { DATE_FILTER_SHEET_OPTIONS, UNIFIED_FILTER_SHEET_OPTIONS } from '../@generic/constant/searchable-filter-modal-options.constant';
+import {
+    DATE_FILTER_SHEET_OPTIONS,
+    STACKED_FILTER_MODAL_OPTIONS,
+    UNIFIED_FILTER_SHEET_OPTIONS
+} from '../@generic/constant/searchable-filter-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
 import { VOICE_REVIEW_MODAL_OPTIONS } from '../@generic/constant/voice-review-modal-options.constant';
@@ -51,6 +55,7 @@ import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
+import { syncWorkloadService } from '../sync/service/sync-workload.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
@@ -61,7 +66,11 @@ i18n.activate(i18nGetOSLocale());
 void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
-const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
+const handleAppStateChange = (isActive: boolean): void => {
+    if (isActive) {
+        void syncWorkloadService.run('foreground-monobank', () => monobankSyncService.sync());
+    }
+};
 
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export const RootLayoutContent = () => {
@@ -145,15 +154,15 @@ export const RootLayoutContent = () => {
                                                                 <Stack.Screen name="date-filter" options={DATE_FILTER_SHEET_OPTIONS} />
                                                                 <Stack.Screen
                                                                     name="transaction-category-filter"
-                                                                    options={UNIFIED_FILTER_SHEET_OPTIONS}
+                                                                    options={STACKED_FILTER_MODAL_OPTIONS}
                                                                 />
                                                                 <Stack.Screen
                                                                     name="transaction-account-filter"
-                                                                    options={UNIFIED_FILTER_SHEET_OPTIONS}
+                                                                    options={STACKED_FILTER_MODAL_OPTIONS}
                                                                 />
                                                                 <Stack.Screen
                                                                     name="transaction-tag-filter"
-                                                                    options={UNIFIED_FILTER_SHEET_OPTIONS}
+                                                                    options={STACKED_FILTER_MODAL_OPTIONS}
                                                                 />
                                                                 <Stack.Screen name="rule-form" options={RULE_FORM_MODAL_OPTIONS} />
                                                                 <Stack.Screen name="rule-selector" options={RULE_SELECTOR_MODAL_OPTIONS} />

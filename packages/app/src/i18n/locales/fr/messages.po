@@ -46,11 +46,11 @@ msgstr "{categoryName}: limite atteinte"
 
 #: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
 msgid "{count, plural, one {# bank sync item repaired} other {# bank sync items repaired}}"
-msgstr ""
+msgstr "{count, plural, one {# élément de synchronisation bancaire réparé} other {# éléments de synchronisation bancaire réparés}}"
 
 #: src/settings/utils/get-bank-sync-repair-text.util.ts
 msgid "{count, plural, one {# bank sync repair} other {# bank sync repairs}}"
-msgstr ""
+msgstr "{count, plural, one {# réparation de synchronisation bancaire} other {# réparations de synchronisation bancaire}}"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
@@ -430,7 +430,7 @@ msgstr "Synchronisation bancaire"
 
 #: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
 msgid "Bank sync data repairs"
-msgstr ""
+msgstr "Réparations des données de synchronisation bancaire"
 
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
@@ -487,7 +487,7 @@ msgstr "Budgie"
 
 #: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
-msgstr ""
+msgstr "Budgie peut détecter les imports de synchronisation bancaire en double et réparer les consolidations de virements associées à des comptes inactifs."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -926,21 +926,9 @@ msgstr "Créer quand même"
 msgid "Create budget"
 msgstr "Créer un budget"
 
-#: src/app/transaction-category-filter.tsx
-msgid "Create Categories"
-msgstr "Créer des catégories"
-
 #: src/category/components/category-form/category-form.tsx
 msgid "Create Category"
 msgstr "Créer une catégorie"
-
-#: src/app/transaction-category-filter.tsx
-msgid "Create custom categories in Settings to label and filter your transactions"
-msgstr "Créez des catégories personnalisées dans les Paramètres pour étiqueter et filtrer vos transactions"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create custom tags in Settings to label and filter your transactions"
-msgstr "Créez des étiquettes personnalisées dans les Paramètres pour étiqueter et filtrer vos transactions"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
@@ -958,10 +946,6 @@ msgstr "Créez des règles pour catégoriser et taguer automatiquement vos trans
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create Tag"
 msgstr "Créer une étiquette"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create Tags"
-msgstr "Créer des étiquettes"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "Create tags to organize your transactions"
@@ -1369,6 +1353,18 @@ msgstr "Champ"
 #: src/account/component/create-account-screen/create-account-screen.tsx
 msgid "Fill in the account details"
 msgstr "Remplissez les détails du compte"
+
+#: src/app/transaction-account-filter.tsx
+msgid "Filter accounts"
+msgstr "Filtrer les comptes"
+
+#: src/app/transaction-category-filter.tsx
+msgid "Filter categories"
+msgstr "Filtrer les catégories"
+
+#: src/app/transaction-tag-filter.tsx
+msgid "Filter tags"
+msgstr "Filtrer les tags"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
@@ -1779,9 +1775,8 @@ msgstr "Aucun compte archivé ne correspond à votre recherche"
 
 #: src/settings/components/bank-sync-repairs-empty-state-card/bank-sync-repairs-empty-state-card.tsx
 msgid "No bank sync repairs found."
-msgstr ""
+msgstr "Aucune réparation de synchronisation bancaire trouvée."
 
-#: src/app/transaction-category-filter.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "Aucune catégorie trouvée"
@@ -1789,10 +1784,6 @@ msgstr "Aucune catégorie trouvée"
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "Aucune catégorie ne correspond à votre recherche"
-
-#: src/app/transaction-category-filter.tsx
-msgid "No Categories Yet"
-msgstr "Aucune catégorie pour le moment"
 
 #: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
 msgid "No category limits yet"
@@ -1876,7 +1867,6 @@ msgstr "Aucune règle pour l'instant"
 msgid "No source transactions"
 msgstr "Aucune transaction source"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "Aucune étiquette trouvée"
@@ -1889,7 +1879,6 @@ msgstr "Aucun tag dans cette période"
 msgid "No tags match your search"
 msgstr "Aucune étiquette ne correspond à votre recherche"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No Tags Yet"
 msgstr "Aucune étiquette pour le moment"
@@ -2677,6 +2666,7 @@ msgstr "Étiquettes ({selectedTagsCount})"
 msgid "Tap re-record to try again"
 msgstr "Appuyez sur réenregistrer pour réessayer"
 
+#: src/@generic/component/search-input/search-input.tsx
 #: src/app/import-column-mapper.tsx
 msgid "Tap to clear"
 msgstr "Appuyez pour effacer"
