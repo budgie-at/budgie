@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { CategorySourceEnum, TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useImperativeHandle, useRef } from 'react';
@@ -90,8 +90,16 @@ export const TransactionFieldIcons = (props: Props) => {
         const selectedCategoryId = await openCategorySelector({ initialCategoryId: categoryId, variant });
 
         if (isDefined(selectedCategoryId)) {
+            const currentCategoryEntry = categoryEntries.at(0);
+
+            if (!isDefined(currentCategoryEntry)) {
+                return;
+            }
+
             const updatedEntries = entries.map(entry =>
-                entry === categoryEntries.at(0) ? { ...entry, categoryId: selectedCategoryId } : entry
+                entry === currentCategoryEntry
+                    ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER }
+                    : entry
             );
 
             setValue('entries', updatedEntries, { shouldValidate: false });

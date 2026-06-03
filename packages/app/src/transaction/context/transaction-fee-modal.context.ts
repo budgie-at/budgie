@@ -10,10 +10,7 @@ export interface TransactionFeeModalParams {
     readonly variant: ColorPaletteVariant;
 }
 
-export interface TransactionFeeModalResult {
-    readonly entry: TransactionEntryCreateInputInterface | null;
-    readonly shouldRemove: boolean;
-}
+export type TransactionFeeModalResult = readonly TransactionEntryCreateInputInterface[];
 
 export const [TransactionFeeModalContext, useTransactionFeeModal] = createModalContext<
     TransactionFeeModalParams,

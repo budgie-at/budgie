@@ -161,10 +161,7 @@ export const TransferQuickForm = (props: Props) => {
         }
 
         const categoryEntries = getTransactionCategoryEntries(currentEntries);
-        const nextFeeEntries =
-            isDefined(result.entry) && !result.shouldRemove
-                ? [{ ...result.entry, accountId: sourceAccountId, type: TransactionEntryTypeEnum.FEE }]
-                : [];
+        const nextFeeEntries = result.map(entry => ({ ...entry, accountId: sourceAccountId, type: TransactionEntryTypeEnum.FEE }));
 
         setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldValidate: false });
     };

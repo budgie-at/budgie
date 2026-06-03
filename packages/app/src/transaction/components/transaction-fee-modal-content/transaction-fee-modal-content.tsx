@@ -56,7 +56,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
     };
 
     const handleConfirm = () => {
-        onConfirm({ entry: feeEntry, shouldRemove: false });
+        onConfirm([feeEntry]);
     };
 
     const handleRemove = async () => {
@@ -69,14 +69,14 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         });
 
         if (confirmed) {
-            onConfirm({ entry: null, shouldRemove: true });
+            onConfirm([]);
         }
     };
 
     const handleFeeCategoryPress = () => void handleCategoryPress();
 
     return (
-        <View className="flex-1 px-xl pt-3xl pb-xl gap-lg">
+        <View className="px-xl pt-3xl pb-xl gap-lg">
             <SplitEntryRow
                 index={ROW_INDEX}
                 categoryId={feeEntry.categoryId ?? 0}

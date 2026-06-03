@@ -1,13 +1,12 @@
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
 
-const SHEET_DETENT = 0.42;
 const SHEET_CORNER_RADIUS = 24;
 
 export const TRANSACTION_FEE_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
     presentation: 'formSheet',
     headerShown: false,
     sheetGrabberVisible: true,
-    sheetAllowedDetents: [SHEET_DETENT],
+    sheetAllowedDetents: 'fitToContents',
     sheetCornerRadius: SHEET_CORNER_RADIUS,
     contentStyle: { backgroundColor: 'transparent' }
 };
