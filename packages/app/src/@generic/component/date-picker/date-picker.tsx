@@ -36,7 +36,6 @@ const TODAY_BORDER_WIDTH = 1;
 
 const buildStyles = (isDark: boolean) => {
     const primary = isDark ? '#ffffff' : '#000000';
-    const rangeFill = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
 
     const compactCircle: ViewStyle = {
         alignSelf: 'center',
@@ -52,22 +51,7 @@ const buildStyles = (isDark: boolean) => {
         borderWidth: TODAY_BORDER_WIDTH,
         borderColor: primary
     };
-    const compactRangeFill: ViewStyle = {
-        backgroundColor: rangeFill,
-        height: DAY_PILL_SIZE,
-        marginVertical: 'auto'
-    };
-    const rangeFillStyle: ViewStyle = compactRangeFill;
-    const rangeFillStart: ViewStyle = {
-        ...compactRangeFill,
-        borderTopLeftRadius: DAY_PILL_RADIUS,
-        borderBottomLeftRadius: DAY_PILL_RADIUS
-    };
-    const rangeFillEnd: ViewStyle = {
-        ...compactRangeFill,
-        borderTopRightRadius: DAY_PILL_RADIUS,
-        borderBottomRightRadius: DAY_PILL_RADIUS
-    };
+    const hiddenRangeFill: ViewStyle = { backgroundColor: 'transparent' };
     const transparentText: TextStyle = { backgroundColor: 'transparent' };
 
     return {
@@ -76,9 +60,9 @@ const buildStyles = (isDark: boolean) => {
         range_start: pill,
         range_end: pill,
         range_middle: transparentText,
-        range_fill: rangeFillStyle,
-        range_fill_weekstart: rangeFillStart,
-        range_fill_weekend: rangeFillEnd
+        range_fill: hiddenRangeFill,
+        range_fill_weekstart: hiddenRangeFill,
+        range_fill_weekend: hiddenRangeFill
     };
 };
 
