@@ -59,8 +59,8 @@ export const CategorySelectorCard = (props: Props) => {
         <HapticPressable className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect} testID={testID}>
             <CircleIcon size={28} iconSize={14} className="rounded-4xl" icon={icon} variant={iconVariant} border={false} />
 
-            <View className="flex-1 justify-center">
-                <Text className={textVariants({ isSelected, variant })} numberOfLines={2}>
+            <View className="w-full flex-1 justify-center">
+                <Text className={textVariants({ isSelected, variant })} numberOfLines={2} ellipsizeMode="tail">
                     {title}
                 </Text>
             </View>

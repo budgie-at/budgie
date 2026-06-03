@@ -1,5 +1,5 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { accountBalanceRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { accountBalanceRepository, categoryRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
 import {
     BANK_FEE_CATEGORY_ID,
     CategoryEntityTable,
@@ -16,6 +16,14 @@ import { describe, expect, it } from 'vitest';
 import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
 
 describe('monobank/fee-entry', () => {
+    it('finds the bank fee default category by lowercase localized search', () => {
+        setupMonobankFixture();
+
+        const categories = categoryRepository.findBySearchQuery('бан', true, LanguageEnum.UK).all();
+
+        expect(categories.some(category => category.id === BANK_FEE_CATEGORY_ID)).toBe(true);
+    });
+
     it('creates a dedicated balance-impacting fee entry without category split semantics', async () => {
         const { account } = setupMonobankFixture();
         monobankStub.statement([buildMonobank.transaction({ id: 'tx-fee', amount: -6000, hold: false, commissionRate: -1000 })]);
