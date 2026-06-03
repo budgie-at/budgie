@@ -12,7 +12,7 @@ class SyncWorkloadService {
     )
     async run<T>(name: string, work: () => Promise<T>): Promise<T> {
         const current = this.queue.then(work, work);
-        this.queue = current.catch(() => void emptyFn(name));
+        this.queue = current.catch((error: unknown) => void emptyFn(error, name));
 
         return current;
     }

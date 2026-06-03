@@ -1,8 +1,9 @@
 /* eslint-disable lingui/no-unlocalized-strings */
+import { Log } from '@budgie/logger';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { databaseRekeyService } from '../../@generic/drizzle/service/database-rekey.service';
 import { RekeyParamsInterface } from '../../@generic/drizzle/service/interface/rekey-params.interface';
@@ -12,6 +13,15 @@ import { PIN_SECURE_STORE_OPTIONS } from '../constant/pin-secure-store-options.c
 import { BiometricTypesInterface } from '../interface/biometric-types.interface';
 
 class AuthService {
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async ensurePinBackgroundAccessibility(): Promise<void> {
+        const pin = await this.getPin();
+
+        if (isNotEmptyString(pin)) {
+            await this.persistPin(pin);
+        }
+    }
+
     async getBiometricTypes(): Promise<BiometricTypesInterface> {
         try {
             const hasHardware = await LocalAuthentication.hasHardwareAsync();
@@ -91,14 +101,6 @@ class AuthService {
 
     async clearAllPins(): Promise<void> {
         await SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
-    }
-
-    async ensurePinBackgroundAccessibility(): Promise<void> {
-        const pin = await this.getPin();
-
-        if (isNotEmptyString(pin)) {
-            await this.persistPin(pin);
-        }
     }
 
     private async rekeyDatabase(params: RekeyParamsInterface): Promise<void> {

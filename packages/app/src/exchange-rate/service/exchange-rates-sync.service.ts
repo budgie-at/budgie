@@ -1,7 +1,8 @@
+import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { exchangeRateRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
@@ -11,6 +12,17 @@ import { exchangeRatesService } from './exchange-rates.service';
 
 class ExchangeRatesSyncService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async registerBackgroundTask(): Promise<void> {
+        if (await TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK)) {
+            return;
+        }
+
+        await BackgroundTask.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, {
+            minimumInterval: ExchangeRatesSyncService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
+        });
+    }
 
     async sync(): Promise<void> {
         const baseInstrument = await exchangeRatesService.getBaseInstrument();
@@ -27,16 +39,6 @@ class ExchangeRatesSyncService {
                 await this.updateInstrumentRate(baseInstrument.id, instrument, apiData.rates);
             }
         }
-    }
-
-    async registerBackgroundTask(): Promise<void> {
-        if (await TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK)) {
-            return;
-        }
-
-        await BackgroundTask.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, {
-            minimumInterval: ExchangeRatesSyncService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
-        });
     }
 
     private async fetch(code: string): Promise<ExchangeRateApiResponseInterface> {

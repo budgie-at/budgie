@@ -71,6 +71,16 @@ class AppMonobankSyncService {
         return mapBankAccountsToPreview(bankAccounts, this.provider);
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async registerBackgroundTask(): Promise<void> {
+        if (await TaskManager.isTaskRegisteredAsync(MONOBANK_SYNC_TASK)) {
+            await BackgroundTask.unregisterTaskAsync(MONOBANK_SYNC_TASK);
+        }
+        await BackgroundTask.registerTaskAsync(MONOBANK_SYNC_TASK, {
+            minimumInterval: AppMonobankSyncService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
+        });
+    }
+
     @Log(
         'enter',
         result =>
@@ -305,15 +315,6 @@ class AppMonobankSyncService {
         if (enabled) {
             void this.sync();
         }
-    }
-
-    async registerBackgroundTask(): Promise<void> {
-        if (await TaskManager.isTaskRegisteredAsync(MONOBANK_SYNC_TASK)) {
-            await BackgroundTask.unregisterTaskAsync(MONOBANK_SYNC_TASK);
-        }
-        await BackgroundTask.registerTaskAsync(MONOBANK_SYNC_TASK, {
-            minimumInterval: AppMonobankSyncService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
-        });
     }
 
     private async processPendingSyncs(): Promise<BackgroundTask.BackgroundTaskResult> {
