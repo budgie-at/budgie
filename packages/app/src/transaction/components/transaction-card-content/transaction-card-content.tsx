@@ -1,7 +1,7 @@
 import { TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
@@ -32,7 +32,10 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
     const refundedPillTestID = TransactionCardSelector.RefundedPill(transaction.id);
     const feePillTestID = TransactionCardSelector.FeePill(transaction.id);
-    const feeAmount = convertFromMicroUnits(sumEntryAmounts(getTransactionFeeEntries(transaction.entries)));
+    const feeEntries = getTransactionFeeEntries(transaction.entries);
+    const feeEntry = feeEntries.at(0);
+    const feeAmount = convertFromMicroUnits(sumEntryAmounts(feeEntries));
+    const feeCurrencySymbol = isDefined(feeEntry) ? feeEntry.account.instrument.symbol : '';
 
     return (
         <>
@@ -54,11 +57,7 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
 
                     <View className="flex-row flex-wrap gap-xs">
                         <RefundedPill transaction={transaction} testID={refundedPillTestID} />
-                        <TransactionFeePill
-                            amount={feeAmount}
-                            currencySymbol={transaction.entries[0]?.account.instrument.symbol ?? ''}
-                            testID={feePillTestID}
-                        />
+                        <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} testID={feePillTestID} />
                     </View>
 
                     {transaction.type === TransactionTypeEnum.TRANSFER || transaction.type === TransactionTypeEnum.DEBT ? null : (
