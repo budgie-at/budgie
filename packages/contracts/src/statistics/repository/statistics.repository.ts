@@ -270,7 +270,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             )
             .where(
                 and(
-                    this.buildFilterWhere(filters),
+                    this.buildStatisticsWhere(filters),
                     this.buildExpenseAnalyticsEntryCondition(),
                     this.buildLedgerEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
@@ -295,7 +295,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
             .where(
                 and(
-                    this.buildFilterWhere(filters),
+                    this.buildStatisticsWhere(filters),
                     this.buildExpenseAnalyticsEntryCondition(),
                     this.buildLedgerEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)

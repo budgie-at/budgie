@@ -3,7 +3,7 @@ import { createModalContext } from '../../@generic/utils/create-modal-context/cr
 
 import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
-export interface TransactionFeeModalParams {
+export interface TransactionFeeModalParamsInterface {
     readonly accountId: number;
     readonly currencySymbol: string;
     readonly entry: TransactionEntryCreateInputInterface | null;
@@ -13,6 +13,6 @@ export interface TransactionFeeModalParams {
 export type TransactionFeeModalResult = readonly TransactionEntryCreateInputInterface[];
 
 export const [TransactionFeeModalContext, useTransactionFeeModal] = createModalContext<
-    TransactionFeeModalParams,
+    TransactionFeeModalParamsInterface,
     TransactionFeeModalResult | null
 >(null);
