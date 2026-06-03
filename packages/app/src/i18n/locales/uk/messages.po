@@ -38,11 +38,11 @@ msgstr "{availableCount, plural, one {# стовпець доступний} few
 
 #: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
 msgid "{count, plural, one {# bank sync item repaired} other {# bank sync items repaired}}"
-msgstr ""
+msgstr "{count, plural, one {# елемент банківської синхронізації виправлено} few {# елементи банківської синхронізації виправлено} many {# елементів банківської синхронізації виправлено} other {# елемента банківської синхронізації виправлено}}"
 
 #: src/settings/utils/get-bank-sync-repair-text.util.ts
 msgid "{count, plural, one {# bank sync repair} other {# bank sync repairs}}"
-msgstr ""
+msgstr "{count, plural, one {# виправлення банківської синхронізації} few {# виправлення банківської синхронізації} many {# виправлень банківської синхронізації} other {# виправлення банківської синхронізації}}"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
@@ -410,7 +410,7 @@ msgstr "Синхронізація з банком"
 
 #: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
 msgid "Bank sync data repairs"
-msgstr ""
+msgstr "Виправлення даних банківської синхронізації"
 
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
@@ -455,7 +455,7 @@ msgstr "Budgie"
 
 #: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
-msgstr ""
+msgstr "Budgie може знайти дублікати імпортів банківської синхронізації та виправити консолідації переказів, що потрапили на неактивні рахунки."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -1265,15 +1265,15 @@ msgstr "Заповніть деталі рахунку"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
-msgstr ""
+msgstr "Фільтрувати рахунки"
 
 #: src/app/transaction-category-filter.tsx
 msgid "Filter categories"
-msgstr ""
+msgstr "Фільтрувати категорії"
 
 #: src/app/transaction-tag-filter.tsx
 msgid "Filter tags"
-msgstr ""
+msgstr "Фільтрувати теги"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
@@ -1668,7 +1668,7 @@ msgstr "Жоден архівований рахунок не відповіда
 
 #: src/settings/components/bank-sync-repairs-empty-state-card/bank-sync-repairs-empty-state-card.tsx
 msgid "No bank sync repairs found."
-msgstr ""
+msgstr "Виправлень банківської синхронізації не знайдено."
 
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
