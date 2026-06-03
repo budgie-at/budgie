@@ -14,7 +14,7 @@ import { useTransactionTagFilterModal } from '../transaction/context/transaction
 import { prepareTransactionFilterGridData } from '../transaction/utils/prepare-transaction-filter-grid-data.util';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-const FOOTER_BOTTOM_SPACE = 176;
+const FOOTER_BOTTOM_SPACE = 132;
 const LIST_TOP_SPACE = 88;
 
 export default function TransactionTagFilterModal() {
