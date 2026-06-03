@@ -44,7 +44,7 @@ export const TransactionSectionsList = ({
     listEmptyState,
     balanceAdjustmentLabel,
     categoriesLabel,
-    footerSpacerMultiplier
+    footerSpacerMultiplier = 1
 }: Props) => {
     const router = useRouter();
     const [, hapticImpact] = useVibration();
@@ -103,7 +103,7 @@ export const TransactionSectionsList = ({
     ]);
 
     const isEmpty = isEmptyArray(flatData);
-    const paddingBottom = (footerSpacerMultiplier ?? 0) * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom;
+    const paddingBottom = footerSpacerMultiplier * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom;
     const contentContainerStyle = {
         gap: 16,
         paddingBottom,
