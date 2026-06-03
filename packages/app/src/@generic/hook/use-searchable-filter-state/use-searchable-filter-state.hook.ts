@@ -12,7 +12,6 @@ interface UseSearchableFilterStateReturn {
     readonly setSearch: (value: string) => void;
     readonly selectedCount: number;
     readonly handleDeselectAll: EmptyFn;
-    readonly handleClear: EmptyFn;
 }
 
 export const useSearchableFilterState = (initialValue: number[] | null): UseSearchableFilterStateReturn => {
@@ -22,7 +21,6 @@ export const useSearchableFilterState = (initialValue: number[] | null): UseSear
     const selectedCount = localValue?.length ?? 0;
 
     const handleDeselectAll = () => void setLocalValue(null);
-    const handleClear = () => void setLocalValue(null);
 
     return {
         localValue,
@@ -31,7 +29,6 @@ export const useSearchableFilterState = (initialValue: number[] | null): UseSear
         search,
         setSearch,
         selectedCount,
-        handleDeselectAll,
-        handleClear
+        handleDeselectAll
     };
 };
