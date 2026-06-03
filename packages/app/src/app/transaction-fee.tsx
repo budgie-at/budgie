@@ -8,8 +8,6 @@ import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styl
 import { TransactionFeeModalContent } from '../transaction/components/transaction-fee-modal-content/transaction-fee-modal-content';
 import { useTransactionFeeModal } from '../transaction/context/transaction-fee-modal.context';
 
-import type { TransactionFeeModalResult } from '../transaction/context/transaction-fee-modal.context';
-
 export default function TransactionFeeModal() {
     const router = useRouter();
     const [, resolveTransactionFee, currentParams] = useTransactionFeeModal();
@@ -18,10 +16,6 @@ export default function TransactionFeeModal() {
 
     const screenOptions = { contentStyle: { backgroundColor } };
     const containerStyle = { backgroundColor };
-
-    const handleConfirm = (result: TransactionFeeModalResult) => {
-        resolveTransactionFee(result);
-    };
 
     useEffect(
         () => () => {
@@ -55,7 +49,7 @@ export default function TransactionFeeModal() {
                 currencySymbol={currentParams.currencySymbol}
                 entry={currentParams.entry}
                 variant={currentParams.variant}
-                onConfirm={handleConfirm}
+                onConfirm={resolveTransactionFee}
             />
         </View>
     );
