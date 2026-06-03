@@ -52,14 +52,19 @@ const buildStyles = (isDark: boolean) => {
         borderWidth: TODAY_BORDER_WIDTH,
         borderColor: primary
     };
-    const rangeFillStyle: ViewStyle = { backgroundColor: rangeFill };
-    const rangeFillStart: ViewStyle = {
+    const compactRangeFill: ViewStyle = {
         backgroundColor: rangeFill,
+        height: DAY_PILL_SIZE,
+        marginVertical: 'auto'
+    };
+    const rangeFillStyle: ViewStyle = compactRangeFill;
+    const rangeFillStart: ViewStyle = {
+        ...compactRangeFill,
         borderTopLeftRadius: DAY_PILL_RADIUS,
         borderBottomLeftRadius: DAY_PILL_RADIUS
     };
     const rangeFillEnd: ViewStyle = {
-        backgroundColor: rangeFill,
+        ...compactRangeFill,
         borderTopRightRadius: DAY_PILL_RADIUS,
         borderBottomRightRadius: DAY_PILL_RADIUS
     };
