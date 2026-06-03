@@ -10,13 +10,13 @@ import { Icon } from '../icon/icon';
 
 import { DatePickerSelector } from './date-picker.selector';
 
-const renderDay = (day: CalendarDay) => (
+const renderDay = (day: CalendarDay, shouldShowTodayIndicator: boolean) => (
     <Text
         testID={DatePickerSelector.Day(day.number)}
         className={cn(
             'text-primary font-medium',
             !day.isCurrentMonth && 'text-secondary-foreground/40',
-            day.isToday && 'font-bold',
+            shouldShowTodayIndicator && day.isToday && 'font-bold',
             (day.isSelected || day.rangeStart || day.rangeEnd) && 'text-primary-reverse font-bold'
         )}
     >
@@ -24,17 +24,11 @@ const renderDay = (day: CalendarDay) => (
     </Text>
 );
 
-const defaultComponents: CalendarComponents = {
-    IconNext: <Icon icon={UserIconNameEnum.ChevronRight} className="text-primary" size={20} />,
-    IconPrev: <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={20} />,
-    Day: renderDay
-};
-
 const DAY_PILL_RADIUS = 9999;
 const DAY_PILL_SIZE = 40;
 const TODAY_BORDER_WIDTH = 1;
 
-const buildStyles = (isDark: boolean) => {
+const buildStyles = (isDark: boolean, shouldShowTodayIndicator: boolean) => {
     const primary = isDark ? '#ffffff' : '#000000';
 
     const compactCircle: ViewStyle = {
@@ -51,11 +45,13 @@ const buildStyles = (isDark: boolean) => {
         borderWidth: TODAY_BORDER_WIDTH,
         borderColor: primary
     };
+    const transparentView: ViewStyle = { backgroundColor: 'transparent' };
     const hiddenRangeFill: ViewStyle = { backgroundColor: 'transparent' };
     const transparentText: TextStyle = { backgroundColor: 'transparent' };
+    const today = shouldShowTodayIndicator ? todayRing : transparentView;
 
     return {
-        today: todayRing,
+        today,
         selected: pill,
         range_start: pill,
         range_end: pill,
@@ -70,8 +66,14 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     const { languageTag } = useLocaleInfo();
     const { isDarkColorSchema } = useThemeContext();
     const defaultClassNames = useDefaultClassNames();
+    const shouldShowTodayIndicator = props.mode !== 'range';
+    const defaultComponents: CalendarComponents = {
+        IconNext: <Icon icon={UserIconNameEnum.ChevronRight} className="text-primary" size={20} />,
+        IconPrev: <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={20} />,
+        Day: day => renderDay(day, shouldShowTodayIndicator)
+    };
     const mergedComponents = { ...defaultComponents, ...props.components };
-    const themedStyles = buildStyles(isDarkColorSchema);
+    const themedStyles = buildStyles(isDarkColorSchema, shouldShowTodayIndicator);
 
     /* eslint-disable lingui/no-unlocalized-strings */
     const classNames = {
