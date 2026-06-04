@@ -16,11 +16,11 @@ interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' 
     readonly instrumentSymbol: string;
 }
 
-const syncStatusVariants = cva('absolute bottom-3 right-3 h-2 w-2 rounded-full will-change-animation', {
+const syncStatusVariants = cva('absolute bottom-3 right-3 z-10 h-2 w-2 rounded-full will-change-animation', {
     variants: {
         status: {
-            [BankSyncStatusEnum.SYNCING]: 'bg-amber-500 animate-pulse',
-            [BankSyncStatusEnum.IDLE]: 'bg-green-500',
+            [BankSyncStatusEnum.SYNCING]: 'bg-warning-foreground animate-pulse',
+            [BankSyncStatusEnum.IDLE]: 'bg-positive-foreground',
             [BankSyncStatusEnum.FAILED]: 'bg-destructive'
         }
     }
