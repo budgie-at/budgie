@@ -6,11 +6,12 @@ import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.ut
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 import { AccountRowInterface } from '../interface/account-row.interface';
 import { BankProviderSectionInterface } from '../interface/bank-provider-section.interface';
+import { CryptoCurrencyGroupInterface } from '../interface/crypto-currency-group.interface';
 
 interface AccountTypeSectionInterface {
     readonly kind: HomeSectionKindEnum.ACCOUNT_TYPE;
     readonly type: AccountTypeEnum;
-    readonly data: AccountRowInterface[];
+    readonly data: Array<AccountRowInterface | CryptoCurrencyGroupInterface>;
 }
 
 export interface DebtSectionInterface {
@@ -22,6 +23,33 @@ export type HomeSectionInterface = AccountTypeSectionInterface | BankProviderSec
 
 type AccountGroups = Partial<Record<AccountTypeEnum, AccountWithBankSyncEntityInterface[]>>;
 type ProviderGroups = Partial<Record<ExternalSourceEnum, AccountWithBankSyncEntityInterface[]>>;
+
+const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInterface[]): CryptoCurrencyGroupInterface[] => {
+    const groups = new Map<number, CryptoCurrencyGroupInterface>();
+
+    accounts.forEach(account => {
+        const group = groups.get(account.instrument.id);
+
+        if (isDefined(group)) {
+            groups.set(account.instrument.id, {
+                ...group,
+                accounts: [...group.accounts, account]
+            });
+
+            return;
+        }
+
+        groups.set(account.instrument.id, {
+            instrumentId: account.instrument.id,
+            instrumentCode: account.instrument.code,
+            instrumentName: account.instrument.name,
+            instrumentSymbol: account.instrument.symbol,
+            accounts: [account]
+        });
+    });
+
+    return [...groups.values()];
+};
 
 const pairAccountsIntoRows = (accounts: AccountWithBankSyncEntityInterface[]): AccountRowInterface[] => {
     const rows: AccountRowInterface[] = [];
@@ -74,7 +102,10 @@ export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterfa
         .map(([type, groupAccounts]) => ({
             kind: HomeSectionKindEnum.ACCOUNT_TYPE,
             type,
-            data: pairAccountsIntoRows(groupAccounts ?? [])
+            data:
+                type === AccountTypeEnum.CRYPTO
+                    ? groupCryptoAccountsByInstrument(groupAccounts ?? [])
+                    : pairAccountsIntoRows(groupAccounts ?? [])
         }));
 
     const debtSections: DebtSectionInterface[] = [];
