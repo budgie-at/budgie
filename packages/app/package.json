@@ -35,6 +35,7 @@
         "@lingui/core": "6.1.0",
         "@lingui/react": "6.1.0",
         "@rnw-community/shared": "^2.2.0",
+        "@vnaidin/react-native-cryptocurrency-icons": "0.0.31",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "date-fns": "^4.3.0",

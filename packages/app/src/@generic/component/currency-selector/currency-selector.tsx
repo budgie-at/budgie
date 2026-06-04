@@ -9,6 +9,7 @@ import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCurrencySelectorModal } from '../../context/currency-selector-modal.context';
 import { formatExchangeRate } from '../../utils/format-exchange-rate.util';
+import { CryptoCurrencyIcon } from '../crypto-currency-icon/crypto-currency-icon';
 import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
 import { Icon } from '../icon/icon';
 
@@ -36,6 +37,14 @@ export const CurrencySelector = ({ instrumentId, instrumentType = InstrumentType
 
     const convertedAmount = isDefined(rate) ? formatExchangeRate(rate.rate) : '1';
     const isBaseCurrency = !isDefined(rate);
+    const isCrypto = instrumentType === InstrumentTypeEnum.CRYPTO;
+    const left = isCrypto ? (
+        <CryptoCurrencyIcon code={selectedCurrencyCode} size={48} className="bg-secondary-background" />
+    ) : (
+        <View className="rounded-5xl bg-secondary-background w-12 h-12 items-center justify-center">
+            <Text className="text-primary text-4xl">{symbol}</Text>
+        </View>
+    );
 
     const handleOpen = async () => {
         const result = await openCurrencySelector({ selectedInstrumentId: instrumentId, instrumentType });
@@ -46,11 +55,7 @@ export const CurrencySelector = ({ instrumentId, instrumentType = InstrumentType
 
     return (
         <HorizontalCell
-            left={
-                <View className="rounded-5xl bg-secondary-background w-12 h-12 items-center justify-center">
-                    <Text className="text-primary text-4xl">{symbol}</Text>
-                </View>
-            }
+            left={left}
             right={<Icon icon={UserIconNameEnum.Sparkles} className="text-secondary-foreground/50" size={16} />}
             onPress={handleOpen}
             size="lg"
