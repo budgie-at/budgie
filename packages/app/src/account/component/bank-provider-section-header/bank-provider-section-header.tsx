@@ -16,11 +16,11 @@ interface Props {
     readonly syncStatus: BankSyncStatusEnum;
 }
 
-const syncStatusVariants = cva('size-2 rounded-full', {
+const syncStatusVariants = cva('h-2 w-2 rounded-full', {
     variants: {
         status: {
-            [BankSyncStatusEnum.SYNCING]: 'bg-amber-500 animate-pulse',
-            [BankSyncStatusEnum.IDLE]: 'bg-green-500',
+            [BankSyncStatusEnum.SYNCING]: 'bg-warning-foreground animate-pulse',
+            [BankSyncStatusEnum.IDLE]: 'bg-positive-foreground',
             [BankSyncStatusEnum.FAILED]: 'bg-destructive'
         }
     }
