@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 export const useConvertedAmount = (fromInstrumentId: number, toInstrumentId: number, amountInMicroUnits: number): number | undefined => {
     const [convertedAmount, setConvertedAmount] = useState<number | undefined>();
     const isSameCurrency = fromInstrumentId === toInstrumentId;
+    const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
 
     useEffect(() => {
         let cancelled = false;
@@ -24,7 +26,7 @@ export const useConvertedAmount = (fromInstrumentId: number, toInstrumentId: num
         return () => {
             cancelled = true;
         };
-    }, [isSameCurrency, fromInstrumentId, toInstrumentId, amountInMicroUnits]);
+    }, [isSameCurrency, fromInstrumentId, toInstrumentId, amountInMicroUnits, exchangeRatesUpdatedAt]);
 
     if (isSameCurrency) {
         return undefined; // eslint-disable-line no-undefined -- Same currency needs no conversion
