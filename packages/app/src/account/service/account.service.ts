@@ -1,6 +1,8 @@
 import {
     AccountEntityInterface,
     AccountNatureEnum,
+    CryptoAccountCreateInputInterface,
+    type DB,
     DebtAccountCreateInputInterface,
     LiabilityAccountCreateInputInterface,
     TransactionEntryCreateEntityInterface,
@@ -27,10 +29,8 @@ import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsol
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 
-import type { DB } from '@budgie/contracts';
-
 class AccountService {
-    async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {
+    async create(input: LiabilityAccountCreateInputInterface | CryptoAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const [{ count }] = await accountRepository.count();
             const account = await this.createLiabilityAccount({ ...input }, count, tx);
@@ -265,7 +265,7 @@ class AccountService {
     }
 
     private async createLiabilityAccount(
-        input: Omit<LiabilityAccountCreateInputInterface, 'currentBalance'> & Record<string, unknown>,
+        input: Omit<LiabilityAccountCreateInputInterface | CryptoAccountCreateInputInterface, 'currentBalance'> & Record<string, unknown>,
         count: number,
         tx: DB
     ): Promise<AccountEntityInterface> {

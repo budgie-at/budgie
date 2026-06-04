@@ -2,6 +2,7 @@ import { AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
 
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { BankSyncAccountCard } from '../bank-sync-account-card/bank-sync-account-card';
+import { CryptoAccountCard } from '../crypto-account-card/crypto-account-card';
 import { DebtAccountCard } from '../debt-account-card/debt-account-card';
 
 interface Props extends Pick<
@@ -21,6 +22,10 @@ export const AccountCard = (props: Props) => {
 
     if (type === AccountTypeEnum.BANK_SYNC) {
         return <BankSyncAccountCard {...props} />;
+    }
+
+    if (type === AccountTypeEnum.CRYPTO) {
+        return <CryptoAccountCard {...props} />;
     }
 
     return <AccountCardBase {...props} />;

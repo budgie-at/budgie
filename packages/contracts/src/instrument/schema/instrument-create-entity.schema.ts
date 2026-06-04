@@ -2,4 +2,8 @@ import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-crea
 
 import { InstrumentEntitySchema } from './instrument-entity.schema';
 
-export const InstrumentCreateEntitySchema = convertToCreateEntitySchema(InstrumentEntitySchema);
+export const InstrumentCreateEntitySchema = convertToCreateEntitySchema(InstrumentEntitySchema).partial({
+    priceProvider: true,
+    providerInstrumentId: true,
+    marketCapRank: true
+});

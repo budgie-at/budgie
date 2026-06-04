@@ -36,6 +36,12 @@ export default function Index() {
                     type={AccountTypeEnum.CASH}
                 />
                 <CreateAccountCard
+                    description={t`Cold wallets and exchange balances`}
+                    icon={ACCOUNT_ICON.CRYPTO}
+                    title={t`Crypto Account`}
+                    type={AccountTypeEnum.CRYPTO}
+                />
+                <CreateAccountCard
                     description={t`Money lent or borrowed`}
                     icon={ACCOUNT_ICON.DEBT}
                     title={t`Debt Account`}

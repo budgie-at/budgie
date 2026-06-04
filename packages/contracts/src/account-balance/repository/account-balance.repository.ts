@@ -1,4 +1,4 @@
-import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
+import { and, eq, inArray, isNull, ne, sql } from 'drizzle-orm';
 
 import { DB } from '../../@generic/type/db.type';
 import {
@@ -111,7 +111,7 @@ export class AccountBalanceRepository {
     }
 
     getNetWorth(defaultInstrumentId: number) {
-        const exchangeRateSql = this.buildExchangeRateConversionSql(defaultInstrumentId);
+        const exchangeRateSql = this.buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
 
         return this.db
             .select({
@@ -121,9 +121,39 @@ export class AccountBalanceRepository {
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
+    getAssetClassTotals(defaultInstrumentId: number) {
+        const fiatExchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
+        const cryptoExchangeRateSql = this.buildStrictExchangeRateConversionSql(defaultInstrumentId);
+        const balanceSql = this.getAccountBalanceWithTransactionsSql();
+
+        return this.db
+            .select({
+                fiatTotal: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${fiatExchangeRateSql} ELSE 0 END), 0)`,
+                cryptoTotal: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${cryptoExchangeRateSql} ELSE 0 END), 0)`,
+                fiatCount: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)`,
+                cryptoCount: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)`
+            })
+            .from(AccountEntityTable)
+            .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
+    }
+
+    getValuedByAccountId(accountId: number, defaultInstrumentId: number) {
+        const exchangeRateSql = this.buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
+        const balanceSql = this.getAccountBalanceWithTransactionsSql(sql`${accountId}`);
+
+        return this.db
+            .select({
+                balance: balanceSql,
+                valuedBalance: sql<number>`COALESCE((${balanceSql}) * ${exchangeRateSql}, 0)`
+            })
+            .from(AccountEntityTable)
+            .where(eq(AccountEntityTable.id, accountId))
+            .limit(1);
+    }
+
     // jscpd:ignore-start
     getTotalByAccountType(defaultInstrumentId: number, accountType: AccountTypeEnum) {
-        const exchangeRateSql = this.buildExchangeRateConversionSql(defaultInstrumentId);
+        const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
 
         return this.db
             .select({
@@ -136,7 +166,7 @@ export class AccountBalanceRepository {
     }
 
     getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
-        const exchangeRateSql = this.buildExchangeRateConversionSql(defaultInstrumentId);
+        const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
 
         const remainingDebtSql = sql<number>`
             MAX(${AccountEntityTable.targetBalance} - (${this.getAccountBalanceWithTransactionsSql()}), 0)
@@ -158,7 +188,7 @@ export class AccountBalanceRepository {
     }
 
     getTotalByBankProvider(defaultInstrumentId: number, provider: ExternalSourceEnum) {
-        const exchangeRateSql = this.buildExchangeRateConversionSql(defaultInstrumentId);
+        const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
 
         return this.db
             .select({
@@ -181,7 +211,11 @@ export class AccountBalanceRepository {
         await (tx ?? this.db).delete(AccountBalanceEntityTable);
     }
 
-    private buildExchangeRateConversionSql(defaultInstrumentId: number) {
+    private buildNetWorthExchangeRateConversionSql(defaultInstrumentId: number) {
+        return sql`CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN ${this.buildStrictExchangeRateConversionSql(defaultInstrumentId)} ELSE ${this.buildFiatExchangeRateConversionSql(defaultInstrumentId)} END`;
+    }
+
+    private buildFiatExchangeRateConversionSql(defaultInstrumentId: number) {
         const instrumentIdRef = sql.raw('accounts.instrument_id');
 
         return sql`COALESCE(
@@ -190,6 +224,15 @@ export class AccountBalanceRepository {
             ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             1.0
+        )`;
+    }
+
+    private buildStrictExchangeRateConversionSql(defaultInstrumentId: number) {
+        const instrumentIdRef = sql.raw('accounts.instrument_id');
+
+        return sql`COALESCE(
+            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
         )`;
     }
 

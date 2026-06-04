@@ -588,6 +588,10 @@ msgstr "Закрити меню"
 msgid "Coinbase"
 msgstr "Coinbase"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Cold wallets and exchange balances"
+msgstr "Холодні гаманці та баланси на біржах"
+
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -896,6 +900,11 @@ msgstr "Створіть свій перший рахунок, щоб почат
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto"
 msgstr "Криптовалюта"
+
+#: src/account/component/create-crypto-account/create-crypto-account.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Crypto Account"
+msgstr "Крипторахунок"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "CSV"
@@ -1691,6 +1700,10 @@ msgid "No contacts yet"
 msgstr "Поки немає контактів"
 
 #: src/app/currency-selector.tsx
+msgid "No crypto found"
+msgstr "Криптовалют не знайдено"
+
+#: src/app/currency-selector.tsx
 msgid "No currencies found"
 msgstr "Не знайдено жодної валюти"
 
@@ -2159,6 +2172,10 @@ msgstr "Пошук категорій..."
 #: src/app/contact-selector.tsx
 msgid "Search contacts..."
 msgstr "Шукати контакти..."
+
+#: src/app/currency-selector.tsx
+msgid "Search crypto..."
+msgstr "Пошук криптовалют..."
 
 #: src/app/currency-selector.tsx
 msgid "Search currencies..."

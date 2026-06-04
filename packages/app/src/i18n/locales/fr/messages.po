@@ -588,6 +588,10 @@ msgstr "Fermer le menu"
 msgid "Coinbase"
 msgstr "Coinbase"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Cold wallets and exchange balances"
+msgstr "Portefeuilles à froid et soldes d'exchange"
+
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -896,6 +900,11 @@ msgstr "Créez votre premier compte pour commencer à suivre vos finances"
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto"
 msgstr "Crypto"
+
+#: src/account/component/create-crypto-account/create-crypto-account.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Crypto Account"
+msgstr "Compte crypto"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "CSV"
@@ -1691,6 +1700,10 @@ msgid "No contacts yet"
 msgstr "Aucun contact pour le moment"
 
 #: src/app/currency-selector.tsx
+msgid "No crypto found"
+msgstr "Aucune crypto trouvée"
+
+#: src/app/currency-selector.tsx
 msgid "No currencies found"
 msgstr "Aucune devise trouvée"
 
@@ -2159,6 +2172,10 @@ msgstr "Rechercher des catégories..."
 #: src/app/contact-selector.tsx
 msgid "Search contacts..."
 msgstr "Rechercher des contacts..."
+
+#: src/app/currency-selector.tsx
+msgid "Search crypto..."
+msgstr "Rechercher une crypto..."
 
 #: src/app/currency-selector.tsx
 msgid "Search currencies..."

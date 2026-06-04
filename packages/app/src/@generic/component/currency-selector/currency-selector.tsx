@@ -14,13 +14,14 @@ import { Icon } from '../icon/icon';
 
 interface Props {
     readonly instrumentId?: number;
+    readonly instrumentType?: InstrumentTypeEnum;
     readonly testID?: string;
     readonly onChange: (instrumentId: number) => void;
 }
 
-export const CurrencySelector = ({ instrumentId, onChange, testID }: Props) => {
+export const CurrencySelector = ({ instrumentId, instrumentType = InstrumentTypeEnum.FIAT, onChange, testID }: Props) => {
     const { defaultInstrument } = useSettingsContext();
-    const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
+    const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
     const { rate } = useGetRatesByBaseAndQuoteIdsQuery(instrumentId ?? 0, defaultInstrument.id);
     const [openCurrencySelector] = useCurrencySelectorModal();
 
@@ -37,7 +38,7 @@ export const CurrencySelector = ({ instrumentId, onChange, testID }: Props) => {
     const isBaseCurrency = !isDefined(rate);
 
     const handleOpen = async () => {
-        const result = await openCurrencySelector({ selectedInstrumentId: instrumentId });
+        const result = await openCurrencySelector({ selectedInstrumentId: instrumentId, instrumentType });
         if (isDefined(result)) {
             onChange(result);
         }
