@@ -125,6 +125,9 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                             exchange-rate matching, then merged into a single transfer entry
                         </Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={6}>
+                        <Trans>Imported commissions become bank-fee entries, so fees stay in analytics after transfer consolidation</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -176,6 +179,11 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                         budgie={<Trans>Original FX kept per leg</Trans>}
                         concern={<Trans>FX preserved</Trans>}
                         rival={<Trans>Often dropped or recomputed</Trans>}
+                    />
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>Tracked as fee entries</Trans>}
+                        concern={<Trans>Bank fees</Trans>}
+                        rival={<Trans>Often merged into the main amount</Trans>}
                     />
                     <FeaturePageComparisonTable.Row
                         budgie={<Trans>Yes — enables transfer-pair detection</Trans>}

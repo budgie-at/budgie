@@ -2197,6 +2197,10 @@ msgstr "PIN-код із 4–6 цифр розблоковує додаток і 
 msgid "A background scan looks at your transaction history for amount + cadence patterns: same vendor, similar amount, regular interval. Confidence scores filter out one-off matches."
 msgstr "Фоновий аналіз переглядає вашу історію транзакцій на предмет шаблонів сума + ритм: той самий продавець, схожа сума, регулярний інтервал. Оцінки надійності відфільтровують разові збіги."
 
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-overview-section/bank-fee-tracking-overview-section.tsx
+msgid "A cash withdrawal is a transfer from your bank account to cash, but the ATM commission is still a real expense. If both are forced into one category, either transfers pollute spending or fees disappear from analytics."
+msgstr "Зняття готівки — це переказ із банківського рахунку в готівку, але комісія банкомата все одно є реальною витратою. Якщо змусити обидві частини жити в одній категорії, перекази забруднюють витрати або комісії зникають з аналітики."
+
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "A cloud assistant ships your transaction titles to a remote model and trusts the provider's privacy policy. Budgie's models live on your device — there's no provider to trust."
 msgstr "Хмарний асистент надсилає назви ваших транзакцій до віддаленої моделі та довіряє політиці конфіденційності провайдера. Моделі Budgie живуть на вашому пристрої — жодного провайдера, якому треба довіряти."
@@ -2704,6 +2708,10 @@ msgstr "Аналітика за тегами — вкладка витрат п�
 msgid "Analytics counts each split toward its own category — no double-counting"
 msgstr "Аналітика враховує кожну частину розділеної транзакції у власній категорії — без подвійного рахунку"
 
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
+msgid "Analytics includes fees in their own category, even when the main transaction is a transfer"
+msgstr "Аналітика враховує комісії в окремій категорії, навіть коли основна транзакція є переказом"
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Analytics renders directly from the transaction table — no separate aggregation pipeline. Filters apply to all tabs simultaneously. Compact tile mode shows weekly/monthly net flow alongside category totals."
 msgstr "Аналітика відображається безпосередньо з таблиці транзакцій — без окремого агрегаційного конвеєра. Фільтри застосовуються до всіх вкладок одночасно. Компактний плитковий режим показує тижневий/місячний чистий потік поруч із підсумками категорій."
@@ -2906,6 +2914,10 @@ msgstr "При поточному темпі ви позбудетеся бор�
 msgid "At the heart of Budgie is a local-first architecture built on SQLite, the most widely deployed database engine in the world. SQLite runs on billions of devices and has been battle-tested for over two decades. It is the same database that powers your browser history, your mobile contacts, and countless other applications that require reliable local storage."
 msgstr "В основі Budgie лежить локально-орієнтована архітектура, побудована на SQLite — найбільш поширеному рушії баз даних у світі. SQLite працює на мільярдах пристроїв і перевірений на практиці протягом понад двох десятиліть. Це та сама база даних, яка зберігає історію вашого браузера, контакти вашого телефону та безліч інших застосунків, що потребують надійного локального сховища."
 
+#: src/generic/component/analytics-section/analytics-section-content.tsx
+msgid "ATM fees and bank commissions stay visible even when the main transaction is a transfer."
+msgstr "Комісії банкоматів і банківські комісії залишаються видимими, навіть коли основна транзакція є переказом."
+
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Attempt to gain unauthorized access to any part of the Service"
 msgstr ""
@@ -3069,6 +3081,22 @@ msgstr "безпека банківських даних"
 msgid "Bank Data Safety: Why Offline-First Is the Only Honest Answer"
 msgstr "Безпека банківських даних: чому офлайн-перший підхід — єдина чесна відповідь"
 
+#: src/app/[lang]/features/bank-fee-tracking/metadata.ts
+msgid "Bank Fee Tracking"
+msgstr "Облік банківських комісій"
+
+#: src/app/[lang]/features/bank-fee-tracking/metadata.ts
+msgid "Bank Fee Tracking — Budgie"
+msgstr "Облік банківських комісій — Budgie"
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Bank fees"
+msgstr "Банківські комісії"
+
+#: src/generic/component/analytics-section/analytics-section-content.tsx
+msgid "Bank Fees Included"
+msgstr "Банківські комісії враховано"
+
 #: src/generic/component/integrations-section/integrations-section-bank-card.tsx
 msgid "Bank Integrations"
 msgstr "Інтеграції з банками"
@@ -3157,6 +3185,10 @@ msgstr "Синхронізація з банком без стеження"
 msgid "Bank synchronization data"
 msgstr ""
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Bank-fee entries are included in category analytics even when attached to transfers"
+msgstr "Записи банківських комісій враховуються в категорійній аналітиці, навіть коли вони прив’язані до переказів"
+
 #: src/app/[lang]/features/biometric-authentication/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
@@ -3183,6 +3215,10 @@ msgstr "Лише банківського рівня"
 #: src/generic/component/security-section/security-section-header.tsx
 msgid "Bank-Level Security Without the Bank"
 msgstr "Банківський рівень безпеки без банку"
+
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
+msgid "Bank-sync imports create fee entries instead of fake split expenses"
+msgstr "Імпорт із банківської синхронізації створює записи комісій замість штучних розділених витрат"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Bank-synced accounts auto-group by provider on the home screen"
@@ -3860,6 +3896,10 @@ msgstr "Умови користування Budgie - умови використ
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports partial refunds, and keeps the audit trail visible from the transaction detail screen."
 msgstr "Budgie розглядає цю позитивну транзакцію як повернення. Він пов’язує дохід від повернення з початковою витратою, підтримує часткові повернення і залишає історію аудиту видимою на екрані деталей транзакції."
+
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-overview-section/bank-fee-tracking-overview-section.tsx
+msgid "Budgie treats the main movement and the bank fee separately. The transfer stays a transfer. The fee gets its own amount and category, so your reports show what the bank actually charged you."
+msgstr "Budgie обробляє основний рух коштів і банківську комісію окремо. Переказ залишається переказом. Комісія отримує власну суму й категорію, тому звіти показують, скільки банк фактично з вас списав."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Budgie turns that cleanup into a visible workflow. When the current filter contains uncategorized transactions, a compact missing-category pill appears above the list with the exact count."
@@ -5601,6 +5641,10 @@ msgstr "Чи працює якийсь із цих додатків без ін�
 msgid "Do charts recolor?"
 msgstr "Чи змінюються кольори графіків?"
 
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-faq-section/bank-fee-tracking-faq-section.tsx
+msgid "Do fees show up in analytics?"
+msgstr "Чи видно комісії в аналітиці?"
+
 #: src/app/[lang]/privacy/page.tsx
 msgid "Do I need to create an account to use Budgie?"
 msgstr "Чи потрібно створювати акаунт для використання Budgie?"
@@ -5616,6 +5660,10 @@ msgstr ""
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Do privacy-focused community members discuss the implementation?"
 msgstr "Чи обговорюють члени спільноти, орієнтовані на конфіденційність, реалізацію?"
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Do transfer fees show up as expenses?"
+msgstr "Чи показуються комісії за переказ як витрати?"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Do you really want all of that on someone else’s server?"
@@ -5745,6 +5793,10 @@ msgstr "Чи має проєкт чітку документацію щодо о
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Does the target return date trigger a reminder?"
 msgstr "Чи запускає цільова дата повернення нагадування?"
+
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-faq-section/bank-fee-tracking-faq-section.tsx
+msgid "Does this replace split transactions?"
+msgstr "Це замінює розділені транзакції?"
 
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Does this run on every transaction?"
@@ -6369,6 +6421,7 @@ msgstr "функції"
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/convert-to-refund/page.tsx
@@ -6416,6 +6469,18 @@ msgstr "функції"
 #: src/generic/component/mobile-menu/mobile-menu.tsx
 msgid "Features"
 msgstr "Можливості"
+
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
+msgid "Fee pills keep the transaction list readable without hiding the cost"
+msgstr "Плашки комісій зберігають список транзакцій читабельним і не приховують вартість"
+
+#: src/generic/component/features-section/features-section-grid.tsx
+msgid "Fee Tracking"
+msgstr "Облік комісій"
+
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
+msgid "Fees work on expenses, income, and transfers — not only card purchases"
+msgstr "Комісії працюють для витрат, доходів і переказів — не лише для карткових покупок"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Figma"
@@ -7014,6 +7079,7 @@ msgstr "Позиції об'єднуються в чисті активи раз
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/convert-to-refund/page.tsx
@@ -7298,6 +7364,7 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/account-transfers/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-how-it-works-section/bank-fee-tracking-how-it-works-section.tsx
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
@@ -7598,6 +7665,10 @@ msgstr "Імпортуйте повну виписку рахунку Erste Bank
 #: src/app/[lang]/features/erste-bank-pdf-import/metadata.ts
 msgid "Import your full Erste Bank statement straight from PDF — both classic and the new 2026 modern format. Account holder, IBAN, balances, and every transaction line parsed."
 msgstr "Імпортуйте повну виписку Erste Bank прямо з PDF — як класичний, так і новий сучасний формат 2026 року. Розпізнаються власник рахунку, IBAN, баланси та кожен рядок транзакції."
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Imported commissions become bank-fee entries, so fees stay in analytics after transfer consolidation"
+msgstr "Імпортовані комісії стають записами банківських комісій, тому залишаються в аналітиці після консолідації переказів"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Importing to Budgie"
@@ -7905,6 +7976,14 @@ msgstr "Приєднатись до списку очікування для р�
 #: src/generic/component/waitlist-form/waitlist-form.tsx
 msgid "Join Waitlist"
 msgstr "Приєднатися до списку очікування"
+
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "Keep ATM fees, transfer fees, and card commissions visible in analytics without turning every transfer into an expense."
+msgstr "Залишайте комісії банкоматів, переказів і карток видимими в аналітиці, не перетворюючи кожен переказ на витрату."
+
+#: src/app/[lang]/features/bank-fee-tracking/metadata.ts
+msgid "Keep ATM fees, transfer fees, and card commissions visible without polluting transfers."
+msgstr "Залишайте комісії банкоматів, переказів і карток видимими, не забруднюючи перекази."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Key features:"
@@ -8316,6 +8395,10 @@ msgstr "Ручні записи не мають MCC; деякі потоки б�
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations."
 msgstr "Ручне внесення витрат, імпорт банківських PDF/CSV, мультивалютність, облік боргів і аналітика — безплатні. Опційне одноразове розблокування відкриває AI-функції та прямі банківські інтеграції."
+
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
+msgid "Manual fee editing uses a compact bottom sheet for category and amount"
+msgstr "Ручне редагування комісії використовує компактний нижній sheet для категорії та суми"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Manual import takes more effort, but it ensures that your bank data follows the same privacy guarantees as the rest of Budgie: it never leaves your device, and no third party ever has access."
@@ -9250,6 +9333,10 @@ msgstr "Ні. Повторний імпорт завжди виконує дед
 msgid "No. Screenshot protection automatically blurs all sensitive screens when the app moves to the background, preventing balance exposure in the iOS and Android recent-apps view."
 msgstr "Ні. Захист знімків екрана автоматично розмиває всі чутливі екрани, коли додаток переходить у фоновий режим, запобігаючи розкриттю балансу в перегляді нещодавніх додатків iOS та Android."
 
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-faq-section/bank-fee-tracking-faq-section.tsx
+msgid "No. Splits are for dividing the main amount across categories. Fees are a separate cost attached to the transaction."
+msgstr "Ні. Розділення потрібні, щоб рознести основну суму між категоріями. Комісії — це окрема вартість, прив’язана до транзакції."
+
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "No. Switching language re-renders the UI in-place, no reinstall or relaunch."
 msgstr "Ні. Перемикання мови перерендеровує інтерфейс на місці — без перевстановлення або перезапуску."
@@ -9499,6 +9586,10 @@ msgstr "Офлайн-перший. Приватний. На базі AI."
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Often dropped or recomputed"
 msgstr "Часто відкидається або перераховується"
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Often merged into the main amount"
+msgstr "Часто змішані з основною сумою"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Often no"
@@ -12053,6 +12144,10 @@ msgstr "Теорема CAP та компроміси Local-First"
 msgid "The CAP theorem states that a distributed system can provide at most two of three guarantees: Consistency, Availability, and Partition tolerance. Since network partitions are inevitable (your device will go offline), practical systems must choose between consistency and availability."
 msgstr "Теорема CAP стверджує, що розподілена система може забезпечити максимум дві з трьох гарантій: узгодженість (Consistency), доступність (Availability) та стійкість до розділення (Partition tolerance). Оскільки мережеві розділення неминучі (ваш пристрій вимкнеться з мережі), практичні системи мають обирати між узгодженістю та доступністю."
 
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-faq-section/bank-fee-tracking-faq-section.tsx
+msgid "The cash movement can stay a transfer, while the ATM commission is stored as a bank-fee entry for analytics."
+msgstr "Рух готівки може залишатися переказом, а комісія банкомата зберігається як запис банківської комісії для аналітики."
+
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "The category selector reorders by popularity over time, so the categories you use most surface first. Bank-synced transactions can pre-fill via MCC mapping; you can override at any time."
 msgstr "Селектор категорій перебудовується за популярністю з плином часу, тому категорії, якими ви користуєтеся найчастіше, відображаються першими. Синхронізовані з банком транзакції можуть автоматично заповнюватися через маппінг MCC; ви можете змінити в будь-який час."
@@ -12857,6 +12952,14 @@ msgstr "Повна — жодного провайдера не існує"
 msgid "Track accounts in multiple currencies without compromising privacy:"
 msgstr "Відстежуйте рахунки в декількох валютах без компромісу конфіденційності:"
 
+#: src/generic/component/features-section/features-section-grid.tsx
+msgid "Track ATM fees, transfer fees, and card commissions as real analytics entries without breaking transfers."
+msgstr "Обліковуйте комісії банкоматів, переказів і карток як справжні записи аналітики, не ламаючи перекази."
+
+#: src/app/[lang]/features/bank-fee-tracking/metadata.ts
+msgid "Track bank fees as first-class transaction entries. ATM fees, transfer fees, and card commissions stay visible in analytics even when the main movement is a transfer."
+msgstr "Обліковуйте банківські комісії як повноцінні записи транзакцій. Комісії банкоматів, переказів і карток залишаються видимими в аналітиці, навіть коли основний рух коштів є переказом."
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Track Bitcoin, Ethereum, AAPL, an S&P 500 ETF, and gold alongside your bank accounts in a single net-worth view."
 msgstr "Відстежуйте Bitcoin, Ethereum, AAPL, ETF на S&P 500 та золото разом із банківськими рахунками в одному вигляді чистих активів."
@@ -12925,6 +13028,10 @@ msgstr "Відстежуйте прогрес з часом"
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Track unlimited bank accounts, cash wallets, savings, crypto, stocks, and debt — grouped, archived, and renamed however you want."
 msgstr "Відстежуйте необмежену кількість банківських рахунків, готівкових гаманців, заощаджень, криптовалюти, акцій та боргів — згруповані, заархівовані та перейменовані як завгодно."
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Tracked as fee entries"
+msgstr "Обліковуються як записи комісій"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Trade-offs to Consider:"
@@ -13657,6 +13764,10 @@ msgstr "Що відбувається з AI-підказками, якщо я о
 msgid "What happens to analytics after splitting?"
 msgstr "Що відбувається з аналітикою після розбивки?"
 
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-faq-section/bank-fee-tracking-faq-section.tsx
+msgid "What happens to ATM withdrawals?"
+msgstr "Що відбувається зі зняттям у банкоматі?"
+
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "What happens to edited transactions in the window?"
 msgstr "Що відбувається з відредагованими транзакціями у вікні?"
@@ -13815,6 +13926,7 @@ msgstr "Які компроміси розглядаються"
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/convert-to-refund/page.tsx
@@ -13911,6 +14023,10 @@ msgstr "Що таке відро «Без тегів»?"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "What’s your budget?"
 msgstr "Який ваш бюджет?"
+
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-how-it-works-section/bank-fee-tracking-how-it-works-section.tsx
+msgid "When a bank import includes a commission, Budgie stores it as a fee entry attached to the transaction. You can also add or edit a fee manually from the transaction screen. The fee entry keeps its own category and amount while the main transaction keeps its original type."
+msgstr "Коли банківський імпорт містить комісію, Budgie зберігає її як запис комісії, прив’язаний до транзакції. Ви також можете додати або відредагувати комісію вручну з екрана транзакції. Запис комісії має власну категорію й суму, а основна транзакція зберігає свій початковий тип."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "When a company shuts down, the data does not necessarily disappear. It often becomes an asset sold to the acquiring company or retained in archives with unclear access policies."
@@ -14273,6 +14389,10 @@ msgstr "Чому тертя при введенні вбиває трекери 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Why every voice budgeting app today is a privacy hole"
 msgstr "Чому кожен голосовий фінансовий додаток сьогодні є дірою конфіденційності"
+
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-overview-section/bank-fee-tracking-overview-section.tsx
+msgid "Why fees need their own entry type"
+msgstr "Чому комісіям потрібен власний тип запису"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Why Financial Data Is the Worst Thing to Send to the Cloud"
@@ -14777,6 +14897,10 @@ msgstr "Так, за згодою. Коли ви приймаєте умови �
 msgid "Yes, YNAB supports manual transaction entry. However, the app is designed around bank sync, and some users find the manual-only experience less polished. If you’re using YNAB without bank sync for privacy reasons, you might consider an app that was designed for manual entry from the start."
 msgstr "Так, YNAB підтримує ручне введення транзакцій. Проте додаток побудований навколо банківської синхронізації, і деякі користувачі вважають досвід без синхронізації менш відшліфованим. Якщо ви використовуєте YNAB без банківської синхронізації з міркувань приватності, варто розглянути додаток, який був розроблений для ручного введення з самого початку."
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Yes. A transfer can remain a transfer while its fee is counted in the selected fee category for analytics."
+msgstr "Так. Переказ може залишатися переказом, а його комісія враховується в обраній категорії комісій для аналітики."
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Yes. All core functionality — adding transactions, viewing reports, managing budgets, and reviewing your history — works completely offline. Internet access is only used when you explicitly trigger a bank sync or fetch current exchange rates."
 msgstr "Так. Всі основні функції — додавання транзакцій, перегляд звітів, управління бюджетами та перегляд вашої історії — повністю офлайн. Доступ до інтернету використовується лише тоді, коли ви явно запускаєте синхронізацію з банком або завантажуєте поточні обмінні курси."
@@ -14844,6 +14968,10 @@ msgstr "Так. Кожен рядок тегу показує окремі пі�
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Yes. Editing a transaction keeps its primary-tag designation; bank-sync re-imports also preserve it."
 msgstr "Так. Редагування транзакції зберігає позначення первинного тегу; повторні імпорти банківської синхронізації також зберігають його."
+
+#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-faq-section/bank-fee-tracking-faq-section.tsx
+msgid "Yes. Fee entries count toward their selected category, including bank fees attached to transfers."
+msgstr "Так. Записи комісій зараховуються до вибраної категорії, включно з банківськими комісіями, прив’язаними до переказів."
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Yes. Long-press the transfer and choose \"Split back into two transactions\"; both halves return to their original types."

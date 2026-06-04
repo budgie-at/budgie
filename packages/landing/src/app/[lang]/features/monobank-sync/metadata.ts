@@ -17,6 +17,7 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: [
         'offline-first-expense-tracker',
         'bank-resync-window',
+        'bank-fee-tracking',
         'csv-import',
         'erste-bank-pdf-import',
         'privatbank-import'
