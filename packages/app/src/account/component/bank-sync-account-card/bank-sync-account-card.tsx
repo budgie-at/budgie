@@ -16,7 +16,7 @@ interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' 
     readonly instrumentSymbol: string;
 }
 
-const syncStatusVariants = cva('absolute bottom-3 right-3 size-2 rounded-full will-change-animation', {
+const syncStatusVariants = cva('absolute bottom-3 right-3 h-2 w-2 rounded-full will-change-animation', {
     variants: {
         status: {
             [BankSyncStatusEnum.SYNCING]: 'bg-amber-500 animate-pulse',
