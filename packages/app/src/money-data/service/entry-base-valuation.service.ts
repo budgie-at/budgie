@@ -1,4 +1,4 @@
-import { CurrencyEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 import { format } from 'date-fns';
@@ -55,7 +55,16 @@ class EntryBaseValuationService {
             };
         }
 
-        const baseExchangeRate = await this.resolveHistoricalBaseExchangeRate(account.instrumentId, baseInstrument.id, operatedAt, tx);
+        const baseExchangeRate = await this.resolveHistoricalBaseExchangeRateOrNull(
+            account.instrumentId,
+            baseInstrument.id,
+            operatedAt,
+            tx
+        );
+
+        if (!isDefined(baseExchangeRate)) {
+            return this.resolveMissingBaseValuation(account.type, account.instrumentId, baseInstrument.id);
+        }
 
         return {
             baseInstrumentId: baseInstrument.id,
@@ -80,6 +89,38 @@ class EntryBaseValuationService {
         operatedAt: Date,
         tx?: DB
     ): Promise<number> {
+        const rate = await this.resolveHistoricalBaseExchangeRateOrNull(sourceInstrumentId, targetInstrumentId, operatedAt, tx);
+
+        if (isDefined(rate)) {
+            return rate;
+        }
+
+        throw new Error(t`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`);
+    }
+
+    async valueEntries(
+        entries: TransactionEntryCreateInputInterface[],
+        operatedAt: Date,
+        externalSource: ExternalSourceEnum | null,
+        tx?: DB
+    ): Promise<Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>> {
+        const valuations = new Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>();
+
+        await Promise.all(
+            entries.map(async entry => {
+                valuations.set(entry, await this.resolveEntryValuation(entry, operatedAt, externalSource, tx));
+            })
+        );
+
+        return valuations;
+    }
+
+    private async resolveHistoricalBaseExchangeRateOrNull(
+        sourceInstrumentId: number,
+        targetInstrumentId: number,
+        operatedAt: Date,
+        tx?: DB
+    ): Promise<number | null> {
         const rateDate = format(operatedAt, EntryBaseValuationService.RATE_DATE_FORMAT);
         const dateRate = await this.resolveDirectOrInverseRate(
             (sourceId, targetId) => historicalExchangeRateRepository.findForDateOrBefore(sourceId, targetId, rateDate, tx),
@@ -110,21 +151,20 @@ class EntryBaseValuationService {
         return await this.resolveCurrentBaseExchangeRate(sourceInstrumentId, targetInstrumentId);
     }
 
-    async valueEntries(
-        entries: TransactionEntryCreateInputInterface[],
-        operatedAt: Date,
-        externalSource: ExternalSourceEnum | null,
-        tx?: DB
-    ): Promise<Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>> {
-        const valuations = new Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>();
+    private resolveMissingBaseValuation(
+        accountType: AccountTypeEnum,
+        sourceInstrumentId: number,
+        targetInstrumentId: number
+    ): EntryBaseValuationInterface {
+        if (accountType === AccountTypeEnum.CRYPTO) {
+            return {
+                baseInstrumentId: null,
+                baseExchangeRate: null,
+                baseAmount: null
+            };
+        }
 
-        await Promise.all(
-            entries.map(async entry => {
-                valuations.set(entry, await this.resolveEntryValuation(entry, operatedAt, externalSource, tx));
-            })
-        );
-
-        return valuations;
+        throw new Error(t`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`);
     }
 
     private async resolveDirectOrInverseRate(
@@ -147,7 +187,7 @@ class EntryBaseValuationService {
         return null;
     }
 
-    private async resolveCurrentBaseExchangeRate(sourceInstrumentId: number, targetInstrumentId: number): Promise<number> {
+    private async resolveCurrentBaseExchangeRate(sourceInstrumentId: number, targetInstrumentId: number): Promise<number | null> {
         const directExchangeRate = await exchangeRateRepository.findByBaseAndQuoteIds(sourceInstrumentId, targetInstrumentId);
 
         if (isDefined(directExchangeRate)) {
@@ -160,7 +200,7 @@ class EntryBaseValuationService {
             return 1 / inverseExchangeRate.rate;
         }
 
-        throw new Error(t`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`);
+        return null;
     }
 
     private async resolveEntryValuation(
