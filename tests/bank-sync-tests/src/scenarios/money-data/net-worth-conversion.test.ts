@@ -42,31 +42,12 @@ describe('net worth currency conversion', () => {
         expect(cashTotal?.total).toBe(netWorth?.netWorth);
     });
 
-    it('does not value crypto totals with fiat fallback when the live rate is missing', async () => {
-        const { euro } = await seedBitcoinCryptoWithBalance(100 * PRECISION);
-
-        const cryptoTotal = accountBalanceRepository.getTotalByAccountType(euro.id, AccountTypeEnum.CRYPTO).get();
-        const assetClassTotals = accountBalanceRepository.getAssetClassTotals(euro.id).get();
-
-        expect(cryptoTotal?.total).toBe(0);
-        expect(assetClassTotals?.cryptoTotal).toBe(0);
-    });
-
-    it('values crypto totals with the live rate when present', async () => {
-        const { euro } = await seedBitcoinCryptoWithLiveRate(100 * PRECISION);
-
-        const cryptoTotal = accountBalanceRepository.getTotalByAccountType(euro.id, AccountTypeEnum.CRYPTO).get();
-        const assetClassTotals = accountBalanceRepository.getAssetClassTotals(euro.id).get();
-
-        expect(cryptoTotal?.total).toBe(5_000_000 * PRECISION);
-        expect(assetClassTotals?.cryptoTotal).toBe(5_000_000 * PRECISION);
-    });
-
-    it('does not convert crypto display amounts with fiat fallback when the live rate is missing', async () => {
+    it('does not value crypto totals or display amounts with fiat fallback when the live rate is missing', async () => {
         const { bitcoin, euro } = await seedBitcoinCryptoWithBalance(100 * PRECISION);
 
         const conversion = await exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
 
+        expectCryptoTotals(euro.id, 0);
         expect(conversion).toBeNull();
     });
 
@@ -75,6 +56,7 @@ describe('net worth currency conversion', () => {
 
         const conversion = await exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
 
+        expectCryptoTotals(euro.id, 5_000_000 * PRECISION);
         expect(conversion?.amount).toBe(5_000_000 * PRECISION);
         expect(conversion?.exchangeRate).toBe(BITCOIN_EURO_RATE);
     });
@@ -118,4 +100,12 @@ const seedBitcoinCryptoWithLiveRate = async (balance: number) => {
     });
 
     return result;
+};
+
+const expectCryptoTotals = (defaultInstrumentId: number, expectedTotal: number) => {
+    const cryptoTotal = accountBalanceRepository.getTotalByAccountType(defaultInstrumentId, AccountTypeEnum.CRYPTO).get();
+    const assetClassTotals = accountBalanceRepository.getAssetClassTotals(defaultInstrumentId).get();
+
+    expect(cryptoTotal?.total).toBe(expectedTotal);
+    expect(assetClassTotals?.cryptoTotal).toBe(expectedTotal);
 };
