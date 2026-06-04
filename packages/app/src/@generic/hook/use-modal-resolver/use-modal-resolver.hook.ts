@@ -17,7 +17,7 @@ export const useModalResolver = <TParams, TResult>(route: Href): UseModalResolve
 
     const open = (params?: TParams): Promise<TResult> =>
         new Promise(resolve => {
-            setCurrentParams((params ?? {}) as TParams);
+            setCurrentParams(params ?? null);
             resolverRef.current = resolve;
             router.push(route);
         });

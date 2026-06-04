@@ -123,7 +123,11 @@ export const TagsSelectorCard = ({
                 onPress={handleSelect}
                 onLongPress={longPressHandler}
             >
-                <Text className={cn(textVariants({ isSelected, isPrimary, variant }), 'text-center')} numberOfLines={numberOfLines}>
+                <Text
+                    className={cn(textVariants({ isSelected, isPrimary, variant }), 'self-stretch flex-shrink text-center')}
+                    numberOfLines={numberOfLines}
+                    ellipsizeMode="tail"
+                >
                     {title}
                 </Text>
 
