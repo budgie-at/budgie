@@ -27,6 +27,8 @@ export const AccountGridItem = ({ account, type, isLeft }: Props) => {
                 title={title}
                 createdAt={createdAt}
                 bankSync={bankSync}
+                instrumentId={instrument.id}
+                instrumentCode={instrument.code}
                 instrumentSymbol={instrument.symbol}
             />
         </View>

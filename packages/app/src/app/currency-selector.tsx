@@ -48,6 +48,7 @@ export default function CurrencySelectorModal() {
             code={item.code}
             symbol={item.symbol}
             name={item.name}
+            type={item.type}
             onSelect={handleSelect}
         />
     );
