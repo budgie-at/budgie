@@ -5,6 +5,7 @@ import {
     AccountTypeEnum,
     CurrencyEnum,
     ExchangeRateEntityTable,
+    InstrumentTypeEnum,
     PRECISION,
     SettingsEntityTable
 } from '@budgie/contracts';
@@ -37,6 +38,28 @@ describe('net worth currency conversion', () => {
         expect(netWorth?.netWorth).toBeGreaterThan(5 * PRECISION);
         expect(cashTotal?.total).toBe(netWorth?.netWorth);
     });
+
+    it('does not value crypto totals with fiat fallback when the live rate is missing', async () => {
+        const { euro } = await seedBitcoinCryptoWithBalance(100 * PRECISION);
+
+        const cryptoTotal = accountBalanceRepository.getTotalByAccountType(euro.id, AccountTypeEnum.CRYPTO).get();
+        const assetClassTotals = accountBalanceRepository.getAssetClassTotals(euro.id).get();
+
+        expect(cryptoTotal?.total).toBe(0);
+        expect(assetClassTotals?.cryptoTotal).toBe(0);
+    });
+
+    it('values crypto totals with the live rate when present', async () => {
+        const { bitcoin, euro } = await seedBitcoinCryptoWithBalance(100 * PRECISION);
+
+        insertOne(ExchangeRateEntityTable, { source: 'test', baseInstrumentId: bitcoin.id, quoteInstrumentId: euro.id, rate: 50_000 });
+
+        const cryptoTotal = accountBalanceRepository.getTotalByAccountType(euro.id, AccountTypeEnum.CRYPTO).get();
+        const assetClassTotals = accountBalanceRepository.getAssetClassTotals(euro.id).get();
+
+        expect(cryptoTotal?.total).toBe(5_000_000 * PRECISION);
+        expect(assetClassTotals?.cryptoTotal).toBe(5_000_000 * PRECISION);
+    });
 });
 
 const seedHryvniaCashWithBalance = async (balance: number) => {
@@ -48,4 +71,20 @@ const seedHryvniaCashWithBalance = async (balance: number) => {
     insertOne(AccountBalanceEntityTable, { accountId: account.id, amount: balance });
 
     return euro;
+};
+
+const seedBitcoinCryptoWithBalance = async (balance: number) => {
+    const euro = await requireInstrument(CurrencyEnum.EUR);
+    const bitcoin = seed.instrument({
+        code: 'BTC',
+        name: 'Bitcoin',
+        symbol: 'BTC',
+        type: InstrumentTypeEnum.CRYPTO
+    });
+    const account = seed.account({ instrumentId: bitcoin.id, type: AccountTypeEnum.CRYPTO });
+
+    await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
+    insertOne(AccountBalanceEntityTable, { accountId: account.id, amount: balance });
+
+    return { bitcoin, euro };
 };

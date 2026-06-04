@@ -139,7 +139,10 @@ export class AccountBalanceRepository {
 
     // jscpd:ignore-start
     getTotalByAccountType(defaultInstrumentId: number, accountType: AccountTypeEnum) {
-        const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
+        const exchangeRateSql =
+            accountType === AccountTypeEnum.CRYPTO
+                ? this.buildStrictExchangeRateConversionSql(defaultInstrumentId)
+                : this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
 
         return this.db
             .select({
