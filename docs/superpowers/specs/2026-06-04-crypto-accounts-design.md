@@ -14,6 +14,7 @@ Each crypto account is manual in v1. Budgie tracks the native asset balance ente
 - Do not implement buy, sell, or crypto transfer transaction screens in this phase.
 - Do not redesign the main screen beyond the approved summary chips and crypto account secondary amount.
 - Do not introduce instrument-specific decimal precision in this phase.
+- Do not seed every CoinGecko-supported asset. The app seeds a top-200 starter catalog and supports on-demand persistence for assets outside that list.
 - Do not add Jest, Vitest, or other unit-test workspaces.
 
 ## Existing Context
@@ -33,7 +34,7 @@ The current gaps are:
 - `CreateLiabilityAccount` only accepts `BANK | CASH`.
 - `accountService.create` creates accounts as `AccountNatureEnum.LIABILITY`, so crypto needs its own asset-account creation path.
 - `CurrencySelector` is hard-coded to `InstrumentTypeEnum.FIAT`.
-- Initial migrations seed fiat instruments only.
+- Initial migrations seed fiat instruments only and the instrument model has no crypto price-provider metadata yet.
 - The existing exchange-rate sync is fiat-oriented and uses a fiat rate provider.
 
 ## Product Behavior
@@ -52,6 +53,13 @@ The crypto account form collects:
 The default title is `Crypto Account`. The default icon uses the existing crypto account icon. The default crypto instrument should be `BTC` when available. If `BTC` is not available, the first crypto instrument sorted by code is selected.
 
 The form must use a crypto instrument selector, not the fiat currency selector. User-facing strings must use Lingui macros following the repo rules.
+
+The selector is local-first:
+
+- show seeded local crypto instruments first
+- search local instruments by code and name
+- when online search finds a provider asset that is not local, persist it as a local crypto instrument before creating the account
+- do not require network access to create an account for an already-local instrument
 
 ### Main Screen
 
@@ -86,19 +94,25 @@ Crypto cards are account-specific. Budgie does not merge accounts with the same 
 
 ### Instruments
 
-Seed a small, explicit v1 crypto instrument list:
+Seed the top 200 crypto instruments by market cap at migration authoring time. The source for the snapshot should be CoinGecko's market endpoint, using `vs_currency=usd`, `order=market_cap_desc`, `per_page=200`, and `page=1`.
 
-- `BTC`, name `Bitcoin`, symbol `₿`, provider id `bitcoin`
-- `ETH`, name `Ethereum`, symbol `Ξ`, provider id `ethereum`
-- `USDT`, name `Tether`, symbol `₮`, provider id `tether`
-- `USDC`, name `USD Coin`, symbol `USDC`, provider id `usd-coin`
-- `SOL`, name `Solana`, symbol `◎`, provider id `solana`
-- `BNB`, name `BNB`, symbol `BNB`, provider id `binancecoin`
-- `TON`, name `Toncoin`, symbol `TON`, provider id `the-open-network`
+The existing `instruments` table has `type`, `code`, `name`, and `symbol`, but no provider-specific external id. Add nullable provider metadata to instruments:
 
-The existing `instruments` table has `type`, `code`, `name`, and `symbol`, but no provider-specific external id. The implementation should add a crypto-provider mapping in the app layer as a module constant used by the crypto rate sync. This avoids a schema migration for provider metadata in v1 while keeping the mapping explicit and typed.
+- `priceProvider`, backed by an `InstrumentPriceProviderEnum`
+- `providerInstrumentId`, for example `bitcoin`
+- `marketCapRank`, for local ordering and fallback display
 
-If the repo later needs user-added coins or multiple providers, a provider id column can be introduced then.
+Enum members follow repo casing rules:
+
+```ts
+export enum InstrumentPriceProviderEnum {
+    COINGECKO = 'COINGECKO'
+}
+```
+
+Fiat instruments leave these provider fields null. Seeded crypto instruments use `priceProvider = COINGECKO`, a CoinGecko provider id, and their snapshot market-cap rank.
+
+The crypto selector can add assets outside the top 200 later. When a user selects a remote search result that is not local, Budgie creates a local `CRYPTO` instrument with the same provider metadata before creating the account.
 
 ### Accounts
 
@@ -127,7 +141,15 @@ Use CoinGecko's simple price endpoint for crypto prices. The endpoint supports q
 
 - https://docs.coingecko.com/reference/simple-price
 
-For v1, query only crypto instruments present in active accounts and only the user's default fiat code as `vs_currencies`.
+Use CoinGecko's market endpoint to generate the static top-200 migration snapshot:
+
+- https://docs.coingecko.com/reference/coins-markets
+
+Use CoinGecko search for on-demand selector discovery:
+
+- https://docs.coingecko.com/reference/search-data
+
+For rate sync, query only crypto instruments present in active accounts and only the user's default fiat code as `vs_currencies`.
 
 ### Sync Shape
 
@@ -139,7 +161,7 @@ The service:
 - skips when the default instrument is not fiat
 - finds active crypto accounts included in net worth
 - deduplicates their crypto instrument ids
-- maps instruments to CoinGecko ids through the explicit mapping constant
+- reads CoinGecko ids from instrument provider metadata
 - fetches prices in one batched request
 - writes crypto-to-default and default-to-crypto rates to `exchange_rates`
 
@@ -180,6 +202,7 @@ The chip row renders only when both counts are positive.
 Expected implementation areas:
 
 - `packages/contracts/src/account`: crypto create schema and input type
+- `packages/contracts/src/instrument`: instrument price-provider enum, provider metadata schema, and interfaces
 - `packages/app/drizzle`: migration to seed crypto instruments
 - `packages/app/src/account`: create crypto account component, route handling, service method, account-card secondary crypto amount
 - `packages/app/src/@generic/component`: selector generalization from fiat-only to instrument-type-aware selection if needed
@@ -208,6 +231,8 @@ Manual verification should include:
 - fiat-only account set shows the existing main screen with no chips
 - crypto-only account set shows no chips and includes crypto accounts in net worth
 - mixed fiat and crypto account set shows two icon-only chips under net worth
+- crypto selector lists seeded top-200 instruments while offline
+- online search can persist a crypto instrument outside the seeded top 200 before account creation
 - multiple `BTC` accounts remain separate cards
 - crypto account card shows default-currency value and native balance
 - app remains usable with network disabled after rates have been cached
