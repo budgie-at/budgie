@@ -118,6 +118,9 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Compact tile mode shows weekly/monthly net flow alongside category totals</Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>Bank-fee entries are included in category analytics even when attached to transfers</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -164,6 +167,14 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     question={<Trans>Are charts rendered offline?</Trans>}
                     answer={
                         <Trans>Yes. Analytics reads directly from your local SQLite database — every chart works without internet.</Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Do transfer fees show up as expenses?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. A transfer can remain a transfer while its fee is counted in the selected fee category for analytics.
+                        </Trans>
                     }
                 />
             </FeaturePageFaqSection>

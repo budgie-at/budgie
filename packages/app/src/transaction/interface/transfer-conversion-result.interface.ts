@@ -1,4 +1,4 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import type { TransactionEntryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 
 export interface TransferConversionResultInterface {
     readonly creditAccountId: number;
@@ -10,4 +10,5 @@ export interface TransferConversionResultInterface {
     readonly operatedAt: Date;
     readonly toAccountId: number;
     readonly transactionType: TransactionTypeEnum;
+    readonly feeEntries: TransactionEntryEntityInterface[];
 }

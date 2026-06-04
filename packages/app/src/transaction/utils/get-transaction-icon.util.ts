@@ -5,6 +5,8 @@ import {
     UserIconNameEnum
 } from '@budgie/contracts';
 
+import { getTransactionCategoryEntries } from './get-transaction-category-entries.util';
+
 export const getTransactionIcon = (transaction: TransactionWithRelationsEntityInterface): UserIconNameEnum => {
     if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
         const [entry] = transaction.entries;
@@ -20,9 +22,11 @@ export const getTransactionIcon = (transaction: TransactionWithRelationsEntityIn
         return UserIconNameEnum.HandCoins;
     }
 
-    if (transaction.entries.length > 1) {
+    const categoryEntries = getTransactionCategoryEntries(transaction.entries);
+
+    if (categoryEntries.length > 1) {
         return UserIconNameEnum.Split;
     }
 
-    return transaction.entries.at(0)?.category?.icon ?? UserIconNameEnum.Home;
+    return categoryEntries.at(0)?.category?.icon ?? UserIconNameEnum.Home;
 };
