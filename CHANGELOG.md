@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.34.0](https://github.com/budgie-at/budgie/compare/v5.33.1...v5.34.0) (2026-06-04)
+
+### Bug Fixes
+
+- address bot review feedback ([179dc7b](https://github.com/budgie-at/budgie/commit/179dc7ba5a4b08eff152780bc50c3d3fd3faa2cf))
+- **app:** address CI and review feedback ([8f08799](https://github.com/budgie-at/budgie/commit/8f0879919e6c58567b164f9b5e34a0c82318abd2))
+- **app:** cover blurred page footer edge ([09444d4](https://github.com/budgie-at/budgie/commit/09444d4ed4452e5bf1ea8fc4163d8fe31acbdd58))
+- **app:** fit category tile labels ([665c406](https://github.com/budgie-at/budgie/commit/665c406c7d7369141397a32a4246f0df2d826320))
+- **app:** restore bank sync status indicators ([fcdc0bb](https://github.com/budgie-at/budgie/commit/fcdc0bb5e569e89c6254f3f82eb52d4a05c177f0))
+- **app:** restore bank sync tile indicator placement ([f8c9bfe](https://github.com/budgie-at/budgie/commit/f8c9bfea5f260b702b4b091e3f15af096de4cae5))
+- **app:** restore visible bank sync tile dot ([237b213](https://github.com/budgie-at/budgie/commit/237b21388d4d0dbeae7a687392ece63db1f6d7e5))
+- **app:** show bank sync status dots ([bdb577e](https://github.com/budgie-at/budgie/commit/bdb577e3e1d71438329c7186a55c95269f993970))
+- **app:** show bank sync tile indicator ([342ae40](https://github.com/budgie-at/budgie/commit/342ae4029856e63621987119d14f2e3875ec63c8))
+- **app:** wrap selector tile labels ([c2e84a3](https://github.com/budgie-at/budgie/commit/c2e84a36116883d5deba923b88989e4d01b15331))
+- improve category filter search ([6850658](https://github.com/budgie-at/budgie/commit/68506582621fa2bfa097ae872de0facbcb0be5a9))
+- preserve ATM fees and split transaction flows ([1925786](https://github.com/budgie-at/budgie/commit/192578635d55c383430b589d3d37c854f38cc552))
+
+### Features
+
+- add fee entries to transactions ([efc62e2](https://github.com/budgie-at/budgie/commit/efc62e25448c74b5da28fac9952ff640f915f3a3))
+- **landing:** add bank fee tracking feature ([2768e99](https://github.com/budgie-at/budgie/commit/2768e99b5dabe8d2b3d354fb73f5488cc548c497))
+
 ## [5.33.1](https://github.com/budgie-at/budgie/compare/v5.33.0...v5.33.1) (2026-06-04)
 
 ### Bug Fixes
