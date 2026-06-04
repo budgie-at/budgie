@@ -35,9 +35,11 @@ export { AccountEntityRelations } from './account/relations/account-entity.relat
 
 export { DebtAccountCreateInputSchema } from './account/schema/debt-account-create-input.schema';
 export { LiabilityAccountCreateInputSchema } from './account/schema/liability-account-create-input.schema';
+export { CryptoAccountCreateInputSchema } from './account/schema/crypto-account-create-input.schema';
 
 export type { LiabilityAccountCreateInputInterface } from './account/input/liability-account-create-input.interface';
 export type { DebtAccountCreateInputInterface } from './account/input/debt-account-create-input.interface';
+export type { CryptoAccountCreateInputInterface } from './account/input/crypto-account-create-input.interface';
 
 export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
@@ -99,6 +101,7 @@ export { TagUpdateEntitySchema } from './tag/schema/tag-update-entity.schema';
 export { TagRepository } from './tag/repository/tag.repository';
 
 export { InstrumentTypeEnum } from './instrument/enum/instrument-type.enum';
+export { InstrumentPriceProviderEnum } from './instrument/enum/instrument-price-provider.enum';
 export { InstrumentAssociationEnum } from './instrument/enum/instrument-association.enum';
 
 export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';
