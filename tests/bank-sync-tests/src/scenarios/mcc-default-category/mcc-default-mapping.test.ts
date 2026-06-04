@@ -1,6 +1,12 @@
 import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
 import { BankProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
-import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, ExternalSourceEnum, MCC_DEFAULT_CATEGORY_SEED } from '@budgie/contracts';
+import {
+    BANK_FEE_CATEGORY_ID,
+    CategorySourceEnum,
+    ExternalSourceEnum,
+    MCC_DEFAULT_CATEGORY_SEED,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import type { BankTransactionInterface } from '@budgie/bank-sync';
@@ -82,18 +88,23 @@ describe('mcc-default-category/mcc-default-mapping', () => {
         expect(result.entries[0].amount).toBe(2500);
     });
 
-    it('splits a fee into a dedicated bank-fee entry', () => {
+    it('creates a fee entry without turning the transaction into category splits', () => {
         const lookup: MccCategoryLookupInterface = { id: 999, defaultCategoryId: 42 };
         const result = mapBankTransactionToCreateInput(makeFeeTransaction(), ACCOUNT_ID, lookup, PROVIDER);
+        const categoryEntries = result.entries.filter(entry => entry.type !== TransactionEntryTypeEnum.FEE);
+        const feeEntries = result.entries.filter(entry => entry.type === TransactionEntryTypeEnum.FEE);
 
         expect(result.amount).toBe(FEE_CARD_AMOUNT);
         expect(result.entries).toHaveLength(2);
-        expect(result.entries[0].amount).toBe(30000);
-        expect(result.entries[0].categoryId).toBe(42);
-        expect(result.entries[0].exchangeRate).toBe(1);
-        expect(result.entries[1].amount).toBe(300);
-        expect(result.entries[1].categoryId).toBe(BANK_FEE_CATEGORY_ID);
-        expect(result.entries[1].categorySource).toBe(CategorySourceEnum.FEE);
-        expect(result.entries[1].externalId).toBe('tx-test-1:fee');
+        expect(categoryEntries).toHaveLength(1);
+        expect(feeEntries).toHaveLength(1);
+        expect(categoryEntries[0].amount).toBe(30000);
+        expect(categoryEntries[0].categoryId).toBe(42);
+        expect(categoryEntries[0].exchangeRate).toBe(1);
+        expect(feeEntries[0].type).toBe(TransactionEntryTypeEnum.FEE);
+        expect(feeEntries[0].amount).toBe(300);
+        expect(feeEntries[0].categoryId).toBe(BANK_FEE_CATEGORY_ID);
+        expect(feeEntries[0].categorySource).toBe(CategorySourceEnum.FEE);
+        expect(feeEntries[0].externalId).toBe('tx-test-1:fee');
     });
 });

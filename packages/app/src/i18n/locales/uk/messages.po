@@ -522,7 +522,9 @@ msgstr "Budgie позначить як видалені такі записи: {
 #: src/settings/components/truncate-data/truncate-data.tsx
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
@@ -799,6 +801,10 @@ msgstr "Не вдалося отримати рахунки"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
+
+#: src/budget/hooks/use-budget-form.hook.ts
+msgid "Could not load budget"
+msgstr ""
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -1337,6 +1343,10 @@ msgstr "Не вдалося зберегти PIN-код. Спробуйте ще
 #: src/ai/service/ai-system-status.service.ts
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Швидке індексування {done} з {total} • торкніться, щоб призупинити"
+
+#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+msgid "Fee {formattedAmount}"
+msgstr "Комісія {formattedAmount}"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
@@ -2204,6 +2214,22 @@ msgstr "Видалити ліміт категорії?"
 msgid "Remove duplicate imported bank transactions"
 msgstr "Видалити дубльовані імпортовані банківські транзакції"
 
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "Remove fee"
+msgstr "Видалити комісію"
+
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "Remove fee?"
+msgstr "Видалити комісію?"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+msgid "Remove split"
+msgstr "Прибрати розділення"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+msgid "Remove split?"
+msgstr "Прибрати розділення?"
+
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 msgid "Repair"
 msgstr "Виправити"
@@ -2274,6 +2300,10 @@ msgstr "Зберегти"
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Save {count}"
 msgstr "Зберегти {count}"
+
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "Save fee"
+msgstr "Зберегти комісію"
 
 #: src/account/constant/account-type.constant.ts
 msgid "Savings"
@@ -2491,6 +2521,10 @@ msgstr "Встановіть місячний ліміт та відстежуй
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
 msgstr "Встановити категорію"
+
+#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+msgid "Set fee"
+msgstr "Встановити комісію"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
@@ -2722,9 +2756,17 @@ msgstr "Це конвертує витрату у переказ між раху
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+msgid "This will keep one entry with the full transaction amount."
+msgstr "Це залишить один запис із повною сумою транзакції."
+
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Це прив’яже вибрану витрату до цього доходу-повернення. Ви можете скасувати це на аркуші джерел повернення."
+
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "This will remove the fee entry from this transaction."
+msgstr "Це видалить запис комісії з цієї транзакції."
 
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "This will remove your monthly budget. You can create a new one anytime."

@@ -1,7 +1,10 @@
 import type { TransactionEntryRepository, TransactionRepository, TransactionTagsRepository } from '@budgie/contracts';
 
 export interface UnconsolidationDependenciesInterface {
-    readonly transactionEntryRepository: Pick<TransactionEntryRepository, 'deleteLedgerByTransactionId' | 'moveBackToOriginalTransactions'>;
+    readonly transactionEntryRepository: Pick<
+        TransactionEntryRepository,
+        'deleteByTransactionId' | 'deleteLedgerByTransactionId' | 'moveBackToOriginalTransactions'
+    >;
     readonly transactionRepository: Pick<
         TransactionRepository,
         'clearConsolidationParent' | 'deleteById' | 'getByIdRaw' | 'setConsolidationType'

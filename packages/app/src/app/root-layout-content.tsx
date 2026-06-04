@@ -39,6 +39,7 @@ import {
 } from '../@generic/constant/searchable-filter-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
+import { TRANSACTION_FEE_MODAL_OPTIONS } from '../@generic/constant/transaction-fee-modal-options.constant';
 import { VOICE_REVIEW_MODAL_OPTIONS } from '../@generic/constant/voice-review-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
@@ -139,6 +140,10 @@ export const RootLayoutContent = () => {
                                                                 />
                                                                 <Stack.Screen name="icon-selector" options={ICON_SELECTOR_MODAL_OPTIONS} />
                                                                 <Stack.Screen name="split-entries" options={SPLIT_ENTRIES_MODAL_OPTIONS} />
+                                                                <Stack.Screen
+                                                                    name="transaction-fee"
+                                                                    options={TRANSACTION_FEE_MODAL_OPTIONS}
+                                                                />
                                                                 <Stack.Screen
                                                                     name="consolidation-source"
                                                                     options={CONSOLIDATION_SOURCE_MODAL_OPTIONS}

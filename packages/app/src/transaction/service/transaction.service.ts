@@ -257,8 +257,8 @@ class TransactionService {
     }
 
     private findPrimaryEntries(entries: TransactionEntryCreateInputInterface[], fromAccountId: number | null, toAccountId: number | null) {
-        const fromEntry = entries.find(({ accountId }) => accountId === fromAccountId);
-        const toEntry = entries.find(({ accountId }) => accountId === toAccountId);
+        const fromEntry = entries.find(({ accountId, type }) => accountId === fromAccountId && type === TransactionEntryTypeEnum.CREDIT);
+        const toEntry = entries.find(({ accountId, type }) => accountId === toAccountId && type === TransactionEntryTypeEnum.DEBIT);
 
         if (!isDefined(fromEntry) || !isDefined(toEntry)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
