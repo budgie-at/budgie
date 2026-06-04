@@ -6,6 +6,7 @@ import * as TaskManager from 'expo-task-manager';
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { exchangeRateRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
 import { CoinGeckoSimplePriceResponseSchema } from '../schema/coin-gecko-simple-price-response.schema';
@@ -17,6 +18,10 @@ import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 class ExchangeRatesSyncService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
+    private static readonly CRYPTO_RATE_UPDATE_BATCH_SIZE = 10;
+    private static readonly SYNC_COOLDOWN_MS = 5 * 60 * 1000;
+
+    private lastSyncedAtMs: number | null = null;
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async registerBackgroundTask(): Promise<void> {
@@ -30,6 +35,12 @@ class ExchangeRatesSyncService {
     }
 
     async sync(): Promise<void> {
+        const now = Date.now();
+
+        if (isDefined(this.lastSyncedAtMs) && now - this.lastSyncedAtMs < ExchangeRatesSyncService.SYNC_COOLDOWN_MS) {
+            return;
+        }
+
         const baseInstrument = await exchangeRatesService.getBaseInstrument();
 
         if (!isDefined(baseInstrument)) {
@@ -37,6 +48,7 @@ class ExchangeRatesSyncService {
         }
 
         await Promise.all([this.syncFiatRates(baseInstrument), this.syncCryptoRates(baseInstrument)]);
+        this.lastSyncedAtMs = Date.now();
     }
 
     private async syncFiatRates(baseInstrument: InstrumentEntityInterface): Promise<void> {
@@ -64,12 +76,14 @@ class ExchangeRatesSyncService {
         const prices = await this.fetchCryptoPrices(providerInstrumentIds, baseInstrument.code);
         const quoteCode = baseInstrument.code.toLowerCase();
 
-        await Promise.all(
-            coingeckoInstruments.map(instrument =>
-                this.updateCryptoInstrumentRate(
-                    baseInstrument.id,
-                    instrument,
-                    this.getCryptoPrice(prices, instrument.providerInstrumentId, quoteCode)
+        await processInputWithBatches(coingeckoInstruments, ExchangeRatesSyncService.CRYPTO_RATE_UPDATE_BATCH_SIZE, batch =>
+            Promise.all(
+                batch.map(instrument =>
+                    this.updateCryptoInstrumentRate(
+                        baseInstrument.id,
+                        instrument,
+                        this.getCryptoPrice(prices, instrument.providerInstrumentId, quoteCode)
+                    )
                 )
             )
         );
