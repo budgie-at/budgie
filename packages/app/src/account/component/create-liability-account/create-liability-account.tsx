@@ -56,10 +56,17 @@ export const CreateLiabilityAccount = ({
     }
 
     const variant = ACCOUNT_COLOR[type];
+    const showInstrumentAfterAmount = type === AccountTypeEnum.CRYPTO;
 
     return (
         <CreateAccountScreen title={title} variant={variant} onSubmit={handleSubmit}>
-            <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} allowNegative={allowNegative} />
+            <AccountBalanceField
+                variant={variant}
+                instrumentSymbol={instrument.symbol}
+                control={control}
+                allowNegative={allowNegative}
+                showInstrumentAfterAmount={showInstrumentAfterAmount}
+            />
 
             <FormLayoutGroup>
                 <AccountDetailsField variant={variant} control={control} nameInputTestID={CreateAccountScreenSelector.NameInput} />
