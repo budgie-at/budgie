@@ -16,11 +16,11 @@ interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' 
     readonly instrumentSymbol: string;
 }
 
-const syncStatusVariants = cva('absolute bottom-3 right-3 size-2 rounded-full will-change-animation', {
+const syncStatusVariants = cva('h-2 w-2 rounded-full will-change-animation', {
     variants: {
         status: {
-            [BankSyncStatusEnum.SYNCING]: 'bg-amber-500 animate-pulse',
-            [BankSyncStatusEnum.IDLE]: 'bg-green-500',
+            [BankSyncStatusEnum.SYNCING]: 'bg-warning-foreground animate-pulse',
+            [BankSyncStatusEnum.IDLE]: 'bg-positive-foreground',
             [BankSyncStatusEnum.FAILED]: 'bg-destructive'
         }
     }
@@ -41,10 +41,7 @@ export const BankSyncAccountCard = (props: Props) => {
     };
 
     const longPressHandler = isDefined(quickImportConfig) ? handleLongPress : emptyFn;
-    const statusClassName = shouldShow
-        ? syncStatusVariants({ status: bankSync.status })
-        : syncStatusVariants({ status: BankSyncStatusEnum.IDLE });
-    const statusStyle = { opacity: shouldShow ? 1 : 0 };
+    const statusIndicator = shouldShow ? <View className={syncStatusVariants({ status: bankSync.status })} /> : null;
 
     return (
         <AccountCardBase
@@ -54,8 +51,7 @@ export const BankSyncAccountCard = (props: Props) => {
             instrumentSymbol={instrumentSymbol}
             className={className}
             onLongPress={longPressHandler}
-        >
-            <View className={statusClassName} style={statusStyle} />
-        </AccountCardBase>
+            topRight={statusIndicator}
+        />
     );
 };
