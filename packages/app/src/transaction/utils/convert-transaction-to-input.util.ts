@@ -12,12 +12,15 @@ import { RuleEvaluationInputInterface } from '../../rule/interface/rule-evaluati
 import { sortTransactionTagsByPrimary } from './sort-transaction-tags-by-primary.util';
 
 const calculateAmount = (transaction: TransactionWithRelationsEntityInterface) => {
-    if (
-        transaction.type === TransactionTypeEnum.EXPENSE ||
-        transaction.type === TransactionTypeEnum.TRANSFER ||
-        transaction.type === TransactionTypeEnum.DEBT ||
-        isNegativeAdjustmentTransaction(transaction)
-    ) {
+    if (transaction.type === TransactionTypeEnum.EXPENSE || isNegativeAdjustmentTransaction(transaction)) {
+        return transaction.entries.reduce(
+            (acc, curr) =>
+                curr.type === TransactionEntryTypeEnum.CREDIT || curr.type === TransactionEntryTypeEnum.FEE ? acc + curr.amount : acc,
+            0
+        );
+    }
+
+    if (transaction.type === TransactionTypeEnum.TRANSFER || transaction.type === TransactionTypeEnum.DEBT) {
         return transaction.entries.reduce((acc, curr) => (curr.type === TransactionEntryTypeEnum.CREDIT ? acc + curr.amount : acc), 0);
     }
 
