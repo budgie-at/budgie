@@ -137,20 +137,6 @@ export class AccountBalanceRepository {
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
-    getValuedByAccountId(accountId: number, defaultInstrumentId: number) {
-        const exchangeRateSql = this.buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
-        const balanceSql = this.getAccountBalanceWithTransactionsSql(sql`${accountId}`);
-
-        return this.db
-            .select({
-                balance: balanceSql,
-                valuedBalance: sql<number>`COALESCE((${balanceSql}) * ${exchangeRateSql}, 0)`
-            })
-            .from(AccountEntityTable)
-            .where(eq(AccountEntityTable.id, accountId))
-            .limit(1);
-    }
-
     // jscpd:ignore-start
     getTotalByAccountType(defaultInstrumentId: number, accountType: AccountTypeEnum) {
         const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);

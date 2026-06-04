@@ -1,5 +1,5 @@
 // jscpd:ignore-start
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -7,6 +7,7 @@ import { AccountDetailsField } from '../../../@generic/component/account-details
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 // jscpd:ignore-end
@@ -18,23 +19,34 @@ import { CreateAccountScreenSelector } from '../create-account-screen/create-acc
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
-    readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH;
+    readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH | AccountTypeEnum.CRYPTO;
     readonly title: string;
+    readonly allowNegative?: boolean;
+    readonly defaultIcon?: UserIconNameEnum;
+    readonly instrumentType?: InstrumentTypeEnum;
 }
 
 const DEFAULT_ICON = UserIconNameEnum.Home;
 
-export const CreateLiabilityAccount = ({ type, title }: Props) => {
+export const CreateLiabilityAccount = ({
+    type,
+    title,
+    allowNegative = true,
+    defaultIcon = DEFAULT_ICON,
+    instrumentType = InstrumentTypeEnum.FIAT
+}: Props) => {
     const { defaultInstrument } = useSettingsContext();
+    const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
+    const instrumentId = instrumentType === InstrumentTypeEnum.FIAT ? defaultInstrument.id : (instruments.at(0)?.id ?? 0);
 
     const { control, handleSubmit, instrument } = useAccountForm(
         {
             type,
             title: '',
             currentBalance: 0,
-            icon: DEFAULT_ICON,
+            icon: defaultIcon,
             includeInNetWorth: true,
-            instrumentId: defaultInstrument.id
+            instrumentId
         },
         async values => accountService.create(values)
     );
@@ -47,11 +59,11 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
 
     return (
         <CreateAccountScreen title={title} variant={variant} onSubmit={handleSubmit}>
-            <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} allowNegative />
+            <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} allowNegative={allowNegative} />
 
             <FormLayoutGroup>
                 <AccountDetailsField variant={variant} control={control} nameInputTestID={CreateAccountScreenSelector.NameInput} />
-                <CreateAccountCurrencyField control={control} />
+                <CreateAccountCurrencyField control={control} instrumentType={instrumentType} />
                 <IncludeInNetWorthField control={control} />
             </FormLayoutGroup>
         </CreateAccountScreen>
