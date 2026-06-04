@@ -10,19 +10,18 @@ import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
-import type { useSimpleQuickFormValues } from '../../hook/use-simple-quick-form-values.hook';
-
 interface Props {
     readonly accountFieldName: QuickFormAccountFieldName;
     readonly accountRowRef: RefObject<TransactionAccountRowRef | null>;
     readonly fieldIconsRef: RefObject<TransactionFieldIconsRefInterface | null>;
-    readonly formValues: ReturnType<typeof useSimpleQuickFormValues>;
+    readonly isAmountPositive: boolean;
     readonly keypadHandlers: {
         readonly onDigit: (digit: string) => void;
         readonly onDecimal: () => void;
         readonly onBackspace: () => void;
         readonly onLongBackspace: () => void;
     };
+    readonly splitEntryCount: number;
     readonly transactionType: TransactionTypeEnum;
     readonly variant: ColorPaletteVariant;
     readonly onCancel: () => void;
@@ -36,8 +35,9 @@ export const SimpleQuickFormControls = ({
     accountFieldName,
     accountRowRef,
     fieldIconsRef,
-    formValues,
+    isAmountPositive,
     keypadHandlers,
+    splitEntryCount,
     transactionType,
     variant,
     onCancel,
@@ -51,8 +51,8 @@ export const SimpleQuickFormControls = ({
             ref={fieldIconsRef}
             variant={variant}
             transactionType={transactionType}
-            splitEntryCount={formValues.splitEntryCount}
-            isAmountPositive={formValues.isAmountPositive}
+            splitEntryCount={splitEntryCount}
+            isAmountPositive={isAmountPositive}
             onSplitPress={onSplitPress}
             onCommentPress={onCommentPress}
             onDatePress={onDatePress}
