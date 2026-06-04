@@ -15,8 +15,8 @@ const SPLASH_HIDE_DELAY_MS = 200;
 const STARTUP_SERVICE_DELAY_MS = 1_000;
 
 const syncAppData = async (): Promise<void> => {
-    await monobankSyncService.sync();
     await exchangeRatesSyncService.sync();
+    await monobankSyncService.sync();
     await accountBalanceIncrementalService.updateAllBalances(false);
 };
 
