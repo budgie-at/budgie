@@ -8,7 +8,6 @@ import { AccountCardBase } from '../account-card-base/account-card-base';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly className?: string;
-    readonly instrumentId: number;
     readonly instrumentCode: string;
     readonly instrumentSymbol: string;
 }

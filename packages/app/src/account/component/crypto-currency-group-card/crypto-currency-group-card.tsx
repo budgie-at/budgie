@@ -29,15 +29,15 @@ export const CryptoCurrencyGroupCard = ({ group }: Props) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
-    const balance = useCryptoInstrumentTotalQuery(group.instrumentId);
-    const { rate } = useGetRatesByBaseAndQuoteIdsQuery(group.instrumentId, defaultInstrument.id);
+    const balance = useCryptoInstrumentTotalQuery(group.instrument.id);
+    const { rate } = useGetRatesByBaseAndQuoteIdsQuery(group.instrument.id, defaultInstrument.id);
 
     const toggleOpen = () => void setIsOpen(value => !value);
-    const formattedBalance = `${formatDigits(balance)} ${group.instrumentCode}`;
+    const { code: instrumentCode, name: instrumentName } = group.instrument;
+    const formattedBalance = `${formatDigits(balance)} ${instrumentCode}`;
     const formattedValue = isDefined(rate) ? formatDigits(balance * rate.rate, defaultInstrument.symbol) : null;
     const formattedRate = isDefined(rate) ? formatExchangeRate(rate.rate) : null;
     const chevronIcon = isOpen ? UserIconNameEnum.ChevronDown : UserIconNameEnum.ChevronRight;
-    const { instrumentCode } = group;
     const defaultInstrumentSymbol = defaultInstrument.symbol;
     const accountsCountLabel = t({
         message: plural(group.accounts.length, {
@@ -54,11 +54,11 @@ export const CryptoCurrencyGroupCard = ({ group }: Props) => {
                 <HapticPressable onPress={toggleOpen} className="gap-y-4">
                     <View className="flex-row items-center justify-between">
                         <View className="flex-row items-center gap-x-lg">
-                            <CryptoCurrencyIcon code={group.instrumentCode} size={42} className="bg-warning-background/20" />
+                            <CryptoCurrencyIcon code={instrumentCode} size={42} className="bg-warning-background/20" />
 
                             <View>
-                                <Text className="text-primary text-base font-medium">{group.instrumentName}</Text>
-                                <Text className="text-warning-foreground text-xs font-medium uppercase">{group.instrumentCode}</Text>
+                                <Text className="text-primary text-base font-medium">{instrumentName}</Text>
+                                <Text className="text-warning-foreground text-xs font-medium uppercase">{instrumentCode}</Text>
                             </View>
                         </View>
 

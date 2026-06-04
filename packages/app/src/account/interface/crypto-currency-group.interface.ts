@@ -1,9 +1,6 @@
-import { AccountWithBankSyncEntityInterface } from '@budgie/contracts';
+import type { AccountWithBankSyncEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
 
 export interface CryptoCurrencyGroupInterface {
-    readonly instrumentId: number;
-    readonly instrumentCode: string;
-    readonly instrumentName: string;
-    readonly instrumentSymbol: string;
+    readonly instrument: InstrumentEntityInterface;
     readonly accounts: AccountWithBankSyncEntityInterface[];
 }
