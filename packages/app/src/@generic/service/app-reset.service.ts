@@ -4,16 +4,10 @@ import * as SQLite from 'expo-sqlite';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { aiCoordinatorService } from '../../ai/service/ai-coordinator.service';
-import { aiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
-import { aiSystemStatusService } from '../../ai/service/ai-system-status.service';
-import { aiTranslationStatusService } from '../../ai/service/ai-translation-status.service';
-import { aiUmbrellaStatusService } from '../../ai/service/ai-umbrella-status.service';
+import { aiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { chatService } from '../../ai/service/chat.service';
-import { embeddingDrainerService } from '../../ai/service/embedding-drainer.service';
 import { embeddingService } from '../../ai/service/embedding.service';
 import { sttService } from '../../ai/service/stt.service';
-import { translationDrainerService } from '../../ai/service/translation-drainer.service';
 import { authService } from '../../auth/service/auth.service';
 import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 import { patternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
@@ -43,7 +37,8 @@ class AppResetService {
 
     private async runPrimaryResetSteps(errors: unknown[]): Promise<void> {
         try {
-            await this.pauseLongLivedRuntime();
+            await aiStorageReplacementService.pauseLongLivedRuntime();
+            await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
             await this.closeDatabase();
             this.clearDatabaseGlobals();
             this.deleteDatabaseFiles(this.getDatabasePath());
@@ -73,16 +68,6 @@ class AppResetService {
         } catch (error: unknown) {
             errors.push(error);
         }
-    }
-
-    private async pauseLongLivedRuntime(): Promise<void> {
-        await Promise.all([translationDrainerService.pause(), embeddingDrainerService.pause()]);
-        aiEmbeddingStatusService.stop();
-        aiTranslationStatusService.stop();
-        aiUmbrellaStatusService.stop();
-        aiSystemStatusService.stop();
-        aiCoordinatorService.stop();
-        await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
     }
 
     private async closeDatabase(): Promise<void> {
