@@ -1,3 +1,4 @@
+import { InstrumentTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, FieldPath, UseControllerReturn } from 'react-hook-form';
 
@@ -7,14 +8,20 @@ import { FormItem } from '../form-item/form-item';
 
 interface Props<T extends { instrumentId: number }> {
     readonly control: Control<T>;
+    readonly instrumentType?: InstrumentTypeEnum;
 }
 
-export const CreateAccountCurrencyField = <T extends { instrumentId: number }>({ control }: Props<T>) => {
+export const CreateAccountCurrencyField = <T extends { instrumentId: number }>({ control, instrumentType }: Props<T>) => {
     const { t } = useLingui();
 
     const renderCurrencySelector = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => (
         <FormItem label={t`Currency`}>
-            <CurrencySelector testID={CreateAccountScreenSelector.CurrencySelector} instrumentId={value} onChange={onChange} />
+            <CurrencySelector
+                testID={CreateAccountScreenSelector.CurrencySelector}
+                instrumentId={value}
+                instrumentType={instrumentType}
+                onChange={onChange}
+            />
         </FormItem>
     );
 

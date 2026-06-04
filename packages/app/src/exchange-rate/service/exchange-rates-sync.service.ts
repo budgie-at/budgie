@@ -1,14 +1,19 @@
+import { InstrumentPriceProviderEnum, InstrumentTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { exchangeRateRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
+import { CoinGeckoSimplePriceResponseSchema } from '../schema/coin-gecko-simple-price-response.schema';
+import { ExchangeRateApiResponseSchema } from '../schema/exchange-rate-api-response.schema';
 
 import { exchangeRatesService } from './exchange-rates.service';
+
+import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 class ExchangeRatesSyncService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
@@ -31,14 +36,44 @@ class ExchangeRatesSyncService {
             return;
         }
 
-        const apiData = await this.fetch(baseInstrument.code);
+        await this.syncFiatRates(baseInstrument);
+        await this.syncCryptoRates(baseInstrument);
+    }
 
-        for (const instrument of await instrumentRepository.getAll()) {
-            if (instrument.code !== baseInstrument.code) {
-                // eslint-disable-next-line no-await-in-loop
-                await this.updateInstrumentRate(baseInstrument.id, instrument, apiData.rates);
-            }
+    private async syncFiatRates(baseInstrument: InstrumentEntityInterface): Promise<void> {
+        const apiData = await this.fetch(baseInstrument.code);
+        const instruments = await instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
+
+        await Promise.all(
+            instruments
+                .filter(instrument => instrument.code !== baseInstrument.code)
+                .map(instrument => this.updateInstrumentRate(baseInstrument.id, instrument, apiData.rates, 'exchangerate-api.com'))
+        );
+    }
+
+    private async syncCryptoRates(baseInstrument: InstrumentEntityInterface): Promise<void> {
+        const instruments = await instrumentRepository.findByType(InstrumentTypeEnum.CRYPTO);
+        const coingeckoInstruments = instruments.filter(
+            instrument => instrument.priceProvider === InstrumentPriceProviderEnum.COINGECKO && isDefined(instrument.providerInstrumentId)
+        );
+        const providerInstrumentIds = coingeckoInstruments.map(instrument => instrument.providerInstrumentId).filter(isDefined);
+
+        if (!isNotEmptyArray(providerInstrumentIds)) {
+            return;
         }
+
+        const prices = await this.fetchCryptoPrices(providerInstrumentIds, baseInstrument.code);
+        const quoteCode = baseInstrument.code.toLowerCase();
+
+        await Promise.all(
+            coingeckoInstruments.map(instrument =>
+                this.updateCryptoInstrumentRate(
+                    baseInstrument.id,
+                    instrument,
+                    this.getCryptoPrice(prices, instrument.providerInstrumentId, quoteCode)
+                )
+            )
+        );
     }
 
     private async fetch(code: string): Promise<ExchangeRateApiResponseInterface> {
@@ -48,13 +83,55 @@ class ExchangeRatesSyncService {
             return emptyExchangeRateApiResponse;
         }
 
-        return (await response.json().catch(() => emptyExchangeRateApiResponse)) as ExchangeRateApiResponseInterface;
+        const payload: unknown = await response.json().catch(() => null);
+        const result = ExchangeRateApiResponseSchema.safeParse(payload);
+
+        if (!result.success) {
+            return emptyExchangeRateApiResponse;
+        }
+
+        return result.data;
+    }
+
+    private async fetchCryptoPrices(
+        providerInstrumentIds: string[],
+        quoteCode: string
+    ): Promise<Partial<Record<string, Partial<Record<string, number>>>>> {
+        const ids = providerInstrumentIds.map(encodeURIComponent).join(',');
+        const quote = encodeURIComponent(quoteCode.toLowerCase());
+        const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=${quote}`);
+
+        if (!response.ok) {
+            return {};
+        }
+
+        const payload: unknown = await response.json().catch(() => null);
+        const result = CoinGeckoSimplePriceResponseSchema.safeParse(payload);
+
+        if (!result.success) {
+            return {};
+        }
+
+        return result.data;
+    }
+
+    private getCryptoPrice(
+        prices: Partial<Record<string, Partial<Record<string, number>>>>,
+        providerInstrumentId: string | null,
+        quoteCode: string
+    ): number | null {
+        if (!isDefined(providerInstrumentId)) {
+            return null;
+        }
+
+        return prices[providerInstrumentId]?.[quoteCode] ?? null;
     }
 
     private async updateInstrumentRate(
         baseInstrumentId: number,
         instrument: { id: number; code: string },
-        rates: Record<string, number>
+        rates: Record<string, number>,
+        source: string
     ): Promise<void> {
         const rate = rates[instrument.code];
 
@@ -62,11 +139,24 @@ class ExchangeRatesSyncService {
             return;
         }
 
-        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, rate, 'exchangerate-api.com');
+        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, rate, source);
 
         const reverseRate = 1 / rate;
 
-        await exchangeRateRepository.upsert(instrument.id, baseInstrumentId, reverseRate, 'exchangerate-api.com');
+        await exchangeRateRepository.upsert(instrument.id, baseInstrumentId, reverseRate, source);
+    }
+
+    private async updateCryptoInstrumentRate(
+        baseInstrumentId: number,
+        instrument: InstrumentEntityInterface,
+        rate: number | null
+    ): Promise<void> {
+        if (!isPositiveNumber(rate)) {
+            return;
+        }
+
+        await exchangeRateRepository.upsert(instrument.id, baseInstrumentId, rate, 'coingecko.com');
+        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, 1 / rate, 'coingecko.com');
     }
 }
 
