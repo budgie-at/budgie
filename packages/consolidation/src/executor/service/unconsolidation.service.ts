@@ -16,12 +16,11 @@ export class UnconsolidationService {
     )
     async unconsolidateById(transactionId: number, tx: DB): Promise<void> {
         const canonical = await this.dependencies.transactionRepository.getByIdRaw(transactionId, tx);
-        const isRefundCanonical = this.isRefundCanonical(canonical);
 
         await this.dependencies.transactionEntryRepository.moveBackToOriginalTransactions(transactionId, tx);
         await this.dependencies.transactionRepository.clearConsolidationParent(transactionId, tx);
 
-        if (isRefundCanonical) {
+        if (this.isRefundCanonical(canonical)) {
             await this.dependencies.transactionRepository.setConsolidationType(transactionId, null, tx);
 
             return;

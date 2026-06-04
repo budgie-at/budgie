@@ -11,6 +11,7 @@ import { isDefined } from '@rnw-community/shared';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
 interface Props {
@@ -26,13 +27,14 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
     const formatDigits = useFormatDigits(decimalPlaces);
     const { t } = useLingui();
 
-    const hasMultipleEntries = transaction.entries.length > 1;
+    const categoryEntries = getTransactionCategoryEntries(transaction.entries);
+    const hasMultipleEntries = categoryEntries.length > 1;
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
     if (hasMultipleEntries) {
         return (
             <View className="flex-row flex-wrap gap-xs">
-                {transaction.entries.map(entry => {
+                {categoryEntries.map(entry => {
                     const entryLabel = entry.category?.title ?? t`Unknown`;
                     const entryAmount = convertFromMicroUnits(entry.amount);
                     const entryTestID = TransactionCardSelector.EntryCategoryAmount(entryLabel, entryAmount);
