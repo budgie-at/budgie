@@ -2,7 +2,7 @@ import { Log } from '@budgie/logger';
 import { Directory, File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { aiCoordinatorService } from '../../ai/service/ai-coordinator.service';
 import { aiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
@@ -31,14 +31,48 @@ class AppResetService {
     }
 
     private async clearAllAppOwnedStorage(): Promise<void> {
-        await this.pauseLongLivedRuntime();
-        await this.closeDatabase();
-        this.clearDatabaseGlobals();
-        this.deleteDatabaseFiles(this.getDatabasePath());
-        this.deleteDatabaseFiles(`${this.getDatabasePath()}.bak`);
-        this.deleteCacheContents();
-        patternCacheService.invalidate();
-        await authService.clearAllPins();
+        const errors: unknown[] = [];
+
+        await this.runPrimaryResetSteps(errors);
+        await this.runCleanupResetSteps(errors);
+
+        if (isNotEmptyArray(errors)) {
+            throw errors[0];
+        }
+    }
+
+    private async runPrimaryResetSteps(errors: unknown[]): Promise<void> {
+        try {
+            await this.pauseLongLivedRuntime();
+            await this.closeDatabase();
+            this.clearDatabaseGlobals();
+            this.deleteDatabaseFiles(this.getDatabasePath());
+            this.deleteDatabaseFiles(`${this.getDatabasePath()}.bak`);
+        } catch (error: unknown) {
+            errors.push(error);
+        }
+    }
+
+    private async runCleanupResetSteps(errors: unknown[]): Promise<void> {
+        this.captureSyncError(() => void this.deleteCacheContents(), errors);
+        this.captureSyncError(() => void patternCacheService.invalidate(), errors);
+        await this.captureAsyncError(() => authService.clearAllPins(), errors);
+    }
+
+    private captureSyncError(operation: () => void, errors: unknown[]): void {
+        try {
+            operation();
+        } catch (error: unknown) {
+            errors.push(error);
+        }
+    }
+
+    private async captureAsyncError(operation: () => Promise<void>, errors: unknown[]): Promise<void> {
+        try {
+            await operation();
+        } catch (error: unknown) {
+            errors.push(error);
+        }
     }
 
     private async pauseLongLivedRuntime(): Promise<void> {
@@ -69,9 +103,21 @@ class AppResetService {
             return;
         }
 
+        let firstError: unknown = null;
+
         cacheDirectory.list().forEach(item => {
-            item.delete();
+            try {
+                item.delete();
+            } catch (error: unknown) {
+                if (!isDefined(firstError)) {
+                    firstError = error;
+                }
+            }
         });
+
+        if (isDefined(firstError)) {
+            throw firstError;
+        }
     }
 
     private deleteDatabaseFiles(databasePath: string): void {
@@ -87,7 +133,7 @@ class AppResetService {
     }
 
     private getDatabasePath(): string {
-        return `${String(SQLite.defaultDatabaseDirectory)}/${DB_NAME}`;
+        return `${SQLite.defaultDatabaseDirectory}/${DB_NAME}`;
     }
 }
 
