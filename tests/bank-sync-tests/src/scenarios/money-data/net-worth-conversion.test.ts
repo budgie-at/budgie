@@ -5,14 +5,13 @@ import {
     AccountTypeEnum,
     CurrencyEnum,
     ExchangeRateEntityTable,
-    InstrumentTypeEnum,
     PRECISION,
     SettingsEntityTable
 } from '@budgie/contracts';
 import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
 import { exchangeRatesService } from '@app/exchange-rate/service/exchange-rates.service';
 
-import { requireInstrument } from '../../harness';
+import { requireInstrument, seedBitcoinCryptoAccount } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -43,7 +42,7 @@ describe('net worth currency conversion', () => {
     });
 
     it('does not value crypto totals or display amounts with fiat fallback when the live rate is missing', async () => {
-        const { bitcoin, euro } = await seedBitcoinCryptoWithBalance(100 * PRECISION);
+        const { bitcoin, euro } = await seedBitcoinCryptoAccount(100 * PRECISION);
 
         const conversion = await exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
 
@@ -73,24 +72,8 @@ const seedHryvniaCashWithBalance = async (balance: number) => {
     return euro;
 };
 
-const seedBitcoinCryptoWithBalance = async (balance: number) => {
-    const euro = await requireInstrument(CurrencyEnum.EUR);
-    const bitcoin = seed.instrument({
-        code: 'BTC',
-        name: 'Bitcoin',
-        symbol: 'BTC',
-        type: InstrumentTypeEnum.CRYPTO
-    });
-    const account = seed.account({ instrumentId: bitcoin.id, type: AccountTypeEnum.CRYPTO });
-
-    await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
-    insertOne(AccountBalanceEntityTable, { accountId: account.id, amount: balance });
-
-    return { bitcoin, euro };
-};
-
 const seedBitcoinCryptoWithLiveRate = async (balance: number) => {
-    const result = await seedBitcoinCryptoWithBalance(balance);
+    const result = await seedBitcoinCryptoAccount(balance);
 
     insertOne(ExchangeRateEntityTable, {
         source: 'test',
