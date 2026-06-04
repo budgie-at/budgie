@@ -55,6 +55,8 @@ env:
                               - runFlow:
                                     file: open-e2e-fixtures-full-path.flow.yaml
 
+- waitForAnimationToEnd
+
 - runFlow:
       when:
           true: ${FILE_PICKER_INITIAL_SCROLL_SHIFT == 'DOWN'}

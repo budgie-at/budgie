@@ -14,6 +14,8 @@ import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetCategoryLimitCompactRow } from '../budget-category-limit-compact-row/budget-category-limit-compact-row';
 import { BudgetCategoryLimitsEmptyState } from '../budget-category-limits-empty-state/budget-category-limits-empty-state';
 
+const ADD_BUTTON_STYLE = { width: 26, height: 26 } as const;
+
 export const BudgetInlineCategoryLimits = () => {
     const { control } = useFormContext<BudgetFormValues>();
     const { fields, append, remove } = useFieldArray({ control, name: 'categoryLimits' });
@@ -21,6 +23,8 @@ export const BudgetInlineCategoryLimits = () => {
     const [openCategorySelector] = useCategorySelectorModal();
 
     const selectedCategoryIds = categoryLimits.map(limit => limit.categoryId).filter(id => id > 0);
+    const isCategoryLimitsEmpty = isEmptyArray(fields);
+    const addButtonTestProps = isCategoryLimitsEmpty ? {} : { testID: BudgetSelector.SetupCategoryLimitAddButton };
 
     const handleAdd = async () => {
         const result = await openCategorySelector({
@@ -41,15 +45,15 @@ export const BudgetInlineCategoryLimits = () => {
                 <Text className="text-primary text-lg font-semibold">
                     <Trans>Category limits</Trans>
                 </Text>
-                <HapticPressable testID={BudgetSelector.SetupCategoryLimitAddButton} onPress={handleAddPress}>
-                    <CircleIcon icon={UserIconNameEnum.Plus} variant="ghost" size={26} iconSize={14} />
+                <HapticPressable accessibilityRole="button" onPress={handleAddPress} style={ADD_BUTTON_STYLE}>
+                    <CircleIcon {...addButtonTestProps} icon={UserIconNameEnum.Plus} variant="ghost" size={26} iconSize={14} />
                 </HapticPressable>
             </View>
             <Text className="text-secondary-foreground text-sm">
                 <Trans>Optional per-category caps within this budget</Trans>
             </Text>
-            {isEmptyArray(fields) ? (
-                <BudgetCategoryLimitsEmptyState onPress={handleAddPress} />
+            {isCategoryLimitsEmpty ? (
+                <BudgetCategoryLimitsEmptyState onPress={handleAddPress} testID={BudgetSelector.SetupCategoryLimitAddButton} />
             ) : (
                 fields.map((field, index) => <BudgetCategoryLimitCompactRow key={field.id} index={index} onRemove={remove} />)
             )}

@@ -4,106 +4,105 @@ env:
     CATEGORY_NAME: Rules Test Category
     COMMENT: E2E Budget Update Txn
 ---
-
 - runFlow:
-    file: setup/setup-budget-test.flow.yaml
+      file: setup/setup-budget-test.flow.yaml
 
 - openLink: 'budgie://budget'
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'BudgetWidget.EmptyState'
+      timeout: 3000
+
+- tapOn:
       id: 'BudgetWidget.EmptyState'
-    timeout: 3000
-
-- tapOn:
-    id: 'BudgetWidget.EmptyState'
 - extendedWaitUntil:
-    visible: 'Create budget'
-    timeout: 3000
+      visible: 'Create budget'
+      timeout: 3000
 
 - tapOn:
-    id: 'BudgetSetup.OverallLimitInput'
+      id: 'BudgetSetup.OverallLimitInput'
 - inputText: '1000'
 - tapOn:
-    id: 'BudgetSetup.CategoryLimitsHeader'
+      id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd
 - tapOn:
-    id: 'BudgetSetup.SaveButton'
+      id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.Card'
-    timeout: 3000
+      visible:
+          id: 'BudgetWidget.Card'
+      timeout: 3000
 - assertVisible:
-    id: 'BudgetWidget.SpentLabel'
-    text: '0.00 / 1000.00'
+      id: 'BudgetWidget.SpentLabel'
+      text: '0.00 / 1000.00'
 
 - runFlow:
-    file: subflows/navigation/navigate-to-transactions.flow.yaml
+      file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - runFlow:
-    file: subflows/transactions/open-transaction-form.flow.yaml
-    env:
-      ACTION_ITEM_ID: 'ActionItem.Expense'
-      FORM_TITLE: 'New Expense'
+      file: subflows/transactions/open-transaction-form.flow.yaml
+      env:
+          ACTION_ITEM_ID: 'ActionItem.Expense'
+          FORM_TITLE: 'New Expense'
 
 - tapOn:
-    id: 'TransactionKeypad.Digit.6'
+      id: 'TransactionKeypad.Digit.6'
 - tapOn:
-    id: 'TransactionKeypad.Digit.0'
+      id: 'TransactionKeypad.Digit.0'
 
 - runFlow:
-    file: subflows/transactions/select-account.flow.yaml
-    env:
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      file: subflows/transactions/select-account.flow.yaml
+      env:
+          ACCOUNT_NAME: ${ACCOUNT_NAME}
 
 - tapOn:
-    id: 'TransactionForm.CategorySelector'
+      id: 'TransactionForm.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - runFlow:
-    file: subflows/transactions/enter-comment.flow.yaml
-    env:
-      COMMENT: ${COMMENT}
+      file: subflows/transactions/enter-comment.flow.yaml
+      env:
+          COMMENT: ${COMMENT}
 
 - runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
 
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
-    timeout: 5000
+      visible:
+          id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+      timeout: 5000
 
 - tapOn:
-    id: 'TabBar.Home'
+      id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.SpentLabel'
-      text: '60.00 / 1000.00'
-    timeout: 3000
+      visible:
+          id: 'BudgetWidget.SpentLabel'
+          text: '60.00 / 1000.00'
+      timeout: 3000
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
-    timeout: 5000
+      visible:
+          id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+      timeout: 5000
 
-- runFlow:
-    file: subflows/transactions/long-press-delete-transaction.flow.yaml
-    env:
-      TRANSACTION_CARD_ID: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+- tapOn:
+      id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+
+- runFlow: subflows/transactions/delete-transaction.flow.yaml
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - assertNotVisible:
-    id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+      id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
 
 - tapOn:
-    id: 'TabBar.Home'
+      id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.SpentLabel'
-      text: '0.00 / 1000.00'
-    timeout: 3000
+      visible:
+          id: 'BudgetWidget.SpentLabel'
+          text: '0.00 / 1000.00'
+      timeout: 3000

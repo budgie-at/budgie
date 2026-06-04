@@ -3,327 +3,369 @@ env:
     ACCOUNT_NAME: Rules Test Account
     CATEGORY_NAME: Rules Test Category
 ---
-
 - runFlow:
-    file: setup/setup-budget-test.flow.yaml
+      file: setup/setup-budget-test.flow.yaml
+
+- tapOn:
+      id: 'TabBar.Settings'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 3000
+- openLink: 'budgie://settings?anchor=budget'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.BudgetManagementCard'
+      timeout: 3000
+- tapOn:
+      point: '50%,44%'
+- extendedWaitUntil:
+      visible: 'Create budget'
+      timeout: 3000
+- tapOn:
+      id: 'PageHeader.BackButton'
+- waitForAnimationToEnd
 
 - openLink: 'budgie://budget'
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'BudgetWidget.EmptyState'
+      timeout: 3000
+
+- tapOn:
       id: 'BudgetWidget.EmptyState'
-    timeout: 3000
-
-- tapOn:
-    id: 'BudgetWidget.EmptyState'
 - extendedWaitUntil:
-    visible: 'Create budget'
-    timeout: 3000
+      visible: 'Create budget'
+      timeout: 3000
 
 - tapOn:
-    id: 'BudgetSetup.OverallLimitInput'
+      id: 'BudgetSetup.OverallLimitInput'
 - inputText: '1000'
 - tapOn:
-    id: 'BudgetSetup.CategoryLimitsHeader'
+      id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.SaveButton'
+      timeout: 3000
+
 - tapOn:
-    id: 'BudgetSetup.SaveButton'
+      id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.Card'
-    timeout: 3000
+      visible:
+          id: 'BudgetWidget.Card'
+      timeout: 3000
 - assertVisible:
-    id: 'BudgetWidget.SpentLabel'
-    text: '0.00 / 1000.00'
+      id: 'BudgetWidget.SpentLabel'
+      text: '0.00 / 1000.00'
 
 - runFlow:
-    file: subflows/navigation/navigate-to-transactions.flow.yaml
+      file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - runFlow:
-    file: subflows/transactions/open-transaction-form.flow.yaml
-    env:
-      ACTION_ITEM_ID: 'ActionItem.Expense'
-      FORM_TITLE: 'New Expense'
+      file: subflows/transactions/open-transaction-form.flow.yaml
+      env:
+          ACTION_ITEM_ID: 'ActionItem.Expense'
+          FORM_TITLE: 'New Expense'
 
 - tapOn:
-    id: 'TransactionKeypad.Digit.4'
+      id: 'TransactionKeypad.Digit.4'
 - tapOn:
-    id: 'TransactionKeypad.Digit.2'
+      id: 'TransactionKeypad.Digit.2'
 
 - runFlow:
-    file: subflows/transactions/select-account.flow.yaml
-    env:
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      file: subflows/transactions/select-account.flow.yaml
+      env:
+          ACCOUNT_NAME: ${ACCOUNT_NAME}
 
 - tapOn:
-    id: 'TransactionForm.CategorySelector'
+      id: 'TransactionForm.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
 
 - tapOn:
-    id: 'TabBar.Home'
+      id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.SpentLabel'
-      text: '42.00 / 1000.00'
-    timeout: 3000
+      visible:
+          id: 'BudgetWidget.SpentLabel'
+          text: '42.00 / 1000.00'
+      timeout: 3000
 
 - tapOn:
-    id: 'BudgetWidget.Card'
+      id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-    visible: 'Edit budget'
-    timeout: 3000
+      visible: 'Edit budget'
+      timeout: 3000
 
 - tapOn:
-    id: 'BudgetSetup.OverallLimitInput'
-    point: '95%,50%'
+      id: 'BudgetSetup.OverallLimitInput'
+      point: '95%,50%'
 - eraseText: 10
 - inputText: '1500'
 - tapOn:
-    id: 'BudgetSetup.CategoryLimitsHeader'
+      id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.SaveButton'
+      timeout: 3000
 
 - tapOn:
-    id: 'BudgetSetup.SaveButton'
+      id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.SpentLabel'
-      text: '42.00 / 1500.00'
-    timeout: 3000
+      visible:
+          id: 'BudgetWidget.SpentLabel'
+          text: '42.00 / 1500.00'
+      timeout: 3000
 
 - tapOn:
-    id: 'BudgetWidget.Card'
+      id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-    visible: 'Edit budget'
-    timeout: 3000
+      visible: 'Edit budget'
+      timeout: 3000
 
 - tapOn:
-    id: 'BudgetSetup.OverallLimitInput'
-    point: '95%,50%'
+      id: 'BudgetSetup.OverallLimitInput'
+      point: '95%,50%'
 - eraseText: 10
 - inputText: '9999'
 
 - tapOn:
-    id: 'PageHeader.BackButton'
+      id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.SpentLabel'
-      text: '42.00 / 1500.00'
-    timeout: 3000
+      visible:
+          id: 'BudgetWidget.SpentLabel'
+          text: '42.00 / 1500.00'
+      timeout: 3000
 
 - tapOn:
-    id: 'BudgetWidget.Card'
+      id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-    visible: 'Edit budget'
-    timeout: 3000
+      visible: 'Edit budget'
+      timeout: 3000
 
 - scrollUntilVisible:
-    element:
-      id: 'BudgetSetup.CategoryLimitAddButton'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'BudgetSetup.CategoryLimitAddButton'
+      direction: DOWN
+      centerElement: true
 - tapOn:
-    id: 'BudgetSetup.CategoryLimitAddButton'
+      id: 'BudgetSetup.CategoryLimitAddButton'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetSetup.CategoryLimit.0.Row'
-    timeout: 3000
+      visible:
+          id: 'BudgetSetup.CategoryLimit.0.Row'
+      timeout: 3000
 
 - tapOn:
-    id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+      id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '200'
-
-- scrollUntilVisible:
-    element:
+- tapOn:
       id: 'BudgetSetup.CategoryLimitAddButton'
-    direction: DOWN
-    centerElement: true
-- tapOn:
-    id: 'BudgetSetup.CategoryLimitAddButton'
-- runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: 'Groceries'
-
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetSetup.CategoryLimit.1.Row'
-    timeout: 3000
-
-- tapOn:
-    id: 'BudgetSetup.CategoryLimit.1.AmountInput'
-- inputText: '100'
-- tapOn:
-    id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd
 
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.CategoryLimitAddButton'
+      timeout: 3000
 - tapOn:
-    id: 'BudgetSetup.SaveButton'
+      id: 'BudgetSetup.CategoryLimitAddButton'
+- runFlow:
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: 'Groceries'
 
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.CategoryRow.42'
-    timeout: 3000
-- assertVisible:
-    id: 'BudgetWidget.CategoryRow.11'
-- assertVisible:
-    id: 'BudgetWidget.CategorySpentLabel.42'
-    text: '42.00 / 200.00'
-- assertVisible:
-    id: 'BudgetWidget.CategorySpentLabel.11'
-    text: '0.00 / 100.00'
+      visible:
+          id: 'BudgetSetup.CategoryLimit.1.Row'
+      timeout: 3000
 
 - tapOn:
-    id: 'BudgetWidget.Card'
+      id: 'BudgetSetup.CategoryLimit.1.AmountInput'
+- inputText: '100'
+- tapOn: 'Category limits'
+- waitForAnimationToEnd
 - extendedWaitUntil:
-    visible: 'Edit budget'
-    timeout: 3000
+      visible:
+          id: 'BudgetSetup.SaveButton'
+      timeout: 3000
+
+- tapOn:
+      id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.CategoryRow.42'
+      timeout: 3000
+- assertVisible:
+      id: 'BudgetWidget.CategoryRow.11'
+- assertVisible:
+      id: 'BudgetWidget.CategorySpentLabel.42'
+      text: '42.00 / 200.00'
+- assertVisible:
+      id: 'BudgetWidget.CategorySpentLabel.11'
+      text: '0.00 / 100.00'
+
+- tapOn:
+      id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+      visible: 'Edit budget'
+      timeout: 3000
 
 - scrollUntilVisible:
-    element:
-      id: 'BudgetSetup.CategoryLimit.0.Row'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'BudgetSetup.CategoryLimit.0.Row'
+      direction: DOWN
+      centerElement: true
 
 - swipe:
-    from:
-      id: 'BudgetSetup.CategoryLimit.0.Row'
-    direction: LEFT
-    duration: 300
+      from:
+          id: 'BudgetSetup.CategoryLimit.0.Row'
+      direction: LEFT
+      duration: 300
 - extendedWaitUntil:
-    visible:
-      id: 'DeletableRow.DeleteButton'
-    timeout: 3000
+      visible:
+          id: 'DeletableRow.DeleteButton'
+      timeout: 3000
 - tapOn:
-    id: 'DeletableRow.DeleteButton'
+      id: 'DeletableRow.DeleteButton'
 - tapOn: 'Remove'
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'BudgetSetup.SaveButton'
+      id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.CategoryRow.42'
-    timeout: 3000
+      visible:
+          id: 'BudgetWidget.CategoryRow.42'
+      timeout: 3000
 - assertNotVisible:
-    id: 'BudgetWidget.CategoryRow.11'
+      id: 'BudgetWidget.CategoryRow.11'
 
 - tapOn:
-    id: 'TabBar.Settings'
+      id: 'TabBar.Settings'
 - extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-    timeout: 3000
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 3000
 
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.BudgetPushCard'
-    direction: DOWN
-    centerElement: true
+- openLink: 'budgie://settings?anchor=budget'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.BudgetManagementCard'
+      timeout: 3000
+- tapOn:
+      point: '50%,44%'
+- extendedWaitUntil:
+      visible: 'Edit budget'
+      timeout: 3000
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 3000
+- openLink: 'budgie://settings?anchor=budget'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.BudgetPushSwitch.State.Off'
+      timeout: 3000
+
+- tapOn:
+      id: 'SettingsPage.BudgetPushSwitch'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.BudgetPushSwitch.State.On'
+      timeout: 3000
+
+- tapOn:
+      id: 'SettingsPage.BudgetPushSwitch'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.BudgetPushSwitch.State.Off'
+      timeout: 3000
 
 - assertVisible:
-    id: 'SettingsPage.BudgetPushSwitch.State.Off'
-
-- tapOn:
-    id: 'SettingsPage.BudgetPushSwitch'
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.BudgetPushSwitch.State.On'
-    timeout: 3000
-
-- tapOn:
-    id: 'SettingsPage.BudgetPushSwitch'
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.BudgetPushSwitch.State.Off'
-    timeout: 3000
-
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.BudgetWidgetCard'
-    direction: DOWN
-    centerElement: true
-
-- assertVisible:
-    id: 'SettingsPage.BudgetWidgetSwitch.State.On'
-
-- tapOn:
-    id: 'SettingsPage.BudgetWidgetSwitch'
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.BudgetWidgetSwitch.State.Off'
-    timeout: 3000
-
-- tapOn:
-    id: 'TabBar.Home'
-- extendedWaitUntil:
-    visible:
-      id: 'TabBar.Home'
-    timeout: 3000
-- assertNotVisible:
-    id: 'BudgetWidget.Card'
-- assertNotVisible:
-    id: 'BudgetWidget.EmptyState'
-
-- tapOn:
-    id: 'TabBar.Settings'
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-    timeout: 3000
-
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.BudgetWidgetCard'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'SettingsPage.BudgetWidgetSwitch'
-- extendedWaitUntil:
-    visible:
       id: 'SettingsPage.BudgetWidgetSwitch.State.On'
-    timeout: 3000
 
 - tapOn:
-    id: 'TabBar.Home'
+      id: 'SettingsPage.BudgetWidgetSwitch'
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'SettingsPage.BudgetWidgetSwitch.State.Off'
+      timeout: 3000
+
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 3000
+- assertNotVisible:
       id: 'BudgetWidget.Card'
-    timeout: 3000
+- assertNotVisible:
+      id: 'BudgetWidget.EmptyState'
 
 - tapOn:
-    id: 'BudgetWidget.Card'
+      id: 'TabBar.Settings'
 - extendedWaitUntil:
-    visible: 'Edit budget'
-    timeout: 3000
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 3000
+
+- openLink: 'budgie://settings?anchor=budget'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.BudgetWidgetSwitch.State.Off'
+      timeout: 3000
+
+- tapOn:
+      id: 'SettingsPage.BudgetWidgetSwitch'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.BudgetWidgetSwitch.State.On'
+      timeout: 3000
+
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.Card'
+      timeout: 3000
+
+- tapOn:
+      id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+      visible: 'Edit budget'
+      timeout: 3000
 
 - scrollUntilVisible:
-    element:
-      id: 'BudgetSetup.DeleteButton'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'BudgetSetup.DeleteButton'
+      direction: DOWN
+      centerElement: true
 - tapOn:
-    id: 'BudgetSetup.DeleteButton'
+      id: 'BudgetSetup.DeleteButton'
 - extendedWaitUntil:
-    visible: 'Delete budget?'
-    timeout: 3000
+      visible: 'Delete budget?'
+      timeout: 3000
 - tapOn: 'Delete'
 
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.EmptyState'
-    timeout: 5000
+      visible:
+          id: 'BudgetWidget.EmptyState'
+      timeout: 5000

@@ -1,16 +1,22 @@
 appId: ${APP_ID}
 ---
-
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'CategoryPickerBottomSheet.Input'
+      visible:
+          id: 'CategoryPickerBottomSheet.Input'
 - tapOn:
-    id: 'CategoryPickerBottomSheet.Input'
+      id: 'CategoryPickerBottomSheet.Input'
 - waitForAnimationToEnd
 - inputText: ${CATEGORY_NAME}
+- hideKeyboard
+- waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+      visible:
+          id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+- waitForAnimationToEnd
 - tapOn:
-    id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+- extendedWaitUntil:
+      notVisible:
+          id: 'CategoryPickerBottomSheet.Input'
+- waitForAnimationToEnd

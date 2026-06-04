@@ -230,6 +230,37 @@ const buildMonthlyTimestamp = (monthOffset, desiredDay) => {
     return Math.floor(targetDate.getTime() / 1000);
 };
 
+const generateBudgetMultiCurrencyFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, 'budget-multi-currency.db');
+    const targetPath = path.join(outputDirectoryPath, 'budget-multi-currency.db');
+    const transactionTimestamp = buildMonthlyTimestamp(0, 19);
+
+    backupFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        UPDATE transactions
+        SET operated_at = ${transactionTimestamp},
+            created_at = ${transactionTimestamp},
+            updated_at = ${transactionTimestamp}
+        WHERE id IN (9, 10);
+
+        UPDATE transaction_entries
+        SET created_at = ${transactionTimestamp},
+            updated_at = ${transactionTimestamp}
+        WHERE transaction_id IN (9, 10);
+
+        UPDATE settings
+        SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 const generateRecurringFixture = () => {
     const sourcePath = path.join(fixturesDirectoryPath, '07.db');
     const targetPath = path.join(outputDirectoryPath, '20-recurring-calendar.db');
@@ -535,6 +566,7 @@ const generateRefundConsolidationFixture = () => {
 };
 
 shiftTransactionsFixtureToNow();
+generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
 generateConsolidationFixture();
 generateRefundConsolidationFixture();

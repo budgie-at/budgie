@@ -40,8 +40,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '200'
-- tapOn:
-    id: 'BudgetSetup.CategoryLimitsHeader'
+- tapOn: 'Category limits'
 - waitForAnimationToEnd
 
 - tapOn:
@@ -114,8 +113,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '300'
-- tapOn:
-    id: 'BudgetSetup.CategoryLimitsHeader'
+- tapOn: 'Category limits'
 - waitForAnimationToEnd
 
 - tapOn:

@@ -1,10 +1,4 @@
-import {
-    AccountEntityInterface,
-    AccountTypeEnum,
-    LiabilityAccountCreateInputInterface,
-    LiabilityAccountCreateInputSchema,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { AccountEntityInterface, LiabilityAccountCreateInputInterface, LiabilityAccountCreateInputSchema } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
 import { useForm, useWatch } from 'react-hook-form';
@@ -20,13 +14,7 @@ export const useAccountForm = (
     const form = useForm({
         resolver: zodResolver(LiabilityAccountCreateInputSchema),
         mode: 'onSubmit',
-        defaultValues: {
-            icon: UserIconNameEnum.Home,
-            type: AccountTypeEnum.BANK,
-            currentBalance: 0,
-            instrumentId: 1,
-            title: ''
-        },
+        defaultValues,
         values: defaultValues
     });
 

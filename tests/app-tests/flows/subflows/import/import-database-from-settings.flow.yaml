@@ -14,6 +14,11 @@ env:
       commands:
           - tapOn: 'Open'
 
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 3000
+
 - scrollUntilVisible:
       element:
           id: 'SettingsPage.ImportDatabaseCard'
@@ -49,6 +54,27 @@ env:
       index: 1
 
 - waitForAnimationToEnd
+
+- extendedWaitUntil:
+      notVisible:
+          id: 'SettingsPage.Container'
+      timeout: 10000
+
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 10000
+      optional: true
+
+- runFlow:
+      when:
+          notVisible:
+              id: 'TabBar.Home'
+      commands:
+          - extendedWaitUntil:
+                visible: 'budgie \(E2E\)'
+                timeout: 10000
+                optional: true
 
 - runFlow:
       file: ../navigation/relaunch-app-and-wait.flow.yaml

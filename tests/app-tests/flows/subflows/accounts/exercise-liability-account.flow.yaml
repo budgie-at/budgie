@@ -18,6 +18,8 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: ${ACCOUNT_NAME}
 
+- assertVisible: ${CURRENCY_SYMBOL}
+
 - runFlow:
     file: rename-account.flow.yaml
     env:

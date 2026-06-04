@@ -19,7 +19,7 @@ export const BudgetCategoryLimitRow = ({ categoryId, limitAmount, spent, testID,
     const title = category?.title ?? '';
 
     return (
-        <View testID={testID} className="flex-row items-center gap-x-md">
+        <View testID={testID} collapsable={false} className="flex-row items-center gap-x-md">
             {isDefined(category) && <CircleIcon icon={category.icon} variant="ghost" size={32} iconSize={16} />}
 
             <View className="flex-1 gap-y-xs">
