@@ -5,8 +5,17 @@ import { emptyFn } from '@rnw-community/shared';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
-export const useConvertedAmount = (fromInstrumentId: number, toInstrumentId: number, amountInMicroUnits: number): number | undefined => {
-    const [convertedAmount, setConvertedAmount] = useState<number | undefined>();
+export const useConvertedAmount = (
+    fromInstrumentId: number,
+    toInstrumentId: number,
+    amountInMicroUnits: number
+): { readonly amount: number; readonly exchangeRate: number } | null => {
+    const [convertedAmount, setConvertedAmount] = useState<{
+        readonly fromInstrumentId: number;
+        readonly toInstrumentId: number;
+        readonly amountInMicroUnits: number;
+        readonly result: { readonly amount: number; readonly exchangeRate: number } | null;
+    } | null>(null);
     const isSameCurrency = fromInstrumentId === toInstrumentId;
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
 
@@ -14,9 +23,9 @@ export const useConvertedAmount = (fromInstrumentId: number, toInstrumentId: num
         let cancelled = false;
 
         if (!isSameCurrency) {
-            void exchangeRatesService.convert(fromInstrumentId, toInstrumentId, amountInMicroUnits).then(result => {
+            void exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits).then(result => {
                 if (!cancelled) {
-                    setConvertedAmount(result.amount);
+                    setConvertedAmount({ fromInstrumentId, toInstrumentId, amountInMicroUnits, result });
                 }
 
                 return result;
@@ -29,8 +38,13 @@ export const useConvertedAmount = (fromInstrumentId: number, toInstrumentId: num
     }, [isSameCurrency, fromInstrumentId, toInstrumentId, amountInMicroUnits, exchangeRatesUpdatedAt]);
 
     if (isSameCurrency) {
-        return undefined; // eslint-disable-line no-undefined -- Same currency needs no conversion
+        return null;
     }
 
-    return convertedAmount;
+    const isCurrentConversion =
+        convertedAmount?.fromInstrumentId === fromInstrumentId &&
+        convertedAmount.toInstrumentId === toInstrumentId &&
+        convertedAmount.amountInMicroUnits === amountInMicroUnits;
+
+    return isCurrentConversion ? convertedAmount.result : null;
 };

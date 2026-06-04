@@ -10,6 +10,7 @@ import {
     SettingsEntityTable
 } from '@budgie/contracts';
 import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
+import { exchangeRatesService } from '@app/exchange-rate/service/exchange-rates.service';
 
 import { requireInstrument } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
@@ -59,6 +60,25 @@ describe('net worth currency conversion', () => {
 
         expect(cryptoTotal?.total).toBe(5_000_000 * PRECISION);
         expect(assetClassTotals?.cryptoTotal).toBe(5_000_000 * PRECISION);
+    });
+
+    it('does not convert crypto display amounts with fiat fallback when the live rate is missing', async () => {
+        const { bitcoin, euro } = await seedBitcoinCryptoWithBalance(100 * PRECISION);
+
+        const conversion = await exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
+
+        expect(conversion).toBeNull();
+    });
+
+    it('converts crypto display amounts with the live rate when present', async () => {
+        const { bitcoin, euro } = await seedBitcoinCryptoWithBalance(100 * PRECISION);
+
+        insertOne(ExchangeRateEntityTable, { source: 'test', baseInstrumentId: bitcoin.id, quoteInstrumentId: euro.id, rate: 50_000 });
+
+        const conversion = await exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
+
+        expect(conversion?.amount).toBe(5_000_000 * PRECISION);
+        expect(conversion?.exchangeRate).toBe(50_000);
     });
 });
 

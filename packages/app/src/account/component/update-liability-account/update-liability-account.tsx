@@ -1,4 +1,4 @@
-import { AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -18,7 +18,7 @@ import { UpdateAccountScreen } from '../create-account-screen/update-account-scr
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
-    readonly account: AccountEntityInterface;
+    readonly account: AccountWithInstrumentEntityInterface;
 }
 
 export const UpdateLiabilityAccount = ({ account }: Props) => {
@@ -59,7 +59,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
 
     return (
         <UpdateAccountScreen
-            instrumentSymbol={instrument.symbol}
+            instrumentSymbol={account[AccountAssociationEnum.INSTRUMENT].symbol}
             onSubmit={handleSubmit}
             account={account}
             control={control}
