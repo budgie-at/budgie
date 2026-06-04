@@ -1,17 +1,11 @@
-import {
-    AccountDebtTypeEnum,
-    AccountTypeEnum,
-    AccountWithBankSyncEntityInterface,
-    BankSyncStatusEnum,
-    ExternalSourceEnum
-} from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountTypeEnum, AccountWithBankSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 import { AccountRowInterface } from '../interface/account-row.interface';
-import { BankProviderSectionWithStatusInterface } from '../interface/bank-provider-section-with-status.interface';
+import { BankProviderSectionInterface } from '../interface/bank-provider-section.interface';
 
 interface AccountTypeSectionInterface {
     readonly kind: HomeSectionKindEnum.ACCOUNT_TYPE;
@@ -24,7 +18,7 @@ export interface DebtSectionInterface {
     readonly data: AccountRowInterface[];
 }
 
-export type HomeSectionInterface = AccountTypeSectionInterface | BankProviderSectionWithStatusInterface | DebtSectionInterface;
+export type HomeSectionInterface = AccountTypeSectionInterface | BankProviderSectionInterface | DebtSectionInterface;
 
 type AccountGroups = Partial<Record<AccountTypeEnum, AccountWithBankSyncEntityInterface[]>>;
 type ProviderGroups = Partial<Record<ExternalSourceEnum, AccountWithBankSyncEntityInterface[]>>;
@@ -40,20 +34,6 @@ const pairAccountsIntoRows = (accounts: AccountWithBankSyncEntityInterface[]): A
     }
 
     return rows;
-};
-
-const getProviderSyncStatus = (accounts: AccountWithBankSyncEntityInterface[]): BankSyncStatusEnum => {
-    const hasSyncing = accounts.some(account => account.bankSync?.status === BankSyncStatusEnum.SYNCING);
-    if (hasSyncing) {
-        return BankSyncStatusEnum.SYNCING;
-    }
-
-    const hasFailed = accounts.some(account => account.bankSync?.status === BankSyncStatusEnum.FAILED);
-    if (hasFailed) {
-        return BankSyncStatusEnum.FAILED;
-    }
-
-    return BankSyncStatusEnum.IDLE;
 };
 
 // eslint-disable-next-line max-statements -- Section builder with multiple filter and transform operations
@@ -113,12 +93,11 @@ export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterfa
         });
     }
 
-    const providerSections: BankProviderSectionWithStatusInterface[] = typedObjectEntries(providerGroups)
+    const providerSections: BankProviderSectionInterface[] = typedObjectEntries(providerGroups)
         .filter(([, groupAccounts]) => isNotEmptyArray(groupAccounts))
         .map(([provider, groupAccounts]) => ({
             kind: HomeSectionKindEnum.BANK_PROVIDER,
             provider,
-            syncStatus: getProviderSyncStatus(groupAccounts ?? []),
             data: pairAccountsIntoRows(groupAccounts ?? [])
         }));
 
