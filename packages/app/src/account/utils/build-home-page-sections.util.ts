@@ -40,10 +40,7 @@ const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInte
         }
 
         groups.set(account.instrument.id, {
-            instrumentId: account.instrument.id,
-            instrumentCode: account.instrument.code,
-            instrumentName: account.instrument.name,
-            instrumentSymbol: account.instrument.symbol,
+            instrument: account.instrument,
             accounts: [account]
         });
     });

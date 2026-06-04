@@ -86,7 +86,7 @@ export default function HomePage() {
     };
 
     const keyExtractor = (item: AccountRowInterface | CryptoCurrencyGroupInterface) =>
-        isCryptoCurrencyGroup(item) ? `crypto-${item.instrumentId}` : String(item.left.id);
+        isCryptoCurrencyGroup(item) ? `crypto-${item.instrument.id}` : String(item.left.id);
 
     return (
         <View className="flex-1 bg-background">
