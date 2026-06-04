@@ -6,7 +6,7 @@ import {
 } from '@budgie/contracts';
 import { useFormContext } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
 import { useSplitEntriesModal } from '../context/split-entries-modal.context';
@@ -69,7 +69,7 @@ export const useQuickFormSplit = ({
         feeTotal: number
     ) => {
         const hasMultipleEntries = result.length > 1;
-        const hasSingleEntryWithAmount = result.length === 1 && result[0].amount > 0;
+        const hasSingleEntryWithAmount = result.length === 1 && isPositiveNumber(result[0].amount);
 
         if (!hasMultipleEntries && !hasSingleEntryWithAmount) {
             return;

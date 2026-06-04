@@ -1,5 +1,7 @@
 import { t } from '@lingui/core/macro';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
@@ -15,7 +17,7 @@ interface Props {
 export const TransactionFeePill = ({ amount, currencySymbol, showEmptyState = false, onPress, testID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const hasFee = amount > 0;
+    const hasFee = isPositiveNumber(amount);
 
     if (!hasFee && !showEmptyState) {
         return null;
