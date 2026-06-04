@@ -1,13 +1,14 @@
-import { AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithBankSyncEntityInterface, BankSyncEntityInterface } from '@budgie/contracts';
 
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { BankSyncAccountCard } from '../bank-sync-account-card/bank-sync-account-card';
 import { DebtAccountCard } from '../debt-account-card/debt-account-card';
 
 interface Props extends Pick<
-    AccountEntityInterface,
+    AccountWithBankSyncEntityInterface,
     'id' | 'createdAt' | 'title' | 'type' | 'icon' | 'debtType' | 'targetBalance' | 'deadline'
 > {
+    readonly bankSync: BankSyncEntityInterface | null;
     readonly className?: string;
     readonly instrumentSymbol: string;
 }

@@ -49,7 +49,9 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, filters,
         <View className="gap-y-md">
             <Text className="uppercase text-secondary-foreground text-xs">{title}</Text>
 
-            <Card className="gap-y-xl">{stats.map(renderStat)}</Card>
+            <Card size="md" className="gap-y-xl">
+                {stats.map(renderStat)}
+            </Card>
         </View>
     );
     /* jscpd:ignore-end */

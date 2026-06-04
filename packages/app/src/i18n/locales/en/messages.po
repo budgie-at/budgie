@@ -523,7 +523,9 @@ msgstr "Budgie will soft-delete {countText}. This keeps your manual transactions
 #: src/settings/components/truncate-data/truncate-data.tsx
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
@@ -800,6 +802,10 @@ msgstr "Could not fetch accounts"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not import CSV file"
 msgstr "Could not import CSV file"
+
+#: src/budget/hooks/use-budget-form.hook.ts
+msgid "Could not load budget"
+msgstr "Could not load budget"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -1338,6 +1344,10 @@ msgstr "Failed to save PIN. Please try again."
 #: src/ai/service/ai-system-status.service.ts
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Fast-indexing {done} of {total} • tap to pause"
+
+#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+msgid "Fee {formattedAmount}"
+msgstr "Fee {formattedAmount}"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
@@ -2205,6 +2215,22 @@ msgstr "Remove category limit?"
 msgid "Remove duplicate imported bank transactions"
 msgstr "Remove duplicate imported bank transactions"
 
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "Remove fee"
+msgstr "Remove fee"
+
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "Remove fee?"
+msgstr "Remove fee?"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+msgid "Remove split"
+msgstr "Remove split"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+msgid "Remove split?"
+msgstr "Remove split?"
+
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 msgid "Repair"
 msgstr "Repair"
@@ -2275,6 +2301,10 @@ msgstr "Save"
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Save {count}"
 msgstr "Save {count}"
+
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "Save fee"
+msgstr "Save fee"
 
 #: src/account/constant/account-type.constant.ts
 msgid "Savings"
@@ -2492,6 +2522,10 @@ msgstr "Set a monthly limit and track your spending"
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
 msgstr "Set Category"
+
+#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+msgid "Set fee"
+msgstr "Set fee"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
@@ -2723,9 +2757,17 @@ msgstr "This will convert the expense to a transfer between accounts."
 msgid "This will convert the income to a transfer between accounts."
 msgstr "This will convert the income to a transfer between accounts."
 
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+msgid "This will keep one entry with the full transaction amount."
+msgstr "This will keep one entry with the full transaction amount."
+
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
+
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "This will remove the fee entry from this transaction."
+msgstr "This will remove the fee entry from this transaction."
 
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "This will remove your monthly budget. You can create a new one anytime."

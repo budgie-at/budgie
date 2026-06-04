@@ -28,5 +28,5 @@ CREATE UNIQUE INDEX `budget_category_limit_budget_category_unq` ON `budget_categ
 --> statement-breakpoint
 CREATE INDEX `budget_instrument_idx` ON `budgets` (`instrument_id`);
 --> statement-breakpoint
-ALTER TABLE `settings` ADD `is_budget_widget_enabled` integer NOT NULL DEFAULT false;--> statement-breakpoint
+ALTER TABLE `settings` ADD `is_budget_widget_enabled` integer NOT NULL DEFAULT true;--> statement-breakpoint
 ALTER TABLE `settings` ADD `is_budget_push_enabled` integer NOT NULL DEFAULT false;
