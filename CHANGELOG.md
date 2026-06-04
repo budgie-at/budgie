@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.34.1](https://github.com/budgie-at/budgie/compare/v5.34.0...v5.34.1) (2026-06-04)
+
+### Bug Fixes
+
+- **app:** render debt account settings form ([#541](https://github.com/budgie-at/budgie/issues/541)) ([bce5a11](https://github.com/budgie-at/budgie/commit/bce5a11ae7c2fc164af9cd160629eec0395ed4d2))
+
 # [5.34.0](https://github.com/budgie-at/budgie/compare/v5.33.1...v5.34.0) (2026-06-04)
 
 ### Bug Fixes
