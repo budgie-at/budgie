@@ -137,6 +137,22 @@ export class AccountBalanceRepository {
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
+    getTotalByCryptoInstrument(instrumentId: number) {
+        return this.db
+            .select({
+                balance: sql<number>`COALESCE(SUM(${this.getAccountBalanceWithTransactionsSql()}), 0)`
+            })
+            .from(AccountEntityTable)
+            .where(
+                and(
+                    eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO),
+                    eq(AccountEntityTable.instrumentId, instrumentId),
+                    eq(AccountEntityTable.isActive, true),
+                    isNull(AccountEntityTable.deletedAt)
+                )
+            );
+    }
+
     // jscpd:ignore-start
     getTotalByAccountType(defaultInstrumentId: number, accountType: AccountTypeEnum) {
         const exchangeRateSql =
@@ -156,7 +172,6 @@ export class AccountBalanceRepository {
 
     getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
         const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
-
         const remainingDebtSql = sql<number>`
             MAX(${AccountEntityTable.targetBalance} - (${this.getAccountBalanceWithTransactionsSql()}), 0)
         `;
@@ -255,17 +270,12 @@ export class AccountBalanceRepository {
 
     private getTransactionsSumSql() {
         return sql<number>`
-            SUM(
-                   CASE
-                   WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                   THEN -${TransactionEntryEntityTable.amount}
-                   WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE}
-                   THEN -${TransactionEntryEntityTable.amount}
-                   WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
-                   THEN ${TransactionEntryEntityTable.amount}
-                   ELSE 0
-                   END
-               )
+            SUM(CASE
+                WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT} THEN -${TransactionEntryEntityTable.amount}
+                WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE} THEN -${TransactionEntryEntityTable.amount}
+                WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.amount}
+                ELSE 0
+            END)
         `;
     }
 
