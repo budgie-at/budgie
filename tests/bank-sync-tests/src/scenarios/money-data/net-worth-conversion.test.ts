@@ -17,6 +17,8 @@ import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
+const BITCOIN_EURO_RATE = 50_000;
+
 describe('net worth currency conversion', () => {
     it('converts a foreign balance using the live rate when present', async () => {
         const euro = await seedHryvniaCashWithBalance(1000 * PRECISION);
@@ -51,9 +53,7 @@ describe('net worth currency conversion', () => {
     });
 
     it('values crypto totals with the live rate when present', async () => {
-        const { bitcoin, euro } = await seedBitcoinCryptoWithBalance(100 * PRECISION);
-
-        insertOne(ExchangeRateEntityTable, { source: 'test', baseInstrumentId: bitcoin.id, quoteInstrumentId: euro.id, rate: 50_000 });
+        const { euro } = await seedBitcoinCryptoWithLiveRate(100 * PRECISION);
 
         const cryptoTotal = accountBalanceRepository.getTotalByAccountType(euro.id, AccountTypeEnum.CRYPTO).get();
         const assetClassTotals = accountBalanceRepository.getAssetClassTotals(euro.id).get();
@@ -71,14 +71,12 @@ describe('net worth currency conversion', () => {
     });
 
     it('converts crypto display amounts with the live rate when present', async () => {
-        const { bitcoin, euro } = await seedBitcoinCryptoWithBalance(100 * PRECISION);
-
-        insertOne(ExchangeRateEntityTable, { source: 'test', baseInstrumentId: bitcoin.id, quoteInstrumentId: euro.id, rate: 50_000 });
+        const { bitcoin, euro } = await seedBitcoinCryptoWithLiveRate(100 * PRECISION);
 
         const conversion = await exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
 
         expect(conversion?.amount).toBe(5_000_000 * PRECISION);
-        expect(conversion?.exchangeRate).toBe(50_000);
+        expect(conversion?.exchangeRate).toBe(BITCOIN_EURO_RATE);
     });
 });
 
@@ -107,4 +105,17 @@ const seedBitcoinCryptoWithBalance = async (balance: number) => {
     insertOne(AccountBalanceEntityTable, { accountId: account.id, amount: balance });
 
     return { bitcoin, euro };
+};
+
+const seedBitcoinCryptoWithLiveRate = async (balance: number) => {
+    const result = await seedBitcoinCryptoWithBalance(balance);
+
+    insertOne(ExchangeRateEntityTable, {
+        source: 'test',
+        baseInstrumentId: result.bitcoin.id,
+        quoteInstrumentId: result.euro.id,
+        rate: BITCOIN_EURO_RATE
+    });
+
+    return result;
 };
