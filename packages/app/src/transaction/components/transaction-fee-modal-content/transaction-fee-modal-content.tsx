@@ -38,7 +38,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         }
     );
 
-    const canSave = isPositiveNumber(feeEntry.categoryId) && feeEntry.amount > 0;
+    const canSave = isPositiveNumber(feeEntry.categoryId) && isPositiveNumber(feeEntry.amount);
     const canRemove = isDefined(entry);
 
     const handleAmountChange = (amount: number) => {

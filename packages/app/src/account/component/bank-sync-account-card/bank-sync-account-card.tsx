@@ -1,4 +1,4 @@
-import { AccountAssociationEnum, AccountWithBankSyncEntityInterface, BankSyncStatusEnum } from '@budgie/contracts';
+import { AccountWithBankSyncEntityInterface, BankSyncEntityInterface, BankSyncStatusEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { View } from 'react-native';
@@ -11,7 +11,7 @@ import { useQuickImport } from '../../../sync/hook/use-quick-import.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 
 interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' | 'icon'> {
-    readonly [AccountAssociationEnum.BANK_SYNC]: AccountWithBankSyncEntityInterface[AccountAssociationEnum.BANK_SYNC];
+    readonly bankSync: BankSyncEntityInterface | null;
     readonly className?: string;
     readonly instrumentSymbol: string;
 }

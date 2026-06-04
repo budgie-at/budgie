@@ -8,40 +8,50 @@ import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.
 import { SimpleQuickFormAmountHeader } from '../simple-quick-form-amount-header/simple-quick-form-amount-header';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 
-import type { useSimpleQuickFormActions } from '../../hook/use-simple-quick-form-actions.hook';
-import type { useSimpleQuickFormValues } from '../../hook/use-simple-quick-form-values.hook';
 import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
 
 interface Props extends RulePillSlotPropsInterface {
+    readonly accountId: number;
     readonly aiContext?: string;
+    readonly amount: number;
     readonly amountDisplayRef: RefObject<TransactionAmountDisplayRef | null>;
     readonly amountTopContent?: ReactNode;
+    readonly categoryId: number | null;
+    readonly comment: string;
     readonly currencySymbol: string;
     readonly displayValue: string;
     readonly feeAmount: number;
-    readonly formValues: ReturnType<typeof useSimpleQuickFormValues>;
+    readonly hasTagsSelected: boolean;
+    readonly isCategoryUserConfirmed: boolean;
     readonly isNewTransaction?: boolean;
     readonly isSplitActive: boolean;
     readonly mccCategoryId: number | null;
-    readonly quickFormActions: ReturnType<typeof useSimpleQuickFormActions>;
     readonly transactionTitle: string;
     readonly transactionType: TransactionTypeEnum;
     readonly variant: ColorPaletteVariant;
     readonly onFeePress: () => void;
+    readonly onFillPatternAmount: (patternAmount: number) => void;
+    readonly onSelectCategory: (selectedCategoryId: number) => void;
+    readonly onSelectComment: (selectedComment: string) => void;
+    readonly onSelectTag: (selectedTagId: number) => void;
 }
 
 export const SimpleQuickFormDisplay = ({
+    accountId,
     aiContext = '',
+    amount,
     amountDisplayRef,
     amountTopContent,
+    categoryId,
+    comment,
     currencySymbol,
     displayValue,
     feeAmount,
-    formValues,
+    hasTagsSelected,
+    isCategoryUserConfirmed,
     isNewTransaction = false,
     isSplitActive,
     mccCategoryId,
-    quickFormActions,
     transactionTitle,
     transactionType,
     variant,
@@ -51,6 +61,10 @@ export const SimpleQuickFormDisplay = ({
     updateRuleData,
     matchingRulesCount,
     matchingRuleIds,
+    onSelectCategory,
+    onSelectTag,
+    onSelectComment,
+    onFillPatternAmount,
     onRuleCreated,
     onDismiss,
     onCreatingChange
@@ -87,17 +101,17 @@ export const SimpleQuickFormDisplay = ({
             isNewTransaction={isNewTransaction}
             isSplitActive={isSplitActive}
             transactionType={transactionType}
-            categoryId={formValues.categoryId}
-            isCategoryUserConfirmed={formValues.isCategoryUserConfirmed}
-            comment={formValues.comment}
+            categoryId={categoryId}
+            isCategoryUserConfirmed={isCategoryUserConfirmed}
+            comment={comment}
             aiContext={aiContext}
-            accountId={formValues.accountId}
-            amount={formValues.amount}
-            hasTagsSelected={formValues.hasTagsSelected}
-            onSelectCategory={quickFormActions.handleSelectCategory}
-            onSelectTag={quickFormActions.handleSelectTag}
-            onSelectComment={quickFormActions.handleSelectComment}
-            onFillPatternAmount={quickFormActions.handleFillPatternAmount}
+            accountId={accountId}
+            amount={amount}
+            hasTagsSelected={hasTagsSelected}
+            onSelectCategory={onSelectCategory}
+            onSelectTag={onSelectTag}
+            onSelectComment={onSelectComment}
+            onFillPatternAmount={onFillPatternAmount}
         />
     </View>
 );
