@@ -9,11 +9,13 @@ import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
 
 export const useNetWorthQuery = () => {
     const { defaultInstrument } = useSettingsContext();
+    const defaultInstrumentId = defaultInstrument.id;
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
-    const dependencies = [defaultInstrument.id, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
-    const { data } = useLiveQuery(accountBalanceRepository.getNetWorth(defaultInstrument.id), dependencies);
-    const netWorth = useCachedMicroUnitQuery(data.at(0)?.netWorth, dependencies);
+    const queryDependencies = [defaultInstrumentId, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
+    const query = accountBalanceRepository.getNetWorth(defaultInstrumentId);
+    const { data } = useLiveQuery(query, queryDependencies);
+    const netWorth = useCachedMicroUnitQuery(data.at(0)?.netWorth, queryDependencies);
 
     return netWorth;
 };
