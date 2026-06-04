@@ -20,14 +20,24 @@ const GRADIENT_START = 0.6;
 const GRADIENT_END = 0.6;
 const DEFAULT_HEADER_HEIGHT = 150;
 const DEFAULT_HEIGHT_BOTTOM = 150;
+const DARK_GRADIENT_EDGE = '#000000';
+const DARK_GRADIENT_TRANSPARENT = 'rgba(0, 0, 0, 0)';
+const LIGHT_GRADIENT_EDGE = '#ffffff';
+const LIGHT_GRADIENT_TRANSPARENT = 'rgba(255, 255, 255, 0)';
 
 const GRADIENT_CONFIG = {
     top: {
-        colors: { dark: ['#000000', 'transparent'] as const, light: ['#ffffff', 'transparent'] as const },
+        colors: {
+            dark: [DARK_GRADIENT_EDGE, DARK_GRADIENT_TRANSPARENT] as const,
+            light: [LIGHT_GRADIENT_EDGE, LIGHT_GRADIENT_TRANSPARENT] as const
+        },
         locations: [GRADIENT_START, 1] as const
     },
     bottom: {
-        colors: { dark: ['transparent', '#000000'] as const, light: ['transparent', '#ffffff'] as const },
+        colors: {
+            dark: [DARK_GRADIENT_TRANSPARENT, DARK_GRADIENT_EDGE] as const,
+            light: [LIGHT_GRADIENT_TRANSPARENT, LIGHT_GRADIENT_EDGE] as const
+        },
         locations: [0, GRADIENT_END] as const
     }
 } as const;

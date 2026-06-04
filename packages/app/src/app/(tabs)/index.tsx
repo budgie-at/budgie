@@ -10,6 +10,7 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 import { AnimatedSectionList } from '../../@generic/component/animated-section-list/animated-section-list';
 import { CollapsibleHeader } from '../../@generic/component/collapsible-header/collapsible-header';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../@generic/constant/floating-tab-bar.constant';
+import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { AccountGridItem } from '../../account/component/account-grid-item/account-grid-item';
 import { AccountSectionHeader } from '../../account/component/account-section-header/account-section-header';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
@@ -37,11 +38,13 @@ const getSectionAccountType = (section: HomeSectionInterface): AccountTypeEnum =
     return section.type;
 };
 
-// eslint-disable-next-line max-statements -- Screen orchestration component with 6 hooks and multiple render helpers
+// eslint-disable-next-line max-statements -- Screen orchestration component with 7 hooks and multiple render helpers
 export default function HomePage() {
     const { accounts } = useAccountsWithBankSyncQuery();
     const { bottom } = useSafeAreaInsets();
     const language = useSetting('language');
+    const isBudgetWidgetEnabled = useSetting('isBudgetWidgetEnabled');
+    const focusKey = useFocusKey();
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
@@ -58,10 +61,11 @@ export default function HomePage() {
         activeAccounts.length > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
             <CollapsibleNetWorthHeaderScrollSpacer />
         ) : null;
-    // Remount the widget on language change: the frozen Home tab plus the memoized list header otherwise keep stale category translations.
+    const budgetWidgetRemountKey = `${language}-${isBudgetWidgetEnabled ? 'enabled' : 'disabled'}-${focusKey}`;
+    // Remount the widget on key settings changes: the frozen Home tab plus the memoized list header otherwise keeps stale content.
     const listHeaderComponent = (
         <View className="mb-3xl">
-            <BudgetWidget key={language} />
+            <BudgetWidget key={budgetWidgetRemountKey} />
         </View>
     );
 

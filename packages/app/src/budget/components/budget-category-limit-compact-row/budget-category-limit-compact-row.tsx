@@ -42,6 +42,7 @@ export const BudgetCategoryLimitCompactRow = ({ index, onRemove }: Props) => {
         <DeletableRow id={index} onDelete={onRemove} confirmation={confirmation}>
             <View
                 testID={BudgetSelector.SetupCategoryLimitRow(index)}
+                collapsable={false}
                 className="flex-row items-center gap-x-md bg-primary-reverse px-md py-sm rounded-2xl"
             >
                 {icon}

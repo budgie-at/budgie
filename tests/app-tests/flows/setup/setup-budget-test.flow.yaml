@@ -1,5 +1,11 @@
 appId: ${APP_ID}
 ---
+- stopApp
+- launchApp:
+      permissions:
+          contacts: allow
+          microphone: allow
+
 - runFlow:
     file: ../subflows/import/import-database-from-settings.flow.yaml
     env:

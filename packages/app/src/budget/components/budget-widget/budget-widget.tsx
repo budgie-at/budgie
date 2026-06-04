@@ -21,12 +21,12 @@ export const BudgetWidget = () => {
     const { spent } = useGetBudgetSpentQuery(budget);
     const { categoryLimits } = useGetBudgetCategoryLimitsQuery(isDefined(budget) ? budget.id : null);
 
-    if (!isDefined(budget)) {
-        return <BudgetEmptyState testID={BudgetSelector.WidgetEmptyState} />;
-    }
-
     if (!isEnabled) {
         return null;
+    }
+
+    if (!isDefined(budget)) {
+        return <BudgetEmptyState testID={BudgetSelector.WidgetEmptyState} />;
     }
 
     const handleNavigate = () => void router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });

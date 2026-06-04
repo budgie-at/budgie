@@ -7,10 +7,11 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 
 interface Props {
     readonly onPress: () => void;
+    readonly testID?: string;
 }
 
-export const BudgetCategoryLimitsEmptyState = ({ onPress }: Props) => (
-    <Card variant="ghost" onPress={onPress}>
+export const BudgetCategoryLimitsEmptyState = ({ onPress, testID }: Props) => (
+    <Card variant="ghost" onPress={onPress} testID={testID}>
         <View className="items-center gap-y-md py-lg">
             <CircleIcon icon={UserIconNameEnum.Plus} variant="ghost" size={40} iconSize={20} />
             <Text className="text-primary text-md font-semibold">

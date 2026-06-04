@@ -42,8 +42,7 @@ env:
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '200'
-- tapOn:
-    id: 'BudgetSetup.CategoryLimitsHeader'
+- tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
     id: 'BudgetSetup.SaveButton'
@@ -186,7 +185,8 @@ env:
     visible: 'Convert to Refund?'
     timeout: 10000
 - tapOn:
-    point: '68%,60%'
+    text: 'Convert'
+    index: 0
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.RefundedPill.9'
