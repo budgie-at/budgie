@@ -10,6 +10,8 @@ import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-c
 import { enableFreeze, enableScreens } from 'react-native-screens';
 import Toast from 'react-native-toast-message';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import migrations from '../../drizzle/migrations';
 import '../global.css';
 import { DevMenuController } from '../@generic/component/dev-menu-controller/dev-menu-controller';
@@ -43,10 +45,12 @@ import { useAppInitialization } from '../@generic/hook/use-app-initialization.ho
 import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
+import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
+import { exchangeRatesSyncService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
@@ -62,9 +66,16 @@ i18n.activate(i18nGetOSLocale());
 void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
+
+const syncForegroundData = async (): Promise<void> => {
+    await exchangeRatesSyncService.sync();
+    await monobankSyncService.sync();
+    await accountBalanceIncrementalService.updateAllBalances(false);
+};
+
 const handleAppStateChange = (isActive: boolean): void => {
     if (isActive) {
-        void syncWorkloadService.run('foreground-monobank', () => monobankSyncService.sync());
+        void syncWorkloadService.run('foreground', syncForegroundData).catch(emptyFn);
     }
 };
 

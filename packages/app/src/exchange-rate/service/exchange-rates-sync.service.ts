@@ -36,8 +36,7 @@ class ExchangeRatesSyncService {
             return;
         }
 
-        await this.syncFiatRates(baseInstrument);
-        await this.syncCryptoRates(baseInstrument);
+        await Promise.all([this.syncFiatRates(baseInstrument), this.syncCryptoRates(baseInstrument)]);
     }
 
     private async syncFiatRates(baseInstrument: InstrumentEntityInterface): Promise<void> {
@@ -77,9 +76,9 @@ class ExchangeRatesSyncService {
     }
 
     private async fetch(code: string): Promise<ExchangeRateApiResponseInterface> {
-        const response = await fetch(`https://api.exchangerate-api.com/v4/latest/${code}`);
+        const response = await fetch(`https://api.exchangerate-api.com/v4/latest/${code}`).catch(() => null);
 
-        if (!response.ok) {
+        if (!isDefined(response) || !response.ok) {
             return emptyExchangeRateApiResponse;
         }
 
@@ -99,9 +98,9 @@ class ExchangeRatesSyncService {
     ): Promise<Partial<Record<string, Partial<Record<string, number>>>>> {
         const ids = providerInstrumentIds.map(encodeURIComponent).join(',');
         const quote = encodeURIComponent(quoteCode.toLowerCase());
-        const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=${quote}`);
+        const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=${quote}`).catch(() => null);
 
-        if (!response.ok) {
+        if (!isDefined(response) || !response.ok) {
             return {};
         }
 
