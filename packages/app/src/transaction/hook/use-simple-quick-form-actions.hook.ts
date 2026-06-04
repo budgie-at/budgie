@@ -37,6 +37,11 @@ export const useSimpleQuickFormActions = ({ amount, setFromNumeric }: UseSimpleQ
 
     const handleSelectTag = (selectedTagId: number) => {
         const currentTagIds = getValues('tagIds');
+
+        if (currentTagIds.includes(selectedTagId)) {
+            return;
+        }
+
         setValue('tagIds', [...currentTagIds, selectedTagId]);
     };
 
