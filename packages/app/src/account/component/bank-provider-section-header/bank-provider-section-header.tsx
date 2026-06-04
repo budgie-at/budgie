@@ -1,5 +1,6 @@
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -12,9 +13,20 @@ import { useBankProviderTotalQuery } from '../../query/use-bank-provider-total.q
 
 interface Props {
     readonly provider: ExternalSourceEnum;
+    readonly syncStatus: BankSyncStatusEnum;
 }
 
-export const BankProviderSectionHeader = ({ provider }: Props) => {
+const syncStatusVariants = cva('size-2 rounded-full', {
+    variants: {
+        status: {
+            [BankSyncStatusEnum.SYNCING]: 'bg-amber-500 animate-pulse',
+            [BankSyncStatusEnum.IDLE]: 'bg-green-500',
+            [BankSyncStatusEnum.FAILED]: 'bg-destructive'
+        }
+    }
+});
+
+export const BankProviderSectionHeader = ({ provider, syncStatus }: Props) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
@@ -29,6 +41,7 @@ export const BankProviderSectionHeader = ({ provider }: Props) => {
             <View className="flex-row items-center gap-sm">
                 <BankLogo bankProvider={provider} size={20} />
                 <Text className="text-xs uppercase text-secondary-foreground">{title}</Text>
+                <View className={syncStatusVariants({ status: syncStatus })} />
             </View>
             <Text className="text-xs text-secondary-foreground">{formattedTotal}</Text>
         </View>
