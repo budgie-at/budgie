@@ -1,17 +1,17 @@
-import { AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithBankSyncEntityInterface } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { AccountCard } from '../account-card/account-card';
 
 interface Props {
-    readonly account: AccountWithInstrumentEntityInterface;
+    readonly account: AccountWithBankSyncEntityInterface;
     readonly type: AccountTypeEnum;
     readonly isLeft: boolean;
 }
 
 export const AccountGridItem = ({ account, type, isLeft }: Props) => {
-    const { id, title, icon, instrument, deadline, debtType, targetBalance, createdAt } = account;
+    const { id, title, icon, instrument, deadline, debtType, targetBalance, createdAt, bankSync } = account;
 
     const containerClassName = isLeft ? 'flex-1 pr-1.5' : 'flex-1 pl-1.5';
 
@@ -26,6 +26,7 @@ export const AccountGridItem = ({ account, type, isLeft }: Props) => {
                 icon={icon}
                 title={title}
                 createdAt={createdAt}
+                bankSync={bankSync}
                 instrumentSymbol={instrument.symbol}
             />
         </View>

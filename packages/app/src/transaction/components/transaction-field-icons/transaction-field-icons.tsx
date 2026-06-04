@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { CategorySourceEnum, TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useImperativeHandle, useRef } from 'react';
@@ -23,6 +23,7 @@ import {
 } from '../../constant/transaction-field-animation-delay.constant';
 import { formatOperatedAt } from '../../utils/format-operated-at.util';
 import { getTagsDisplayValue } from '../../utils/get-tags-display-value.util';
+import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 
 import { TransactionFieldIconsSelector } from './transaction-field-icons.selector';
@@ -75,11 +76,13 @@ export const TransactionFieldIcons = (props: Props) => {
         shakeCategory: () => categoryIconRef.current?.shake()
     }));
 
-    const categoryId = useWatch({ control, name: 'entries.0.categoryId' });
+    const entries = useWatch({ control, name: 'entries' });
     const tagIds = useWatch({ control, name: 'tagIds' });
     const operatedAt = useWatch({ control, name: 'operatedAt' });
     const comment = useWatch({ control, name: 'comment' });
 
+    const categoryEntries = getTransactionCategoryEntries(entries);
+    const categoryId = categoryEntries.at(0)?.categoryId ?? null;
     const { category } = useGetCategoryByIdQuery(categoryId ?? 0);
     const { tags } = useGetTagByIdsQuery(tagIds);
 
@@ -87,7 +90,19 @@ export const TransactionFieldIcons = (props: Props) => {
         const selectedCategoryId = await openCategorySelector({ initialCategoryId: categoryId, variant });
 
         if (isDefined(selectedCategoryId)) {
-            setValue('entries.0.categoryId', selectedCategoryId);
+            const currentCategoryEntry = categoryEntries.at(0);
+
+            if (!isDefined(currentCategoryEntry)) {
+                return;
+            }
+
+            const updatedEntries = entries.map(entry =>
+                entry === currentCategoryEntry
+                    ? { ...entry, categoryId: selectedCategoryId, categorySource: CategorySourceEnum.USER }
+                    : entry
+            );
+
+            setValue('entries', updatedEntries, { shouldValidate: false });
         }
     };
 

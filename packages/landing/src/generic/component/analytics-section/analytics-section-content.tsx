@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { AlertTriangle, Calendar, PieChart, Tag } from 'lucide-react';
+import { AlertTriangle, Calendar, PieChart, ReceiptText, Tag } from 'lucide-react';
 
 import { Badge } from '../../../ui/badge';
 import { Motion } from '../motion/motion';
@@ -42,6 +42,13 @@ export const AnalyticsSectionContent = () => (
                 icon={<Tag className="size-5 text-orange-600 dark:text-orange-400" />}
                 iconClassName="bg-orange-100 dark:bg-orange-900/30"
                 title={<Trans>Find Hidden Patterns</Trans>}
+            />
+
+            <AnalyticsSectionFeature
+                description={<Trans>ATM fees and bank commissions stay visible even when the main transaction is a transfer.</Trans>}
+                icon={<ReceiptText className="size-5 text-amber-600 dark:text-amber-400" />}
+                iconClassName="bg-amber-100 dark:bg-amber-900/30"
+                title={<Trans>Bank Fees Included</Trans>}
             />
 
             <AnalyticsSectionFeature
