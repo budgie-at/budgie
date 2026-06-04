@@ -17,6 +17,7 @@ interface Props<Item> {
 }
 
 const NUM_COLUMNS = 3;
+const ROW_GAP = 8;
 
 export const SelectorGridContent = <Item,>(props: Props<Item>) => {
     const {
@@ -33,6 +34,7 @@ export const SelectorGridContent = <Item,>(props: Props<Item>) => {
     const { flatListStyle, contentContainerStyle } = useFormsheetListStyles(additionalBottomPadding, topOffset);
     const alignedContentContainerStyle: ViewStyle = {
         ...contentContainerStyle,
+        rowGap: ROW_GAP,
         ...(alignToBottom && { justifyContent: 'flex-end' })
     };
 
@@ -56,7 +58,7 @@ export const SelectorGridContent = <Item,>(props: Props<Item>) => {
             numColumns={NUM_COLUMNS}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
-            columnWrapperClassName="gap-x-lg mb-lg"
+            columnWrapperClassName="gap-x-lg"
             contentContainerStyle={alignedContentContainerStyle}
             ListEmptyComponent={listEmptyComponent}
         />

@@ -46,7 +46,7 @@ export const mapBankTransactionToCreateInput = (
 
     const feeEntry: TransactionEntryCreateInputInterface = {
         accountId,
-        type: entryType,
+        type: TransactionEntryTypeEnum.FEE,
         amount: feeAmount,
         categoryId: BANK_FEE_CATEGORY_ID,
         categorySource: CategorySourceEnum.FEE,
