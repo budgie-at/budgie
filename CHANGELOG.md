@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.33.1](https://github.com/budgie-at/budgie/compare/v5.33.0...v5.33.1) (2026-06-04)
+
+### Bug Fixes
+
+- **app:** dedupe storage replacement runtime pause ([c96b452](https://github.com/budgie-at/budgie/commit/c96b4527665101a8dec398974d103425ecc81468))
+- **app:** harden app reset cleanup ([d50483b](https://github.com/budgie-at/budgie/commit/d50483be8ab03cc5ce8b4881b93cc16b0719f465))
+- **app:** reset all app-owned storage ([4107f59](https://github.com/budgie-at/budgie/commit/4107f59ae851ed973121c217087ebb0304e181cf))
+
 # [5.33.0](https://github.com/budgie-at/budgie/compare/v5.32.3...v5.33.0) (2026-06-03)
 
 ### Bug Fixes
