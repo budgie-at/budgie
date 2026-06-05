@@ -1996,10 +1996,6 @@ msgstr "ПриватБанк"
 msgid "Quick rule"
 msgstr "Швидке правило"
 
-#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
-msgid "Rate unavailable"
-msgstr "Курс недоступний"
-
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
