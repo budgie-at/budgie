@@ -22,8 +22,10 @@ class ExchangeRatesSyncService {
     private static readonly COINGECKO_SIMPLE_PRICE_API_URL = 'https://api.coingecko.com/api/v3/simple/price';
     private static readonly EXCHANGE_RATE_API_URL = 'https://api.exchangerate-api.com/v4/latest';
     private static readonly CRYPTO_RATE_SYNC_BATCH_SIZE = 40;
+    private static readonly FETCH_TIMEOUT_MS = 5000;
     private static readonly SYNC_COOLDOWN_MS = 5 * 60 * 1000;
 
+    private isSyncing = false;
     private lastSyncedAtMs: number | null = null;
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -37,7 +39,22 @@ class ExchangeRatesSyncService {
         });
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async sync(): Promise<void> {
+        if (this.isSyncing) {
+            return;
+        }
+
+        this.isSyncing = true;
+
+        try {
+            await this.syncInner();
+        } finally {
+            this.isSyncing = false;
+        }
+    }
+
+    private async syncInner(): Promise<void> {
         const now = Date.now();
 
         if (isDefined(this.lastSyncedAtMs) && now - this.lastSyncedAtMs < ExchangeRatesSyncService.SYNC_COOLDOWN_MS) {
@@ -110,7 +127,7 @@ class ExchangeRatesSyncService {
     }
 
     private async fetch(code: string): Promise<ExchangeRateApiResponseInterface> {
-        const response = await fetch(`${ExchangeRatesSyncService.EXCHANGE_RATE_API_URL}/${code}`).catch(() => null);
+        const response = await this.fetchWithTimeout(`${ExchangeRatesSyncService.EXCHANGE_RATE_API_URL}/${code}`);
 
         if (!isDefined(response) || !response.ok) {
             return emptyExchangeRateApiResponse;
@@ -132,8 +149,8 @@ class ExchangeRatesSyncService {
     ): Promise<Partial<Record<string, Partial<Record<string, number>>>>> {
         const ids = providerInstrumentIds.map(encodeURIComponent).join(',');
         const quote = encodeURIComponent(quoteCode.toLowerCase());
-        const response = await fetch(`${ExchangeRatesSyncService.COINGECKO_SIMPLE_PRICE_API_URL}?ids=${ids}&vs_currencies=${quote}`).catch(
-            () => null
+        const response = await this.fetchWithTimeout(
+            `${ExchangeRatesSyncService.COINGECKO_SIMPLE_PRICE_API_URL}?ids=${ids}&vs_currencies=${quote}`
         );
 
         if (!isDefined(response) || !response.ok) {
@@ -148,6 +165,17 @@ class ExchangeRatesSyncService {
         }
 
         return result.data;
+    }
+
+    private async fetchWithTimeout(url: string): Promise<Response | null> {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => void controller.abort(), ExchangeRatesSyncService.FETCH_TIMEOUT_MS);
+
+        try {
+            return await fetch(url, { signal: controller.signal }).catch(() => null);
+        } finally {
+            clearTimeout(timeoutId);
+        }
     }
 
     private getCryptoPrice(

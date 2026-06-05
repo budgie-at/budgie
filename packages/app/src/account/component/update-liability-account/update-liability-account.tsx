@@ -1,4 +1,4 @@
-import { AccountAssociationEnum, AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -59,7 +59,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
 
     return (
         <UpdateAccountScreen
-            instrumentSymbol={account[AccountAssociationEnum.INSTRUMENT].symbol}
+            instrumentSymbol={instrument.symbol}
             onSubmit={handleSubmit}
             account={account}
             control={control}

@@ -12,7 +12,8 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly instrumentSymbol: string;
 }
 
-export const CryptoAccountCard = ({ id, title, icon, className, instrumentCode, instrumentSymbol }: Props) => {
+export const CryptoAccountCard = (props: Props) => {
+    const { id, title, icon, className, instrumentCode, instrumentSymbol } = props;
     const { balance } = useAccountBalanceQuery(id);
     const formatDigits = useDisplayFormatDigits();
 

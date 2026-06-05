@@ -1,6 +1,7 @@
+import { Log } from '@budgie/logger';
 import { and, eq, sql } from 'drizzle-orm';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ExchangeRateEntityTable } from '../table/exchange-rate-entity.table';
 
@@ -11,6 +12,32 @@ import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class ExchangeRateRepository {
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+
+    @Log(
+        (inputs, tx) =>
+            `enter baseInstrumentIds=${inputs.map(input => input.baseInstrumentId).join(',')} quoteInstrumentIds=${inputs.map(input => input.quoteInstrumentId).join(',')} hasTx=${String(isDefined(tx))}`,
+        (result, inputs, tx) =>
+            `done baseInstrumentIds=${inputs.map(input => input.baseInstrumentId).join(',')} quoteInstrumentIds=${inputs.map(input => input.quoteInstrumentId).join(',')} hasTx=${String(isDefined(tx))} hasResult=${String(isDefined(result))}`,
+        (error, inputs, tx) =>
+            `throw baseInstrumentIds=${inputs.map(input => input.baseInstrumentId).join(',')} quoteInstrumentIds=${inputs.map(input => input.quoteInstrumentId).join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async bulkUpsert(inputs: ExchangeRateCreateEntityInterface[], tx?: DB): Promise<void> {
+        if (!isNotEmptyArray(inputs)) {
+            return;
+        }
+
+        await (tx ?? this.db)
+            .insert(ExchangeRateEntityTable)
+            .values(inputs)
+            .onConflictDoUpdate({
+                target: [ExchangeRateEntityTable.baseInstrumentId, ExchangeRateEntityTable.quoteInstrumentId],
+                set: {
+                    rate: sql`excluded.rate`,
+                    source: sql`excluded.source`,
+                    updatedAt: new Date()
+                }
+            });
+    }
 
     getAll() {
         return this.db.query.ExchangeRateEntityTable.findMany();
@@ -32,24 +59,6 @@ export class ExchangeRateRepository {
             .onConflictDoUpdate({
                 target: [ExchangeRateEntityTable.baseInstrumentId, ExchangeRateEntityTable.quoteInstrumentId],
                 set: { rate, source }
-            });
-    }
-
-    async bulkUpsert(inputs: ExchangeRateCreateEntityInterface[], tx?: DB): Promise<void> {
-        if (!isNotEmptyArray(inputs)) {
-            return;
-        }
-
-        await (tx ?? this.db)
-            .insert(ExchangeRateEntityTable)
-            .values(inputs)
-            .onConflictDoUpdate({
-                target: [ExchangeRateEntityTable.baseInstrumentId, ExchangeRateEntityTable.quoteInstrumentId],
-                set: {
-                    rate: sql`excluded.rate`,
-                    source: sql`excluded.source`,
-                    updatedAt: new Date()
-                }
             });
     }
 }
