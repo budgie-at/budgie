@@ -18,7 +18,6 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
 import { useCryptoInstrumentTotalQuery } from '../../query/use-crypto-instrument-total.query';
 import { CryptoCurrencyGroupAccounts } from '../crypto-currency-group-accounts/crypto-currency-group-accounts';
-import { CryptoCurrencySparkline } from '../crypto-currency-sparkline/crypto-currency-sparkline';
 
 interface Props {
     readonly group: CryptoCurrencyGroupInterface;
@@ -48,41 +47,40 @@ export const CryptoCurrencyGroupCard = ({ group }: Props) => {
 
     return (
         <View className="mb-3 gap-y-3">
-            <Card className="relative overflow-hidden border-warning-corner bg-secondary-background" size="lg">
-                <CryptoCurrencySparkline />
-
-                <HapticPressable onPress={toggleOpen} className="gap-y-4">
+            <Card className="border-warning-corner bg-secondary-background" size="md">
+                <HapticPressable onPress={toggleOpen} className="gap-y-3">
                     <View className="flex-row items-center justify-between">
-                        <View className="flex-row items-center gap-x-lg">
-                            <CryptoCurrencyIcon code={instrumentCode} size={42} className="bg-warning-background/20" />
+                        <View className="flex-row items-center gap-x-md">
+                            <CryptoCurrencyIcon code={instrumentCode} size={36} className="bg-warning-background/20" />
 
                             <View>
-                                <Text className="text-primary text-base font-medium">{instrumentName}</Text>
+                                <Text className="text-primary text-sm font-medium" ellipsizeMode="tail" numberOfLines={1}>
+                                    {instrumentName}
+                                </Text>
                                 <Text className="text-warning-foreground text-xs font-medium uppercase">{instrumentCode}</Text>
                             </View>
                         </View>
 
-                        <Icon icon={chevronIcon} size={18} className="text-secondary-foreground" />
+                        <View className="flex-row items-center gap-x-xs">
+                            <Text className="text-secondary-foreground text-xs">{accountsCountLabel}</Text>
+                            <Icon icon={chevronIcon} size={16} className="text-secondary-foreground" />
+                        </View>
                     </View>
 
-                    <View className="gap-y-1">
-                        <ProtectedText className="text-primary text-3xl font-medium">{formattedBalance}</ProtectedText>
-
+                    <View className="items-end gap-y-0.5">
                         {isDefined(formattedValue) ? (
-                            <ProtectedText className="text-secondary-foreground text-sm" placeholderText="≈ ***">
+                            <ProtectedText className="text-primary text-base font-medium" placeholderText="≈ ***">
                                 ≈ {formattedValue}
                             </ProtectedText>
                         ) : (
-                            <Text className="text-secondary-foreground text-sm">
-                                <Trans>Rate unavailable</Trans>
-                            </Text>
+                            <ProtectedText className="text-primary text-base font-medium">{formattedBalance}</ProtectedText>
                         )}
-                    </View>
 
-                    <View className="flex-row items-center justify-between gap-x-md">
-                        <View className="flex-row items-center gap-x-xs rounded-full bg-background/70 border border-secondary-corner px-md py-xs">
-                            <Icon icon={UserIconNameEnum.Activity} size={13} className="text-warning-foreground" />
-                            <Text className="text-primary text-xs font-medium">
+                        <View className="flex-row items-center gap-x-xs">
+                            <ProtectedText className="text-secondary-foreground text-xs" placeholderText="***">
+                                {formattedBalance}
+                            </ProtectedText>
+                            <Text className="text-secondary-foreground text-xs">
                                 {isDefined(formattedRate) ? (
                                     <Trans>
                                         1 {instrumentCode} ≈ {defaultInstrumentSymbol}
@@ -93,8 +91,6 @@ export const CryptoCurrencyGroupCard = ({ group }: Props) => {
                                 )}
                             </Text>
                         </View>
-
-                        <Text className="text-secondary-foreground text-xs">{accountsCountLabel}</Text>
                     </View>
                 </HapticPressable>
             </Card>

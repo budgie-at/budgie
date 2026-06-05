@@ -1996,10 +1996,6 @@ msgstr "PrivatBank"
 msgid "Quick rule"
 msgstr "Règle rapide"
 
-#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
-msgid "Rate unavailable"
-msgstr "Taux indisponible"
-
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
