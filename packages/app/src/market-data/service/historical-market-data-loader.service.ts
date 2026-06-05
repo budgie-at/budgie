@@ -196,7 +196,7 @@ class HistoricalMarketDataLoaderService {
             return [];
         }
 
-        const quoteCode = await this.getQuoteCode(job.quoteInstrumentId);
+        const quoteCode = (await instrumentRepository.findByIdAsync(job.quoteInstrumentId))?.code.toLowerCase() ?? 'usd';
         const fromDate = this.getSupportedFromDate(job.fromDate);
 
         if (isAfter(parseISO(fromDate), parseISO(job.toDate))) {
@@ -270,12 +270,6 @@ class HistoricalMarketDataLoaderService {
         );
     }
 
-    private async getQuoteCode(quoteInstrumentId: number): Promise<string> {
-        const quoteInstrument = await instrumentRepository.findByIdAsync(quoteInstrumentId);
-
-        return quoteInstrument?.code.toLowerCase() ?? 'usd';
-    }
-
     private isSupportedInstrument(instrument: InstrumentEntityInterface | undefined): boolean {
         return (
             isDefined(instrument) &&
@@ -286,13 +280,17 @@ class HistoricalMarketDataLoaderService {
     }
 
     private cancelScheduledDrain(): void {
-        if (isDefined(this.timer)) {
-            clearTimeout(this.timer);
-            this.timer = null;
+        const { timer } = this;
+        const { cancelIdleCallback } = this;
+
+        this.timer = null;
+        this.cancelIdleCallback = null;
+
+        if (isDefined(timer)) {
+            clearTimeout(timer);
         }
 
-        this.cancelIdleCallback?.();
-        this.cancelIdleCallback = null;
+        cancelIdleCallback?.();
     }
 }
 

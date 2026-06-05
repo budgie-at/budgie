@@ -77,16 +77,7 @@ export class InstrumentMarketDataJobRepository {
     )
     async hasOpen(instrumentId: number, quoteInstrumentId: number, tx?: DB): Promise<boolean> {
         const job = await (tx ?? this.db).query.InstrumentMarketDataJobEntityTable.findFirst({
-            where: and(
-                eq(InstrumentMarketDataJobEntityTable.instrumentId, instrumentId),
-                eq(InstrumentMarketDataJobEntityTable.quoteInstrumentId, quoteInstrumentId),
-                inArray(InstrumentMarketDataJobEntityTable.status, [
-                    InstrumentMarketDataJobStatusEnum.PENDING,
-                    InstrumentMarketDataJobStatusEnum.RUNNING,
-                    InstrumentMarketDataJobStatusEnum.FAILED
-                ]),
-                isNull(InstrumentMarketDataJobEntityTable.deletedAt)
-            )
+            where: this.buildOpenInstrumentQuoteCondition(instrumentId, quoteInstrumentId)
         });
 
         return isDefined(job);
@@ -156,12 +147,27 @@ export class InstrumentMarketDataJobRepository {
 
     findLatestByInstrumentAndQuote(instrumentId: number, quoteInstrumentId: number) {
         return this.db.query.InstrumentMarketDataJobEntityTable.findFirst({
-            where: and(
-                eq(InstrumentMarketDataJobEntityTable.instrumentId, instrumentId),
-                eq(InstrumentMarketDataJobEntityTable.quoteInstrumentId, quoteInstrumentId),
-                isNull(InstrumentMarketDataJobEntityTable.deletedAt)
-            ),
+            where: this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
             orderBy: desc(InstrumentMarketDataJobEntityTable.updatedAt)
         });
+    }
+
+    private buildOpenInstrumentQuoteCondition(instrumentId: number, quoteInstrumentId: number) {
+        return and(
+            this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
+            inArray(InstrumentMarketDataJobEntityTable.status, [
+                InstrumentMarketDataJobStatusEnum.PENDING,
+                InstrumentMarketDataJobStatusEnum.RUNNING,
+                InstrumentMarketDataJobStatusEnum.FAILED
+            ])
+        );
+    }
+
+    private buildInstrumentQuoteCondition(instrumentId: number, quoteInstrumentId: number) {
+        return and(
+            eq(InstrumentMarketDataJobEntityTable.instrumentId, instrumentId),
+            eq(InstrumentMarketDataJobEntityTable.quoteInstrumentId, quoteInstrumentId),
+            isNull(InstrumentMarketDataJobEntityTable.deletedAt)
+        );
     }
 }

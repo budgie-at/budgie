@@ -1,18 +1,13 @@
 import { sql } from 'drizzle-orm';
-import { index, int, real, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
+import { index, real, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 
+import { instrumentPairTableColumns } from '../../@generic/util/instrument-pair-table-columns.util';
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
-import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 
 export const InstrumentDailyMarketPriceEntityTable = sqliteTable(
     'instrument_daily_market_prices',
     withBaseEntityTableColumns({
-        instrumentId: int('instrument_id', { mode: 'number' })
-            .notNull()
-            .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
-        quoteInstrumentId: int('quote_instrument_id', { mode: 'number' })
-            .notNull()
-            .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
+        ...instrumentPairTableColumns(),
         priceDate: text('price_date').notNull(),
         price: real('price').notNull(),
         marketCap: real('market_cap'),

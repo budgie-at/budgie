@@ -2,19 +2,14 @@ import { sql } from 'drizzle-orm';
 import { index, int, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
+import { instrumentPairTableColumns } from '../../@generic/util/instrument-pair-table-columns.util';
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
-import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { InstrumentMarketDataJobStatusEnum } from '../enum/instrument-market-data-job-status.enum';
 
 export const InstrumentMarketDataJobEntityTable = sqliteTable(
     'instrument_market_data_jobs',
     withBaseEntityTableColumns({
-        instrumentId: int('instrument_id', { mode: 'number' })
-            .notNull()
-            .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
-        quoteInstrumentId: int('quote_instrument_id', { mode: 'number' })
-            .notNull()
-            .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
+        ...instrumentPairTableColumns(),
         fromDate: text('from_date').notNull(),
         toDate: text('to_date').notNull(),
         status: text('status', { enum: convertEnumToDrizzleEnum(InstrumentMarketDataJobStatusEnum) })

@@ -58,11 +58,7 @@ export class InstrumentDailyMarketPriceRepository {
         tx?: DB
     ): Promise<InstrumentDailyMarketPriceEntityInterface | undefined> {
         return await (tx ?? this.db).query.InstrumentDailyMarketPriceEntityTable.findFirst({
-            where: and(
-                eq(InstrumentDailyMarketPriceEntityTable.instrumentId, instrumentId),
-                eq(InstrumentDailyMarketPriceEntityTable.quoteInstrumentId, quoteInstrumentId),
-                isNull(InstrumentDailyMarketPriceEntityTable.deletedAt)
-            ),
+            where: this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
             orderBy: desc(InstrumentDailyMarketPriceEntityTable.priceDate)
         });
     }
@@ -74,23 +70,14 @@ export class InstrumentDailyMarketPriceRepository {
         tx?: DB
     ): Promise<InstrumentDailyMarketPriceEntityInterface | undefined> {
         return await (tx ?? this.db).query.InstrumentDailyMarketPriceEntityTable.findFirst({
-            where: and(
-                eq(InstrumentDailyMarketPriceEntityTable.instrumentId, instrumentId),
-                eq(InstrumentDailyMarketPriceEntityTable.quoteInstrumentId, quoteInstrumentId),
-                lte(InstrumentDailyMarketPriceEntityTable.priceDate, priceDate),
-                isNull(InstrumentDailyMarketPriceEntityTable.deletedAt)
-            ),
+            where: this.buildInstrumentQuoteDateCondition(instrumentId, quoteInstrumentId, priceDate),
             orderBy: desc(InstrumentDailyMarketPriceEntityTable.priceDate)
         });
     }
 
     findRecent(instrumentId: number, quoteInstrumentId: number, limit: number) {
         return this.db.query.InstrumentDailyMarketPriceEntityTable.findMany({
-            where: and(
-                eq(InstrumentDailyMarketPriceEntityTable.instrumentId, instrumentId),
-                eq(InstrumentDailyMarketPriceEntityTable.quoteInstrumentId, quoteInstrumentId),
-                isNull(InstrumentDailyMarketPriceEntityTable.deletedAt)
-            ),
+            where: this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
             orderBy: desc(InstrumentDailyMarketPriceEntityTable.priceDate),
             limit
         });
@@ -100,12 +87,21 @@ export class InstrumentDailyMarketPriceRepository {
         return this.db
             .select({ count: count() })
             .from(InstrumentDailyMarketPriceEntityTable)
-            .where(
-                and(
-                    eq(InstrumentDailyMarketPriceEntityTable.instrumentId, instrumentId),
-                    eq(InstrumentDailyMarketPriceEntityTable.quoteInstrumentId, quoteInstrumentId),
-                    isNull(InstrumentDailyMarketPriceEntityTable.deletedAt)
-                )
-            );
+            .where(this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId));
+    }
+
+    private buildInstrumentQuoteDateCondition(instrumentId: number, quoteInstrumentId: number, priceDate: string) {
+        return and(
+            this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
+            lte(InstrumentDailyMarketPriceEntityTable.priceDate, priceDate)
+        );
+    }
+
+    private buildInstrumentQuoteCondition(instrumentId: number, quoteInstrumentId: number) {
+        return and(
+            eq(InstrumentDailyMarketPriceEntityTable.instrumentId, instrumentId),
+            eq(InstrumentDailyMarketPriceEntityTable.quoteInstrumentId, quoteInstrumentId),
+            isNull(InstrumentDailyMarketPriceEntityTable.deletedAt)
+        );
     }
 }
