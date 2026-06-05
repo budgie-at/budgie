@@ -15,7 +15,6 @@ export const useNetWorthQuery = () => {
     const queryDependencies = [defaultInstrumentId, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
     const query = accountBalanceRepository.getNetWorth(defaultInstrumentId);
     const { data } = useLiveQuery(query, queryDependencies);
-    const netWorth = useCachedMicroUnitQuery(data.at(0)?.netWorth, queryDependencies);
 
-    return netWorth;
+    return useCachedMicroUnitQuery(data.at(0)?.netWorth, queryDependencies);
 };

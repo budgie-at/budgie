@@ -5,17 +5,15 @@ import { emptyFn } from '@rnw-community/shared';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
+import type { ConvertedAmountStateInterface } from '../interface/converted-amount-state.interface';
+import type { ConvertedAmountInterface } from '../interface/converted-amount.interface';
+
 export const useConvertedAmount = (
     fromInstrumentId: number,
     toInstrumentId: number,
     amountInMicroUnits: number
-): { readonly amount: number; readonly exchangeRate: number } | null => {
-    const [convertedAmount, setConvertedAmount] = useState<{
-        readonly fromInstrumentId: number;
-        readonly toInstrumentId: number;
-        readonly amountInMicroUnits: number;
-        readonly result: { readonly amount: number; readonly exchangeRate: number } | null;
-    } | null>(null);
+): ConvertedAmountInterface | null => {
+    const [convertedAmount, setConvertedAmount] = useState<ConvertedAmountStateInterface | null>(null);
     const isSameCurrency = fromInstrumentId === toInstrumentId;
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
 

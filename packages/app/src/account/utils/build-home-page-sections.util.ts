@@ -25,19 +25,19 @@ type AccountGroups = Partial<Record<AccountTypeEnum, AccountWithBankSyncEntityIn
 type ProviderGroups = Partial<Record<ExternalSourceEnum, AccountWithBankSyncEntityInterface[]>>;
 
 const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInterface[]): CryptoCurrencyGroupInterface[] => {
-    const accountGroupsByInstrument = new Map<number, AccountWithBankSyncEntityInterface[]>();
-
-    accounts.forEach(account => {
-        const groupAccounts = accountGroupsByInstrument.get(account.instrument.id);
+    const accountGroupsByInstrument = accounts.reduce<Map<number, AccountWithBankSyncEntityInterface[]>>((groups, account) => {
+        const groupAccounts = groups.get(account.instrument.id);
 
         if (isDefined(groupAccounts)) {
             groupAccounts.push(account);
 
-            return;
+            return groups;
         }
 
-        accountGroupsByInstrument.set(account.instrument.id, [account]);
-    });
+        groups.set(account.instrument.id, [account]);
+
+        return groups;
+    }, new Map());
 
     return [...accountGroupsByInstrument.values()]
         .map(groupAccounts => {
