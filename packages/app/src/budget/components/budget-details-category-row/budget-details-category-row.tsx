@@ -7,10 +7,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { buildBudgetCategoryLimitMetrics } from '../../utils/build-budget-category-limit-metrics.util';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
 interface Props {
@@ -31,11 +31,8 @@ export const BudgetDetailsCategoryRow = (props: Props) => {
     const formatDigits = useFormatDigits(decimalPlaces);
     const { t } = useLingui();
 
-    const remainingAmount = limitAmount - spent;
-    const displaySpent = convertFromMicroUnits(spent);
-    const displayLimit = convertFromMicroUnits(limitAmount);
-    const displayRemaining = convertFromMicroUnits(Math.abs(remainingAmount));
-    const remainingLabel = remainingAmount < 0 ? t`Over budget` : t`Left`;
+    const metrics = buildBudgetCategoryLimitMetrics(spent, limitAmount);
+    const remainingLabel = metrics.isOverBudget ? t`Over budget` : t`Left`;
     const title = category?.title ?? '';
 
     const handlePress = () => {
@@ -60,20 +57,22 @@ export const BudgetDetailsCategoryRow = (props: Props) => {
                 </Text>
             </View>
 
-            <BudgetProgressBar spent={spent} limit={limitAmount} spentTestID={spentTestID} />
+            <BudgetProgressBar isSummaryVisible={false} spent={spent} limit={limitAmount} />
 
             <View className="flex-row justify-between gap-x-md">
                 <View className="flex-1">
                     <Text className="text-secondary-foreground text-xs">{t`Spent`}</Text>
-                    <Text className="text-primary text-sm font-semibold">{formatDigits(displaySpent, currencySymbol)}</Text>
+                    <Text testID={spentTestID} className="text-primary text-sm font-semibold">
+                        {formatDigits(metrics.displaySpent, currencySymbol)}
+                    </Text>
                 </View>
                 <View className="flex-1 items-center">
                     <Text className="text-secondary-foreground text-xs">{remainingLabel}</Text>
-                    <Text className="text-primary text-sm font-semibold">{formatDigits(displayRemaining, currencySymbol)}</Text>
+                    <Text className="text-primary text-sm font-semibold">{formatDigits(metrics.displayRemaining, currencySymbol)}</Text>
                 </View>
                 <View className="flex-1 items-end">
                     <Text className="text-secondary-foreground text-xs">{t`Limit`}</Text>
-                    <Text className="text-primary text-sm font-semibold">{formatDigits(displayLimit, currencySymbol)}</Text>
+                    <Text className="text-primary text-sm font-semibold">{formatDigits(metrics.displayLimit, currencySymbol)}</Text>
                 </View>
             </View>
         </Card>

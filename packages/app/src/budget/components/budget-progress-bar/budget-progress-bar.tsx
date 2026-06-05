@@ -11,7 +11,9 @@ const MAX_PROGRESS = 1;
 const PERCENT_MULTIPLIER = 100;
 
 interface Props {
+    readonly amountDecimalPlaces?: number;
     readonly isAmountLight?: boolean;
+    readonly isSummaryVisible?: boolean;
     readonly spent: number;
     readonly limit: number;
     readonly testID?: string;
@@ -37,7 +39,8 @@ const amountTextVariants = cva('text-primary text-md', {
     }
 });
 
-export const BudgetProgressBar = ({ isAmountLight = false, spent, limit, testID, spentTestID }: Props) => {
+export const BudgetProgressBar = (props: Props) => {
+    const { amountDecimalPlaces = 2, isAmountLight = false, isSummaryVisible = true, spent, limit, testID, spentTestID } = props;
     const ratio = isPositiveNumber(limit) ? spent / limit : 0;
     const clampedRatio = Math.max(MIN_PROGRESS, Math.min(MAX_PROGRESS, ratio));
     const percent = Math.round(ratio * PERCENT_MULTIPLIER);
@@ -46,17 +49,24 @@ export const BudgetProgressBar = ({ isAmountLight = false, spent, limit, testID,
     const widthPercent: `${number}%` = `${clampedRatio * PERCENT_MULTIPLIER}%`;
     const widthStyle = { width: widthPercent };
     const percentLabel = `${percent}%`;
-    const amountLabel = `${displaySpent.toFixed(2)} / ${displayLimit.toFixed(2)}`;
+    const amountLabel = `${displaySpent.toFixed(amountDecimalPlaces)} / ${displayLimit.toFixed(amountDecimalPlaces)}`;
 
     return (
         <View testID={testID} className="gap-y-md">
-            <View className="flex-row items-center justify-between">
-                <Text className={amountTextVariants({ isAmountLight })} testID={spentTestID} accessible accessibilityLabel={amountLabel}>
-                    {amountLabel}
-                </Text>
+            {isSummaryVisible ? (
+                <View className="flex-row items-center justify-between">
+                    <Text
+                        className={amountTextVariants({ isAmountLight })}
+                        testID={spentTestID}
+                        accessible
+                        accessibilityLabel={amountLabel}
+                    >
+                        {amountLabel}
+                    </Text>
 
-                <Text className="text-secondary-foreground text-sm">{percentLabel}</Text>
-            </View>
+                    <Text className="text-secondary-foreground text-sm">{percentLabel}</Text>
+                </View>
+            ) : null}
 
             <View className="h-3 bg-secondary-corner rounded-full overflow-hidden">
                 <View className={barVariants({ tone: resolveBudgetBarTone(ratio) })} style={widthStyle} />

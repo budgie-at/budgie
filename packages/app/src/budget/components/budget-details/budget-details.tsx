@@ -11,6 +11,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -42,7 +43,7 @@ export const BudgetDetails = ({ budget }: Props) => {
     const periodWindow = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
     const periodEnd = getBudgetPeriodInclusiveEnd(periodWindow.nextPeriodStart);
     const currencySymbol = instrument?.symbol ?? '';
-    const dateLabel = formatBudgetPeriodLabel(budget);
+    const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);
     const displaySpent = convertFromMicroUnits(spent.spentOverall);
     const displayLimit = convertFromMicroUnits(budget.overallLimit);
 

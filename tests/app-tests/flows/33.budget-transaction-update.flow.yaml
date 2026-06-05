@@ -34,7 +34,7 @@ env:
       timeout: 3000
 - assertVisible:
       id: 'BudgetWidget.SpentLabel'
-      text: '0.00 / 1000.00'
+      text: '0 / 1000'
 
 - runFlow:
       file: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -79,7 +79,7 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'BudgetWidget.SpentLabel'
-          text: '60.00 / 1000.00'
+          text: '60 / 1000'
       timeout: 3000
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -104,5 +104,5 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'BudgetWidget.SpentLabel'
-          text: '0.00 / 1000.00'
+          text: '0 / 1000'
       timeout: 3000
