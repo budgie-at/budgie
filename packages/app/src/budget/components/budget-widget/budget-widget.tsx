@@ -36,13 +36,18 @@ export const BudgetWidget = () => {
     return (
         <Card testID={BudgetSelector.WidgetCard} variant="ghost" onPress={handleNavigate} className="gap-y-lg">
             <View className="flex-row items-center justify-between">
-                <Text className="text-primary font-semibold text-md">
+                <Text className="text-primary font-medium text-md">
                     <Trans>Monthly budget</Trans>
                 </Text>
                 <Text className="text-secondary-foreground text-sm">{dateLabel}</Text>
             </View>
 
-            <BudgetProgressBar spent={spent.spentOverall} limit={budget.overallLimit} spentTestID={BudgetSelector.WidgetSpentLabel} />
+            <BudgetProgressBar
+                isAmountLight
+                spent={spent.spentOverall}
+                limit={budget.overallLimit}
+                spentTestID={BudgetSelector.WidgetSpentLabel}
+            />
 
             <BudgetWidgetCategoryList categoryLimits={categoryLimits} spentByCategory={spent.spentByCategory} />
         </Card>

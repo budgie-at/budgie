@@ -24,7 +24,7 @@ export const BudgetCategoryLimitRow = ({ categoryId, limitAmount, spent, testID,
 
             <View className="flex-1 gap-y-xs">
                 <Text className="text-primary text-sm font-medium">{title}</Text>
-                <BudgetProgressBar spent={spent} limit={limitAmount} spentTestID={spentTestID} />
+                <BudgetProgressBar isAmountLight spent={spent} limit={limitAmount} spentTestID={spentTestID} />
             </View>
         </View>
     );
