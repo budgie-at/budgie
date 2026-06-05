@@ -10,6 +10,7 @@ import type { InstrumentDailyMarketPriceEntityInterface } from '@budgie/contract
 interface Props {
     readonly prices: InstrumentDailyMarketPriceEntityInterface[];
     readonly isPositive: boolean;
+    readonly testID?: string;
 }
 
 const CHART_WIDTH = 320;
@@ -41,13 +42,13 @@ const buildPoints = (prices: InstrumentDailyMarketPriceEntityInterface[]): strin
         .join(' ');
 };
 
-export const MarketDataSparkline = ({ prices, isPositive }: Props) => {
+export const MarketDataSparkline = ({ prices, isPositive, testID }: Props) => {
     const points = useMemo(() => buildPoints(prices), [prices]);
     const stroke = isPositive ? POSITIVE_COLOR : NEGATIVE_COLOR;
 
     if (prices.length < 2) {
         return (
-            <View className="border-secondary-corner bg-secondary-background rounded-5xl border px-4xl py-6xl">
+            <View className="border-secondary-corner bg-secondary-background rounded-5xl border px-4xl py-6xl" testID={testID}>
                 <Text className="text-secondary-foreground text-center text-sm">
                     <Trans>Market history is loading quietly.</Trans>
                 </Text>
@@ -56,7 +57,7 @@ export const MarketDataSparkline = ({ prices, isPositive }: Props) => {
     }
 
     return (
-        <View className="border-secondary-corner bg-secondary-background rounded-5xl border p-lg">
+        <View className="border-secondary-corner bg-secondary-background rounded-5xl border p-lg" testID={testID}>
             <Svg width="100%" height={CHART_HEIGHT} viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}>
                 <Polyline points={points} fill="none" stroke={stroke} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
             </Svg>

@@ -7,6 +7,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 
 import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
 
@@ -41,12 +42,20 @@ export const CurrencyMarketPriceCard = ({ instrument, latestPrice, previousPrice
                     <Text className="text-secondary-foreground text-xs uppercase">
                         <Trans>Market price</Trans>
                     </Text>
-                    <Text selectable className="text-primary text-5xl font-light" numberOfLines={1}>
+                    <Text
+                        selectable
+                        className="text-primary text-5xl font-light"
+                        numberOfLines={1}
+                        testID={CurrencyMarketPageSelector.Price(instrument.code)}
+                    >
                         {formattedPrice}
                     </Text>
                 </View>
 
-                <View className="border-secondary-corner bg-secondary-background rounded-full border px-lg py-sm flex-row items-center gap-x-xs">
+                <View
+                    className="border-secondary-corner bg-secondary-background rounded-full border px-lg py-sm flex-row items-center gap-x-xs"
+                    testID={CurrencyMarketPageSelector.Change(instrument.code)}
+                >
                     <Icon icon={changeIcon} size={14} className={changeClassName} />
                     <Text selectable className={`${changeClassName} text-sm font-semibold`}>
                         {formattedChange}
@@ -54,7 +63,7 @@ export const CurrencyMarketPriceCard = ({ instrument, latestPrice, previousPrice
                 </View>
             </View>
 
-            <Text selectable className="text-secondary-foreground text-sm">
+            <Text selectable className="text-secondary-foreground text-sm" testID={CurrencyMarketPageSelector.Rate(instrument.code)}>
                 {formattedRate}
             </Text>
         </View>

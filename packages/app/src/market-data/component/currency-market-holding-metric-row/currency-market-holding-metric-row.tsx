@@ -7,10 +7,11 @@ interface Props {
     readonly label: string;
     readonly value: string;
     readonly valueClassName?: string;
+    readonly testID?: string;
 }
 
-export const CurrencyMarketHoldingMetricRow = ({ label, value, valueClassName }: Props) => (
-    <View className="flex-row items-center justify-between gap-x-xl">
+export const CurrencyMarketHoldingMetricRow = ({ label, value, valueClassName, testID }: Props) => (
+    <View className="flex-row items-center justify-between gap-x-xl" testID={testID}>
         <Text className="text-secondary-foreground min-w-0 flex-1 text-xs uppercase" numberOfLines={1}>
             {label}
         </Text>

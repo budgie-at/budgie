@@ -5,6 +5,7 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { AccountCardBase } from '../account-card-base/account-card-base';
+import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly className?: string;
@@ -21,7 +22,9 @@ export const CryptoAccountCard = (props: Props) => {
 
     const balanceContent = (
         <View className="gap-y-1">
-            <ProtectedText className="text-primary font-medium">{formattedBalance}</ProtectedText>
+            <ProtectedText className="text-primary font-medium" testID={AccountCardBaseSelector.Balance(title, formattedBalance)}>
+                {formattedBalance}
+            </ProtectedText>
         </View>
     );
 

@@ -17,6 +17,8 @@ import { CryptoCurrencyGroupAccounts } from '../crypto-currency-group-accounts/c
 import { CryptoCurrencyGroupMarketLink } from '../crypto-currency-group-market-link/crypto-currency-group-market-link';
 import { CryptoCurrencyGroupToggleRow } from '../crypto-currency-group-toggle-row/crypto-currency-group-toggle-row';
 
+import { CryptoCurrencyGroupCardSelector } from './crypto-currency-group-card.selector';
+
 interface Props {
     readonly group: CryptoCurrencyGroupInterface;
 }
@@ -48,7 +50,6 @@ export const CryptoCurrencyGroupCard = ({ group }: Props) => {
             <Card className="border-warning-corner bg-secondary-background" size="md">
                 <View className="gap-y-3">
                     <CryptoCurrencyGroupMarketLink
-                        instrumentId={group.instrument.id}
                         instrumentCode={instrumentCode}
                         instrumentName={instrumentName}
                         formattedBalance={formattedBalance}
@@ -63,7 +64,7 @@ export const CryptoCurrencyGroupCard = ({ group }: Props) => {
                         formattedRate={formattedRate}
                         instrumentCode={instrumentCode}
                         isOpen={isOpen}
-                        testID={`crypto-group-toggle-${group.instrument.id}`}
+                        testID={CryptoCurrencyGroupCardSelector.Toggle(instrumentCode)}
                     />
                 </View>
             </Card>

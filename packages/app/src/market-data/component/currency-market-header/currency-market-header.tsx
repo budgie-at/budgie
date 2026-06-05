@@ -4,6 +4,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CurrencySelectorInstrumentIcon } from '../../../@generic/component/currency-selector-instrument-icon/currency-selector-instrument-icon';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 import type { EmptyFn } from '@rnw-community/shared';
@@ -18,7 +19,7 @@ export const CurrencyMarketHeader = ({ instrument, onGoBack }: Props) => {
 
     return (
         <View className="px-5xl pb-3xl gap-y-4xl">
-            <View className="flex-row items-center gap-x-xl">
+            <View className="flex-row items-center gap-x-xl" testID={CurrencyMarketPageSelector.Header(instrument.code)}>
                 <GoBackButton onPress={onGoBack} />
 
                 <CurrencySelectorInstrumentIcon code={instrument.code} symbol={instrument.symbol} type={instrument.type} size={44} />

@@ -15,6 +15,8 @@ import { CurrencyMarketPriceCard } from '../currency-market-price-card/currency-
 import { MarketDataHistoryProgress } from '../market-data-history-progress/market-data-history-progress';
 import { MarketDataSparkline } from '../market-data-sparkline/market-data-sparkline';
 
+import { CurrencyMarketPageSelector } from './currency-market-page.selector';
+
 import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
 
 interface Props {
@@ -54,10 +56,14 @@ export const CurrencyMarketPage = ({ instrument }: Props) => {
                         totalDays={progress.totalDays}
                     />
                 ) : (
-                    <MarketDataSparkline prices={prices} isPositive={isPositiveChange} />
+                    <MarketDataSparkline
+                        prices={prices}
+                        isPositive={isPositiveChange}
+                        testID={CurrencyMarketPageSelector.Sparkline(instrument.code)}
+                    />
                 )}
                 {holdingsCard}
-                <CurrencyMarketMetrics latestPrice={latestPrice} />
+                <CurrencyMarketMetrics instrumentCode={instrument.code} latestPrice={latestPrice} />
             </ScrollView>
         </Page>
     );

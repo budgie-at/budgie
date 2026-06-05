@@ -10,6 +10,7 @@ import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-di
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCryptoInstrumentPositionQuery } from '../../query/use-crypto-instrument-position.query';
 import { CurrencyMarketHoldingMetricRow } from '../currency-market-holding-metric-row/currency-market-holding-metric-row';
+import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 
 import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
 
@@ -108,7 +109,10 @@ export const CurrencyMarketHoldingsCard = ({ instrument, latestPrice }: Props) =
     const formattedProfit = formatProfitValue(profit, profitPercent, defaultInstrument.symbol, formatDigits);
 
     return (
-        <View className="border-warning-corner bg-secondary-background rounded-5xl border px-4xl py-3xl gap-y-3xl overflow-hidden">
+        <View
+            className="border-warning-corner bg-secondary-background rounded-5xl border px-4xl py-3xl gap-y-3xl overflow-hidden"
+            testID={CurrencyMarketPageSelector.Holdings(instrument.code)}
+        >
             <View className="flex-row items-center justify-between gap-x-lg">
                 <Text className="text-secondary-foreground text-xs uppercase">
                     <Trans>Your holdings</Trans>
@@ -117,10 +121,20 @@ export const CurrencyMarketHoldingsCard = ({ instrument, latestPrice }: Props) =
             </View>
 
             <View className="flex-row items-end justify-between gap-x-lg">
-                <ProtectedText selectable className="text-primary text-3xl font-semibold" placeholderText="***">
+                <ProtectedText
+                    selectable
+                    className="text-primary text-3xl font-semibold"
+                    placeholderText="***"
+                    testID={CurrencyMarketPageSelector.HoldingsBalance(instrument.code)}
+                >
                     {formattedBalance}
                 </ProtectedText>
-                <ProtectedText selectable className="text-secondary-foreground text-base font-semibold" placeholderText="~ ***">
+                <ProtectedText
+                    selectable
+                    className="text-secondary-foreground text-base font-semibold"
+                    placeholderText="~ ***"
+                    testID={CurrencyMarketPageSelector.HoldingsValue(instrument.code)}
+                >
                     ~ {formattedMarketValue}
                 </ProtectedText>
             </View>
@@ -128,9 +142,22 @@ export const CurrencyMarketHoldingsCard = ({ instrument, latestPrice }: Props) =
             <View className="bg-warning-corner/40 h-px" />
 
             <View className="gap-y-lg">
-                <CurrencyMarketHoldingMetricRow label={t`Avg cost`} value={formattedAverageCost} />
-                <CurrencyMarketHoldingMetricRow label={t`Cost basis`} value={formattedCostBasis} />
-                <CurrencyMarketHoldingMetricRow label={t`Unrealized P&L`} value={formattedProfit} valueClassName={profitClassName} />
+                <CurrencyMarketHoldingMetricRow
+                    label={t`Avg cost`}
+                    value={formattedAverageCost}
+                    testID={CurrencyMarketPageSelector.AverageCost(instrument.code)}
+                />
+                <CurrencyMarketHoldingMetricRow
+                    label={t`Cost basis`}
+                    value={formattedCostBasis}
+                    testID={CurrencyMarketPageSelector.CostBasis(instrument.code)}
+                />
+                <CurrencyMarketHoldingMetricRow
+                    label={t`Unrealized P&L`}
+                    value={formattedProfit}
+                    valueClassName={profitClassName}
+                    testID={CurrencyMarketPageSelector.UnrealizedProfit(instrument.code)}
+                />
             </View>
         </View>
     );

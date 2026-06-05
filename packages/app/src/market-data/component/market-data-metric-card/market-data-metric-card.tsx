@@ -10,10 +10,11 @@ interface Props {
     readonly value: string;
     readonly className?: string;
     readonly valueClassName?: string;
+    readonly testID?: string;
 }
 
-export const MarketDataMetricCard = ({ icon, label, value, className, valueClassName }: Props) => (
-    <View className={cn('border-secondary-corner bg-secondary-background rounded-4xl border p-3xl gap-y-md', className)}>
+export const MarketDataMetricCard = ({ icon, label, value, className, valueClassName, testID }: Props) => (
+    <View className={cn('border-secondary-corner bg-secondary-background rounded-4xl border p-3xl gap-y-md', className)} testID={testID}>
         <View className="flex-row items-center gap-x-sm">
             <Icon icon={icon} size={14} className="text-secondary-foreground" />
             <Text className="text-secondary-foreground text-xs uppercase">{label}</Text>

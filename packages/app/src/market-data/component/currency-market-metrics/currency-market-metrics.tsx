@@ -6,17 +6,19 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 import { MarketDataMetricCard } from '../market-data-metric-card/market-data-metric-card';
 
 import type { InstrumentDailyMarketPriceEntityInterface } from '@budgie/contracts';
 
 interface Props {
+    readonly instrumentCode: string;
     readonly latestPrice: InstrumentDailyMarketPriceEntityInterface | undefined;
 }
 
 const MISSING_VALUE = '-';
 
-export const CurrencyMarketMetrics = ({ latestPrice }: Props) => {
+export const CurrencyMarketMetrics = ({ instrumentCode, latestPrice }: Props) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
     const formatCompactDigits = useFormatCompactDigits();
@@ -34,11 +36,22 @@ export const CurrencyMarketMetrics = ({ latestPrice }: Props) => {
                     label={t`Market cap`}
                     value={formattedMarketCap}
                     className="flex-1"
+                    testID={CurrencyMarketPageSelector.MarketCap(instrumentCode)}
                 />
-                <MarketDataMetricCard icon={UserIconNameEnum.Activity} label={t`Volume`} value={formattedVolume} className="flex-1" />
+                <MarketDataMetricCard
+                    icon={UserIconNameEnum.Activity}
+                    label={t`Volume`}
+                    value={formattedVolume}
+                    className="flex-1"
+                    testID={CurrencyMarketPageSelector.Volume(instrumentCode)}
+                />
             </View>
 
-            <Text selectable className="text-secondary-foreground/70 text-center text-xs">
+            <Text
+                selectable
+                className="text-secondary-foreground/70 text-center text-xs"
+                testID={CurrencyMarketPageSelector.Updated(instrumentCode)}
+            >
                 {t`Updated`} {formattedDate}
             </Text>
         </>
