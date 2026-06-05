@@ -37,6 +37,7 @@ export const Ticker = (props: Props) => {
     const [containerWidth, setContainerWidth] = useState(0);
 
     const charArray = number.toString().split('');
+    const digitCount = charArray.filter(char => !Number.isNaN(Number.parseFloat(char))).length;
     const resolvedContainerWidth = availableWidth ?? containerWidth;
 
     const textSize = calculateOptimalTextSize({
@@ -53,14 +54,16 @@ export const Ticker = (props: Props) => {
 
     const { elements } = charArray.reduce<{ elements: ReactNode[]; digitIndex: number }>(
         (acc, char, index) => {
-            if (!isNaN(parseFloat(char))) {
+            if (!Number.isNaN(Number.parseFloat(char))) {
+                const digitKey = `digit-${digitCount}-${acc.digitIndex}`;
+
                 return {
                     digitIndex: acc.digitIndex + 1,
                     elements: [
                         ...acc.elements,
                         <TickItem
-                            key={index}
-                            num={parseFloat(char)}
+                            key={digitKey}
+                            num={Number.parseFloat(char)}
                             textSize={textSize}
                             textClassName={textClassName}
                             index={acc.digitIndex}
@@ -72,7 +75,15 @@ export const Ticker = (props: Props) => {
 
             return {
                 digitIndex: acc.digitIndex,
-                elements: [...acc.elements, <StaticCharItem key={index} char={char} textSize={textSize} textClassName={textClassName} />]
+                elements: [
+                    ...acc.elements,
+                    <StaticCharItem
+                        key={`static-${digitCount}-${index}-${char}`}
+                        char={char}
+                        textSize={textSize}
+                        textClassName={textClassName}
+                    />
+                ]
             };
         },
         { elements: [], digitIndex: 0 }
