@@ -2,6 +2,7 @@ import { InstrumentPriceProviderEnum, InstrumentTypeEnum, transactionAsync } fro
 import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
+import ky from 'ky';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -23,7 +24,15 @@ class ExchangeRatesSyncService {
     private static readonly EXCHANGE_RATE_API_URL = 'https://api.exchangerate-api.com/v4/latest';
     private static readonly CRYPTO_RATE_SYNC_BATCH_SIZE = 40;
     private static readonly FETCH_TIMEOUT_MS = 5000;
+    private static readonly FETCH_RETRY_LIMIT = 1;
     private static readonly SYNC_COOLDOWN_MS = 5 * 60 * 1000;
+    private static readonly HTTP_CLIENT = ky.create({
+        timeout: ExchangeRatesSyncService.FETCH_TIMEOUT_MS,
+        retry: {
+            limit: ExchangeRatesSyncService.FETCH_RETRY_LIMIT,
+            retryOnTimeout: true
+        }
+    });
 
     private isSyncing = false;
     private lastSyncedAtMs: number | null = null;
@@ -127,13 +136,7 @@ class ExchangeRatesSyncService {
     }
 
     private async fetch(code: string): Promise<ExchangeRateApiResponseInterface> {
-        const response = await this.fetchWithTimeout(`${ExchangeRatesSyncService.EXCHANGE_RATE_API_URL}/${code}`);
-
-        if (!isDefined(response) || !response.ok) {
-            return emptyExchangeRateApiResponse;
-        }
-
-        const payload: unknown = await response.json().catch(() => null);
+        const payload = await this.fetchJson(`${ExchangeRatesSyncService.EXCHANGE_RATE_API_URL}/${code}`);
         const result = ExchangeRateApiResponseSchema.safeParse(payload);
 
         if (!result.success) {
@@ -149,15 +152,9 @@ class ExchangeRatesSyncService {
     ): Promise<Partial<Record<string, Partial<Record<string, number>>>>> {
         const ids = providerInstrumentIds.map(encodeURIComponent).join(',');
         const quote = encodeURIComponent(quoteCode.toLowerCase());
-        const response = await this.fetchWithTimeout(
+        const payload = await this.fetchJson(
             `${ExchangeRatesSyncService.COINGECKO_SIMPLE_PRICE_API_URL}?ids=${ids}&vs_currencies=${quote}`
         );
-
-        if (!isDefined(response) || !response.ok) {
-            return {};
-        }
-
-        const payload: unknown = await response.json().catch(() => null);
         const result = CoinGeckoSimplePriceResponseSchema.safeParse(payload);
 
         if (!result.success) {
@@ -167,17 +164,10 @@ class ExchangeRatesSyncService {
         return result.data;
     }
 
-    private async fetchWithTimeout(url: string): Promise<Response | null> {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => void controller.abort(), ExchangeRatesSyncService.FETCH_TIMEOUT_MS);
-
-        try {
-            return await fetch(url, { signal: controller.signal });
-        } catch {
-            return null;
-        } finally {
-            clearTimeout(timeoutId);
-        }
+    private async fetchJson(url: string): Promise<unknown> {
+        return ExchangeRatesSyncService.HTTP_CLIENT.get(url)
+            .json()
+            .catch(() => null);
     }
 
     private getCryptoPrice(
