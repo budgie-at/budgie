@@ -57,7 +57,7 @@ export const CurrencyMarketPage = ({ instrument }: Props) => {
                     <MarketDataSparkline prices={prices} isPositive={isPositiveChange} />
                 )}
                 {holdingsCard}
-                <CurrencyMarketMetrics instrument={instrument} latestPrice={latestPrice} />
+                <CurrencyMarketMetrics latestPrice={latestPrice} />
             </ScrollView>
         </Page>
     );

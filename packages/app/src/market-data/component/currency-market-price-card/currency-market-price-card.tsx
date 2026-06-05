@@ -5,7 +5,6 @@ import { Text, View } from 'react-native';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
@@ -31,7 +30,7 @@ export const CurrencyMarketPriceCard = ({ instrument, latestPrice, previousPrice
     const isPositiveChange = isDefined(change) ? change >= 0 : true;
     const formattedPrice = hasPrice ? formatDigits(price, defaultInstrument.symbol) : MISSING_VALUE;
     const formattedChange = isDefined(change) ? `${change >= 0 ? '+' : ''}${change.toFixed(2)}%` : MISSING_VALUE;
-    const formattedRate = hasPrice ? `1 ${instrument.code} ~ ${defaultInstrument.symbol}${formatExchangeRate(price)}` : MISSING_VALUE;
+    const formattedRate = hasPrice ? `1 ${instrument.code} ~ ${formatDigits(price, defaultInstrument.symbol)}` : MISSING_VALUE;
     const changeClassName = isPositiveChange ? 'text-positive-foreground' : 'text-destructive-foreground';
     const changeIcon = isPositiveChange ? UserIconNameEnum.ArrowUpRight : UserIconNameEnum.ArrowDownRight;
 
