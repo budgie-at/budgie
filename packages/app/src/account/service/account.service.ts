@@ -1,7 +1,6 @@
 import {
     AccountEntityInterface,
     AccountNatureEnum,
-    type DB,
     DebtAccountCreateInputInterface,
     LiabilityAccountCreateInputInterface,
     TransactionEntryCreateEntityInterface,
@@ -27,6 +26,8 @@ import { processInputWithBatches } from '../../@generic/utils/process-input-with
 import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
+
+import type { DB } from '@budgie/contracts';
 
 class AccountService {
     async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {

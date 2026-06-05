@@ -1,8 +1,8 @@
 import { InstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
-import { CryptoCurrencyIcon } from '../crypto-currency-icon/crypto-currency-icon';
+import { CurrencySelectorInstrumentIcon } from '../currency-selector-instrument-icon/currency-selector-instrument-icon';
 import { SelectorCard } from '../selector-card/selector-card';
 
 interface Props extends Pick<InstrumentEntityInterface, 'id' | 'code' | 'symbol' | 'name' | 'type'> {
@@ -13,13 +13,7 @@ interface Props extends Pick<InstrumentEntityInterface, 'id' | 'code' | 'symbol'
 
 export const CurrencySelectorCard = ({ className, isSelected, name, onSelect, code, symbol, id, type }: Props) => {
     const isCrypto = type === InstrumentTypeEnum.CRYPTO;
-    const iconSlot = isCrypto ? (
-        <CryptoCurrencyIcon code={code} size={42} className="bg-secondary-background" />
-    ) : (
-        <View className="w-12 h-12 bg-secondary-background rounded-5xl items-center justify-center">
-            <Text className="text-primary text-md">{symbol}</Text>
-        </View>
-    );
+    const iconSlot = <CurrencySelectorInstrumentIcon code={code} symbol={symbol} type={type} size={42} />;
     const title = isCrypto ? (
         <Text className="text-primary uppercase font-medium text-md">{code}</Text>
     ) : (

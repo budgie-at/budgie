@@ -19,6 +19,8 @@ import type { ExchangeRateCreateEntityInterface, InstrumentEntityInterface } fro
 
 class ExchangeRatesSyncService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
+    private static readonly COINGECKO_SIMPLE_PRICE_API_URL = 'https://api.coingecko.com/api/v3/simple/price';
+    private static readonly EXCHANGE_RATE_API_URL = 'https://api.exchangerate-api.com/v4/latest';
     private static readonly CRYPTO_RATE_SYNC_BATCH_SIZE = 40;
     private static readonly SYNC_COOLDOWN_MS = 5 * 60 * 1000;
 
@@ -67,16 +69,16 @@ class ExchangeRatesSyncService {
     }
 
     private async syncCryptoRates(baseInstrument: InstrumentEntityInterface): Promise<void> {
-        const instruments = await instrumentRepository.findByType(InstrumentTypeEnum.CRYPTO);
-        const coingeckoInstruments = instruments.filter(
-            instrument => instrument.priceProvider === InstrumentPriceProviderEnum.COINGECKO && isDefined(instrument.providerInstrumentId)
+        const instruments = await instrumentRepository.findByTypeAndPriceProviderWithProviderInstrumentId(
+            InstrumentTypeEnum.CRYPTO,
+            InstrumentPriceProviderEnum.COINGECKO
         );
 
-        if (!isNotEmptyArray(coingeckoInstruments)) {
+        if (!isNotEmptyArray(instruments)) {
             return;
         }
 
-        await processInputWithBatches(coingeckoInstruments, ExchangeRatesSyncService.CRYPTO_RATE_SYNC_BATCH_SIZE, async batch => {
+        await processInputWithBatches(instruments, ExchangeRatesSyncService.CRYPTO_RATE_SYNC_BATCH_SIZE, async batch => {
             await this.syncCryptoRateBatch(baseInstrument, batch);
 
             return null;
@@ -84,7 +86,7 @@ class ExchangeRatesSyncService {
     }
 
     private async syncCryptoRateBatch(baseInstrument: InstrumentEntityInterface, instruments: InstrumentEntityInterface[]): Promise<void> {
-        const providerInstrumentIds = instruments.map(instrument => instrument.providerInstrumentId).filter(isDefined);
+        const providerInstrumentIds = [...new Set(instruments.map(instrument => instrument.providerInstrumentId).filter(isDefined))];
 
         if (!isNotEmptyArray(providerInstrumentIds)) {
             return;
@@ -108,7 +110,7 @@ class ExchangeRatesSyncService {
     }
 
     private async fetch(code: string): Promise<ExchangeRateApiResponseInterface> {
-        const response = await fetch(`https://api.exchangerate-api.com/v4/latest/${code}`).catch(() => null);
+        const response = await fetch(`${ExchangeRatesSyncService.EXCHANGE_RATE_API_URL}/${code}`).catch(() => null);
 
         if (!isDefined(response) || !response.ok) {
             return emptyExchangeRateApiResponse;
@@ -130,7 +132,9 @@ class ExchangeRatesSyncService {
     ): Promise<Partial<Record<string, Partial<Record<string, number>>>>> {
         const ids = providerInstrumentIds.map(encodeURIComponent).join(',');
         const quote = encodeURIComponent(quoteCode.toLowerCase());
-        const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=${quote}`).catch(() => null);
+        const response = await fetch(`${ExchangeRatesSyncService.COINGECKO_SIMPLE_PRICE_API_URL}?ids=${ids}&vs_currencies=${quote}`).catch(
+            () => null
+        );
 
         if (!isDefined(response) || !response.ok) {
             return {};
