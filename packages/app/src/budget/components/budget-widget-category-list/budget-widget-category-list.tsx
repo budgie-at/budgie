@@ -17,9 +17,15 @@ interface Props {
 }
 
 export const BudgetWidgetCategoryList = ({ categoryLimits, spentByCategory }: Props) => {
-    const visibleCategoryLimits = categoryLimits.slice(0, WIDGET_CATEGORY_LIMITS_MAX);
-    const hiddenCategoryCount = categoryLimits.length - visibleCategoryLimits.length;
     const spentByCategoryMap = new Map(spentByCategory.map(entry => [entry.categoryId, entry.spent]));
+    const sortedCategoryLimits = [...categoryLimits].sort((firstCategoryLimit, secondCategoryLimit) => {
+        const firstSpent = spentByCategoryMap.get(firstCategoryLimit.categoryId) ?? 0;
+        const secondSpent = spentByCategoryMap.get(secondCategoryLimit.categoryId) ?? 0;
+
+        return secondSpent - firstSpent;
+    });
+    const visibleCategoryLimits = sortedCategoryLimits.slice(0, WIDGET_CATEGORY_LIMITS_MAX);
+    const hiddenCategoryCount = categoryLimits.length - visibleCategoryLimits.length;
 
     if (!isNotEmptyArray(visibleCategoryLimits)) {
         return null;

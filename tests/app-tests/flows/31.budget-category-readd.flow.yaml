@@ -86,17 +86,10 @@ appId: ${APP_ID}
     id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.Card'
-    timeout: 3000
-- assertNotVisible:
-    id: 'BudgetWidget.CategoryRow.11'
-
-- tapOn:
-    id: 'BudgetWidget.Card'
-- extendedWaitUntil:
     visible: 'Budget details'
     timeout: 3000
+- assertNotVisible:
+    id: 'BudgetDetails.CategoryRow.11'
 - tapOn:
     id: 'BudgetDetails.EditButton'
 - extendedWaitUntil:
@@ -131,8 +124,8 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'BudgetWidget.CategoryRow.11'
+      id: 'BudgetDetails.CategoryRow.11'
     timeout: 3000
 - assertVisible:
-    id: 'BudgetWidget.CategorySpentLabel.11'
+    id: 'BudgetDetails.CategorySpentLabel.11'
     text: '0.00 / 300.00'

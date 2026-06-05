@@ -153,16 +153,11 @@ env:
       id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-      visible:
-          id: 'BudgetWidget.SpentLabel'
-          text: '42.00 / 1500.00'
-      timeout: 3000
-
-- tapOn:
-      id: 'BudgetWidget.Card'
-- extendedWaitUntil:
       visible: 'Budget details'
       timeout: 3000
+- assertVisible:
+      id: 'BudgetDetails.SpentLabel'
+      text: '42.00 / 1500.00'
 
 - tapOn:
       id: 'BudgetDetails.EditButton'
@@ -180,13 +175,6 @@ env:
       id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 
-- extendedWaitUntil:
-      visible:
-          id: 'BudgetWidget.SpentLabel'
-          text: '42.00 / 1500.00'
-      timeout: 3000
-
-- openLink: 'budgie://budget'
 - extendedWaitUntil:
       visible: 'Budget details'
       timeout: 3000
@@ -300,21 +288,27 @@ env:
       id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
       visible:
-          id: 'BudgetWidget.CategoryRow.11'
+          id: 'BudgetWidget.CategoryRow.42'
       timeout: 3000
 - assertVisible:
-      id: 'BudgetWidget.CategorySpentLabel.11'
-      text: '0.00 / 100.00'
+      id: 'BudgetWidget.CategorySpentLabel.42'
+      text: '42.00 / 200.00'
+- assertVisible:
+      id: 'BudgetWidget.CategoryRow.11'
 - assertVisible:
       id: 'BudgetWidget.CategoryRow.12'
-- assertVisible:
-      id: 'BudgetWidget.CategoryRow.14'
 - assertVisible:
       id: 'BudgetWidget.MoreCategoriesLabel'
       text: '+1 more'
 - assertNotVisible:
-      id: 'BudgetWidget.CategoryRow.42'
+      id: 'BudgetWidget.CategoryRow.14'
 
 - tapOn:
       id: 'BudgetWidget.Card'
@@ -437,11 +431,12 @@ env:
       id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-      visible:
-          id: 'BudgetWidget.CategoryRow.42'
+      visible: 'Budget details'
       timeout: 3000
+- assertVisible:
+      id: 'BudgetDetails.CategoryRow.42'
 - assertNotVisible:
-      id: 'BudgetWidget.CategoryRow.11'
+      id: 'BudgetDetails.CategoryRow.11'
 
 - tapOn:
       id: 'TabBar.Settings'

@@ -47,7 +47,7 @@ export const BudgetDetails = ({ budget }: Props) => {
     const displayLimit = convertFromMicroUnits(budget.overallLimit);
 
     const handleEditPress = () => {
-        router.replace({ pathname: '/budget/edit', params: { id: String(budget.id) } });
+        router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
     };
 
     const categoryLimitsContent = isNotEmptyArray(categoryLimits) ? (
