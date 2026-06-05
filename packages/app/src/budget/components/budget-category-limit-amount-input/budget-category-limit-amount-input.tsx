@@ -11,11 +11,12 @@ const CATEGORY_LIMIT_AMOUNT_INPUT_STYLE = {
 };
 
 interface Props {
+    readonly currencySymbol: string;
     readonly index: number;
     readonly testID?: string;
 }
 
-export const BudgetCategoryLimitAmountInput = ({ index, testID }: Props) => {
+export const BudgetCategoryLimitAmountInput = ({ currencySymbol, index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<BudgetFormValues>();
 
@@ -25,6 +26,7 @@ export const BudgetCategoryLimitAmountInput = ({ index, testID }: Props) => {
             value={value}
             onChangeValue={onChange}
             placeholder={t`e.g. 200`}
+            valuePrefix={currencySymbol}
             size="md"
             style={CATEGORY_LIMIT_AMOUNT_INPUT_STYLE}
         />

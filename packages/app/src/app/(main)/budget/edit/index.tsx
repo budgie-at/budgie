@@ -15,10 +15,11 @@ import { BudgetEditFooter } from '../../../../budget/components/budget-edit-foot
 import { BudgetInlineCategoryLimits } from '../../../../budget/components/budget-inline-category-limits/budget-inline-category-limits';
 import { BudgetMissingCurrencyGuard } from '../../../../budget/components/budget-missing-currency-guard/budget-missing-currency-guard';
 import { BudgetOverallLimitField } from '../../../../budget/components/budget-overall-limit-field/budget-overall-limit-field';
-import { BudgetProgressBar } from '../../../../budget/components/budget-progress-bar/budget-progress-bar';
+import { BudgetSetupProgressBar } from '../../../../budget/components/budget-setup-progress-bar/budget-setup-progress-bar';
 import { BudgetFormSchema } from '../../../../budget/constant/budget-form-schema.constant';
 import { useBudgetForm } from '../../../../budget/hooks/use-budget-form.hook';
 import { useGetBudgetSpentQuery } from '../../../../budget/query/use-get-budget-spent.query';
+import { useGetInstrumentByIdQuery } from '../../../../instrument/query/use-get-instrument-by-id.query';
 import { useSetting } from '../../../../settings/hook/use-setting.hook';
 
 const FORM_CONTENT_STYLE = { rowGap: 24 } as const;
@@ -59,31 +60,39 @@ export default function BudgetSetupScreen() {
         name: ['overallLimit', 'categoryLimits', 'instrumentId']
     });
     const { spent } = useGetBudgetSpentQuery(budget);
-    const instrumentId = isPositiveNumber(watchedInstrumentId) ? watchedInstrumentId : defaultInstrumentId;
+    const instrumentId = isPositiveNumber(watchedInstrumentId) ? watchedInstrumentId : (defaultInstrumentId ?? 0);
+    const { instrument } = useGetInstrumentByIdQuery(instrumentId);
     const isSaveDisabled = !BudgetFormSchema.safeParse({ ...form.getValues(), overallLimit, categoryLimits, instrumentId }).success;
     const fallbackScreen = getFallbackScreen(isLoading, defaultInstrumentId);
+    const currencySymbol = instrument?.symbol ?? '';
 
     if (isDefined(fallbackScreen)) {
         return fallbackScreen;
     }
 
     const headerTitle = isEditing ? t`Edit budget` : t`Create budget`;
-    const progressBar =
-        isEditing && isDefined(budget) ? (
-            <BudgetProgressBar spent={spent.spentOverall} limit={budget.overallLimit} spentTestID={BudgetSelector.SetupSpentLabel} />
-        ) : null;
-    const deleteButton = getDeleteButton(isEditing, handleDelete);
 
     return (
         <FormProvider {...form}>
             <FormPage
                 header={<PageHeader title={headerTitle} onGoBack={handleCancel} />}
-                footer={<BudgetEditFooter onSubmit={handleSubmit} disabled={isSaveDisabled} deleteButton={deleteButton} />}
+                footer={
+                    <BudgetEditFooter
+                        onSubmit={handleSubmit}
+                        disabled={isSaveDisabled}
+                        deleteButton={getDeleteButton(isEditing, handleDelete)}
+                    />
+                }
                 contentContainerStyle={FORM_CONTENT_STYLE}
             >
-                {progressBar}
-                <BudgetOverallLimitField control={form.control} autoFocus={!isEditing} />
-                <BudgetInlineCategoryLimits />
+                <BudgetSetupProgressBar
+                    budget={budget}
+                    currencySymbol={currencySymbol}
+                    isEditing={isEditing}
+                    spentOverall={spent.spentOverall}
+                />
+                <BudgetOverallLimitField control={form.control} autoFocus={!isEditing} currencySymbol={currencySymbol} />
+                <BudgetInlineCategoryLimits currencySymbol={currencySymbol} />
             </FormPage>
         </FormProvider>
     );

@@ -1601,7 +1601,8 @@ msgid "Learning up to date"
 msgstr "Aprendizaje actualizado"
 
 #: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
-#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
 msgid "Left"
 msgstr "Restante"
 
@@ -1614,7 +1615,7 @@ msgid "Less Than"
 msgstr "Menor que"
 
 #: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
-#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 msgid "Limit"
 msgstr "Límite"
 
@@ -2010,8 +2011,14 @@ msgstr "Las transacciones importadas originales serán restauradas y la transacc
 msgid "Original transaction"
 msgstr "Transacción original"
 
+#: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
+msgid "Other"
+msgstr "Otros"
+
 #: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
-#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
 msgid "Over budget"
 msgstr "Por encima del presupuesto"
 
@@ -2625,7 +2632,7 @@ msgid "Spending by Tag"
 msgstr "Gastos por etiqueta"
 
 #: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
-#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Gastado"

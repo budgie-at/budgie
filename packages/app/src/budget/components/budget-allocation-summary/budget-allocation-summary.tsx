@@ -5,7 +5,9 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 
@@ -35,17 +37,20 @@ const remainingTextVariants = cva<{ status: Record<AllocationStatus, string> }>(
 export const BudgetAllocationSummary = () => {
     const { t } = useLingui();
     const { control } = useFormContext<BudgetFormValues>();
-    const overallLimit = useWatch<BudgetFormValues, 'overallLimit'>({ control, name: 'overallLimit' });
-    const categoryLimits = useWatch<BudgetFormValues, 'categoryLimits'>({ control, name: 'categoryLimits' });
-    const instrumentId = useWatch<BudgetFormValues, 'instrumentId'>({ control, name: 'instrumentId' });
+    const [overallLimit, categoryLimits, instrumentId] = useWatch({
+        control,
+        name: ['overallLimit', 'categoryLimits', 'instrumentId']
+    });
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
+    const { decimalPlaces } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const allocated = categoryLimits.reduce((sum, limit) => sum + limit.limitAmount, 0);
     const remaining = overallLimit - allocated;
     const status: AllocationStatus = remaining < 0 ? 'over' : 'normal';
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
-    const allocatedLabel = `${allocated.toFixed(2)} ${currencySymbol}`.trim();
-    const remainingLabel = `${remaining.toFixed(2)} ${currencySymbol}`.trim();
+    const allocatedLabel = formatDigits(allocated, currencySymbol);
+    const remainingLabel = formatDigits(Math.abs(remaining), currencySymbol);
     const remainingHeader = status === 'over' ? t`Over by` : t`Remaining`;
     const remainingHeaderTestID =
         status === 'over' ? BudgetSelector.SetupAllocationSummaryOverBy : BudgetSelector.SetupAllocationSummaryRemaining;

@@ -13,10 +13,11 @@ const WIDGET_CATEGORY_LIMITS_MAX = 3;
 
 interface Props {
     readonly categoryLimits: readonly BudgetCategoryLimitEntityInterface[];
+    readonly currencySymbol: string;
     readonly spentByCategory: readonly BudgetCategorySpentInterface[];
 }
 
-export const BudgetWidgetCategoryList = ({ categoryLimits, spentByCategory }: Props) => {
+export const BudgetWidgetCategoryList = ({ categoryLimits, currencySymbol, spentByCategory }: Props) => {
     const spentByCategoryMap = new Map(spentByCategory.map(entry => [entry.categoryId, entry.spent]));
     const sortedCategoryLimits = [...categoryLimits].sort((firstCategoryLimit, secondCategoryLimit) => {
         const firstSpent = spentByCategoryMap.get(firstCategoryLimit.categoryId) ?? 0;
@@ -37,6 +38,7 @@ export const BudgetWidgetCategoryList = ({ categoryLimits, spentByCategory }: Pr
                 <BudgetCategoryLimitRow
                     key={limit.id}
                     categoryId={limit.categoryId}
+                    currencySymbol={currencySymbol}
                     limitAmount={limit.limitAmount}
                     spent={spentByCategoryMap.get(limit.categoryId) ?? 0}
                     testID={BudgetSelector.WidgetCategoryRow(limit.categoryId)}

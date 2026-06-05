@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetActiveBudgetQuery } from '../../query/use-get-active-budget.query';
@@ -20,6 +21,7 @@ export const BudgetWidget = () => {
     const isEnabled = useSetting('isBudgetWidgetEnabled');
     const { budget } = useGetActiveBudgetQuery();
     const { spent } = useGetBudgetSpentQuery(budget);
+    const { instrument } = useGetInstrumentByIdQuery(isDefined(budget) ? budget.instrumentId : 0);
     const { categoryLimits } = useGetBudgetCategoryLimitsQuery(isDefined(budget) ? budget.id : null);
     const { formatMonthAndDay } = useFormatDate();
 
@@ -33,6 +35,7 @@ export const BudgetWidget = () => {
 
     const handleNavigate = () => void router.push('/budget');
 
+    const currencySymbol = instrument?.symbol ?? '';
     const dateLabel = formatBudgetPeriodLabel(budget, formatMonthAndDay);
 
     return (
@@ -46,13 +49,19 @@ export const BudgetWidget = () => {
 
             <BudgetProgressBar
                 amountDecimalPlaces={0}
+                currencySymbol={currencySymbol}
                 isAmountLight
                 spent={spent.spentOverall}
                 limit={budget.overallLimit}
                 spentTestID={BudgetSelector.WidgetSpentLabel}
+                remainingTestID={BudgetSelector.WidgetRemainingLabel}
             />
 
-            <BudgetWidgetCategoryList categoryLimits={categoryLimits} spentByCategory={spent.spentByCategory} />
+            <BudgetWidgetCategoryList
+                categoryLimits={categoryLimits}
+                currencySymbol={currencySymbol}
+                spentByCategory={spent.spentByCategory}
+            />
         </Card>
     );
 };

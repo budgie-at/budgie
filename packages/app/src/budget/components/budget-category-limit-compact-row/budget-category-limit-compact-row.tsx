@@ -14,11 +14,12 @@ import { BudgetCategoryLimitAmountInput } from '../budget-category-limit-amount-
 const ICON_PLACEHOLDER_STYLE: ViewStyle = { width: 32, height: 32 };
 
 interface Props {
+    readonly currencySymbol: string;
     readonly index: number;
     readonly onRemove: (index: number) => void;
 }
 
-export const BudgetCategoryLimitCompactRow = ({ index, onRemove }: Props) => {
+export const BudgetCategoryLimitCompactRow = ({ currencySymbol, index, onRemove }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<BudgetFormValues>();
     const categoryId = useWatch({ control, name: `categoryLimits.${index}.categoryId` });
@@ -49,7 +50,11 @@ export const BudgetCategoryLimitCompactRow = ({ index, onRemove }: Props) => {
                 <Text className="text-primary text-md flex-1" numberOfLines={1}>
                     {title}
                 </Text>
-                <BudgetCategoryLimitAmountInput index={index} testID={BudgetSelector.SetupCategoryLimitAmountInput(index)} />
+                <BudgetCategoryLimitAmountInput
+                    currencySymbol={currencySymbol}
+                    index={index}
+                    testID={BudgetSelector.SetupCategoryLimitAmountInput(index)}
+                />
             </View>
         </DeletableRow>
     );

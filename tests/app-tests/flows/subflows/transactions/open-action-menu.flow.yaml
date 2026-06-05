@@ -4,6 +4,7 @@ env:
 ---
 - tapOn:
     id: 'ActionButton'
+- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: ${ACTION_ITEM_ID}
