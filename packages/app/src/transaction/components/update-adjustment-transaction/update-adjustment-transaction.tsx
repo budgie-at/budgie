@@ -1,4 +1,5 @@
 import {
+    TransactionAssociationEnum,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -62,7 +63,7 @@ const buildAdjustmentUpdateInput = (
     fromAccountId: isIncrease ? null : details.accountId,
     toAccountId: isIncrease ? details.accountId : null,
     exchangeRate: transaction.exchangeRate,
-    tagIds: [],
+    tagIds: transaction[TransactionAssociationEnum.TRANSACTION_TAGS].map(transactionTag => transactionTag.tagId),
     entries: [buildAdjustmentEntry(details, amount, isIncrease)]
 });
 
