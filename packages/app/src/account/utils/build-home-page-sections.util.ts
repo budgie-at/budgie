@@ -2,7 +2,6 @@ import { AccountDebtTypeEnum, AccountTypeEnum, AccountWithBankSyncEntityInterfac
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 import { AccountRowInterface } from '../interface/account-row.interface';
 import { BankProviderSectionInterface } from '../interface/bank-provider-section.interface';
@@ -23,152 +22,99 @@ export interface DebtSectionInterface {
 
 export type HomeSectionInterface = AccountTypeSectionInterface | BankProviderSectionInterface | DebtSectionInterface;
 
-type AccountGroups = Partial<Record<AccountTypeEnum, AccountWithBankSyncEntityInterface[]>>;
-type ProviderGroups = Partial<Record<ExternalSourceEnum, AccountWithBankSyncEntityInterface[]>>;
+const appendAccount = <Key, Value>(groups: Map<Key, Value[]>, key: Key, value: Value): void => {
+    const groupValues = groups.get(key);
 
-const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInterface[]): CryptoCurrencyGroupInterface[] => {
-    const accountGroupsByInstrument = accounts.reduce<Map<number, AccountWithBankSyncEntityInterface[]>>((groups, account) => {
-        const groupAccounts = groups.get(account.instrument.id);
-
-        if (isDefined(groupAccounts)) {
-            groupAccounts.push(account);
-
-            return groups;
-        }
-
-        groups.set(account.instrument.id, [account]);
-
-        return groups;
-    }, new Map());
-
-    return [...accountGroupsByInstrument.values()]
-        .map(groupAccounts => {
-            const firstAccount = groupAccounts.at(0);
-
-            if (!isDefined(firstAccount)) {
-                return null;
-            }
-
-            return {
-                instrument: firstAccount.instrument,
-                accounts: groupAccounts
-            };
-        })
-        .filter(isDefined);
-};
-
-const appendAccount = <Key extends string>(
-    groups: Partial<Record<Key, AccountWithBankSyncEntityInterface[]>>,
-    key: Key,
-    account: AccountWithBankSyncEntityInterface
-): void => {
-    const groupAccounts = groups[key];
-
-    if (isNotEmptyArray(groupAccounts)) {
-        groupAccounts.push(account);
+    if (isDefined(groupValues)) {
+        groupValues.push(value);
 
         return;
     }
 
-    groups[key] = [account];
+    groups.set(key, [value]);
 };
 
-const appendBankSyncAccount = (account: AccountWithBankSyncEntityInterface, providerGroups: ProviderGroups): boolean => {
-    if (account.type !== AccountTypeEnum.BANK_SYNC) {
-        return false;
-    }
-
-    const provider = account.bankSync?.provider;
-
-    if (isDefined(provider)) {
-        appendAccount(providerGroups, provider, account);
-    }
-
-    return true;
-};
-
-const appendDebtAccount = (
-    account: AccountWithBankSyncEntityInterface,
-    debtYouOweAccounts: AccountWithBankSyncEntityInterface[],
-    debtOwedToYouAccounts: AccountWithBankSyncEntityInterface[]
-): boolean => {
-    if (account.type !== AccountTypeEnum.DEBT) {
-        return false;
-    }
-
-    if (account.debtType === AccountDebtTypeEnum.BORROW) {
-        debtYouOweAccounts.push(account);
-    } else {
-        debtOwedToYouAccounts.push(account);
-    }
-
-    return true;
-};
-
-const buildDebtSections = (
-    debtYouOweAccounts: AccountWithBankSyncEntityInterface[],
-    debtOwedToYouAccounts: AccountWithBankSyncEntityInterface[]
-): DebtSectionInterface[] => {
-    const sections: DebtSectionInterface[] = [];
-
-    if (isNotEmptyArray(debtYouOweAccounts)) {
-        sections.push({
-            kind: HomeSectionKindEnum.DEBT_YOU_OWE,
-            data: pairAccountsIntoRows(debtYouOweAccounts)
-        });
-    }
-
-    if (isNotEmptyArray(debtOwedToYouAccounts)) {
-        sections.push({
-            kind: HomeSectionKindEnum.DEBT_OWED_TO_YOU,
-            data: pairAccountsIntoRows(debtOwedToYouAccounts)
-        });
-    }
-
-    return sections;
-};
-
-export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterface[]): HomeSectionInterface[] => {
-    const accountGroups: AccountGroups = {};
-    const providerGroups: ProviderGroups = {};
-    const debtYouOweAccounts: AccountWithBankSyncEntityInterface[] = [];
-    const debtOwedToYouAccounts: AccountWithBankSyncEntityInterface[] = [];
+const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInterface[]): CryptoCurrencyGroupInterface[] => {
+    const groups = new Map<number, CryptoCurrencyGroupInterface>();
 
     accounts.forEach(account => {
-        if (appendBankSyncAccount(account, providerGroups)) {
+        const group = groups.get(account.instrument.id);
+
+        if (isDefined(group)) {
+            group.accounts.push(account);
+
             return;
         }
 
-        if (appendDebtAccount(account, debtYouOweAccounts, debtOwedToYouAccounts)) {
+        groups.set(account.instrument.id, {
+            instrument: account.instrument,
+            accounts: [account]
+        });
+    });
+
+    return [...groups.values()];
+};
+
+export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterface[]): HomeSectionInterface[] => {
+    const accountGroups = new Map<AccountTypeEnum, AccountWithBankSyncEntityInterface[]>();
+    const providerGroups = new Map<ExternalSourceEnum, AccountWithBankSyncEntityInterface[]>();
+    const debtGroups = new Map<DebtSectionInterface['kind'], AccountWithBankSyncEntityInterface[]>();
+    const debtSectionKinds = [
+        HomeSectionKindEnum.DEBT_YOU_OWE,
+        HomeSectionKindEnum.DEBT_OWED_TO_YOU
+    ] satisfies DebtSectionInterface['kind'][];
+
+    accounts.forEach(account => {
+        if (account.type === AccountTypeEnum.BANK_SYNC) {
+            const provider = account.bankSync?.provider;
+
+            if (isDefined(provider)) {
+                appendAccount(providerGroups, provider, account);
+            }
+
+            return;
+        }
+
+        if (account.type === AccountTypeEnum.DEBT) {
+            const kind =
+                account.debtType === AccountDebtTypeEnum.BORROW ? HomeSectionKindEnum.DEBT_YOU_OWE : HomeSectionKindEnum.DEBT_OWED_TO_YOU;
+
+            appendAccount(debtGroups, kind, account);
+
             return;
         }
 
         appendAccount(accountGroups, account.type, account);
     });
 
-    const accountTypeSections: AccountTypeSectionInterface[] = typedObjectEntries(accountGroups).flatMap(([type, groupAccounts]) => {
-        if (!isNotEmptyArray(groupAccounts)) {
-            return [];
-        }
+    const sections: HomeSectionInterface[] = [];
 
-        return {
+    accountGroups.forEach((groupAccounts, type) => {
+        sections.push({
             kind: HomeSectionKindEnum.ACCOUNT_TYPE,
             type,
             data: type === AccountTypeEnum.CRYPTO ? groupCryptoAccountsByInstrument(groupAccounts) : pairAccountsIntoRows(groupAccounts)
-        };
+        });
     });
-    const debtSections = buildDebtSections(debtYouOweAccounts, debtOwedToYouAccounts);
-    const providerSections: BankProviderSectionInterface[] = typedObjectEntries(providerGroups).flatMap(([provider, groupAccounts]) => {
-        if (!isNotEmptyArray(groupAccounts)) {
-            return [];
-        }
 
-        return {
+    debtSectionKinds.forEach(kind => {
+        const groupAccounts = debtGroups.get(kind);
+
+        if (isNotEmptyArray(groupAccounts)) {
+            sections.push({
+                kind,
+                data: pairAccountsIntoRows(groupAccounts)
+            });
+        }
+    });
+
+    providerGroups.forEach((groupAccounts, provider) => {
+        sections.push({
             kind: HomeSectionKindEnum.BANK_PROVIDER,
             provider,
             data: pairAccountsIntoRows(groupAccounts)
-        };
+        });
     });
 
-    return [...accountTypeSections, ...debtSections, ...providerSections];
+    return sections;
 };
