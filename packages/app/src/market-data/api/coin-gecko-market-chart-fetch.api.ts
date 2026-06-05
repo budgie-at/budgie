@@ -34,7 +34,7 @@ export const coinGeckoMarketChartFetchApi = async (
     const result = CoinGeckoMarketChartResponseSchema.safeParse(payload);
 
     if (!result.success) {
-        throw new Error();
+        throw new Error(result.error.message);
     }
 
     return result.data;

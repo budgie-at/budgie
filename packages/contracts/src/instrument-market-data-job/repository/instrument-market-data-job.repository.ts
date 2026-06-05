@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { and, asc, desc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, isNotNull, isNull, lte, or, sql } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -40,17 +40,26 @@ export class InstrumentMarketDataJobRepository {
     }
 
     @Log(
-        maxAttempts => `enter maxAttempts=${maxAttempts}`,
-        (result, maxAttempts) => `done maxAttempts=${maxAttempts} jobId=${String(result?.id)}`,
-        (error, maxAttempts) => `throw maxAttempts=${maxAttempts} error=${getErrorMessage(error)}`
+        (maxAttempts, staleLockedBefore) => `enter maxAttempts=${maxAttempts} staleLockedBefore=${staleLockedBefore.toISOString()}`,
+        (result, maxAttempts, staleLockedBefore) =>
+            `done maxAttempts=${maxAttempts} staleLockedBefore=${staleLockedBefore.toISOString()} jobId=${String(result?.id)}`,
+        (error, maxAttempts, staleLockedBefore) =>
+            `throw maxAttempts=${maxAttempts} staleLockedBefore=${staleLockedBefore.toISOString()} error=${getErrorMessage(error)}`
     )
-    async findNext(maxAttempts: number): Promise<InstrumentMarketDataJobEntityInterface | undefined> {
+    async findNext(maxAttempts: number, staleLockedBefore: Date): Promise<InstrumentMarketDataJobEntityInterface | undefined> {
         return await this.db.query.InstrumentMarketDataJobEntityTable.findFirst({
             where: and(
-                inArray(InstrumentMarketDataJobEntityTable.status, [
-                    InstrumentMarketDataJobStatusEnum.PENDING,
-                    InstrumentMarketDataJobStatusEnum.FAILED
-                ]),
+                or(
+                    inArray(InstrumentMarketDataJobEntityTable.status, [
+                        InstrumentMarketDataJobStatusEnum.PENDING,
+                        InstrumentMarketDataJobStatusEnum.FAILED
+                    ]),
+                    and(
+                        eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING),
+                        isNotNull(InstrumentMarketDataJobEntityTable.lockedAt),
+                        lte(InstrumentMarketDataJobEntityTable.lockedAt, staleLockedBefore)
+                    )
+                ),
                 sql`${InstrumentMarketDataJobEntityTable.attempts} < ${maxAttempts}`,
                 isNull(InstrumentMarketDataJobEntityTable.deletedAt)
             ),
@@ -103,7 +112,8 @@ export class InstrumentMarketDataJobRepository {
                     eq(InstrumentMarketDataJobEntityTable.id, jobId),
                     or(
                         eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.PENDING),
-                        eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.FAILED)
+                        eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.FAILED),
+                        eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING)
                     )
                 )
             );

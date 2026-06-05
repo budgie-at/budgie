@@ -1466,6 +1466,10 @@ msgstr "Incorrect PIN"
 msgid "Indexing {done} of {total}"
 msgstr "Indexing {done} of {total}"
 
+#: src/market-data/service/historical-market-data-loader.service.ts
+msgid "Instrument not found"
+msgstr "Instrument not found"
+
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
 msgid "Invalid file"
 msgstr "Invalid file"
@@ -1585,6 +1589,10 @@ msgstr "Map CSV Columns"
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Market cap"
 msgstr "Market cap"
+
+#: src/market-data/service/historical-market-data-loader.service.ts
+msgid "Market data prices missing"
+msgstr "Market data prices missing"
 
 #: src/market-data/component/market-data-sparkline/market-data-sparkline.tsx
 msgid "Market history is loading quietly."

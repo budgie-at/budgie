@@ -1,4 +1,5 @@
 import { AccountTypeEnum, InstrumentPriceProviderEnum, InstrumentTypeEnum, transactionAsync } from '@budgie/contracts';
+import { t } from '@lingui/core/macro';
 import { addDays, format, isAfter, parseISO, subDays } from 'date-fns';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -11,7 +12,6 @@ import {
     instrumentMarketDataJobRepository,
     instrumentRepository
 } from '../../@generic/drizzle/db/db';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { coinGeckoMarketChartFetchApi } from '../api/coin-gecko-market-chart-fetch.api';
@@ -32,6 +32,7 @@ class HistoricalMarketDataLoaderService {
     private static readonly MAX_ATTEMPTS = 3;
     private static readonly SOURCE = 'coingecko.com';
     private static readonly RATE_DATE_FORMAT = 'yyyy-MM-dd';
+    private static readonly STALE_LOCK_MS = 5 * 60 * 1000;
 
     private cancelIdleCallback: (() => void) | null = null;
     private isRunning = false;
@@ -80,26 +81,28 @@ class HistoricalMarketDataLoaderService {
         }
 
         this.isRunning = true;
-
-        try {
-            await this.drainNextJob();
-        } finally {
+        const shouldContinue = await this.drainNextJob().finally(() => {
             this.isRunning = false;
+        });
+
+        if (shouldContinue) {
+            this.scheduleDrain();
         }
     }
 
-    private async drainNextJob(): Promise<void> {
-        const job = await instrumentMarketDataJobRepository.findNext(HistoricalMarketDataLoaderService.MAX_ATTEMPTS);
+    private async drainNextJob(): Promise<boolean> {
+        const staleLockedBefore = new Date(Date.now() - HistoricalMarketDataLoaderService.STALE_LOCK_MS);
+        const job = await instrumentMarketDataJobRepository.findNext(HistoricalMarketDataLoaderService.MAX_ATTEMPTS, staleLockedBefore);
 
         if (!isDefined(job)) {
-            return;
+            return false;
         }
 
         await this.processJob(job).catch(async (error: unknown) => {
             await instrumentMarketDataJobRepository.markFailed(job.id, getErrorMessage(error));
         });
-        await microPause();
-        await this.drainNextJob();
+
+        return true;
     }
 
     private async processJob(job: InstrumentMarketDataJobEntityInterface): Promise<void> {
@@ -108,7 +111,7 @@ class HistoricalMarketDataLoaderService {
         const instrument = await instrumentRepository.findByIdAsync(job.instrumentId);
 
         if (!isDefined(instrument)) {
-            throw new Error();
+            throw new Error(t`Instrument not found`);
         }
 
         const prices = await this.fetchHistoricalPrices(instrument, job);
@@ -195,7 +198,17 @@ class HistoricalMarketDataLoaderService {
 
         const quoteCode = await this.getQuoteCode(job.quoteInstrumentId);
         const fromDate = this.getSupportedFromDate(job.fromDate);
+
+        if (isAfter(parseISO(fromDate), parseISO(job.toDate))) {
+            return [];
+        }
+
         const data = await coinGeckoMarketChartFetchApi(instrument.providerInstrumentId, quoteCode, fromDate, job.toDate);
+
+        if (!isNotEmptyArray(data.prices)) {
+            throw new Error(t`Market data prices missing`);
+        }
+
         const marketCapByDate = this.buildTimedValueMap(data.market_caps);
         const volumeByDate = this.buildTimedValueMap(data.total_volumes);
 
