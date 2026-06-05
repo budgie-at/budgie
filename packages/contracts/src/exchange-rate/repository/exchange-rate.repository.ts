@@ -1,8 +1,12 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { ExchangeRateEntityTable } from '../table/exchange-rate-entity.table';
 
+import type { DB } from '../../@generic/type/db.type';
 import type * as schema from '../../schema';
+import type { ExchangeRateCreateEntityInterface } from '../entity/exchange-rate-create-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class ExchangeRateRepository {
@@ -28,6 +32,24 @@ export class ExchangeRateRepository {
             .onConflictDoUpdate({
                 target: [ExchangeRateEntityTable.baseInstrumentId, ExchangeRateEntityTable.quoteInstrumentId],
                 set: { rate, source }
+            });
+    }
+
+    async bulkUpsert(inputs: ExchangeRateCreateEntityInterface[], tx?: DB): Promise<void> {
+        if (!isNotEmptyArray(inputs)) {
+            return;
+        }
+
+        await (tx ?? this.db)
+            .insert(ExchangeRateEntityTable)
+            .values(inputs)
+            .onConflictDoUpdate({
+                target: [ExchangeRateEntityTable.baseInstrumentId, ExchangeRateEntityTable.quoteInstrumentId],
+                set: {
+                    rate: sql`excluded.rate`,
+                    source: sql`excluded.source`,
+                    updatedAt: new Date()
+                }
             });
     }
 }
