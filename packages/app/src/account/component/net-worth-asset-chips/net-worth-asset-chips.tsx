@@ -31,7 +31,7 @@ export const NetWorthAssetChips = () => {
             </View>
 
             <View className="flex-row items-center gap-x-xs rounded-full bg-secondary-background border border-secondary-corner px-md py-xs">
-                <Icon icon={UserIconNameEnum.Bitcoin} size={14} className="text-warning-foreground" />
+                <Icon icon={UserIconNameEnum.Coins} size={14} className="text-warning-foreground" />
                 <ProtectedText className="text-primary text-xs font-medium">{formattedCryptoTotal}</ProtectedText>
             </View>
         </View>
