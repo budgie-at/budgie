@@ -16,11 +16,14 @@ import { AccountSectionHeader } from '../../account/component/account-section-he
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { BankProviderSectionHeader } from '../../account/component/bank-provider-section-header/bank-provider-section-header';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../../account/component/collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
+import { CryptoCurrencyGroupCard } from '../../account/component/crypto-currency-group-card/crypto-currency-group-card';
 import { DebtSectionHeader } from '../../account/component/debt-section-header/debt-section-header';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../account/constant/collapsible-net-worth-header-scroll-spacer.constant';
 import { AccountRowInterface } from '../../account/interface/account-row.interface';
+import { CryptoCurrencyGroupInterface } from '../../account/interface/crypto-currency-group.interface';
 import { useAccountsWithBankSyncQuery } from '../../account/query/use-accounts-with-bank-sync.query';
 import { isBankProviderSection } from '../../account/type-guard/is-bank-provider-section.type-guard';
+import { isCryptoCurrencyGroup } from '../../account/type-guard/is-crypto-currency-group.type-guard';
 import { isDebtSection } from '../../account/type-guard/is-debt-section.type-guard';
 import { HomeSectionInterface, buildHomePageSections } from '../../account/utils/build-home-page-sections.util';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
@@ -81,7 +84,11 @@ export default function HomePage() {
         return <AccountSectionHeader type={section.type} />;
     };
 
-    const renderItem = ({ item, section }: { item: AccountRowInterface; section: HomeSectionInterface }) => {
+    const renderItem = ({ item, section }: { item: AccountRowInterface | CryptoCurrencyGroupInterface; section: HomeSectionInterface }) => {
+        if (isCryptoCurrencyGroup(item)) {
+            return <CryptoCurrencyGroupCard group={item} />;
+        }
+
         const accountType = getSectionAccountType(section);
 
         return (
@@ -92,14 +99,15 @@ export default function HomePage() {
         );
     };
 
-    const keyExtractor = (item: AccountRowInterface) => String(item.left.id);
+    const keyExtractor = (item: AccountRowInterface | CryptoCurrencyGroupInterface) =>
+        isCryptoCurrencyGroup(item) ? `crypto-${item.instrument.id}` : String(item.left.id);
 
     return (
         <View className="flex-1 bg-background">
             <CollapsibleHeader scrollY={scrollY} />
 
             {isNotEmptyArray(sections) ? (
-                <AnimatedSectionList
+                <AnimatedSectionList<AccountRowInterface | CryptoCurrencyGroupInterface, HomeSectionInterface>
                     scrollY={scrollY}
                     sections={sections}
                     renderSectionHeader={renderSectionHeader}

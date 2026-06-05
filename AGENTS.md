@@ -155,6 +155,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
     Empty deps + ref-stable read = cleanup fires only on actual unmount.
 54. **After `await` inside `useEffect`, downstream reads come from the awaited result, not the captured closure.** Hook destructured state (`const { data } = useFoo()`) is captured at render time. By the time `await something()` resolves, `data` is stale. Thread fresh values through the resolved value, the callback parameter, or a fresh ref read — never `data.foo` from the original closure.
 55. **Snapshot Typed Array buffers from native callbacks.** When a native API hands you a `Float32Array`/`Int16Array`/etc. view (`AudioBuffer.getChannelData(0)`, JNI callbacks, FFI), the underlying memory is typically reused on the next callback. Always copy via `new Float32Array(samples)` before storing — otherwise all stored chunks alias the latest buffer.
+56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.
 
 ### Naming Conventions
 

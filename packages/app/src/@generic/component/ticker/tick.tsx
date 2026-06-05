@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { Text, TextStyle, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
-import { usePrevious } from '../../hook/use-previous.hook';
 import { getTextStyleForTicket } from '../../utils/get-text-style-for-ticket.util';
 
 interface Props {
@@ -19,11 +18,10 @@ const NUM_FROM_ZERO_TO_NINE = [...Array(10).keys()];
 export const Tick = (props: Props) => {
     const { num, textSize, textStyle, index, duration = 500, delay = 50 } = props;
 
-    const previous = usePrevious(num);
-    const translateY = useSharedValue(-textSize * (previous ?? 0));
+    const translateY = useSharedValue(-textSize * num);
 
     useEffect(() => {
-        translateY.set(withDelay(delay * index, withTiming(-textSize * num, { duration })));
+        translateY.value = withDelay(delay * index, withTiming(-textSize * num, { duration }));
     }, [num, textSize, index, translateY, delay, duration]);
 
     const animatedStyle = useAnimatedStyle(() => ({

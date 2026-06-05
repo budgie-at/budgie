@@ -9,5 +9,8 @@ export const DEFAULT_INSTRUMENT = {
     createdAt: new Date(),
     updatedAt: new Date(),
     code: CurrencyEnum.USD,
-    type: InstrumentTypeEnum.FIAT
+    type: InstrumentTypeEnum.FIAT,
+    priceProvider: null,
+    providerInstrumentId: null,
+    marketCapRank: null
 } satisfies InstrumentEntityInterface;
