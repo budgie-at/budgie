@@ -36,9 +36,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-    visible:
-      id: 'BudgetSetup.SpentLabel'
+    visible: 'Budget details'
     timeout: 3000
 - assertVisible:
-    id: 'BudgetSetup.SpentLabel'
+    id: 'BudgetDetails.SpentLabel'
     text: '136.21 / 200.00'

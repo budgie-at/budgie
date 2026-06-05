@@ -54,6 +54,11 @@ appId: ${APP_ID}
 - tapOn:
     id: 'BudgetWidget.Card'
 - extendedWaitUntil:
+    visible: 'Budget details'
+    timeout: 3000
+- tapOn:
+    id: 'BudgetDetails.EditButton'
+- extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000
 
@@ -89,6 +94,11 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible: 'Budget details'
+    timeout: 3000
+- tapOn:
+    id: 'BudgetDetails.EditButton'
 - extendedWaitUntil:
     visible: 'Edit budget'
     timeout: 3000

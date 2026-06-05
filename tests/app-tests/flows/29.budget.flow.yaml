@@ -2,6 +2,7 @@ appId: ${APP_ID}
 env:
     ACCOUNT_NAME: Rules Test Account
     CATEGORY_NAME: Rules Test Category
+    MATCHING_TRANSACTION_COMMENT: E2E Budget Details Match
 ---
 - runFlow:
       file: setup/setup-budget-test.flow.yaml
@@ -86,6 +87,16 @@ env:
       env:
           CATEGORY_NAME: ${CATEGORY_NAME}
 
+- scrollUntilVisible:
+      element:
+          id: 'TransactionForm.CommentInput'
+      direction: DOWN
+      centerElement: true
+- runFlow:
+      file: subflows/transactions/enter-comment.flow.yaml
+      env:
+          COMMENT: ${MATCHING_TRANSACTION_COMMENT}
+
 - runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
 
 - tapOn:
@@ -96,8 +107,31 @@ env:
           text: '42.00 / 1000.00'
       timeout: 3000
 
+- openLink: 'budgie://budget'
+- extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+- assertNotVisible: 'Edit budget'
+- assertVisible:
+      id: 'BudgetDetails.SpentLabel'
+      text: '42.00 / 1000.00'
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.Card'
+      timeout: 3000
+
 - tapOn:
       id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+- assertNotVisible: 'Edit budget'
+
+- tapOn:
+      id: 'BudgetDetails.EditButton'
 - extendedWaitUntil:
       visible: 'Edit budget'
       timeout: 3000
@@ -127,6 +161,12 @@ env:
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+
+- tapOn:
+      id: 'BudgetDetails.EditButton'
+- extendedWaitUntil:
       visible: 'Edit budget'
       timeout: 3000
 
@@ -146,19 +186,24 @@ env:
           text: '42.00 / 1500.00'
       timeout: 3000
 
+- openLink: 'budgie://budget'
+- extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+- assertNotVisible: 'Edit budget'
+- assertVisible:
+      id: 'BudgetDetails.SpentLabel'
+      text: '42.00 / 1500.00'
+
 - tapOn:
-      id: 'BudgetWidget.Card'
+      id: 'BudgetDetails.EditButton'
 - extendedWaitUntil:
       visible: 'Edit budget'
       timeout: 3000
 
-- scrollUntilVisible:
-      element:
-          id: 'BudgetSetup.CategoryLimitAddButton'
-      direction: DOWN
-      centerElement: true
 - tapOn:
-      id: 'BudgetSetup.CategoryLimitAddButton'
+      id: 'BudgetSetup.CategoryLimitsHeader'
+      point: '95%,50%'
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -172,16 +217,17 @@ env:
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '200'
+- tapOn: 'Category limits'
+- waitForAnimationToEnd
 - tapOn:
-      id: 'BudgetSetup.CategoryLimitAddButton'
+      id: 'BudgetSetup.CategoryLimitsHeader'
+      point: '95%,50%'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
       visible:
-          id: 'BudgetSetup.CategoryLimitAddButton'
+          id: 'CategoryPickerBottomSheet.Input'
       timeout: 3000
-- tapOn:
-      id: 'BudgetSetup.CategoryLimitAddButton'
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -197,6 +243,54 @@ env:
 - inputText: '100'
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
+- tapOn:
+      id: 'BudgetSetup.CategoryLimitsHeader'
+      point: '95%,50%'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPickerBottomSheet.Input'
+      timeout: 3000
+- runFlow:
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: 'Restaurants & Cafes'
+
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.CategoryLimit.2.Row'
+      timeout: 3000
+
+- tapOn:
+      id: 'BudgetSetup.CategoryLimit.2.AmountInput'
+- inputText: '150'
+- tapOn: 'Category limits'
+- waitForAnimationToEnd
+- tapOn:
+      id: 'BudgetSetup.CategoryLimitsHeader'
+      point: '95%,50%'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPickerBottomSheet.Input'
+      timeout: 3000
+- runFlow:
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: 'Car & Fuel'
+
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.CategoryLimit.3.Row'
+      timeout: 3000
+
+- tapOn:
+      id: 'BudgetSetup.CategoryLimit.3.AmountInput'
+- inputText: '75'
+- tapOn: 'Category limits'
+- waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'BudgetSetup.SaveButton'
@@ -207,19 +301,114 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'BudgetWidget.CategoryRow.42'
+          id: 'BudgetWidget.CategoryRow.11'
       timeout: 3000
-- assertVisible:
-      id: 'BudgetWidget.CategoryRow.11'
-- assertVisible:
-      id: 'BudgetWidget.CategorySpentLabel.42'
-      text: '42.00 / 200.00'
 - assertVisible:
       id: 'BudgetWidget.CategorySpentLabel.11'
       text: '0.00 / 100.00'
+- assertVisible:
+      id: 'BudgetWidget.CategoryRow.12'
+- assertVisible:
+      id: 'BudgetWidget.CategoryRow.14'
+- assertVisible:
+      id: 'BudgetWidget.MoreCategoriesLabel'
+      text: '+1 more'
+- assertNotVisible:
+      id: 'BudgetWidget.CategoryRow.42'
 
 - tapOn:
       id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+
+- scrollUntilVisible:
+      element:
+          id: 'BudgetDetails.CategoryRow.42'
+      direction: DOWN
+      centerElement: true
+- assertVisible:
+      id: 'BudgetDetails.CategoryRow.42'
+- assertVisible:
+      id: 'BudgetDetails.CategorySpentLabel.42'
+      text: '42.00 / 200.00'
+- scrollUntilVisible:
+      element:
+          id: 'BudgetDetails.CategoryRow.11'
+      direction: UP
+      centerElement: true
+- assertVisible:
+      id: 'BudgetDetails.CategoryRow.11'
+- assertVisible:
+      id: 'BudgetDetails.CategoryRow.12'
+- scrollUntilVisible:
+      element:
+          id: 'BudgetDetails.CategoryRow.14'
+      direction: DOWN
+      centerElement: true
+- scrollUntilVisible:
+      element:
+          id: 'BudgetDetails.CategoryRow.42'
+      direction: DOWN
+      centerElement: true
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.Card'
+      timeout: 3000
+
+- runFlow:
+      file: subflows/transactions/create-expense.flow.yaml
+      env:
+          AMOUNT: '10'
+          ACCOUNT_NAME: ${ACCOUNT_NAME}
+          CATEGORY_NAME: 'Groceries'
+          COMMENT: 'E2E Budget Details Other Category'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Budget_Details_Other_Category'
+      timeout: 5000
+
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.Card'
+      timeout: 3000
+
+- tapOn:
+      id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+- scrollUntilVisible:
+      element:
+          id: 'BudgetDetails.CategoryRow.42'
+      direction: UP
+      centerElement: true
+
+- tapOn:
+      id: 'BudgetDetails.CategoryRow.42'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Budget_Details_Match'
+      timeout: 3000
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Budget_Details_Other_Category'
+- assertNotVisible:
+      id: 'TransactionCard.Label.Spotify_Premium'
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+
+- tapOn:
+      id: 'BudgetDetails.EditButton'
 - extendedWaitUntil:
       visible: 'Edit budget'
       timeout: 3000
@@ -349,6 +538,12 @@ env:
 
 - tapOn:
       id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+
+- tapOn:
+      id: 'BudgetDetails.EditButton'
 - extendedWaitUntil:
       visible: 'Edit budget'
       timeout: 3000

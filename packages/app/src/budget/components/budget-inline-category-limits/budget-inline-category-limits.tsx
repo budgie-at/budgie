@@ -45,8 +45,8 @@ export const BudgetInlineCategoryLimits = () => {
                 <Text className="text-primary text-lg font-semibold">
                     <Trans>Category limits</Trans>
                 </Text>
-                <HapticPressable accessibilityRole="button" onPress={handleAddPress} style={ADD_BUTTON_STYLE}>
-                    <CircleIcon {...addButtonTestProps} icon={UserIconNameEnum.Plus} variant="ghost" size={26} iconSize={14} />
+                <HapticPressable {...addButtonTestProps} accessibilityRole="button" onPress={handleAddPress} style={ADD_BUTTON_STYLE}>
+                    <CircleIcon icon={UserIconNameEnum.Plus} variant="ghost" size={26} iconSize={14} />
                 </HapticPressable>
             </View>
             <Text className="text-secondary-foreground text-sm">
