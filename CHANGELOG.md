@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.35.0](https://github.com/budgie-at/budgie/compare/v5.34.1...v5.35.0) (2026-06-05)
+
+### Bug Fixes
+
+- **app:** add balance adjustment editor ([fbf915c](https://github.com/budgie-at/budgie/commit/fbf915c4de9ec3bb5d4d2df637083dbd46c18f15))
+- **app:** address crypto review comments ([f48d0fe](https://github.com/budgie-at/budgie/commit/f48d0fe02bf5d2f364f837be0a6e0e958b109caa))
+- **app:** align crypto net worth chip icon ([dadce34](https://github.com/budgie-at/budgie/commit/dadce34c7b85b8458671ff3baa9a972d202315b5))
+- **app:** allow unvalued crypto transactions ([cdee4f2](https://github.com/budgie-at/budgie/commit/cdee4f268969bf497fa55fa2d10baccd9cef2d4d))
+- **app:** avoid duplicate net worth query hook ([36f6569](https://github.com/budgie-at/budgie/commit/36f6569392a0f6aa1bf34a139ea841917fc9d7a2))
+- **app:** clean up crypto currency symbols ([77efb6e](https://github.com/budgie-at/budgie/commit/77efb6ebcced4ccf6fea98d190a0e0ca87ee4786))
+- **app:** compact crypto currency tiles ([8d6ba87](https://github.com/budgie-at/budgie/commit/8d6ba87d969a8d31abdcc7ddffe687cc8bd89057))
+- **app:** correct balance ticker updates ([38bf16b](https://github.com/budgie-at/budgie/commit/38bf16b3a444676060874b8defccb56d14cfe508))
+- **app:** correct crypto rate display ([b472259](https://github.com/budgie-at/budgie/commit/b4722598e1c49e208dbce660e178e51f9151da83))
+- **app:** keep crypto seed in forward migration ([3bc48df](https://github.com/budgie-at/budgie/commit/3bc48dfec75f6fbcb08ea25473a2fdb1f7d96b27))
+- **app:** polish crypto account visuals ([a36d7c7](https://github.com/budgie-at/budgie/commit/a36d7c7f26ed488add0bf26139ca6a2442975773))
+- **app:** reduce crypto rate refresh jank ([6d27ac8](https://github.com/budgie-at/budgie/commit/6d27ac808123fd73e996199951af46638d29233e))
+- **app:** refine crypto group tile layout ([5794f3e](https://github.com/budgie-at/budgie/commit/5794f3e75b474b5e4e64bc7cd023e17c9d3da4e9))
+- **app:** refresh crypto rates on foreground ([e109326](https://github.com/budgie-at/budgie/commit/e109326e950e77c0d0439ac1dc5b18aa94300afe))
+- **app:** refresh crypto valuations from rates ([a08f784](https://github.com/budgie-at/budgie/commit/a08f7840e4c9cb48d45c3a6e49af6215d7493472))
+- **app:** restore balance total reactivity ([09e888e](https://github.com/budgie-at/budgie/commit/09e888e1aa25aef2bbe53dad8d54b4dd76de2bd5))
+- **app:** smooth exchange rate sync ([d924ce8](https://github.com/budgie-at/budgie/commit/d924ce8db254392bbe8b9be264b87526abdd0c03))
+- **app:** yield crypto rate sync ([fd711ef](https://github.com/budgie-at/budgie/commit/fd711ef68a74b297e5c06624489ea4d4e55eef42))
+
+### Features
+
+- **app:** add manual crypto accounts ([d279e1b](https://github.com/budgie-at/budgie/commit/d279e1b75d2a86010ae479392c88eea76aebdab8))
+- **app:** group crypto accounts by currency ([b9baee5](https://github.com/budgie-at/budgie/commit/b9baee50b90e9d04fd37b2911518712cbc3a14c2))
+- **app:** polish crypto account display ([a0b0a6c](https://github.com/budgie-at/budgie/commit/a0b0a6c7870285eb25be52a37a104e831cf2b641))
+
 ## [5.34.1](https://github.com/budgie-at/budgie/compare/v5.34.0...v5.34.1) (2026-06-04)
 
 ### Bug Fixes
