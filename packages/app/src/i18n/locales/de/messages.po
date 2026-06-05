@@ -399,6 +399,10 @@ msgstr "Konten und Transaktionen automatisch von Monobank synchronisieren"
 msgid "Available Columns"
 msgstr "Verfügbare Spalten"
 
+#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
+msgid "Avg cost"
+msgstr "Ø-Kosten"
+
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Balance"
 msgstr "Saldo"
@@ -463,10 +467,6 @@ msgstr "Biometrische Authentifizierung"
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Borrowed"
 msgstr "Geliehen"
-
-#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
-msgid "Break-even"
-msgstr "Gewinnschwelle"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Budgie"

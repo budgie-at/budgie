@@ -399,6 +399,10 @@ msgstr "Автоматична синхронізація рахунків та 
 msgid "Available Columns"
 msgstr "Доступні стовпці"
 
+#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
+msgid "Avg cost"
+msgstr "Сер. ціна"
+
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Balance"
 msgstr "Баланс"
@@ -463,10 +467,6 @@ msgstr "Біометрична автентифікація"
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Borrowed"
 msgstr "Позичено"
-
-#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
-msgid "Break-even"
-msgstr "Точка беззбитковості"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Budgie"
@@ -2852,7 +2852,7 @@ msgstr "Невідомо"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
-msgstr "Нереалізований P&L"
+msgstr "Нереаліз. приб./збиток"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx

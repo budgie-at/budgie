@@ -57,7 +57,7 @@ const calculatePosition = (entries: CryptoPositionEntryRowInterface[]) => {
 
     return {
         costBasis,
-        breakEvenPrice: averageCost
+        averageCost
     };
 };
 

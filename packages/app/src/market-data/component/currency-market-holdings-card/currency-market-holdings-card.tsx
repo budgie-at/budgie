@@ -103,7 +103,7 @@ export const CurrencyMarketHoldingsCard = ({ instrument, latestPrice }: Props) =
     const profitClassName = getProfitClassName(profit);
     const formattedBalance = `${formatDigits(balance)} ${instrument.code}`;
     const formattedMarketValue = formatOptionalValue(marketValue, defaultInstrument.symbol, formatDigits);
-    const formattedBreakEvenPrice = formatOptionalValue(position.breakEvenPrice, defaultInstrument.symbol, formatDigits);
+    const formattedAverageCost = formatOptionalValue(position.averageCost, defaultInstrument.symbol, formatDigits);
     const formattedCostBasis = formatOptionalValue(position.costBasis, defaultInstrument.symbol, formatDigits);
     const formattedProfit = formatProfitValue(profit, profitPercent, defaultInstrument.symbol, formatDigits);
 
@@ -128,7 +128,7 @@ export const CurrencyMarketHoldingsCard = ({ instrument, latestPrice }: Props) =
             <View className="bg-warning-corner/40 h-px" />
 
             <View className="gap-y-lg">
-                <CurrencyMarketHoldingMetricRow label={t`Break-even`} value={formattedBreakEvenPrice} />
+                <CurrencyMarketHoldingMetricRow label={t`Avg cost`} value={formattedAverageCost} />
                 <CurrencyMarketHoldingMetricRow label={t`Cost basis`} value={formattedCostBasis} />
                 <CurrencyMarketHoldingMetricRow label={t`Unrealized P&L`} value={formattedProfit} valueClassName={profitClassName} />
             </View>
