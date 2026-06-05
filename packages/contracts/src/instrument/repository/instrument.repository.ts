@@ -1,4 +1,4 @@
-import { and, eq, isNotNull } from 'drizzle-orm';
+import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 
 import { InstrumentPriceProviderEnum } from '../enum/instrument-price-provider.enum';
 import { InstrumentTypeEnum } from '../enum/instrument-type.enum';
@@ -40,7 +40,8 @@ export class InstrumentRepository {
             where: and(
                 eq(InstrumentEntityTable.type, type),
                 eq(InstrumentEntityTable.priceProvider, priceProvider),
-                isNotNull(InstrumentEntityTable.providerInstrumentId)
+                isNotNull(InstrumentEntityTable.providerInstrumentId),
+                isNull(InstrumentEntityTable.deletedAt)
             )
         });
     }

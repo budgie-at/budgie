@@ -1,5 +1,7 @@
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { useSettingsContext } from '../../settings/context/settings.context';
@@ -20,7 +22,7 @@ export const useAccountAssetClassTotalsQuery = () => {
     return {
         fiatTotal,
         cryptoTotal,
-        fiatCount: result?.fiatCount ?? 0,
-        cryptoCount: result?.cryptoCount ?? 0
+        fiatCount: isDefined(result?.fiatCount) ? result.fiatCount : 0,
+        cryptoCount: isDefined(result?.cryptoCount) ? result.cryptoCount : 0
     };
 };

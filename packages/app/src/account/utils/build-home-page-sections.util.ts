@@ -73,10 +73,15 @@ const appendAccount = <Key extends string>(
     key: Key,
     account: AccountWithBankSyncEntityInterface
 ): void => {
-    const groupAccounts = groups[key] ?? [];
+    const groupAccounts = groups[key];
 
-    groupAccounts.push(account);
-    groups[key] = groupAccounts;
+    if (isNotEmptyArray(groupAccounts)) {
+        groupAccounts.push(account);
+
+        return;
+    }
+
+    groups[key] = [account];
 };
 
 const appendBankSyncAccount = (account: AccountWithBankSyncEntityInterface, providerGroups: ProviderGroups): boolean => {
@@ -152,24 +157,29 @@ export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterfa
         appendAccount(accountGroups, account.type, account);
     });
 
-    const accountTypeSections: AccountTypeSectionInterface[] = typedObjectEntries(accountGroups)
-        .filter(([, groupAccounts]) => isNotEmptyArray(groupAccounts))
-        .map(([type, groupAccounts]) => ({
+    const accountTypeSections: AccountTypeSectionInterface[] = typedObjectEntries(accountGroups).flatMap(([type, groupAccounts]) => {
+        if (!isNotEmptyArray(groupAccounts)) {
+            return [];
+        }
+
+        return {
             kind: HomeSectionKindEnum.ACCOUNT_TYPE,
             type,
-            data:
-                type === AccountTypeEnum.CRYPTO
-                    ? groupCryptoAccountsByInstrument(groupAccounts ?? [])
-                    : pairAccountsIntoRows(groupAccounts ?? [])
-        }));
+            data: type === AccountTypeEnum.CRYPTO ? groupCryptoAccountsByInstrument(groupAccounts) : pairAccountsIntoRows(groupAccounts)
+        };
+    });
     const debtSections = buildDebtSections(debtYouOweAccounts, debtOwedToYouAccounts);
-    const providerSections: BankProviderSectionInterface[] = typedObjectEntries(providerGroups)
-        .filter(([, groupAccounts]) => isNotEmptyArray(groupAccounts))
-        .map(([provider, groupAccounts]) => ({
+    const providerSections: BankProviderSectionInterface[] = typedObjectEntries(providerGroups).flatMap(([provider, groupAccounts]) => {
+        if (!isNotEmptyArray(groupAccounts)) {
+            return [];
+        }
+
+        return {
             kind: HomeSectionKindEnum.BANK_PROVIDER,
             provider,
-            data: pairAccountsIntoRows(groupAccounts ?? [])
-        }));
+            data: pairAccountsIntoRows(groupAccounts)
+        };
+    });
 
     return [...accountTypeSections, ...debtSections, ...providerSections];
 };

@@ -37,7 +37,9 @@ export const CreateLiabilityAccount = ({
 }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
-    const instrumentId = instrumentType === InstrumentTypeEnum.FIAT ? defaultInstrument.id : (instruments.at(0)?.id ?? 0);
+    const cryptoInstrumentId = instruments.at(0)?.id;
+    const isMissingCryptoInstrument = instrumentType === InstrumentTypeEnum.CRYPTO && !isDefined(cryptoInstrumentId);
+    const instrumentId = isDefined(cryptoInstrumentId) ? cryptoInstrumentId : defaultInstrument.id;
 
     const { control, handleSubmit, instrument } = useAccountForm(
         {
@@ -51,7 +53,7 @@ export const CreateLiabilityAccount = ({
         async values => accountService.create(values)
     );
 
-    if (!isDefined(instrument)) {
+    if (isMissingCryptoInstrument || !isDefined(instrument)) {
         return <EmptyScreen />;
     }
 

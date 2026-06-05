@@ -1,4 +1,4 @@
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { microPause } from './micro-pause.util';
 
@@ -7,6 +7,10 @@ export const processInputWithBatches = async <T, O>(
     batchSize: number,
     cb: (batch: T[]) => Promise<O[] | null>
 ): Promise<O[]> => {
+    if (!isPositiveNumber(batchSize)) {
+        throw new Error();
+    }
+
     const results: O[] = [];
 
     for (let index = 0; index < inputs.length; index += batchSize) {

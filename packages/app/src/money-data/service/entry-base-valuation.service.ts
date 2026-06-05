@@ -74,14 +74,21 @@ class EntryBaseValuationService {
     }
 
     @Log(
-        (sourceInstrumentId, targetInstrumentId, operatedAt, tx) =>
-            `enter sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))}`,
-        // eslint-disable-next-line @typescript-eslint/max-params -- Log hooks intentionally keep positional arguments
-        (result, sourceInstrumentId, targetInstrumentId, operatedAt, tx) =>
-            `done sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} baseExchangeRate=${result} hasTx=${String(isDefined(tx))}`,
-        // eslint-disable-next-line @typescript-eslint/max-params -- Log hooks intentionally keep positional arguments
-        (error, sourceInstrumentId, targetInstrumentId, operatedAt, tx) =>
-            `throw sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (...inputs) => {
+            const [sourceInstrumentId, targetInstrumentId, operatedAt, tx] = inputs;
+
+            return `enter sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))}`;
+        },
+        (result, ...inputs) => {
+            const [sourceInstrumentId, targetInstrumentId, operatedAt, tx] = inputs;
+
+            return `done sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} baseExchangeRate=${result} hasTx=${String(isDefined(tx))}`;
+        },
+        (error, ...inputs) => {
+            const [sourceInstrumentId, targetInstrumentId, operatedAt, tx] = inputs;
+
+            return `throw sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`;
+        }
     )
     async resolveHistoricalBaseExchangeRate(
         sourceInstrumentId: number,
@@ -98,6 +105,20 @@ class EntryBaseValuationService {
         throw new Error(t`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`);
     }
 
+    @Log(
+        (entries, operatedAt, externalSource, tx) =>
+            `enter accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} externalSource=${externalSource ?? ''} hasTx=${String(isDefined(tx))}`,
+        (result, ...inputs) => {
+            const [entries, operatedAt, externalSource, tx] = inputs;
+
+            return `done accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} externalSource=${externalSource ?? ''} hasTx=${String(isDefined(tx))} count=${result.size}`;
+        },
+        (error, ...inputs) => {
+            const [entries, operatedAt, externalSource, tx] = inputs;
+
+            return `throw accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} externalSource=${externalSource ?? ''} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`;
+        }
+    )
     async valueEntries(
         entries: TransactionEntryCreateInputInterface[],
         operatedAt: Date,

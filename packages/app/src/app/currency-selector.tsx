@@ -3,6 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { FlatList, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { CurrencySelectorCard } from '../@generic/component/currency-selector-card/currency-selector-card';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
@@ -28,7 +30,7 @@ export default function CurrencySelectorModal() {
     const [, resolveCurrencySelector, currentParams] = useCurrencySelectorModal();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
-    const instrumentType = currentParams?.instrumentType ?? InstrumentTypeEnum.FIAT;
+    const instrumentType = isDefined(currentParams?.instrumentType) ? currentParams.instrumentType : InstrumentTypeEnum.FIAT;
     const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
 
     const selectedInstrumentId = currentParams?.selectedInstrumentId;

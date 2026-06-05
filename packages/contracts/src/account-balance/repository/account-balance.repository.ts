@@ -1,6 +1,5 @@
 import { and, eq, inArray, isNull, ne, sql } from 'drizzle-orm';
 
-import { DB } from '../../@generic/type/db.type';
 import {
     getDirectExchangeRateSql,
     getHistoricalExchangeRateSql,
@@ -19,12 +18,44 @@ import { TransactionEntryEntityTable } from '../../transaction-entry/table/trans
 import { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
 
+import type { DB } from '../../@generic/type/db.type';
 import type { AccountBalanceEntityInterface } from '../entity/account-balance-entity.interface';
 
 export class AccountBalanceRepository {
     constructor(private db: DB) {}
 
-    // TODO: change to bulkUpsert when drizzle is updated to the latest version
+    getAssetClassTotals(defaultInstrumentId: number) {
+        const fiatExchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
+        const cryptoExchangeRateSql = this.buildStrictExchangeRateConversionSql(defaultInstrumentId);
+        const balanceSql = this.getAccountBalanceWithTransactionsSql();
+
+        return this.db
+            .select({
+                fiatTotal: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${fiatExchangeRateSql} ELSE 0 END), 0)`,
+                cryptoTotal: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${cryptoExchangeRateSql} ELSE 0 END), 0)`,
+                fiatCount: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)`,
+                cryptoCount: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)`
+            })
+            .from(AccountEntityTable)
+            .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
+    }
+
+    getTotalByCryptoInstrument(instrumentId: number) {
+        return this.db
+            .select({
+                balance: sql<number>`COALESCE(SUM(${this.getAccountBalanceWithTransactionsSql()}), 0)`
+            })
+            .from(AccountEntityTable)
+            .where(
+                and(
+                    eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO),
+                    eq(AccountEntityTable.instrumentId, instrumentId),
+                    eq(AccountEntityTable.isActive, true),
+                    isNull(AccountEntityTable.deletedAt)
+                )
+            );
+    }
+
     async upsert(input: AccountBalanceCreateEntityInterface, tx?: DB): Promise<AccountBalanceEntityInterface> {
         const [accountBalance] = await (tx ?? this.db)
             .insert(AccountBalanceEntityTable)
@@ -119,38 +150,6 @@ export class AccountBalanceRepository {
             })
             .from(AccountEntityTable)
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
-    }
-
-    getAssetClassTotals(defaultInstrumentId: number) {
-        const fiatExchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
-        const cryptoExchangeRateSql = this.buildStrictExchangeRateConversionSql(defaultInstrumentId);
-        const balanceSql = this.getAccountBalanceWithTransactionsSql();
-
-        return this.db
-            .select({
-                fiatTotal: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${fiatExchangeRateSql} ELSE 0 END), 0)`,
-                cryptoTotal: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${cryptoExchangeRateSql} ELSE 0 END), 0)`,
-                fiatCount: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)`,
-                cryptoCount: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)`
-            })
-            .from(AccountEntityTable)
-            .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
-    }
-
-    getTotalByCryptoInstrument(instrumentId: number) {
-        return this.db
-            .select({
-                balance: sql<number>`COALESCE(SUM(${this.getAccountBalanceWithTransactionsSql()}), 0)`
-            })
-            .from(AccountEntityTable)
-            .where(
-                and(
-                    eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO),
-                    eq(AccountEntityTable.instrumentId, instrumentId),
-                    eq(AccountEntityTable.isActive, true),
-                    isNull(AccountEntityTable.deletedAt)
-                )
-            );
     }
 
     // jscpd:ignore-start
