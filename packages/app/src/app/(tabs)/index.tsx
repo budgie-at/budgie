@@ -1,6 +1,7 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { useSQLiteContext } from 'expo-sqlite';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -48,17 +49,20 @@ export default function HomePage() {
     const scrollY = useSharedValue(0);
 
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom;
-    const contentContainerStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20 };
-    const emptyStateStyle = { paddingBottom: bottomPadding };
+    const contentContainerStyle = useMemo(() => ({ paddingBottom: bottomPadding, paddingHorizontal: 20 }), [bottomPadding]);
+    const emptyStateStyle = useMemo(() => ({ paddingBottom: bottomPadding }), [bottomPadding]);
 
-    const activeAccounts = accounts.filter(account => account.isActive);
-    const sections = buildHomePageSections(activeAccounts);
-    const listFooterComponent =
-        activeAccounts.length > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
-            <CollapsibleNetWorthHeaderScrollSpacer />
-        ) : null;
+    const activeAccounts = useMemo(() => accounts.filter(account => account.isActive), [accounts]);
+    const sections = useMemo(() => buildHomePageSections(activeAccounts), [activeAccounts]);
+    const listFooterComponent = useMemo(
+        () =>
+            activeAccounts.length > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
+                <CollapsibleNetWorthHeaderScrollSpacer />
+            ) : null,
+        [activeAccounts.length]
+    );
 
-    const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => {
+    const renderSectionHeader = useCallback(({ section }: { section: HomeSectionInterface }) => {
         if (isBankProviderSection(section)) {
             return <BankProviderSectionHeader provider={section.provider} />;
         }
@@ -68,25 +72,31 @@ export default function HomePage() {
         }
 
         return <AccountSectionHeader type={section.type} />;
-    };
+    }, []);
 
-    const renderItem = ({ item, section }: { item: AccountRowInterface | CryptoCurrencyGroupInterface; section: HomeSectionInterface }) => {
-        if (isCryptoCurrencyGroup(item)) {
-            return <CryptoCurrencyGroupCard group={item} />;
-        }
+    const renderItem = useCallback(
+        ({ item, section }: { item: AccountRowInterface | CryptoCurrencyGroupInterface; section: HomeSectionInterface }) => {
+            if (isCryptoCurrencyGroup(item)) {
+                return <CryptoCurrencyGroupCard group={item} />;
+            }
 
-        const accountType = getSectionAccountType(section);
+            const accountType = getSectionAccountType(section);
 
-        return (
-            <View className="flex-row mb-3">
-                <AccountGridItem account={item.left} type={accountType} isLeft />
-                {item.right ? <AccountGridItem account={item.right} type={accountType} isLeft={false} /> : <View className="flex-1" />}
-            </View>
-        );
-    };
+            return (
+                <View className="flex-row mb-3">
+                    <AccountGridItem account={item.left} type={accountType} isLeft />
+                    {item.right ? <AccountGridItem account={item.right} type={accountType} isLeft={false} /> : <View className="flex-1" />}
+                </View>
+            );
+        },
+        []
+    );
 
-    const keyExtractor = (item: AccountRowInterface | CryptoCurrencyGroupInterface) =>
-        isCryptoCurrencyGroup(item) ? `crypto-${item.instrument.id}` : String(item.left.id);
+    const keyExtractor = useCallback(
+        (item: AccountRowInterface | CryptoCurrencyGroupInterface) =>
+            isCryptoCurrencyGroup(item) ? `crypto-${item.instrument.id}` : String(item.left.id),
+        []
+    );
 
     return (
         <View className="flex-1 bg-background">
