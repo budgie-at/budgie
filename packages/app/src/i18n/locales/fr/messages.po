@@ -1600,6 +1600,7 @@ msgstr "Apprentissage des transactions"
 msgid "Learning up to date"
 msgstr "Apprentissage à jour"
 
+#: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
 #: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
 msgid "Left"
 msgstr "Restant"
@@ -1612,6 +1613,7 @@ msgstr "Prêté"
 msgid "Less Than"
 msgstr "Inférieur à"
 
+#: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
 #: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
 msgid "Limit"
 msgstr "Limite"
@@ -2008,6 +2010,7 @@ msgstr "Les transactions importées d'origine seront restaurées et la transacti
 msgid "Original transaction"
 msgstr "Transaction d’origine"
 
+#: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
 #: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
 msgid "Over budget"
 msgstr "Budget dépassé"
@@ -2621,6 +2624,7 @@ msgstr "Dépenses par catégorie"
 msgid "Spending by Tag"
 msgstr "Dépenses par étiquette"
 
+#: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
 #: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"

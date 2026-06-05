@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetActiveBudgetQuery } from '../../query/use-get-active-budget.query';
@@ -20,6 +21,7 @@ export const BudgetWidget = () => {
     const { budget } = useGetActiveBudgetQuery();
     const { spent } = useGetBudgetSpentQuery(budget);
     const { categoryLimits } = useGetBudgetCategoryLimitsQuery(isDefined(budget) ? budget.id : null);
+    const { formatMonthAndDay } = useFormatDate();
 
     if (!isEnabled) {
         return null;
@@ -31,7 +33,7 @@ export const BudgetWidget = () => {
 
     const handleNavigate = () => void router.push('/budget');
 
-    const dateLabel = formatBudgetPeriodLabel(budget);
+    const dateLabel = formatBudgetPeriodLabel(budget, formatMonthAndDay);
 
     return (
         <Card testID={BudgetSelector.WidgetCard} variant="ghost" onPress={handleNavigate} className="gap-y-lg">
@@ -43,6 +45,7 @@ export const BudgetWidget = () => {
             </View>
 
             <BudgetProgressBar
+                amountDecimalPlaces={0}
                 isAmountLight
                 spent={spent.spentOverall}
                 limit={budget.overallLimit}

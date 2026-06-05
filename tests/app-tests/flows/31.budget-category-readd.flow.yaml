@@ -128,4 +128,4 @@ appId: ${APP_ID}
     timeout: 3000
 - assertVisible:
     id: 'BudgetDetails.CategorySpentLabel.11'
-    text: '0.00 / 300.00'
+    text: '$0.00'
