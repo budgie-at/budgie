@@ -53,10 +53,10 @@ env:
     timeout: 3000
 - assertVisible:
     id: 'BudgetWidget.SpentLabel'
-    text: '0 / 1000'
+    text: '€0 / €1,000'
 - assertVisible:
     id: 'BudgetWidget.CategorySpentLabel.42'
-    text: '0'
+    text: '€0'
 
 - runFlow:
     file: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -103,11 +103,11 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'BudgetWidget.SpentLabel'
-      text: '100 / 1000'
+      text: '€100 / €1,000'
     timeout: 3000
 - assertVisible:
     id: 'BudgetWidget.CategorySpentLabel.42'
-    text: '100'
+    text: '€100'
 
 - runFlow:
     file: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -152,11 +152,11 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'BudgetWidget.SpentLabel'
-      text: '100 / 1000'
+      text: '€100 / €1,000'
     timeout: 3000
 - assertVisible:
     id: 'BudgetWidget.CategorySpentLabel.42'
-    text: '100'
+    text: '€100'
 
 - openLink: 'budgie://transactions/10/income'
 - extendedWaitUntil:
@@ -199,8 +199,8 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'BudgetWidget.SpentLabel'
-      text: '70 / 1000'
+      text: '€70 / €1,000'
     timeout: 5000
 - assertVisible:
     id: 'BudgetWidget.CategorySpentLabel.42'
-    text: '70'
+    text: '€70'

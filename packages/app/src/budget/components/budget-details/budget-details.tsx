@@ -45,7 +45,6 @@ export const BudgetDetails = ({ budget }: Props) => {
     const currencySymbol = instrument?.symbol ?? '';
     const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);
     const displaySpent = convertFromMicroUnits(spent.spentOverall);
-    const displayLimit = convertFromMicroUnits(budget.overallLimit);
 
     const handleEditPress = () => {
         router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
@@ -55,6 +54,8 @@ export const BudgetDetails = ({ budget }: Props) => {
         <BudgetDetailsCategoryList
             categoryLimits={categoryLimits}
             spentByCategory={spent.spentByCategory}
+            spentOverall={spent.spentOverall}
+            overallLimit={budget.overallLimit}
             periodStart={periodWindow.periodStart}
             periodEnd={periodEnd}
             currencySymbol={currencySymbol}
@@ -80,11 +81,13 @@ export const BudgetDetails = ({ budget }: Props) => {
                     <Text className="text-secondary-foreground text-sm">{formatDigits(displaySpent, currencySymbol)}</Text>
                 </View>
 
-                <BudgetProgressBar spent={spent.spentOverall} limit={budget.overallLimit} spentTestID={BudgetSelector.DetailsSpentLabel} />
-
-                <Text className="text-secondary-foreground text-sm">
-                    {formatDigits(displaySpent, currencySymbol)} / {formatDigits(displayLimit, currencySymbol)}
-                </Text>
+                <BudgetProgressBar
+                    spent={spent.spentOverall}
+                    limit={budget.overallLimit}
+                    spentTestID={BudgetSelector.DetailsSpentLabel}
+                    currencySymbol={currencySymbol}
+                    remainingTestID={BudgetSelector.DetailsRemainingLabel}
+                />
             </View>
 
             <View className="gap-y-md">

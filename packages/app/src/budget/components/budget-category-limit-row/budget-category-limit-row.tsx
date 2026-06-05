@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { buildBudgetCategoryLimitMetrics } from '../../utils/build-budget-category-limit-metrics.util';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
@@ -12,21 +13,23 @@ const WIDGET_AMOUNT_DECIMAL_PLACES = 0;
 
 interface Props {
     readonly categoryId: number;
+    readonly currencySymbol: string;
     readonly limitAmount: number;
     readonly spent: number;
     readonly testID?: string;
     readonly spentTestID?: string;
 }
 
-export const BudgetCategoryLimitRow = ({ categoryId, limitAmount, spent, testID, spentTestID }: Props) => {
+export const BudgetCategoryLimitRow = ({ categoryId, currencySymbol, limitAmount, spent, testID, spentTestID }: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId);
     const { t } = useLingui();
     const metrics = buildBudgetCategoryLimitMetrics(spent, limitAmount);
+    const formatDigits = useFormatDigits(WIDGET_AMOUNT_DECIMAL_PLACES);
     const remainingLabel = metrics.isOverBudget ? t`Over budget` : t`Left`;
     const title = category?.title ?? '';
-    const spentLabel = metrics.displaySpent.toFixed(WIDGET_AMOUNT_DECIMAL_PLACES);
-    const limitLabel = metrics.displayLimit.toFixed(WIDGET_AMOUNT_DECIMAL_PLACES);
-    const remainingAmountLabel = metrics.displayRemaining.toFixed(WIDGET_AMOUNT_DECIMAL_PLACES);
+    const spentLabel = formatDigits(metrics.displaySpent, currencySymbol);
+    const limitLabel = formatDigits(metrics.displayLimit, currencySymbol);
+    const remainingAmountLabel = formatDigits(metrics.displayRemaining, currencySymbol);
 
     return (
         <View testID={testID} collapsable={false} className="flex-row items-center gap-x-md">

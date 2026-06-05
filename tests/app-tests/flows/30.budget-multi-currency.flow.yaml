@@ -31,7 +31,7 @@ appId: ${APP_ID}
     timeout: 3000
 - assertVisible:
     id: 'BudgetWidget.SpentLabel'
-    text: '136 / 200'
+    text: '€136 / €200'
 
 - tapOn:
     id: 'BudgetWidget.Card'
@@ -40,4 +40,4 @@ appId: ${APP_ID}
     timeout: 3000
 - assertVisible:
     id: 'BudgetDetails.SpentLabel'
-    text: '136.21 / 200.00'
+    text: '€136 / €200'

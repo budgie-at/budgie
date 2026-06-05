@@ -16,7 +16,11 @@ import { BudgetCategoryLimitsEmptyState } from '../budget-category-limits-empty-
 
 const ADD_BUTTON_STYLE = { width: 26, height: 26 } as const;
 
-export const BudgetInlineCategoryLimits = () => {
+interface Props {
+    readonly currencySymbol: string;
+}
+
+export const BudgetInlineCategoryLimits = ({ currencySymbol }: Props) => {
     const { control } = useFormContext<BudgetFormValues>();
     const { fields, append, remove } = useFieldArray({ control, name: 'categoryLimits' });
     const categoryLimits = useWatch({ control, name: 'categoryLimits' });
@@ -55,7 +59,9 @@ export const BudgetInlineCategoryLimits = () => {
             {isCategoryLimitsEmpty ? (
                 <BudgetCategoryLimitsEmptyState onPress={handleAddPress} testID={BudgetSelector.SetupCategoryLimitAddButton} />
             ) : (
-                fields.map((field, index) => <BudgetCategoryLimitCompactRow key={field.id} index={index} onRemove={remove} />)
+                fields.map((field, index) => (
+                    <BudgetCategoryLimitCompactRow key={field.id} currencySymbol={currencySymbol} index={index} onRemove={remove} />
+                ))
             )}
         </View>
     );

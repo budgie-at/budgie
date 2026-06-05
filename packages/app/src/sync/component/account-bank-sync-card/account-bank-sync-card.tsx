@@ -23,7 +23,7 @@ const statusTextVariants = cva('text-xs font-medium', {
     variants: {
         status: {
             [BankSyncStatusEnum.FAILED]: 'text-destructive-foreground',
-            [BankSyncStatusEnum.SYNCING]: 'text-warning-foreground',
+            [BankSyncStatusEnum.SYNCING]: 'text-dark-warning-foreground',
             [BankSyncStatusEnum.IDLE]: 'text-positive-foreground'
         }
     }

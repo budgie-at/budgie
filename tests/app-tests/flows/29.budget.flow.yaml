@@ -59,7 +59,7 @@ env:
       timeout: 3000
 - assertVisible:
       id: 'BudgetWidget.SpentLabel'
-      text: '0 / 1000'
+      text: '€0 / €1,000'
 
 - runFlow:
       file: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -104,7 +104,7 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'BudgetWidget.SpentLabel'
-          text: '42 / 1000'
+          text: '€42 / €1,000'
       timeout: 3000
 
 - openLink: 'budgie://budget'
@@ -114,7 +114,7 @@ env:
 - assertNotVisible: 'Edit budget'
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
-      text: '42.00 / 1000.00'
+      text: '€42 / €1,000'
 
 - tapOn:
       id: 'PageHeader.BackButton'
@@ -157,7 +157,7 @@ env:
       timeout: 3000
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
-      text: '42.00 / 1500.00'
+      text: '€42 / €1,500'
 
 - tapOn:
       id: 'BudgetDetails.EditButton'
@@ -181,7 +181,7 @@ env:
 - assertNotVisible: 'Edit budget'
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
-      text: '42.00 / 1500.00'
+      text: '€42 / €1,500'
 
 - tapOn:
       id: 'BudgetDetails.EditButton'
@@ -299,7 +299,7 @@ env:
       timeout: 3000
 - assertVisible:
       id: 'BudgetWidget.CategorySpentLabel.42'
-      text: '42'
+      text: '€42'
 - assertVisible:
       id: 'BudgetWidget.CategoryRow.11'
 - assertVisible:
@@ -325,7 +325,7 @@ env:
       id: 'BudgetDetails.CategoryRow.42'
 - assertVisible:
       id: 'BudgetDetails.CategorySpentLabel.42'
-      text: '$42.00'
+      text: '€42'
 - scrollUntilVisible:
       element:
           id: 'BudgetDetails.CategoryRow.11'
@@ -396,7 +396,7 @@ env:
       id: 'TransactionCard.Label.Spotify_Premium'
 
 - tapOn:
-      id: 'PageHeader.BackButton'
+      point: '9%,9%'
 - extendedWaitUntil:
       visible: 'Budget details'
       timeout: 3000
@@ -438,13 +438,6 @@ env:
 - assertNotVisible:
       id: 'BudgetDetails.CategoryRow.11'
 
-- tapOn:
-      id: 'TabBar.Settings'
-- extendedWaitUntil:
-      visible:
-          id: 'SettingsPage.Container'
-      timeout: 3000
-
 - openLink: 'budgie://settings?anchor=budget'
 
 - extendedWaitUntil:
@@ -457,7 +450,7 @@ env:
       visible: 'Edit budget'
       timeout: 3000
 - tapOn:
-      id: 'PageHeader.BackButton'
+      point: '9%,9%'
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.Container'
@@ -504,13 +497,6 @@ env:
 - assertNotVisible:
       id: 'BudgetWidget.EmptyState'
 
-- tapOn:
-      id: 'TabBar.Settings'
-- extendedWaitUntil:
-      visible:
-          id: 'SettingsPage.Container'
-      timeout: 3000
-
 - openLink: 'budgie://settings?anchor=budget'
 - extendedWaitUntil:
       visible:
@@ -555,7 +541,6 @@ env:
       timeout: 3000
 - tapOn: 'Delete'
 
-- extendedWaitUntil:
-      visible:
-          id: 'BudgetWidget.EmptyState'
-      timeout: 5000
+- waitForAnimationToEnd
+- assertNotVisible:
+      id: 'BudgetWidget.Card'

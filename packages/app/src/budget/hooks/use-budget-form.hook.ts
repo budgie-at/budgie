@@ -19,6 +19,8 @@ import { budgetService } from '../service/budget.service';
 
 const DEFAULT_PERIOD_START_DAY = 1;
 const EMPTY_CATEGORY_LIMITS: readonly BudgetCategoryLimitEntityInterface[] = [];
+const EDITING_FALLBACK_ROUTE = '/budget' as const;
+const DEFAULT_FALLBACK_ROUTE = '/' as const;
 
 interface UseBudgetFormOptionsInterface {
     readonly editingId: number | null;
@@ -145,7 +147,8 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
 
     const handleCancel = () => {
         resetFormFromBudget(hydratedCategoryLimits);
-        goBackOrReplace('/');
+        const fallbackRoute = isEditing ? EDITING_FALLBACK_ROUTE : DEFAULT_FALLBACK_ROUTE;
+        goBackOrReplace(fallbackRoute);
     };
 
     const handleSubmit = () => {
@@ -171,7 +174,8 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
                     await budgetService.createBudget(basePayload);
                 }
 
-                goBackOrReplace('/');
+                const fallbackRoute = isEditing ? EDITING_FALLBACK_ROUTE : DEFAULT_FALLBACK_ROUTE;
+                goBackOrReplace(fallbackRoute);
             } catch (error: unknown) {
                 const errorMessage = isEditing ? t`Could not save budget` : t`Could not create budget`;
                 Toast.show({ type: 'error', text1: errorMessage, text2: getErrorMessage(error) });
