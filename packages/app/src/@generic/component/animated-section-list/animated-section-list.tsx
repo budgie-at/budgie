@@ -20,7 +20,5 @@ export const AnimatedSectionList = <ItemT, SectionT = DefaultSectionT>({
         onScroll?.(event);
     };
 
-    return (
-        <SectionList<ItemT, SectionT> ref={ref} onScroll={handleScroll} scrollEventThrottle={16} stickySectionHeadersEnabled {...rest} />
-    );
+    return <SectionList<ItemT, SectionT> ref={ref} onScroll={handleScroll} scrollEventThrottle={16} {...rest} />;
 };
