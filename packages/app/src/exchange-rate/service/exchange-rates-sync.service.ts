@@ -172,7 +172,9 @@ class ExchangeRatesSyncService {
         const timeoutId = setTimeout(() => void controller.abort(), ExchangeRatesSyncService.FETCH_TIMEOUT_MS);
 
         try {
-            return await fetch(url, { signal: controller.signal }).catch(() => null);
+            return await fetch(url, { signal: controller.signal });
+        } catch {
+            return null;
         } finally {
             clearTimeout(timeoutId);
         }
@@ -187,7 +189,9 @@ class ExchangeRatesSyncService {
             return null;
         }
 
-        return prices[providerInstrumentId]?.[quoteCode] ?? null;
+        const price = prices[providerInstrumentId]?.[quoteCode];
+
+        return isDefined(price) ? price : null;
     }
 
     private buildInstrumentRateInputs(

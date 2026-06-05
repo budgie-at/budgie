@@ -7,8 +7,8 @@ export const processInputWithBatches = async <T, O>(
     batchSize: number,
     cb: (batch: T[]) => Promise<O[] | null>
 ): Promise<O[]> => {
-    if (!isPositiveNumber(batchSize)) {
-        throw new Error();
+    if (!Number.isInteger(batchSize) || !isPositiveNumber(batchSize)) {
+        throw new RangeError();
     }
 
     const results: O[] = [];

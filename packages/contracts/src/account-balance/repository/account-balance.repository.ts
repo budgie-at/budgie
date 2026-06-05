@@ -76,8 +76,13 @@ export class AccountBalanceRepository {
             .where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
-    getAllBalances() {
-        return this.db.select().from(AccountBalanceEntityTable);
+    getLatestUpdatedAt() {
+        return this.db
+            .select({
+                updatedAt: sql<Date | null>`MAX(${AccountBalanceEntityTable.updatedAt})`
+            })
+            .from(AccountBalanceEntityTable)
+            .where(isNull(AccountBalanceEntityTable.deletedAt));
     }
 
     async getNewTransactionEntriesDeltas(accountIds: number[], tx?: DB): Promise<Map<number, number>> {
@@ -152,7 +157,6 @@ export class AccountBalanceRepository {
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
-    // jscpd:ignore-start
     getTotalByAccountType(defaultInstrumentId: number, accountType: AccountTypeEnum) {
         const exchangeRateSql =
             accountType === AccountTypeEnum.CRYPTO
@@ -208,7 +212,6 @@ export class AccountBalanceRepository {
                 )
             );
     }
-    // jscpd:ignore-end
 
     async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(AccountBalanceEntityTable);

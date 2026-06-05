@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -39,8 +39,13 @@ export class ExchangeRateRepository {
             });
     }
 
-    getAll() {
-        return this.db.query.ExchangeRateEntityTable.findMany();
+    getLatestUpdatedAt() {
+        return this.db
+            .select({
+                updatedAt: sql<Date | null>`MAX(${ExchangeRateEntityTable.updatedAt})`
+            })
+            .from(ExchangeRateEntityTable)
+            .where(isNull(ExchangeRateEntityTable.deletedAt));
     }
 
     findByBaseAndQuoteIds(baseInstrumentId: number, quoteInstrumentId: number) {

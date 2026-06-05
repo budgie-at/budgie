@@ -14,7 +14,7 @@ export const useBankProviderTotalQuery = (provider: ExternalSourceEnum) => {
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
     const dependencies = [defaultInstrument.id, provider, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
     const { data } = useLiveQuery(accountBalanceRepository.getTotalByBankProvider(defaultInstrument.id, provider), dependencies);
-    const total = useCachedMicroUnitQuery(data.at(0)?.total, dependencies);
+    const total = useCachedMicroUnitQuery(data.at(0)?.total);
 
     return total;
 };
