@@ -4,6 +4,7 @@ import { LayoutChangeEvent, Text, View } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { NetWorthAssetChips } from '../../../account/component/net-worth-asset-chips/net-worth-asset-chips';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -18,7 +19,7 @@ interface Props {
 }
 
 const HEADER_COLLAPSED_HEIGHT = 40;
-const HEADER_EXPANDED_HEIGHT = 140;
+const HEADER_EXPANDED_HEIGHT = 156;
 const SCROLL_THRESHOLD = 100;
 const EXPANDED_OPACITY_THRESHOLD = 0.6;
 const COLLAPSED_OPACITY_THRESHOLD = 0.5;
@@ -124,6 +125,8 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
                             {netWorth}
                         </ProtectedMoney>
                     </View>
+
+                    <NetWorthAssetChips />
                 </Animated.View>
             </Animated.View>
         </View>
