@@ -17,6 +17,11 @@ msgstr ""
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} tx queued"
 
+#. placeholder {0}: group.accounts.length
+#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
+msgid "{0, plural, one {# account} other {# accounts}}"
+msgstr "{0, plural, one {# account} other {# accounts}}"
+
 #: src/account/component/accounts-group/accounts-group.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# account} other {# accounts}}"
@@ -144,6 +149,10 @@ msgstr "<"
 msgid ">"
 msgstr ">"
 
+#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
+msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
+msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
+
 #: src/@generic/component/currency-selector/currency-selector.tsx
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -166,6 +175,7 @@ msgstr "About"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Account"
@@ -410,6 +420,7 @@ msgstr "Available Columns"
 msgid "Balance"
 msgstr "Balance"
 
+#: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "Balance Adjustment"
@@ -633,6 +644,10 @@ msgstr "Close menu"
 #: src/rule/constant/external-source.constant.ts
 msgid "Coinbase"
 msgstr "Coinbase"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Cold wallets and exchange balances"
+msgstr "Cold wallets and exchange balances"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
@@ -898,6 +913,7 @@ msgstr "Could not update rule"
 msgid "Could not update token"
 msgstr "Could not update token"
 
+#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "Could not update transaction."
@@ -974,6 +990,11 @@ msgstr "Create your first account to start tracking your finances"
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto"
 msgstr "Crypto"
+
+#: src/account/component/create-crypto-account/create-crypto-account.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Crypto Account"
+msgstr "Crypto Account"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "CSV"
@@ -1728,6 +1749,10 @@ msgstr "Merge matching transfers and refunds"
 msgid "Missing categories"
 msgstr "Missing categories"
 
+#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
+msgid "Missing rate"
+msgstr "Missing rate"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Money lent or borrowed"
 msgstr "Money lent or borrowed"
@@ -1829,6 +1854,10 @@ msgstr "No contacts found on this device."
 #: src/app/contact-selector.tsx
 msgid "No contacts yet"
 msgstr "No contacts yet"
+
+#: src/app/currency-selector.tsx
+msgid "No crypto found"
+msgstr "No crypto found"
 
 #: src/app/currency-selector.tsx
 msgid "No currencies found"
@@ -2370,6 +2399,10 @@ msgstr "Search categories..."
 #: src/app/contact-selector.tsx
 msgid "Search contacts..."
 msgstr "Search contacts..."
+
+#: src/app/currency-selector.tsx
+msgid "Search crypto..."
+msgstr "Search crypto..."
 
 #: src/app/currency-selector.tsx
 msgid "Search currencies..."

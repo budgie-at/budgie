@@ -29,7 +29,8 @@ import m0024 from './0024_default_category_translations.sql';
 import m0025 from './0025_add_consolidation_query_indexes.sql';
 import m0026 from './0026_money_data_upgrade.sql';
 import m0027 from './0027_mark_fee_entries.sql';
-import m0028 from './0028_add_budget_planning.sql';
+import m0028 from './0028_add_crypto_instruments.sql';
+import m0029 from './0029_add_budget_planning.sql';
 
 export default {
     journal,
@@ -62,6 +63,7 @@ export default {
         m0025,
         m0026,
         m0027,
-        m0028
+        m0028,
+        m0029
     }
 };

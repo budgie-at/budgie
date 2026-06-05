@@ -100,6 +100,7 @@ export { TagUpdateEntitySchema } from './tag/schema/tag-update-entity.schema';
 export { TagRepository } from './tag/repository/tag.repository';
 
 export { InstrumentTypeEnum } from './instrument/enum/instrument-type.enum';
+export { InstrumentPriceProviderEnum } from './instrument/enum/instrument-price-provider.enum';
 export { InstrumentAssociationEnum } from './instrument/enum/instrument-association.enum';
 
 export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';

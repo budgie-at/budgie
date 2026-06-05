@@ -2,6 +2,7 @@ import { createSelectSchema } from 'drizzle-zod';
 import { enum as zodEnum } from 'zod';
 
 import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.constant';
+import { InstrumentPriceProviderEnum } from '../enum/instrument-price-provider.enum';
 import { InstrumentTypeEnum } from '../enum/instrument-type.enum';
 import { InstrumentEntityTable } from '../table/instrument-entity.table';
 
@@ -10,5 +11,8 @@ export const InstrumentEntitySchema = createSelectSchema(InstrumentEntityTable, 
     name: schema => schema.describe('The instrument name.'),
     type: zodEnum(InstrumentTypeEnum).describe('The instrument type.'),
     symbol: schema => schema.describe('The instrument symbol.'),
-    code: schema => schema.describe('The instrument code.')
+    code: schema => schema.describe('The instrument code.'),
+    priceProvider: zodEnum(InstrumentPriceProviderEnum).nullable().describe('The market data provider for this instrument.'),
+    providerInstrumentId: schema => schema.nullable().describe('The provider-specific instrument id.'),
+    marketCapRank: schema => schema.positive().nullable().describe('The provider market-cap rank.')
 });

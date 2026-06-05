@@ -1070,6 +1070,7 @@ __metadata:
     "@types/babel__core": "npm:^7"
     "@types/better-sqlite3": "npm:^7.6.13"
     "@types/papaparse": "npm:^5"
+    "@vnaidin/react-native-cryptocurrency-icons": "npm:0.0.31"
     babel-plugin-inline-import: "npm:^3.0.0"
     babel-plugin-macros: "npm:^3.1.0"
     babel-plugin-react-compiler: "npm:^1.0.0"
@@ -1111,6 +1112,7 @@ __metadata:
     expo-system-ui: "npm:~56.0.5"
     expo-task-manager: "npm:~56.0.16"
     expo-updates: "npm:~56.0.17"
+    ky: "npm:^2.0.2"
     lightningcss: "npm:1.30.1"
     llama.rn: "npm:^0.12.4"
     lucide-react-native: "npm:^1.17.0"
@@ -7265,6 +7267,16 @@ __metadata:
     convert-source-map: "npm:^2.0.0"
     tinyrainbow: "npm:^3.1.0"
   checksum: 10/13250b9e7825d425cc9a3d22aeb2e8d117c93e96a192138e93d76bfe7d5a391ab3888c5aa9e0394b0314bdff41e441ad7a32b0c0caa00cd202223b88087dcc78
+  languageName: node
+  linkType: hard
+
+"@vnaidin/react-native-cryptocurrency-icons@npm:0.0.31":
+  version: 0.0.31
+  resolution: "@vnaidin/react-native-cryptocurrency-icons@npm:0.0.31"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/d0e0fb066031131a2adaa77668a79070d875946ba1b9476610c9b728119d137734c0f561f0ff8200e0f05da0c74d1fd1c30c40480d30fd0cb92876112c6e30bd
   languageName: node
   linkType: hard
 

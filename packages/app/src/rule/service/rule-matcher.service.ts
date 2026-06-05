@@ -144,6 +144,10 @@ class RuleMatcherService {
         (error, rule, input) => `throw ruleId=${rule.id} title="${input.title}" error=${getErrorMessage(error)}`
     )
     evaluateRule(rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean {
+        if (input.type === TransactionTypeEnum.ADJUSTMENT) {
+            return false;
+        }
+
         if (!isNotEmptyArray(rule.conditions)) {
             return false;
         }

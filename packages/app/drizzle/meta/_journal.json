@@ -201,8 +201,15 @@
         {
             "idx": 28,
             "version": "6",
-            "when": 1780508500000,
-            "tag": "0028_add_budget_planning",
+            "when": 1780566000000,
+            "tag": "0028_add_crypto_instruments",
+            "breakpoints": true
+        },
+        {
+            "idx": 29,
+            "version": "6",
+            "when": 1780566100000,
+            "tag": "0029_add_budget_planning",
             "breakpoints": true
         }
     ]
