@@ -8,6 +8,8 @@ import { AccountRowInterface } from '../interface/account-row.interface';
 import { BankProviderSectionInterface } from '../interface/bank-provider-section.interface';
 import { CryptoCurrencyGroupInterface } from '../interface/crypto-currency-group.interface';
 
+import { pairAccountsIntoRows } from './pair-accounts-into-rows.util';
+
 interface AccountTypeSectionInterface {
     readonly kind: HomeSectionKindEnum.ACCOUNT_TYPE;
     readonly type: AccountTypeEnum;
@@ -53,19 +55,6 @@ const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInte
             };
         })
         .filter(isDefined);
-};
-
-const pairAccountsIntoRows = (accounts: AccountWithBankSyncEntityInterface[]): AccountRowInterface[] => {
-    const rows: AccountRowInterface[] = [];
-
-    for (let index = 0; index < accounts.length; index += 2) {
-        rows.push({
-            left: accounts[index],
-            right: accounts[index + 1]
-        });
-    }
-
-    return rows;
 };
 
 const appendAccount = <Key extends string>(
