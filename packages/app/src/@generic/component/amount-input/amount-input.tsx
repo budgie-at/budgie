@@ -1,6 +1,7 @@
-import React, { ComponentProps, useState } from 'react';
+import React, { ComponentProps, useEffect, useRef, useState } from 'react';
+import { InteractionManager } from 'react-native';
 
-import { isEmptyString, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isDefined, isEmptyString, isNotEmptyString } from '@rnw-community/shared';
 
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -11,6 +12,8 @@ import { extractPartsFromNumeric } from '../../utils/extract-parts-from-numeric.
 import { normalizeDecimalSeparator } from '../../utils/normalize-decimal-separator.util';
 import { sanitizeAmountText } from '../../utils/sanitize-amount-text.util';
 import { Input } from '../input/input';
+
+import type { TextInput } from 'react-native';
 
 interface Props extends Omit<ComponentProps<typeof Input>, 'value'> {
     readonly value: number;
@@ -38,10 +41,25 @@ export const AmountInput = ({
     const formatDigits = useFormatDigits(visibleDecimalPlaces);
     const { intl } = useI18nContext();
 
+    const inputRef = useRef<TextInput>(null);
     const [displayValue, setDisplayValue] = useState(() => formatDigits(value === 0 ? '' : value.toString(), valuePrefix));
     const [isFocused, setIsFocused] = useState(false);
 
     const displayedText = isFocused ? displayValue : formatDigits(value === 0 ? '' : value.toString(), valuePrefix);
+
+    useEffect(() => {
+        if (!autoFocus) {
+            return emptyFn;
+        }
+
+        const interactionHandle = InteractionManager.runAfterInteractions(() => {
+            if (isDefined(inputRef.current)) {
+                inputRef.current.focus();
+            }
+        });
+
+        return () => void interactionHandle.cancel();
+    }, [autoFocus]);
 
     const handleChangeText = (text: string) => {
         const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator);
@@ -85,7 +103,7 @@ export const AmountInput = ({
             onFocus={handleFocus}
             onBlur={handleBlur}
             keyboardType="decimal-pad"
-            autoFocus={autoFocus}
+            ref={inputRef}
             className={inputClassName}
             {...rest}
         />

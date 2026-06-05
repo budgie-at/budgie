@@ -1,5 +1,5 @@
 import { cva } from 'class-variance-authority';
-import { ComponentProps } from 'react';
+import { ComponentProps, ForwardedRef, forwardRef } from 'react';
 import { TextInput } from 'react-native';
 
 import { FormFieldStatus } from '../../type/form-field-status.type';
@@ -29,6 +29,10 @@ const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
     }
 });
 
-export const Input = ({ size = 'sm', status = 'default', borderless = false, className, ...rest }: InputProps) => (
-    <TextInput {...rest} className={cn(inputVariant({ size, status, borderless }), className)} />
-);
+const renderInput = (props: InputProps, ref: ForwardedRef<TextInput>) => {
+    const { size = 'sm', status = 'default', borderless = false, className, ...rest } = props;
+
+    return <TextInput ref={ref} {...rest} className={cn(inputVariant({ size, status, borderless }), className)} />;
+};
+
+export const Input = forwardRef<TextInput, InputProps>(renderInput);
