@@ -67,30 +67,29 @@ export const CryptoCurrencyGroupCard = ({ group }: Props) => {
                         </View>
                     </View>
 
-                    <View className="items-end gap-y-0.5">
-                        {isDefined(formattedValue) ? (
-                            <ProtectedText className="text-primary text-base font-medium" placeholderText="≈ ***">
-                                ≈ {formattedValue}
-                            </ProtectedText>
-                        ) : (
-                            <ProtectedText className="text-primary text-base font-medium">{formattedBalance}</ProtectedText>
-                        )}
-
-                        <View className="flex-row items-center gap-x-xs">
-                            <ProtectedText className="text-secondary-foreground text-xs" placeholderText="***">
+                    <View className="flex-row items-end justify-between gap-x-md">
+                        <View className="min-w-0 flex-1 gap-y-0.5">
+                            <ProtectedText className="text-primary text-2xl font-semibold leading-7" placeholderText="***">
                                 {formattedBalance}
                             </ProtectedText>
-                            <Text className="text-secondary-foreground text-xs">
-                                {isDefined(formattedRate) ? (
-                                    <Trans>
-                                        1 {instrumentCode} ≈ {defaultInstrumentSymbol}
-                                        {formattedRate}
-                                    </Trans>
-                                ) : (
-                                    <Trans>Missing rate</Trans>
-                                )}
-                            </Text>
+
+                            {isDefined(formattedValue) ? (
+                                <ProtectedText className="text-secondary-foreground text-sm font-medium" placeholderText="≈ ***">
+                                    ≈ {formattedValue}
+                                </ProtectedText>
+                            ) : null}
                         </View>
+
+                        <Text className="shrink-0 text-right text-secondary-foreground text-xs">
+                            {isDefined(formattedRate) ? (
+                                <Trans>
+                                    1 {instrumentCode} ≈ {defaultInstrumentSymbol}
+                                    {formattedRate}
+                                </Trans>
+                            ) : (
+                                <Trans>Missing rate</Trans>
+                            )}
+                        </Text>
                     </View>
                 </HapticPressable>
             </Card>
