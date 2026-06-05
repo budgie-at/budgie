@@ -478,6 +478,10 @@ msgstr "Budget"
 msgid "Budget alerts"
 msgstr "Budget alerts"
 
+#: src/budget/components/budget-details/budget-details.tsx
+msgid "Budget details"
+msgstr "Budget details"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Budget limit reached"
 msgstr "Budget limit reached"
@@ -560,6 +564,7 @@ msgstr "Category"
 msgid "Category → {categoryTitle}"
 msgstr "Category → {categoryTitle}"
 
+#: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Category limits"
 msgstr "Category limits"
@@ -1596,6 +1601,10 @@ msgstr "Learning transactions"
 msgid "Learning up to date"
 msgstr "Learning up to date"
 
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+msgid "Left"
+msgstr "Left"
+
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Lent"
@@ -1603,6 +1612,10 @@ msgstr "Lent"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Less Than"
 msgstr "Less Than"
+
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+msgid "Limit"
+msgstr "Limit"
 
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx
 msgid "Listening..."
@@ -1722,6 +1735,7 @@ msgstr "Money lent or borrowed"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
 msgid "Monthly budget"
 msgstr "Monthly budget"
@@ -1797,6 +1811,7 @@ msgid "No categories match your search"
 msgstr "No categories match your search"
 
 #: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
+#: src/budget/components/budget-details/budget-details.tsx
 msgid "No category limits yet"
 msgstr "No category limits yet"
 
@@ -1993,6 +2008,10 @@ msgstr "Original imported transactions will be restored and the consolidated tra
 #: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx
 msgid "Original transaction"
 msgstr "Original transaction"
+
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+msgid "Over budget"
+msgstr "Over budget"
 
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
 msgid "Over by"
@@ -2603,6 +2622,7 @@ msgstr "Spending by Category"
 msgid "Spending by Tag"
 msgstr "Spending by Tag"
 
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Spent"

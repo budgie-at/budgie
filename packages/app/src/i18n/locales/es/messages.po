@@ -477,6 +477,10 @@ msgstr "Presupuesto"
 msgid "Budget alerts"
 msgstr "Alertas de presupuesto"
 
+#: src/budget/components/budget-details/budget-details.tsx
+msgid "Budget details"
+msgstr "Detalles del presupuesto"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Budget limit reached"
 msgstr "Límite de presupuesto alcanzado"
@@ -559,6 +563,7 @@ msgstr "Categoría"
 msgid "Category → {categoryTitle}"
 msgstr "Categoría → {categoryTitle}"
 
+#: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Category limits"
 msgstr "Límites por categoría"
@@ -1595,6 +1600,10 @@ msgstr "Aprendiendo transacciones"
 msgid "Learning up to date"
 msgstr "Aprendizaje actualizado"
 
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+msgid "Left"
+msgstr "Restante"
+
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Prestado"
@@ -1602,6 +1611,10 @@ msgstr "Prestado"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Less Than"
 msgstr "Menor que"
+
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+msgid "Limit"
+msgstr "Límite"
 
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx
 msgid "Listening..."
@@ -1721,6 +1734,7 @@ msgstr "Dinero prestado o recibido"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
 msgid "Monthly budget"
 msgstr "Presupuesto mensual"
@@ -1796,6 +1810,7 @@ msgid "No categories match your search"
 msgstr "Ninguna categoría coincide con tu búsqueda"
 
 #: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
+#: src/budget/components/budget-details/budget-details.tsx
 msgid "No category limits yet"
 msgstr "Sin límites de categoría"
 
@@ -1992,6 +2007,10 @@ msgstr "Las transacciones importadas originales serán restauradas y la transacc
 #: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx
 msgid "Original transaction"
 msgstr "Transacción original"
+
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+msgid "Over budget"
+msgstr "Por encima del presupuesto"
 
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
 msgid "Over by"
@@ -2602,6 +2621,7 @@ msgstr "Gastos por categoría"
 msgid "Spending by Tag"
 msgstr "Gastos por etiqueta"
 
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Gastado"

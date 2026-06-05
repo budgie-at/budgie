@@ -29,7 +29,7 @@ export const BudgetWidget = () => {
         return <BudgetEmptyState testID={BudgetSelector.WidgetEmptyState} />;
     }
 
-    const handleNavigate = () => void router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
+    const handleNavigate = () => void router.push('/budget');
 
     const dateLabel = formatBudgetPeriodLabel(budget);
 

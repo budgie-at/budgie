@@ -477,6 +477,10 @@ msgstr "Бюджет"
 msgid "Budget alerts"
 msgstr "Сповіщення про бюджет"
 
+#: src/budget/components/budget-details/budget-details.tsx
+msgid "Budget details"
+msgstr "Деталі бюджету"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Budget limit reached"
 msgstr "Ліміт бюджету досягнуто"
@@ -559,6 +563,7 @@ msgstr "Категорія"
 msgid "Category → {categoryTitle}"
 msgstr "Категорія → {categoryTitle}"
 
+#: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Category limits"
 msgstr "Ліміти за категоріями"
@@ -1595,6 +1600,10 @@ msgstr "Навчання на транзакціях"
 msgid "Learning up to date"
 msgstr "Навчання актуальне"
 
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+msgid "Left"
+msgstr "Залишилось"
+
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Позичено"
@@ -1602,6 +1611,10 @@ msgstr "Позичено"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Less Than"
 msgstr "Менше ніж"
+
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+msgid "Limit"
+msgstr "Ліміт"
 
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx
 msgid "Listening..."
@@ -1721,6 +1734,7 @@ msgstr "Позичені або надані гроші"
 msgid "Monobank"
 msgstr "Монобанк"
 
+#: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
 msgid "Monthly budget"
 msgstr "Місячний бюджет"
@@ -1796,6 +1810,7 @@ msgid "No categories match your search"
 msgstr "Жодна категорія не відповідає вашому пошуку"
 
 #: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
+#: src/budget/components/budget-details/budget-details.tsx
 msgid "No category limits yet"
 msgstr "Лімітів за категоріями немає"
 
@@ -1992,6 +2007,10 @@ msgstr "Початкові імпортовані транзакції буде 
 #: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx
 msgid "Original transaction"
 msgstr "Початкова транзакція"
+
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
+msgid "Over budget"
+msgstr "Понад бюджет"
 
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
 msgid "Over by"
@@ -2602,6 +2621,7 @@ msgstr "Витрати за категоріями"
 msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
+#: src/budget/components/budget-details-category-row/budget-details-category-row.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Витрачено"
