@@ -1,4 +1,7 @@
-import { SQL, and, asc, desc, eq, isNull, lte } from 'drizzle-orm';
+import { Log } from '@budgie/logger';
+import { SQL, and, asc, desc, eq, isNull, lte, sql } from 'drizzle-orm';
+
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { HistoricalExchangeRateEntityTable } from '../table/historical-exchange-rate-entity.table';
 
@@ -8,6 +11,35 @@ import type { HistoricalExchangeRateEntityInterface } from '../entity/historical
 
 export class HistoricalExchangeRateRepository {
     constructor(private db: DB) {}
+
+    @Log(
+        (inputs, tx) =>
+            `enter sourceInstrumentIds=${inputs.map(input => input.sourceInstrumentId).join(',')} targetInstrumentIds=${inputs.map(input => input.targetInstrumentId).join(',')} rateDates=${inputs.map(input => input.rateDate).join(',')} hasTx=${String(isDefined(tx))}`,
+        (_result, inputs, tx) =>
+            `done sourceInstrumentIds=${inputs.map(input => input.sourceInstrumentId).join(',')} targetInstrumentIds=${inputs.map(input => input.targetInstrumentId).join(',')} rateDates=${inputs.map(input => input.rateDate).join(',')} hasTx=${String(isDefined(tx))}`,
+        (error, inputs, tx) =>
+            `throw sourceInstrumentIds=${inputs.map(input => input.sourceInstrumentId).join(',')} targetInstrumentIds=${inputs.map(input => input.targetInstrumentId).join(',')} rateDates=${inputs.map(input => input.rateDate).join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async bulkUpsert(inputs: HistoricalExchangeRateCreateEntityInterface[], tx?: DB): Promise<void> {
+        if (!isNotEmptyArray(inputs)) {
+            return;
+        }
+
+        await (tx ?? this.db)
+            .insert(HistoricalExchangeRateEntityTable)
+            .values(inputs)
+            .onConflictDoUpdate({
+                target: [
+                    HistoricalExchangeRateEntityTable.sourceInstrumentId,
+                    HistoricalExchangeRateEntityTable.targetInstrumentId,
+                    HistoricalExchangeRateEntityTable.rateDate
+                ],
+                set: {
+                    rate: sql`excluded.rate`,
+                    updatedAt: new Date()
+                }
+            });
+    }
 
     async findForDateOrBefore(
         sourceInstrumentId: number,

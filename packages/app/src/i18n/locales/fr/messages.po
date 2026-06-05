@@ -81,6 +81,10 @@ msgstr "{formattedRemaining} au-dessus du budget"
 msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
 msgstr "{found, plural, one {# correspondance fiable} other {# correspondances fiables}}"
 
+#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
+msgid "{loadedDays}/{totalDays} days"
+msgstr ""
+
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Afficher tous les types} one {Afficher # type} other {Afficher # types}}"
@@ -136,7 +140,7 @@ msgstr "<"
 msgid ">"
 msgstr ">"
 
-#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
+#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 
@@ -1362,6 +1366,10 @@ msgstr "Masquer les soldes des comptes et la valeur nette lors des captures d'é
 msgid "Historical valuation failed"
 msgstr "Échec de la valorisation historique"
 
+#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
+msgid "History loading paused"
+msgstr ""
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
 msgid "History synced"
 msgstr "Historique synchronisé"
@@ -1537,6 +1545,10 @@ msgstr "Modèle IA non disponible"
 msgid "Loading AI model..."
 msgstr "Chargement du modèle d'IA..."
 
+#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
+msgid "Loading market history"
+msgstr ""
+
 #: src/ai/service/ai-system-status.service.ts
 msgid "Loading models"
 msgstr "Chargement des modèles"
@@ -1568,6 +1580,18 @@ msgstr "Manuel"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Map CSV Columns"
 msgstr "Mapper les colonnes CSV"
+
+#: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
+msgid "Market cap"
+msgstr ""
+
+#: src/market-data/component/market-data-sparkline/market-data-sparkline.tsx
+msgid "Market history is loading quietly."
+msgstr ""
+
+#: src/market-data/component/currency-market-price-card/currency-market-price-card.tsx
+msgid "Market price"
+msgstr ""
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "Match All"
@@ -1629,7 +1653,7 @@ msgstr "Fusionner les virements et remboursements correspondants"
 msgid "Missing categories"
 msgstr "Catégories manquantes"
 
-#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
+#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "Missing rate"
 msgstr "Taux manquant"
 
@@ -1979,6 +2003,10 @@ msgstr "Modèle appliqué. Ajustez les colonnes ci-dessous si nécessaire."
 msgid "Press to re-evaluate transactions"
 msgstr "Appuyez pour réévaluer les transactions"
 
+#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
+msgid "Prices fill in quietly while you use the app."
+msgstr ""
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Privacy"
 msgstr "Confidentialité"
@@ -1995,6 +2023,10 @@ msgstr "PrivatBank"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Quick rule"
 msgstr "Règle rapide"
+
+#: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
+msgid "Rank"
+msgstr ""
 
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
@@ -2827,6 +2859,10 @@ msgstr "Mettre à jour le compte"
 msgid "Update rule?"
 msgstr "Mettre à jour la règle ?"
 
+#: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
+msgid "Updated"
+msgstr ""
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
@@ -2876,9 +2912,17 @@ msgstr "Afficher et supprimer les catégories personnalisées"
 msgid "View and restore archived accounts"
 msgstr "Afficher et restaurer les comptes archivés"
 
+#: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
+msgid "Volume"
+msgstr ""
+
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Waiting"
 msgstr "En attente"
+
+#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
+msgid "We will retry this quietly."
+msgstr ""
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"
@@ -2924,6 +2968,10 @@ msgstr "Vous avez reçu de l'argent"
 #: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."
 msgstr "Votre sauvegarde de base de données est prête à être partagée."
+
+#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
+msgid "Your holdings"
+msgstr ""
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Your token is stored securely in the database. Sync continues in the background."

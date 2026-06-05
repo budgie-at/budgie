@@ -33,6 +33,15 @@ const textVariants = cva('', {
     }
 });
 
+const amountInputVariants = cva('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', {
+    variants: {
+        hasSuffix: {
+            true: 'flex-1 text-right',
+            false: ''
+        }
+    }
+});
+
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const FormAmountInput = (props: Props) => {
     const {
@@ -69,6 +78,7 @@ export const FormAmountInput = (props: Props) => {
 
     const fontSizeStyle = { fontSize };
     const suffixFontSizeStyle = { fontSize: Math.max(MINIMUM_SUFFIX_FONT_SIZE, Math.round(fontSize * SUFFIX_FONT_SIZE_RATIO)) };
+    const amountInputClassName = cn(amountInputVariants({ hasSuffix: showInstrumentAfterAmount }), textClassName);
 
     const handleToggleSign = () => {
         const newIsNegative = !isNegative;
@@ -102,7 +112,7 @@ export const FormAmountInput = (props: Props) => {
                     testID={testID}
                     value={absoluteValue}
                     onChangeValue={handleAmountChange}
-                    inputClassName={cn('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}
+                    inputClassName={amountInputClassName}
                     placeholder={formatDigits(0)}
                     autoFocus={autoFocus}
                     style={fontSizeStyle}

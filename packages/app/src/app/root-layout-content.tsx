@@ -53,6 +53,7 @@ import { AuthProvider } from '../auth/provider/auth.provider';
 import { exchangeRatesSyncService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
+import { historicalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../sync/service/sync-workload.service';
@@ -71,6 +72,7 @@ const syncForegroundData = async (): Promise<void> => {
     await exchangeRatesSyncService.sync();
     await monobankSyncService.sync();
     await accountBalanceIncrementalService.updateAllBalances(false);
+    void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
 };
 
 const handleAppStateChange = (isActive: boolean): void => {
@@ -113,6 +115,7 @@ export const RootLayoutContent = () => {
                                                                 <Stack.Screen name="(main)/create-account" />
                                                                 <Stack.Screen name="(main)/account/[id]/details" />
                                                                 <Stack.Screen name="(main)/account/[id]/update" />
+                                                                <Stack.Screen name="(main)/currency/[id]" />
                                                                 <Stack.Screen name="(main)/create-transaction/expense" />
                                                                 <Stack.Screen name="(main)/create-transaction/income" />
                                                                 <Stack.Screen name="(main)/create-transaction/transfer" />

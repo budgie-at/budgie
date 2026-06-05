@@ -9,6 +9,8 @@ import {
     CommentEmbeddingRepository,
     ExchangeRateRepository,
     HistoricalExchangeRateRepository,
+    InstrumentDailyMarketPriceRepository,
+    InstrumentMarketDataJobRepository,
     InstrumentRepository,
     MccCategoryRepository,
     MerchantEmbeddingRepository,
@@ -112,6 +114,8 @@ export const categoryRepository = new CategoryRepository(db);
 export const instrumentRepository = new InstrumentRepository(db);
 export const exchangeRateRepository = new ExchangeRateRepository(db);
 export const historicalExchangeRateRepository = new HistoricalExchangeRateRepository(db);
+export const instrumentDailyMarketPriceRepository = new InstrumentDailyMarketPriceRepository(db);
+export const instrumentMarketDataJobRepository = new InstrumentMarketDataJobRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
 export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);

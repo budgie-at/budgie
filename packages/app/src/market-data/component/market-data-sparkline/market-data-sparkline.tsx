@@ -1,0 +1,65 @@
+import { Trans } from '@lingui/react/macro';
+import { useMemo } from 'react';
+import { Text, View } from 'react-native';
+import Svg, { Polyline } from 'react-native-svg';
+
+import { isPositiveNumber } from '@rnw-community/shared';
+
+import type { InstrumentDailyMarketPriceEntityInterface } from '@budgie/contracts';
+
+interface Props {
+    readonly prices: InstrumentDailyMarketPriceEntityInterface[];
+    readonly isPositive: boolean;
+}
+
+const CHART_WIDTH = 320;
+const CHART_HEIGHT = 112;
+const CHART_PADDING = 6;
+const POSITIVE_COLOR = '#00e08a';
+const NEGATIVE_COLOR = '#ff5c5c';
+
+const buildPoints = (prices: InstrumentDailyMarketPriceEntityInterface[]): string => {
+    if (prices.length < 2) {
+        return '';
+    }
+
+    const values = prices.map(price => price.price);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const range = max - min;
+    const drawableWidth = CHART_WIDTH - CHART_PADDING * 2;
+    const drawableHeight = CHART_HEIGHT - CHART_PADDING * 2;
+
+    return values
+        .map((value, index) => {
+            const x = CHART_PADDING + (index / (values.length - 1)) * drawableWidth;
+            const normalizedValue = isPositiveNumber(range) ? (value - min) / range : 0.5;
+            const y = CHART_PADDING + (1 - normalizedValue) * drawableHeight;
+
+            return `${x},${y}`;
+        })
+        .join(' ');
+};
+
+export const MarketDataSparkline = ({ prices, isPositive }: Props) => {
+    const points = useMemo(() => buildPoints(prices), [prices]);
+    const stroke = isPositive ? POSITIVE_COLOR : NEGATIVE_COLOR;
+
+    if (prices.length < 2) {
+        return (
+            <View className="border-secondary-corner bg-secondary-background rounded-5xl border px-4xl py-6xl">
+                <Text className="text-secondary-foreground text-center text-sm">
+                    <Trans>Market history is loading quietly.</Trans>
+                </Text>
+            </View>
+        );
+    }
+
+    return (
+        <View className="border-secondary-corner bg-secondary-background rounded-5xl border p-lg">
+            <Svg width="100%" height={CHART_HEIGHT} viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}>
+                <Polyline points={points} fill="none" stroke={stroke} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+            </Svg>
+        </View>
+    );
+};
