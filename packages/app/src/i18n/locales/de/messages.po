@@ -16,6 +16,11 @@ msgstr ""
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} Tx ausstehend"
 
+#. placeholder {0}: group.accounts.length
+#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
+msgid "{0, plural, one {# account} other {# accounts}}"
+msgstr "{0, plural, one {# Konto} other {# Konten}}"
+
 #: src/account/component/accounts-group/accounts-group.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# Konto} other {# Konten}}"
@@ -131,6 +136,10 @@ msgstr "<"
 msgid ">"
 msgstr ">"
 
+#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
+msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
+msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
+
 #: src/@generic/component/currency-selector/currency-selector.tsx
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -153,6 +162,7 @@ msgstr "Über"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Account"
@@ -389,6 +399,7 @@ msgstr "Verfügbare Spalten"
 msgid "Balance"
 msgstr "Saldo"
 
+#: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "Balance Adjustment"
@@ -589,6 +600,10 @@ msgstr "Menü schließen"
 #: src/rule/constant/external-source.constant.ts
 msgid "Coinbase"
 msgstr "Coinbase"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Cold wallets and exchange balances"
+msgstr "Cold Wallets und Exchange-Guthaben"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
@@ -834,6 +849,7 @@ msgstr "Regel konnte nicht aktualisiert werden"
 msgid "Could not update token"
 msgstr "Token konnte nicht aktualisiert werden"
 
+#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "Transaktion konnte nicht aktualisiert werden."
@@ -898,6 +914,11 @@ msgstr "Erstellen Sie Ihr erstes Konto, um Ihre Finanzen zu verfolgen"
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto"
 msgstr "Krypto"
+
+#: src/account/component/create-crypto-account/create-crypto-account.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Crypto Account"
+msgstr "Kryptokonto"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "CSV"
@@ -1608,6 +1629,10 @@ msgstr "Passende Überweisungen und Rückerstattungen zusammenführen"
 msgid "Missing categories"
 msgstr "Fehlende Kategorien"
 
+#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
+msgid "Missing rate"
+msgstr "Kurs fehlt"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Money lent or borrowed"
 msgstr "Verliehenes oder geliehenes Geld"
@@ -1695,6 +1720,10 @@ msgstr "Keine Kontakte auf diesem Gerät gefunden."
 #: src/app/contact-selector.tsx
 msgid "No contacts yet"
 msgstr "Noch keine Kontakte"
+
+#: src/app/currency-selector.tsx
+msgid "No crypto found"
+msgstr "Keine Kryptowährungen gefunden"
 
 #: src/app/currency-selector.tsx
 msgid "No currencies found"
@@ -2185,6 +2214,10 @@ msgstr "Kategorien durchsuchen..."
 #: src/app/contact-selector.tsx
 msgid "Search contacts..."
 msgstr "Kontakte suchen..."
+
+#: src/app/currency-selector.tsx
+msgid "Search crypto..."
+msgstr "Kryptowährungen suchen..."
 
 #: src/app/currency-selector.tsx
 msgid "Search currencies..."

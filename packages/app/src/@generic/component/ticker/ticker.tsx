@@ -2,6 +2,8 @@ import { styled } from 'nativewind';
 import { ReactNode, useState } from 'react';
 import { LayoutChangeEvent, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { calculateOptimalTextSize } from '../../utils/calculate-optimal-text-size.util';
 import { cn } from '../../utils/cn.util';
 
@@ -37,7 +39,8 @@ export const Ticker = (props: Props) => {
     const [containerWidth, setContainerWidth] = useState(0);
 
     const charArray = number.toString().split('');
-    const resolvedContainerWidth = availableWidth ?? containerWidth;
+    const digitCount = charArray.filter(char => !Number.isNaN(Number.parseFloat(char))).length;
+    const resolvedContainerWidth = isDefined(availableWidth) ? availableWidth : containerWidth;
 
     const textSize = calculateOptimalTextSize({
         minFontSize,
@@ -51,35 +54,40 @@ export const Ticker = (props: Props) => {
         setContainerWidth(event.nativeEvent.layout.width);
     };
 
-    const { elements } = charArray.reduce<{ elements: ReactNode[]; digitIndex: number }>(
-        (acc, char, index) => {
-            if (!isNaN(parseFloat(char))) {
-                return {
-                    digitIndex: acc.digitIndex + 1,
-                    elements: [
-                        ...acc.elements,
-                        <TickItem
-                            key={index}
-                            num={parseFloat(char)}
-                            textSize={textSize}
-                            textClassName={textClassName}
-                            index={acc.digitIndex}
-                            {...(!hasAnimation && { duration: 0, delay: 0 })}
-                        />
-                    ]
-                };
-            }
+    const elements: ReactNode[] = [];
+    let digitIndex = 0;
 
-            return {
-                digitIndex: acc.digitIndex,
-                elements: [...acc.elements, <StaticCharItem key={index} char={char} textSize={textSize} textClassName={textClassName} />]
-            };
-        },
-        { elements: [], digitIndex: 0 }
-    );
+    charArray.forEach((char, index) => {
+        const digit = Number.parseFloat(char);
+
+        if (Number.isNaN(digit)) {
+            elements.push(
+                <StaticCharItem
+                    key={`static-${digitCount}-${index}-${char}`}
+                    char={char}
+                    textSize={textSize}
+                    textClassName={textClassName}
+                />
+            );
+
+            return;
+        }
+
+        elements.push(
+            <TickItem
+                key={`digit-${digitCount}-${digitIndex}`}
+                num={digit}
+                textSize={textSize}
+                textClassName={textClassName}
+                index={digitIndex}
+                {...(!hasAnimation && { duration: 0, delay: 0 })}
+            />
+        );
+        digitIndex += 1;
+    });
 
     return (
-        <View className="w-full" {...(!availableWidth && { onLayout: handleLayout })}>
+        <View className="w-full" {...(!isDefined(availableWidth) && { onLayout: handleLayout })}>
             <View className={cn('flex-row justify-center', className)}>{elements}</View>
         </View>
     );

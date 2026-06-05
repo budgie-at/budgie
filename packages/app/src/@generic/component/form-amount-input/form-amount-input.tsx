@@ -12,6 +12,8 @@ import { AmountInput } from '../amount-input/amount-input';
 import { SignTogglePill } from '../sign-toggle-pill/sign-toggle-pill';
 
 const BASE_FONT_SIZE = 72;
+const SUFFIX_FONT_SIZE_RATIO = 0.4;
+const MINIMUM_SUFFIX_FONT_SIZE = 22;
 
 interface Props {
     readonly value: number;
@@ -21,6 +23,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly allowNegative?: boolean;
     readonly autoFocus?: boolean;
+    readonly showInstrumentAfterAmount?: boolean;
     readonly onChange: (value: number) => void;
 }
 
@@ -32,7 +35,17 @@ const textVariants = cva('', {
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const FormAmountInput = (props: Props) => {
-    const { value, onChange, variant, textClassName, instrumentSymbol, allowNegative = false, autoFocus, testID } = props;
+    const {
+        value,
+        onChange,
+        variant,
+        textClassName,
+        instrumentSymbol,
+        allowNegative = false,
+        autoFocus,
+        testID,
+        showInstrumentAfterAmount = false
+    } = props;
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
@@ -51,10 +64,11 @@ export const FormAmountInput = (props: Props) => {
     const displayedText = absoluteValue === 0 ? '' : formatDigits(absoluteValue.toString());
     const effectiveVariant = allowNegative && isNegative ? 'destructive' : variant;
 
-    const fullText = `${instrumentSymbol} ${displayedText}`;
+    const fullText = showInstrumentAfterAmount ? `${displayedText} ${instrumentSymbol}` : `${instrumentSymbol} ${displayedText}`;
     const { fontSize, onContainerLayout } = useAutoScaleFont(BASE_FONT_SIZE, fullText);
 
     const fontSizeStyle = { fontSize };
+    const suffixFontSizeStyle = { fontSize: Math.max(MINIMUM_SUFFIX_FONT_SIZE, Math.round(fontSize * SUFFIX_FONT_SIZE_RATIO)) };
 
     const handleToggleSign = () => {
         const newIsNegative = !isNegative;
@@ -78,9 +92,11 @@ export const FormAmountInput = (props: Props) => {
             ) : null}
 
             <View className="flex-row flex-1 items-center overflow-hidden" onLayout={onContainerLayout}>
-                <Text className={textVariants({ variant: effectiveVariant })} style={fontSizeStyle}>
-                    {instrumentSymbol}{' '}
-                </Text>
+                {showInstrumentAfterAmount ? null : (
+                    <Text className={textVariants({ variant: effectiveVariant })} style={fontSizeStyle}>
+                        {instrumentSymbol}{' '}
+                    </Text>
+                )}
 
                 <AmountInput
                     testID={testID}
@@ -91,6 +107,13 @@ export const FormAmountInput = (props: Props) => {
                     autoFocus={autoFocus}
                     style={fontSizeStyle}
                 />
+
+                {showInstrumentAfterAmount ? (
+                    <Text className={textVariants({ variant: effectiveVariant })} style={suffixFontSizeStyle}>
+                        {' '}
+                        {instrumentSymbol}
+                    </Text>
+                ) : null}
             </View>
         </View>
     );

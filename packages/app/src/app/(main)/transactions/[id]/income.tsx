@@ -130,6 +130,10 @@ export default function UpdateIncomeTransactionPage() {
         return isParentLoading || !isDefined(parentTransaction) ? null : <Redirect href={getTransactionHref(parentTransaction)} />;
     }
 
+    if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
+        return <Redirect href={getTransactionHref(transaction)} />;
+    }
+
     return <UpdateIncomeForm transaction={transaction} transactionId={transactionId} />;
 }
 /* jscpd:ignore-end */

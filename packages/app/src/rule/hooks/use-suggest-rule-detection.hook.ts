@@ -1,3 +1,4 @@
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
@@ -48,6 +49,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
 
     const originalCategoryId = transaction.entries[0]?.categoryId ?? null;
     const originalTagIds = transaction.transactionTags.map(({ tagId }) => tagId);
+    const isAdjustment = transaction.type === TransactionTypeEnum.ADJUSTMENT;
 
     const categoryChanged = isDefined(categoryId) && categoryId !== originalCategoryId;
     const sortedTagIds = [...tagIds].sort();
@@ -67,7 +69,9 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     };
 
     const transactionInput = convertTransactionToInput(transaction);
-    const matchingRules = enabledRules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData));
+    const matchingRules = isAdjustment
+        ? []
+        : enabledRules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData));
     const matchingRulesCount = matchingRules.length;
     const matchingRuleIds = matchingRules.map(rule => rule.id);
     const hasChanges = categoryChanged || tagsChanged;
@@ -84,14 +88,16 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const dismissKey = buildDismissKey(transaction.id, transaction.title, transaction.comment, mccCode);
     const wasPreviouslyDismissed = dismissedSuggestions.has(dismissKey);
 
-    const mode = computeDetectionMode({
-        hasChanges,
-        isRuleCreationStarted,
-        isCreating,
-        isDismissed: isDismissed || wasPreviouslyDismissed,
-        matchingRulesCount,
-        hasConflictWithMatchingRules: hasConflict
-    });
+    const mode = isAdjustment
+        ? RuleDetectionModeEnum.NONE
+        : computeDetectionMode({
+              hasChanges,
+              isRuleCreationStarted,
+              isCreating,
+              isDismissed: isDismissed || wasPreviouslyDismissed,
+              matchingRulesCount,
+              hasConflictWithMatchingRules: hasConflict
+          });
 
     const singleMatchingRule = matchingRulesCount === 1 ? matchingRules[0] : null;
     const canUpdateRule = !isCreating && !isRuleCreationStarted;
