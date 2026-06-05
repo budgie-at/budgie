@@ -26,12 +26,12 @@ import type { AccountBalanceEntityInterface } from '../entity/account-balance-en
 
 export class AccountBalanceRepository {
     constructor(private db: DB) {}
-
     @Log(
-        (accountIds, tx) => `enter accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))}`,
+        (accountIds, tx) => `enter balanceAccountIds=${accountIds.join(',')} usesTransaction=${String(isDefined(tx))}`,
         (result, accountIds, tx) =>
-            `done accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))} resultAccountIds=${[...result.keys()].join(',')}`,
-        (error, accountIds, tx) => `throw accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+            `done balanceAccountIds=${accountIds.join(',')} usesTransaction=${String(isDefined(tx))} deltaAccountIds=${[...result.keys()].join(',')}`,
+        (error, accountIds, tx) =>
+            `throw balanceAccountIds=${accountIds.join(',')} usesTransaction=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async getNewTransactionEntriesDeltas(accountIds: number[], tx?: DB): Promise<Map<number, number>> {
         const database = tx ?? this.db;
