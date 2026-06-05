@@ -69,11 +69,11 @@ export class InstrumentMarketDataJobRepository {
 
     @Log(
         (instrumentId, quoteInstrumentId, tx) =>
-            `enter instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))}`,
+            `enter lookup=open-job instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))}`,
         (result, instrumentId, quoteInstrumentId, tx) =>
-            `done instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} hasOpenJob=${String(result)}`,
+            `done lookup=open-job instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} hasOpenJob=${String(result)}`,
         (error, instrumentId, quoteInstrumentId, tx) =>
-            `throw instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+            `throw lookup=open-job instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async hasOpen(instrumentId: number, quoteInstrumentId: number, tx?: DB): Promise<boolean> {
         const job = await (tx ?? this.db).query.InstrumentMarketDataJobEntityTable.findFirst({
@@ -84,9 +84,9 @@ export class InstrumentMarketDataJobRepository {
     }
 
     @Log(
-        (jobId, tx) => `enter jobId=${jobId} hasTx=${String(isDefined(tx))}`,
-        (_result, jobId, tx) => `done jobId=${jobId} hasTx=${String(isDefined(tx))}`,
-        (error, jobId, tx) => `throw jobId=${jobId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (jobId, tx) => `enter transition=running jobId=${jobId} hasTx=${String(isDefined(tx))}`,
+        (_result, jobId, tx) => `done transition=running jobId=${jobId} hasTx=${String(isDefined(tx))}`,
+        (error, jobId, tx) => `throw transition=running jobId=${jobId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async markRunning(jobId: number, tx?: DB): Promise<void> {
         await (tx ?? this.db)
@@ -111,9 +111,9 @@ export class InstrumentMarketDataJobRepository {
     }
 
     @Log(
-        (jobId, tx) => `enter jobId=${jobId} hasTx=${String(isDefined(tx))}`,
-        (_result, jobId, tx) => `done jobId=${jobId} hasTx=${String(isDefined(tx))}`,
-        (error, jobId, tx) => `throw jobId=${jobId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (jobId, tx) => `enter transition=completed jobId=${jobId} hasTx=${String(isDefined(tx))}`,
+        (_result, jobId, tx) => `done transition=completed jobId=${jobId} hasTx=${String(isDefined(tx))}`,
+        (error, jobId, tx) => `throw transition=completed jobId=${jobId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async markCompleted(jobId: number, tx?: DB): Promise<void> {
         await (tx ?? this.db)

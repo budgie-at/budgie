@@ -46,11 +46,11 @@ export class InstrumentDailyMarketPriceRepository {
 
     @Log(
         (instrumentId, quoteInstrumentId, tx) =>
-            `enter instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))}`,
+            `enter lookup=latest-price instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))}`,
         (result, instrumentId, quoteInstrumentId, tx) =>
-            `done instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} found=${String(isDefined(result))}`,
+            `done lookup=latest-price instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} found=${String(isDefined(result))}`,
         (error, instrumentId, quoteInstrumentId, tx) =>
-            `throw instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+            `throw lookup=latest-price instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async findLatest(
         instrumentId: number,
