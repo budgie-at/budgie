@@ -1,6 +1,12 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { microPause } from './micro-pause.util';
 
-export const processInputWithBatches = async <T, O>(inputs: T[], batchSize: number, cb: (batch: T[]) => Promise<O[]>): Promise<O[]> => {
+export const processInputWithBatches = async <T, O>(
+    inputs: T[],
+    batchSize: number,
+    cb: (batch: T[]) => Promise<O[] | null>
+): Promise<O[]> => {
     const results: O[] = [];
 
     for (let index = 0; index < inputs.length; index += batchSize) {
@@ -9,7 +15,10 @@ export const processInputWithBatches = async <T, O>(inputs: T[], batchSize: numb
 
         // eslint-disable-next-line no-await-in-loop
         await cb(batch).then(batchResults => {
-            results.push(...batchResults);
+            if (isDefined(batchResults)) {
+                results.push(...batchResults);
+            }
+
             if (hasMoreBatches) {
                 return microPause();
             }

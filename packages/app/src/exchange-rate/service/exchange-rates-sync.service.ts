@@ -6,6 +6,8 @@ import * as TaskManager from 'expo-task-manager';
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, exchangeRateRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { microPause } from '../../@generic/utils/micro-pause.util';
+import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
 import { CoinGeckoSimplePriceResponseSchema } from '../schema/coin-gecko-simple-price-response.schema';
@@ -17,6 +19,7 @@ import type { ExchangeRateCreateEntityInterface, InstrumentEntityInterface } fro
 
 class ExchangeRatesSyncService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
+    private static readonly CRYPTO_RATE_SYNC_BATCH_SIZE = 40;
     private static readonly SYNC_COOLDOWN_MS = 5 * 60 * 1000;
 
     private lastSyncedAtMs: number | null = null;
@@ -45,7 +48,9 @@ class ExchangeRatesSyncService {
             return;
         }
 
-        await Promise.all([this.syncFiatRates(baseInstrument), this.syncCryptoRates(baseInstrument)]);
+        await this.syncFiatRates(baseInstrument);
+        await microPause();
+        await this.syncCryptoRates(baseInstrument);
         this.lastSyncedAtMs = Date.now();
     }
 
@@ -66,7 +71,20 @@ class ExchangeRatesSyncService {
         const coingeckoInstruments = instruments.filter(
             instrument => instrument.priceProvider === InstrumentPriceProviderEnum.COINGECKO && isDefined(instrument.providerInstrumentId)
         );
-        const providerInstrumentIds = coingeckoInstruments.map(instrument => instrument.providerInstrumentId).filter(isDefined);
+
+        if (!isNotEmptyArray(coingeckoInstruments)) {
+            return;
+        }
+
+        await processInputWithBatches(coingeckoInstruments, ExchangeRatesSyncService.CRYPTO_RATE_SYNC_BATCH_SIZE, async batch => {
+            await this.syncCryptoRateBatch(baseInstrument, batch);
+
+            return null;
+        });
+    }
+
+    private async syncCryptoRateBatch(baseInstrument: InstrumentEntityInterface, instruments: InstrumentEntityInterface[]): Promise<void> {
+        const providerInstrumentIds = instruments.map(instrument => instrument.providerInstrumentId).filter(isDefined);
 
         if (!isNotEmptyArray(providerInstrumentIds)) {
             return;
@@ -74,13 +92,17 @@ class ExchangeRatesSyncService {
 
         const prices = await this.fetchCryptoPrices(providerInstrumentIds, baseInstrument.code);
         const quoteCode = baseInstrument.code.toLowerCase();
-        const inputs = coingeckoInstruments.flatMap(instrument =>
+        const inputs = instruments.flatMap(instrument =>
             this.buildCryptoInstrumentRateInputs(
                 baseInstrument.id,
                 instrument,
                 this.getCryptoPrice(prices, instrument.providerInstrumentId, quoteCode)
             )
         );
+
+        if (!isNotEmptyArray(inputs)) {
+            return;
+        }
 
         await transactionAsync(db, tx => exchangeRateRepository.bulkUpsert(inputs, tx));
     }
