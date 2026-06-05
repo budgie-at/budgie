@@ -49,11 +49,11 @@ export const CryptoCurrencyGroupCard = ({ group }: Props) => {
         <View className="mb-3 gap-y-3">
             <Card className="border-warning-corner bg-secondary-background" size="md">
                 <HapticPressable onPress={toggleOpen} className="gap-y-3">
-                    <View className="flex-row items-center justify-between">
-                        <View className="flex-row items-center gap-x-md">
+                    <View className="flex-row items-start justify-between gap-x-md">
+                        <View className="min-w-0 flex-1 flex-row items-center gap-x-md">
                             <CryptoCurrencyIcon code={instrumentCode} size={36} className="bg-warning-background/20" />
 
-                            <View>
+                            <View className="min-w-0 flex-1">
                                 <Text className="text-primary text-sm font-medium" ellipsizeMode="tail" numberOfLines={1}>
                                     {instrumentName}
                                 </Text>
@@ -61,23 +61,23 @@ export const CryptoCurrencyGroupCard = ({ group }: Props) => {
                             </View>
                         </View>
 
-                        <View className="flex-row items-center gap-x-xs">
-                            <Text className="text-secondary-foreground text-xs">{accountsCountLabel}</Text>
-                            <Icon icon={chevronIcon} size={16} className="text-secondary-foreground" />
-                        </View>
-                    </View>
-
-                    <View className="flex-row items-end justify-between gap-x-md">
-                        <View className="min-w-0 flex-1 gap-y-0.5">
-                            <ProtectedText className="text-primary text-2xl font-semibold leading-7" placeholderText="***">
+                        <View className="min-w-0 items-end gap-y-0.5">
+                            <ProtectedText className="text-right text-primary text-lg font-semibold leading-6" placeholderText="***">
                                 {formattedBalance}
                             </ProtectedText>
 
                             {isDefined(formattedValue) ? (
-                                <ProtectedText className="text-secondary-foreground text-sm font-medium" placeholderText="≈ ***">
+                                <ProtectedText className="text-right text-secondary-foreground text-xs font-medium" placeholderText="≈ ***">
                                     ≈ {formattedValue}
                                 </ProtectedText>
                             ) : null}
+                        </View>
+                    </View>
+
+                    <View className="flex-row items-end justify-between gap-x-md">
+                        <View className="flex-row items-center gap-x-xs">
+                            <Text className="text-secondary-foreground text-xs">{accountsCountLabel}</Text>
+                            <Icon icon={chevronIcon} size={16} className="text-secondary-foreground" />
                         </View>
 
                         <Text className="shrink-0 text-right text-secondary-foreground text-xs">
