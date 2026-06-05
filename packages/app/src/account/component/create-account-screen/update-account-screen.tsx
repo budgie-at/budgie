@@ -41,6 +41,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
     const handleGoBack = () => void goBackOrReplace('/');
 
     const variant = account.type === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[account.type];
+    const showInstrumentAfterAmount = account.type === AccountTypeEnum.CRYPTO;
 
     return (
         <FormPage
@@ -65,6 +66,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                 instrumentSymbol={instrumentSymbol}
                 control={control}
                 allowNegative={allowNegativeBalance}
+                showInstrumentAfterAmount={showInstrumentAfterAmount}
             />
 
             <FormLayoutGroup>

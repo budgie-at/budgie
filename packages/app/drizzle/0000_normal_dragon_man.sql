@@ -171,6 +171,7 @@ INSERT INTO `instruments` (`type`, `code`, `name`, `symbol`) VALUES
 ('FIAT', 'SAR', 'Saudi Riyal', '﷼'),
 ('FIAT', 'ARS', 'Argentine Peso', 'ARS$'),
 ('FIAT', 'UAH', 'Ukrainian Hryvnia', '₴');
+
 --> statement-breakpoint
 -- Seed default settings
 INSERT INTO `settings` (`locale`, `language`, `default_account_id`, `default_instrument_id`, `theme`, `show_cents`, `is_vibration_enabled`, `is_pin_enabled`, `is_biometric_enabled`) VALUES

@@ -9,10 +9,11 @@ interface Props<T extends { currentBalance: number }> {
     readonly instrumentSymbol: string;
     readonly variant: ColorPaletteVariant;
     readonly allowNegative?: boolean;
+    readonly showInstrumentAfterAmount?: boolean;
 }
 
 export const AccountBalanceField = <T extends { currentBalance: number }>(props: Props<T>) => {
-    const { control, instrumentSymbol, variant, allowNegative } = props;
+    const { control, instrumentSymbol, variant, allowNegative, showInstrumentAfterAmount } = props;
 
     const renderInput = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => (
         <FormAmountInput
@@ -21,6 +22,7 @@ export const AccountBalanceField = <T extends { currentBalance: number }>(props:
             instrumentSymbol={instrumentSymbol}
             variant={variant}
             allowNegative={allowNegative}
+            showInstrumentAfterAmount={showInstrumentAfterAmount}
             onChange={onChange}
         />
     );

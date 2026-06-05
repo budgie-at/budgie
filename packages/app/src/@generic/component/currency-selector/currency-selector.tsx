@@ -9,18 +9,20 @@ import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCurrencySelectorModal } from '../../context/currency-selector-modal.context';
 import { formatExchangeRate } from '../../utils/format-exchange-rate.util';
+import { CurrencySelectorInstrumentIcon } from '../currency-selector-instrument-icon/currency-selector-instrument-icon';
 import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
 import { Icon } from '../icon/icon';
 
 interface Props {
     readonly instrumentId?: number;
+    readonly instrumentType?: InstrumentTypeEnum;
     readonly testID?: string;
     readonly onChange: (instrumentId: number) => void;
 }
 
-export const CurrencySelector = ({ instrumentId, onChange, testID }: Props) => {
+export const CurrencySelector = ({ instrumentId, instrumentType = InstrumentTypeEnum.FIAT, onChange, testID }: Props) => {
     const { defaultInstrument } = useSettingsContext();
-    const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
+    const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
     const { rate } = useGetRatesByBaseAndQuoteIdsQuery(instrumentId ?? 0, defaultInstrument.id);
     const [openCurrencySelector] = useCurrencySelectorModal();
 
@@ -35,9 +37,10 @@ export const CurrencySelector = ({ instrumentId, onChange, testID }: Props) => {
 
     const convertedAmount = isDefined(rate) ? formatExchangeRate(rate.rate) : '1';
     const isBaseCurrency = !isDefined(rate);
+    const left = <CurrencySelectorInstrumentIcon code={selectedCurrencyCode} symbol={symbol} type={instrumentType} isLargeFiatSymbol />;
 
     const handleOpen = async () => {
-        const result = await openCurrencySelector({ selectedInstrumentId: instrumentId });
+        const result = await openCurrencySelector({ selectedInstrumentId: instrumentId, instrumentType });
         if (isDefined(result)) {
             onChange(result);
         }
@@ -45,11 +48,7 @@ export const CurrencySelector = ({ instrumentId, onChange, testID }: Props) => {
 
     return (
         <HorizontalCell
-            left={
-                <View className="rounded-5xl bg-secondary-background w-12 h-12 items-center justify-center">
-                    <Text className="text-primary text-4xl">{symbol}</Text>
-                </View>
-            }
+            left={left}
             right={<Icon icon={UserIconNameEnum.Sparkles} className="text-secondary-foreground/50" size={16} />}
             onPress={handleOpen}
             size="lg"

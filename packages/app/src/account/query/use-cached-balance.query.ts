@@ -13,7 +13,7 @@ export const useCachedBalanceQuery = (query: BalanceQuery, dependencies: unknown
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
     const queryDependencies = [...dependencies, accountBalancesUpdatedAt];
     const { data } = useLiveQuery(query, queryDependencies);
-    const balance = useCachedMicroUnitQuery(data.at(0)?.balance, queryDependencies);
+    const balance = useCachedMicroUnitQuery(data.at(0)?.balance);
 
     return { balance };
 };
