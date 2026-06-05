@@ -1,5 +1,6 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, isNotNull } from 'drizzle-orm';
 
+import { InstrumentPriceProviderEnum } from '../enum/instrument-price-provider.enum';
 import { InstrumentTypeEnum } from '../enum/instrument-type.enum';
 import { InstrumentEntityTable } from '../table/instrument-entity.table';
 
@@ -32,5 +33,15 @@ export class InstrumentRepository {
 
     findByType(type: InstrumentTypeEnum) {
         return this.db.query.InstrumentEntityTable.findMany({ where: eq(InstrumentEntityTable.type, type) });
+    }
+
+    findByTypeAndPriceProviderWithProviderInstrumentId(type: InstrumentTypeEnum, priceProvider: InstrumentPriceProviderEnum) {
+        return this.db.query.InstrumentEntityTable.findMany({
+            where: and(
+                eq(InstrumentEntityTable.type, type),
+                eq(InstrumentEntityTable.priceProvider, priceProvider),
+                isNotNull(InstrumentEntityTable.providerInstrumentId)
+            )
+        });
     }
 }

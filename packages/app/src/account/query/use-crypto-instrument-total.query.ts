@@ -9,7 +9,6 @@ export const useCryptoInstrumentTotalQuery = (instrumentId: number) => {
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
     const dependencies = [instrumentId, accountBalancesUpdatedAt];
     const { data } = useLiveQuery(accountBalanceRepository.getTotalByCryptoInstrument(instrumentId), dependencies);
-    const balance = useCachedMicroUnitQuery(data.at(0)?.balance, dependencies);
 
-    return balance;
+    return useCachedMicroUnitQuery(data.at(0)?.balance, dependencies);
 };
