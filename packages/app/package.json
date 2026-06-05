@@ -71,6 +71,7 @@
         "expo-system-ui": "~56.0.5",
         "expo-task-manager": "~56.0.16",
         "expo-updates": "~56.0.17",
+        "ky": "^2.0.2",
         "llama.rn": "^0.12.4",
         "lucide-react-native": "^1.17.0",
         "nativewind": "^5.0.0-preview.2",
