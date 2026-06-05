@@ -2041,10 +2041,6 @@ msgstr "PrivatBank"
 msgid "Quick rule"
 msgstr "Quick rule"
 
-#: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
-msgid "Rank"
-msgstr "Rank"
-
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
