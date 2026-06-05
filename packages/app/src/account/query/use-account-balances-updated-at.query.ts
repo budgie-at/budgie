@@ -3,7 +3,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
 
 export const useAccountBalancesUpdatedAtQuery = () => {
-    const { updatedAt } = useLiveQuery(accountBalanceRepository.getLatestUpdatedAt(), []);
+    const { data } = useLiveQuery(accountBalanceRepository.getLatestUpdatedAt(), []);
 
-    return updatedAt;
+    return data.at(0)?.updatedAt;
 };
