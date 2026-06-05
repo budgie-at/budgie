@@ -1,4 +1,7 @@
+import { Log } from '@budgie/logger';
 import { and, eq, inArray, isNull, ne, sql } from 'drizzle-orm';
+
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import {
     getDirectExchangeRateSql,
@@ -15,14 +18,45 @@ import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transac
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
 
 import type { DB } from '../../@generic/type/db.type';
+import type { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
 import type { AccountBalanceEntityInterface } from '../entity/account-balance-entity.interface';
 
 export class AccountBalanceRepository {
     constructor(private db: DB) {}
+
+    @Log(
+        (accountIds, tx) => `enter accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))}`,
+        (result, accountIds, tx) =>
+            `done accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))} resultAccountIds=${[...result.keys()].join(',')}`,
+        (error, accountIds, tx) => `throw accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async getNewTransactionEntriesDeltas(accountIds: number[], tx?: DB): Promise<Map<number, number>> {
+        const database = tx ?? this.db;
+
+        const results = await database
+            .select({
+                accountId: TransactionEntryEntityTable.accountId,
+                delta: this.getTransactionsSumSql().mapWith(Number)
+            })
+            .from(TransactionEntryEntityTable)
+            .where(
+                and(
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    this.getBalanceLedgerEntryConditionSql(),
+                    inArray(TransactionEntryEntityTable.accountId, accountIds),
+                    sql`(
+                        NOT EXISTS (SELECT 1 FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${TransactionEntryEntityTable.accountId})
+                        OR ${TransactionEntryEntityTable.createdAt} > (SELECT MAX(${AccountBalanceEntityTable.updatedAt}) FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${TransactionEntryEntityTable.accountId})
+                    )`
+                )
+            )
+            .groupBy(TransactionEntryEntityTable.accountId);
+
+        return new Map(results.map(({ accountId, delta }) => [accountId, delta]));
+    }
 
     getAssetClassTotals(defaultInstrumentId: number) {
         const fiatExchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
@@ -83,38 +117,6 @@ export class AccountBalanceRepository {
             })
             .from(AccountBalanceEntityTable)
             .where(isNull(AccountBalanceEntityTable.deletedAt));
-    }
-
-    async getNewTransactionEntriesDeltas(accountIds: number[], tx?: DB): Promise<Map<number, number>> {
-        const database = tx ?? this.db;
-
-        const results = await database
-            .select({
-                accountId: TransactionEntryEntityTable.accountId,
-                delta: this.getTransactionsSumSql().mapWith(Number)
-            })
-            .from(TransactionEntryEntityTable)
-            .where(
-                and(
-                    isNull(TransactionEntryEntityTable.deletedAt),
-                    this.getBalanceLedgerEntryConditionSql(),
-                    inArray(TransactionEntryEntityTable.accountId, accountIds),
-                    sql`(
-                        NOT EXISTS (
-                            SELECT 1 FROM ${AccountBalanceEntityTable}
-                            WHERE ${AccountBalanceEntityTable.accountId} = ${TransactionEntryEntityTable.accountId}
-                        )
-                        OR ${TransactionEntryEntityTable.createdAt} > (
-                            SELECT MAX(${AccountBalanceEntityTable.updatedAt})
-                            FROM ${AccountBalanceEntityTable}
-                            WHERE ${AccountBalanceEntityTable.accountId} = ${TransactionEntryEntityTable.accountId}
-                        )
-                    )`
-                )
-            )
-            .groupBy(TransactionEntryEntityTable.accountId);
-
-        return new Map(results.map(({ accountId, delta }) => [accountId, delta]));
     }
 
     getByAccountId(accountId: number) {
