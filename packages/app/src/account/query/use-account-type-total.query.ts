@@ -14,7 +14,7 @@ export const useAccountTypeTotalQuery = (accountType: AccountTypeEnum) => {
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
     const dependencies = [defaultInstrument.id, accountType, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
     const { data } = useLiveQuery(accountBalanceRepository.getTotalByAccountType(defaultInstrument.id, accountType), dependencies);
-    const total = useCachedMicroUnitQuery(data.at(0)?.total, dependencies);
+    const total = useCachedMicroUnitQuery(data.at(0)?.total);
 
     return total;
 };

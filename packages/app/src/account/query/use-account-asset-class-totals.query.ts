@@ -16,8 +16,8 @@ export const useAccountAssetClassTotalsQuery = () => {
     const dependencies = [defaultInstrument.id, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
     const { data } = useLiveQuery(accountBalanceRepository.getAssetClassTotals(defaultInstrument.id), dependencies);
     const result = data.at(0);
-    const fiatTotal = useCachedMicroUnitQuery(result?.fiatTotal, dependencies);
-    const cryptoTotal = useCachedMicroUnitQuery(result?.cryptoTotal, dependencies);
+    const fiatTotal = useCachedMicroUnitQuery(result?.fiatTotal);
+    const cryptoTotal = useCachedMicroUnitQuery(result?.cryptoTotal);
 
     return {
         fiatTotal,

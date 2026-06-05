@@ -14,7 +14,7 @@ export const useDebtTypeTotalQuery = (debtType: AccountDebtTypeEnum) => {
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
     const dependencies = [defaultInstrument.id, debtType, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
     const { data } = useLiveQuery(accountBalanceRepository.getTotalRemainingDebtByType(defaultInstrument.id, debtType), dependencies);
-    const total = useCachedMicroUnitQuery(data.at(0)?.total, dependencies);
+    const total = useCachedMicroUnitQuery(data.at(0)?.total);
 
     return total;
 };
