@@ -7210,18 +7210,33 @@ INSERT INTO crypto_market_price_seed (code, quote_code, price_date, price, marke
 INSERT OR IGNORE INTO instrument_daily_market_prices (instrument_id, quote_instrument_id, price_date, price, market_cap, volume, source)
 SELECT source.id, quote.id, seed.price_date, seed.price, seed.market_cap, seed.volume, 'coingecko.com'
 FROM crypto_market_price_seed seed
+INNER JOIN (
+    SELECT code, quote_code, price_date, MAX(rowid) AS rowid
+    FROM crypto_market_price_seed
+    GROUP BY code, quote_code, price_date
+) latest_seed ON latest_seed.rowid = seed.rowid
 INNER JOIN instruments source ON source.code = seed.code
 INNER JOIN instruments quote ON quote.code = seed.quote_code;
 --> statement-breakpoint
 INSERT OR IGNORE INTO historical_exchange_rates (source_instrument_id, target_instrument_id, rate_date, rate)
 SELECT source.id, quote.id, seed.price_date, seed.price
 FROM crypto_market_price_seed seed
+INNER JOIN (
+    SELECT code, quote_code, price_date, MAX(rowid) AS rowid
+    FROM crypto_market_price_seed
+    GROUP BY code, quote_code, price_date
+) latest_seed ON latest_seed.rowid = seed.rowid
 INNER JOIN instruments source ON source.code = seed.code
 INNER JOIN instruments quote ON quote.code = seed.quote_code;
 --> statement-breakpoint
 INSERT OR IGNORE INTO historical_exchange_rates (source_instrument_id, target_instrument_id, rate_date, rate)
 SELECT quote.id, source.id, seed.price_date, 1 / seed.price
 FROM crypto_market_price_seed seed
+INNER JOIN (
+    SELECT code, quote_code, price_date, MAX(rowid) AS rowid
+    FROM crypto_market_price_seed
+    GROUP BY code, quote_code, price_date
+) latest_seed ON latest_seed.rowid = seed.rowid
 INNER JOIN instruments source ON source.code = seed.code
 INNER JOIN instruments quote ON quote.code = seed.quote_code;
 --> statement-breakpoint

@@ -306,9 +306,11 @@ export type { TransactionEntryEntityInterface } from './transaction-entry/entity
 export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';
 export type { TransactionEntryWithMccCategoryEntityInterface } from './transaction-entry/entity/transaction-entry-with-mcc-category-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
+export type { CryptoPositionEntryRowInterface } from './transaction-entry/interface/crypto-position-entry-row.interface';
 export type { PendingBaseValuationBucketInterface } from './transaction-entry/interface/pending-base-valuation-bucket.interface';
 
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
+export { TransactionEntryPositionRepository } from './transaction-entry/repository/transaction-entry-position.repository';
 
 export { ExchangeRateAssociationEnum } from './exchange-rate/enum/exchange-rate-association.enum';
 

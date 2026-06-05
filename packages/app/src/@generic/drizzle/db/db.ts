@@ -22,6 +22,7 @@ import {
     StatisticsRepository,
     TagRepository,
     TransactionEmbeddingRepository,
+    TransactionEntryPositionRepository,
     TransactionEntryRepository,
     TransactionPatternRepository,
     TransactionRepository,
@@ -122,6 +123,7 @@ export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
 export const transactionEmbeddingRepository = new TransactionEmbeddingRepository(db);
 export const transactionEntryRepository = new TransactionEntryRepository(db);
+export const transactionEntryPositionRepository = new TransactionEntryPositionRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
 export const transactionRepository = new TransactionRepository(db);
 export const transactionTagsRepository = new TransactionTagsRepository(db);

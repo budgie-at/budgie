@@ -8,7 +8,7 @@ export const useGetInstrumentByIdQuery = (id: number) => {
     const { data, updatedAt, error } = useLiveQuery(instrumentRepository.findById(id), [id]);
 
     if (!isDefined(data)) {
-        return { isLoading: true, instrument: null, updatedAt: null, error };
+        return { isLoading: !isDefined(updatedAt), instrument: null, updatedAt, error };
     }
 
     return {

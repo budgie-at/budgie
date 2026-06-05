@@ -1,3 +1,4 @@
+import { InstrumentTypeEnum } from '@budgie/contracts';
 import { ScrollView } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -37,6 +38,8 @@ export const CurrencyMarketPage = ({ instrument }: Props) => {
     const progress = useInstrumentMarketDataProgressQuery(instrument.id, defaultInstrument.id);
     const isPositiveChange = isMarketMovePositive(latestPrice, previousPrice);
     const shouldShowProgress = prices.length < 2 && !progress.isComplete;
+    const shouldShowHoldings = instrument.type === InstrumentTypeEnum.CRYPTO;
+    const holdingsCard = shouldShowHoldings ? <CurrencyMarketHoldingsCard instrument={instrument} latestPrice={latestPrice} /> : null;
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
@@ -53,7 +56,7 @@ export const CurrencyMarketPage = ({ instrument }: Props) => {
                 ) : (
                     <MarketDataSparkline prices={prices} isPositive={isPositiveChange} />
                 )}
-                <CurrencyMarketHoldingsCard instrument={instrument} latestPrice={latestPrice} />
+                {holdingsCard}
                 <CurrencyMarketMetrics instrument={instrument} latestPrice={latestPrice} />
             </ScrollView>
         </Page>

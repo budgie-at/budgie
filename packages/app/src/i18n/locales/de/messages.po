@@ -464,6 +464,10 @@ msgstr "Biometrische Authentifizierung"
 msgid "Borrowed"
 msgstr "Geliehen"
 
+#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
+msgid "Break-even"
+msgstr "Gewinnschwelle"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Budgie"
 msgstr "Budgie"
@@ -692,6 +696,10 @@ msgstr "In Überweisung umwandeln"
 #: src/app/convert-to-transfer.tsx
 msgid "Convert to Transfer?"
 msgstr "In Überweisung umwandeln?"
+
+#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
+msgid "Cost basis"
+msgstr "Kostenbasis"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Could not activate account."
@@ -2845,6 +2853,10 @@ msgstr "Transaktion entkonsolidieren?"
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
 msgid "Unknown"
 msgstr "Unbekannt"
+
+#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
+msgid "Unrealized P&L"
+msgstr "Unrealisierte GuV"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
