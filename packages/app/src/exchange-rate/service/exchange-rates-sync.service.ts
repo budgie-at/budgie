@@ -1,12 +1,11 @@
-import { InstrumentPriceProviderEnum, InstrumentTypeEnum } from '@budgie/contracts';
+import { InstrumentPriceProviderEnum, InstrumentTypeEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { exchangeRateRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
-import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
+import { db, exchangeRateRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
 import { CoinGeckoSimplePriceResponseSchema } from '../schema/coin-gecko-simple-price-response.schema';
@@ -14,11 +13,10 @@ import { ExchangeRateApiResponseSchema } from '../schema/exchange-rate-api-respo
 
 import { exchangeRatesService } from './exchange-rates.service';
 
-import type { InstrumentEntityInterface } from '@budgie/contracts';
+import type { ExchangeRateCreateEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
 
 class ExchangeRatesSyncService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
-    private static readonly CRYPTO_RATE_UPDATE_BATCH_SIZE = 10;
     private static readonly SYNC_COOLDOWN_MS = 5 * 60 * 1000;
 
     private lastSyncedAtMs: number | null = null;
@@ -54,12 +52,13 @@ class ExchangeRatesSyncService {
     private async syncFiatRates(baseInstrument: InstrumentEntityInterface): Promise<void> {
         const apiData = await this.fetch(baseInstrument.code);
         const instruments = await instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
-
-        await Promise.all(
-            instruments
-                .filter(instrument => instrument.code !== baseInstrument.code)
-                .map(instrument => this.updateInstrumentRate(baseInstrument.id, instrument, apiData.rates, 'exchangerate-api.com'))
+        const inputs = instruments.flatMap(instrument =>
+            instrument.code === baseInstrument.code
+                ? []
+                : this.buildInstrumentRateInputs(baseInstrument.id, instrument, apiData.rates, 'exchangerate-api.com')
         );
+
+        await transactionAsync(db, tx => exchangeRateRepository.bulkUpsert(inputs, tx));
     }
 
     private async syncCryptoRates(baseInstrument: InstrumentEntityInterface): Promise<void> {
@@ -75,18 +74,15 @@ class ExchangeRatesSyncService {
 
         const prices = await this.fetchCryptoPrices(providerInstrumentIds, baseInstrument.code);
         const quoteCode = baseInstrument.code.toLowerCase();
-
-        await processInputWithBatches(coingeckoInstruments, ExchangeRatesSyncService.CRYPTO_RATE_UPDATE_BATCH_SIZE, batch =>
-            Promise.all(
-                batch.map(instrument =>
-                    this.updateCryptoInstrumentRate(
-                        baseInstrument.id,
-                        instrument,
-                        this.getCryptoPrice(prices, instrument.providerInstrumentId, quoteCode)
-                    )
-                )
+        const inputs = coingeckoInstruments.flatMap(instrument =>
+            this.buildCryptoInstrumentRateInputs(
+                baseInstrument.id,
+                instrument,
+                this.getCryptoPrice(prices, instrument.providerInstrumentId, quoteCode)
             )
         );
+
+        await transactionAsync(db, tx => exchangeRateRepository.bulkUpsert(inputs, tx));
     }
 
     private async fetch(code: string): Promise<ExchangeRateApiResponseInterface> {
@@ -140,36 +136,53 @@ class ExchangeRatesSyncService {
         return prices[providerInstrumentId]?.[quoteCode] ?? null;
     }
 
-    private async updateInstrumentRate(
+    private buildInstrumentRateInputs(
         baseInstrumentId: number,
         instrument: { id: number; code: string },
         rates: Record<string, number>,
         source: string
-    ): Promise<void> {
+    ): ExchangeRateCreateEntityInterface[] {
         const rate = rates[instrument.code];
 
         if (!isPositiveNumber(rate)) {
-            return;
+            return [];
         }
 
-        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, rate, source);
-
-        const reverseRate = 1 / rate;
-
-        await exchangeRateRepository.upsert(instrument.id, baseInstrumentId, reverseRate, source);
+        return this.buildRatePairInputs(baseInstrumentId, instrument.id, rate, source);
     }
 
-    private async updateCryptoInstrumentRate(
+    private buildCryptoInstrumentRateInputs(
         baseInstrumentId: number,
         instrument: InstrumentEntityInterface,
         rate: number | null
-    ): Promise<void> {
+    ): ExchangeRateCreateEntityInterface[] {
         if (!isPositiveNumber(rate)) {
-            return;
+            return [];
         }
 
-        await exchangeRateRepository.upsert(instrument.id, baseInstrumentId, rate, 'coingecko.com');
-        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, 1 / rate, 'coingecko.com');
+        return this.buildRatePairInputs(instrument.id, baseInstrumentId, rate, 'coingecko.com');
+    }
+
+    private buildRatePairInputs(
+        baseInstrumentId: number,
+        quoteInstrumentId: number,
+        rate: number,
+        source: string
+    ): ExchangeRateCreateEntityInterface[] {
+        return [
+            {
+                baseInstrumentId,
+                quoteInstrumentId,
+                rate,
+                source
+            },
+            {
+                baseInstrumentId: quoteInstrumentId,
+                quoteInstrumentId: baseInstrumentId,
+                rate: 1 / rate,
+                source
+            }
+        ];
     }
 }
 
