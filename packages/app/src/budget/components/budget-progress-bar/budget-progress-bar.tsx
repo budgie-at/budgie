@@ -11,6 +11,7 @@ const MAX_PROGRESS = 1;
 const PERCENT_MULTIPLIER = 100;
 
 interface Props {
+    readonly isAmountLight?: boolean;
     readonly spent: number;
     readonly limit: number;
     readonly testID?: string;
@@ -27,7 +28,16 @@ const barVariants = cva<{ tone: Record<BudgetBarTone, string> }>('h-full rounded
     }
 });
 
-export const BudgetProgressBar = ({ spent, limit, testID, spentTestID }: Props) => {
+const amountTextVariants = cva('text-primary text-md', {
+    variants: {
+        isAmountLight: {
+            false: 'font-semibold',
+            true: 'font-medium'
+        }
+    }
+});
+
+export const BudgetProgressBar = ({ isAmountLight = false, spent, limit, testID, spentTestID }: Props) => {
     const ratio = isPositiveNumber(limit) ? spent / limit : 0;
     const clampedRatio = Math.max(MIN_PROGRESS, Math.min(MAX_PROGRESS, ratio));
     const percent = Math.round(ratio * PERCENT_MULTIPLIER);
@@ -41,7 +51,7 @@ export const BudgetProgressBar = ({ spent, limit, testID, spentTestID }: Props) 
     return (
         <View testID={testID} className="gap-y-md">
             <View className="flex-row items-center justify-between">
-                <Text className="text-primary font-semibold text-md" testID={spentTestID} accessible accessibilityLabel={amountLabel}>
+                <Text className={amountTextVariants({ isAmountLight })} testID={spentTestID} accessible accessibilityLabel={amountLabel}>
                     {amountLabel}
                 </Text>
 
