@@ -43,8 +43,12 @@ class ErsteMapper {
         (error, row, iban) => `throw iban=${iban} date=${row.date.toISOString()} amount=${row.amount} error=${getErrorMessage(error)}`
     )
     mapTransaction(row: ErsteRowInterface, iban: string): BankTransactionInterface {
+        const id = this.generateExternalId(row, iban);
+        const legacyExternalId = this.generateLegacyExternalId(row, iban);
+
         return {
-            id: this.generateExternalId(row, iban),
+            id,
+            ...(id !== legacyExternalId && { legacyExternalIds: [legacyExternalId] }),
             provider: BankProviderEnum.ERSTE,
             accountId: iban,
             type: row.isCredit ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE,
@@ -78,6 +82,14 @@ class ErsteMapper {
     }
 
     private generateExternalId(row: ErsteRowInterface, iban: string): string {
+        const seed = [this.buildStatementDateKey(row.date), iban, row.amount, String(row.isCredit), row.reference, row.description].join(
+            '|'
+        );
+
+        return this.fnv1aHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
+    }
+
+    private generateLegacyExternalId(row: ErsteRowInterface, iban: string): string {
         const seed = [
             this.buildStatementDateKey(row.date),
             iban,

@@ -114,23 +114,18 @@ export abstract class BaseFileBankSyncService {
         if (!isNotEmptyArray(transactions)) {
             return 0;
         }
-
         const transactionInputs = transactions.map(transaction => {
             const lookup = context.mccCategoryLookupMap.get(transaction.category ?? '') ?? null;
 
             return mapBankTransactionToCreateInput(transaction, account.id, lookup, this.provider);
         });
+        const prepared = transactionImportService.prepareImportedInputs(transactionInputs, context.existingTransactionIdMap);
 
-        const upsertedTransactions = await transactionImportService.bulkUpsertImported(
-            transactionInputs,
-            context.existingTransactionIdMap,
-            context.tx,
-            {
-                shouldUpdateBalances: false
-            }
-        );
+        const upsertedTransactions = await transactionImportService.bulkUpsertPreparedImported(prepared, context.tx, {
+            shouldUpdateBalances: false
+        });
 
-        return this.queueRulesForNewlyImportedTransactions(transactionInputs, upsertedTransactions, context.existingTransactionIdMap);
+        return this.queueRulesForNewlyImportedTransactions(prepared.transactionInputs, upsertedTransactions, prepared.externalIdMap);
     }
 
     @Log(

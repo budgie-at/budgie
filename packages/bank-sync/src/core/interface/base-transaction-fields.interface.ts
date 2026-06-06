@@ -1,5 +1,6 @@
 export interface BaseTransactionFieldsInterface {
     readonly id: string;
+    readonly legacyExternalIds?: readonly string[];
     readonly time: number;
     readonly description: string;
     readonly mcc: number;
