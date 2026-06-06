@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.35.1](https://github.com/budgie-at/budgie/compare/v5.35.0...v5.35.1) (2026-06-06)
+
+### Bug Fixes
+
+- dedupe repeated bank imports ([7a67803](https://github.com/budgie-at/budgie/commit/7a67803024cc590a1129209bf984dc65a8f008f9))
+
 # [5.35.0](https://github.com/budgie-at/budgie/compare/v5.34.1...v5.35.0) (2026-06-05)
 
 ### Bug Fixes
