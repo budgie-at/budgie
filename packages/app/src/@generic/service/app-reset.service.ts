@@ -2,26 +2,34 @@ import { Log } from '@budgie/logger';
 import { Directory, File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { aiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { chatService } from '../../ai/service/chat.service';
 import { embeddingService } from '../../ai/service/embedding.service';
 import { sttService } from '../../ai/service/stt.service';
 import { authService } from '../../auth/service/auth.service';
-import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 import { patternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { DB_NAME } from '../drizzle/constant/db-name.constant';
 import { expoDb } from '../drizzle/db/db';
 import { reloadApp } from '../utils/reload-app.util';
 
+import { foregroundWorkloadService } from './foreground-workload.service';
+
 class AppResetService {
-    private static readonly RESET_WORKLOAD_NAME = 'full-app-storage-reset';
+    private static readonly RUNTIME_TEARDOWN_TIMEOUT_MS = 10_000;
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async clearAllDataAndRestart(): Promise<void> {
-        await syncWorkloadService.run(AppResetService.RESET_WORKLOAD_NAME, () => this.clearAllAppOwnedStorage());
+        await foregroundWorkloadService.run(() => this.clearAllAppOwnedStorage());
         await reloadApp();
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    private async tearDownRuntime(): Promise<void> {
+        await aiStorageReplacementService.pauseLongLivedRuntime();
+        await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
+        await this.closeDatabase();
     }
 
     private async clearAllAppOwnedStorage(): Promise<void> {
@@ -36,10 +44,8 @@ class AppResetService {
     }
 
     private async runPrimaryResetSteps(errors: unknown[]): Promise<void> {
+        await this.tearDownRuntimeBestEffort();
         try {
-            await aiStorageReplacementService.pauseLongLivedRuntime();
-            await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
-            await this.closeDatabase();
             this.clearDatabaseGlobals();
             this.deleteDatabaseFiles(this.getDatabasePath());
             this.deleteDatabaseFiles(`${this.getDatabasePath()}.bak`);
@@ -52,6 +58,21 @@ class AppResetService {
         this.captureSyncError(() => void this.deleteCacheContents(), errors);
         this.captureSyncError(() => void patternCacheService.invalidate(), errors);
         await this.captureAsyncError(() => authService.clearAllPins(), errors);
+    }
+
+    private async tearDownRuntimeBestEffort(): Promise<void> {
+        let deadlineTimer: ReturnType<typeof setTimeout> | null = null;
+        const deadline = new Promise<void>(resolve => {
+            deadlineTimer = setTimeout(resolve, AppResetService.RUNTIME_TEARDOWN_TIMEOUT_MS);
+        });
+
+        try {
+            await Promise.race([this.tearDownRuntime().catch(emptyFn), deadline]);
+        } finally {
+            if (isDefined(deadlineTimer)) {
+                clearTimeout(deadlineTimer);
+            }
+        }
     }
 
     private captureSyncError(operation: () => void, errors: unknown[]): void {
