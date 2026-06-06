@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -26,10 +26,12 @@ interface Props<T extends IdInterface> {
     emptyState: ReactNode;
     onSearchChange: (search: string) => void;
     onDelete?: (id: number) => Promise<void>;
-    renderCard: (item: T) => ReactNode;
+    renderCard: (item: T, index: number) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     searchInputTestID?: string;
     testID?: string;
+    listHeader?: ReactElement | null;
+    estimatedHeaderSize?: number;
     children?: ReactNode;
     sizing?: LegendListSizingInterface<T>;
 }
@@ -47,6 +49,8 @@ export const SearchablePage = <T extends IdInterface>({
     getDeleteConfirmation,
     searchInputTestID,
     testID,
+    listHeader,
+    estimatedHeaderSize,
     children,
     sizing
 }: Props<T>) => {
@@ -63,6 +67,8 @@ export const SearchablePage = <T extends IdInterface>({
                         data={data}
                         renderCard={renderCard}
                         getDeleteConfirmation={getDeleteConfirmation}
+                        listHeader={listHeader}
+                        estimatedHeaderSize={estimatedHeaderSize}
                         sizing={sizing}
                     >
                         {children}

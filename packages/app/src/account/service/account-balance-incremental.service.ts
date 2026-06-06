@@ -1,50 +1,42 @@
-import { getLogger } from '@budgie/logger';
+import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { isEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { accountBalanceRepository, accountRepository } from '../../@generic/drizzle/db/db';
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
-import { ONE_WEEK_IN_SECONDS } from '../constant/one-week-in-seconds.constant';
 
 import type { AccountBalanceCreateEntityInterface, AccountBalanceEntityInterface, DB } from '@budgie/contracts';
 
-const logger = getLogger('AccountBalanceIncrementalService');
-
 class AccountBalanceIncrementalService {
+    private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 7 * 24 * 60;
+
+    @Log(
+        (truncate, tx) => `enter truncate=${String(truncate)} tx=${String(isDefined(tx))}`,
+        (result, truncate, tx) => `done truncate=${String(truncate)} tx=${String(isDefined(tx))} result=${String(result)}`,
+        (error, truncate, tx) => `throw truncate=${String(truncate)} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async updateAllBalances(truncate: boolean, tx?: DB): Promise<void> {
-        const startedAt = Date.now();
         const accounts = await accountRepository.getAllActiveAccounts(tx);
         if (isEmptyArray(accounts)) {
-            logger.log('updateAllBalances:duration', { truncate, accountCount: 0, durationMs: Date.now() - startedAt });
-
             return;
         }
 
         await this.truncateBalances(truncate, tx);
 
         const accountIds = accounts.map(({ id }) => id);
-
-        const [currentBalances, deltaMap] = await Promise.all([
-            accountBalanceRepository.getByAccountIds(accountIds, tx),
-            accountBalanceRepository.getNewTransactionEntriesDeltas(accountIds, tx)
-        ]);
+        const currentBalances = await accountBalanceRepository.getByAccountIds(accountIds, tx);
+        const deltaMap = await accountBalanceRepository.getNewTransactionEntriesDeltas(accountIds, tx);
 
         const balancesMap = this.buildBalancesMap(currentBalances);
 
         const balancesToInsert = accounts.map(account => this.buildBalanceInput(account.id, balancesMap, deltaMap));
 
-        await Promise.all(balancesToInsert.map(async balance => accountBalanceRepository.upsert(balance, tx)));
-
-        logger.log('updateAllBalances:duration', {
-            truncate,
-            accountCount: accounts.length,
-            balanceCount: balancesToInsert.length,
-            durationMs: Date.now() - startedAt
-        });
+        await this.upsertBalances(balancesToInsert, tx);
     }
 
+    @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
     async registerBackgroundTask(): Promise<void> {
         const isRegistered = await TaskManager.isTaskRegisteredAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK);
         if (isRegistered) {
@@ -52,7 +44,7 @@ class AccountBalanceIncrementalService {
         }
 
         await BackgroundTask.registerTaskAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK, {
-            minimumInterval: ONE_WEEK_IN_SECONDS
+            minimumInterval: AccountBalanceIncrementalService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
         });
     }
 
@@ -85,6 +77,13 @@ class AccountBalanceIncrementalService {
         }
 
         await accountBalanceRepository.truncate(tx);
+    }
+
+    private async upsertBalances(balances: AccountBalanceCreateEntityInterface[], tx?: DB): Promise<void> {
+        await balances.reduce<Promise<void>>(async (previousBalancePromise, balance) => {
+            await previousBalancePromise;
+            await accountBalanceRepository.upsert(balance, tx);
+        }, Promise.resolve());
     }
 }
 

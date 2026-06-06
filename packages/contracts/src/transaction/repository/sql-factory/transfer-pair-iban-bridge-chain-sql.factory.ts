@@ -119,6 +119,7 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = `
                 INNER JOIN accounts source_account ON
                     source_account.id = source_expense_entry.account_id
                     AND source_account.deleted_at IS NULL
+                    AND source_account.is_active = 1
                     AND source_account.iban IS NOT NULL
                     AND source_account.iban != ''
                 INNER JOIN transactions bridge_income_tx ON
@@ -136,6 +137,7 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = `
                 INNER JOIN accounts bridge_account ON
                     bridge_account.id = bridge_income_entry.account_id
                     AND bridge_account.deleted_at IS NULL
+                    AND bridge_account.is_active = 1
                 INNER JOIN transactions bridge_expense_tx ON
                     bridge_expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
                     AND bridge_expense_tx.deleted_at IS NULL
@@ -164,6 +166,7 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = `
                 INNER JOIN accounts target_account ON
                     target_account.id = target_income_entry.account_id
                     AND target_account.deleted_at IS NULL
+                    AND target_account.is_active = 1
                     AND target_account.iban = bridge_expense_entry.to_iban
                     AND target_account.iban = source_expense_entry.to_iban
                 LEFT JOIN mcc_categories source_expense_mcc ON source_expense_mcc.id = source_expense_entry.mcc_category_id

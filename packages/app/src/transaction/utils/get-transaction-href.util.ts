@@ -16,11 +16,15 @@ export const getTransactionHref = (transaction: TransactionWithRelationsEntityIn
         return `/transactions/${id}/transfer`;
     }
 
-    if (isIncomeTransaction(transaction) || isPositiveAdjustmentTransaction(transaction)) {
+    if (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) {
+        return `/transactions/${id}/adjustment`;
+    }
+
+    if (isIncomeTransaction(transaction)) {
         return `/transactions/${id}/income`;
     }
 
-    if (isExpenseTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) {
+    if (isExpenseTransaction(transaction)) {
         return `/transactions/${id}/expense`;
     }
 

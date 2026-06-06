@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro';
 import { getI18n } from '@lingui/react/server';
 import Link from 'next/link';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { ARTICLE_REGISTRY } from '../../constant/article-registry.constant';
 
@@ -16,7 +16,7 @@ export const RelatedArticles = ({ slugs, locale }: RelatedArticlesProps) => {
 
     const articles = slugs.map(slug => ARTICLE_REGISTRY.find(entry => entry.slug === slug)).filter(isDefined);
 
-    if (!isDefined(i18n) || articles.length === 0) {
+    if (!isDefined(i18n) || isEmptyArray(articles)) {
         return null;
     }
 

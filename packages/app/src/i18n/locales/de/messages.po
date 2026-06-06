@@ -16,6 +16,11 @@ msgstr ""
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} Tx ausstehend"
 
+#. placeholder {0}: group.accounts.length
+#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
+msgid "{0, plural, one {# account} other {# accounts}}"
+msgstr "{0, plural, one {# Konto} other {# Konten}}"
+
 #: src/account/component/accounts-group/accounts-group.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# Konto} other {# Konten}}"
@@ -35,6 +40,14 @@ msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt."
 #: src/app/import-column-mapper.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verfügbar}}"
+
+#: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
+msgid "{count, plural, one {# bank sync item repaired} other {# bank sync items repaired}}"
+msgstr "{count, plural, one {# Bank-Sync-Eintrag repariert} other {# Bank-Sync-Einträge repariert}}"
+
+#: src/settings/utils/get-bank-sync-repair-text.util.ts
+msgid "{count, plural, one {# bank sync repair} other {# bank sync repairs}}"
+msgstr "{count, plural, one {# Bank-Sync-Reparatur} other {# Bank-Sync-Reparaturen}}"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
@@ -123,6 +136,10 @@ msgstr "<"
 msgid ">"
 msgstr ">"
 
+#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
+msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
+msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
+
 #: src/@generic/component/currency-selector/currency-selector.tsx
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -145,6 +162,7 @@ msgstr "Über"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Account"
@@ -355,6 +373,7 @@ msgid "Are you sure you want to delete this rule?"
 msgstr "Möchten Sie diese Regel wirklich löschen?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Are you sure?"
@@ -380,6 +399,7 @@ msgstr "Verfügbare Spalten"
 msgid "Balance"
 msgstr "Saldo"
 
+#: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "Balance Adjustment"
@@ -394,9 +414,14 @@ msgid "Bank sync"
 msgstr "Bank-Synchronisation"
 
 #: src/app/(main)/create-account/index.tsx
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
 msgid "Bank Sync"
 msgstr "Bank-Synchronisation"
+
+#: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
+msgid "Bank sync data repairs"
+msgstr "Reparaturen der Bank-Sync-Daten"
 
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
@@ -439,6 +464,10 @@ msgstr "Geliehen"
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
+msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
+msgstr "Budgie kann doppelte Bank-Sync-Importe finden und Überweisungskonsolidierungen reparieren, die auf inaktiven Konten gelandet sind."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie füllt fehlende Werte in der Basiswährung mit historischen Wechselkursen. Analysen sind möglicherweise nicht verfügbar, bis dies abgeschlossen ist."
@@ -446,6 +475,10 @@ msgstr "Budgie füllt fehlende Werte in der Basiswährung mit historischen Wechs
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
 msgstr "Budgie führt sichere Überweisungs- und Rückerstattungs-Treffer zusammen. Mehrdeutige Treffer bleiben unverändert."
+
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
+msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
+msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen bleiben unverändert."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
@@ -461,12 +494,15 @@ msgstr "Budgie führt sichere Überweisungs- und Rückerstattungs-Treffer zusamm
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
@@ -511,6 +547,10 @@ msgstr "Ändern"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Change PIN"
 msgstr "PIN ändern"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+msgid "Checking"
+msgstr "Prüfen"
 
 #: src/account/component/create-bank-account/create-bank-account.tsx
 #: src/app/(main)/create-account/index.tsx
@@ -560,6 +600,10 @@ msgstr "Menü schließen"
 #: src/rule/constant/external-source.constant.ts
 msgid "Coinbase"
 msgstr "Coinbase"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Cold wallets and exchange balances"
+msgstr "Cold Wallets und Exchange-Guthaben"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
@@ -652,6 +696,10 @@ msgstr "Konto konnte nicht aktiviert werden."
 #: src/account/component/archive-account/archive-account.tsx
 msgid "Could not archive account"
 msgstr "Konto konnte nicht archiviert werden"
+
+#: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
+msgid "Could not check bank sync data"
+msgstr "Bank-Sync-Daten konnten nicht geprüft werden"
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Could not clear data"
@@ -751,6 +799,10 @@ msgstr "Tag konnte nicht neu zugewiesen werden"
 msgid "Could not recalculate balances"
 msgstr "Salden konnten nicht neu berechnet werden"
 
+#: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
+msgid "Could not repair bank sync data"
+msgstr "Bank-Sync-Daten konnten nicht repariert werden"
+
 #: src/app/resync-window-picker.tsx
 msgid "Could not reset bank sync"
 msgstr "Bank-Synchronisation konnte nicht zurückgesetzt werden"
@@ -797,6 +849,7 @@ msgstr "Regel konnte nicht aktualisiert werden"
 msgid "Could not update token"
 msgstr "Token konnte nicht aktualisiert werden"
 
+#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "Transaktion konnte nicht aktualisiert werden."
@@ -829,21 +882,9 @@ msgstr "Transaktions-Tags erstellen und organisieren"
 msgid "Create anyway"
 msgstr "Trotzdem erstellen"
 
-#: src/app/transaction-category-filter.tsx
-msgid "Create Categories"
-msgstr "Kategorien erstellen"
-
 #: src/category/components/category-form/category-form.tsx
 msgid "Create Category"
 msgstr "Kategorie erstellen"
-
-#: src/app/transaction-category-filter.tsx
-msgid "Create custom categories in Settings to label and filter your transactions"
-msgstr "Erstellen Sie benutzerdefinierte Kategorien in den Einstellungen, um Ihre Transaktionen zu kennzeichnen und zu filtern"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create custom tags in Settings to label and filter your transactions"
-msgstr "Erstellen Sie benutzerdefinierte Tags in den Einstellungen, um Ihre Transaktionen zu kennzeichnen und zu filtern"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
@@ -854,17 +895,13 @@ msgstr "Erstellen Sie eines, um zu beginnen."
 msgid "Create Rule"
 msgstr "Regel erstellen"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Regeln erstellen, um Banktransaktionen automatisch zu kategorisieren und zu taggen"
 
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create Tag"
 msgstr "Tag erstellen"
-
-#: src/app/transaction-tag-filter.tsx
-msgid "Create Tags"
-msgstr "Tags erstellen"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "Create tags to organize your transactions"
@@ -877,6 +914,11 @@ msgstr "Erstellen Sie Ihr erstes Konto, um Ihre Finanzen zu verfolgen"
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto"
 msgstr "Krypto"
+
+#: src/account/component/create-crypto-account/create-crypto-account.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Crypto Account"
+msgstr "Kryptokonto"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "CSV"
@@ -1149,6 +1191,7 @@ msgstr "Gleich"
 msgid "Errors"
 msgstr "Fehler"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Erste"
 msgstr "Erste"
@@ -1227,6 +1270,10 @@ msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Schnellindexierung {done} von {total} • zum Pausieren tippen"
 
+#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+msgid "Fee {formattedAmount}"
+msgstr "Gebühr {formattedAmount}"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
 msgstr "Konten abrufen"
@@ -1242,6 +1289,18 @@ msgstr "Feld"
 #: src/account/component/create-account-screen/create-account-screen.tsx
 msgid "Fill in the account details"
 msgstr "Füllen Sie die Kontodetails aus"
+
+#: src/app/transaction-account-filter.tsx
+msgid "Filter accounts"
+msgstr "Konten filtern"
+
+#: src/app/transaction-category-filter.tsx
+msgid "Filter categories"
+msgstr "Kategorien filtern"
+
+#: src/app/transaction-tag-filter.tsx
+msgid "Filter tags"
+msgstr "Tags filtern"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
@@ -1356,6 +1415,10 @@ msgstr "in"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "In List"
 msgstr "In Liste"
+
+#: src/account/component/account-inactive-icon/account-inactive-icon.tsx
+msgid "Inactive"
+msgstr "Inaktiv"
 
 #: src/app/(tabs)/settings/inactive.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -1566,6 +1629,10 @@ msgstr "Passende Überweisungen und Rückerstattungen zusammenführen"
 msgid "Missing categories"
 msgstr "Fehlende Kategorien"
 
+#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
+msgid "Missing rate"
+msgstr "Kurs fehlt"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Money lent or borrowed"
 msgstr "Verliehenes oder geliehenes Geld"
@@ -1630,7 +1697,10 @@ msgstr "Keine archivierten Konten"
 msgid "No archived accounts match your search"
 msgstr "Keine archivierten Konten entsprechen deiner Suche"
 
-#: src/app/transaction-category-filter.tsx
+#: src/settings/components/bank-sync-repairs-empty-state-card/bank-sync-repairs-empty-state-card.tsx
+msgid "No bank sync repairs found."
+msgstr "Keine Bank-Sync-Reparaturen gefunden."
+
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "Keine Kategorien gefunden"
@@ -1638,10 +1708,6 @@ msgstr "Keine Kategorien gefunden"
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "Keine Kategorien entsprechen Ihrer Suche"
-
-#: src/app/transaction-category-filter.tsx
-msgid "No Categories Yet"
-msgstr "Noch keine Kategorien"
 
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
@@ -1654,6 +1720,10 @@ msgstr "Keine Kontakte auf diesem Gerät gefunden."
 #: src/app/contact-selector.tsx
 msgid "No contacts yet"
 msgstr "Noch keine Kontakte"
+
+#: src/app/currency-selector.tsx
+msgid "No crypto found"
+msgstr "Keine Kryptowährungen gefunden"
 
 #: src/app/currency-selector.tsx
 msgid "No currencies found"
@@ -1708,11 +1778,12 @@ msgstr "Keine wiederkehrenden Zahlungen erkannt"
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 #: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No Results"
 msgstr "Keine Ergebnisse"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "No Rules Yet"
 msgstr "Noch keine Regeln"
 
@@ -1720,7 +1791,6 @@ msgstr "Noch keine Regeln"
 msgid "No source transactions"
 msgstr "Keine Quelltransaktionen"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "Keine Tags gefunden"
@@ -1733,7 +1803,6 @@ msgstr "Keine Tags in diesem Zeitraum"
 msgid "No tags match your search"
 msgstr "Keine Tags entsprechen Ihrer Suche"
 
-#: src/app/transaction-tag-filter.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No Tags Yet"
 msgstr "Noch keine Tags"
@@ -2007,14 +2076,6 @@ msgstr "Wiederkehrend"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Wiederkehrende Zahlungen erscheinen hier, sobald Muster in deinen Transaktionen erkannt werden"
 
-#: src/transaction/service/transaction-refund.service.ts
-msgid "Refund amount cannot exceed the expense"
-msgstr "Der Rückerstattungsbetrag darf die Ausgabe nicht überschreiten"
-
-#: src/transaction/service/transaction-refund.service.ts
-msgid "Refund conversion starts from an income"
-msgstr "Eine Rückerstattung kann nur von einer Einnahme aus gestartet werden"
-
 #: src/transaction/components/refunded-pill/refunded-pill.tsx
 msgid "Refunded"
 msgstr "Erstattet"
@@ -2022,6 +2083,35 @@ msgstr "Erstattet"
 #: src/transaction/components/refunded-pill/refunded-pill.tsx
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Erstattet {formattedRefundedAmount}"
+
+#: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
+msgid "Remove duplicate imported bank transactions"
+msgstr "Doppelte importierte Banktransaktionen entfernen"
+
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "Remove fee"
+msgstr "Gebühr entfernen"
+
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "Remove fee?"
+msgstr "Gebühr entfernen?"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+msgid "Remove split"
+msgstr "Aufteilung entfernen"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+msgid "Remove split?"
+msgstr "Aufteilung entfernen?"
+
+#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
+msgid "Repair"
+msgstr "Reparieren"
+
+#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+#: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
+msgid "Repair Bank Sync Data"
+msgstr "Bank-Sync-Daten reparieren"
 
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
@@ -2085,6 +2175,10 @@ msgstr "Speichern"
 msgid "Save {count}"
 msgstr "{count} speichern"
 
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "Save fee"
+msgstr "Gebühr speichern"
+
 #: src/account/constant/account-type.constant.ts
 msgid "Savings"
 msgstr "Ersparnisse"
@@ -2122,6 +2216,10 @@ msgid "Search contacts..."
 msgstr "Kontakte suchen..."
 
 #: src/app/currency-selector.tsx
+msgid "Search crypto..."
+msgstr "Kryptowährungen suchen..."
+
+#: src/app/currency-selector.tsx
 msgid "Search currencies..."
 msgstr "Währungen durchsuchen..."
 
@@ -2152,6 +2250,7 @@ msgid "Search tags..."
 msgstr "Tags durchsuchen..."
 
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
+#: src/rule/components/rules-list-page/rules-list-page.tsx
 msgid "Search..."
 msgstr "Suchen..."
 
@@ -2281,10 +2380,6 @@ msgstr "Typ auswählen"
 msgid "Selected"
 msgstr "Ausgewählt"
 
-#: src/transaction/service/transaction-refund.service.ts
-msgid "Selected transaction is already consolidated"
-msgstr "Die ausgewählte Transaktion ist bereits konsolidiert"
-
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
 msgstr "Senden {fromCode}"
@@ -2292,6 +2387,10 @@ msgstr "Senden {fromCode}"
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
 msgstr "Kategorie festlegen"
+
+#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+msgid "Set fee"
+msgstr "Gebühr festlegen"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
@@ -2459,6 +2558,7 @@ msgstr "Tags ({selectedTagsCount})"
 msgid "Tap re-record to try again"
 msgstr "Auf 'Erneut aufnehmen' tippen, um es erneut zu versuchen"
 
+#: src/@generic/component/search-input/search-input.tsx
 #: src/app/import-column-mapper.tsx
 msgid "Tap to clear"
 msgstr "Tippen zum Leeren"
@@ -2514,9 +2614,17 @@ msgstr "Dies wandelt die Ausgabe in eine Überweisung zwischen Konten um."
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Dadurch wird das Einkommen in eine Überweisung zwischen Konten umgewandelt."
 
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+msgid "This will keep one entry with the full transaction amount."
+msgstr "Dadurch bleibt ein Eintrag mit dem vollständigen Transaktionsbetrag erhalten."
+
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "This will link the selected expense to this refund income. You can revert it from the refund sources sheet."
 msgstr "Dadurch wird die ausgewählte Ausgabe mit dieser Rückerstattungseinnahme verknüpft. Du kannst dies im Rückerstattungsquellen-Dialog rückgängig machen."
+
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+msgid "This will remove the fee entry from this transaction."
+msgstr "Dadurch wird die Gebührenbuchung aus dieser Transaktion entfernt."
 
 #: src/app/resync-window-picker.tsx
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
@@ -2584,7 +2692,6 @@ msgstr "Transaktion muss ein Zielkonto haben"
 msgid "Transaction must have a source account"
 msgstr "Transaktion muss ein Quellkonto haben"
 
-#: src/transaction/service/transaction-refund.service.ts
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction not found"
 msgstr "Transaktion nicht gefunden"
@@ -2650,6 +2757,7 @@ msgstr "Versuche einen anderen Händler, Betrag oder ein anderes Datum."
 #: src/app/language-selector.tsx
 #: src/app/rule-mcc-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
+#: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "Try a different search term"
 msgstr "Versuchen Sie einen anderen Suchbegriff"
 
@@ -2663,6 +2771,7 @@ msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
 #: src/ai/component/voice-input-error/voice-input-error.tsx
+#: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Try Again"
 msgstr "Erneut versuchen"
 

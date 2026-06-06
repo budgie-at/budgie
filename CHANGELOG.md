@@ -3,6 +3,237 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.35.0](https://github.com/budgie-at/budgie/compare/v5.34.1...v5.35.0) (2026-06-05)
+
+### Bug Fixes
+
+- **app:** add balance adjustment editor ([fbf915c](https://github.com/budgie-at/budgie/commit/fbf915c4de9ec3bb5d4d2df637083dbd46c18f15))
+- **app:** address crypto review comments ([f48d0fe](https://github.com/budgie-at/budgie/commit/f48d0fe02bf5d2f364f837be0a6e0e958b109caa))
+- **app:** align crypto net worth chip icon ([dadce34](https://github.com/budgie-at/budgie/commit/dadce34c7b85b8458671ff3baa9a972d202315b5))
+- **app:** allow unvalued crypto transactions ([cdee4f2](https://github.com/budgie-at/budgie/commit/cdee4f268969bf497fa55fa2d10baccd9cef2d4d))
+- **app:** avoid duplicate net worth query hook ([36f6569](https://github.com/budgie-at/budgie/commit/36f6569392a0f6aa1bf34a139ea841917fc9d7a2))
+- **app:** clean up crypto currency symbols ([77efb6e](https://github.com/budgie-at/budgie/commit/77efb6ebcced4ccf6fea98d190a0e0ca87ee4786))
+- **app:** compact crypto currency tiles ([8d6ba87](https://github.com/budgie-at/budgie/commit/8d6ba87d969a8d31abdcc7ddffe687cc8bd89057))
+- **app:** correct balance ticker updates ([38bf16b](https://github.com/budgie-at/budgie/commit/38bf16b3a444676060874b8defccb56d14cfe508))
+- **app:** correct crypto rate display ([b472259](https://github.com/budgie-at/budgie/commit/b4722598e1c49e208dbce660e178e51f9151da83))
+- **app:** keep crypto seed in forward migration ([3bc48df](https://github.com/budgie-at/budgie/commit/3bc48dfec75f6fbcb08ea25473a2fdb1f7d96b27))
+- **app:** polish crypto account visuals ([a36d7c7](https://github.com/budgie-at/budgie/commit/a36d7c7f26ed488add0bf26139ca6a2442975773))
+- **app:** reduce crypto rate refresh jank ([6d27ac8](https://github.com/budgie-at/budgie/commit/6d27ac808123fd73e996199951af46638d29233e))
+- **app:** refine crypto group tile layout ([5794f3e](https://github.com/budgie-at/budgie/commit/5794f3e75b474b5e4e64bc7cd023e17c9d3da4e9))
+- **app:** refresh crypto rates on foreground ([e109326](https://github.com/budgie-at/budgie/commit/e109326e950e77c0d0439ac1dc5b18aa94300afe))
+- **app:** refresh crypto valuations from rates ([a08f784](https://github.com/budgie-at/budgie/commit/a08f7840e4c9cb48d45c3a6e49af6215d7493472))
+- **app:** restore balance total reactivity ([09e888e](https://github.com/budgie-at/budgie/commit/09e888e1aa25aef2bbe53dad8d54b4dd76de2bd5))
+- **app:** smooth exchange rate sync ([d924ce8](https://github.com/budgie-at/budgie/commit/d924ce8db254392bbe8b9be264b87526abdd0c03))
+- **app:** yield crypto rate sync ([fd711ef](https://github.com/budgie-at/budgie/commit/fd711ef68a74b297e5c06624489ea4d4e55eef42))
+
+### Features
+
+- **app:** add manual crypto accounts ([d279e1b](https://github.com/budgie-at/budgie/commit/d279e1b75d2a86010ae479392c88eea76aebdab8))
+- **app:** group crypto accounts by currency ([b9baee5](https://github.com/budgie-at/budgie/commit/b9baee50b90e9d04fd37b2911518712cbc3a14c2))
+- **app:** polish crypto account display ([a0b0a6c](https://github.com/budgie-at/budgie/commit/a0b0a6c7870285eb25be52a37a104e831cf2b641))
+
+## [5.34.1](https://github.com/budgie-at/budgie/compare/v5.34.0...v5.34.1) (2026-06-04)
+
+### Bug Fixes
+
+- **app:** render debt account settings form ([#541](https://github.com/budgie-at/budgie/issues/541)) ([bce5a11](https://github.com/budgie-at/budgie/commit/bce5a11ae7c2fc164af9cd160629eec0395ed4d2))
+
+# [5.34.0](https://github.com/budgie-at/budgie/compare/v5.33.1...v5.34.0) (2026-06-04)
+
+### Bug Fixes
+
+- address bot review feedback ([179dc7b](https://github.com/budgie-at/budgie/commit/179dc7ba5a4b08eff152780bc50c3d3fd3faa2cf))
+- **app:** address CI and review feedback ([8f08799](https://github.com/budgie-at/budgie/commit/8f0879919e6c58567b164f9b5e34a0c82318abd2))
+- **app:** cover blurred page footer edge ([09444d4](https://github.com/budgie-at/budgie/commit/09444d4ed4452e5bf1ea8fc4163d8fe31acbdd58))
+- **app:** fit category tile labels ([665c406](https://github.com/budgie-at/budgie/commit/665c406c7d7369141397a32a4246f0df2d826320))
+- **app:** restore bank sync status indicators ([fcdc0bb](https://github.com/budgie-at/budgie/commit/fcdc0bb5e569e89c6254f3f82eb52d4a05c177f0))
+- **app:** restore bank sync tile indicator placement ([f8c9bfe](https://github.com/budgie-at/budgie/commit/f8c9bfea5f260b702b4b091e3f15af096de4cae5))
+- **app:** restore visible bank sync tile dot ([237b213](https://github.com/budgie-at/budgie/commit/237b21388d4d0dbeae7a687392ece63db1f6d7e5))
+- **app:** show bank sync status dots ([bdb577e](https://github.com/budgie-at/budgie/commit/bdb577e3e1d71438329c7186a55c95269f993970))
+- **app:** show bank sync tile indicator ([342ae40](https://github.com/budgie-at/budgie/commit/342ae4029856e63621987119d14f2e3875ec63c8))
+- **app:** wrap selector tile labels ([c2e84a3](https://github.com/budgie-at/budgie/commit/c2e84a36116883d5deba923b88989e4d01b15331))
+- improve category filter search ([6850658](https://github.com/budgie-at/budgie/commit/68506582621fa2bfa097ae872de0facbcb0be5a9))
+- preserve ATM fees and split transaction flows ([1925786](https://github.com/budgie-at/budgie/commit/192578635d55c383430b589d3d37c854f38cc552))
+
+### Features
+
+- add fee entries to transactions ([efc62e2](https://github.com/budgie-at/budgie/commit/efc62e25448c74b5da28fac9952ff640f915f3a3))
+- **landing:** add bank fee tracking feature ([2768e99](https://github.com/budgie-at/budgie/commit/2768e99b5dabe8d2b3d354fb73f5488cc548c497))
+
+## [5.33.1](https://github.com/budgie-at/budgie/compare/v5.33.0...v5.33.1) (2026-06-04)
+
+### Bug Fixes
+
+- **app:** dedupe storage replacement runtime pause ([c96b452](https://github.com/budgie-at/budgie/commit/c96b4527665101a8dec398974d103425ecc81468))
+- **app:** harden app reset cleanup ([d50483b](https://github.com/budgie-at/budgie/commit/d50483be8ab03cc5ce8b4881b93cc16b0719f465))
+- **app:** reset all app-owned storage ([4107f59](https://github.com/budgie-at/budgie/commit/4107f59ae851ed973121c217087ebb0304e181cf))
+
+# [5.33.0](https://github.com/budgie-at/budgie/compare/v5.32.3...v5.33.0) (2026-06-03)
+
+### Bug Fixes
+
+- **app:** add missing app translations ([f263aad](https://github.com/budgie-at/budgie/commit/f263aad7a2f6f86e0be8a81c50254d4b4fbc8fc4))
+- **app:** constrain date picker range fill ([99a9c35](https://github.com/budgie-at/budgie/commit/99a9c357e6572c5a8f19bc64d69b866fa6dd3df1))
+- **app:** constrain date picker selected cells ([80d2591](https://github.com/budgie-at/budgie/commit/80d259136b9ef7a9635ef3eed59dae1d6d844de8))
+- **app:** focus calendar on selected date range ([b1f6458](https://github.com/budgie-at/budgie/commit/b1f645833de6ccfa36bec211f5ce5f0f6a772f49))
+- **app:** format single-day date filter labels ([d5e6e29](https://github.com/budgie-at/budgie/commit/d5e6e296cd6ab0178855927e2133bffee69316c0))
+- **app:** hide date picker range fill ([d724df9](https://github.com/budgie-at/budgie/commit/d724df9ff23bfafd63544e2cec2c9a92f4b6b43a))
+- **app:** hide range picker today indicator ([efe42fb](https://github.com/budgie-at/budgie/commit/efe42fb323c420c67bb7ba05a9280041af3dea26))
+- **app:** keep transaction list footer clear of tab bar ([6ee48ab](https://github.com/budgie-at/budgie/commit/6ee48abbc8ad410340420827fcd7792ed01485e7))
+- **app:** normalize single-day date ranges ([238f1b2](https://github.com/budgie-at/budgie/commit/238f1b2763f9cb3b1c5a604e05067019673e7edc))
+- **app:** restore date picker range selection ([c740459](https://github.com/budgie-at/budgie/commit/c7404594895f9a5da655dac52360410740ca8142))
+
+### Features
+
+- **app:** add date filter haptics ([c9c9154](https://github.com/budgie-at/budgie/commit/c9c91549b0828621aa0c8162d71ba193c1c1ce29))
+
+## [5.32.3](https://github.com/budgie-at/budgie/compare/v5.32.2...v5.32.3) (2026-06-03)
+
+### Bug Fixes
+
+- **app:** refresh Monobank background sync registration ([#536](https://github.com/budgie-at/budgie/issues/536)) ([66e094b](https://github.com/budgie-at/budgie/commit/66e094bd030fbb78faf45087c6c3fdb59a639014))
+
+## [5.32.2](https://github.com/budgie-at/budgie/compare/v5.32.1...v5.32.2) (2026-06-03)
+
+**Note:** Version bump only for package @budgie-at/root
+
+## [5.32.1](https://github.com/budgie-at/budgie/compare/v5.32.0...v5.32.1) (2026-06-03)
+
+### Bug Fixes
+
+- **app:** ignore package scripts in fingerprint ([#537](https://github.com/budgie-at/budgie/issues/537)) ([93e3eb1](https://github.com/budgie-at/budgie/commit/93e3eb1816d72d68ce6f7449564821829aa783a6))
+
+# [5.32.0](https://github.com/budgie-at/budgie/compare/v5.31.3...v5.32.0) (2026-06-02)
+
+### Features
+
+- **app:** improve transaction filter modals ([#531](https://github.com/budgie-at/budgie/issues/531)) ([49827dc](https://github.com/budgie-at/budgie/commit/49827dc6bbac014c7c912c5d4aa17d370a8cd984))
+
+## [5.31.3](https://github.com/budgie-at/budgie/compare/v5.31.2...v5.31.3) (2026-06-02)
+
+### Bug Fixes
+
+- **app:** define background tasks at app entry ([#534](https://github.com/budgie-at/budgie/issues/534)) ([92ce3e3](https://github.com/budgie-at/budgie/commit/92ce3e38fd88e4594a8c50ca913cd06f4d049a67))
+
+## [5.31.2](https://github.com/budgie-at/budgie/compare/v5.31.1...v5.31.2) (2026-06-02)
+
+### Bug Fixes
+
+- align production eas update for sdk 56 ([397ea91](https://github.com/budgie-at/budgie/commit/397ea9143408ee1d57bd17e689a742a0db2ba5c0))
+
+## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
+
+### Bug Fixes
+
+- **app:** extend blur gradients through safe areas ([9fe0e4f](https://github.com/budgie-at/budgie/commit/9fe0e4fff3d56691710630fc062303d6a5222e1f))
+- avoid sourcemap export for preview updates ([73ea3e3](https://github.com/budgie-at/budgie/commit/73ea3e372b3e18b521576a87ee52ebb3878bbf52))
+
+### Reverts
+
+- Revert "refactor(app): use expo ui single date picker" ([30378d9](https://github.com/budgie-at/budgie/commit/30378d91943f609a39e83ce00b923bf41f0ad499))
+
+# [5.31.0](https://github.com/budgie-at/budgie/compare/v5.30.1...v5.31.0) (2026-06-01)
+
+### Bug Fixes
+
+- address bank sync repair review ([a568946](https://github.com/budgie-at/budgie/commit/a5689460d52dfb3f24e35f120a89efa3eeb4ab00))
+- **ai:** deduplicate generated keywords ([2ed0f93](https://github.com/budgie-at/budgie/commit/2ed0f93b61cc890a86b32974d14afa5655e2435a))
+- align test kit db helpers ([802e3a8](https://github.com/budgie-at/budgie/commit/802e3a8b13f510c9ff28e4768838332b27140cf0))
+- **app:** avoid locked database during bank sync repair ([4b87461](https://github.com/budgie-at/budgie/commit/4b87461e3e5f334460b564a7bf46e44566dc1e10))
+- **app:** clean up bank sync repair flow ([14e8be0](https://github.com/budgie-at/budgie/commit/14e8be0df5929977629bda6ffb97423b5125d42f))
+- **app:** harden bank sync repair preview ([214c0ef](https://github.com/budgie-at/budgie/commit/214c0ef8eb3dab9b6816713cb62303150c0f9b84))
+- **app:** repair bank sync duplicate consolidations ([c8be995](https://github.com/budgie-at/budgie/commit/c8be995d2362b8490c309f43cec02d8724a95ae9))
+- build consolidation in update workflows ([fa55cd9](https://github.com/budgie-at/budgie/commit/fa55cd9b404c34d44fa72dac68b88eade94501d8))
+- clear bank sync repair ci checks ([87553c9](https://github.com/budgie-at/budgie/commit/87553c9e9cb63e436f686c1ace6aa6c391e57e03))
+- **landing:** add blog index social image and correct OG image dimensions ([4f85354](https://github.com/budgie-at/budgie/commit/4f85354ebe9447ed5f4f43effedc9a7d2b4f5e45))
+- **landing:** align feature page lingui literals ([a033601](https://github.com/budgie-at/budgie/commit/a033601d1cba78dab4c57bb74e86982d6ec22442))
+- **landing:** deep-link newer blog articles from related features ([b8cd070](https://github.com/budgie-at/budgie/commit/b8cd070509f8bebe42ea48aee69c55672e276423))
+- **landing:** default no-preference locale to /en and serve root .txt files ([dad4e7b](https://github.com/budgie-at/budgie/commit/dad4e7b52307ceabbcdcd94f8c694eab0c28993a))
+- **landing:** keep api routes out of locale proxy ([d7cb581](https://github.com/budgie-at/budgie/commit/d7cb5818c4cb3617dde4a86701a55fed48864f80))
+- **landing:** let legal pages pass link equity with noindex, follow ([e0d1236](https://github.com/budgie-at/budgie/commit/e0d1236bcba9e0dbb0bd764b4451779343ec946b))
+- **landing:** match safari overscroll background ([2f36b06](https://github.com/budgie-at/budgie/commit/2f36b065e092efa07c42c68425d89759e64b2665))
+- **landing:** remove duplicate brand suffix from feature and pillar titles ([a17f0ab](https://github.com/budgie-at/budgie/commit/a17f0ab31871807373d6e90553ac04c461c18884))
+- repair test kit write execution ([6d12410](https://github.com/budgie-at/budgie/commit/6d12410345a45fe2e257aeca3bb5c6511774e8f7))
+
+### Features
+
+- add consolidation package shell ([66e797e](https://github.com/budgie-at/budgie/commit/66e797e0c593d2c902910b6cf32637e8bd4aeb11))
+- **app:** add bank sync repair interfaces ([19c898e](https://github.com/budgie-at/budgie/commit/19c898ecb094400939be7eaeda14897324ceb753))
+- **app:** add bank sync repair preview query ([44fd81b](https://github.com/budgie-at/budgie/commit/44fd81b9e1ccc738a5ac64e7271875adf4696f80))
+- **app:** add bank sync repair screen ([2c628cb](https://github.com/budgie-at/budgie/commit/2c628cb6df5c343b3eb070b2dd5e6908250fcdef))
+- **app:** add bank sync repair service ([50713f0](https://github.com/budgie-at/budgie/commit/50713f08dbf36d9d2041883bd3c0a0e545cce570))
+- **app:** add bank sync repair settings card ([248a4ec](https://github.com/budgie-at/budgie/commit/248a4ecf7c8a79a48d7c3779ef6b5b7983c99e42))
+- **app:** add bank sync repair translations ([d8f30ff](https://github.com/budgie-at/budgie/commit/d8f30ff4ef8298a88f52395cb64ccdee8f9971f9))
+- **landing:** add ai.txt AI crawler policy ([316c43b](https://github.com/budgie-at/budgie/commit/316c43bdabf099319345a5bb25a5cbfed06ad73c))
+- **landing:** add IndexNow submission with merge-to-main GitHub Action ([0cfe693](https://github.com/budgie-at/budgie/commit/0cfe6935b247a7965cb0668533344dc7eb552b0d))
+- **landing:** add llms.txt, llms-full.txt, and AI crawler robots rules ([4d2b437](https://github.com/budgie-at/budgie/commit/4d2b437c09ded635c4dacf3e3e821923fcbd455b))
+- **landing:** enrich structured data for SEO and AI grounding ([98ab38e](https://github.com/budgie-at/budgie/commit/98ab38e6317889df570264b7b484eeaf54ccb642))
+
+## [5.30.1](https://github.com/budgie-at/budgie/compare/v5.30.0...v5.30.1) (2026-06-01)
+
+### Bug Fixes
+
+- **app:** prevent duplicate Erste PDF imports ([f98e2c9](https://github.com/budgie-at/budgie/commit/f98e2c97f302903a4e4b64b3e88fbc78794bc0d7))
+
+# [5.30.0](https://github.com/budgie-at/budgie/compare/v5.29.1...v5.30.0) (2026-05-31)
+
+### Bug Fixes
+
+- **app:** address rules search review ([f236d82](https://github.com/budgie-at/budgie/commit/f236d824effe28f0d766a1adbb55dc84d407231c))
+- **app:** hide weak rules search matches ([027d93f](https://github.com/budgie-at/budgie/commit/027d93fc501ebe64fdf32e5fd001680002724547))
+
+### Features
+
+- **app:** add rules page search ([1c61aaf](https://github.com/budgie-at/budgie/commit/1c61aafab37fd3b71a8788d2277a25a4373a4a05))
+
+## [5.29.1](https://github.com/budgie-at/budgie/compare/v5.29.0...v5.29.1) (2026-05-31)
+
+### Bug Fixes
+
+- **ai:** deduplicate generated keywords ([f8a2b31](https://github.com/budgie-at/budgie/commit/f8a2b310ca748a19af3f69a364b216e17f36da82))
+- **app:** allow inactive accounts in rules ([f7a6b29](https://github.com/budgie-at/budgie/commit/f7a6b29ad02bf7f1ce59e03829589938c099201b))
+
+# [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
+
+### Bug Fixes
+
+- **app:** allow selecting inactive accounts in transaction forms ([9c6b874](https://github.com/budgie-at/budgie/commit/9c6b8749754c3979c7f500dba80321b631446f4f))
+- **app:** dedupe tags when consolidating refunds and transfers ([#507](https://github.com/budgie-at/budgie/issues/507)) ([7ed5f63](https://github.com/budgie-at/budgie/commit/7ed5f63e43d5b0ebb3d10f94c48b2a8421206165))
+- **app:** fill Value entries confirm-button translations ([7a14c33](https://github.com/budgie-at/budgie/commit/7a14c33c8e9d5c4607eae2ebcb6d0906d134cfa9))
+- **app:** keep valuation status text on one line to stop row jumping ([105233f](https://github.com/budgie-at/budgie/commit/105233fda5c3616a1c4dd18861fb75c98cb092dc))
+- **app:** order consolidation sources along transfer chain ([#492](https://github.com/budgie-at/budgie/issues/492)) ([282b7ee](https://github.com/budgie-at/budgie/commit/282b7eec6ea079ce2fd67906876dd66311e1b240)), closes [#491](https://github.com/budgie-at/budgie/issues/491) [#491](https://github.com/budgie-at/budgie/issues/491) [#491](https://github.com/budgie-at/budgie/issues/491)
+- **app:** scope hidden-account picker to inactive accounts only ([e549802](https://github.com/budgie-at/budgie/commit/e549802ce862413cf894c91400ddc18d68723e2c))
+- **app:** show hidden account on existing transactions via sticky selection ([abef49d](https://github.com/budgie-at/budgie/commit/abef49d36ad02d93a8fe019fc6fc6e5f2953b3e1))
+- **app:** show historical base value in transaction list, not live rate ([9fe5599](https://github.com/budgie-at/budgie/commit/9fe5599d8b8344e5719bdee078b9677216a311d2))
+- **app:** use action-verb confirm label for historical valuation ([8b29794](https://github.com/budgie-at/budgie/commit/8b2979456538cd0bc4543e8eec8e627c84991c83))
+- **app:** value back-dated manual entries at the historical rate ([f6400a0](https://github.com/budgie-at/budgie/commit/f6400a00e327fa1968ab30b58be00e79e37eefae))
+- **app:** value pre-range transactions at the oldest historical rate ([#514](https://github.com/budgie-at/budgie/issues/514)) ([8eddce2](https://github.com/budgie-at/budgie/commit/8eddce2f16d7cf9232ac255a421228ab2f417368))
+- **bank-sync:** seed base valuation columns in refund fixture ([f37fd9a](https://github.com/budgie-at/budgie/commit/f37fd9a059e5d2bc8439c4ee68d7521b94928ae0))
+- **contracts:** fall back to historical rate for net worth, never 1:1 ([e679484](https://github.com/budgie-at/budgie/commit/e679484036052164a89c5e92c9d51690d89d7d37))
+- **contracts:** stop analytics from dropping unvalued entries ([#513](https://github.com/budgie-at/budgie/issues/513)) ([9b0c68f](https://github.com/budgie-at/budgie/commit/9b0c68f33a689654027580e55bd374212df24d2f))
+- exclude deleted-account data from analytics and batch rule application ([#516](https://github.com/budgie-at/budgie/issues/516)) ([51a2f4e](https://github.com/budgie-at/budgie/commit/51a2f4e354fc3d5a8d54c2986e56c20a3ca1ade9)), closes [#509](https://github.com/budgie-at/budgie/issues/509)
+- keep monobank backward sync past empty 31-day windows ([#434](https://github.com/budgie-at/budgie/issues/434)) ([de436b0](https://github.com/budgie-at/budgie/commit/de436b0740aa733e87a366a88c65ca7e155541cd))
+- restore release workflow state ([915fe62](https://github.com/budgie-at/budgie/commit/915fe621feb3e21f00552334fee4eea619f6202d))
+
+### Features
+
+- add historical money data valuation ([998187d](https://github.com/budgie-at/budgie/commit/998187d3d21f1400e80947cbbf20c5931d62fe6c))
+- **app:** always allow convert-to-transfer rule action and show account on rule card ([#506](https://github.com/budgie-at/budgie/issues/506)) ([83dde51](https://github.com/budgie-at/budgie/commit/83dde5191466672c30c7ed588bb0291d9bd90cfd))
+- **app:** always show valuation progress bar and percent ([346214e](https://github.com/budgie-at/budgie/commit/346214e70fc806a271b4b89e768e164a742adff3))
+- auto-consolidate file-based bank imports (Privatbank/Erste) with Cash accounts ([#503](https://github.com/budgie-at/budgie/issues/503)) ([f758a75](https://github.com/budgie-at/budgie/commit/f758a75c628e2e548c9b3b8a96d7ee66fade6d69))
+- capture bank fees as a categorized split on sync and import ([#502](https://github.com/budgie-at/budgie/issues/502)) ([2a8a3f7](https://github.com/budgie-at/budgie/commit/2a8a3f7dd57202b0fe08a17d9aa3cad9a3bf29c2))
+- sync monobank jars alongside cards ([#512](https://github.com/budgie-at/budgie/issues/512)) ([045786c](https://github.com/budgie-at/budgie/commit/045786c40fc9dc5a3b95531a5b40563dad62af4a))
+
+### Performance Improvements
+
+- **app:** yield to UI between money-data valuation batches ([d48c2e5](https://github.com/budgie-at/budgie/commit/d48c2e5ab1f8bb22454ad5c1bbbc9b270ce0680e))
+
+# [5.28.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.28.0) (2026-05-30)
+
+### Features
+
+- **app:** always allow convert-to-transfer rule action and show account on rule card ([#506](https://github.com/budgie-at/budgie/issues/506)) ([83dde51](https://github.com/budgie-at/budgie/commit/83dde5191466672c30c7ed588bb0291d9bd90cfd))
+
 # [5.27.0](https://github.com/budgie-at/budgie/compare/v5.26.0...v5.27.0) (2026-05-29)
 
 ### Bug Fixes

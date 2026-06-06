@@ -3,6 +3,63 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.35.0](https://github.com/budgie-at/budgie/compare/v5.34.1...v5.35.0) (2026-06-05)
+
+### Bug Fixes
+
+- **app:** address crypto review comments ([f48d0fe](https://github.com/budgie-at/budgie/commit/f48d0fe02bf5d2f364f837be0a6e0e958b109caa))
+- **app:** reduce crypto rate refresh jank ([6d27ac8](https://github.com/budgie-at/budgie/commit/6d27ac808123fd73e996199951af46638d29233e))
+- **app:** refresh crypto valuations from rates ([a08f784](https://github.com/budgie-at/budgie/commit/a08f7840e4c9cb48d45c3a6e49af6215d7493472))
+
+### Features
+
+- **app:** add manual crypto accounts ([d279e1b](https://github.com/budgie-at/budgie/commit/d279e1b75d2a86010ae479392c88eea76aebdab8))
+- **app:** group crypto accounts by currency ([b9baee5](https://github.com/budgie-at/budgie/commit/b9baee50b90e9d04fd37b2911518712cbc3a14c2))
+
+# [5.34.0](https://github.com/budgie-at/budgie/compare/v5.33.1...v5.34.0) (2026-06-04)
+
+### Bug Fixes
+
+- address bot review feedback ([179dc7b](https://github.com/budgie-at/budgie/commit/179dc7ba5a4b08eff152780bc50c3d3fd3faa2cf))
+- improve category filter search ([6850658](https://github.com/budgie-at/budgie/commit/68506582621fa2bfa097ae872de0facbcb0be5a9))
+- preserve ATM fees and split transaction flows ([1925786](https://github.com/budgie-at/budgie/commit/192578635d55c383430b589d3d37c854f38cc552))
+
+### Features
+
+- add fee entries to transactions ([efc62e2](https://github.com/budgie-at/budgie/commit/efc62e25448c74b5da28fac9952ff640f915f3a3))
+
+## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
+
+**Note:** Version bump only for package @budgie/contracts
+
+# [5.31.0](https://github.com/budgie-at/budgie/compare/v5.30.1...v5.31.0) (2026-06-01)
+
+### Bug Fixes
+
+- address bank sync repair review ([a568946](https://github.com/budgie-at/budgie/commit/a5689460d52dfb3f24e35f120a89efa3eeb4ab00))
+- **app:** repair bank sync duplicate consolidations ([c8be995](https://github.com/budgie-at/budgie/commit/c8be995d2362b8490c309f43cec02d8724a95ae9))
+
+# [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
+
+### Bug Fixes
+
+- **app:** value pre-range transactions at the oldest historical rate ([#514](https://github.com/budgie-at/budgie/issues/514)) ([8eddce2](https://github.com/budgie-at/budgie/commit/8eddce2f16d7cf9232ac255a421228ab2f417368))
+- **contracts:** fall back to historical rate for net worth, never 1:1 ([e679484](https://github.com/budgie-at/budgie/commit/e679484036052164a89c5e92c9d51690d89d7d37))
+- **contracts:** stop analytics from dropping unvalued entries ([#513](https://github.com/budgie-at/budgie/issues/513)) ([9b0c68f](https://github.com/budgie-at/budgie/commit/9b0c68f33a689654027580e55bd374212df24d2f))
+- exclude deleted-account data from analytics and batch rule application ([#516](https://github.com/budgie-at/budgie/issues/516)) ([51a2f4e](https://github.com/budgie-at/budgie/commit/51a2f4e354fc3d5a8d54c2986e56c20a3ca1ade9)), closes [#509](https://github.com/budgie-at/budgie/issues/509)
+
+### Features
+
+- add historical money data valuation ([998187d](https://github.com/budgie-at/budgie/commit/998187d3d21f1400e80947cbbf20c5931d62fe6c))
+- **app:** always allow convert-to-transfer rule action and show account on rule card ([#506](https://github.com/budgie-at/budgie/issues/506)) ([83dde51](https://github.com/budgie-at/budgie/commit/83dde5191466672c30c7ed588bb0291d9bd90cfd))
+- capture bank fees as a categorized split on sync and import ([#502](https://github.com/budgie-at/budgie/issues/502)) ([2a8a3f7](https://github.com/budgie-at/budgie/commit/2a8a3f7dd57202b0fe08a17d9aa3cad9a3bf29c2))
+
+# [5.28.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.28.0) (2026-05-30)
+
+### Features
+
+- **app:** always allow convert-to-transfer rule action and show account on rule card ([#506](https://github.com/budgie-at/budgie/issues/506)) ([83dde51](https://github.com/budgie-at/budgie/commit/83dde5191466672c30c7ed588bb0291d9bd90cfd))
+
 # [5.27.0](https://github.com/budgie-at/budgie/compare/v5.26.0...v5.27.0) (2026-05-29)
 
 ### Features

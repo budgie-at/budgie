@@ -20,6 +20,7 @@ import { useUpdateTransactionForm } from '../../../../transaction/hook/use-updat
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { buildIncomeEntry } from '../../../../transaction/utils/build-income-entry.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
+import { getTransactionCategoryEntries } from '../../../../transaction/utils/get-transaction-category-entries.util';
 import { getTransactionHref } from '../../../../transaction/utils/get-transaction-href.util';
 
 import type { UpdateTransactionFormPropsInterface } from '../../../../transaction/interface/update-transaction-form-props.interface';
@@ -30,10 +31,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
     const { t } = useLingui();
     const { markForEmbedding } = useEmbeddingGenerator();
 
-    const transactionInput = convertTransactionToInput(transaction);
-
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
-        transaction: transactionInput,
+        transaction: convertTransactionToInput(transaction),
         schema: IncomeTransactionCreateInputSchema,
         id: transactionId,
         onAfterSubmit: () => void markForEmbedding({ transactionId })
@@ -56,8 +55,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
     });
 
     const handleGoBack = () => void goBackOrReplace('/');
-    const [sourceEntry] = transaction.entries;
-    const mccCategoryId = sourceEntry.mccCategoryId ?? null;
+    const categoryEntries = getTransactionCategoryEntries(transaction.entries);
+    const mccCategoryId = categoryEntries.at(0)?.mccCategoryId ?? null;
     const isConsolidated = isDefined(transaction.consolidationType);
     const { handleOpenConvert, handleOpenRefundConvert, handleRevert } = useUpdateIncomeTransactionActions({
         transaction,
@@ -66,6 +65,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
     });
     const canConvertToRefund = !isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
+    const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
 
     return (
         <FormProvider {...form}>
@@ -79,8 +79,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
                                 onRevert={handleRevert}
-                                onConvertToTransfer={handleOpenConvert}
                                 {...refundConvertProps}
+                                {...transferConvertProps}
                             />
                         }
                     />
@@ -128,6 +128,10 @@ export default function UpdateIncomeTransactionPage() {
 
     if (isDefined(transaction.consolidationParentTransactionId)) {
         return isParentLoading || !isDefined(parentTransaction) ? null : <Redirect href={getTransactionHref(parentTransaction)} />;
+    }
+
+    if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
+        return <Redirect href={getTransactionHref(transaction)} />;
     }
 
     return <UpdateIncomeForm transaction={transaction} transactionId={transactionId} />;
