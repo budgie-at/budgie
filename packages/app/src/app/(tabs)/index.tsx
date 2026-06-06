@@ -92,6 +92,7 @@ export default function HomePage() {
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
                     showsVerticalScrollIndicator={false}
+                    stickySectionHeadersEnabled={false}
                     contentContainerStyle={contentContainerStyle}
                     ListFooterComponent={listFooterComponent}
                 />
