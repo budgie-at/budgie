@@ -7,9 +7,9 @@ import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-completeness-threshold.constant';
 
-const logger = getLogger('useSuggestionBase');
-
 import { useEmbeddingProgressSnapshot } from './use-embedding-progress-snapshot.hook';
+
+const logger = getLogger('useSuggestionBase');
 
 interface UseSuggestionBaseParams<T> {
     readonly enabled: boolean;
@@ -33,6 +33,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const { enabled, readyChecks, requestKeyParts, fetchSuggestions } = params;
     const requestKey = JSON.stringify(requestKeyParts);
     const isReady = enabled && readyChecks.every(isCheckReady => isCheckReady);
+    const firstUnreadyCheckIndex = readyChecks.findIndex(isCheckReady => !isCheckReady);
 
     const [result, setResult] = useState<SuggestionResultInterface<T>>({
         key: null,
@@ -43,7 +44,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const fetchSuggestionsRef = useRef(fetchSuggestions);
     const navigation = useNavigation();
     const { percent: progress } = useEmbeddingProgressSnapshot();
-    const isIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
+    const isEmbeddingIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
 
     useEffect(() => {
         fetchSuggestionsRef.current = fetchSuggestions;
@@ -58,12 +59,11 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     }, [navigation]);
 
     useEffect(() => {
-        logger.log('hook:suggestion:base:effect:fire', { isReady, enabled, progress, isIncomplete, refreshVersion, requestKey });
+        logger.log('hook:suggestion:base:effect:fire', { isReady, isEmbeddingIncomplete, refreshVersion, requestKey });
         if (!isReady) {
             logger.log('hook:suggestion:base:effect:skip:not-ready', {
-                enabled,
-                readyChecks: [...readyChecks],
-                readyCheckFailAt: readyChecks.findIndex(check => !check)
+                firstUnreadyCheckIndex,
+                isEmbeddingIncomplete
             });
 
             return emptyFn;
@@ -98,7 +98,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
         return () => {
             cancelled = true;
         };
-    }, [isReady, requestKey, refreshVersion, isIncomplete]);
+    }, [firstUnreadyCheckIndex, isReady, requestKey, refreshVersion, isEmbeddingIncomplete]);
 
     const currentResult: SuggestionResultInterface<T> =
         result.key === requestKey ? result : { key: requestKey, status: 'idle', suggestions: [] };
