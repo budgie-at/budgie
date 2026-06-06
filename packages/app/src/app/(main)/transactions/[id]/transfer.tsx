@@ -47,7 +47,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransactionFor
         transaction: transactionInput,
         schema: TransferTransactionCreateInputSchema,
         id: transactionId,
-        onAfterSubmit: () => void markForEmbedding({ transactionId })
+        onAfterSubmit: () => void markForEmbedding(transactionId)
     });
 
     const [fromAccountId, amount] = useWatch({

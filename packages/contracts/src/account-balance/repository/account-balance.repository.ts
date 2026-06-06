@@ -109,6 +109,10 @@ export class AccountBalanceRepository {
             .where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
+    async deleteByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
+        await (tx ?? this.db).delete(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
+    }
+
     getHomeAccountRows(defaultInstrumentId: number) {
         const balanceSql = this.getAccountBalanceWithTransactionsSql();
         const convertedBalanceSql = sql<number>`COALESCE((${balanceSql}) * ${this.buildNetWorthExchangeRateConversionSql(defaultInstrumentId)}, 0)`;
