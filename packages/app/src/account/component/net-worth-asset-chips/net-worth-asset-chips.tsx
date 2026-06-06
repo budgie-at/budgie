@@ -7,12 +7,17 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useAccountAssetClassTotalsQuery } from '../../query/use-account-asset-class-totals.query';
 
-export const NetWorthAssetChips = () => {
+interface Props {
+    readonly fiatTotal: number;
+    readonly cryptoTotal: number;
+    readonly fiatCount: number;
+    readonly cryptoCount: number;
+}
+
+export const NetWorthAssetChips = ({ fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
-    const { fiatTotal, cryptoTotal, fiatCount, cryptoCount } = useAccountAssetClassTotalsQuery();
 
     const shouldShowChips = isPositiveNumber(fiatCount) && isPositiveNumber(cryptoCount);
 
