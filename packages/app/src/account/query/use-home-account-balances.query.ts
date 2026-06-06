@@ -1,6 +1,6 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -24,8 +24,6 @@ const createHomeAccountBalanceSummary = () => ({
     fiatTotal: 0,
     netWorth: 0
 });
-
-const EMPTY_HOME_ACCOUNT_BALANCE_SUMMARY: HomeAccountBalanceSummaryInterface = createHomeAccountBalanceSummary();
 
 const addTotal = <Key>(totals: Map<Key, number>, key: Key, amount: number): void => {
     totals.set(key, (totals.get(key) ?? 0) + amount);
@@ -83,18 +81,13 @@ export const useHomeAccountBalancesQuery = (): HomeAccountBalanceSummaryInterfac
     const { defaultInstrument } = useSettingsContext();
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
-    const previousSummaryRef = useRef(EMPTY_HOME_ACCOUNT_BALANCE_SUMMARY);
     const queryDependencies = [defaultInstrument.id, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
     const { data } = useLiveQuery(accountBalanceRepository.getHomeAccountBalanceRows(defaultInstrument.id), queryDependencies);
 
-    return useMemo<HomeAccountBalanceSummaryInterface>(() => {
-        if (!isDefined(data)) {
-            return previousSummaryRef.current;
-        }
-
-        const nextSummary = data
-            .map(
-                (row): HomeAccountBalanceInterface => ({
+    return useMemo<HomeAccountBalanceSummaryInterface>(
+        () =>
+            data.reduce((summary, row) => {
+                const homeAccountBalance: HomeAccountBalanceInterface = {
                     accountId: row.accountId,
                     accountType: row.accountType,
                     balance: convertFromMicroUnits(row.balance),
@@ -104,9 +97,7 @@ export const useHomeAccountBalancesQuery = (): HomeAccountBalanceSummaryInterfac
                     debtType: row.debtType,
                     includeInNetWorth: row.includeInNetWorth,
                     isActive: row.isActive
-                })
-            )
-            .reduce((summary, homeAccountBalance) => {
+                };
                 const { accountType, accountId, bankProvider, convertedBalance, isActive } = homeAccountBalance;
 
                 summary.balancesByAccountId.set(accountId, homeAccountBalance);
@@ -116,10 +107,7 @@ export const useHomeAccountBalancesQuery = (): HomeAccountBalanceSummaryInterfac
                 addNetWorthAssetTotals(summary, homeAccountBalance);
 
                 return summary;
-            }, createHomeAccountBalanceSummary());
-
-        previousSummaryRef.current = nextSummary;
-
-        return nextSummary;
-    }, [data]);
+            }, createHomeAccountBalanceSummary()),
+        [data]
+    );
 };

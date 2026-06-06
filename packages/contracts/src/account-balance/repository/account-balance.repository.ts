@@ -157,7 +157,13 @@ export class AccountBalanceRepository {
                   AND ${this.getBalanceLedgerEntryConditionSql()}
             ), 0)`;
 
-        return this.db.select({ balance: totalBalanceSql }).from(AccountEntityTable).where(eq(AccountEntityTable.id, accountId)).limit(1);
+        return this.db
+            .select({
+                balance: totalBalanceSql
+            })
+            .from(AccountEntityTable)
+            .where(eq(AccountEntityTable.id, accountId))
+            .limit(1);
     }
 
     getNetWorth(defaultInstrumentId: number) {
