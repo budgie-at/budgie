@@ -29,7 +29,7 @@ export default function CreateIncomeTransactionPage() {
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
             const result = await transactionService.createInternal(data);
-            markForEmbedding({ transactionId: result.id });
+            markForEmbedding(result.id);
 
             return result;
         },

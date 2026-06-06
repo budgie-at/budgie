@@ -21,6 +21,7 @@ import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util'
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
+import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
 import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
@@ -118,29 +119,33 @@ export abstract class BaseFileBankSyncService {
             `throw bankAccountIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
     )
     private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
-        const [mccCategoryLookupMap, existingTransactionIdMap] = await Promise.all([
-            this.resolveMccCategoryIdMap(client, bankAccounts),
-            transactionService.findIdMapByExternalSource(this.provider)
-        ]);
+        const importWork = async (): Promise<void> => {
+            const [mccCategoryLookupMap, existingTransactionIdMap] = await Promise.all([
+                this.resolveMccCategoryIdMap(client, bankAccounts),
+                transactionService.findIdMapByExternalSource(this.provider)
+            ]);
 
-        const newImportedCounts: number[] = [];
+            const newImportedCounts: number[] = [];
 
-        await transactionAsync(db, async tx => {
-            const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap, tx };
+            await transactionAsync(db, async tx => {
+                const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap, tx };
 
-            for (const bankAccount of bankAccounts) {
-                newImportedCounts.push(await this.importAccountTransactions(client, bankAccount, context));
-                await microPause();
+                for (const bankAccount of bankAccounts) {
+                    newImportedCounts.push(await this.importAccountTransactions(client, bankAccount, context));
+                    await microPause();
+                }
+
+                await transactionService.updateAllBalances(tx);
+            });
+
+            const newImportedCount = newImportedCounts.reduce((total, count) => total + count, 0);
+
+            if (isPositiveNumber(newImportedCount)) {
+                transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT);
             }
+        };
 
-            await transactionService.updateAllBalances(tx);
-        });
-
-        const newImportedCount = newImportedCounts.reduce((total, count) => total + count, 0);
-
-        if (isPositiveNumber(newImportedCount)) {
-            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT);
-        }
+        await syncWorkloadService.run(`${this.provider}-file-import`, importWork);
     }
 
     private async executeImportForSelectedAccountsInner(uri: string, selectedAccountIds: string[]): Promise<void> {

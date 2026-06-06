@@ -35,7 +35,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
         transaction: convertTransactionToInput(transaction),
         schema: IncomeTransactionCreateInputSchema,
         id: transactionId,
-        onAfterSubmit: () => void markForEmbedding({ transactionId })
+        onAfterSubmit: () => void markForEmbedding(transactionId)
     });
 
     const toAccountId = useWatch({ control: form.control, name: 'toAccountId' });
