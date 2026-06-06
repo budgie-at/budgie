@@ -1,8 +1,14 @@
 /* eslint-disable max-lines -- Consolidation executor keeps per-candidate logs and the write path together for debugging */
-import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum, transactionAsync } from '@budgie/contracts';
+import {
+    CategorySourceEnum,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum,
+    transactionAsync
+} from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 
@@ -18,6 +24,7 @@ import type {
     RefundCandidateInterface,
     TransactionEntityInterface,
     TransactionTagsEntityInterface,
+    TransactionWithEntriesEntityInterface,
     TransferPairCandidateInterface
 } from '@budgie/contracts';
 
@@ -159,6 +166,12 @@ class TransferConsolidationExecutorService {
 
     private async consolidateAtmCashWithdrawalInner(candidate: AtmCashWithdrawalCandidateInterface, tx: DB): Promise<boolean> {
         const sourceTransactionIds = [candidate.transactionId];
+        const sourceTransactions = await this.findEligibleSourceTransactions(sourceTransactionIds, tx);
+
+        if (!isDefined(sourceTransactions)) {
+            return false;
+        }
+
         const canonicalInput: CanonicalTransferInputInterface = {
             title: candidate.transactionTitle ?? '',
             operatedAt: candidate.operatedAt,
@@ -173,7 +186,13 @@ class TransferConsolidationExecutorService {
             fromEntryToIban: null
         };
 
-        return this.executeConsolidation(sourceTransactionIds, canonicalInput, tx);
+        const canonicalTransaction = await this.createCanonicalTransfer(canonicalInput, tx);
+
+        await this.createAtmCashWithdrawalFeeEntry(candidate, sourceTransactions, canonicalTransaction.id, tx);
+        await this.copySourceTags(sourceTransactionIds, canonicalTransaction.id, tx);
+        await this.moveSourcesToCanonical(sourceTransactionIds, canonicalTransaction.id, tx);
+
+        return true;
     }
 
     private async consolidateRefundInner(candidate: RefundCandidateInterface, tx: DB): Promise<boolean> {
@@ -349,10 +368,18 @@ class TransferConsolidationExecutorService {
         tx: DB,
         allowedMovedSourceTransactionIds: number[] = []
     ): Promise<boolean> {
+        return isDefined(await this.findEligibleSourceTransactions(sourceTransactionIds, tx, allowedMovedSourceTransactionIds));
+    }
+
+    private async findEligibleSourceTransactions(
+        sourceTransactionIds: number[],
+        tx: DB,
+        allowedMovedSourceTransactionIds: number[] = []
+    ): Promise<TransactionWithEntriesEntityInterface[] | null> {
         const fresh = await transactionRepository.findByIds(sourceTransactionIds, tx);
 
         if (fresh.length !== sourceTransactionIds.length) {
-            return false;
+            return null;
         }
 
         const movedEntryBlockedTransactionIds = sourceTransactionIds.filter(
@@ -360,10 +387,14 @@ class TransferConsolidationExecutorService {
         );
 
         if (await transactionEntryRepository.hasMovedSourceEntries(movedEntryBlockedTransactionIds, tx)) {
-            return false;
+            return null;
         }
 
-        return fresh.every(transaction => !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt));
+        if (fresh.every(transaction => !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt))) {
+            return fresh;
+        }
+
+        return null;
     }
 
     private async isExistingTransferStillEligible(transactionId: number, tx: DB): Promise<boolean> {
@@ -428,6 +459,48 @@ class TransferConsolidationExecutorService {
     private async moveSourcesToCanonical(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
         await transactionEntryRepository.moveToConsolidatedTransaction(sourceTransactionIds, canonicalTransactionId, tx);
         await transactionRepository.setConsolidationParent(sourceTransactionIds, canonicalTransactionId, tx);
+    }
+
+    private async createAtmCashWithdrawalFeeEntry(
+        candidate: AtmCashWithdrawalCandidateInterface,
+        sourceTransactions: TransactionWithEntriesEntityInterface[],
+        canonicalTransactionId: number,
+        tx: DB
+    ): Promise<void> {
+        const feeEntry = sourceTransactions
+            .flatMap(transaction => transaction.entries)
+            .find(
+                entry =>
+                    entry.accountId === candidate.sourceAccountId &&
+                    isPositiveNumber(entry.amount) &&
+                    (entry.type === TransactionEntryTypeEnum.FEE || entry.categorySource === CategorySourceEnum.FEE)
+            );
+
+        if (!isDefined(feeEntry)) {
+            return;
+        }
+
+        await transactionEntryRepository.bulkCreate(
+            [
+                {
+                    transactionId: canonicalTransactionId,
+                    accountId: candidate.sourceAccountId,
+                    categoryId: feeEntry.categoryId,
+                    categorySource: feeEntry.categorySource,
+                    mccCategoryId: feeEntry.mccCategoryId,
+                    type: TransactionEntryTypeEnum.FEE,
+                    amount: feeEntry.amount,
+                    externalId: null,
+                    exchangeRate: feeEntry.exchangeRate,
+                    baseInstrumentId: feeEntry.baseInstrumentId,
+                    baseExchangeRate: feeEntry.baseExchangeRate,
+                    baseAmount: feeEntry.baseAmount,
+                    toIban: null,
+                    originalTransactionId: null
+                }
+            ],
+            tx
+        );
     }
 
     private async copySourceTags(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
