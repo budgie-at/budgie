@@ -309,6 +309,7 @@ msgstr "Вже синхронізується"
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "Amount"
 msgstr "Сума"
 
@@ -1318,9 +1319,14 @@ msgstr "Французька (Франція)"
 msgid "from"
 msgstr "від"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
 msgstr "З"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "From {fromText}"
+msgstr "Від {fromText}"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Account"
@@ -1597,6 +1603,10 @@ msgstr "збігається"
 msgid "Matches Regex"
 msgstr "Відповідає регулярному виразу"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Maximum amount"
+msgstr "Максимальна сума"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
 msgstr "MCC"
@@ -1624,6 +1634,10 @@ msgstr "Об'єднати з іншим тегом"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Об'єднати відповідні перекази та повернення"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Minimum amount"
+msgstr "Мінімальна сума"
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -2404,6 +2418,10 @@ msgstr "Налаштування"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Show all amounts"
+msgstr "Показати всі суми"
+
 #: src/app/date-filter.tsx
 msgid "Show all dates"
 msgstr "Показати всі дати"
@@ -2413,6 +2431,7 @@ msgid "Show Cents"
 msgstr "Показати копійки"
 
 #: src/app/date-filter.tsx
+#: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
 msgstr "Показати вибраний діапазон"
 
@@ -2647,9 +2666,14 @@ msgstr "Назва"
 msgid "to"
 msgstr "до"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
 msgstr "На"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "To {toText}"
+msgstr "До {toText}"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "To Account"

@@ -309,6 +309,7 @@ msgstr "Ya sincronizando"
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "Amount"
 msgstr "Cantidad"
 
@@ -1318,9 +1319,14 @@ msgstr "Francés (Francia)"
 msgid "from"
 msgstr "de"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
 msgstr "De"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "From {fromText}"
+msgstr "Desde {fromText}"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Account"
@@ -1597,6 +1603,10 @@ msgstr "coincide"
 msgid "Matches Regex"
 msgstr "Coincide con regex"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Maximum amount"
+msgstr "Importe máximo"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
 msgstr "MCC"
@@ -1624,6 +1634,10 @@ msgstr "Fusionar con otra etiqueta"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Unir transferencias y reembolsos coincidentes"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Minimum amount"
+msgstr "Importe mínimo"
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -2404,6 +2418,10 @@ msgstr "Configuración"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Show all amounts"
+msgstr "Mostrar todos los importes"
+
 #: src/app/date-filter.tsx
 msgid "Show all dates"
 msgstr "Mostrar todas las fechas"
@@ -2413,6 +2431,7 @@ msgid "Show Cents"
 msgstr "Mostrar centavos"
 
 #: src/app/date-filter.tsx
+#: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
 msgstr "Mostrar rango seleccionado"
 
@@ -2647,9 +2666,14 @@ msgstr "Título"
 msgid "to"
 msgstr "a"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
 msgstr "A"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "To {toText}"
+msgstr "Hasta {toText}"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "To Account"

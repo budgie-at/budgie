@@ -310,6 +310,7 @@ msgstr "Already syncing"
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "Amount"
 msgstr "Amount"
 
@@ -1319,9 +1320,14 @@ msgstr "French (France)"
 msgid "from"
 msgstr "from"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
 msgstr "From"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "From {fromText}"
+msgstr "From {fromText}"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Account"
@@ -1598,6 +1604,10 @@ msgstr "matches"
 msgid "Matches Regex"
 msgstr "Matches Regex"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Maximum amount"
+msgstr "Maximum amount"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
 msgstr "MCC"
@@ -1625,6 +1635,10 @@ msgstr "Merge into another tag"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Merge matching transfers and refunds"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Minimum amount"
+msgstr "Minimum amount"
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -2405,6 +2419,10 @@ msgstr "Settings"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Show all amounts"
+msgstr "Show all amounts"
+
 #: src/app/date-filter.tsx
 msgid "Show all dates"
 msgstr "Show all dates"
@@ -2414,6 +2432,7 @@ msgid "Show Cents"
 msgstr "Show Cents"
 
 #: src/app/date-filter.tsx
+#: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
 msgstr "Show selected range"
 
@@ -2648,9 +2667,14 @@ msgstr "Title"
 msgid "to"
 msgstr "to"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
 msgstr "To"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "To {toText}"
+msgstr "To {toText}"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "To Account"
