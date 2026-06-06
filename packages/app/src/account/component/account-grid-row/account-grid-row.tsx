@@ -16,11 +16,12 @@ interface Props {
 }
 
 export const AccountGridRow = ({ row, accountType, balancesByAccountId, className }: Props) => {
-    const leftBalance = balancesByAccountId.get(row.left.id)?.balance ?? 0;
-    const rightAccount = row.right;
-    const rightBalance = isDefined(rightAccount) ? (balancesByAccountId.get(rightAccount.id)?.balance ?? 0) : 0;
-    const rightItem = isDefined(rightAccount) ? (
-        <AccountGridItem account={rightAccount} balance={rightBalance} type={accountType} isLeft={false} />
+    const leftBalanceRow = balancesByAccountId.get(row.left.id);
+    const leftBalance = isDefined(leftBalanceRow) ? leftBalanceRow.balance : 0;
+    const rightBalanceRow = isDefined(row.right) ? balancesByAccountId.get(row.right.id) : null;
+    const rightBalance = isDefined(rightBalanceRow) ? rightBalanceRow.balance : 0;
+    const rightItem = isDefined(row.right) ? (
+        <AccountGridItem account={row.right} balance={rightBalance} type={accountType} isLeft={false} />
     ) : (
         <View className="flex-1" />
     );
