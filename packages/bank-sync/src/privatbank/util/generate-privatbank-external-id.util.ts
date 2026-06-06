@@ -42,6 +42,19 @@ export const generatePrivatbankExternalId = (input: PrivatbankExternalIdInputInt
         [
             input.rawDate,
             input.card,
+            input.description,
+            input.cardAmount,
+            input.cardCurrency,
+            input.operationAmount,
+            input.operationCurrency
+        ].join('|')
+    ).slice(0, PRIVATBANK_EXTERNAL_ID_LENGTH);
+
+export const generatePrivatbankLegacyExternalId = (input: PrivatbankExternalIdInputInterface): string =>
+    fnv1aHash(
+        [
+            input.rawDate,
+            input.card,
             input.category,
             input.description,
             input.cardAmount,

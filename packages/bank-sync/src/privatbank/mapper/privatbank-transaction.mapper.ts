@@ -4,7 +4,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.enum';
-import { generatePrivatbankExternalId } from '../util/generate-privatbank-external-id.util';
+import { generatePrivatbankExternalId, generatePrivatbankLegacyExternalId } from '../util/generate-privatbank-external-id.util';
 
 import { privatbankCurrencyCodeMapper } from './privatbank-currency-code.mapper';
 
@@ -24,22 +24,28 @@ const getFeeAmount = (row: PrivatbankRowInterface): number => {
     return isPositiveNumber(fee) ? fee : 0;
 };
 
-export const privatbankTransactionMapper = (row: PrivatbankRowInterface): BankTransactionInterface => ({
-    id: generatePrivatbankExternalId(row),
-    provider: BankProviderEnum.PRIVATBANK,
-    accountId: row.card,
-    type: getTransactionType(row.cardAmount),
-    time: getUnixTime(row.date),
-    description: row.description,
-    mcc: 0,
-    originalMcc: 0,
-    amount: Math.abs(row.cardAmount),
-    operationAmount: Math.abs(row.operationAmount),
-    currencyCode: privatbankCurrencyCodeMapper(row.operationCurrency),
-    commissionRate: 0,
-    cashbackAmount: 0,
-    balance: row.endBalance,
-    hold: false,
-    category: row.category,
-    feeAmount: getFeeAmount(row)
-});
+export const privatbankTransactionMapper = (row: PrivatbankRowInterface): BankTransactionInterface => {
+    const id = generatePrivatbankExternalId(row);
+    const legacyExternalId = generatePrivatbankLegacyExternalId(row);
+
+    return {
+        id,
+        ...(id !== legacyExternalId && { legacyExternalIds: [legacyExternalId] }),
+        provider: BankProviderEnum.PRIVATBANK,
+        accountId: row.card,
+        type: getTransactionType(row.cardAmount),
+        time: getUnixTime(row.date),
+        description: row.description,
+        mcc: 0,
+        originalMcc: 0,
+        amount: Math.abs(row.cardAmount),
+        operationAmount: Math.abs(row.operationAmount),
+        currencyCode: privatbankCurrencyCodeMapper(row.operationCurrency),
+        commissionRate: 0,
+        cashbackAmount: 0,
+        balance: row.endBalance,
+        hold: false,
+        category: row.category,
+        feeAmount: getFeeAmount(row)
+    };
+};
