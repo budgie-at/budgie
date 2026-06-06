@@ -101,12 +101,12 @@ export class AccountRepository {
         });
     }
 
-    async findByIds(ids: number[]): Promise<AccountEntityInterface[]> {
+    async findByIds(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
         if (!isNotEmptyArray(ids)) {
             return [];
         }
 
-        return await this.db.query.AccountEntityTable.findMany({
+        return await (tx ?? this.db).query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt))
         });
     }
