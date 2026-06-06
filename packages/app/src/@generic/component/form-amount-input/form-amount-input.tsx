@@ -1,6 +1,6 @@
 import { cva } from 'class-variance-authority';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -33,14 +33,14 @@ const textVariants = cva('', {
     }
 });
 
-const amountInputVariants = cva('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', {
-    variants: {
-        hasSuffix: {
-            true: 'flex-1 text-right',
-            false: ''
-        }
+const styles = StyleSheet.create({
+    amountWithSuffix: {
+        flex: 1,
+        textAlign: 'right'
     }
 });
+
+const amountInputVariants = cva('text-primary placeholder-secondary-reverse-foreground border-0 h-auto');
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const FormAmountInput = (props: Props) => {
@@ -78,7 +78,8 @@ export const FormAmountInput = (props: Props) => {
 
     const fontSizeStyle = { fontSize };
     const suffixFontSizeStyle = { fontSize: Math.max(MINIMUM_SUFFIX_FONT_SIZE, Math.round(fontSize * SUFFIX_FONT_SIZE_RATIO)) };
-    const amountInputClassName = cn(amountInputVariants({ hasSuffix: showInstrumentAfterAmount }), textClassName);
+    const amountInputClassName = cn(amountInputVariants(), textClassName);
+    const amountInputStyle = showInstrumentAfterAmount ? [fontSizeStyle, styles.amountWithSuffix] : fontSizeStyle;
 
     const handleToggleSign = () => {
         const newIsNegative = !isNegative;
@@ -115,7 +116,7 @@ export const FormAmountInput = (props: Props) => {
                     inputClassName={amountInputClassName}
                     placeholder={formatDigits(0)}
                     autoFocus={autoFocus}
-                    style={fontSizeStyle}
+                    style={amountInputStyle}
                 />
 
                 {showInstrumentAfterAmount ? (
