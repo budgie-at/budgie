@@ -1,6 +1,5 @@
 // jscpd:ignore-start
 import { AccountTypeEnum, InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useMemo } from 'react';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
@@ -44,17 +43,14 @@ export const CreateLiabilityAccount = ({
     const isMissingCryptoInstrument = instrumentType === InstrumentTypeEnum.CRYPTO && !isDefined(cryptoInstrumentId);
     const instrumentId = isDefined(cryptoInstrumentId) ? cryptoInstrumentId : defaultInstrument.id;
 
-    const formValues = useMemo(
-        () => ({
-            type,
-            title: '',
-            currentBalance: 0,
-            icon: defaultIcon,
-            includeInNetWorth: true,
-            instrumentId
-        }),
-        [defaultIcon, instrumentId, type]
-    );
+    const formValues = {
+        type,
+        title: '',
+        currentBalance: 0,
+        icon: defaultIcon,
+        includeInNetWorth: true,
+        instrumentId
+    };
 
     const { control, handleSubmit, instrument } = useAccountForm(formValues, async values => {
         const account = await accountService.create(values);

@@ -7,6 +7,20 @@ import { useForm, useWatch } from 'react-hook-form';
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 
+const haveDefaultValuesChanged = (
+    currentValues: LiabilityAccountCreateInputInterface,
+    nextValues: LiabilityAccountCreateInputInterface
+): boolean =>
+    currentValues.currentBalance !== nextValues.currentBalance ||
+    currentValues.externalId !== nextValues.externalId ||
+    currentValues.iban !== nextValues.iban ||
+    currentValues.icon !== nextValues.icon ||
+    currentValues.includeInNetWorth !== nextValues.includeInNetWorth ||
+    currentValues.instrumentId !== nextValues.instrumentId ||
+    currentValues.isActive !== nextValues.isActive ||
+    currentValues.title !== nextValues.title ||
+    currentValues.type !== nextValues.type;
+
 export const useAccountForm = (
     defaultValues: LiabilityAccountCreateInputInterface,
     onSubmit: (values: LiabilityAccountCreateInputInterface) => Promise<AccountEntityInterface>
@@ -27,7 +41,7 @@ export const useAccountForm = (
     });
 
     useEffect(() => {
-        if (defaultValuesRef.current !== defaultValues) {
+        if (haveDefaultValuesChanged(defaultValuesRef.current, defaultValues)) {
             defaultValuesRef.current = defaultValues;
             reset(defaultValues, { keepDirtyValues: true });
         }
