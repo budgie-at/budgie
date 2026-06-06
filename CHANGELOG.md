@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.35.5](https://github.com/budgie-at/budgie/compare/v5.35.4...v5.35.5) (2026-06-06)
+
+### Bug Fixes
+
+- **app:** enqueue consolidation after file imports ([d8122a6](https://github.com/budgie-at/budgie/commit/d8122a68abfe639b586452e651c9458db0ec6d00))
+- **app:** scope balance refreshes ([c3afcd4](https://github.com/budgie-at/budgie/commit/c3afcd427669b7c798a72f953483dfb5f9e91da6))
+- **app:** stabilize home layout styling ([18b160b](https://github.com/budgie-at/budgie/commit/18b160ba6100b8d4d6fd12f135239d571c49e05a))
+- **app:** stabilize transaction processing ([b2d6717](https://github.com/budgie-at/budgie/commit/b2d6717d8361842cc1987bd4b25a9c3b49f211b3))
+
+## [5.35.4](https://github.com/budgie-at/budgie/compare/v5.35.3...v5.35.4) (2026-06-06)
+
+### Bug Fixes
+
+- **app:** clear suggestion hook dependency warning ([1c5134f](https://github.com/budgie-at/budgie/commit/1c5134f13394f379661beb3c5bec11a78cb3f35c))
+- consolidate ATM withdrawals with fees ([e416598](https://github.com/budgie-at/budgie/commit/e4165988c96d0e55adc4679b47db142d3f8a8508))
+
 ## [5.35.3](https://github.com/budgie-at/budgie/compare/v5.35.2...v5.35.3) (2026-06-06)
 
 ### Bug Fixes
