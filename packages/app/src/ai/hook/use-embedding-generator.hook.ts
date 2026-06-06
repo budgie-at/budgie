@@ -7,20 +7,16 @@ import { embeddingProgressStore } from '../store/embedding-progress.store';
 
 const logger = getLogger('useEmbeddingGenerator');
 
-interface MarkParamsInterface {
-    readonly transactionId: number;
-}
-
 interface UseEmbeddingGeneratorReturnInterface {
-    readonly markForEmbedding: (params: MarkParamsInterface) => void;
+    readonly markForEmbedding: (transactionId: number) => void;
     readonly markManyForEmbedding: (transactionIds: readonly number[]) => void;
 }
 
 export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface => {
-    const markForEmbedding = (params: MarkParamsInterface): void => {
-        logger.log('embed:defer:mark', { transactionId: params.transactionId });
+    const markForEmbedding = (transactionId: number): void => {
+        logger.log('embed:defer:mark', { transactionId });
         transactionRepository
-            .updateById(params.transactionId, { needsEmbedding: true })
+            .markForEmbeddingByIds([transactionId])
             .then(() => embeddingProgressStore.refresh())
             .catch(emptyFn);
     };
@@ -34,7 +30,8 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface =>
 
         logger.log('embed:defer:markMany', { count: ids.length, transactionIds: ids });
 
-        Promise.all(ids.map(id => transactionRepository.updateById(id, { needsEmbedding: true })))
+        transactionRepository
+            .markForEmbeddingByIds(ids)
             .then(() => embeddingProgressStore.refresh())
             .catch(emptyFn);
     };
