@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.35.3](https://github.com/budgie-at/budgie/compare/v5.35.2...v5.35.3) (2026-06-06)
+
+### Bug Fixes
+
+- **app:** reduce Home tab SQLite fanout ([3f9e2eb](https://github.com/budgie-at/budgie/commit/3f9e2eb779f1c9976c0b69552f0b7fe10aa3ac5f))
+
+### Performance Improvements
+
+- **app:** consolidate Home data query ([c536bb6](https://github.com/budgie-at/budgie/commit/c536bb64c4d51d39ad3d2896234180b933c38dd1))
+- **app:** defer hidden analytics queries ([104458a](https://github.com/budgie-at/budgie/commit/104458a99a1bfbe30f6da966cb8d0b0467badc40))
+
 ## [5.35.2](https://github.com/budgie-at/budgie/compare/v5.35.1...v5.35.2) (2026-06-06)
 
 **Note:** Version bump only for package @budgie-at/root
