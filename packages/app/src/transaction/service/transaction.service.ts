@@ -32,7 +32,8 @@ import type {
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryCreateInputInterface,
-    TransactionUpdateServiceInputInterface
+    TransactionUpdateServiceInputInterface,
+    TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
 class TransactionService {
@@ -63,7 +64,7 @@ class TransactionService {
         );
 
         if (isNotEmptyArray(transactions)) {
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+            await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs(inputs), tx);
         }
 
         return transactions;
@@ -83,17 +84,18 @@ class TransactionService {
     @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
     async deleteById(id: number): Promise<void> {
         await transactionAsync(db, async tx => {
-            const transaction = await transactionRepository.getByIdRaw(id, tx);
+            const transaction = await transactionRepository.getByIdWithEntries(id, tx);
+            const accountIds = this.getAccountIdsFromTransactions(isDefined(transaction) ? [transaction] : []);
 
             if (isDefined(transaction?.consolidationType)) {
                 await unconsolidateByIdInTransaction(id, tx);
+                await accountBalanceIncrementalService.updateAllBalances(true, tx);
             } else {
                 await transactionRepository.deleteById(id, tx);
                 await transactionTagsRepository.deleteByTransactionId(id, tx);
                 await transactionEntryRepository.deleteByTransactionId(id, tx);
+                await accountBalanceIncrementalService.updateBalancesByAccountIds(accountIds, tx);
             }
-
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
         });
     }
 
@@ -223,7 +225,7 @@ class TransactionService {
                 await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transaction.id), tx);
             }
 
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+            await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs([input]), tx);
 
             return transaction;
         });
@@ -231,7 +233,7 @@ class TransactionService {
 
     async updateById(id: number, input: TransactionUpdateServiceInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
-            const existingTransaction = await transactionRepository.getByIdRaw(id, tx);
+            const existingTransaction = await transactionRepository.getByIdWithEntries(id, tx);
             const isConsolidated = isDefined(existingTransaction?.consolidationType);
             const transaction = await transactionRepository.updateById(
                 id,
@@ -250,10 +252,24 @@ class TransactionService {
 
             await upsertTransactionEntriesAndTags({ transactionId: id, input, operatedAt: transaction.operatedAt, isConsolidated }, tx);
 
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+            await accountBalanceIncrementalService.updateBalancesByAccountIds(
+                [
+                    ...this.getAccountIdsFromTransactions(isDefined(existingTransaction) ? [existingTransaction] : []),
+                    ...this.getAccountIdsFromInputs([input])
+                ],
+                tx
+            );
 
             return transaction;
         });
+    }
+
+    private getAccountIdsFromInputs(inputs: readonly Pick<TransactionCreateInputInterface, 'entries'>[]): number[] {
+        return [...new Set(inputs.flatMap(input => input.entries.map(entry => entry.accountId)))];
+    }
+
+    private getAccountIdsFromTransactions(transactions: readonly TransactionWithEntriesEntityInterface[]): number[] {
+        return [...new Set(transactions.flatMap(transaction => transaction.entries.map(entry => entry.accountId)))];
     }
 
     private findPrimaryEntries(entries: TransactionEntryCreateInputInterface[], fromAccountId: number | null, toAccountId: number | null) {

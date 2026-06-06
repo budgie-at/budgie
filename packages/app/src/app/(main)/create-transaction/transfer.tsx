@@ -34,7 +34,7 @@ export default function CreateTransferTransactionPage() {
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
             const result = await transactionService.createInternalTransfer(data);
-            markForEmbedding({ transactionId: result.id });
+            markForEmbedding(result.id);
 
             return result;
         },

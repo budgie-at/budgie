@@ -7,7 +7,7 @@ import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared'
 import { accountBalanceRepository, accountRepository } from '../../@generic/drizzle/db/db';
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
 
-import type { AccountBalanceCreateEntityInterface, AccountBalanceEntityInterface, DB } from '@budgie/contracts';
+import type { AccountBalanceCreateEntityInterface, AccountBalanceEntityInterface, AccountEntityInterface, DB } from '@budgie/contracts';
 
 class AccountBalanceIncrementalService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 7 * 24 * 60;
@@ -19,6 +19,45 @@ class AccountBalanceIncrementalService {
     )
     async updateAllBalances(truncate: boolean, tx?: DB): Promise<void> {
         const accounts = await accountRepository.getAllActiveAccounts(tx);
+        await this.upsertLatestBalances(accounts, truncate, tx);
+    }
+
+    @Log(
+        (accountIds, tx) => `enter accountIds=${accountIds.join(',')} tx=${String(isDefined(tx))}`,
+        (_, accountIds, tx) => `done accountIds=${accountIds.join(',')} tx=${String(isDefined(tx))}`,
+        (error, accountIds, tx) => `throw accountIds=${accountIds.join(',')} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async updateBalancesByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
+        const uniqueAccountIds = [...new Set(accountIds)];
+
+        if (isEmptyArray(uniqueAccountIds)) {
+            return;
+        }
+
+        const accounts = await accountRepository.findByIds(uniqueAccountIds, tx);
+        if (isEmptyArray(accounts)) {
+            return;
+        }
+
+        const activeAccountIds = accounts.map(({ id }) => id);
+
+        await accountBalanceRepository.deleteByAccountIds(activeAccountIds, tx);
+        await this.upsertLatestBalances(accounts, false, tx);
+    }
+
+    @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
+    async registerBackgroundTask(): Promise<void> {
+        const isRegistered = await TaskManager.isTaskRegisteredAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK);
+        if (isRegistered) {
+            return;
+        }
+
+        await BackgroundTask.registerTaskAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK, {
+            minimumInterval: AccountBalanceIncrementalService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
+        });
+    }
+
+    private async upsertLatestBalances(accounts: AccountEntityInterface[], truncate: boolean, tx?: DB): Promise<void> {
         if (isEmptyArray(accounts)) {
             return;
         }
@@ -34,18 +73,6 @@ class AccountBalanceIncrementalService {
         const balancesToInsert = accounts.map(account => this.buildBalanceInput(account.id, balancesMap, deltaMap));
 
         await this.upsertBalances(balancesToInsert, tx);
-    }
-
-    @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
-    async registerBackgroundTask(): Promise<void> {
-        const isRegistered = await TaskManager.isTaskRegisteredAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK);
-        if (isRegistered) {
-            return;
-        }
-
-        await BackgroundTask.registerTaskAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK, {
-            minimumInterval: AccountBalanceIncrementalService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
-        });
     }
 
     private buildBalancesMap(balances: AccountBalanceEntityInterface[]) {
