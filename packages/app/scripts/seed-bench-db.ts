@@ -15,6 +15,7 @@ const INSTRUMENT_COUNT = 4;
 const MCC_COUNT = 150;
 const SOFT_DELETE_RATIO = 0.1;
 const NEEDS_EMBEDDING_RATIO = 0.25;
+const UNCATEGORIZED_RATIO = 0.12;
 const MONTHS_BACK = 36;
 
 const ensureDir = (file: string) => {
@@ -83,6 +84,19 @@ export const seed = () => {
         `CREATE TABLE exchange_rates (id INTEGER PRIMARY KEY, source TEXT,
             base_instrument_id INTEGER NOT NULL, quote_instrument_id INTEGER NOT NULL,
             rate INTEGER NOT NULL, created_at INTEGER, updated_at INTEGER, deleted_at INTEGER)`
+    );
+    db.exec('CREATE INDEX transactions_visible_operated_idx ON transactions (operated_at) WHERE deleted_at IS NULL');
+    db.exec('CREATE INDEX transactions_visible_type_operated_idx ON transactions (type, operated_at) WHERE deleted_at IS NULL');
+    db.exec('CREATE INDEX transactions_needs_embedding_idx ON transactions (needs_embedding, deleted_at)');
+    db.exec('CREATE INDEX transaction_entries_transaction_idx ON transaction_entries (transaction_id)');
+    db.exec('CREATE INDEX transaction_entries_category_idx ON transaction_entries (category_id) WHERE category_id IS NOT NULL');
+    db.exec('CREATE INDEX transaction_entries_category_type_idx ON transaction_entries (category_id, type) WHERE category_id IS NOT NULL');
+    db.exec(
+        'CREATE INDEX transaction_entries_uncategorized_transaction_idx ON transaction_entries (transaction_id) WHERE category_id IS NULL AND deleted_at IS NULL'
+    );
+    db.exec('CREATE INDEX transaction_tags_tag_idx ON transaction_tags (tag_id)');
+    db.exec(
+        'CREATE INDEX exchange_rates_lookup_idx ON exchange_rates (base_instrument_id, quote_instrument_id, created_at DESC) WHERE deleted_at IS NULL'
     );
     const now = Math.floor(Date.now() / 1000);
     for (let i = 1; i <= INSTRUMENT_COUNT; i++) {
@@ -154,11 +168,12 @@ export const seed = () => {
             const deletedAt = isSoftDeleted ? operatedAt + 86400 : null;
             const needsEmbedding = !isSoftDeleted && randomFloat() < NEEDS_EMBEDDING_RATIO ? 1 : 0;
             const toAccount = randomInt(1, ACCOUNT_COUNT + 1);
+            const categoryId = randomFloat() < UNCATEGORIZED_RATIO ? null : randomInt(1, CATEGORY_COUNT + 1);
             insertTx.run('EXPENSE', title, operatedAt, comment, toAccount, null, 1.0, needsEmbedding, now, now, deletedAt);
             insertEntry.run(
                 'CREDIT',
                 toAccount,
-                randomInt(1, CATEGORY_COUNT + 1),
+                categoryId,
                 randomFloat() < 0.3 ? randomInt(1, MCC_COUNT + 1) : null,
                 i,
                 randomInt(100_000, 100_000_000),
