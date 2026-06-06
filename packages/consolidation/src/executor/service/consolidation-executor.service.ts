@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- Consolidation executor keeps per-candidate logs and the write path together for debugging */
-import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { CategorySourceEnum, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -521,7 +521,7 @@ export class ConsolidationExecutorService {
             .find(
                 entry =>
                     entry.accountId === candidate.sourceAccountId &&
-                    entry.type === TransactionEntryTypeEnum.FEE &&
+                    (entry.type === TransactionEntryTypeEnum.FEE || entry.categorySource === CategorySourceEnum.FEE) &&
                     isPositiveNumber(entry.amount)
             );
     }
