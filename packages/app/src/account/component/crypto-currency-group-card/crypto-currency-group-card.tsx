@@ -12,7 +12,7 @@ import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
-import { useCryptoInstrumentTotalQuery } from '../../query/use-crypto-instrument-total.query';
+import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import { CryptoCurrencyGroupAccounts } from '../crypto-currency-group-accounts/crypto-currency-group-accounts';
 import { CryptoCurrencyGroupMarketLink } from '../crypto-currency-group-market-link/crypto-currency-group-market-link';
 import { CryptoCurrencyGroupToggleRow } from '../crypto-currency-group-toggle-row/crypto-currency-group-toggle-row';
@@ -21,14 +21,15 @@ import { CryptoCurrencyGroupCardSelector } from './crypto-currency-group-card.se
 
 interface Props {
     readonly group: CryptoCurrencyGroupInterface;
+    readonly balance: number;
+    readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
 }
 
-export const CryptoCurrencyGroupCard = ({ group }: Props) => {
+export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
-    const balance = useCryptoInstrumentTotalQuery(group.instrument.id);
     const { rate } = useGetRatesByBaseAndQuoteIdsQuery(group.instrument.id, defaultInstrument.id);
 
     const toggleOpen = () => void setIsOpen(value => !value);
@@ -69,7 +70,7 @@ export const CryptoCurrencyGroupCard = ({ group }: Props) => {
                 </View>
             </Card>
 
-            {isOpen ? <CryptoCurrencyGroupAccounts group={group} /> : null}
+            {isOpen ? <CryptoCurrencyGroupAccounts group={group} balancesByAccountId={balancesByAccountId} /> : null}
         </View>
     );
 };
