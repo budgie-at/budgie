@@ -28,6 +28,7 @@ export class TransactionEntryPositionRepository {
                 baseAmount: sql<CryptoPositionEntryRowInterface['baseAmount']>`
                     CASE
                         WHEN ${TransactionEntryEntityTable.baseInstrumentId} = ${baseInstrumentId}
+                         AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}
                         THEN ${TransactionEntryEntityTable.baseAmount}
                         ELSE NULL
                     END
