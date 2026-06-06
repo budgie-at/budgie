@@ -22,16 +22,15 @@ const MISSING_VALUE = '-';
 export const CurrencyMarketPriceCard = ({ instrument, latestPrice, previousPrice }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
-    const price = latestPrice?.price ?? 0;
     const change =
-        isDefined(previousPrice) && isPositiveNumber(previousPrice.price)
-            ? ((price - previousPrice.price) / previousPrice.price) * 100
+        isDefined(latestPrice) && isDefined(previousPrice) && isPositiveNumber(previousPrice.price)
+            ? ((latestPrice.price - previousPrice.price) / previousPrice.price) * 100
             : null;
     const hasPrice = isDefined(latestPrice);
     const isPositiveChange = isDefined(change) ? change >= 0 : true;
-    const formattedPrice = hasPrice ? formatDigits(price, defaultInstrument.symbol) : MISSING_VALUE;
+    const formattedPrice = hasPrice ? formatDigits(latestPrice.price, defaultInstrument.symbol) : MISSING_VALUE;
     const formattedChange = isDefined(change) ? `${change >= 0 ? '+' : ''}${change.toFixed(2)}%` : MISSING_VALUE;
-    const formattedRate = hasPrice ? `1 ${instrument.code} ~ ${formatDigits(price, defaultInstrument.symbol)}` : MISSING_VALUE;
+    const formattedRate = hasPrice ? `1 ${instrument.code} ~ ${formatDigits(latestPrice.price, defaultInstrument.symbol)}` : MISSING_VALUE;
     const changeClassName = isPositiveChange ? 'text-positive-foreground' : 'text-destructive-foreground';
     const changeIcon = isPositiveChange ? UserIconNameEnum.ArrowUpRight : UserIconNameEnum.ArrowDownRight;
 

@@ -26,7 +26,7 @@ export const CurrencyMarketMetrics = ({ instrumentCode, latestPrice }: Props) =>
     const volume = latestPrice?.volume;
     const formattedMarketCap = isDefined(marketCap) ? formatCompactDigits(marketCap, defaultInstrument.symbol) : MISSING_VALUE;
     const formattedVolume = isDefined(volume) ? formatCompactDigits(volume, defaultInstrument.symbol) : MISSING_VALUE;
-    const formattedDate = latestPrice?.priceDate ?? MISSING_VALUE;
+    const formattedDate = isDefined(latestPrice?.priceDate) ? latestPrice.priceDate : MISSING_VALUE;
 
     return (
         <>

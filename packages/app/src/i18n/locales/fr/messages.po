@@ -83,7 +83,7 @@ msgstr "{found, plural, one {# correspondance fiable} other {# correspondances f
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
-msgstr ""
+msgstr "{loadedDays}/{totalDays} jours"
 
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
@@ -1376,7 +1376,7 @@ msgstr "Échec de la valorisation historique"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "History loading paused"
-msgstr ""
+msgstr "Chargement de l'historique en pause"
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
 msgid "History synced"
@@ -1559,7 +1559,7 @@ msgstr "Chargement du modèle d'IA..."
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
-msgstr ""
+msgstr "Chargement de l'historique du marché"
 
 #: src/ai/service/ai-system-status.service.ts
 msgid "Loading models"
@@ -1595,7 +1595,7 @@ msgstr "Mapper les colonnes CSV"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Market cap"
-msgstr ""
+msgstr "Capitalisation"
 
 #: src/market-data/service/historical-market-data-loader.service.ts
 msgid "Market data prices missing"
@@ -1603,11 +1603,11 @@ msgstr "Prix des données de marché manquants"
 
 #: src/market-data/component/market-data-sparkline/market-data-sparkline.tsx
 msgid "Market history is loading quietly."
-msgstr ""
+msgstr "L'historique du marché se charge en arrière-plan."
 
 #: src/market-data/component/currency-market-price-card/currency-market-price-card.tsx
 msgid "Market price"
-msgstr ""
+msgstr "Prix du marché"
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "Match All"
@@ -2021,7 +2021,7 @@ msgstr "Appuyez pour réévaluer les transactions"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Prices fill in quietly while you use the app."
-msgstr ""
+msgstr "Les prix se complètent en arrière-plan pendant que vous utilisez l'app."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Privacy"
@@ -2930,7 +2930,7 @@ msgstr "Afficher et restaurer les comptes archivés"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Waiting"
@@ -2938,7 +2938,7 @@ msgstr "En attente"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."
-msgstr ""
+msgstr "Nous réessaierons en arrière-plan."
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"
@@ -2987,7 +2987,7 @@ msgstr "Votre sauvegarde de base de données est prête à être partagée."
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Your holdings"
-msgstr ""
+msgstr "Vos avoirs"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Your token is stored securely in the database. Sync continues in the background."

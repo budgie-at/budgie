@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import { InstrumentMarketDataJobEntityTable } from '../table/instrument-market-data-job-entity.table';
 
-import { InstrumentMarketDataJobEntitySchema } from '../schema/instrument-market-data-job-entity.schema';
-
-export type InstrumentMarketDataJobEntityInterface = z.infer<typeof InstrumentMarketDataJobEntitySchema>;
+export type InstrumentMarketDataJobEntityInterface = typeof InstrumentMarketDataJobEntityTable.$inferSelect;

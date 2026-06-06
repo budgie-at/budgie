@@ -46,25 +46,27 @@ export class InstrumentMarketDataJobRepository {
         (error, maxAttempts, staleLockedBefore) =>
             `throw maxAttempts=${maxAttempts} staleLockedBefore=${staleLockedBefore.toISOString()} error=${getErrorMessage(error)}`
     )
-    async findNext(maxAttempts: number, staleLockedBefore: Date): Promise<InstrumentMarketDataJobEntityInterface | undefined> {
-        return await this.db.query.InstrumentMarketDataJobEntityTable.findFirst({
-            where: and(
-                or(
-                    inArray(InstrumentMarketDataJobEntityTable.status, [
-                        InstrumentMarketDataJobStatusEnum.PENDING,
-                        InstrumentMarketDataJobStatusEnum.FAILED
-                    ]),
-                    and(
-                        eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING),
-                        isNotNull(InstrumentMarketDataJobEntityTable.lockedAt),
-                        lte(InstrumentMarketDataJobEntityTable.lockedAt, staleLockedBefore)
-                    )
-                ),
-                sql`${InstrumentMarketDataJobEntityTable.attempts} < ${maxAttempts}`,
-                isNull(InstrumentMarketDataJobEntityTable.deletedAt)
-            ),
-            orderBy: [desc(InstrumentMarketDataJobEntityTable.priority), asc(InstrumentMarketDataJobEntityTable.updatedAt)]
-        });
+    async claimNext(maxAttempts: number, staleLockedBefore: Date): Promise<InstrumentMarketDataJobEntityInterface | undefined> {
+        const now = new Date();
+        const nextJobQuery = this.db
+            .select({ id: InstrumentMarketDataJobEntityTable.id })
+            .from(InstrumentMarketDataJobEntityTable)
+            .where(this.buildClaimableCondition(maxAttempts, staleLockedBefore))
+            .orderBy(desc(InstrumentMarketDataJobEntityTable.priority), asc(InstrumentMarketDataJobEntityTable.updatedAt))
+            .limit(1);
+        const [job] = await this.db
+            .update(InstrumentMarketDataJobEntityTable)
+            .set({
+                status: InstrumentMarketDataJobStatusEnum.RUNNING,
+                attempts: sql`${InstrumentMarketDataJobEntityTable.attempts} + 1`,
+                lockedAt: now,
+                lastError: null,
+                updatedAt: now
+            })
+            .where(inArray(InstrumentMarketDataJobEntityTable.id, nextJobQuery))
+            .returning();
+
+        return job;
     }
 
     @Log(
@@ -81,33 +83,6 @@ export class InstrumentMarketDataJobRepository {
         });
 
         return isDefined(job);
-    }
-
-    @Log(
-        (jobId, tx) => `enter transition=running jobId=${jobId} hasTx=${String(isDefined(tx))}`,
-        (_result, jobId, tx) => `done transition=running jobId=${jobId} hasTx=${String(isDefined(tx))}`,
-        (error, jobId, tx) => `throw transition=running jobId=${jobId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async markRunning(jobId: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(InstrumentMarketDataJobEntityTable)
-            .set({
-                status: InstrumentMarketDataJobStatusEnum.RUNNING,
-                attempts: sql`${InstrumentMarketDataJobEntityTable.attempts} + 1`,
-                lockedAt: new Date(),
-                lastError: null,
-                updatedAt: new Date()
-            })
-            .where(
-                and(
-                    eq(InstrumentMarketDataJobEntityTable.id, jobId),
-                    or(
-                        eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.PENDING),
-                        eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.FAILED),
-                        eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING)
-                    )
-                )
-            );
     }
 
     @Log(
@@ -145,11 +120,29 @@ export class InstrumentMarketDataJobRepository {
             .where(eq(InstrumentMarketDataJobEntityTable.id, jobId));
     }
 
-    findLatestByInstrumentAndQuote(instrumentId: number, quoteInstrumentId: number) {
-        return this.db.query.InstrumentMarketDataJobEntityTable.findFirst({
+    findLatestByInstrumentAndQuote(instrumentId: number, quoteInstrumentId: number, tx?: DB) {
+        return (tx ?? this.db).query.InstrumentMarketDataJobEntityTable.findFirst({
             where: this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
             orderBy: desc(InstrumentMarketDataJobEntityTable.updatedAt)
         });
+    }
+
+    private buildClaimableCondition(maxAttempts: number, staleLockedBefore: Date) {
+        return and(
+            or(
+                inArray(InstrumentMarketDataJobEntityTable.status, [
+                    InstrumentMarketDataJobStatusEnum.PENDING,
+                    InstrumentMarketDataJobStatusEnum.FAILED
+                ]),
+                and(
+                    eq(InstrumentMarketDataJobEntityTable.status, InstrumentMarketDataJobStatusEnum.RUNNING),
+                    isNotNull(InstrumentMarketDataJobEntityTable.lockedAt),
+                    lte(InstrumentMarketDataJobEntityTable.lockedAt, staleLockedBefore)
+                )
+            ),
+            sql`${InstrumentMarketDataJobEntityTable.attempts} < ${maxAttempts}`,
+            isNull(InstrumentMarketDataJobEntityTable.deletedAt)
+        );
     }
 
     private buildOpenInstrumentQuoteCondition(instrumentId: number, quoteInstrumentId: number) {

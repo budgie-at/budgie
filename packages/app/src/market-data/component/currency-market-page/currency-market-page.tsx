@@ -31,7 +31,11 @@ const isMarketMovePositive = (
         return true;
     }
 
-    return (latestPrice?.price ?? 0) >= previousPrice.price;
+    if (!isDefined(latestPrice)) {
+        return true;
+    }
+
+    return latestPrice.price >= previousPrice.price;
 };
 
 export const CurrencyMarketPage = ({ instrument }: Props) => {

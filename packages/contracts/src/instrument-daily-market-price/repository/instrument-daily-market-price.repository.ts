@@ -75,16 +75,16 @@ export class InstrumentDailyMarketPriceRepository {
         });
     }
 
-    findRecent(instrumentId: number, quoteInstrumentId: number, limit: number) {
-        return this.db.query.InstrumentDailyMarketPriceEntityTable.findMany({
+    findRecent(instrumentId: number, quoteInstrumentId: number, limit: number, tx?: DB) {
+        return (tx ?? this.db).query.InstrumentDailyMarketPriceEntityTable.findMany({
             where: this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
             orderBy: desc(InstrumentDailyMarketPriceEntityTable.priceDate),
             limit
         });
     }
 
-    countByInstrumentAndQuote(instrumentId: number, quoteInstrumentId: number) {
-        return this.db
+    countByInstrumentAndQuote(instrumentId: number, quoteInstrumentId: number, tx?: DB) {
+        return (tx ?? this.db)
             .select({ count: count() })
             .from(InstrumentDailyMarketPriceEntityTable)
             .where(this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId));

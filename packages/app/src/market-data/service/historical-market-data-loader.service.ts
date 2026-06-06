@@ -92,7 +92,7 @@ class HistoricalMarketDataLoaderService {
 
     private async drainNextJob(): Promise<boolean> {
         const staleLockedBefore = new Date(Date.now() - HistoricalMarketDataLoaderService.STALE_LOCK_MS);
-        const job = await instrumentMarketDataJobRepository.findNext(HistoricalMarketDataLoaderService.MAX_ATTEMPTS, staleLockedBefore);
+        const job = await instrumentMarketDataJobRepository.claimNext(HistoricalMarketDataLoaderService.MAX_ATTEMPTS, staleLockedBefore);
 
         if (!isDefined(job)) {
             return false;
@@ -106,8 +106,6 @@ class HistoricalMarketDataLoaderService {
     }
 
     private async processJob(job: InstrumentMarketDataJobEntityInterface): Promise<void> {
-        await instrumentMarketDataJobRepository.markRunning(job.id);
-
         const instrument = await instrumentRepository.findByIdAsync(job.instrumentId);
 
         if (!isDefined(instrument)) {
