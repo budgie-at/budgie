@@ -12,6 +12,7 @@ import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber 
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
+import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -109,6 +110,10 @@ export abstract class BaseFileBankSyncService {
             shouldUpdateBalances: false
         });
 
+        if (isNotEmptyArray(upsertedTransactions)) {
+            await accountBalanceIncrementalService.updateBalancesByAccountIds([account.id], context.tx);
+        }
+
         return this.queueRulesForNewlyImportedTransactions(prepared.transactionInputs, upsertedTransactions, prepared.externalIdMap);
     }
 
@@ -134,8 +139,6 @@ export abstract class BaseFileBankSyncService {
                     newImportedCounts.push(await this.importAccountTransactions(client, bankAccount, context));
                     await microPause();
                 }
-
-                await transactionService.updateAllBalances(tx);
             });
 
             const newImportedCount = newImportedCounts.reduce((total, count) => total + count, 0);
