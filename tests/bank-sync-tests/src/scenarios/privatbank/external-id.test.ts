@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { generatePrivatbankExternalId } from '@budgie/bank-sync';
+import { generatePrivatbankExternalId, privatbankTransactionMapper } from '@budgie/bank-sync';
 
 const buildPrivatbankRow = (date: Date, endBalance = 12_345.67) => ({
     rawDate: '13.01.2026 11:42:53',
@@ -24,10 +24,25 @@ describe('privatbank/external-id', () => {
         expect(generatePrivatbankExternalId(first)).toBe(generatePrivatbankExternalId(shifted));
     });
 
-    it('changes when statement data changes', () => {
+    it('ignores volatile statement balance identity and keeps legacy identity', () => {
         const first = buildPrivatbankRow(new Date('2026-01-13T09:42:53.000Z'));
         const changedBalance = buildPrivatbankRow(new Date('2026-01-13T09:42:53.000Z'), 54_321.01);
+        const firstTransaction = privatbankTransactionMapper(first);
+        const changedBalanceTransaction = privatbankTransactionMapper(changedBalance);
 
-        expect(generatePrivatbankExternalId(first)).not.toBe(generatePrivatbankExternalId(changedBalance));
+        expect(generatePrivatbankExternalId(first)).toBe(generatePrivatbankExternalId(changedBalance));
+        expect(firstTransaction.id).toBe(changedBalanceTransaction.id);
+        expect(firstTransaction.legacyExternalIds?.[0]).not.toBe(changedBalanceTransaction.legacyExternalIds?.[0]);
+        expect(firstTransaction.id).not.toBe(firstTransaction.legacyExternalIds?.[0]);
+    });
+
+    it('changes when stable statement data changes', () => {
+        const first = buildPrivatbankRow(new Date('2026-01-13T09:42:53.000Z'));
+        const changedDescription = {
+            ...first,
+            description: 'З гривневого рахунку ТОВ'
+        };
+
+        expect(generatePrivatbankExternalId(first)).not.toBe(generatePrivatbankExternalId(changedDescription));
     });
 });

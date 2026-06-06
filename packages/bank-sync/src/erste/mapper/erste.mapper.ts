@@ -6,6 +6,7 @@ import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 import { BankAccountTypeEnum } from '../../core/enum/bank-account-type.enum';
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.enum';
+import { generateStableExternalIdHash } from '../../core/util/generate-stable-external-id-hash.util';
 import { ERSTE_CURRENCY_CODE_EUR, ERSTE_EXTERNAL_ID_LENGTH } from '../constant/erste.constant';
 
 import type { BankAccountInterface } from '../../core/interface/bank-account.interface';
@@ -14,11 +15,6 @@ import type { ErsteAccountInfoInterface } from '../interface/erste-account-info.
 import type { ErsteRowInterface } from '../interface/erste-row.interface';
 
 class ErsteMapper {
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- FNV-1a 32-bit constants from RFC
-    private static readonly FNV_OFFSET_BASIS = 0x811c9dc5;
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- FNV-1a 32-bit constants from RFC
-    private static readonly FNV_PRIME = 0x01000193;
-
     @Log(
         account => `enter iban=${account.iban} newBalance=${account.newBalance}`,
         (result, account) => `done iban=${account.iban} accountId=${result.id}`,
@@ -43,8 +39,12 @@ class ErsteMapper {
         (error, row, iban) => `throw iban=${iban} date=${row.date.toISOString()} amount=${row.amount} error=${getErrorMessage(error)}`
     )
     mapTransaction(row: ErsteRowInterface, iban: string): BankTransactionInterface {
+        const id = this.generateExternalId(row, iban);
+        const legacyExternalId = this.generateLegacyExternalId(row, iban);
+
         return {
-            id: this.generateExternalId(row, iban),
+            id,
+            ...(id !== legacyExternalId && { legacyExternalIds: [legacyExternalId] }),
             provider: BankProviderEnum.ERSTE,
             accountId: iban,
             type: row.isCredit ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE,
@@ -78,6 +78,14 @@ class ErsteMapper {
     }
 
     private generateExternalId(row: ErsteRowInterface, iban: string): string {
+        const seed = [this.buildStatementDateKey(row.date), iban, row.amount, String(row.isCredit), row.reference, row.description].join(
+            '|'
+        );
+
+        return generateStableExternalIdHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
+    }
+
+    private generateLegacyExternalId(row: ErsteRowInterface, iban: string): string {
         const seed = [
             this.buildStatementDateKey(row.date),
             iban,
@@ -89,7 +97,7 @@ class ErsteMapper {
             row.countryAlpha2 ?? ''
         ].join('|');
 
-        return this.fnv1aHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
+        return generateStableExternalIdHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
     }
 
     private buildStatementDateKey(date: Date): string {
@@ -99,40 +107,6 @@ class ErsteMapper {
 
         return `${year}-${month}-${day}`;
     }
-
-    /* jscpd:ignore-start */
-    /* eslint-disable no-bitwise, no-plusplus, max-statements -- FNV-1a hash requires bitwise operations */
-    private fnv1aHash(input: string): string {
-        let hash1 = ErsteMapper.FNV_OFFSET_BASIS;
-        let hash2 = ErsteMapper.FNV_OFFSET_BASIS;
-        let hash3 = ErsteMapper.FNV_OFFSET_BASIS;
-        let hash4 = ErsteMapper.FNV_OFFSET_BASIS;
-
-        for (let index = 0; index < input.length; index++) {
-            const charCode = input.charCodeAt(index);
-
-            hash1 ^= charCode;
-            hash1 = Math.imul(hash1, ErsteMapper.FNV_PRIME);
-
-            hash2 ^= charCode ^ (index & 0xff);
-            hash2 = Math.imul(hash2, ErsteMapper.FNV_PRIME);
-
-            hash3 ^= (charCode + index) & 0xff;
-            hash3 = Math.imul(hash3, ErsteMapper.FNV_PRIME);
-
-            hash4 ^= charCode ^ ((index * 31) & 0xff);
-            hash4 = Math.imul(hash4, ErsteMapper.FNV_PRIME);
-        }
-
-        const part1 = (hash1 >>> 0).toString(16).padStart(8, '0');
-        const part2 = (hash2 >>> 0).toString(16).padStart(8, '0');
-        const part3 = (hash3 >>> 0).toString(16).padStart(8, '0');
-        const part4 = (hash4 >>> 0).toString(16).padStart(8, '0');
-
-        return `${part1}${part2}${part3}${part4}`;
-    }
-    /* eslint-enable no-bitwise, no-plusplus, max-statements */
-    /* jscpd:ignore-end */
 }
 
 export const ersteMapper = new ErsteMapper();
