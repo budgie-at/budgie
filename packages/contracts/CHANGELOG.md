@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.35.5](https://github.com/budgie-at/budgie/compare/v5.35.4...v5.35.5) (2026-06-06)
+
+### Bug Fixes
+
+- **app:** scope balance refreshes ([c3afcd4](https://github.com/budgie-at/budgie/commit/c3afcd427669b7c798a72f953483dfb5f9e91da6))
+- **app:** stabilize transaction processing ([b2d6717](https://github.com/budgie-at/budgie/commit/b2d6717d8361842cc1987bd4b25a9c3b49f211b3))
+
 ## [5.35.3](https://github.com/budgie-at/budgie/compare/v5.35.2...v5.35.3) (2026-06-06)
 
 ### Bug Fixes
