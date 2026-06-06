@@ -1,6 +1,5 @@
 import { AmountRangeInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -9,6 +8,7 @@ import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/fil
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
 import { FormItem } from '../@generic/component/form-item/form-item';
+import { FormLayoutGroup } from '../@generic/component/form-layout-group/form-layout-group';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { useSettingsContext } from '../settings/context/settings.context';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
@@ -35,7 +35,7 @@ export default function TransactionAmountFilterModal() {
 
     return (
         <FilterSheet>
-            <View className="flex-1 gap-y-lg px-xl pt-7xl">
+            <FormLayoutGroup className="flex-1 px-xl pt-7xl">
                 <FormItem label={t`From`}>
                     <AmountInput
                         value={fromValue}
@@ -56,7 +56,7 @@ export default function TransactionAmountFilterModal() {
                         testID={TransactionFiltersSelector.AmountToInput}
                     />
                 </FormItem>
-            </View>
+            </FormLayoutGroup>
 
             <FilterSheetDrawer>
                 <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelector.AmountApplyButton} />
