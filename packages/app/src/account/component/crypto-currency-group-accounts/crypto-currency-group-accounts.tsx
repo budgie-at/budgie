@@ -1,20 +1,28 @@
+import { AccountTypeEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
+import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import { pairAccountsIntoRows } from '../../utils/pair-accounts-into-rows.util';
-import { CryptoCurrencyGroupAccountRow } from '../crypto-currency-group-account-row/crypto-currency-group-account-row';
+import { AccountGridRow } from '../account-grid-row/account-grid-row';
 
 interface Props {
     readonly group: CryptoCurrencyGroupInterface;
+    readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
 }
 
-export const CryptoCurrencyGroupAccounts = ({ group }: Props) => {
+export const CryptoCurrencyGroupAccounts = ({ group, balancesByAccountId }: Props) => {
     const rows = pairAccountsIntoRows(group.accounts);
 
     return (
         <View className="gap-y-3">
             {rows.map(row => (
-                <CryptoCurrencyGroupAccountRow key={row.left.id} row={row} />
+                <AccountGridRow
+                    key={row.left.id}
+                    row={row}
+                    accountType={AccountTypeEnum.CRYPTO}
+                    balancesByAccountId={balancesByAccountId}
+                />
             ))}
         </View>
     );

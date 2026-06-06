@@ -3,8 +3,7 @@ import { useLocalSearchParams } from 'expo-router';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { StatisticsAnalyticsTransactionsPage } from '../../../transaction/components/statistics-analytics-transactions-page/statistics-analytics-transactions-page';
-import { UncategorizedAnalyticsTransactionsPage } from '../../../transaction/components/uncategorized-analytics-transactions-page/uncategorized-analytics-transactions-page';
+import { AnalyticsTransactionsRoute } from '../../../transaction/components/analytics-transactions-route/analytics-transactions-route';
 import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../../transaction/interface/analytics-transactions-route-params.interface';
@@ -73,9 +72,5 @@ export default function AnalyticsTransactionsPage() {
         ...(isNotEmptyArray(tagIds) && { tagIds })
     };
 
-    if (params.mode === AnalyticsTransactionsModeEnum.UNCATEGORIZED) {
-        return <UncategorizedAnalyticsTransactionsPage {...params} />;
-    }
-
-    return <StatisticsAnalyticsTransactionsPage {...params} />;
+    return <AnalyticsTransactionsRoute params={params} />;
 }

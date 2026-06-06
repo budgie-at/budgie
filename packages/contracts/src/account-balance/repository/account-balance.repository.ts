@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { and, eq, inArray, isNull, ne, sql } from 'drizzle-orm';
+import { type SQL, and, eq, inArray, isNull, ne, sql } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
@@ -14,6 +14,7 @@ import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankSyncEntityTable } from '../../bank-sync/table/bank-sync-entity.table';
+import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -25,6 +26,8 @@ import type { AccountBalanceCreateEntityInterface } from '../entity/account-bala
 import type { AccountBalanceEntityInterface } from '../entity/account-balance-entity.interface';
 
 export class AccountBalanceRepository {
+    private static readonly ACCOUNT_INSTRUMENT_ID_SQL = sql.raw('accounts.instrument_id');
+
     constructor(private db: DB) {}
     @Log(
         (accountIds, tx) => `enter balanceAccountIds=${accountIds.join(',')} usesTransaction=${String(isDefined(tx))}`,
@@ -76,16 +79,12 @@ export class AccountBalanceRepository {
 
     getTotalByCryptoInstrument(instrumentId: number) {
         return this.db
-            .select({
-                balance: sql<number>`COALESCE(SUM(${this.getAccountBalanceWithTransactionsSql()}), 0)`
-            })
+            .select({ balance: sql<number>`COALESCE(SUM(${this.getAccountBalanceWithTransactionsSql()}), 0)` })
             .from(AccountEntityTable)
             .where(
-                and(
+                this.getActiveAccountWhereSql(
                     eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO),
-                    eq(AccountEntityTable.instrumentId, instrumentId),
-                    eq(AccountEntityTable.isActive, true),
-                    isNull(AccountEntityTable.deletedAt)
+                    eq(AccountEntityTable.instrumentId, instrumentId)
                 )
             );
     }
@@ -110,20 +109,38 @@ export class AccountBalanceRepository {
             .where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
-    getLatestUpdatedAt() {
+    getHomeAccountRows(defaultInstrumentId: number) {
+        const balanceSql = this.getAccountBalanceWithTransactionsSql();
+        const convertedBalanceSql = sql<number>`COALESCE((${balanceSql}) * ${this.buildNetWorthExchangeRateConversionSql(defaultInstrumentId)}, 0)`;
+
         return this.db
             .select({
-                updatedAt: sql<Date | null>`MAX(${AccountBalanceEntityTable.updatedAt})`
+                account: AccountEntityTable,
+                balance: balanceSql,
+                bankSync: BankSyncEntityTable,
+                convertedBalance: convertedBalanceSql,
+                convertedTargetBalance: sql<number>`COALESCE(${AccountEntityTable.targetBalance} * ${this.buildFiatExchangeRateConversionSql(defaultInstrumentId)}, 0)`,
+                instrument: InstrumentEntityTable
             })
+            .from(AccountEntityTable)
+            .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))
+            .leftJoin(
+                BankSyncEntityTable,
+                and(eq(BankSyncEntityTable.accountId, AccountEntityTable.id), isNull(BankSyncEntityTable.deletedAt))
+            )
+            .where(isNull(AccountEntityTable.deletedAt));
+    }
+
+    getLatestUpdatedAt() {
+        return this.db
+            .select({ updatedAt: sql<Date | null>`MAX(${AccountBalanceEntityTable.updatedAt})` })
             .from(AccountBalanceEntityTable)
             .where(isNull(AccountBalanceEntityTable.deletedAt));
     }
 
     getByAccountId(accountId: number) {
         return this.db
-            .select({
-                balance: this.getAccountBalanceWithTransactionsSql(sql`${accountId}`)
-            })
+            .select({ balance: this.getAccountBalanceWithTransactionsSql(sql`${accountId}`) })
             .from(AccountEntityTable)
             .where(eq(AccountEntityTable.id, accountId))
             .limit(1);
@@ -152,9 +169,7 @@ export class AccountBalanceRepository {
         const exchangeRateSql = this.buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
 
         return this.db
-            .select({
-                netWorth: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)`
-            })
+            .select({ netWorth: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
             .from(AccountEntityTable)
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
@@ -166,13 +181,9 @@ export class AccountBalanceRepository {
                 : this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
 
         return this.db
-            .select({
-                total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)`
-            })
+            .select({ total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
             .from(AccountEntityTable)
-            .where(
-                and(eq(AccountEntityTable.type, accountType), eq(AccountEntityTable.isActive, true), isNull(AccountEntityTable.deletedAt))
-            );
+            .where(this.getActiveAccountWhereSql(eq(AccountEntityTable.type, accountType)));
     }
 
     getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
@@ -182,17 +193,10 @@ export class AccountBalanceRepository {
         `;
 
         return this.db
-            .select({
-                total: sql<number>`COALESCE(SUM((${remainingDebtSql}) * ${exchangeRateSql}), 0)`
-            })
+            .select({ total: sql<number>`COALESCE(SUM((${remainingDebtSql}) * ${exchangeRateSql}), 0)` })
             .from(AccountEntityTable)
             .where(
-                and(
-                    eq(AccountEntityTable.type, AccountTypeEnum.DEBT),
-                    eq(AccountEntityTable.debtType, debtType),
-                    eq(AccountEntityTable.isActive, true),
-                    isNull(AccountEntityTable.deletedAt)
-                )
+                this.getActiveAccountWhereSql(eq(AccountEntityTable.type, AccountTypeEnum.DEBT), eq(AccountEntityTable.debtType, debtType))
             );
     }
 
@@ -200,19 +204,10 @@ export class AccountBalanceRepository {
         const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
 
         return this.db
-            .select({
-                total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)`
-            })
+            .select({ total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
             .from(AccountEntityTable)
             .innerJoin(BankSyncEntityTable, eq(BankSyncEntityTable.accountId, AccountEntityTable.id))
-            .where(
-                and(
-                    eq(BankSyncEntityTable.provider, provider),
-                    isNull(BankSyncEntityTable.deletedAt),
-                    eq(AccountEntityTable.isActive, true),
-                    isNull(AccountEntityTable.deletedAt)
-                )
-            );
+            .where(this.getActiveAccountWhereSql(eq(BankSyncEntityTable.provider, provider), isNull(BankSyncEntityTable.deletedAt)));
     }
 
     async truncate(tx?: DB): Promise<void> {
@@ -223,24 +218,24 @@ export class AccountBalanceRepository {
         return sql`CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN ${this.buildStrictExchangeRateConversionSql(defaultInstrumentId)} ELSE ${this.buildFiatExchangeRateConversionSql(defaultInstrumentId)} END`;
     }
 
-    private buildFiatExchangeRateConversionSql(defaultInstrumentId: number) {
-        const instrumentIdRef = sql.raw('accounts.instrument_id');
+    private getActiveAccountWhereSql(...conditions: SQL[]) {
+        return and(...conditions, eq(AccountEntityTable.isActive, true), isNull(AccountEntityTable.deletedAt));
+    }
 
+    private buildFiatExchangeRateConversionSql(defaultInstrumentId: number) {
         return sql`COALESCE(
-            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getDirectExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)},
+            ${getHistoricalExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)},
+            ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)},
             1.0
         )`;
     }
 
     private buildStrictExchangeRateConversionSql(defaultInstrumentId: number) {
-        const instrumentIdRef = sql.raw('accounts.instrument_id');
-
         return sql`COALESCE(
-            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
+            ${getDirectExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)}
         )`;
     }
 

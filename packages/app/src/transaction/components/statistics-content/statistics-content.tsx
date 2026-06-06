@@ -7,15 +7,10 @@ import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer'
 import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
 import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
-import { StatsByCategoriesPanel } from '../../../category/components/stats-by-categories-panel/stats-by-categories-panel';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { StatsByTagsPanel } from '../../../tag/components/stats-by-tags-panel/stats-by-tags-panel';
-import { useGetExpenseByCategoryQuery } from '../../query/use-get-expense-by-category.query';
-import { useGetExpenseByTagQuery } from '../../query/use-get-expense-by-tag.query';
-import { useGetIncomeByCategoryQuery } from '../../query/use-get-income-by-category.query';
-import { useGetIncomeByTagQuery } from '../../query/use-get-income-by-tag.query';
 import { useGetTotalIncomeAndExpensesQuery } from '../../query/use-get-total-income-and-expenses.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
+import { StatisticsCategoriesActivityContent } from '../statistics-categories-activity-content/statistics-categories-activity-content';
+import { StatisticsTagsActivityContent } from '../statistics-tags-activity-content/statistics-tags-activity-content';
 import { TransactionAnalyticsCard } from '../transaction-analytics-card/transaction-analytics-card';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 
@@ -29,12 +24,7 @@ export const StatisticsContent = ({ activeTab }: Props) => {
         ...DEFAULT_TRANSACTION_FILTER,
         date: getDateFilterByPeriod(DatePeriodEnum.THIS_MONTH)
     });
-    const language = useSetting('language');
 
-    const { incomeByCategory } = useGetIncomeByCategoryQuery(filters, language);
-    const { expenseByCategory } = useGetExpenseByCategoryQuery(filters, language);
-    const { incomeByTag } = useGetIncomeByTagQuery(filters);
-    const { expenseByTag } = useGetExpenseByTagQuery(filters);
     const { expense, income } = useGetTotalIncomeAndExpensesQuery(filters);
     const netWorth = useNetWorthQuery();
     const hasFiltersSelected = checkIfFiltersSelected(null, filters);
@@ -74,23 +64,11 @@ export const StatisticsContent = ({ activeTab }: Props) => {
                 </View>
 
                 <Activity mode={categoriesActivityMode}>
-                    <StatsByCategoriesPanel
-                        filters={filters}
-                        income={income}
-                        expense={expense}
-                        incomeByCategory={incomeByCategory}
-                        expenseByCategory={expenseByCategory}
-                    />
+                    <StatisticsCategoriesActivityContent filters={filters} income={income} expense={expense} />
                 </Activity>
 
                 <Activity mode={tagsActivityMode}>
-                    <StatsByTagsPanel
-                        filters={filters}
-                        income={income}
-                        expense={expense}
-                        incomeByTag={incomeByTag}
-                        expenseByTag={expenseByTag}
-                    />
+                    <StatisticsTagsActivityContent filters={filters} income={income} expense={expense} />
                 </Activity>
 
                 <MenuSpacer />
