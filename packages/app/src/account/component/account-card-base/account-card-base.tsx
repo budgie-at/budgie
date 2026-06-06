@@ -14,11 +14,11 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 
 import { AccountCardBaseSelector } from './account-card-base.selector';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
+    readonly balance: number;
     readonly className?: string;
     readonly instrumentSymbol: string;
     readonly circleVariant?: ColorPaletteVariant;
@@ -46,6 +46,7 @@ export const AccountCardBase = (props: Props) => {
         id,
         title,
         icon,
+        balance,
         className,
         instrumentSymbol,
         circleVariant = 'ghost',
@@ -57,7 +58,6 @@ export const AccountCardBase = (props: Props) => {
     } = props;
 
     const formatDigits = useDisplayFormatDigits();
-    const { balance } = useAccountBalanceQuery(id);
 
     const navigateToAccount = () => void router.push(`/account/${id}/details`);
     const navigateToEditAccount = () => void router.push(`/account/${id}/update`);

@@ -8,17 +8,16 @@ import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
-import { useBankProviderTotalQuery } from '../../query/use-bank-provider-total.query';
 
 interface Props {
     readonly provider: ExternalSourceEnum;
+    readonly total: number;
 }
 
-export const BankProviderSectionHeader = ({ provider }: Props) => {
+export const BankProviderSectionHeader = ({ provider, total }: Props) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
-    const total = useBankProviderTotalQuery(provider);
 
     const formattedTotal = formatDigits(total, defaultInstrument.symbol);
     const titleDescriptor = BANK_PROVIDER_TITLE[provider];
