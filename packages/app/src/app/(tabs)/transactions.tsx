@@ -1,12 +1,8 @@
-import { Activity, useState } from 'react';
-import { View } from 'react-native';
-import { GestureDetector } from 'react-native-gesture-handler';
+import { useState } from 'react';
 
 import { Page } from '../../@generic/component/page/page';
 import { TransactionsPageHeader } from '../../@generic/component/transactions-page-header/transactions-page-header';
-import { tabSwipeGesture } from '../../@generic/utils/tab-swipe-gesture.util';
-import { RecurringCalendarContent } from '../../transaction/components/recurring-calendar-content/recurring-calendar-content';
-import { TransactionList } from '../../transaction/components/transaction-list/transaction-list';
+import { TransactionsPageContent } from '../../transaction/components/transactions-page-content/transactions-page-content';
 
 import { TransactionsPageSelector } from './transactions-page.selector';
 
@@ -17,27 +13,11 @@ const TABS: readonly TransactionsTabType[] = ['transactions', 'recurring'];
 export default function TransactionsPage() {
     const [activeTab, setActiveTab] = useState<TransactionsTabType>('transactions');
 
-    const swipeGesture = tabSwipeGesture({ tabs: TABS, activeTab, onChangeTab: setActiveTab });
-
     const header = <TransactionsPageHeader activeTab={activeTab} onChangeTab={setActiveTab} />;
-
-    const isTransactionsTab = activeTab === 'transactions';
-    const transactionsActivityMode = isTransactionsTab ? 'visible' : 'hidden';
-    const recurringActivityMode = isTransactionsTab ? 'hidden' : 'visible';
 
     return (
         <Page testID={TransactionsPageSelector.Container} header={header}>
-            <GestureDetector gesture={swipeGesture}>
-                <View className="flex-1">
-                    <Activity mode={transactionsActivityMode}>
-                        <TransactionList accountId={null} />
-                    </Activity>
-
-                    <Activity mode={recurringActivityMode}>
-                        <RecurringCalendarContent />
-                    </Activity>
-                </View>
-            </GestureDetector>
+            <TransactionsPageContent activeTab={activeTab} tabs={TABS} onChangeTab={setActiveTab} />
         </Page>
     );
 }
