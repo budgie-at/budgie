@@ -1,208 +1,263 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-    file: subflows/import/import-database-from-settings.flow.yaml
-    env:
-      FIXTURE_ROW_ID_MATCH: '02.db(, db)?'
+      file: subflows/import/import-database-from-settings.flow.yaml
+      env:
+          FIXTURE_ROW_ID_MATCH: '02.db(, db)?'
 
-# --- Create BTC account ---
+# --- Create fiat account so asset chips have both sides ---
 
-- runFlow: subflows/accounts/open-new-account.flow.yaml
+- runFlow:
+      file: subflows/accounts/create-liability-account.flow.yaml
+      env:
+          ACCOUNT_TYPE_ID: 'CreateAccount.CASH'
+          ACCOUNT_NAME: 'E2E Fiat Pocket'
+          ACCOUNT_AMOUNT: '100'
+          CURRENCY_CODE: 'EUR'
 
-- extendedWaitUntil:
-    visible:
-      id: 'CreateAccount.CRYPTO'
-    timeout: 3000
-- tapOn:
-    id: 'CreateAccount.CRYPTO'
-    retryTapIfNoChange: true
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'AccountForm.NameInput'
-    timeout: 3000
+# --- Create crypto accounts ---
 
-- tapOn:
-    id: 'CreateAccount.Amount'
-    point: '95%,50%'
-- eraseText: 100
-- inputText: '2'
+- runFlow:
+      file: subflows/accounts/create-crypto-account.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Crypto Vault'
+          ACCOUNT_AMOUNT: '2'
+          CURRENCY_CODE: 'BTC'
 
-- tapOn:
-    id: 'AccountForm.NameInput'
-- inputText: 'E2E Crypto Vault'
+- runFlow:
+      file: subflows/accounts/create-crypto-account.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Binance BTC'
+          ACCOUNT_AMOUNT: '2'
+          CURRENCY_CODE: 'BTC'
 
-- tapOn:
-    id: 'AccountForm.CurrencySelector'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'CurrencySelector.SearchInput'
-    timeout: 3000
-- tapOn:
-    id: 'CurrencySelector.SearchInput'
-- inputText: 'BTC'
-- extendedWaitUntil:
-    visible:
-      id: 'AccountForm.CurrencyOption.BTC'
-    timeout: 3000
-- tapOn:
-    id: 'AccountForm.CurrencyOption.BTC'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    notVisible:
-      id: 'CurrencySelector.SearchInput'
-    timeout: 3000
-
-- extendedWaitUntil:
-    visible:
-      id: 'AccountForm.SubmitButton'
-    timeout: 3000
-- tapOn:
-    id: 'AccountForm.SubmitButton'
+- runFlow:
+      file: subflows/accounts/create-crypto-account.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Ethereum Stack'
+          ACCOUNT_AMOUNT: '1'
+          CURRENCY_CODE: 'ETH'
 
 # --- Home crypto group ---
 
 - extendedWaitUntil:
-    visible:
-      id: 'CryptoGroup.Market.BTC'
-    timeout: 10000
-- assertVisible: 'Bitcoin'
-- assertVisible: '2 BTC'
+      visible:
+          id: 'CryptoGroup.Market.BTC'
+      timeout: 10000
 - assertVisible:
-    id: 'CryptoGroup.Toggle.BTC'
+      id: 'CryptoGroup.Container.BTC'
+- assertVisible:
+      id: 'NetWorthAssetChips'
+- assertVisible:
+      id: 'NetWorthAssetChips.Fiat'
+- assertVisible:
+      id: 'NetWorthAssetChips.Crypto'
+- assertVisible:
+      id: 'CryptoGroup.Balance.BTC'
+- assertVisible:
+      id: 'CryptoGroup.Value.BTC'
+- assertVisible:
+      id: 'CryptoGroup.Toggle.BTC'
+- assertVisible:
+      id: 'CryptoGroup.AccountCount.BTC'
+- assertVisible:
+      id: 'CryptoGroup.Rate.BTC'
+- extendedWaitUntil:
+      visible:
+          id: 'CryptoGroup.Market.ETH'
+      timeout: 10000
+- assertVisible:
+      id: 'CryptoGroup.Container.ETH'
+- assertVisible:
+      id: 'CryptoGroup.Balance.ETH'
+- assertVisible:
+      id: 'CryptoGroup.Value.ETH'
+- assertVisible:
+      id: 'CryptoGroup.Toggle.ETH'
+- assertVisible:
+      id: 'CryptoGroup.AccountCount.ETH'
+- assertVisible:
+      id: 'CryptoGroup.Rate.ETH'
 
 - tapOn:
-    id: 'CryptoGroup.Toggle.BTC'
+      id: 'CryptoGroup.Toggle.BTC'
 - extendedWaitUntil:
-    visible:
-      id: 'AccountCard.E2E Crypto Vault'
-    timeout: 3000
+      visible:
+          id: 'AccountCard.E2E Crypto Vault'
+      timeout: 3000
+- extendedWaitUntil:
+      visible:
+          id: 'AccountCard.E2E Binance BTC'
+      timeout: 3000
 - assertVisible:
-    id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+      id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+- assertVisible:
+      id: 'AccountCard.Balance.E2E_Binance_BTC.2_BTC'
 
 # --- Market page ---
 
 - tapOn:
-    id: 'CryptoGroup.Market.BTC'
+      id: 'CryptoGroup.Market.BTC'
 - extendedWaitUntil:
-    visible:
-      id: 'CurrencyMarket.Header.BTC'
-    timeout: 10000
+      visible:
+          id: 'CurrencyMarket.Header.BTC'
+      timeout: 10000
 - assertVisible:
-    id: 'CurrencyMarket.Price.BTC'
+      id: 'CurrencyMarket.Price.BTC'
 - assertVisible:
-    id: 'CurrencyMarket.Rate.BTC'
+      id: 'CurrencyMarket.Rate.BTC'
 - assertVisible:
-    id: 'CurrencyMarket.Sparkline.BTC'
+      id: 'CurrencyMarket.Sparkline.BTC'
 - assertVisible:
-    id: 'CurrencyMarket.Holdings.BTC'
+      id: 'CurrencyMarket.Holdings.BTC'
 - assertVisible:
-    id: 'CurrencyMarket.Holdings.Balance.BTC'
+      id: 'CurrencyMarket.Holdings.Balance.BTC'
 - assertVisible:
-    id: 'CurrencyMarket.Holdings.AverageCost.BTC'
+      id: 'CurrencyMarket.Holdings.Value.BTC'
 - assertVisible:
-    id: 'CurrencyMarket.Holdings.CostBasis.BTC'
+      id: 'CurrencyMarket.Holdings.AverageCost.BTC'
 - assertVisible:
-    id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
+      id: 'CurrencyMarket.Holdings.CostBasis.BTC'
+- assertVisible:
+      id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
+- assertVisible: '4 BTC'
 
 - scrollUntilVisible:
-    element:
-      id: 'CurrencyMarket.MarketCap.BTC'
-    direction: DOWN
-    timeout: 3000
+      element:
+          id: 'CurrencyMarket.MarketCap.BTC'
+      direction: DOWN
+      timeout: 3000
 - assertVisible:
-    id: 'CurrencyMarket.Volume.BTC'
+      id: 'CurrencyMarket.Volume.BTC'
 - assertVisible:
-    id: 'CurrencyMarket.Updated.BTC'
+      id: 'CurrencyMarket.Updated.BTC'
 
 - tapOn:
-    id: 'PageHeader.BackButton'
+      id: 'PageHeader.BackButton'
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 3000
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 3000
+
+# --- Seeded ETH market page ---
+
+- tapOn:
+      id: 'CryptoGroup.Market.ETH'
+- extendedWaitUntil:
+      visible:
+          id: 'CurrencyMarket.Header.ETH'
+      timeout: 10000
+- assertVisible:
+      id: 'CurrencyMarket.Price.ETH'
+- assertVisible:
+      id: 'CurrencyMarket.Rate.ETH'
+- assertVisible:
+      id: 'CurrencyMarket.Sparkline.ETH'
+- assertVisible:
+      id: 'CurrencyMarket.Holdings.ETH'
+- assertVisible:
+      id: 'CurrencyMarket.Holdings.Balance.ETH'
+- assertVisible:
+      id: 'CurrencyMarket.Holdings.Value.ETH'
+- assertVisible: '1 ETH'
+
+- scrollUntilVisible:
+      element:
+          id: 'CurrencyMarket.MarketCap.ETH'
+      direction: DOWN
+      timeout: 3000
+- assertVisible:
+      id: 'CurrencyMarket.Volume.ETH'
+- assertVisible:
+      id: 'CurrencyMarket.Updated.ETH'
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 3000
 
 # --- Create crypto income transaction from account details ---
 
 - runFlow:
-    when:
-      notVisible:
-        id: 'AccountCard.E2E Crypto Vault'
-    commands:
-      - tapOn:
-          id: 'CryptoGroup.Toggle.BTC'
+      when:
+          notVisible:
+              id: 'AccountCard.E2E Crypto Vault'
+      commands:
+          - tapOn:
+                id: 'CryptoGroup.Toggle.BTC'
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'AccountCard.E2E Crypto Vault'
+      timeout: 3000
+- tapOn:
       id: 'AccountCard.E2E Crypto Vault'
-    timeout: 3000
-- tapOn:
-    id: 'AccountCard.E2E Crypto Vault'
 - extendedWaitUntil:
-    visible:
-      id: 'AccountDetails.EditButton'
-    timeout: 10000
+      visible:
+          id: 'AccountDetails.EditButton'
+      timeout: 10000
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Badge.Adjustment'
-    timeout: 10000
+      visible:
+          id: 'TransactionCard.Badge.Adjustment'
+      timeout: 10000
 - assertVisible:
-    id: 'TransactionCard.AdjustmentAmount.2'
+      id: 'TransactionCard.AdjustmentAmount.2'
 
 - runFlow:
-    file: subflows/transactions/open-transaction-form.flow.yaml
-    env:
-      ACTION_ITEM_ID: 'ActionItem.Income'
-      FORM_TITLE: 'New Income'
+      file: subflows/transactions/open-transaction-form.flow.yaml
+      env:
+          ACTION_ITEM_ID: 'ActionItem.Income'
+          FORM_TITLE: 'New Income'
 
 - tapOn:
-    id: 'TransactionKeypad.Digit.1'
+      id: 'TransactionKeypad.Digit.1'
 
 - runFlow:
-    file: subflows/categories/create-category-from-transaction.flow.yaml
-    env:
-      CATEGORY_NAME: 'E2E Crypto Buy'
+      file: subflows/categories/create-category-from-transaction.flow.yaml
+      env:
+          CATEGORY_NAME: 'E2E Crypto Buy'
 
 - runFlow:
-    file: subflows/transactions/enter-comment.flow.yaml
-    env:
-      COMMENT: 'E2E Crypto Income'
+      file: subflows/transactions/enter-comment.flow.yaml
+      env:
+          COMMENT: 'E2E Crypto Income'
 
 - tapOn:
-    id: 'TransactionForm.SubmitButton'
+      id: 'TransactionForm.SubmitButton'
 - extendedWaitUntil:
-    visible:
-      id: 'AccountDetails.EditButton'
-    timeout: 10000
+      visible:
+          id: 'AccountDetails.EditButton'
+      timeout: 10000
 
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.E2E_Crypto_Income'
-    timeout: 10000
+      visible:
+          id: 'TransactionCard.Label.E2E_Crypto_Income'
+      timeout: 10000
 - assertVisible:
-    id: 'TransactionCard.Category.E2E_Crypto_Buy'
+      id: 'TransactionCard.Category.E2E_Crypto_Buy'
 - assertVisible:
-    id: 'TransactionCard.Account.E2E_Crypto_Vault'
+      id: 'TransactionCard.Account.E2E_Crypto_Vault'
 
 - tapOn:
-    id: 'PageHeader.BackButton'
+      id: 'PageHeader.BackButton'
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 3000
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 3000
 
 # --- Updated market holdings ---
 
 - tapOn:
-    id: 'CryptoGroup.Market.BTC'
+      id: 'CryptoGroup.Market.BTC'
 - extendedWaitUntil:
-    visible:
-      id: 'CurrencyMarket.Header.BTC'
-    timeout: 10000
-- assertVisible: '3 BTC'
+      visible:
+          id: 'CurrencyMarket.Header.BTC'
+      timeout: 10000
+- assertVisible: '5 BTC'
 - assertVisible:
-    id: 'CurrencyMarket.Holdings.AverageCost.BTC'
+      id: 'CurrencyMarket.Holdings.AverageCost.BTC'
 - assertVisible:
-    id: 'CurrencyMarket.Holdings.CostBasis.BTC'
+      id: 'CurrencyMarket.Holdings.CostBasis.BTC'
 - assertVisible:
-    id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
+      id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'

@@ -1,10 +1,11 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, InstrumentTypeEnum } from '@budgie/contracts';
 import { ScrollView } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Page } from '../../../@generic/component/page/page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { useHomePageDataQuery } from '../../../account/query/use-home-page-data.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useInstrumentMarketDataProgressQuery } from '../../query/use-instrument-market-data-progress.query';
 import { useInstrumentMarketDataQuery } from '../../query/use-instrument-market-data.query';
@@ -40,12 +41,29 @@ const isMarketMovePositive = (
 
 export const CurrencyMarketPage = ({ instrument }: Props) => {
     const { defaultInstrument } = useSettingsContext();
+    const { accounts, balanceSummary } = useHomePageDataQuery();
     const { latestPrice, previousPrice, prices } = useInstrumentMarketDataQuery(instrument.id, defaultInstrument.id);
     const progress = useInstrumentMarketDataProgressQuery(instrument.id, defaultInstrument.id);
     const isPositiveChange = isMarketMovePositive(latestPrice, previousPrice);
     const shouldShowProgress = prices.length < 2 && !progress.isComplete;
     const shouldShowHoldings = instrument.type === InstrumentTypeEnum.CRYPTO;
-    const holdingsCard = shouldShowHoldings ? <CurrencyMarketHoldingsCard instrument={instrument} latestPrice={latestPrice} /> : null;
+    const balance = accounts.reduce((amount, account) => {
+        const accountBalance = balanceSummary.balancesByAccountId.get(account.id);
+        const shouldIncludeAccount =
+            account.type === AccountTypeEnum.CRYPTO &&
+            account.instrument.id === instrument.id &&
+            isDefined(accountBalance) &&
+            accountBalance.isActive;
+
+        if (shouldIncludeAccount) {
+            return amount + accountBalance.balance;
+        }
+
+        return amount;
+    }, 0);
+    const holdingsCard = shouldShowHoldings ? (
+        <CurrencyMarketHoldingsCard instrument={instrument} balance={balance} latestPrice={latestPrice} />
+    ) : null;
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (

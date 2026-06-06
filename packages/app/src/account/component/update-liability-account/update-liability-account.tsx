@@ -1,5 +1,6 @@
 import { AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { useMemo } from 'react';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -25,8 +26,8 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     const { t } = useLingui();
     const { balance } = useAccountBalanceQuery(account.id);
 
-    const { control, handleSubmit, instrument } = useAccountForm(
-        {
+    const formValues = useMemo(
+        () => ({
             externalId: account.externalId,
             iban: account.iban,
             type: account.type,
@@ -36,7 +37,22 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             instrumentId: account.instrumentId,
             includeInNetWorth: account.includeInNetWorth,
             isActive: account.isActive
-        },
+        }),
+        [
+            account.externalId,
+            account.iban,
+            account.icon,
+            account.includeInNetWorth,
+            account.instrumentId,
+            account.isActive,
+            account.title,
+            account.type,
+            balance
+        ]
+    );
+
+    const { control, handleSubmit, instrument } = useAccountForm(
+        formValues,
         async values =>
             await accountService.updateById(account.id, {
                 externalId: values.externalId,

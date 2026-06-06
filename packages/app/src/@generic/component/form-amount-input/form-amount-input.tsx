@@ -23,6 +23,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly allowNegative?: boolean;
     readonly autoFocus?: boolean;
+    readonly minimumDecimalPlaces?: number;
     readonly showInstrumentAfterAmount?: boolean;
     readonly onChange: (value: number) => void;
 }
@@ -52,11 +53,13 @@ export const FormAmountInput = (props: Props) => {
         instrumentSymbol,
         allowNegative = false,
         autoFocus,
+        minimumDecimalPlaces = 0,
         testID,
         showInstrumentAfterAmount = false
     } = props;
     const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const visibleDecimalPlaces = Math.max(decimalPlaces, minimumDecimalPlaces);
+    const formatDigits = useFormatDigits(visibleDecimalPlaces);
 
     const [isNegative, setIsNegative] = useState(value < 0);
     const [previousValue, setPreviousValue] = useState(value);
@@ -116,6 +119,7 @@ export const FormAmountInput = (props: Props) => {
                     inputClassName={amountInputClassName}
                     placeholder={formatDigits(0)}
                     autoFocus={autoFocus}
+                    minimumDecimalPlaces={minimumDecimalPlaces}
                     style={amountInputStyle}
                 />
 

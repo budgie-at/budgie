@@ -24,7 +24,12 @@ export const CryptoCurrencyGroupMarketLink = ({ instrumentCode, instrumentName, 
                 <CryptoCurrencyIcon code={instrumentCode} size={36} className="bg-warning-background/20" />
 
                 <View className="min-w-0 flex-1">
-                    <Text className="text-primary text-sm font-medium" ellipsizeMode="tail" numberOfLines={1}>
+                    <Text
+                        className="text-primary text-sm font-medium"
+                        ellipsizeMode="tail"
+                        numberOfLines={1}
+                        testID={CryptoCurrencyGroupCardSelector.Container(instrumentCode)}
+                    >
                         {instrumentName}
                     </Text>
                     <Text className="text-warning-foreground text-xs font-medium uppercase">{instrumentCode}</Text>
@@ -32,12 +37,20 @@ export const CryptoCurrencyGroupMarketLink = ({ instrumentCode, instrumentName, 
             </View>
 
             <View className="min-w-0 items-end gap-y-0.5">
-                <ProtectedText className="text-right text-primary text-lg font-semibold leading-6" placeholderText="***">
+                <ProtectedText
+                    className="text-right text-primary text-lg font-semibold leading-6"
+                    placeholderText="***"
+                    testID={CryptoCurrencyGroupCardSelector.Balance(instrumentCode)}
+                >
                     {formattedBalance}
                 </ProtectedText>
 
                 {isDefined(formattedValue) ? (
-                    <ProtectedText className="text-right text-secondary-foreground text-xs font-medium" placeholderText="≈ ***">
+                    <ProtectedText
+                        className="text-right text-secondary-foreground text-xs font-medium"
+                        placeholderText="≈ ***"
+                        testID={CryptoCurrencyGroupCardSelector.Value(instrumentCode)}
+                    >
                         ≈ {formattedValue}
                     </ProtectedText>
                 ) : null}

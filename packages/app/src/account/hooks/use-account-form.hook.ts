@@ -1,12 +1,7 @@
-import {
-    AccountEntityInterface,
-    AccountTypeEnum,
-    LiabilityAccountCreateInputInterface,
-    LiabilityAccountCreateInputSchema,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { AccountEntityInterface, LiabilityAccountCreateInputInterface, LiabilityAccountCreateInputSchema } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
+import { useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
@@ -17,23 +12,26 @@ export const useAccountForm = (
     onSubmit: (values: LiabilityAccountCreateInputInterface) => Promise<AccountEntityInterface>
 ) => {
     const showError = useShowError();
+    const defaultValuesRef = useRef(defaultValues);
     const form = useForm({
         resolver: zodResolver(LiabilityAccountCreateInputSchema),
         mode: 'onSubmit',
-        defaultValues: {
-            icon: UserIconNameEnum.Home,
-            type: AccountTypeEnum.BANK,
-            currentBalance: 0,
-            instrumentId: 1,
-            title: ''
-        },
-        values: defaultValues
+        defaultValues
     });
+
+    const { reset } = form;
 
     const instrumentId = useWatch({
         control: form.control,
         name: 'instrumentId'
     });
+
+    useEffect(() => {
+        if (defaultValuesRef.current !== defaultValues) {
+            defaultValuesRef.current = defaultValues;
+            reset(defaultValues, { keepDirtyValues: true });
+        }
+    }, [defaultValues, reset]);
 
     const handleSubmit = async (values: LiabilityAccountCreateInputInterface) => {
         try {

@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { useCryptoInstrumentTotalQuery } from '../../../account/query/use-crypto-instrument-total.query';
+import { useCryptoFormatDigits } from '../../../i18n/hook/use-crypto-format-digits.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCryptoInstrumentPositionQuery } from '../../query/use-crypto-instrument-position.query';
@@ -16,6 +16,7 @@ import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterfa
 
 interface Props {
     readonly instrument: InstrumentEntityInterface;
+    readonly balance: number;
     readonly latestPrice: InstrumentDailyMarketPriceEntityInterface | undefined;
 }
 
@@ -93,16 +94,16 @@ const formatProfitValue = (
     return formattedProfit;
 };
 
-export const CurrencyMarketHoldingsCard = ({ instrument, latestPrice }: Props) => {
+export const CurrencyMarketHoldingsCard = ({ instrument, balance, latestPrice }: Props) => {
     const { defaultInstrument } = useSettingsContext();
-    const balance = useCryptoInstrumentTotalQuery(instrument.id);
     const position = useCryptoInstrumentPositionQuery(instrument.id, defaultInstrument.id);
     const formatDigits = useDisplayFormatDigits();
+    const formatCryptoDigits = useCryptoFormatDigits();
     const marketValue = isDefined(latestPrice) ? balance * latestPrice.price : null;
     const profit = getProfit(marketValue, position.costBasis);
     const profitPercent = getProfitPercent(profit, position.costBasis);
     const profitClassName = getProfitClassName(profit);
-    const formattedBalance = `${formatDigits(balance)} ${instrument.code}`;
+    const formattedBalance = `${formatCryptoDigits(balance)} ${instrument.code}`;
     const formattedMarketValue = formatOptionalValue(marketValue, defaultInstrument.symbol, formatDigits);
     const formattedAverageCost = formatOptionalValue(position.averageCost, defaultInstrument.symbol, formatDigits);
     const formattedCostBasis = formatOptionalValue(position.costBasis, defaultInstrument.symbol, formatDigits);
