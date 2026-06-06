@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.35.4](https://github.com/budgie-at/budgie/compare/v5.35.3...v5.35.4) (2026-06-06)
+
+### Bug Fixes
+
+- **app:** clear suggestion hook dependency warning ([1c5134f](https://github.com/budgie-at/budgie/commit/1c5134f13394f379661beb3c5bec11a78cb3f35c))
+
 ## [5.35.3](https://github.com/budgie-at/budgie/compare/v5.35.2...v5.35.3) (2026-06-06)
 
 ### Bug Fixes
