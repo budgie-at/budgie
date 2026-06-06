@@ -67,7 +67,8 @@ i18n.activate(i18nGetOSLocale());
 void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
-const isDrizzleStudioEnabled = __DEV__ && process.env.EXPO_PUBLIC_DRIZZLE_STUDIO_ENABLE === 'true';
+const drizzleStudioEnvironmentVariable = 'EXPO_PUBLIC_DRIZZLE_STUDIO_ENABLE';
+const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVariable] === 'true';
 
 const syncForegroundData = async (): Promise<void> => {
     await exchangeRatesSyncService.sync().catch(emptyFn);
