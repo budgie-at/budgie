@@ -16,12 +16,8 @@ msgstr ""
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} tx en file d'attente"
 
-#. placeholder {0}: group.accounts.length
-#: src/account/component/crypto-currency-group-card/crypto-currency-group-card.tsx
-msgid "{0, plural, one {# account} other {# accounts}}"
-msgstr "{0, plural, one {# compte} other {# comptes}}"
-
 #: src/account/component/accounts-group/accounts-group.tsx
+#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# compte} other {# comptes}}"
 
@@ -1761,11 +1757,11 @@ msgstr "Aucun contact trouvé sur cet appareil."
 msgid "No contacts yet"
 msgstr "Aucun contact pour le moment"
 
-#: src/app/currency-selector.tsx
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "No crypto found"
 msgstr "Aucune crypto trouvée"
 
-#: src/app/currency-selector.tsx
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "No currencies found"
 msgstr "Aucune devise trouvée"
 
@@ -2259,11 +2255,11 @@ msgstr "Rechercher des catégories..."
 msgid "Search contacts..."
 msgstr "Rechercher des contacts..."
 
-#: src/app/currency-selector.tsx
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Search crypto..."
 msgstr "Rechercher une crypto..."
 
-#: src/app/currency-selector.tsx
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Search currencies..."
 msgstr "Rechercher des devises..."
 
@@ -2794,9 +2790,9 @@ msgstr "Traductions prêtes"
 msgid "Try a different merchant, amount, or date."
 msgstr "Essayez un autre commerçant, montant ou date."
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
-#: src/app/currency-selector.tsx
 #: src/app/icon-selector.tsx
 #: src/app/language-selector.tsx
 #: src/app/rule-mcc-selector.tsx
