@@ -5,7 +5,6 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-na
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NetWorthAssetChips } from '../../../account/component/net-worth-asset-chips/net-worth-asset-chips';
-import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -16,6 +15,11 @@ import type { SharedValue } from 'react-native-reanimated';
 
 interface Props {
     readonly scrollY: SharedValue<number>;
+    readonly netWorth: number;
+    readonly fiatTotal: number;
+    readonly cryptoTotal: number;
+    readonly fiatCount: number;
+    readonly cryptoCount: number;
 }
 
 const HEADER_COLLAPSED_HEIGHT = 40;
@@ -28,11 +32,10 @@ const EXPANDED_SCALE_MIN = 0.9;
 const EXPANDED_TRANSLATE_Y = -20;
 const COLLAPSED_TRANSLATE_Y = 10;
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Animated header with multiple interpolated styles
-export const CollapsibleHeader = ({ scrollY }: Props) => {
+// eslint-disable-next-line max-lines-per-function -- Animated header with multiple interpolated styles
+export const CollapsibleHeader = ({ scrollY, netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
     const { top } = useSafeAreaInsets();
     const { defaultInstrument } = useSettingsContext();
-    const netWorth = useNetWorthQuery();
     const formatDigits = useDisplayFormatDigits();
     const [expandedHeaderWidth, setExpandedHeaderWidth] = useState(0);
 
@@ -126,7 +129,7 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
                         </ProtectedMoney>
                     </View>
 
-                    <NetWorthAssetChips />
+                    <NetWorthAssetChips fiatTotal={fiatTotal} cryptoTotal={cryptoTotal} fiatCount={fiatCount} cryptoCount={cryptoCount} />
                 </Animated.View>
             </Animated.View>
         </View>

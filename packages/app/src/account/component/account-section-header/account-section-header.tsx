@@ -5,17 +5,16 @@ import { Text, View } from 'react-native';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
-import { useAccountTypeTotalQuery } from '../../query/use-account-type-total.query';
 
 interface Props {
     readonly type: AccountTypeEnum;
+    readonly total: number;
 }
 
-export const AccountSectionHeader = ({ type }: Props) => {
+export const AccountSectionHeader = ({ type, total }: Props) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
-    const total = useAccountTypeTotalQuery(type);
 
     const formattedTotal = formatDigits(total, defaultInstrument.symbol);
 

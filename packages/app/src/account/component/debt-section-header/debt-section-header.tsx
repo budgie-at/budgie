@@ -1,4 +1,3 @@
-import { AccountDebtTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -6,24 +5,17 @@ import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-di
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { DEBT_SECTION_KIND_LABEL } from '../../constant/debt-section-kind-label.constant';
 import { HomeSectionKindEnum } from '../../enum/home-section-kind.enum';
-import { useDebtTypeTotalQuery } from '../../query/use-debt-type-total.query';
 
 interface Props {
     readonly sectionKind: HomeSectionKindEnum.DEBT_YOU_OWE | HomeSectionKindEnum.DEBT_OWED_TO_YOU;
+    readonly total: number;
 }
 
-const SECTION_KIND_TO_DEBT_TYPE: Record<HomeSectionKindEnum.DEBT_YOU_OWE | HomeSectionKindEnum.DEBT_OWED_TO_YOU, AccountDebtTypeEnum> = {
-    [HomeSectionKindEnum.DEBT_YOU_OWE]: AccountDebtTypeEnum.BORROW,
-    [HomeSectionKindEnum.DEBT_OWED_TO_YOU]: AccountDebtTypeEnum.LENT
-};
-
-export const DebtSectionHeader = ({ sectionKind }: Props) => {
+export const DebtSectionHeader = ({ sectionKind, total }: Props) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
 
-    const debtType = SECTION_KIND_TO_DEBT_TYPE[sectionKind];
-    const total = useDebtTypeTotalQuery(debtType);
     const formattedTotal = formatDigits(total, defaultInstrument.symbol);
 
     return (

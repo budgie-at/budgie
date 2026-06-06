@@ -9,6 +9,7 @@ interface Props extends Pick<
     AccountWithBankSyncEntityInterface,
     'id' | 'createdAt' | 'title' | 'type' | 'icon' | 'debtType' | 'targetBalance' | 'deadline'
 > {
+    readonly balance: number;
     readonly bankSync: BankSyncEntityInterface | null;
     readonly className?: string;
     readonly instrumentId: number;
