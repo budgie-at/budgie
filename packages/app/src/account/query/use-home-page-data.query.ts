@@ -7,10 +7,12 @@ import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { useSettingsContext } from '../../settings/context/settings.context';
-import { HomeAccountBalanceSummaryInterface } from '../interface/home-account-balance-summary.interface';
-import { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
 
 import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated-at.query';
+
+import type { HomeAccountBalanceSummaryInterface } from '../interface/home-account-balance-summary.interface';
+import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
+import type { AccountWithBankSyncEntityInterface } from '@budgie/contracts';
 
 const createHomeAccountBalanceSummary = () => ({
     accountTypeTotals: new Map<AccountTypeEnum, number>(),
@@ -76,24 +78,34 @@ const addNetWorthAssetTotals = (
     summary.fiatTotal += convertedBalance;
 };
 
-export const useHomeAccountBalancesQuery = (): HomeAccountBalanceSummaryInterface => {
+export const useHomePageDataQuery = () => {
     const { defaultInstrument } = useSettingsContext();
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
     const queryDependencies = [defaultInstrument.id, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
-    const { data } = useLiveQuery(accountBalanceRepository.getHomeAccountBalanceRows(defaultInstrument.id), queryDependencies);
+    const { data } = useLiveQuery(accountBalanceRepository.getHomeAccountRows(defaultInstrument.id), queryDependencies);
+    const accounts = data.map(row => {
+        const account: AccountWithBankSyncEntityInterface = {
+            ...row.account,
+            bankSync: row.bankSync,
+            instrument: row.instrument
+        };
 
-    return data.reduce((summary, row) => {
+        return account;
+    });
+
+    const balanceSummary: HomeAccountBalanceSummaryInterface = data.reduce((summary, row) => {
+        const rowBankProvider = isDefined(row.bankSync) ? row.bankSync.provider : null;
         const homeAccountBalance: HomeAccountBalanceInterface = {
-            accountId: row.accountId,
-            accountType: row.accountType,
+            accountId: row.account.id,
+            accountType: row.account.type,
             balance: convertFromMicroUnits(row.balance),
-            bankProvider: row.bankProvider,
+            bankProvider: rowBankProvider,
             convertedBalance: convertFromMicroUnits(row.convertedBalance),
             convertedTargetBalance: convertFromMicroUnits(row.convertedTargetBalance),
-            debtType: row.debtType,
-            includeInNetWorth: row.includeInNetWorth,
-            isActive: row.isActive
+            debtType: row.account.debtType,
+            includeInNetWorth: row.account.includeInNetWorth,
+            isActive: row.account.isActive
         };
         const { accountType, accountId, bankProvider, convertedBalance, isActive } = homeAccountBalance;
 
@@ -105,4 +117,6 @@ export const useHomeAccountBalancesQuery = (): HomeAccountBalanceSummaryInterfac
 
         return summary;
     }, createHomeAccountBalanceSummary());
+
+    return { accounts, balanceSummary };
 };

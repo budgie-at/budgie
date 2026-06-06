@@ -4,13 +4,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CollapsibleHeader } from '../../@generic/component/collapsible-header/collapsible-header';
 import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
-import { useAccountsWithBankSyncQuery } from '../../account/query/use-accounts-with-bank-sync.query';
-import { useHomeAccountBalancesQuery } from '../../account/query/use-home-account-balances.query';
+import { useHomePageDataQuery } from '../../account/query/use-home-page-data.query';
 import { buildHomePageSections } from '../../account/utils/build-home-page-sections.util';
 
 export default function HomePage() {
-    const { accounts } = useAccountsWithBankSyncQuery();
-    const balanceSummary = useHomeAccountBalancesQuery();
+    const { accounts, balanceSummary } = useHomePageDataQuery();
     const { bottom } = useSafeAreaInsets();
 
     const scrollY = useSharedValue(0);
