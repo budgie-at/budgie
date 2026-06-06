@@ -14,6 +14,7 @@ import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankSyncEntityTable } from '../../bank-sync/table/bank-sync-entity.table';
+import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -108,23 +109,21 @@ export class AccountBalanceRepository {
             .where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
-    getHomeAccountBalanceRows(defaultInstrumentId: number) {
+    getHomeAccountRows(defaultInstrumentId: number) {
         const balanceSql = this.getAccountBalanceWithTransactionsSql();
         const convertedBalanceSql = sql<number>`COALESCE((${balanceSql}) * ${this.buildNetWorthExchangeRateConversionSql(defaultInstrumentId)}, 0)`;
 
         return this.db
             .select({
-                accountId: AccountEntityTable.id,
-                accountType: AccountEntityTable.type,
+                account: AccountEntityTable,
                 balance: balanceSql,
-                bankProvider: BankSyncEntityTable.provider,
+                bankSync: BankSyncEntityTable,
                 convertedBalance: convertedBalanceSql,
                 convertedTargetBalance: sql<number>`COALESCE(${AccountEntityTable.targetBalance} * ${this.buildFiatExchangeRateConversionSql(defaultInstrumentId)}, 0)`,
-                debtType: AccountEntityTable.debtType,
-                includeInNetWorth: AccountEntityTable.includeInNetWorth,
-                isActive: AccountEntityTable.isActive
+                instrument: InstrumentEntityTable
             })
             .from(AccountEntityTable)
+            .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))
             .leftJoin(
                 BankSyncEntityTable,
                 and(eq(BankSyncEntityTable.accountId, AccountEntityTable.id), isNull(BankSyncEntityTable.deletedAt))
