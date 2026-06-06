@@ -40,21 +40,23 @@ export class InstrumentMarketDataJobRepository {
     }
 
     @Log(
-        (maxAttempts, staleLockedBefore) => `enter maxAttempts=${maxAttempts} staleLockedBefore=${staleLockedBefore.toISOString()}`,
-        (result, maxAttempts, staleLockedBefore) =>
-            `done maxAttempts=${maxAttempts} staleLockedBefore=${staleLockedBefore.toISOString()} jobId=${String(result?.id)}`,
-        (error, maxAttempts, staleLockedBefore) =>
-            `throw maxAttempts=${maxAttempts} staleLockedBefore=${staleLockedBefore.toISOString()} error=${getErrorMessage(error)}`
+        (maxAttempts, staleLockedBefore, tx) =>
+            `enter maxAttempts=${maxAttempts} staleLockedBefore=${staleLockedBefore.toISOString()} hasTx=${String(isDefined(tx))}`,
+        (result, maxAttempts, staleLockedBefore, tx) =>
+            `done maxAttempts=${maxAttempts} staleLockedBefore=${staleLockedBefore.toISOString()} hasTx=${String(isDefined(tx))} jobId=${String(result?.id)}`,
+        (error, maxAttempts, staleLockedBefore, tx) =>
+            `throw maxAttempts=${maxAttempts} staleLockedBefore=${staleLockedBefore.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
-    async claimNext(maxAttempts: number, staleLockedBefore: Date): Promise<InstrumentMarketDataJobEntityInterface | undefined> {
+    async claimNext(maxAttempts: number, staleLockedBefore: Date, tx?: DB): Promise<InstrumentMarketDataJobEntityInterface | undefined> {
         const now = new Date();
-        const nextJobQuery = this.db
+        const db = tx ?? this.db;
+        const nextJobQuery = db
             .select({ id: InstrumentMarketDataJobEntityTable.id })
             .from(InstrumentMarketDataJobEntityTable)
             .where(this.buildClaimableCondition(maxAttempts, staleLockedBefore))
             .orderBy(desc(InstrumentMarketDataJobEntityTable.priority), asc(InstrumentMarketDataJobEntityTable.updatedAt))
             .limit(1);
-        const [job] = await this.db
+        const [job] = await db
             .update(InstrumentMarketDataJobEntityTable)
             .set({
                 status: InstrumentMarketDataJobStatusEnum.RUNNING,
