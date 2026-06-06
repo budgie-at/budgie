@@ -5,10 +5,11 @@ import { View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
+import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
 import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
-import { useCryptoFormatDigits } from '../../../i18n/hook/use-crypto-format-digits.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useInstrumentMarketDataQuery } from '../../../market-data/query/use-instrument-market-data.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
@@ -29,7 +30,7 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
     const [isOpen, setIsOpen] = useState(false);
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
-    const formatCryptoDigits = useCryptoFormatDigits();
+    const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
     const { rate } = useGetRatesByBaseAndQuoteIdsQuery(group.instrument.id, defaultInstrument.id);
     const { latestPrice } = useInstrumentMarketDataQuery(group.instrument.id, defaultInstrument.id);
 

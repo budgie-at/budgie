@@ -5,8 +5,9 @@ import { Text, View } from 'react-native';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { useCryptoFormatDigits } from '../../../i18n/hook/use-crypto-format-digits.hook';
+import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCryptoInstrumentPositionQuery } from '../../query/use-crypto-instrument-position.query';
 import { CurrencyMarketHoldingMetricRow } from '../currency-market-holding-metric-row/currency-market-holding-metric-row';
@@ -98,7 +99,7 @@ export const CurrencyMarketHoldingsCard = ({ instrument, balance, latestPrice }:
     const { defaultInstrument } = useSettingsContext();
     const position = useCryptoInstrumentPositionQuery(instrument.id, defaultInstrument.id);
     const formatDigits = useDisplayFormatDigits();
-    const formatCryptoDigits = useCryptoFormatDigits();
+    const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
     const marketValue = isDefined(latestPrice) ? balance * latestPrice.price : null;
     const profit = getProfit(marketValue, position.costBasis);
     const profitPercent = getProfitPercent(profit, position.costBasis);
