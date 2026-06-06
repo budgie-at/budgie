@@ -1,5 +1,4 @@
 import { AccountDebtTypeEnum, AccountTypeEnum } from '@budgie/contracts';
-import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -113,43 +112,22 @@ export default function HomePage() {
     const scrollY = useSharedValue(0);
 
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom;
-    const { contentContainerStyle, emptyStateStyle } = useMemo(
-        () => ({
-            contentContainerStyle: { paddingBottom: bottomPadding, paddingHorizontal: 20 },
-            emptyStateStyle: { paddingBottom: bottomPadding }
-        }),
-        [bottomPadding]
-    );
-
-    const { activeAccounts, sections } = useMemo(() => {
-        const nextActiveAccounts = accounts.filter(account => account.isActive);
-
-        return {
-            activeAccounts: nextActiveAccounts,
-            sections: buildHomePageSections(nextActiveAccounts)
-        };
-    }, [accounts]);
+    const contentContainerStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20 };
+    const emptyStateStyle = { paddingBottom: bottomPadding };
+    const activeAccounts = accounts.filter(account => account.isActive);
+    const sections = buildHomePageSections(activeAccounts);
     const listFooterComponent =
         activeAccounts.length > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
             <CollapsibleNetWorthHeaderScrollSpacer />
         ) : null;
 
-    const renderSectionHeader = useCallback(
-        ({ section }: { section: HomeSectionInterface }) => renderHomeSectionHeader(section, balanceSummary),
-        [balanceSummary]
-    );
+    const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => renderHomeSectionHeader(section, balanceSummary);
 
-    const renderItem = useCallback(
-        ({ item, section }: { item: AccountRowInterface | CryptoCurrencyGroupInterface; section: HomeSectionInterface }) =>
-            renderHomeItem(item, section, balanceSummary),
-        [balanceSummary]
-    );
+    const renderItem = ({ item, section }: { item: AccountRowInterface | CryptoCurrencyGroupInterface; section: HomeSectionInterface }) =>
+        renderHomeItem(item, section, balanceSummary);
 
-    const keyExtractor = useCallback(
-        (item: AccountRowInterface | CryptoCurrencyGroupInterface) =>
-            isCryptoCurrencyGroup(item) ? `crypto-${item.instrument.id}` : String(item.left.id),
-        []
-    );
+    const keyExtractor = (item: AccountRowInterface | CryptoCurrencyGroupInterface) =>
+        isCryptoCurrencyGroup(item) ? `crypto-${item.instrument.id}` : String(item.left.id);
 
     return (
         <View className="flex-1 bg-background">

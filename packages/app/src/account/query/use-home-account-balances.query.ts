@@ -1,6 +1,5 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { useMemo } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -84,30 +83,26 @@ export const useHomeAccountBalancesQuery = (): HomeAccountBalanceSummaryInterfac
     const queryDependencies = [defaultInstrument.id, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
     const { data } = useLiveQuery(accountBalanceRepository.getHomeAccountBalanceRows(defaultInstrument.id), queryDependencies);
 
-    return useMemo<HomeAccountBalanceSummaryInterface>(
-        () =>
-            data.reduce((summary, row) => {
-                const homeAccountBalance: HomeAccountBalanceInterface = {
-                    accountId: row.accountId,
-                    accountType: row.accountType,
-                    balance: convertFromMicroUnits(row.balance),
-                    bankProvider: row.bankProvider,
-                    convertedBalance: convertFromMicroUnits(row.convertedBalance),
-                    convertedTargetBalance: convertFromMicroUnits(row.convertedTargetBalance),
-                    debtType: row.debtType,
-                    includeInNetWorth: row.includeInNetWorth,
-                    isActive: row.isActive
-                };
-                const { accountType, accountId, bankProvider, convertedBalance, isActive } = homeAccountBalance;
+    return data.reduce((summary, row) => {
+        const homeAccountBalance: HomeAccountBalanceInterface = {
+            accountId: row.accountId,
+            accountType: row.accountType,
+            balance: convertFromMicroUnits(row.balance),
+            bankProvider: row.bankProvider,
+            convertedBalance: convertFromMicroUnits(row.convertedBalance),
+            convertedTargetBalance: convertFromMicroUnits(row.convertedTargetBalance),
+            debtType: row.debtType,
+            includeInNetWorth: row.includeInNetWorth,
+            isActive: row.isActive
+        };
+        const { accountType, accountId, bankProvider, convertedBalance, isActive } = homeAccountBalance;
 
-                summary.balancesByAccountId.set(accountId, homeAccountBalance);
-                addActiveTotal(summary.accountTypeTotals, accountType, convertedBalance, isActive);
-                addBankProviderTotal(summary.bankProviderTotals, bankProvider, convertedBalance, isActive);
-                addDebtTypeTotal(summary.debtTypeTotals, homeAccountBalance);
-                addNetWorthAssetTotals(summary, homeAccountBalance);
+        summary.balancesByAccountId.set(accountId, homeAccountBalance);
+        addActiveTotal(summary.accountTypeTotals, accountType, convertedBalance, isActive);
+        addBankProviderTotal(summary.bankProviderTotals, bankProvider, convertedBalance, isActive);
+        addDebtTypeTotal(summary.debtTypeTotals, homeAccountBalance);
+        addNetWorthAssetTotals(summary, homeAccountBalance);
 
-                return summary;
-            }, createHomeAccountBalanceSummary()),
-        [data]
-    );
+        return summary;
+    }, createHomeAccountBalanceSummary());
 };
