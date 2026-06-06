@@ -23,6 +23,22 @@ describe('erste/external-id', () => {
         expect(ersteMapper.mapTransaction(first, 'AT123').id).toBe(ersteMapper.mapTransaction(shifted, 'AT123').id);
     });
 
+    it('ignores parsed location identity and keeps legacy identity', () => {
+        const first = buildErsteRow(new Date('2026-01-13T10:00:00.000Z'));
+        const changedLocation = {
+            ...first,
+            details: 'Parsed card location',
+            city: 'GRAZ',
+            countryAlpha2: 'AT'
+        };
+        const firstTransaction = ersteMapper.mapTransaction(first, 'AT123');
+        const changedLocationTransaction = ersteMapper.mapTransaction(changedLocation, 'AT123');
+
+        expect(firstTransaction.id).toBe(changedLocationTransaction.id);
+        expect(firstTransaction.legacyExternalIds?.[0]).not.toBe(changedLocationTransaction.legacyExternalIds?.[0]);
+        expect(firstTransaction.id).not.toBe(firstTransaction.legacyExternalIds?.[0]);
+    });
+
     it('changes when row description changes on the same statement day', () => {
         const first = buildErsteRow(new Date('2026-01-13T10:00:00.000Z'), 'ERSTE CARD PAYMENT WIEN 1010 040');
         const changedDescription = buildErsteRow(new Date('2026-01-13T10:00:00.000Z'), 'ERSTE CARD PAYMENT GRAZ 8010 040');
