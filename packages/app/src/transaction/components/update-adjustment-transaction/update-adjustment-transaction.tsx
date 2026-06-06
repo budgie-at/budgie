@@ -117,7 +117,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
         try {
             setIsSubmitting(true);
             await transactionService.updateById(transactionId, buildAdjustmentUpdateInput(transaction, details, numericValue, isIncrease));
-            void markForEmbedding({ transactionId });
+            void markForEmbedding(transactionId);
             goBackOrReplace('/');
         } catch (error: unknown) {
             Toast.show({

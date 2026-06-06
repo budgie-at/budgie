@@ -84,7 +84,7 @@ class TransactionImportService {
         );
 
         if (shouldUpdateBalances && isNotEmptyArray(transactions)) {
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+            await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs(stampedInputs), tx);
         }
 
         return transactions;
@@ -271,6 +271,10 @@ class TransactionImportService {
         return new Map(
             existingTransactions.map((transaction): [number, TransactionWithEntriesEntityInterface] => [transaction.id, transaction])
         );
+    }
+
+    private getAccountIdsFromInputs(inputs: readonly TransactionCreateInputInterface[]): number[] {
+        return [...new Set(inputs.flatMap(input => input.entries.map(entry => entry.accountId)))];
     }
 }
 

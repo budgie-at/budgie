@@ -103,7 +103,10 @@ class TransactionTransferService {
                 tx
             );
 
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+            await accountBalanceIncrementalService.updateBalancesByAccountIds(
+                [conversion.creditAccountId, conversion.debitAccountId, ...conversion.feeEntries.map(entry => entry.accountId)],
+                tx
+            );
 
             return updated;
         });
