@@ -1,5 +1,4 @@
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { useMemo } from 'react';
 
 import { instrumentDailyMarketPriceRepository } from '../../@generic/drizzle/db/db';
 
@@ -12,7 +11,7 @@ export const useInstrumentMarketDataQuery = (instrumentId: number, quoteInstrume
         dependencies
     );
 
-    const prices = useMemo(() => [...data].reverse(), [data]);
+    const prices = [...data].reverse();
     const latestPrice = prices.at(-1);
     const previousPrice = prices.at(-2);
 

@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -52,7 +52,7 @@ export const CurrencyMarketMetrics = ({ instrumentCode, latestPrice }: Props) =>
                 className="text-secondary-foreground/70 text-center text-xs"
                 testID={CurrencyMarketPageSelector.Updated(instrumentCode)}
             >
-                {t`Updated`} {formattedDate}
+                <Trans>Updated {formattedDate}</Trans>
             </Text>
         </>
     );

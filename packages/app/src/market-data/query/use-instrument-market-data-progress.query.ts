@@ -1,7 +1,6 @@
 import { InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { useMemo } from 'react';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -21,19 +20,16 @@ export const useInstrumentMarketDataProgressQuery = (instrumentId: number, quote
     );
 
     const loadedDays = countRows.at(0)?.count ?? 0;
-    const totalDays = useMemo(() => {
-        if (!isDefined(job)) {
-            return loadedDays;
-        }
+    let totalDays = loadedDays;
 
+    if (isDefined(job)) {
         const jobDays = differenceInCalendarDays(parseISO(job.toDate), parseISO(job.fromDate)) + 1;
 
-        if (!isPositiveNumber(jobDays)) {
-            return loadedDays;
+        if (isPositiveNumber(jobDays)) {
+            totalDays = Math.max(jobDays, loadedDays);
         }
+    }
 
-        return Math.max(jobDays, loadedDays);
-    }, [job, loadedDays]);
     const boundedLoadedDays = Math.min(loadedDays, totalDays);
     const percent = isPositiveNumber(totalDays) ? Math.round((boundedLoadedDays / totalDays) * FULL_PERCENT) : 0;
     const isComplete = job?.status === InstrumentMarketDataJobStatusEnum.COMPLETED || percent >= FULL_PERCENT;

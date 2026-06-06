@@ -1,5 +1,4 @@
 import { Trans } from '@lingui/react/macro';
-import { useMemo } from 'react';
 import { Text, View } from 'react-native';
 import Svg, { Polyline } from 'react-native-svg';
 
@@ -43,7 +42,7 @@ const buildPoints = (prices: InstrumentDailyMarketPriceEntityInterface[]): strin
 };
 
 export const MarketDataSparkline = ({ prices, isPositive, testID }: Props) => {
-    const points = useMemo(() => buildPoints(prices), [prices]);
+    const points = buildPoints(prices);
     const stroke = isPositive ? POSITIVE_COLOR : NEGATIVE_COLOR;
 
     if (prices.length < 2) {

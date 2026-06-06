@@ -1,6 +1,5 @@
 import { TransactionEntryTypeEnum } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { useMemo } from 'react';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -68,5 +67,5 @@ export const useCryptoInstrumentPositionQuery = (instrumentId: number, baseInstr
         dependencies
     );
 
-    return useMemo(() => calculatePosition(data), [data]);
+    return calculatePosition(data);
 };

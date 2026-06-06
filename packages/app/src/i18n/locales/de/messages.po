@@ -2876,8 +2876,8 @@ msgid "Update rule?"
 msgstr "Regel aktualisieren?"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
-msgid "Updated"
-msgstr ""
+msgid "Updated {formattedDate}"
+msgstr "Aktualisiert {formattedDate}"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/auth/util/get-pin-setup-meta.util.ts
