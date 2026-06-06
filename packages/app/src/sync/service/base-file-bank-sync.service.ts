@@ -77,7 +77,7 @@ export abstract class BaseFileBankSyncService {
                 .map(account => account.id)
                 .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')}`,
         (result, client, bankAccount, context) =>
-            `done accountId=${bankAccount.id} newImportedCount=${result} accountIds=${client
+            `done accountId=${bankAccount.id} importedCount=${result} accountIds=${client
                 .getAccounts()
                 .map(account => account.id)
                 .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')}`,
@@ -114,7 +114,9 @@ export abstract class BaseFileBankSyncService {
             await accountBalanceIncrementalService.updateBalancesByAccountIds([account.id], context.tx);
         }
 
-        return this.queueRulesForNewlyImportedTransactions(prepared.transactionInputs, upsertedTransactions, prepared.externalIdMap);
+        this.queueRulesForNewlyImportedTransactions(prepared.transactionInputs, upsertedTransactions, prepared.externalIdMap);
+
+        return upsertedTransactions.length;
     }
 
     @Log(
@@ -130,20 +132,20 @@ export abstract class BaseFileBankSyncService {
                 transactionService.findIdMapByExternalSource(this.provider)
             ]);
 
-            const newImportedCounts: number[] = [];
+            const importedCounts: number[] = [];
 
             await transactionAsync(db, async tx => {
                 const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap, tx };
 
                 for (const bankAccount of bankAccounts) {
-                    newImportedCounts.push(await this.importAccountTransactions(client, bankAccount, context));
+                    importedCounts.push(await this.importAccountTransactions(client, bankAccount, context));
                     await microPause();
                 }
             });
 
-            const newImportedCount = newImportedCounts.reduce((total, count) => total + count, 0);
+            const importedCount = importedCounts.reduce((total, count) => total + count, 0);
 
-            if (isPositiveNumber(newImportedCount)) {
+            if (isPositiveNumber(importedCount)) {
                 transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT);
             }
         };
@@ -223,16 +225,16 @@ export abstract class BaseFileBankSyncService {
         transactionInputs: TransactionCreateInputInterface[],
         upsertedTransactions: TransactionEntityInterface[],
         existingTransactionIdMap: Map<string, number>
-    ): number {
+    ): void {
         const wasNotPreviouslyImported = ({ externalId }: { externalId: string | null }) =>
             !isDefined(externalId) || !existingTransactionIdMap.has(externalId);
 
         const newInputs = transactionInputs.filter(wasNotPreviouslyImported);
         const newTransactionIds = upsertedTransactions.filter(wasNotPreviouslyImported).map(transaction => transaction.id);
 
-        ruleApplicationDrainerService.enqueueTransactions(newTransactionIds, newInputs);
-
-        return newTransactionIds.length;
+        if (isNotEmptyArray(newTransactionIds)) {
+            ruleApplicationDrainerService.enqueueTransactions(newTransactionIds, newInputs);
+        }
     }
 
     protected abstract parseFile(uri: string): Promise<ParsedFileResultInterface>;
