@@ -57,13 +57,6 @@ export class AccountBalanceRepository {
         return new Map(results.map(({ accountId, delta }) => [accountId, delta]));
     }
 
-    @Log(
-        defaultInstrumentId => `enter lookup=asset-class-totals defaultInstrumentId=${defaultInstrumentId}`,
-        (result, defaultInstrumentId) =>
-            `done lookup=asset-class-totals defaultInstrumentId=${defaultInstrumentId} queryBuilt=${String(isDefined(result))}`,
-        (error, defaultInstrumentId) =>
-            `throw lookup=asset-class-totals defaultInstrumentId=${defaultInstrumentId} error=${getErrorMessage(error)}`
-    )
     getAssetClassTotals(defaultInstrumentId: number) {
         const fiatExchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
         const cryptoExchangeRateSql = this.buildStrictExchangeRateConversionSql(defaultInstrumentId);
@@ -80,12 +73,6 @@ export class AccountBalanceRepository {
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
-    @Log(
-        instrumentId => `enter lookup=crypto-instrument-total instrumentId=${instrumentId}`,
-        (result, instrumentId) =>
-            `done lookup=crypto-instrument-total instrumentId=${instrumentId} queryBuilt=${String(isDefined(result))}`,
-        (error, instrumentId) => `throw lookup=crypto-instrument-total instrumentId=${instrumentId} error=${getErrorMessage(error)}`
-    )
     getTotalByCryptoInstrument(instrumentId: number) {
         return this.db
             .select({ balance: sql<number>`COALESCE(SUM(${this.getAccountBalanceWithTransactionsSql()}), 0)` })

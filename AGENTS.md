@@ -157,6 +157,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 55. **Snapshot Typed Array buffers from native callbacks.** When a native API hands you a `Float32Array`/`Int16Array`/etc. view (`AudioBuffer.getChannelData(0)`, JNI callbacks, FFI), the underlying memory is typically reused on the next callback. Always copy via `new Float32Array(samples)` before storing — otherwise all stored chunks alias the latest buffer.
 56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.
 57. **For `@Log` callbacks, preserve APIs and destructure callback rest args.** If logging callbacks trip `max-params`, use `(result, ...[argA, argB]) => ...`; never reshape the method signature or add a lint disable just for the decorator.
+58. **Do not decorate query-builder factory methods with `@Log`.** If a repository method returns a Drizzle builder for callers to finish with `.get()` / `.all()` / `.execute()`, keep it plain and log the executed service or repository boundary instead.
 
 ### Naming Conventions
 
