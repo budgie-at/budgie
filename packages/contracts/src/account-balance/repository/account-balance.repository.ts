@@ -3,12 +3,7 @@ import { type SQL, and, eq, inArray, isNull, ne, sql } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import {
-    getDirectExchangeRateSql,
-    getHistoricalExchangeRateSql,
-    getInverseExchangeRateSql,
-    getInverseHistoricalExchangeRateSql
-} from '../../@generic/util/get-exchange-rate-sql.util';
+import { getExchangeRateWithHistoricalFallbackSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
@@ -29,6 +24,7 @@ export class AccountBalanceRepository {
     private static readonly ACCOUNT_INSTRUMENT_ID_SQL = sql.raw('accounts.instrument_id');
 
     constructor(private db: DB) {}
+
     @Log(
         (accountIds, tx) => `enter balanceAccountIds=${accountIds.join(',')} usesTransaction=${String(isDefined(tx))}`,
         (result, accountIds, tx) =>
@@ -227,20 +223,11 @@ export class AccountBalanceRepository {
     }
 
     private buildFiatExchangeRateConversionSql(defaultInstrumentId: number) {
-        return sql`COALESCE(
-            ${getDirectExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)},
-            ${getInverseExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)},
-            ${getHistoricalExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)},
-            ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)},
-            1.0
-        )`;
+        return sql`COALESCE(${getExchangeRateWithHistoricalFallbackSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)}, 1.0)`;
     }
 
     private buildStrictExchangeRateConversionSql(defaultInstrumentId: number) {
-        return sql`COALESCE(
-            ${getDirectExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)},
-            ${getInverseExchangeRateSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL)}
-        )`;
+        return getExchangeRateWithHistoricalFallbackSql(defaultInstrumentId, AccountBalanceRepository.ACCOUNT_INSTRUMENT_ID_SQL);
     }
 
     private getAccountBalanceWithTransactionsSql(accountIdReference = sql.raw('accounts.id')) {

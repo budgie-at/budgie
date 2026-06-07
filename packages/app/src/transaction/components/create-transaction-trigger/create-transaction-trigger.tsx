@@ -24,6 +24,10 @@ export const CreateTransactionTrigger = ({ isOpen, onPress }: Props) => {
     return (
         <HapticPressable
             testID={CreateTransactionMenuSelector.Trigger}
+            accessibilityLabel={CreateTransactionMenuSelector.Trigger}
+            accessibilityRole="button"
+            accessible
+            collapsable={false}
             className="bg-primary rounded-full items-center justify-center w-18 h-18"
             {...(!isOpen && { onPress: handlePress })}
         >
