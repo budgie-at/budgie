@@ -38,7 +38,7 @@ export class ConsolidationExecutorService {
     async consolidatePair(candidate: TransferPairCandidateInterface, consolidationPlan: ConsolidationPlanInterface): Promise<boolean> {
         const requiredSourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
 
-        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
             this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
         );
     }
@@ -55,7 +55,7 @@ export class ConsolidationExecutorService {
         candidate: AtmCashWithdrawalCandidateInterface,
         consolidationPlan: ConsolidationPlanInterface
     ): Promise<boolean> {
-        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
             this.consolidateAtmCashWithdrawalInner(candidate, consolidationPlan, tx)
         );
     }
@@ -74,7 +74,7 @@ export class ConsolidationExecutorService {
     ): Promise<boolean> {
         const requiredSourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
 
-        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
             this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
         );
     }
@@ -97,7 +97,7 @@ export class ConsolidationExecutorService {
             candidate.existingTransferId
         ];
 
-        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
             this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
         );
     }
@@ -121,7 +121,7 @@ export class ConsolidationExecutorService {
             candidate.targetIncomeTransactionId
         ];
 
-        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
             this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
         );
     }
