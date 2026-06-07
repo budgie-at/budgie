@@ -1,4 +1,4 @@
-import { RuleConditionMatchTypeEnum } from '@budgie/contracts';
+import { RuleConditionMatchTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -13,6 +13,10 @@ export const doesRuleMatchTransaction = (
     transactionInput: RuleEvaluationInputInterface,
     suggestRuleData: SuggestRuleDataInterface
 ): boolean => {
+    if (transactionInput.type === TransactionTypeEnum.ADJUSTMENT) {
+        return false;
+    }
+
     if (!isNotEmptyArray(rule.conditions)) {
         return false;
     }

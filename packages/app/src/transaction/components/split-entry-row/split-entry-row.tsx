@@ -11,6 +11,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
+import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
 
 import { SplitEntryRowSelector } from './split-entry-row.selector';
 
@@ -61,7 +62,7 @@ export const SplitEntryRow = (props: Props) => {
                         border={false}
                         variant={variant}
                     />
-                    <Text className={cn('text-md font-semibold flex-1', titleClassName)} numberOfLines={1}>
+                    <Text className={cn('text-md font-semibold flex-1', titleClassName)} numberOfLines={2} ellipsizeMode="tail">
                         {categoryTitle}
                     </Text>
                 </HapticPressable>
@@ -76,6 +77,7 @@ export const SplitEntryRow = (props: Props) => {
                     style={amountInputStyle}
                     valuePrefix={`${currencySymbol} `}
                     placeholder={`${currencySymbol} 0`}
+                    minimumDecimalPlaces={DEFAULT_DECIMAL_PLACES}
                     testID={SplitEntryRowSelector.Amount(index)}
                 />
 

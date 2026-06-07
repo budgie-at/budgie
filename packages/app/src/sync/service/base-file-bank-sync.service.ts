@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+import { consolidationScopeService } from '@budgie/consolidation';
 import {
     BankSyncModeEnum,
     ExternalSourceEnum,
@@ -8,10 +9,11 @@ import {
 } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
+import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -21,7 +23,7 @@ import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util'
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
-import { consolidationScopeService } from './consolidation-scope.service';
+import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
 import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
@@ -31,6 +33,8 @@ import type { BankAccountInterface } from '@budgie/bank-sync';
 import type { DB, MccCategoryLookupInterface } from '@budgie/contracts';
 
 export abstract class BaseFileBankSyncService {
+    private importQueue: Promise<void> = Promise.resolve();
+
     constructor(protected readonly provider: ExternalSourceEnum) {}
 
     @Log(
@@ -55,35 +59,16 @@ export abstract class BaseFileBankSyncService {
             `throw uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')} error=${getErrorMessage(error)}`
     )
     async executeImportForSelectedAccounts(uri: string, selectedAccountIds: string[]): Promise<void> {
-        const { client, bankAccounts } = await this.parseFile(uri);
-        const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
-
-        if (!isNotEmptyArray(selectedBankAccounts)) {
-            return;
-        }
-
-        await this.executeImport(client, selectedBankAccounts);
+        return this.runQueuedImport(async () => {
+            await this.executeImportForSelectedAccountsInner(uri, selectedAccountIds);
+        });
     }
 
     @Log(uri => `enter uri=${uri}`, (_result, uri) => `done uri=${uri}`, (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`)
     async quickImport(uri: string): Promise<void> {
-        const { client, bankAccounts } = await this.parseFile(uri);
-
-        if (!isNotEmptyArray(bankAccounts)) {
-            return;
-        }
-
-        const enabledExternalIds = await this.getEnabledExternalIds();
-        if (enabledExternalIds.size === 0) {
-            return;
-        }
-
-        const enabledBankAccounts = bankAccounts.filter(account => enabledExternalIds.has(account.id));
-        if (!isNotEmptyArray(enabledBankAccounts)) {
-            return;
-        }
-
-        await this.executeImport(client, enabledBankAccounts);
+        return this.runQueuedImport(async () => {
+            await this.quickImportInner(uri);
+        });
     }
 
     @Log(
@@ -126,6 +111,10 @@ export abstract class BaseFileBankSyncService {
             shouldUpdateBalances: false
         });
 
+        if (isNotEmptyArray(upsertedTransactions)) {
+            await accountBalanceIncrementalService.updateBalancesByAccountIds([account.id], context.tx);
+        }
+
         return this.queueRulesForNewlyImportedTransactions(prepared.transactionInputs, upsertedTransactions, prepared.externalIdMap);
     }
 
@@ -136,53 +125,68 @@ export abstract class BaseFileBankSyncService {
             `throw bankAccountIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
     )
     private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
-        const [mccCategoryLookupMap, existingTransactionIdMap] = await Promise.all([
-            this.resolveMccCategoryIdMap(client, bankAccounts),
-            transactionService.findIdMapByExternalSource(this.provider)
-        ]);
+        const importWork = async (): Promise<void> => {
+            const [mccCategoryLookupMap, existingTransactionIdMap] = await Promise.all([
+                this.resolveMccCategoryIdMap(client, bankAccounts),
+                transactionService.findIdMapByExternalSource(this.provider)
+            ]);
 
-        const newlyImportedTransactions: TransactionEntityInterface[] = [];
+            const newlyImportedTransactions: TransactionEntityInterface[] = [];
 
-        await transactionAsync(db, async tx => {
-            const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap, tx };
+            await transactionAsync(db, async tx => {
+                const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap, tx };
 
-            for (const bankAccount of bankAccounts) {
-                newlyImportedTransactions.push(...(await this.importAccountTransactions(client, bankAccount, context)));
-                await microPause();
+                for (const bankAccount of bankAccounts) {
+                    newlyImportedTransactions.push(...(await this.importAccountTransactions(client, bankAccount, context)));
+                    await microPause();
+                }
+            });
+
+            const scope = consolidationScopeService.buildFromTransactions(newlyImportedTransactions);
+            if (isDefined(scope)) {
+                transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT, scope);
             }
+        };
 
-            await transactionService.updateAllBalances(tx);
-        });
-
-        const scope = consolidationScopeService.buildFromTransactions(newlyImportedTransactions);
-        if (isDefined(scope)) {
-            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT, scope);
-        }
+        await syncWorkloadService.run(`${this.provider}-file-import`, importWork);
     }
 
-    @Log(
-        (transactionInputs, upsertedTransactions, existingTransactionIdMap) =>
-            `enter inputExternalIds=${transactionInputs.map(input => input.externalId ?? '').join(',')} upsertedIds=${upsertedTransactions.map(transaction => transaction.id).join(',')} existingExternalIds=${[...existingTransactionIdMap.keys()].join(',')}`,
-        (result, transactionInputs, upsertedTransactions, existingTransactionIdMap) =>
-            `done inputExternalIds=${transactionInputs.map(input => input.externalId ?? '').join(',')} upsertedIds=${upsertedTransactions.map(transaction => transaction.id).join(',')} existingExternalIds=${[...existingTransactionIdMap.keys()].join(',')} newTransactionIds=${result.map(transaction => transaction.id).join(',')}`,
-        (error, transactionInputs, upsertedTransactions, existingTransactionIdMap) =>
-            `throw inputExternalIds=${transactionInputs.map(input => input.externalId ?? '').join(',')} upsertedIds=${upsertedTransactions.map(transaction => transaction.id).join(',')} existingExternalIds=${[...existingTransactionIdMap.keys()].join(',')} error=${getErrorMessage(error)}`
-    )
-    private queueRulesForNewlyImportedTransactions(
-        transactionInputs: TransactionCreateInputInterface[],
-        upsertedTransactions: TransactionEntityInterface[],
-        existingTransactionIdMap: Map<string, number>
-    ): TransactionEntityInterface[] {
-        const wasNotPreviouslyImported = ({ externalId }: { externalId: string | null }) =>
-            !isDefined(externalId) || !existingTransactionIdMap.has(externalId);
+    private async executeImportForSelectedAccountsInner(uri: string, selectedAccountIds: string[]): Promise<void> {
+        const { client, bankAccounts } = await this.parseFile(uri);
+        const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
 
-        const newInputs = transactionInputs.filter(wasNotPreviouslyImported);
-        const newTransactions = upsertedTransactions.filter(wasNotPreviouslyImported);
-        const newTransactionIds = newTransactions.map(transaction => transaction.id);
+        if (!isNotEmptyArray(selectedBankAccounts)) {
+            return;
+        }
 
-        ruleApplicationDrainerService.enqueueTransactions(newTransactionIds, newInputs);
+        await this.executeImport(client, selectedBankAccounts);
+    }
 
-        return newTransactions;
+    private async quickImportInner(uri: string): Promise<void> {
+        const { client, bankAccounts } = await this.parseFile(uri);
+
+        if (!isNotEmptyArray(bankAccounts)) {
+            return;
+        }
+
+        const enabledExternalIds = await this.getEnabledExternalIds();
+        if (enabledExternalIds.size === 0) {
+            return;
+        }
+
+        const enabledBankAccounts = bankAccounts.filter(account => enabledExternalIds.has(account.id));
+        if (!isNotEmptyArray(enabledBankAccounts)) {
+            return;
+        }
+
+        await this.executeImport(client, enabledBankAccounts);
+    }
+
+    private async runQueuedImport(handler: () => Promise<void>): Promise<void> {
+        const queuedImport = this.importQueue.then(handler, handler);
+        this.importQueue = queuedImport.catch(emptyFn);
+
+        return queuedImport;
     }
 
     private async getEnabledExternalIds(): Promise<Set<string>> {
@@ -213,6 +217,25 @@ export abstract class BaseFileBankSyncService {
             },
             tx
         );
+    }
+
+    private queueRulesForNewlyImportedTransactions(
+        transactionInputs: TransactionCreateInputInterface[],
+        upsertedTransactions: TransactionEntityInterface[],
+        existingTransactionIdMap: Map<string, number>
+    ): TransactionEntityInterface[] {
+        const wasNotPreviouslyImported = ({ externalId }: { externalId: string | null }) =>
+            !isDefined(externalId) || !existingTransactionIdMap.has(externalId);
+
+        const newInputs = transactionInputs.filter(wasNotPreviouslyImported);
+        const newTransactions = upsertedTransactions.filter(wasNotPreviouslyImported);
+        const newTransactionIds = newTransactions.map(transaction => transaction.id);
+
+        if (isNotEmptyArray(newTransactionIds)) {
+            ruleApplicationDrainerService.enqueueTransactions(newTransactionIds, newInputs);
+        }
+
+        return newTransactions;
     }
 
     protected abstract parseFile(uri: string): Promise<ParsedFileResultInterface>;

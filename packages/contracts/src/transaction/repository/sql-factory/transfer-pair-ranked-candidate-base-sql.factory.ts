@@ -55,6 +55,7 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                 INNER JOIN accounts expense_account ON
                     expense_entry.account_id = expense_account.id
                     AND expense_account.deleted_at IS NULL
+                    AND expense_account.is_active = 1
                 INNER JOIN instruments expense_instrument ON expense_account.instrument_id = expense_instrument.id
                 LEFT JOIN mcc_categories expense_mcc ON expense_entry.mcc_category_id = expense_mcc.id
                 WHERE expense_entry.deleted_at IS NULL
@@ -95,6 +96,7 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                 INNER JOIN accounts income_account ON
                     income_entry.account_id = income_account.id
                     AND income_account.deleted_at IS NULL
+                    AND income_account.is_active = 1
                 INNER JOIN instruments income_instrument ON income_account.instrument_id = income_instrument.id
                 LEFT JOIN mcc_categories income_mcc ON income_entry.mcc_category_id = income_mcc.id
                 WHERE income_entry.deleted_at IS NULL

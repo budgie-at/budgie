@@ -6,19 +6,22 @@ import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-comm
 
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { THIRTY_MINUTES_IN_SECONDS } from '../constant/time.constant';
 import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-task.constant';
 
 import { consolidationCoordinatorService } from './consolidation-coordinator.service';
 
-import type { ConsolidationPreviewInterface } from '../interface/consolidation-preview.interface';
-import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
-import type { TransferConsolidationProgressSnapshotInterface } from '../interface/transfer-consolidation-progress-snapshot.interface';
+import type {
+    ConsolidationPreviewInterface,
+    ConsolidationProgressSnapshotInterface,
+    ConsolidationResultInterface
+} from '@budgie/consolidation';
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const logger = getLogger('TransferConsolidationService');
 
 class TransferConsolidationService {
+    private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 30;
+
     private activeOperation: Promise<unknown> | null = null;
     private isRunning = false;
 
@@ -29,7 +32,7 @@ class TransferConsolidationService {
         }
 
         await BackgroundTask.registerTaskAsync(TRANSFER_CONSOLIDATION_TASK, {
-            minimumInterval: THIRTY_MINUTES_IN_SECONDS
+            minimumInterval: TransferConsolidationService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
         });
     }
 
@@ -60,7 +63,7 @@ class TransferConsolidationService {
             `done autoCandidateCount=${result.autoCandidateCount} manualReviewCandidateCount=${result.manualReviewCandidateCount} remainingCandidateGroupCount=${result.remainingCandidateGroupCount} isRunning=${String(result.isRunning)}`,
         error => `throw error=${getErrorMessage(error)}`
     )
-    async getProgressSnapshot(): Promise<TransferConsolidationProgressSnapshotInterface> {
+    async getProgressSnapshot(): Promise<ConsolidationProgressSnapshotInterface> {
         return this.runExclusive(() => this.buildProgressSnapshot());
     }
 
@@ -117,7 +120,7 @@ class TransferConsolidationService {
         };
     }
 
-    private async buildProgressSnapshot(): Promise<TransferConsolidationProgressSnapshotInterface> {
+    private async buildProgressSnapshot(): Promise<ConsolidationProgressSnapshotInterface> {
         const startedAt = Date.now();
         const autoCandidateCount = await consolidationCoordinatorService.countAutoCandidates();
         const manualReviewCandidateCount = await consolidationCoordinatorService.countManualReviewCandidates();

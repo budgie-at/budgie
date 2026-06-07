@@ -22,6 +22,7 @@ import { useUpdateTransactionForm } from '../../../../transaction/hook/use-updat
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { buildExpenseEntry } from '../../../../transaction/utils/build-expense-entry.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
+import { getTransactionCategoryEntries } from '../../../../transaction/utils/get-transaction-category-entries.util';
 import { getTransactionHref } from '../../../../transaction/utils/get-transaction-href.util';
 
 import type { UpdateTransactionFormPropsInterface } from '../../../../transaction/interface/update-transaction-form-props.interface';
@@ -37,7 +38,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
         transaction: convertTransactionToInput(transaction),
         schema: ExpenseTransactionCreateInputSchema,
         id: transactionId,
-        onAfterSubmit: () => void markForEmbedding({ transactionId })
+        onAfterSubmit: () => void markForEmbedding(transactionId)
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
@@ -57,13 +58,14 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
     });
 
     const handleGoBack = () => void goBackOrReplace('/');
-    const [sourceEntry] = transaction.entries;
     const isConsolidated = isDefined(transaction.consolidationType);
     const { handleOpenConvert, handleOpenRefundSources, handleRevert } = useUpdateExpenseTransactionActions({
         transaction,
         transactionId,
         fromAccountId
     });
+    const categoryEntries = getTransactionCategoryEntries(transaction.entries);
+    const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
 
     return (
         <FormProvider {...form}>
@@ -77,7 +79,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
                                 onRevert={handleRevert}
-                                onConvertToTransfer={handleOpenConvert}
+                                {...transferConvertProps}
                             />
                         }
                     />
@@ -88,7 +90,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                     transactionType={TransactionTypeEnum.EXPENSE}
                     accountFieldName="fromAccountId"
                     transactionTitle={transaction.title}
-                    mccCategoryId={sourceEntry.mccCategoryId ?? null}
+                    mccCategoryId={categoryEntries.at(0)?.mccCategoryId ?? null}
                     amountTopContent={
                         <RefundedPill
                             transaction={transaction}
@@ -132,6 +134,10 @@ export default function UpdateExpenseTransactionPage() {
 
     if (isDefined(transaction.consolidationParentTransactionId)) {
         return isParentLoading || !isDefined(parentTransaction) ? null : <Redirect href={getTransactionHref(parentTransaction)} />;
+    }
+
+    if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
+        return <Redirect href={getTransactionHref(transaction)} />;
     }
 
     return <UpdateExpenseForm transaction={transaction} transactionId={transactionId} />;

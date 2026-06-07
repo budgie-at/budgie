@@ -15,16 +15,68 @@ import { getDateFilterByPeriod } from '../@generic/utils/date/get-date-filter-by
 import { getPeriodByDateRange } from '../@generic/utils/date/get-period-by-date-range.util';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 
+const DATE_FILTER_PERIODS: readonly DatePeriodEnum[] = [
+    DatePeriodEnum.THIS_MONTH,
+    DatePeriodEnum.LAST_MONTH,
+    DatePeriodEnum.ALL_TIME,
+    DatePeriodEnum.TODAY,
+    DatePeriodEnum.THIS_WEEK,
+    DatePeriodEnum.LAST_WEEK,
+    DatePeriodEnum.THIS_YEAR
+];
+
+const getCalendarVisibleDate = (range: DateRangeInterface | null): Date | null => {
+    if (!isDefined(range)) {
+        return null;
+    }
+
+    const { from, to } = range;
+    const now = new Date();
+
+    if (isDefined(from) && isDefined(to)) {
+        const nowTime = now.getTime();
+        const fromTime = from.getTime();
+        const toTime = to.getTime();
+        const isNowInRange = fromTime <= nowTime && nowTime <= toTime;
+
+        if (isNowInRange) {
+            return now;
+        }
+
+        return nowTime - fromTime < toTime - nowTime ? from : to;
+    }
+
+    if (isDefined(to)) {
+        return to;
+    }
+
+    return from;
+};
+
 export default function DateFilterModal() {
     const { t } = useLingui();
     const [, resolveDateFilter, currentParams] = useDateFilterModal();
 
     const [localValue, setLocalValue] = useState<DateRangeInterface | null>(() => currentParams?.value ?? null);
+    const [visibleDate, setVisibleDate] = useState<Date | null>(() => getCalendarVisibleDate(currentParams?.value ?? null));
+    const [calendarResetKey, setCalendarResetKey] = useState(0);
 
     const selectedPeriod = getPeriodByDateRange(localValue);
     const hasSelected = isDefined(localValue);
 
-    const handlePeriodSelect = (period: DatePeriodEnum) => void setLocalValue(getDateFilterByPeriod(period));
+    const handlePeriodSelect = (period: DatePeriodEnum) => {
+        const nextValue = getDateFilterByPeriod(period);
+
+        setLocalValue(nextValue);
+        setVisibleDate(getCalendarVisibleDate(nextValue));
+        setCalendarResetKey(current => current + 1);
+    };
+
+    const handleRangeChange = (range: DateRangeInterface) => {
+        setLocalValue(range);
+        setVisibleDate(getCalendarVisibleDate(range));
+    };
+
     const handleApply = () => {
         resolveDateFilter({ value: localValue });
     };
@@ -39,12 +91,17 @@ export default function DateFilterModal() {
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <RangeDatePicker range={localValue} onChange={setLocalValue} />
+                <RangeDatePicker
+                    range={localValue}
+                    calendarResetKey={calendarResetKey}
+                    visibleDate={visibleDate}
+                    onChange={handleRangeChange}
+                />
             </ScrollView>
 
             <FilterSheetDrawer>
                 <ScrollView contentContainerClassName="gap-x-sm" showsHorizontalScrollIndicator={false} horizontal>
-                    {Object.values(DatePeriodEnum).map(period => (
+                    {DATE_FILTER_PERIODS.map(period => (
                         <DateFilterItem
                             key={period}
                             period={period}

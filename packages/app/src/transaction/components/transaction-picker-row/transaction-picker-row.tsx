@@ -13,9 +13,16 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 
-import type { TransactionPickerRowPropsInterface } from '../../interface/transaction-picker-row-props.interface';
+import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
 
-export const TransactionPickerRow = ({ item, isSelected = false, onPress, testID }: TransactionPickerRowPropsInterface) => {
+interface Props {
+    readonly item: TransactionPickerItemInterface;
+    readonly isSelected?: boolean;
+    readonly onPress?: (item: TransactionPickerItemInterface) => void;
+    readonly testID?: string;
+}
+
+export const TransactionPickerRow = ({ item, isSelected = false, onPress, testID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const { formatMonthAndDay } = useFormatDate();
     const formatDigits = useFormatDigits(decimalPlaces);

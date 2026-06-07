@@ -58,11 +58,13 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                 INNER JOIN accounts source_account ON
                     source_account.id = source_expense_entry.account_id
                     AND source_account.deleted_at IS NULL
+                    AND source_account.is_active = 1
                     AND source_account.iban IS NOT NULL
                     AND source_account.iban != ''
                 INNER JOIN accounts target_account ON
                     target_account.iban = source_expense_entry.to_iban
                     AND target_account.deleted_at IS NULL
+                    AND target_account.is_active = 1
                     AND target_account.id != source_account.id
                 INNER JOIN transactions target_income_tx ON
                     target_income_tx.type = '${TransactionTypeEnum.INCOME}'

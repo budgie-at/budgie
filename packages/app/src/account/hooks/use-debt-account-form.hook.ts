@@ -1,11 +1,4 @@
-import {
-    AccountDebtTypeEnum,
-    AccountEntityInterface,
-    AccountTypeEnum,
-    DebtAccountCreateInputInterface,
-    DebtAccountCreateInputSchema,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { AccountEntityInterface, DebtAccountCreateInputInterface, DebtAccountCreateInputSchema } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
@@ -20,25 +13,15 @@ interface DebtAccountFormValues extends Omit<DebtAccountCreateInputInterface, 'c
 }
 
 export const useDebtAccountForm = (
-    defaultValues: DebtAccountFormValues,
+    initialValues: DebtAccountFormValues,
     onSubmit: (values: DebtAccountFormValues) => Promise<AccountEntityInterface>
 ) => {
     const showError = useShowError();
     const form = useForm<DebtAccountFormValues>({
         resolver: zodResolver(DebtAccountCreateInputSchema) as Resolver<DebtAccountFormValues>,
         mode: 'onSubmit',
-        defaultValues: {
-            debtType: AccountDebtTypeEnum.LENT,
-            icon: UserIconNameEnum.Home,
-            type: AccountTypeEnum.DEBT,
-            targetBalance: 0,
-            instrumentId: 0,
-            includeInNetWorth: false,
-            contactId: null,
-            deadline: null,
-            title: ''
-        },
-        values: defaultValues
+        defaultValues: initialValues,
+        values: initialValues
     });
 
     const [instrumentId, debtType] = useWatch({

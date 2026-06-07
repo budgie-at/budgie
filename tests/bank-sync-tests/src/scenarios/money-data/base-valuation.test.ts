@@ -16,7 +16,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { requireInstrument } from '../../harness';
+import { requireInstrument, seedBitcoinCryptoAccount } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -30,6 +30,23 @@ describe('base valuation', () => {
 
     it('values a manually back-dated UAH entry with the historical rate, not the current one', async () => {
         await expectHistoricalUahValuation(null);
+    });
+
+    it('allows manual crypto entries to remain unvalued when no live crypto rate exists', async () => {
+        const { account } = await seedBitcoinCryptoAccount();
+
+        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
+            accountId: account.id,
+            amount: 100 * PRECISION,
+            operatedAt: new Date('2026-06-04T15:35:37.321Z'),
+            externalSource: null
+        });
+
+        expect(valuation).toStrictEqual({
+            baseInstrumentId: null,
+            baseExchangeRate: null,
+            baseAmount: null
+        });
     });
 
     it('sums analytics with historical base amounts from different periods', async () => {

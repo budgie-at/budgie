@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 interface Props {
     icon: ReactNode;
-    label: string;
+    label: ReactNode;
 }
 
 export const SecuritySectionBadge = ({ icon, label }: Props) => (

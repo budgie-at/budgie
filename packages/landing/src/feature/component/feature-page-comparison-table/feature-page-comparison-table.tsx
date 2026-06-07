@@ -1,19 +1,15 @@
 import { Trans } from '@lingui/react/macro';
 
-import type { ReactNode } from 'react';
+import { FeaturePageComparisonTableRow } from '../feature-page-comparison-table-row/feature-page-comparison-table-row';
 
-export interface ComparisonRowInterface {
-    readonly concern: ReactNode;
-    readonly rival: ReactNode;
-    readonly budgie: ReactNode;
-}
+import type { ReactNode } from 'react';
 
 interface Props {
     readonly rivalLabel: ReactNode;
-    readonly rows: readonly ComparisonRowInterface[];
+    readonly children: ReactNode;
 }
 
-export const FeaturePageComparisonTable = ({ rivalLabel, rows }: Props) => (
+const FeaturePageComparisonTableRoot = ({ rivalLabel, children }: Props) => (
     <div className="overflow-x-auto">
         <table className="w-full text-sm border border-border/60 rounded-lg">
             <thead className="bg-muted/40">
@@ -27,15 +23,11 @@ export const FeaturePageComparisonTable = ({ rivalLabel, rows }: Props) => (
                     </th>
                 </tr>
             </thead>
-            <tbody className="divide-y divide-border/40">
-                {rows.map((row, index) => (
-                    <tr key={`row-${index}`}>
-                        <td className="p-3 font-medium">{row.concern}</td>
-                        <td className="p-3">{row.rival}</td>
-                        <td className="p-3">{row.budgie}</td>
-                    </tr>
-                ))}
-            </tbody>
+            <tbody className="divide-y divide-border/40">{children}</tbody>
         </table>
     </div>
 );
+
+export const FeaturePageComparisonTable = Object.assign(FeaturePageComparisonTableRoot, {
+    Row: FeaturePageComparisonTableRow
+});

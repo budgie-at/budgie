@@ -8,10 +8,10 @@ import type { ReactNode } from 'react';
 interface Props {
     icon: ReactNode;
     iconClassName: string;
-    label: string;
+    label: ReactNode;
     amount: string;
     amountClassName: string;
-    dueDate: string;
+    dueDate: ReactNode;
 }
 
 export const DebtSectionCard = ({ icon, iconClassName, label, amount, amountClassName, dueDate }: Props) => (

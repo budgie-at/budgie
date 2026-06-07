@@ -10,13 +10,13 @@ import { Icon } from '../icon/icon';
 
 import { DatePickerSelector } from './date-picker.selector';
 
-const renderDay = (day: CalendarDay) => (
+const renderDay = (day: CalendarDay, shouldShowTodayIndicator: boolean) => (
     <Text
         testID={DatePickerSelector.Day(day.number)}
         className={cn(
             'text-primary font-medium',
             !day.isCurrentMonth && 'text-secondary-foreground/40',
-            day.isToday && 'font-bold',
+            shouldShowTodayIndicator && day.isToday && 'font-bold',
             (day.isSelected || day.rangeStart || day.rangeEnd) && 'text-primary-reverse font-bold'
         )}
     >
@@ -24,43 +24,46 @@ const renderDay = (day: CalendarDay) => (
     </Text>
 );
 
-const defaultComponents: CalendarComponents = {
-    IconNext: <Icon icon={UserIconNameEnum.ChevronRight} className="text-primary" size={20} />,
-    IconPrev: <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={20} />,
-    Day: renderDay
-};
-
 const DAY_PILL_RADIUS = 9999;
+const DAY_PILL_SIZE = 40;
 const TODAY_BORDER_WIDTH = 1;
 
-const buildStyles = (isDark: boolean) => {
+const buildStyles = (isDark: boolean, shouldShowTodayIndicator: boolean) => {
     const primary = isDark ? '#ffffff' : '#000000';
     const rangeFill = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
 
-    const pill: ViewStyle = { backgroundColor: primary, borderRadius: DAY_PILL_RADIUS };
-    const todayRing: ViewStyle = { borderRadius: DAY_PILL_RADIUS, borderWidth: TODAY_BORDER_WIDTH, borderColor: primary };
-    const rangeFillStyle: ViewStyle = { backgroundColor: rangeFill };
-    const rangeFillStart: ViewStyle = {
-        backgroundColor: rangeFill,
-        borderTopLeftRadius: DAY_PILL_RADIUS,
-        borderBottomLeftRadius: DAY_PILL_RADIUS
+    const compactCircle: ViewStyle = {
+        alignSelf: 'center',
+        flex: 0,
+        height: DAY_PILL_SIZE,
+        marginVertical: 'auto',
+        width: DAY_PILL_SIZE
     };
-    const rangeFillEnd: ViewStyle = {
+    const pill: ViewStyle = { ...compactCircle, backgroundColor: primary, borderRadius: DAY_PILL_RADIUS };
+    const todayRing: ViewStyle = {
+        ...compactCircle,
+        borderRadius: DAY_PILL_RADIUS,
+        borderWidth: TODAY_BORDER_WIDTH,
+        borderColor: primary
+    };
+    const transparentView: ViewStyle = { backgroundColor: 'transparent' };
+    const rangeFillView: ViewStyle = {
         backgroundColor: rangeFill,
-        borderTopRightRadius: DAY_PILL_RADIUS,
-        borderBottomRightRadius: DAY_PILL_RADIUS
+        height: DAY_PILL_SIZE,
+        marginVertical: 'auto'
     };
     const transparentText: TextStyle = { backgroundColor: 'transparent' };
+    const today = shouldShowTodayIndicator ? todayRing : transparentView;
 
     return {
-        today: todayRing,
+        today,
         selected: pill,
         range_start: pill,
         range_end: pill,
         range_middle: transparentText,
-        range_fill: rangeFillStyle,
-        range_fill_weekstart: rangeFillStart,
-        range_fill_weekend: rangeFillEnd
+        range_fill: rangeFillView,
+        range_fill_weekstart: rangeFillView,
+        range_fill_weekend: rangeFillView
     };
 };
 
@@ -68,8 +71,14 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     const { languageTag } = useLocaleInfo();
     const { isDarkColorSchema } = useThemeContext();
     const defaultClassNames = useDefaultClassNames();
+    const shouldShowTodayIndicator = props.mode !== 'range';
+    const defaultComponents: CalendarComponents = {
+        IconNext: <Icon icon={UserIconNameEnum.ChevronRight} className="text-primary" size={20} />,
+        IconPrev: <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={20} />,
+        Day: day => renderDay(day, shouldShowTodayIndicator)
+    };
     const mergedComponents = { ...defaultComponents, ...props.components };
-    const themedStyles = buildStyles(isDarkColorSchema);
+    const themedStyles = buildStyles(isDarkColorSchema, shouldShowTodayIndicator);
 
     /* eslint-disable lingui/no-unlocalized-strings */
     const classNames = {

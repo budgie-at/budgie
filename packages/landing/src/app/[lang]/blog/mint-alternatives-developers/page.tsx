@@ -3,8 +3,6 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import Link from 'next/link';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { BlogArticleContent } from '../../../../blog/component/blog-article-content/blog-article-content';
 import { BlogArticleCta } from '../../../../blog/component/blog-article-cta/blog-article-cta';
 import { BlogArticleHeading } from '../../../../blog/component/blog-article-heading/blog-article-heading';
@@ -22,24 +20,15 @@ import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-i
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
 import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
 import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
-import { ARTICLE_REGISTRY } from '../../../../blog/constant/article-registry.constant';
 import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
-import { FEATURE_REGISTRY } from '../../../../feature/constant/feature-registry.constant';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
 
+import { ARTICLE_METADATA } from './metadata';
+
 import type { Metadata } from 'next';
-
-const SLUG = 'mint-alternatives-developers';
-const DATE = '2025-02-05';
-// eslint-disable-next-line lingui/no-unlocalized-strings
-const AUTHOR = 'Budgie Team';
-const IMAGE = '/images/design-mode/ai-budgeting-app-4x.jpg';
-const READING_TIME = 18;
-
-const RELATED_SLUGS = ['ynab-alternatives-privacy', 'budgie-offline-financial-data'] as const;
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
@@ -47,16 +36,14 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     const i18n = getI18nInstance(lang);
 
     return buildBlogArticleMetadata({
-        author: AUTHOR,
-        date: DATE,
-        description: t(
-            i18n
-        )`After Mint's shutdown, developers need a finance app that respects data ownership and privacy. Compare Budgie, Actual Budget, Firefly III, and more.`,
-        image: IMAGE,
+        author: ARTICLE_METADATA.author,
+        date: ARTICLE_METADATA.date,
+        description: i18n._(ARTICLE_METADATA.seoDescription),
+        image: ARTICLE_METADATA.image,
         keywords: t(i18n)`Mint alternatives, Mint shutdown, budget app for developers, privacy finance app, offline budget app`,
         locale: lang,
-        slug: SLUG,
-        title: t(i18n)`Mint Shutdown: Where Developers Are Moving Their Finances`
+        slug: ARTICLE_METADATA.slug,
+        title: i18n._(ARTICLE_METADATA.title)
     });
 }
 
@@ -64,28 +51,22 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const articleEntry = ARTICLE_REGISTRY.find(item => item.slug === SLUG);
-    const relatedFeatures =
-        articleEntry?.relatedFeatureSlugs.map(slug => FEATURE_REGISTRY.find(feature => feature.slug === slug)).filter(isDefined) ?? [];
-
     return (
         <main className="flex-1">
             <BlogPostingJsonLd
-                author={AUTHOR}
+                author={ARTICLE_METADATA.author}
                 blogLabel={t(i18n)`Blog`}
-                date={DATE}
-                description={t(
-                    i18n
-                )`After Mint's shutdown, developers need a finance app that respects data ownership and privacy. Compare Budgie, Actual Budget, Firefly III, and more.`}
+                date={ARTICLE_METADATA.date}
+                description={i18n._(ARTICLE_METADATA.description)}
                 homeLabel={t(i18n)`Home`}
-                image={IMAGE}
+                image={ARTICLE_METADATA.image}
                 keywords={t(i18n)`Mint alternatives, Mint shutdown, budget app for developers, privacy finance app, offline budget app`}
                 locale={lang}
-                slug={SLUG}
-                title={t(i18n)`Mint Shutdown: Where Developers Are Moving Their Finances`}
+                slug={ARTICLE_METADATA.slug}
+                title={i18n._(ARTICLE_METADATA.title)}
             />
 
-            <BlogArticleHero image={IMAGE} imageAlt={t(i18n)`Mint alternatives for developers`}>
+            <BlogArticleHero image={ARTICLE_METADATA.image} imageAlt={i18n._(ARTICLE_METADATA.title)}>
                 <Link
                     className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
                     href={`/${lang}/blog`}
@@ -117,10 +98,10 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                 </p>
 
                 <BlogArticleMeta
-                    author={AUTHOR}
-                    date={DATE}
+                    author={ARTICLE_METADATA.author}
+                    date={ARTICLE_METADATA.date}
                     locale={lang}
-                    readingTimeMinutes={READING_TIME}
+                    readingTimeMinutes={ARTICLE_METADATA.readingTimeMinutes}
                     tags={
                         <>
                             <Badge variant="secondary">
@@ -1801,7 +1782,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         <Trans>Frequently Asked Questions</Trans>
                     </BlogArticleHeading>
 
-                    <BlogFaqSection>
+                    <BlogFaqSection locale={lang}>
                         <BlogFaqItem question={<Trans>What happened to all my Mint data?</Trans>}>
                             <Trans>
                                 If you exported before March 23, 2024, you should have a CSV file containing your transaction history. If
@@ -2006,9 +1987,9 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                 </BlogArticleSection>
             </BlogArticleContent>
 
-            <RelatedArticles locale={lang} slugs={RELATED_SLUGS} />
+            <RelatedArticles locale={lang} slugs={ARTICLE_METADATA.relatedArticleSlugs} />
 
-            <FeaturePageRelated features={relatedFeatures} locale={lang} />
+            <FeaturePageRelated locale={lang} slugs={ARTICLE_METADATA.relatedFeatureSlugs} />
 
             <BlogArticleCta locale={lang} />
         </main>

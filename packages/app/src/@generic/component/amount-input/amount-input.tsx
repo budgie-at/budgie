@@ -18,13 +18,24 @@ interface Props extends Omit<ComponentProps<typeof Input>, 'value'> {
     readonly status?: FormFieldStatus;
     readonly autoFocus?: boolean;
     readonly valuePrefix?: string;
+    readonly minimumDecimalPlaces?: number;
     readonly onChangeValue: (value: number) => void;
 }
 
-export const AmountInput = ({ value, onChangeValue, inputClassName, status, autoFocus, valuePrefix = '', ...rest }: Props) => {
+export const AmountInput = ({
+    value,
+    onChangeValue,
+    inputClassName,
+    status,
+    autoFocus,
+    valuePrefix = '',
+    minimumDecimalPlaces = 0,
+    ...rest
+}: Props) => {
     const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
     const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const visibleDecimalPlaces = Math.max(decimalPlaces, minimumDecimalPlaces);
+    const formatDigits = useFormatDigits(visibleDecimalPlaces);
     const { intl } = useI18nContext();
 
     const [displayValue, setDisplayValue] = useState(() => formatDigits(value === 0 ? '' : value.toString(), valuePrefix));
@@ -44,7 +55,7 @@ export const AmountInput = ({ value, onChangeValue, inputClassName, status, auto
 
         const normalizedNumeric = normalizeDecimalSeparator(cleaned, decimalSeparator);
 
-        const { integerPart, decimalPart, hasDecimal } = extractPartsFromNumeric(normalizedNumeric);
+        const { integerPart, decimalPart, hasDecimal } = extractPartsFromNumeric(normalizedNumeric, visibleDecimalPlaces);
 
         const formattedInteger = isNotEmptyString(integerPart)
             ? intl.formatNumber(Number(integerPart), { useGrouping: true, maximumFractionDigits: 0 })

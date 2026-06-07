@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop -- Single-flight drainer intentionally serializes consolidation scans */
+import { consolidationScopeService } from '@budgie/consolidation';
 import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -7,7 +7,7 @@ import { foregroundWorkloadService } from '../../@generic/service/foreground-wor
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 
-import { consolidationScopeService } from './consolidation-scope.service';
+import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationService } from './transfer-consolidation.service';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
@@ -73,12 +73,15 @@ class TransferConsolidationDrainerService {
     }
 
     private async drainPendingRuns(): Promise<void> {
-        while (this.hasPendingRun) {
-            const scope = this.pendingScope;
-            this.hasPendingRun = false;
-            this.pendingScope = null;
-            await transferConsolidationService.consolidate(scope);
+        if (!this.hasPendingRun) {
+            return;
         }
+
+        const scope = this.pendingScope;
+        this.hasPendingRun = false;
+        this.pendingScope = null;
+        await syncWorkloadService.run('transfer-consolidation-drain', () => transferConsolidationService.consolidate(scope));
+        await this.drainPendingRuns();
     }
 
     private addPendingScope(scope: ConsolidationScanScopeInterface | null): void {

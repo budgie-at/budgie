@@ -31,6 +31,8 @@ executionOrder:
         - 25.rules-crud.flow
         - 26.rules-application.flow
         - 27.mcc-default-category.flow
+        - 28.rules-search.flow
+        - 29.crypto-account-and-market.flow
 
 platform:
     ios:

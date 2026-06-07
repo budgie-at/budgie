@@ -4,16 +4,13 @@ import { BankAccountTypeEnum, BankProviderEnum, privatbankTransactionMapper } fr
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 
-import { seed, testDb } from '../../harness';
+import { seed, StubFileBankSyncService, testDb } from '../../harness';
 
 import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
-import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 
 import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
-import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
 import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';
-import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
 const PRIVATBANK_CARD_ID = 'privat-card';
 const PRIVATBANK_STATEMENT_URI = 'privatbank-statement.xlsx';
@@ -57,21 +54,8 @@ class StubPrivatbankFileClient implements FileBasedBankSyncClientInterface {
     }
 }
 
-class StubPrivatbankFileSyncService extends BaseFileBankSyncService {
-    constructor(private readonly transactions: BankTransactionInterface[]) {
-        super(ExternalSourceEnum.PRIVATBANK);
-    }
-
-    protected parseFile(): Promise<ParsedFileResultInterface> {
-        const client = new StubPrivatbankFileClient(this.transactions);
-
-        return Promise.resolve({ client, bankAccounts: client.getAccounts() });
-    }
-
-    protected resolveMccCategoryIdMap(): Promise<Map<string, MccCategoryLookupInterface | null>> {
-        return Promise.resolve(new Map());
-    }
-}
+const buildPrivatbankSyncService = (transactions: BankTransactionInterface[]): StubFileBankSyncService =>
+    new StubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, new StubPrivatbankFileClient(transactions));
 
 const seedPrivatbankAccount = (): void => {
     seed.account({
@@ -88,7 +72,7 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
 
     it('enqueues consolidation after a Privatbank file import introduces new transactions', async () => {
         seedPrivatbankAccount();
-        const syncService = new StubPrivatbankFileSyncService([buildPrivatbankTransaction()]);
+        const syncService = buildPrivatbankSyncService([buildPrivatbankTransaction()]);
 
         await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
@@ -109,9 +93,9 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
         );
     });
 
-    it('does not enqueue consolidation when a re-import introduces no new transactions', async () => {
+    it('does not enqueue consolidation after a re-import with no new transactions', async () => {
         seedPrivatbankAccount();
-        const syncService = new StubPrivatbankFileSyncService([buildPrivatbankTransaction()]);
+        const syncService = buildPrivatbankSyncService([buildPrivatbankTransaction()]);
 
         await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
         vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();

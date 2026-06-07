@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.35.2](https://github.com/budgie-at/budgie/compare/v5.35.1...v5.35.2) (2026-06-06)
+
+**Note:** Version bump only for package @budgie/bank-sync
+
+## [5.35.1](https://github.com/budgie-at/budgie/compare/v5.35.0...v5.35.1) (2026-06-06)
+
+### Bug Fixes
+
+- dedupe repeated bank imports ([7a67803](https://github.com/budgie-at/budgie/commit/7a67803024cc590a1129209bf984dc65a8f008f9))
+
+## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
+
+**Note:** Version bump only for package @budgie/bank-sync
+
+# [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
+
+### Bug Fixes
+
+- keep monobank backward sync past empty 31-day windows ([#434](https://github.com/budgie-at/budgie/issues/434)) ([de436b0](https://github.com/budgie-at/budgie/commit/de436b0740aa733e87a366a88c65ca7e155541cd))
+
+### Features
+
+- auto-consolidate file-based bank imports (Privatbank/Erste) with Cash accounts ([#503](https://github.com/budgie-at/budgie/issues/503)) ([f758a75](https://github.com/budgie-at/budgie/commit/f758a75c628e2e548c9b3b8a96d7ee66fade6d69))
+- capture bank fees as a categorized split on sync and import ([#502](https://github.com/budgie-at/budgie/issues/502)) ([2a8a3f7](https://github.com/budgie-at/budgie/commit/2a8a3f7dd57202b0fe08a17d9aa3cad9a3bf29c2))
+- sync monobank jars alongside cards ([#512](https://github.com/budgie-at/budgie/issues/512)) ([045786c](https://github.com/budgie-at/budgie/commit/045786c40fc9dc5a3b95531a5b40563dad62af4a))
+
 ## [5.24.1](https://github.com/budgie-at/budgie/compare/v5.24.0...v5.24.1) (2026-05-25)
 
 ### Bug Fixes

@@ -3,14 +3,17 @@ import { Star } from 'lucide-react';
 import { Card } from '../../../ui/card/card';
 import { CardContent } from '../../../ui/card/card-content';
 
+import type { ReactNode } from 'react';
+
 interface Props {
-    quote: string;
-    author: string;
-    role: string;
+    quote: ReactNode;
+    author: ReactNode;
+    role: ReactNode;
+    avatarLetter: string;
     rating: number;
 }
 
-export const TestimonialCard = ({ quote, author, role, rating }: Props) => (
+export const TestimonialCard = ({ quote, author, role, avatarLetter, rating }: Props) => (
     <Card className="min-w-[320px] max-w-[400px] flex-shrink-0 snap-start overflow-hidden border-border/40 bg-linear-to-b from-background to-muted/10 backdrop-blur-sm transition-all hover:shadow-md">
         <CardContent className="p-6 flex flex-col h-full">
             <div className="flex mb-4">
@@ -23,7 +26,7 @@ export const TestimonialCard = ({ quote, author, role, rating }: Props) => (
 
             <div className="flex items-center gap-4 mt-auto pt-4 border-t border-border/40">
                 <div className="size-10 rounded-full bg-muted flex items-center justify-center text-foreground font-medium">
-                    {author.charAt(0)}
+                    {avatarLetter}
                 </div>
 
                 <div>
