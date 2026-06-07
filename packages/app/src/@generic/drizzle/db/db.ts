@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite';
+import { RefundPairRepository, TransferPairRepository } from '@budgie/consolidation';
 import { getLogger } from '@budgie/logger';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import {
@@ -14,7 +15,6 @@ import {
     InstrumentRepository,
     MccCategoryRepository,
     MerchantEmbeddingRepository,
-    RefundPairRepository,
     RuleActionRepository,
     RuleConditionRepository,
     RuleRepository,
@@ -27,8 +27,7 @@ import {
     TransactionPatternRepository,
     TransactionRepository,
     TransactionRuleRepository,
-    TransactionTagsRepository,
-    TransferPairRepository
+    TransactionTagsRepository
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';

@@ -1,10 +1,10 @@
-import { TRANSFER_MCC_GROUP_ID } from '../../constant/transfer-mcc-group-id.constant';
-import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../constant/transfer-pair-fast-time-window.constant';
+import { TRANSFER_MCC_GROUP_ID } from '../../shared/constant/transfer-mcc-group-id.constant';
+import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../shared/constant/transfer-pair-fast-time-window.constant';
 import {
     TRANSFER_PAIR_INTERBANK_HINTED_FEE_TIME_WINDOW_SECONDS,
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_TIME_WINDOW_SECONDS
-} from '../../constant/transfer-pair-hinted-fee.constant';
-import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../constant/transfer-pair-implied-rate-tolerance.constant';
+} from '../../shared/constant/transfer-pair-hinted-fee.constant';
+import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../shared/constant/transfer-pair-implied-rate-tolerance.constant';
 
 export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs AS (
                 SELECT

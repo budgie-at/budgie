@@ -1,9 +1,10 @@
-import { TRANSFER_MCC_GROUP_ID } from '../../constant/transfer-mcc-group-id.constant';
-import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../constant/transfer-pair-fast-time-window.constant';
-import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
-import { applyConsolidationScanScopeSql } from '../../util/apply-consolidation-scan-scope-sql.util';
+import { TransactionTypeEnum } from '@budgie/contracts';
 
-import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+import { TRANSFER_MCC_GROUP_ID } from '../../shared/constant/transfer-mcc-group-id.constant';
+import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../shared/constant/transfer-pair-fast-time-window.constant';
+import { applyConsolidationScanScopeSql } from '../utils/apply-consolidation-scan-scope-sql.util';
+
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const BRIDGE_INCOME_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CHAIN_INCOME_SCOPE_SQL__';
 const BRIDGE_EXPENSE_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CHAIN_BRIDGE_EXPENSE_SCOPE_SQL__';

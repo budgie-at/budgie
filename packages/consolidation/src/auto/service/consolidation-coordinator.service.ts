@@ -15,11 +15,11 @@ export class ConsolidationCoordinatorService {
 
     @Log(
         (scope, onProgress) =>
-            `enter autoRunFrom=${scope?.operatedAtFrom.toISOString() ?? ''} autoRunTo=${scope?.operatedAtTo.toISOString() ?? ''} autoRunIds=${scope?.transactionIds.join(',') ?? ''} progressCallback=${String(isDefined(onProgress))}`,
+            `enter hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))}`,
         (result, scope, onProgress) =>
-            `done autoRunFrom=${scope?.operatedAtFrom.toISOString() ?? ''} autoRunTo=${scope?.operatedAtTo.toISOString() ?? ''} autoRunIds=${scope?.transactionIds.join(',') ?? ''} progressCallback=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
+            `done hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
         (error, scope, onProgress) =>
-            `throw autoRunFrom=${scope?.operatedAtFrom.toISOString() ?? ''} autoRunTo=${scope?.operatedAtTo.toISOString() ?? ''} autoRunIds=${scope?.transactionIds.join(',') ?? ''} progressCallback=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
+            `throw hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
     )
     async consolidate(
         scope: ConsolidationScanScopeInterface | null = null,
@@ -33,12 +33,10 @@ export class ConsolidationCoordinatorService {
     }
 
     @Log(
-        scope =>
-            `enter countScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} countScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} countScopeIds=${scope?.transactionIds.join(',') ?? ''}`,
-        (result, scope) =>
-            `done countScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} countScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} countScopeIds=${scope?.transactionIds.join(',') ?? ''} count=${result}`,
+        scope => `enter hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0}`,
+        (result, scope) => `done hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} count=${result}`,
         (error, scope) =>
-            `throw countScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} countScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} countScopeIds=${scope?.transactionIds.join(',') ?? ''} error=${getErrorMessage(error)}`
+            `throw hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} error=${getErrorMessage(error)}`
     )
     async countAutoCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<number> {
         const groups = await this.consolidationCandidateService.findGroups(scope);
