@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, seedAccountPair, seedBankPair } from '../../harness';
+import { fetchCanonicalsOfType, seed, seedBankPair } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
@@ -11,7 +11,7 @@ const seedScopedTransferPair = (
     operatedAt: Date,
     fromAccountId: number,
     toAccountId: number
-): { expenseId: number; incomeId: number } => {
+): { readonly expenseId: number; readonly incomeId: number } => {
     const expense = seedBankPair.expense(
         { externalId: `${externalIdPrefix}-expense`, operatedAt },
         { accountId: fromAccountId, amount: 100 * PRECISION, toIban: 'UA-TO' }
@@ -26,7 +26,7 @@ const seedScopedTransferPair = (
 
 describe('consolidation/bounded-consolidation-scope', () => {
     it('limits a bank-sync triggered scan to candidates inside the provided operated-at scope', async () => {
-        const { fromAccount, toAccount } = seedAccountPair('UA-FROM', 'UA-TO');
+        const { fromAccount, toAccount } = seed.accountPair('UA-FROM', 'UA-TO');
         const oldOperatedAt = new Date(2025, 0, 15, 12, 0, 0);
         const newOperatedAt = new Date(2026, 0, 15, 12, 0, 0);
 
@@ -44,7 +44,7 @@ describe('consolidation/bounded-consolidation-scope', () => {
     });
 
     it('keeps settings-triggered consolidation global when no scope is provided', async () => {
-        const { fromAccount, toAccount } = seedAccountPair('UA-FROM', 'UA-TO');
+        const { fromAccount, toAccount } = seed.accountPair('UA-FROM', 'UA-TO');
         const oldOperatedAt = new Date(2025, 0, 15, 12, 0, 0);
         const newOperatedAt = new Date(2026, 0, 15, 12, 0, 0);
 

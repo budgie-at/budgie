@@ -7,13 +7,14 @@ import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
 
 type BalanceQuery =
     | ReturnType<typeof accountBalanceRepository.getByAccountId>
-    | ReturnType<typeof accountBalanceRepository.getArchivedAccountBalance>;
+    | ReturnType<typeof accountBalanceRepository.getArchivedAccountBalance>
+    | ReturnType<typeof accountBalanceRepository.getTotalByCryptoInstrument>;
 
 export const useCachedBalanceQuery = (query: BalanceQuery, dependencies: unknown[]) => {
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
     const queryDependencies = [...dependencies, accountBalancesUpdatedAt];
     const { data } = useLiveQuery(query, queryDependencies);
-    const balance = useCachedMicroUnitQuery(data.at(0)?.balance, queryDependencies);
+    const balance = useCachedMicroUnitQuery(data.at(0)?.balance);
 
     return { balance };
 };

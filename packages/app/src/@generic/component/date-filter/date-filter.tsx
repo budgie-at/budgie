@@ -39,21 +39,26 @@ export const DateFilter = ({ value, onChange }: Props) => {
             return t(DATE_PERIOD[period]);
         }
 
-        if (isDefined(value.from) && isDefined(value.to)) {
-            return value.from.getFullYear() === value.to.getFullYear()
-                ? `${formatMonthAndDay(value.from)} – ${formatMonthAndDay(value.to)}`
-                : `${formatDayAndMonthAndYear(value.from)} – ${formatDayAndMonthAndYear(value.to)}`;
+        const { from, to } = value;
+
+        if (isDefined(from) && isDefined(to)) {
+            const isSameDate =
+                from.getFullYear() === to.getFullYear() && from.getMonth() === to.getMonth() && from.getDate() === to.getDate();
+
+            if (isSameDate) {
+                return formatMonthAndDay(from);
+            }
+
+            return from.getFullYear() === to.getFullYear()
+                ? `${formatMonthAndDay(from)} – ${formatMonthAndDay(to)}`
+                : `${formatDayAndMonthAndYear(from)} – ${formatDayAndMonthAndYear(to)}`;
         }
 
-        if (isDefined(value.from)) {
-            return formatMonthAndDay(value.from);
+        if (isDefined(from)) {
+            return formatMonthAndDay(from);
         }
 
-        if (isDefined(value.to)) {
-            return formatMonthAndDay(value.to);
-        }
-
-        return t`Date`;
+        return isDefined(to) ? formatMonthAndDay(to) : t`Date`;
     };
 
     const hasDateFilterSelected = isDefined(value?.from) || isDefined(value?.to);

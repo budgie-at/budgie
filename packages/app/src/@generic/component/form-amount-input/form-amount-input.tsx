@@ -1,6 +1,6 @@
 import { cva } from 'class-variance-authority';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -12,6 +12,8 @@ import { AmountInput } from '../amount-input/amount-input';
 import { SignTogglePill } from '../sign-toggle-pill/sign-toggle-pill';
 
 const BASE_FONT_SIZE = 72;
+const SUFFIX_FONT_SIZE_RATIO = 0.4;
+const MINIMUM_SUFFIX_FONT_SIZE = 22;
 
 interface Props {
     readonly value: number;
@@ -21,6 +23,8 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly allowNegative?: boolean;
     readonly autoFocus?: boolean;
+    readonly minimumDecimalPlaces?: number;
+    readonly showInstrumentAfterAmount?: boolean;
     readonly onChange: (value: number) => void;
 }
 
@@ -30,11 +34,32 @@ const textVariants = cva('', {
     }
 });
 
+const styles = StyleSheet.create({
+    amountWithSuffix: {
+        flex: 1,
+        textAlign: 'right'
+    }
+});
+
+const amountInputVariants = cva('text-primary placeholder-secondary-reverse-foreground border-0 h-auto');
+
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const FormAmountInput = (props: Props) => {
-    const { value, onChange, variant, textClassName, instrumentSymbol, allowNegative = false, autoFocus, testID } = props;
+    const {
+        value,
+        onChange,
+        variant,
+        textClassName,
+        instrumentSymbol,
+        allowNegative = false,
+        autoFocus,
+        minimumDecimalPlaces = 0,
+        testID,
+        showInstrumentAfterAmount = false
+    } = props;
     const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const visibleDecimalPlaces = Math.max(decimalPlaces, minimumDecimalPlaces);
+    const formatDigits = useFormatDigits(visibleDecimalPlaces);
 
     const [isNegative, setIsNegative] = useState(value < 0);
     const [previousValue, setPreviousValue] = useState(value);
@@ -51,10 +76,13 @@ export const FormAmountInput = (props: Props) => {
     const displayedText = absoluteValue === 0 ? '' : formatDigits(absoluteValue.toString());
     const effectiveVariant = allowNegative && isNegative ? 'destructive' : variant;
 
-    const fullText = `${instrumentSymbol} ${displayedText}`;
+    const fullText = showInstrumentAfterAmount ? `${displayedText} ${instrumentSymbol}` : `${instrumentSymbol} ${displayedText}`;
     const { fontSize, onContainerLayout } = useAutoScaleFont(BASE_FONT_SIZE, fullText);
 
     const fontSizeStyle = { fontSize };
+    const suffixFontSizeStyle = { fontSize: Math.max(MINIMUM_SUFFIX_FONT_SIZE, Math.round(fontSize * SUFFIX_FONT_SIZE_RATIO)) };
+    const amountInputClassName = cn(amountInputVariants(), textClassName);
+    const amountInputStyle = showInstrumentAfterAmount ? [fontSizeStyle, styles.amountWithSuffix] : fontSizeStyle;
 
     const handleToggleSign = () => {
         const newIsNegative = !isNegative;
@@ -78,19 +106,29 @@ export const FormAmountInput = (props: Props) => {
             ) : null}
 
             <View className="flex-row flex-1 items-center overflow-hidden" onLayout={onContainerLayout}>
-                <Text className={textVariants({ variant: effectiveVariant })} style={fontSizeStyle}>
-                    {instrumentSymbol}{' '}
-                </Text>
+                {showInstrumentAfterAmount ? null : (
+                    <Text className={textVariants({ variant: effectiveVariant })} style={fontSizeStyle}>
+                        {instrumentSymbol}{' '}
+                    </Text>
+                )}
 
                 <AmountInput
                     testID={testID}
                     value={absoluteValue}
                     onChangeValue={handleAmountChange}
-                    inputClassName={cn('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}
+                    inputClassName={amountInputClassName}
                     placeholder={formatDigits(0)}
                     autoFocus={autoFocus}
-                    style={fontSizeStyle}
+                    minimumDecimalPlaces={minimumDecimalPlaces}
+                    style={amountInputStyle}
                 />
+
+                {showInstrumentAfterAmount ? (
+                    <Text className={textVariants({ variant: effectiveVariant })} style={suffixFontSizeStyle}>
+                        {' '}
+                        {instrumentSymbol}
+                    </Text>
+                ) : null}
             </View>
         </View>
     );

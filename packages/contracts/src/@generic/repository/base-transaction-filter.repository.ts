@@ -71,7 +71,7 @@ export abstract class BaseTransactionFilterRepository {
     }
 
     protected buildLedgerEntryCondition() {
-        return isNull(TransactionEntryEntityTable.originalTransactionId);
+        return and(isNull(TransactionEntryEntityTable.originalTransactionId), isNull(TransactionEntryEntityTable.deletedAt));
     }
 
     private buildUncategorizedCondition() {
@@ -80,13 +80,7 @@ export abstract class BaseTransactionFilterRepository {
             this.db
                 .select({ transactionId: TransactionEntryEntityTable.transactionId })
                 .from(TransactionEntryEntityTable)
-                .where(
-                    and(
-                        isNull(TransactionEntryEntityTable.categoryId),
-                        this.buildLedgerEntryCondition(),
-                        isNull(TransactionEntryEntityTable.deletedAt)
-                    )
-                )
+                .where(and(isNull(TransactionEntryEntityTable.categoryId), this.buildLedgerEntryCondition()))
         );
     }
 

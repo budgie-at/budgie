@@ -28,6 +28,10 @@ import m0023 from './0023_add_mcc_default_category.sql';
 import m0024 from './0024_default_category_translations.sql';
 import m0025 from './0025_add_consolidation_query_indexes.sql';
 import m0026 from './0026_money_data_upgrade.sql';
+import m0027 from './0027_mark_fee_entries.sql';
+import m0028 from './0028_add_crypto_instruments.sql';
+import m0029 from './0029_add_instrument_market_data_jobs.sql';
+import m0030 from './0030_seed_top_crypto_market_prices.sql';
 
 export default {
     journal,
@@ -58,6 +62,10 @@ export default {
         m0023,
         m0024,
         m0025,
-        m0026
+        m0026,
+        m0027,
+        m0028,
+        m0029,
+        m0030
     }
 };

@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { Code2, Eye, Github, Heart, Shield, Users } from 'lucide-react';
+import { Code2, Eye, GitBranch, Heart, Shield, Users } from 'lucide-react';
 import Link from 'next/link';
 
 import { Badge } from '../../../ui/badge';
@@ -59,7 +59,7 @@ export const OpenSourceContent = ({ locale }: Props) => (
             <Button asChild className="rounded-full" size="lg">
                 {/* eslint-disable-next-line lingui/no-unlocalized-strings */}
                 <Link href="https://github.com/budgie-at/budgie" rel="noopener noreferrer" target="_blank">
-                    <Github className="mr-2 size-5" />
+                    <GitBranch className="mr-2 size-5" />
                     <Trans>View on GitHub</Trans>
                 </Link>
             </Button>
