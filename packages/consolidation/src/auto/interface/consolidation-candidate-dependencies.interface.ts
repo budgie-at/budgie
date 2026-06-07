@@ -1,4 +1,5 @@
-import type { RefundPairRepository, TransferPairRepository } from '@budgie/contracts';
+import type { RefundPairRepository } from '../../query/repository/refund-pair.repository';
+import type { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
 
 export interface ConsolidationCandidateDependenciesInterface {
     readonly refundPairRepository: Pick<RefundPairRepository, 'findCandidates' | 'findReviewCandidates'>;

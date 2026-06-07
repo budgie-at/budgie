@@ -10,11 +10,10 @@ class ConsolidationScopeService {
     private static readonly PADDING_MS = REFUND_TIME_WINDOW_SECONDS * (1 + ConsolidationScopeService.SAFETY_MARGIN_RATIO) * 1000;
 
     @Log(
-        transactions => `enter transactionIds=${transactions.map(transaction => transaction.id).join(',')}`,
+        transactions => `enter transactionCount=${transactions.length}`,
         (result, transactions) =>
-            `done transactionIds=${transactions.map(transaction => transaction.id).join(',')} scopeTransactionIds=${result?.transactionIds.join(',') ?? ''} scopeFrom=${result?.operatedAtFrom.toISOString() ?? ''} scopeTo=${result?.operatedAtTo.toISOString() ?? ''}`,
-        (error, transactions) =>
-            `throw transactionIds=${transactions.map(transaction => transaction.id).join(',')} error=${getErrorMessage(error)}`
+            `done transactionCount=${transactions.length} hasScope=${String(isNotEmptyArray(result?.transactionIds ?? []))} scopeIdCount=${result?.transactionIds.length ?? 0}`,
+        (error, transactions) => `throw transactionCount=${transactions.length} error=${getErrorMessage(error)}`
     )
     buildFromTransactions(transactions: Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]): ConsolidationScanScopeInterface | null {
         if (!isNotEmptyArray(transactions)) {
@@ -35,11 +34,11 @@ class ConsolidationScopeService {
 
     @Log(
         (currentScope, nextScope) =>
-            `enter currentTransactionIds=${currentScope.transactionIds.join(',')} currentFrom=${currentScope.operatedAtFrom.toISOString()} currentTo=${currentScope.operatedAtTo.toISOString()} nextTransactionIds=${nextScope.transactionIds.join(',')} nextFrom=${nextScope.operatedAtFrom.toISOString()} nextTo=${nextScope.operatedAtTo.toISOString()}`,
+            `enter currentIdCount=${currentScope.transactionIds.length} nextIdCount=${nextScope.transactionIds.length}`,
         (result, currentScope, nextScope) =>
-            `done currentTransactionIds=${currentScope.transactionIds.join(',')} currentFrom=${currentScope.operatedAtFrom.toISOString()} currentTo=${currentScope.operatedAtTo.toISOString()} nextTransactionIds=${nextScope.transactionIds.join(',')} nextFrom=${nextScope.operatedAtFrom.toISOString()} nextTo=${nextScope.operatedAtTo.toISOString()} resultTransactionIds=${result.transactionIds.join(',')} resultFrom=${result.operatedAtFrom.toISOString()} resultTo=${result.operatedAtTo.toISOString()}`,
+            `done currentIdCount=${currentScope.transactionIds.length} nextIdCount=${nextScope.transactionIds.length} resultIdCount=${result.transactionIds.length}`,
         (error, currentScope, nextScope) =>
-            `throw currentTransactionIds=${currentScope.transactionIds.join(',')} currentFrom=${currentScope.operatedAtFrom.toISOString()} currentTo=${currentScope.operatedAtTo.toISOString()} nextTransactionIds=${nextScope.transactionIds.join(',')} nextFrom=${nextScope.operatedAtFrom.toISOString()} nextTo=${nextScope.operatedAtTo.toISOString()} error=${getErrorMessage(error)}`
+            `throw currentIdCount=${currentScope.transactionIds.length} nextIdCount=${nextScope.transactionIds.length} error=${getErrorMessage(error)}`
     )
     merge(currentScope: ConsolidationScanScopeInterface, nextScope: ConsolidationScanScopeInterface): ConsolidationScanScopeInterface {
         return {
