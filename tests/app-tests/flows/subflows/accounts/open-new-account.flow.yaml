@@ -15,6 +15,14 @@ appId: ${APP_ID}
     commands:
       - tapOn:
           id: 'ActionButton'
+          optional: true
+      - runFlow:
+          when:
+            notVisible:
+              id: 'ActionItem.AddAccount'
+          commands:
+            - tapOn:
+                point: '88%,94%'
       - extendedWaitUntil:
           visible:
             id: 'ActionItem.AddAccount'

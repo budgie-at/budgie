@@ -38,7 +38,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
         transaction: convertTransactionToInput(transaction),
         schema: ExpenseTransactionCreateInputSchema,
         id: transactionId,
-        onAfterSubmit: () => void markForEmbedding({ transactionId })
+        onAfterSubmit: () => void markForEmbedding(transactionId)
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });

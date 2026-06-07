@@ -15,6 +15,8 @@ export { MccCategoryEntityRelations } from './mcc-category/relations/mcc-categor
 export { ExchangeRateEntityTable } from './exchange-rate/table/exchange-rate-entity.table';
 export { ExchangeRateEntityRelations } from './exchange-rate/relations/exchange-rate-entity.relations';
 export { HistoricalExchangeRateEntityTable } from './historical-exchange-rate/table/historical-exchange-rate-entity.table';
+export { InstrumentDailyMarketPriceEntityTable } from './instrument-daily-market-price/table/instrument-daily-market-price-entity.table';
+export { InstrumentMarketDataJobEntityTable } from './instrument-market-data-job/table/instrument-market-data-job-entity.table';
 export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';
 export { InstrumentEntityRelations } from './instrument/relations/instrument-entity.relations';
 export { SettingsEntityTable } from './settings/table/settings-entity.table';

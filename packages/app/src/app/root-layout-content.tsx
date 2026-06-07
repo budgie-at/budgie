@@ -20,6 +20,7 @@ import '../sync/task/monobank-sync.task';
 import '../sync/task/transfer-consolidation.task';
 import '../global.css';
 import { DevMenuController } from '../@generic/component/dev-menu-controller/dev-menu-controller';
+import { DrizzleStudioController } from '../@generic/component/drizzle-studio-controller/drizzle-studio-controller';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { ScreenshotProtectionController } from '../@generic/component/screenshot-protection-controller/screenshot-protection-controller';
 import { APP_TOAST_CONFIG } from '../@generic/constant/app-toast-config.constant';
@@ -58,6 +59,7 @@ import { AuthProvider } from '../auth/provider/auth.provider';
 import { exchangeRatesSyncService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
+import { historicalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../sync/service/sync-workload.service';
@@ -71,11 +73,14 @@ i18n.activate(i18nGetOSLocale());
 void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
+const drizzleStudioEnvironmentVariable = 'EXPO_PUBLIC_DRIZZLE_STUDIO_ENABLE';
+const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVariable] === 'true';
 
 const syncForegroundData = async (): Promise<void> => {
-    await exchangeRatesSyncService.sync();
-    await monobankSyncService.sync();
-    await accountBalanceIncrementalService.updateAllBalances(false);
+    await exchangeRatesSyncService.sync().catch(emptyFn);
+    await monobankSyncService.sync().catch(emptyFn);
+    await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
+    void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
 };
 
 const handleAppStateChange = (isActive: boolean): void => {
@@ -96,11 +101,14 @@ export const RootLayoutContent = () => {
         return null;
     }
 
+    const drizzleStudioController = isDrizzleStudioEnabled ? <DrizzleStudioController /> : null;
+
     return (
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
             <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
                 <SettingsProvider>
                     {__DEV__ && <DevMenuController />}
+                    {drizzleStudioController}
                     <ScreenshotProtectionController />
                     <I18nProvider>
                         <KeyboardProvider>
@@ -118,6 +126,7 @@ export const RootLayoutContent = () => {
                                                                 <Stack.Screen name="(main)/create-account" />
                                                                 <Stack.Screen name="(main)/account/[id]/details" />
                                                                 <Stack.Screen name="(main)/account/[id]/update" />
+                                                                <Stack.Screen name="(main)/currency/[id]" />
                                                                 <Stack.Screen name="(main)/create-transaction/expense" />
                                                                 <Stack.Screen name="(main)/create-transaction/income" />
                                                                 <Stack.Screen name="(main)/create-transaction/transfer" />

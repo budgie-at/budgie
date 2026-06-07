@@ -7,15 +7,17 @@ import { useShowError } from '../../@generic/hook/use-show-error.hook';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 
 export const useAccountForm = (
-    defaultValues: LiabilityAccountCreateInputInterface,
+    values: LiabilityAccountCreateInputInterface,
     onSubmit: (values: LiabilityAccountCreateInputInterface) => Promise<AccountEntityInterface>
 ) => {
     const showError = useShowError();
     const form = useForm({
         resolver: zodResolver(LiabilityAccountCreateInputSchema),
         mode: 'onSubmit',
-        defaultValues,
-        values: defaultValues
+        values,
+        resetOptions: {
+            keepDirtyValues: true
+        }
     });
 
     const instrumentId = useWatch({

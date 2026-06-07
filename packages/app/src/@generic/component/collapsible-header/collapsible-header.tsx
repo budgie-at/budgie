@@ -5,7 +5,6 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-na
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NetWorthAssetChips } from '../../../account/component/net-worth-asset-chips/net-worth-asset-chips';
-import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -16,6 +15,11 @@ import type { SharedValue } from 'react-native-reanimated';
 
 interface Props {
     readonly scrollY: SharedValue<number>;
+    readonly netWorth: number;
+    readonly fiatTotal: number;
+    readonly cryptoTotal: number;
+    readonly fiatCount: number;
+    readonly cryptoCount: number;
 }
 
 const HEADER_COLLAPSED_HEIGHT = 40;
@@ -28,11 +32,10 @@ const EXPANDED_SCALE_MIN = 0.9;
 const EXPANDED_TRANSLATE_Y = -20;
 const COLLAPSED_TRANSLATE_Y = 10;
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Animated header with multiple interpolated styles
-export const CollapsibleHeader = ({ scrollY }: Props) => {
+// eslint-disable-next-line max-lines-per-function -- Animated header with multiple interpolated styles
+export const CollapsibleHeader = ({ scrollY, netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
     const { top } = useSafeAreaInsets();
     const { defaultInstrument } = useSettingsContext();
-    const netWorth = useNetWorthQuery();
     const formatDigits = useDisplayFormatDigits();
     const [expandedHeaderWidth, setExpandedHeaderWidth] = useState(0);
 
@@ -41,9 +44,10 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
     const netWorthValueTestID = HomePageSelector.NetWorthValue(formattedNetWorthValue);
 
     const expandedHeaderStyle = useAnimatedStyle(() => {
-        const opacity = interpolate(scrollY.value, [0, SCROLL_THRESHOLD * EXPANDED_OPACITY_THRESHOLD], [1, 0], Extrapolation.CLAMP);
-        const translateY = interpolate(scrollY.value, [0, SCROLL_THRESHOLD], [0, EXPANDED_TRANSLATE_Y], Extrapolation.CLAMP);
-        const scale = interpolate(scrollY.value, [0, SCROLL_THRESHOLD], [1, EXPANDED_SCALE_MIN], Extrapolation.CLAMP);
+        const currentScrollY = scrollY.get();
+        const opacity = interpolate(currentScrollY, [0, SCROLL_THRESHOLD * EXPANDED_OPACITY_THRESHOLD], [1, 0], Extrapolation.CLAMP);
+        const translateY = interpolate(currentScrollY, [0, SCROLL_THRESHOLD], [0, EXPANDED_TRANSLATE_Y], Extrapolation.CLAMP);
+        const scale = interpolate(currentScrollY, [0, SCROLL_THRESHOLD], [1, EXPANDED_SCALE_MIN], Extrapolation.CLAMP);
 
         return {
             opacity,
@@ -52,14 +56,15 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
     });
 
     const collapsedHeaderStyle = useAnimatedStyle(() => {
+        const currentScrollY = scrollY.get();
         const collapsedStart = SCROLL_THRESHOLD * COLLAPSED_OPACITY_THRESHOLD;
 
         return {
-            opacity: interpolate(scrollY.value, [collapsedStart, SCROLL_THRESHOLD], [0, 1], Extrapolation.CLAMP),
+            opacity: interpolate(currentScrollY, [collapsedStart, SCROLL_THRESHOLD], [0, 1], Extrapolation.CLAMP),
             transform: [
                 {
                     translateY: interpolate(
-                        scrollY.value,
+                        currentScrollY,
                         [collapsedStart, SCROLL_THRESHOLD],
                         [COLLAPSED_TRANSLATE_Y, 0],
                         Extrapolation.CLAMP
@@ -71,7 +76,7 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
 
     const headerBackgroundStyle = useAnimatedStyle(() => ({
         opacity: interpolate(
-            scrollY.value,
+            scrollY.get(),
             [SCROLL_THRESHOLD * BACKGROUND_OPACITY_THRESHOLD, SCROLL_THRESHOLD],
             [0, 1],
             Extrapolation.CLAMP
@@ -79,7 +84,7 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
     }));
 
     const headerContainerStyle = useAnimatedStyle(() => ({
-        height: interpolate(scrollY.value, [0, SCROLL_THRESHOLD], [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT], Extrapolation.CLAMP)
+        height: interpolate(scrollY.get(), [0, SCROLL_THRESHOLD], [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT], Extrapolation.CLAMP)
     }));
 
     const containerStyle = { paddingTop: top };
@@ -126,7 +131,7 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
                         </ProtectedMoney>
                     </View>
 
-                    <NetWorthAssetChips />
+                    <NetWorthAssetChips fiatTotal={fiatTotal} cryptoTotal={cryptoTotal} fiatCount={fiatCount} cryptoCount={cryptoCount} />
                 </Animated.View>
             </Animated.View>
         </View>

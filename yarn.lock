@@ -1055,6 +1055,7 @@ __metadata:
     "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
     "@expo/fingerprint": "npm:~0.19.3"
+    "@expo/metro-config": "npm:~56.0.13"
     "@expo/ui": "npm:~56.0.15"
     "@formatjs/intl": "npm:^4.1.12"
     "@formatjs/intl-pluralrules": "npm:^6.3.8"
@@ -1116,7 +1117,7 @@ __metadata:
     lightningcss: "npm:1.30.1"
     llama.rn: "npm:^0.12.4"
     lucide-react-native: "npm:^1.17.0"
-    nativewind: "npm:^5.0.0-preview.2"
+    nativewind: "npm:^5.0.0-preview.4"
     papaparse: "npm:^5.5.3"
     postcss: "npm:^8.5.15"
     react: "npm:19.2.3"
@@ -1125,9 +1126,9 @@ __metadata:
     react-hook-form: "npm:^7.76.1"
     react-native: "npm:0.85.3"
     react-native-audio-api: "npm:^0.12.2"
-    react-native-css: "patch:react-native-css@3.0.1#patches/react-native-css.patch"
+    react-native-css: "npm:^3.0.7"
     react-native-gesture-handler: "npm:~2.31.1"
-    react-native-keyboard-controller: "npm:1.21.6"
+    react-native-keyboard-controller: "npm:1.21.9"
     react-native-reanimated: "npm:4.3.1"
     react-native-safe-area-context: "npm:~5.7.0"
     react-native-screens: "npm:4.25.2"
@@ -6726,6 +6727,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/debug@npm:^4.1.12":
+  version: 4.1.13
+  resolution: "@types/debug@npm:4.1.13"
+  dependencies:
+    "@types/ms": "npm:*"
+  checksum: 10/5091d4ebda85236e6f4a6ecea552860e521e11d1d388d3f6255b40726f5a4a7cf1baa0d09f60853838e4cac6c12a13b14114d5f422ccecaee4d1d07dab349900
+  languageName: node
+  linkType: hard
+
 "@types/deep-eql@npm:*":
   version: 4.0.2
   resolution: "@types/deep-eql@npm:4.0.2"
@@ -6799,6 +6809,13 @@ __metadata:
   version: 1.2.5
   resolution: "@types/minimist@npm:1.2.5"
   checksum: 10/477047b606005058ab0263c4f58097136268007f320003c348794f74adedc3166ffc47c80ec3e94687787f2ab7f4e72c468223946e79892cf0fd9e25e9970a90
+  languageName: node
+  linkType: hard
+
+"@types/ms@npm:*":
+  version: 2.1.0
+  resolution: "@types/ms@npm:2.1.0"
+  checksum: 10/532d2ebb91937ccc4a89389715e5b47d4c66e708d15942fe6cc25add6dc37b2be058230a327dd50f43f89b8b6d5d52b74685a9e8f70516edfc9bdd6be910eff4
   languageName: node
   linkType: hard
 
@@ -15659,15 +15676,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nativewind@npm:^5.0.0-preview.2":
-  version: 5.0.0-preview.2
-  resolution: "nativewind@npm:5.0.0-preview.2"
+"nativewind@npm:^5.0.0-preview.4":
+  version: 5.0.0-preview.4
+  resolution: "nativewind@npm:5.0.0-preview.4"
   dependencies:
     tailwindcss-safe-area: "npm:^1.1.0"
   peerDependencies:
     react-native-css: ^3.0.1
     tailwindcss: ">4.1.11"
-  checksum: 10/9136e819d051eae8ceebbc2339e12bf0af5c70e0a28219694ce25e840342977dc65e76b755c21dba600e1ca84a7b0f01b1dadd38057c52a8ab0368ecfb964bc4
+  checksum: 10/15f430886d4f85e030533f2430e2aac8d1345751265bbceb1c5ebd33df9904696acf267a5dfe7e14b29566db9bb4f4f76ac3c6b6bb2fe01e390b0c11d002a1c9
   languageName: node
   linkType: hard
 
@@ -17664,10 +17681,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-css@npm:3.0.1":
-  version: 3.0.1
-  resolution: "react-native-css@npm:3.0.1"
+"react-native-css@npm:^3.0.7":
+  version: 3.0.7
+  resolution: "react-native-css@npm:3.0.7"
   dependencies:
+    "@types/debug": "npm:^4.1.12"
     babel-plugin-react-compiler: "npm:^19.1.0-rc.2"
     colorjs.io: "npm:0.6.0-alpha.1"
     comment-json: "npm:^4.2.5"
@@ -17677,24 +17695,7 @@ __metadata:
     lightningcss: ">=1.27.0"
     react: ">=19"
     react-native: ">=0.81"
-  checksum: 10/0b4c98a05599bd41d634a62625bcace954b94875d7ee72996a4b07f48e63c2188a670d451e7193ee634312dd585d46749330d431bcc821263242d654d607a563
-  languageName: node
-  linkType: hard
-
-"react-native-css@patch:react-native-css@3.0.1#patches/react-native-css.patch::locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp":
-  version: 3.0.1
-  resolution: "react-native-css@patch:react-native-css@npm%3A3.0.1#patches/react-native-css.patch::version=3.0.1&hash=5621ce&locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp"
-  dependencies:
-    babel-plugin-react-compiler: "npm:^19.1.0-rc.2"
-    colorjs.io: "npm:0.6.0-alpha.1"
-    comment-json: "npm:^4.2.5"
-    debug: "npm:^4.4.1"
-  peerDependencies:
-    "@expo/metro-config": ">=54"
-    lightningcss: ">=1.27.0"
-    react: ">=19"
-    react-native: ">=0.81"
-  checksum: 10/74c8c023b7fe7921d56bced501b8cf5a714a1cf196c04e0f090a431866f96b1415ec4f78e3cb16ccd383e428dfcb91155de59861f7afb5873b3ba1d9f0268930
+  checksum: 10/151ef478b138413d74015509a4cad6e962674bb3a7a04e2f82e6f460e49400ed36d4d016eccdf94e6f8128d63c2979e77270b897d5c78d8a0821ca06cb0bef6e
   languageName: node
   linkType: hard
 
@@ -17738,16 +17739,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-keyboard-controller@npm:1.21.6":
-  version: 1.21.6
-  resolution: "react-native-keyboard-controller@npm:1.21.6"
+"react-native-keyboard-controller@npm:1.21.9":
+  version: 1.21.9
+  resolution: "react-native-keyboard-controller@npm:1.21.9"
   dependencies:
     react-native-is-edge-to-edge: "npm:^1.2.1"
   peerDependencies:
     react: "*"
     react-native: "*"
     react-native-reanimated: ">=3.0.0"
-  checksum: 10/4d5831665ff5208067ef312e3673844d8738a648e6f211f7e69fbf4fbefa6cd94d47ace84bc5179cfa433a371bf38f5df222481493cb1621af37d2e62458a30e
+  checksum: 10/54c91528fa7730a41efe1688fad32dbbe6f32878b5bb1ef3fc78e4fba837704efe3a34cfa0c7c674608ad32f5e677bfcb6c7c237697b20252784fc51c2def4ff
   languageName: node
   linkType: hard
 

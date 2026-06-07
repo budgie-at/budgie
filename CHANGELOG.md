@@ -3,6 +3,65 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.36.1](https://github.com/budgie-at/budgie/compare/v5.36.0...v5.36.1) (2026-06-07)
+
+### Bug Fixes
+
+- **contracts:** keep market query builders undecorated ([#560](https://github.com/budgie-at/budgie/issues/560)) ([3d349c2](https://github.com/budgie-at/budgie/commit/3d349c2cffb4868fa659a80e0356a61af6f74e35))
+
+# [5.36.0](https://github.com/budgie-at/budgie/compare/v5.35.6...v5.36.0) (2026-06-07)
+
+### Bug Fixes
+
+- **app:** keep filter search near keyboard ([#559](https://github.com/budgie-at/budgie/issues/559)) ([a7b07a4](https://github.com/budgie-at/budgie/commit/a7b07a4144a7e501a4c05117fcad8b864d0e246d))
+
+### Features
+
+- **app:** add crypto market history ([#543](https://github.com/budgie-at/budgie/issues/543)) ([24f7c37](https://github.com/budgie-at/budgie/commit/24f7c37928b31067f9560b4ff5ac9bf8588f0239))
+
+## [5.35.6](https://github.com/budgie-at/budgie/compare/v5.35.5...v5.35.6) (2026-06-07)
+
+### Bug Fixes
+
+- **app:** show all account types in analytics account filter ([#553](https://github.com/budgie-at/budgie/issues/553)) ([e333a5c](https://github.com/budgie-at/budgie/commit/e333a5c9fedde343ade33ab8aea1f740c7139379))
+
+## [5.35.5](https://github.com/budgie-at/budgie/compare/v5.35.4...v5.35.5) (2026-06-06)
+
+### Bug Fixes
+
+- **app:** enqueue consolidation after file imports ([d8122a6](https://github.com/budgie-at/budgie/commit/d8122a68abfe639b586452e651c9458db0ec6d00))
+- **app:** scope balance refreshes ([c3afcd4](https://github.com/budgie-at/budgie/commit/c3afcd427669b7c798a72f953483dfb5f9e91da6))
+- **app:** stabilize home layout styling ([18b160b](https://github.com/budgie-at/budgie/commit/18b160ba6100b8d4d6fd12f135239d571c49e05a))
+- **app:** stabilize transaction processing ([b2d6717](https://github.com/budgie-at/budgie/commit/b2d6717d8361842cc1987bd4b25a9c3b49f211b3))
+
+## [5.35.4](https://github.com/budgie-at/budgie/compare/v5.35.3...v5.35.4) (2026-06-06)
+
+### Bug Fixes
+
+- **app:** clear suggestion hook dependency warning ([1c5134f](https://github.com/budgie-at/budgie/commit/1c5134f13394f379661beb3c5bec11a78cb3f35c))
+- consolidate ATM withdrawals with fees ([e416598](https://github.com/budgie-at/budgie/commit/e4165988c96d0e55adc4679b47db142d3f8a8508))
+
+## [5.35.3](https://github.com/budgie-at/budgie/compare/v5.35.2...v5.35.3) (2026-06-06)
+
+### Bug Fixes
+
+- **app:** reduce Home tab SQLite fanout ([3f9e2eb](https://github.com/budgie-at/budgie/commit/3f9e2eb779f1c9976c0b69552f0b7fe10aa3ac5f))
+
+### Performance Improvements
+
+- **app:** consolidate Home data query ([c536bb6](https://github.com/budgie-at/budgie/commit/c536bb64c4d51d39ad3d2896234180b933c38dd1))
+- **app:** defer hidden analytics queries ([104458a](https://github.com/budgie-at/budgie/commit/104458a99a1bfbe30f6da966cb8d0b0467badc40))
+
+## [5.35.2](https://github.com/budgie-at/budgie/compare/v5.35.1...v5.35.2) (2026-06-06)
+
+**Note:** Version bump only for package @budgie-at/root
+
+## [5.35.1](https://github.com/budgie-at/budgie/compare/v5.35.0...v5.35.1) (2026-06-06)
+
+### Bug Fixes
+
+- dedupe repeated bank imports ([7a67803](https://github.com/budgie-at/budgie/commit/7a67803024cc590a1129209bf984dc65a8f008f9))
+
 # [5.35.0](https://github.com/budgie-at/budgie/compare/v5.34.1...v5.35.0) (2026-06-05)
 
 ### Bug Fixes
