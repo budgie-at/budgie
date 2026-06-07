@@ -49,11 +49,14 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         }
 
         const pattern = `%${trimmed.toLowerCase()}%`;
+        const localizedTitleSearchExpressions = this.buildSearchPatterns(trimmed).map(searchPattern =>
+            like(DefaultCategoryTranslationEntityTable.title, searchPattern)
+        );
         const searchExpr = or(
             like(CategoryEntityTable.titleSearch, pattern),
             like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleEn}, ''))`, pattern),
             like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleTags}, ''))`, pattern),
-            like(sql<string>`LOWER(COALESCE(${DefaultCategoryTranslationEntityTable.title}, ''))`, pattern)
+            ...localizedTitleSearchExpressions
         );
 
         return sortedByUsage
@@ -174,5 +177,13 @@ export class CategoryRepository extends TranslatableRepositoryBase {
                     eq(DefaultCategoryTranslationEntityTable.language, language)
                 )
             );
+    }
+
+    private buildSearchPatterns(search: string): string[] {
+        const lowerSearch = search.toLowerCase();
+        const upperSearch = search.toUpperCase();
+        const capitalizedSearch = `${lowerSearch.charAt(0).toUpperCase()}${lowerSearch.slice(1)}`;
+
+        return [...new Set([search, lowerSearch, upperSearch, capitalizedSearch].map(value => `%${value}%`))];
     }
 }

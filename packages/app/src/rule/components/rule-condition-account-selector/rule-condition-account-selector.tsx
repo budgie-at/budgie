@@ -27,7 +27,10 @@ export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
 
     const renderSelector = ({ field: { onChange } }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.value`>) => {
         const handleOpen = async () => {
-            const selectedAccountId = await openAccountSelector({ initialAccountId: isPositiveNumber(accountId) ? accountId : null });
+            const selectedAccountId = await openAccountSelector({
+                initialAccountId: isPositiveNumber(accountId) ? accountId : null,
+                onlyActive: false
+            });
 
             if (isDefined(selectedAccountId)) {
                 onChange(String(selectedAccountId));

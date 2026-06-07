@@ -7,7 +7,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import type { BankTransactionInterface } from '@budgie/bank-sync';
 import type { MccCategoryLookupInterface, TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
@@ -31,6 +31,7 @@ export const mapBankTransactionToCreateInput = (
     const hasFee = isPositiveNumber(feeAmount) && feeAmount < amount;
     const mainAmount = hasFee ? amount - feeAmount : amount;
     const exchangeRate = getExchangeRate(mainAmount, Math.abs(bankTransaction.operationAmount));
+    const externalIdAliases = bankTransaction.legacyExternalIds ?? [];
 
     const mainEntry: TransactionEntryCreateInputInterface = {
         accountId,
@@ -46,7 +47,7 @@ export const mapBankTransactionToCreateInput = (
 
     const feeEntry: TransactionEntryCreateInputInterface = {
         accountId,
-        type: entryType,
+        type: TransactionEntryTypeEnum.FEE,
         amount: feeAmount,
         categoryId: BANK_FEE_CATEGORY_ID,
         categorySource: CategorySourceEnum.FEE,
@@ -64,6 +65,7 @@ export const mapBankTransactionToCreateInput = (
         exchangeRate,
         operatedAt: new Date(bankTransaction.time * 1000),
         externalId: bankTransaction.id,
+        ...(isNotEmptyArray(externalIdAliases) && { externalIdAliases: [...externalIdAliases] }),
         updatedBy: null,
         externalSource: provider,
         fromAccountId: isIncome ? null : accountId,

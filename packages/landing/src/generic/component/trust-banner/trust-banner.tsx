@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { Github, Shield, Zap } from 'lucide-react';
+import { GitBranch, Shield, Zap } from 'lucide-react';
 import Link from 'next/link';
 
 import { Motion } from '../motion/motion';
@@ -28,7 +28,7 @@ export const TrustBanner = () => (
                     rel="noopener noreferrer" // eslint-disable-line lingui/no-unlocalized-strings
                     target="_blank"
                 >
-                    <Github className="size-4" />
+                    <GitBranch className="size-4" />
 
                     <span className="font-semibold">
                         <Trans>Source-Available</Trans>

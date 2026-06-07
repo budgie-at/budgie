@@ -1,39 +1,61 @@
-import { getLogger } from '@budgie/logger';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { emptyFn } from '@rnw-community/shared';
 
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { authService } from '../../auth/service/auth.service';
 import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
+import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
+import { scheduleIdleCallback } from '../utils/schedule-idle-callback.util';
 
-const logger = getLogger('useAppInitialization');
+const SPLASH_HIDE_DELAY_MS = 200;
+const STARTUP_SERVICE_DELAY_MS = 1_000;
+
+const syncAppData = async (): Promise<void> => {
+    await exchangeRatesSyncService.sync().catch(emptyFn);
+    await monobankSyncService.sync().catch(emptyFn);
+    await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
+};
+
+const initializeAppServices = async (): Promise<void> => {
+    await authService.ensurePinBackgroundAccessibility().catch(emptyFn);
+    await exchangeRatesSyncService.registerBackgroundTask().catch(emptyFn);
+    await accountBalanceIncrementalService.registerBackgroundTask().catch(emptyFn);
+    await transferConsolidationService.registerBackgroundTask().catch(emptyFn);
+    await monobankSyncService.registerBackgroundTask().catch(emptyFn);
+    await syncWorkloadService.run('startup', syncAppData);
+};
+
+const scheduleAppServicesInitialization = (): (() => void) => {
+    let cancelIdleCallback: () => void = emptyFn;
+
+    const timer = setTimeout(() => {
+        cancelIdleCallback = scheduleIdleCallback(() => {
+            void initializeAppServices().catch(emptyFn);
+        });
+    }, STARTUP_SERVICE_DELAY_MS);
+
+    return () => {
+        clearTimeout(timer);
+        cancelIdleCallback();
+    };
+};
 
 export const useAppInitialization = (success: boolean) => {
     useEffect(() => {
-        const init = async () => {
-            if (success) {
-                try {
-                    void exchangeRatesSyncService.sync();
-                    void exchangeRatesSyncService.registerBackgroundTask();
+        if (!success) {
+            return emptyFn;
+        }
 
-                    void accountBalanceIncrementalService.updateAllBalances(false);
-                    void accountBalanceIncrementalService.registerBackgroundTask();
+        const cancelAppServicesInitialization = scheduleAppServicesInitialization();
+        const splashHideTimer = setTimeout(() => void SplashScreen.hideAsync(), SPLASH_HIDE_DELAY_MS);
 
-                    void monobankSyncService.sync();
-                    void monobankSyncService.registerBackgroundTask();
-
-                    void transferConsolidationService.registerBackgroundTask();
-                } catch (error: unknown) {
-                    logger.error('failed', { errorMessage: getErrorMessage(error) });
-                } finally {
-                    setTimeout(() => void SplashScreen.hideAsync(), 200);
-                }
-            }
+        return () => {
+            cancelAppServicesInitialization();
+            clearTimeout(splashHideTimer);
         };
-
-        void init();
     }, [success]);
 };

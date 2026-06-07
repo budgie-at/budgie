@@ -1,10 +1,17 @@
-import { and, desc, eq, getTableColumns, inArray, ne, sql } from 'drizzle-orm';
+/* eslint-disable max-lines -- File owns the single multi-stage statistics SQL aggregation pipeline that must stay together */
+import { SQL, and, desc, eq, getTableColumns, inArray, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { buildTranslatedCategoryRelation } from '../../@generic/util/build-translated-category-relation.util';
+import {
+    getDirectExchangeRateSql,
+    getHistoricalExchangeRateSql,
+    getInverseExchangeRateSql,
+    getInverseHistoricalExchangeRateSql
+} from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
@@ -67,8 +74,9 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                              AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
                         THEN 0
                         WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
                              AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
-                        THEN ${TransactionEntryEntityTable.baseAmount}
+                        THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
                         ELSE 0
                     END), 0)
                 `.as('income'),
@@ -77,10 +85,14 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                         WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
                              AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
                              AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
-                        THEN ${this.buildRefundAdjustedCreditBaseAmountSql()}
-                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                        THEN ${this.buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId)}
+                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE}
                              AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
-                        THEN ${TransactionEntryEntityTable.baseAmount}
+                        THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
+                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
+                             AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+                        THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
                         ELSE 0
                     END), 0)
                 `.as('expense')
@@ -88,7 +100,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(and(baseWhere, this.buildLedgerEntryCondition(), eq(TransactionEntryEntityTable.baseInstrumentId, defaultInstrumentId)));
+            .where(and(baseWhere, this.buildLedgerEntryCondition()));
     }
 
     getIncomeByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
@@ -100,11 +112,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     }
 
     getExpenseByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
-        return this.buildCategoryBreakdownQuery(
-            this.buildTransactionIdsQuery(filters, TransactionTypeEnum.EXPENSE),
-            defaultInstrumentId,
-            language
-        );
+        return this.buildExpenseCategoryBreakdownQuery(filters, defaultInstrumentId, language);
     }
 
     getIncomeByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
@@ -112,7 +120,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     }
 
     getExpenseByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        return this.buildTagBreakdownQuery(this.buildTransactionIdsQuery(filters, TransactionTypeEnum.EXPENSE), defaultInstrumentId);
+        return this.buildExpenseTagBreakdownQuery(filters, defaultInstrumentId);
     }
 
     getIncomeTransactionsQuery(filters: TransactionFilterInterface) {
@@ -186,7 +194,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         defaultInstrumentId: number,
         language: LanguageEnum
     ) {
-        const amountSql = this.buildRefundAwareBaseAmountSql();
+        const amountSql = this.buildRefundAwareBaseAmountSql(defaultInstrumentId);
         const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`;
 
         return this.db
@@ -209,7 +217,6 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 and(
                     inArray(TransactionEntityTable.id, transactionIdsSubquery),
                     this.buildLedgerEntryCondition(),
-                    eq(TransactionEntryEntityTable.baseInstrumentId, defaultInstrumentId),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
                 )
             )
@@ -218,7 +225,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     }
 
     private buildTagBreakdownQuery(transactionIdsSubquery: ReturnType<typeof this.buildTransactionIdsQuery>, defaultInstrumentId: number) {
-        const amountSql = this.buildRefundAwareBaseAmountSql();
+        const amountSql = this.buildRefundAwareBaseAmountSql(defaultInstrumentId);
 
         return this.db
             .select({
@@ -234,7 +241,63 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 and(
                     inArray(TransactionEntityTable.id, transactionIdsSubquery),
                     this.buildLedgerEntryCondition(),
-                    eq(TransactionEntryEntityTable.baseInstrumentId, defaultInstrumentId),
+                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
+                )
+            )
+            .groupBy(TagEntityTable.id)
+            .orderBy(desc(amountSql));
+    }
+
+    private buildExpenseCategoryBreakdownQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
+        const amountSql = this.buildRefundAwareBaseAmountSql(defaultInstrumentId);
+        const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`;
+
+        return this.db
+            .select({
+                category: { ...getTableColumns(CategoryEntityTable), title: categoryTitleSql.as('title') },
+                amount: amountSql.as('amount')
+            })
+            .from(TransactionEntryEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+            .leftJoin(
+                DefaultCategoryTranslationEntityTable,
+                and(
+                    eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
+                    eq(DefaultCategoryTranslationEntityTable.language, language)
+                )
+            )
+            .where(
+                and(
+                    this.buildStatisticsWhere(filters),
+                    this.buildExpenseAnalyticsEntryCondition(),
+                    this.buildLedgerEntryCondition(),
+                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
+                )
+            )
+            .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
+            .orderBy(desc(amountSql));
+    }
+
+    private buildExpenseTagBreakdownQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
+        const amountSql = this.buildRefundAwareBaseAmountSql(defaultInstrumentId);
+
+        return this.db
+            .select({
+                tag: TagEntityTable,
+                amount: amountSql.as('amount')
+            })
+            .from(TransactionEntryEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            .leftJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
+            .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
+            .where(
+                and(
+                    this.buildStatisticsWhere(filters),
+                    this.buildExpenseAnalyticsEntryCondition(),
+                    this.buildLedgerEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
                 )
             )
@@ -243,30 +306,62 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     }
     /* jscpd:ignore-end */
 
-    private buildRefundAwareBaseAmountSql() {
+    private buildExpenseAnalyticsEntryCondition() {
+        return or(
+            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.FEE),
+            and(
+                eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
+                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
+            )
+        );
+    }
+
+    private buildConversionRateSql(defaultInstrumentId: number, instrumentIdRef: SQL) {
+        return sql`COALESCE(
+            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            1.0
+        )`;
+    }
+
+    private buildEntryBaseValueSql(defaultInstrumentId: number) {
+        return sql<number>`CASE
+            WHEN ${TransactionEntryEntityTable.baseInstrumentId} = ${defaultInstrumentId}
+            THEN ${TransactionEntryEntityTable.baseAmount}
+            ELSE ROUND(${TransactionEntryEntityTable.amount} * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('accounts.instrument_id'))})
+        END`;
+    }
+
+    private buildRefundAwareBaseAmountSql(defaultInstrumentId: number) {
         return sql<number>`COALESCE(SUM(CASE
             WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
                  AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-            THEN ${this.buildRefundAdjustedCreditBaseAmountSql()}
-            ELSE ${TransactionEntryEntityTable.baseAmount}
+            THEN ${this.buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId)}
+            ELSE ${this.buildEntryBaseValueSql(defaultInstrumentId)}
         END), 0)`;
     }
 
-    private buildRefundAdjustedCreditBaseAmountSql() {
+    private buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId: number) {
         return sql<number>`
-            ${TransactionEntryEntityTable.baseAmount}
+            ${this.buildEntryBaseValueSql(defaultInstrumentId)}
             - (
-                ${this.buildRefundTotalBaseAmountSql()}
-                * ${TransactionEntryEntityTable.baseAmount}
-                / NULLIF(${this.buildLedgerCreditBaseAmountTotalSql()}, 0)
+                ${this.buildRefundTotalBaseAmountSql(defaultInstrumentId)}
+                * ${this.buildEntryBaseValueSql(defaultInstrumentId)}
+                / NULLIF(${this.buildLedgerCreditBaseAmountTotalSql(defaultInstrumentId)}, 0)
             )
         `;
     }
 
-    private buildRefundTotalBaseAmountSql() {
+    private buildRefundTotalBaseAmountSql(defaultInstrumentId: number) {
         return sql<number>`COALESCE((
-            SELECT SUM(refund_entry.base_amount)
+            SELECT SUM(CASE
+                WHEN refund_entry.base_instrument_id = ${defaultInstrumentId} THEN refund_entry.base_amount
+                ELSE ROUND(refund_entry.amount * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('refund_account.instrument_id'))})
+            END)
             FROM transaction_entries refund_entry
+            INNER JOIN accounts refund_account ON refund_account.id = refund_entry.account_id
             WHERE refund_entry.transaction_id = ${TransactionEntryEntityTable.transactionId}
               AND refund_entry.original_transaction_id IS NOT NULL
               AND refund_entry.deleted_at IS NULL
@@ -274,10 +369,14 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         ), 0)`;
     }
 
-    private buildLedgerCreditBaseAmountTotalSql() {
+    private buildLedgerCreditBaseAmountTotalSql(defaultInstrumentId: number) {
         return sql<number>`COALESCE((
-            SELECT SUM(ledger_credit.base_amount)
+            SELECT SUM(CASE
+                WHEN ledger_credit.base_instrument_id = ${defaultInstrumentId} THEN ledger_credit.base_amount
+                ELSE ROUND(ledger_credit.amount * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('ledger_account.instrument_id'))})
+            END)
             FROM transaction_entries ledger_credit
+            INNER JOIN accounts ledger_account ON ledger_account.id = ledger_credit.account_id
             WHERE ledger_credit.transaction_id = ${TransactionEntryEntityTable.transactionId}
               AND ledger_credit.original_transaction_id IS NULL
               AND ledger_credit.deleted_at IS NULL
@@ -288,10 +387,6 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     private buildStatisticsWhere(filters: TransactionFilterInterface) {
         const baseWhere = this.buildFilterWhere(filters);
 
-        return and(
-            baseWhere,
-            ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
-            ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)
-        );
+        return and(baseWhere, ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT));
     }
 }

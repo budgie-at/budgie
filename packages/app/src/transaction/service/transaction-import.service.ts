@@ -12,9 +12,11 @@ import { ImportedUpdateParamInterface } from '../interface/imported-update-param
 import { RefreshedImportedEntriesStatusEnum } from '../type/refreshed-imported-entries-status.enum';
 import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
 
+import { importedBatchNormalizerService } from './imported-batch-normalizer.service';
 import { refreshedImportedEntriesService } from './refreshed-imported-entries.service';
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
+import type { ImportedBatchPreparationInterface } from '../interface/imported-batch-preparation.interface';
 import type { TransactionImportOptionsInterface } from '../interface/transaction-import-options.interface';
 import type {
     DB,
@@ -38,9 +40,6 @@ class TransactionImportService {
         tx?: DB,
         options: TransactionImportOptionsInterface = {}
     ): Promise<TransactionEntityInterface[]> {
-        const batchSize = options.batchSize ?? TRANSACTION_BATCH_SIZE;
-        const shouldUpdateBalances = options.shouldUpdateBalances ?? true;
-
         if (!isNotEmptyArray(inputs)) {
             return [];
         }
@@ -49,17 +48,98 @@ class TransactionImportService {
             return transactionAsync(db, async innerTx => this.bulkUpsertImported(inputs, existingTransactionIdMap, innerTx, options));
         }
 
-        const { stampedInputs } = stampForDeferredEmbedding(inputs, 'import');
+        const prepared = this.prepareImportedInputs(inputs, existingTransactionIdMap);
+
+        return this.bulkUpsertPreparedImported(prepared, tx, options);
+    }
+
+    @Log(
+        (prepared, tx, options) =>
+            `enter externalIds=${prepared.transactionInputs.map(input => input.externalId).join(',')} existingKeys=${[...prepared.externalIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
+        (result, ...[prepared, tx, options]) =>
+            `done externalIds=${prepared.transactionInputs.map(input => input.externalId).join(',')} existingKeys=${[...prepared.externalIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upsertedIds=${result.map(row => row.id).join(',')}`,
+        (error, ...[prepared, tx, options]) =>
+            `throw externalIds=${prepared.transactionInputs.map(input => input.externalId).join(',')} existingKeys=${[...prepared.externalIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
+    )
+    async bulkUpsertPreparedImported(
+        prepared: ImportedBatchPreparationInterface,
+        tx?: DB,
+        options: TransactionImportOptionsInterface = {}
+    ): Promise<TransactionEntityInterface[]> {
+        const batchSize = options.batchSize ?? TRANSACTION_BATCH_SIZE;
+        const shouldUpdateBalances = options.shouldUpdateBalances ?? true;
+
+        if (!isNotEmptyArray(prepared.transactionInputs)) {
+            return [];
+        }
+
+        if (!isDefined(tx)) {
+            return transactionAsync(db, async innerTx => this.bulkUpsertPreparedImported(prepared, innerTx, options));
+        }
+
+        const { stampedInputs } = stampForDeferredEmbedding(prepared.transactionInputs, 'import');
 
         const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
-            this.processImportedBatchInner(batch, existingTransactionIdMap, tx)
+            this.processImportedBatchInner(batch, prepared.externalIdMap, tx)
         );
 
         if (shouldUpdateBalances && isNotEmptyArray(transactions)) {
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+            await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs(stampedInputs), tx);
         }
 
         return transactions;
+    }
+
+    prepareImportedInputs(
+        inputs: TransactionCreateInputInterface[],
+        existingTransactionIdMap: Map<string, number>
+    ): ImportedBatchPreparationInterface {
+        const transactionInputs = importedBatchNormalizerService.normalize(inputs);
+        const externalIdMap = this.buildImportExternalIdMap(transactionInputs, existingTransactionIdMap);
+
+        return { externalIdMap, transactionInputs };
+    }
+
+    private buildImportExternalIdMap(
+        inputs: readonly TransactionCreateInputInterface[],
+        existingTransactionIdMap: Map<string, number>
+    ): Map<string, number> {
+        const importExternalIdMap = new Map(existingTransactionIdMap);
+
+        for (const input of inputs) {
+            const { externalId } = input;
+            const shouldCheckExternalIdAliases = isDefined(externalId) && !importExternalIdMap.has(externalId);
+
+            if (shouldCheckExternalIdAliases) {
+                this.mapExternalIdAlias(input, importExternalIdMap, existingTransactionIdMap);
+            }
+        }
+
+        return importExternalIdMap;
+    }
+
+    private mapExternalIdAlias(
+        input: TransactionCreateInputInterface,
+        importExternalIdMap: Map<string, number>,
+        existingTransactionIdMap: Map<string, number>
+    ): void {
+        const { externalId } = input;
+
+        if (!isDefined(externalId)) {
+            return;
+        }
+
+        const externalIdAlias = input.externalIdAliases?.find(item => existingTransactionIdMap.has(item));
+
+        if (!isDefined(externalIdAlias)) {
+            return;
+        }
+
+        const transactionId = existingTransactionIdMap.get(externalIdAlias);
+
+        if (isDefined(transactionId)) {
+            importExternalIdMap.set(externalId, transactionId);
+        }
     }
 
     private async processImportedBatchInner(
@@ -141,7 +221,9 @@ class TransactionImportService {
             {
                 title: input.title,
                 comment,
-                operatedAt: input.operatedAt
+                operatedAt: input.operatedAt,
+                externalId: input.externalId,
+                externalSource: input.externalSource
             },
             tx
         );
@@ -189,6 +271,10 @@ class TransactionImportService {
         return new Map(
             existingTransactions.map((transaction): [number, TransactionWithEntriesEntityInterface] => [transaction.id, transaction])
         );
+    }
+
+    private getAccountIdsFromInputs(inputs: readonly TransactionCreateInputInterface[]): number[] {
+        return [...new Set(inputs.flatMap(input => input.entries.map(entry => entry.accountId)))];
     }
 }
 

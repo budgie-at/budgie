@@ -1,16 +1,27 @@
 /* eslint-disable lingui/no-unlocalized-strings */
+import { Log } from '@budgie/logger';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { databaseRekeyService } from '../../@generic/drizzle/service/database-rekey.service';
 import { RekeyParamsInterface } from '../../@generic/drizzle/service/interface/rekey-params.interface';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { PIN_KEY } from '../constant/pin-key.constant';
+import { PIN_SECURE_STORE_OPTIONS } from '../constant/pin-secure-store-options.constant';
 import { BiometricTypesInterface } from '../interface/biometric-types.interface';
 
 class AuthService {
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async ensurePinBackgroundAccessibility(): Promise<void> {
+        const pin = await this.getPin();
+
+        if (isNotEmptyString(pin)) {
+            await this.persistPin(pin);
+        }
+    }
+
     async getBiometricTypes(): Promise<BiometricTypesInterface> {
         try {
             const hasHardware = await LocalAuthentication.hasHardwareAsync();
@@ -69,7 +80,7 @@ class AuthService {
     }
 
     async verifyPin(pin: string): Promise<boolean> {
-        const savedPin = await SecureStore.getItemAsync(PIN_KEY);
+        const savedPin = await SecureStore.getItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
 
         return savedPin === pin;
     }
@@ -85,11 +96,11 @@ class AuthService {
     }
 
     async getPin(): Promise<string | null> {
-        return SecureStore.getItemAsync(PIN_KEY);
+        return SecureStore.getItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
     }
 
     async clearAllPins(): Promise<void> {
-        await SecureStore.deleteItemAsync(PIN_KEY);
+        await SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
     }
 
     private async rekeyDatabase(params: RekeyParamsInterface): Promise<void> {
@@ -106,9 +117,9 @@ class AuthService {
 
     private async persistPin(pin: string | null): Promise<void> {
         if (isNotEmptyString(pin)) {
-            await SecureStore.setItemAsync(PIN_KEY, pin);
+            await SecureStore.setItemAsync(PIN_KEY, pin, PIN_SECURE_STORE_OPTIONS);
         } else {
-            await SecureStore.deleteItemAsync(PIN_KEY);
+            await SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
         }
     }
 

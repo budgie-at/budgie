@@ -150,6 +150,26 @@ class RuleEngineService {
         return { applied, failed, total };
     }
 
+    @Log(
+        matches => `enter transactionIds=${matches.map(match => match.transactionId).join(',')}`,
+        (_result, matches) => `done transactionIds=${matches.map(match => match.transactionId).join(',')}`,
+        (error, matches) => `throw transactionIds=${matches.map(match => match.transactionId).join(',')} error=${getErrorMessage(error)}`
+    )
+    private async applyMatchedRulesInBatchTransaction(matches: RuleTransactionMatchInterface[]): Promise<void> {
+        await transactionAsync(db, async transaction => this.applyMatchedRulesInBatch(matches, transaction));
+    }
+
+    @Log(
+        (batchIds, actions) => `enter transactionIds=${batchIds.join(',')} actionTypes=${actions.map(action => action.type).join(',')}`,
+        (result, batchIds, actions) =>
+            `done transactionIds=${batchIds.join(',')} actionTypes=${actions.map(action => action.type).join(',')} failed=${result}`,
+        (error, batchIds, actions) =>
+            `throw transactionIds=${batchIds.join(',')} actionTypes=${actions.map(action => action.type).join(',')} error=${getErrorMessage(error)}`
+    )
+    private async applyRuleActionsToTransactionBatchTransaction(batchIds: number[], actions: RuleActionEntityInterface[]): Promise<number> {
+        return transactionAsync(db, async transaction => this.applyRuleActionsToTransactionBatch(batchIds, actions, transaction));
+    }
+
     private async applyRulesToTransactionsBatch(
         batchStart: number,
         transactionIds: number[],
@@ -172,14 +192,7 @@ class RuleEngineService {
             return;
         }
 
-        try {
-            await transactionAsync(db, async transaction => this.applyMatchedRulesInBatch(matches, transaction));
-        } catch (error: unknown) {
-            logger.error('applyRulesToTransactionsBatch:throw', {
-                transactionIds: batchIds.join(','),
-                errorMessage: getErrorMessage(error)
-            });
-        }
+        await this.applyMatchedRulesInBatchTransaction(matches);
     }
 
     private async applyMatchedRulesInBatch(matches: RuleTransactionMatchInterface[], transaction: DB): Promise<void> {
@@ -235,16 +248,10 @@ class RuleEngineService {
     private async applyRuleToMatchingTransactionBatch(batchIds: number[], actions: RuleActionEntityInterface[]): Promise<number> {
         await this.waitForNextBatch();
 
-        try {
-            return await transactionAsync(db, async transaction => this.applyRuleActionsToTransactionBatch(batchIds, actions, transaction));
-        } catch (error: unknown) {
-            logger.error('applyRuleToMatchingTransactionBatch:throw', {
-                transactionIds: batchIds.join(','),
-                errorMessage: getErrorMessage(error)
-            });
-
-            return batchIds.length;
-        }
+        return this.applyRuleActionsToTransactionBatchTransaction(batchIds, actions).then(
+            batchFailed => batchFailed,
+            () => batchIds.length
+        );
     }
 
     private async applyRuleActionsToTransactionBatch(

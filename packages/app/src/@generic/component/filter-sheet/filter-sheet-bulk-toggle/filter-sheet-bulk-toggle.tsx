@@ -9,6 +9,7 @@ interface Props {
     readonly selectedCount: number;
     readonly onSelectAll: EmptyFn;
     readonly onDeselectAll: EmptyFn;
+    readonly disabled?: boolean;
     readonly selectAllTestID?: string;
     readonly deselectAllTestID?: string;
 }
@@ -17,21 +18,23 @@ const ANIMATION_DURATION = 180;
 const ENTERING = FadeIn.duration(ANIMATION_DURATION);
 const EXITING = FadeOut.duration(ANIMATION_DURATION);
 const LAYOUT = LinearTransition.duration(ANIMATION_DURATION);
-const TOGGLE_MIN_WIDTH = 84;
+const TOGGLE_WIDTH = 116;
 
 export const FilterSheetBulkToggle = (props: Props) => {
-    const { selectedCount, onSelectAll, onDeselectAll, selectAllTestID, deselectAllTestID } = props;
+    const { selectedCount, onSelectAll, onDeselectAll, disabled = false, selectAllTestID, deselectAllTestID } = props;
     const hasSelection = isPositiveNumber(selectedCount);
     const handlePress = hasSelection ? onDeselectAll : onSelectAll;
     const testID = hasSelection ? deselectAllTestID : selectAllTestID;
-    const pressableStyle = { minWidth: TOGGLE_MIN_WIDTH };
+    const pressableStyle = { width: TOGGLE_WIDTH };
+    const disabledClassName = disabled ? 'opacity-50' : '';
 
     return (
         <HapticPressable
             onPress={handlePress}
             testID={testID}
             style={pressableStyle}
-            className="h-[52px] items-center justify-center rounded-3xl border border-secondary-corner bg-ghost-background px-xl"
+            disabled={disabled}
+            className={`h-[52px] items-center justify-center rounded-3xl border border-secondary-corner bg-ghost-background px-xl ${disabledClassName}`}
         >
             {hasSelection ? (
                 <Animated.Text
