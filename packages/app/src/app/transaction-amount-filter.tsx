@@ -1,5 +1,6 @@
 import { AmountRangeInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -35,28 +36,30 @@ export default function TransactionAmountFilterModal() {
 
     return (
         <FilterSheet>
-            <FormLayoutGroup className="flex-1 px-xl pt-7xl">
-                <FormItem label={t`From`}>
-                    <AmountInput
-                        value={fromValue}
-                        onChangeValue={setFromValue}
-                        valuePrefix={defaultInstrument.symbol}
-                        placeholder={t`Minimum amount`}
-                        testID={TransactionFiltersSelector.AmountFromInput}
-                        autoFocus
-                    />
-                </FormItem>
+            <View className="flex-1 justify-end px-xl pb-lg">
+                <FormLayoutGroup variant="horizontal">
+                    <FormItem className="flex-1" label={t`From`}>
+                        <AmountInput
+                            value={fromValue}
+                            onChangeValue={setFromValue}
+                            valuePrefix={defaultInstrument.symbol}
+                            placeholder={t`Minimum amount`}
+                            testID={TransactionFiltersSelector.AmountFromInput}
+                            autoFocus
+                        />
+                    </FormItem>
 
-                <FormItem label={t`To`}>
-                    <AmountInput
-                        value={toValue}
-                        onChangeValue={setToValue}
-                        valuePrefix={defaultInstrument.symbol}
-                        placeholder={t`Maximum amount`}
-                        testID={TransactionFiltersSelector.AmountToInput}
-                    />
-                </FormItem>
-            </FormLayoutGroup>
+                    <FormItem className="flex-1" label={t`To`}>
+                        <AmountInput
+                            value={toValue}
+                            onChangeValue={setToValue}
+                            valuePrefix={defaultInstrument.symbol}
+                            placeholder={t`Maximum amount`}
+                            testID={TransactionFiltersSelector.AmountToInput}
+                        />
+                    </FormItem>
+                </FormLayoutGroup>
+            </View>
 
             <FilterSheetDrawer>
                 <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelector.AmountApplyButton} />

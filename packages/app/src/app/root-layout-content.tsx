@@ -174,7 +174,7 @@ export const RootLayoutContent = () => {
                                                                 <Stack.Screen name="date-filter" options={DATE_FILTER_SHEET_OPTIONS} />
                                                                 <Stack.Screen
                                                                     name="transaction-amount-filter"
-                                                                    options={DATE_FILTER_SHEET_OPTIONS}
+                                                                    options={COMPACT_FILTER_SHEET_OPTIONS}
                                                                 />
                                                                 <Stack.Screen
                                                                     name="transaction-category-filter"
