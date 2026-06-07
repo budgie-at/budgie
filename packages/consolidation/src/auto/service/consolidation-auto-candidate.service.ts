@@ -2,6 +2,8 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { yieldToEventLoop } from '../utils/yield-to-event-loop.util';
+
 import type { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
 import type { ConsolidationCandidateGroupsInterface } from '../interface/consolidation-candidate-groups.interface';
 import type {
@@ -17,7 +19,10 @@ import type {
 } from '@budgie/contracts';
 
 export class ConsolidationAutoCandidateService {
-    constructor(private readonly consolidationExecutorService: ConsolidationExecutorService) {}
+    constructor(
+        private readonly consolidationExecutorService: ConsolidationExecutorService,
+        private readonly yieldControl: () => Promise<void> = yieldToEventLoop
+    ) {}
 
     @Log(
         (candidates, onProgress) =>
@@ -183,8 +188,16 @@ export class ConsolidationAutoCandidateService {
         processBatch: (entries: T[]) => Promise<number>,
         onProgress?: (processedCandidateGroupCount: number) => void
     ): Promise<number> {
+        if (candidates.length === 0) {
+            onProgress?.(candidates.length);
+
+            return 0;
+        }
+
+        await this.yieldControl();
         const consolidated = await processBatch(candidates);
         onProgress?.(candidates.length);
+        await this.yieldControl();
 
         return consolidated;
     }
@@ -192,10 +205,12 @@ export class ConsolidationAutoCandidateService {
     private async reduceConsolidations<T>(candidates: T[], consolidate: (candidate: T) => Promise<boolean>): Promise<number> {
         return candidates.reduce(async (consolidatedPromise, candidate) => {
             const consolidated = await consolidatedPromise;
+            await this.yieldControl();
             const success = await consolidate(candidate).then(
                 result => result,
                 () => false
             );
+            await this.yieldControl();
 
             return success ? consolidated + 1 : consolidated;
         }, Promise.resolve(0));
