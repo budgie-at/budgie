@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.36.1](https://github.com/budgie-at/budgie/compare/v5.36.0...v5.36.1) (2026-06-07)
+
+### Bug Fixes
+
+- **contracts:** keep market query builders undecorated ([#560](https://github.com/budgie-at/budgie/issues/560)) ([3d349c2](https://github.com/budgie-at/budgie/commit/3d349c2cffb4868fa659a80e0356a61af6f74e35))
+
 # [5.36.0](https://github.com/budgie-at/budgie/compare/v5.35.6...v5.36.0) (2026-06-07)
 
 ### Features
