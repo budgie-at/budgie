@@ -157,10 +157,6 @@ export class ConsolidationExecutorService {
             return false;
         }
 
-        return this.executeConsolidationPlan(consolidationPlan, tx);
-    }
-
-    private async executeConsolidationPlan(consolidationPlan: ConsolidationPlanInterface, tx: DB): Promise<boolean> {
         return this.executeConsolidation(
             consolidationPlan.sourceTransactionIds,
             consolidationPlan.canonicalInput,

@@ -1,4 +1,4 @@
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, TransferPairAutoConfidenceBucketEnum } from '@budgie/contracts';
 
 import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
 
@@ -53,7 +53,10 @@ export class TransferPairConsolidationFamilyService extends ConsolidationFamilyS
     }
 
     private computeExchangeRate(candidate: TransferPairCandidateInterface): number {
-        if (candidate.confidenceBucket === 'AUTO_SAME_BANK_HINTED_FEE' || candidate.confidenceBucket === 'AUTO_INTERBANK_HINTED_FEE') {
+        if (
+            candidate.confidenceBucket === TransferPairAutoConfidenceBucketEnum.AUTO_SAME_BANK_HINTED_FEE ||
+            candidate.confidenceBucket === TransferPairAutoConfidenceBucketEnum.AUTO_INTERBANK_HINTED_FEE
+        ) {
             return 1;
         }
 
@@ -65,7 +68,7 @@ export class TransferPairConsolidationFamilyService extends ConsolidationFamilyS
     }
 
     private getConsolidationType(candidate: TransferPairCandidateInterface): TransactionConsolidationTypeEnum {
-        if (candidate.confidenceBucket === 'AUTO_SAME_BANK_HINTED_FEE') {
+        if (candidate.confidenceBucket === TransferPairAutoConfidenceBucketEnum.AUTO_SAME_BANK_HINTED_FEE) {
             return TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER;
         }
 

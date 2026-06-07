@@ -1,4 +1,6 @@
-import { isDefined } from '@rnw-community/shared';
+import { Log } from '@budgie/logger';
+
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
 import type { DB, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
@@ -6,6 +8,14 @@ import type { DB, TransactionWithEntriesEntityInterface } from '@budgie/contract
 export class ConsolidationEligibilityService {
     constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {}
 
+    @Log(
+        (sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
+            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')}`,
+        (result, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
+            `done sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')} result=${String(result)}`,
+        (error, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
+            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')} error=${getErrorMessage(error)}`
+    )
     async areCandidatesStillEligible(
         sourceTransactionIds: number[],
         tx: DB,
@@ -14,6 +24,14 @@ export class ConsolidationEligibilityService {
         return isDefined(await this.findEligibleSourceTransactions(sourceTransactionIds, tx, allowedMovedSourceTransactionIds));
     }
 
+    @Log(
+        (sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
+            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')}`,
+        (result, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
+            `done sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')} resultIds=${result?.map(transaction => transaction.id).join(',') ?? ''}`,
+        (error, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
+            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')} error=${getErrorMessage(error)}`
+    )
     async findEligibleSourceTransactions(
         sourceTransactionIds: number[],
         tx: DB,
@@ -40,6 +58,14 @@ export class ConsolidationEligibilityService {
         return null;
     }
 
+    @Log(
+        (sourceTransactionIds, existingTransferId, tx) =>
+            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} existingTransferId=${existingTransferId} hasTx=${String(isDefined(tx))}`,
+        (result, sourceTransactionIds, existingTransferId, tx) =>
+            `done sourceTransactionIds=${sourceTransactionIds.join(',')} existingTransferId=${existingTransferId} hasTx=${String(isDefined(tx))} result=${String(result)}`,
+        (error, sourceTransactionIds, existingTransferId, tx) =>
+            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} existingTransferId=${existingTransferId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async isExistingTransferConsolidationStillEligible(
         sourceTransactionIds: number[],
         existingTransferId: number,
