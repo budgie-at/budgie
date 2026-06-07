@@ -180,6 +180,7 @@ export { TransactionAssociationEnum } from './transaction/enum/transaction-assoc
 
 export { DEFAULT_TRANSACTION_FILTER } from './transaction/constant/default-transaction-filter.constant';
 export { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from './transaction/constant/transfer-pair-time-window.constant';
+export { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from './transaction/constant/iban-bridge-chain-fx-tolerance.constant';
 export { REFUND_TIME_WINDOW_SECONDS } from './transaction/constant/refund-time-window.constant';
 
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
@@ -256,6 +257,7 @@ export type { TransferPairReviewCandidateInterface } from './transaction/interfa
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
 export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
 export type { ExistingTransferBridgeCandidateInterface } from './transaction/interface/existing-transfer-bridge-candidate.interface';
+export type { ExistingTransferChainReclaimCandidateInterface } from './transaction/interface/existing-transfer-chain-reclaim-candidate.interface';
 export type { ExistingTransferIncomeDuplicateCandidateInterface } from './transaction/interface/existing-transfer-income-duplicate-candidate.interface';
 export type { IbanBridgeCanonicalDuplicateCandidateInterface } from './transaction/interface/iban-bridge-canonical-duplicate-candidate.interface';
 export type { IbanBridgeChainTransferCandidateInterface } from './transaction/interface/iban-bridge-chain-transfer-candidate.interface';

@@ -8,6 +8,7 @@ export interface ConsolidationCandidateDependenciesInterface {
         | 'findAtmCashWithdrawalReviewCandidates'
         | 'findCandidates'
         | 'findExistingTransferBridgeCandidates'
+        | 'findExistingTransferChainReclaimCandidates'
         | 'findExistingTransferIncomeDuplicateCandidates'
         | 'findIbanBridgeCanonicalDuplicateCandidates'
         | 'findIbanBridgeChainTransferCandidates'

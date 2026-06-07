@@ -204,6 +204,7 @@ class TransferConsolidationService {
             candidates.pairCandidates.length +
             candidates.ibanBridgeChainTransferCandidates.length +
             candidates.existingTransferBridgeCandidates.length +
+            candidates.existingTransferChainReclaimCandidates.length +
             candidates.ibanBridgeCanonicalDuplicateCandidates.length +
             candidates.existingTransferIncomeDuplicateCandidates.length +
             candidates.ibanBridgeTransferCandidates.length +

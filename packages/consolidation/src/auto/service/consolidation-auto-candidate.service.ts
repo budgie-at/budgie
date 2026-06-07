@@ -7,6 +7,7 @@ import type { ConsolidationCandidateGroupsInterface } from '../interface/consoli
 import type {
     AtmCashWithdrawalCandidateInterface,
     ExistingTransferBridgeCandidateInterface,
+    ExistingTransferChainReclaimCandidateInterface,
     ExistingTransferIncomeDuplicateCandidateInterface,
     IbanBridgeCanonicalDuplicateCandidateInterface,
     IbanBridgeChainTransferCandidateInterface,
@@ -45,6 +46,12 @@ export class ConsolidationAutoCandidateService {
             'existingTransferBridge',
             candidates.existingTransferBridgeCandidates,
             entries => this.processExistingTransferBridgeCandidates(entries),
+            publishProgress
+        );
+        const existingTransferChainReclaimConsolidated = await this.profileConsolidationBatch(
+            'existingTransferChainReclaim',
+            candidates.existingTransferChainReclaimCandidates,
+            entries => this.processExistingTransferChainReclaimCandidates(entries),
             publishProgress
         );
         const bridgeDuplicateConsolidated = await this.profileConsolidationBatch(
@@ -87,6 +94,7 @@ export class ConsolidationAutoCandidateService {
         return (
             bridgeChainConsolidated +
             existingTransferBridgeConsolidated +
+            existingTransferChainReclaimConsolidated +
             bridgeDuplicateConsolidated +
             pairConsolidated +
             bridgeConsolidated +
@@ -136,6 +144,14 @@ export class ConsolidationAutoCandidateService {
     private async processExistingTransferBridgeCandidates(candidates: ExistingTransferBridgeCandidateInterface[]): Promise<number> {
         return this.reduceConsolidations(candidates, candidate =>
             this.consolidationExecutorService.consolidateExistingTransferBridge(candidate)
+        );
+    }
+
+    private async processExistingTransferChainReclaimCandidates(
+        candidates: ExistingTransferChainReclaimCandidateInterface[]
+    ): Promise<number> {
+        return this.reduceConsolidations(candidates, candidate =>
+            this.consolidationExecutorService.consolidateExistingTransferChainReclaim(candidate)
         );
     }
 

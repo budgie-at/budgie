@@ -1,3 +1,4 @@
+import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../constant/iban-bridge-chain-fx-tolerance.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../constant/transfer-pair-fast-time-window.constant';
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
@@ -182,7 +183,7 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = `
                     AND source_account.id != bridge_account.id
                     AND bridge_account.id != target_account.id
                     AND source_account.id != target_account.id
-                    AND ABS(source_expense_entry.amount - (bridge_income_entry.amount / bridge_income_entry.exchange_rate)) / source_expense_entry.amount <= 0.01
+                    AND ABS(source_expense_entry.amount - (bridge_income_entry.amount / bridge_income_entry.exchange_rate)) / source_expense_entry.amount <= ${IBAN_BRIDGE_CHAIN_FX_TOLERANCE}
                     AND (
                         source_expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
                         OR bridge_income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
