@@ -19,6 +19,8 @@ import type {
 } from '@budgie/contracts';
 
 export class ConsolidationAutoCandidateService {
+    private static readonly YIELD_EVERY_CANDIDATES = 10;
+
     constructor(
         private readonly consolidationExecutorService: ConsolidationExecutorService,
         private readonly yieldControl: () => Promise<void> = yieldToEventLoop
@@ -203,16 +205,24 @@ export class ConsolidationAutoCandidateService {
     }
 
     private async reduceConsolidations<T>(candidates: T[], consolidate: (candidate: T) => Promise<boolean>): Promise<number> {
-        return candidates.reduce(async (consolidatedPromise, candidate) => {
+        return candidates.reduce(async (consolidatedPromise, candidate, candidateIndex) => {
             const consolidated = await consolidatedPromise;
-            await this.yieldControl();
             const success = await consolidate(candidate).then(
                 result => result,
                 () => false
             );
-            await this.yieldControl();
+            await this.yieldBetweenCandidates(candidateIndex, candidates.length);
 
             return success ? consolidated + 1 : consolidated;
         }, Promise.resolve(0));
+    }
+
+    private async yieldBetweenCandidates(candidateIndex: number, candidateCount: number): Promise<void> {
+        const processedCandidateCount = candidateIndex + 1;
+        const hasMoreCandidates = processedCandidateCount < candidateCount;
+
+        if (hasMoreCandidates && processedCandidateCount % ConsolidationAutoCandidateService.YIELD_EVERY_CANDIDATES === 0) {
+            await this.yieldControl();
+        }
     }
 }
