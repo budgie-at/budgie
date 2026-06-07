@@ -5,15 +5,21 @@ import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, PRECISION, Transacti
 
 import { isDefined } from '@rnw-community/shared';
 
-import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, requireInstrument, seed, seedBankPair } from '../../harness';
+import {
+    fetchCanonicalsOfType,
+    fetchTransactionById,
+    findMccByCode,
+    requireInstrument,
+    seed,
+    seedBankPair,
+    StubFileBankSyncService
+} from '../../harness';
 
 import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
-import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
-import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
 import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';
 import type { AccountEntityInterface, ConsolidationScanScopeInterface, MccCategoryLookupInterface } from '@budgie/contracts';
 
@@ -54,24 +60,6 @@ const buildBankAccount = (
     iban
 });
 
-class CategoryMappedFileSyncService extends BaseFileBankSyncService {
-    constructor(
-        externalSource: ExternalSourceEnum,
-        private readonly client: FileBasedBankSyncClientInterface,
-        private readonly categoryLookup: MccCategoryLookupInterface
-    ) {
-        super(externalSource);
-    }
-
-    protected parseFile(): Promise<ParsedFileResultInterface> {
-        return Promise.resolve({ client: this.client, bankAccounts: this.client.getAccounts() });
-    }
-
-    protected resolveMccCategoryIdMap(): Promise<Map<string, MccCategoryLookupInterface | null>> {
-        return Promise.resolve(new Map([[TRANSFER_CATEGORY, this.categoryLookup]]));
-    }
-}
-
 const buildIncomeTransaction = (
     provider: BankProviderEnum,
     externalId: string,
@@ -97,6 +85,14 @@ const buildIncomeTransaction = (
     category: TRANSFER_CATEGORY,
     feeAmount: 0
 });
+
+const expectTransferPairCanonical = (result: { readonly consolidated: number }, sourceAccountId: number): void => {
+    expect(result.consolidated).toBe(1);
+    const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+    expect(canonicals).toHaveLength(1);
+    expect(canonicals[0].fromAccountId).toBe(sourceAccountId);
+    expect(fetchTransactionById(canonicals[0].id).toAccountId).not.toBe(sourceAccountId);
+};
 
 const seedExistingBankExpense = (
     externalSource: ExternalSourceEnum,
@@ -130,14 +126,14 @@ const buildSyncService = (
     currencyCodeNumeric: number,
     iban: string,
     categoryLookup: MccCategoryLookupInterface
-): CategoryMappedFileSyncService =>
-    new CategoryMappedFileSyncService(
+): StubFileBankSyncService =>
+    new StubFileBankSyncService(
         externalSource,
         new SingleIncomeFileClient(
             buildBankAccount(provider, accountExternalId, currencyCode, currencyCodeNumeric, iban),
             buildIncomeTransaction(provider, `${accountExternalId}-income`, accountExternalId, currencyCodeNumeric)
         ),
-        categoryLookup
+        new Map([[TRANSFER_CATEGORY, categoryLookup]])
     );
 
 const getQueuedConsolidationScope = (): ConsolidationScanScopeInterface | null => {
@@ -155,7 +151,7 @@ const buildMccCategoryLookup = (): MccCategoryLookupInterface => {
     };
 };
 
-const importAndRunQueuedScope = async (syncService: BaseFileBankSyncService, accountExternalId: string) => {
+const importAndRunQueuedScope = async (syncService: StubFileBankSyncService, accountExternalId: string) => {
     await syncService.executeImportForSelectedAccounts('statement-file', [accountExternalId]);
 
     const scope = getQueuedConsolidationScope();
@@ -173,113 +169,110 @@ describe('consolidation/file-import-scoped-interbank-transfer', () => {
         vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();
     });
 
-    it('consolidates an existing Monobank expense with an imported Privatbank income using the import scope', async () => {
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
-        const transferMcc = buildMccCategoryLookup();
-        const monobankAccount = seedExistingBankExpense(
+    it.each<
+        [
+            string,
+            ExternalSourceEnum,
+            string,
+            string,
+            CurrencyEnum,
+            ExternalSourceEnum,
+            BankProviderEnum,
+            string,
+            CurrencyEnum,
+            number,
+            string
+        ]
+    >([
+        [
+            'consolidates an existing Monobank expense with an imported Privatbank income using the import scope',
             ExternalSourceEnum.MONOBANK,
             'mono-source',
             'Monobank source',
-            hryvnia.id,
-            transferMcc.id
-        );
-        const syncService = buildSyncService(
+            CurrencyEnum.UAH,
             ExternalSourceEnum.PRIVATBANK,
             BankProviderEnum.PRIVATBANK,
             'privat-target',
             CurrencyEnum.UAH,
             980,
-            'UA-PRIVAT-TARGET',
-            transferMcc
-        );
-
-        const result = await importAndRunQueuedScope(syncService, 'privat-target');
-
-        expect(result.consolidated).toBe(1);
-        const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-        expect(canonicals).toHaveLength(1);
-        expect(canonicals[0].fromAccountId).toBe(monobankAccount.id);
-        expect(fetchTransactionById(canonicals[0].id).toAccountId).not.toBe(monobankAccount.id);
-    });
-
-    it('consolidates an existing Monobank expense with an imported Erste income using the import scope', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
-        const transferMcc = buildMccCategoryLookup();
-        const monobankAccount = seedExistingBankExpense(
+            'UA-PRIVAT-TARGET'
+        ],
+        [
+            'consolidates an existing Monobank expense with an imported Erste income using the import scope',
             ExternalSourceEnum.MONOBANK,
             'mono-source',
             'Monobank source',
-            euro.id,
-            transferMcc.id
-        );
-        const syncService = buildSyncService(
+            CurrencyEnum.EUR,
             ExternalSourceEnum.ERSTE,
             BankProviderEnum.ERSTE,
             'AT123',
             CurrencyEnum.EUR,
             978,
-            'AT123',
-            transferMcc
-        );
-
-        const result = await importAndRunQueuedScope(syncService, 'AT123');
-
-        expect(result.consolidated).toBe(1);
-        const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-        expect(canonicals).toHaveLength(1);
-        expect(canonicals[0].fromAccountId).toBe(monobankAccount.id);
-        expect(fetchTransactionById(canonicals[0].id).toAccountId).not.toBe(monobankAccount.id);
-    });
-
-    it('consolidates an existing Privatbank expense with an imported Erste income using the import scope', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
-        const transferMcc = buildMccCategoryLookup();
-        const privatbankAccount = seedExistingBankExpense(
+            'AT123'
+        ],
+        [
+            'consolidates an existing Privatbank expense with an imported Erste income using the import scope',
             ExternalSourceEnum.PRIVATBANK,
             'privat-source',
             'Privatbank source',
-            euro.id,
-            transferMcc.id
-        );
-        const syncService = buildSyncService(
+            CurrencyEnum.EUR,
             ExternalSourceEnum.ERSTE,
             BankProviderEnum.ERSTE,
             'AT123',
             CurrencyEnum.EUR,
             978,
-            'AT123',
-            transferMcc
-        );
-
-        const result = await importAndRunQueuedScope(syncService, 'AT123');
-
-        expect(result.consolidated).toBe(1);
-        const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-        expect(canonicals).toHaveLength(1);
-        expect(canonicals[0].fromAccountId).toBe(privatbankAccount.id);
-        expect(fetchTransactionById(canonicals[0].id).toAccountId).not.toBe(privatbankAccount.id);
-    });
-
-    it('consolidates an existing Erste expense with an imported Privatbank income using the import scope', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
-        const transferMcc = buildMccCategoryLookup();
-        const ersteAccount = seedExistingBankExpense(ExternalSourceEnum.ERSTE, 'AT456', 'Erste source', euro.id, transferMcc.id);
-        const syncService = buildSyncService(
+            'AT123'
+        ],
+        [
+            'consolidates an existing Erste expense with an imported Privatbank income using the import scope',
+            ExternalSourceEnum.ERSTE,
+            'AT456',
+            'Erste source',
+            CurrencyEnum.EUR,
             ExternalSourceEnum.PRIVATBANK,
             BankProviderEnum.PRIVATBANK,
             'privat-target',
             CurrencyEnum.EUR,
             978,
-            'UA-PRIVAT-TARGET',
-            transferMcc
-        );
+            'UA-PRIVAT-TARGET'
+        ]
+    ])(
+        '%s',
+        async (
+            _caseTitle,
+            sourceExternalSource,
+            sourceExternalId,
+            sourceTitle,
+            sourceCurrency,
+            targetExternalSource,
+            targetProvider,
+            targetExternalId,
+            targetCurrency,
+            targetCurrencyCodeNumeric,
+            targetIban
+        ) => {
+            const instrument = await requireInstrument(sourceCurrency);
+            const transferMcc = buildMccCategoryLookup();
+            const sourceAccount = seedExistingBankExpense(
+                sourceExternalSource,
+                sourceExternalId,
+                sourceTitle,
+                instrument.id,
+                transferMcc.id
+            );
+            const syncService = buildSyncService(
+                targetExternalSource,
+                targetProvider,
+                targetExternalId,
+                targetCurrency,
+                targetCurrencyCodeNumeric,
+                targetIban,
+                transferMcc
+            );
 
-        const result = await importAndRunQueuedScope(syncService, 'privat-target');
+            const result = await importAndRunQueuedScope(syncService, targetExternalId);
 
-        expect(result.consolidated).toBe(1);
-        const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-        expect(canonicals).toHaveLength(1);
-        expect(canonicals[0].fromAccountId).toBe(ersteAccount.id);
-        expect(fetchTransactionById(canonicals[0].id).toAccountId).not.toBe(ersteAccount.id);
-    });
+            expectTransferPairCanonical(result, sourceAccount.id);
+        }
+    );
 });
