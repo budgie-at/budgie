@@ -6,9 +6,8 @@ import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { StubFileBankSyncService, testDb } from '../../harness';
+import { expectFileImportConsolidationEnqueued, StubFileBankSyncService, testDb } from '../../harness';
 
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 
@@ -159,16 +158,8 @@ describe('erste/file-import-idempotency', () => {
                 )
             )
             .get();
-        const transactionId = transaction?.id;
 
-        expect(transactionId).toBeTypeOf('number');
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledTimes(1);
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledWith(
-            TransferConsolidationDrainReasonEnum.FILE_IMPORT,
-            expect.objectContaining({
-                transactionIds: [transactionId]
-            })
-        );
+        expectFileImportConsolidationEnqueued(transaction?.id);
     });
 
     it('keeps one transaction when the same statement import starts twice', async () => {

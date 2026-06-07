@@ -4,9 +4,8 @@ import { BankAccountTypeEnum, BankProviderEnum, privatbankTransactionMapper } fr
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 
-import { seed, StubFileBankSyncService, testDb } from '../../harness';
+import { expectFileImportConsolidationEnqueued, seed, StubFileBankSyncService, testDb } from '../../harness';
 
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 
 import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
@@ -81,16 +80,8 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
             .from(TransactionEntityTable)
             .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK))
             .get();
-        const transactionId = transaction?.id;
 
-        expect(transactionId).toBeTypeOf('number');
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledTimes(1);
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledWith(
-            TransferConsolidationDrainReasonEnum.FILE_IMPORT,
-            expect.objectContaining({
-                transactionIds: [transactionId]
-            })
-        );
+        expectFileImportConsolidationEnqueued(transaction?.id);
     });
 
     it('does not enqueue consolidation after a re-import with no new transactions', async () => {
