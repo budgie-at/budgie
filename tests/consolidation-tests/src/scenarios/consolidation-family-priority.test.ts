@@ -1,33 +1,41 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-    ConsolidationFamilyBatchBuilderService,
+    ConsolidationFamilyRegistryService,
     ConsolidationFamilyKeyEnum,
-    type ConsolidationCandidateGroupsInterface
+    type ConsolidationFamilyStrategyInterface
 } from '@budgie/consolidation';
 
-import { consolidationExecutorService } from '../harness/test-context';
+import {
+    atmCashWithdrawalRepository,
+    consolidationExecutorService,
+    existingTransferRepository,
+    ibanBridgeTransferRepository,
+    refundPairRepository,
+    transferPairRepository
+} from '../harness/test-context';
 
-const emptyCandidateGroups = {
-    atmCashWithdrawalCandidates: [],
-    atmCashWithdrawalReviewCandidates: [],
-    existingTransferBridgeCandidates: [],
-    existingTransferChainReclaimCandidates: [],
-    existingTransferIncomeDuplicateCandidates: [],
-    ibanBridgeCanonicalDuplicateCandidates: [],
-    ibanBridgeChainTransferCandidates: [],
-    ibanBridgeTransferCandidates: [],
-    manualReviewCandidates: [],
-    pairCandidates: [],
-    refundCandidates: [],
-    refundReviewCandidates: []
-} satisfies ConsolidationCandidateGroupsInterface;
+const expectStrategyContract = (family: ConsolidationFamilyStrategyInterface): void => {
+    expect(typeof family.preview).toBe('function');
+    expect(typeof family.process).toBe('function');
+};
 
 describe('consolidation/family-priority', () => {
     it('keeps automatic consolidation family priority explicit and stable', () => {
-        const familyBatchBuilder = new ConsolidationFamilyBatchBuilderService(consolidationExecutorService, () => Promise.resolve(0));
+        const familyRegistry = new ConsolidationFamilyRegistryService(
+            {
+                atmCashWithdrawalRepository,
+                existingTransferRepository,
+                ibanBridgeTransferRepository,
+                refundPairRepository,
+                transferPairRepository
+            },
+            consolidationExecutorService,
+            () => Promise.resolve()
+        );
 
-        const familyKeys = familyBatchBuilder.buildBatches(emptyCandidateGroups).map(batch => batch.key);
+        const families = familyRegistry.buildFamilies();
+        const familyKeys = families.map(family => family.key);
 
         expect(familyKeys).toEqual([
             ConsolidationFamilyKeyEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
@@ -40,5 +48,8 @@ describe('consolidation/family-priority', () => {
             ConsolidationFamilyKeyEnum.ATM_CASH_WITHDRAWAL,
             ConsolidationFamilyKeyEnum.REFUND
         ]);
+        for (const family of families) {
+            expectStrategyContract(family);
+        }
     });
 });

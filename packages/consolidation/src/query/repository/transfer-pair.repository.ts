@@ -2,28 +2,10 @@ import {
     buildTransferPairCandidatesSql,
     buildTransferPairManualReviewCandidatesSql
 } from '../sql-factory/transfer-pair-candidate-sql.factory';
-import {
-    buildAtmCashWithdrawalCandidatesSql,
-    buildAtmCashWithdrawalReviewCandidatesSql
-} from '../sql-factory/transfer-pair-cash-withdrawal-sql.factory';
-import { EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL } from '../sql-factory/transfer-pair-existing-transfer-bridge-sql.factory';
-import { EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL } from '../sql-factory/transfer-pair-existing-transfer-chain-reclaim-sql.factory';
-import { EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL } from '../sql-factory/transfer-pair-existing-transfer-income-duplicate-sql.factory';
-import { IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL } from '../sql-factory/transfer-pair-iban-bridge-canonical-duplicate-sql.factory';
-import { IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL } from '../sql-factory/transfer-pair-iban-bridge-chain-sql.factory';
-import { IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL } from '../sql-factory/transfer-pair-iban-bridge-transfer-sql.factory';
 
 import type {
-    AtmCashWithdrawalCandidateInterface,
-    AtmCashWithdrawalReviewCandidateInterface,
     ConsolidationScanScopeInterface,
     DB,
-    ExistingTransferBridgeCandidateInterface,
-    ExistingTransferChainReclaimCandidateInterface,
-    ExistingTransferIncomeDuplicateCandidateInterface,
-    IbanBridgeCanonicalDuplicateCandidateInterface,
-    IbanBridgeChainTransferCandidateInterface,
-    IbanBridgeTransferCandidateInterface,
     TransferPairCandidateInterface,
     TransferPairReviewCandidateInterface
 } from '@budgie/contracts';
@@ -41,67 +23,5 @@ export class TransferPairRepository {
         const sql = buildTransferPairManualReviewCandidatesSql();
 
         return this.db.$client.getAllAsync<TransferPairReviewCandidateInterface>(sql);
-    }
-
-    async findAtmCashWithdrawalCandidates(
-        scope: ConsolidationScanScopeInterface | null = null
-    ): Promise<AtmCashWithdrawalCandidateInterface[]> {
-        const sql = buildAtmCashWithdrawalCandidatesSql(scope);
-
-        return this.db.$client.getAllAsync<AtmCashWithdrawalCandidateInterface>(sql);
-    }
-
-    async findAtmCashWithdrawalReviewCandidates(): Promise<AtmCashWithdrawalReviewCandidateInterface[]> {
-        const sql = buildAtmCashWithdrawalReviewCandidatesSql();
-
-        return this.db.$client.getAllAsync<AtmCashWithdrawalReviewCandidateInterface>(sql);
-    }
-
-    async findExistingTransferBridgeCandidates(
-        scope: ConsolidationScanScopeInterface | null = null
-    ): Promise<ExistingTransferBridgeCandidateInterface[]> {
-        const sql = EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL(scope);
-
-        return this.db.$client.getAllAsync<ExistingTransferBridgeCandidateInterface>(sql);
-    }
-
-    async findExistingTransferChainReclaimCandidates(
-        scope: ConsolidationScanScopeInterface | null = null
-    ): Promise<ExistingTransferChainReclaimCandidateInterface[]> {
-        const sql = EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL(scope);
-
-        return this.db.$client.getAllAsync<ExistingTransferChainReclaimCandidateInterface>(sql);
-    }
-
-    async findExistingTransferIncomeDuplicateCandidates(
-        scope: ConsolidationScanScopeInterface | null = null
-    ): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
-        const sql = EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL(scope);
-
-        return this.db.$client.getAllAsync<ExistingTransferIncomeDuplicateCandidateInterface>(sql);
-    }
-
-    async findIbanBridgeTransferCandidates(
-        scope: ConsolidationScanScopeInterface | null = null
-    ): Promise<IbanBridgeTransferCandidateInterface[]> {
-        const sql = IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL(scope);
-
-        return this.db.$client.getAllAsync<IbanBridgeTransferCandidateInterface>(sql);
-    }
-
-    async findIbanBridgeCanonicalDuplicateCandidates(
-        scope: ConsolidationScanScopeInterface | null = null
-    ): Promise<IbanBridgeCanonicalDuplicateCandidateInterface[]> {
-        const sql = IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL(scope);
-
-        return this.db.$client.getAllAsync<IbanBridgeCanonicalDuplicateCandidateInterface>(sql);
-    }
-
-    async findIbanBridgeChainTransferCandidates(
-        scope: ConsolidationScanScopeInterface | null = null
-    ): Promise<IbanBridgeChainTransferCandidateInterface[]> {
-        const sql = IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL(scope);
-
-        return this.db.$client.getAllAsync<IbanBridgeChainTransferCandidateInterface>(sql);
     }
 }

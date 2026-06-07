@@ -1,5 +1,11 @@
 import * as contracts from '@budgie/contracts';
-import { RefundPairRepository, TransferPairRepository } from '@budgie/consolidation';
+import {
+    AtmCashWithdrawalRepository,
+    ExistingTransferRepository,
+    IbanBridgeTransferRepository,
+    RefundPairRepository,
+    TransferPairRepository
+} from '@budgie/consolidation';
 
 import type { DB } from '@budgie/contracts';
 
@@ -27,5 +33,8 @@ export const createTestRepositories = (db: DB) => ({
     merchantEmbeddingRepository: new contracts.MerchantEmbeddingRepository(db),
     commentEmbeddingRepository: new contracts.CommentEmbeddingRepository(db),
     transferPairRepository: new TransferPairRepository(db),
+    atmCashWithdrawalRepository: new AtmCashWithdrawalRepository(db),
+    existingTransferRepository: new ExistingTransferRepository(db),
+    ibanBridgeTransferRepository: new IbanBridgeTransferRepository(db),
     refundPairRepository: new RefundPairRepository(db)
 });

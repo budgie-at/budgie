@@ -4,8 +4,6 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
 
-import { ConsolidationEligibilityService } from './consolidation-eligibility.service';
-
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
 import type {
@@ -21,19 +19,9 @@ import type {
 } from '@budgie/contracts';
 
 export class ConsolidationWriterService {
-    private readonly consolidationEligibilityService: ConsolidationEligibilityService;
+    constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {}
 
-    constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {
-        this.consolidationEligibilityService = new ConsolidationEligibilityService(dependencies);
-    }
-
-    async consolidateRefund(candidate: RefundCandidateInterface, tx: DB): Promise<boolean> {
-        const sourceTransactionIds = [candidate.expenseTransactionId, ...candidate.refundIncomeTransactionIds];
-
-        if (!(await this.consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds, tx))) {
-            return false;
-        }
-
+    async writeRefundConsolidation(candidate: RefundCandidateInterface, tx: DB): Promise<void> {
         await this.dependencies.transactionRepository.setConsolidationType(
             candidate.expenseTransactionId,
             TransactionConsolidationTypeEnum.REFUND,
@@ -41,34 +29,16 @@ export class ConsolidationWriterService {
         );
         await this.copySourceTags(candidate.refundIncomeTransactionIds, candidate.expenseTransactionId, tx);
         await this.moveSourcesToCanonical(candidate.refundIncomeTransactionIds, candidate.expenseTransactionId, tx);
-
-        return true;
     }
 
-    async consolidateIbanBridgeCanonicalDuplicate(candidate: IbanBridgeCanonicalDuplicateCandidateInterface, tx: DB): Promise<boolean> {
+    async attachIbanBridgeCanonicalDuplicateSources(candidate: IbanBridgeCanonicalDuplicateCandidateInterface, tx: DB): Promise<void> {
         const sourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
 
-        if (!(await this.consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds, tx))) {
-            return false;
-        }
-
         await this.moveSourcesToCanonical(sourceTransactionIds, candidate.existingCanonicalTransferId, tx);
-
-        return true;
     }
 
-    async consolidateExistingTransferChainReclaim(candidate: ExistingTransferChainReclaimCandidateInterface, tx: DB): Promise<boolean> {
+    async writeExistingTransferChainReclaim(candidate: ExistingTransferChainReclaimCandidateInterface, tx: DB): Promise<void> {
         const sourceTransactionIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
-
-        if (
-            !(await this.consolidationEligibilityService.isExistingTransferConsolidationStillEligible(
-                sourceTransactionIds,
-                candidate.existingTransferId,
-                tx
-            ))
-        ) {
-            return false;
-        }
 
         await this.dependencies.transactionRepository.setConsolidationType(
             candidate.existingTransferId,
@@ -76,26 +46,9 @@ export class ConsolidationWriterService {
             tx
         );
         await this.moveSourcesToCanonical(sourceTransactionIds, candidate.existingTransferId, tx);
-
-        return true;
     }
 
-    async consolidateExistingTransferIncomeDuplicate(
-        candidate: ExistingTransferIncomeDuplicateCandidateInterface,
-        tx: DB
-    ): Promise<boolean> {
-        const sourceTransactionIds = [candidate.incomeTransactionId];
-
-        if (
-            !(await this.consolidationEligibilityService.isExistingTransferConsolidationStillEligible(
-                sourceTransactionIds,
-                candidate.existingTransferId,
-                tx
-            ))
-        ) {
-            return false;
-        }
-
+    async writeExistingTransferIncomeDuplicateRepair(candidate: ExistingTransferIncomeDuplicateCandidateInterface, tx: DB): Promise<void> {
         await this.dependencies.transactionRepository.updateById(
             candidate.existingTransferId,
             {
@@ -118,9 +71,7 @@ export class ConsolidationWriterService {
             TransactionConsolidationTypeEnum.TRANSFER_PAIR,
             tx
         );
-        await this.moveSourcesToCanonical(sourceTransactionIds, candidate.existingTransferId, tx);
-
-        return true;
+        await this.moveSourcesToCanonical([candidate.incomeTransactionId], candidate.existingTransferId, tx);
     }
 
     async createCanonicalTransfer(input: CanonicalTransferInputInterface, tx: DB): Promise<TransactionEntityInterface> {
@@ -216,7 +167,7 @@ export class ConsolidationWriterService {
         await this.dependencies.transactionRepository.setConsolidationParent(sourceTransactionIds, canonicalTransactionId, tx);
     }
 
-    async copySourceTags(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
+    private async copySourceTags(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
         await consolidationCopySourceTransactionTags(
             this.dependencies.transactionTagsRepository,
             sourceTransactionIds,
