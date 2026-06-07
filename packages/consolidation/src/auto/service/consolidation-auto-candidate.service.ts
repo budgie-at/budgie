@@ -20,9 +20,16 @@ export class ConsolidationAutoCandidateService {
         scope: ConsolidationScanScopeInterface | null = null,
         onProgress?: (processedCandidateGroupCount: number) => void
     ): Promise<ConsolidationResultInterface> {
-        const result = await this.consolidationFamilyRegistryService.buildFamilies().reduce(
-            async (resultPromise, family) => {
-                const currentResult = await resultPromise;
+        const families = this.consolidationFamilyRegistryService.buildFamilies();
+        let resultPromise = Promise.resolve({
+            blockedSourceTransactionIds: new Set<number>(),
+            consolidated: 0,
+            found: 0,
+            processedCandidateGroupCount: 0
+        });
+
+        for (const family of families) {
+            resultPromise = resultPromise.then(async currentResult => {
                 const familyResult = await family.process({
                     blockedSourceTransactionIds: currentResult.blockedSourceTransactionIds,
                     onProgress: processedCount => {
@@ -40,9 +47,9 @@ export class ConsolidationAutoCandidateService {
                     found: currentResult.found + familyResult.found,
                     processedCandidateGroupCount: currentResult.processedCandidateGroupCount + familyResult.found
                 };
-            },
-            Promise.resolve({ blockedSourceTransactionIds: new Set<number>(), consolidated: 0, found: 0, processedCandidateGroupCount: 0 })
-        );
+            });
+        }
+        const result = await resultPromise;
 
         return { found: result.found, consolidated: result.consolidated };
     }
@@ -53,9 +60,11 @@ export class ConsolidationAutoCandidateService {
         (error, scope) => `throw scopeIdCount=${scope?.transactionIds.length ?? 0} error=${getErrorMessage(error)}`
     )
     async count(scope: ConsolidationScanScopeInterface | null = null): Promise<number> {
-        const result = await this.consolidationFamilyRegistryService.buildFamilies().reduce(
-            async (resultPromise, family) => {
-                const currentResult = await resultPromise;
+        const families = this.consolidationFamilyRegistryService.buildFamilies();
+        let resultPromise = Promise.resolve({ blockedSourceTransactionIds: new Set<number>(), found: 0 });
+
+        for (const family of families) {
+            resultPromise = resultPromise.then(async currentResult => {
                 const preview = await family.preview({
                     blockedSourceTransactionIds: currentResult.blockedSourceTransactionIds,
                     scope
@@ -67,9 +76,9 @@ export class ConsolidationAutoCandidateService {
                     blockedSourceTransactionIds,
                     found: currentResult.found + preview.found
                 };
-            },
-            Promise.resolve({ blockedSourceTransactionIds: new Set<number>(), found: 0 })
-        );
+            });
+        }
+        const result = await resultPromise;
 
         return result.found;
     }

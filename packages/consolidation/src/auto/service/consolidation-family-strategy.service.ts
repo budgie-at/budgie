@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import type { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
 import type { ConsolidationFamilyPreviewInterface } from '../interface/consolidation-family-preview.interface';
 import type { ConsolidationFamilyRunContextInterface } from '../interface/consolidation-family-run-context.interface';
@@ -35,29 +37,46 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
     }
 
     async processCandidateList(candidates: Candidate[]): Promise<number> {
-        return candidates.reduce(async (consolidatedPromise, candidate, candidateIndex) => {
-            const consolidated = await consolidatedPromise;
-            const success = await this.consolidateCandidate(candidate).then(
-                result => result,
-                () => false
-            );
-            await this.yieldBetweenCandidates(candidateIndex, candidates.length);
+        let consolidatedPromise = Promise.resolve(0);
 
-            return success ? consolidated + 1 : consolidated;
-        }, Promise.resolve(0));
+        for (let candidateIndex = 0; candidateIndex < candidates.length; candidateIndex += 1) {
+            const candidate = candidates[candidateIndex];
+
+            consolidatedPromise = consolidatedPromise.then(async consolidated => {
+                const success = await this.consolidateCandidate(candidate);
+                await this.yieldBetweenCandidates(candidateIndex, candidates.length);
+
+                return success ? consolidated + 1 : consolidated;
+            });
+        }
+
+        return consolidatedPromise;
     }
 
     private async buildRunnableCandidates(context: ConsolidationFamilyRunContextInterface): Promise<Candidate[]> {
         const candidates = await this.findCandidates(context.scope);
         await this.yieldControl();
-        const runnableCandidates = candidates.filter(candidate => this.isCandidateRunnable(candidate, context.blockedSourceTransactionIds));
+        const runnableCandidates = candidates.filter(candidate => this.isCandidateRunnable(candidate, context));
         await this.yieldControl();
 
         return runnableCandidates;
     }
 
-    private isCandidateRunnable(candidate: Candidate, blockedSourceTransactionIds: ReadonlySet<number>): boolean {
-        return this.getSourceTransactionIds(candidate).every(sourceTransactionId => !blockedSourceTransactionIds.has(sourceTransactionId));
+    private isCandidateRunnable(candidate: Candidate, context: ConsolidationFamilyRunContextInterface): boolean {
+        return (
+            this.isCandidateInScope(candidate, context.scope) &&
+            this.getSourceTransactionIds(candidate).every(
+                sourceTransactionId => !context.blockedSourceTransactionIds.has(sourceTransactionId)
+            )
+        );
+    }
+
+    private isCandidateInScope(candidate: Candidate, scope: ConsolidationScanScopeInterface | null): boolean {
+        if (!isDefined(scope)) {
+            return true;
+        }
+
+        return this.getSourceTransactionIds(candidate).some(sourceTransactionId => scope.transactionIds.includes(sourceTransactionId));
     }
 
     private buildBlockedSourceTransactionIds(candidates: Candidate[]): number[] {
