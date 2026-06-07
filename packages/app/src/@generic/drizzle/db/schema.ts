@@ -20,6 +20,8 @@ export {
     ExchangeRateEntityTable,
     ExchangeRateEntityRelations,
     HistoricalExchangeRateEntityTable,
+    InstrumentDailyMarketPriceEntityTable,
+    InstrumentMarketDataJobEntityTable,
     InstrumentEntityTable,
     InstrumentEntityRelations,
     SettingsEntityTable,

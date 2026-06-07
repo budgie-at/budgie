@@ -9,6 +9,8 @@ import {
     CommentEmbeddingRepository,
     ExchangeRateRepository,
     HistoricalExchangeRateRepository,
+    InstrumentDailyMarketPriceRepository,
+    InstrumentMarketDataJobRepository,
     InstrumentRepository,
     MccCategoryRepository,
     MerchantEmbeddingRepository,
@@ -20,6 +22,7 @@ import {
     StatisticsRepository,
     TagRepository,
     TransactionEmbeddingRepository,
+    TransactionEntryPositionRepository,
     TransactionEntryRepository,
     TransactionPatternRepository,
     TransactionRepository,
@@ -112,12 +115,15 @@ export const categoryRepository = new CategoryRepository(db);
 export const instrumentRepository = new InstrumentRepository(db);
 export const exchangeRateRepository = new ExchangeRateRepository(db);
 export const historicalExchangeRateRepository = new HistoricalExchangeRateRepository(db);
+export const instrumentDailyMarketPriceRepository = new InstrumentDailyMarketPriceRepository(db);
+export const instrumentMarketDataJobRepository = new InstrumentMarketDataJobRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
 export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
 export const transactionEmbeddingRepository = new TransactionEmbeddingRepository(db);
 export const transactionEntryRepository = new TransactionEntryRepository(db);
+export const transactionEntryPositionRepository = new TransactionEntryPositionRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
 export const transactionRepository = new TransactionRepository(db);
 export const transactionTagsRepository = new TransactionTagsRepository(db);
