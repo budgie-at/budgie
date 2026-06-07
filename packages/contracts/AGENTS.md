@@ -202,6 +202,29 @@ private async processBatchInner(batch: InputInterface[], tx: Transaction) {
 
 ### Query API Preference
 
+### Red Flag: Do Not Decorate Query Builders
+
+Repository methods that return Drizzle query builders must not use `@Log`. Drizzle query builders are thenable, so log decorators can mistake them for promises and wrap them. `useLiveQuery` expects the original query object so it can read table metadata; a wrapped builder can crash at runtime with `Cannot read property 'table' of undefined`.
+
+Keep `@Log` on methods that execute work themselves, especially `async` methods that `await` the database call. Leave builder-returning methods undecorated:
+
+```typescript
+// Good
+findRecent(accountId: number) {
+    return this.db.query.AccountEntityTable.findMany({
+        where: eq(AccountEntityTable.id, accountId)
+    });
+}
+
+// Bad
+@Log(...)
+findRecent(accountId: number) {
+    return this.db.query.AccountEntityTable.findMany({
+        where: eq(AccountEntityTable.id, accountId)
+    });
+}
+```
+
 **Prefer:**
 ```typescript
 this.db.query.AccountEntityTable.findMany({
