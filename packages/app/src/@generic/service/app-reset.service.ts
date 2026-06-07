@@ -32,7 +32,7 @@ class AppResetService {
         syncWorkloadService.cancelPendingAndBlockNewWork();
         transferConsolidationDrainerService.cancelPending();
         ruleApplicationDrainerService.cancelPending();
-        historicalMarketDataLoaderService.cancelPending();
+        historicalMarketDataLoaderService.cancelScheduledDrain();
     }
 
     private async clearAllAppOwnedStorage(): Promise<void> {

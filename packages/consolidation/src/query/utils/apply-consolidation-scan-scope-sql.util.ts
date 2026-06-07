@@ -6,12 +6,9 @@ export const applyConsolidationScanScopeSql = (
     sql: string,
     scope: ConsolidationScanScopeInterface | null,
     scopeExpressions: ReadonlyMap<string, string>
-): string => {
-    let scopedSql = sql;
-
-    scopeExpressions.forEach((operatedAtExpression, placeholder) => {
-        scopedSql = scopedSql.replaceAll(placeholder, buildConsolidationScanScopeSql(scope, operatedAtExpression));
-    });
-
-    return scopedSql;
-};
+): string =>
+    [...scopeExpressions].reduce(
+        (scopedSql, [placeholder, operatedAtExpression]) =>
+            scopedSql.replaceAll(placeholder, buildConsolidationScanScopeSql(scope, operatedAtExpression)),
+        sql
+    );
