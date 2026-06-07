@@ -59,6 +59,10 @@ class HistoricalMarketDataLoaderService {
         await this.enqueueAccounts(accounts);
     }
 
+    cancelPending(): void {
+        this.cancelScheduledDrain();
+    }
+
     scheduleDrain(): void {
         if (this.isRunning || isDefined(this.timer)) {
             return;

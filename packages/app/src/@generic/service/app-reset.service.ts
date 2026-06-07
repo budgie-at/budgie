@@ -9,19 +9,30 @@ import { chatService } from '../../ai/service/chat.service';
 import { embeddingService } from '../../ai/service/embedding.service';
 import { sttService } from '../../ai/service/stt.service';
 import { authService } from '../../auth/service/auth.service';
+import { historicalMarketDataLoaderService } from '../../market-data/service/historical-market-data-loader.service';
+import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { syncWorkloadService } from '../../sync/service/sync-workload.service';
+import { transferConsolidationDrainerService } from '../../sync/service/transfer-consolidation-drainer.service';
 import { patternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { DB_NAME } from '../drizzle/constant/db-name.constant';
 import { expoDb } from '../drizzle/db/db';
 import { reloadApp } from '../utils/reload-app.util';
 
-class AppResetService {
-    private static readonly RESET_WORKLOAD_NAME = 'full-app-storage-reset';
+import { foregroundWorkloadService } from './foreground-workload.service';
 
+class AppResetService {
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async clearAllDataAndRestart(): Promise<void> {
-        await syncWorkloadService.run(AppResetService.RESET_WORKLOAD_NAME, () => this.clearAllAppOwnedStorage());
+        this.prepareForReset();
+        await foregroundWorkloadService.run(() => this.clearAllAppOwnedStorage());
         await reloadApp();
+    }
+
+    private prepareForReset(): void {
+        syncWorkloadService.cancelPendingAndBlockNewWork();
+        transferConsolidationDrainerService.cancelPending();
+        ruleApplicationDrainerService.cancelPending();
+        historicalMarketDataLoaderService.cancelPending();
     }
 
     private async clearAllAppOwnedStorage(): Promise<void> {
