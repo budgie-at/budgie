@@ -833,7 +833,7 @@ msgstr "No se pudo importar el archivo CSV"
 
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "Could not load budget"
-msgstr ""
+msgstr "No se pudo cargar el presupuesto"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -1434,7 +1434,7 @@ msgstr "De"
 
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "From {fromText}"
-msgstr ""
+msgstr "Desde {fromText}"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Account"
@@ -1760,7 +1760,7 @@ msgstr "Coincide con regex"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Maximum amount"
-msgstr ""
+msgstr "Importe máximo"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
@@ -1792,7 +1792,7 @@ msgstr "Unir transferencias y reembolsos coincidentes"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Minimum amount"
-msgstr ""
+msgstr "Importe mínimo"
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -2657,7 +2657,7 @@ msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show all amounts"
-msgstr ""
+msgstr "Mostrar todos los importes"
 
 #: src/app/date-filter.tsx
 msgid "Show all dates"
@@ -2924,7 +2924,7 @@ msgstr "A"
 
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "To {toText}"
-msgstr ""
+msgstr "A {toText}"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "To Account"

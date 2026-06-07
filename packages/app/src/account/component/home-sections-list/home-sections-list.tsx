@@ -15,7 +15,7 @@ import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-
 import { HomeSectionHeader } from '../home-section-header/home-section-header';
 import { HomeSectionItem } from '../home-section-item/home-section-item';
 
-import type { ReactNode } from 'react';
+import type { ReactElement } from 'react';
 import type { SharedValue } from 'react-native-reanimated';
 
 interface Props {
@@ -24,7 +24,7 @@ interface Props {
     readonly activeAccountCount: number;
     readonly bottomInset: number;
     readonly balanceSummary: HomeAccountBalanceSummaryInterface;
-    readonly listHeaderComponent?: ReactNode;
+    readonly listHeaderComponent?: ReactElement;
 }
 
 export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottomInset, balanceSummary, listHeaderComponent }: Props) => {
