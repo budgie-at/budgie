@@ -1,7 +1,7 @@
 import {
     buildTransferPairCandidatesSql,
     buildTransferPairManualReviewCandidatesSql
-} from '../sql-factory/transfer-pair-candidate-sql.factory';
+} from './sql-factory/transfer-pair-candidate-sql.factory';
 
 import type {
     ConsolidationScanScopeInterface,

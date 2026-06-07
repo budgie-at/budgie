@@ -2,7 +2,7 @@ import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enu
 
 import { ConsolidationFamilyStrategyService } from './consolidation-family-strategy.service';
 
-import type { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
+import type { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
 import type { ExistingTransferRepository } from '../../query/repository/existing-transfer.repository';
 import type { ConsolidationScanScopeInterface, ExistingTransferIncomeDuplicateCandidateInterface } from '@budgie/contracts';
 
@@ -11,7 +11,10 @@ export class ExistingTransferIncomeDuplicateConsolidationFamilyService extends C
 
     constructor(
         private readonly existingTransferRepository: Pick<ExistingTransferRepository, 'findIncomeDuplicateCandidates'>,
-        private readonly consolidationExecutorService: Pick<ConsolidationExecutorService, 'consolidateExistingTransferIncomeDuplicate'>,
+        private readonly consolidationRepairExecutorService: Pick<
+            ConsolidationRepairExecutorService,
+            'consolidateExistingTransferIncomeDuplicate'
+        >,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
@@ -22,7 +25,7 @@ export class ExistingTransferIncomeDuplicateConsolidationFamilyService extends C
     }
 
     protected consolidateCandidate(candidate: ExistingTransferIncomeDuplicateCandidateInterface): Promise<boolean> {
-        return this.consolidationExecutorService.consolidateExistingTransferIncomeDuplicate(candidate);
+        return this.consolidationRepairExecutorService.consolidateExistingTransferIncomeDuplicate(candidate);
     }
 
     protected getSourceTransactionIds(candidate: ExistingTransferIncomeDuplicateCandidateInterface): number[] {

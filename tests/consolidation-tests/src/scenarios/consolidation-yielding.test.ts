@@ -6,6 +6,7 @@ import { ConsolidationAutoCandidateService, ConsolidationFamilyRegistryService }
 import {
     atmCashWithdrawalRepository,
     consolidationExecutorService,
+    consolidationRepairExecutorService,
     existingTransferRepository,
     ibanBridgeTransferRepository,
     refundPairRepository,
@@ -29,6 +30,7 @@ describe('consolidation/yielding', () => {
                 transferPairRepository
             },
             consolidationExecutorService,
+            consolidationRepairExecutorService,
             yieldControl
         );
         const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationFamilyRegistryService);
