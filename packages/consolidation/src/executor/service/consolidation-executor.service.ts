@@ -36,11 +36,7 @@ export class ConsolidationExecutorService {
             `throw pair=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
     )
     async consolidatePair(candidate: TransferPairCandidateInterface, consolidationPlan: ConsolidationPlanInterface): Promise<boolean> {
-        const requiredSourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
-
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
-        );
+        return await this.consolidateTwoRequiredSources(candidate.expenseTransactionId, candidate.incomeTransactionId, consolidationPlan);
     }
 
     @Log(
@@ -72,11 +68,7 @@ export class ConsolidationExecutorService {
         candidate: IbanBridgeTransferCandidateInterface,
         consolidationPlan: ConsolidationPlanInterface
     ): Promise<boolean> {
-        const requiredSourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
-
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
-        );
+        return await this.consolidateTwoRequiredSources(candidate.expenseTransactionId, candidate.incomeTransactionId, consolidationPlan);
     }
 
     @Log(
@@ -146,6 +138,18 @@ export class ConsolidationExecutorService {
         await this.consolidationMutationService.moveSourcesToCanonical(consolidationPlan.sourceTransactionIds, canonicalTransaction.id, tx);
 
         return true;
+    }
+
+    private async consolidateTwoRequiredSources(
+        expenseTransactionId: number,
+        incomeTransactionId: number,
+        consolidationPlan: ConsolidationPlanInterface
+    ): Promise<boolean> {
+        const requiredSourceTransactionIds = [expenseTransactionId, incomeTransactionId];
+
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
+            this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
+        );
     }
 
     private async executeRequiredSourceConsolidationPlan(
