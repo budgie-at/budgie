@@ -2,12 +2,16 @@ import {
     ConsolidationAutoCandidateService,
     ConsolidationCandidateService,
     ConsolidationCoordinatorService,
-    ConsolidationExecutorService
+    ConsolidationExecutorService,
+    ConsolidationFamilyRegistryService
 } from '@budgie/consolidation';
 import { transactionAsync } from '@budgie/contracts';
 
 import {
+    atmCashWithdrawalRepository,
     db,
+    existingTransferRepository,
+    ibanBridgeTransferRepository,
     refundPairRepository,
     transactionEntryRepository,
     transactionRepository,
@@ -26,13 +30,27 @@ const consolidationExecutorService = new ConsolidationExecutorService({
 
 const consolidationCandidateService = new ConsolidationCandidateService(
     {
+        atmCashWithdrawalRepository,
+        existingTransferRepository,
         refundPairRepository,
         transferPairRepository
     },
     microPause
 );
 
-const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationExecutorService, microPause);
+const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryService(
+    {
+        atmCashWithdrawalRepository,
+        existingTransferRepository,
+        ibanBridgeTransferRepository,
+        refundPairRepository,
+        transferPairRepository
+    },
+    consolidationExecutorService,
+    microPause
+);
+
+const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationFamilyRegistryService);
 
 export const consolidationCoordinatorService = new ConsolidationCoordinatorService(
     consolidationCandidateService,
