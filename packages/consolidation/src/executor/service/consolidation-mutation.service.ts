@@ -130,11 +130,11 @@ export class ConsolidationMutationService {
 
     @Log(
         (sourceTransactionIds, canonicalTransactionId, tx) =>
-            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
+            `enter moveSources ids=${sourceTransactionIds.join(',')} parent=${canonicalTransactionId} tx=${String(isDefined(tx))}`,
         (result, sourceTransactionIds, canonicalTransactionId, tx) =>
-            `done sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} result=${String(result)}`,
+            `done moved=${String(result)} ids=${sourceTransactionIds.join(',')} parent=${canonicalTransactionId} tx=${String(isDefined(tx))}`,
         (error, sourceTransactionIds, canonicalTransactionId, tx) =>
-            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+            `throw moveSources ids=${sourceTransactionIds.join(',')} parent=${canonicalTransactionId} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async moveSourcesToCanonical(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
         await this.dependencies.transactionEntryRepository.moveToConsolidatedTransaction(sourceTransactionIds, canonicalTransactionId, tx);
@@ -143,11 +143,11 @@ export class ConsolidationMutationService {
 
     @Log(
         (sourceTransactionIds, canonicalTransactionId, tx) =>
-            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
+            `enter copyTags from=${sourceTransactionIds.join(',')} to=${canonicalTransactionId} tx=${String(isDefined(tx))}`,
         (result, sourceTransactionIds, canonicalTransactionId, tx) =>
-            `done sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} result=${String(result)}`,
+            `done tagsCopied=${String(result)} from=${sourceTransactionIds.join(',')} to=${canonicalTransactionId} tx=${String(isDefined(tx))}`,
         (error, sourceTransactionIds, canonicalTransactionId, tx) =>
-            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+            `throw copyTags from=${sourceTransactionIds.join(',')} to=${canonicalTransactionId} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async copySourceTags(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
         await consolidationCopySourceTransactionTags(
