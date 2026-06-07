@@ -70,7 +70,8 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                     target_income_tx.type = '${TransactionTypeEnum.INCOME}'
                     AND target_income_tx.deleted_at IS NULL
                     AND target_income_tx.consolidation_parent_transaction_id IS NULL
-                    AND ABS(target_income_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    AND target_income_tx.operated_at BETWEEN source_expense_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        AND source_expense_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                     ${TARGET_INCOME_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries target_income_entry ON
                     target_income_entry.transaction_id = target_income_tx.id
@@ -86,7 +87,8 @@ const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
                     AND canonical_tx.consolidation_type IN ('${TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER}', '${TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER}')
                     AND canonical_tx.from_account_id = source_account.id
                     AND canonical_tx.to_account_id = target_account.id
-                    AND ABS(canonical_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    AND canonical_tx.operated_at BETWEEN source_expense_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        AND source_expense_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                     ${CANONICAL_SCOPE_SQL_PLACEHOLDER}
                 LEFT JOIN mcc_categories source_expense_mcc ON source_expense_mcc.id = source_expense_entry.mcc_category_id
                 LEFT JOIN mcc_categories target_income_mcc ON target_income_mcc.id = target_income_entry.mcc_category_id

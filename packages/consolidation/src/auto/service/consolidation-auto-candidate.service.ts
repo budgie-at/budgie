@@ -21,11 +21,11 @@ export class ConsolidationAutoCandidateService {
 
     @Log(
         (candidates, onProgress) =>
-            `enter pairCandidateCount=${candidates.pairCandidates.length} bridgeCandidateCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length} hasOnProgress=${String(isDefined(onProgress))}`,
+            `enter ibanBridgeChainCount=${candidates.ibanBridgeChainTransferCandidates.length} existingTransferBridgeCount=${candidates.existingTransferBridgeCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length} ibanBridgeDuplicateCount=${candidates.ibanBridgeCanonicalDuplicateCandidates.length} ibanBridgeCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferIncomeDuplicateCount=${candidates.existingTransferIncomeDuplicateCandidates.length} pairCount=${candidates.pairCandidates.length} atmCount=${candidates.atmCashWithdrawalCandidates.length} refundCount=${candidates.refundCandidates.length} hasOnProgress=${String(isDefined(onProgress))}`,
         (result, candidates, onProgress) =>
-            `done pairCandidateCount=${candidates.pairCandidates.length} bridgeCandidateCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length} hasOnProgress=${String(isDefined(onProgress))} consolidated=${result}`,
+            `done ibanBridgeChainCount=${candidates.ibanBridgeChainTransferCandidates.length} existingTransferBridgeCount=${candidates.existingTransferBridgeCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length} ibanBridgeDuplicateCount=${candidates.ibanBridgeCanonicalDuplicateCandidates.length} ibanBridgeCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferIncomeDuplicateCount=${candidates.existingTransferIncomeDuplicateCandidates.length} pairCount=${candidates.pairCandidates.length} atmCount=${candidates.atmCashWithdrawalCandidates.length} refundCount=${candidates.refundCandidates.length} hasOnProgress=${String(isDefined(onProgress))} consolidated=${result}`,
         (error, candidates, onProgress) =>
-            `throw pairCandidateCount=${candidates.pairCandidates.length} bridgeCandidateCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length} hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
+            `throw ibanBridgeChainCount=${candidates.ibanBridgeChainTransferCandidates.length} existingTransferBridgeCount=${candidates.existingTransferBridgeCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length} ibanBridgeDuplicateCount=${candidates.ibanBridgeCanonicalDuplicateCandidates.length} ibanBridgeCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferIncomeDuplicateCount=${candidates.existingTransferIncomeDuplicateCandidates.length} pairCount=${candidates.pairCandidates.length} atmCount=${candidates.atmCashWithdrawalCandidates.length} refundCount=${candidates.refundCandidates.length} hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
     )
     async processGroups(
         candidates: ConsolidationCandidateGroupsInterface,
@@ -87,9 +87,9 @@ export class ConsolidationAutoCandidateService {
             existingTransferBridgeConsolidated +
             existingTransferChainReclaimConsolidated +
             bridgeDuplicateConsolidated +
-            pairConsolidated +
             bridgeConsolidated +
             existingTransferIncomeDuplicateConsolidated +
+            pairConsolidated +
             atmConsolidated +
             refundConsolidated
         );
@@ -97,11 +97,11 @@ export class ConsolidationAutoCandidateService {
 
     @Log(
         candidates =>
-            `enter pairCandidateCount=${candidates.pairCandidates.length} bridgeCandidateCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length}`,
+            `enter ibanBridgeChainCount=${candidates.ibanBridgeChainTransferCandidates.length} existingTransferBridgeCount=${candidates.existingTransferBridgeCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length} ibanBridgeDuplicateCount=${candidates.ibanBridgeCanonicalDuplicateCandidates.length} ibanBridgeCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferIncomeDuplicateCount=${candidates.existingTransferIncomeDuplicateCandidates.length} pairCount=${candidates.pairCandidates.length} atmCount=${candidates.atmCashWithdrawalCandidates.length} refundCount=${candidates.refundCandidates.length}`,
         (result, candidates) =>
-            `done pairCandidateCount=${candidates.pairCandidates.length} bridgeCandidateCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length} count=${result}`,
+            `done ibanBridgeChainCount=${candidates.ibanBridgeChainTransferCandidates.length} existingTransferBridgeCount=${candidates.existingTransferBridgeCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length} ibanBridgeDuplicateCount=${candidates.ibanBridgeCanonicalDuplicateCandidates.length} ibanBridgeCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferIncomeDuplicateCount=${candidates.existingTransferIncomeDuplicateCandidates.length} pairCount=${candidates.pairCandidates.length} atmCount=${candidates.atmCashWithdrawalCandidates.length} refundCount=${candidates.refundCandidates.length} count=${result}`,
         (error, candidates) =>
-            `throw pairCandidateCount=${candidates.pairCandidates.length} bridgeCandidateCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length} error=${getErrorMessage(error)}`
+            `throw ibanBridgeChainCount=${candidates.ibanBridgeChainTransferCandidates.length} existingTransferBridgeCount=${candidates.existingTransferBridgeCandidates.length} existingTransferChainReclaimCount=${candidates.existingTransferChainReclaimCandidates.length} ibanBridgeDuplicateCount=${candidates.ibanBridgeCanonicalDuplicateCandidates.length} ibanBridgeCount=${candidates.ibanBridgeTransferCandidates.length} existingTransferIncomeDuplicateCount=${candidates.existingTransferIncomeDuplicateCandidates.length} pairCount=${candidates.pairCandidates.length} atmCount=${candidates.atmCashWithdrawalCandidates.length} refundCount=${candidates.refundCandidates.length} error=${getErrorMessage(error)}`
     )
     countCandidates(candidates: ConsolidationCandidateGroupsInterface): number {
         return (
