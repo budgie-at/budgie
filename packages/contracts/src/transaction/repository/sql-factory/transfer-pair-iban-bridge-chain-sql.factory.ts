@@ -141,7 +141,8 @@ const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_BASE_SQL = `
                     bridge_income_tx.type = '${TransactionTypeEnum.INCOME}'
                     AND bridge_income_tx.deleted_at IS NULL
                     AND bridge_income_tx.consolidation_parent_transaction_id IS NULL
-                    AND ABS(bridge_income_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    AND bridge_income_tx.operated_at BETWEEN source_expense_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        AND source_expense_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                     ${BRIDGE_INCOME_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries bridge_income_entry ON
                     bridge_income_entry.transaction_id = bridge_income_tx.id
@@ -158,7 +159,8 @@ const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_BASE_SQL = `
                     bridge_expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
                     AND bridge_expense_tx.deleted_at IS NULL
                     AND bridge_expense_tx.consolidation_parent_transaction_id IS NULL
-                    AND ABS(bridge_expense_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    AND bridge_expense_tx.operated_at BETWEEN source_expense_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        AND source_expense_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                     ${BRIDGE_EXPENSE_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries bridge_expense_entry ON
                     bridge_expense_entry.transaction_id = bridge_expense_tx.id
@@ -173,7 +175,8 @@ const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_BASE_SQL = `
                     target_income_tx.type = '${TransactionTypeEnum.INCOME}'
                     AND target_income_tx.deleted_at IS NULL
                     AND target_income_tx.consolidation_parent_transaction_id IS NULL
-                    AND ABS(target_income_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    AND target_income_tx.operated_at BETWEEN source_expense_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        AND source_expense_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                     ${TARGET_INCOME_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries target_income_entry ON
                     target_income_entry.transaction_id = target_income_tx.id
