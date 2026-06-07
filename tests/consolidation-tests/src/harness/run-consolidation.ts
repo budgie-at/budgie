@@ -1,10 +1,14 @@
 import { consolidationAutoCandidateService } from './test-context';
 
-export const runConsolidation = async (): Promise<{
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
+
+export const runConsolidation = async (
+    scope: ConsolidationScanScopeInterface | null = null
+): Promise<{
     readonly consolidated: number;
     readonly found: number;
 }> => {
-    const result = await consolidationAutoCandidateService.process();
+    const result = await consolidationAutoCandidateService.process(scope);
 
     return result;
 };

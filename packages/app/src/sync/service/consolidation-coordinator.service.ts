@@ -21,21 +21,17 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 
-const consolidationExecutorService = new ConsolidationExecutorService({
+const consolidationExecutorDependencies = {
     database: db,
+    runTransaction: transactionAsync,
     transactionEntryRepository,
     transactionRepository,
-    transactionRunner: { run: transactionAsync },
     transactionTagsRepository
-});
+};
 
-const consolidationRepairExecutorService = new ConsolidationRepairExecutorService({
-    database: db,
-    transactionEntryRepository,
-    transactionRepository,
-    transactionRunner: { run: transactionAsync },
-    transactionTagsRepository
-});
+const consolidationExecutorService = new ConsolidationExecutorService(consolidationExecutorDependencies);
+
+const consolidationRepairExecutorService = new ConsolidationRepairExecutorService(consolidationExecutorDependencies);
 
 const consolidationCandidateService = new ConsolidationCandidateService(
     {

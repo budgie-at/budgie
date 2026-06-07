@@ -7,12 +7,14 @@ import {
     UnconsolidationService
 } from '@budgie/consolidation';
 
-import { buildTestDb, createTestRepositories, createTestTransactionRunner, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
+import { buildTestDb, createTestRepositories, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
+
+import type { DB } from '@budgie/contracts';
 
 export const testDb = buildTestDb();
 
 const repositories = createTestRepositories(testDb);
-const transactionRunner = createTestTransactionRunner();
+const runTestTransaction = <T>(database: DB, callback: (transactionDatabase: DB) => Promise<T>): Promise<T> => callback(database);
 const yieldControl = (): Promise<void> => Promise.resolve();
 
 export const accountBalanceRepository = repositories.accountBalanceRepository;
@@ -23,21 +25,17 @@ export const ibanBridgeTransferRepository = repositories.ibanBridgeTransferRepos
 export const refundPairRepository = repositories.refundPairRepository;
 export const transferPairRepository = repositories.transferPairRepository;
 
-export const consolidationExecutorService = new ConsolidationExecutorService({
+const consolidationExecutorDependencies = {
     database: testDb,
-    transactionRunner,
+    runTransaction: runTestTransaction,
     transactionRepository: repositories.transactionRepository,
     transactionEntryRepository: repositories.transactionEntryRepository,
     transactionTagsRepository: repositories.transactionTagsRepository
-});
+};
 
-export const consolidationRepairExecutorService = new ConsolidationRepairExecutorService({
-    database: testDb,
-    transactionRunner,
-    transactionRepository: repositories.transactionRepository,
-    transactionEntryRepository: repositories.transactionEntryRepository,
-    transactionTagsRepository: repositories.transactionTagsRepository
-});
+export const consolidationExecutorService = new ConsolidationExecutorService(consolidationExecutorDependencies);
+
+export const consolidationRepairExecutorService = new ConsolidationRepairExecutorService(consolidationExecutorDependencies);
 
 const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryService(
     {
@@ -65,7 +63,7 @@ export const refundConsolidationService = new RefundConsolidationService({
     refundPairRepository: repositories.refundPairRepository,
     transactionEntryRepository: repositories.transactionEntryRepository,
     transactionRepository: repositories.transactionRepository,
-    transactionRunner,
+    runTransaction: runTestTransaction,
     transactionTagsRepository: repositories.transactionTagsRepository
 });
 

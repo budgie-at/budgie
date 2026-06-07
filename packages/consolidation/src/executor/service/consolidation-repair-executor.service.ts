@@ -34,7 +34,7 @@ export class ConsolidationRepairExecutorService {
             `throw expenseTransactionId=${candidate.expenseTransactionId} incomeTransactionId=${candidate.incomeTransactionId} existingCanonicalTransferId=${candidate.existingCanonicalTransferId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
     )
     async consolidateIbanBridgeCanonicalDuplicate(candidate: IbanBridgeCanonicalDuplicateCandidateInterface): Promise<boolean> {
-        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
             this.consolidateIbanBridgeCanonicalDuplicateInner(candidate, tx)
         );
     }
@@ -48,7 +48,7 @@ export class ConsolidationRepairExecutorService {
             `throw existingTransferId=${candidate.existingTransferId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} bridgeAmount=${candidate.bridgeAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate} error=${getErrorMessage(error)}`
     )
     async consolidateExistingTransferChainReclaim(candidate: ExistingTransferChainReclaimCandidateInterface): Promise<boolean> {
-        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
             this.consolidateExistingTransferChainReclaimInner(candidate, tx)
         );
     }
@@ -62,7 +62,7 @@ export class ConsolidationRepairExecutorService {
             `throw existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
     )
     async consolidateExistingTransferIncomeDuplicate(candidate: ExistingTransferIncomeDuplicateCandidateInterface): Promise<boolean> {
-        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
             this.consolidateExistingTransferIncomeDuplicateInner(candidate, tx)
         );
     }
@@ -76,9 +76,7 @@ export class ConsolidationRepairExecutorService {
             `throw expenseTransactionId=${candidate.expenseTransactionId} refundIncomeTransactionIds=${candidate.refundIncomeTransactionIds.join(',')} refundsTotal=${candidate.refundsTotal} error=${getErrorMessage(error)}`
     )
     async consolidateRefund(candidate: RefundCandidateInterface): Promise<boolean> {
-        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
-            this.consolidateRefundInner(candidate, tx)
-        );
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx => this.consolidateRefundInner(candidate, tx));
     }
 
     private async consolidateIbanBridgeCanonicalDuplicateInner(

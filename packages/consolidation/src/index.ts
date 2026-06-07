@@ -25,4 +25,4 @@ export type { ConsolidationExecutorDependenciesInterface } from './executor/inte
 export type { ConvertToRefundParamsInterface } from './refund/interface/convert-to-refund-params.interface';
 export type { RefundConsolidationDependenciesInterface } from './refund/interface/refund-consolidation-dependencies.interface';
 export type { UnconsolidationDependenciesInterface } from './executor/interface/unconsolidation-dependencies.interface';
-export type { TransactionRunnerInterface } from './wiring/interface/transaction-runner.interface';
+export type { TransactionRunnerType } from './wiring/type/transaction-runner.type';
