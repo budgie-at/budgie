@@ -102,17 +102,30 @@ export { TagRepository } from './tag/repository/tag.repository';
 export { InstrumentTypeEnum } from './instrument/enum/instrument-type.enum';
 export { InstrumentPriceProviderEnum } from './instrument/enum/instrument-price-provider.enum';
 export { InstrumentAssociationEnum } from './instrument/enum/instrument-association.enum';
+export { InstrumentMarketDataJobStatusEnum } from './instrument-market-data-job/enum/instrument-market-data-job-status.enum';
 
 export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';
 export { InstrumentEntityRelations } from './instrument/relations/instrument-entity.relations';
+export { InstrumentDailyMarketPriceEntityTable } from './instrument-daily-market-price/table/instrument-daily-market-price-entity.table';
+export { InstrumentMarketDataJobEntityTable } from './instrument-market-data-job/table/instrument-market-data-job-entity.table';
 
 export { InstrumentEntitySchema } from './instrument/schema/instrument-entity.schema';
 export { InstrumentCreateEntitySchema } from './instrument/schema/instrument-create-entity.schema';
+export { InstrumentDailyMarketPriceEntitySchema } from './instrument-daily-market-price/schema/instrument-daily-market-price-entity.schema';
+export { InstrumentDailyMarketPriceCreateEntitySchema } from './instrument-daily-market-price/schema/instrument-daily-market-price-create-entity.schema';
+export { InstrumentMarketDataJobEntitySchema } from './instrument-market-data-job/schema/instrument-market-data-job-entity.schema';
+export { InstrumentMarketDataJobCreateEntitySchema } from './instrument-market-data-job/schema/instrument-market-data-job-create-entity.schema';
 
 export type { InstrumentEntityInterface } from './instrument/entity/instrument-entity.interface';
 export type { InstrumentCreateEntityInterface } from './instrument/entity/instrument-create-entity.interface';
+export type { InstrumentDailyMarketPriceEntityInterface } from './instrument-daily-market-price/entity/instrument-daily-market-price-entity.interface';
+export type { InstrumentDailyMarketPriceCreateEntityInterface } from './instrument-daily-market-price/entity/instrument-daily-market-price-create-entity.interface';
+export type { InstrumentMarketDataJobEntityInterface } from './instrument-market-data-job/entity/instrument-market-data-job-entity.interface';
+export type { InstrumentMarketDataJobCreateEntityInterface } from './instrument-market-data-job/entity/instrument-market-data-job-create-entity.interface';
 
 export { InstrumentRepository } from './instrument/repository/instrument.repository';
+export { InstrumentDailyMarketPriceRepository } from './instrument-daily-market-price/repository/instrument-daily-market-price.repository';
+export { InstrumentMarketDataJobRepository } from './instrument-market-data-job/repository/instrument-market-data-job.repository';
 
 export { BANK_FEE_CATEGORY_ID } from './category/constant/bank-fee-category-id.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
@@ -294,9 +307,11 @@ export type { TransactionEntryEntityInterface } from './transaction-entry/entity
 export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';
 export type { TransactionEntryWithMccCategoryEntityInterface } from './transaction-entry/entity/transaction-entry-with-mcc-category-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
+export type { CryptoPositionEntryRowInterface } from './transaction-entry/interface/crypto-position-entry-row.interface';
 export type { PendingBaseValuationBucketInterface } from './transaction-entry/interface/pending-base-valuation-bucket.interface';
 
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
+export { TransactionEntryPositionRepository } from './transaction-entry/repository/transaction-entry-position.repository';
 
 export { ExchangeRateAssociationEnum } from './exchange-rate/enum/exchange-rate-association.enum';
 
