@@ -9,20 +9,18 @@ interface Props {
     readonly categoryLimits: readonly BudgetCategoryLimitEntityInterface[];
     readonly spentByCategory: readonly BudgetCategorySpentInterface[];
     readonly spentOverall: number;
-    readonly overallLimit: number;
+    readonly otherLimitAmount: number;
     readonly periodStart: Date;
     readonly periodEnd: Date;
     readonly currencySymbol: string;
 }
 
 export const BudgetDetailsCategoryList = (props: Props) => {
-    const { categoryLimits, spentByCategory, spentOverall, overallLimit, periodStart, periodEnd, currencySymbol } = props;
+    const { categoryLimits, spentByCategory, spentOverall, otherLimitAmount, periodStart, periodEnd, currencySymbol } = props;
     const spentByCategoryMap = new Map(spentByCategory.map(entry => [entry.categoryId, entry.spent]));
     const categoryIds = categoryLimits.map(limit => limit.categoryId);
     const limitedCategorySpent = categoryLimits.reduce((total, limit) => total + (spentByCategoryMap.get(limit.categoryId) ?? 0), 0);
-    const limitedCategoryAmount = categoryLimits.reduce((total, limit) => total + limit.limitAmount, 0);
     const otherSpent = Math.max(0, spentOverall - limitedCategorySpent);
-    const otherLimitAmount = Math.max(0, overallLimit - limitedCategoryAmount);
 
     const categoryLimitCards = categoryLimits.map(limit => (
         <BudgetDetailsCategoryRow

@@ -12,15 +12,15 @@ const CATEGORY_LIMIT_AMOUNT_INPUT_STYLE = {
 
 interface Props {
     readonly currencySymbol: string;
-    readonly index: number;
+    readonly name: 'otherLimit' | `categoryLimits.${number}.limitAmount`;
     readonly testID?: string;
 }
 
-export const BudgetCategoryLimitAmountInput = ({ currencySymbol, index, testID }: Props) => {
+export const BudgetLimitAmountInput = ({ currencySymbol, name, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<BudgetFormValues>();
 
-    const render = ({ field: { value, onChange } }: UseControllerReturn<BudgetFormValues, `categoryLimits.${number}.limitAmount`>) => (
+    const render = ({ field: { value, onChange } }: UseControllerReturn<BudgetFormValues, Props['name']>) => (
         <AmountInput
             testID={testID}
             value={value}
@@ -32,5 +32,5 @@ export const BudgetCategoryLimitAmountInput = ({ currencySymbol, index, testID }
         />
     );
 
-    return <Controller control={control} name={`categoryLimits.${index}.limitAmount`} render={render} />;
+    return <Controller control={control} name={name} render={render} />;
 };

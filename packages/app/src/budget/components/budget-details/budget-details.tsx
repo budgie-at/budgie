@@ -3,7 +3,7 @@ import { t } from '@lingui/core/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FormPage } from '../../../@generic/component/form-page/form-page';
@@ -45,17 +45,18 @@ export const BudgetDetails = ({ budget }: Props) => {
     const currencySymbol = instrument?.symbol ?? '';
     const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);
     const displaySpent = convertFromMicroUnits(spent.spentOverall);
+    const hasCategoryLimitsContent = isNotEmptyArray(categoryLimits) || isPositiveNumber(budget.otherLimit);
 
     const handleEditPress = () => {
         router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
     };
 
-    const categoryLimitsContent = isNotEmptyArray(categoryLimits) ? (
+    const categoryLimitsContent = hasCategoryLimitsContent ? (
         <BudgetDetailsCategoryList
             categoryLimits={categoryLimits}
             spentByCategory={spent.spentByCategory}
             spentOverall={spent.spentOverall}
-            overallLimit={budget.overallLimit}
+            otherLimitAmount={budget.otherLimit}
             periodStart={periodWindow.periodStart}
             periodEnd={periodEnd}
             currencySymbol={currencySymbol}

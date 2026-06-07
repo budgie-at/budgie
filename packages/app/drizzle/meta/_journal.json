@@ -211,6 +211,13 @@
             "when": 1780566100000,
             "tag": "0029_add_budget_planning",
             "breakpoints": true
+        },
+        {
+            "idx": 30,
+            "version": "6",
+            "when": 1780752111000,
+            "tag": "0030_add_budget_other_limit",
+            "breakpoints": true
         }
     ]
 }

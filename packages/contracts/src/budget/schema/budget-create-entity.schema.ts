@@ -6,5 +6,6 @@ export const BudgetCreateEntitySchema = BudgetEntitySchema.pick({
     periodStartDay: true,
     useLastDayOfMonth: true,
     overallLimit: true,
+    otherLimit: true,
     instrumentId: true
 });

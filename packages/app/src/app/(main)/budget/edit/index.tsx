@@ -55,14 +55,15 @@ export default function BudgetSetupScreen() {
 
     const defaultInstrumentId = useSetting('defaultInstrumentId');
     const { form, handleCancel, handleSubmit, handleDelete, isEditing, isLoading, budget } = useBudgetForm({ editingId });
-    const [overallLimit, categoryLimits, watchedInstrumentId] = useWatch({
+    const [overallLimit, otherLimit, categoryLimits, watchedInstrumentId] = useWatch({
         control: form.control,
-        name: ['overallLimit', 'categoryLimits', 'instrumentId']
+        name: ['overallLimit', 'otherLimit', 'categoryLimits', 'instrumentId']
     });
     const { spent } = useGetBudgetSpentQuery(budget);
     const instrumentId = isPositiveNumber(watchedInstrumentId) ? watchedInstrumentId : (defaultInstrumentId ?? 0);
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
-    const isSaveDisabled = !BudgetFormSchema.safeParse({ ...form.getValues(), overallLimit, categoryLimits, instrumentId }).success;
+    const isSaveDisabled = !BudgetFormSchema.safeParse({ ...form.getValues(), overallLimit, otherLimit, categoryLimits, instrumentId })
+        .success;
     const fallbackScreen = getFallbackScreen(isLoading, defaultInstrumentId);
     const currencySymbol = instrument?.symbol ?? '';
 

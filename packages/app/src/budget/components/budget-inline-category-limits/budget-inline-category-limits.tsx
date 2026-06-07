@@ -13,6 +13,7 @@ import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetCategoryLimitCompactRow } from '../budget-category-limit-compact-row/budget-category-limit-compact-row';
 import { BudgetCategoryLimitsEmptyState } from '../budget-category-limits-empty-state/budget-category-limits-empty-state';
+import { BudgetOtherCategoryLimitCompactRow } from '../budget-other-category-limit-compact-row/budget-other-category-limit-compact-row';
 
 const ADD_BUTTON_STYLE = { width: 26, height: 26 } as const;
 
@@ -26,7 +27,7 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol }: Props) => {
     const categoryLimits = useWatch({ control, name: 'categoryLimits' });
     const [openCategorySelector] = useCategorySelectorModal();
 
-    const selectedCategoryIds = categoryLimits.map(limit => limit.categoryId).filter(id => id > 0);
+    const selectedCategoryIds = categoryLimits.map(limit => limit.categoryId).filter(isPositiveNumber);
     const isCategoryLimitsEmpty = isEmptyArray(fields);
     const addButtonTestProps = isCategoryLimitsEmpty ? {} : { testID: BudgetSelector.SetupCategoryLimitAddButton };
 
@@ -63,6 +64,7 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol }: Props) => {
                     <BudgetCategoryLimitCompactRow key={field.id} currencySymbol={currencySymbol} index={index} onRemove={remove} />
                 ))
             )}
+            <BudgetOtherCategoryLimitCompactRow currencySymbol={currencySymbol} />
         </View>
     );
 };
