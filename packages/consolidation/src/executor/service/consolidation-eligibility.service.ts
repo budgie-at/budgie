@@ -10,11 +10,11 @@ export class ConsolidationEligibilityService {
 
     @Log(
         (sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')}`,
+            `enter check sourceIds=${sourceTransactionIds.join(',')} allowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))}`,
         (result, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `done sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')} result=${String(result)}`,
+            `done eligible=${String(result)} sourceIds=${sourceTransactionIds.join(',')} allowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))}`,
         (error, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')} error=${getErrorMessage(error)}`
+            `throw check sourceIds=${sourceTransactionIds.join(',')} allowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async areCandidatesStillEligible(
         sourceTransactionIds: number[],
@@ -26,11 +26,11 @@ export class ConsolidationEligibilityService {
 
     @Log(
         (sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')}`,
+            `enter load ids=${sourceTransactionIds.join(',')} movedAllowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))}`,
         (result, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `done sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')} resultIds=${result?.map(transaction => transaction.id).join(',') ?? ''}`,
+            `done loaded=${result?.map(transaction => transaction.id).join(',') ?? ''} ids=${sourceTransactionIds.join(',')} movedAllowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))}`,
         (error, sourceTransactionIds, tx, allowedMovedSourceTransactionIds = []) =>
-            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} hasTx=${String(isDefined(tx))} allowedMovedSourceTransactionIds=${allowedMovedSourceTransactionIds.join(',')} error=${getErrorMessage(error)}`
+            `throw load ids=${sourceTransactionIds.join(',')} movedAllowed=${allowedMovedSourceTransactionIds.join(',')} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async findEligibleSourceTransactions(
         sourceTransactionIds: number[],
