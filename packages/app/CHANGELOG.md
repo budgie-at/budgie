@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.36.0](https://github.com/budgie-at/budgie/compare/v5.35.6...v5.36.0) (2026-06-07)
+
+### Bug Fixes
+
+- **app:** keep filter search near keyboard ([#559](https://github.com/budgie-at/budgie/issues/559)) ([a7b07a4](https://github.com/budgie-at/budgie/commit/a7b07a4144a7e501a4c05117fcad8b864d0e246d))
+
+### Features
+
+- **app:** add crypto market history ([#543](https://github.com/budgie-at/budgie/issues/543)) ([24f7c37](https://github.com/budgie-at/budgie/commit/24f7c37928b31067f9560b4ff5ac9bf8588f0239))
+
 ## [5.35.6](https://github.com/budgie-at/budgie/compare/v5.35.5...v5.35.6) (2026-06-07)
 
 ### Bug Fixes
