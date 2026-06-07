@@ -29,6 +29,7 @@ export const CurrencySelectorCard = ({ className, isSelected, name, onSelect, co
             isSelected={isSelected}
             onSelect={onSelect}
             className={className}
+            allowReselect
             testID={CreateAccountScreenSelector.CurrencyOption(code)}
             iconSlot={iconSlot}
             title={title}

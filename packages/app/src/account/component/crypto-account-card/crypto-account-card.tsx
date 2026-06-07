@@ -2,8 +2,10 @@ import { AccountEntityInterface } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
+import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly balance: number;
@@ -14,13 +16,15 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
 
 export const CryptoAccountCard = (props: Props) => {
     const { id, title, icon, balance, className, instrumentCode, instrumentSymbol } = props;
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
 
     const formattedBalance = `${formatDigits(balance)} ${instrumentCode}`;
 
     const balanceContent = (
         <View className="gap-y-1">
-            <ProtectedText className="text-primary font-medium">{formattedBalance}</ProtectedText>
+            <ProtectedText className="text-primary font-medium" testID={AccountCardBaseSelector.Balance(title, formattedBalance)}>
+                {formattedBalance}
+            </ProtectedText>
         </View>
     );
 

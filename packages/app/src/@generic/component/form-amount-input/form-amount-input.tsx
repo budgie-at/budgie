@@ -1,6 +1,6 @@
 import { cva } from 'class-variance-authority';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -23,6 +23,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly allowNegative?: boolean;
     readonly autoFocus?: boolean;
+    readonly minimumDecimalPlaces?: number;
     readonly showInstrumentAfterAmount?: boolean;
     readonly onChange: (value: number) => void;
 }
@@ -32,6 +33,15 @@ const textVariants = cva('', {
         variant: FOREGROUND_COLOR_PALETTE
     }
 });
+
+const styles = StyleSheet.create({
+    amountWithSuffix: {
+        flex: 1,
+        textAlign: 'right'
+    }
+});
+
+const amountInputVariants = cva('text-primary placeholder-secondary-reverse-foreground border-0 h-auto');
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const FormAmountInput = (props: Props) => {
@@ -43,11 +53,13 @@ export const FormAmountInput = (props: Props) => {
         instrumentSymbol,
         allowNegative = false,
         autoFocus,
+        minimumDecimalPlaces = 0,
         testID,
         showInstrumentAfterAmount = false
     } = props;
     const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const visibleDecimalPlaces = Math.max(decimalPlaces, minimumDecimalPlaces);
+    const formatDigits = useFormatDigits(visibleDecimalPlaces);
 
     const [isNegative, setIsNegative] = useState(value < 0);
     const [previousValue, setPreviousValue] = useState(value);
@@ -69,6 +81,8 @@ export const FormAmountInput = (props: Props) => {
 
     const fontSizeStyle = { fontSize };
     const suffixFontSizeStyle = { fontSize: Math.max(MINIMUM_SUFFIX_FONT_SIZE, Math.round(fontSize * SUFFIX_FONT_SIZE_RATIO)) };
+    const amountInputClassName = cn(amountInputVariants(), textClassName);
+    const amountInputStyle = showInstrumentAfterAmount ? [fontSizeStyle, styles.amountWithSuffix] : fontSizeStyle;
 
     const handleToggleSign = () => {
         const newIsNegative = !isNegative;
@@ -102,10 +116,11 @@ export const FormAmountInput = (props: Props) => {
                     testID={testID}
                     value={absoluteValue}
                     onChangeValue={handleAmountChange}
-                    inputClassName={cn('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}
+                    inputClassName={amountInputClassName}
                     placeholder={formatDigits(0)}
                     autoFocus={autoFocus}
-                    style={fontSizeStyle}
+                    minimumDecimalPlaces={minimumDecimalPlaces}
+                    style={amountInputStyle}
                 />
 
                 {showInstrumentAfterAmount ? (

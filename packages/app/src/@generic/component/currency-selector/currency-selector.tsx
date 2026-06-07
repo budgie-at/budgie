@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -55,7 +56,10 @@ export const CurrencySelector = ({ instrumentId, instrumentType = InstrumentType
             testID={testID}
         >
             <View className="gap-y-xs flex-1">
-                <Text className="text-primary font-medium text-sm">
+                <Text
+                    className="text-primary font-medium text-sm"
+                    testID={CreateAccountScreenSelector.SelectedCurrency(selectedCurrencyCode)}
+                >
                     {name} <Text className="text-primary">{selectedCurrencyCode}</Text>
                 </Text>
 

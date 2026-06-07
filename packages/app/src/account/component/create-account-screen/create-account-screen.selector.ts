@@ -6,6 +6,7 @@ export const CreateAccountScreenSelector = {
     ScrollView: 'AccountForm.ScrollView',
     NameInput: 'AccountForm.NameInput',
     CurrencySelector: 'AccountForm.CurrencySelector',
+    SelectedCurrency: (code: string) => `AccountForm.SelectedCurrency.${normalizePart(code)}` as const,
     CurrencyOption: (code: string) => `AccountForm.CurrencyOption.${normalizePart(code)}` as const,
     TargetBalanceInput: 'AccountForm.TargetBalanceInput',
     IncludeInNetWorthTitle: 'AccountForm.IncludeInNetWorthTitle',

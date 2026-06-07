@@ -8,6 +8,8 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
+import { NetWorthAssetChipsSelector } from './net-worth-asset-chips.selector';
+
 interface Props {
     readonly fiatTotal: number;
     readonly cryptoTotal: number;
@@ -29,13 +31,19 @@ export const NetWorthAssetChips = ({ fiatTotal, cryptoTotal, fiatCount, cryptoCo
     const formattedCryptoTotal = formatDigits(cryptoTotal, defaultInstrument.symbol);
 
     return (
-        <View className="flex-row gap-x-sm mt-lg">
-            <View className="flex-row items-center gap-x-xs rounded-full bg-secondary-background border border-secondary-corner px-md py-xs">
+        <View className="flex-row gap-x-sm mt-lg" testID={NetWorthAssetChipsSelector.Container}>
+            <View
+                className="flex-row items-center gap-x-xs rounded-full bg-secondary-background border border-secondary-corner px-md py-xs"
+                testID={NetWorthAssetChipsSelector.Fiat}
+            >
                 <Icon icon={UserIconNameEnum.Banknote} size={14} className="text-secondary-foreground" />
                 <ProtectedText className="text-primary text-xs font-medium">{formattedFiatTotal}</ProtectedText>
             </View>
 
-            <View className="flex-row items-center gap-x-xs rounded-full bg-secondary-background border border-secondary-corner px-md py-xs">
+            <View
+                className="flex-row items-center gap-x-xs rounded-full bg-secondary-background border border-secondary-corner px-md py-xs"
+                testID={NetWorthAssetChipsSelector.Crypto}
+            >
                 <Icon icon={UserIconNameEnum.Coins} size={14} className="text-warning-foreground" />
                 <ProtectedText className="text-primary text-xs font-medium">{formattedCryptoTotal}</ProtectedText>
             </View>
