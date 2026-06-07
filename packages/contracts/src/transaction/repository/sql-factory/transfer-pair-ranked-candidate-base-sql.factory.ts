@@ -1,4 +1,4 @@
-import { ExternalSourceEnum } from '../../../account/enum/external-source.enum';
+import { AccountTypeEnum } from '../../../account/enum/account-type.enum';
 import { TRANSFER_MCC_GROUP_ID } from '../../constant/transfer-mcc-group-id.constant';
 import {
     TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH,
@@ -7,7 +7,7 @@ import {
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_MAX_AMOUNT_DELTA,
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO
 } from '../../constant/transfer-pair-hinted-fee.constant';
-import { BINANCE_C2C_EXTERNAL_ID_PREFIX } from '../../constant/transfer-pair-p2p-fiat.constant';
+import { P2P_ORDER_EXTERNAL_ID_MARKER } from '../../constant/transfer-pair-p2p-fiat.constant';
 import { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from '../../constant/transfer-pair-time-window.constant';
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
 
@@ -26,6 +26,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                     expense_tx.external_id as expenseTransactionExternalId,
                     expense_tx.operated_at as expenseOperatedAt,
                     expense_account.title as expenseAccountTitle,
+                    expense_account.type as expenseAccountType,
                     expense_account.instrument_id as expenseInstrumentId,
                     expense_account.external_source as expenseExternalSource,
                     COALESCE(NULLIF(expense_account.external_source, ''), expense_tx.external_source) as expenseBankSource,
@@ -67,6 +68,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                     income_tx.external_id as incomeTransactionExternalId,
                     income_tx.operated_at as incomeOperatedAt,
                     income_account.title as incomeAccountTitle,
+                    income_account.type as incomeAccountType,
                     income_account.instrument_id as incomeInstrumentId,
                     income_account.external_source as incomeExternalSource,
                     COALESCE(NULLIF(income_account.external_source, ''), income_tx.external_source) as incomeBankSource,
@@ -262,13 +264,13 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                             AND expense_entries.expenseEntryAmount > 0
                             AND income_entries.incomeEntryAmount > 0
                             AND (
-                                (income_entries.incomeExternalSource = '${ExternalSourceEnum.BINANCE}'
-                                    AND income_entries.incomeTransactionExternalId LIKE '${BINANCE_C2C_EXTERNAL_ID_PREFIX}%'
-                                    AND (expense_entries.expenseExternalSource IS NULL OR expense_entries.expenseExternalSource != '${ExternalSourceEnum.BINANCE}'))
+                                (income_entries.incomeAccountType = '${AccountTypeEnum.CRYPTO_SYNC}'
+                                    AND income_entries.incomeTransactionExternalId LIKE '%${P2P_ORDER_EXTERNAL_ID_MARKER}%'
+                                    AND expense_entries.expenseAccountType != '${AccountTypeEnum.CRYPTO_SYNC}')
                                 OR
-                                (expense_entries.expenseExternalSource = '${ExternalSourceEnum.BINANCE}'
-                                    AND expense_entries.expenseTransactionExternalId LIKE '${BINANCE_C2C_EXTERNAL_ID_PREFIX}%'
-                                    AND (income_entries.incomeExternalSource IS NULL OR income_entries.incomeExternalSource != '${ExternalSourceEnum.BINANCE}'))
+                                (expense_entries.expenseAccountType = '${AccountTypeEnum.CRYPTO_SYNC}'
+                                    AND expense_entries.expenseTransactionExternalId LIKE '%${P2P_ORDER_EXTERNAL_ID_MARKER}%'
+                                    AND income_entries.incomeAccountType != '${AccountTypeEnum.CRYPTO_SYNC}')
                             )
                         THEN 1
                         ELSE 0

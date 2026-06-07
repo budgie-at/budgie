@@ -158,4 +158,30 @@ describe('consolidation/binance-p2p-fiat-transfer', () => {
         expect(result.consolidated).toBe(0);
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
     });
+
+    it('consolidates a P2P top-up from any synced crypto exchange, not only Binance', async () => {
+        const uah = await requireInstrument(CurrencyEnum.UAH);
+        const usdt = seedUsdtInstrument();
+        const bankAccount = seedMonobankAccount(uah.id);
+        const exchangeAccount = seedBinanceUsdtAccount(usdt.id);
+
+        await seedBaseTriangulationRates(uah.id, usdt.id);
+
+        const expense = seedBankPair.expense(
+            { externalId: 'mono-uah-okx-out', operatedAt: P2P_OPERATED_AT },
+            { accountId: bankAccount.id, amount: UAH_TOTAL }
+        );
+        const income = seedBankPair.income(
+            { externalId: 'okx:c2c:buy-1', operatedAt: new Date(P2P_OPERATED_AT.getTime() + BANK_LEG_OFFSET_MS) },
+            { accountId: exchangeAccount.id, amount: USDT_AMOUNT }
+        );
+
+        const result = await transferConsolidationService.consolidate();
+
+        expect(result).toEqual({ found: 1, consolidated: 1 });
+
+        const [canonical] = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
+        expect(fetchTransactionById(expense.id).consolidationParentTransactionId).toBe(canonical?.id);
+        expect(fetchTransactionById(income.id).consolidationParentTransactionId).toBe(canonical?.id);
+    });
 });
