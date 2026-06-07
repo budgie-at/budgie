@@ -18,6 +18,13 @@ export interface TransferPairCandidateInterface {
     readonly incomeEntryAmount: number;
     readonly incomeEntryExchangeRate: number;
     readonly incomeEntryToIban: string | null;
-    readonly matchType: 'iban' | 'amount' | 'operation-amount' | 'implied-rate' | 'same-bank-hinted-fee' | 'interbank-hinted-fee';
+    readonly matchType:
+        | 'iban'
+        | 'amount'
+        | 'operation-amount'
+        | 'implied-rate'
+        | 'same-bank-cross-currency'
+        | 'same-bank-hinted-fee'
+        | 'interbank-hinted-fee';
     readonly timeDiff: number;
 }
