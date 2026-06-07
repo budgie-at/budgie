@@ -53,6 +53,13 @@ class TransferConsolidationDrainerService {
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    cancelPending(): void {
+        this.hasPendingRun = false;
+        this.pendingScope = null;
+        this.cancelScheduledRun();
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async run(): Promise<void> {
         if (foregroundWorkloadService.isActive()) {
             this.scheduleAfter(TransferConsolidationDrainerService.FOREGROUND_BUSY_RESCHEDULE_MS);
@@ -108,9 +115,7 @@ class TransferConsolidationDrainerService {
     }
 
     private scheduleAfter(delay: number): void {
-        if (isDefined(this.timer)) {
-            clearTimeout(this.timer);
-        }
+        this.cancelScheduledRun();
 
         this.timerFiresAt = Date.now() + delay;
         this.timer = setTimeout(() => {
@@ -120,6 +125,15 @@ class TransferConsolidationDrainerService {
                 this.run().catch(emptyFn);
             });
         }, delay);
+    }
+
+    private cancelScheduledRun(): void {
+        if (isDefined(this.timer)) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+
+        this.timerFiresAt = null;
     }
 }
 

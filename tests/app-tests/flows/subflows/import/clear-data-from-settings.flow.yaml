@@ -46,9 +46,13 @@ appId: ${APP_ID}
 - tapOn:
     text: 'Delete data'
 
-- stopApp
+- extendedWaitUntil:
+    visible:
+      id: 'TabBar.Home'
+    timeout: 10000
 
-- launchApp
+- tapOn:
+    id: 'TabBar.Home'
 
 - runFlow:
     when:
