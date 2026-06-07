@@ -2,20 +2,26 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { yieldToEventLoop } from '../utils/yield-to-event-loop.util';
+
+import { ConsolidationSourceTransactionSetService } from './consolidation-source-transaction-set.service';
+
 import type { ConsolidationCandidateDependenciesInterface } from '../interface/consolidation-candidate-dependencies.interface';
 import type { ConsolidationCandidateGroupsInterface } from '../interface/consolidation-candidate-groups.interface';
 import type {
     ConsolidationScanScopeInterface,
-    ExistingTransferBridgeCandidateInterface,
-    ExistingTransferChainReclaimCandidateInterface,
     ExistingTransferIncomeDuplicateCandidateInterface,
-    IbanBridgeChainTransferCandidateInterface,
     IbanBridgeTransferCandidateInterface,
     TransferPairCandidateInterface
 } from '@budgie/contracts';
 
 export class ConsolidationCandidateService {
-    constructor(private readonly dependencies: ConsolidationCandidateDependenciesInterface) {}
+    private readonly sourceTransactionSetService = new ConsolidationSourceTransactionSetService();
+
+    constructor(
+        private readonly dependencies: ConsolidationCandidateDependenciesInterface,
+        private readonly yieldControl: () => Promise<void> = yieldToEventLoop
+    ) {}
 
     @Log(
         scope =>
@@ -27,46 +33,20 @@ export class ConsolidationCandidateService {
     )
     async findGroups(scope: ConsolidationScanScopeInterface | null = null): Promise<ConsolidationCandidateGroupsInterface> {
         const reviewCandidateGroups = await this.findReviewCandidateGroups(scope);
-        const ibanBridgeChainTransferCandidates =
-            await this.dependencies.transferPairRepository.findIbanBridgeChainTransferCandidates(scope);
-        const existingTransferBridgeCandidates = await this.dependencies.transferPairRepository.findExistingTransferBridgeCandidates(scope);
-        const existingTransferChainReclaimCandidates =
-            await this.dependencies.transferPairRepository.findExistingTransferChainReclaimCandidates(scope);
-        const ibanBridgeCanonicalDuplicateCandidates =
-            await this.dependencies.transferPairRepository.findIbanBridgeCanonicalDuplicateCandidates(scope);
-        const ibanBridgeTransferCandidates = this.filterIbanBridgeTransferCandidates(
-            await this.dependencies.transferPairRepository.findIbanBridgeTransferCandidates(scope),
-            this.buildBridgeTransferBlockedSourceTransactionIdSet(ibanBridgeChainTransferCandidates, existingTransferChainReclaimCandidates)
-        );
-        const existingTransferIncomeDuplicateCandidates = this.filterExistingTransferIncomeDuplicateCandidates(
-            await this.dependencies.transferPairRepository.findExistingTransferIncomeDuplicateCandidates(scope),
-            this.buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
-                existingTransferBridgeCandidates,
-                existingTransferChainReclaimCandidates
-            )
-        );
-        const pairCandidates = this.filterPairCandidates(
-            await this.dependencies.transferPairRepository.findCandidates(scope),
-            this.buildBridgeSourceTransactionIdSet({
-                ibanBridgeChainTransferCandidates,
-                existingTransferBridgeCandidates,
-                existingTransferChainReclaimCandidates,
-                ibanBridgeTransferCandidates,
-                existingTransferIncomeDuplicateCandidates
-            })
-        );
-        const atmCashWithdrawalCandidates = await this.dependencies.transferPairRepository.findAtmCashWithdrawalCandidates(scope);
-        const refundCandidates = await this.dependencies.refundPairRepository.findCandidates(scope);
+        const priorityTransferCandidateGroups = await this.findPriorityTransferCandidateGroups(scope);
+        const bridgeCandidateGroups = await this.findFilteredBridgeCandidateGroups(scope, priorityTransferCandidateGroups);
+        const pairCandidates = await this.findFilteredPairCandidates(scope, {
+            ...priorityTransferCandidateGroups,
+            ...bridgeCandidateGroups
+        });
+        const atmCashWithdrawalCandidates = await this.findAtmCashWithdrawalCandidates(scope);
+        const refundCandidates = await this.findRefundCandidates(scope);
 
         return {
             ...reviewCandidateGroups,
-            existingTransferBridgeCandidates,
-            existingTransferChainReclaimCandidates,
-            existingTransferIncomeDuplicateCandidates,
-            ibanBridgeCanonicalDuplicateCandidates,
-            ibanBridgeChainTransferCandidates,
+            ...priorityTransferCandidateGroups,
+            ...bridgeCandidateGroups,
             pairCandidates,
-            ibanBridgeTransferCandidates,
             atmCashWithdrawalCandidates,
             refundCandidates
         };
@@ -75,23 +55,34 @@ export class ConsolidationCandidateService {
     @Log('enter', result => `done existingTransferIncomeDuplicateCount=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
     async findExistingTransferIncomeDuplicateRepairCandidates(): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
         const existingTransferBridgeCandidates = await this.dependencies.transferPairRepository.findExistingTransferBridgeCandidates(null);
+        await this.yieldControl();
         const existingTransferChainReclaimCandidates =
             await this.dependencies.transferPairRepository.findExistingTransferChainReclaimCandidates(null);
+        await this.yieldControl();
+        const rawExistingTransferIncomeDuplicateCandidates =
+            await this.dependencies.transferPairRepository.findExistingTransferIncomeDuplicateCandidates(null);
+        await this.yieldControl();
 
-        return this.filterExistingTransferIncomeDuplicateCandidates(
-            await this.dependencies.transferPairRepository.findExistingTransferIncomeDuplicateCandidates(null),
-            this.buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
+        const existingTransferIncomeDuplicateCandidates = this.filterExistingTransferIncomeDuplicateCandidates(
+            rawExistingTransferIncomeDuplicateCandidates,
+            this.sourceTransactionSetService.buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
                 existingTransferBridgeCandidates,
                 existingTransferChainReclaimCandidates
             )
         );
+        await this.yieldControl();
+
+        return existingTransferIncomeDuplicateCandidates;
     }
 
     @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
     async countManualReviewCandidates(): Promise<number> {
-        const manualReviewCandidates = await this.dependencies.transferPairRepository.findManualReviewCandidates();
-        const atmCashWithdrawalReviewCandidates = await this.dependencies.transferPairRepository.findAtmCashWithdrawalReviewCandidates();
-        const refundReviewCandidates = await this.dependencies.refundPairRepository.findReviewCandidates();
+        const [manualReviewCandidates, atmCashWithdrawalReviewCandidates, refundReviewCandidates] = await Promise.all([
+            this.dependencies.transferPairRepository.findManualReviewCandidates(),
+            this.dependencies.transferPairRepository.findAtmCashWithdrawalReviewCandidates(),
+            this.dependencies.refundPairRepository.findReviewCandidates()
+        ]);
+        await this.yieldControl();
 
         return manualReviewCandidates.length + atmCashWithdrawalReviewCandidates.length + refundReviewCandidates.length;
     }
@@ -125,6 +116,112 @@ export class ConsolidationCandidateService {
         };
     }
 
+    private async findPriorityTransferCandidateGroups(
+        scope: ConsolidationScanScopeInterface | null
+    ): Promise<
+        Pick<
+            ConsolidationCandidateGroupsInterface,
+            | 'ibanBridgeChainTransferCandidates'
+            | 'existingTransferBridgeCandidates'
+            | 'existingTransferChainReclaimCandidates'
+            | 'ibanBridgeCanonicalDuplicateCandidates'
+        >
+    > {
+        const ibanBridgeChainTransferCandidates =
+            await this.dependencies.transferPairRepository.findIbanBridgeChainTransferCandidates(scope);
+        await this.yieldControl();
+        const existingTransferBridgeCandidates = await this.dependencies.transferPairRepository.findExistingTransferBridgeCandidates(scope);
+        await this.yieldControl();
+        const existingTransferChainReclaimCandidates =
+            await this.dependencies.transferPairRepository.findExistingTransferChainReclaimCandidates(scope);
+        await this.yieldControl();
+        const ibanBridgeCanonicalDuplicateCandidates =
+            await this.dependencies.transferPairRepository.findIbanBridgeCanonicalDuplicateCandidates(scope);
+        await this.yieldControl();
+
+        return {
+            ibanBridgeChainTransferCandidates,
+            existingTransferBridgeCandidates,
+            existingTransferChainReclaimCandidates,
+            ibanBridgeCanonicalDuplicateCandidates
+        };
+    }
+
+    private async findFilteredBridgeCandidateGroups(
+        scope: ConsolidationScanScopeInterface | null,
+        priorityTransferCandidateGroups: Pick<
+            ConsolidationCandidateGroupsInterface,
+            'ibanBridgeChainTransferCandidates' | 'existingTransferBridgeCandidates' | 'existingTransferChainReclaimCandidates'
+        >
+    ): Promise<Pick<ConsolidationCandidateGroupsInterface, 'ibanBridgeTransferCandidates' | 'existingTransferIncomeDuplicateCandidates'>> {
+        const rawIbanBridgeTransferCandidates = await this.dependencies.transferPairRepository.findIbanBridgeTransferCandidates(scope);
+        await this.yieldControl();
+        const ibanBridgeTransferCandidates = this.filterIbanBridgeTransferCandidates(
+            rawIbanBridgeTransferCandidates,
+            this.sourceTransactionSetService.buildBridgeTransferBlockedSourceTransactionIdSet(
+                priorityTransferCandidateGroups.ibanBridgeChainTransferCandidates,
+                priorityTransferCandidateGroups.existingTransferChainReclaimCandidates
+            )
+        );
+        await this.yieldControl();
+        const rawExistingTransferIncomeDuplicateCandidates =
+            await this.dependencies.transferPairRepository.findExistingTransferIncomeDuplicateCandidates(scope);
+        await this.yieldControl();
+        const existingTransferIncomeDuplicateCandidates = this.filterExistingTransferIncomeDuplicateCandidates(
+            rawExistingTransferIncomeDuplicateCandidates,
+            this.sourceTransactionSetService.buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
+                priorityTransferCandidateGroups.existingTransferBridgeCandidates,
+                priorityTransferCandidateGroups.existingTransferChainReclaimCandidates
+            )
+        );
+        await this.yieldControl();
+
+        return {
+            ibanBridgeTransferCandidates,
+            existingTransferIncomeDuplicateCandidates
+        };
+    }
+
+    private async findFilteredPairCandidates(
+        scope: ConsolidationScanScopeInterface | null,
+        candidateGroups: Pick<
+            ConsolidationCandidateGroupsInterface,
+            | 'ibanBridgeChainTransferCandidates'
+            | 'existingTransferBridgeCandidates'
+            | 'existingTransferChainReclaimCandidates'
+            | 'ibanBridgeTransferCandidates'
+            | 'existingTransferIncomeDuplicateCandidates'
+        >
+    ): Promise<TransferPairCandidateInterface[]> {
+        const rawPairCandidates = await this.dependencies.transferPairRepository.findCandidates(scope);
+        await this.yieldControl();
+        const pairCandidates = this.filterPairCandidates(
+            rawPairCandidates,
+            this.sourceTransactionSetService.buildBridgeSourceTransactionIdSet(candidateGroups)
+        );
+        await this.yieldControl();
+
+        return pairCandidates;
+    }
+
+    private async findAtmCashWithdrawalCandidates(
+        scope: ConsolidationScanScopeInterface | null
+    ): Promise<ConsolidationCandidateGroupsInterface['atmCashWithdrawalCandidates']> {
+        const atmCashWithdrawalCandidates = await this.dependencies.transferPairRepository.findAtmCashWithdrawalCandidates(scope);
+        await this.yieldControl();
+
+        return atmCashWithdrawalCandidates;
+    }
+
+    private async findRefundCandidates(
+        scope: ConsolidationScanScopeInterface | null
+    ): Promise<ConsolidationCandidateGroupsInterface['refundCandidates']> {
+        const refundCandidates = await this.dependencies.refundPairRepository.findCandidates(scope);
+        await this.yieldControl();
+
+        return refundCandidates;
+    }
+
     private filterPairCandidates(
         candidates: TransferPairCandidateInterface[],
         sourceTransactionIds: Set<number>
@@ -152,111 +249,5 @@ export class ConsolidationCandidateService {
             candidate =>
                 !sourceTransactionIds.has(candidate.expenseTransactionId) && !sourceTransactionIds.has(candidate.incomeTransactionId)
         );
-    }
-
-    private buildBridgeSourceTransactionIdSet(
-        candidateGroups: Pick<
-            ConsolidationCandidateGroupsInterface,
-            | 'ibanBridgeChainTransferCandidates'
-            | 'existingTransferBridgeCandidates'
-            | 'existingTransferChainReclaimCandidates'
-            | 'ibanBridgeTransferCandidates'
-            | 'existingTransferIncomeDuplicateCandidates'
-        >
-    ): Set<number> {
-        const sourceTransactionIds = this.buildBridgeChainSourceTransactionIdSet(candidateGroups.ibanBridgeChainTransferCandidates);
-        const existingTransferBridgeSourceTransactionIds = candidateGroups.existingTransferBridgeCandidates.flatMap(candidate => [
-            candidate.sourceExpenseTransactionId,
-            candidate.bridgeIncomeTransactionId,
-            candidate.existingTransferId
-        ]);
-        const existingTransferChainReclaimSourceTransactionIds = candidateGroups.existingTransferChainReclaimCandidates.flatMap(
-            candidate => [candidate.existingTransferId, candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId]
-        );
-        const bridgeSourceTransactionIds = candidateGroups.ibanBridgeTransferCandidates
-            .flatMap(candidate => [candidate.expenseTransactionId, candidate.incomeTransactionId, candidate.existingDirectTransferId])
-            .filter(isDefined);
-        const duplicateSourceTransactionIds = candidateGroups.existingTransferIncomeDuplicateCandidates.map(
-            candidate => candidate.incomeTransactionId
-        );
-        const additionalSourceTransactionIds = [
-            ...existingTransferBridgeSourceTransactionIds,
-            ...existingTransferChainReclaimSourceTransactionIds,
-            ...bridgeSourceTransactionIds,
-            ...duplicateSourceTransactionIds
-        ];
-
-        for (const sourceTransactionId of additionalSourceTransactionIds) {
-            sourceTransactionIds.add(sourceTransactionId);
-        }
-
-        return sourceTransactionIds;
-    }
-
-    private buildExistingTransferBridgeSourceTransactionIdSet(candidates: ExistingTransferBridgeCandidateInterface[]): Set<number> {
-        return new Set(
-            candidates.flatMap(candidate => [
-                candidate.sourceExpenseTransactionId,
-                candidate.bridgeIncomeTransactionId,
-                candidate.existingTransferId
-            ])
-        );
-    }
-
-    private buildExistingTransferChainReclaimSourceTransactionIdSet(
-        candidates: ExistingTransferChainReclaimCandidateInterface[]
-    ): Set<number> {
-        return new Set(
-            candidates.flatMap(candidate => [
-                candidate.existingTransferId,
-                candidate.bridgeIncomeTransactionId,
-                candidate.bridgeExpenseTransactionId
-            ])
-        );
-    }
-
-    private buildBridgeTransferBlockedSourceTransactionIdSet(
-        bridgeChainCandidates: IbanBridgeChainTransferCandidateInterface[],
-        existingTransferChainReclaimCandidates: ExistingTransferChainReclaimCandidateInterface[]
-    ): Set<number> {
-        const sourceTransactionIds = this.buildBridgeChainSourceTransactionIdSet(bridgeChainCandidates);
-        const existingTransferChainReclaimSourceTransactionIds = this.buildExistingTransferChainReclaimSourceTransactionIdSet(
-            existingTransferChainReclaimCandidates
-        );
-
-        for (const sourceTransactionId of existingTransferChainReclaimSourceTransactionIds) {
-            sourceTransactionIds.add(sourceTransactionId);
-        }
-
-        return sourceTransactionIds;
-    }
-
-    private buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
-        existingTransferBridgeCandidates: ExistingTransferBridgeCandidateInterface[],
-        existingTransferChainReclaimCandidates: ExistingTransferChainReclaimCandidateInterface[]
-    ): Set<number> {
-        const sourceTransactionIds = this.buildExistingTransferBridgeSourceTransactionIdSet(existingTransferBridgeCandidates);
-        const existingTransferChainReclaimSourceTransactionIds = this.buildExistingTransferChainReclaimSourceTransactionIdSet(
-            existingTransferChainReclaimCandidates
-        );
-
-        for (const sourceTransactionId of existingTransferChainReclaimSourceTransactionIds) {
-            sourceTransactionIds.add(sourceTransactionId);
-        }
-
-        return sourceTransactionIds;
-    }
-
-    private buildBridgeChainSourceTransactionIdSet(candidates: IbanBridgeChainTransferCandidateInterface[]): Set<number> {
-        const sourceTransactionIds = new Set<number>();
-
-        for (const candidate of candidates) {
-            sourceTransactionIds.add(candidate.sourceExpenseTransactionId);
-            sourceTransactionIds.add(candidate.bridgeIncomeTransactionId);
-            sourceTransactionIds.add(candidate.bridgeExpenseTransactionId);
-            sourceTransactionIds.add(candidate.targetIncomeTransactionId);
-        }
-
-        return sourceTransactionIds;
     }
 }

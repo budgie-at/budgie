@@ -17,7 +17,7 @@ export const accountBalanceRepository = repositories.accountBalanceRepository;
 export const accountRepository = repositories.accountRepository;
 export const refundPairRepository = repositories.refundPairRepository;
 
-const consolidationExecutorService = new ConsolidationExecutorService({
+export const consolidationExecutorService = new ConsolidationExecutorService({
     database: testDb,
     transactionRunner,
     transactionRepository: repositories.transactionRepository,
