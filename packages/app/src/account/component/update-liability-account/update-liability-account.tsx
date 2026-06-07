@@ -1,10 +1,11 @@
-import { AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { AccountBankSyncCard } from '../../../sync/component/account-bank-sync-card/account-bank-sync-card';
@@ -18,25 +19,27 @@ import { UpdateAccountScreen } from '../create-account-screen/update-account-scr
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
-    readonly account: AccountEntityInterface;
+    readonly account: AccountWithInstrumentEntityInterface;
 }
 
 export const UpdateLiabilityAccount = ({ account }: Props) => {
     const { t } = useLingui();
     const { balance } = useAccountBalanceQuery(account.id);
 
+    const formValues = {
+        externalId: account.externalId,
+        iban: account.iban,
+        type: account.type,
+        icon: account.icon,
+        title: account.title,
+        currentBalance: balance,
+        instrumentId: account.instrumentId,
+        includeInNetWorth: account.includeInNetWorth,
+        isActive: account.isActive
+    };
+
     const { control, handleSubmit, instrument } = useAccountForm(
-        {
-            externalId: account.externalId,
-            iban: account.iban,
-            type: account.type,
-            icon: account.icon,
-            title: account.title,
-            currentBalance: balance,
-            instrumentId: account.instrumentId,
-            includeInNetWorth: account.includeInNetWorth,
-            isActive: account.isActive
-        },
+        formValues,
         async values =>
             await accountService.updateById(account.id, {
                 externalId: values.externalId,
@@ -52,6 +55,10 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
 
     const accountTypeVariant = ACCOUNT_COLOR[account.type];
     const isBankSyncAccount = account.type === AccountTypeEnum.BANK_SYNC;
+    const currencyField =
+        account.type === AccountTypeEnum.CRYPTO ? (
+            <CreateAccountCurrencyField control={control} instrumentType={InstrumentTypeEnum.CRYPTO} />
+        ) : null;
 
     if (!isDefined(instrument)) {
         return <EmptyScreen />;
@@ -65,6 +72,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             control={control}
             allowNegativeBalance
         >
+            {currencyField}
             <FormItem label={t`Account Type`}>
                 <View className="flex-row items-center rounded-2xl bg-secondary-background p-xl">
                     <View className="flex-row items-center gap-x-lg">

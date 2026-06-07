@@ -1,5 +1,19 @@
 import { msg } from '@lingui/core/macro';
-import { Banknote, BarChart3, Bitcoin, Calendar, Layers, Mic, Sparkles, Tag, Target, TrendingUp, Wallet, WifiOff } from 'lucide-react';
+import {
+    Banknote,
+    BarChart3,
+    Bitcoin,
+    Calendar,
+    Layers,
+    Mic,
+    ReceiptText,
+    Sparkles,
+    Tag,
+    Target,
+    TrendingUp,
+    Wallet,
+    WifiOff
+} from 'lucide-react';
 import Link from 'next/link';
 
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
@@ -76,6 +90,16 @@ export const FeaturesSectionGrid = ({ locale }: Props) => {
                     description={i18n._(msg`Custom tags layered on top of categories. Drillable analytics and AI-suggested tags built in.`)}
                     icon={<Tag className="size-5" />}
                     title={i18n._(msg`Smart Tags`)}
+                />
+            </Link>
+
+            <Link href={`/${locale}/features/bank-fee-tracking`}>
+                <FeaturesSectionItem
+                    description={i18n._(
+                        msg`Track ATM fees, transfer fees, and card commissions as real analytics entries without breaking transfers.`
+                    )}
+                    icon={<ReceiptText className="size-5" />}
+                    title={i18n._(msg`Fee Tracking`)}
                 />
             </Link>
 

@@ -46,6 +46,7 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                 INNER JOIN accounts bridge_account ON
                     bridge_account.id = expense_entry.account_id
                     AND bridge_account.deleted_at IS NULL
+                    AND bridge_account.is_active = 1
                 INNER JOIN transactions income_tx ON
                     income_tx.type = '${TransactionTypeEnum.INCOME}'
                     AND income_tx.deleted_at IS NULL
@@ -62,9 +63,11 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                 INNER JOIN accounts source_account ON
                     source_account.iban = income_entry.to_iban
                     AND source_account.deleted_at IS NULL
+                    AND source_account.is_active = 1
                 INNER JOIN accounts target_account ON
                     target_account.iban = expense_entry.to_iban
                     AND target_account.deleted_at IS NULL
+                    AND target_account.is_active = 1
                 LEFT JOIN mcc_categories expense_mcc ON expense_mcc.id = expense_entry.mcc_category_id
                 LEFT JOIN mcc_categories income_mcc ON income_mcc.id = income_entry.mcc_category_id
                 WHERE expense_entry.deleted_at IS NULL
@@ -137,6 +140,35 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                 ) as existingDirectTransferId,
                 timeDiff
             FROM bridge_candidates
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM transactions direct_tx
+                WHERE direct_tx.type = '${TransactionTypeEnum.TRANSFER}'
+                    AND direct_tx.deleted_at IS NULL
+                    AND direct_tx.consolidation_parent_transaction_id IS NULL
+                    AND direct_tx.from_account_id = bridge_candidates.sourceAccountId
+                    AND direct_tx.to_account_id = bridge_candidates.targetAccountId
+                    AND ABS(direct_tx.operated_at - bridge_candidates.operatedAt) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    ${DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER}
+                    AND EXISTS (
+                        SELECT 1
+                        FROM transaction_entries direct_source_entry
+                        WHERE direct_source_entry.transaction_id = direct_tx.id
+                            AND direct_source_entry.deleted_at IS NULL
+                            AND direct_source_entry.original_transaction_id IS NULL
+                            AND direct_source_entry.account_id = bridge_candidates.sourceAccountId
+                            AND direct_source_entry.amount = bridge_candidates.sourceAmount
+                    )
+                    AND EXISTS (
+                        SELECT 1
+                        FROM transaction_entries direct_target_entry
+                        WHERE direct_target_entry.transaction_id = direct_tx.id
+                            AND direct_target_entry.deleted_at IS NULL
+                            AND direct_target_entry.original_transaction_id IS NULL
+                            AND direct_target_entry.account_id = bridge_candidates.targetAccountId
+                            AND direct_target_entry.amount = bridge_candidates.bridgeAmount
+                    )
+            )
 `;
 
 export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
