@@ -1,8 +1,21 @@
 import { TRANSFER_MCC_GROUP_ID } from '../../constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../constant/transfer-pair-fast-time-window.constant';
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
+import { applyConsolidationScanScopeSql } from '../../util/apply-consolidation-scan-scope-sql.util';
 
-export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = `
+import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+
+const INCOME_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_TRANSFER_INCOME_SCOPE_SQL__';
+const EXPENSE_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_TRANSFER_EXPENSE_SCOPE_SQL__';
+const DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_TRANSFER_DIRECT_SCOPE_SQL__';
+
+const IBAN_BRIDGE_TRANSFER_SCOPE_EXPRESSIONS = new Map([
+    [INCOME_SCOPE_SQL_PLACEHOLDER, 'income_tx.operated_at'],
+    [EXPENSE_SCOPE_SQL_PLACEHOLDER, 'expense_tx.operated_at'],
+    [DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER, 'direct_tx.operated_at']
+]);
+
+const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
             WITH bridge_candidates AS (
                 SELECT
                     expense_tx.id as expenseTransactionId,
@@ -38,6 +51,7 @@ export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = `
                     AND income_tx.deleted_at IS NULL
                     AND income_tx.consolidation_parent_transaction_id IS NULL
                     AND ABS(income_tx.operated_at - expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    ${INCOME_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries income_entry ON
                     income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
@@ -57,6 +71,7 @@ export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = `
                     AND expense_entry.original_transaction_id IS NULL
                     AND expense_entry.exchange_rate > 0
                     AND expense_entry.amount > 0
+                    ${EXPENSE_SCOPE_SQL_PLACEHOLDER}
                     AND expense_entry.to_iban IS NOT NULL
                     AND expense_entry.to_iban != ''
                     AND income_entry.to_iban IS NOT NULL
@@ -99,6 +114,7 @@ export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = `
                         AND direct_tx.from_account_id = bridge_candidates.sourceAccountId
                         AND direct_tx.to_account_id = bridge_candidates.targetAccountId
                         AND ABS(direct_tx.operated_at - bridge_candidates.operatedAt) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        ${DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER}
                         AND EXISTS (
                             SELECT 1
                             FROM transaction_entries direct_source_entry
@@ -122,3 +138,6 @@ export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = `
                 timeDiff
             FROM bridge_candidates
 `;
+
+export const IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
+    applyConsolidationScanScopeSql(IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL, scope, IBAN_BRIDGE_TRANSFER_SCOPE_EXPRESSIONS);

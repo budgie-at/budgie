@@ -12,15 +12,22 @@ import type { ConsolidationExecutionResultInterface } from '../../interface/cons
 import type { ConsolidationRuleInterface } from '../../interface/consolidation-rule.interface';
 import type { ConsolidationSourceMoveRequestInterface } from '../../interface/consolidation-source-move-request.interface';
 import type { ConsolidationTagCopyRequestInterface } from '../../interface/consolidation-tag-copy-request.interface';
-import type { DB, IbanBridgeChainTransferCandidateInterface } from '@budgie/contracts';
+import type { ConsolidationScanScopeInterface, DB, IbanBridgeChainTransferCandidateInterface } from '@budgie/contracts';
 
 class IbanBridgeChainTransferConsolidationService implements ConsolidationRuleInterface<IbanBridgeChainTransferCandidateInterface> {
     readonly priority = 10;
     readonly type = ConsolidationRuleTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER;
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findCandidates(): Promise<IbanBridgeChainTransferCandidateInterface[]> {
-        return transferPairRepository.findIbanBridgeChainTransferCandidates();
+    @Log(
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    async findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<IbanBridgeChainTransferCandidateInterface[]> {
+        return transferPairRepository.findIbanBridgeChainTransferCandidates(scope);
     }
 
     @Log(

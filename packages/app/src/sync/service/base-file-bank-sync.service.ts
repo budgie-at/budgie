@@ -8,7 +8,7 @@ import {
 } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
@@ -21,6 +21,7 @@ import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util'
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
+import { consolidationScopeService } from './consolidation-scope.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
 import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
@@ -92,7 +93,7 @@ export abstract class BaseFileBankSyncService {
                 .map(account => account.id)
                 .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')}`,
         (result, client, bankAccount, context) =>
-            `done accountId=${bankAccount.id} newImportedCount=${result} accountIds=${client
+            `done accountId=${bankAccount.id} newImportedIds=${result.map(transaction => transaction.id).join(',')} accountIds=${client
                 .getAccounts()
                 .map(account => account.id)
                 .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')}`,
@@ -106,13 +107,13 @@ export abstract class BaseFileBankSyncService {
         client: FileBasedBankSyncClientInterface,
         bankAccount: BankAccountInterface,
         context: ImportContextInterface
-    ): Promise<number> {
+    ): Promise<TransactionEntityInterface[]> {
         const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
         await this.createBankSyncRecord(account.id, context.tx);
 
         const transactions = client.getTransactions(bankAccount.id);
         if (!isNotEmptyArray(transactions)) {
-            return 0;
+            return [];
         }
         const transactionInputs = transactions.map(transaction => {
             const lookup = context.mccCategoryLookupMap.get(transaction.category ?? '') ?? null;
@@ -140,24 +141,48 @@ export abstract class BaseFileBankSyncService {
             transactionService.findIdMapByExternalSource(this.provider)
         ]);
 
-        const newImportedCounts: number[] = [];
+        const newlyImportedTransactions: TransactionEntityInterface[] = [];
 
         await transactionAsync(db, async tx => {
             const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap, tx };
 
             for (const bankAccount of bankAccounts) {
-                newImportedCounts.push(await this.importAccountTransactions(client, bankAccount, context));
+                newlyImportedTransactions.push(...(await this.importAccountTransactions(client, bankAccount, context)));
                 await microPause();
             }
 
             await transactionService.updateAllBalances(tx);
         });
 
-        const newImportedCount = newImportedCounts.reduce((total, count) => total + count, 0);
-
-        if (isPositiveNumber(newImportedCount)) {
-            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT);
+        const scope = consolidationScopeService.buildFromTransactions(newlyImportedTransactions);
+        if (isDefined(scope)) {
+            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT, scope);
         }
+    }
+
+    @Log(
+        (transactionInputs, upsertedTransactions, existingTransactionIdMap) =>
+            `enter inputExternalIds=${transactionInputs.map(input => input.externalId ?? '').join(',')} upsertedIds=${upsertedTransactions.map(transaction => transaction.id).join(',')} existingExternalIds=${[...existingTransactionIdMap.keys()].join(',')}`,
+        (result, transactionInputs, upsertedTransactions, existingTransactionIdMap) =>
+            `done inputExternalIds=${transactionInputs.map(input => input.externalId ?? '').join(',')} upsertedIds=${upsertedTransactions.map(transaction => transaction.id).join(',')} existingExternalIds=${[...existingTransactionIdMap.keys()].join(',')} newTransactionIds=${result.map(transaction => transaction.id).join(',')}`,
+        (error, transactionInputs, upsertedTransactions, existingTransactionIdMap) =>
+            `throw inputExternalIds=${transactionInputs.map(input => input.externalId ?? '').join(',')} upsertedIds=${upsertedTransactions.map(transaction => transaction.id).join(',')} existingExternalIds=${[...existingTransactionIdMap.keys()].join(',')} error=${getErrorMessage(error)}`
+    )
+    private queueRulesForNewlyImportedTransactions(
+        transactionInputs: TransactionCreateInputInterface[],
+        upsertedTransactions: TransactionEntityInterface[],
+        existingTransactionIdMap: Map<string, number>
+    ): TransactionEntityInterface[] {
+        const wasNotPreviouslyImported = ({ externalId }: { externalId: string | null }) =>
+            !isDefined(externalId) || !existingTransactionIdMap.has(externalId);
+
+        const newInputs = transactionInputs.filter(wasNotPreviouslyImported);
+        const newTransactions = upsertedTransactions.filter(wasNotPreviouslyImported);
+        const newTransactionIds = newTransactions.map(transaction => transaction.id);
+
+        ruleApplicationDrainerService.enqueueTransactions(newTransactionIds, newInputs);
+
+        return newTransactions;
     }
 
     private async getEnabledExternalIds(): Promise<Set<string>> {
@@ -188,22 +213,6 @@ export abstract class BaseFileBankSyncService {
             },
             tx
         );
-    }
-
-    private queueRulesForNewlyImportedTransactions(
-        transactionInputs: TransactionCreateInputInterface[],
-        upsertedTransactions: TransactionEntityInterface[],
-        existingTransactionIdMap: Map<string, number>
-    ): number {
-        const wasNotPreviouslyImported = ({ externalId }: { externalId: string | null }) =>
-            !isDefined(externalId) || !existingTransactionIdMap.has(externalId);
-
-        const newInputs = transactionInputs.filter(wasNotPreviouslyImported);
-        const newTransactionIds = upsertedTransactions.filter(wasNotPreviouslyImported).map(transaction => transaction.id);
-
-        ruleApplicationDrainerService.enqueueTransactions(newTransactionIds, newInputs);
-
-        return newTransactionIds.length;
     }
 
     protected abstract parseFile(uri: string): Promise<ParsedFileResultInterface>;

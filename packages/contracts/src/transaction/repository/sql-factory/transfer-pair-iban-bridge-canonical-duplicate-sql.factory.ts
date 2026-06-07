@@ -2,8 +2,21 @@ import { TRANSFER_MCC_GROUP_ID } from '../../constant/transfer-mcc-group-id.cons
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../constant/transfer-pair-fast-time-window.constant';
 import { TransactionConsolidationTypeEnum } from '../../enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
+import { applyConsolidationScanScopeSql } from '../../util/apply-consolidation-scan-scope-sql.util';
 
-export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = `
+import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+
+const TARGET_INCOME_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CANONICAL_DUPLICATE_INCOME_SCOPE_SQL__';
+const CANONICAL_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CANONICAL_DUPLICATE_CANONICAL_SCOPE_SQL__';
+const SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CANONICAL_DUPLICATE_EXPENSE_SCOPE_SQL__';
+
+const IBAN_BRIDGE_CANONICAL_DUPLICATE_SCOPE_EXPRESSIONS = new Map([
+    [TARGET_INCOME_SCOPE_SQL_PLACEHOLDER, 'target_income_tx.operated_at'],
+    [CANONICAL_SCOPE_SQL_PLACEHOLDER, 'canonical_tx.operated_at'],
+    [SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER, 'source_expense_tx.operated_at']
+]);
+
+const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL = `
             SELECT
                 'AUTO_IBAN_BRIDGE_CANONICAL_DUPLICATE' as confidenceBucket,
                 expenseTransactionId,
@@ -56,6 +69,7 @@ export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = `
                     AND target_income_tx.deleted_at IS NULL
                     AND target_income_tx.consolidation_parent_transaction_id IS NULL
                     AND ABS(target_income_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    ${TARGET_INCOME_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries target_income_entry ON
                     target_income_entry.transaction_id = target_income_tx.id
                     AND target_income_entry.deleted_at IS NULL
@@ -71,12 +85,14 @@ export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = `
                     AND canonical_tx.from_account_id = source_account.id
                     AND canonical_tx.to_account_id = target_account.id
                     AND ABS(canonical_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    ${CANONICAL_SCOPE_SQL_PLACEHOLDER}
                 LEFT JOIN mcc_categories source_expense_mcc ON source_expense_mcc.id = source_expense_entry.mcc_category_id
                 LEFT JOIN mcc_categories target_income_mcc ON target_income_mcc.id = target_income_entry.mcc_category_id
                 WHERE source_expense_entry.deleted_at IS NULL
                     AND source_expense_entry.original_transaction_id IS NULL
                     AND source_expense_entry.exchange_rate > 0
                     AND source_expense_entry.amount > 0
+                    ${SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER}
                     AND source_expense_entry.to_iban IS NOT NULL
                     AND source_expense_entry.to_iban != ''
                     AND (
@@ -107,3 +123,10 @@ export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = `
             WHERE expenseRank = 1
                 AND incomeRank = 1
 `;
+
+export const IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
+    applyConsolidationScanScopeSql(
+        IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_BASE_SQL,
+        scope,
+        IBAN_BRIDGE_CANONICAL_DUPLICATE_SCOPE_EXPRESSIONS
+    );

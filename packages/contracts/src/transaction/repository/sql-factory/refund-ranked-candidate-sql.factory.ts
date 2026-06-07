@@ -1,6 +1,9 @@
 import { TransactionEntryTypeEnum } from '../../../transaction-entry/enum/transaction-entry-type.enum';
 import { REFUND_TIME_WINDOW_SECONDS } from '../../constant/refund-time-window.constant';
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
+import { buildConsolidationScanScopeSql } from '../../util/build-consolidation-scan-scope-sql.util';
+
+import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
 const CARD_REVERSAL_TIME_WINDOW_SECONDS = 600;
@@ -34,7 +37,12 @@ const buildStripPrefixesSql = (seedExpression: string, prefixes: readonly string
 const buildStripCommaSuffixSql = (seedExpression: string): string =>
     `TRIM(CASE WHEN INSTR(${seedExpression}, ',') > 0 THEN SUBSTR(${seedExpression}, 1, INSTR(${seedExpression}, ',') - 1) ELSE ${seedExpression} END)`;
 
-const buildExpenseEntriesSql = (autoTitle: string, reviewTitle: string, reviewMerchantTitle: string): string => `
+const buildExpenseEntriesSql = (
+    autoTitle: string,
+    reviewTitle: string,
+    reviewMerchantTitle: string,
+    scope: ConsolidationScanScopeInterface | null
+): string => `
     expense_entries AS (
         SELECT
             expense_tx.id AS expenseTxId,
@@ -57,10 +65,16 @@ const buildExpenseEntriesSql = (autoTitle: string, reviewTitle: string, reviewMe
             AND expense_tx.consolidation_parent_transaction_id IS NULL
             AND expense_tx.consolidation_type IS NULL
             AND expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
+            ${buildConsolidationScanScopeSql(scope, 'expense_tx.operated_at')}
     )
 `;
 
-const buildIncomeEntriesSql = (autoTitle: string, reviewTitle: string, reviewMerchantTitle: string): string => `
+const buildIncomeEntriesSql = (
+    autoTitle: string,
+    reviewTitle: string,
+    reviewMerchantTitle: string,
+    scope: ConsolidationScanScopeInterface | null
+): string => `
     income_entries AS (
         SELECT
             income_tx.id AS txId,
@@ -82,6 +96,7 @@ const buildIncomeEntriesSql = (autoTitle: string, reviewTitle: string, reviewMer
         WHERE income_tx.deleted_at IS NULL
             AND income_tx.consolidation_parent_transaction_id IS NULL
             AND income_tx.type = '${TransactionTypeEnum.INCOME}'
+            ${buildConsolidationScanScopeSql(scope, 'income_tx.operated_at')}
     )
 `;
 
@@ -158,7 +173,7 @@ const buildRankedPairsSql = (): string => `
     )
 `;
 
-const buildRankedCandidateSql = (): string => {
+const buildRankedCandidateSql = (scope: ConsolidationScanScopeInterface | null): string => {
     const expenseAutoTitle = buildStripPrefixesSql('UPPER(TRIM(expense_tx.title))', AUTO_TITLE_PREFIXES);
     const incomeAutoTitle = buildStripPrefixesSql('UPPER(TRIM(income_tx.title))', AUTO_TITLE_PREFIXES);
     const expenseReviewTitle = buildStripPrefixesSql('UPPER(TRIM(expense_tx.title))', REVIEW_TITLE_PREFIXES);
@@ -167,15 +182,15 @@ const buildRankedCandidateSql = (): string => {
     const incomeReviewMerchantTitle = buildStripCommaSuffixSql(incomeReviewTitle);
 
     return `
-        WITH ${buildExpenseEntriesSql(expenseAutoTitle, expenseReviewTitle, expenseReviewMerchantTitle)},
-        ${buildIncomeEntriesSql(incomeAutoTitle, incomeReviewTitle, incomeReviewMerchantTitle)},
+        WITH ${buildExpenseEntriesSql(expenseAutoTitle, expenseReviewTitle, expenseReviewMerchantTitle, scope)},
+        ${buildIncomeEntriesSql(incomeAutoTitle, incomeReviewTitle, incomeReviewMerchantTitle, scope)},
         ${buildCompatiblePairsSql()},
         ${buildRankedPairsSql()}
         SELECT * FROM ranked_pairs
     `;
 };
 
-export const REFUND_AUTO_CANDIDATES_SQL = `
+export const REFUND_AUTO_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string => `
     SELECT
         confidenceBucket, matchType,
         expenseTxId AS expenseTransactionId,
@@ -183,7 +198,7 @@ export const REFUND_AUTO_CANDIDATES_SQL = `
         expenseAmount AS expenseEntryAmount,
         SUM(refundAmount) AS refundsTotal,
         GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
-    FROM (${buildRankedCandidateSql()})
+    FROM (${buildRankedCandidateSql(scope)})
     WHERE refundRank = 1
         AND confidenceBucket IN ('AUTO_REFUND_EXACT_TITLE', 'AUTO_REFUND_LOCALIZED_REFUND_TITLE')
         AND (
@@ -206,7 +221,7 @@ export const REFUND_REVIEW_CANDIDATES_SQL = `
         expenseAmount AS expenseEntryAmount,
         SUM(refundAmount) AS refundsTotal,
         GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
-    FROM (${buildRankedCandidateSql()})
+    FROM (${buildRankedCandidateSql(null)})
     WHERE refundRank = 1
         AND confidenceBucket IN ('REVIEW_REFUND_PREFIX_TITLE_MCC')
     GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount

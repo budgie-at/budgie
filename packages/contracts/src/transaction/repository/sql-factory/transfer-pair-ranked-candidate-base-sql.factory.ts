@@ -8,8 +8,19 @@ import {
 } from '../../constant/transfer-pair-hinted-fee.constant';
 import { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from '../../constant/transfer-pair-time-window.constant';
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
+import { applyConsolidationScanScopeSql } from '../../util/apply-consolidation-scan-scope-sql.util';
 
-export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
+import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+
+const EXPENSE_SCOPE_SQL_PLACEHOLDER = '__TRANSFER_PAIR_EXPENSE_SCOPE_SQL__';
+const INCOME_SCOPE_SQL_PLACEHOLDER = '__TRANSFER_PAIR_INCOME_SCOPE_SQL__';
+
+const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SCOPE_EXPRESSIONS = new Map([
+    [EXPENSE_SCOPE_SQL_PLACEHOLDER, 'expense_tx.operated_at'],
+    [INCOME_SCOPE_SQL_PLACEHOLDER, 'income_tx.operated_at']
+]);
+
+const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
             WITH expense_entries AS (
                 SELECT
                     expense_entry.id as expenseEntryId,
@@ -49,6 +60,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                 WHERE expense_entry.deleted_at IS NULL
                     AND expense_entry.original_transaction_id IS NULL
                     AND expense_entry.exchange_rate > 0
+                    ${EXPENSE_SCOPE_SQL_PLACEHOLDER}
             ),
             income_entries AS (
                 SELECT
@@ -87,6 +99,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                 LEFT JOIN mcc_categories income_mcc ON income_entry.mcc_category_id = income_mcc.id
                 WHERE income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL
+                    ${INCOME_SCOPE_SQL_PLACEHOLDER}
             ),
             latest_exchange_rates AS (
                 SELECT
@@ -242,3 +255,6 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                         AND expense_entries.expenseOperatedAt + ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
             ),
 `;
+
+export const buildTransferPairRankedCandidateBaseSql = (scope: ConsolidationScanScopeInterface | null): string =>
+    applyConsolidationScanScopeSql(TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL, scope, TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SCOPE_EXPRESSIONS);

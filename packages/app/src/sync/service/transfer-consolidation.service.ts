@@ -14,6 +14,7 @@ import { consolidationCoordinatorService } from './consolidation-coordinator.ser
 import type { ConsolidationPreviewInterface } from '../interface/consolidation-preview.interface';
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type { TransferConsolidationProgressSnapshotInterface } from '../interface/transfer-consolidation-progress-snapshot.interface';
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const logger = getLogger('TransferConsolidationService');
 
@@ -42,12 +43,15 @@ class TransferConsolidationService {
     }
 
     @Log(
-        'enter',
-        result => `done found=${result.found} consolidated=${result.consolidated}`,
-        error => `throw error=${getErrorMessage(error)}`
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} found=${result.found} consolidated=${result.consolidated}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
     )
-    async consolidate(): Promise<ConsolidationResultInterface> {
-        return this.runExclusive(() => this.runConsolidationIfIdle());
+    async consolidate(scope: ConsolidationScanScopeInterface | null = null): Promise<ConsolidationResultInterface> {
+        return this.runExclusive(() => this.runConsolidationIfIdle(scope));
     }
 
     @Log(
@@ -61,21 +65,27 @@ class TransferConsolidationService {
     }
 
     @Log(
-        onProgress => `enter hasOnProgress=${String(isDefined(onProgress))}`,
-        (result, onProgress) =>
-            `done hasOnProgress=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
-        (error, onProgress) => `throw hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
+        (scope, onProgress) =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} hasOnProgress=${String(isDefined(onProgress))}`,
+        (result, scope, onProgress) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} hasOnProgress=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
+        (error, scope, onProgress) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
     )
-    private async runConsolidation(onProgress?: (processedCandidateGroupCount: number) => void): Promise<ConsolidationResultInterface> {
+    private async runConsolidation(
+        scope: ConsolidationScanScopeInterface | null,
+        onProgress?: (processedCandidateGroupCount: number) => void
+    ): Promise<ConsolidationResultInterface> {
         const startedAt = Date.now();
-        const result = await consolidationCoordinatorService.consolidate(onProgress);
+        const result = await consolidationCoordinatorService.consolidate(scope, onProgress);
 
         await this.updateBalancesAfterConsolidation(result.consolidated);
 
         logger.log('consolidate:duration', {
             durationMs: Date.now() - startedAt,
             found: result.found,
-            consolidated: result.consolidated
+            consolidated: result.consolidated,
+            scopeTransactionIds: scope?.transactionIds ?? []
         });
 
         return result;
@@ -129,6 +139,7 @@ class TransferConsolidationService {
     }
 
     private async runConsolidationIfIdle(
+        scope: ConsolidationScanScopeInterface | null,
         onProgress?: (processedCandidateGroupCount: number) => void
     ): Promise<ConsolidationResultInterface> {
         if (this.isRunning) {
@@ -138,7 +149,7 @@ class TransferConsolidationService {
         this.isRunning = true;
 
         try {
-            return await this.runConsolidation(onProgress);
+            return await this.runConsolidation(scope, onProgress);
         } finally {
             this.isRunning = false;
         }
