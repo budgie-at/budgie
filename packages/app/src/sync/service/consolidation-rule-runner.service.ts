@@ -11,7 +11,7 @@ import type { ConsolidationRuleTypeEnum } from '../enum/consolidation-rule-type.
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type { ConsolidationRuleRunnerInterface } from '../interface/consolidation-rule-runner.interface';
 import type { ConsolidationRuleInterface } from '../interface/consolidation-rule.interface';
-import type { DB } from '@budgie/contracts';
+import type { ConsolidationScanScopeInterface, DB } from '@budgie/contracts';
 
 export class ConsolidationRuleRunnerService<Candidate> implements ConsolidationRuleRunnerInterface {
     constructor(private readonly rule: ConsolidationRuleInterface<Candidate>) {}
@@ -25,18 +25,19 @@ export class ConsolidationRuleRunnerService<Candidate> implements ConsolidationR
     }
 
     @Log(
-        (claimedTransactionIds, publishProgress) =>
-            `enter claimedTransactionIds=${[...claimedTransactionIds].join(',')} hasPublishProgress=${String(isDefined(publishProgress))}`,
-        (result, claimedTransactionIds, publishProgress) =>
-            `done claimedTransactionIds=${[...claimedTransactionIds].join(',')} hasPublishProgress=${String(isDefined(publishProgress))} found=${result.found} consolidated=${result.consolidated}`,
-        (error, claimedTransactionIds, publishProgress) =>
-            `throw claimedTransactionIds=${[...claimedTransactionIds].join(',')} hasPublishProgress=${String(isDefined(publishProgress))} error=${getErrorMessage(error)}`
+        (claimedTransactionIds, publishProgress, scope) =>
+            `enter claimedTransactionIds=${[...claimedTransactionIds].join(',')} hasPublishProgress=${String(isDefined(publishProgress))} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, claimedTransactionIds, publishProgress, scope) =>
+            `done claimedTransactionIds=${[...claimedTransactionIds].join(',')} hasPublishProgress=${String(isDefined(publishProgress))} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} found=${result.found} consolidated=${result.consolidated}`,
+        (error, claimedTransactionIds, publishProgress, scope) =>
+            `throw claimedTransactionIds=${[...claimedTransactionIds].join(',')} hasPublishProgress=${String(isDefined(publishProgress))} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
     )
     async process(
         claimedTransactionIds: Set<number>,
-        publishProgress: (processedCount: number) => void
+        publishProgress: (processedCount: number) => void,
+        scope: ConsolidationScanScopeInterface | null
     ): Promise<ConsolidationResultInterface> {
-        const candidates = await this.rule.findCandidates();
+        const candidates = await this.rule.findCandidates(scope);
 
         return candidates.reduce(
             async (resultPromise, candidate) => {
@@ -54,13 +55,15 @@ export class ConsolidationRuleRunnerService<Candidate> implements ConsolidationR
     }
 
     @Log(
-        claimedTransactionIds => `enter claimedTransactionIds=${[...claimedTransactionIds].join(',')}`,
-        (result, claimedTransactionIds) => `done claimedTransactionIds=${[...claimedTransactionIds].join(',')} count=${result}`,
-        (error, claimedTransactionIds) =>
-            `throw claimedTransactionIds=${[...claimedTransactionIds].join(',')} error=${getErrorMessage(error)}`
+        (claimedTransactionIds, scope) =>
+            `enter claimedTransactionIds=${[...claimedTransactionIds].join(',')} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, claimedTransactionIds, scope) =>
+            `done claimedTransactionIds=${[...claimedTransactionIds].join(',')} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result}`,
+        (error, claimedTransactionIds, scope) =>
+            `throw claimedTransactionIds=${[...claimedTransactionIds].join(',')} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
     )
-    async countCandidates(claimedTransactionIds: Set<number>): Promise<number> {
-        const candidates = await this.rule.findCandidates();
+    async countCandidates(claimedTransactionIds: Set<number>, scope: ConsolidationScanScopeInterface | null): Promise<number> {
+        const candidates = await this.rule.findCandidates(scope);
         let count = 0;
 
         for (const candidate of candidates) {

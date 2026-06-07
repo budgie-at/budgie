@@ -12,15 +12,22 @@ import type { ConsolidationExecutionResultInterface } from '../../interface/cons
 import type { ConsolidationRuleInterface } from '../../interface/consolidation-rule.interface';
 import type { ConsolidationSourceMoveRequestInterface } from '../../interface/consolidation-source-move-request.interface';
 import type { ConsolidationTagCopyRequestInterface } from '../../interface/consolidation-tag-copy-request.interface';
-import type { DB, IbanBridgeTransferCandidateInterface } from '@budgie/contracts';
+import type { ConsolidationScanScopeInterface, DB, IbanBridgeTransferCandidateInterface } from '@budgie/contracts';
 
 class IbanBridgeTransferConsolidationService implements ConsolidationRuleInterface<IbanBridgeTransferCandidateInterface> {
     readonly priority = 40;
     readonly type = ConsolidationRuleTypeEnum.IBAN_BRIDGE_TRANSFER;
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findCandidates(): Promise<IbanBridgeTransferCandidateInterface[]> {
-        return transferPairRepository.findIbanBridgeTransferCandidates();
+    @Log(
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    async findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<IbanBridgeTransferCandidateInterface[]> {
+        return transferPairRepository.findIbanBridgeTransferCandidates(scope);
     }
 
     @Log(

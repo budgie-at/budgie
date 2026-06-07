@@ -11,15 +11,22 @@ import type { ConsolidationExecutionResultInterface } from '../../interface/cons
 import type { ConsolidationRuleInterface } from '../../interface/consolidation-rule.interface';
 import type { ConsolidationSourceMoveRequestInterface } from '../../interface/consolidation-source-move-request.interface';
 import type { ConsolidationTagCopyRequestInterface } from '../../interface/consolidation-tag-copy-request.interface';
-import type { DB, RefundCandidateInterface } from '@budgie/contracts';
+import type { ConsolidationScanScopeInterface, DB, RefundCandidateInterface } from '@budgie/contracts';
 
 class RefundConsolidationService implements ConsolidationRuleInterface<RefundCandidateInterface> {
     readonly priority = 80;
     readonly type = ConsolidationRuleTypeEnum.REFUND;
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findCandidates(): Promise<RefundCandidateInterface[]> {
-        return refundPairRepository.findCandidates();
+    @Log(
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    async findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<RefundCandidateInterface[]> {
+        return refundPairRepository.findCandidates(scope);
     }
 
     @Log(

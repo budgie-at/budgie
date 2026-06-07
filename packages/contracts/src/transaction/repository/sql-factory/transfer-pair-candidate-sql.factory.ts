@@ -1,7 +1,9 @@
 import { buildTransferPairRankedCandidateSql } from './transfer-pair-ranked-candidate-sql.factory';
 
-export const buildTransferPairCandidatesSql = (): string => {
-    const rankedCandidateSql = buildTransferPairRankedCandidateSql();
+import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+
+export const buildTransferPairCandidatesSql = (scope: ConsolidationScanScopeInterface | null = null): string => {
+    const rankedCandidateSql = buildTransferPairRankedCandidateSql(scope);
 
     return `
             SELECT
@@ -32,7 +34,7 @@ export const buildTransferPairCandidatesSql = (): string => {
 };
 
 export const buildTransferPairManualReviewCandidatesSql = (): string => {
-    const rankedCandidateSql = buildTransferPairRankedCandidateSql();
+    const rankedCandidateSql = buildTransferPairRankedCandidateSql(null);
 
     return `
             SELECT

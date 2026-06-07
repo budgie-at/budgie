@@ -2,7 +2,7 @@ import type { ConsolidationExecutionResultInterface } from './consolidation-exec
 import type { ConsolidationSourceMoveRequestInterface } from './consolidation-source-move-request.interface';
 import type { ConsolidationTagCopyRequestInterface } from './consolidation-tag-copy-request.interface';
 import type { ConsolidationRuleTypeEnum } from '../enum/consolidation-rule-type.enum';
-import type { DB } from '@budgie/contracts';
+import type { ConsolidationScanScopeInterface, DB } from '@budgie/contracts';
 
 export interface ConsolidationRuleInterface<Candidate> {
     readonly priority: number;
@@ -11,6 +11,6 @@ export interface ConsolidationRuleInterface<Candidate> {
     buildSourceMoveRequests(candidate: Candidate, result: ConsolidationExecutionResultInterface): ConsolidationSourceMoveRequestInterface[];
     buildTagCopyRequests(candidate: Candidate, result: ConsolidationExecutionResultInterface): ConsolidationTagCopyRequestInterface[];
     consolidate(candidate: Candidate, tx: DB): Promise<ConsolidationExecutionResultInterface>;
-    findCandidates(): Promise<Candidate[]>;
+    findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<Candidate[]>;
     getSourceTransactionIds(candidate: Candidate): number[];
 }
