@@ -1,11 +1,9 @@
-import { AccountTypeEnum } from '../../../account/enum/account-type.enum';
-import { ExternalSourceEnum } from '../../../account/enum/external-source.enum';
-import { TRANSFER_MCC_GROUP_ID } from '../../constant/transfer-mcc-group-id.constant';
-import { TransactionConsolidationTypeEnum } from '../../enum/transaction-consolidation-type.enum';
-import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
-import { applyConsolidationScanScopeSql } from '../../util/apply-consolidation-scan-scope-sql.util';
+import { AccountTypeEnum, ExternalSourceEnum, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+import { TRANSFER_MCC_GROUP_ID } from '../../shared/constant/transfer-mcc-group-id.constant';
+import { applyConsolidationScanScopeSql } from '../utils/apply-consolidation-scan-scope-sql.util';
+
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const EXISTING_TRANSFER_DUPLICATE_TIME_WINDOW_SECONDS = 2 * 60 * 60;
 const LEGACY_CSV_DUPLICATE_TIME_WINDOW_SECONDS = EXISTING_TRANSFER_DUPLICATE_TIME_WINDOW_SECONDS + 5 * 60;

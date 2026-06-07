@@ -1,6 +1,4 @@
-import { TransactionEntryTypeEnum } from '../../../transaction-entry/enum/transaction-entry-type.enum';
-import { TransactionConsolidationTypeEnum } from '../../enum/transaction-consolidation-type.enum';
-import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
+import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 const MANUAL_RECOMMENDED_AMOUNT_DISTANCE_RATIO = 0.05;
 const MANUAL_RECOMMENDED_DATE_DISTANCE_SECONDS = 604_800;

@@ -1,9 +1,8 @@
-import { TransactionEntryTypeEnum } from '../../../transaction-entry/enum/transaction-entry-type.enum';
-import { REFUND_TIME_WINDOW_SECONDS } from '../../constant/refund-time-window.constant';
-import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
-import { buildConsolidationScanScopeSql } from '../../util/build-consolidation-scan-scope-sql.util';
+import { REFUND_TIME_WINDOW_SECONDS, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+import { buildConsolidationScanScopeSql } from '../utils/build-consolidation-scan-scope-sql.util';
+
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
 const CARD_REVERSAL_TIME_WINDOW_SECONDS = 600;

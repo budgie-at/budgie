@@ -1,4 +1,4 @@
-import { PRECISION } from '../../@generic/constant/precision.constant';
+import { PRECISION } from '@budgie/contracts';
 
 const SAME_BANK_HINTED_FEE_TRANSFER_TIME_WINDOW_MINUTES = 2;
 

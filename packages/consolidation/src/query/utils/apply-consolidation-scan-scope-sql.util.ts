@@ -1,6 +1,6 @@
 import { buildConsolidationScanScopeSql } from './build-consolidation-scan-scope-sql.util';
 
-import type { ConsolidationScanScopeInterface } from '../interface/consolidation-scan-scope.interface';
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 export const applyConsolidationScanScopeSql = (
     sql: string,

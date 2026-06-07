@@ -2,8 +2,6 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { yieldToEventLoop } from '../utils/yield-to-event-loop.util';
-
 import { ConsolidationSourceTransactionSetService } from './consolidation-source-transaction-set.service';
 
 import type { ConsolidationCandidateDependenciesInterface } from '../interface/consolidation-candidate-dependencies.interface';
@@ -20,7 +18,7 @@ export class ConsolidationCandidateService {
 
     constructor(
         private readonly dependencies: ConsolidationCandidateDependenciesInterface,
-        private readonly yieldControl: () => Promise<void> = yieldToEventLoop
+        private readonly yieldControl: () => Promise<void>
     ) {}
 
     @Log(

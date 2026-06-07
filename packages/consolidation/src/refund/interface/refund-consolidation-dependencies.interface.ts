@@ -1,11 +1,6 @@
+import type { RefundPairRepository } from '../../query/repository/refund-pair.repository';
 import type { TransactionRunnerInterface } from '../../wiring/interface/transaction-runner.interface';
-import type {
-    DB,
-    RefundPairRepository,
-    TransactionEntryRepository,
-    TransactionRepository,
-    TransactionTagsRepository
-} from '@budgie/contracts';
+import type { DB, TransactionEntryRepository, TransactionRepository, TransactionTagsRepository } from '@budgie/contracts';
 
 export interface RefundConsolidationDependenciesInterface {
     readonly database: DB;

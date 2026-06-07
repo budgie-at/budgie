@@ -1,6 +1,6 @@
 import { buildTransferPairRankedCandidateSql } from './transfer-pair-ranked-candidate-sql.factory';
 
-import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 export const buildTransferPairCandidatesSql = (scope: ConsolidationScanScopeInterface | null = null): string => {
     const rankedCandidateSql = buildTransferPairRankedCandidateSql(scope);

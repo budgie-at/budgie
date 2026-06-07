@@ -3,7 +3,9 @@ export { ConsolidationCandidateService } from './auto/service/consolidation-cand
 export { ConsolidationCoordinatorService } from './auto/service/consolidation-coordinator.service';
 export { consolidationScopeService } from './auto/service/consolidation-scope.service';
 export { ConsolidationExecutorService } from './executor/service/consolidation-executor.service';
+export { RefundPairRepository } from './query/repository/refund-pair.repository';
 export { RefundConsolidationService } from './refund/service/refund-consolidation.service';
+export { TransferPairRepository } from './query/repository/transfer-pair.repository';
 export { UnconsolidationService } from './executor/service/unconsolidation.service';
 
 export type { ConsolidationCandidateDependenciesInterface } from './auto/interface/consolidation-candidate-dependencies.interface';

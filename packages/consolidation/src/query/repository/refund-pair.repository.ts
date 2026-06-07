@@ -1,19 +1,21 @@
-import { REFUND_AUTO_CANDIDATES_SQL, REFUND_REVIEW_CANDIDATES_SQL } from './sql-factory/refund-ranked-candidate-sql.factory';
+import { REFUND_AUTO_CANDIDATES_SQL, REFUND_REVIEW_CANDIDATES_SQL } from '../sql-factory/refund-ranked-candidate-sql.factory';
 import {
     REFUNDABLE_EXPENSE_CANDIDATES_SQL,
     buildRefundableExpenseCandidateParams
-} from './sql-factory/refundable-expense-candidate-sql.factory';
+} from '../sql-factory/refundable-expense-candidate-sql.factory';
 
-import type { DB } from '../../@generic/type/db.type';
-import type { ConsolidationScanScopeInterface } from '../interface/consolidation-scan-scope.interface';
-import type { RefundCandidateBaseRowInterface } from '../interface/refund-candidate-base-row.interface';
-import type { RefundCandidateBaseInterface } from '../interface/refund-candidate-base.interface';
-import type { RefundCandidateRowInterface } from '../interface/refund-candidate-row.interface';
-import type { RefundCandidateInterface } from '../interface/refund-candidate.interface';
-import type { RefundReviewCandidateRowInterface } from '../interface/refund-review-candidate-row.interface';
-import type { RefundReviewCandidateInterface } from '../interface/refund-review-candidate.interface';
-import type { RefundableExpenseCandidateRowInterface } from '../interface/refundable-expense-candidate-row.interface';
-import type { RefundableExpenseCandidateInterface } from '../interface/refundable-expense-candidate.interface';
+import type {
+    ConsolidationScanScopeInterface,
+    DB,
+    RefundCandidateBaseInterface,
+    RefundCandidateBaseRowInterface,
+    RefundCandidateInterface,
+    RefundCandidateRowInterface,
+    RefundReviewCandidateInterface,
+    RefundReviewCandidateRowInterface,
+    RefundableExpenseCandidateInterface,
+    RefundableExpenseCandidateRowInterface
+} from '@budgie/contracts';
 
 export class RefundPairRepository {
     constructor(private db: DB) {}

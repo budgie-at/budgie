@@ -1,7 +1,8 @@
-import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
-import { buildConsolidationScanScopeSql } from '../../util/build-consolidation-scan-scope-sql.util';
+import { TransactionTypeEnum } from '@budgie/contracts';
 
-import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+import { buildConsolidationScanScopeSql } from '../utils/build-consolidation-scan-scope-sql.util';
+
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 export const buildAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScopeInterface | null = null): string => `
             WITH active_cash_accounts AS (

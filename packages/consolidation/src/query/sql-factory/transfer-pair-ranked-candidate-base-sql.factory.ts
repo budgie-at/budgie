@@ -1,16 +1,16 @@
-import { TRANSFER_MCC_GROUP_ID } from '../../constant/transfer-mcc-group-id.constant';
+import { TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionTypeEnum } from '@budgie/contracts';
+
+import { TRANSFER_MCC_GROUP_ID } from '../../shared/constant/transfer-mcc-group-id.constant';
 import {
     TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH,
     TRANSFER_PAIR_INTERBANK_HINTED_FEE_MAX_AMOUNT_DELTA,
     TRANSFER_PAIR_INTERBANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO,
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_MAX_AMOUNT_DELTA,
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO
-} from '../../constant/transfer-pair-hinted-fee.constant';
-import { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from '../../constant/transfer-pair-time-window.constant';
-import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
-import { applyConsolidationScanScopeSql } from '../../util/apply-consolidation-scan-scope-sql.util';
+} from '../../shared/constant/transfer-pair-hinted-fee.constant';
+import { applyConsolidationScanScopeSql } from '../utils/apply-consolidation-scan-scope-sql.util';
 
-import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const EXPENSE_SCOPE_SQL_PLACEHOLDER = '__TRANSFER_PAIR_EXPENSE_SCOPE_SQL__';
 const INCOME_SCOPE_SQL_PLACEHOLDER = '__TRANSFER_PAIR_INCOME_SCOPE_SQL__';
