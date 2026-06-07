@@ -70,6 +70,12 @@ export default function Index() {
                     route={`/create-account/${ExternalSourceEnum.ERSTE}`}
                     bankProvider={ExternalSourceEnum.ERSTE}
                 />
+                <CreateBankSyncCard
+                    description={t`Sync crypto balances and transactions from Binance with a read-only API key`}
+                    title={t`Binance`}
+                    route={`/create-account/${ExternalSourceEnum.BINANCE}`}
+                    bankProvider={ExternalSourceEnum.BINANCE}
+                />
 
                 <MenuSpacer />
             </ScrollView>

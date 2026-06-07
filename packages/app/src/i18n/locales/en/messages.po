@@ -449,6 +449,7 @@ msgstr "Between"
 msgid "Billing Dates"
 msgstr "Billing Dates"
 
+#: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Binance"
 msgstr "Binance"
@@ -632,6 +633,10 @@ msgstr "Confirm Split"
 msgid "Confirm tag selection"
 msgstr "Confirm tag selection"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Connect Binance"
+msgstr "Connect Binance"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Connect Monobank"
@@ -764,6 +769,7 @@ msgstr "Could not export CSV"
 msgid "Could not export database"
 msgstr "Could not export database"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Could not fetch accounts"
 msgstr "Could not fetch accounts"
@@ -832,6 +838,7 @@ msgstr "Could not select CSV file"
 msgid "Could not select database backup"
 msgstr "Could not select database backup"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Could not set up sync"
 msgstr "Could not set up sync"
@@ -912,6 +919,10 @@ msgstr "Create tags to organize your transactions"
 msgid "Create your first account to start tracking your finances"
 msgstr "Create your first account to start tracking your finances"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Credentials required"
+msgstr "Credentials required"
+
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto"
 msgstr "Crypto"
@@ -920,6 +931,10 @@ msgstr "Crypto"
 #: src/app/(main)/create-account/index.tsx
 msgid "Crypto Account"
 msgstr "Crypto Account"
+
+#: src/account/constant/account-type.constant.ts
+msgid "Crypto sync"
+msgstr "Crypto sync"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "CSV"
@@ -1168,6 +1183,14 @@ msgstr "Enter your {PIN_LENGTH}-digit PIN"
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Enter your {PIN_LENGTH}-digit PIN to unlock"
 
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+msgid "Enter your Binance API key"
+msgstr "Enter your Binance API key"
+
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+msgid "Enter your Binance API secret"
+msgstr "Enter your Binance API secret"
+
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Enter your Monobank API token"
 msgstr "Enter your Monobank API token"
@@ -1275,6 +1298,7 @@ msgstr "Fast-indexing {done} of {total} • tap to pause"
 msgid "Fee {formattedAmount}"
 msgstr "Fee {formattedAmount}"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
 msgstr "Fetch Accounts"
@@ -1920,6 +1944,14 @@ msgstr "Paid: {formattedBalance}"
 msgid "Paste your API token below:"
 msgstr "Paste your API token below:"
 
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+msgid "Paste your Binance API key:"
+msgstr "Paste your Binance API key:"
+
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+msgid "Paste your Binance API secret:"
+msgstr "Paste your Binance API secret:"
+
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Payment Progress"
 msgstr "Payment Progress"
@@ -1944,6 +1976,10 @@ msgstr "PIN must be {PIN_LENGTH} digits"
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PINs do not match"
 msgstr "PINs do not match"
+
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Please enter your Binance API key and secret"
+msgstr "Please enter your Binance API key and secret"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Please enter your Monobank API token"
@@ -2477,6 +2513,7 @@ msgstr "Split"
 msgid "Start Import"
 msgstr "Start Import"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
@@ -2515,9 +2552,17 @@ msgstr "Swipe left"
 msgid "Switch between light and dark themes"
 msgstr "Switch between light and dark themes"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Sync crypto balances and transactions from Binance with a read-only API key"
+msgstr "Sync crypto balances and transactions from Binance with a read-only API key"
+
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Sync Failed"
 msgstr "Sync Failed"
+
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Sync your Binance balances and transactions"
+msgstr "Sync your Binance balances and transactions"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Sync your Monobank accounts and transactions"
@@ -2828,6 +2873,10 @@ msgstr "Update Account"
 msgid "Update rule?"
 msgstr "Update rule?"
 
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+msgid "Use a read-only API key. Your key and secret are stored securely in the database and sync runs in the background."
+msgstr "Use a read-only API key. Your key and secret are stored securely in the database and sync runs in the background."
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
@@ -2840,6 +2889,10 @@ msgstr "Use Face ID to unlock your app quickly and securely"
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Use Touch ID to unlock your app quickly and securely"
+
+#: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
+msgid "Valuation unavailable"
+msgstr "Valuation unavailable"
 
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx

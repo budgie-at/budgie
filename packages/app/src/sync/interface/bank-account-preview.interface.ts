@@ -8,4 +8,5 @@ export interface BankAccountPreviewInterface {
     readonly iban: string | null;
     readonly existingAccountId: number | null;
     readonly hasBankSync: boolean;
+    readonly isParked: boolean;
 }

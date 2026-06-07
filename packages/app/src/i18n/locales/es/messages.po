@@ -448,6 +448,7 @@ msgstr "Entre"
 msgid "Billing Dates"
 msgstr "Fechas de cobro"
 
+#: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Binance"
 msgstr "Binance"
@@ -631,6 +632,10 @@ msgstr "Confirmar división"
 msgid "Confirm tag selection"
 msgstr "Confirmar selección de etiquetas"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Connect Binance"
+msgstr "Conectar Binance"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Conectar Monobank"
@@ -763,6 +768,7 @@ msgstr "No se pudo exportar el CSV"
 msgid "Could not export database"
 msgstr "No se pudo exportar la base de datos"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Could not fetch accounts"
 msgstr "No se pudieron obtener las cuentas"
@@ -831,6 +837,7 @@ msgstr "No se pudo seleccionar el archivo CSV"
 msgid "Could not select database backup"
 msgstr "No se pudo seleccionar la copia de seguridad de la base de datos"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Could not set up sync"
 msgstr "No se pudo configurar la sincronización"
@@ -911,6 +918,10 @@ msgstr "Crea etiquetas para organizar tus transacciones"
 msgid "Create your first account to start tracking your finances"
 msgstr "Crea tu primera cuenta para comenzar a rastrear tus finanzas"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Credentials required"
+msgstr "Credenciales requeridas"
+
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto"
 msgstr "Cripto"
@@ -919,6 +930,10 @@ msgstr "Cripto"
 #: src/app/(main)/create-account/index.tsx
 msgid "Crypto Account"
 msgstr "Cuenta cripto"
+
+#: src/account/constant/account-type.constant.ts
+msgid "Crypto sync"
+msgstr "Sincronización cripto"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "CSV"
@@ -1167,6 +1182,14 @@ msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos"
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos para desbloquear"
 
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+msgid "Enter your Binance API key"
+msgstr "Introduce tu clave de API de Binance"
+
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+msgid "Enter your Binance API secret"
+msgstr "Introduce tu secreto de API de Binance"
+
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Enter your Monobank API token"
 msgstr "Ingrese su token API de Monobank"
@@ -1274,6 +1297,7 @@ msgstr "Indexación rápida {done} de {total} • toca para pausar"
 msgid "Fee {formattedAmount}"
 msgstr "Comisión {formattedAmount}"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
 msgstr "Obtener cuentas"
@@ -1919,6 +1943,14 @@ msgstr "Pagado: {formattedBalance}"
 msgid "Paste your API token below:"
 msgstr "Pegue su token API a continuación:"
 
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+msgid "Paste your Binance API key:"
+msgstr "Pega tu clave de API de Binance:"
+
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+msgid "Paste your Binance API secret:"
+msgstr "Pega tu secreto de API de Binance:"
+
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Payment Progress"
 msgstr "Progreso del pago"
@@ -1943,6 +1975,10 @@ msgstr "El PIN debe tener {PIN_LENGTH} dígitos"
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PINs do not match"
 msgstr "Los PIN no coinciden"
+
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Please enter your Binance API key and secret"
+msgstr "Introduce tu clave y secreto de API de Binance"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Please enter your Monobank API token"
@@ -2476,6 +2512,7 @@ msgstr "Dividir"
 msgid "Start Import"
 msgstr "Iniciar importación"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
@@ -2514,9 +2551,17 @@ msgstr "Desliza a la izquierda"
 msgid "Switch between light and dark themes"
 msgstr "Cambiar entre temas claro y oscuro"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Sync crypto balances and transactions from Binance with a read-only API key"
+msgstr "Sincroniza saldos y transacciones de cripto desde Binance con una clave de API de solo lectura"
+
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Sync Failed"
 msgstr "Sincronización fallida"
+
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Sync your Binance balances and transactions"
+msgstr "Sincroniza tus saldos y transacciones de Binance"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Sync your Monobank accounts and transactions"
@@ -2827,6 +2872,10 @@ msgstr "Actualizar cuenta"
 msgid "Update rule?"
 msgstr "¿Actualizar regla?"
 
+#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+msgid "Use a read-only API key. Your key and secret are stored securely in the database and sync runs in the background."
+msgstr "Usa una clave de API de solo lectura. Tu clave y secreto se almacenan de forma segura en la base de datos y la sincronización se ejecuta en segundo plano."
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
@@ -2839,6 +2888,10 @@ msgstr "Usa Face ID para desbloquear tu aplicación de forma rápida y segura"
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Usa Touch ID para desbloquear tu aplicación de forma rápida y segura"
+
+#: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
+msgid "Valuation unavailable"
+msgstr "Valoración no disponible"
 
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx

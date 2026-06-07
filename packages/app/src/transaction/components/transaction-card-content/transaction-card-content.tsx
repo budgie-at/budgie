@@ -36,6 +36,7 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
     const feeEntry = feeEntries.at(0);
     const feeAmount = convertFromMicroUnits(sumEntryAmounts(feeEntries));
     const feeCurrencySymbol = isDefined(feeEntry) ? feeEntry.account.instrument.symbol : '';
+    const feeInstrumentType = feeEntry?.account.instrument.type;
 
     return (
         <>
@@ -57,7 +58,12 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
 
                     <View className="flex-row flex-wrap gap-xs">
                         <RefundedPill transaction={transaction} testID={refundedPillTestID} />
-                        <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} testID={feePillTestID} />
+                        <TransactionFeePill
+                            amount={feeAmount}
+                            currencySymbol={feeCurrencySymbol}
+                            instrumentType={feeInstrumentType}
+                            testID={feePillTestID}
+                        />
                     </View>
 
                     {transaction.type === TransactionTypeEnum.TRANSFER || transaction.type === TransactionTypeEnum.DEBT ? null : (

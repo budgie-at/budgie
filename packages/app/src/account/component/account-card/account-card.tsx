@@ -28,7 +28,7 @@ export const AccountCard = (props: Props) => {
         return <BankSyncAccountCard {...props} />;
     }
 
-    if (type === AccountTypeEnum.CRYPTO) {
+    if (type === AccountTypeEnum.CRYPTO || type === AccountTypeEnum.CRYPTO_SYNC) {
         return <CryptoAccountCard {...props} />;
     }
 

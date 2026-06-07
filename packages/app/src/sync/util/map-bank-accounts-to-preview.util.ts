@@ -27,7 +27,8 @@ export const mapBankAccountsToPreview = async (
             currencyCode: bankAccount.currencyCode,
             iban: bankAccount.iban ?? null,
             existingAccountId: existingAccount?.id ?? null,
-            hasBankSync: isDefined(existingAccount) && syncedAccountIds.has(existingAccount.id)
+            hasBankSync: isDefined(existingAccount) && syncedAccountIds.has(existingAccount.id),
+            isParked: false
         };
     });
 };

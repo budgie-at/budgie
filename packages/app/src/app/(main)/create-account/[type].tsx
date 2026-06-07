@@ -5,6 +5,7 @@ import { CreateBankAccount } from '../../../account/component/create-bank-accoun
 import { CreateCashAccount } from '../../../account/component/create-cash-account/create-cash-account';
 import { CreateCryptoAccount } from '../../../account/component/create-crypto-account/create-crypto-account';
 import { CreateDebtAccount } from '../../../account/component/create-debt-account/create-debt-account';
+import { CreateBinanceAccount } from '../../../sync/component/create-binance-account/create-binance-account';
 import { CreateErsteAccount } from '../../../sync/component/create-erste-account/create-erste-account';
 import { CreateMonobankAccount } from '../../../sync/component/create-monobank-account/create-monobank-account';
 import { CreatePrivatbankAccount } from '../../../sync/component/create-privatbank-account/create-privatbank-account';
@@ -29,6 +30,8 @@ export default function CreateAccountType() {
             return <CreatePrivatbankAccount />;
         case ExternalSourceEnum.ERSTE:
             return <CreateErsteAccount />;
+        case ExternalSourceEnum.BINANCE:
+            return <CreateBinanceAccount />;
         default:
             return <Redirect href="/" />;
     }

@@ -13,6 +13,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
 import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
+import { useCryptoFormatDigits } from '../../../i18n/hook/use-crypto-format-digits.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
@@ -30,11 +31,12 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
+    const formatCryptoDigits = useCryptoFormatDigits();
     const { rate } = useGetRatesByBaseAndQuoteIdsQuery(group.instrument.id, defaultInstrument.id);
 
     const toggleOpen = () => void setIsOpen(value => !value);
     const { code: instrumentCode, name: instrumentName } = group.instrument;
-    const formattedBalance = `${formatDigits(balance)} ${instrumentCode}`;
+    const formattedBalance = `${formatCryptoDigits(balance)} ${instrumentCode}`;
     const formattedValue = isDefined(rate) ? formatDigits(balance * rate.rate, defaultInstrument.symbol) : null;
     const formattedRate = isDefined(rate) ? formatExchangeRate(rate.rate) : null;
     const chevronIcon = isOpen ? UserIconNameEnum.ChevronDown : UserIconNameEnum.ChevronRight;

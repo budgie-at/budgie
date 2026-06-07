@@ -1,3 +1,4 @@
+import { ExternalSourceEnum } from '../../../account/enum/external-source.enum';
 import { TRANSFER_MCC_GROUP_ID } from '../../constant/transfer-mcc-group-id.constant';
 import {
     TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH,
@@ -6,6 +7,7 @@ import {
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_MAX_AMOUNT_DELTA,
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO
 } from '../../constant/transfer-pair-hinted-fee.constant';
+import { BINANCE_C2C_EXTERNAL_ID_PREFIX } from '../../constant/transfer-pair-p2p-fiat.constant';
 import { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from '../../constant/transfer-pair-time-window.constant';
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
 
@@ -21,6 +23,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                     expense_entry.to_iban as expenseEntryToIban,
                     expense_tx.title as expenseTransactionTitle,
                     expense_tx.comment as expenseTransactionComment,
+                    expense_tx.external_id as expenseTransactionExternalId,
                     expense_tx.operated_at as expenseOperatedAt,
                     expense_account.title as expenseAccountTitle,
                     expense_account.instrument_id as expenseInstrumentId,
@@ -61,6 +64,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                     income_entry.amount / income_entry.exchange_rate as incomeOperationAmount,
                     income_entry.to_iban as incomeEntryToIban,
                     income_tx.title as incomeTransactionTitle,
+                    income_tx.external_id as incomeTransactionExternalId,
                     income_tx.operated_at as incomeOperatedAt,
                     income_account.title as incomeAccountTitle,
                     income_account.instrument_id as incomeInstrumentId,
@@ -103,6 +107,35 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                 WHERE deleted_at IS NULL
                     AND rate > 0
             ),
+            direct_exchange_rates AS (
+                SELECT
+                    base_instrument_id,
+                    quote_instrument_id,
+                    rate,
+                    0 as direction
+                FROM latest_exchange_rates
+                WHERE exchangeRateRank = 1
+                UNION ALL
+                SELECT
+                    quote_instrument_id as base_instrument_id,
+                    base_instrument_id as quote_instrument_id,
+                    1.0 / rate as rate,
+                    1 as direction
+                FROM latest_exchange_rates
+                WHERE exchangeRateRank = 1
+            ),
+            base_triangulated_rates AS (
+                SELECT
+                    first_leg.base_instrument_id as base_instrument_id,
+                    second_leg.quote_instrument_id as quote_instrument_id,
+                    first_leg.rate * second_leg.rate as rate,
+                    2 as direction
+                FROM direct_exchange_rates first_leg
+                INNER JOIN direct_exchange_rates second_leg
+                    ON first_leg.quote_instrument_id = second_leg.base_instrument_id
+                WHERE first_leg.quote_instrument_id = (SELECT default_instrument_id FROM settings LIMIT 1)
+                    AND first_leg.base_instrument_id != second_leg.quote_instrument_id
+            ),
             available_exchange_rates AS (
                 SELECT base_instrument_id, quote_instrument_id, rate
                 FROM (
@@ -115,21 +148,9 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                             ORDER BY direction
                         ) as directionRank
                     FROM (
-                        SELECT
-                            base_instrument_id,
-                            quote_instrument_id,
-                            rate,
-                            0 as direction
-                        FROM latest_exchange_rates
-                        WHERE exchangeRateRank = 1
+                        SELECT base_instrument_id, quote_instrument_id, rate, direction FROM direct_exchange_rates
                         UNION ALL
-                        SELECT
-                            quote_instrument_id as base_instrument_id,
-                            base_instrument_id as quote_instrument_id,
-                            1.0 / rate as rate,
-                            1 as direction
-                        FROM latest_exchange_rates
-                        WHERE exchangeRateRank = 1
+                        SELECT base_instrument_id, quote_instrument_id, rate, direction FROM base_triangulated_rates
                     )
                 )
                 WHERE directionRank = 1
@@ -235,7 +256,23 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                             AND (expense_entries.expenseEntryAmount - income_entries.incomeEntryAmount) * 1.0 / income_entries.incomeEntryAmount <= ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO}
                         THEN 1
                         ELSE 0
-                    END as interbankHintedFeeAmountMatch
+                    END as interbankHintedFeeAmountMatch,
+                    CASE
+                        WHEN expense_entries.expenseInstrumentId != income_entries.incomeInstrumentId
+                            AND expense_entries.expenseEntryAmount > 0
+                            AND income_entries.incomeEntryAmount > 0
+                            AND (
+                                (income_entries.incomeExternalSource = '${ExternalSourceEnum.BINANCE}'
+                                    AND income_entries.incomeTransactionExternalId LIKE '${BINANCE_C2C_EXTERNAL_ID_PREFIX}%'
+                                    AND (expense_entries.expenseExternalSource IS NULL OR expense_entries.expenseExternalSource != '${ExternalSourceEnum.BINANCE}'))
+                                OR
+                                (expense_entries.expenseExternalSource = '${ExternalSourceEnum.BINANCE}'
+                                    AND expense_entries.expenseTransactionExternalId LIKE '${BINANCE_C2C_EXTERNAL_ID_PREFIX}%'
+                                    AND (income_entries.incomeExternalSource IS NULL OR income_entries.incomeExternalSource != '${ExternalSourceEnum.BINANCE}'))
+                            )
+                        THEN 1
+                        ELSE 0
+                    END as p2pCrossCurrencyMatch
                 FROM expense_entries
                 INNER JOIN income_entries ON
                     income_entries.incomeAccountId != expense_entries.expenseAccountId

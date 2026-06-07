@@ -38,6 +38,33 @@ export { extractCardEnding } from './privatbank/util/extract-card-ending.util';
 export { generatePrivatbankExternalId } from './privatbank/util/generate-privatbank-external-id.util';
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
+export { BinanceSyncService } from './binance/service/binance-sync.service';
+export { BinanceSignedClient } from './binance/client/binance-signed.client';
+export { binanceMapper } from './binance/mapper/binance.mapper';
+export { encodeBinanceAccountId, decodeBinanceAccountId } from './binance/util/binance-account-id.util';
+export { BinanceWalletEnum } from './binance/enum/binance-wallet.enum';
+export { BinanceAssetEnum } from './binance/enum/binance-asset.enum';
+export { BinanceTransferSourceEnum } from './binance/enum/binance-transfer-source.enum';
+export { BINANCE_ASSET_INSTRUMENT_CODE } from './binance/constant/binance-asset-instrument-code.constant';
+export { BINANCE_RATE_LIMIT_MS } from './binance/constant/binance-rate-limit-ms.constant';
+export { BINANCE_NO_NUMERIC_CODE } from './binance/constant/binance-no-numeric-code.constant';
+export { BinanceCredentialsSchema } from './binance/constant/binance-credentials.schema';
+
+export type { BinanceCredentialsInterface } from './binance/constant/binance-credentials.schema';
+export type { BinanceAccountIdInterface } from './binance/interface/binance-account-id.interface';
+export type { BinanceTransferInterface } from './binance/interface/binance-transfer.interface';
+export type { BinanceAssetBalanceApiInterface } from './binance/interface/binance-asset-balance-api.schema';
+export type { BinanceServerTimeApiInterface } from './binance/interface/binance-server-time-api.schema';
+export type { BinanceDepositApiInterface } from './binance/interface/binance-deposit-api.schema';
+export type { BinanceWithdrawalApiInterface } from './binance/interface/binance-withdrawal-api.schema';
+export type { BinanceFiatOrderApiInterface } from './binance/interface/binance-fiat-order-api.schema';
+export type { BinanceC2cOrderApiInterface } from './binance/interface/binance-c2c-order-api.schema';
+export type { BinanceTradeApiInterface } from './binance/interface/binance-trade-api.schema';
+export type { BinanceConvertFlowApiInterface } from './binance/interface/binance-convert-api.schema';
+export type { BinanceEarnPositionApiInterface } from './binance/interface/binance-earn-position-api.schema';
+export type { BinanceLockedEarnPositionApiInterface } from './binance/interface/binance-locked-earn-position-api.schema';
+export type { BinanceEarnRewardApiInterface } from './binance/interface/binance-earn-reward-api.schema';
+
 export { ErsteFileClient } from './erste/client/erste-file.client';
 export { ersteMapper } from './erste/mapper/erste.mapper';
 export { ersteParser } from './erste/parser/erste.parser';

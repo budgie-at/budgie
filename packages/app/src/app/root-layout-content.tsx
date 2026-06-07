@@ -55,6 +55,7 @@ import { exchangeRatesSyncService } from '../exchange-rate/service/exchange-rate
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
+import { binanceSyncService } from '../sync/service/binance-sync.service';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../sync/service/sync-workload.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
@@ -73,6 +74,7 @@ const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVa
 const syncForegroundData = async (): Promise<void> => {
     await exchangeRatesSyncService.sync().catch(emptyFn);
     await monobankSyncService.sync().catch(emptyFn);
+    await binanceSyncService.sync().catch(emptyFn);
     await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
 };
 

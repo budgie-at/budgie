@@ -1284,10 +1284,12 @@ __metadata:
   resolution: "@budgie/bank-sync@workspace:packages/bank-sync"
   dependencies:
     "@budgie/logger": "workspace:*"
+    "@noble/hashes": "npm:^1.8.0"
     "@rnw-community/shared": "npm:^2.2.0"
     date-fns: "npm:^4.3.0"
     ky: "npm:^2.0.2"
     xlsx: "npm:^0.18.5"
+    zod: "npm:4.1.12"
   languageName: unknown
   linkType: soft
 
@@ -4368,6 +4370,13 @@ __metadata:
   version: 16.2.7
   resolution: "@next/swc-win32-x64-msvc@npm:16.2.7"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@noble/hashes@npm:1.8.0"
+  checksum: 10/474b7f56bc6fb2d5b3a42132561e221b0ea4f91e590f4655312ca13667840896b34195e2b53b7f097ec080a1fdd3b58d902c2a8d0fbdf51d2e238b53808a177e
   languageName: node
   linkType: hard
 

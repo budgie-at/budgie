@@ -1,5 +1,6 @@
+/* eslint-disable max-lines -- File owns a single multi-stage balance SQL/CTE pipeline that must stay together */
 import { Log } from '@budgie/logger';
-import { type SQL, and, eq, inArray, isNull, ne, sql } from 'drizzle-orm';
+import { type SQL, and, eq, inArray, isNull, notInArray, sql } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
@@ -27,6 +28,7 @@ import type { AccountBalanceEntityInterface } from '../entity/account-balance-en
 
 export class AccountBalanceRepository {
     private static readonly ACCOUNT_INSTRUMENT_ID_SQL = sql.raw('accounts.instrument_id');
+    private static readonly CRYPTO_ACCOUNT_TYPES = [AccountTypeEnum.CRYPTO, AccountTypeEnum.CRYPTO_SYNC];
 
     constructor(private db: DB) {}
     @Log(
@@ -68,10 +70,10 @@ export class AccountBalanceRepository {
 
         return this.db
             .select({
-                fiatTotal: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${fiatExchangeRateSql} ELSE 0 END), 0)`,
-                cryptoTotal: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${cryptoExchangeRateSql} ELSE 0 END), 0)`,
-                fiatCount: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)`,
-                cryptoCount: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)`
+                fiatTotal: sql<number>`COALESCE(SUM(CASE WHEN ${notInArray(AccountEntityTable.type, AccountBalanceRepository.CRYPTO_ACCOUNT_TYPES)} THEN (${balanceSql}) * ${fiatExchangeRateSql} ELSE 0 END), 0)`,
+                cryptoTotal: sql<number>`COALESCE(SUM(CASE WHEN ${inArray(AccountEntityTable.type, AccountBalanceRepository.CRYPTO_ACCOUNT_TYPES)} THEN (${balanceSql}) * ${cryptoExchangeRateSql} ELSE 0 END), 0)`,
+                fiatCount: sql<number>`COALESCE(SUM(CASE WHEN ${notInArray(AccountEntityTable.type, AccountBalanceRepository.CRYPTO_ACCOUNT_TYPES)} THEN 1 ELSE 0 END), 0)`,
+                cryptoCount: sql<number>`COALESCE(SUM(CASE WHEN ${inArray(AccountEntityTable.type, AccountBalanceRepository.CRYPTO_ACCOUNT_TYPES)} THEN 1 ELSE 0 END), 0)`
             })
             .from(AccountEntityTable)
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
@@ -83,7 +85,7 @@ export class AccountBalanceRepository {
             .from(AccountEntityTable)
             .where(
                 this.getActiveAccountWhereSql(
-                    eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO),
+                    inArray(AccountEntityTable.type, AccountBalanceRepository.CRYPTO_ACCOUNT_TYPES),
                     eq(AccountEntityTable.instrumentId, instrumentId)
                 )
             );
@@ -179,10 +181,10 @@ export class AccountBalanceRepository {
     }
 
     getTotalByAccountType(defaultInstrumentId: number, accountType: AccountTypeEnum) {
-        const exchangeRateSql =
-            accountType === AccountTypeEnum.CRYPTO
-                ? this.buildStrictExchangeRateConversionSql(defaultInstrumentId)
-                : this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
+        const isCryptoAccountType = AccountBalanceRepository.CRYPTO_ACCOUNT_TYPES.includes(accountType);
+        const exchangeRateSql = isCryptoAccountType
+            ? this.buildStrictExchangeRateConversionSql(defaultInstrumentId)
+            : this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
 
         return this.db
             .select({ total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
@@ -218,8 +220,20 @@ export class AccountBalanceRepository {
         await (tx ?? this.db).delete(AccountBalanceEntityTable);
     }
 
+    async truncateExceptBankAuthoritative(tx?: DB): Promise<void> {
+        const database = tx ?? this.db;
+        const bankAuthoritativeAccountIdsSql = database
+            .select({ id: AccountEntityTable.id })
+            .from(AccountEntityTable)
+            .where(eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO_SYNC));
+
+        await database
+            .delete(AccountBalanceEntityTable)
+            .where(notInArray(AccountBalanceEntityTable.accountId, bankAuthoritativeAccountIdsSql));
+    }
+
     private buildNetWorthExchangeRateConversionSql(defaultInstrumentId: number) {
-        return sql`CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN ${this.buildStrictExchangeRateConversionSql(defaultInstrumentId)} ELSE ${this.buildFiatExchangeRateConversionSql(defaultInstrumentId)} END`;
+        return sql`CASE WHEN ${inArray(AccountEntityTable.type, AccountBalanceRepository.CRYPTO_ACCOUNT_TYPES)} THEN ${this.buildStrictExchangeRateConversionSql(defaultInstrumentId)} ELSE ${this.buildFiatExchangeRateConversionSql(defaultInstrumentId)} END`;
     }
 
     private getActiveAccountWhereSql(...conditions: SQL[]) {
@@ -268,7 +282,9 @@ export class AccountBalanceRepository {
               )
         `;
 
-        return sql<number>`COALESCE((${latestAccountBalanceSql}), 0) + COALESCE((${transactionsSumSinceLastBalanceSql}), 0)`;
+        const ledgerSumSql = sql<number>`CASE WHEN ${sql.raw('accounts.type')} = ${AccountTypeEnum.CRYPTO_SYNC} THEN 0 ELSE COALESCE((${transactionsSumSinceLastBalanceSql}), 0) END`;
+
+        return sql<number>`COALESCE((${latestAccountBalanceSql}), 0) + ${ledgerSumSql}`;
     }
 
     private getTransactionsSumSql() {

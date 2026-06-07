@@ -10,6 +10,7 @@ import { TransactionEntryEntityTable } from '../../transaction-entry/table/trans
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
+import { ExternalSourceEnum } from '../enum/external-source.enum';
 import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
 
@@ -118,6 +119,12 @@ export class AccountRepository {
 
         return await this.db.query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
+        });
+    }
+
+    async findByExternalSource(externalSource: ExternalSourceEnum, tx?: DB): Promise<AccountEntityInterface[]> {
+        return await (tx ?? this.db).query.AccountEntityTable.findMany({
+            where: and(eq(AccountEntityTable.externalSource, externalSource), isNull(AccountEntityTable.deletedAt))
         });
     }
 

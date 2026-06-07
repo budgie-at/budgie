@@ -26,9 +26,11 @@
     },
     "dependencies": {
         "@budgie/logger": "workspace:*",
+        "@noble/hashes": "^1.8.0",
         "@rnw-community/shared": "^2.2.0",
         "date-fns": "^4.3.0",
         "ky": "^2.0.2",
-        "xlsx": "^0.18.5"
+        "xlsx": "^0.18.5",
+        "zod": "4.1.12"
     }
 }

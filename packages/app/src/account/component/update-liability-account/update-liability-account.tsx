@@ -51,7 +51,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     );
 
     const accountTypeVariant = ACCOUNT_COLOR[account.type];
-    const isBankSyncAccount = account.type === AccountTypeEnum.BANK_SYNC;
+    const isSyncedAccount = account.type === AccountTypeEnum.BANK_SYNC || account.type === AccountTypeEnum.CRYPTO_SYNC;
 
     if (!isDefined(instrument)) {
         return <EmptyScreen />;
@@ -73,7 +73,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
                     </View>
                 </View>
             </FormItem>
-            {isBankSyncAccount ? <AccountBankSyncCard accountId={account.id} /> : null}
+            {isSyncedAccount ? <AccountBankSyncCard accountId={account.id} /> : null}
             <IncludeInNetWorthField control={control} />
         </UpdateAccountScreen>
     );

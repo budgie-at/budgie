@@ -625,6 +625,25 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return null;
     }
 
+    async getEarliestTransactionTimeByExternalSource(externalSource: ExternalSourceEnum): Promise<Date | null> {
+        const result = await this.db
+            .select({ operatedAt: sql<number | null>`MIN(${TransactionEntityTable.operatedAt})` })
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, externalSource),
+                    ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)
+                )
+            );
+
+        const time = result[0]?.operatedAt;
+        if (isPositiveNumber(time)) {
+            return new Date(time * 1000);
+        }
+
+        return null;
+    }
+
     async archiveByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)

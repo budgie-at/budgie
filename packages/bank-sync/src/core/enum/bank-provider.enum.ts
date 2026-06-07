@@ -3,5 +3,6 @@ export enum BankProviderEnum {
     PRIVATBANK = 'PRIVATBANK',
     ERSTE = 'ERSTE',
     REVOLUT = 'REVOLUT',
-    WISE = 'WISE'
+    WISE = 'WISE',
+    BINANCE = 'BINANCE'
 }

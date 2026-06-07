@@ -90,10 +90,12 @@ export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterfa
     const sections: HomeSectionInterface[] = [];
 
     accountGroups.forEach((groupAccounts, type) => {
+        const isCryptoSection = type === AccountTypeEnum.CRYPTO || type === AccountTypeEnum.CRYPTO_SYNC;
+
         sections.push({
             kind: HomeSectionKindEnum.ACCOUNT_TYPE,
             type,
-            data: type === AccountTypeEnum.CRYPTO ? groupCryptoAccountsByInstrument(groupAccounts) : pairAccountsIntoRows(groupAccounts)
+            data: isCryptoSection ? groupCryptoAccountsByInstrument(groupAccounts) : pairAccountsIntoRows(groupAccounts)
         });
     });
 

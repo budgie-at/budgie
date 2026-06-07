@@ -13,6 +13,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { useCryptoFormatDigits } from '../../../i18n/hook/use-crypto-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
@@ -63,19 +64,27 @@ const getDisplayState = (transaction: TransactionWithRelationsEntityInterface) =
 export const TransactionAmount = ({ transaction }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
+    const formatCryptoDigits = useCryptoFormatDigits();
     const { type, isAdjustment, fromEntry, toEntry } = getDisplayState(transaction);
+
+    const formatEntryAmount = (entry: AggregatedEntry): string => {
+        const amount = convertFromMicroUnits(entry.amount);
+        const instrumentSymbol = entry.account.instrument.symbol;
+
+        if (entry.account.instrument.type === InstrumentTypeEnum.CRYPTO) {
+            return `${formatCryptoDigits(amount)} ${instrumentSymbol}`;
+        }
+
+        return formatDigits(amount, instrumentSymbol);
+    };
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return (
             <View className="gap-y-xxl items-end" testID={TransactionCardSelector.Amount(transaction.id)}>
-                <Text className={amountVariants({ type: 'default' })}>
-                    {formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol)}
-                </Text>
+                <Text className={amountVariants({ type: 'default' })}>{formatEntryAmount(fromEntry)}</Text>
                 <View className="flex-row items-center gap-x-xs">
                     <Icon icon={UserIconNameEnum.ArrowRight} className="text-secondary-foreground" size={12} />
-                    <Text className="text-secondary-foreground text-xxs">
-                        {formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol)}
-                    </Text>
+                    <Text className="text-secondary-foreground text-xxs">{formatEntryAmount(toEntry)}</Text>
                 </View>
             </View>
         );
@@ -88,9 +97,7 @@ export const TransactionAmount = ({ transaction }: Props) => {
 
         return (
             <View className="items-end" testID={amountTestID}>
-                <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
-                    {formatDigits(amount, fromEntry.account.instrument.symbol)}
-                </Text>
+                <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>{formatEntryAmount(fromEntry)}</Text>
                 {isCrossCurrency ? (
                     <ConvertedAmountLabel
                         instrumentId={fromEntry.account.instrument.id}
@@ -111,9 +118,7 @@ export const TransactionAmount = ({ transaction }: Props) => {
 
         return (
             <View className="items-end" testID={amountTestID}>
-                <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
-                    {formatDigits(amount, toEntry.account.instrument.symbol)}
-                </Text>
+                <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>{formatEntryAmount(toEntry)}</Text>
                 {isCrossCurrency ? (
                     <ConvertedAmountLabel
                         instrumentId={toEntry.account.instrument.id}

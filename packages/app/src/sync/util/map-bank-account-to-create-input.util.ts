@@ -9,7 +9,8 @@ const BANK_PROVIDER_TITLE: Record<BankProviderEnum, string> = {
     [BankProviderEnum.PRIVATBANK]: 'Privatbank',
     [BankProviderEnum.ERSTE]: 'Erste',
     [BankProviderEnum.REVOLUT]: 'Revolut',
-    [BankProviderEnum.WISE]: 'Wise'
+    [BankProviderEnum.WISE]: 'Wise',
+    [BankProviderEnum.BINANCE]: 'Binance'
 };
 /* eslint-enable lingui/no-unlocalized-strings */
 
@@ -48,6 +49,10 @@ export const generateBankAccountTitle = (bankAccount: BankAccountInterface): str
         return generateMonobankTitle(bankAccount);
     }
 
+    if (bankAccount.provider === BankProviderEnum.BINANCE && isNotEmptyString(bankAccount.title)) {
+        return bankAccount.title;
+    }
+
     return generateDefaultBankTitle(bankAccount);
 };
 
@@ -56,11 +61,14 @@ export const mapBankAccountToCreateInput = (
     instrumentId: number,
     provider: ExternalSourceEnum
 ): LiabilityAccountCreateInputInterface => {
-    const icon = bankAccount.type === BankAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark;
+    const isBinance = provider === ExternalSourceEnum.BINANCE;
+    const bankIcon = bankAccount.type === BankAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark;
+    const icon = isBinance ? UserIconNameEnum.Bitcoin : bankIcon;
+    const type = isBinance ? AccountTypeEnum.CRYPTO_SYNC : AccountTypeEnum.BANK_SYNC;
 
     return {
         title: generateBankAccountTitle(bankAccount),
-        type: AccountTypeEnum.BANK_SYNC,
+        type,
         icon,
         instrumentId,
         currentBalance: 0,

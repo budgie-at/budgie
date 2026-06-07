@@ -1,7 +1,9 @@
+import { InstrumentTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { useCryptoFormatDigits } from '../../../i18n/hook/use-crypto-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
@@ -9,21 +11,24 @@ import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-p
 interface Props {
     readonly amount: number;
     readonly currencySymbol: string;
+    readonly instrumentType?: InstrumentTypeEnum;
     readonly showEmptyState?: boolean;
     readonly onPress?: () => void;
     readonly testID?: string;
 }
 
-export const TransactionFeePill = ({ amount, currencySymbol, showEmptyState = false, onPress, testID }: Props) => {
+export const TransactionFeePill = ({ amount, currencySymbol, instrumentType, showEmptyState = false, onPress, testID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
+    const formatCryptoDigits = useCryptoFormatDigits();
     const hasFee = isPositiveNumber(amount);
 
     if (!hasFee && !showEmptyState) {
         return null;
     }
 
-    const formattedAmount = formatDigits(amount, currencySymbol);
+    const isCrypto = instrumentType === InstrumentTypeEnum.CRYPTO;
+    const formattedAmount = isCrypto ? `${formatCryptoDigits(amount)} ${currencySymbol}` : formatDigits(amount, currencySymbol);
     const label = hasFee ? t`Fee ${formattedAmount}` : t`Set fee`;
 
     return <TransactionMetaPill label={label} onPress={onPress} testID={testID} />;

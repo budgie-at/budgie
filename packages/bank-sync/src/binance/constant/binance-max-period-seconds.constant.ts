@@ -1,0 +1,1 @@
+export const BINANCE_MAX_PERIOD_SECONDS = 7776000;

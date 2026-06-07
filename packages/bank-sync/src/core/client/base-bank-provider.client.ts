@@ -23,7 +23,7 @@ const HTTP_STATUS_BAD_GATEWAY = 502;
 const HTTP_STATUS_SERVICE_UNAVAILABLE = 503;
 const HTTP_STATUS_GATEWAY_TIMEOUT = 504;
 
-const DEFAULT_RETRY_STATUS_CODES = [
+export const DEFAULT_RETRY_STATUS_CODES = [
     HTTP_STATUS_REQUEST_TIMEOUT,
     HTTP_STATUS_INTERNAL_SERVER_ERROR,
     HTTP_STATUS_BAD_GATEWAY,
@@ -31,6 +31,7 @@ const DEFAULT_RETRY_STATUS_CODES = [
     HTTP_STATUS_GATEWAY_TIMEOUT
 ];
 
+const DEFAULT_RETRY_METHODS = ['get'];
 const DEFAULT_RETRY_LIMIT = 3;
 const DEFAULT_TIMEOUT_MS = 30000;
 
@@ -38,6 +39,7 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
     protected readonly retryLimit: number;
     protected readonly timeoutMs: number;
     protected readonly retryStatusCodes: number[];
+    protected readonly retryMethods: string[];
 
     protected abstract readonly provider: BankProviderEnum;
     protected abstract readonly baseUrl: string;
@@ -48,11 +50,13 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
             readonly retryLimit?: number;
             readonly timeoutMs?: number;
             readonly retryStatusCodes?: number[];
+            readonly retryMethods?: string[];
         }
     ) {
         this.retryLimit = options?.retryLimit ?? DEFAULT_RETRY_LIMIT;
         this.timeoutMs = options?.timeoutMs ?? DEFAULT_TIMEOUT_MS;
         this.retryStatusCodes = options?.retryStatusCodes ?? DEFAULT_RETRY_STATUS_CODES;
+        this.retryMethods = options?.retryMethods ?? DEFAULT_RETRY_METHODS;
     }
 
     protected success<T>(data: T): BankSyncResultInterface<T> {
@@ -77,8 +81,11 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
                 timeout: this.timeoutMs,
                 retry: {
                     limit: this.retryLimit,
-                    methods: ['get'],
+                    methods: this.retryMethods,
                     statusCodes: this.retryStatusCodes
+                },
+                hooks: {
+                    afterResponse: [state => void this.onResponseHeaders(state.response.headers)]
                 }
             }).json<T>();
             syncLogger.log('http:response:ok', {
@@ -92,6 +99,10 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
         } catch (error) {
             return this.handleError<T>(error);
         }
+    }
+
+    protected onResponseHeaders(_headers: Headers): void {
+        return void 0;
     }
 
     // eslint-disable-next-line max-statements -- Instrumented with diagnostic logs (temporary)

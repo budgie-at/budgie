@@ -67,7 +67,7 @@ const addNetWorthAssetTotals = (
 
     summary.netWorth += convertedBalance;
 
-    if (accountType === AccountTypeEnum.CRYPTO) {
+    if (accountType === AccountTypeEnum.CRYPTO || accountType === AccountTypeEnum.CRYPTO_SYNC) {
         summary.cryptoCount += 1;
         summary.cryptoTotal += convertedBalance;
 
