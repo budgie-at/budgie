@@ -1,22 +1,30 @@
 import { AmountRangeInterface } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
+import { KeyboardStickyView } from 'react-native-keyboard-controller';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { AmountInput } from '../@generic/component/amount-input/amount-input';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
-import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
 import { FormItem } from '../@generic/component/form-item/form-item';
-import { FormLayoutGroup } from '../@generic/component/form-layout-group/form-layout-group';
+import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { useSettingsContext } from '../settings/context/settings.context';
+import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionAmountFilterModal } from '../transaction/context/transaction-amount-filter-modal.context';
 
+const CONTENT_TOP_SPACE = 96;
+const MIN_BOTTOM_SPACING = 16;
+const KEYBOARD_STICKY_OFFSET = { closed: 0, opened: 12 };
+
 export default function TransactionAmountFilterModal() {
     const { t } = useLingui();
+    const { bottom } = useSafeAreaInsets();
+    const { backgroundColor } = useFormsheetListStyles();
     const { defaultInstrument } = useSettingsContext();
     const [, resolveTransactionAmountFilter, currentParams] = useTransactionAmountFilterModal();
 
@@ -31,15 +39,26 @@ export default function TransactionAmountFilterModal() {
         resolveTransactionAmountFilter({ value });
     };
 
+    const handleClose = () => void resolveTransactionAmountFilter(null);
+
     const hasSelected = isPositiveNumber(fromValue) || isPositiveNumber(toValue);
     const applyLabel = hasSelected ? t`Show selected range` : t`Show all amounts`;
+    const contentStyle = { paddingTop: CONTENT_TOP_SPACE };
+    const drawerStyle = { backgroundColor, paddingBottom: Math.max(bottom, MIN_BOTTOM_SPACING) };
 
     return (
         <FilterSheet>
-            <View className="flex-1 justify-end px-xl pb-lg">
-                <FormLayoutGroup variant="horizontal">
-                    <FormItem className="flex-1" label={t`From`}>
+            <TransactionFilterSelectorHeader title={t`Filter by amount`} onClose={handleClose} />
+
+            <View className="flex-1 px-7xl" style={contentStyle}>
+                <Text className="text-secondary-foreground text-sm mb-7xl">
+                    <Trans>Show only transactions with a total inside this range, in your default currency.</Trans>
+                </Text>
+
+                <View className="gap-y-4xl">
+                    <FormItem label={t`From`}>
                         <AmountInput
+                            size="lg"
                             value={fromValue}
                             onChangeValue={setFromValue}
                             valuePrefix={defaultInstrument.symbol}
@@ -49,8 +68,9 @@ export default function TransactionAmountFilterModal() {
                         />
                     </FormItem>
 
-                    <FormItem className="flex-1" label={t`To`}>
+                    <FormItem label={t`To`}>
                         <AmountInput
+                            size="lg"
                             value={toValue}
                             onChangeValue={setToValue}
                             valuePrefix={defaultInstrument.symbol}
@@ -58,12 +78,14 @@ export default function TransactionAmountFilterModal() {
                             testID={TransactionFiltersSelector.AmountToInput}
                         />
                     </FormItem>
-                </FormLayoutGroup>
+                </View>
             </View>
 
-            <FilterSheetDrawer>
-                <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelector.AmountApplyButton} />
-            </FilterSheetDrawer>
+            <KeyboardStickyView offset={KEYBOARD_STICKY_OFFSET} className="absolute inset-x-0 bottom-0">
+                <View className="border-t border-t-secondary-corner px-xl pb-lg pt-lg" style={drawerStyle}>
+                    <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelector.AmountApplyButton} />
+                </View>
+            </KeyboardStickyView>
         </FilterSheet>
     );
 }

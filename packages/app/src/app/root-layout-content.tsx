@@ -25,7 +25,7 @@ import { CONVERT_TO_REFUND_MODAL_OPTIONS } from '../@generic/constant/convert-to
 import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
-import { COMPACT_FILTER_SHEET_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
+import { AMOUNT_FILTER_SHEET_OPTIONS, COMPACT_FILTER_SHEET_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
 import { RULE_FORM_MODAL_OPTIONS } from '../@generic/constant/rule-form-modal-options.constant';
@@ -174,7 +174,7 @@ export const RootLayoutContent = () => {
                                                                 <Stack.Screen name="date-filter" options={DATE_FILTER_SHEET_OPTIONS} />
                                                                 <Stack.Screen
                                                                     name="transaction-amount-filter"
-                                                                    options={COMPACT_FILTER_SHEET_OPTIONS}
+                                                                    options={AMOUNT_FILTER_SHEET_OPTIONS}
                                                                 />
                                                                 <Stack.Screen
                                                                     name="transaction-category-filter"

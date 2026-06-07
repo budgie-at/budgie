@@ -1303,6 +1303,10 @@ msgstr "Заповніть деталі рахунку"
 msgid "Filter accounts"
 msgstr "Фільтрувати рахунки"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Filter by amount"
+msgstr "Фільтрувати за сумою"
+
 #: src/app/transaction-category-filter.tsx
 msgid "Filter categories"
 msgstr "Фільтрувати категорії"
@@ -2469,6 +2473,10 @@ msgstr "Показати всі дати"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show Cents"
 msgstr "Показати копійки"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Show only transactions with a total inside this range, in your default currency."
+msgstr "Показувати лише транзакції, сума яких потрапляє в цей діапазон, у вашій валюті за замовчуванням."
 
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx

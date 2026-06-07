@@ -1303,6 +1303,10 @@ msgstr "Füllen Sie die Kontodetails aus"
 msgid "Filter accounts"
 msgstr "Konten filtern"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Filter by amount"
+msgstr "Nach Betrag filtern"
+
 #: src/app/transaction-category-filter.tsx
 msgid "Filter categories"
 msgstr "Kategorien filtern"
@@ -2469,6 +2473,10 @@ msgstr "Alle Daten anzeigen"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show Cents"
 msgstr "Cent anzeigen"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Show only transactions with a total inside this range, in your default currency."
+msgstr "Nur Transaktionen anzeigen, deren Gesamtbetrag in dieser Spanne liegt – in deiner Standardwährung."
 
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx
