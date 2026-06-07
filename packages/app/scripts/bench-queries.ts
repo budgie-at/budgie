@@ -12,6 +12,9 @@ interface BenchInterface {
     readonly params?: readonly unknown[];
 }
 
+const NOW = Math.floor(Date.now() / 1000);
+const RECENT_START = NOW - 30 * 24 * 60 * 60;
+
 const BENCHES: readonly BenchInterface[] = [
     {
         name: 'transaction_list_first_20',
@@ -19,12 +22,88 @@ const BENCHES: readonly BenchInterface[] = [
               ORDER BY t.operated_at DESC, t.id DESC LIMIT 20`
     },
     {
+        name: 'transaction_list_first_100',
+        sql: `SELECT t.* FROM transactions t WHERE t.deleted_at IS NULL
+              ORDER BY t.operated_at DESC, t.id DESC LIMIT 100`
+    },
+    {
+        name: 'transaction_list_first_500',
+        sql: `SELECT t.* FROM transactions t WHERE t.deleted_at IS NULL
+              ORDER BY t.operated_at DESC, t.id DESC LIMIT 500`
+    },
+    {
         name: 'count_all_active',
         sql: `SELECT COUNT(*) AS c FROM transactions WHERE deleted_at IS NULL`
     },
     {
+        name: 'count_uncategorized_recent',
+        sql: `SELECT COUNT(DISTINCT t.id) AS c
+              FROM transactions t
+              INNER JOIN transaction_entries te ON te.transaction_id = t.id
+              WHERE t.deleted_at IS NULL
+                AND t.type IN ('INCOME', 'EXPENSE')
+                AND t.operated_at >= ?
+                AND te.category_id IS NULL
+                AND te.deleted_at IS NULL`,
+        params: [RECENT_START] as const
+    },
+    {
         name: 'count_pending_embedding',
         sql: `SELECT COUNT(*) AS c FROM transactions WHERE needs_embedding = 1 AND deleted_at IS NULL`
+    },
+    {
+        name: 'analytics_overview_recent',
+        sql: `SELECT
+                  COALESCE(SUM(CASE
+                      WHEN te.type = 'DEBIT' AND t.type != 'TRANSFER' AND a.type != 'DEBT'
+                      THEN te.amount ELSE 0
+                  END), 0) AS income,
+                  COALESCE(SUM(CASE
+                      WHEN te.type = 'CREDIT' AND t.type != 'TRANSFER' AND a.type != 'DEBT'
+                      THEN te.amount ELSE 0
+                  END), 0) AS expense
+              FROM transaction_entries te
+              INNER JOIN transactions t ON te.transaction_id = t.id
+              INNER JOIN accounts a ON te.account_id = a.id
+              WHERE t.deleted_at IS NULL
+                AND te.deleted_at IS NULL
+                AND t.operated_at >= ?`,
+        params: [RECENT_START] as const
+    },
+    {
+        name: 'analytics_expense_by_category_recent',
+        sql: `SELECT c.id, c.title, COALESCE(SUM(te.amount), 0) AS amount
+              FROM transaction_entries te
+              INNER JOIN transactions t ON te.transaction_id = t.id
+              INNER JOIN accounts a ON te.account_id = a.id
+              LEFT JOIN categories c ON te.category_id = c.id
+              WHERE t.deleted_at IS NULL
+                AND te.deleted_at IS NULL
+                AND t.operated_at >= ?
+                AND t.type = 'EXPENSE'
+                AND te.type = 'CREDIT'
+                AND a.type != 'DEBT'
+              GROUP BY te.category_id
+              ORDER BY amount DESC`,
+        params: [RECENT_START] as const
+    },
+    {
+        name: 'analytics_expense_by_tag_recent',
+        sql: `SELECT tag.id, tag.title, COALESCE(SUM(te.amount), 0) AS amount
+              FROM transaction_entries te
+              INNER JOIN transactions t ON te.transaction_id = t.id
+              INNER JOIN accounts a ON te.account_id = a.id
+              LEFT JOIN transaction_tags tt ON t.id = tt.transaction_id
+              LEFT JOIN tags tag ON tt.tag_id = tag.id
+              WHERE t.deleted_at IS NULL
+                AND te.deleted_at IS NULL
+                AND t.operated_at >= ?
+                AND t.type = 'EXPENSE'
+                AND te.type = 'CREDIT'
+                AND a.type != 'DEBT'
+              GROUP BY tag.id
+              ORDER BY amount DESC`,
+        params: [RECENT_START] as const
     },
     {
         name: 'pending_merchant_contexts_15',

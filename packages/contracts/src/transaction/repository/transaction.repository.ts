@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { Log } from '@budgie/logger';
-import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -31,6 +31,11 @@ import type { TransactionUpdateInputInterface } from '../input/transaction-updat
 import type { ConsolidationSourceRowInterface } from '../interface/consolidation-source-row.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
+    private static readonly NON_INDEXABLE_EMBEDDING_TYPES: TransactionTypeEnum[] = [
+        TransactionTypeEnum.TRANSFER,
+        TransactionTypeEnum.ADJUSTMENT
+    ];
+
     private entriesWithMccCategoryRelations = {
         [TransactionAssociationEnum.ENTRIES]: {
             with: { [TransactionEntryAssociationEnum.MCC_CATEGORY]: true }
@@ -486,6 +491,24 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     async markAllForEmbedding(tx?: DB): Promise<void> {
         await (tx ?? this.db).update(TransactionEntityTable).set({ needsEmbedding: true }).where(isNull(TransactionEntityTable.deletedAt));
+    }
+
+    async markForEmbeddingByIds(ids: number[], tx?: DB): Promise<void> {
+        if (isEmptyArray(ids)) {
+            return;
+        }
+
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ needsEmbedding: true })
+            .where(
+                and(
+                    inArray(TransactionEntityTable.id, ids),
+                    eq(TransactionEntityTable.needsEmbedding, false),
+                    isNull(TransactionEntityTable.deletedAt),
+                    notInArray(TransactionEntityTable.type, TransactionRepository.NON_INDEXABLE_EMBEDDING_TYPES)
+                )
+            );
     }
 
     async clearNeedsEmbedding(ids: number[], tx?: DB): Promise<void> {

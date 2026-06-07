@@ -1,69 +1,25 @@
-import { AccountTypeEnum } from '@budgie/contracts';
-import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
-import { useSQLiteContext } from 'expo-sqlite';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
-
-import { AnimatedSectionList } from '../../@generic/component/animated-section-list/animated-section-list';
 import { CollapsibleHeader } from '../../@generic/component/collapsible-header/collapsible-header';
-import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../@generic/constant/floating-tab-bar.constant';
 import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
-import { AccountGridItem } from '../../account/component/account-grid-item/account-grid-item';
-import { AccountSectionHeader } from '../../account/component/account-section-header/account-section-header';
-import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
-import { BankProviderSectionHeader } from '../../account/component/bank-provider-section-header/bank-provider-section-header';
-import { CollapsibleNetWorthHeaderScrollSpacer } from '../../account/component/collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
-import { CryptoCurrencyGroupCard } from '../../account/component/crypto-currency-group-card/crypto-currency-group-card';
-import { DebtSectionHeader } from '../../account/component/debt-section-header/debt-section-header';
-import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../account/constant/collapsible-net-worth-header-scroll-spacer.constant';
-import { AccountRowInterface } from '../../account/interface/account-row.interface';
-import { CryptoCurrencyGroupInterface } from '../../account/interface/crypto-currency-group.interface';
-import { useAccountsWithBankSyncQuery } from '../../account/query/use-accounts-with-bank-sync.query';
-import { isBankProviderSection } from '../../account/type-guard/is-bank-provider-section.type-guard';
-import { isCryptoCurrencyGroup } from '../../account/type-guard/is-crypto-currency-group.type-guard';
-import { isDebtSection } from '../../account/type-guard/is-debt-section.type-guard';
-import { HomeSectionInterface, buildHomePageSections } from '../../account/utils/build-home-page-sections.util';
+import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
+import { useHomePageDataQuery } from '../../account/query/use-home-page-data.query';
+import { buildHomePageSections } from '../../account/utils/build-home-page-sections.util';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
-const getSectionAccountType = (section: HomeSectionInterface): AccountTypeEnum => {
-    if (isBankProviderSection(section)) {
-        return AccountTypeEnum.BANK_SYNC;
-    }
-
-    if (isDebtSection(section)) {
-        return AccountTypeEnum.DEBT;
-    }
-
-    return section.type;
-};
-
-// eslint-disable-next-line max-statements -- Screen orchestration component with 7 hooks and multiple render helpers
 export default function HomePage() {
-    const { accounts } = useAccountsWithBankSyncQuery();
+    const { accounts, balanceSummary } = useHomePageDataQuery();
     const { bottom } = useSafeAreaInsets();
     const language = useSetting('language');
     const isBudgetWidgetEnabled = useSetting('isBudgetWidgetEnabled');
     const focusKey = useFocusKey();
 
-    const db = useSQLiteContext();
-    useDrizzleStudio(db);
-
     const scrollY = useSharedValue(0);
-
-    const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom;
-    const contentContainerStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20 };
-    const emptyStateContentStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20, flexGrow: 1 };
-
     const activeAccounts = accounts.filter(account => account.isActive);
     const sections = buildHomePageSections(activeAccounts);
-    const listFooterComponent =
-        activeAccounts.length > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
-            <CollapsibleNetWorthHeaderScrollSpacer />
-        ) : null;
     const budgetWidgetRemountKey = `${language}-${isBudgetWidgetEnabled ? 'enabled' : 'disabled'}-${focusKey}`;
     // Remount the widget on key settings changes: the frozen Home tab plus the memoized list header otherwise keeps stale content.
     const listHeaderComponent = (
@@ -72,58 +28,25 @@ export default function HomePage() {
         </View>
     );
 
-    const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => {
-        if (isBankProviderSection(section)) {
-            return <BankProviderSectionHeader provider={section.provider} />;
-        }
-
-        if (isDebtSection(section)) {
-            return <DebtSectionHeader sectionKind={section.kind} />;
-        }
-
-        return <AccountSectionHeader type={section.type} />;
-    };
-
-    const renderItem = ({ item, section }: { item: AccountRowInterface | CryptoCurrencyGroupInterface; section: HomeSectionInterface }) => {
-        if (isCryptoCurrencyGroup(item)) {
-            return <CryptoCurrencyGroupCard group={item} />;
-        }
-
-        const accountType = getSectionAccountType(section);
-
-        return (
-            <View className="flex-row mb-3">
-                <AccountGridItem account={item.left} type={accountType} isLeft />
-                {item.right ? <AccountGridItem account={item.right} type={accountType} isLeft={false} /> : <View className="flex-1" />}
-            </View>
-        );
-    };
-
-    const keyExtractor = (item: AccountRowInterface | CryptoCurrencyGroupInterface) =>
-        isCryptoCurrencyGroup(item) ? `crypto-${item.instrument.id}` : String(item.left.id);
-
     return (
         <View className="flex-1 bg-background">
-            <CollapsibleHeader scrollY={scrollY} />
+            <CollapsibleHeader
+                scrollY={scrollY}
+                netWorth={balanceSummary.netWorth}
+                fiatTotal={balanceSummary.fiatTotal}
+                cryptoTotal={balanceSummary.cryptoTotal}
+                fiatCount={balanceSummary.fiatCount}
+                cryptoCount={balanceSummary.cryptoCount}
+            />
 
-            {isNotEmptyArray(sections) ? (
-                <AnimatedSectionList<AccountRowInterface | CryptoCurrencyGroupInterface, HomeSectionInterface>
-                    scrollY={scrollY}
-                    sections={sections}
-                    renderSectionHeader={renderSectionHeader}
-                    renderItem={renderItem}
-                    keyExtractor={keyExtractor}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={contentContainerStyle}
-                    ListHeaderComponent={listHeaderComponent}
-                    ListFooterComponent={listFooterComponent}
-                />
-            ) : (
-                <ScrollView contentContainerStyle={emptyStateContentStyle} showsVerticalScrollIndicator={false}>
-                    {listHeaderComponent}
-                    <AccountsEmptyState />
-                </ScrollView>
-            )}
+            <HomeSectionsList
+                scrollY={scrollY}
+                sections={sections}
+                activeAccountCount={activeAccounts.length}
+                bottomInset={bottom}
+                balanceSummary={balanceSummary}
+                listHeaderComponent={listHeaderComponent}
+            />
         </View>
     );
 }

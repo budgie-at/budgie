@@ -11,6 +11,7 @@ import { useQuickImport } from '../../../sync/hook/use-quick-import.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 
 interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' | 'icon'> {
+    readonly balance: number;
     readonly bankSync: BankSyncEntityInterface | null;
     readonly className?: string;
     readonly instrumentSymbol: string;
@@ -27,7 +28,7 @@ const syncStatusVariants = cva('absolute bottom-3 right-3 z-10 h-2 w-2 rounded-f
 });
 
 export const BankSyncAccountCard = (props: Props) => {
-    const { id, title, icon, className, instrumentSymbol, bankSync } = props;
+    const { id, title, icon, balance, className, instrumentSymbol, bankSync } = props;
 
     const [, hapticImpact] = useVibration();
 
@@ -51,6 +52,7 @@ export const BankSyncAccountCard = (props: Props) => {
             id={id}
             title={title}
             icon={icon}
+            balance={balance}
             instrumentSymbol={instrumentSymbol}
             className={className}
             onLongPress={longPressHandler}

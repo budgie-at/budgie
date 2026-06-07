@@ -14,10 +14,11 @@ env:
       commands:
           - tapOn: 'Open'
 
-- extendedWaitUntil:
-      visible:
-          id: 'SettingsPage.Container'
-      timeout: 3000
+- runFlow:
+      when:
+          notVisible:
+              id: 'SettingsPage.Container'
+      file: ../navigation/navigate-to-settings.flow.yaml
 
 - scrollUntilVisible:
       element:

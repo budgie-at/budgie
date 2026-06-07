@@ -7,12 +7,19 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useAccountAssetClassTotalsQuery } from '../../query/use-account-asset-class-totals.query';
 
-export const NetWorthAssetChips = () => {
+import { NetWorthAssetChipsSelector } from './net-worth-asset-chips.selector';
+
+interface Props {
+    readonly fiatTotal: number;
+    readonly cryptoTotal: number;
+    readonly fiatCount: number;
+    readonly cryptoCount: number;
+}
+
+export const NetWorthAssetChips = ({ fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
-    const { fiatTotal, cryptoTotal, fiatCount, cryptoCount } = useAccountAssetClassTotalsQuery();
 
     const shouldShowChips = isPositiveNumber(fiatCount) && isPositiveNumber(cryptoCount);
 
@@ -24,13 +31,19 @@ export const NetWorthAssetChips = () => {
     const formattedCryptoTotal = formatDigits(cryptoTotal, defaultInstrument.symbol);
 
     return (
-        <View className="flex-row gap-x-sm mt-lg">
-            <View className="flex-row items-center gap-x-xs rounded-full bg-secondary-background border border-secondary-corner px-md py-xs">
+        <View className="flex-row gap-x-sm mt-lg" testID={NetWorthAssetChipsSelector.Container}>
+            <View
+                className="flex-row items-center gap-x-xs rounded-full bg-secondary-background border border-secondary-corner px-md py-xs"
+                testID={NetWorthAssetChipsSelector.Fiat}
+            >
                 <Icon icon={UserIconNameEnum.Banknote} size={14} className="text-secondary-foreground" />
                 <ProtectedText className="text-primary text-xs font-medium">{formattedFiatTotal}</ProtectedText>
             </View>
 
-            <View className="flex-row items-center gap-x-xs rounded-full bg-secondary-background border border-secondary-corner px-md py-xs">
+            <View
+                className="flex-row items-center gap-x-xs rounded-full bg-secondary-background border border-secondary-corner px-md py-xs"
+                testID={NetWorthAssetChipsSelector.Crypto}
+            >
                 <Icon icon={UserIconNameEnum.Coins} size={14} className="text-warning-foreground" />
                 <ProtectedText className="text-primary text-xs font-medium">{formattedCryptoTotal}</ProtectedText>
             </View>

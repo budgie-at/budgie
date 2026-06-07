@@ -79,7 +79,7 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
         expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledWith(TransferConsolidationDrainReasonEnum.FILE_IMPORT);
     });
 
-    it('does not enqueue consolidation when a re-import introduces no new transactions', async () => {
+    it('enqueues consolidation after a re-import so the drainer can process existing confident candidates', async () => {
         seedPrivatbankAccount();
         const syncService = buildPrivatbankSyncService([buildPrivatbankTransaction()]);
 
@@ -88,6 +88,7 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
 
         await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
-        expect(transferConsolidationDrainerService.enqueue).not.toHaveBeenCalled();
+        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledTimes(1);
+        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledWith(TransferConsolidationDrainReasonEnum.FILE_IMPORT);
     });
 });

@@ -208,15 +208,29 @@
         {
             "idx": 29,
             "version": "6",
-            "when": 1780566100000,
-            "tag": "0029_add_budget_planning",
+            "when": 1780671600000,
+            "tag": "0029_add_instrument_market_data_jobs",
             "breakpoints": true
         },
         {
             "idx": 30,
             "version": "6",
+            "when": 1780738800000,
+            "tag": "0030_seed_top_crypto_market_prices",
+            "breakpoints": true
+        },
+        {
+            "idx": 31,
+            "version": "6",
+            "when": 1780752110000,
+            "tag": "0031_add_budget_planning",
+            "breakpoints": true
+        },
+        {
+            "idx": 32,
+            "version": "6",
             "when": 1780752111000,
-            "tag": "0030_add_budget_other_limit",
+            "tag": "0032_add_budget_other_limit",
             "breakpoints": true
         }
     ]

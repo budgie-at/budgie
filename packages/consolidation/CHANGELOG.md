@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.36.1](https://github.com/budgie-at/budgie/compare/v5.36.0...v5.36.1) (2026-06-07)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+# [5.36.0](https://github.com/budgie-at/budgie/compare/v5.35.6...v5.36.0) (2026-06-07)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+## [5.35.5](https://github.com/budgie-at/budgie/compare/v5.35.4...v5.35.5) (2026-06-06)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+## [5.35.4](https://github.com/budgie-at/budgie/compare/v5.35.3...v5.35.4) (2026-06-06)
+
+### Bug Fixes
+
+- consolidate ATM withdrawals with fees ([e416598](https://github.com/budgie-at/budgie/commit/e4165988c96d0e55adc4679b47db142d3f8a8508))
+
+## [5.35.3](https://github.com/budgie-at/budgie/compare/v5.35.2...v5.35.3) (2026-06-06)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+## [5.35.1](https://github.com/budgie-at/budgie/compare/v5.35.0...v5.35.1) (2026-06-06)
+
+**Note:** Version bump only for package @budgie/consolidation
+
 # [5.35.0](https://github.com/budgie-at/budgie/compare/v5.34.1...v5.35.0) (2026-06-05)
 
 **Note:** Version bump only for package @budgie/consolidation

@@ -32,13 +32,14 @@ executionOrder:
         - 26.rules-application.flow
         - 27.mcc-default-category.flow
         - 28.rules-search.flow
-        - 29.budget.flow
-        - 30.budget-multi-currency.flow
-        - 31.budget-category-readd.flow
-        - 32.budget-over-allocation.flow
-        - 33.budget-transaction-update.flow
-        - 34.budget-multi-currency-category.flow
-        - 35.budget-refund-netting.flow
+        - 29.crypto-account-and-market.flow
+        - 31.budget.flow
+        - 32.budget-multi-currency.flow
+        - 33.budget-category-readd.flow
+        - 34.budget-over-allocation.flow
+        - 35.budget-transaction-update.flow
+        - 36.budget-multi-currency-category.flow
+        - 37.budget-refund-netting.flow
 
 platform:
     ios:
