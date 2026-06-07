@@ -2,47 +2,76 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { ConsolidationFamilyBatchBuilderService } from './consolidation-family-batch-builder.service';
-
-import type { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
-import type { ConsolidationCandidateGroupsInterface } from '../interface/consolidation-candidate-groups.interface';
-import type { ConsolidationFamilyBatchInterface } from '../interface/consolidation-family-batch.interface';
-import type { ExistingTransferIncomeDuplicateCandidateInterface } from '@budgie/contracts';
+import type { ConsolidationFamilyRegistryService } from './consolidation-family-registry.service';
+import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
+import type { ConsolidationScanScopeInterface, ExistingTransferIncomeDuplicateCandidateInterface } from '@budgie/contracts';
 
 export class ConsolidationAutoCandidateService {
-    private static readonly YIELD_EVERY_CANDIDATES = 10;
+    constructor(private readonly consolidationFamilyRegistryService: ConsolidationFamilyRegistryService) {}
 
-    private readonly consolidationFamilyBatchBuilderService: ConsolidationFamilyBatchBuilderService;
+    @Log(
+        (scope, onProgress) => `enter scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))}`,
+        (result, scope, onProgress) =>
+            `done scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
+        (error, scope, onProgress) =>
+            `throw scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
+    )
+    async process(
+        scope: ConsolidationScanScopeInterface | null = null,
+        onProgress?: (processedCandidateGroupCount: number) => void
+    ): Promise<ConsolidationResultInterface> {
+        const result = await this.consolidationFamilyRegistryService.buildFamilies().reduce(
+            async (resultPromise, family) => {
+                const currentResult = await resultPromise;
+                const familyResult = await family.process({
+                    blockedSourceTransactionIds: currentResult.blockedSourceTransactionIds,
+                    onProgress: processedCount => {
+                        const processedCandidateGroupCount = currentResult.processedCandidateGroupCount + processedCount;
+                        onProgress?.(processedCandidateGroupCount);
+                    },
+                    scope
+                });
+                const blockedSourceTransactionIds = new Set(currentResult.blockedSourceTransactionIds);
+                this.addBlockedSourceTransactionIds(blockedSourceTransactionIds, familyResult.blockedSourceTransactionIds);
 
-    constructor(
-        private readonly consolidationExecutorService: ConsolidationExecutorService,
-        private readonly yieldControl: () => Promise<void>
-    ) {
-        this.consolidationFamilyBatchBuilderService = new ConsolidationFamilyBatchBuilderService(
-            consolidationExecutorService,
-            (candidates, consolidate) => this.processCandidates(candidates, consolidate)
+                return {
+                    blockedSourceTransactionIds,
+                    consolidated: currentResult.consolidated + familyResult.consolidated,
+                    found: currentResult.found + familyResult.found,
+                    processedCandidateGroupCount: currentResult.processedCandidateGroupCount + familyResult.found
+                };
+            },
+            Promise.resolve({ blockedSourceTransactionIds: new Set<number>(), consolidated: 0, found: 0, processedCandidateGroupCount: 0 })
         );
+
+        return { found: result.found, consolidated: result.consolidated };
     }
 
     @Log(
-        (candidates, onProgress) =>
-            `enter candidateCount=${ConsolidationAutoCandidateService.countCandidateGroupItems(candidates)} hasOnProgress=${String(isDefined(onProgress))}`,
-        (result, candidates, onProgress) =>
-            `done candidateCount=${ConsolidationAutoCandidateService.countCandidateGroupItems(candidates)} hasOnProgress=${String(isDefined(onProgress))} consolidated=${result}`,
-        (error, candidates, onProgress) =>
-            `throw candidateCount=${ConsolidationAutoCandidateService.countCandidateGroupItems(candidates)} hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
+        scope => `enter scopeIdCount=${scope?.transactionIds.length ?? 0}`,
+        (result, scope) => `done scopeIdCount=${scope?.transactionIds.length ?? 0} count=${result}`,
+        (error, scope) => `throw scopeIdCount=${scope?.transactionIds.length ?? 0} error=${getErrorMessage(error)}`
     )
-    async processGroups(
-        candidates: ConsolidationCandidateGroupsInterface,
-        onProgress?: (processedCandidateGroupCount: number) => void
-    ): Promise<number> {
-        let processedCandidateGroupCount = 0;
-        const publishProgress = (processedCount: number) => {
-            processedCandidateGroupCount += processedCount;
-            onProgress?.(processedCandidateGroupCount);
-        };
+    async count(scope: ConsolidationScanScopeInterface | null = null): Promise<number> {
+        const result = await this.consolidationFamilyRegistryService.buildFamilies().reduce(
+            async (resultPromise, family) => {
+                const currentResult = await resultPromise;
+                const preview = await family.preview({
+                    blockedSourceTransactionIds: currentResult.blockedSourceTransactionIds,
+                    scope
+                });
+                const blockedSourceTransactionIds = new Set(currentResult.blockedSourceTransactionIds);
+                this.addBlockedSourceTransactionIds(blockedSourceTransactionIds, preview.blockedSourceTransactionIds);
 
-        return this.processFamilyBatches(this.consolidationFamilyBatchBuilderService.buildBatches(candidates), publishProgress);
+                return {
+                    blockedSourceTransactionIds,
+                    found: currentResult.found + preview.found
+                };
+            },
+            Promise.resolve({ blockedSourceTransactionIds: new Set<number>(), found: 0 })
+        );
+
+        return result.found;
     }
 
     @Log(
@@ -53,78 +82,12 @@ export class ConsolidationAutoCandidateService {
     async processExistingTransferIncomeDuplicateCandidates(
         candidates: ExistingTransferIncomeDuplicateCandidateInterface[]
     ): Promise<number> {
-        return this.processCandidates(candidates, candidate =>
-            this.consolidationExecutorService.consolidateExistingTransferIncomeDuplicate(candidate)
-        );
+        return this.consolidationFamilyRegistryService.buildExistingTransferIncomeDuplicateFamily().processCandidateList(candidates);
     }
 
-    countCandidates(candidates: ConsolidationCandidateGroupsInterface): number {
-        return this.consolidationFamilyBatchBuilderService.countCandidates(candidates);
-    }
-
-    private async processFamilyBatches(
-        batches: ConsolidationFamilyBatchInterface[],
-        onProgress: (processedCandidateGroupCount: number) => void
-    ): Promise<number> {
-        return batches.reduce(async (consolidatedPromise, batch) => {
-            const consolidated = await consolidatedPromise;
-            const familyConsolidated = await this.profileConsolidationBatch(batch, onProgress);
-
-            return consolidated + familyConsolidated;
-        }, Promise.resolve(0));
-    }
-
-    private async profileConsolidationBatch(
-        batch: ConsolidationFamilyBatchInterface,
-        onProgress?: (processedCandidateGroupCount: number) => void
-    ): Promise<number> {
-        if (batch.candidateCount === 0) {
-            onProgress?.(batch.candidateCount);
-
-            return 0;
+    private addBlockedSourceTransactionIds(blockedSourceTransactionIds: Set<number>, sourceTransactionIds: number[]): void {
+        for (const sourceTransactionId of sourceTransactionIds) {
+            blockedSourceTransactionIds.add(sourceTransactionId);
         }
-
-        await this.yieldControl();
-        const consolidated = await batch.process();
-        onProgress?.(batch.candidateCount);
-        await this.yieldControl();
-
-        return consolidated;
-    }
-
-    private async processCandidates<T>(candidates: T[], consolidate: (candidate: T) => Promise<boolean>): Promise<number> {
-        return candidates.reduce(async (consolidatedPromise, candidate, candidateIndex) => {
-            const consolidated = await consolidatedPromise;
-            const success = await consolidate(candidate).then(
-                result => result,
-                () => false
-            );
-            await this.yieldBetweenCandidates(candidateIndex, candidates.length);
-
-            return success ? consolidated + 1 : consolidated;
-        }, Promise.resolve(0));
-    }
-
-    private async yieldBetweenCandidates(candidateIndex: number, candidateCount: number): Promise<void> {
-        const processedCandidateCount = candidateIndex + 1;
-        const hasMoreCandidates = processedCandidateCount < candidateCount;
-
-        if (hasMoreCandidates && processedCandidateCount % ConsolidationAutoCandidateService.YIELD_EVERY_CANDIDATES === 0) {
-            await this.yieldControl();
-        }
-    }
-
-    private static countCandidateGroupItems(candidates: ConsolidationCandidateGroupsInterface): number {
-        return (
-            candidates.ibanBridgeChainTransferCandidates.length +
-            candidates.existingTransferBridgeCandidates.length +
-            candidates.existingTransferChainReclaimCandidates.length +
-            candidates.ibanBridgeCanonicalDuplicateCandidates.length +
-            candidates.ibanBridgeTransferCandidates.length +
-            candidates.existingTransferIncomeDuplicateCandidates.length +
-            candidates.pairCandidates.length +
-            candidates.atmCashWithdrawalCandidates.length +
-            candidates.refundCandidates.length
-        );
     }
 }

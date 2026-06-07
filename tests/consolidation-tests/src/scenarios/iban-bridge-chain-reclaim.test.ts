@@ -139,8 +139,7 @@ describe('consolidation/iban-bridge-chain-reclaim', () => {
 
         const result = await runConsolidation();
 
-        expect(result.groups.existingTransferChainReclaimCandidates).toHaveLength(1);
-        expect(result.groups.ibanBridgeTransferCandidates).toHaveLength(0);
+        expect(result.found).toBe(1);
         expect(result.consolidated).toBe(1);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
         const canonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
@@ -163,7 +162,7 @@ describe('consolidation/iban-bridge-chain-reclaim', () => {
 
         const result = await runConsolidation();
 
-        expect(result.groups.existingTransferChainReclaimCandidates).toHaveLength(1);
+        expect(result.found).toBe(1);
         expect(result.consolidated).toBe(1);
         expect(testQueryService.fetchTransactionById(directTransfer.id).consolidationType).toBe(
             TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER
@@ -186,8 +185,7 @@ describe('consolidation/iban-bridge-chain-reclaim', () => {
 
         const result = await runConsolidation();
 
-        expect(result.groups.existingTransferChainReclaimCandidates).toHaveLength(0);
-        expect(result.groups.ibanBridgeTransferCandidates).toHaveLength(0);
+        expect(result.found).toBe(0);
         expect(result.consolidated).toBe(0);
         expect(testQueryService.fetchTransactionById(directTransfer.id).consolidationType).toBeNull();
         expect(testQueryService.fetchTransactionById(bridgeIncome.id).consolidationParentTransactionId).toBeNull();

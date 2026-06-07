@@ -1,7 +1,7 @@
 import {
     ConsolidationAutoCandidateService,
-    ConsolidationCandidateService,
     ConsolidationExecutorService,
+    ConsolidationFamilyRegistryService,
     RefundConsolidationService,
     UnconsolidationService
 } from '@budgie/consolidation';
@@ -16,7 +16,11 @@ const yieldControl = (): Promise<void> => Promise.resolve();
 
 export const accountBalanceRepository = repositories.accountBalanceRepository;
 export const accountRepository = repositories.accountRepository;
+export const atmCashWithdrawalRepository = repositories.atmCashWithdrawalRepository;
+export const existingTransferRepository = repositories.existingTransferRepository;
+export const ibanBridgeTransferRepository = repositories.ibanBridgeTransferRepository;
 export const refundPairRepository = repositories.refundPairRepository;
+export const transferPairRepository = repositories.transferPairRepository;
 
 export const consolidationExecutorService = new ConsolidationExecutorService({
     database: testDb,
@@ -26,15 +30,19 @@ export const consolidationExecutorService = new ConsolidationExecutorService({
     transactionTagsRepository: repositories.transactionTagsRepository
 });
 
-export const consolidationCandidateService = new ConsolidationCandidateService(
+const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryService(
     {
-        transferPairRepository: repositories.transferPairRepository,
-        refundPairRepository: repositories.refundPairRepository
+        atmCashWithdrawalRepository: repositories.atmCashWithdrawalRepository,
+        existingTransferRepository: repositories.existingTransferRepository,
+        ibanBridgeTransferRepository: repositories.ibanBridgeTransferRepository,
+        refundPairRepository: repositories.refundPairRepository,
+        transferPairRepository: repositories.transferPairRepository
     },
+    consolidationExecutorService,
     yieldControl
 );
 
-export const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationExecutorService, yieldControl);
+export const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationFamilyRegistryService);
 
 export const unconsolidationService = new UnconsolidationService({
     transactionRepository: repositories.transactionRepository,

@@ -185,7 +185,15 @@ export class ConsolidationExecutorService {
     }
 
     private async consolidateRefundInner(candidate: RefundCandidateInterface, tx: DB): Promise<boolean> {
-        return this.consolidationWriterService.consolidateRefund(candidate, tx);
+        const sourceTransactionIds = [candidate.expenseTransactionId, ...candidate.refundIncomeTransactionIds];
+
+        if (!(await this.consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds, tx))) {
+            return false;
+        }
+
+        await this.consolidationWriterService.writeRefundConsolidation(candidate, tx);
+
+        return true;
     }
 
     private async consolidateIbanBridgeTransferInner(candidate: IbanBridgeTransferCandidateInterface, tx: DB): Promise<boolean> {
@@ -196,7 +204,15 @@ export class ConsolidationExecutorService {
         candidate: IbanBridgeCanonicalDuplicateCandidateInterface,
         tx: DB
     ): Promise<boolean> {
-        return this.consolidationWriterService.consolidateIbanBridgeCanonicalDuplicate(candidate, tx);
+        const sourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
+
+        if (!(await this.consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds, tx))) {
+            return false;
+        }
+
+        await this.consolidationWriterService.attachIbanBridgeCanonicalDuplicateSources(candidate, tx);
+
+        return true;
     }
 
     private async consolidateExistingTransferBridgeInner(candidate: ExistingTransferBridgeCandidateInterface, tx: DB): Promise<boolean> {
@@ -207,14 +223,42 @@ export class ConsolidationExecutorService {
         candidate: ExistingTransferChainReclaimCandidateInterface,
         tx: DB
     ): Promise<boolean> {
-        return this.consolidationWriterService.consolidateExistingTransferChainReclaim(candidate, tx);
+        const sourceTransactionIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
+
+        if (
+            !(await this.consolidationEligibilityService.isExistingTransferConsolidationStillEligible(
+                sourceTransactionIds,
+                candidate.existingTransferId,
+                tx
+            ))
+        ) {
+            return false;
+        }
+
+        await this.consolidationWriterService.writeExistingTransferChainReclaim(candidate, tx);
+
+        return true;
     }
 
     private async consolidateExistingTransferIncomeDuplicateInner(
         candidate: ExistingTransferIncomeDuplicateCandidateInterface,
         tx: DB
     ): Promise<boolean> {
-        return this.consolidationWriterService.consolidateExistingTransferIncomeDuplicate(candidate, tx);
+        const sourceTransactionIds = [candidate.incomeTransactionId];
+
+        if (
+            !(await this.consolidationEligibilityService.isExistingTransferConsolidationStillEligible(
+                sourceTransactionIds,
+                candidate.existingTransferId,
+                tx
+            ))
+        ) {
+            return false;
+        }
+
+        await this.consolidationWriterService.writeExistingTransferIncomeDuplicateRepair(candidate, tx);
+
+        return true;
     }
 
     private async consolidateIbanBridgeChainTransferInner(candidate: IbanBridgeChainTransferCandidateInterface, tx: DB): Promise<boolean> {

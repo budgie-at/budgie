@@ -1,13 +1,10 @@
-import { consolidationAutoCandidateService, consolidationCandidateService } from './test-context';
-
-import type { ConsolidationCandidateGroupsInterface } from '@budgie/consolidation';
+import { consolidationAutoCandidateService } from './test-context';
 
 export const runConsolidation = async (): Promise<{
     readonly consolidated: number;
-    readonly groups: ConsolidationCandidateGroupsInterface;
+    readonly found: number;
 }> => {
-    const groups = await consolidationCandidateService.findGroups();
-    const consolidated = await consolidationAutoCandidateService.processGroups(groups);
+    const result = await consolidationAutoCandidateService.process();
 
-    return { consolidated, groups };
+    return result;
 };

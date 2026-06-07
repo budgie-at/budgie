@@ -1,5 +1,11 @@
 import * as SQLite from 'expo-sqlite';
-import { RefundPairRepository, TransferPairRepository } from '@budgie/consolidation';
+import {
+    AtmCashWithdrawalRepository,
+    ExistingTransferRepository,
+    IbanBridgeTransferRepository,
+    RefundPairRepository,
+    TransferPairRepository
+} from '@budgie/consolidation';
 import { getLogger } from '@budgie/logger';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import {
@@ -133,4 +139,7 @@ export const ruleRepository = new RuleRepository(db);
 export const ruleConditionRepository = new RuleConditionRepository(db);
 export const ruleActionRepository = new RuleActionRepository(db);
 export const transferPairRepository = new TransferPairRepository(db);
+export const atmCashWithdrawalRepository = new AtmCashWithdrawalRepository(db);
+export const existingTransferRepository = new ExistingTransferRepository(db);
+export const ibanBridgeTransferRepository = new IbanBridgeTransferRepository(db);
 export const refundPairRepository = new RefundPairRepository(db);

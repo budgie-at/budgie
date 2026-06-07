@@ -25,11 +25,7 @@ export class ConsolidationCoordinatorService {
         scope: ConsolidationScanScopeInterface | null = null,
         onProgress?: (processedCandidateGroupCount: number) => void
     ): Promise<ConsolidationResultInterface> {
-        const groups = await this.consolidationCandidateService.findGroups(scope);
-        const found = this.consolidationAutoCandidateService.countCandidates(groups);
-        const consolidated = await this.consolidationAutoCandidateService.processGroups(groups, onProgress);
-
-        return { found, consolidated };
+        return this.consolidationAutoCandidateService.process(scope, onProgress);
     }
 
     @Log(
@@ -39,9 +35,7 @@ export class ConsolidationCoordinatorService {
             `throw hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} error=${getErrorMessage(error)}`
     )
     async countAutoCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<number> {
-        const groups = await this.consolidationCandidateService.findGroups(scope);
-
-        return this.consolidationAutoCandidateService.countCandidates(groups);
+        return this.consolidationAutoCandidateService.count(scope);
     }
 
     @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
