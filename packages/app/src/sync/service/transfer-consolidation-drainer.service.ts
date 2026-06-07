@@ -4,6 +4,7 @@ import { Log } from '@budgie/logger';
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 
@@ -80,7 +81,9 @@ class TransferConsolidationDrainerService {
         const scope = this.pendingScope;
         this.hasPendingRun = false;
         this.pendingScope = null;
+        await microPause();
         await syncWorkloadService.run('transfer-consolidation-drain', () => transferConsolidationService.consolidate(scope));
+        await microPause();
         await this.drainPendingRuns();
     }
 
