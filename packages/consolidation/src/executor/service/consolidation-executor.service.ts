@@ -1,5 +1,11 @@
 /* eslint-disable max-lines -- Consolidation executor keeps per-candidate logs and the write path together for debugging */
-import { CategorySourceEnum, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    CategorySourceEnum,
+    IBAN_BRIDGE_CHAIN_FX_TOLERANCE,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -8,10 +14,12 @@ import { consolidationCopySourceTransactionTags } from '../../shared/utils/conso
 
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
+import type { IbanBridgeChainCanonicalInputInterface } from '../interface/iban-bridge-chain-canonical-input.interface';
 import type {
     AtmCashWithdrawalCandidateInterface,
     DB,
     ExistingTransferBridgeCandidateInterface,
+    ExistingTransferChainReclaimCandidateInterface,
     ExistingTransferIncomeDuplicateCandidateInterface,
     IbanBridgeCanonicalDuplicateCandidateInterface,
     IbanBridgeChainTransferCandidateInterface,
@@ -121,6 +129,20 @@ export class ConsolidationExecutorService {
     async consolidateIbanBridgeChainTransfer(candidate: IbanBridgeChainTransferCandidateInterface): Promise<boolean> {
         return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
             this.consolidateIbanBridgeChainTransferInner(candidate, tx)
+        );
+    }
+
+    @Log(
+        candidate =>
+            `enter existingTransferId=${candidate.existingTransferId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate}`,
+        (result, candidate) =>
+            `done result=${String(result)} existingTransferId=${candidate.existingTransferId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate}`,
+        (error, candidate) =>
+            `throw existingTransferId=${candidate.existingTransferId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate} error=${getErrorMessage(error)}`
+    )
+    async consolidateExistingTransferChainReclaim(candidate: ExistingTransferChainReclaimCandidateInterface): Promise<boolean> {
+        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
+            this.consolidateExistingTransferChainReclaimInner(candidate, tx)
         );
     }
 
@@ -334,26 +356,147 @@ export class ConsolidationExecutorService {
             candidate.bridgeExpenseTransactionId,
             candidate.targetIncomeTransactionId
         ];
-        const canonicalInput: CanonicalTransferInputInterface = {
-            title:
-                candidate.bridgeExpenseTransactionTitle ??
-                candidate.sourceExpenseTransactionTitle ??
-                candidate.targetIncomeTransactionTitle ??
-                candidate.bridgeIncomeTransactionTitle ??
-                '',
+        const title =
+            candidate.bridgeExpenseTransactionTitle ??
+            candidate.sourceExpenseTransactionTitle ??
+            candidate.targetIncomeTransactionTitle ??
+            candidate.bridgeIncomeTransactionTitle ??
+            '';
+        const canonicalInput = this.buildIbanBridgeChainCanonicalInput({
+            title,
             operatedAt: candidate.operatedAt,
             fromAccountId: candidate.sourceAccountId,
             toAccountId: candidate.targetAccountId,
             fromAmount: candidate.sourceAmount,
             toAmount: candidate.targetAmount,
             exchangeRate: candidate.exchangeRate,
-            consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
-            fromEntryExchangeRate: candidate.exchangeRate,
-            toEntryExchangeRate: 1,
             fromEntryToIban: candidate.sourceExpenseEntryToIban
-        };
+        });
 
         return this.executeConsolidation(sourceTransactionIds, canonicalInput, tx);
+    }
+
+    private async consolidateExistingTransferChainReclaimInner(
+        candidate: ExistingTransferChainReclaimCandidateInterface,
+        tx: DB
+    ): Promise<boolean> {
+        const bridgeSourceTransactionIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
+
+        if (!(await this.isExistingTransferStillEligible(candidate.existingTransferId, tx))) {
+            return false;
+        }
+
+        if (!(await this.areCandidatesStillEligible(bridgeSourceTransactionIds, tx))) {
+            return false;
+        }
+
+        const existingTransfer = (await this.dependencies.transactionRepository.findByIds([candidate.existingTransferId], tx)).at(0);
+
+        if (!isDefined(existingTransfer)) {
+            return false;
+        }
+
+        if (this.isChainReclaimFastPathEligible(candidate, existingTransfer)) {
+            return this.absorbChainReclaimBridgeLegs(candidate, bridgeSourceTransactionIds, tx);
+        }
+
+        return this.rebuildChainReclaimCanonical(candidate, existingTransfer.title, tx);
+    }
+
+    private async absorbChainReclaimBridgeLegs(
+        candidate: ExistingTransferChainReclaimCandidateInterface,
+        bridgeSourceTransactionIds: number[],
+        tx: DB
+    ): Promise<boolean> {
+        await this.copySourceTags(bridgeSourceTransactionIds, candidate.existingTransferId, tx);
+        await this.moveSourcesToCanonical(bridgeSourceTransactionIds, candidate.existingTransferId, tx);
+        await this.dependencies.transactionRepository.setConsolidationType(
+            candidate.existingTransferId,
+            TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
+            tx
+        );
+
+        return true;
+    }
+
+    private async rebuildChainReclaimCanonical(
+        candidate: ExistingTransferChainReclaimCandidateInterface,
+        existingTransferTitle: string,
+        tx: DB
+    ): Promise<boolean> {
+        const sourceTransactionIds = [
+            candidate.bridgeIncomeTransactionId,
+            candidate.bridgeExpenseTransactionId,
+            candidate.existingTransferId
+        ];
+        const canonicalInput = this.buildIbanBridgeChainCanonicalInput({
+            title: existingTransferTitle,
+            operatedAt: candidate.operatedAt,
+            fromAccountId: candidate.sourceAccountId,
+            toAccountId: candidate.targetAccountId,
+            fromAmount: candidate.sourceAmount,
+            toAmount: candidate.targetAmount,
+            exchangeRate: candidate.exchangeRate,
+            fromEntryToIban: candidate.targetAccountIban
+        });
+
+        return this.executeConsolidation(sourceTransactionIds, canonicalInput, tx, [candidate.existingTransferId]);
+    }
+
+    private buildIbanBridgeChainCanonicalInput(input: IbanBridgeChainCanonicalInputInterface): CanonicalTransferInputInterface {
+        return {
+            title: input.title,
+            operatedAt: input.operatedAt,
+            fromAccountId: input.fromAccountId,
+            toAccountId: input.toAccountId,
+            fromAmount: input.fromAmount,
+            toAmount: input.toAmount,
+            exchangeRate: input.exchangeRate,
+            consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
+            fromEntryExchangeRate: input.exchangeRate,
+            toEntryExchangeRate: 1,
+            fromEntryToIban: input.fromEntryToIban
+        };
+    }
+
+    private isChainReclaimFastPathEligible(
+        candidate: ExistingTransferChainReclaimCandidateInterface,
+        existingTransfer: TransactionWithEntriesEntityInterface
+    ): boolean {
+        if (existingTransfer.fromAccountId !== candidate.sourceAccountId || existingTransfer.toAccountId !== candidate.targetAccountId) {
+            return false;
+        }
+
+        const liveEntries = existingTransfer.entries.filter(
+            entry => !isDefined(entry.deletedAt) && !isDefined(entry.originalTransactionId)
+        );
+        const fromCreditEntry = liveEntries.find(
+            entry => entry.accountId === candidate.sourceAccountId && entry.type === TransactionEntryTypeEnum.CREDIT
+        );
+        const toDebitEntry = liveEntries.find(
+            entry => entry.accountId === candidate.targetAccountId && entry.type === TransactionEntryTypeEnum.DEBIT
+        );
+
+        if (!isDefined(fromCreditEntry) || !isDefined(toDebitEntry)) {
+            return false;
+        }
+
+        return (
+            fromCreditEntry.amount === candidate.sourceAmount &&
+            toDebitEntry.amount === candidate.targetAmount &&
+            toDebitEntry.exchangeRate === 1 &&
+            fromCreditEntry.toIban === candidate.targetAccountIban &&
+            this.isWithinChainFxTolerance(fromCreditEntry.exchangeRate, candidate.exchangeRate) &&
+            this.isWithinChainFxTolerance(existingTransfer.exchangeRate, candidate.exchangeRate)
+        );
+    }
+
+    private isWithinChainFxTolerance(actualRate: number, expectedRate: number): boolean {
+        if (!isPositiveNumber(expectedRate)) {
+            return false;
+        }
+
+        return Math.abs(actualRate - expectedRate) / expectedRate <= IBAN_BRIDGE_CHAIN_FX_TOLERANCE;
     }
 
     private buildBridgeSourceTransactionIds(candidate: IbanBridgeTransferCandidateInterface): number[] {

@@ -1,6 +1,11 @@
-import { eq } from 'drizzle-orm';
-
-import { MccCategoryEntityTable, TransactionEntityTable, TransactionEntryEntityTable, TransactionTagsEntityTable } from '@budgie/contracts';
+import {
+    MccCategoryEntityTable,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionEntryTypeEnum,
+    TransactionTagsEntityTable
+} from '@budgie/contracts';
+import { and, eq, isNull } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -24,7 +29,7 @@ export class TestQueryService {
     }
 
     fetchTransactionById(id: number): TransactionEntityInterface {
-        const row = this.database.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, id)).all()[0];
+        const [row] = this.database.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, id)).all();
 
         if (!isDefined(row)) {
             throw new Error(`Transaction ${id} not found`);
@@ -42,11 +47,11 @@ export class TestQueryService {
     }
 
     fetchEntryByExternalId(externalId: string): TransactionEntryEntityInterface {
-        const row = this.database
+        const [row] = this.database
             .select()
             .from(TransactionEntryEntityTable)
             .where(eq(TransactionEntryEntityTable.externalId, externalId))
-            .all()[0];
+            .all();
 
         if (!isDefined(row)) {
             throw new Error(`Transaction entry ${externalId} not found`);
@@ -64,8 +69,30 @@ export class TestQueryService {
             .map(row => row.tagId);
     }
 
+    fetchLiveBalanceByAccount(accountId: number): number {
+        const rows = this.database
+            .select({ type: TransactionEntryEntityTable.type, amount: TransactionEntryEntityTable.amount })
+            .from(TransactionEntryEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntryEntityTable.accountId, accountId),
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    isNull(TransactionEntryEntityTable.originalTransactionId)
+                )
+            )
+            .all();
+
+        return rows.reduce((balance, row) => {
+            if (row.type === TransactionEntryTypeEnum.DEBIT) {
+                return balance + row.amount;
+            }
+
+            return balance - row.amount;
+        }, 0);
+    }
+
     findMccByCode(mcc: string): Pick<MccCategoryEntityInterface, 'id' | 'mccGroupId'> {
-        const row = this.database.select().from(MccCategoryEntityTable).where(eq(MccCategoryEntityTable.mcc, mcc)).all()[0];
+        const [row] = this.database.select().from(MccCategoryEntityTable).where(eq(MccCategoryEntityTable.mcc, mcc)).all();
 
         if (!isDefined(row)) {
             throw new Error(`MCC ${mcc} not found`);

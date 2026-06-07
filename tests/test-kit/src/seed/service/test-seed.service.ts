@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- Cohesive shared test seed harness */
 import {
     AccountEntityTable,
     AccountNatureEnum,
@@ -10,6 +11,7 @@ import {
     InstrumentTypeEnum,
     MccCategoryEntityTable,
     TagEntityTable,
+    TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
@@ -21,6 +23,7 @@ import { eq } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
+import type { ChainReclaimScenarioInputInterface } from '../interface/chain-reclaim-scenario-input.interface';
 import type { SeedBankPairEntryInputType } from '../interface/seed-bank-pair-entry-input.type';
 import type {
     AccountCreateEntityInterface,
@@ -34,13 +37,17 @@ import type {
     MccCategoryEntityInterface,
     TransactionCreateEntityInterface,
     TransactionEntityInterface,
-    TransactionEntryCreateEntityInterface
+    TransactionEntryCreateEntityInterface,
+    TransactionEntryEntityInterface
 } from '@budgie/contracts';
+
+const SECONDS_PER_DAY = 86_400;
+const DEFAULT_BASE_YEAR = 2026;
 
 export class TestSeedService {
     private static readonly DEFAULT_REFUND_TITLE = 'STARBUCKS #1234';
-    private static readonly DEFAULT_REFUND_DELAY_SECONDS = 86_400;
-    private static readonly DEFAULT_TRANSFER_OPERATED_AT = new Date(2026, 0, 15, 12, 0, 0);
+    private static readonly DEFAULT_REFUND_DELAY_SECONDS = SECONDS_PER_DAY;
+    private static readonly DEFAULT_TRANSFER_OPERATED_AT = new Date(DEFAULT_BASE_YEAR, 0, 15, 12, 0, 0);
     private static readonly DEFAULT_BASE_INSTRUMENT_ID = 1;
 
     constructor(private readonly database: DB) {}
@@ -80,6 +87,7 @@ export class TestSeedService {
         return this.requireInserted(rows, 'accounts');
     }
 
+    // eslint-disable-next-line @typescript-eslint/max-params -- Existing test seed helper keeps positional arguments
     bankSyncAccount(
         title: string,
         externalSource: ExternalSourceEnum | null,
@@ -203,6 +211,137 @@ export class TestSeedService {
         );
 
         return { fromAccount, toAccount, expense, income };
+    }
+
+    // eslint-disable-next-line max-statements -- Multi-step test seed helper builds transaction + entries
+    directTransfer(input: {
+        readonly fromAccountId: number;
+        readonly toAccountId: number;
+        readonly fromAmount: number;
+        readonly toAmount: number;
+        readonly operatedAt?: Date;
+        readonly exchangeRate?: number;
+        readonly fromEntryExchangeRate?: number;
+        readonly toEntryExchangeRate?: number;
+        readonly fromEntryToIban?: string | null;
+        readonly externalIdPrefix?: string;
+        readonly title?: string;
+        readonly consolidationType?: TransactionConsolidationTypeEnum | null;
+        readonly withBackingSources?: boolean;
+    }): {
+        readonly transfer: TransactionEntityInterface;
+        readonly fromEntry: TransactionEntryEntityInterface;
+        readonly toEntry: TransactionEntryEntityInterface;
+        readonly backingExpense: TransactionEntityInterface | null;
+        readonly backingIncome: TransactionEntityInterface | null;
+    } {
+        const operatedAt = input.operatedAt ?? TestSeedService.DEFAULT_TRANSFER_OPERATED_AT;
+        const externalIdPrefix = input.externalIdPrefix ?? 'transfer';
+        const consolidationType = 'consolidationType' in input ? input.consolidationType : TransactionConsolidationTypeEnum.TRANSFER_PAIR;
+        const transferRows = this.database
+            .insert(TransactionEntityTable)
+            .values({
+                type: TransactionTypeEnum.TRANSFER,
+                title: input.title ?? 'Direct Transfer',
+                externalId: `${externalIdPrefix}-transfer`,
+                externalSource: ExternalSourceEnum.MONOBANK,
+                operatedAt,
+                exchangeRate: input.exchangeRate ?? 1,
+                fromAccountId: input.fromAccountId,
+                toAccountId: input.toAccountId,
+                comment: '',
+                consolidationType,
+                updatedBy: null
+            } satisfies TransactionCreateEntityInterface)
+            .returning()
+            .all();
+        const transfer = this.requireInserted(transferRows, 'transactions');
+        const fromEntry = this.insertTransferEntry(transfer.id, TransactionEntryTypeEnum.CREDIT, `${externalIdPrefix}-from`, {
+            accountId: input.fromAccountId,
+            amount: input.fromAmount,
+            exchangeRate: input.fromEntryExchangeRate ?? 1,
+            toIban: input.fromEntryToIban ?? null
+        });
+        const toEntry = this.insertTransferEntry(transfer.id, TransactionEntryTypeEnum.DEBIT, `${externalIdPrefix}-to`, {
+            accountId: input.toAccountId,
+            amount: input.toAmount,
+            exchangeRate: input.toEntryExchangeRate ?? 1,
+            toIban: null
+        });
+
+        if (input.withBackingSources !== true) {
+            return { transfer, fromEntry, toEntry, backingExpense: null, backingIncome: null };
+        }
+
+        const backingExpense = this.bankPairExpense(
+            { externalId: `${externalIdPrefix}-backing-expense`, operatedAt },
+            { accountId: input.fromAccountId, amount: input.fromAmount, exchangeRate: input.fromEntryExchangeRate ?? 1 }
+        );
+        const backingIncome = this.bankPairIncome(
+            { externalId: `${externalIdPrefix}-backing-income`, operatedAt },
+            { accountId: input.toAccountId, amount: input.toAmount, exchangeRate: input.toEntryExchangeRate ?? 1 }
+        );
+
+        this.moveEntryIntoCanonical(`${externalIdPrefix}-backing-expense`, backingExpense.id, transfer.id);
+        this.moveEntryIntoCanonical(`${externalIdPrefix}-backing-income`, backingIncome.id, transfer.id);
+        this.setConsolidationParent(backingExpense.id, transfer.id);
+        this.setConsolidationParent(backingIncome.id, transfer.id);
+
+        return { transfer, fromEntry, toEntry, backingExpense, backingIncome };
+    }
+
+    feeEntry(transactionId: number, accountId: number, amount: number, externalId: string): TransactionEntryEntityInterface {
+        return this.insertTransferEntry(transactionId, TransactionEntryTypeEnum.FEE, externalId, { accountId, amount });
+    }
+
+    chainReclaimScenario(input: ChainReclaimScenarioInputInterface): {
+        readonly sourceAccount: AccountEntityInterface;
+        readonly bridgeAccount: AccountEntityInterface;
+        readonly targetAccount: AccountEntityInterface;
+        readonly transfer: TransactionEntityInterface;
+        readonly backingExpense: TransactionEntityInterface | null;
+        readonly backingIncome: TransactionEntityInterface | null;
+        readonly bridgeIncome: TransactionEntityInterface;
+        readonly bridgeExpense: TransactionEntityInterface;
+    } {
+        const usdInstrument = this.instrument({ code: 'USD', name: 'Dollar', symbol: '$' });
+        const sourceAccount = this.bankSyncAccount('Source USD', null, 'UA-SOURCE', usdInstrument.id);
+        const bridgeAccount = this.bankSyncAccount('Bridge UAH', null, 'UA-BRIDGE', input.bridgeInstrumentId ?? 1);
+        const targetAccount = this.bankSyncAccount('Target UAH', null, 'UA-TARGET', 1);
+        const bridgeOffset = input.bridgeOperatedAtOffsetMs ?? 10_000;
+        const gateMatchingExchangeRate = input.sourceAmount / input.targetAmount;
+        const { transfer, backingExpense, backingIncome } = this.directTransfer({
+            fromAccountId: sourceAccount.id,
+            toAccountId: targetAccount.id,
+            fromAmount: input.sourceAmount,
+            toAmount: input.targetAmount,
+            operatedAt: input.operatedAt,
+            exchangeRate: input.transferExchangeRate ?? gateMatchingExchangeRate,
+            fromEntryExchangeRate: input.transferFromEntryExchangeRate ?? gateMatchingExchangeRate,
+            toEntryExchangeRate: input.transferToEntryExchangeRate ?? 1,
+            fromEntryToIban: input.transferFromEntryToIban ?? 'UA-TARGET',
+            withBackingSources: true
+        });
+        const bridgeIncome = this.bankPairIncome(
+            { externalId: 'bridge-income', operatedAt: new Date(input.operatedAt.getTime() + bridgeOffset) },
+            {
+                accountId: bridgeAccount.id,
+                amount: input.bridgeIncomeAmount ?? input.targetAmount,
+                exchangeRate: input.bridgeExchangeRate,
+                toIban: input.bridgeIncomeToIban ?? 'UA-SOURCE'
+            }
+        );
+        const bridgeExpense = this.bankPairExpense(
+            { externalId: 'bridge-expense', operatedAt: new Date(input.operatedAt.getTime() + bridgeOffset + 2_000) },
+            {
+                accountId: bridgeAccount.id,
+                amount: input.bridgeExpenseAmount ?? input.targetAmount,
+                exchangeRate: 1,
+                toIban: input.bridgeExpenseToIban ?? 'UA-TARGET'
+            }
+        );
+
+        return { sourceAccount, bridgeAccount, targetAccount, transfer, backingExpense, backingIncome, bridgeIncome, bridgeExpense };
     }
 
     refundedExpense(input: {
@@ -340,6 +479,7 @@ export class TestSeedService {
         return inserted;
     }
 
+    // eslint-disable-next-line @typescript-eslint/max-params -- Existing test seed helper keeps positional arguments
     private insertTransaction(
         type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
         transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt' | 'title'>,
@@ -374,6 +514,46 @@ export class TestSeedService {
         externalId: string | null,
         entry: SeedBankPairEntryInputType
     ): void {
+        this.insertTransferEntry(transactionId, entryType, externalId, {
+            accountId: entry.accountId,
+            amount: entry.amount,
+            exchangeRate: entry.exchangeRate,
+            toIban: entry.toIban,
+            mccCategoryId: entry.mccCategoryId
+        });
+    }
+
+    private moveEntryIntoCanonical(entryExternalId: string, sourceTransactionId: number, canonicalTransactionId: number): void {
+        this.database
+            .update(TransactionEntryEntityTable)
+            .set({
+                transactionId: canonicalTransactionId,
+                originalTransactionId: sourceTransactionId
+            })
+            .where(eq(TransactionEntryEntityTable.externalId, entryExternalId))
+            .run();
+    }
+
+    private setConsolidationParent(sourceTransactionId: number, canonicalTransactionId: number): void {
+        this.database
+            .update(TransactionEntityTable)
+            .set({ consolidationParentTransactionId: canonicalTransactionId })
+            .where(eq(TransactionEntityTable.id, sourceTransactionId))
+            .run();
+    }
+
+    private insertTransferEntry(
+        transactionId: number,
+        entryType: TransactionEntryTypeEnum,
+        externalId: string | null,
+        entry: {
+            readonly accountId: number;
+            readonly amount: number;
+            readonly exchangeRate?: number;
+            readonly toIban?: string | null;
+            readonly mccCategoryId?: number | null;
+        }
+    ): TransactionEntryEntityInterface {
         const entryRows = this.database
             .insert(TransactionEntryEntityTable)
             .values({
@@ -394,11 +574,11 @@ export class TestSeedService {
             .returning()
             .all();
 
-        this.requireInserted(entryRows, 'transaction_entries');
+        return this.requireInserted(entryRows, 'transaction_entries');
     }
 
     private requireInserted<T>(rows: readonly T[], tableName: string): T {
-        const row = rows[0];
+        const [row] = rows;
 
         if (!isDefined(row)) {
             throw new Error(`Failed to insert into ${tableName}`);
