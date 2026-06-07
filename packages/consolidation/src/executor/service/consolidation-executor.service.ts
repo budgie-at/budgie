@@ -29,11 +29,11 @@ export class ConsolidationExecutorService {
 
     @Log(
         (candidate, consolidationPlan) =>
-            `enter expenseTransactionId=${candidate.expenseTransactionId} incomeTransactionId=${candidate.incomeTransactionId} matchType=${candidate.matchType} bucket=${candidate.confidenceBucket} timeDiff=${candidate.timeDiff} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType}`,
+            `enter pair=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} bucket=${candidate.confidenceBucket} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (result, candidate, consolidationPlan) =>
-            `done result=${String(result)} expenseTransactionId=${candidate.expenseTransactionId} incomeTransactionId=${candidate.incomeTransactionId} matchType=${candidate.matchType} bucket=${candidate.confidenceBucket} timeDiff=${candidate.timeDiff} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType}`,
+            `done pairResult=${String(result)} pair=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (error, candidate, consolidationPlan) =>
-            `throw expenseTransactionId=${candidate.expenseTransactionId} incomeTransactionId=${candidate.incomeTransactionId} matchType=${candidate.matchType} bucket=${candidate.confidenceBucket} timeDiff=${candidate.timeDiff} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
+            `throw pair=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
     )
     async consolidatePair(candidate: TransferPairCandidateInterface, consolidationPlan: ConsolidationPlanInterface): Promise<boolean> {
         const requiredSourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
@@ -45,11 +45,11 @@ export class ConsolidationExecutorService {
 
     @Log(
         (candidate, consolidationPlan) =>
-            `enter transactionId=${candidate.transactionId} sourceAccountId=${candidate.sourceAccountId} targetCashAccountId=${candidate.targetCashAccountId} amount=${candidate.amount} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType}`,
+            `enter atm=${candidate.transactionId} cash=${candidate.sourceAccountId}->${candidate.targetCashAccountId} amount=${candidate.amount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (result, candidate, consolidationPlan) =>
-            `done result=${String(result)} transactionId=${candidate.transactionId} sourceAccountId=${candidate.sourceAccountId} targetCashAccountId=${candidate.targetCashAccountId} amount=${candidate.amount} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType}`,
+            `done atmResult=${String(result)} transaction=${candidate.transactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (error, candidate, consolidationPlan) =>
-            `throw transactionId=${candidate.transactionId} sourceAccountId=${candidate.sourceAccountId} targetCashAccountId=${candidate.targetCashAccountId} amount=${candidate.amount} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
+            `throw atm=${candidate.transactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
     )
     async consolidateAtmCashWithdrawal(
         candidate: AtmCashWithdrawalCandidateInterface,
@@ -62,11 +62,11 @@ export class ConsolidationExecutorService {
 
     @Log(
         (candidate, consolidationPlan) =>
-            `enter expenseTransactionId=${candidate.expenseTransactionId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} bridgeAmount=${candidate.bridgeAmount} exchangeRate=${candidate.exchangeRate} existingDirectTransferId=${candidate.existingDirectTransferId ?? ''} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType}`,
+            `enter ibanBridge=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} route=${candidate.sourceAccountId}->${candidate.bridgeAccountId}->${candidate.targetAccountId} rate=${candidate.exchangeRate} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (result, candidate, consolidationPlan) =>
-            `done result=${String(result)} expenseTransactionId=${candidate.expenseTransactionId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} bridgeAmount=${candidate.bridgeAmount} exchangeRate=${candidate.exchangeRate} existingDirectTransferId=${candidate.existingDirectTransferId ?? ''} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType}`,
+            `done ibanBridgeResult=${String(result)} direct=${candidate.existingDirectTransferId ?? ''} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (error, candidate, consolidationPlan) =>
-            `throw expenseTransactionId=${candidate.expenseTransactionId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} bridgeAmount=${candidate.bridgeAmount} exchangeRate=${candidate.exchangeRate} existingDirectTransferId=${candidate.existingDirectTransferId ?? ''} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
+            `throw ibanBridge=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} amount=${candidate.bridgeAmount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
     )
     async consolidateIbanBridgeTransfer(
         candidate: IbanBridgeTransferCandidateInterface,
@@ -81,11 +81,11 @@ export class ConsolidationExecutorService {
 
     @Log(
         (candidate, consolidationPlan) =>
-            `enter sourceExpenseTransactionId=${candidate.sourceExpenseTransactionId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} existingTransferId=${candidate.existingTransferId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType}`,
+            `enter existingBridge=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.existingTransferId} route=${candidate.sourceAccountId}->${candidate.bridgeAccountId}->${candidate.targetAccountId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (result, candidate, consolidationPlan) =>
-            `done result=${String(result)} sourceExpenseTransactionId=${candidate.sourceExpenseTransactionId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} existingTransferId=${candidate.existingTransferId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType}`,
+            `done existingBridgeResult=${String(result)} amounts=${candidate.sourceAmount}/${candidate.targetAmount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (error, candidate, consolidationPlan) =>
-            `throw sourceExpenseTransactionId=${candidate.sourceExpenseTransactionId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} existingTransferId=${candidate.existingTransferId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
+            `throw existingBridge=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.existingTransferId} rate=${candidate.exchangeRate} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
     )
     async consolidateExistingTransferBridge(
         candidate: ExistingTransferBridgeCandidateInterface,
@@ -104,11 +104,11 @@ export class ConsolidationExecutorService {
 
     @Log(
         (candidate, consolidationPlan) =>
-            `enter sourceExpenseTransactionId=${candidate.sourceExpenseTransactionId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} targetIncomeTransactionId=${candidate.targetIncomeTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType}`,
+            `enter bridgeChain=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.bridgeExpenseTransactionId}/${candidate.targetIncomeTransactionId} route=${candidate.sourceAccountId}->${candidate.bridgeAccountId}->${candidate.targetAccountId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (result, candidate, consolidationPlan) =>
-            `done result=${String(result)} sourceExpenseTransactionId=${candidate.sourceExpenseTransactionId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} targetIncomeTransactionId=${candidate.targetIncomeTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType}`,
+            `done bridgeChainResult=${String(result)} amounts=${candidate.sourceAmount}/${candidate.targetAmount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (error, candidate, consolidationPlan) =>
-            `throw sourceExpenseTransactionId=${candidate.sourceExpenseTransactionId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} targetIncomeTransactionId=${candidate.targetIncomeTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate} sourceIds=${consolidationPlan.sourceTransactionIds.join(',')} type=${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
+            `throw bridgeChain=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.bridgeExpenseTransactionId}/${candidate.targetIncomeTransactionId} rate=${candidate.exchangeRate} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
     )
     async consolidateIbanBridgeChainTransfer(
         candidate: IbanBridgeChainTransferCandidateInterface,
