@@ -1,8 +1,11 @@
 import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { InteractionManager, Text, View } from 'react-native';
 import Svg, { Polyline } from 'react-native-svg';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, isPositiveNumber } from '@rnw-community/shared';
+
+import { MarketDataSparklineSkeleton } from '../market-data-sparkline-skeleton/market-data-sparkline-skeleton';
 
 import type { InstrumentDailyMarketPriceEntityInterface } from '@budgie/contracts';
 
@@ -17,6 +20,13 @@ const CHART_HEIGHT = 112;
 const CHART_PADDING = 6;
 const POSITIVE_COLOR = '#00e08a';
 const NEGATIVE_COLOR = '#ff5c5c';
+
+const getHistoryVersion = (prices: InstrumentDailyMarketPriceEntityInterface[]): string => {
+    const firstPrice = prices.at(0);
+    const latestPrice = prices.at(-1);
+
+    return `${prices.length}:${firstPrice?.priceDate ?? ''}:${latestPrice?.priceDate ?? ''}`;
+};
 
 const buildPoints = (prices: InstrumentDailyMarketPriceEntityInterface[]): string => {
     if (prices.length < 2) {
@@ -42,7 +52,26 @@ const buildPoints = (prices: InstrumentDailyMarketPriceEntityInterface[]): strin
 };
 
 export const MarketDataSparkline = ({ prices, isPositive, testID }: Props) => {
-    const points = buildPoints(prices);
+    const [readyHistoryVersion, setReadyHistoryVersion] = useState('');
+    const historyVersion = getHistoryVersion(prices);
+    const hasRenderableHistory = prices.length >= 2;
+    const isChartReady = hasRenderableHistory && readyHistoryVersion === historyVersion;
+
+    useEffect(() => {
+        if (!hasRenderableHistory) {
+            return emptyFn;
+        }
+
+        const task = InteractionManager.runAfterInteractions(() => {
+            setReadyHistoryVersion(historyVersion);
+        });
+
+        return () => {
+            task.cancel();
+        };
+    }, [hasRenderableHistory, historyVersion]);
+
+    const points = isChartReady ? buildPoints(prices) : '';
     const stroke = isPositive ? POSITIVE_COLOR : NEGATIVE_COLOR;
 
     if (prices.length < 2) {
@@ -53,6 +82,10 @@ export const MarketDataSparkline = ({ prices, isPositive, testID }: Props) => {
                 </Text>
             </View>
         );
+    }
+
+    if (!isChartReady) {
+        return <MarketDataSparklineSkeleton testID={testID} />;
     }
 
     return (

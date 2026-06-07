@@ -1,51 +1,29 @@
 import { AccountEntityInterface, LiabilityAccountCreateInputInterface, LiabilityAccountCreateInputSchema } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
-import { useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 
-const haveDefaultValuesChanged = (
-    currentValues: LiabilityAccountCreateInputInterface,
-    nextValues: LiabilityAccountCreateInputInterface
-): boolean =>
-    currentValues.currentBalance !== nextValues.currentBalance ||
-    currentValues.externalId !== nextValues.externalId ||
-    currentValues.iban !== nextValues.iban ||
-    currentValues.icon !== nextValues.icon ||
-    currentValues.includeInNetWorth !== nextValues.includeInNetWorth ||
-    currentValues.instrumentId !== nextValues.instrumentId ||
-    currentValues.isActive !== nextValues.isActive ||
-    currentValues.title !== nextValues.title ||
-    currentValues.type !== nextValues.type;
-
 export const useAccountForm = (
-    defaultValues: LiabilityAccountCreateInputInterface,
+    values: LiabilityAccountCreateInputInterface,
     onSubmit: (values: LiabilityAccountCreateInputInterface) => Promise<AccountEntityInterface>
 ) => {
     const showError = useShowError();
-    const defaultValuesRef = useRef(defaultValues);
     const form = useForm({
         resolver: zodResolver(LiabilityAccountCreateInputSchema),
         mode: 'onSubmit',
-        defaultValues
+        values,
+        resetOptions: {
+            keepDirtyValues: true
+        }
     });
-
-    const { reset } = form;
 
     const instrumentId = useWatch({
         control: form.control,
         name: 'instrumentId'
     });
-
-    useEffect(() => {
-        if (haveDefaultValuesChanged(defaultValuesRef.current, defaultValues)) {
-            defaultValuesRef.current = defaultValues;
-            reset(defaultValues, { keepDirtyValues: true });
-        }
-    }, [defaultValues, reset]);
 
     const handleSubmit = async (values: LiabilityAccountCreateInputInterface) => {
         try {

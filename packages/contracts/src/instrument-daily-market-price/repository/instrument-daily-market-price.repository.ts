@@ -63,6 +63,14 @@ export class InstrumentDailyMarketPriceRepository {
         });
     }
 
+    @Log(
+        (instrumentId, quoteInstrumentId, priceDate, tx) =>
+            `enter lookup=price-date-or-before instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} priceDate="${priceDate}" hasTx=${String(isDefined(tx))}`,
+        (result, ...[instrumentId, quoteInstrumentId, priceDate, tx]) =>
+            `done lookup=price-date-or-before instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} priceDate="${priceDate}" hasTx=${String(isDefined(tx))} found=${String(isDefined(result))}`,
+        (error, ...[instrumentId, quoteInstrumentId, priceDate, tx]) =>
+            `throw lookup=price-date-or-before instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} priceDate="${priceDate}" hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async findForDateOrBefore(
         instrumentId: number,
         quoteInstrumentId: number,
@@ -75,6 +83,14 @@ export class InstrumentDailyMarketPriceRepository {
         });
     }
 
+    @Log(
+        (instrumentId, quoteInstrumentId, limit, tx) =>
+            `enter lookup=recent-prices instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} limit=${limit} hasTx=${String(isDefined(tx))}`,
+        (result, ...[instrumentId, quoteInstrumentId, limit, tx]) =>
+            `done lookup=recent-prices instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} limit=${limit} hasTx=${String(isDefined(tx))} queryBuilt=${String(isDefined(result))}`,
+        (error, ...[instrumentId, quoteInstrumentId, limit, tx]) =>
+            `throw lookup=recent-prices instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} limit=${limit} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     findRecent(instrumentId: number, quoteInstrumentId: number, limit: number, tx?: DB) {
         return (tx ?? this.db).query.InstrumentDailyMarketPriceEntityTable.findMany({
             where: this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
@@ -83,6 +99,14 @@ export class InstrumentDailyMarketPriceRepository {
         });
     }
 
+    @Log(
+        (instrumentId, quoteInstrumentId, tx) =>
+            `enter lookup=price-count instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))}`,
+        (result, instrumentId, quoteInstrumentId, tx) =>
+            `done lookup=price-count instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} queryBuilt=${String(isDefined(result))}`,
+        (error, instrumentId, quoteInstrumentId, tx) =>
+            `throw lookup=price-count instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     countByInstrumentAndQuote(instrumentId: number, quoteInstrumentId: number, tx?: DB) {
         return (tx ?? this.db)
             .select({ count: count() })

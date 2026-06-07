@@ -41,6 +41,14 @@ export class HistoricalExchangeRateRepository {
             });
     }
 
+    @Log(
+        (sourceInstrumentId, targetInstrumentId, rateDate, tx) =>
+            `enter lookup=historical-rate-date-or-before sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} rateDate="${rateDate}" hasTx=${String(isDefined(tx))}`,
+        (result, ...[sourceInstrumentId, targetInstrumentId, rateDate, tx]) =>
+            `done lookup=historical-rate-date-or-before sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} rateDate="${rateDate}" hasTx=${String(isDefined(tx))} found=${String(isDefined(result))}`,
+        (error, ...[sourceInstrumentId, targetInstrumentId, rateDate, tx]) =>
+            `throw lookup=historical-rate-date-or-before sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} rateDate="${rateDate}" hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async findForDateOrBefore(
         sourceInstrumentId: number,
         targetInstrumentId: number,
@@ -55,6 +63,14 @@ export class HistoricalExchangeRateRepository {
         return await this.findFirstRate(where, desc(HistoricalExchangeRateEntityTable.rateDate), tx);
     }
 
+    @Log(
+        (sourceInstrumentId, targetInstrumentId, tx) =>
+            `enter lookup=earliest-historical-rate sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} hasTx=${String(isDefined(tx))}`,
+        (result, sourceInstrumentId, targetInstrumentId, tx) =>
+            `done lookup=earliest-historical-rate sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} hasTx=${String(isDefined(tx))} found=${String(isDefined(result))}`,
+        (error, sourceInstrumentId, targetInstrumentId, tx) =>
+            `throw lookup=earliest-historical-rate sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async findEarliest(
         sourceInstrumentId: number,
         targetInstrumentId: number,
@@ -65,6 +81,14 @@ export class HistoricalExchangeRateRepository {
         return await this.findFirstRate(where, asc(HistoricalExchangeRateEntityTable.rateDate), tx);
     }
 
+    @Log(
+        (input, tx) =>
+            `enter sourceInstrumentId=${input.sourceInstrumentId} targetInstrumentId=${input.targetInstrumentId} rateDate="${input.rateDate}" hasTx=${String(isDefined(tx))}`,
+        (_result, input, tx) =>
+            `done sourceInstrumentId=${input.sourceInstrumentId} targetInstrumentId=${input.targetInstrumentId} rateDate="${input.rateDate}" hasTx=${String(isDefined(tx))}`,
+        (error, input, tx) =>
+            `throw sourceInstrumentId=${input.sourceInstrumentId} targetInstrumentId=${input.targetInstrumentId} rateDate="${input.rateDate}" hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async upsert(input: HistoricalExchangeRateCreateEntityInterface, tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .insert(HistoricalExchangeRateEntityTable)

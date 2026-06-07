@@ -1,4 +1,7 @@
+import { Log } from '@budgie/logger';
 import { and, asc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
+
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
@@ -20,6 +23,14 @@ export class TransactionEntryPositionRepository {
 
     constructor(private db: DB) {}
 
+    @Log(
+        (instrumentId, baseInstrumentId) =>
+            `enter lookup=crypto-position-entries instrumentId=${instrumentId} baseInstrumentId=${baseInstrumentId}`,
+        (result, instrumentId, baseInstrumentId) =>
+            `done lookup=crypto-position-entries instrumentId=${instrumentId} baseInstrumentId=${baseInstrumentId} queryBuilt=${String(isDefined(result))}`,
+        (error, instrumentId, baseInstrumentId) =>
+            `throw lookup=crypto-position-entries instrumentId=${instrumentId} baseInstrumentId=${baseInstrumentId} error=${getErrorMessage(error)}`
+    )
     findCryptoPositionEntries(instrumentId: number, baseInstrumentId: number) {
         return this.db
             .select({
