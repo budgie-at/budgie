@@ -1,7 +1,7 @@
 import { AccountTypeEnum, ExternalSourceEnum, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-import { TRANSFER_MCC_GROUP_ID } from '../../shared/constant/transfer-mcc-group-id.constant';
-import { applyConsolidationScanScopeSql } from '../utils/apply-consolidation-scan-scope-sql.util';
+import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
+import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 

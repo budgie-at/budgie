@@ -1,6 +1,6 @@
-import { IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL } from '../sql-factory/transfer-pair-iban-bridge-canonical-duplicate-sql.factory';
-import { IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL } from '../sql-factory/transfer-pair-iban-bridge-chain-sql.factory';
-import { IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL } from '../sql-factory/transfer-pair-iban-bridge-transfer-sql.factory';
+import { IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-canonical-duplicate-sql.factory';
+import { IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-chain-sql.factory';
+import { IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-transfer-sql.factory';
 
 import type {
     ConsolidationScanScopeInterface,

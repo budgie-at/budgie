@@ -1,6 +1,6 @@
-import { EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL } from '../sql-factory/transfer-pair-existing-transfer-bridge-sql.factory';
-import { EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL } from '../sql-factory/transfer-pair-existing-transfer-chain-reclaim-sql.factory';
-import { EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL } from '../sql-factory/transfer-pair-existing-transfer-income-duplicate-sql.factory';
+import { EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL } from './sql-factory/transfer-pair-existing-transfer-bridge-sql.factory';
+import { EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL } from './sql-factory/transfer-pair-existing-transfer-chain-reclaim-sql.factory';
+import { EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL } from './sql-factory/transfer-pair-existing-transfer-income-duplicate-sql.factory';
 
 import type {
     ConsolidationScanScopeInterface,

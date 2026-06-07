@@ -2,6 +2,7 @@ import {
     ConsolidationAutoCandidateService,
     ConsolidationExecutorService,
     ConsolidationFamilyRegistryService,
+    ConsolidationRepairExecutorService,
     RefundConsolidationService,
     UnconsolidationService
 } from '@budgie/consolidation';
@@ -30,6 +31,14 @@ export const consolidationExecutorService = new ConsolidationExecutorService({
     transactionTagsRepository: repositories.transactionTagsRepository
 });
 
+export const consolidationRepairExecutorService = new ConsolidationRepairExecutorService({
+    database: testDb,
+    transactionRunner,
+    transactionRepository: repositories.transactionRepository,
+    transactionEntryRepository: repositories.transactionEntryRepository,
+    transactionTagsRepository: repositories.transactionTagsRepository
+});
+
 const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryService(
     {
         atmCashWithdrawalRepository: repositories.atmCashWithdrawalRepository,
@@ -39,6 +48,7 @@ const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryServic
         transferPairRepository: repositories.transferPairRepository
     },
     consolidationExecutorService,
+    consolidationRepairExecutorService,
     yieldControl
 );
 

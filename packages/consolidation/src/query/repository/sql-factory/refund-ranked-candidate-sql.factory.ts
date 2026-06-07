@@ -1,6 +1,6 @@
 import { REFUND_TIME_WINDOW_SECONDS, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-import { buildConsolidationScanScopeSql } from '../utils/build-consolidation-scan-scope-sql.util';
+import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 

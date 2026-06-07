@@ -2,10 +2,9 @@ export { ConsolidationAutoCandidateService } from './auto/service/consolidation-
 export { ConsolidationCandidateService } from './auto/service/consolidation-candidate.service';
 export { ConsolidationCoordinatorService } from './auto/service/consolidation-coordinator.service';
 export { ConsolidationFamilyRegistryService } from './auto/service/consolidation-family-registry.service';
-export { ConsolidationFamilyKeyEnum } from './auto/enum/consolidation-family-key.enum';
 export { consolidationScopeService } from './auto/service/consolidation-scope.service';
 export { ConsolidationExecutorService } from './executor/service/consolidation-executor.service';
-export { ConsolidationPlanBuilderService } from './executor/service/consolidation-plan-builder.service';
+export { ConsolidationRepairExecutorService } from './executor/service/consolidation-repair-executor.service';
 export { AtmCashWithdrawalRepository } from './query/repository/atm-cash-withdrawal.repository';
 export { ExistingTransferRepository } from './query/repository/existing-transfer.repository';
 export { IbanBridgeTransferRepository } from './query/repository/iban-bridge-transfer.repository';
@@ -14,8 +13,6 @@ export { RefundConsolidationService } from './refund/service/refund-consolidatio
 export { TransferPairRepository } from './query/repository/transfer-pair.repository';
 export { UnconsolidationService } from './executor/service/unconsolidation.service';
 
-export type { ConsolidationCandidateRepositoriesInterface } from './auto/interface/consolidation-candidate-repositories.interface';
-export type { ConsolidationFamilyRepositoriesInterface } from './auto/interface/consolidation-family-repositories.interface';
 export type { ConsolidationFamilyPreviewInterface } from './auto/interface/consolidation-family-preview.interface';
 export type { ConsolidationFamilyRunContextInterface } from './auto/interface/consolidation-family-run-context.interface';
 export type { ConsolidationFamilyRunResultInterface } from './auto/interface/consolidation-family-run-result.interface';
@@ -25,7 +22,6 @@ export type { ConsolidationProgressSnapshotInterface } from './auto/interface/co
 export type { ConsolidationResultInterface } from './auto/interface/consolidation-result.interface';
 export type { CanonicalTransferInputInterface } from './executor/interface/canonical-transfer-input.interface';
 export type { ConsolidationExecutorDependenciesInterface } from './executor/interface/consolidation-executor-dependencies.interface';
-export type { ConsolidationPlanInterface } from './executor/interface/consolidation-plan.interface';
 export type { ConvertToRefundParamsInterface } from './refund/interface/convert-to-refund-params.interface';
 export type { RefundConsolidationDependenciesInterface } from './refund/interface/refund-consolidation-dependencies.interface';
 export type { UnconsolidationDependenciesInterface } from './executor/interface/unconsolidation-dependencies.interface';

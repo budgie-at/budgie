@@ -1,4 +1,4 @@
-import { CategorySourceEnum, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { CategorySourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -9,70 +9,13 @@ import type { ConsolidationExecutorDependenciesInterface } from '../interface/co
 import type {
     AtmCashWithdrawalCandidateInterface,
     DB,
-    ExistingTransferChainReclaimCandidateInterface,
-    ExistingTransferIncomeDuplicateCandidateInterface,
-    IbanBridgeCanonicalDuplicateCandidateInterface,
-    RefundCandidateInterface,
     TransactionEntityInterface,
     TransactionEntryEntityInterface,
     TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
-export class ConsolidationWriterService {
+export class ConsolidationMutationService {
     constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {}
-
-    async writeRefundConsolidation(candidate: RefundCandidateInterface, tx: DB): Promise<void> {
-        await this.dependencies.transactionRepository.setConsolidationType(
-            candidate.expenseTransactionId,
-            TransactionConsolidationTypeEnum.REFUND,
-            tx
-        );
-        await this.copySourceTags(candidate.refundIncomeTransactionIds, candidate.expenseTransactionId, tx);
-        await this.moveSourcesToCanonical(candidate.refundIncomeTransactionIds, candidate.expenseTransactionId, tx);
-    }
-
-    async attachIbanBridgeCanonicalDuplicateSources(candidate: IbanBridgeCanonicalDuplicateCandidateInterface, tx: DB): Promise<void> {
-        const sourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
-
-        await this.moveSourcesToCanonical(sourceTransactionIds, candidate.existingCanonicalTransferId, tx);
-    }
-
-    async writeExistingTransferChainReclaim(candidate: ExistingTransferChainReclaimCandidateInterface, tx: DB): Promise<void> {
-        const sourceTransactionIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
-
-        await this.dependencies.transactionRepository.setConsolidationType(
-            candidate.existingTransferId,
-            TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
-            tx
-        );
-        await this.moveSourcesToCanonical(sourceTransactionIds, candidate.existingTransferId, tx);
-    }
-
-    async writeExistingTransferIncomeDuplicateRepair(candidate: ExistingTransferIncomeDuplicateCandidateInterface, tx: DB): Promise<void> {
-        await this.dependencies.transactionRepository.updateById(
-            candidate.existingTransferId,
-            {
-                exchangeRate: candidate.exchangeRate,
-                toAccountId: candidate.targetAccountId
-            },
-            tx
-        );
-        await this.dependencies.transactionEntryRepository.updateById(
-            candidate.existingTransferTargetEntryId,
-            {
-                accountId: candidate.targetAccountId,
-                amount: candidate.amount,
-                exchangeRate: 1
-            },
-            tx
-        );
-        await this.dependencies.transactionRepository.setConsolidationType(
-            candidate.existingTransferId,
-            TransactionConsolidationTypeEnum.TRANSFER_PAIR,
-            tx
-        );
-        await this.moveSourcesToCanonical([candidate.incomeTransactionId], candidate.existingTransferId, tx);
-    }
 
     async createCanonicalTransfer(input: CanonicalTransferInputInterface, tx: DB): Promise<TransactionEntityInterface> {
         const canonicalTransaction = await this.dependencies.transactionRepository.create(
@@ -167,7 +110,7 @@ export class ConsolidationWriterService {
         await this.dependencies.transactionRepository.setConsolidationParent(sourceTransactionIds, canonicalTransactionId, tx);
     }
 
-    private async copySourceTags(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
+    async copySourceTags(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
         await consolidationCopySourceTransactionTags(
             this.dependencies.transactionTagsRepository,
             sourceTransactionIds,

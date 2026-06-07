@@ -9,13 +9,15 @@ import { RefundPairConsolidationFamilyService } from './refund-pair-consolidatio
 import { TransferPairConsolidationFamilyService } from './transfer-pair-consolidation-family.service';
 
 import type { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
-import type { ConsolidationFamilyRepositoriesInterface } from '../interface/consolidation-family-repositories.interface';
+import type { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
 import type { ConsolidationFamilyStrategyInterface } from '../interface/consolidation-family-strategy.interface';
+import type { ConsolidationRepositoriesInterface } from '../interface/consolidation-repositories.interface';
 
 export class ConsolidationFamilyRegistryService {
     constructor(
-        private readonly repositories: ConsolidationFamilyRepositoriesInterface,
+        private readonly repositories: ConsolidationRepositoriesInterface,
         private readonly consolidationExecutorService: ConsolidationExecutorService,
+        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService,
         private readonly yieldControl: () => Promise<void>
     ) {}
 
@@ -33,12 +35,12 @@ export class ConsolidationFamilyRegistryService {
             ),
             new ExistingTransferChainReclaimConsolidationFamilyService(
                 this.repositories.existingTransferRepository,
-                this.consolidationExecutorService,
+                this.consolidationRepairExecutorService,
                 this.yieldControl
             ),
             new IbanBridgeCanonicalDuplicateConsolidationFamilyService(
                 this.repositories.ibanBridgeTransferRepository,
-                this.consolidationExecutorService,
+                this.consolidationRepairExecutorService,
                 this.yieldControl
             ),
             new IbanBridgeTransferConsolidationFamilyService(
@@ -48,7 +50,7 @@ export class ConsolidationFamilyRegistryService {
             ),
             new ExistingTransferIncomeDuplicateConsolidationFamilyService(
                 this.repositories.existingTransferRepository,
-                this.consolidationExecutorService,
+                this.consolidationRepairExecutorService,
                 this.yieldControl
             ),
             new TransferPairConsolidationFamilyService(
@@ -63,7 +65,7 @@ export class ConsolidationFamilyRegistryService {
             ),
             new RefundPairConsolidationFamilyService(
                 this.repositories.refundPairRepository,
-                this.consolidationExecutorService,
+                this.consolidationRepairExecutorService,
                 this.yieldControl
             )
         ];
@@ -72,7 +74,7 @@ export class ConsolidationFamilyRegistryService {
     buildExistingTransferIncomeDuplicateFamily(): ExistingTransferIncomeDuplicateConsolidationFamilyService {
         return new ExistingTransferIncomeDuplicateConsolidationFamilyService(
             this.repositories.existingTransferRepository,
-            this.consolidationExecutorService,
+            this.consolidationRepairExecutorService,
             this.yieldControl
         );
     }

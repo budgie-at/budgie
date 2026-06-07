@@ -1,7 +1,7 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 
-import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../shared/constant/transfer-pair-fast-time-window.constant';
-import { applyConsolidationScanScopeSql } from '../utils/apply-consolidation-scan-scope-sql.util';
+import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
+import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 

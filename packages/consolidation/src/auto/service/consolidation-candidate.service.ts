@@ -4,14 +4,17 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { ConsolidationSourceTransactionSetService } from './consolidation-source-transaction-set.service';
 
-import type { ConsolidationCandidateRepositoriesInterface } from '../interface/consolidation-candidate-repositories.interface';
+import type { ConsolidationRepositoriesInterface } from '../interface/consolidation-repositories.interface';
 import type { ExistingTransferIncomeDuplicateCandidateInterface } from '@budgie/contracts';
 
 export class ConsolidationCandidateService {
     private readonly sourceTransactionSetService = new ConsolidationSourceTransactionSetService();
 
     constructor(
-        private readonly repositories: ConsolidationCandidateRepositoriesInterface,
+        private readonly repositories: Pick<
+            ConsolidationRepositoriesInterface,
+            'atmCashWithdrawalRepository' | 'existingTransferRepository' | 'refundPairRepository' | 'transferPairRepository'
+        >,
         private readonly yieldControl: () => Promise<void>
     ) {}
 

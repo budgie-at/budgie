@@ -1,8 +1,8 @@
-import { REFUND_AUTO_CANDIDATES_SQL, REFUND_REVIEW_CANDIDATES_SQL } from '../sql-factory/refund-ranked-candidate-sql.factory';
+import { REFUND_AUTO_CANDIDATES_SQL, REFUND_REVIEW_CANDIDATES_SQL } from './sql-factory/refund-ranked-candidate-sql.factory';
 import {
     REFUNDABLE_EXPENSE_CANDIDATES_SQL,
     buildRefundableExpenseCandidateParams
-} from '../sql-factory/refundable-expense-candidate-sql.factory';
+} from './sql-factory/refundable-expense-candidate-sql.factory';
 
 import type {
     ConsolidationScanScopeInterface,
