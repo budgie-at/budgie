@@ -47,11 +47,11 @@ class TransferConsolidationService {
 
     @Log(
         scope =>
-            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+            `enter appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIds=${scope?.transactionIds.join(',') ?? ''}`,
         (result, scope) =>
-            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} found=${result.found} consolidated=${result.consolidated}`,
+            `done appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIds=${scope?.transactionIds.join(',') ?? ''} found=${result.found} consolidated=${result.consolidated}`,
         (error, scope) =>
-            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+            `throw appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIds=${scope?.transactionIds.join(',') ?? ''} error=${getErrorMessage(error)}`
     )
     async consolidate(scope: ConsolidationScanScopeInterface | null = null): Promise<ConsolidationResultInterface> {
         return this.runExclusive(() => this.runConsolidationIfIdle(scope));
@@ -67,14 +67,6 @@ class TransferConsolidationService {
         return this.runExclusive(() => this.buildProgressSnapshot());
     }
 
-    @Log(
-        (scope, onProgress) =>
-            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} hasOnProgress=${String(isDefined(onProgress))}`,
-        (result, scope, onProgress) =>
-            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} hasOnProgress=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
-        (error, scope, onProgress) =>
-            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
-    )
     private async runConsolidation(
         scope: ConsolidationScanScopeInterface | null,
         onProgress?: (processedCandidateGroupCount: number) => void

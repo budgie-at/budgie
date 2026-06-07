@@ -1,7 +1,3 @@
-import { Log } from '@budgie/logger';
-
-import { getErrorMessage } from '@rnw-community/shared';
-
 import {
     buildTransferPairCandidatesSql,
     buildTransferPairManualReviewCandidatesSql
@@ -33,35 +29,18 @@ import type { TransferPairReviewCandidateInterface } from '../interface/transfer
 export class TransferPairRepository {
     constructor(private db: DB) {}
 
-    @Log(
-        scope =>
-            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (result, scope) =>
-            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
-        (error, scope) =>
-            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
-    )
     async findCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<TransferPairCandidateInterface[]> {
         const sql = buildTransferPairCandidatesSql(scope);
 
         return this.db.$client.getAllAsync<TransferPairCandidateInterface>(sql);
     }
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
     async findManualReviewCandidates(): Promise<TransferPairReviewCandidateInterface[]> {
         const sql = buildTransferPairManualReviewCandidatesSql();
 
         return this.db.$client.getAllAsync<TransferPairReviewCandidateInterface>(sql);
     }
 
-    @Log(
-        scope =>
-            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (result, scope) =>
-            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
-        (error, scope) =>
-            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
-    )
     async findAtmCashWithdrawalCandidates(
         scope: ConsolidationScanScopeInterface | null = null
     ): Promise<AtmCashWithdrawalCandidateInterface[]> {
@@ -70,21 +49,12 @@ export class TransferPairRepository {
         return this.db.$client.getAllAsync<AtmCashWithdrawalCandidateInterface>(sql);
     }
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
     async findAtmCashWithdrawalReviewCandidates(): Promise<AtmCashWithdrawalReviewCandidateInterface[]> {
         const sql = buildAtmCashWithdrawalReviewCandidatesSql();
 
         return this.db.$client.getAllAsync<AtmCashWithdrawalReviewCandidateInterface>(sql);
     }
 
-    @Log(
-        scope =>
-            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (result, scope) =>
-            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
-        (error, scope) =>
-            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
-    )
     async findExistingTransferBridgeCandidates(
         scope: ConsolidationScanScopeInterface | null = null
     ): Promise<ExistingTransferBridgeCandidateInterface[]> {
@@ -93,14 +63,6 @@ export class TransferPairRepository {
         return this.db.$client.getAllAsync<ExistingTransferBridgeCandidateInterface>(sql);
     }
 
-    @Log(
-        scope =>
-            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (result, scope) =>
-            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
-        (error, scope) =>
-            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
-    )
     async findExistingTransferChainReclaimCandidates(
         scope: ConsolidationScanScopeInterface | null = null
     ): Promise<ExistingTransferChainReclaimCandidateInterface[]> {
@@ -109,14 +71,6 @@ export class TransferPairRepository {
         return this.db.$client.getAllAsync<ExistingTransferChainReclaimCandidateInterface>(sql);
     }
 
-    @Log(
-        scope =>
-            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (result, scope) =>
-            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
-        (error, scope) =>
-            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
-    )
     async findExistingTransferIncomeDuplicateCandidates(
         scope: ConsolidationScanScopeInterface | null = null
     ): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
@@ -125,14 +79,6 @@ export class TransferPairRepository {
         return this.db.$client.getAllAsync<ExistingTransferIncomeDuplicateCandidateInterface>(sql);
     }
 
-    @Log(
-        scope =>
-            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (result, scope) =>
-            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
-        (error, scope) =>
-            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
-    )
     async findIbanBridgeTransferCandidates(
         scope: ConsolidationScanScopeInterface | null = null
     ): Promise<IbanBridgeTransferCandidateInterface[]> {
@@ -141,14 +87,6 @@ export class TransferPairRepository {
         return this.db.$client.getAllAsync<IbanBridgeTransferCandidateInterface>(sql);
     }
 
-    @Log(
-        scope =>
-            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (result, scope) =>
-            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
-        (error, scope) =>
-            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
-    )
     async findIbanBridgeCanonicalDuplicateCandidates(
         scope: ConsolidationScanScopeInterface | null = null
     ): Promise<IbanBridgeCanonicalDuplicateCandidateInterface[]> {
@@ -157,14 +95,6 @@ export class TransferPairRepository {
         return this.db.$client.getAllAsync<IbanBridgeCanonicalDuplicateCandidateInterface>(sql);
     }
 
-    @Log(
-        scope =>
-            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (result, scope) =>
-            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
-        (error, scope) =>
-            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
-    )
     async findIbanBridgeChainTransferCandidates(
         scope: ConsolidationScanScopeInterface | null = null
     ): Promise<IbanBridgeChainTransferCandidateInterface[]> {

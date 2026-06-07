@@ -2,22 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
-import {
-    TransactionConsolidationTypeEnum,
-    TransactionEntityTable,
-    TransactionEntryEntityTable,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { testDb, testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService } from '../harness/test-context';
 
-import type {
-    TransactionCreateEntityInterface,
-    TransactionEntityInterface,
-    TransactionEntryCreateEntityInterface
-} from '@budgie/contracts';
+import type { TransactionEntityInterface } from '@budgie/contracts';
 
 const SOURCE_IBAN = 'UA-RECLAIM-SOURCE-EUR';
 const BRIDGE_IBAN = 'UA-RECLAIM-BRIDGE-UAH';
@@ -41,63 +31,18 @@ const seedDirectTransfer = (
     sourceAccountId: number,
     targetAccountId: number,
     consolidationType: TransactionConsolidationTypeEnum | null
-): TransactionEntityInterface => {
-    const directTransfer = testDb
-        .insert(TransactionEntityTable)
-        .values({
-            type: TransactionTypeEnum.TRANSFER,
-            title: 'Generated direct transfer',
-            externalId: null,
-            externalSource: null,
-            operatedAt,
-            exchangeRate: UAH_TO_EUR_RATE,
-            fromAccountId: sourceAccountId,
-            toAccountId: targetAccountId,
-            comment: '',
-            needsEmbedding: false,
-            consolidationParentTransactionId: null,
-            consolidationType,
-            updatedBy: null
-        } satisfies TransactionCreateEntityInterface)
-        .returning()
-        .all()[0];
-
-    if (!isDefined(directTransfer)) {
-        throw new Error('Expected direct transfer seed');
-    }
-
-    testDb
-        .insert(TransactionEntryEntityTable)
-        .values([
-            {
-                transactionId: directTransfer.id,
-                accountId: sourceAccountId,
-                categoryId: null,
-                mccCategoryId: null,
-                type: TransactionEntryTypeEnum.CREDIT,
-                amount: EUR_AMOUNT,
-                externalId: null,
-                exchangeRate: UAH_TO_EUR_RATE,
-                toIban: TARGET_IBAN,
-                originalTransactionId: null
-            },
-            {
-                transactionId: directTransfer.id,
-                accountId: targetAccountId,
-                categoryId: null,
-                mccCategoryId: null,
-                type: TransactionEntryTypeEnum.DEBIT,
-                amount: UAH_AMOUNT,
-                externalId: null,
-                exchangeRate: 1,
-                toIban: null,
-                originalTransactionId: null
-            }
-        ] satisfies TransactionEntryCreateEntityInterface[])
-        .run();
-
-    return directTransfer;
-};
+): TransactionEntityInterface =>
+    testSeedService.directTransfer({
+        consolidationType,
+        exchangeRate: UAH_TO_EUR_RATE,
+        operatedAt,
+        sourceAccountId,
+        sourceAmount: EUR_AMOUNT,
+        sourceEntryExchangeRate: UAH_TO_EUR_RATE,
+        targetAccountId,
+        targetAmount: UAH_AMOUNT,
+        toIban: TARGET_IBAN
+    });
 
 const seedBridgeLegs = (operatedAt: Date, bridgeAccountId: number, transferMccId: number) => {
     const bridgeIncome = testSeedService.bankPairIncome(

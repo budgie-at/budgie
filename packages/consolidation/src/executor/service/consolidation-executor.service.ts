@@ -304,11 +304,7 @@ export class ConsolidationExecutorService {
     ): Promise<boolean> {
         const sourceTransactionIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
 
-        if (!(await this.areCandidatesStillEligible(sourceTransactionIds, tx))) {
-            return false;
-        }
-
-        if (!(await this.isExistingTransferStillEligible(candidate.existingTransferId, tx))) {
+        if (!(await this.isExistingTransferConsolidationStillEligible(sourceTransactionIds, candidate.existingTransferId, tx))) {
             return false;
         }
 
@@ -328,11 +324,7 @@ export class ConsolidationExecutorService {
     ): Promise<boolean> {
         const sourceTransactionIds = [candidate.incomeTransactionId];
 
-        if (!(await this.areCandidatesStillEligible(sourceTransactionIds, tx))) {
-            return false;
-        }
-
-        if (!(await this.isExistingTransferStillEligible(candidate.existingTransferId, tx))) {
+        if (!(await this.isExistingTransferConsolidationStillEligible(sourceTransactionIds, candidate.existingTransferId, tx))) {
             return false;
         }
 
@@ -457,6 +449,18 @@ export class ConsolidationExecutorService {
         const transaction = await this.dependencies.transactionRepository.getByIdRaw(transactionId, tx);
 
         return isDefined(transaction) && !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt);
+    }
+
+    private async isExistingTransferConsolidationStillEligible(
+        sourceTransactionIds: number[],
+        existingTransferId: number,
+        tx: DB
+    ): Promise<boolean> {
+        if (!(await this.areCandidatesStillEligible(sourceTransactionIds, tx))) {
+            return false;
+        }
+
+        return this.isExistingTransferStillEligible(existingTransferId, tx);
     }
 
     private async createCanonicalTransfer(input: CanonicalTransferInputInterface, tx: DB): Promise<TransactionEntityInterface> {

@@ -24,14 +24,22 @@ const seedScopedTransferPair = (
     return { expenseId: expense.id, incomeId: income.id };
 };
 
+const seedWindowTransferPairs = () => {
+    const { fromAccount, toAccount } = seed.accountPair('UA-FROM', 'UA-TO');
+    const oldOperatedAt = new Date(2025, 0, 15, 12, 0, 0);
+    const newOperatedAt = new Date(2026, 0, 15, 12, 0, 0);
+
+    seedScopedTransferPair('old', oldOperatedAt, fromAccount.id, toAccount.id);
+
+    return {
+        changedPair: seedScopedTransferPair('new', newOperatedAt, fromAccount.id, toAccount.id),
+        newOperatedAt
+    };
+};
+
 describe('consolidation/bounded-consolidation-scope', () => {
     it('limits a bank-sync triggered scan to candidates inside the provided operated-at scope', async () => {
-        const { fromAccount, toAccount } = seed.accountPair('UA-FROM', 'UA-TO');
-        const oldOperatedAt = new Date(2025, 0, 15, 12, 0, 0);
-        const newOperatedAt = new Date(2026, 0, 15, 12, 0, 0);
-
-        seedScopedTransferPair('old', oldOperatedAt, fromAccount.id, toAccount.id);
-        const changedPair = seedScopedTransferPair('new', newOperatedAt, fromAccount.id, toAccount.id);
+        const { changedPair, newOperatedAt } = seedWindowTransferPairs();
 
         const result = await transferConsolidationService.consolidate({
             operatedAtFrom: new Date(newOperatedAt.getTime() - 60_000),
@@ -44,12 +52,7 @@ describe('consolidation/bounded-consolidation-scope', () => {
     });
 
     it('keeps settings-triggered consolidation global when no scope is provided', async () => {
-        const { fromAccount, toAccount } = seed.accountPair('UA-FROM', 'UA-TO');
-        const oldOperatedAt = new Date(2025, 0, 15, 12, 0, 0);
-        const newOperatedAt = new Date(2026, 0, 15, 12, 0, 0);
-
-        seedScopedTransferPair('old', oldOperatedAt, fromAccount.id, toAccount.id);
-        seedScopedTransferPair('new', newOperatedAt, fromAccount.id, toAccount.id);
+        seedWindowTransferPairs();
 
         const result = await transferConsolidationService.consolidate();
 
