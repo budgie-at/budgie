@@ -51,7 +51,8 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                     income_tx.type = '${TransactionTypeEnum.INCOME}'
                     AND income_tx.deleted_at IS NULL
                     AND income_tx.consolidation_parent_transaction_id IS NULL
-                    AND ABS(income_tx.operated_at - expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    AND income_tx.operated_at BETWEEN expense_tx.operated_at - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        AND expense_tx.operated_at + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                     ${INCOME_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries income_entry ON
                     income_entry.transaction_id = income_tx.id
@@ -116,7 +117,8 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                         AND direct_tx.consolidation_parent_transaction_id IS NULL
                         AND direct_tx.from_account_id = bridge_candidates.sourceAccountId
                         AND direct_tx.to_account_id = bridge_candidates.targetAccountId
-                        AND ABS(direct_tx.operated_at - bridge_candidates.operatedAt) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        AND direct_tx.operated_at BETWEEN bridge_candidates.operatedAt - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                            AND bridge_candidates.operatedAt + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         ${DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER}
                         AND EXISTS (
                             SELECT 1
@@ -148,7 +150,8 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                     AND direct_tx.consolidation_parent_transaction_id IS NULL
                     AND direct_tx.from_account_id = bridge_candidates.sourceAccountId
                     AND direct_tx.to_account_id = bridge_candidates.targetAccountId
-                    AND ABS(direct_tx.operated_at - bridge_candidates.operatedAt) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    AND direct_tx.operated_at BETWEEN bridge_candidates.operatedAt - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        AND bridge_candidates.operatedAt + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                     ${DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER}
                     AND EXISTS (
                         SELECT 1
