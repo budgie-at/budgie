@@ -1,8 +1,6 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
-import { isNotEmptyString } from '@rnw-community/shared';
-
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
@@ -50,7 +48,6 @@ export default function TransactionTagFilterModal() {
                 data={data}
                 selectedTagIds={selectedTagIds}
                 isLoading={isLoading}
-                alignToBottom={isNotEmptyString(search)}
                 additionalBottomPadding={FOOTER_BOTTOM_SPACE}
                 topOffset={LIST_TOP_SPACE}
                 onSelect={handleSelect}
