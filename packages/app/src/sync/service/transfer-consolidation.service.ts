@@ -9,10 +9,8 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 import { THIRTY_MINUTES_IN_SECONDS } from '../constant/time.constant';
 import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-task.constant';
 
-import { transferConsolidationAutoCandidateService } from './transfer-consolidation-auto-candidate.service';
-import { transferConsolidationCandidateService } from './transfer-consolidation-candidate.service';
+import { consolidationCoordinatorService } from './consolidation-coordinator.service';
 
-import type { ConsolidationCandidateGroupsInterface } from '../interface/consolidation-candidate-groups.interface';
 import type { ConsolidationPreviewInterface } from '../interface/consolidation-preview.interface';
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type { TransferConsolidationProgressSnapshotInterface } from '../interface/transfer-consolidation-progress-snapshot.interface';
@@ -70,41 +68,17 @@ class TransferConsolidationService {
     )
     private async runConsolidation(onProgress?: (processedCandidateGroupCount: number) => void): Promise<ConsolidationResultInterface> {
         const startedAt = Date.now();
-        const candidates = await this.findCandidateGroupsWithProfiling();
-        const consolidated = await this.processCandidateGroupsWithProfiling(candidates, onProgress);
+        const result = await consolidationCoordinatorService.consolidate(onProgress);
 
-        await this.updateBalancesAfterConsolidation(consolidated);
+        await this.updateBalancesAfterConsolidation(result.consolidated);
 
-        const result = {
-            found: this.countAutoCandidates(candidates),
-            consolidated
-        };
-        logger.log('consolidate:duration', { durationMs: Date.now() - startedAt, found: result.found, consolidated });
-
-        return result;
-    }
-
-    private async findCandidateGroupsWithProfiling(): Promise<ConsolidationCandidateGroupsInterface> {
-        const startedAt = Date.now();
-        const candidates = await transferConsolidationCandidateService.findGroups();
-        logger.log('findGroups:duration', {
-            autoCandidateCount: this.countAutoCandidates(candidates),
+        logger.log('consolidate:duration', {
             durationMs: Date.now() - startedAt,
-            manualReviewCandidateCount: this.countManualReviewCandidates(candidates)
+            found: result.found,
+            consolidated: result.consolidated
         });
 
-        return candidates;
-    }
-
-    private async processCandidateGroupsWithProfiling(
-        candidates: ConsolidationCandidateGroupsInterface,
-        onProgress?: (processedCandidateGroupCount: number) => void
-    ): Promise<number> {
-        const startedAt = Date.now();
-        const consolidated = await transferConsolidationAutoCandidateService.processGroups(candidates, onProgress);
-        logger.log('processGroups:duration', { consolidated, durationMs: Date.now() - startedAt });
-
-        return consolidated;
+        return result;
     }
 
     private async updateBalancesAfterConsolidation(consolidated: number): Promise<void> {
@@ -119,9 +93,8 @@ class TransferConsolidationService {
 
     private async buildPreview(): Promise<ConsolidationPreviewInterface> {
         const startedAt = Date.now();
-        const candidates = await transferConsolidationCandidateService.findGroups();
-        const autoCandidateCount = this.countAutoCandidates(candidates);
-        const manualReviewCandidateCount = this.countManualReviewCandidates(candidates);
+        const autoCandidateCount = await consolidationCoordinatorService.countAutoCandidates();
+        const manualReviewCandidateCount = await consolidationCoordinatorService.countManualReviewCandidates();
         logger.log('preview:duration', {
             autoCandidateCount,
             durationMs: Date.now() - startedAt,
@@ -136,9 +109,8 @@ class TransferConsolidationService {
 
     private async buildProgressSnapshot(): Promise<TransferConsolidationProgressSnapshotInterface> {
         const startedAt = Date.now();
-        const candidates = await transferConsolidationCandidateService.findGroups();
-        const autoCandidateCount = this.countAutoCandidates(candidates);
-        const manualReviewCandidateCount = this.countManualReviewCandidates(candidates);
+        const autoCandidateCount = await consolidationCoordinatorService.countAutoCandidates();
+        const manualReviewCandidateCount = await consolidationCoordinatorService.countManualReviewCandidates();
         const remainingCandidateGroupCount = autoCandidateCount + manualReviewCandidateCount;
         logger.log('progressSnapshot:duration', {
             autoCandidateCount,
@@ -194,27 +166,6 @@ class TransferConsolidationService {
                 this.activeOperation = null;
             }
         }
-    }
-
-    private countAutoCandidates(candidates: ConsolidationCandidateGroupsInterface): number {
-        return (
-            candidates.pairCandidates.length +
-            candidates.ibanBridgeChainTransferCandidates.length +
-            candidates.existingTransferBridgeCandidates.length +
-            candidates.ibanBridgeCanonicalDuplicateCandidates.length +
-            candidates.existingTransferIncomeDuplicateCandidates.length +
-            candidates.ibanBridgeTransferCandidates.length +
-            candidates.atmCashWithdrawalCandidates.length +
-            candidates.refundCandidates.length
-        );
-    }
-
-    private countManualReviewCandidates(candidates: ConsolidationCandidateGroupsInterface): number {
-        return (
-            candidates.manualReviewCandidates.length +
-            candidates.atmCashWithdrawalReviewCandidates.length +
-            candidates.refundReviewCandidates.length
-        );
     }
 }
 
