@@ -2,27 +2,27 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { ConsolidationFamilyBatchBuilderService } from './consolidation-family-batch-builder.service';
+
 import type { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
 import type { ConsolidationCandidateGroupsInterface } from '../interface/consolidation-candidate-groups.interface';
-import type {
-    AtmCashWithdrawalCandidateInterface,
-    ExistingTransferBridgeCandidateInterface,
-    ExistingTransferChainReclaimCandidateInterface,
-    ExistingTransferIncomeDuplicateCandidateInterface,
-    IbanBridgeCanonicalDuplicateCandidateInterface,
-    IbanBridgeChainTransferCandidateInterface,
-    IbanBridgeTransferCandidateInterface,
-    RefundCandidateInterface,
-    TransferPairCandidateInterface
-} from '@budgie/contracts';
+import type { ConsolidationFamilyBatchInterface } from '../interface/consolidation-family-batch.interface';
+import type { ExistingTransferIncomeDuplicateCandidateInterface } from '@budgie/contracts';
 
 export class ConsolidationAutoCandidateService {
     private static readonly YIELD_EVERY_CANDIDATES = 10;
 
+    private readonly consolidationFamilyBatchBuilderService: ConsolidationFamilyBatchBuilderService;
+
     constructor(
         private readonly consolidationExecutorService: ConsolidationExecutorService,
         private readonly yieldControl: () => Promise<void>
-    ) {}
+    ) {
+        this.consolidationFamilyBatchBuilderService = new ConsolidationFamilyBatchBuilderService(
+            consolidationExecutorService,
+            (candidates, consolidate) => this.processCandidates(candidates, consolidate)
+        );
+    }
 
     @Log(
         (candidates, onProgress) =>
@@ -41,63 +41,8 @@ export class ConsolidationAutoCandidateService {
             processedCandidateGroupCount += processedCount;
             onProgress?.(processedCandidateGroupCount);
         };
-        const bridgeChainConsolidated = await this.profileConsolidationBatch(
-            candidates.ibanBridgeChainTransferCandidates,
-            entries => this.processIbanBridgeChainTransferCandidates(entries),
-            publishProgress
-        );
-        const existingTransferBridgeConsolidated = await this.profileConsolidationBatch(
-            candidates.existingTransferBridgeCandidates,
-            entries => this.processExistingTransferBridgeCandidates(entries),
-            publishProgress
-        );
-        const existingTransferChainReclaimConsolidated = await this.profileConsolidationBatch(
-            candidates.existingTransferChainReclaimCandidates,
-            entries => this.processExistingTransferChainReclaimCandidates(entries),
-            publishProgress
-        );
-        const bridgeDuplicateConsolidated = await this.profileConsolidationBatch(
-            candidates.ibanBridgeCanonicalDuplicateCandidates,
-            entries => this.processIbanBridgeCanonicalDuplicateCandidates(entries),
-            publishProgress
-        );
-        const bridgeConsolidated = await this.profileConsolidationBatch(
-            candidates.ibanBridgeTransferCandidates,
-            entries => this.processIbanBridgeTransferCandidates(entries),
-            publishProgress
-        );
-        const existingTransferIncomeDuplicateConsolidated = await this.profileConsolidationBatch(
-            candidates.existingTransferIncomeDuplicateCandidates,
-            entries => this.processExistingTransferIncomeDuplicateCandidates(entries),
-            publishProgress
-        );
-        const pairConsolidated = await this.profileConsolidationBatch(
-            candidates.pairCandidates,
-            entries => this.processPairCandidates(entries),
-            publishProgress
-        );
-        const atmConsolidated = await this.profileConsolidationBatch(
-            candidates.atmCashWithdrawalCandidates,
-            entries => this.processAtmCashWithdrawalCandidates(entries),
-            publishProgress
-        );
-        const refundConsolidated = await this.profileConsolidationBatch(
-            candidates.refundCandidates,
-            entries => this.processRefundCandidates(entries),
-            publishProgress
-        );
 
-        return (
-            bridgeChainConsolidated +
-            existingTransferBridgeConsolidated +
-            existingTransferChainReclaimConsolidated +
-            bridgeDuplicateConsolidated +
-            bridgeConsolidated +
-            existingTransferIncomeDuplicateConsolidated +
-            pairConsolidated +
-            atmConsolidated +
-            refundConsolidated
-        );
+        return this.processFamilyBatches(this.consolidationFamilyBatchBuilderService.buildBatches(candidates), publishProgress);
     }
 
     @Log(
@@ -108,83 +53,46 @@ export class ConsolidationAutoCandidateService {
     async processExistingTransferIncomeDuplicateCandidates(
         candidates: ExistingTransferIncomeDuplicateCandidateInterface[]
     ): Promise<number> {
-        return this.reduceConsolidations(candidates, candidate =>
+        return this.processCandidates(candidates, candidate =>
             this.consolidationExecutorService.consolidateExistingTransferIncomeDuplicate(candidate)
         );
     }
 
     countCandidates(candidates: ConsolidationCandidateGroupsInterface): number {
-        return ConsolidationAutoCandidateService.countCandidateGroupItems(candidates);
+        return this.consolidationFamilyBatchBuilderService.countCandidates(candidates);
     }
 
-    private async processPairCandidates(candidates: TransferPairCandidateInterface[]): Promise<number> {
-        return this.reduceConsolidations(candidates, candidate => this.consolidationExecutorService.consolidatePair(candidate));
-    }
-
-    private async processAtmCashWithdrawalCandidates(candidates: AtmCashWithdrawalCandidateInterface[]): Promise<number> {
-        return this.reduceConsolidations(candidates, candidate =>
-            this.consolidationExecutorService.consolidateAtmCashWithdrawal(candidate)
-        );
-    }
-
-    private async processIbanBridgeTransferCandidates(candidates: IbanBridgeTransferCandidateInterface[]): Promise<number> {
-        return this.reduceConsolidations(candidates, candidate =>
-            this.consolidationExecutorService.consolidateIbanBridgeTransfer(candidate)
-        );
-    }
-
-    private async processIbanBridgeCanonicalDuplicateCandidates(
-        candidates: IbanBridgeCanonicalDuplicateCandidateInterface[]
+    private async processFamilyBatches(
+        batches: ConsolidationFamilyBatchInterface[],
+        onProgress: (processedCandidateGroupCount: number) => void
     ): Promise<number> {
-        return this.reduceConsolidations(candidates, candidate =>
-            this.consolidationExecutorService.consolidateIbanBridgeCanonicalDuplicate(candidate)
-        );
+        return batches.reduce(async (consolidatedPromise, batch) => {
+            const consolidated = await consolidatedPromise;
+            const familyConsolidated = await this.profileConsolidationBatch(batch, onProgress);
+
+            return consolidated + familyConsolidated;
+        }, Promise.resolve(0));
     }
 
-    private async processExistingTransferBridgeCandidates(candidates: ExistingTransferBridgeCandidateInterface[]): Promise<number> {
-        return this.reduceConsolidations(candidates, candidate =>
-            this.consolidationExecutorService.consolidateExistingTransferBridge(candidate)
-        );
-    }
-
-    private async processExistingTransferChainReclaimCandidates(
-        candidates: ExistingTransferChainReclaimCandidateInterface[]
-    ): Promise<number> {
-        return this.reduceConsolidations(candidates, candidate =>
-            this.consolidationExecutorService.consolidateExistingTransferChainReclaim(candidate)
-        );
-    }
-
-    private async processIbanBridgeChainTransferCandidates(candidates: IbanBridgeChainTransferCandidateInterface[]): Promise<number> {
-        return this.reduceConsolidations(candidates, candidate =>
-            this.consolidationExecutorService.consolidateIbanBridgeChainTransfer(candidate)
-        );
-    }
-
-    private async processRefundCandidates(candidates: RefundCandidateInterface[]): Promise<number> {
-        return this.reduceConsolidations(candidates, candidate => this.consolidationExecutorService.consolidateRefund(candidate));
-    }
-
-    private async profileConsolidationBatch<T>(
-        candidates: T[],
-        processBatch: (entries: T[]) => Promise<number>,
+    private async profileConsolidationBatch(
+        batch: ConsolidationFamilyBatchInterface,
         onProgress?: (processedCandidateGroupCount: number) => void
     ): Promise<number> {
-        if (candidates.length === 0) {
-            onProgress?.(candidates.length);
+        if (batch.candidateCount === 0) {
+            onProgress?.(batch.candidateCount);
 
             return 0;
         }
 
         await this.yieldControl();
-        const consolidated = await processBatch(candidates);
-        onProgress?.(candidates.length);
+        const consolidated = await batch.process();
+        onProgress?.(batch.candidateCount);
         await this.yieldControl();
 
         return consolidated;
     }
 
-    private async reduceConsolidations<T>(candidates: T[], consolidate: (candidate: T) => Promise<boolean>): Promise<number> {
+    private async processCandidates<T>(candidates: T[], consolidate: (candidate: T) => Promise<boolean>): Promise<number> {
         return candidates.reduce(async (consolidatedPromise, candidate, candidateIndex) => {
             const consolidated = await consolidatedPromise;
             const success = await consolidate(candidate).then(
