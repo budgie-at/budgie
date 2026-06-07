@@ -6,6 +6,7 @@ import { emptyFn } from '@rnw-community/shared';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { authService } from '../../auth/service/auth.service';
 import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
+import { historicalMarketDataLoaderService } from '../../market-data/service/historical-market-data-loader.service';
 import { binanceSyncService } from '../../sync/service/binance-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../../sync/service/sync-workload.service';
@@ -30,6 +31,7 @@ const initializeAppServices = async (): Promise<void> => {
     await monobankSyncService.registerBackgroundTask().catch(emptyFn);
     await binanceSyncService.registerBackgroundTask().catch(emptyFn);
     await syncWorkloadService.run('startup', syncAppData);
+    void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
 };
 
 const scheduleAppServicesInitialization = (): (() => void) => {

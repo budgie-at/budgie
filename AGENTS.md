@@ -156,6 +156,8 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 54. **After `await` inside `useEffect`, downstream reads come from the awaited result, not the captured closure.** Hook destructured state (`const { data } = useFoo()`) is captured at render time. By the time `await something()` resolves, `data` is stale. Thread fresh values through the resolved value, the callback parameter, or a fresh ref read — never `data.foo` from the original closure.
 55. **Snapshot Typed Array buffers from native callbacks.** When a native API hands you a `Float32Array`/`Int16Array`/etc. view (`AudioBuffer.getChannelData(0)`, JNI callbacks, FFI), the underlying memory is typically reused on the next callback. Always copy via `new Float32Array(samples)` before storing — otherwise all stored chunks alias the latest buffer.
 56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.
+57. **For `@Log` callbacks, preserve APIs and destructure callback rest args.** If logging callbacks trip `max-params`, use `(result, ...[argA, argB]) => ...`; never reshape the method signature or add a lint disable just for the decorator.
+58. **Do not decorate query-builder factory methods with `@Log`.** If a repository method returns a Drizzle builder for callers to finish with `.get()` / `.all()` / `.execute()`, keep it plain and log the executed service or repository boundary instead.
 
 ### Naming Conventions
 
@@ -570,7 +572,7 @@ Add `eslint-disable-next-line` with justification for these specific cases:
 | `max-statements`                | Form orchestration components with multiple hooks/handlers                                                                                                | `-- Form orchestration component with multiple hooks and handlers`             |
 | `max-lines-per-function`        | Layout files, complex form components                                                                                                                     | `-- Layout/form component requires many lines`                                 |
 | `max-lines`                     | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together`   |
-| `@typescript-eslint/max-params` | Existing public APIs or lifecycle log hooks must preserve positional argument shape                                                                       | `-- Existing public API and Log hooks intentionally keep positional arguments` |
+| `@typescript-eslint/max-params` | Existing public APIs must preserve positional argument shape. For `@Log` callbacks, prefer rest-arg destructuring from rule 57 instead                   | `-- Existing public API intentionally keeps positional arguments`              |
 | `func-style`                    | Next.js `generateMetadata` requires `export async function`, not `const`                                                                                  | `-- Next.js generateMetadata must be a function declaration`                   |
 
 Example:

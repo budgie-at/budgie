@@ -55,7 +55,7 @@ export const AmountInput = ({
 
         const normalizedNumeric = normalizeDecimalSeparator(cleaned, decimalSeparator);
 
-        const { integerPart, decimalPart, hasDecimal } = extractPartsFromNumeric(normalizedNumeric);
+        const { integerPart, decimalPart, hasDecimal } = extractPartsFromNumeric(normalizedNumeric, visibleDecimalPlaces);
 
         const formattedInteger = isNotEmptyString(integerPart)
             ? intl.formatNumber(Number(integerPart), { useGrouping: true, maximumFractionDigits: 0 })

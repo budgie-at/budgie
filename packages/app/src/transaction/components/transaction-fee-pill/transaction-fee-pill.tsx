@@ -3,7 +3,7 @@ import { t } from '@lingui/core/macro';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { useCryptoFormatDigits } from '../../../i18n/hook/use-crypto-format-digits.hook';
+import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
@@ -20,7 +20,7 @@ interface Props {
 export const TransactionFeePill = ({ amount, currencySymbol, instrumentType, showEmptyState = false, onPress, testID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const formatCryptoDigits = useCryptoFormatDigits();
+    const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
     const hasFee = isPositiveNumber(amount);
 
     if (!hasFee && !showEmptyState) {

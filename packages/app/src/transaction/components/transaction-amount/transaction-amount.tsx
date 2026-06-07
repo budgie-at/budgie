@@ -12,8 +12,8 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { useCryptoFormatDigits } from '../../../i18n/hook/use-crypto-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
@@ -64,7 +64,7 @@ const getDisplayState = (transaction: TransactionWithRelationsEntityInterface) =
 export const TransactionAmount = ({ transaction }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const formatCryptoDigits = useCryptoFormatDigits();
+    const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
     const { type, isAdjustment, fromEntry, toEntry } = getDisplayState(transaction);
 
     const formatEntryAmount = (entry: AggregatedEntry): string => {

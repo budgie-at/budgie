@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.36.1](https://github.com/budgie-at/budgie/compare/v5.36.0...v5.36.1) (2026-06-07)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.36.0](https://github.com/budgie-at/budgie/compare/v5.35.6...v5.36.0) (2026-06-07)
+
+**Note:** Version bump only for package @budgie/ai
+
 ## [5.35.5](https://github.com/budgie-at/budgie/compare/v5.35.4...v5.35.5) (2026-06-06)
 
 **Note:** Version bump only for package @budgie/ai

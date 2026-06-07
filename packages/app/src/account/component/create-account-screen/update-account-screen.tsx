@@ -16,6 +16,7 @@ import { Button } from '../../../@generic/component/button/button';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
@@ -42,6 +43,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
 
     const variant = account.type === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[account.type];
     const showInstrumentAfterAmount = account.type === AccountTypeEnum.CRYPTO || account.type === AccountTypeEnum.CRYPTO_SYNC;
+    const minimumDecimalPlaces = showInstrumentAfterAmount ? MICRO_UNIT_DECIMAL_PLACES : 0;
 
     return (
         <FormPage
@@ -66,6 +68,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                 instrumentSymbol={instrumentSymbol}
                 control={control}
                 allowNegative={allowNegativeBalance}
+                minimumDecimalPlaces={minimumDecimalPlaces}
                 showInstrumentAfterAmount={showInstrumentAfterAmount}
             />
 
