@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.35.7](https://github.com/budgie-at/budgie/compare/v5.35.6...v5.35.7) (2026-06-07)
+
+### Bug Fixes
+
+- **app:** keep filter search near keyboard ([#559](https://github.com/budgie-at/budgie/issues/559)) ([a7b07a4](https://github.com/budgie-at/budgie/commit/a7b07a4144a7e501a4c05117fcad8b864d0e246d))
+
 ## [5.35.6](https://github.com/budgie-at/budgie/compare/v5.35.5...v5.35.6) (2026-06-07)
 
 ### Bug Fixes
