@@ -1,7 +1,7 @@
 import {
     buildAtmCashWithdrawalCandidatesSql,
     buildAtmCashWithdrawalReviewCandidatesSql
-} from '../sql-factory/transfer-pair-cash-withdrawal-sql.factory';
+} from './sql-factory/transfer-pair-cash-withdrawal-sql.factory';
 
 import type {
     AtmCashWithdrawalCandidateInterface,

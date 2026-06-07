@@ -2,7 +2,7 @@ import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enu
 
 import { ConsolidationFamilyStrategyService } from './consolidation-family-strategy.service';
 
-import type { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
+import type { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
 import type { IbanBridgeTransferRepository } from '../../query/repository/iban-bridge-transfer.repository';
 import type { ConsolidationScanScopeInterface, IbanBridgeCanonicalDuplicateCandidateInterface } from '@budgie/contracts';
 
@@ -11,7 +11,10 @@ export class IbanBridgeCanonicalDuplicateConsolidationFamilyService extends Cons
 
     constructor(
         private readonly ibanBridgeTransferRepository: Pick<IbanBridgeTransferRepository, 'findCanonicalDuplicateCandidates'>,
-        private readonly consolidationExecutorService: Pick<ConsolidationExecutorService, 'consolidateIbanBridgeCanonicalDuplicate'>,
+        private readonly consolidationRepairExecutorService: Pick<
+            ConsolidationRepairExecutorService,
+            'consolidateIbanBridgeCanonicalDuplicate'
+        >,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
@@ -22,7 +25,7 @@ export class IbanBridgeCanonicalDuplicateConsolidationFamilyService extends Cons
     }
 
     protected consolidateCandidate(candidate: IbanBridgeCanonicalDuplicateCandidateInterface): Promise<boolean> {
-        return this.consolidationExecutorService.consolidateIbanBridgeCanonicalDuplicate(candidate);
+        return this.consolidationRepairExecutorService.consolidateIbanBridgeCanonicalDuplicate(candidate);
     }
 
     protected getSourceTransactionIds(candidate: IbanBridgeCanonicalDuplicateCandidateInterface): number[] {

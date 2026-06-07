@@ -3,7 +3,8 @@ import {
     ConsolidationCandidateService,
     ConsolidationCoordinatorService,
     ConsolidationExecutorService,
-    ConsolidationFamilyRegistryService
+    ConsolidationFamilyRegistryService,
+    ConsolidationRepairExecutorService
 } from '@budgie/consolidation';
 import { transactionAsync } from '@budgie/contracts';
 
@@ -21,6 +22,14 @@ import {
 import { microPause } from '../../@generic/utils/micro-pause.util';
 
 const consolidationExecutorService = new ConsolidationExecutorService({
+    database: db,
+    transactionEntryRepository,
+    transactionRepository,
+    transactionRunner: { run: transactionAsync },
+    transactionTagsRepository
+});
+
+const consolidationRepairExecutorService = new ConsolidationRepairExecutorService({
     database: db,
     transactionEntryRepository,
     transactionRepository,
@@ -47,6 +56,7 @@ const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryServic
         transferPairRepository
     },
     consolidationExecutorService,
+    consolidationRepairExecutorService,
     microPause
 );
 

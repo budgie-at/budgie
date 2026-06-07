@@ -1,14 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-    ConsolidationFamilyRegistryService,
-    ConsolidationFamilyKeyEnum,
-    type ConsolidationFamilyStrategyInterface
-} from '@budgie/consolidation';
+import { ConsolidationFamilyRegistryService, type ConsolidationFamilyStrategyInterface } from '@budgie/consolidation';
 
 import {
     atmCashWithdrawalRepository,
     consolidationExecutorService,
+    consolidationRepairExecutorService,
     existingTransferRepository,
     ibanBridgeTransferRepository,
     refundPairRepository,
@@ -31,6 +28,7 @@ describe('consolidation/family-priority', () => {
                 transferPairRepository
             },
             consolidationExecutorService,
+            consolidationRepairExecutorService,
             () => Promise.resolve()
         );
 
@@ -38,15 +36,15 @@ describe('consolidation/family-priority', () => {
         const familyKeys = families.map(family => family.key);
 
         expect(familyKeys).toEqual([
-            ConsolidationFamilyKeyEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
-            ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_BRIDGE,
-            ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_CHAIN_RECLAIM,
-            ConsolidationFamilyKeyEnum.IBAN_BRIDGE_CANONICAL_DUPLICATE,
-            ConsolidationFamilyKeyEnum.IBAN_BRIDGE_TRANSFER,
-            ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_INCOME_DUPLICATE,
-            ConsolidationFamilyKeyEnum.TRANSFER_PAIR,
-            ConsolidationFamilyKeyEnum.ATM_CASH_WITHDRAWAL,
-            ConsolidationFamilyKeyEnum.REFUND
+            'IBAN_BRIDGE_CHAIN_TRANSFER',
+            'EXISTING_TRANSFER_BRIDGE',
+            'EXISTING_TRANSFER_CHAIN_RECLAIM',
+            'IBAN_BRIDGE_CANONICAL_DUPLICATE',
+            'IBAN_BRIDGE_TRANSFER',
+            'EXISTING_TRANSFER_INCOME_DUPLICATE',
+            'TRANSFER_PAIR',
+            'ATM_CASH_WITHDRAWAL',
+            'REFUND'
         ]);
         for (const family of families) {
             expectStrategyContract(family);
