@@ -20,6 +20,7 @@ import { DatePickerModalProvider } from '../../transaction/provider/date-picker-
 import { NoteInputModalProvider } from '../../transaction/provider/note-input-modal.provider';
 import { SplitEntriesModalProvider } from '../../transaction/provider/split-entries-modal.provider';
 import { TransactionAccountFilterModalProvider } from '../../transaction/provider/transaction-account-filter-modal.provider';
+import { TransactionAmountFilterModalProvider } from '../../transaction/provider/transaction-amount-filter-modal.provider';
 import { TransactionCategoryFilterModalProvider } from '../../transaction/provider/transaction-category-filter-modal.provider';
 import { TransactionFeeModalProvider } from '../../transaction/provider/transaction-fee-modal.provider';
 import { TransactionTagFilterModalProvider } from '../../transaction/provider/transaction-tag-filter-modal.provider';
@@ -53,17 +54,19 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                                                                 <DateFilterModalProvider>
                                                                                     <TransactionCategoryFilterModalProvider>
                                                                                         <TransactionAccountFilterModalProvider>
-                                                                                            <TransactionTagFilterModalProvider>
-                                                                                                <VoiceReviewModalProvider>
-                                                                                                    <RuleFormModalProvider>
-                                                                                                        <RuleSelectorModalProvider>
-                                                                                                            <RuleMccSelectorModalProvider>
-                                                                                                                {children}
-                                                                                                            </RuleMccSelectorModalProvider>
-                                                                                                        </RuleSelectorModalProvider>
-                                                                                                    </RuleFormModalProvider>
-                                                                                                </VoiceReviewModalProvider>
-                                                                                            </TransactionTagFilterModalProvider>
+                                                                                            <TransactionAmountFilterModalProvider>
+                                                                                                <TransactionTagFilterModalProvider>
+                                                                                                    <VoiceReviewModalProvider>
+                                                                                                        <RuleFormModalProvider>
+                                                                                                            <RuleSelectorModalProvider>
+                                                                                                                <RuleMccSelectorModalProvider>
+                                                                                                                    {children}
+                                                                                                                </RuleMccSelectorModalProvider>
+                                                                                                            </RuleSelectorModalProvider>
+                                                                                                        </RuleFormModalProvider>
+                                                                                                    </VoiceReviewModalProvider>
+                                                                                                </TransactionTagFilterModalProvider>
+                                                                                            </TransactionAmountFilterModalProvider>
                                                                                         </TransactionAccountFilterModalProvider>
                                                                                     </TransactionCategoryFilterModalProvider>
                                                                                 </DateFilterModalProvider>

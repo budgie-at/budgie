@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { Text, View, ViewStyle } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -9,7 +9,8 @@ import { DeletableRow } from '../../../@generic/component/deletable-row/deletabl
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
-import { BudgetCategoryLimitAmountInput } from '../budget-category-limit-amount-input/budget-category-limit-amount-input';
+import { BudgetCategoryLimitCompactRowLayout } from '../budget-category-limit-compact-row-layout/budget-category-limit-compact-row-layout';
+import { BudgetLimitAmountInput } from '../budget-limit-amount-input/budget-limit-amount-input';
 
 const ICON_PLACEHOLDER_STYLE: ViewStyle = { width: 32, height: 32 };
 
@@ -41,21 +42,18 @@ export const BudgetCategoryLimitCompactRow = ({ currencySymbol, index, onRemove 
 
     return (
         <DeletableRow id={index} onDelete={onRemove} confirmation={confirmation}>
-            <View
+            <BudgetCategoryLimitCompactRowLayout
+                amountInput={
+                    <BudgetLimitAmountInput
+                        currencySymbol={currencySymbol}
+                        name={`categoryLimits.${index}.limitAmount`}
+                        testID={BudgetSelector.SetupCategoryLimitAmountInput(index)}
+                    />
+                }
+                icon={icon}
                 testID={BudgetSelector.SetupCategoryLimitRow(index)}
-                collapsable={false}
-                className="flex-row items-center gap-x-md bg-primary-reverse px-md py-sm rounded-2xl"
-            >
-                {icon}
-                <Text className="text-primary text-md flex-1" numberOfLines={1}>
-                    {title}
-                </Text>
-                <BudgetCategoryLimitAmountInput
-                    currencySymbol={currencySymbol}
-                    index={index}
-                    testID={BudgetSelector.SetupCategoryLimitAmountInput(index)}
-                />
-            </View>
+                title={title}
+            />
         </DeletableRow>
     );
 };

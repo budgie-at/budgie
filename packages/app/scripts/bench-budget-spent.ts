@@ -100,6 +100,7 @@ const buildSchema = (db: Database.Database): void => {
             period_start_day INTEGER NOT NULL DEFAULT 1,
             use_last_day_of_month INTEGER NOT NULL DEFAULT 0,
             overall_limit INTEGER NOT NULL,
+            other_limit INTEGER NOT NULL DEFAULT 0,
             created_at INTEGER NOT NULL,
             updated_at INTEGER NOT NULL,
             deleted_at INTEGER
@@ -191,9 +192,9 @@ const insertCategories = (db: Database.Database, nowSec: number): void => {
 
 const insertBudgetWithCategoryLimits = (db: Database.Database, nowSec: number): void => {
     db.prepare(
-        `INSERT INTO budgets (id, name, period, period_start_day, use_last_day_of_month, overall_limit, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-    ).run(1, 'Monthly Budget', 'MONTHLY', 1, 0, 500_000_000, nowSec, nowSec);
+        `INSERT INTO budgets (id, name, period, period_start_day, use_last_day_of_month, overall_limit, other_limit, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).run(1, 'Monthly Budget', 'MONTHLY', 1, 0, 500_000_000, 350_000_000, nowSec, nowSec);
 
     const limitStmt = db.prepare(
         `INSERT INTO budget_category_limits (budget_id, category_id, limit_amount, created_at, updated_at)

@@ -44,6 +44,7 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
             periodStartDay: DEFAULT_PERIOD_START_DAY,
             useLastDayOfMonth: false,
             overallLimit: 0,
+            otherLimit: 0,
             categoryLimits: [],
             instrumentId: isPositiveNumber(defaultInstrumentId) ? defaultInstrumentId : 0
         }
@@ -76,6 +77,7 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
                 periodStartDay: budget.periodStartDay,
                 useLastDayOfMonth: budget.useLastDayOfMonth,
                 overallLimit: convertFromMicroUnits(budget.overallLimit),
+                otherLimit: convertFromMicroUnits(budget.otherLimit),
                 categoryLimits: categoryLimits.map(limit => ({
                     categoryId: limit.categoryId,
                     limitAmount: convertFromMicroUnits(limit.limitAmount)
@@ -161,6 +163,7 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
                     periodStartDay: values.periodStartDay,
                     useLastDayOfMonth: values.useLastDayOfMonth,
                     overallLimit: convertToMicroUnits(values.overallLimit),
+                    otherLimit: convertToMicroUnits(values.otherLimit),
                     instrumentId: values.instrumentId,
                     categoryLimits: values.categoryLimits.map(limit => ({
                         categoryId: limit.categoryId,

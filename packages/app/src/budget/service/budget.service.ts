@@ -14,11 +14,11 @@ import type { BudgetCategoryLimitEntityInterface, BudgetEntityInterface, DB } fr
 class BudgetService {
     @Log(
         input =>
-            `enter name="${input.name}" period=${input.period} overallLimit=${input.overallLimit} periodStartDay=${input.periodStartDay} useLastDayOfMonth=${String(input.useLastDayOfMonth)} categoryLimits=${input.categoryLimits.length}`,
+            `enter name="${input.name}" period=${input.period} overallLimit=${input.overallLimit} otherLimit=${input.otherLimit} periodStartDay=${input.periodStartDay} useLastDayOfMonth=${String(input.useLastDayOfMonth)} categoryLimits=${input.categoryLimits.length}`,
         (result, input) =>
-            `done name="${input.name}" period=${input.period} overallLimit=${input.overallLimit} periodStartDay=${input.periodStartDay} useLastDayOfMonth=${String(input.useLastDayOfMonth)} categoryLimits=${input.categoryLimits.length} id=${result.id}`,
+            `done name="${input.name}" period=${input.period} overallLimit=${input.overallLimit} otherLimit=${input.otherLimit} periodStartDay=${input.periodStartDay} useLastDayOfMonth=${String(input.useLastDayOfMonth)} categoryLimits=${input.categoryLimits.length} id=${result.id}`,
         (error, input) =>
-            `throw name="${input.name}" period=${input.period} overallLimit=${input.overallLimit} periodStartDay=${input.periodStartDay} useLastDayOfMonth=${String(input.useLastDayOfMonth)} categoryLimits=${input.categoryLimits.length} error=${getErrorMessage(error)}`
+            `throw name="${input.name}" period=${input.period} overallLimit=${input.overallLimit} otherLimit=${input.otherLimit} periodStartDay=${input.periodStartDay} useLastDayOfMonth=${String(input.useLastDayOfMonth)} categoryLimits=${input.categoryLimits.length} error=${getErrorMessage(error)}`
     )
     async createBudget(input: BudgetCreateInputInterface): Promise<BudgetEntityInterface> {
         return transactionAsync(db, async tx => {

@@ -22,6 +22,8 @@ export const BudgetSelector = {
     SetupCategoryLimitAddButton: 'BudgetSetup.CategoryLimitAddButton',
     SetupCategoryLimitRow: (index: number) => `BudgetSetup.CategoryLimit.${index}.Row` as const,
     SetupCategoryLimitAmountInput: (index: number) => `BudgetSetup.CategoryLimit.${index}.AmountInput` as const,
+    SetupOtherCategoryLimitRow: 'BudgetSetup.OtherCategoryLimit.Row',
+    SetupOtherCategoryLimitAmountInput: 'BudgetSetup.OtherCategoryLimit.AmountInput',
     SetupAllocationSummaryOverBy: 'BudgetSetup.AllocationSummary.OverBy',
     SetupAllocationSummaryRemaining: 'BudgetSetup.AllocationSummary.Remaining'
 } as const;

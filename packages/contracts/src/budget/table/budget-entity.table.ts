@@ -15,6 +15,7 @@ export const BudgetEntityTable = sqliteTable(
         periodStartDay: int('period_start_day').notNull().default(1),
         useLastDayOfMonth: int('use_last_day_of_month', { mode: 'boolean' }).notNull().default(false),
         overallLimit: int('overall_limit').notNull(),
+        otherLimit: int('other_limit').notNull().default(0),
         instrumentId: int('instrument_id')
             .notNull()
             .references(() => InstrumentEntityTable.id)

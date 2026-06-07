@@ -31,6 +31,7 @@ import m0026 from './0026_money_data_upgrade.sql';
 import m0027 from './0027_mark_fee_entries.sql';
 import m0028 from './0028_add_crypto_instruments.sql';
 import m0029 from './0029_add_budget_planning.sql';
+import m0030 from './0030_add_budget_other_limit.sql';
 
 export default {
     journal,
@@ -64,6 +65,7 @@ export default {
         m0026,
         m0027,
         m0028,
-        m0029
+        m0029,
+        m0030
     }
 };
