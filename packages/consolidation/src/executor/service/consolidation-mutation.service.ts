@@ -1,6 +1,7 @@
 import { CategorySourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
 
@@ -17,6 +18,14 @@ import type {
 export class ConsolidationMutationService {
     constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {}
 
+    @Log(
+        (input, tx) =>
+            `enter title="${input.title}" fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))}`,
+        (result, input, tx) =>
+            `done title="${input.title}" fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))} canonicalTransactionId=${result.id}`,
+        (error, input, tx) =>
+            `throw title="${input.title}" fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async createCanonicalTransfer(input: CanonicalTransferInputInterface, tx: DB): Promise<TransactionEntityInterface> {
         const canonicalTransaction = await this.dependencies.transactionRepository.create(
             {
@@ -70,6 +79,20 @@ export class ConsolidationMutationService {
         return canonicalTransaction;
     }
 
+    @Log(
+        (candidate, sourceTransactions, canonicalTransactionId, tx) =>
+            `enter transactionId=${candidate.transactionId} sourceAccountId=${candidate.sourceAccountId} sourceTransactionIds=${sourceTransactions.map(transaction => transaction.id).join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
+        (result, ...inputs) => {
+            const [candidate, sourceTransactions, canonicalTransactionId, tx] = inputs;
+
+            return `done transactionId=${candidate.transactionId} sourceAccountId=${candidate.sourceAccountId} sourceTransactionIds=${sourceTransactions.map(transaction => transaction.id).join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} result=${String(result)}`;
+        },
+        (error, ...inputs) => {
+            const [candidate, sourceTransactions, canonicalTransactionId, tx] = inputs;
+
+            return `throw transactionId=${candidate.transactionId} sourceAccountId=${candidate.sourceAccountId} sourceTransactionIds=${sourceTransactions.map(transaction => transaction.id).join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`;
+        }
+    )
     async createAtmCashWithdrawalFeeEntry(
         candidate: AtmCashWithdrawalCandidateInterface,
         sourceTransactions: TransactionWithEntriesEntityInterface[],
@@ -105,11 +128,27 @@ export class ConsolidationMutationService {
         );
     }
 
+    @Log(
+        (sourceTransactionIds, canonicalTransactionId, tx) =>
+            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
+        (result, sourceTransactionIds, canonicalTransactionId, tx) =>
+            `done sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} result=${String(result)}`,
+        (error, sourceTransactionIds, canonicalTransactionId, tx) =>
+            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async moveSourcesToCanonical(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
         await this.dependencies.transactionEntryRepository.moveToConsolidatedTransaction(sourceTransactionIds, canonicalTransactionId, tx);
         await this.dependencies.transactionRepository.setConsolidationParent(sourceTransactionIds, canonicalTransactionId, tx);
     }
 
+    @Log(
+        (sourceTransactionIds, canonicalTransactionId, tx) =>
+            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
+        (result, sourceTransactionIds, canonicalTransactionId, tx) =>
+            `done sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} result=${String(result)}`,
+        (error, sourceTransactionIds, canonicalTransactionId, tx) =>
+            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async copySourceTags(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
         await consolidationCopySourceTransactionTags(
             this.dependencies.transactionTagsRepository,

@@ -59,8 +59,18 @@ class HistoricalMarketDataLoaderService {
         await this.enqueueAccounts(accounts);
     }
 
-    cancelPending(): void {
-        this.cancelScheduledDrain();
+    cancelScheduledDrain(): void {
+        const { timer } = this;
+        const { cancelIdleCallback } = this;
+
+        this.timer = null;
+        this.cancelIdleCallback = null;
+
+        if (isDefined(timer)) {
+            clearTimeout(timer);
+        }
+
+        cancelIdleCallback?.();
     }
 
     scheduleDrain(): void {
@@ -279,20 +289,6 @@ class HistoricalMarketDataLoaderService {
             instrument.priceProvider === InstrumentPriceProviderEnum.COINGECKO &&
             isDefined(instrument.providerInstrumentId)
         );
-    }
-
-    private cancelScheduledDrain(): void {
-        const { timer } = this;
-        const { cancelIdleCallback } = this;
-
-        this.timer = null;
-        this.cancelIdleCallback = null;
-
-        if (isDefined(timer)) {
-            clearTimeout(timer);
-        }
-
-        cancelIdleCallback?.();
     }
 }
 
