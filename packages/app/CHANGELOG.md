@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.35.6](https://github.com/budgie-at/budgie/compare/v5.35.5...v5.35.6) (2026-06-07)
+
+### Bug Fixes
+
+- **app:** show all account types in analytics account filter ([#553](https://github.com/budgie-at/budgie/issues/553)) ([e333a5c](https://github.com/budgie-at/budgie/commit/e333a5c9fedde343ade33ab8aea1f740c7139379))
+
 ## [5.35.5](https://github.com/budgie-at/budgie/compare/v5.35.4...v5.35.5) (2026-06-06)
 
 ### Bug Fixes
