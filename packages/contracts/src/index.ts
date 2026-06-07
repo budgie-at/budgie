@@ -208,6 +208,7 @@ export type { TransactionCreateInputInterface } from './transaction/input/transa
 
 export type { TransactionUpdateInputInterface } from './transaction/input/transaction-update-input.interface';
 export type { TransactionUpdateServiceInputInterface } from './transaction/input/transaction-update-service-input.interface';
+export type { ConsolidationScanScopeInterface } from './transaction/interface/consolidation-scan-scope.interface';
 export type { ConsolidationSourceRowInterface } from './transaction/interface/consolidation-source-row.interface';
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';

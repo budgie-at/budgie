@@ -1,3 +1,7 @@
+import { Log } from '@budgie/logger';
+
+import { getErrorMessage } from '@rnw-community/shared';
+
 import { REFUND_AUTO_CANDIDATES_SQL, REFUND_REVIEW_CANDIDATES_SQL } from './sql-factory/refund-ranked-candidate-sql.factory';
 import {
     REFUNDABLE_EXPENSE_CANDIDATES_SQL,
@@ -5,6 +9,7 @@ import {
 } from './sql-factory/refundable-expense-candidate-sql.factory';
 
 import type { DB } from '../../@generic/type/db.type';
+import type { ConsolidationScanScopeInterface } from '../interface/consolidation-scan-scope.interface';
 import type { RefundCandidateBaseRowInterface } from '../interface/refund-candidate-base-row.interface';
 import type { RefundCandidateBaseInterface } from '../interface/refund-candidate-base.interface';
 import type { RefundCandidateRowInterface } from '../interface/refund-candidate-row.interface';
@@ -17,8 +22,16 @@ import type { RefundableExpenseCandidateInterface } from '../interface/refundabl
 export class RefundPairRepository {
     constructor(private db: DB) {}
 
-    async findCandidates(): Promise<RefundCandidateInterface[]> {
-        const rows = await this.db.$client.getAllAsync<RefundCandidateRowInterface>(REFUND_AUTO_CANDIDATES_SQL);
+    @Log(
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    async findCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<RefundCandidateInterface[]> {
+        const rows = await this.db.$client.getAllAsync<RefundCandidateRowInterface>(REFUND_AUTO_CANDIDATES_SQL(scope));
 
         return rows.map(row => ({
             ...this.mapCandidateBaseRow(row),
@@ -27,6 +40,7 @@ export class RefundPairRepository {
         }));
     }
 
+    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
     async findReviewCandidates(): Promise<RefundReviewCandidateInterface[]> {
         const rows = await this.db.$client.getAllAsync<RefundReviewCandidateRowInterface>(REFUND_REVIEW_CANDIDATES_SQL);
 

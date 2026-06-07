@@ -19,6 +19,7 @@ import { IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL } from './sql-factory/transfer-pair
 import type { DB } from '../../@generic/type/db.type';
 import type { AtmCashWithdrawalCandidateInterface } from '../interface/atm-cash-withdrawal-candidate.interface';
 import type { AtmCashWithdrawalReviewCandidateInterface } from '../interface/atm-cash-withdrawal-review-candidate.interface';
+import type { ConsolidationScanScopeInterface } from '../interface/consolidation-scan-scope.interface';
 import type { ExistingTransferBridgeCandidateInterface } from '../interface/existing-transfer-bridge-candidate.interface';
 import type { ExistingTransferIncomeDuplicateCandidateInterface } from '../interface/existing-transfer-income-duplicate-candidate.interface';
 import type { IbanBridgeCanonicalDuplicateCandidateInterface } from '../interface/iban-bridge-canonical-duplicate-candidate.interface';
@@ -30,9 +31,16 @@ import type { TransferPairReviewCandidateInterface } from '../interface/transfer
 export class TransferPairRepository {
     constructor(private db: DB) {}
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findCandidates(): Promise<TransferPairCandidateInterface[]> {
-        const sql = buildTransferPairCandidatesSql();
+    @Log(
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    async findCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<TransferPairCandidateInterface[]> {
+        const sql = buildTransferPairCandidatesSql(scope);
 
         return this.db.$client.getAllAsync<TransferPairCandidateInterface>(sql);
     }
@@ -44,9 +52,18 @@ export class TransferPairRepository {
         return this.db.$client.getAllAsync<TransferPairReviewCandidateInterface>(sql);
     }
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findAtmCashWithdrawalCandidates(): Promise<AtmCashWithdrawalCandidateInterface[]> {
-        const sql = buildAtmCashWithdrawalCandidatesSql();
+    @Log(
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    async findAtmCashWithdrawalCandidates(
+        scope: ConsolidationScanScopeInterface | null = null
+    ): Promise<AtmCashWithdrawalCandidateInterface[]> {
+        const sql = buildAtmCashWithdrawalCandidatesSql(scope);
 
         return this.db.$client.getAllAsync<AtmCashWithdrawalCandidateInterface>(sql);
     }
@@ -58,37 +75,82 @@ export class TransferPairRepository {
         return this.db.$client.getAllAsync<AtmCashWithdrawalReviewCandidateInterface>(sql);
     }
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findExistingTransferBridgeCandidates(): Promise<ExistingTransferBridgeCandidateInterface[]> {
-        const sql = EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL;
+    @Log(
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    async findExistingTransferBridgeCandidates(
+        scope: ConsolidationScanScopeInterface | null = null
+    ): Promise<ExistingTransferBridgeCandidateInterface[]> {
+        const sql = EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL(scope);
 
         return this.db.$client.getAllAsync<ExistingTransferBridgeCandidateInterface>(sql);
     }
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findExistingTransferIncomeDuplicateCandidates(): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
-        const sql = EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL;
+    @Log(
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    async findExistingTransferIncomeDuplicateCandidates(
+        scope: ConsolidationScanScopeInterface | null = null
+    ): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
+        const sql = EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL(scope);
 
         return this.db.$client.getAllAsync<ExistingTransferIncomeDuplicateCandidateInterface>(sql);
     }
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findIbanBridgeTransferCandidates(): Promise<IbanBridgeTransferCandidateInterface[]> {
-        const sql = IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL;
+    @Log(
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    async findIbanBridgeTransferCandidates(
+        scope: ConsolidationScanScopeInterface | null = null
+    ): Promise<IbanBridgeTransferCandidateInterface[]> {
+        const sql = IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL(scope);
 
         return this.db.$client.getAllAsync<IbanBridgeTransferCandidateInterface>(sql);
     }
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findIbanBridgeCanonicalDuplicateCandidates(): Promise<IbanBridgeCanonicalDuplicateCandidateInterface[]> {
-        const sql = IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL;
+    @Log(
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    async findIbanBridgeCanonicalDuplicateCandidates(
+        scope: ConsolidationScanScopeInterface | null = null
+    ): Promise<IbanBridgeCanonicalDuplicateCandidateInterface[]> {
+        const sql = IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL(scope);
 
         return this.db.$client.getAllAsync<IbanBridgeCanonicalDuplicateCandidateInterface>(sql);
     }
 
-    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findIbanBridgeChainTransferCandidates(): Promise<IbanBridgeChainTransferCandidateInterface[]> {
-        const sql = IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL;
+    @Log(
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} count=${result.length}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    async findIbanBridgeChainTransferCandidates(
+        scope: ConsolidationScanScopeInterface | null = null
+    ): Promise<IbanBridgeChainTransferCandidateInterface[]> {
+        const sql = IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL(scope);
 
         return this.db.$client.getAllAsync<IbanBridgeChainTransferCandidateInterface>(sql);
     }

@@ -7,7 +7,10 @@ import { foregroundWorkloadService } from '../../@generic/service/foreground-wor
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 
+import { consolidationScopeService } from './consolidation-scope.service';
 import { transferConsolidationService } from './transfer-consolidation.service';
+
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 class TransferConsolidationDrainerService {
     private static readonly DRAIN_DELAY_MS_BY_REASON: Record<TransferConsolidationDrainReasonEnum, number> = {
@@ -18,12 +21,21 @@ class TransferConsolidationDrainerService {
     private static readonly FOREGROUND_BUSY_RESCHEDULE_MS = 1000;
 
     private hasPendingRun = false;
+    private pendingScope: ConsolidationScanScopeInterface | null = null;
     private isRunning = false;
     private timer: ReturnType<typeof setTimeout> | null = null;
     private timerFiresAt: number | null = null;
 
-    @Log(reason => `enter reason=${reason}`, 'done', (error, reason) => `throw reason=${reason} error=${getErrorMessage(error)}`)
-    enqueue(reason: TransferConsolidationDrainReasonEnum): void {
+    @Log(
+        (reason, scope) =>
+            `enter reason=${reason} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (_result, reason, scope) =>
+            `done reason=${reason} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (error, reason, scope) =>
+            `throw reason=${reason} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+    )
+    enqueue(reason: TransferConsolidationDrainReasonEnum, scope: ConsolidationScanScopeInterface | null = null): void {
+        this.addPendingScope(scope);
         this.hasPendingRun = true;
 
         if (this.isRunning) {
@@ -54,13 +66,39 @@ class TransferConsolidationDrainerService {
         this.isRunning = true;
 
         try {
-            while (this.hasPendingRun) {
-                this.hasPendingRun = false;
-                await transferConsolidationService.consolidate();
-            }
+            await this.drainPendingRuns();
         } finally {
             this.isRunning = false;
         }
+    }
+
+    private async drainPendingRuns(): Promise<void> {
+        while (this.hasPendingRun) {
+            const scope = this.pendingScope;
+            this.hasPendingRun = false;
+            this.pendingScope = null;
+            await transferConsolidationService.consolidate(scope);
+        }
+    }
+
+    private addPendingScope(scope: ConsolidationScanScopeInterface | null): void {
+        if (!this.hasPendingRun) {
+            this.pendingScope = scope;
+
+            return;
+        }
+
+        if (!isDefined(scope)) {
+            this.pendingScope = null;
+
+            return;
+        }
+
+        if (!isDefined(this.pendingScope)) {
+            return;
+        }
+
+        this.pendingScope = consolidationScopeService.merge(this.pendingScope, scope);
     }
 
     private scheduleAfter(delay: number): void {

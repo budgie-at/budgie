@@ -1,6 +1,9 @@
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
+import { buildConsolidationScanScopeSql } from '../../util/build-consolidation-scan-scope-sql.util';
 
-export const buildAtmCashWithdrawalCandidatesSql = (): string => `
+import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+
+export const buildAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScopeInterface | null = null): string => `
             WITH active_cash_accounts AS (
                 SELECT
                     cash_account.id,
@@ -52,6 +55,7 @@ export const buildAtmCashWithdrawalCandidatesSql = (): string => `
                 target_cash_account.instrument_id = source_account.instrument_id
             WHERE expense_entry.deleted_at IS NULL
                 AND expense_entry.original_transaction_id IS NULL
+                ${buildConsolidationScanScopeSql(scope, 'expense_tx.operated_at')}
         `;
 
 export const buildAtmCashWithdrawalReviewCandidatesSql = (): string => `

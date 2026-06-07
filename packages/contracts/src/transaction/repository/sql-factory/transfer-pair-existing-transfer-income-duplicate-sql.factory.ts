@@ -2,12 +2,23 @@ import { ExternalSourceEnum } from '../../../account/enum/external-source.enum';
 import { TRANSFER_MCC_GROUP_ID } from '../../constant/transfer-mcc-group-id.constant';
 import { TransactionConsolidationTypeEnum } from '../../enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
+import { applyConsolidationScanScopeSql } from '../../util/apply-consolidation-scan-scope-sql.util';
+
+import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
 
 const EXISTING_TRANSFER_DUPLICATE_TIME_WINDOW_SECONDS = 2 * 60 * 60;
 const APPROXIMATE_TARGET_AMOUNT_MAX_DELTA = 100_000_000;
 const APPROXIMATE_TARGET_AMOUNT_MAX_DELTA_RATIO = 0.005;
 
-export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = `
+const INCOME_SCOPE_SQL_PLACEHOLDER = '__EXISTING_TRANSFER_DUPLICATE_INCOME_SCOPE_SQL__';
+const EXISTING_TRANSFER_SCOPE_SQL_PLACEHOLDER = '__EXISTING_TRANSFER_DUPLICATE_TRANSFER_SCOPE_SQL__';
+
+const EXISTING_TRANSFER_INCOME_DUPLICATE_SCOPE_EXPRESSIONS = new Map([
+    [INCOME_SCOPE_SQL_PLACEHOLDER, 'income_tx.operated_at'],
+    [EXISTING_TRANSFER_SCOPE_SQL_PLACEHOLDER, 'existing_transfer.operated_at']
+]);
+
+const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_BASE_SQL = `
             WITH candidate_rows AS (
                 SELECT
                     'AUTO_EXISTING_TRANSFER_INCOME_DUPLICATE' as confidenceBucket,
@@ -52,6 +63,7 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = `
                     AND income_tx.consolidation_parent_transaction_id IS NULL
                     AND income_tx.operated_at BETWEEN existing_transfer.operated_at - ${EXISTING_TRANSFER_DUPLICATE_TIME_WINDOW_SECONDS}
                         AND existing_transfer.operated_at + ${EXISTING_TRANSFER_DUPLICATE_TIME_WINDOW_SECONDS}
+                    ${INCOME_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries income_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
@@ -68,6 +80,7 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = `
                     )
                     AND existing_transfer.from_account_id IS NOT NULL
                     AND existing_transfer.to_account_id IS NOT NULL
+                    ${EXISTING_TRANSFER_SCOPE_SQL_PLACEHOLDER}
                     AND source_account.id != target_account.id
                     AND income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
                 UNION ALL
@@ -114,6 +127,7 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = `
                     AND income_tx.consolidation_parent_transaction_id IS NULL
                     AND income_tx.operated_at BETWEEN existing_transfer.operated_at - ${EXISTING_TRANSFER_DUPLICATE_TIME_WINDOW_SECONDS}
                         AND existing_transfer.operated_at + ${EXISTING_TRANSFER_DUPLICATE_TIME_WINDOW_SECONDS}
+                    ${INCOME_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries income_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx ON
                     income_entry.transaction_id = income_tx.id
                     AND income_entry.deleted_at IS NULL
@@ -140,6 +154,7 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = `
                     AND existing_transfer.from_account_id IS NOT NULL
                     AND existing_transfer.to_account_id IS NOT NULL
                     AND existing_transfer.exchange_rate > 0
+                    ${EXISTING_TRANSFER_SCOPE_SQL_PLACEHOLDER}
                     AND source_account.id != target_account.id
                     AND source_account.instrument_id != income_account.instrument_id
                     AND income_account.id != target_account.id
@@ -184,3 +199,10 @@ export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = `
             WHERE existingTransferRank = 1
                 AND incomeRank = 1
 `;
+
+export const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
+    applyConsolidationScanScopeSql(
+        EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_BASE_SQL,
+        scope,
+        EXISTING_TRANSFER_INCOME_DUPLICATE_SCOPE_EXPRESSIONS
+    );

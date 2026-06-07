@@ -1,8 +1,23 @@
 import { TRANSFER_MCC_GROUP_ID } from '../../constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../constant/transfer-pair-fast-time-window.constant';
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
+import { applyConsolidationScanScopeSql } from '../../util/apply-consolidation-scan-scope-sql.util';
 
-export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = `
+import type { ConsolidationScanScopeInterface } from '../../interface/consolidation-scan-scope.interface';
+
+const BRIDGE_INCOME_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CHAIN_INCOME_SCOPE_SQL__';
+const BRIDGE_EXPENSE_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CHAIN_BRIDGE_EXPENSE_SCOPE_SQL__';
+const TARGET_INCOME_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CHAIN_TARGET_INCOME_SCOPE_SQL__';
+const SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_CHAIN_SOURCE_EXPENSE_SCOPE_SQL__';
+
+const IBAN_BRIDGE_CHAIN_TRANSFER_SCOPE_EXPRESSIONS = new Map([
+    [BRIDGE_INCOME_SCOPE_SQL_PLACEHOLDER, 'bridge_income_tx.operated_at'],
+    [BRIDGE_EXPENSE_SCOPE_SQL_PLACEHOLDER, 'bridge_expense_tx.operated_at'],
+    [TARGET_INCOME_SCOPE_SQL_PLACEHOLDER, 'target_income_tx.operated_at'],
+    [SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER, 'source_expense_tx.operated_at']
+]);
+
+const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_BASE_SQL = `
             SELECT
                 'AUTO_IBAN_BRIDGE_CHAIN_TRANSFER' as confidenceBucket,
                 sourceExpenseTransactionId,
@@ -126,6 +141,7 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = `
                     AND bridge_income_tx.deleted_at IS NULL
                     AND bridge_income_tx.consolidation_parent_transaction_id IS NULL
                     AND ABS(bridge_income_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    ${BRIDGE_INCOME_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries bridge_income_entry ON
                     bridge_income_entry.transaction_id = bridge_income_tx.id
                     AND bridge_income_entry.deleted_at IS NULL
@@ -141,6 +157,7 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = `
                     AND bridge_expense_tx.deleted_at IS NULL
                     AND bridge_expense_tx.consolidation_parent_transaction_id IS NULL
                     AND ABS(bridge_expense_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    ${BRIDGE_EXPENSE_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries bridge_expense_entry ON
                     bridge_expense_entry.transaction_id = bridge_expense_tx.id
                     AND bridge_expense_entry.deleted_at IS NULL
@@ -155,6 +172,7 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = `
                     AND target_income_tx.deleted_at IS NULL
                     AND target_income_tx.consolidation_parent_transaction_id IS NULL
                     AND ABS(target_income_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    ${TARGET_INCOME_SCOPE_SQL_PLACEHOLDER}
                 INNER JOIN transaction_entries target_income_entry ON
                     target_income_entry.transaction_id = target_income_tx.id
                     AND target_income_entry.deleted_at IS NULL
@@ -174,6 +192,7 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = `
                     AND source_expense_entry.original_transaction_id IS NULL
                     AND source_expense_entry.exchange_rate > 0
                     AND source_expense_entry.amount > 0
+                    ${SOURCE_EXPENSE_SCOPE_SQL_PLACEHOLDER}
                     AND source_expense_entry.to_iban IS NOT NULL
                     AND source_expense_entry.to_iban != ''
                     AND source_account.id != bridge_account.id
@@ -196,3 +215,6 @@ export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = `
                 AND bridgeExpenseRank = 1
                 AND targetIncomeRank = 1
 `;
+
+export const IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string =>
+    applyConsolidationScanScopeSql(IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_BASE_SQL, scope, IBAN_BRIDGE_CHAIN_TRANSFER_SCOPE_EXPRESSIONS);
