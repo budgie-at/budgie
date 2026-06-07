@@ -39,7 +39,7 @@ export class ConsolidationExecutorService {
         const requiredSourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
 
         return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
-            this.consolidatePairInner(consolidationPlan, requiredSourceTransactionIds, tx)
+            this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
         );
     }
 
@@ -75,7 +75,7 @@ export class ConsolidationExecutorService {
         const requiredSourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
 
         return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
-            this.consolidateIbanBridgeTransferInner(consolidationPlan, requiredSourceTransactionIds, tx)
+            this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
         );
     }
 
@@ -98,7 +98,7 @@ export class ConsolidationExecutorService {
         ];
 
         return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
-            this.consolidateExistingTransferBridgeInner(consolidationPlan, requiredSourceTransactionIds, tx)
+            this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
         );
     }
 
@@ -122,20 +122,8 @@ export class ConsolidationExecutorService {
         ];
 
         return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx =>
-            this.consolidateIbanBridgeChainTransferInner(consolidationPlan, requiredSourceTransactionIds, tx)
+            this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
         );
-    }
-
-    private async consolidatePairInner(
-        consolidationPlan: ConsolidationPlanInterface,
-        requiredSourceTransactionIds: number[],
-        tx: DB
-    ): Promise<boolean> {
-        if (!this.hasRequiredSourceTransactionIds(consolidationPlan, requiredSourceTransactionIds)) {
-            return false;
-        }
-
-        return this.executeConsolidationPlan(consolidationPlan, tx);
     }
 
     private async consolidateAtmCashWithdrawalInner(
@@ -160,31 +148,7 @@ export class ConsolidationExecutorService {
         return true;
     }
 
-    private async consolidateIbanBridgeTransferInner(
-        consolidationPlan: ConsolidationPlanInterface,
-        requiredSourceTransactionIds: number[],
-        tx: DB
-    ): Promise<boolean> {
-        if (!this.hasRequiredSourceTransactionIds(consolidationPlan, requiredSourceTransactionIds)) {
-            return false;
-        }
-
-        return this.executeConsolidationPlan(consolidationPlan, tx);
-    }
-
-    private async consolidateExistingTransferBridgeInner(
-        consolidationPlan: ConsolidationPlanInterface,
-        requiredSourceTransactionIds: number[],
-        tx: DB
-    ): Promise<boolean> {
-        if (!this.hasRequiredSourceTransactionIds(consolidationPlan, requiredSourceTransactionIds)) {
-            return false;
-        }
-
-        return this.executeConsolidationPlan(consolidationPlan, tx);
-    }
-
-    private async consolidateIbanBridgeChainTransferInner(
+    private async executeRequiredSourceConsolidationPlan(
         consolidationPlan: ConsolidationPlanInterface,
         requiredSourceTransactionIds: number[],
         tx: DB
