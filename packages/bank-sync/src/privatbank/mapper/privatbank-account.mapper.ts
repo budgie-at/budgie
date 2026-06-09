@@ -1,5 +1,5 @@
 import { BankAccountTypeEnum } from '../../core/enum/bank-account-type.enum';
-import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { PRIVATBANK_FAKE_IBAN_PREFIX } from '../constant/privatbank.constant';
 import { extractCardEnding } from '../util/extract-card-ending.util';
 
@@ -10,7 +10,7 @@ import type { PrivatbankRowInterface } from '../interface/privatbank-row.interfa
 
 const mapCardToAccount = (card: string, currencyString: string): BankAccountInterface => ({
     id: card,
-    provider: BankProviderEnum.PRIVATBANK,
+    provider: SyncProviderEnum.PRIVATBANK,
     currencyCode: currencyString,
     currencyCodeNumeric: privatbankCurrencyCodeMapper(currencyString),
     balance: 0,

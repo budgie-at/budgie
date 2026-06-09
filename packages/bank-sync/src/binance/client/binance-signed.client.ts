@@ -7,8 +7,8 @@ import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { BaseBankProviderClient } from '../../core/client/base-bank-provider.client';
-import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankSyncErrorCodeEnum } from '../../core/enum/bank-sync-error-code.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { BankSyncError } from '../../core/error/bank-sync.error';
 import { syncLogger } from '../../core/util/sync-logger.util';
 import { BINANCE_API_BASE_URL } from '../constant/binance-api-base-url.constant';
@@ -95,7 +95,7 @@ const UNAUTHORIZED_STATUS = 401;
 const FORBIDDEN_STATUS = 403;
 
 export class BinanceSignedClient extends BaseBankProviderClient {
-    protected readonly provider = BankProviderEnum.BINANCE;
+    protected readonly provider = SyncProviderEnum.BINANCE;
     protected readonly baseUrl = BINANCE_API_BASE_URL;
 
     private readonly credentials: BinanceCredentialsInterface;
@@ -117,8 +117,8 @@ export class BinanceSignedClient extends BaseBankProviderClient {
     @Log('enter', 'done')
     async getClientInfo(): Promise<BankSyncResultInterface<BankClientInfoInterface>> {
         return this.success({
-            id: BankProviderEnum.BINANCE,
-            name: BankProviderEnum.BINANCE,
+            id: SyncProviderEnum.BINANCE,
+            name: SyncProviderEnum.BINANCE,
             provider: this.provider
         });
     }

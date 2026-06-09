@@ -1,16 +1,16 @@
-import { BankAccountInterface, BankAccountTypeEnum, BankProviderEnum } from '@budgie/bank-sync';
+import { BankAccountInterface, BankAccountTypeEnum, SyncProviderEnum } from '@budgie/bank-sync';
 import { AccountTypeEnum, ExternalSourceEnum, LiabilityAccountCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 /* eslint-disable lingui/no-unlocalized-strings */
-const BANK_PROVIDER_TITLE: Record<BankProviderEnum, string> = {
-    [BankProviderEnum.MONOBANK]: 'Monobank',
-    [BankProviderEnum.PRIVATBANK]: 'Privatbank',
-    [BankProviderEnum.ERSTE]: 'Erste',
-    [BankProviderEnum.REVOLUT]: 'Revolut',
-    [BankProviderEnum.WISE]: 'Wise',
-    [BankProviderEnum.BINANCE]: 'Binance'
+const BANK_PROVIDER_TITLE: Record<SyncProviderEnum, string> = {
+    [SyncProviderEnum.MONOBANK]: 'Monobank',
+    [SyncProviderEnum.PRIVATBANK]: 'Privatbank',
+    [SyncProviderEnum.ERSTE]: 'Erste',
+    [SyncProviderEnum.REVOLUT]: 'Revolut',
+    [SyncProviderEnum.WISE]: 'Wise',
+    [SyncProviderEnum.BINANCE]: 'Binance'
 };
 /* eslint-enable lingui/no-unlocalized-strings */
 
@@ -45,11 +45,11 @@ const generateDefaultBankTitle = (bankAccount: BankAccountInterface): string => 
 };
 
 export const generateBankAccountTitle = (bankAccount: BankAccountInterface): string => {
-    if (bankAccount.provider === BankProviderEnum.MONOBANK) {
+    if (bankAccount.provider === SyncProviderEnum.MONOBANK) {
         return generateMonobankTitle(bankAccount);
     }
 
-    if (bankAccount.provider === BankProviderEnum.BINANCE && isNotEmptyString(bankAccount.title)) {
+    if (bankAccount.provider === SyncProviderEnum.BINANCE && isNotEmptyString(bankAccount.title)) {
         return bankAccount.title;
     }
 

@@ -1,5 +1,5 @@
 import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
-import { BankProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
+import { SyncProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
 import {
     BANK_FEE_CATEGORY_ID,
     CategorySourceEnum,
@@ -25,7 +25,7 @@ const makeExpenseTransaction = (overrides: Partial<BankTransactionInterface> = {
     cashbackAmount: 0,
     balance: 100000,
     hold: false,
-    provider: BankProviderEnum.MONOBANK,
+    provider: SyncProviderEnum.MONOBANK,
     accountId: 'mono-acc-1',
     type: BankTransactionTypeEnum.EXPENSE,
     feeAmount: 0,

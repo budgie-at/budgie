@@ -2,8 +2,8 @@ import { getUnixTime } from 'date-fns';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { generatePrivatbankExternalId, generatePrivatbankLegacyExternalId } from '../util/generate-privatbank-external-id.util';
 
 import { privatbankCurrencyCodeMapper } from './privatbank-currency-code.mapper';
@@ -31,7 +31,7 @@ export const privatbankTransactionMapper = (row: PrivatbankRowInterface): BankTr
     return {
         id,
         ...(id !== legacyExternalId && { legacyExternalIds: [legacyExternalId] }),
-        provider: BankProviderEnum.PRIVATBANK,
+        provider: SyncProviderEnum.PRIVATBANK,
         accountId: row.card,
         type: getTransactionType(row.cardAmount),
         time: getUnixTime(row.date),

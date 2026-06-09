@@ -3,8 +3,8 @@ import { isValid } from 'date-fns';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankSyncErrorCodeEnum } from '../../core/enum/bank-sync-error-code.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { BankSyncError } from '../../core/error/bank-sync.error';
 import { ERSTE_CURRENCY_ALPHA_EUR, ERSTE_LAYOUT_Y_ROW_TOLERANCE } from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
@@ -40,7 +40,7 @@ class ErsteAccountInfoExtractor {
         const ibanItem = items.find(item => item.text.startsWith(IBAN_LABEL_PREFIX));
 
         if (!ibanItem) {
-            throw new BankSyncError(BankSyncErrorCodeEnum.INVALID_RESPONSE, 'Could not find IBAN in Erste PDF', BankProviderEnum.ERSTE);
+            throw new BankSyncError(BankSyncErrorCodeEnum.INVALID_RESPONSE, 'Could not find IBAN in Erste PDF', SyncProviderEnum.ERSTE);
         }
 
         return ibanItem.text.slice(IBAN_LABEL_PREFIX.length).trim();
@@ -69,7 +69,7 @@ class ErsteAccountInfoExtractor {
         throw new BankSyncError(
             BankSyncErrorCodeEnum.INVALID_RESPONSE,
             'Could not find statement date in Erste PDF',
-            BankProviderEnum.ERSTE
+            SyncProviderEnum.ERSTE
         );
     }
 

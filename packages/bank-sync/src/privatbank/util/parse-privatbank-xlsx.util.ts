@@ -2,8 +2,8 @@ import { read, utils } from 'xlsx';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankSyncErrorCodeEnum } from '../../core/enum/bank-sync-error-code.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { BankSyncError } from '../../core/error/bank-sync.error';
 import {
     PRIVATBANK_BALANCE_CURRENCY_COLUMN_INDEX,
@@ -22,7 +22,7 @@ import {
 import type { PrivatbankRowInterface } from '../interface/privatbank-row.interface';
 
 const createParseError = (message: string, originalError?: unknown): BankSyncError =>
-    new BankSyncError(BankSyncErrorCodeEnum.INVALID_RESPONSE, message, BankProviderEnum.PRIVATBANK, originalError);
+    new BankSyncError(BankSyncErrorCodeEnum.INVALID_RESPONSE, message, SyncProviderEnum.PRIVATBANK, originalError);
 
 const parsePrivatbankDate = (dateString: string): Date => {
     const [datePart, timePart] = dateString.split(' ');

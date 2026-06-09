@@ -1,7 +1,7 @@
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { MONOBANK_BALANCE_DIVISOR } from '../constant/monobank-balance-divisor.constant';
 
 import type { BankTransactionInterface } from '../../core/interface/bank-transaction.interface';
@@ -13,7 +13,7 @@ const getTransactionType = (amount: number): BankTransactionTypeEnum =>
 export const monobankTransactionMapper = (transaction: MonobankTransactionApiInterface, accountId: string): BankTransactionInterface => ({
     accountId,
     id: transaction.id,
-    provider: BankProviderEnum.MONOBANK,
+    provider: SyncProviderEnum.MONOBANK,
     time: transaction.time,
     description: transaction.description,
     mcc: transaction.mcc,

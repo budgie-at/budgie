@@ -1,7 +1,7 @@
 import { and, eq } from 'drizzle-orm';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { BankAccountTypeEnum, BankProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
+import { BankAccountTypeEnum, SyncProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
@@ -22,7 +22,7 @@ const ERSTE_STATEMENT_URI = 'erste-statement.pdf';
 
 const buildErsteBankAccount = (): BankAccountInterface => ({
     id: ERSTE_ACCOUNT_ID,
-    provider: BankProviderEnum.ERSTE,
+    provider: SyncProviderEnum.ERSTE,
     currencyCode: 'UAH',
     currencyCodeNumeric: 980,
     balance: 0,
@@ -33,7 +33,7 @@ const buildErsteBankAccount = (): BankAccountInterface => ({
 
 const buildErsteTransaction = (): BankTransactionInterface => ({
     id: ERSTE_EXTERNAL_ID,
-    provider: BankProviderEnum.ERSTE,
+    provider: SyncProviderEnum.ERSTE,
     accountId: ERSTE_ACCOUNT_ID,
     type: BankTransactionTypeEnum.EXPENSE,
     time: 1_768_302_000,

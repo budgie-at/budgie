@@ -6,7 +6,7 @@ import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankSyncError } from '../error/bank-sync.error';
 import { syncLogger } from '../util/sync-logger.util';
 
-import type { BankProviderEnum } from '../enum/bank-provider.enum';
+import type { SyncProviderEnum } from '../enum/sync-provider.enum';
 import type { BankAccountInterface } from '../interface/bank-account.interface';
 import type { BankClientInfoInterface } from '../interface/bank-client-info.interface';
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
@@ -41,7 +41,7 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
     protected readonly retryStatusCodes: number[];
     protected readonly retryMethods: string[];
 
-    protected abstract readonly provider: BankProviderEnum;
+    protected abstract readonly provider: SyncProviderEnum;
     protected abstract readonly baseUrl: string;
 
     constructor(

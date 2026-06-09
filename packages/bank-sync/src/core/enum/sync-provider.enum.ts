@@ -1,4 +1,4 @@
-export enum BankProviderEnum {
+export enum SyncProviderEnum {
     MONOBANK = 'MONOBANK',
     PRIVATBANK = 'PRIVATBANK',
     ERSTE = 'ERSTE',

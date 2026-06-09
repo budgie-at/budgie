@@ -1,4 +1,4 @@
-import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { MONOBANK_BALANCE_DIVISOR } from '../constant/monobank-balance-divisor.constant';
 
 import { monobankAccountTypeMapper } from './monobank-account-type.mapper';
@@ -10,7 +10,7 @@ import type { MonobankAccountApiInterface } from '../interface/monobank-account-
 
 export const monobankAccountMapper = (account: MonobankAccountApiInterface): BankAccountInterface => ({
     id: account.id,
-    provider: BankProviderEnum.MONOBANK,
+    provider: SyncProviderEnum.MONOBANK,
     currencyCode: monobankCurrencyCodeMapper(account.currencyCode),
     currencyCodeNumeric: account.currencyCode,
     balance: account.balance / MONOBANK_BALANCE_DIVISOR,

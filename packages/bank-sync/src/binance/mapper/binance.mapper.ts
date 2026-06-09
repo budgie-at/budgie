@@ -5,8 +5,8 @@ import { getUnixTime } from 'date-fns';
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankAccountTypeEnum } from '../../core/enum/bank-account-type.enum';
-import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { syncLogger } from '../../core/util/sync-logger.util';
 import { BINANCE_NO_NUMERIC_CODE } from '../constant/binance-no-numeric-code.constant';
 import { BINANCE_MICRO_UNITS_PRECISION } from '../constant/binance-precision.constant';
@@ -42,7 +42,7 @@ class BinanceMapper {
     mapBalanceToAccount(asset: string, wallet: BinanceWalletEnum, balance: number): BankAccountInterface {
         return {
             id: encodeBinanceAccountId({ wallet, asset }),
-            provider: BankProviderEnum.BINANCE,
+            provider: SyncProviderEnum.BINANCE,
             currencyCode: asset,
             currencyCodeNumeric: BINANCE_NO_NUMERIC_CODE,
             balance,
@@ -311,7 +311,7 @@ class BinanceMapper {
     ): Omit<BankTransactionInterface, 'type' | 'description' | 'amount' | 'operationAmount' | 'feeAmount'> {
         return {
             id: externalId,
-            provider: BankProviderEnum.BINANCE,
+            provider: SyncProviderEnum.BINANCE,
             accountId,
             time,
             mcc: 0,

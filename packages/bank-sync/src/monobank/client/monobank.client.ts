@@ -3,7 +3,7 @@ import { getUnixTime } from 'date-fns';
 import { isDefined } from '@rnw-community/shared';
 
 import { BaseBankProviderClient } from '../../core/client/base-bank-provider.client';
-import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { MONOBANK_API_BASE_URL } from '../constant/monobank-api-base-url.constant';
 import { monobankAccountMapper } from '../mapper/monobank-account.mapper';
 import { monobankJarMapper } from '../mapper/monobank-jar.mapper';
@@ -17,7 +17,7 @@ import type { MonobankClientInfoApiInterface } from '../interface/monobank-clien
 import type { MonobankTransactionApiInterface } from '../interface/monobank-transaction-api.type';
 
 export class MonobankClient extends BaseBankProviderClient {
-    protected readonly provider = BankProviderEnum.MONOBANK;
+    protected readonly provider = SyncProviderEnum.MONOBANK;
     protected readonly baseUrl = MONOBANK_API_BASE_URL;
     private cachedClientInfo: MonobankClientInfoApiInterface | undefined;
 

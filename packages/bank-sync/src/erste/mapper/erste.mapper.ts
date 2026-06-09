@@ -4,8 +4,8 @@ import { getUnixTime } from 'date-fns';
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankAccountTypeEnum } from '../../core/enum/bank-account-type.enum';
-import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { generateStableExternalIdHash } from '../../core/util/generate-stable-external-id-hash.util';
 import { ERSTE_CURRENCY_CODE_EUR, ERSTE_EXTERNAL_ID_LENGTH } from '../constant/erste.constant';
 
@@ -23,7 +23,7 @@ class ErsteMapper {
     mapAccount(account: ErsteAccountInfoInterface): BankAccountInterface {
         return {
             id: account.iban,
-            provider: BankProviderEnum.ERSTE,
+            provider: SyncProviderEnum.ERSTE,
             currencyCode: account.currency,
             currencyCodeNumeric: ERSTE_CURRENCY_CODE_EUR,
             balance: account.newBalance,
@@ -45,7 +45,7 @@ class ErsteMapper {
         return {
             id,
             ...(id !== legacyExternalId && { legacyExternalIds: [legacyExternalId] }),
-            provider: BankProviderEnum.ERSTE,
+            provider: SyncProviderEnum.ERSTE,
             accountId: iban,
             type: row.isCredit ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE,
             time: getUnixTime(row.date),

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { BankAccountTypeEnum, BankProviderEnum, privatbankTransactionMapper } from '@budgie/bank-sync';
+import { BankAccountTypeEnum, SyncProviderEnum, privatbankTransactionMapper } from '@budgie/bank-sync';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 
@@ -18,7 +18,7 @@ const TRANSFER_AMOUNT = 250;
 
 const buildPrivatbankBankAccount = (): BankAccountInterface => ({
     id: PRIVATBANK_CARD_ID,
-    provider: BankProviderEnum.PRIVATBANK,
+    provider: SyncProviderEnum.PRIVATBANK,
     currencyCode: 'UAH',
     currencyCodeNumeric: 980,
     balance: TRANSFER_AMOUNT,

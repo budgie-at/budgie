@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { BankAccountTypeEnum, BankProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
+import { BankAccountTypeEnum, SyncProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
@@ -44,7 +44,7 @@ class SingleIncomeFileClient implements FileBasedBankSyncClientInterface {
 }
 
 const buildBankAccount = (
-    provider: BankProviderEnum,
+    provider: SyncProviderEnum,
     externalId: string,
     currencyCode: CurrencyEnum,
     currencyCodeNumeric: number,
@@ -61,7 +61,7 @@ const buildBankAccount = (
 });
 
 const buildIncomeTransaction = (
-    provider: BankProviderEnum,
+    provider: SyncProviderEnum,
     externalId: string,
     accountId: string,
     currencyCode: number
@@ -120,7 +120,7 @@ const seedExistingBankExpense = (
 
 const buildSyncService = (
     externalSource: ExternalSourceEnum,
-    provider: BankProviderEnum,
+    provider: SyncProviderEnum,
     accountExternalId: string,
     currencyCode: CurrencyEnum,
     currencyCodeNumeric: number,
@@ -177,7 +177,7 @@ describe('consolidation/file-import-scoped-interbank-transfer', () => {
             string,
             CurrencyEnum,
             ExternalSourceEnum,
-            BankProviderEnum,
+            SyncProviderEnum,
             string,
             CurrencyEnum,
             number,
@@ -191,7 +191,7 @@ describe('consolidation/file-import-scoped-interbank-transfer', () => {
             'Monobank source',
             CurrencyEnum.UAH,
             ExternalSourceEnum.PRIVATBANK,
-            BankProviderEnum.PRIVATBANK,
+            SyncProviderEnum.PRIVATBANK,
             'privat-target',
             CurrencyEnum.UAH,
             980,
@@ -204,7 +204,7 @@ describe('consolidation/file-import-scoped-interbank-transfer', () => {
             'Monobank source',
             CurrencyEnum.EUR,
             ExternalSourceEnum.ERSTE,
-            BankProviderEnum.ERSTE,
+            SyncProviderEnum.ERSTE,
             'AT123',
             CurrencyEnum.EUR,
             978,
@@ -217,7 +217,7 @@ describe('consolidation/file-import-scoped-interbank-transfer', () => {
             'Privatbank source',
             CurrencyEnum.EUR,
             ExternalSourceEnum.ERSTE,
-            BankProviderEnum.ERSTE,
+            SyncProviderEnum.ERSTE,
             'AT123',
             CurrencyEnum.EUR,
             978,
@@ -230,7 +230,7 @@ describe('consolidation/file-import-scoped-interbank-transfer', () => {
             'Erste source',
             CurrencyEnum.EUR,
             ExternalSourceEnum.PRIVATBANK,
-            BankProviderEnum.PRIVATBANK,
+            SyncProviderEnum.PRIVATBANK,
             'privat-target',
             CurrencyEnum.EUR,
             978,

@@ -1,5 +1,5 @@
 import { BankAccountTypeEnum } from '../../core/enum/bank-account-type.enum';
-import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { MONOBANK_BALANCE_DIVISOR } from '../constant/monobank-balance-divisor.constant';
 
 import { monobankCurrencyCodeMapper } from './monobank-currency-code.mapper';
@@ -9,7 +9,7 @@ import type { MonobankJarApiInterface } from '../interface/monobank-jar-api.inte
 
 export const monobankJarMapper = (jar: MonobankJarApiInterface): BankAccountInterface => ({
     id: jar.id,
-    provider: BankProviderEnum.MONOBANK,
+    provider: SyncProviderEnum.MONOBANK,
     currencyCode: monobankCurrencyCodeMapper(jar.currencyCode),
     currencyCodeNumeric: jar.currencyCode,
     balance: jar.balance / MONOBANK_BALANCE_DIVISOR,
