@@ -1,11 +1,9 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { Input } from '../../../@generic/component/input/input';
-import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { GetTokenCard } from '../get-token-card/get-token-card';
+import { BankCredentialsStepHeader } from '../bank-credentials-step-header/bank-credentials-step-header';
 import { PasteTokenButton } from '../paste-token-button/paste-token-button';
 
 interface Props {
@@ -18,14 +16,7 @@ export const TokenInputStep = ({ token, onTokenChange }: Props) => {
 
     return (
         <>
-            <GetTokenCard />
-
-            <SimpleHorizontalCell
-                left={<CircleIcon icon={UserIconNameEnum.Info} variant="warning" size={15} iconSize={15} />}
-                size="lg"
-                variant="warning"
-                title={t`Your token is stored securely in the database. Sync continues in the background.`}
-            />
+            <BankCredentialsStepHeader provider={ExternalSourceEnum.MONOBANK} />
 
             <View className="gap-y-md">
                 <Text className="text-secondary-foreground text-sm px-md">

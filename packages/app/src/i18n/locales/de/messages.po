@@ -880,11 +880,15 @@ msgstr "Erstellen Sie eine Sicherung aller Ihrer Daten"
 msgid "Create a PIN"
 msgstr "PIN erstellen"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Create a read-only API key and secret"
+msgstr "Erstellen Sie einen schreibgeschützten API-Schlüssel und ein Secret"
+
 #: src/app/transaction-account-filter.tsx
 msgid "Create Accounts"
 msgstr "Konten erstellen"
 
-#: src/sync/component/get-token-card/get-token-card.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create and copy the personal token"
 msgstr "Persönlichen Token erstellen und kopieren"
 
@@ -1376,7 +1380,11 @@ msgstr "Deutsch"
 msgid "German (Germany)"
 msgstr "Deutsch (Deutschland)"
 
-#: src/sync/component/get-token-card/get-token-card.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Get API Key"
+msgstr "API-Schlüssel abrufen"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Token"
 msgstr "API-Token abrufen"
 
@@ -1925,11 +1933,15 @@ msgstr "Nur Ausgaben mit einem Eintrag können umgewandelt werden"
 msgid "Only single-entry incomes can be converted"
 msgstr "Nur Einnahmen mit einem Eintrag können umgewandelt werden"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Open Binance to get your API key"
+msgstr "Öffnen Sie Binance, um Ihren API-Schlüssel zu erhalten"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "George (Erste Bank Online-Banking) öffnen"
 
-#: src/sync/component/get-token-card/get-token-card.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Monobank to get your token"
 msgstr "Öffnen Sie Monobank, um Ihren Token zu erhalten"
 
@@ -2925,7 +2937,7 @@ msgstr "Regel aktualisieren?"
 msgid "Updated {formattedDate}"
 msgstr "Aktualisiert {formattedDate}"
 
-#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Use a read-only API key. Your key and secret are stored securely in the database and sync runs in the background."
 msgstr ""
 
@@ -3043,7 +3055,7 @@ msgstr "Ihre Datenbanksicherung kann geteilt werden."
 msgid "Your holdings"
 msgstr "Deine Bestände"
 
-#: src/sync/component/token-input-step/token-input-step.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Your token is stored securely in the database. Sync continues in the background."
 msgstr "Ihr Token wird sicher in der Datenbank gespeichert. Die Synchronisation läuft im Hintergrund weiter."
 

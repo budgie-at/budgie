@@ -880,11 +880,15 @@ msgstr "Створити резервну копію всіх ваших дан�
 msgid "Create a PIN"
 msgstr "Створити PIN-код"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Create a read-only API key and secret"
+msgstr "Створіть API-ключ і секрет лише для читання"
+
 #: src/app/transaction-account-filter.tsx
 msgid "Create Accounts"
 msgstr "Створити рахунки"
 
-#: src/sync/component/get-token-card/get-token-card.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create and copy the personal token"
 msgstr "Створити та скопіювати персональний токен"
 
@@ -1376,7 +1380,11 @@ msgstr "Німецька"
 msgid "German (Germany)"
 msgstr "Німецька (Німеччина)"
 
-#: src/sync/component/get-token-card/get-token-card.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Get API Key"
+msgstr "Отримати API-ключ"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Token"
 msgstr "Отримати API-токен"
 
@@ -1925,11 +1933,15 @@ msgstr "Можна конвертувати лише витрати з одни�
 msgid "Only single-entry incomes can be converted"
 msgstr "Можна конвертувати лише доходи з одним записом"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Open Binance to get your API key"
+msgstr "Відкрийте Binance, щоб отримати API-ключ"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "Відкрийте George (онлайн-банкінг Erste Bank)"
 
-#: src/sync/component/get-token-card/get-token-card.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Monobank to get your token"
 msgstr "Відкрийте Монобанк, щоб отримати токен"
 
@@ -2925,7 +2937,7 @@ msgstr "Оновити?"
 msgid "Updated {formattedDate}"
 msgstr "Оновлено {formattedDate}"
 
-#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Use a read-only API key. Your key and secret are stored securely in the database and sync runs in the background."
 msgstr ""
 
@@ -3043,7 +3055,7 @@ msgstr "Ваша резервна копія бази даних готова д
 msgid "Your holdings"
 msgstr "Ваші активи"
 
-#: src/sync/component/token-input-step/token-input-step.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Your token is stored securely in the database. Sync continues in the background."
 msgstr "Ваш токен зберігається в безпечній базі даних. Синхронізація продовжується у фоновому режимі."
 

@@ -47,6 +47,7 @@ export { BinanceAssetEnum } from './binance/enum/binance-asset.enum';
 export { BinanceTransferSourceEnum } from './binance/enum/binance-transfer-source.enum';
 export { BINANCE_ASSET_INSTRUMENT_CODE } from './binance/constant/binance-asset-instrument-code.constant';
 export { BINANCE_RATE_LIMIT_MS } from './binance/constant/binance-rate-limit-ms.constant';
+export { BINANCE_API_MANAGEMENT_URL } from './binance/constant/binance-api-management-url.constant';
 export { BINANCE_NO_NUMERIC_CODE } from './binance/constant/binance-no-numeric-code.constant';
 export { BinanceCredentialsSchema } from './binance/constant/binance-credentials.schema';
 
