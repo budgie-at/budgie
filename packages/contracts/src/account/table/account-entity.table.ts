@@ -1,4 +1,5 @@
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
+import { index, int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
 import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
@@ -43,5 +44,13 @@ export const AccountEntityTable = sqliteTable(
         iban: text('iban'),
         includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull(),
         isActive: int('is_active', { mode: 'boolean' }).default(true).notNull()
-    })
+    }),
+    table => [
+        index('accounts_iban_active_idx')
+            .on(table.iban, table.isActive)
+            .where(sql`${table.deletedAt} IS NULL AND ${table.iban} IS NOT NULL`),
+        index('accounts_active_type_instrument_idx')
+            .on(table.isActive, table.type, table.instrumentId)
+            .where(sql`${table.deletedAt} IS NULL`)
+    ]
 );

@@ -7,8 +7,11 @@ appId: ${APP_ID}
       element:
           id: 'SettingsPage.ConsolidateTransfersCard'
       direction: DOWN
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
 - tapOn:
       id: 'SettingsPage.ConsolidateTransfersCard'
+      retryTapIfNoChange: true
 - extendedWaitUntil:
       visible: '.*high-confidence transfer.*'
       timeout: 10000

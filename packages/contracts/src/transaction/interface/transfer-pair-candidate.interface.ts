@@ -1,7 +1,7 @@
-import type { TransferPairAutoConfidenceBucket } from './transfer-pair-auto-confidence-bucket.type';
+import { TransferPairAutoConfidenceBucketEnum } from '../enum/transfer-pair-auto-confidence-bucket.enum';
 
 export interface TransferPairCandidateInterface {
-    readonly confidenceBucket: TransferPairAutoConfidenceBucket;
+    readonly confidenceBucket: TransferPairAutoConfidenceBucketEnum;
     readonly expenseTransactionId: number;
     readonly expenseTransactionTitle: string | null;
     readonly expenseTransactionComment: string | null;
@@ -18,6 +18,13 @@ export interface TransferPairCandidateInterface {
     readonly incomeEntryAmount: number;
     readonly incomeEntryExchangeRate: number;
     readonly incomeEntryToIban: string | null;
-    readonly matchType: 'iban' | 'amount' | 'operation-amount' | 'implied-rate' | 'same-bank-hinted-fee' | 'interbank-hinted-fee';
+    readonly matchType:
+        | 'iban'
+        | 'amount'
+        | 'operation-amount'
+        | 'implied-rate'
+        | 'same-bank-cross-currency'
+        | 'same-bank-hinted-fee'
+        | 'interbank-hinted-fee';
     readonly timeDiff: number;
 }

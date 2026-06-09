@@ -1,6 +1,5 @@
 export { buildTestDb } from './db/build-test-db';
 export { createTestRepositories } from './db/create-test-repositories';
-export { createTestTransactionRunner } from './db/create-test-transaction-runner';
 export { resetTestDb } from './db/reset-test-db';
 export { TestQueryService } from './query/service/test-query.service';
 export { TestSeedService } from './seed/service/test-seed.service';

@@ -12,7 +12,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible: 'Value historical entries?'
       timeout: 10000
-- tapOn: 'Value'
+- tapOn: 'Value entries'
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.MoneyDataUpgradeCard.Status.COMPLETE'

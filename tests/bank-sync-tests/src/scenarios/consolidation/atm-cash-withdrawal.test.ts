@@ -29,7 +29,6 @@ import {
 import { insertOne } from '../../harness/db/insert-one';
 
 import { accountBalanceRepository, bankSyncRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
@@ -173,7 +172,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
         expectAccountBalances(bankAccount.id, cashAccount.id, -508, 500);
     });
 
-    it('enqueues consolidation after an empty Monobank sync so historical ATM fee entries can be repaired', async () => {
+    it('does not enqueue global consolidation after an empty stale Monobank sync', async () => {
         const staleForwardSyncDate = new Date(2026, 0, 1);
         const { bankSync } = setupMonobankFixture();
         seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
@@ -198,11 +197,10 @@ describe('consolidation/atm-cash-withdrawal', () => {
         monobankStub.statement([]);
         await monobankSyncService.sync();
 
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledTimes(1);
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledWith(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC);
+        expect(transferConsolidationDrainerService.enqueue).not.toHaveBeenCalled();
     });
 
-    it('enqueues consolidation when Monobank sync has no stale batch pending', async () => {
+    it('does not enqueue global consolidation when Monobank sync has no stale batch pending', async () => {
         setupMonobankFixture();
         seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
         monobankStub.statement([
@@ -222,8 +220,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
         monobankStub.statement([]);
         await monobankSyncService.sync();
 
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledTimes(1);
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledWith(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC);
+        expect(transferConsolidationDrainerService.enqueue).not.toHaveBeenCalled();
     });
 
     it('does NOT auto-consolidate when more than one cash account shares the currency', async () => {

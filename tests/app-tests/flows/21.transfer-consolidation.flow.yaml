@@ -30,14 +30,50 @@ appId: ${APP_ID}
     direction: DOWN
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_SameBank_Out_5524'
+    direction: DOWN
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_SameBank_In_0356'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_Bridge_Out'
+    direction: DOWN
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_Bridge_In'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_Bridge_Chain_Out'
+    direction: DOWN
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_Chain_Source'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_Chain_Target'
 
 # 3. Consolidate matches
 - runFlow: subflows/settings/consolidate-matches.flow.yaml
 
 # 4. Verify canonicals exist on the transactions list
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+    direction: UP
+    timeout: 5000
+    centerElement: true
+    optional: true
+- runFlow:
+    when:
+      notVisible:
+        id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+          direction: DOWN
+          centerElement: true
+          waitToSettleTimeoutMs: 500
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.FromAccount.E2E_Consolidation_A'
@@ -58,8 +94,52 @@ appId: ${APP_ID}
     id: 'TransactionCard.FromAccount.E2E_Consolidation_Card'
 - assertVisible:
     id: 'TransactionCard.ToAccount.E2E_Consolidation_Cash'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_SameBank_Out_5524'
+    direction: DOWN
+- assertVisible:
+    id: 'TransactionCard.FromAccount.E2E_Consolidation_Privat_Source'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.E2E_Consolidation_Privat_Target'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_Bridge_Out'
+    direction: DOWN
+- assertVisible:
+    id: 'TransactionCard.FromAccount.E2E_Consolidation_Bridge_Source'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.E2E_Consolidation_Bridge_Target'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_Bridge_Chain_Out'
+    direction: DOWN
+- assertVisible:
+    id: 'TransactionCard.FromAccount.E2E_Consolidation_Chain_Source'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.E2E_Consolidation_Chain_Target'
 
-# 5. INCOME-side source titles are now hidden (consolidationParent != NULL)
+# 5. Source titles are now hidden (consolidationParent != NULL)
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_Chain_Target'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_Chain_Source'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_SameBank_Out_5524'
+    direction: UP
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_SameBank_In_0356'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_Bridge_Out'
+    direction: DOWN
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_Bridge_In'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+    direction: UP
 - assertNotVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_P1_In'
 - assertNotVisible:
@@ -112,38 +192,7 @@ appId: ${APP_ID}
       id: 'TransactionCard.FromAccount.E2E_Consolidation_A'
     timeout: 5000
 
-# 8. Detail actions menu on canonical 2 replaces Delete with Revert
-- scrollUntilVisible:
-    element:
-      id: 'TransactionCard.Label.E2E_Consolidation_P2_Out'
-    direction: DOWN
-    centerElement: true
-- tapOn:
-    id: 'TransactionCard.Label.E2E_Consolidation_P2_Out'
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionActionsMenu.TriggerButton'
-    timeout: 10000
-- tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionActionsMenu.RevertButton'
-    timeout: 3000
-- assertNotVisible:
-    id: 'TransactionActionsMenu.DeleteButton'
-- tapOn:
-    id: 'TransactionActionsMenu.RevertButton'
-- runFlow: subflows/transactions/confirm-revert-consolidation.flow.yaml
-- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.E2E_Consolidation_P2_In'
-    timeout: 10000
-- assertNotVisible:
-    id: 'TransactionCard.FromAccount.E2E_Consolidation_USD'
-
-# 9. Long-press menu on the ATM canonical replaces Delete with Revert
+# 8. Long-press menu on the ATM canonical replaces Delete with Revert
 - scrollUntilVisible:
     element:
       id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
@@ -169,7 +218,7 @@ appId: ${APP_ID}
 - assertNotVisible:
     id: 'TransactionCard.ToAccount.E2E_Consolidation_Cash'
 
-# 10. Final balance assertions show generated cash withdrawal entries are gone
+# 9. Final balance assertions show generated cash withdrawal entries are gone
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:

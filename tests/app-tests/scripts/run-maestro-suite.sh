@@ -103,10 +103,21 @@ if [ -z "$E2E_CSV_FIXTURES_URI" ]; then
 fi
 
 echo "Running Maestro suite from $WORKSPACE_DIR"
-maestro test "$WORKSPACE_DIR" \
-    -e APP_ID="$APP_ID" \
-    -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
-    -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \
-    -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
-    --config "$SUITE_CONFIG_PATH" \
-    "$@"
+if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
+    maestro test "$WORKSPACE_DIR" \
+        --udid "$DETECTED_SIMULATOR_UDID" \
+        -e APP_ID="$APP_ID" \
+        -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
+        -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \
+        -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
+        --config "$SUITE_CONFIG_PATH" \
+        "$@"
+else
+    maestro test "$WORKSPACE_DIR" \
+        -e APP_ID="$APP_ID" \
+        -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
+        -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \
+        -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
+        --config "$SUITE_CONFIG_PATH" \
+        "$@"
+fi
