@@ -11,7 +11,7 @@ import { TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-second
 import { transactionService } from '../../transaction/service/transaction.service';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
-import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
+import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 
 import { AbstractSyncService } from './abstract-sync.service';
 
@@ -222,7 +222,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return { ...baseUpdate, forwardSyncFromAt: result.nextFrom };
     }
 
-    abstract fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]>;
+    abstract fetchAccountsPreview(token: string): Promise<SyncAccountPreviewInterface[]>;
 
     abstract setupAccountSyncBatch(token: string, externalIds: string[]): Promise<unknown>;
 

@@ -6,7 +6,7 @@ import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
-import { BankSyncStatusDot } from '../bank-sync-status-dot/bank-sync-status-dot';
+import { SyncStatusDot } from '../sync-status-dot/sync-status-dot';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly balance: number;
@@ -40,7 +40,7 @@ export const CryptoAccountCard = (props: Props) => {
             instrumentSymbol={instrumentSymbol}
             balanceContent={balanceContent}
         >
-            <BankSyncStatusDot bankSync={bankSync} />
+            <SyncStatusDot bankSync={bankSync} />
         </AccountCardBase>
     );
 };

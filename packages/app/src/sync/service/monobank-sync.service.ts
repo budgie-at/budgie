@@ -13,7 +13,7 @@ import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
-import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
+import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
@@ -43,7 +43,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         (result, token) => `done tokenLen=${token.length} externalIds=${result.map(account => account.externalId).join(',')}`,
         (error, token) => `throw tokenLen=${token.length} error=${getErrorMessage(error)}`
     )
-    async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
+    async fetchAccountsPreview(token: string): Promise<SyncAccountPreviewInterface[]> {
         const bankAccounts = await this.fetchBankAccountsAndJars(token);
         if (!isNotEmptyArray(bankAccounts)) {
             return [];

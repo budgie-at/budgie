@@ -6,10 +6,10 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
+import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
 
 interface Props {
-    readonly parkedPreviews: BankAccountPreviewInterface[];
+    readonly parkedPreviews: SyncAccountPreviewInterface[];
 }
 
 export const BinanceParkedAssetsNotice = ({ parkedPreviews }: Props) => {

@@ -4,13 +4,13 @@ import { useState } from 'react';
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { useBankAccountSetupFlow } from '../../hook/use-bank-account-setup-flow.hook';
-import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
+import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
+import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
 import { binanceSyncService } from '../../service/binance-sync.service';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
-import { BankAccountSetupPage } from '../bank-account-setup-page/bank-account-setup-page';
 import { BinanceParkedAssetsNotice } from '../binance-parked-assets-notice/binance-parked-assets-notice';
 import { KeySecretInputStep } from '../key-secret-input-step/key-secret-input-step';
+import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
 
 import { CreateBinanceAccountSelector } from './create-binance-account.selector';
 
@@ -22,7 +22,7 @@ export const CreateBinanceAccount = () => {
     const [step, setStep] = useState<SetupStep>('credentials');
     const [apiKey, setApiKey] = useState('');
     const [apiSecret, setApiSecret] = useState('');
-    const [parkedPreviews, setParkedPreviews] = useState<BankAccountPreviewInterface[]>([]);
+    const [parkedPreviews, setParkedPreviews] = useState<SyncAccountPreviewInterface[]>([]);
 
     const buildToken = () => JSON.stringify({ apiKey: apiKey.trim(), apiSecret: apiSecret.trim() });
 
@@ -38,7 +38,7 @@ export const CreateBinanceAccount = () => {
         handleGoBack,
         handleSetupSync,
         isStartSyncDisabled
-    } = useBankAccountSetupFlow(selectedAccountIds => binanceSyncService.setupAccountSyncBatch(buildToken(), selectedAccountIds));
+    } = useSyncAccountSetupFlow(selectedAccountIds => binanceSyncService.setupAccountSyncBatch(buildToken(), selectedAccountIds));
 
     const handleFetchAccounts = async () => {
         if (!isNotEmptyString(apiKey.trim()) || !isNotEmptyString(apiSecret.trim())) {
@@ -79,7 +79,7 @@ export const CreateBinanceAccount = () => {
     );
 
     return (
-        <BankAccountSetupPage
+        <SyncAccountSetupPage
             onGoBack={handleGoBack}
             title={t`Connect Binance`}
             description={t`Sync your Binance balances and transactions`}

@@ -18,7 +18,7 @@ import { ruleApplicationDrainerService } from '../../rule/service/rule-applicati
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
-import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
+import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
@@ -47,7 +47,7 @@ export abstract class BaseFileBankSyncService extends AbstractSyncService {
         (result, uri) => `done uri=${uri} previewCount=${result.length}`,
         (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`
     )
-    async importPreview(uri: string): Promise<BankAccountPreviewInterface[]> {
+    async importPreview(uri: string): Promise<SyncAccountPreviewInterface[]> {
         const { bankAccounts } = await this.parseFile(uri);
 
         if (!isNotEmptyArray(bankAccounts)) {

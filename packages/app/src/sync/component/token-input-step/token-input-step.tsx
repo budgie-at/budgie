@@ -3,8 +3,8 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { Input } from '../../../@generic/component/input/input';
-import { BankCredentialsStepHeader } from '../bank-credentials-step-header/bank-credentials-step-header';
 import { PasteTokenButton } from '../paste-token-button/paste-token-button';
+import { SyncCredentialsStepHeader } from '../sync-credentials-step-header/sync-credentials-step-header';
 
 interface Props {
     readonly token: string;
@@ -16,7 +16,7 @@ export const TokenInputStep = ({ token, onTokenChange }: Props) => {
 
     return (
         <>
-            <BankCredentialsStepHeader provider={ExternalSourceEnum.MONOBANK} />
+            <SyncCredentialsStepHeader provider={ExternalSourceEnum.MONOBANK} />
 
             <View className="gap-y-md">
                 <Text className="text-secondary-foreground text-sm px-md">

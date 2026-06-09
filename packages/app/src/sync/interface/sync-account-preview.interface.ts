@@ -1,6 +1,6 @@
 import { BankAccountTypeEnum } from '@budgie/bank-sync';
 
-export interface BankAccountPreviewInterface {
+export interface SyncAccountPreviewInterface {
     readonly externalId: string;
     readonly title: string;
     readonly type: BankAccountTypeEnum;

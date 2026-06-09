@@ -22,8 +22,8 @@ import { transactionService } from '../../transaction/service/transaction.servic
 import { BINANCE_SYNC_TASK } from '../constant/binance-sync-task.constant';
 import { BINANCE_TRANSFER_LOOKBACK_YEARS } from '../constant/binance-transfer-lookback-years.constant';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
-import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { BinanceResolvableAccountInterface } from '../interface/binance-resolvable-account.interface';
+import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { mapBankAccountToCreateInput } from '../util/map-bank-account-to-create-input.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 import { mapBinanceTransferToCreateInput } from '../util/map-binance-transfer-to-create-input.util';
@@ -66,7 +66,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             `done keyLen=${token.length} externalIds=${result.map(preview => preview.externalId).join(',')} parkedCount=${result.filter(preview => preview.isParked).length}`,
         (error, token) => `throw keyLen=${token.length} error=${getErrorMessage(error)}`
     )
-    async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
+    async fetchAccountsPreview(token: string): Promise<SyncAccountPreviewInterface[]> {
         const bankAccounts = await this.fetchBankAccounts(token);
         const instruments = await instrumentRepository.getAll();
 

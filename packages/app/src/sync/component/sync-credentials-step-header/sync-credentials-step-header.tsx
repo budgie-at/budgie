@@ -13,7 +13,7 @@ interface Props {
     readonly provider: ExternalSourceEnum;
 }
 
-export const BankCredentialsStepHeader = ({ provider }: Props) => {
+export const SyncCredentialsStepHeader = ({ provider }: Props) => {
     const { t } = useLingui();
     const config = BANK_CREDENTIALS_STEP_CONFIG[provider];
 

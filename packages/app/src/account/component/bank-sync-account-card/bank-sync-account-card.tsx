@@ -7,7 +7,7 @@ import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { quickImportConfigMap } from '../../../sync/constant/quick-import-config-map.constant';
 import { useQuickImport } from '../../../sync/hook/use-quick-import.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
-import { BankSyncStatusDot } from '../bank-sync-status-dot/bank-sync-status-dot';
+import { SyncStatusDot } from '../sync-status-dot/sync-status-dot';
 
 interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' | 'icon'> {
     readonly balance: number;
@@ -41,7 +41,7 @@ export const BankSyncAccountCard = (props: Props) => {
             className={className}
             onLongPress={longPressHandler}
         >
-            <BankSyncStatusDot bankSync={bankSync} />
+            <SyncStatusDot bankSync={bankSync} />
         </AccountCardBase>
     );
 };

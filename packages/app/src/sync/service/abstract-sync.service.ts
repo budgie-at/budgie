@@ -4,7 +4,7 @@ import { Log } from '@budgie/logger';
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
-import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
+import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { generateBankAccountTitle } from '../util/map-bank-account-to-create-input.util';
 
 import type { BankAccountInterface } from '@budgie/bank-sync';
@@ -35,7 +35,7 @@ export abstract class AbstractSyncService {
     protected async mapAccountsToPreview(
         bankAccounts: BankAccountInterface[],
         isParked: (bankAccount: BankAccountInterface) => boolean = () => false
-    ): Promise<BankAccountPreviewInterface[]> {
+    ): Promise<SyncAccountPreviewInterface[]> {
         const existingAccounts = await accountRepository.findByExternalIds(bankAccounts.map(account => account.id));
         const existingMap = new Map(existingAccounts.map(account => [account.externalId, account]));
         const existingSyncs = await bankSyncRepository.getByProvider(this.provider);

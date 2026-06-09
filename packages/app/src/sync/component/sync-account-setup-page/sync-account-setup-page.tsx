@@ -24,7 +24,7 @@ interface Props {
     readonly accountsStepContent: ReactNode;
 }
 
-export const BankAccountSetupPage = ({
+export const SyncAccountSetupPage = ({
     onGoBack,
     title,
     description,

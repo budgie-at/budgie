@@ -5,13 +5,13 @@ import { Text, View } from 'react-native';
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
+import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
 import { BankAccountPreviewList } from '../bank-account-preview-list/bank-account-preview-list';
 
 import { AccountSelectionStepSelector } from './account-selection-step.selector';
 
 interface Props {
-    readonly accountPreviews: BankAccountPreviewInterface[];
+    readonly accountPreviews: SyncAccountPreviewInterface[];
     readonly selectedAccounts: Set<string>;
     readonly onToggle: (externalId: string) => void;
     readonly onSelectAll: EmptyFn;

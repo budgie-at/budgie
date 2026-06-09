@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { useBankAccountSetupFlow } from '../../hook/use-bank-account-setup-flow.hook';
+import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
-import { BankAccountSetupPage } from '../bank-account-setup-page/bank-account-setup-page';
+import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
 import { TokenInputStep } from '../token-input-step/token-input-step';
 
 import { CreateMonobankAccountSelector } from './create-monobank-account.selector';
@@ -32,7 +32,7 @@ export const CreateMonobankAccount = () => {
         handleGoBack,
         handleSetupSync,
         isStartSyncDisabled
-    } = useBankAccountSetupFlow(selectedAccountIds => monobankSyncService.setupAccountSyncBatch(token.trim(), selectedAccountIds));
+    } = useSyncAccountSetupFlow(selectedAccountIds => monobankSyncService.setupAccountSyncBatch(token.trim(), selectedAccountIds));
 
     const handleFetchAccounts = async () => {
         const trimmedToken = token.trim();
@@ -68,7 +68,7 @@ export const CreateMonobankAccount = () => {
     );
 
     return (
-        <BankAccountSetupPage
+        <SyncAccountSetupPage
             onGoBack={handleGoBack}
             title={t`Connect Monobank`}
             description={t`Sync your Monobank accounts and transactions`}

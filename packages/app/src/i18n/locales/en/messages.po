@@ -850,7 +850,7 @@ msgstr "Could not select CSV file"
 msgid "Could not select database backup"
 msgstr "Could not select database backup"
 
-#: src/sync/hook/use-bank-account-setup-flow.hook.ts
+#: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not set up sync"
 msgstr "Could not set up sync"
 
@@ -1321,7 +1321,7 @@ msgstr "Fast-indexing {done} of {total} • tap to pause"
 msgid "Fee {formattedAmount}"
 msgstr "Fee {formattedAmount}"
 
-#: src/sync/component/bank-account-setup-page/bank-account-setup-page.tsx
+#: src/sync/component/sync-account-setup-page/sync-account-setup-page.tsx
 msgid "Fetch Accounts"
 msgstr "Fetch Accounts"
 
@@ -1421,7 +1421,7 @@ msgstr "History loading paused"
 msgid "History synced"
 msgstr "History synced"
 
-#: src/sync/component/bank-credentials-step-header/bank-credentials-step-header.tsx
+#: src/sync/component/sync-credentials-step-header/sync-credentials-step-header.tsx
 msgid "How to configure"
 msgstr "How to configure"
 
@@ -2587,8 +2587,8 @@ msgstr "Split"
 msgid "Start Import"
 msgstr "Start Import"
 
-#: src/sync/component/bank-account-setup-page/bank-account-setup-page.tsx
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/sync-account-setup-page/sync-account-setup-page.tsx
 msgid "Start Sync"
 msgstr "Start Sync"
 

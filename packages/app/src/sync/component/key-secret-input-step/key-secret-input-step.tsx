@@ -3,7 +3,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { Input } from '../../../@generic/component/input/input';
-import { BankCredentialsStepHeader } from '../bank-credentials-step-header/bank-credentials-step-header';
+import { SyncCredentialsStepHeader } from '../sync-credentials-step-header/sync-credentials-step-header';
 
 interface Props {
     readonly apiKey: string;
@@ -17,7 +17,7 @@ export const KeySecretInputStep = ({ apiKey, apiSecret, onApiKeyChange, onApiSec
 
     return (
         <>
-            <BankCredentialsStepHeader provider={ExternalSourceEnum.BINANCE} />
+            <SyncCredentialsStepHeader provider={ExternalSourceEnum.BINANCE} />
 
             <View className="gap-y-md">
                 <Text className="text-secondary-foreground text-sm px-md">

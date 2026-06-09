@@ -9,7 +9,7 @@ import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error
 
 import { useAccountSelection } from './use-account-selection.hook';
 
-export const useBankAccountSetupFlow = (setupSync: (selectedAccountIds: string[]) => Promise<unknown>) => {
+export const useSyncAccountSetupFlow = (setupSync: (selectedAccountIds: string[]) => Promise<unknown>) => {
     const { t } = useLingui();
     const [isLoading, setIsLoading] = useState(false);
     const accountSelection = useAccountSelection();
