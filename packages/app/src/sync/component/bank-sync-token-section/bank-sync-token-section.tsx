@@ -7,7 +7,7 @@ import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Input } from '../../../@generic/component/input/input';
-import { monobankSyncService } from '../../service/monobank-sync.service';
+import { syncProviderRegistryService } from '../../service/sync-provider-registry.service';
 import { PasteTokenButton } from '../paste-token-button/paste-token-button';
 
 interface Props {
@@ -48,7 +48,8 @@ export const BankSyncTokenSection = ({ accountId, token }: Props) => {
 
         setIsSaving(true);
         try {
-            await monobankSyncService.updateAccountToken(accountId, newToken.trim());
+            const service = await syncProviderRegistryService.getServiceForAccount(accountId);
+            await service?.updateAccountToken?.(accountId, newToken.trim());
             setIsEditing(false);
             setNewToken('');
         } catch (error) {

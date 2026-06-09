@@ -6,6 +6,8 @@ const VIRTUAL_PREFIX = '\0virtual:';
 
 const VIRTUAL_SHIMS: Record<string, string> = {
     'expo-secure-store': `export const getItem = () => null;`,
+    expo: `export const requireNativeModule = () => ({});`,
+    'expo-file-system': `export const File = class { constructor() {} };`,
     'expo-sqlite': `
         export const openDatabaseSync = () => ({});
         export const deleteDatabaseAsync = async () => undefined;
@@ -75,7 +77,7 @@ export const createTestVitestConfig = (rootDir: string, setupFile: string, inclu
         plugins: [createTestInlineShimPlugin(true)],
         ...(includeAppAlias && {
             resolve: {
-                alias: [{ find: /^@app\/(.*)$/, replacement: here('../../packages/app/src/$1') }]
+                alias: [{ find: /^@app\/(.*)$/u, replacement: here('../../packages/app/src/$1') }]
             }
         }),
         test: {

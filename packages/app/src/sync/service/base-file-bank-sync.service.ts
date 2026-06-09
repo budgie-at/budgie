@@ -33,6 +33,8 @@ import type { BankAccountInterface } from '@budgie/bank-sync';
 import type { DB, MccCategoryLookupInterface } from '@budgie/contracts';
 
 export abstract class BaseFileBankSyncService {
+    readonly supportsTokenAuth = false;
+
     private importQueue: Promise<void> = Promise.resolve();
 
     constructor(protected readonly provider: ExternalSourceEnum) {}
@@ -149,6 +151,10 @@ export abstract class BaseFileBankSyncService {
         };
 
         await syncWorkloadService.run(`${this.provider}-file-import`, importWork);
+    }
+
+    async setAccountSyncEnabled(accountId: number, enabled: boolean): Promise<void> {
+        await bankSyncRepository.setEnabled(accountId, enabled);
     }
 
     private async executeImportForSelectedAccountsInner(uri: string, selectedAccountIds: string[]): Promise<void> {

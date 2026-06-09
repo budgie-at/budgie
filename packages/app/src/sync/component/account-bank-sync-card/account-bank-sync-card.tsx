@@ -9,7 +9,7 @@ import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useAccountBankSync } from '../../hook/use-account-bank-sync.hook';
-import { monobankSyncService } from '../../service/monobank-sync.service';
+import { syncProviderRegistryService } from '../../service/sync-provider-registry.service';
 import { buildBankSyncStatusLabel } from '../../utils/build-bank-sync-status-label.util';
 import { BankSyncTokenSection } from '../bank-sync-token-section/bank-sync-token-section';
 import { ResyncBankSyncAccount } from '../resync-bank-sync-account/resync-bank-sync-account';
@@ -43,8 +43,13 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
     const statusLabel = buildBankSyncStatusLabel({ status: bankSync.status, isForwardMode, isSyncing });
 
     const handleToggle = (enabled: boolean) => {
-        void monobankSyncService.setAccountSyncEnabled(accountId, enabled);
+        void syncProviderRegistryService
+            .getServiceForAccount(accountId)
+            .then(service => service?.setAccountSyncEnabled(accountId, enabled));
     };
+
+    const providerService = syncProviderRegistryService.getServiceForProvider(bankSync.provider);
+    const supportsTokenAuth = providerService?.supportsTokenAuth === true;
 
     return (
         <Card className="p-4xl gap-y-lg">
@@ -88,7 +93,7 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
                     </>
                 )}
 
-                <BankSyncTokenSection accountId={accountId} token={bankSync.token} />
+                {supportsTokenAuth && <BankSyncTokenSection accountId={accountId} token={bankSync.token} />}
             </View>
         </Card>
     );

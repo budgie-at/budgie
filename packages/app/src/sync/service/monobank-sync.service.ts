@@ -41,6 +41,8 @@ class AppMonobankSyncService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 15;
     private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
 
+    readonly supportsTokenAuth = true;
+
     private readonly provider = ExternalSourceEnum.MONOBANK;
     private isRunning = false;
     private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();

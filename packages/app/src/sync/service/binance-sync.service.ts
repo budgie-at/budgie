@@ -58,6 +58,8 @@ class AppBinanceSyncService {
     private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 15;
 
+    readonly supportsTokenAuth = true;
+
     private readonly provider = ExternalSourceEnum.BINANCE;
     private isRunning = false;
     private transfersSyncedThisRun = false;
