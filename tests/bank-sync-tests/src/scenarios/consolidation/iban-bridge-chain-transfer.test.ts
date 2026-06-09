@@ -1,13 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 
+import { isDefined } from '@rnw-community/shared';
+
 import {
     TransactionConsolidationTypeEnum,
-    TransactionCreateEntityInterface,
-    TransactionEntityTable,
-    TransactionEntryCreateEntityInterface,
+    TransactionEntityInterface,
     TransactionEntryEntityTable,
-    TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 
@@ -21,6 +20,9 @@ import {
     seedBankSyncAccount,
     testDb
 } from '../../harness';
+
+import { consolidationScopeService } from '@budgie/consolidation';
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 const SOURCE_IBAN = 'UA-SOURCE-EUR';
 const BRIDGE_IBAN = 'UA-BRIDGE-UAH';
@@ -79,58 +81,37 @@ const seedDirectTransfer = (
     sourceAccountId: number,
     targetAccountId: number,
     consolidationType: TransactionConsolidationTypeEnum | null = null
-) => {
-    const directTransfer = testDb
-        .insert(TransactionEntityTable)
-        .values({
-            type: TransactionTypeEnum.TRANSFER,
-            title: 'На чорну картку',
-            externalId: null,
-            externalSource: null,
-            operatedAt,
-            exchangeRate: UAH_TO_EUR_RATE,
-            fromAccountId: sourceAccountId,
-            toAccountId: targetAccountId,
-            comment: '',
-            needsEmbedding: false,
-            consolidationParentTransactionId: null,
-            consolidationType,
-            updatedBy: null
-        } satisfies TransactionCreateEntityInterface)
-        .returning()
-        .get();
+): TransactionEntityInterface =>
+    seed.directTransfer({
+        consolidationType,
+        exchangeRate: UAH_TO_EUR_RATE,
+        operatedAt,
+        sourceAccountId,
+        sourceAmount: EUR_AMOUNT,
+        sourceEntryExchangeRate: UAH_TO_EUR_RATE,
+        targetAccountId,
+        targetAmount: UAH_AMOUNT,
+        toIban: TARGET_IBAN,
+        title: 'На чорну картку'
+    });
 
-    testDb
-        .insert(TransactionEntryEntityTable)
-        .values([
-            {
-                transactionId: directTransfer.id,
-                accountId: sourceAccountId,
-                categoryId: null,
-                mccCategoryId: null,
-                type: TransactionEntryTypeEnum.CREDIT,
-                amount: EUR_AMOUNT,
-                externalId: null,
-                exchangeRate: UAH_TO_EUR_RATE,
-                toIban: TARGET_IBAN,
-                originalTransactionId: null
-            },
-            {
-                transactionId: directTransfer.id,
-                accountId: targetAccountId,
-                categoryId: null,
-                mccCategoryId: null,
-                type: TransactionEntryTypeEnum.DEBIT,
-                amount: UAH_AMOUNT,
-                externalId: null,
-                exchangeRate: 1,
-                toIban: null,
-                originalTransactionId: null
-            }
-        ] satisfies TransactionEntryCreateEntityInterface[])
-        .run();
+const seedBridgeReclaimFixture = (consolidationType: TransactionConsolidationTypeEnum | null) => {
+    const operatedAt = new Date(2026, 4, 20, 18, 38, 0);
+    const { transferMcc, sourceAccount, bridgeAccount, targetAccount } = seedBridgeAccounts();
+    const directTransfer = seedDirectTransfer(operatedAt, sourceAccount.id, targetAccount.id, consolidationType);
+    const { bridgeIncome, bridgeExpense } = seedBridgeRows(operatedAt, bridgeAccount.id, transferMcc.id);
 
-    return directTransfer;
+    return { bridgeExpense, bridgeIncome, directTransfer, sourceAccount, targetAccount };
+};
+
+const buildBridgeScope = (transactions: Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]) => {
+    const scope = consolidationScopeService.buildFromTransactions(transactions);
+
+    if (!isDefined(scope)) {
+        throw new Error('Expected bridge rows to build a consolidation scope');
+    }
+
+    return scope;
 };
 
 const fetchMovedSourceIds = (canonicalId: number): number[] => {
@@ -171,6 +152,25 @@ const expectMovedSources = (canonicalId: number, expectedSourceIds: number[]): v
     expect(sourceIds.sort((left, right) => left - right)).toEqual(expectedSourceIds.sort((left, right) => left - right));
 };
 
+const expectBridgeReclaimedIntoDirectTransfer = (
+    directTransferId: number,
+    sourceAccountId: number,
+    targetAccountId: number,
+    sourceIds: number[]
+): void => {
+    expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
+
+    const canonicalId = expectCanonicalTransfer(
+        TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
+        sourceAccountId,
+        targetAccountId
+    );
+
+    expect(canonicalId).toBe(directTransferId);
+    expectSourcesParented(canonicalId, sourceIds);
+    expectMovedSources(canonicalId, sourceIds);
+};
+
 describe('consolidation/iban-bridge-chain-transfer', () => {
     it('collapses a technical bridge chain into one direct canonical transfer', async () => {
         const operatedAt = new Date(2026, 4, 20, 18, 38, 0);
@@ -201,23 +201,40 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
         expectMovedSources(canonicalId, sourceIds);
     });
 
-    it('prioritizes bridge consolidation over the generic technical pair when a direct transfer exists', async () => {
-        const operatedAt = new Date(2026, 4, 20, 18, 38, 0);
-        const { transferMcc, sourceAccount, bridgeAccount, targetAccount } = seedBridgeAccounts();
-        const directTransfer = seedDirectTransfer(operatedAt, sourceAccount.id, targetAccount.id);
-        const { bridgeIncome, bridgeExpense } = seedBridgeRows(operatedAt, bridgeAccount.id, transferMcc.id);
+    it('reclaims a generated direct transfer pair before generic bridge consolidation in a full scan', async () => {
+        const { bridgeExpense, bridgeIncome, directTransfer, sourceAccount, targetAccount } = seedBridgeReclaimFixture(
+            TransactionConsolidationTypeEnum.TRANSFER_PAIR
+        );
 
         await expectSingleConsolidation();
 
-        const canonicalId = expectCanonicalTransfer(
-            TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
-            sourceAccount.id,
-            targetAccount.id
-        );
-        const sourceIds = [directTransfer.id, bridgeIncome.id, bridgeExpense.id];
+        expectBridgeReclaimedIntoDirectTransfer(directTransfer.id, sourceAccount.id, targetAccount.id, [bridgeIncome.id, bridgeExpense.id]);
+    });
 
-        expectSourcesParented(canonicalId, sourceIds);
-        expectMovedSources(canonicalId, [directTransfer.id, ...sourceIds]);
+    it('reclaims late bridge legs into an existing direct transfer pair inside a scoped sync scan', async () => {
+        const { bridgeExpense, bridgeIncome, directTransfer, sourceAccount, targetAccount } = seedBridgeReclaimFixture(
+            TransactionConsolidationTypeEnum.TRANSFER_PAIR
+        );
+        const scope = buildBridgeScope([bridgeIncome, bridgeExpense]);
+
+        const result = await transferConsolidationService.consolidate(scope);
+
+        expect(result.found).toBe(1);
+        expect(result.consolidated).toBe(1);
+        expectBridgeReclaimedIntoDirectTransfer(directTransfer.id, sourceAccount.id, targetAccount.id, [bridgeIncome.id, bridgeExpense.id]);
+    });
+
+    it('does not reclaim late bridge legs into a source-less hand-created transfer', async () => {
+        const { bridgeExpense, bridgeIncome, directTransfer } = seedBridgeReclaimFixture(null);
+        const scope = buildBridgeScope([bridgeIncome, bridgeExpense]);
+
+        const result = await transferConsolidationService.consolidate(scope);
+
+        expect(result.found).toBe(0);
+        expect(result.consolidated).toBe(0);
+        expect(fetchTransactionById(directTransfer.id).consolidationType).toBeNull();
+        expect(fetchTransactionById(bridgeIncome.id).consolidationParentTransactionId).toBeNull();
+        expect(fetchTransactionById(bridgeExpense.id).consolidationParentTransactionId).toBeNull();
     });
 
     it('attaches leftover technical source and target rows to an existing bridge canonical transfer', async () => {
