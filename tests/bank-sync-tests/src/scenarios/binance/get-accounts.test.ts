@@ -1,9 +1,12 @@
 import { BinanceSignedClient, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/bank-sync';
 import { describe, expect, it } from 'vitest';
 
-import { binanceStub, buildBinance } from '../../harness';
+import { BINANCE_TEST_TOKEN, binanceStub, buildBinance } from '../../harness';
 
-const TOKEN = JSON.stringify({ apiKey: 'k', apiSecret: 's' });
+import type { BankAccountInterface, BankSyncResultInterface } from '@budgie/bank-sync';
+
+const fetchAccountsResult = (): Promise<BankSyncResultInterface<BankAccountInterface[]>> =>
+    new BinanceSignedClient(BINANCE_TEST_TOKEN).getAccounts();
 
 describe('binance/get-accounts', () => {
     it('enumerates Spot and Funding non-zero (wallet, asset) pairs', async () => {
@@ -13,8 +16,7 @@ describe('binance/get-accounts', () => {
         binanceStub.earnPositions([]);
         binanceStub.lockedEarnPositions([]);
 
-        const client = new BinanceSignedClient(TOKEN);
-        const result = await client.getAccounts();
+        const result = await fetchAccountsResult();
 
         expect(result.success).toBe(true);
         if (result.success) {
@@ -33,8 +35,7 @@ describe('binance/get-accounts', () => {
         binanceStub.earnPositions([buildBinance.earnPosition({ asset: 'BNB', totalAmount: '0.00008945' })]);
         binanceStub.lockedEarnPositions([buildBinance.lockedEarnPosition({ asset: 'BNB', amount: '0.51033101' })]);
 
-        const client = new BinanceSignedClient(TOKEN);
-        const result = await client.getAccounts();
+        const result = await fetchAccountsResult();
 
         expect(result.success).toBe(true);
         if (result.success) {
@@ -53,8 +54,7 @@ describe('binance/get-accounts', () => {
         binanceStub.earnPositions([]);
         binanceStub.lockedEarnPositions([]);
 
-        const client = new BinanceSignedClient(TOKEN);
-        const result = await client.getAccounts();
+        const result = await fetchAccountsResult();
 
         expect(result.success).toBe(true);
         if (result.success) {

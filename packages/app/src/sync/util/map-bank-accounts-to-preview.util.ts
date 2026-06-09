@@ -10,7 +10,8 @@ import { generateBankAccountTitle } from './map-bank-account-to-create-input.uti
 
 export const mapBankAccountsToPreview = async (
     bankAccounts: BankAccountInterface[],
-    provider: ExternalSourceEnum
+    provider: ExternalSourceEnum,
+    isParked: (bankAccount: BankAccountInterface) => boolean = () => false
 ): Promise<BankAccountPreviewInterface[]> => {
     const existingAccounts = await accountRepository.findByExternalIds(bankAccounts.map(account => account.id));
     const existingMap = new Map(existingAccounts.map(account => [account.externalId, account]));
@@ -28,7 +29,7 @@ export const mapBankAccountsToPreview = async (
             iban: bankAccount.iban ?? null,
             existingAccountId: existingAccount?.id ?? null,
             hasBankSync: isDefined(existingAccount) && syncedAccountIds.has(existingAccount.id),
-            isParked: false
+            isParked: isParked(bankAccount)
         };
     });
 };

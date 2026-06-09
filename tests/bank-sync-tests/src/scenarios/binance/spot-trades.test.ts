@@ -1,48 +1,49 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
 import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/bank-sync';
-import {
-    AccountEntityTable,
-    ExternalSourceEnum,
-    InstrumentTypeEnum,
-    TransactionEntityTable,
-    TransactionEntryEntityTable,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { AccountEntityTable, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { binanceStub, buildBinance, seed, setupBinanceFixture, testDb } from '../../harness';
+import {
+    binanceStub,
+    buildBinance,
+    expectNoDuplicateAfterResync,
+    expectSingleBinanceTransaction,
+    fetchBinanceEntriesByExternalId,
+    fetchBinanceTransactions,
+    seedCryptoInstrument,
+    setupBinanceFixture,
+    setupUsdtSpotFixtureWithBalances,
+    testDb
+} from '../../harness';
 
-const fetchTransactions = () =>
-    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.BINANCE)).all();
+const stubAdaUsdtTrade = (id: number, qty: string, quoteQty: string, isBuyer: boolean): void => {
+    binanceStub.myTrades({
+        ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id, qty, quoteQty, commission: '0', isBuyer })]
+    });
+};
 
-const fetchEntriesByExternalId = (externalId: string) =>
-    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId)).all();
-
-const seedInstrument = (code: string) => seed.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
+const setupUsdtAdaBnbFixture = (bnbFree: string): void => {
+    setupBinanceFixture({ asset: 'USDT' });
+    binanceStub.spotBalances([
+        buildBinance.balance({ asset: 'USDT', free: '100' }),
+        buildBinance.balance({ asset: 'ADA', free: '200' }),
+        buildBinance.balance({ asset: 'BNB', free: bnbFree })
+    ]);
+};
 
 describe('binance/spot-trades', () => {
     it('maps a buy fill to a TRANSFER with quote-out CREDIT and base-in DEBIT at exchangeRate 1', async () => {
-        seedInstrument('ADA');
-        setupBinanceFixture({ asset: 'USDT' });
-        binanceStub.spotBalances([
-            buildBinance.balance({ asset: 'USDT', free: '100' }),
-            buildBinance.balance({ asset: 'ADA', free: '200' })
-        ]);
-        binanceStub.myTrades({
-            ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 10, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })]
-        });
+        seedCryptoInstrument('ADA');
+        setupUsdtSpotFixtureWithBalances('ADA', '200');
+        stubAdaUsdtTrade(10, '200', '100', true);
 
         await binanceSyncService.sync();
 
-        const transactions = fetchTransactions();
-        expect(transactions).toHaveLength(1);
-        expect(transactions[0].type).toBe(TransactionTypeEnum.TRANSFER);
-        expect(transactions[0].externalId).toBe('binance:trade:ADAUSDT:10');
-        expect(transactions[0].exchangeRate).toBe(1);
+        expectSingleBinanceTransaction(TransactionTypeEnum.TRANSFER, 'binance:trade:ADAUSDT:10');
+        expect(fetchBinanceTransactions()[0].exchangeRate).toBe(1);
 
-        const entries = fetchEntriesByExternalId('binance:trade:ADAUSDT:10');
+        const entries = fetchBinanceEntriesByExternalId('binance:trade:ADAUSDT:10');
         expect(entries).toHaveLength(2);
         const creditEntry = entries.find(entry => entry.type === TransactionEntryTypeEnum.CREDIT);
         const debitEntry = entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
@@ -51,33 +52,19 @@ describe('binance/spot-trades', () => {
     });
 
     it('maps a sell fill to a TRANSFER with base-out and quote-in', async () => {
-        seedInstrument('ADA');
-        setupBinanceFixture({ asset: 'USDT' });
-        binanceStub.spotBalances([
-            buildBinance.balance({ asset: 'USDT', free: '100' }),
-            buildBinance.balance({ asset: 'ADA', free: '50' })
-        ]);
-        binanceStub.myTrades({
-            ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 11, qty: '150', quoteQty: '75', commission: '0', isBuyer: false })]
-        });
+        seedCryptoInstrument('ADA');
+        setupUsdtSpotFixtureWithBalances('ADA', '50');
+        stubAdaUsdtTrade(11, '150', '75', false);
 
         await binanceSyncService.sync();
 
-        const transactions = fetchTransactions();
-        expect(transactions).toHaveLength(1);
-        expect(transactions[0].type).toBe(TransactionTypeEnum.TRANSFER);
-        expect(transactions[0].externalId).toBe('binance:trade:ADAUSDT:11');
+        expectSingleBinanceTransaction(TransactionTypeEnum.TRANSFER, 'binance:trade:ADAUSDT:11');
     });
 
     it('adds a FEE entry on the BNB account when the commission asset is BNB', async () => {
-        seedInstrument('ADA');
-        seedInstrument('BNB');
-        setupBinanceFixture({ asset: 'USDT' });
-        binanceStub.spotBalances([
-            buildBinance.balance({ asset: 'USDT', free: '100' }),
-            buildBinance.balance({ asset: 'ADA', free: '200' }),
-            buildBinance.balance({ asset: 'BNB', free: '1' })
-        ]);
+        seedCryptoInstrument('ADA');
+        seedCryptoInstrument('BNB');
+        setupUsdtAdaBnbFixture('1');
         binanceStub.myTrades({
             ADAUSDT: [
                 buildBinance.trade({
@@ -94,30 +81,24 @@ describe('binance/spot-trades', () => {
 
         await binanceSyncService.sync();
 
-        const entries = fetchEntriesByExternalId('binance:trade:ADAUSDT:12');
-        const feeEntries = fetchEntriesByExternalId('binance:trade:ADAUSDT:12:fee');
+        const entries = fetchBinanceEntriesByExternalId('binance:trade:ADAUSDT:12');
+        const feeEntries = fetchBinanceEntriesByExternalId('binance:trade:ADAUSDT:12:fee');
         expect(entries).toHaveLength(2);
         expect(feeEntries).toHaveLength(1);
         expect(feeEntries[0].type).toBe(TransactionEntryTypeEnum.FEE);
     });
 
     it('auto-creates the counter account for the bought asset when no Budgie account exists yet', async () => {
-        seedInstrument('ADA');
-        setupBinanceFixture({ asset: 'USDT' });
-        binanceStub.spotBalances([
-            buildBinance.balance({ asset: 'USDT', free: '100' }),
-            buildBinance.balance({ asset: 'ADA', free: '200' })
-        ]);
-        binanceStub.myTrades({
-            ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 13, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })]
-        });
+        seedCryptoInstrument('ADA');
+        setupUsdtSpotFixtureWithBalances('ADA', '200');
+        stubAdaUsdtTrade(13, '200', '100', true);
 
         const adaCodecId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'ADA' });
         expect(testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, adaCodecId)).all()).toHaveLength(0);
 
         await binanceSyncService.sync();
 
-        const transactions = fetchTransactions();
+        const transactions = fetchBinanceTransactions();
         expect(transactions).toHaveLength(1);
         expect(transactions[0].type).toBe(TransactionTypeEnum.TRANSFER);
         expect(testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, adaCodecId)).all()).toHaveLength(1);
@@ -132,18 +113,13 @@ describe('binance/spot-trades', () => {
 
         await binanceSyncService.sync();
 
-        expect(fetchTransactions()).toHaveLength(0);
+        expect(fetchBinanceTransactions()).toHaveLength(0);
     });
 
     it('returns trades for all accounts in a single run, not just the first account', async () => {
-        seedInstrument('ADA');
-        seedInstrument('BNB');
-        setupBinanceFixture({ asset: 'USDT' });
-        binanceStub.spotBalances([
-            buildBinance.balance({ asset: 'USDT', free: '100' }),
-            buildBinance.balance({ asset: 'ADA', free: '200' }),
-            buildBinance.balance({ asset: 'BNB', free: '5' })
-        ]);
+        seedCryptoInstrument('ADA');
+        seedCryptoInstrument('BNB');
+        setupUsdtAdaBnbFixture('5');
         binanceStub.myTrades({
             ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 20, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })],
             BNBUSDT: [buildBinance.trade({ symbol: 'BNBUSDT', id: 21, qty: '5', quoteQty: '50', commission: '0', isBuyer: true })]
@@ -151,14 +127,14 @@ describe('binance/spot-trades', () => {
 
         await binanceSyncService.sync();
 
-        const transactions = fetchTransactions();
+        const transactions = fetchBinanceTransactions();
         const externalIds = transactions.map(transaction => transaction.externalId);
         expect(externalIds).toContain('binance:trade:ADAUSDT:20');
         expect(externalIds).toContain('binance:trade:BNBUSDT:21');
     });
 
     it('only queries myTrades for symbols present in exchangeInfo', async () => {
-        seedInstrument('ADA');
+        seedCryptoInstrument('ADA');
         setupBinanceFixture({ asset: 'USDT' });
         binanceStub.exchangeInfo(['ADAUSDT']);
         binanceStub.spotBalances([
@@ -166,7 +142,7 @@ describe('binance/spot-trades', () => {
             buildBinance.balance({ asset: 'ADA', free: '200' })
         ]);
         const requestedSymbols = new Set<string>();
-        binanceStub.myTradesTracked(
+        binanceStub.myTrades(
             { ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 22, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })] },
             requestedSymbols
         );
@@ -176,11 +152,11 @@ describe('binance/spot-trades', () => {
         expect([...requestedSymbols]).toEqual(['ADAUSDT']);
         expect(requestedSymbols.has('ADABTC')).toBe(false);
         expect(requestedSymbols.has('ADABNB')).toBe(false);
-        expect(fetchTransactions()).toHaveLength(1);
+        expect(fetchBinanceTransactions()).toHaveLength(1);
     });
 
     it('does not query myTrades for LD* Simple Earn assets', async () => {
-        seedInstrument('ADA');
+        seedCryptoInstrument('ADA');
         setupBinanceFixture({ asset: 'USDT' });
         binanceStub.exchangeInfo(['ADAUSDT', 'LDADAUSDT', 'LDADABTC']);
         binanceStub.spotBalances([
@@ -189,7 +165,7 @@ describe('binance/spot-trades', () => {
             buildBinance.balance({ asset: 'LDADA', free: '500' })
         ]);
         const requestedSymbols = new Set<string>();
-        binanceStub.myTradesTracked(
+        binanceStub.myTrades(
             { ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 23, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })] },
             requestedSymbols
         );
@@ -202,30 +178,18 @@ describe('binance/spot-trades', () => {
     });
 
     it('does not create duplicate transfers on a second sync run', async () => {
-        seedInstrument('ADA');
-        setupBinanceFixture({ asset: 'USDT' });
-        binanceStub.spotBalances([
-            buildBinance.balance({ asset: 'USDT', free: '100' }),
-            buildBinance.balance({ asset: 'ADA', free: '200' })
-        ]);
-        binanceStub.myTrades({
-            ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 15, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })]
-        });
+        seedCryptoInstrument('ADA');
+        setupUsdtSpotFixtureWithBalances('ADA', '200');
+        stubAdaUsdtTrade(15, '200', '100', true);
 
         await binanceSyncService.sync();
-        expect(fetchTransactions()).toHaveLength(1);
 
-        Object.assign(binanceSyncService, { isRunning: false });
-        binanceStub.serverTime();
-        binanceStub.spotBalances([
-            buildBinance.balance({ asset: 'USDT', free: '100' }),
-            buildBinance.balance({ asset: 'ADA', free: '200' })
-        ]);
-        binanceStub.myTrades({
-            ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 15, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })]
+        await expectNoDuplicateAfterResync(() => {
+            binanceStub.spotBalances([
+                buildBinance.balance({ asset: 'USDT', free: '100' }),
+                buildBinance.balance({ asset: 'ADA', free: '200' })
+            ]);
+            stubAdaUsdtTrade(15, '200', '100', true);
         });
-        await binanceSyncService.sync();
-
-        expect(fetchTransactions()).toHaveLength(1);
     });
 });

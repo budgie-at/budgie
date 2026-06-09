@@ -28,6 +28,7 @@ import { upsertTransactionEntriesAndTags } from '../utils/upsert-transaction-ent
 import { importedTransactionEntryUpdateService } from './imported-transaction-entry-update.service';
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
+import type { PersistPrimaryTransferInputInterface } from '../interface/persist-primary-transfer-input.interface';
 import type { PersistTransferInputInterface } from '../interface/persist-transfer-input.interface';
 import type { TransferLegValuationsInterface } from '../interface/transfer-leg-valuations.interface';
 import type { ValueTransferLegsInputInterface } from '../interface/value-transfer-legs-input.interface';
@@ -132,21 +133,7 @@ class TransactionService {
 
             const transaction = await transactionRepository.create({ ...input, exchangeRate: 1 }, tx);
 
-            const { additionalEntryValuations, fromValuation, toValuation } = await this.valueTransferLegs({
-                input,
-                fromEntry,
-                toEntry,
-                fromAmountInMicroUnits,
-                toAmountInMicroUnits,
-                tx
-            });
-
-            const primaryEntries = this.buildPrimaryTransferEntries(transaction.id, [
-                { entry: fromEntry, type: TransactionEntryTypeEnum.CREDIT, amount: fromAmountInMicroUnits, valuation: fromValuation },
-                { entry: toEntry, type: TransactionEntryTypeEnum.DEBIT, amount: toAmountInMicroUnits, valuation: toValuation }
-            ]);
-
-            await this.persistTransfer({ transaction, input, primaryEntries, fromEntry, toEntry, additionalEntryValuations, tx });
+            await this.persistPrimaryTransfer({ transaction, input, fromEntry, toEntry, fromAmountInMicroUnits, toAmountInMicroUnits, tx });
 
             return transaction;
         });
@@ -181,7 +168,6 @@ class TransactionService {
     }
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        // eslint-disable-next-line max-statements -- Transfer creation with optional custom exchange rate and debt handling
         return await transactionAsync(db, async tx => {
             const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
 
@@ -214,7 +200,8 @@ class TransactionService {
                 },
                 tx
             );
-            const { additionalEntryValuations, fromValuation, toValuation } = await this.valueTransferLegs({
+            await this.persistPrimaryTransfer({
+                transaction,
                 input,
                 fromEntry,
                 toEntry,
@@ -222,13 +209,6 @@ class TransactionService {
                 toAmountInMicroUnits: toAmount,
                 tx
             });
-
-            const primaryEntries = this.buildPrimaryTransferEntries(transaction.id, [
-                { entry: fromEntry, type: TransactionEntryTypeEnum.CREDIT, amount: fromAmountInMicroUnits, valuation: fromValuation },
-                { entry: toEntry, type: TransactionEntryTypeEnum.DEBIT, amount: toAmount, valuation: toValuation }
-            ]);
-
-            await this.persistTransfer({ transaction, input, primaryEntries, fromEntry, toEntry, additionalEntryValuations, tx });
 
             return transaction;
         });
@@ -265,6 +245,32 @@ class TransactionService {
 
             return transaction;
         });
+    }
+
+    private async persistPrimaryTransfer({
+        transaction,
+        input,
+        fromEntry,
+        toEntry,
+        fromAmountInMicroUnits,
+        toAmountInMicroUnits,
+        tx
+    }: PersistPrimaryTransferInputInterface): Promise<void> {
+        const { additionalEntryValuations, fromValuation, toValuation } = await this.valueTransferLegs({
+            input,
+            fromEntry,
+            toEntry,
+            fromAmountInMicroUnits,
+            toAmountInMicroUnits,
+            tx
+        });
+
+        const primaryEntries = this.buildPrimaryTransferEntries(transaction.id, [
+            { entry: fromEntry, type: TransactionEntryTypeEnum.CREDIT, amount: fromAmountInMicroUnits, valuation: fromValuation },
+            { entry: toEntry, type: TransactionEntryTypeEnum.DEBIT, amount: toAmountInMicroUnits, valuation: toValuation }
+        ]);
+
+        await this.persistTransfer({ transaction, input, primaryEntries, fromEntry, toEntry, additionalEntryValuations, tx });
     }
 
     private async valueTransferLegs({

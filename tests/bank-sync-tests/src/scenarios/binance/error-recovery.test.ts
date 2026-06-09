@@ -1,23 +1,15 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
-import { BankSyncEntityTable, BankSyncModeEnum } from '@budgie/contracts';
-import { eq } from 'drizzle-orm';
+import { BankSyncModeEnum } from '@budgie/contracts';
 import { HttpResponse, http } from 'msw';
-import { describe, expect, it } from 'vitest';
+import { describe, it } from 'vitest';
 
-import { setupBinanceFixture, testDb } from '../../harness';
+import { DEPOSIT_URL, SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases, setupBinanceFixture } from '../../harness';
 import { binanceServer } from '../../harness/binance/binance-server';
 
-const DEPOSIT_URL = 'https://api.binance.com/sapi/v1/capital/deposit/hisrec';
-const SYNC_ERROR_THRESHOLD = 3;
 const RETRY_EXHAUSTION_TIMEOUT_MS = 30000;
 
 describe('binance/error-recovery', () => {
-    const cases = [
-        { label: '401 unauthorized', status: 401 },
-        { label: '429 rate limited', status: 429 }
-    ];
-
-    for (const { label, status } of cases) {
+    for (const { label, status } of httpFailureCases) {
         it(
             `marks the sync FAILED + disabled after ${SYNC_ERROR_THRESHOLD} consecutive ${label} errors`,
             async () => {
@@ -26,11 +18,7 @@ describe('binance/error-recovery', () => {
 
                 await binanceSyncService.sync();
 
-                const finalSync = testDb.select().from(BankSyncEntityTable).where(eq(BankSyncEntityTable.id, bankSync.id)).all()[0];
-                expect(finalSync.errorCount).toBeGreaterThanOrEqual(SYNC_ERROR_THRESHOLD);
-                expect(finalSync.enabled).toBe(false);
-                expect(finalSync.status).toBe('FAILED');
-                expect(finalSync.lastError).not.toBeNull();
+                expectSyncFailedAndDisabled(bankSync.id);
             },
             RETRY_EXHAUSTION_TIMEOUT_MS
         );

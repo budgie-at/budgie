@@ -72,6 +72,13 @@ const parseTimeWindow = (url: URL, startParam: string, endParam: string): TimeWi
 
 const isWithinWindow = (timeMs: number, window: TimeWindow): boolean => timeMs >= window.startMs && timeMs <= window.endMs;
 
+const buildPagedEarnResponse = <TRow>(url: URL, rows: TRow[]): { rows: TRow[]; total: number } => {
+    const isFirstPage = url.searchParams.get('current') === FIRST_PAGE;
+    const pageRows = isFirstPage ? rows : [];
+
+    return { rows: pageRows, total: pageRows.length };
+};
+
 export const binanceStub = {
     serverTime: (): void => {
         binanceServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() }, { headers: WEIGHT_HEADERS })));
@@ -102,28 +109,10 @@ export const binanceStub = {
             })
         );
     },
-    fiatOrders: (fiatDeposits: BinanceFiatOrderApiInterface[], fiatWithdrawals: BinanceFiatOrderApiInterface[]): void => {
-        binanceServer.use(
-            http.get(FIAT_ORDERS_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const isDeposit = url.searchParams.get('transactionType') === FIAT_DEPOSIT_TRANSACTION_TYPE;
-                const isFirstPage = url.searchParams.get('page') === FIRST_PAGE;
-                const window = parseTimeWindow(url, 'beginTime', 'endTime');
-                const typeOrders = isDeposit ? fiatDeposits : fiatWithdrawals;
-                const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
-                const orders = isFirstPage ? windowOrders : [];
-
-                return HttpResponse.json(
-                    { code: '000000', message: 'success', data: orders, total: orders.length, success: true },
-                    { headers: WEIGHT_HEADERS }
-                );
-            })
-        );
-    },
-    fiatOrdersTracked: (
+    fiatOrders: (
         fiatDeposits: BinanceFiatOrderApiInterface[],
         fiatWithdrawals: BinanceFiatOrderApiInterface[],
-        requestedWindows: TimeWindow[]
+        requestedWindows?: TimeWindow[]
     ): void => {
         binanceServer.use(
             http.get(FIAT_ORDERS_URL, ({ request }) => {
@@ -131,7 +120,7 @@ export const binanceStub = {
                 const isDeposit = url.searchParams.get('transactionType') === FIAT_DEPOSIT_TRANSACTION_TYPE;
                 const isFirstPage = url.searchParams.get('page') === FIRST_PAGE;
                 const window = parseTimeWindow(url, 'beginTime', 'endTime');
-                requestedWindows.push(window);
+                requestedWindows?.push(window);
                 const typeOrders = isDeposit ? fiatDeposits : fiatWithdrawals;
                 const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
                 const orders = isFirstPage ? windowOrders : [];
@@ -143,28 +132,10 @@ export const binanceStub = {
             })
         );
     },
-    c2cOrders: (buyOrders: BinanceC2cOrderApiInterface[], sellOrders: BinanceC2cOrderApiInterface[]): void => {
-        binanceServer.use(
-            http.get(C2C_ORDERS_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const isBuy = url.searchParams.get('tradeType') === C2C_BUY_TRADE_TYPE;
-                const isFirstPage = url.searchParams.get('page') === FIRST_PAGE;
-                const window = parseTimeWindow(url, 'startTimestamp', 'endTimestamp');
-                const typeOrders = isBuy ? buyOrders : sellOrders;
-                const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
-                const data = isFirstPage ? windowOrders : [];
-
-                return HttpResponse.json(
-                    { code: '000000', message: 'success', data, total: data.length, success: true },
-                    { headers: WEIGHT_HEADERS }
-                );
-            })
-        );
-    },
-    c2cOrdersTracked: (
+    c2cOrders: (
         buyOrders: BinanceC2cOrderApiInterface[],
         sellOrders: BinanceC2cOrderApiInterface[],
-        requestedWindows: TimeWindow[]
+        requestedWindows?: TimeWindow[]
     ): void => {
         binanceServer.use(
             http.get(C2C_ORDERS_URL, ({ request }) => {
@@ -172,7 +143,7 @@ export const binanceStub = {
                 const isBuy = url.searchParams.get('tradeType') === C2C_BUY_TRADE_TYPE;
                 const isFirstPage = url.searchParams.get('page') === FIRST_PAGE;
                 const window = parseTimeWindow(url, 'startTimestamp', 'endTimestamp');
-                requestedWindows.push(window);
+                requestedWindows?.push(window);
                 const typeOrders = isBuy ? buyOrders : sellOrders;
                 const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
                 const data = isFirstPage ? windowOrders : [];
@@ -204,26 +175,13 @@ export const binanceStub = {
     exchangeInfoAllValid: (): void => {
         binanceStub.exchangeInfo(buildAllValidSymbols());
     },
-    myTrades: (tradesBySymbol: Record<string, BinanceTradeApiInterface[]>): void => {
+    myTrades: (tradesBySymbol: Record<string, BinanceTradeApiInterface[]>, requestedSymbols?: Set<string>): void => {
         binanceServer.use(
             http.get(MY_TRADES_URL, ({ request }) => {
                 const url = new URL(request.url);
                 const symbol = url.searchParams.get('symbol') ?? '';
                 const fromId = Number(url.searchParams.get('fromId') ?? '0');
-                const symbolTrades = tradesBySymbol[symbol] ?? [];
-                const trades = fromId === 0 ? symbolTrades : [];
-
-                return HttpResponse.json(trades, { headers: WEIGHT_HEADERS });
-            })
-        );
-    },
-    myTradesTracked: (tradesBySymbol: Record<string, BinanceTradeApiInterface[]>, requestedSymbols: Set<string>): void => {
-        binanceServer.use(
-            http.get(MY_TRADES_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const symbol = url.searchParams.get('symbol') ?? '';
-                const fromId = Number(url.searchParams.get('fromId') ?? '0');
-                requestedSymbols.add(symbol);
+                requestedSymbols?.add(symbol);
                 const symbolTrades = tradesBySymbol[symbol] ?? [];
                 const trades = fromId === 0 ? symbolTrades : [];
 
@@ -245,24 +203,16 @@ export const binanceStub = {
     },
     earnPositions: (positions: BinanceEarnPositionApiInterface[]): void => {
         binanceServer.use(
-            http.get(EARN_POSITION_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const isFirstPage = url.searchParams.get('current') === FIRST_PAGE;
-                const rows = isFirstPage ? positions : [];
-
-                return HttpResponse.json({ rows, total: rows.length }, { headers: WEIGHT_HEADERS });
-            })
+            http.get(EARN_POSITION_URL, ({ request }) =>
+                HttpResponse.json(buildPagedEarnResponse(new URL(request.url), positions), { headers: WEIGHT_HEADERS })
+            )
         );
     },
     lockedEarnPositions: (positions: BinanceLockedEarnPositionApiInterface[]): void => {
         binanceServer.use(
-            http.get(LOCKED_EARN_POSITION_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const isFirstPage = url.searchParams.get('current') === FIRST_PAGE;
-                const rows = isFirstPage ? positions : [];
-
-                return HttpResponse.json({ rows, total: rows.length }, { headers: WEIGHT_HEADERS });
-            })
+            http.get(LOCKED_EARN_POSITION_URL, ({ request }) =>
+                HttpResponse.json(buildPagedEarnResponse(new URL(request.url), positions), { headers: WEIGHT_HEADERS })
+            )
         );
     },
     earnRewards: (rewards: BinanceEarnRewardApiInterface[]): void => {

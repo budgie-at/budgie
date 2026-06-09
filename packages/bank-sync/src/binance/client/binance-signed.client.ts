@@ -4,7 +4,7 @@ import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { BaseBankProviderClient } from '../../core/client/base-bank-provider.client';
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
@@ -112,10 +112,6 @@ export class BinanceSignedClient extends BaseBankProviderClient {
     constructor(token: string) {
         super(token, { retryStatusCodes: BINANCE_RETRY_STATUS_CODES, retryMethods: BINANCE_RETRY_METHODS });
         this.credentials = BinanceCredentialsSchema.parse(JSON.parse(token));
-        syncLogger.log('binance:credentials', {
-            keyLen: this.credentials.apiKey.length,
-            hasSecret: isNotEmptyString(this.credentials.apiSecret)
-        });
     }
 
     @Log('enter', 'done')

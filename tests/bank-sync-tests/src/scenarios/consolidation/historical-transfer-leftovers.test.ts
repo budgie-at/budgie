@@ -4,8 +4,6 @@ import { and, eq, isNull } from 'drizzle-orm';
 import {
     AccountEntityTable,
     AccountTypeEnum,
-    ExchangeRateCreateEntityInterface,
-    ExchangeRateEntityTable,
     ExternalSourceEnum,
     TransactionConsolidationTypeEnum,
     TransactionCreateEntityInterface,
@@ -17,7 +15,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair, testDb } from '../../harness';
+import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair, seedExchangeRate, testDb } from '../../harness';
 
 import { bankSyncRepairService } from '@app/sync/service/bank-sync-repair.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
@@ -34,18 +32,6 @@ const APPROXIMATE_TRANSFER_TARGET_AMOUNT = 14_840_136_000;
 const APPROXIMATE_PRIVAT_INCOME_AMOUNT = 14_790_780_000;
 const SAME_BANK_CURRENCY_SOURCE_AMOUNT = 276_500_000;
 const SAME_BANK_CURRENCY_TARGET_AMOUNT = 13_272_000_000;
-
-const seedExchangeRate = (baseInstrumentId: number, quoteInstrumentId: number, rate: number): void => {
-    testDb
-        .insert(ExchangeRateEntityTable)
-        .values({
-            source: 'test',
-            baseInstrumentId,
-            quoteInstrumentId,
-            rate
-        } satisfies ExchangeRateCreateEntityInterface)
-        .run();
-};
 
 const seedHistoricalBridgeAccounts = () => {
     const eur = seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });

@@ -25,3 +25,30 @@ export { binanceStub } from './binance/binance-stub';
 export type { TimeWindow } from './binance/binance-stub';
 export { buildBinance } from './binance/build-binance';
 export { setupBinanceFixture } from './binance/setup-binance-fixture';
+export {
+    buildEarnMonthKey,
+    expectNoDuplicateAfterResync,
+    expectSingleBinanceTransaction,
+    fetchBinanceEntriesByExternalId,
+    fetchBinanceTransactions,
+    recentDayInMonthsAgo,
+    resetBinanceSyncForResync,
+    seedCryptoInstrument,
+    setupUsdtSpotFixtureWithBalances,
+    stubEmptyBinanceBalances
+} from './binance/binance-scenario';
+export {
+    BINANCE_TEST_TOKEN,
+    BINANCE_WINDOW_FROM,
+    BINANCE_WINDOW_TO,
+    DEPOSIT_URL,
+    EMPTY_FIAT_RESPONSE,
+    FIAT_ORDERS_URL,
+    WITHDRAW_URL,
+    stubBinanceServerTime,
+    stubEmptyC2cAndEarnRewards
+} from './binance/binance-raw-stub';
+export { withCoolDownSpy } from './binance/with-cooldown-spy';
+export { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases } from './scenario/error-recovery';
+export { seedExchangeRate } from './consolidation/seed-exchange-rate';
+export { seedP2pFiatTransferFixture } from './consolidation/seed-p2p-fiat-transfer-fixture';

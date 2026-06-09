@@ -47,7 +47,7 @@ describe('binance/source-window-walk', () => {
         binanceStub.spotBalances([]);
         binanceStub.fundingBalances([]);
         const requestedWindows: TimeWindow[] = [];
-        binanceStub.fiatOrdersTracked([], [], requestedWindows);
+        binanceStub.fiatOrders([], [], requestedWindows);
 
         await binanceSyncService.sync();
 

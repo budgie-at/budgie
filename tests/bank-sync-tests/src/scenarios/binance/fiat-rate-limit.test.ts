@@ -1,58 +1,43 @@
 import { BinanceSignedClient } from '@budgie/bank-sync';
 import { HttpResponse, http } from 'msw';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
+import {
+    BINANCE_TEST_TOKEN,
+    BINANCE_WINDOW_FROM,
+    BINANCE_WINDOW_TO,
+    DEPOSIT_URL,
+    EMPTY_FIAT_RESPONSE,
+    FIAT_ORDERS_URL,
+    WITHDRAW_URL,
+    stubBinanceServerTime,
+    stubEmptyC2cAndEarnRewards,
+    withCoolDownSpy
+} from '../../harness';
 import { binanceServer } from '../../harness/binance/binance-server';
 
-const TOKEN = JSON.stringify({ apiKey: 'k', apiSecret: 's' });
-const FROM = 1_700_000_000;
-const TO = 1_707_000_000;
-const SERVER_TIME_URL = 'https://api.binance.com/api/v3/time';
-const DEPOSIT_URL = 'https://api.binance.com/sapi/v1/capital/deposit/hisrec';
-const WITHDRAW_URL = 'https://api.binance.com/sapi/v1/capital/withdraw/history';
-const FIAT_ORDERS_URL = 'https://api.binance.com/sapi/v1/fiat/orders';
-const C2C_ORDERS_URL = 'https://api.binance.com/sapi/v1/c2c/orderMatch/listUserOrderHistory';
-const EARN_REWARDS_URL = 'https://api.binance.com/sapi/v1/simple-earn/flexible/history/rewardsRecord';
 const NEAR_CEILING_UID_WEIGHT = '80000';
 const COOL_DOWN_WINDOW_MS = 60_000;
 
-const emptyFiatResponse = { code: '000000', message: 'success', data: [], total: 0, success: true };
-const emptyC2cResponse = { code: '000000', message: 'success', data: [], total: 0, success: true };
-const emptyEarnRewardsResponse = { rows: [], total: 0 };
-
 describe('binance/fiat-rate-limit', () => {
     it('schedules a cool-down before the next heavy call when fiat used-weight crosses the ceiling threshold', async () => {
-        binanceServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() })));
+        stubBinanceServerTime();
         binanceServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json([])));
         binanceServer.use(http.get(WITHDRAW_URL, () => HttpResponse.json([])));
-        binanceServer.use(http.get(C2C_ORDERS_URL, () => HttpResponse.json(emptyC2cResponse)));
-        binanceServer.use(http.get(EARN_REWARDS_URL, () => HttpResponse.json(emptyEarnRewardsResponse)));
+        stubEmptyC2cAndEarnRewards();
         binanceServer.use(
             http.get(FIAT_ORDERS_URL, () =>
-                HttpResponse.json(emptyFiatResponse, { headers: { 'x-sapi-used-uid-weight-1m': NEAR_CEILING_UID_WEIGHT } })
+                HttpResponse.json(EMPTY_FIAT_RESPONSE, { headers: { 'x-sapi-used-uid-weight-1m': NEAR_CEILING_UID_WEIGHT } })
             )
         );
 
-        const coolDownDelays: number[] = [];
-        const realSetTimeout = globalThis.setTimeout;
-        const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout').mockImplementation((handler: TimerHandler, delay?: number, ...args) => {
-            if (typeof handler === 'function' && delay === COOL_DOWN_WINDOW_MS) {
-                coolDownDelays.push(delay);
-                handler();
+        const client = new BinanceSignedClient(BINANCE_TEST_TOKEN);
+        const coolDownDelays = await withCoolDownSpy(COOL_DOWN_WINDOW_MS, async () => {
+            const result = await client.getTransactions('SPOT:EUR', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
 
-                return 0 as unknown as ReturnType<typeof setTimeout>;
-            }
-
-            return realSetTimeout(handler, delay, ...args);
-        });
-        try {
-            const client = new BinanceSignedClient(TOKEN);
-            const result = await client.getTransactions('SPOT:EUR', FROM, TO);
-
-            expect(coolDownDelays).toContain(COOL_DOWN_WINDOW_MS);
             expect(result.success).toBe(true);
-        } finally {
-            setTimeoutSpy.mockRestore();
-        }
+        });
+
+        expect(coolDownDelays).toContain(COOL_DOWN_WINDOW_MS);
     });
 });
