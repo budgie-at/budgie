@@ -7,6 +7,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { BANK_CREDENTIALS_STEP_CONFIG } from '../../constant/bank-credentials-step-config.constant';
 import { GetTokenCard } from '../get-token-card/get-token-card';
+import { NumberedSteps } from '../numbered-steps/numbered-steps';
 
 interface Props {
     readonly provider: ExternalSourceEnum;
@@ -20,6 +21,8 @@ export const BankCredentialsStepHeader = ({ provider }: Props) => {
         return null;
     }
 
+    const steps = config.steps.map(step => t(step));
+
     return (
         <>
             <GetTokenCard
@@ -29,6 +32,8 @@ export const BankCredentialsStepHeader = ({ provider }: Props) => {
                 description={t(config.description)}
                 modalTitle={t(config.modalTitle)}
             />
+
+            <NumberedSteps title={t`How to configure`} steps={steps} />
 
             <SimpleHorizontalCell
                 left={<CircleIcon icon={UserIconNameEnum.Info} variant="warning" size={15} iconSize={15} />}

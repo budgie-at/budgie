@@ -698,6 +698,10 @@ msgstr "In Überweisung umwandeln"
 msgid "Convert to Transfer?"
 msgstr "In Überweisung umwandeln?"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Copy the API Key and Secret Key into the fields below"
+msgstr "Kopieren Sie den API-Schlüssel und den geheimen Schlüssel in die Felder unten"
+
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Cost basis"
 msgstr "Kostenbasis"
@@ -876,6 +880,10 @@ msgstr "Dieses Konto in die Berechnung des Nettovermögens einbeziehen"
 msgid "Create a backup of all your data"
 msgstr "Erstellen Sie eine Sicherung aller Ihrer Daten"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Create a new System-generated API key"
+msgstr "Erstellen Sie einen neuen systemgenerierten API-Schlüssel"
+
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
 msgstr "PIN erstellen"
@@ -891,6 +899,10 @@ msgstr "Konten erstellen"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create and copy the personal token"
 msgstr "Persönlichen Token erstellen und kopieren"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Create and copy your personal API token"
+msgstr "Erstellen und kopieren Sie Ihren persönlichen API-Token"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Create and organize transaction tags"
@@ -1408,6 +1420,10 @@ msgstr "Laden des Verlaufs pausiert"
 msgid "History synced"
 msgstr "Verlauf synchronisiert"
 
+#: src/sync/component/bank-credentials-step-header/bank-credentials-step-header.tsx
+msgid "How to configure"
+msgstr "So konfigurieren Sie"
+
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "How to export"
 msgstr "So exportieren Sie"
@@ -1518,6 +1534,10 @@ msgstr "Italienisch (Italien)"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
 msgstr "Sparziele"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
+msgstr "Aktivieren Sie nur \"Lesen aktivieren\" — erlauben Sie niemals Handel oder Auszahlungen"
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -1984,6 +2004,10 @@ msgstr "Schuldet Ihnen"
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Paid: {formattedBalance}"
 msgstr "Bezahlt: {formattedBalance}"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Paste the token into the field below"
+msgstr "Fügen Sie den Token in das Feld unten ein"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
@@ -2655,6 +2679,14 @@ msgstr "Tags"
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Tap \"Get API Key\" above and sign in to Binance"
+msgstr "Tippen Sie oben auf \"API-Schlüssel abrufen\" und melden Sie sich bei Binance an"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Tap \"Get API Token\" above and log in to Monobank"
+msgstr "Tippen Sie oben auf \"API-Token abrufen\" und melden Sie sich bei Monobank an"
 
 #: src/app/voice-review.tsx
 msgid "Tap re-record to try again"

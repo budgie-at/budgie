@@ -699,6 +699,10 @@ msgstr "Convert to Transfer"
 msgid "Convert to Transfer?"
 msgstr "Convert to Transfer?"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Copy the API Key and Secret Key into the fields below"
+msgstr "Copy the API Key and Secret Key into the fields below"
+
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Cost basis"
 msgstr "Cost basis"
@@ -877,6 +881,10 @@ msgstr "Count this account in your net worth calculation"
 msgid "Create a backup of all your data"
 msgstr "Create a backup of all your data"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Create a new System-generated API key"
+msgstr "Create a new System-generated API key"
+
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
 msgstr "Create a PIN"
@@ -892,6 +900,10 @@ msgstr "Create Accounts"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create and copy the personal token"
 msgstr "Create and copy the personal token"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Create and copy your personal API token"
+msgstr "Create and copy your personal API token"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Create and organize transaction tags"
@@ -1409,6 +1421,10 @@ msgstr "History loading paused"
 msgid "History synced"
 msgstr "History synced"
 
+#: src/sync/component/bank-credentials-step-header/bank-credentials-step-header.tsx
+msgid "How to configure"
+msgstr "How to configure"
+
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "How to export"
 msgstr "How to export"
@@ -1519,6 +1535,10 @@ msgstr "Italian (Italy)"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
 msgstr "Jars"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
+msgstr "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -1985,6 +2005,10 @@ msgstr "Owes you"
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Paid: {formattedBalance}"
 msgstr "Paid: {formattedBalance}"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Paste the token into the field below"
+msgstr "Paste the token into the field below"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
@@ -2656,6 +2680,14 @@ msgstr "Tags"
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Tap \"Get API Key\" above and sign in to Binance"
+msgstr "Tap \"Get API Key\" above and sign in to Binance"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Tap \"Get API Token\" above and log in to Monobank"
+msgstr "Tap \"Get API Token\" above and log in to Monobank"
 
 #: src/app/voice-review.tsx
 msgid "Tap re-record to try again"

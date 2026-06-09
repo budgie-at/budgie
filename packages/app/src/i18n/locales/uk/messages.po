@@ -698,6 +698,10 @@ msgstr "Перетворити на переказ"
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Copy the API Key and Secret Key into the fields below"
+msgstr "Скопіюйте API-ключ і секретний ключ у поля нижче"
+
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Cost basis"
 msgstr "Собівартість"
@@ -876,6 +880,10 @@ msgstr "Враховувати цей рахунок у розрахунку ч�
 msgid "Create a backup of all your data"
 msgstr "Створити резервну копію всіх ваших даних"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Create a new System-generated API key"
+msgstr "Створіть новий згенерований системою API-ключ"
+
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
 msgstr "Створити PIN-код"
@@ -891,6 +899,10 @@ msgstr "Створити рахунки"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create and copy the personal token"
 msgstr "Створити та скопіювати персональний токен"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Create and copy your personal API token"
+msgstr "Створіть і скопіюйте свій персональний API-токен"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Create and organize transaction tags"
@@ -1408,6 +1420,10 @@ msgstr "Завантаження історії призупинено"
 msgid "History synced"
 msgstr "Історію синхронізовано"
 
+#: src/sync/component/bank-credentials-step-header/bank-credentials-step-header.tsx
+msgid "How to configure"
+msgstr "Як налаштувати"
+
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "How to export"
 msgstr "Як експортувати"
@@ -1518,6 +1534,10 @@ msgstr "Італійська (Італія)"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
 msgstr "Банки"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
+msgstr "Залиште увімкненим лише \"Дозволити читання\" — ніколи не дозволяйте торгівлю чи виведення"
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -1984,6 +2004,10 @@ msgstr "Винен вам"
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Paid: {formattedBalance}"
 msgstr "Сплачено: {formattedBalance}"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Paste the token into the field below"
+msgstr "Вставте токен у поле нижче"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
@@ -2655,6 +2679,14 @@ msgstr "Теги"
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags ({selectedTagsCount})"
 msgstr "Теги ({selectedTagsCount})"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Tap \"Get API Key\" above and sign in to Binance"
+msgstr "Натисніть \"Отримати API-ключ\" вгорі та увійдіть у Binance"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Tap \"Get API Token\" above and log in to Monobank"
+msgstr "Натисніть \"Отримати API-токен\" вгорі та увійдіть у Монобанк"
 
 #: src/app/voice-review.tsx
 msgid "Tap re-record to try again"
