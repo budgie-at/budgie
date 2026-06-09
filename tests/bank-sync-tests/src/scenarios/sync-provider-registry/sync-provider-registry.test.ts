@@ -4,9 +4,7 @@ import { syncProviderRegistryService } from '@app/sync/service/sync-provider-reg
 import { ExternalSourceEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-
 import { seed } from '../../harness';
-
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 

@@ -1,30 +1,24 @@
-/* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings, max-lines -- Sync orchestration requires sequential awaits and many log tags */
+/* eslint-disable no-await-in-loop, max-lines -- Sync orchestration requires sequential awaits and many log tags */
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { consolidationScopeService } from '@budgie/consolidation';
-import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { BankSyncModeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { Log, getLogger } from '@budgie/logger';
-import * as BackgroundTask from 'expo-background-task';
-import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
-import { applyBankSyncProgressUpdate } from '../util/apply-bank-sync-progress-update.util';
-import { createOrUpdateBankSync } from '../util/create-or-update-bank-sync.util';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
-import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
-import { runBankSyncLoop } from '../util/run-bank-sync-loop.util';
 
+import { AbstractPollingSyncService } from './abstract-polling-sync.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
 import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
@@ -37,34 +31,12 @@ import type {
 
 const logger = getLogger('AppMonobankSyncService');
 
-class AppMonobankSyncService {
-    private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 15;
-    private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
+class AppMonobankSyncService extends AbstractPollingSyncService {
+    protected readonly provider = ExternalSourceEnum.MONOBANK;
+    protected readonly rateLimitMs = MONOBANK_RATE_LIMIT_MS;
+    protected readonly backgroundTaskName = MONOBANK_SYNC_TASK;
 
-    readonly supportsTokenAuth = true;
-
-    private readonly provider = ExternalSourceEnum.MONOBANK;
-    private isRunning = false;
     private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
-        const startedAt = Date.now();
-        if (this.isRunning) {
-            logger.log('sync:skip', { reason: 'already-running' });
-
-            return BackgroundTask.BackgroundTaskResult.Success;
-        }
-        this.isRunning = true;
-        try {
-            await this.loadMccCategories();
-
-            return await this.executeSyncLoop();
-        } finally {
-            logger.log('sync:done', { durationMs: Date.now() - startedAt });
-            this.isRunning = false;
-        }
-    }
 
     @Log(
         token => `enter tokenLen=${token.length}`,
@@ -77,100 +49,7 @@ class AppMonobankSyncService {
             return [];
         }
 
-        return mapBankAccountsToPreview(bankAccounts, this.provider);
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async registerBackgroundTask(): Promise<void> {
-        if (await TaskManager.isTaskRegisteredAsync(MONOBANK_SYNC_TASK)) {
-            await BackgroundTask.unregisterTaskAsync(MONOBANK_SYNC_TASK);
-        }
-        await BackgroundTask.registerTaskAsync(MONOBANK_SYNC_TASK, {
-            minimumInterval: AppMonobankSyncService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
-        });
-    }
-
-    @Log(
-        'enter',
-        result =>
-            `done totalMccCount=${result.size} withDefaultCount=${[...result.values()].filter(value => isDefined(value.defaultCategoryId)).length}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    private async loadMccCategories(): Promise<Map<string, MccCategoryLookupInterface>> {
-        this.mccCategoryLookupMap = await loadMccCategoryLookupMap();
-
-        return this.mccCategoryLookupMap;
-    }
-
-    @Log('enter', result => `done result=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    private async executeSyncLoop(): Promise<BackgroundTask.BackgroundTaskResult> {
-        return runBankSyncLoop(this.provider, MONOBANK_RATE_LIMIT_MS, () => this.processPendingSyncs());
-    }
-
-    @Log('enter', result => `done found=${isDefined(result)}`, error => `throw error=${getErrorMessage(error)}`)
-    private async getNextPendingSync(): Promise<BankSyncEntityInterface | null> {
-        const backwardSync = await this.findNextBackwardSync();
-        if (isDefined(backwardSync)) {
-            return backwardSync;
-        }
-
-        return this.findNextForwardSync();
-    }
-
-    @Log('enter', result => `done found=${isDefined(result)}`, error => `throw error=${getErrorMessage(error)}`)
-    private async findNextBackwardSync(): Promise<BankSyncEntityInterface | null> {
-        const backwardSyncs = await bankSyncRepository.getPendingBackwardSync(this.provider);
-        if (!isNotEmptyArray(backwardSyncs)) {
-            return null;
-        }
-
-        await bankSyncRepository.setStatus(backwardSyncs[0].id, BankSyncStatusEnum.SYNCING);
-
-        return backwardSyncs[0];
-    }
-
-    @Log('enter', result => `done found=${isDefined(result)}`, error => `throw error=${getErrorMessage(error)}`)
-    private async findNextForwardSync(): Promise<BankSyncEntityInterface | null> {
-        const forwardSyncs = await bankSyncRepository.getPendingForwardSync(
-            this.provider,
-            AppMonobankSyncService.FORWARD_SYNC_STALE_THRESHOLD_MS
-        );
-        if (!isNotEmptyArray(forwardSyncs)) {
-            return null;
-        }
-
-        await bankSyncRepository.setStatus(forwardSyncs[0].id, BankSyncStatusEnum.SYNCING);
-
-        return forwardSyncs[0];
-    }
-
-    @Log(
-        (sync, result) =>
-            `enter syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} transactionIds=${result.transactions
-                .slice(0, 5)
-                .map(transaction => transaction.id)
-                .join(',')} completed=${result.completed}`,
-        (doneResult, sync, result) =>
-            `done result=${String(doneResult)} syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} transactionIds=${result.transactions
-                .slice(0, 5)
-                .map(transaction => transaction.id)
-                .join(',')} completed=${result.completed}`,
-        (error, sync, result) =>
-            `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} transactionIds=${result.transactions
-                .slice(0, 5)
-                .map(transaction => transaction.id)
-                .join(',')} error=${getErrorMessage(error)}`
-    )
-    private async updateSyncProgress(sync: BankSyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
-        const startedAt = Date.now();
-        await applyBankSyncProgressUpdate(sync, result);
-        logger.log('updateSyncProgress:duration', {
-            completed: result.completed,
-            durationMs: Date.now() - startedAt,
-            mode: sync.mode,
-            syncId: sync.id,
-            transactionCount: result.transactions.length
-        });
+        return this.mapAccountsToPreview(bankAccounts);
     }
 
     @Log(
@@ -183,7 +62,7 @@ class AppMonobankSyncService {
         (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
     )
     // eslint-disable-next-line max-statements -- Sync batch keeps adjacent phase timing logs for live performance debugging
-    private async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
+    protected async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
         const startedAt = Date.now();
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
@@ -237,6 +116,18 @@ class AppMonobankSyncService {
     }
 
     @Log(
+        'enter',
+        result =>
+            `done totalMccCount=${result.size} withDefaultCount=${[...result.values()].filter(value => isDefined(value.defaultCategoryId)).length}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
+    private async loadMccCategories(): Promise<Map<string, MccCategoryLookupInterface>> {
+        this.mccCategoryLookupMap = await loadMccCategoryLookupMap();
+
+        return this.mccCategoryLookupMap;
+    }
+
+    @Log(
         (transactions, existingTransactionIdMap) =>
             `enter transactionIds=${transactions.map(transaction => transaction.id).join(',')} existingExternalIds=${[...existingTransactionIdMap.keys()].join(',')}`,
         (result, transactions, existingTransactionIdMap) =>
@@ -265,7 +156,7 @@ class AppMonobankSyncService {
             const bankAccount = bankAccounts.find(acc => acc.id === externalId);
             if (isDefined(bankAccount)) {
                 const account = await this.getOrCreateAccount(bankAccount);
-                await createOrUpdateBankSync(account.id, token, this.provider);
+                await this.createOrUpdateBankSync(account.id, token);
             }
         }
 
@@ -273,42 +164,15 @@ class AppMonobankSyncService {
         void this.sync();
     }
 
-    async updateAccountToken(accountId: number, token: string): Promise<void> {
-        const bankSync = await bankSyncRepository.getByAccountId(accountId);
-        if (!isDefined(bankSync)) {
-            throw new Error('Bank sync not found');
-        }
-        await bankSyncRepository.update(bankSync.id, { token, errorCount: 0, lastError: null });
-    }
-
-    async setAccountSyncEnabled(accountId: number, enabled: boolean): Promise<void> {
-        await bankSyncRepository.setEnabled(accountId, enabled);
+    override async setAccountSyncEnabled(accountId: number, enabled: boolean): Promise<void> {
+        await super.setAccountSyncEnabled(accountId, enabled);
         if (enabled) {
             void this.sync();
         }
     }
 
-    private async processPendingSyncs(): Promise<BackgroundTask.BackgroundTaskResult> {
-        const startedAt = Date.now();
-        const pendingSync = await this.getNextPendingSync();
-        if (!isDefined(pendingSync)) {
-            logger.log('processPendingSyncs:empty', { durationMs: Date.now() - startedAt });
-
-            return BackgroundTask.BackgroundTaskResult.Success;
-        }
-
-        const result = await this.executeSyncBatch(pendingSync);
-        await this.updateSyncProgress(pendingSync, result);
-        logger.log('processPendingSyncs:batch', {
-            completed: result.completed,
-            durationMs: Date.now() - startedAt,
-            mode: pendingSync.mode,
-            syncId: pendingSync.id,
-            transactionCount: result.transactions.length
-        });
-        await microPause(MONOBANK_RATE_LIMIT_MS);
-
-        return await this.executeSyncLoop();
+    protected override async beforeSyncRun(): Promise<void> {
+        await this.loadMccCategories();
     }
 
     // eslint-disable-next-line max-statements -- Sync import path keeps adjacent phase timing logs for live performance debugging

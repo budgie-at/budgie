@@ -8,18 +8,15 @@ import {
     binanceMapper,
     decodeBinanceAccountId
 } from '@budgie/bank-sync';
-import { BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { Log, getLogger } from '@budgie/logger';
 import { getUnixTime, subYears } from 'date-fns';
-import * as BackgroundTask from 'expo-background-task';
-import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountBalanceRepository, accountRepository, bankSyncRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { accountBalanceRepository, accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { accountService } from '../../account/service/account.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BINANCE_SYNC_TASK } from '../constant/binance-sync-task.constant';
@@ -27,15 +24,12 @@ import { BINANCE_TRANSFER_LOOKBACK_YEARS } from '../constant/binance-transfer-lo
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { BinanceResolvableAccountInterface } from '../interface/binance-resolvable-account.interface';
-import { applyBankSyncProgressUpdate } from '../util/apply-bank-sync-progress-update.util';
-import { createOrUpdateBankSync } from '../util/create-or-update-bank-sync.util';
 import { mapBankAccountToCreateInput } from '../util/map-bank-account-to-create-input.util';
-import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 import { mapBinanceTransferToCreateInput } from '../util/map-binance-transfer-to-create-input.util';
 import { resolveBinanceInstrumentCode } from '../util/resolve-binance-instrument-code.util';
-import { runBankSyncLoop } from '../util/run-bank-sync-loop.util';
 
+import { AbstractPollingSyncService } from './abstract-polling-sync.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
 import type {
@@ -54,46 +48,17 @@ import type {
 
 const logger = getLogger('AppBinanceSyncService');
 
-class AppBinanceSyncService {
-    private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
-    private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 15;
+class AppBinanceSyncService extends AbstractPollingSyncService {
+    protected readonly provider = ExternalSourceEnum.BINANCE;
+    protected readonly rateLimitMs = BINANCE_RATE_LIMIT_MS;
+    protected readonly backgroundTaskName = BINANCE_SYNC_TASK;
 
-    readonly supportsTokenAuth = true;
-
-    private readonly provider = ExternalSourceEnum.BINANCE;
-    private isRunning = false;
     private transfersSyncedThisRun = false;
     private sourcesSyncedThisRun = false;
     private balancesAnchoredThisRun = false;
     private runSyncService: BinanceSyncService | null = null;
     private runSignedClient: BinanceSignedClient | null = null;
     private runClientToken: string | null = null;
-
-    @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
-    async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
-        if (this.isRunning) {
-            logger.log('sync:skip', { reason: 'already-running' });
-
-            return BackgroundTask.BackgroundTaskResult.Success;
-        }
-        this.isRunning = true;
-        this.resetRunState();
-        try {
-            return await this.executeSyncLoop();
-        } finally {
-            this.isRunning = false;
-        }
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async registerBackgroundTask(): Promise<void> {
-        if (await TaskManager.isTaskRegisteredAsync(BINANCE_SYNC_TASK)) {
-            await BackgroundTask.unregisterTaskAsync(BINANCE_SYNC_TASK);
-        }
-        await BackgroundTask.registerTaskAsync(BINANCE_SYNC_TASK, {
-            minimumInterval: AppBinanceSyncService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
-        });
-    }
 
     @Log(
         token => `enter keyLen=${token.length}`,
@@ -103,8 +68,9 @@ class AppBinanceSyncService {
     )
     async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
         const bankAccounts = await this.fetchBankAccounts(token);
+        const instruments = await instrumentRepository.getAll();
 
-        return this.mapAccountsToPreview(bankAccounts);
+        return this.mapAccountsToPreview(bankAccounts, bankAccount => !isDefined(this.resolveInstrument(bankAccount, instruments)));
     }
 
     @Log(
@@ -124,7 +90,7 @@ class AppBinanceSyncService {
         for (const { bankAccount, instrumentId } of resolvableAccounts) {
             const account = await this.getOrCreateAccount(bankAccount, instrumentId);
             await this.anchorAccountBalance(account.id, bankAccount.balance);
-            await createOrUpdateBankSync(account.id, token, this.provider);
+            await this.createOrUpdateBankSync(account.id, token);
             createdCount += 1;
         }
 
@@ -132,104 +98,15 @@ class AppBinanceSyncService {
     }
 
     @Log(
-        (accountId, token) => `enter accountId=${accountId} keyLen=${token.length}`,
-        'done',
-        (error, accountId, token) => `throw accountId=${accountId} keyLen=${token.length} error=${getErrorMessage(error)}`
-    )
-    async updateAccountToken(accountId: number, token: string): Promise<void> {
-        const bankSync = await bankSyncRepository.getByAccountId(accountId);
-        if (!isDefined(bankSync)) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings
-            throw new Error('Bank sync not found');
-        }
-
-        BinanceCredentialsSchema.parse(JSON.parse(token));
-        await bankSyncRepository.update(bankSync.id, { token, errorCount: 0, lastError: null });
-    }
-
-    @Log(
-        (accountId, enabled) => `enter accountId=${accountId} enabled=${String(enabled)}`,
-        'done',
-        (error, accountId, enabled) => `throw accountId=${accountId} enabled=${String(enabled)} error=${getErrorMessage(error)}`
-    )
-    async setAccountSyncEnabled(accountId: number, enabled: boolean): Promise<void> {
-        await bankSyncRepository.setEnabled(accountId, enabled);
-    }
-
-    @Log(
         token => `enter keyLen=${token.length}`,
-        (result, token) => `done keyLen=${token.length} count=${result.length}`,
+        (_result, token) => `done keyLen=${token.length}`,
         (error, token) => `throw keyLen=${token.length} error=${getErrorMessage(error)}`
     )
-    private async fetchBankAccounts(token: string): Promise<BankAccountInterface[]> {
-        return this.getRunSyncService(token).syncAccounts();
-    }
-
-    @Log(
-        accounts => `enter externalIds=${accounts.map(account => account.id).join(',')}`,
-        result =>
-            `done externalIds=${result.map(preview => preview.externalId).join(',')} parkedCount=${result.filter(preview => preview.isParked).length}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    private async mapAccountsToPreview(bankAccounts: BankAccountInterface[]): Promise<BankAccountPreviewInterface[]> {
-        const instruments = await instrumentRepository.getAll();
-
-        return mapBankAccountsToPreview(
-            bankAccounts,
-            this.provider,
-            bankAccount => !isDefined(this.resolveInstrument(bankAccount, instruments))
-        );
-    }
-
-    @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
-    private async executeSyncLoop(): Promise<BackgroundTask.BackgroundTaskResult> {
-        return runBankSyncLoop(
-            this.provider,
-            BINANCE_RATE_LIMIT_MS,
-            () => this.processPendingSyncs(),
-            async firstSyncToken => {
-                if (!this.balancesAnchoredThisRun) {
-                    this.balancesAnchoredThisRun = true;
-                    await this.anchorAllBalances(firstSyncToken);
-                }
-            }
-        );
-    }
-
-    @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
-    private async processPendingSyncs(): Promise<BackgroundTask.BackgroundTaskResult> {
-        const pendingSync = await this.getNextPendingSync();
-        if (!isDefined(pendingSync)) {
-            return BackgroundTask.BackgroundTaskResult.Success;
+    protected override async beforeProcessRun(firstSyncToken: string): Promise<void> {
+        if (!this.balancesAnchoredThisRun) {
+            this.balancesAnchoredThisRun = true;
+            await this.anchorAllBalances(firstSyncToken);
         }
-
-        const result = await this.executeSyncBatch(pendingSync);
-        await this.updateSyncProgress(pendingSync, result);
-        await microPause(BINANCE_RATE_LIMIT_MS);
-
-        return await this.executeSyncLoop();
-    }
-
-    @Log('enter', result => `done found=${String(isDefined(result))}`, error => `throw error=${getErrorMessage(error)}`)
-    private async getNextPendingSync(): Promise<BankSyncEntityInterface | null> {
-        const backwardSyncs = await bankSyncRepository.getPendingBackwardSync(this.provider);
-        if (isNotEmptyArray(backwardSyncs)) {
-            await bankSyncRepository.setStatus(backwardSyncs[0].id, BankSyncStatusEnum.SYNCING);
-
-            return backwardSyncs[0];
-        }
-
-        const forwardSyncs = await bankSyncRepository.getPendingForwardSync(
-            this.provider,
-            AppBinanceSyncService.FORWARD_SYNC_STALE_THRESHOLD_MS
-        );
-        if (isNotEmptyArray(forwardSyncs)) {
-            await bankSyncRepository.setStatus(forwardSyncs[0].id, BankSyncStatusEnum.SYNCING);
-
-            return forwardSyncs[0];
-        }
-
-        return null;
     }
 
     @Log(
@@ -238,7 +115,7 @@ class AppBinanceSyncService {
             `done syncId=${sync.id} mode=${sync.mode} count=${result.transactions.length} completed=${String(result.completed)}`,
         (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
     )
-    private async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
+    protected async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
             return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
@@ -256,6 +133,15 @@ class AppBinanceSyncService {
         const now = new Date();
 
         return { transactions: [], nextTo: now, nextFrom: now, completed: true };
+    }
+
+    @Log(
+        token => `enter keyLen=${token.length}`,
+        (result, token) => `done keyLen=${token.length} count=${result.length}`,
+        (error, token) => `throw keyLen=${token.length} error=${getErrorMessage(error)}`
+    )
+    private async fetchBankAccounts(token: string): Promise<BankAccountInterface[]> {
+        return this.getRunSyncService(token).syncAccounts();
     }
 
     @Log(
@@ -369,7 +255,7 @@ class AppBinanceSyncService {
             return [];
         }
 
-        // eslint-disable-next-line lingui/no-unlocalized-strings
+        // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
         throw new Error(`Failed to fetch transfers ${getErrorMessage(result.error)}`);
     }
 
@@ -397,16 +283,6 @@ class AppBinanceSyncService {
     }
 
     @Log(
-        (sync, result) =>
-            `enter syncId=${sync.id} mode=${sync.mode} count=${result.transactions.length} completed=${String(result.completed)}`,
-        'done',
-        (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
-    )
-    private async updateSyncProgress(sync: BankSyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
-        await applyBankSyncProgressUpdate(sync, result);
-    }
-
-    @Log(
         token => `enter keyLen=${token.length}`,
         (result, token) => `done keyLen=${token.length} anchoredCount=${result}`,
         (error, token) => `throw keyLen=${token.length} error=${getErrorMessage(error)}`
@@ -424,6 +300,14 @@ class AppBinanceSyncService {
         }
 
         return anchoredCount;
+    }
+
+    protected override validateToken(token: string): void {
+        BinanceCredentialsSchema.parse(JSON.parse(token));
+    }
+
+    protected override async beforeSyncRun(): Promise<void> {
+        this.resetRunState();
     }
 
     private resetRunState(): void {
@@ -454,7 +338,7 @@ class AppBinanceSyncService {
             return [];
         }
 
-        // eslint-disable-next-line lingui/no-unlocalized-strings
+        // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
         throw new Error(`Failed to fetch sources ${getErrorMessage(result.error)}`);
     }
 
@@ -596,7 +480,7 @@ class AppBinanceSyncService {
         const input = mapBankAccountToCreateInput(bankAccount, instrumentId, this.provider);
         const createdAccount = Object.values(await accountService.bulkCreate([input])).at(0);
         if (!isDefined(createdAccount)) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings
+            // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
             throw new Error('Failed to create Binance account');
         }
 

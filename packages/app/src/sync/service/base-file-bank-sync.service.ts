@@ -20,9 +20,9 @@ import { transactionService } from '../../transaction/service/transaction.servic
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
-import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
+import { AbstractSyncService } from './abstract-sync.service';
 import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
@@ -32,12 +32,15 @@ import type { ParsedFileResultInterface } from '../interface/parsed-file-result.
 import type { BankAccountInterface } from '@budgie/bank-sync';
 import type { DB, MccCategoryLookupInterface } from '@budgie/contracts';
 
-export abstract class BaseFileBankSyncService {
-    readonly supportsTokenAuth = false;
+export abstract class BaseFileBankSyncService extends AbstractSyncService {
+    protected readonly provider: ExternalSourceEnum;
 
     private importQueue: Promise<void> = Promise.resolve();
 
-    constructor(protected readonly provider: ExternalSourceEnum) {}
+    constructor(provider: ExternalSourceEnum) {
+        super();
+        this.provider = provider;
+    }
 
     @Log(
         uri => `enter uri=${uri}`,
@@ -51,7 +54,7 @@ export abstract class BaseFileBankSyncService {
             return [];
         }
 
-        return mapBankAccountsToPreview(bankAccounts, this.provider);
+        return this.mapAccountsToPreview(bankAccounts);
     }
 
     @Log(
@@ -151,10 +154,6 @@ export abstract class BaseFileBankSyncService {
         };
 
         await syncWorkloadService.run(`${this.provider}-file-import`, importWork);
-    }
-
-    async setAccountSyncEnabled(accountId: number, enabled: boolean): Promise<void> {
-        await bankSyncRepository.setEnabled(accountId, enabled);
     }
 
     private async executeImportForSelectedAccountsInner(uri: string, selectedAccountIds: string[]): Promise<void> {
