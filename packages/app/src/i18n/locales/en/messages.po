@@ -2600,6 +2600,14 @@ msgstr "Sync crypto balances and transactions from Binance with a read-only API 
 msgid "Sync Failed"
 msgstr "Sync Failed"
 
+#: src/sync/service/sync-workload.service.ts
+msgid "Sync workload is blocked for app reset"
+msgstr "Sync workload is blocked for app reset"
+
+#: src/sync/service/sync-workload.service.ts
+msgid "Sync workload was cancelled by app reset"
+msgstr "Sync workload was cancelled by app reset"
+
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
 msgstr "Sync your Binance balances and transactions"

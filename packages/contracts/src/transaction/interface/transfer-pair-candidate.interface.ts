@@ -1,7 +1,7 @@
-import type { TransferPairAutoConfidenceBucket } from './transfer-pair-auto-confidence-bucket.type';
+import { TransferPairAutoConfidenceBucketEnum } from '../enum/transfer-pair-auto-confidence-bucket.enum';
 
 export interface TransferPairCandidateInterface {
-    readonly confidenceBucket: TransferPairAutoConfidenceBucket;
+    readonly confidenceBucket: TransferPairAutoConfidenceBucketEnum;
     readonly expenseTransactionId: number;
     readonly expenseTransactionTitle: string | null;
     readonly expenseTransactionComment: string | null;
@@ -24,6 +24,7 @@ export interface TransferPairCandidateInterface {
         | 'operation-amount'
         | 'implied-rate'
         | 'p2p-fiat'
+        | 'same-bank-cross-currency'
         | 'same-bank-hinted-fee'
         | 'interbank-hinted-fee';
     readonly timeDiff: number;

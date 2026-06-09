@@ -2599,6 +2599,14 @@ msgstr ""
 msgid "Sync Failed"
 msgstr "Synchronisation fehlgeschlagen"
 
+#: src/sync/service/sync-workload.service.ts
+msgid "Sync workload is blocked for app reset"
+msgstr "Synchronisierungsarbeit ist wegen App-Zurücksetzung blockiert"
+
+#: src/sync/service/sync-workload.service.ts
+msgid "Sync workload was cancelled by app reset"
+msgstr "Synchronisierungsarbeit wurde durch App-Zurücksetzung abgebrochen"
+
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
 msgstr ""

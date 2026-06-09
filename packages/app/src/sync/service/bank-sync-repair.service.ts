@@ -9,15 +9,14 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 
 import { ersteDuplicateRepairSourceService, privatbankDuplicateRepairSourceService } from './bank-sync-duplicate-repair-source.service';
 import { bankSyncDuplicateSoftDeleteService } from './bank-sync-duplicate-soft-delete.service';
-import { transferConsolidationAutoCandidateService } from './transfer-consolidation-auto-candidate.service';
-import { transferConsolidationCandidateService } from './transfer-consolidation-candidate.service';
+import { consolidationCoordinatorService } from './consolidation-coordinator.service';
 
 import type { BankSyncDuplicateCandidateRowInterface } from '../interface/bank-sync-duplicate-candidate-row.interface';
 import type { BankSyncDuplicateRepairPreviewInterface } from '../interface/bank-sync-duplicate-repair-preview.interface';
 import type { BankSyncDuplicateRepairResultInterface } from '../interface/bank-sync-duplicate-repair-result.interface';
 import type { BankSyncDuplicateRepairSourcePreviewInterface } from '../interface/bank-sync-duplicate-repair-source-preview.interface';
 import type { BankSyncDuplicateRepairSourceStrategyInterface } from '../interface/bank-sync-duplicate-repair-source-strategy.interface';
-import type { DB, ExistingTransferIncomeDuplicateCandidateInterface } from '@budgie/contracts';
+import type { DB } from '@budgie/contracts';
 
 class BankSyncRepairService {
     private static readonly SOURCE_STRATEGIES: readonly BankSyncDuplicateRepairSourceStrategyInterface[] = [
@@ -61,9 +60,7 @@ class BankSyncRepairService {
 
     @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
     private async repairConsolidationDuplicates(): Promise<number> {
-        return await transferConsolidationAutoCandidateService.processExistingTransferIncomeDuplicateCandidates(
-            await this.findConsolidationRepairCandidates()
-        );
+        return consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
     }
 
     @Log(
@@ -100,7 +97,7 @@ class BankSyncRepairService {
     }
 
     private async countConsolidationRepairCandidates(): Promise<number> {
-        return (await this.findConsolidationRepairCandidates()).length;
+        return consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates();
     }
 
     private buildPreviewFromCandidates(
@@ -189,10 +186,6 @@ class BankSyncRepairService {
         await this.rebuildBalancesWhenNeeded(result);
 
         return result;
-    }
-
-    private async findConsolidationRepairCandidates(): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
-        return transferConsolidationCandidateService.findExistingTransferIncomeDuplicateRepairCandidates();
     }
 
     private mergeConsolidationRepairResult(
