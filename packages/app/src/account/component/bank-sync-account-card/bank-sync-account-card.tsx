@@ -1,7 +1,5 @@
-import { AccountWithBankSyncEntityInterface, BankSyncEntityInterface, BankSyncStatusEnum } from '@budgie/contracts';
-import { cva } from 'class-variance-authority';
+import { AccountWithBankSyncEntityInterface, BankSyncEntityInterface } from '@budgie/contracts';
 import { ImpactFeedbackStyle } from 'expo-haptics';
-import { View } from 'react-native';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
@@ -9,6 +7,7 @@ import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { quickImportConfigMap } from '../../../sync/constant/quick-import-config-map.constant';
 import { useQuickImport } from '../../../sync/hook/use-quick-import.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
+import { BankSyncStatusDot } from '../bank-sync-status-dot/bank-sync-status-dot';
 
 interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' | 'icon'> {
     readonly balance: number;
@@ -17,22 +16,11 @@ interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' 
     readonly instrumentSymbol: string;
 }
 
-const syncStatusVariants = cva('absolute bottom-3 right-3 z-10 h-2 w-2 rounded-full will-change-animation', {
-    variants: {
-        status: {
-            [BankSyncStatusEnum.SYNCING]: 'bg-warning-foreground animate-pulse',
-            [BankSyncStatusEnum.IDLE]: 'bg-positive-foreground',
-            [BankSyncStatusEnum.FAILED]: 'bg-destructive'
-        }
-    }
-});
-
 export const BankSyncAccountCard = (props: Props) => {
     const { id, title, icon, balance, className, instrumentSymbol, bankSync } = props;
 
     const [, hapticImpact] = useVibration();
 
-    const shouldShow = isDefined(bankSync);
     const quickImportConfig = isDefined(bankSync) ? (quickImportConfigMap[bankSync.provider] ?? null) : null;
     const { handleQuickImport } = useQuickImport(quickImportConfig);
 
@@ -42,10 +30,6 @@ export const BankSyncAccountCard = (props: Props) => {
     };
 
     const longPressHandler = isDefined(quickImportConfig) ? handleLongPress : emptyFn;
-    const statusClassName = shouldShow
-        ? syncStatusVariants({ status: bankSync.status })
-        : syncStatusVariants({ status: BankSyncStatusEnum.IDLE });
-    const statusStyle = { opacity: shouldShow ? 1 : 0 };
 
     return (
         <AccountCardBase
@@ -57,7 +41,7 @@ export const BankSyncAccountCard = (props: Props) => {
             className={className}
             onLongPress={longPressHandler}
         >
-            <View className={statusClassName} style={statusStyle} />
+            <BankSyncStatusDot bankSync={bankSync} />
         </AccountCardBase>
     );
 };

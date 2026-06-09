@@ -1,4 +1,4 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, BankSyncEntityInterface } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
@@ -6,16 +6,18 @@ import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
+import { BankSyncStatusDot } from '../bank-sync-status-dot/bank-sync-status-dot';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly balance: number;
+    readonly bankSync: BankSyncEntityInterface | null;
     readonly className?: string;
     readonly instrumentCode: string;
     readonly instrumentSymbol: string;
 }
 
 export const CryptoAccountCard = (props: Props) => {
-    const { id, title, icon, balance, className, instrumentCode, instrumentSymbol } = props;
+    const { id, title, icon, balance, bankSync, className, instrumentCode, instrumentSymbol } = props;
     const formatDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
 
     const formattedBalance = `${formatDigits(balance)} ${instrumentCode}`;
@@ -37,6 +39,8 @@ export const CryptoAccountCard = (props: Props) => {
             className={className}
             instrumentSymbol={instrumentSymbol}
             balanceContent={balanceContent}
-        />
+        >
+            <BankSyncStatusDot bankSync={bankSync} />
+        </AccountCardBase>
     );
 };
