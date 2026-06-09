@@ -5,12 +5,12 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { extractPdfTextItems } from '../util/extract-pdf-text-items.util';
 
-import { BaseFileBankSyncService } from './base-file-bank-sync.service';
+import { AbstractFileSyncService } from './abstract-file-sync.service';
 
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
-class ErsteSyncService extends BaseFileBankSyncService {
+class ErsteSyncService extends AbstractFileSyncService {
     constructor() {
         super(ExternalSourceEnum.ERSTE);
     }

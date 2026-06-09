@@ -1,10 +1,10 @@
-import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
+import { AbstractFileSyncService } from '@app/sync/service/abstract-file-sync.service';
 
 import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
 import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
 import type { ExternalSourceEnum, MccCategoryLookupInterface } from '@budgie/contracts';
 
-export class StubFileBankSyncService extends BaseFileBankSyncService {
+export class StubFileBankSyncService extends AbstractFileSyncService {
     private static readonly EMPTY_MCC_CATEGORY_ID_MAP = new Map<string, MccCategoryLookupInterface | null>();
 
     constructor(

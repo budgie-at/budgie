@@ -5,7 +5,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { readFileAsUint8Array } from '../util/read-file-as-uint8-array.util';
 
-import { BaseFileBankSyncService } from './base-file-bank-sync.service';
+import { AbstractFileSyncService } from './abstract-file-sync.service';
 import { privatbankCategoryMatcherMatch } from './privatbank-category-matcher.service';
 
 import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
@@ -28,7 +28,7 @@ const collectUniqueCategories = (client: FileBasedBankSyncClientInterface, accou
     return [...categorySet];
 };
 
-class PrivatbankSyncService extends BaseFileBankSyncService {
+class PrivatbankSyncService extends AbstractFileSyncService {
     constructor() {
         super(ExternalSourceEnum.PRIVATBANK);
     }

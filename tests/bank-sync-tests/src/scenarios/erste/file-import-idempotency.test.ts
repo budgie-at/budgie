@@ -8,7 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { expectFileImportConsolidationEnqueued, StubFileBankSyncService, testDb } from '../../harness';
 
-import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
+import { AbstractFileSyncService } from '@app/sync/service/abstract-file-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 
 import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
@@ -98,7 +98,7 @@ class TwoCallBarrier {
     }
 }
 
-class BarrierErsteSyncService extends BaseFileBankSyncService {
+class BarrierErsteSyncService extends AbstractFileSyncService {
     constructor(
         private readonly parseBarrier: TwoCallBarrier,
         private readonly resolveBarrier: TwoCallBarrier,

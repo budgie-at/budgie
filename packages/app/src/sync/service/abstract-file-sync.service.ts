@@ -32,7 +32,7 @@ import type { ParsedFileResultInterface } from '../interface/parsed-file-result.
 import type { BankAccountInterface } from '@budgie/bank-sync';
 import type { DB, MccCategoryLookupInterface } from '@budgie/contracts';
 
-export abstract class BaseFileBankSyncService extends AbstractSyncService {
+export abstract class AbstractFileSyncService extends AbstractSyncService {
     protected readonly provider: ExternalSourceEnum;
 
     private importQueue: Promise<void> = Promise.resolve();
