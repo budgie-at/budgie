@@ -40,6 +40,7 @@ executionOrder:
         - 35.budget-transaction-update.flow
         - 36.budget-multi-currency-category.flow
         - 37.budget-refund-netting.flow
+        - 38.budget-template-chooser.flow
 
 platform:
     ios:

@@ -34,9 +34,17 @@ msgstr "{accountTitle} will be restored to your main view and included in totals
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} will be restored to your main view."
 
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
+msgstr "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
+
 #: src/app/import-column-mapper.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# column available} other {# columns available}}"
+
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "{categoriesCount, plural, one {# category} other {# categories}}"
+msgstr "{categoriesCount, plural, one {# category} other {# categories}}"
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{categoryName}: {threshold}% spent"
@@ -98,6 +106,10 @@ msgstr "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other
 #: src/rule/components/rules-list-page/rules-list-page.tsx
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
+
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "{months, plural, one {# month} other {# months}}"
+msgstr "{months, plural, one {# month} other {# months}}"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
@@ -164,6 +176,10 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 #: src/app/(tabs)/settings/index.tsx
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
+
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "A balanced starter budget with common categories"
+msgstr "A balanced starter budget with common categories"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
@@ -253,6 +269,10 @@ msgstr "Add a per-category cap"
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add Account"
 msgstr "Add Account"
+
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+msgid "Add category"
+msgstr "Add category"
 
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
@@ -461,6 +481,10 @@ msgstr "Base currency"
 #: src/money-data/service/money-data-upgrade.service.ts
 msgid "Base instrument not found"
 msgstr "Base instrument not found"
+
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "Based on your recent spending"
+msgstr "Based on your recent spending"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -959,6 +983,7 @@ msgstr "Create and organize transaction tags"
 msgid "Create anyway"
 msgstr "Create anyway"
 
+#: src/app/(main)/budget/create/index.tsx
 #: src/app/(main)/budget/edit/index.tsx
 msgid "Create budget"
 msgstr "Create budget"
@@ -1199,6 +1224,10 @@ msgstr "Edit Transfer"
 #: src/app/(main)/create-account/index.tsx
 msgid "Emergency fund and savings goals"
 msgstr "Emergency fund and savings goals"
+
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "Empty canvas"
+msgstr "Empty canvas"
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx
 msgid "Enable"
@@ -1452,6 +1481,10 @@ msgstr "From Currency"
 #: src/app/(tabs)/settings/index.tsx
 msgid "General"
 msgstr "General"
+
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "Generic"
+msgstr "Generic"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "German"
@@ -2092,7 +2125,6 @@ msgid "Original transaction"
 msgstr "Original transaction"
 
 #: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
-#: src/budget/components/budget-other-category-limit-compact-row/budget-other-category-limit-compact-row.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Other"
 msgstr "Other"
@@ -2735,6 +2767,10 @@ msgstr "Spent"
 msgid "Split"
 msgstr "Split"
 
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "Start from scratch and set every limit yourself"
+msgstr "Start from scratch and set every limit yourself"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Start Import"
 msgstr "Start Import"
@@ -2763,6 +2799,10 @@ msgstr "Submit"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Subscriptions"
 msgstr "Subscriptions"
+
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "Suggested"
+msgstr "Suggested"
 
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Swap accounts"

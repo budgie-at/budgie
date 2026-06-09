@@ -12,7 +12,7 @@ const CATEGORY_LIMIT_AMOUNT_INPUT_STYLE = {
 
 interface Props {
     readonly currencySymbol: string;
-    readonly name: 'otherLimit' | `categoryLimits.${number}.limitAmount`;
+    readonly name: `categoryLimits.${number}.limitAmount`;
     readonly testID?: string;
 }
 

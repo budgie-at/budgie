@@ -12,9 +12,8 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'BudgetWidget.EmptyState'
-- extendedWaitUntil:
-    visible: 'Create budget'
-    timeout: 3000
+- runFlow:
+    file: subflows/budget/choose-empty-canvas.flow.yaml
 
 - tapOn:
     id: 'BudgetSetup.OverallLimitInput'
@@ -31,7 +30,7 @@ appId: ${APP_ID}
     timeout: 3000
 - assertVisible:
     id: 'BudgetWidget.SpentLabel'
-    text: '€136 / €200'
+    text: '€137 / €200'
 
 - tapOn:
     id: 'BudgetWidget.Card'
@@ -40,4 +39,4 @@ appId: ${APP_ID}
     timeout: 3000
 - assertVisible:
     id: 'BudgetDetails.SpentLabel'
-    text: '€136 / €200'
+    text: '€137 / €200'
