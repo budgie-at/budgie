@@ -845,8 +845,7 @@ msgstr "CSV-Datei konnte nicht ausgewählt werden"
 msgid "Could not select database backup"
 msgstr "Datenbanksicherung konnte nicht ausgewählt werden"
 
-#: src/sync/component/create-binance-account/create-binance-account.tsx
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+#: src/sync/hook/use-bank-account-setup-flow.hook.ts
 msgid "Could not set up sync"
 msgstr "Synchronisation konnte nicht eingerichtet werden"
 
@@ -1305,8 +1304,7 @@ msgstr "Schnellindexierung {done} von {total} • zum Pausieren tippen"
 msgid "Fee {formattedAmount}"
 msgstr "Gebühr {formattedAmount}"
 
-#: src/sync/component/create-binance-account/create-binance-account.tsx
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+#: src/sync/component/bank-account-setup-page/bank-account-setup-page.tsx
 msgid "Fetch Accounts"
 msgstr "Konten abrufen"
 
@@ -2552,9 +2550,8 @@ msgstr "Aufteilen"
 msgid "Start Import"
 msgstr "Import starten"
 
-#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/component/bank-account-setup-page/bank-account-setup-page.tsx
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Synchronisation starten"
 
