@@ -37,15 +37,15 @@ const remainingTextVariants = cva<{ status: Record<AllocationStatus, string> }>(
 export const BudgetAllocationSummary = () => {
     const { t } = useLingui();
     const { control } = useFormContext<BudgetFormValues>();
-    const [overallLimit, otherLimit, categoryLimits, instrumentId] = useWatch({
+    const [overallLimit, categoryLimits, instrumentId] = useWatch({
         control,
-        name: ['overallLimit', 'otherLimit', 'categoryLimits', 'instrumentId']
+        name: ['overallLimit', 'categoryLimits', 'instrumentId']
     });
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const allocated = categoryLimits.reduce((sum, limit) => sum + limit.limitAmount, otherLimit);
+    const allocated = categoryLimits.reduce((sum, limit) => sum + limit.limitAmount, 0);
     const remaining = overallLimit - allocated;
     const status: AllocationStatus = remaining < 0 ? 'over' : 'normal';
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';

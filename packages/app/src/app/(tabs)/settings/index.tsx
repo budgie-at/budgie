@@ -65,7 +65,7 @@ export default function SettingsPage() {
             return;
         }
 
-        void router.push('/budget/edit');
+        void router.push('/budget/create');
     };
 
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {

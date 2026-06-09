@@ -1,0 +1,65 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: setup/setup-budget-test.flow.yaml
+
+- openLink: 'budgie://budget'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.EmptyState'
+      timeout: 3000
+
+# Starting a budget now opens the template chooser
+- tapOn:
+      id: 'BudgetWidget.EmptyState'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetCreate.Template.Generic'
+      timeout: 3000
+
+# The fixture has no spending history, so the Suggested option must stay hidden.
+# Only the Generic and Empty options are offered.
+- assertNotVisible:
+      id: 'BudgetCreate.Template.Suggested'
+- assertVisible:
+      id: 'BudgetCreate.Template.Empty'
+
+# Generic prefills the form with common default categories
+- tapOn:
+      id: 'BudgetCreate.Template.Generic'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.OverallLimitInput'
+      timeout: 5000
+- assertVisible:
+      id: 'BudgetSetup.CategoryLimit.0.Row'
+
+# A long prefilled list surfaces the bottom "Add category" button
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.CategoryLimitBottomAddButton'
+      direction: DOWN
+      centerElement: true
+
+# The generic draft is valid as-is, so it can be saved straight away.
+# Save lives in the sticky footer, so tap it directly without scrolling.
+- tapOn:
+      id: 'BudgetSetup.SaveButton'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.Card'
+      timeout: 3000
+
+# Editing an existing budget bypasses the chooser entirely (it is create-only)
+- openLink: 'budgie://settings?anchor=budget'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.BudgetManagementCard'
+      timeout: 3000
+- tapOn:
+      point: '50%,44%'
+- extendedWaitUntil:
+      visible: 'Edit budget'
+      timeout: 3000
+- assertNotVisible:
+      id: 'BudgetCreate.Template.Generic'

@@ -20,10 +20,12 @@ export const BudgetSelector = {
     SetupDeleteButton: 'BudgetSetup.DeleteButton',
     SetupCategoryLimitsHeader: 'BudgetSetup.CategoryLimitsHeader',
     SetupCategoryLimitAddButton: 'BudgetSetup.CategoryLimitAddButton',
+    SetupCategoryLimitBottomAddButton: 'BudgetSetup.CategoryLimitBottomAddButton',
     SetupCategoryLimitRow: (index: number) => `BudgetSetup.CategoryLimit.${index}.Row` as const,
     SetupCategoryLimitAmountInput: (index: number) => `BudgetSetup.CategoryLimit.${index}.AmountInput` as const,
-    SetupOtherCategoryLimitRow: 'BudgetSetup.OtherCategoryLimit.Row',
-    SetupOtherCategoryLimitAmountInput: 'BudgetSetup.OtherCategoryLimit.AmountInput',
     SetupAllocationSummaryOverBy: 'BudgetSetup.AllocationSummary.OverBy',
-    SetupAllocationSummaryRemaining: 'BudgetSetup.AllocationSummary.Remaining'
+    SetupAllocationSummaryRemaining: 'BudgetSetup.AllocationSummary.Remaining',
+    CreateTemplateSuggestedCard: 'BudgetCreate.Template.Suggested',
+    CreateTemplateGenericCard: 'BudgetCreate.Template.Generic',
+    CreateTemplateEmptyCard: 'BudgetCreate.Template.Empty'
 } as const;

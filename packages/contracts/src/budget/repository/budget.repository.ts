@@ -58,7 +58,8 @@ export class BudgetRepository {
                 amount: this.buildRefundAdjustedAmountSql(),
                 categoryId: TransactionEntryEntityTable.categoryId,
                 instrumentId: AccountEntityTable.instrumentId,
-                rate: ExchangeRateEntityTable.rate
+                rate: ExchangeRateEntityTable.rate,
+                operatedAt: TransactionEntityTable.operatedAt
             })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))

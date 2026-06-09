@@ -35,9 +35,8 @@ env:
 
 - tapOn:
       id: 'BudgetWidget.EmptyState'
-- extendedWaitUntil:
-      visible: 'Create budget'
-      timeout: 3000
+- runFlow:
+      file: subflows/budget/choose-empty-canvas.flow.yaml
 
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
