@@ -22,6 +22,7 @@ export const BankCredentialsStepHeader = ({ provider }: Props) => {
     }
 
     const steps = config.steps.map(step => t(step));
+    const { warningTitle } = config;
 
     return (
         <>
@@ -35,12 +36,14 @@ export const BankCredentialsStepHeader = ({ provider }: Props) => {
 
             <NumberedSteps title={t`How to configure`} steps={steps} />
 
-            <SimpleHorizontalCell
-                left={<CircleIcon icon={UserIconNameEnum.Info} variant="warning" size={15} iconSize={15} />}
-                size="lg"
-                variant="warning"
-                title={t(config.warningTitle)}
-            />
+            {isDefined(warningTitle) && (
+                <SimpleHorizontalCell
+                    left={<CircleIcon icon={UserIconNameEnum.Info} variant="warning" size={15} iconSize={15} />}
+                    size="lg"
+                    variant="warning"
+                    title={t(warningTitle)}
+                />
+            )}
         </>
     );
 };

@@ -22,7 +22,6 @@ export const BANK_CREDENTIALS_STEP_CONFIG: Partial<Record<ExternalSourceEnum, Ba
         title: msg`Get API Key`,
         description: msg`Open Binance to get your API key`,
         modalTitle: msg`Create a read-only API key and secret`,
-        warningTitle: msg`Use a read-only API key. Your key and secret are stored securely in the database and sync runs in the background.`,
         steps: [
             msg`Tap "Get API Key" above and sign in to Binance`,
             msg`Create a new System-generated API key`,

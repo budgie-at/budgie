@@ -2970,10 +2970,6 @@ msgstr "Update rule?"
 msgid "Updated {formattedDate}"
 msgstr "Updated {formattedDate}"
 
-#: src/sync/constant/bank-credentials-step-config.constant.ts
-msgid "Use a read-only API key. Your key and secret are stored securely in the database and sync runs in the background."
-msgstr "Use a read-only API key. Your key and secret are stored securely in the database and sync runs in the background."
-
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"

@@ -5,6 +5,6 @@ export interface BankCredentialsStepConfigInterface {
     readonly title: MessageDescriptor;
     readonly description: MessageDescriptor;
     readonly modalTitle: MessageDescriptor;
-    readonly warningTitle: MessageDescriptor;
+    readonly warningTitle?: MessageDescriptor;
     readonly steps: readonly MessageDescriptor[];
 }
