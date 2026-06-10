@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop, max-lines -- Sync orchestration requires sequential awaits and many log tags */
-import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { consolidationScopeService } from '@budgie/consolidation';
 import { ExternalSourceEnum, SyncModeEnum } from '@budgie/contracts';
 import { Log, getLogger } from '@budgie/logger';
+import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/sync';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
@@ -21,13 +21,13 @@ import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
-import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
 import type {
     AccountEntityInterface,
     MccCategoryLookupInterface,
     SyncEntityInterface,
     TransactionEntityInterface
 } from '@budgie/contracts';
+import type { SyncAccountInterface, SyncBatchResultInterface } from '@budgie/sync';
 
 const logger = getLogger('AppMonobankSyncService');
 
@@ -62,7 +62,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
     )
     // eslint-disable-next-line max-statements -- Sync batch keeps adjacent phase timing logs for live performance debugging
-    protected async executeSyncBatch(sync: SyncEntityInterface): Promise<BankSyncBatchResultInterface> {
+    protected async executeSyncBatch(sync: SyncEntityInterface): Promise<SyncBatchResultInterface> {
         const startedAt = Date.now();
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
@@ -136,7 +136,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             `throw transactionIds=${transactions.map(transaction => transaction.id).join(',')} existingExternalIds=${[...existingTransactionIdMap.keys()].join(',')} error=${getErrorMessage(error)}`
     )
     private buildExistingTransactionScopeSeeds(
-        transactions: BankSyncBatchResultInterface['transactions'],
+        transactions: SyncBatchResultInterface['transactions'],
         existingTransactionIdMap: Map<string, number>
     ): Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[] {
         return transactions.flatMap(transaction => {
@@ -177,7 +177,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
 
     // eslint-disable-next-line max-statements -- Sync import path keeps adjacent phase timing logs for live performance debugging
     private async processFetchedTransactions(
-        transactions: BankSyncBatchResultInterface['transactions'],
+        transactions: SyncBatchResultInterface['transactions'],
         accountId: number
     ): Promise<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]> {
         const startedAt = Date.now();
@@ -230,7 +230,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
 
     // eslint-disable-next-line max-statements -- Sync create path keeps adjacent phase timing logs for live performance debugging
     private async createNewTransactions(
-        newTransactions: BankSyncBatchResultInterface['transactions'],
+        newTransactions: SyncBatchResultInterface['transactions'],
         accountId: number
     ): Promise<TransactionEntityInterface[]> {
         const startedAt = Date.now();
@@ -277,7 +277,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
     }
 
     private async updateExistingTransactions(
-        existingTransactions: BankSyncBatchResultInterface['transactions'],
+        existingTransactions: SyncBatchResultInterface['transactions'],
         accountId: number
     ): Promise<number> {
         const startedAt = Date.now();
@@ -300,7 +300,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         return existingTransactions.length;
     }
 
-    private async fetchTransactionBatch(sync: SyncEntityInterface, extAccId: string): Promise<BankSyncBatchResultInterface> {
+    private async fetchTransactionBatch(sync: SyncEntityInterface, extAccId: string): Promise<SyncBatchResultInterface> {
         const startedAt = Date.now();
         const svc = new MonobankSyncService(sync.token);
         const isForward = sync.mode === SyncModeEnum.FORWARD;
@@ -319,7 +319,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         return result;
     }
 
-    private async fetchBankAccountsAndJars(token: string): Promise<BankAccountInterface[]> {
+    private async fetchBankAccountsAndJars(token: string): Promise<SyncAccountInterface[]> {
         const service = new MonobankSyncService(token);
         const accounts = await service.syncAccounts();
         const jars = await service.syncJars();
@@ -327,7 +327,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         return [...accounts, ...jars];
     }
 
-    private async getOrCreateAccount(bankAccount: BankAccountInterface): Promise<AccountEntityInterface> {
+    private async getOrCreateAccount(bankAccount: SyncAccountInterface): Promise<AccountEntityInterface> {
         return getOrCreateBankAccount(bankAccount, this.provider);
     }
 }

@@ -1,15 +1,15 @@
 /* eslint-disable no-await-in-loop, max-lines -- Sync orchestration requires sequential awaits and the account-creation loop reads the running account count; the file owns one cohesive sync service */
+import { ExternalSourceEnum } from '@budgie/contracts';
+import { Log, getLogger } from '@budgie/logger';
 import {
     BINANCE_RATE_LIMIT_MS,
-    BankSyncErrorCodeEnum,
     BinanceCredentialsSchema,
     BinanceSignedClient,
     BinanceSyncService,
+    SyncErrorCodeEnum,
     binanceMapper,
     decodeBinanceAccountId
-} from '@budgie/bank-sync';
-import { ExternalSourceEnum } from '@budgie/contracts';
-import { Log, getLogger } from '@budgie/logger';
+} from '@budgie/sync';
 import { getUnixTime, subYears } from 'date-fns';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -33,18 +33,18 @@ import { AbstractPollingSyncService } from './abstract-polling-sync.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
 import type {
-    BankAccountInterface,
-    BankSyncBatchResultInterface,
-    BankSyncResultInterface,
-    BankTransactionInterface,
-    BinanceTransferInterface
-} from '@budgie/bank-sync';
-import type {
     AccountEntityInterface,
     InstrumentEntityInterface,
     SyncEntityInterface,
     TransactionCreateInputInterface
 } from '@budgie/contracts';
+import type {
+    BinanceTransferInterface,
+    SyncAccountInterface,
+    SyncBatchResultInterface,
+    SyncResultInterface,
+    SyncTransactionInterface
+} from '@budgie/sync';
 
 const logger = getLogger('AppBinanceSyncService');
 
@@ -115,7 +115,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             `done syncId=${sync.id} mode=${sync.mode} count=${result.transactions.length} completed=${String(result.completed)}`,
         (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
     )
-    protected async executeSyncBatch(sync: SyncEntityInterface): Promise<BankSyncBatchResultInterface> {
+    protected async executeSyncBatch(sync: SyncEntityInterface): Promise<SyncBatchResultInterface> {
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
             return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
@@ -140,7 +140,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         (result, token) => `done keyLen=${token.length} count=${result.length}`,
         (error, token) => `throw keyLen=${token.length} error=${getErrorMessage(error)}`
     )
-    private async fetchBankAccounts(token: string): Promise<BankAccountInterface[]> {
+    private async fetchBankAccounts(token: string): Promise<SyncAccountInterface[]> {
         return this.getRunSyncService(token).syncAccounts();
     }
 
@@ -199,7 +199,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     )
     private async commitSourceType(
         token: string,
-        fetchSourceType: () => Promise<BankSyncResultInterface<BankTransactionInterface[]>>
+        fetchSourceType: () => Promise<SyncResultInterface<SyncTransactionInterface[]>>
     ): Promise<number> {
         const transactions = await this.resolveSourceTransactions(fetchSourceType);
         if (!isNotEmptyArray(transactions)) {
@@ -221,7 +221,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         (error, transactions) =>
             `throw externalIds=${transactions.map(transaction => transaction.id).join(',')} error=${getErrorMessage(error)}`
     )
-    private async createSyncedSources(transactions: BankTransactionInterface[], token: string): Promise<number> {
+    private async createSyncedSources(transactions: SyncTransactionInterface[], token: string): Promise<number> {
         const bankAccounts = await this.fetchBankAccounts(token);
         const resolveAccount = this.buildTransferAccountResolver(new Map(bankAccounts.map(bankAccount => [bankAccount.id, bankAccount])));
         const inputs = await this.collectSourceInputs(transactions, resolveAccount);
@@ -251,7 +251,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             return result.data;
         }
 
-        if (result.error.code === BankSyncErrorCodeEnum.INVALID_RESPONSE) {
+        if (result.error.code === SyncErrorCodeEnum.INVALID_RESPONSE) {
             return [];
         }
 
@@ -327,14 +327,14 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private async resolveSourceTransactions(
-        fetchSourceType: () => Promise<BankSyncResultInterface<BankTransactionInterface[]>>
-    ): Promise<BankTransactionInterface[]> {
+        fetchSourceType: () => Promise<SyncResultInterface<SyncTransactionInterface[]>>
+    ): Promise<SyncTransactionInterface[]> {
         const result = await fetchSourceType();
         if (result.success) {
             return result.data;
         }
 
-        if (result.error.code === BankSyncErrorCodeEnum.INVALID_RESPONSE) {
+        if (result.error.code === SyncErrorCodeEnum.INVALID_RESPONSE) {
             return [];
         }
 
@@ -343,7 +343,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private async buildSourceCreateInput(
-        transaction: BankTransactionInterface,
+        transaction: SyncTransactionInterface,
         resolveAccount: (codecAccountId: string) => Promise<AccountEntityInterface | null>
     ): Promise<TransactionCreateInputInterface | null> {
         const account = await resolveAccount(transaction.accountId);
@@ -357,7 +357,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private async collectSourceInputs(
-        transactions: BankTransactionInterface[],
+        transactions: SyncTransactionInterface[],
         resolveAccount: (codecAccountId: string) => Promise<AccountEntityInterface | null>
     ): Promise<TransactionCreateInputInterface[]> {
         const inputs: TransactionCreateInputInterface[] = [];
@@ -412,7 +412,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private buildTransferAccountResolver(
-        bankAccounts: Map<string, BankAccountInterface>
+        bankAccounts: Map<string, SyncAccountInterface>
     ): (codecAccountId: string) => Promise<AccountEntityInterface | null> {
         const instrumentsPromise = instrumentRepository.getAll();
 
@@ -436,7 +436,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         };
     }
 
-    private buildBankAccountFromCodec(codecAccountId: string): BankAccountInterface | null {
+    private buildBankAccountFromCodec(codecAccountId: string): SyncAccountInterface | null {
         const decoded = decodeBinanceAccountId(codecAccountId);
         if (!isDefined(decoded)) {
             return null;
@@ -446,7 +446,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private resolveInstrument(
-        bankAccount: BankAccountInterface,
+        bankAccount: SyncAccountInterface,
         instruments: InstrumentEntityInterface[]
     ): InstrumentEntityInterface | null {
         const instrumentCode = resolveBinanceInstrumentCode(bankAccount.currencyCode);
@@ -458,7 +458,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private resolveAccountInstrumentId(
-        bankAccount: BankAccountInterface,
+        bankAccount: SyncAccountInterface,
         instruments: InstrumentEntityInterface[]
     ): BinanceResolvableAccountInterface | null {
         const instrument = this.resolveInstrument(bankAccount, instruments);
@@ -470,7 +470,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         await accountBalanceRepository.upsert({ accountId, amount: convertToMicroUnits(balance), updatedAt: new Date() });
     }
 
-    private async getOrCreateAccount(bankAccount: BankAccountInterface, instrumentId: number): Promise<AccountEntityInterface> {
+    private async getOrCreateAccount(bankAccount: SyncAccountInterface, instrumentId: number): Promise<AccountEntityInterface> {
         const existingByExternalId = await accountRepository.findByExternalIds([bankAccount.id]);
         const existingAccount = existingByExternalId.at(0);
         if (isDefined(existingAccount)) {

@@ -1,4 +1,4 @@
-import { BINANCE_ASSET_INSTRUMENT_CODE } from '@budgie/bank-sync';
+import { BINANCE_ASSET_INSTRUMENT_CODE } from '@budgie/sync';
 
 const BINANCE_ASSET_INSTRUMENT_CODE_MAP = new Map<string, string>(Object.entries(BINANCE_ASSET_INSTRUMENT_CODE));
 

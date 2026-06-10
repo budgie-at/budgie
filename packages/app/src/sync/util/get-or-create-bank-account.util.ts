@@ -1,5 +1,5 @@
-import { BankAccountInterface } from '@budgie/bank-sync';
 import { ExternalSourceEnum } from '@budgie/contracts';
+import { SyncAccountInterface } from '@budgie/sync';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -11,7 +11,7 @@ import { mapBankAccountToCreateInput } from './map-bank-account-to-create-input.
 import type { AccountEntityInterface, DB, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 
 export const getOrCreateBankAccount = async (
-    bankAccount: BankAccountInterface,
+    bankAccount: SyncAccountInterface,
     provider: ExternalSourceEnum,
     tx?: DB
 ): Promise<AccountEntityInterface> => {

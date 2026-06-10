@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Budgie is an offline-first mobile expenses tracker. Monorepo with 5 packages: app (React Native), contracts (shared types), ai (AI/LLM services), landing (Next.js), and bank-sync (bank integrations).
+Budgie is an offline-first mobile expenses tracker. Monorepo with 5 packages: app (React Native), contracts (shared types), ai (AI/LLM services), landing (Next.js), and sync (bank integrations).
 
 ## Commands
 
@@ -60,7 +60,7 @@ Use the repo package scopes without the npm namespace prefix:
 - `contracts`
 - `ai`
 - `landing`
-- `bank-sync`
+- `sync`
 
 ### Scope Selection Rules
 
@@ -77,7 +77,7 @@ packages/
 ├── ai/                 # Pure TypeScript AI/LLM services
 ├── contracts/          # Shared TypeScript schemas, types, repositories
 ├── landing/            # Next.js 15 marketing site
-└── bank-sync/          # Bank integration package
+└── sync/               # Bank integration package
 ```
 
 ## Package-Specific Instructions
@@ -119,7 +119,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
-27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `bank-sync`, `consolidation`) do not host Jest/Vitest/etc. Verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/bank-sync-tests/` for bank import/sync behavior and `tests/consolidation-tests/` for consolidation matching/execution behavior. Shared integration harness code belongs in `tests/test-kit/`, not in either scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
+27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `sync`, `consolidation`) do not host Jest/Vitest/etc. Verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/sync-tests/` for bank import/sync behavior and `tests/consolidation-tests/` for consolidation matching/execution behavior. Shared integration harness code belongs in `tests/test-kit/`, not in either scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
 28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `yarn cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
@@ -474,9 +474,9 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 `EXPO_PUBLIC_LOGGING_DISABLE=true` (e2e profile in `eas.json`) suppresses all output. Build-time only — flipping requires a rebuild.
 
-### `bank-sync` exception
+### `sync` exception
 
-`packages/bank-sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/bank-sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.
+`packages/sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.
 
 ## Tech Stack
 
@@ -486,7 +486,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 | **ai**        | Pure TypeScript, Zod                                                               |
 | **contracts** | Drizzle ORM, Zod, drizzle-zod                                                      |
 | **landing**   | Next.js 15, React 19, Tailwind CSS 4, Lingui 6.1                                   |
-| **bank-sync** | ky HTTP client, date-fns                                                           |
+| **sync**      | ky HTTP client, date-fns                                                           |
 | **Build**     | Yarn 4.12 (PnP), Node >= 22, Lerna 8, TurboRepo 2, TypeScript 5.9, ESLint 9        |
 
 ## Workflow

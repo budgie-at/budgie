@@ -1050,10 +1050,10 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.29.7"
     "@budgie/ai": "workspace:^"
-    "@budgie/bank-sync": "workspace:*"
     "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
+    "@budgie/sync": "workspace:*"
     "@expo/fingerprint": "npm:~0.19.3"
     "@expo/metro-config": "npm:~56.0.13"
     "@expo/ui": "npm:~56.0.15"
@@ -1142,25 +1142,6 @@ __metadata:
     tailwindcss: "npm:^4.3.0"
     whisper.rn: "npm:^0.6.0"
     zod: "npm:4.1.12"
-  languageName: unknown
-  linkType: soft
-
-"@budgie-at/bank-sync-tests@workspace:tests/bank-sync-tests":
-  version: 0.0.0-use.local
-  resolution: "@budgie-at/bank-sync-tests@workspace:tests/bank-sync-tests"
-  dependencies:
-    "@budgie-at/test-kit": "workspace:*"
-    "@budgie/bank-sync": "workspace:*"
-    "@budgie/consolidation": "workspace:*"
-    "@budgie/contracts": "workspace:^"
-    "@rnw-community/shared": "npm:^2.2.0"
-    "@types/better-sqlite3": "npm:^7.6.13"
-    "@types/node": "npm:^24.5.2"
-    better-sqlite3: "npm:^12.10.0"
-    drizzle-orm: "npm:^0.45.2"
-    msw: "npm:^2.14.6"
-    typescript: "npm:^5.9.3"
-    vitest: "npm:^4.1.7"
   languageName: unknown
   linkType: soft
 
@@ -1254,6 +1235,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@budgie-at/sync-tests@workspace:tests/sync-tests":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/sync-tests@workspace:tests/sync-tests"
+  dependencies:
+    "@budgie-at/test-kit": "workspace:*"
+    "@budgie/consolidation": "workspace:*"
+    "@budgie/contracts": "workspace:^"
+    "@budgie/sync": "workspace:*"
+    "@rnw-community/shared": "npm:^2.2.0"
+    "@types/better-sqlite3": "npm:^7.6.13"
+    "@types/node": "npm:^24.5.2"
+    better-sqlite3: "npm:^12.10.0"
+    drizzle-orm: "npm:^0.45.2"
+    msw: "npm:^2.14.6"
+    typescript: "npm:^5.9.3"
+    vitest: "npm:^4.1.7"
+  languageName: unknown
+  linkType: soft
+
 "@budgie-at/test-kit@workspace:*, @budgie-at/test-kit@workspace:tests/test-kit":
   version: 0.0.0-use.local
   resolution: "@budgie-at/test-kit@workspace:tests/test-kit"
@@ -1276,20 +1276,6 @@ __metadata:
     "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
     "@rnw-community/shared": "npm:^2.2.0"
-    zod: "npm:4.1.12"
-  languageName: unknown
-  linkType: soft
-
-"@budgie/bank-sync@workspace:*, @budgie/bank-sync@workspace:packages/bank-sync":
-  version: 0.0.0-use.local
-  resolution: "@budgie/bank-sync@workspace:packages/bank-sync"
-  dependencies:
-    "@budgie/logger": "workspace:*"
-    "@noble/hashes": "npm:^1.8.0"
-    "@rnw-community/shared": "npm:^2.2.0"
-    date-fns: "npm:^4.3.0"
-    ky: "npm:^2.0.2"
-    xlsx: "npm:^0.18.5"
     zod: "npm:4.1.12"
   languageName: unknown
   linkType: soft
@@ -1324,6 +1310,20 @@ __metadata:
   dependencies:
     "@rnw-community/log-decorator": "npm:^2.2.0"
     "@rnw-community/shared": "npm:^2.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@budgie/sync@workspace:*, @budgie/sync@workspace:packages/sync":
+  version: 0.0.0-use.local
+  resolution: "@budgie/sync@workspace:packages/sync"
+  dependencies:
+    "@budgie/logger": "workspace:*"
+    "@noble/hashes": "npm:^1.8.0"
+    "@rnw-community/shared": "npm:^2.2.0"
+    date-fns: "npm:^4.3.0"
+    ky: "npm:^2.0.2"
+    xlsx: "npm:^0.18.5"
+    zod: "npm:4.1.12"
   languageName: unknown
   linkType: soft
 

@@ -1,5 +1,5 @@
-import { BankAccountInterface, BankAccountTypeEnum, SyncProviderEnum } from '@budgie/bank-sync';
 import { AccountTypeEnum, ExternalSourceEnum, LiabilityAccountCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
+import { SyncAccountInterface, SyncAccountTypeEnum, SyncProviderEnum } from '@budgie/sync';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -14,10 +14,10 @@ const BANK_PROVIDER_TITLE: Record<SyncProviderEnum, string> = {
 };
 /* eslint-enable lingui/no-unlocalized-strings */
 
-const generateMonobankTitle = (bankAccount: BankAccountInterface): string => {
+const generateMonobankTitle = (bankAccount: SyncAccountInterface): string => {
     const bankName = BANK_PROVIDER_TITLE[bankAccount.provider];
 
-    if (bankAccount.type === BankAccountTypeEnum.JAR && isNotEmptyString(bankAccount.title)) {
+    if (bankAccount.type === SyncAccountTypeEnum.JAR && isNotEmptyString(bankAccount.title)) {
         return `${bankName} «${bankAccount.title}»`;
     }
 
@@ -32,7 +32,7 @@ const generateMonobankTitle = (bankAccount: BankAccountInterface): string => {
     return `${bankName} ${cardType} ${bankAccount.currencyCode}`;
 };
 
-const generateDefaultBankTitle = (bankAccount: BankAccountInterface): string => {
+const generateDefaultBankTitle = (bankAccount: SyncAccountInterface): string => {
     const bankName = BANK_PROVIDER_TITLE[bankAccount.provider];
 
     if (isNotEmptyArray(bankAccount.maskedPan)) {
@@ -44,7 +44,7 @@ const generateDefaultBankTitle = (bankAccount: BankAccountInterface): string => 
     return `${bankName} ${bankAccount.currencyCode}`;
 };
 
-export const generateBankAccountTitle = (bankAccount: BankAccountInterface): string => {
+export const generateBankAccountTitle = (bankAccount: SyncAccountInterface): string => {
     if (bankAccount.provider === SyncProviderEnum.MONOBANK) {
         return generateMonobankTitle(bankAccount);
     }
@@ -57,12 +57,12 @@ export const generateBankAccountTitle = (bankAccount: BankAccountInterface): str
 };
 
 export const mapBankAccountToCreateInput = (
-    bankAccount: BankAccountInterface,
+    bankAccount: SyncAccountInterface,
     instrumentId: number,
     provider: ExternalSourceEnum
 ): LiabilityAccountCreateInputInterface => {
     const isBinance = provider === ExternalSourceEnum.BINANCE;
-    const bankIcon = bankAccount.type === BankAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark;
+    const bankIcon = bankAccount.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark;
     const icon = isBinance ? UserIconNameEnum.Bitcoin : bankIcon;
     const type = isBinance ? AccountTypeEnum.CRYPTO_SYNC : AccountTypeEnum.BANK_SYNC;
 

@@ -7,7 +7,7 @@ import { accountRepository, syncRepository } from '../../@generic/drizzle/db/db'
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { generateBankAccountTitle } from '../util/map-bank-account-to-create-input.util';
 
-import type { BankAccountInterface } from '@budgie/bank-sync';
+import type { SyncAccountInterface } from '@budgie/sync';
 
 export abstract class AbstractSyncService {
     readonly supportsTokenAuth: boolean = false;
@@ -33,8 +33,8 @@ export abstract class AbstractSyncService {
             `throw externalIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
     )
     protected async mapAccountsToPreview(
-        bankAccounts: BankAccountInterface[],
-        isParked: (bankAccount: BankAccountInterface) => boolean = () => false
+        bankAccounts: SyncAccountInterface[],
+        isParked: (bankAccount: SyncAccountInterface) => boolean = () => false
     ): Promise<SyncAccountPreviewInterface[]> {
         const existingAccounts = await accountRepository.findByExternalIds(bankAccounts.map(account => account.id));
         const existingMap = new Map(existingAccounts.map(account => [account.externalId, account]));

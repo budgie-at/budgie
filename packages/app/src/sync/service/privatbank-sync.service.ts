@@ -1,5 +1,5 @@
-import { PrivatbankFileClient } from '@budgie/bank-sync';
 import { ExternalSourceEnum } from '@budgie/contracts';
+import { PrivatbankFileClient } from '@budgie/sync';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -10,8 +10,8 @@ import { privatbankCategoryMatcherMatch } from './privatbank-category-matcher.se
 
 import type { FileBasedSyncClientInterface } from '../interface/file-based-sync-client.interface';
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
-import type { BankAccountInterface } from '@budgie/bank-sync';
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
+import type { SyncAccountInterface } from '@budgie/sync';
 
 const collectUniqueCategories = (client: FileBasedSyncClientInterface, accountIds: string[]): string[] => {
     const categorySet = new Set<string>();
@@ -42,7 +42,7 @@ class PrivatbankSyncService extends AbstractFileSyncService {
 
     protected async resolveMccCategoryIdMap(
         client: FileBasedSyncClientInterface,
-        bankAccounts: BankAccountInterface[]
+        bankAccounts: SyncAccountInterface[]
     ): Promise<Map<string, MccCategoryLookupInterface | null>> {
         const accountIds = bankAccounts.map(account => account.id);
         const uniqueCategories = collectUniqueCategories(client, accountIds);

@@ -1,4 +1,3 @@
-import { BinanceTransferInterface } from '@budgie/bank-sync';
 import {
     BANK_FEE_CATEGORY_ID,
     CategorySourceEnum,
@@ -6,6 +5,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { BinanceTransferInterface } from '@budgie/sync';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 

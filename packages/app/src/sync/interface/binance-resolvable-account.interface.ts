@@ -1,6 +1,6 @@
-import type { BankAccountInterface } from '@budgie/bank-sync';
+import type { SyncAccountInterface } from '@budgie/sync';
 
 export interface BinanceResolvableAccountInterface {
-    readonly bankAccount: BankAccountInterface;
+    readonly bankAccount: SyncAccountInterface;
     readonly instrumentId: number;
 }

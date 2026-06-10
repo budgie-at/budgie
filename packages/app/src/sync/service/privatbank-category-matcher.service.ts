@@ -1,5 +1,5 @@
-import { PRIVATBANK_CATEGORY_TO_MCC_CODE } from '@budgie/bank-sync';
 import { getLogger } from '@budgie/logger';
+import { PRIVATBANK_CATEGORY_TO_MCC_CODE } from '@budgie/sync';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 

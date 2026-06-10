@@ -1,4 +1,4 @@
-import { BankAccountTypeEnum } from '@budgie/bank-sync';
+import { SyncAccountTypeEnum } from '@budgie/sync';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -19,8 +19,8 @@ interface Props {
 }
 
 export const AccountSelectionStep = ({ accountPreviews, selectedAccounts, onToggle, onSelectAll, onDeselectAll }: Props) => {
-    const cardPreviews = accountPreviews.filter(preview => preview.type !== BankAccountTypeEnum.JAR);
-    const jarPreviews = accountPreviews.filter(preview => preview.type === BankAccountTypeEnum.JAR);
+    const cardPreviews = accountPreviews.filter(preview => preview.type !== SyncAccountTypeEnum.JAR);
+    const jarPreviews = accountPreviews.filter(preview => preview.type === SyncAccountTypeEnum.JAR);
     const areAllSelected = isNotEmptyArray(accountPreviews) && selectedAccounts.size === accountPreviews.length;
     const handleToggleAll = areAllSelected ? onDeselectAll : onSelectAll;
     const toggleAllLabel = areAllSelected ? <Trans>Deselect all</Trans> : <Trans>Select all</Trans>;

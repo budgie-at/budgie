@@ -716,6 +716,6 @@ Free-form `context: string`. Convention: hook/file/component name. No enum.
 
 `EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses app log output. App logging is enabled only for `APP_VARIANT=development` builds unless disabled explicitly. **Build-time only** — flipping it on a deployed binary requires a rebuild.
 
-### `packages/bank-sync` exception
+### `packages/sync` exception
 
-`packages/bank-sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/bank-sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.
+`packages/sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.

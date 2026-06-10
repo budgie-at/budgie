@@ -23,7 +23,7 @@ class ErsteSyncService extends AbstractFileSyncService {
     )
     protected async parseFile(uri: string): Promise<ParsedFileResultInterface> {
         const items = await extractPdfTextItems(uri);
-        const module = await import('@budgie/bank-sync');
+        const module = await import('@budgie/sync');
         const ersteClient = new module.ErsteFileClient();
         ersteClient.parse(items);
 

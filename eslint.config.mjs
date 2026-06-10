@@ -421,7 +421,7 @@ export default defineConfig(
             'packages/app/src/**/*.{ts,tsx}',
             'packages/contracts/src/**/*.ts',
             'packages/ai/src/**/*.ts',
-            'packages/bank-sync/src/**/*.ts'
+            'packages/sync/src/**/*.ts'
         ],
         rules: {
             'no-restricted-syntax': [

@@ -1,5 +1,5 @@
-import { BINANCE_API_MANAGEMENT_URL, MONOBANK_AUTH_URL } from '@budgie/bank-sync';
 import { ExternalSourceEnum } from '@budgie/contracts';
+import { BINANCE_API_MANAGEMENT_URL, MONOBANK_AUTH_URL } from '@budgie/sync';
 import { msg } from '@lingui/core/macro';
 
 import { BankCredentialsStepConfigInterface } from '../interface/bank-credentials-step-config.interface';

@@ -22,10 +22,10 @@
     },
     "dependencies": {
         "@budgie/ai": "workspace:^",
-        "@budgie/bank-sync": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/logger": "workspace:*",
+        "@budgie/sync": "workspace:*",
         "@expo/fingerprint": "~0.19.3",
         "@expo/ui": "~56.0.15",
         "@formatjs/intl": "^4.1.12",

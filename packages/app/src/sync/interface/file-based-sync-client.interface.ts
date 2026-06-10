@@ -1,6 +1,6 @@
-import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';
+import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
 export interface FileBasedSyncClientInterface {
-    getAccounts(): BankAccountInterface[];
-    getTransactions(accountId: string): BankTransactionInterface[];
+    getAccounts(): SyncAccountInterface[];
+    getTransactions(accountId: string): SyncTransactionInterface[];
 }

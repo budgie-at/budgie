@@ -29,8 +29,8 @@ import { transferConsolidationDrainerService } from './transfer-consolidation-dr
 import type { FileBasedSyncClientInterface } from '../interface/file-based-sync-client.interface';
 import type { ImportContextInterface } from '../interface/import-context.interface';
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
-import type { BankAccountInterface } from '@budgie/bank-sync';
 import type { DB, MccCategoryLookupInterface } from '@budgie/contracts';
+import type { SyncAccountInterface } from '@budgie/sync';
 
 export abstract class AbstractFileSyncService extends AbstractSyncService {
     protected readonly provider: ExternalSourceEnum;
@@ -95,7 +95,7 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
     )
     private async importAccountTransactions(
         client: FileBasedSyncClientInterface,
-        bankAccount: BankAccountInterface,
+        bankAccount: SyncAccountInterface,
         context: ImportContextInterface
     ): Promise<TransactionEntityInterface[]> {
         const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
@@ -129,7 +129,7 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
         (error, _client, bankAccounts) =>
             `throw bankAccountIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
     )
-    private async executeImport(client: FileBasedSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
+    private async executeImport(client: FileBasedSyncClientInterface, bankAccounts: SyncAccountInterface[]): Promise<void> {
         const importWork = async (): Promise<void> => {
             const [mccCategoryLookupMap, existingTransactionIdMap] = await Promise.all([
                 this.resolveMccCategoryIdMap(client, bankAccounts),
@@ -247,6 +247,6 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
 
     protected abstract resolveMccCategoryIdMap(
         client: FileBasedSyncClientInterface,
-        bankAccounts: BankAccountInterface[]
+        bankAccounts: SyncAccountInterface[]
     ): Promise<Map<string, MccCategoryLookupInterface | null>>;
 }

@@ -15,8 +15,8 @@ import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.i
 
 import { AbstractSyncService } from './abstract-sync.service';
 
-import type { BankSyncBatchResultInterface } from '@budgie/bank-sync';
 import type { SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/contracts';
+import type { SyncBatchResultInterface } from '@budgie/sync';
 
 export abstract class AbstractPollingSyncService extends AbstractSyncService {
     private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
@@ -130,7 +130,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         (error, sync, result) =>
             `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} error=${getErrorMessage(error)}`
     )
-    protected async applyProgressUpdate(sync: SyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
+    protected async applyProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): Promise<void> {
         await syncRepository.update(sync.id, this.resolveProgressUpdate(sync, result));
     }
 
@@ -195,7 +195,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         // Providers without credential parsing accept any token; Binance overrides to validate.
     }
 
-    private resolveProgressUpdate(sync: SyncEntityInterface, result: BankSyncBatchResultInterface): SyncUpdateEntityInterface {
+    private resolveProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface {
         const now = new Date();
         const baseUpdate = { transactionCount: sync.transactionCount + result.transactions.length, errorCount: 0, lastError: null };
 
@@ -226,7 +226,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
     abstract setupAccountSyncBatch(token: string, externalIds: string[]): Promise<unknown>;
 
-    protected abstract executeSyncBatch(sync: SyncEntityInterface): Promise<BankSyncBatchResultInterface>;
+    protected abstract executeSyncBatch(sync: SyncEntityInterface): Promise<SyncBatchResultInterface>;
 
     protected abstract beforeSyncRun(): Promise<void>;
 }
