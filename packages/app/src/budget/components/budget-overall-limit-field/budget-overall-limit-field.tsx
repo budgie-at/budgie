@@ -7,12 +7,11 @@ import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 
 interface Props {
-    readonly autoFocus: boolean;
     readonly control: Control<BudgetFormValues>;
     readonly currencySymbol: string;
 }
 
-export const BudgetOverallLimitField = ({ autoFocus, control, currencySymbol }: Props) => {
+export const BudgetOverallLimitField = ({ control, currencySymbol }: Props) => {
     const { t } = useLingui();
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<BudgetFormValues, 'overallLimit'>) => (
@@ -24,7 +23,6 @@ export const BudgetOverallLimitField = ({ autoFocus, control, currencySymbol }: 
                 placeholder={t`e.g. 1000`}
                 valuePrefix={currencySymbol}
                 size="lg"
-                autoFocus={autoFocus}
             />
         </FormItem>
     );
