@@ -39,7 +39,7 @@ export const BudgetWidget = () => {
     const dateLabel = formatBudgetPeriodLabel(budget, formatMonthAndDay);
 
     return (
-        <Card testID={BudgetSelector.WidgetCard} variant="ghost" onPress={handleNavigate} className="gap-y-lg">
+        <Card testID={BudgetSelector.WidgetCard} variant="ghost" onPress={handleNavigate} className="gap-y-md">
             <View className="flex-row items-center justify-between">
                 <Text className="text-primary font-medium text-md">
                     <Trans>Monthly budget</Trans>
@@ -51,17 +51,14 @@ export const BudgetWidget = () => {
                 amountDecimalPlaces={0}
                 currencySymbol={currencySymbol}
                 isAmountLight
+                isCompact
                 spent={spent.spentOverall}
                 limit={budget.overallLimit}
                 spentTestID={BudgetSelector.WidgetSpentLabel}
                 remainingTestID={BudgetSelector.WidgetRemainingLabel}
             />
 
-            <BudgetWidgetCategoryList
-                categoryLimits={categoryLimits}
-                currencySymbol={currencySymbol}
-                spentByCategory={spent.spentByCategory}
-            />
+            <BudgetWidgetCategoryList categoryLimits={categoryLimits} spentByCategory={spent.spentByCategory} />
         </Card>
     );
 };

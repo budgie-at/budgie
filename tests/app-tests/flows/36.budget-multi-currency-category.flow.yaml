@@ -58,7 +58,7 @@ env:
       id: 'BudgetWidget.CategoryRow.11'
 - assertVisible:
       id: 'BudgetWidget.CategorySpentLabel.11'
-      text: '€0'
+      text: '0%'
 
 - runFlow:
       file: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -103,7 +103,7 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'BudgetWidget.CategorySpentLabel.11'
-          text: '€40'
+          text: '50%'
       timeout: 3000
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -123,5 +123,5 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'BudgetWidget.CategorySpentLabel.11'
-          text: '€0'
+          text: '0%'
       timeout: 3000
