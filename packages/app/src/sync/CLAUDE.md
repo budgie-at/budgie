@@ -23,13 +23,20 @@ These `ExternalSourceEnum` members exist but have no service yet:
 ### Hierarchy
 
 ```
-AbstractSyncService (provider, supportsTokenAuth, setAccountSyncEnabled, mapAccountsToPreview)
+AbstractSyncService (identity: provider + providerTitle + accountType; setAccountSyncEnabled, mapAccountsToPreview,
+                     mapAccountToCreateInput, getOrCreateSyncAccount; overridable generateAccountTitle / accountIcon)
   ├── AbstractPollingSyncService (loop, hooks, token, preview, background task)
-  │     ├── MonobankSyncService  — polling-with-history (forward/backward paging)
-  │     └── BinanceSyncService   — polling-with-snapshot (balance anchor, sources+transfers)
+  │     ├── MonobankSyncService  — polling-with-history (forward/backward paging, jar/card titles)
+  │     └── BinanceSyncService   — polling-with-snapshot (balance anchor, sources+transfers, CRYPTO_SYNC + Bitcoin icon)
   └── AbstractFileSyncService   (importPreview, executeImportForSelectedAccounts, quickImport)
         ├── ErsteSyncService
         └── PrivatbankSyncService
 ```
 
 Registry: `SyncProviderRegistryService` in `service/sync-provider-registry.service.ts`
+
+### Adding a provider
+
+Subclass the matching family service, declare the identity fields (`provider`, `providerTitle`, `accountType`),
+override `generateAccountTitle` / `accountIcon` when the defaults don't fit, and register the instance in
+`SyncProviderRegistryService`. No shared utils to edit — account materialization is inherited.

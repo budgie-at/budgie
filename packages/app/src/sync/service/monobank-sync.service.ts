@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop, max-lines -- Sync orchestration requires sequential awaits and many log tags */
 import { consolidationScopeService } from '@budgie/consolidation';
-import { ExternalSourceEnum, SyncModeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum } from '@budgie/contracts';
 import { Log, getLogger } from '@budgie/logger';
-import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/sync';
+import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService, SyncAccountTypeEnum } from '@budgie/sync';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
@@ -14,25 +14,22 @@ import { transactionService } from '../../transaction/service/transaction.servic
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
-import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
-import type {
-    AccountEntityInterface,
-    MccCategoryLookupInterface,
-    SyncEntityInterface,
-    TransactionEntityInterface
-} from '@budgie/contracts';
+import type { MccCategoryLookupInterface, SyncEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 import type { SyncAccountInterface, SyncBatchResultInterface } from '@budgie/sync';
 
 const logger = getLogger('AppMonobankSyncService');
 
 class AppMonobankSyncService extends AbstractPollingSyncService {
     protected readonly provider = ExternalSourceEnum.MONOBANK;
+    // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
+    protected readonly providerTitle = 'Monobank';
+    protected readonly accountType = AccountTypeEnum.BANK_SYNC;
     protected readonly rateLimitMs = MONOBANK_RATE_LIMIT_MS;
     protected readonly backgroundTaskName = MONOBANK_SYNC_TASK;
 
@@ -155,7 +152,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         for (const externalId of externalIds) {
             const bankAccount = bankAccounts.find(acc => acc.id === externalId);
             if (isDefined(bankAccount)) {
-                const account = await this.getOrCreateAccount(bankAccount);
+                const account = await this.getOrCreateSyncAccount(bankAccount);
                 await this.createOrUpdateBankSync(account.id, token);
             }
         }
@@ -173,6 +170,22 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
 
     protected override async beforeSyncRun(): Promise<void> {
         await this.loadMccCategories();
+    }
+
+    protected override generateAccountTitle(account: SyncAccountInterface): string {
+        if (account.type === SyncAccountTypeEnum.JAR && isNotEmptyString(account.title)) {
+            return `${this.providerTitle} «${account.title}»`;
+        }
+
+        const cardType = account.type.charAt(0).toUpperCase() + account.type.slice(1).toLowerCase();
+
+        if (isNotEmptyArray(account.maskedPan)) {
+            const lastFourDigits = account.maskedPan[0].slice(-4);
+
+            return `${this.providerTitle} ${cardType} •${lastFourDigits}`;
+        }
+
+        return `${this.providerTitle} ${cardType} ${account.currencyCode}`;
     }
 
     // eslint-disable-next-line max-statements -- Sync import path keeps adjacent phase timing logs for live performance debugging
@@ -325,10 +338,6 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         const jars = await service.syncJars();
 
         return [...accounts, ...jars];
-    }
-
-    private async getOrCreateAccount(bankAccount: SyncAccountInterface): Promise<AccountEntityInterface> {
-        return getOrCreateBankAccount(bankAccount, this.provider);
     }
 }
 

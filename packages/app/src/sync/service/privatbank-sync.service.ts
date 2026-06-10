@@ -1,4 +1,4 @@
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { PrivatbankFileClient } from '@budgie/sync';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -29,9 +29,10 @@ const collectUniqueCategories = (client: FileBasedSyncClientInterface, accountId
 };
 
 class PrivatbankSyncService extends AbstractFileSyncService {
-    constructor() {
-        super(ExternalSourceEnum.PRIVATBANK);
-    }
+    protected readonly provider = ExternalSourceEnum.PRIVATBANK;
+    // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
+    protected readonly providerTitle = 'Privatbank';
+    protected readonly accountType = AccountTypeEnum.BANK_SYNC;
 
     protected async parseFile(uri: string): Promise<ParsedFileResultInterface> {
         const buffer = await readFileAsUint8Array(uri);

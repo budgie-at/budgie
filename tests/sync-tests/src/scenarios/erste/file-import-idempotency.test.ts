@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
-import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -99,12 +99,16 @@ class TwoCallBarrier {
 }
 
 class BarrierErsteSyncService extends AbstractFileSyncService {
+    protected readonly provider = ExternalSourceEnum.ERSTE;
+    protected readonly providerTitle = 'Erste';
+    protected readonly accountType = AccountTypeEnum.BANK_SYNC;
+
     constructor(
         private readonly parseBarrier: TwoCallBarrier,
         private readonly resolveBarrier: TwoCallBarrier,
         private readonly client: FileBasedSyncClientInterface
     ) {
-        super(ExternalSourceEnum.ERSTE);
+        super();
     }
 
     protected override async parseFile(): Promise<ParsedFileResultInterface> {

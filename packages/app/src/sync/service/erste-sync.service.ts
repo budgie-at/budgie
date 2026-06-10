@@ -1,4 +1,4 @@
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage } from '@rnw-community/shared';
@@ -11,9 +11,10 @@ import type { ParsedFileResultInterface } from '../interface/parsed-file-result.
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
 class ErsteSyncService extends AbstractFileSyncService {
-    constructor() {
-        super(ExternalSourceEnum.ERSTE);
-    }
+    protected readonly provider = ExternalSourceEnum.ERSTE;
+    // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
+    protected readonly providerTitle = 'Erste';
+    protected readonly accountType = AccountTypeEnum.BANK_SYNC;
 
     @Log(
         uri => `enter uri=${uri}`,

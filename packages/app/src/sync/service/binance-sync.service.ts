@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop, max-lines -- Sync orchestration requires sequential awaits and the account-creation loop reads the running account count; the file owns one cohesive sync service */
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log, getLogger } from '@budgie/logger';
 import {
     BINANCE_RATE_LIMIT_MS,
@@ -24,7 +24,6 @@ import { BINANCE_TRANSFER_LOOKBACK_YEARS } from '../constant/binance-transfer-lo
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { BinanceResolvableAccountInterface } from '../interface/binance-resolvable-account.interface';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
-import { mapBankAccountToCreateInput } from '../util/map-bank-account-to-create-input.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 import { mapBinanceTransferToCreateInput } from '../util/map-binance-transfer-to-create-input.util';
 import { resolveBinanceInstrumentCode } from '../util/resolve-binance-instrument-code.util';
@@ -50,6 +49,9 @@ const logger = getLogger('AppBinanceSyncService');
 
 class AppBinanceSyncService extends AbstractPollingSyncService {
     protected readonly provider = ExternalSourceEnum.BINANCE;
+    // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
+    protected readonly providerTitle = 'Binance';
+    protected readonly accountType = AccountTypeEnum.CRYPTO_SYNC;
     protected readonly rateLimitMs = BINANCE_RATE_LIMIT_MS;
     protected readonly backgroundTaskName = BINANCE_SYNC_TASK;
 
@@ -310,6 +312,18 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         this.resetRunState();
     }
 
+    protected override generateAccountTitle(account: SyncAccountInterface): string {
+        if (isNotEmptyString(account.title)) {
+            return account.title;
+        }
+
+        return super.generateAccountTitle(account);
+    }
+
+    protected override accountIcon(): UserIconNameEnum {
+        return UserIconNameEnum.Bitcoin;
+    }
+
     private resetRunState(): void {
         this.transfersSyncedThisRun = false;
         this.sourcesSyncedThisRun = false;
@@ -477,7 +491,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             return existingAccount;
         }
 
-        const input = mapBankAccountToCreateInput(bankAccount, instrumentId, this.provider);
+        const input = this.mapAccountToCreateInput(bankAccount, instrumentId);
         const createdAccount = Object.values(await accountService.bulkCreate([input])).at(0);
         if (!isDefined(createdAccount)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing

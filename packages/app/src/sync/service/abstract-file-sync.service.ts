@@ -1,12 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import { consolidationScopeService } from '@budgie/consolidation';
-import {
-    ExternalSourceEnum,
-    SyncModeEnum,
-    TransactionCreateInputInterface,
-    TransactionEntityInterface,
-    transactionAsync
-} from '@budgie/contracts';
+import { SyncModeEnum, TransactionCreateInputInterface, TransactionEntityInterface, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -19,7 +13,6 @@ import { transactionImportService } from '../../transaction/service/transaction-
 import { transactionService } from '../../transaction/service/transaction.service';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
-import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import { AbstractSyncService } from './abstract-sync.service';
@@ -33,14 +26,7 @@ import type { DB, MccCategoryLookupInterface } from '@budgie/contracts';
 import type { SyncAccountInterface } from '@budgie/sync';
 
 export abstract class AbstractFileSyncService extends AbstractSyncService {
-    protected readonly provider: ExternalSourceEnum;
-
     private importQueue: Promise<void> = Promise.resolve();
-
-    constructor(provider: ExternalSourceEnum) {
-        super();
-        this.provider = provider;
-    }
 
     @Log(
         uri => `enter uri=${uri}`,
@@ -98,7 +84,7 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
         bankAccount: SyncAccountInterface,
         context: ImportContextInterface
     ): Promise<TransactionEntityInterface[]> {
-        const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
+        const account = await this.getOrCreateSyncAccount(bankAccount, context.tx);
         await this.createBankSyncRecord(account.id, context.tx);
 
         const transactions = client.getTransactions(bankAccount.id);
