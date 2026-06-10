@@ -1,5 +1,5 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { BankSyncModeEnum } from '@budgie/contracts';
+import { SyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -42,7 +42,7 @@ describe('monobank/old-transactions-after-dormant-month', () => {
         expect(persistedOld.externalId).toBe('tx-old-80d');
 
         const finalSync = fetchBankSyncById(bankSync.id);
-        expect(finalSync.mode).toBe(BankSyncModeEnum.FORWARD);
+        expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
         expect(finalSync.transactionCount).toBe(EXPECTED_PERSISTED_COUNT);
     });
 });

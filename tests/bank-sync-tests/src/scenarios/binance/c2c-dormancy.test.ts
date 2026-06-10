@@ -1,5 +1,5 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
-import { BankSyncModeEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { SyncModeEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
@@ -21,7 +21,7 @@ const fetchExternalIds = () =>
 
 describe('binance/source-window-walk', () => {
     it('collects a C2C order older than the dormancy gap (walks to the history floor)', async () => {
-        setupBinanceFixture({ asset: 'USDT', mode: BankSyncModeEnum.BACKWARD });
+        setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.BACKWARD });
         binanceStub.spotBalances([]);
         binanceStub.fundingBalances([]);
         binanceStub.c2cOrders(
@@ -43,7 +43,7 @@ describe('binance/source-window-walk', () => {
     });
 
     it('stops walking fiat windows after the dormancy gap when there are no fiat orders', async () => {
-        setupBinanceFixture({ asset: 'USDT', mode: BankSyncModeEnum.BACKWARD });
+        setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.BACKWARD });
         binanceStub.spotBalances([]);
         binanceStub.fundingBalances([]);
         const requestedWindows: TimeWindow[] = [];

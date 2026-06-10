@@ -12,7 +12,7 @@ import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated
 
 import type { HomeAccountBalanceSummaryInterface } from '../interface/home-account-balance-summary.interface';
 import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
-import type { AccountWithBankSyncEntityInterface } from '@budgie/contracts';
+import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
 
 const createHomeAccountBalanceSummary = () => ({
     accountTypeTotals: new Map<AccountTypeEnum, number>(),
@@ -85,7 +85,7 @@ export const useHomePageDataQuery = () => {
     const queryDependencies = [defaultInstrument.id, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
     const { data } = useLiveQuery(accountBalanceRepository.getHomeAccountRows(defaultInstrument.id), queryDependencies);
     const accounts = data.map(row => {
-        const account: AccountWithBankSyncEntityInterface = {
+        const account: AccountWithSyncEntityInterface = {
             ...row.account,
             bankSync: row.bankSync,
             instrument: row.instrument

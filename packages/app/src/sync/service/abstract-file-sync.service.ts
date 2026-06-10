@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop */
 import { consolidationScopeService } from '@budgie/consolidation';
 import {
-    BankSyncModeEnum,
     ExternalSourceEnum,
+    SyncModeEnum,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     transactionAsync
@@ -11,7 +11,7 @@ import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
+import { accountRepository, db, syncRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -195,7 +195,7 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
     }
 
     private async getEnabledExternalIds(): Promise<Set<string>> {
-        const enabledSyncs = await bankSyncRepository.getEnabledByProvider(this.provider);
+        const enabledSyncs = await syncRepository.getEnabledByProvider(this.provider);
         if (!isNotEmptyArray(enabledSyncs)) {
             return new Set();
         }
@@ -207,18 +207,18 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
     }
 
     private async createBankSyncRecord(accountId: number, tx: DB): Promise<void> {
-        const existingSync = await bankSyncRepository.getByAccountId(accountId, tx);
+        const existingSync = await syncRepository.getByAccountId(accountId, tx);
         if (isDefined(existingSync)) {
             return;
         }
 
-        await bankSyncRepository.create(
+        await syncRepository.create(
             {
                 token: '',
                 accountId,
                 provider: this.provider,
                 enabled: true,
-                mode: BankSyncModeEnum.FORWARD
+                mode: SyncModeEnum.FORWARD
             },
             tx
         );

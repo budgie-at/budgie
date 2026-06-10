@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 
-import { BankSyncEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import { SyncEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 
 import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
 
@@ -27,9 +27,9 @@ describe('monobank/unchanged-data-noop', () => {
             .all()[0];
 
         testDb
-            .update(BankSyncEntityTable)
+            .update(SyncEntityTable)
             .set({ forwardSyncFromAt: new Date(2026, 0, 1) } as never)
-            .where(eq(BankSyncEntityTable.id, bankSync.id))
+            .where(eq(SyncEntityTable.id, bankSync.id))
             .run();
 
         monobankStub.statement([txPayload]);

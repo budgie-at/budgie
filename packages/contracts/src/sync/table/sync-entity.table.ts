@@ -4,10 +4,10 @@ import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-dr
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { BankSyncModeEnum } from '../enum/bank-sync-mode.enum';
-import { BankSyncStatusEnum } from '../enum/bank-sync-status.enum';
+import { SyncModeEnum } from '../enum/sync-mode.enum';
+import { SyncStatusEnum } from '../enum/sync-status.enum';
 
-export const BankSyncEntityTable = sqliteTable(
+export const SyncEntityTable = sqliteTable(
     'bank_syncs',
     withBaseEntityTableColumns({
         accountId: int('account_id', { mode: 'number' })
@@ -19,13 +19,13 @@ export const BankSyncEntityTable = sqliteTable(
             .notNull(),
         token: text('token').notNull(),
         enabled: int('enabled', { mode: 'boolean' }).default(true).notNull(),
-        mode: text('mode', { enum: convertEnumToDrizzleEnum(BankSyncModeEnum) })
-            .$type<BankSyncModeEnum>()
-            .default(BankSyncModeEnum.BACKWARD)
+        mode: text('mode', { enum: convertEnumToDrizzleEnum(SyncModeEnum) })
+            .$type<SyncModeEnum>()
+            .default(SyncModeEnum.BACKWARD)
             .notNull(),
-        status: text('status', { enum: convertEnumToDrizzleEnum(BankSyncStatusEnum) })
-            .$type<BankSyncStatusEnum>()
-            .default(BankSyncStatusEnum.IDLE)
+        status: text('status', { enum: convertEnumToDrizzleEnum(SyncStatusEnum) })
+            .$type<SyncStatusEnum>()
+            .default(SyncStatusEnum.IDLE)
             .notNull(),
         backwardSyncedAt: int('backward_synced_at', { mode: 'timestamp' }),
         backwardSyncFromAt: int('backward_sync_from_at', { mode: 'timestamp' }),

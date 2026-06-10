@@ -2,9 +2,9 @@ import {
     AccountEntityTable,
     AccountNatureEnum,
     AccountTypeEnum,
-    BankSyncEntityTable,
-    BankSyncModeEnum,
-    BankSyncStatusEnum,
+    SyncEntityTable,
+    SyncModeEnum,
+    SyncStatusEnum,
     ExternalSourceEnum,
     InstrumentEntityTable,
     InstrumentTypeEnum,
@@ -26,8 +26,8 @@ import type { SeedBankPairEntryInputType } from '../interface/seed-bank-pair-ent
 import type {
     AccountCreateEntityInterface,
     AccountEntityInterface,
-    BankSyncCreateEntityInterface,
-    BankSyncEntityInterface,
+    SyncCreateEntityInterface,
+    SyncEntityInterface,
     DB,
     InstrumentCreateEntityInterface,
     InstrumentEntityInterface,
@@ -99,15 +99,15 @@ export class TestSeedService {
         });
     }
 
-    bankSync(input: Partial<BankSyncCreateEntityInterface> & Pick<BankSyncCreateEntityInterface, 'accountId'>): BankSyncEntityInterface {
+    bankSync(input: Partial<SyncCreateEntityInterface> & Pick<SyncCreateEntityInterface, 'accountId'>): SyncEntityInterface {
         const rows = this.database
-            .insert(BankSyncEntityTable)
+            .insert(SyncEntityTable)
             .values({
                 accountId: input.accountId,
                 token: input.token ?? 'test-token',
                 provider: input.provider ?? ExternalSourceEnum.MONOBANK,
-                mode: input.mode ?? BankSyncModeEnum.FORWARD,
-                status: input.status ?? BankSyncStatusEnum.IDLE,
+                mode: input.mode ?? SyncModeEnum.FORWARD,
+                status: input.status ?? SyncStatusEnum.IDLE,
                 enabled: input.enabled ?? true,
                 forwardSyncFromAt: input.forwardSyncFromAt ?? new Date(),
                 forwardSyncedAt: input.forwardSyncedAt ?? null,
@@ -116,7 +116,7 @@ export class TestSeedService {
                 transactionCount: input.transactionCount ?? 0,
                 errorCount: input.errorCount ?? 0,
                 lastError: input.lastError ?? null
-            } satisfies BankSyncCreateEntityInterface)
+            } satisfies SyncCreateEntityInterface)
             .returning()
             .all();
 

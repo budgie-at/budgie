@@ -1,11 +1,11 @@
-import { BankSyncModeEnum, BankSyncStatusEnum } from '@budgie/contracts';
+import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { syncRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -16,7 +16,7 @@ import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.i
 import { AbstractSyncService } from './abstract-sync.service';
 
 import type { BankSyncBatchResultInterface } from '@budgie/bank-sync';
-import type { BankSyncEntityInterface, BankSyncUpdateEntityInterface } from '@budgie/contracts';
+import type { SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/contracts';
 
 export abstract class AbstractPollingSyncService extends AbstractSyncService {
     private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
@@ -62,18 +62,18 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     override async updateAccountToken(accountId: number, token: string): Promise<void> {
         this.validateToken(token);
 
-        const bankSync = await bankSyncRepository.getByAccountId(accountId);
+        const bankSync = await syncRepository.getByAccountId(accountId);
         if (!isDefined(bankSync)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
             throw new Error('Bank sync not found');
         }
-        await bankSyncRepository.update(bankSync.id, { token, errorCount: 0, lastError: null });
+        await syncRepository.update(bankSync.id, { token, errorCount: 0, lastError: null });
     }
 
     @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
     protected async executeSyncLoop(): Promise<BackgroundTask.BackgroundTaskResult> {
         try {
-            const enabledSyncs = await bankSyncRepository.getEnabledByProvider(this.provider);
+            const enabledSyncs = await syncRepository.getEnabledByProvider(this.provider);
             if (!isNotEmptyArray(enabledSyncs)) {
                 return BackgroundTask.BackgroundTaskResult.Success;
             }
@@ -101,20 +101,20 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     @Log('enter', result => `done found=${String(isDefined(result))}`, error => `throw error=${getErrorMessage(error)}`)
-    protected async getNextPendingSync(): Promise<BankSyncEntityInterface | null> {
-        const backwardSyncs = await bankSyncRepository.getPendingBackwardSync(this.provider);
+    protected async getNextPendingSync(): Promise<SyncEntityInterface | null> {
+        const backwardSyncs = await syncRepository.getPendingBackwardSync(this.provider);
         if (isNotEmptyArray(backwardSyncs)) {
-            await bankSyncRepository.setStatus(backwardSyncs[0].id, BankSyncStatusEnum.SYNCING);
+            await syncRepository.setStatus(backwardSyncs[0].id, SyncStatusEnum.SYNCING);
 
             return backwardSyncs[0];
         }
 
-        const forwardSyncs = await bankSyncRepository.getPendingForwardSync(
+        const forwardSyncs = await syncRepository.getPendingForwardSync(
             this.provider,
             AbstractPollingSyncService.FORWARD_SYNC_STALE_THRESHOLD_MS
         );
         if (isNotEmptyArray(forwardSyncs)) {
-            await bankSyncRepository.setStatus(forwardSyncs[0].id, BankSyncStatusEnum.SYNCING);
+            await syncRepository.setStatus(forwardSyncs[0].id, SyncStatusEnum.SYNCING);
 
             return forwardSyncs[0];
         }
@@ -130,8 +130,8 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         (error, sync, result) =>
             `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} error=${getErrorMessage(error)}`
     )
-    protected async applyProgressUpdate(sync: BankSyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
-        await bankSyncRepository.update(sync.id, this.resolveProgressUpdate(sync, result));
+    protected async applyProgressUpdate(sync: SyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
+        await syncRepository.update(sync.id, this.resolveProgressUpdate(sync, result));
     }
 
     @Log(
@@ -141,14 +141,14 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     )
     private async handleError(error: unknown): Promise<BackgroundTask.BackgroundTaskResult> {
         const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
-        const enabledSyncs = await bankSyncRepository.getEnabledByProvider(this.provider);
+        const enabledSyncs = await syncRepository.getEnabledByProvider(this.provider);
         if (!isNotEmptyArray(enabledSyncs)) {
             return BackgroundTask.BackgroundTaskResult.Failed;
         }
 
         const syncToRetry = enabledSyncs.find(sync => sync.errorCount < SYNC_ERROR_THRESHOLD);
         if (isDefined(syncToRetry)) {
-            await bankSyncRepository.recordError(syncToRetry.id, errorMessage);
+            await syncRepository.recordError(syncToRetry.id, errorMessage);
             await microPause(this.rateLimitMs);
 
             return this.executeSyncLoop();
@@ -156,7 +156,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
         await Promise.all(
             enabledSyncs.map(sync =>
-                bankSyncRepository.update(sync.id, { status: BankSyncStatusEnum.FAILED, lastError: errorMessage, enabled: false })
+                syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false })
             )
         );
 
@@ -164,22 +164,22 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     protected async createOrUpdateBankSync(accountId: number, token: string): Promise<void> {
-        const existingSync = await bankSyncRepository.getByAccountId(accountId);
+        const existingSync = await syncRepository.getByAccountId(accountId);
         if (isDefined(existingSync)) {
-            await bankSyncRepository.update(existingSync.id, { token, enabled: true, errorCount: 0, lastError: null });
+            await syncRepository.update(existingSync.id, { token, enabled: true, errorCount: 0, lastError: null });
 
             return;
         }
 
         const now = new Date();
         const earliestTransactionTime = await transactionService.getEarliestTransactionTimeByAccountId(accountId);
-        await bankSyncRepository.create({
+        await syncRepository.create({
             token,
             accountId,
             provider: this.provider,
             enabled: true,
-            mode: BankSyncModeEnum.BACKWARD,
-            status: BankSyncStatusEnum.SYNCING,
+            mode: SyncModeEnum.BACKWARD,
+            status: SyncStatusEnum.SYNCING,
             backwardSyncFromAt: now,
             backwardSyncedAt: earliestTransactionTime ?? null,
             forwardSyncFromAt: now,
@@ -195,25 +195,25 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         // Providers without credential parsing accept any token; Binance overrides to validate.
     }
 
-    private resolveProgressUpdate(sync: BankSyncEntityInterface, result: BankSyncBatchResultInterface): BankSyncUpdateEntityInterface {
+    private resolveProgressUpdate(sync: SyncEntityInterface, result: BankSyncBatchResultInterface): SyncUpdateEntityInterface {
         const now = new Date();
         const baseUpdate = { transactionCount: sync.transactionCount + result.transactions.length, errorCount: 0, lastError: null };
 
-        if (result.completed && sync.mode === BankSyncModeEnum.FORWARD) {
-            return { ...baseUpdate, status: BankSyncStatusEnum.IDLE, forwardSyncedAt: now, forwardSyncFromAt: now };
+        if (result.completed && sync.mode === SyncModeEnum.FORWARD) {
+            return { ...baseUpdate, status: SyncStatusEnum.IDLE, forwardSyncedAt: now, forwardSyncFromAt: now };
         }
 
         if (result.completed) {
             return {
                 ...baseUpdate,
-                mode: BankSyncModeEnum.FORWARD,
-                status: BankSyncStatusEnum.IDLE,
+                mode: SyncModeEnum.FORWARD,
+                status: SyncStatusEnum.IDLE,
                 backwardSyncedAt: result.nextTo,
                 backwardSyncFromAt: result.nextFrom
             };
         }
 
-        if (sync.mode === BankSyncModeEnum.BACKWARD) {
+        if (sync.mode === SyncModeEnum.BACKWARD) {
             const nextBackwardSyncedAt = isNotEmptyArray(result.transactions) ? null : (sync.backwardSyncedAt ?? result.nextTo);
 
             return { ...baseUpdate, backwardSyncedAt: nextBackwardSyncedAt, backwardSyncFromAt: result.nextTo };
@@ -226,7 +226,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
     abstract setupAccountSyncBatch(token: string, externalIds: string[]): Promise<unknown>;
 
-    protected abstract executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface>;
+    protected abstract executeSyncBatch(sync: SyncEntityInterface): Promise<BankSyncBatchResultInterface>;
 
     protected abstract beforeSyncRun(): Promise<void>;
 }

@@ -3,7 +3,7 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, syncRepository } from '../../@generic/drizzle/db/db';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { generateBankAccountTitle } from '../util/map-bank-account-to-create-input.util';
 
@@ -22,7 +22,7 @@ export abstract class AbstractSyncService {
         (error, accountId, enabled) => `throw accountId=${accountId} enabled=${String(enabled)} error=${getErrorMessage(error)}`
     )
     async setAccountSyncEnabled(accountId: number, enabled: boolean): Promise<void> {
-        await bankSyncRepository.setEnabled(accountId, enabled);
+        await syncRepository.setEnabled(accountId, enabled);
     }
 
     @Log(
@@ -38,7 +38,7 @@ export abstract class AbstractSyncService {
     ): Promise<SyncAccountPreviewInterface[]> {
         const existingAccounts = await accountRepository.findByExternalIds(bankAccounts.map(account => account.id));
         const existingMap = new Map(existingAccounts.map(account => [account.externalId, account]));
-        const existingSyncs = await bankSyncRepository.getByProvider(this.provider);
+        const existingSyncs = await syncRepository.getByProvider(this.provider);
         const syncedAccountIds = new Set(existingSyncs.map(sync => sync.accountId));
 
         return bankAccounts.map(bankAccount => {

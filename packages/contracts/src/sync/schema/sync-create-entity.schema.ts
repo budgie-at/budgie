@@ -1,8 +1,8 @@
 import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-create-entity-schema.util';
 
-import { BankSyncEntitySchema } from './bank-sync-entity.schema';
+import { SyncEntitySchema } from './sync-entity.schema';
 
-export const BankSyncCreateEntitySchema = convertToCreateEntitySchema(BankSyncEntitySchema).partial({
+export const SyncCreateEntitySchema = convertToCreateEntitySchema(SyncEntitySchema).partial({
     mode: true,
     status: true,
     enabled: true,

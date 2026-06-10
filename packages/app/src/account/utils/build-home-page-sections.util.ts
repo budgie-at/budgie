@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountTypeEnum, AccountWithBankSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountTypeEnum, AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -34,7 +34,7 @@ const appendAccount = <Key, Value>(groups: Map<Key, Value[]>, key: Key, value: V
     groups.set(key, [value]);
 };
 
-const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInterface[]): CryptoCurrencyGroupInterface[] => {
+const groupCryptoAccountsByInstrument = (accounts: AccountWithSyncEntityInterface[]): CryptoCurrencyGroupInterface[] => {
     const groups = new Map<number, CryptoCurrencyGroupInterface>();
 
     accounts.forEach(account => {
@@ -55,10 +55,10 @@ const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInte
     return [...groups.values()];
 };
 
-export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterface[]): HomeSectionInterface[] => {
-    const accountGroups = new Map<AccountTypeEnum, AccountWithBankSyncEntityInterface[]>();
-    const providerGroups = new Map<ExternalSourceEnum, AccountWithBankSyncEntityInterface[]>();
-    const debtGroups = new Map<DebtSectionInterface['kind'], AccountWithBankSyncEntityInterface[]>();
+export const buildHomePageSections = (accounts: AccountWithSyncEntityInterface[]): HomeSectionInterface[] => {
+    const accountGroups = new Map<AccountTypeEnum, AccountWithSyncEntityInterface[]>();
+    const providerGroups = new Map<ExternalSourceEnum, AccountWithSyncEntityInterface[]>();
+    const debtGroups = new Map<DebtSectionInterface['kind'], AccountWithSyncEntityInterface[]>();
     const debtSectionKinds = [
         HomeSectionKindEnum.DEBT_YOU_OWE,
         HomeSectionKindEnum.DEBT_OWED_TO_YOU

@@ -4,8 +4,8 @@ import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/bank-sync';
 import {
     AccountBalanceEntityTable,
     AccountTypeEnum,
-    BankSyncModeEnum,
-    BankSyncStatusEnum,
+    SyncModeEnum,
+    SyncStatusEnum,
     ExternalSourceEnum,
     InstrumentTypeEnum,
     PRECISION
@@ -20,7 +20,7 @@ const fetchAnchoredAmount = (accountId: number): number | undefined =>
 
 describe('binance/anchor-once-reset-ordering', () => {
     it('anchors every Binance account exactly once per run via beforeProcessRun across a multi-pass loop', async () => {
-        setupBinanceFixture({ asset: 'BTC', mode: BankSyncModeEnum.BACKWARD });
+        setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
 
         const ethInstrument = seed.instrument({ code: 'ETH', name: 'ETH', symbol: 'ETH', type: InstrumentTypeEnum.CRYPTO });
         const ethAccount = seed.account({
@@ -33,8 +33,8 @@ describe('binance/anchor-once-reset-ordering', () => {
             accountId: ethAccount.id,
             token: JSON.stringify({ apiKey: 'test-api-key', apiSecret: 'test-api-secret' }),
             provider: ExternalSourceEnum.BINANCE,
-            mode: BankSyncModeEnum.BACKWARD,
-            status: BankSyncStatusEnum.SYNCING
+            mode: SyncModeEnum.BACKWARD,
+            status: SyncStatusEnum.SYNCING
         });
 
         binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' }), buildBinance.balance({ asset: 'ETH', free: '2' })]);
@@ -49,7 +49,7 @@ describe('binance/anchor-once-reset-ordering', () => {
     });
 
     it('resets run-state via beforeSyncRun before the loop, so a second run re-anchors the fresh balance', async () => {
-        const { account } = setupBinanceFixture({ asset: 'BTC', mode: BankSyncModeEnum.BACKWARD });
+        const { account } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
 
         binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
 

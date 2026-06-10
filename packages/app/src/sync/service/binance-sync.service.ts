@@ -41,8 +41,8 @@ import type {
 } from '@budgie/bank-sync';
 import type {
     AccountEntityInterface,
-    BankSyncEntityInterface,
     InstrumentEntityInterface,
+    SyncEntityInterface,
     TransactionCreateInputInterface
 } from '@budgie/contracts';
 
@@ -115,7 +115,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             `done syncId=${sync.id} mode=${sync.mode} count=${result.transactions.length} completed=${String(result.completed)}`,
         (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
     )
-    protected async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
+    protected async executeSyncBatch(sync: SyncEntityInterface): Promise<BankSyncBatchResultInterface> {
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
             return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
@@ -149,7 +149,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         (result, sync, externalAccountId) => `done syncId=${sync.id} externalAccountId=${externalAccountId} createdCount=${result}`,
         (error, sync, externalAccountId) => `throw syncId=${sync.id} externalAccountId=${externalAccountId} error=${getErrorMessage(error)}`
     )
-    private async processTransfers(sync: BankSyncEntityInterface, externalAccountId: string): Promise<number> {
+    private async processTransfers(sync: SyncEntityInterface, externalAccountId: string): Promise<number> {
         if (this.transfersSyncedThisRun) {
             return 0;
         }
@@ -174,7 +174,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         (result, sync) => `done syncId=${sync.id} createdCount=${result}`,
         (error, sync) => `throw syncId=${sync.id} error=${getErrorMessage(error)}`
     )
-    private async processSources(sync: BankSyncEntityInterface): Promise<number> {
+    private async processSources(sync: SyncEntityInterface): Promise<number> {
         if (this.sourcesSyncedThisRun) {
             return 0;
         }
@@ -242,7 +242,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         (result, sync, externalAccountId) => `done syncId=${sync.id} externalAccountId=${externalAccountId} count=${result.length}`,
         (error, sync, externalAccountId) => `throw syncId=${sync.id} externalAccountId=${externalAccountId} error=${getErrorMessage(error)}`
     )
-    private async fetchTransferBatch(sync: BankSyncEntityInterface, externalAccountId: string): Promise<BinanceTransferInterface[]> {
+    private async fetchTransferBatch(sync: SyncEntityInterface, externalAccountId: string): Promise<BinanceTransferInterface[]> {
         const client = this.getRunSignedClient(sync.token);
         const from = await this.resolveTransferWindowStart(sync);
         const result = await client.getTransfers(externalAccountId, getUnixTime(from));
@@ -389,7 +389,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         return this.runSignedClient;
     }
 
-    private async resolveTransferWindowStart(sync: BankSyncEntityInterface): Promise<Date> {
+    private async resolveTransferWindowStart(sync: SyncEntityInterface): Promise<Date> {
         const earliestTransactionTime = await transactionService.getEarliestTransactionTimeByAccountId(sync.accountId);
 
         return earliestTransactionTime ?? sync.backwardSyncedAt ?? subYears(new Date(), BINANCE_TRANSFER_LOOKBACK_YEARS);

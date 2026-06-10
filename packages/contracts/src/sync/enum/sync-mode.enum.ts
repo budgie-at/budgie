@@ -1,4 +1,4 @@
-export enum BankSyncModeEnum {
+export enum SyncModeEnum {
     FORWARD = 'FORWARD',
     BACKWARD = 'BACKWARD'
 }

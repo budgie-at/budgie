@@ -1,5 +1,5 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
-import { BankSyncEntityTable, BankSyncModeEnum, PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { SyncEntityTable, SyncModeEnum, PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
@@ -26,7 +26,7 @@ const stubCapitalHistory = (deposits: BinanceDepositApiInterface[], withdrawals:
 
 describe('binance/deposits-withdrawals', () => {
     it('maps a deposit to an INCOME transaction', async () => {
-        setupBinanceFixture({ mode: BankSyncModeEnum.FORWARD });
+        setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
         stubEmptyBinanceBalances();
         stubCapitalHistory([buildBinance.deposit({ id: 'dep-1', coin: 'BTC', amount: '2' })], []);
 
@@ -36,7 +36,7 @@ describe('binance/deposits-withdrawals', () => {
     });
 
     it('maps a fee-bearing withdrawal to an EXPENSE with a separate FEE entry that reconciles to gross', async () => {
-        setupBinanceFixture({ mode: BankSyncModeEnum.FORWARD });
+        setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
         stubEmptyBinanceBalances();
         stubCapitalHistory([], [buildBinance.withdrawal({ id: 'wd-1', coin: 'BTC', amount: '1', transactionFee: '0.1' })]);
 
@@ -57,7 +57,7 @@ describe('binance/deposits-withdrawals', () => {
     });
 
     it('drops the fee for a degenerate fee >= amount withdrawal', async () => {
-        setupBinanceFixture({ mode: BankSyncModeEnum.FORWARD });
+        setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
         stubEmptyBinanceBalances();
         stubCapitalHistory([], [buildBinance.withdrawal({ id: 'wd-degen', coin: 'BTC', amount: '1', transactionFee: '1' })]);
 
@@ -72,7 +72,7 @@ describe('binance/deposits-withdrawals', () => {
 
     it('does not create duplicates on a second sync run', async () => {
         const staleForwardFrom = new Date(Date.now() - HOUR_MS);
-        const { bankSync } = setupBinanceFixture({ mode: BankSyncModeEnum.FORWARD, forwardSyncFromAt: staleForwardFrom });
+        const { bankSync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD, forwardSyncFromAt: staleForwardFrom });
         stubEmptyBinanceBalances();
         stubCapitalHistory([buildBinance.deposit({ id: 'dep-dup', coin: 'BTC', amount: '2' })], []);
 
@@ -80,10 +80,7 @@ describe('binance/deposits-withdrawals', () => {
         expect(fetchBinanceTransactions()).toHaveLength(1);
 
         resetBinanceSyncForResync();
-        await testDb
-            .update(BankSyncEntityTable)
-            .set({ forwardSyncFromAt: staleForwardFrom })
-            .where(eq(BankSyncEntityTable.id, bankSync.id));
+        await testDb.update(SyncEntityTable).set({ forwardSyncFromAt: staleForwardFrom }).where(eq(SyncEntityTable.id, bankSync.id));
         stubCapitalHistory([buildBinance.deposit({ id: 'dep-dup', coin: 'BTC', amount: '2' })], []);
         await binanceSyncService.sync();
 

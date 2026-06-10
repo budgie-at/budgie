@@ -28,7 +28,7 @@ import {
 } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
-import { accountBalanceRepository, bankSyncRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { accountBalanceRepository, syncRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
@@ -189,7 +189,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
         await monobankSyncService.sync();
         vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();
-        await bankSyncRepository.update(bankSync.id, {
+        await syncRepository.update(bankSync.id, {
             forwardSyncedAt: staleForwardSyncDate,
             forwardSyncFromAt: staleForwardSyncDate
         });

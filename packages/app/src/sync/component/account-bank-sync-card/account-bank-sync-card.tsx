@@ -1,4 +1,4 @@
-import { BankSyncModeEnum, BankSyncStatusEnum } from '@budgie/contracts';
+import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
@@ -22,9 +22,9 @@ interface Props {
 const statusTextVariants = cva('text-xs font-medium', {
     variants: {
         status: {
-            [BankSyncStatusEnum.FAILED]: 'text-destructive',
-            [BankSyncStatusEnum.SYNCING]: 'text-amber-600',
-            [BankSyncStatusEnum.IDLE]: 'text-green-600'
+            [SyncStatusEnum.FAILED]: 'text-destructive',
+            [SyncStatusEnum.SYNCING]: 'text-amber-600',
+            [SyncStatusEnum.IDLE]: 'text-green-600'
         }
     }
 });
@@ -38,8 +38,8 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
         return null;
     }
 
-    const isForwardMode = bankSync.mode === BankSyncModeEnum.FORWARD;
-    const isSyncing = bankSync.status === BankSyncStatusEnum.SYNCING;
+    const isForwardMode = bankSync.mode === SyncModeEnum.FORWARD;
+    const isSyncing = bankSync.status === SyncStatusEnum.SYNCING;
     const statusLabel = buildBankSyncStatusLabel({ status: bankSync.status, isForwardMode, isSyncing });
 
     const handleToggle = (enabled: boolean) => {

@@ -1,4 +1,4 @@
-import { AccountTypeEnum, AccountWithBankSyncEntityInterface, BankSyncEntityInterface } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithSyncEntityInterface, SyncEntityInterface } from '@budgie/contracts';
 
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { BankSyncAccountCard } from '../bank-sync-account-card/bank-sync-account-card';
@@ -6,11 +6,11 @@ import { CryptoAccountCard } from '../crypto-account-card/crypto-account-card';
 import { DebtAccountCard } from '../debt-account-card/debt-account-card';
 
 interface Props extends Pick<
-    AccountWithBankSyncEntityInterface,
+    AccountWithSyncEntityInterface,
     'id' | 'createdAt' | 'title' | 'type' | 'icon' | 'debtType' | 'targetBalance' | 'deadline'
 > {
     readonly balance: number;
-    readonly bankSync: BankSyncEntityInterface | null;
+    readonly bankSync: SyncEntityInterface | null;
     readonly className?: string;
     readonly instrumentId: number;
     readonly instrumentCode: string;

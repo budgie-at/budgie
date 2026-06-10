@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop, max-lines -- Sync orchestration requires sequential awaits and many log tags */
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { consolidationScopeService } from '@budgie/consolidation';
-import { BankSyncModeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, SyncModeEnum } from '@budgie/contracts';
 import { Log, getLogger } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -24,8 +24,8 @@ import { transferConsolidationDrainerService } from './transfer-consolidation-dr
 import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
 import type {
     AccountEntityInterface,
-    BankSyncEntityInterface,
     MccCategoryLookupInterface,
+    SyncEntityInterface,
     TransactionEntityInterface
 } from '@budgie/contracts';
 
@@ -62,7 +62,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
     )
     // eslint-disable-next-line max-statements -- Sync batch keeps adjacent phase timing logs for live performance debugging
-    protected async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
+    protected async executeSyncBatch(sync: SyncEntityInterface): Promise<BankSyncBatchResultInterface> {
         const startedAt = Date.now();
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
@@ -300,10 +300,10 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         return existingTransactions.length;
     }
 
-    private async fetchTransactionBatch(sync: BankSyncEntityInterface, extAccId: string): Promise<BankSyncBatchResultInterface> {
+    private async fetchTransactionBatch(sync: SyncEntityInterface, extAccId: string): Promise<BankSyncBatchResultInterface> {
         const startedAt = Date.now();
         const svc = new MonobankSyncService(sync.token);
-        const isForward = sync.mode === BankSyncModeEnum.FORWARD;
+        const isForward = sync.mode === SyncModeEnum.FORWARD;
 
         const result = isForward
             ? await svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date())

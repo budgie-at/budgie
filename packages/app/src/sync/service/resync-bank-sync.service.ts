@@ -3,7 +3,7 @@ import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { bankSyncRepository, db, transactionRepository } from '../../@generic/drizzle/db/db';
+import { db, syncRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
 
@@ -37,14 +37,14 @@ class ResyncBankSyncService {
     private async resyncFull(accountId: number, tx: DB): Promise<void> {
         const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIds([accountId], tx);
         await this.unconsolidateCanonicals(canonicals, tx);
-        await bankSyncRepository.resetForResync(accountId, tx);
+        await syncRepository.resetForResync(accountId, tx);
     }
 
     private async resyncWindowed(accountId: number, sinceDays: number, tx: DB): Promise<void> {
         const since = new Date(Date.now() - sinceDays * ResyncBankSyncService.MILLISECONDS_PER_DAY);
         const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIdsSince([accountId], since, tx);
         await this.unconsolidateCanonicals(canonicals, tx);
-        await bankSyncRepository.resetForWindowedResync(accountId, since, tx);
+        await syncRepository.resetForWindowedResync(accountId, since, tx);
     }
 
     private async unconsolidateCanonicals(canonicals: Array<Pick<TransactionEntityInterface, 'id'>>, tx: DB, index = 0): Promise<void> {

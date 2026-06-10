@@ -1,7 +1,7 @@
-import type { BankSyncStatusEnum } from '@budgie/contracts';
+import type { SyncStatusEnum } from '@budgie/contracts';
 
 export interface BuildBankSyncStatusLabelInputInterface {
-    readonly status: BankSyncStatusEnum;
+    readonly status: SyncStatusEnum;
     readonly isForwardMode: boolean;
     readonly isSyncing: boolean;
 }

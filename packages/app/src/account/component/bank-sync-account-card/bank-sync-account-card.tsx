@@ -1,4 +1,4 @@
-import { AccountWithBankSyncEntityInterface, BankSyncEntityInterface } from '@budgie/contracts';
+import { AccountWithSyncEntityInterface, SyncEntityInterface } from '@budgie/contracts';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
@@ -9,9 +9,9 @@ import { useQuickImport } from '../../../sync/hook/use-quick-import.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { SyncStatusDot } from '../sync-status-dot/sync-status-dot';
 
-interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' | 'icon'> {
+interface Props extends Pick<AccountWithSyncEntityInterface, 'id' | 'title' | 'icon'> {
     readonly balance: number;
-    readonly bankSync: BankSyncEntityInterface | null;
+    readonly bankSync: SyncEntityInterface | null;
     readonly className?: string;
     readonly instrumentSymbol: string;
 }

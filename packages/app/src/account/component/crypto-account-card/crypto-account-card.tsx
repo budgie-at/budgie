@@ -1,4 +1,4 @@
-import { AccountEntityInterface, BankSyncEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, SyncEntityInterface } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
@@ -10,7 +10,7 @@ import { SyncStatusDot } from '../sync-status-dot/sync-status-dot';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly balance: number;
-    readonly bankSync: BankSyncEntityInterface | null;
+    readonly bankSync: SyncEntityInterface | null;
     readonly className?: string;
     readonly instrumentCode: string;
     readonly instrumentSymbol: string;

@@ -3,7 +3,7 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { syncRepository } from '../../@generic/drizzle/db/db';
 
 import { AbstractSyncService } from './abstract-sync.service';
 import { binanceSyncService } from './binance-sync.service';
@@ -25,7 +25,7 @@ class SyncProviderRegistryService {
         (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
     )
     async getServiceForAccount(accountId: number): Promise<AbstractSyncService | null> {
-        const bankSync = await bankSyncRepository.getByAccountId(accountId);
+        const bankSync = await syncRepository.getByAccountId(accountId);
         if (!isDefined(bankSync)) {
             return null;
         }

@@ -1,11 +1,11 @@
-import { AccountTypeEnum, AccountWithBankSyncEntityInterface } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { AccountCard } from '../account-card/account-card';
 
 interface Props {
-    readonly account: AccountWithBankSyncEntityInterface;
+    readonly account: AccountWithSyncEntityInterface;
     readonly balance: number;
     readonly type: AccountTypeEnum;
     readonly isLeft: boolean;

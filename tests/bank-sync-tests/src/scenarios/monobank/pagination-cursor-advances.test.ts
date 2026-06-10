@@ -1,5 +1,5 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { BankSyncModeEnum } from '@budgie/contracts';
+import { SyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { buildMonobank, fetchBankSyncById, fetchPersistedMonobankTransactions, monobankStub, setupMonobankFixture } from '../../harness';
@@ -26,7 +26,7 @@ const buildBatch = (offset: number): MonobankTransactionApiInterface[] =>
 
 describe('monobank/pagination-cursor-advances', () => {
     it('processes a 500-row page, advances the cursor, and continues until the next page is empty', async () => {
-        const { bankSync } = setupMonobankFixture('mono-acc-1', BankSyncModeEnum.FORWARD, FIXTURE_FORWARD_FROM);
+        const { bankSync } = setupMonobankFixture('mono-acc-1', SyncModeEnum.FORWARD, FIXTURE_FORWARD_FROM);
 
         monobankStub.statementBatches([buildBatch(0)]);
 

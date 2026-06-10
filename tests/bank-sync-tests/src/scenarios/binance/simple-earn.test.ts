@@ -1,6 +1,6 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
 import { BinanceSignedClient, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/bank-sync';
-import { BankSyncModeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { SyncModeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -70,7 +70,7 @@ describe('binance/simple-earn', () => {
         const monthStart = recentDayInMonthsAgo(1);
         const firstReward = monthStart;
         const lastReward = monthStart + 5 * DAY_MS;
-        setupBinanceFixture({ asset: 'USDT', mode: BankSyncModeEnum.FORWARD });
+        setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
         binanceStub.earnRewards([
             buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: firstReward }),
             buildBinance.earnReward({ asset: 'USDT', rewards: '0.25', time: lastReward })
@@ -84,7 +84,7 @@ describe('binance/simple-earn', () => {
     it('emits one Earn transaction per calendar month per asset', async () => {
         const previousMonth = recentDayInMonthsAgo(1);
         const currentMonth = recentDayInMonthsAgo(0);
-        setupBinanceFixture({ asset: 'USDT', mode: BankSyncModeEnum.FORWARD });
+        setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
         binanceStub.earnRewards([
             buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: previousMonth }),
             buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: previousMonth + 5 * DAY_MS }),
@@ -102,7 +102,7 @@ describe('binance/simple-earn', () => {
 
     it('does not create duplicate Earn reward transactions on a second sync run', async () => {
         const rewardTime = recentDayInMonthsAgo(0);
-        setupBinanceFixture({ asset: 'USDT', mode: BankSyncModeEnum.FORWARD });
+        setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
         binanceStub.earnRewards([buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: rewardTime })]);
 
         await binanceSyncService.sync();

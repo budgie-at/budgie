@@ -1,5 +1,5 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { BankSyncModeEnum } from '@budgie/contracts';
+import { SyncModeEnum } from '@budgie/contracts';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
@@ -27,7 +27,7 @@ describe('monobank/empty-account-stops-at-dormancy-boundary', () => {
         expect(fetchPersistedMonobankTransactions()).toHaveLength(0);
 
         const finalSync = fetchBankSyncById(bankSync.id);
-        expect(finalSync.mode).toBe(BankSyncModeEnum.FORWARD);
+        expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
         expect(finalSync.transactionCount).toBe(0);
     });
 });

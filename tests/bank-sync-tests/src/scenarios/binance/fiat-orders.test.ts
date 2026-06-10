@@ -1,5 +1,5 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
-import { BankSyncModeEnum, InstrumentTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { SyncModeEnum, InstrumentTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -12,7 +12,7 @@ import {
 } from '../../harness';
 
 const setupFiatScenario = () => {
-    setupBinanceFixture({ mode: BankSyncModeEnum.FORWARD, asset: 'EUR', instrumentType: InstrumentTypeEnum.FIAT });
+    setupBinanceFixture({ mode: SyncModeEnum.FORWARD, asset: 'EUR', instrumentType: InstrumentTypeEnum.FIAT });
     stubEmptyBinanceBalances();
     binanceStub.deposits([]);
     binanceStub.withdrawals([]);

@@ -42,7 +42,7 @@ export type { DebtAccountCreateInputInterface } from './account/input/debt-accou
 export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
 export type { AccountWithInstrumentEntityInterface } from './account/entity/account-with-instrument-entity.interface';
-export type { AccountWithBankSyncEntityInterface } from './account/entity/account-with-bank-sync-entity.interface';
+export type { AccountWithSyncEntityInterface } from './account/entity/account-with-sync-entity.interface';
 
 export type { AccountFilterInterface } from './account/interface/account-filter.interface';
 
@@ -63,22 +63,22 @@ export type { AccountBalanceUpdateEntityInterface } from './account-balance/enti
 
 export { AccountBalanceRepository } from './account-balance/repository/account-balance.repository';
 
-export { BankSyncModeEnum } from './bank-sync/enum/bank-sync-mode.enum';
-export { BankSyncStatusEnum } from './bank-sync/enum/bank-sync-status.enum';
-export { BankSyncAssociationEnum } from './bank-sync/enum/bank-sync-association.enum';
+export { SyncModeEnum } from './sync/enum/sync-mode.enum';
+export { SyncStatusEnum } from './sync/enum/sync-status.enum';
+export { SyncAssociationEnum } from './sync/enum/sync-association.enum';
 
-export { BankSyncEntityTable } from './bank-sync/table/bank-sync-entity.table';
-export { BankSyncEntityRelations } from './bank-sync/relations/bank-sync-entity.relations';
+export { SyncEntityTable } from './sync/table/sync-entity.table';
+export { SyncEntityRelations } from './sync/relations/sync-entity.relations';
 
-export { BankSyncEntitySchema } from './bank-sync/schema/bank-sync-entity.schema';
-export { BankSyncCreateEntitySchema } from './bank-sync/schema/bank-sync-create-entity.schema';
-export { BankSyncUpdateEntitySchema } from './bank-sync/schema/bank-sync-update-entity.schema';
+export { SyncEntitySchema } from './sync/schema/sync-entity.schema';
+export { SyncCreateEntitySchema } from './sync/schema/sync-create-entity.schema';
+export { SyncUpdateEntitySchema } from './sync/schema/sync-update-entity.schema';
 
-export type { BankSyncEntityInterface } from './bank-sync/entity/bank-sync-entity.interface';
-export type { BankSyncCreateEntityInterface } from './bank-sync/entity/bank-sync-create-entity.interface';
-export type { BankSyncUpdateEntityInterface } from './bank-sync/entity/bank-sync-update-entity.interface';
+export type { SyncEntityInterface } from './sync/entity/sync-entity.interface';
+export type { SyncCreateEntityInterface } from './sync/entity/sync-create-entity.interface';
+export type { SyncUpdateEntityInterface } from './sync/entity/sync-update-entity.interface';
 
-export { BankSyncRepository } from './bank-sync/repository/bank-sync.repository';
+export { SyncRepository } from './sync/repository/sync.repository';
 
 export { TAG_TITLE_MAX_LENGTH } from './tag/constant/tag-title-max-length.constant';
 export { TAG_TITLE_MIN_LENGTH } from './tag/constant/tag-title-min-length.constant';

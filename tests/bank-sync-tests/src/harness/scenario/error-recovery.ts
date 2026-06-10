@@ -1,4 +1,4 @@
-import { BankSyncEntityTable } from '@budgie/contracts';
+import { SyncEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { expect } from 'vitest';
 
@@ -12,7 +12,7 @@ export const httpFailureCases = [
 ] as const;
 
 export const expectSyncFailedAndDisabled = (bankSyncId: number): void => {
-    const finalSync = testDb.select().from(BankSyncEntityTable).where(eq(BankSyncEntityTable.id, bankSyncId)).all()[0];
+    const finalSync = testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.id, bankSyncId)).all()[0];
 
     expect(finalSync.errorCount).toBeGreaterThanOrEqual(SYNC_ERROR_THRESHOLD);
     expect(finalSync.enabled).toBe(false);

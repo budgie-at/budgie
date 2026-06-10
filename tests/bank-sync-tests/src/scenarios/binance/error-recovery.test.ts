@@ -1,5 +1,5 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
-import { BankSyncModeEnum } from '@budgie/contracts';
+import { SyncModeEnum } from '@budgie/contracts';
 import { HttpResponse, http } from 'msw';
 import { describe, it } from 'vitest';
 
@@ -13,7 +13,7 @@ describe('binance/error-recovery', () => {
         it(
             `marks the sync FAILED + disabled after ${SYNC_ERROR_THRESHOLD} consecutive ${label} errors`,
             async () => {
-                const { bankSync } = setupBinanceFixture({ mode: BankSyncModeEnum.FORWARD });
+                const { bankSync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
                 binanceServer.use(http.get(DEPOSIT_URL, () => new HttpResponse(null, { status })));
 
                 await binanceSyncService.sync();

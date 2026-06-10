@@ -3,7 +3,7 @@ import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/bank-sync';
 import {
     AccountEntityTable,
     AccountTypeEnum,
-    BankSyncModeEnum,
+    SyncModeEnum,
     ExternalSourceEnum,
     InstrumentTypeEnum,
     TransactionTypeEnum
@@ -41,7 +41,7 @@ describe('binance/account-agnostic-sources', () => {
             instrumentId: eurInstrument.id
         });
 
-        const { account: usdtAccount } = setupBinanceFixture({ asset: 'USDT', mode: BankSyncModeEnum.BACKWARD });
+        const { account: usdtAccount } = setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.BACKWARD });
         stubEmptyBinanceBalances();
         const previousMonth = recentDayInMonthsAgo(1);
         const currentMonth = recentDayInMonthsAgo(0);
@@ -92,7 +92,7 @@ describe('binance/account-agnostic-sources', () => {
     });
 
     it('commits C2C and earn income even when fiat returns no orders, proving per-type incremental commit', async () => {
-        const { account: usdtAccount } = setupBinanceFixture({ asset: 'USDT', mode: BankSyncModeEnum.BACKWARD });
+        const { account: usdtAccount } = setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.BACKWARD });
         stubEmptyBinanceBalances();
         const earnTime = recentDayInMonthsAgo(0);
         binanceStub.c2cOrders([buildBinance.c2cOrder({ orderNumber: 'usdt-c2c', tradeType: 'BUY', asset: 'USDT', amount: '100' })], []);

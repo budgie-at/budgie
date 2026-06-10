@@ -1,5 +1,5 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
-import { BankSyncModeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { SyncModeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -13,7 +13,7 @@ import {
 } from '../../harness';
 
 const setupForwardUsdtScenario = (): void => {
-    setupBinanceFixture({ asset: 'USDT', mode: BankSyncModeEnum.FORWARD });
+    setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
     stubEmptyBinanceBalances();
 };
 
