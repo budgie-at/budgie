@@ -105,7 +105,7 @@ export default function BudgetSetupScreen() {
                     isEditing={isEditing}
                     spentOverall={spent.spentOverall}
                 />
-                <BudgetOverallLimitField control={form.control} autoFocus={!isEditing} currencySymbol={currencySymbol} />
+                <BudgetOverallLimitField control={form.control} currencySymbol={currencySymbol} />
                 <BudgetInlineCategoryLimits currencySymbol={currencySymbol} onCategoryAdded={handleCategoryAdded} />
             </FormPage>
         </FormProvider>
