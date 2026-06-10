@@ -628,7 +628,7 @@ msgstr "Tag-Auswahl bestätigen"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Connect Binance"
-msgstr ""
+msgstr "Binance verbinden"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
@@ -933,7 +933,7 @@ msgstr "Erstellen Sie Ihr erstes Konto, um Ihre Finanzen zu verfolgen"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Credentials required"
-msgstr ""
+msgstr "Zugangsdaten erforderlich"
 
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto"
@@ -946,7 +946,7 @@ msgstr "Kryptokonto"
 
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto sync"
-msgstr ""
+msgstr "Krypto-Synchronisierung"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "CSV"
@@ -1197,11 +1197,11 @@ msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN zum Entsperren ein"
 
 #: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
 msgid "Enter your Binance API key"
-msgstr ""
+msgstr "Geben Sie Ihren Binance-API-Schlüssel ein"
 
 #: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
 msgid "Enter your Binance API secret"
-msgstr ""
+msgstr "Geben Sie Ihr Binance-API-Secret ein"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Enter your Monobank API token"
@@ -2005,11 +2005,11 @@ msgstr "Fügen Sie Ihren API-Token unten ein:"
 
 #: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
 msgid "Paste your Binance API key:"
-msgstr ""
+msgstr "Fügen Sie Ihren Binance-API-Schlüssel ein:"
 
 #: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
 msgid "Paste your Binance API secret:"
-msgstr ""
+msgstr "Fügen Sie Ihr Binance-API-Secret ein:"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Payment Progress"
@@ -2038,7 +2038,7 @@ msgstr "PINs stimmen nicht überein"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Please enter your Binance API key and secret"
-msgstr ""
+msgstr "Bitte geben Sie Ihren Binance-API-Schlüssel und Ihr Secret ein"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Please enter your Monobank API token"
@@ -2621,7 +2621,7 @@ msgstr "Synchronisation"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Sync crypto balances and transactions from Binance with a read-only API key"
-msgstr ""
+msgstr "Synchronisieren Sie Krypto-Salden und -Transaktionen von Binance mit einem schreibgeschützten API-Schlüssel"
 
 #: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
 msgid "Sync data repairs"
@@ -2645,7 +2645,7 @@ msgstr "Synchronisierungsarbeit wurde durch App-Zurücksetzung abgebrochen"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
-msgstr ""
+msgstr "Synchronisieren Sie Ihre Binance-Salden und -Transaktionen"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Sync your Monobank accounts and transactions"
@@ -2987,7 +2987,7 @@ msgstr "Verwenden Sie Touch ID, um Ihre App schnell und sicher zu entsperren"
 
 #: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
 msgid "Valuation unavailable"
-msgstr ""
+msgstr "Bewertung nicht verfügbar"
 
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx

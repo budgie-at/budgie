@@ -51,6 +51,7 @@ describe('binance/source-window-walk', () => {
 
         await binanceSyncService.sync();
 
+        expect(requestedWindows.length).toBeGreaterThan(0);
         const oldestRequestedStartMs = Math.min(...requestedWindows.map(window => window.startMs));
         expect(Date.now() - oldestRequestedStartMs).toBeLessThan(FIAT_DORMANCY_MAX_AGE_MS);
     });

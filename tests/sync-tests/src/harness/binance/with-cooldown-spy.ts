@@ -1,5 +1,7 @@
 import { vi } from 'vitest';
 
+import { emptyFn } from '@rnw-community/shared';
+
 export const withCoolDownSpy = async (coolDownWindowMs: number, run: () => Promise<void>): Promise<number[]> => {
     const coolDownDelays: number[] = [];
     const realSetTimeout = globalThis.setTimeout;
@@ -7,8 +9,10 @@ export const withCoolDownSpy = async (coolDownWindowMs: number, run: () => Promi
         if (typeof handler === 'function' && delay === coolDownWindowMs) {
             coolDownDelays.push(delay);
             handler();
+            const noopTimerId = realSetTimeout(emptyFn, 0);
+            globalThis.clearTimeout(noopTimerId);
 
-            return 0 as unknown as ReturnType<typeof setTimeout>;
+            return noopTimerId;
         }
 
         return realSetTimeout(handler, delay, ...args);
