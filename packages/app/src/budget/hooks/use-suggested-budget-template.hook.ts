@@ -1,4 +1,5 @@
-import { subMonths } from 'date-fns';
+import { convertAmountToBase } from '@budgie/contracts';
+import { getMonth, getYear, subMonths } from 'date-fns';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { useState } from 'react';
 
@@ -7,7 +8,6 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { budgetRepository } from '../../@generic/drizzle/db/db';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { buildSuggestedBudgetTemplate } from '../utils/build-suggested-budget-template.util';
-import { computeBudgetSpent } from '../utils/compute-budget-spent.util';
 import { computeTrailingMonthsWindow } from '../utils/compute-trailing-months-window.util';
 import { resolveSuggestedWindowMonths } from '../utils/resolve-suggested-window-months.util';
 
@@ -29,6 +29,30 @@ interface SuggestedSpentEntryInterface {
     readonly operatedAt: Date;
 }
 
+const groupMonthlySpentByCategory = (
+    entries: readonly SuggestedSpentEntryInterface[],
+    windowStart: Date,
+    months: number,
+    baseInstrumentId: number
+): { categoryId: number; monthlyAmounts: number[] }[] => {
+    const totalsByCategory = new Map<number, number[]>();
+
+    for (const entry of entries) {
+        const monthIndex = (getYear(entry.operatedAt) - getYear(windowStart)) * 12 + getMonth(entry.operatedAt) - getMonth(windowStart);
+        const isInsideWindow = monthIndex >= 0 && monthIndex < months;
+
+        if (isDefined(entry.categoryId) && isInsideWindow) {
+            const isBaseInstrument = entry.instrumentId === baseInstrumentId;
+            const { convertedAmount } = convertAmountToBase(entry.amount, isBaseInstrument ? 1 : entry.rate);
+            const monthlyAmounts = totalsByCategory.get(entry.categoryId) ?? new Array<number>(months).fill(0);
+            monthlyAmounts[monthIndex] += convertedAmount;
+            totalsByCategory.set(entry.categoryId, monthlyAmounts);
+        }
+    }
+
+    return [...totalsByCategory.entries()].map(([categoryId, monthlyAmounts]) => ({ categoryId, monthlyAmounts }));
+};
+
 const buildSuggestedResolution = (
     entries: readonly SuggestedSpentEntryInterface[],
     now: Date,
@@ -46,14 +70,14 @@ const buildSuggestedResolution = (
 
     const windowStart = computeTrailingMonthsWindow(now, effectiveMonths).start;
     const recentEntries = entries.filter(entry => entry.operatedAt.getTime() >= windowStart.getTime());
-    const spent = computeBudgetSpent(recentEntries, baseInstrumentId);
-    const draft = buildSuggestedBudgetTemplate(spent.spentByCategory, effectiveMonths);
-    const hasEnoughCategories = spent.spentByCategory.length >= MIN_DISTINCT_CATEGORIES;
+    const monthlySpentByCategory = groupMonthlySpentByCategory(recentEntries, windowStart, effectiveMonths, baseInstrumentId);
+    const draft = buildSuggestedBudgetTemplate(monthlySpentByCategory);
+    const hasEnoughCategories = monthlySpentByCategory.length >= MIN_DISTINCT_CATEGORIES;
     const isAvailable = isNotEmptyArray(draft.categoryLimits) && hasEnoughCategories && hasMinimumHistory;
     const stats = {
         months: effectiveMonths,
         transactionsCount: recentEntries.length,
-        categoriesCount: spent.spentByCategory.length
+        categoriesCount: monthlySpentByCategory.length
     };
 
     return { draft, isReady: true, isAvailable, stats };
