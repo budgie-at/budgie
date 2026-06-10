@@ -10,12 +10,14 @@ import { TransactionEntryEntityTable } from '../../transaction-entry/table/trans
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
+import { AccountTypeEnum } from '../enum/account-type.enum';
 import { ExternalSourceEnum } from '../enum/external-source.enum';
 import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
 
 import type { DB } from '../../@generic/type/db.type';
 import type { AccountEntityInterface } from '../entity/account-entity.interface';
+import type { SQL } from 'drizzle-orm';
 
 export class AccountRepository {
     constructor(private db: DB) {}
@@ -54,6 +56,13 @@ export class AccountRepository {
 
     async getAllActiveAccounts(tx?: DB): Promise<AccountEntityInterface[]> {
         return await (tx ?? this.db).select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
+    }
+
+    async getAllActiveAccountsExceptBankAuthoritative(tx?: DB): Promise<AccountEntityInterface[]> {
+        return await (tx ?? this.db)
+            .select()
+            .from(AccountEntityTable)
+            .where(and(isNull(AccountEntityTable.deletedAt), ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO_SYNC)));
     }
 
     findBySearchQuery(search: string, filter: AccountFilterInterface = {}) {
@@ -103,13 +112,11 @@ export class AccountRepository {
     }
 
     async findByIds(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
-        if (!isNotEmptyArray(ids)) {
-            return [];
-        }
+        return await this.findActiveByIds(ids, tx);
+    }
 
-        return await (tx ?? this.db).query.AccountEntityTable.findMany({
-            where: and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt))
-        });
+    async findByIdsExceptBankAuthoritative(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
+        return await this.findActiveByIds(ids, tx, ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO_SYNC));
     }
 
     async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {
@@ -192,6 +199,16 @@ export class AccountRepository {
             .limit(1);
 
         return result[0]?.account;
+    }
+
+    private async findActiveByIds(ids: number[], tx?: DB, typeCondition?: SQL): Promise<AccountEntityInterface[]> {
+        if (!isNotEmptyArray(ids)) {
+            return [];
+        }
+
+        return await (tx ?? this.db).query.AccountEntityTable.findMany({
+            where: and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt), typeCondition)
+        });
     }
 
     private buildSearchWhereClause(search: string, filter: AccountFilterInterface) {

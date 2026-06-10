@@ -1,4 +1,3 @@
-import { AccountTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
@@ -19,7 +18,7 @@ class AccountBalanceIncrementalService {
         (error, truncate, tx) => `throw truncate=${String(truncate)} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async updateAllBalances(truncate: boolean, tx?: DB): Promise<void> {
-        const accounts = (await accountRepository.getAllActiveAccounts(tx)).filter(account => account.type !== AccountTypeEnum.CRYPTO_SYNC);
+        const accounts = await accountRepository.getAllActiveAccountsExceptBankAuthoritative(tx);
         await this.upsertLatestBalances(accounts, truncate, tx);
     }
 
@@ -35,9 +34,7 @@ class AccountBalanceIncrementalService {
             return;
         }
 
-        const accounts = (await accountRepository.findByIds(uniqueAccountIds, tx)).filter(
-            account => account.type !== AccountTypeEnum.CRYPTO_SYNC
-        );
+        const accounts = await accountRepository.findByIdsExceptBankAuthoritative(uniqueAccountIds, tx);
         if (isEmptyArray(accounts)) {
             return;
         }
