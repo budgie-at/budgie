@@ -18,7 +18,7 @@ on: pull_request
 jobs:
   code-quality:
     name: Code quality checks
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, arm64]
     permissions:
       contents: read
       id-token: write
@@ -72,7 +72,7 @@ jobs:
   eas-update-preview:
     name: EAS Update Preview
     needs: code-quality
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, arm64]
     permissions:
       contents: read
     steps:
@@ -118,7 +118,7 @@ jobs:
   build-ios-e2e-app:
     needs: [code-quality]
     name: Build iOS E2E app
-    runs-on: self-hosted
+    runs-on: [self-hosted, macos, arm64]
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
@@ -308,7 +308,7 @@ jobs:
   e2e-ios:
     needs: [build-ios-e2e-app]
     name: E2E Tests on iOS
-    runs-on: self-hosted
+    runs-on: [self-hosted, macos, arm64]
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
@@ -462,7 +462,7 @@ jobs:
     if: false
     needs: [code-quality, eas-update-preview]
     name: E2E Tests on Android
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, arm64]
     steps:
       - uses: actions/checkout@v5
 
