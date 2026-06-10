@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop, max-lines -- Sync orchestration requires sequential awaits and many log tags */
 import { consolidationScopeService } from '@budgie/consolidation';
-import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log, getLogger } from '@budgie/logger';
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService, SyncAccountTypeEnum } from '@budgie/sync';
 
@@ -186,6 +186,10 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         }
 
         return `${this.providerTitle} ${cardType} ${account.currencyCode}`;
+    }
+
+    protected override accountIcon(account: SyncAccountInterface): UserIconNameEnum {
+        return account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : super.accountIcon(account);
     }
 
     // eslint-disable-next-line max-statements -- Sync import path keeps adjacent phase timing logs for live performance debugging

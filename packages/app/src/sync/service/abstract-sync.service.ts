@@ -1,6 +1,5 @@
 import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
-import { SyncAccountTypeEnum } from '@budgie/sync';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -101,8 +100,8 @@ export abstract class AbstractSyncService {
         return `${this.providerTitle} ${account.currencyCode}`;
     }
 
-    protected accountIcon(account: SyncAccountInterface): UserIconNameEnum {
-        return account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark;
+    protected accountIcon(_account: SyncAccountInterface): UserIconNameEnum {
+        return UserIconNameEnum.Landmark;
     }
 
     protected mapAccountToCreateInput(account: SyncAccountInterface, instrumentId: number): LiabilityAccountCreateInputInterface {
