@@ -28,11 +28,7 @@ import { upsertTransactionEntriesAndTags } from '../utils/upsert-transaction-ent
 import { importedTransactionEntryUpdateService } from './imported-transaction-entry-update.service';
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
-import type { PersistPrimaryTransferInputInterface } from '../interface/persist-primary-transfer-input.interface';
-import type { PersistTransferInputInterface } from '../interface/persist-transfer-input.interface';
-import type { TransferLegValuationsInterface } from '../interface/transfer-leg-valuations.interface';
-import type { ValueTransferLegsInputInterface } from '../interface/value-transfer-legs-input.interface';
-import type { ValuedTransferEntryInterface } from '../interface/valued-transfer-entry.interface';
+import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
 import type {
     DB,
     TransactionCreateInputInterface,
@@ -115,27 +111,27 @@ class TransactionService {
     }
 
     @Log(
-        input => `enter externalId=${input.externalId} fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId}`,
-        (result, input) => `done id=${result.id} externalId=${input.externalId}`,
-        (error, input) => `throw externalId=${input.externalId} error=${getErrorMessage(error)}`
+        inputs => `enter externalIds=${inputs.map(input => input.externalId).join(',')}`,
+        (result, inputs) =>
+            `done ids=${result.map(transaction => transaction.id).join(',')} externalIds=${inputs.map(input => input.externalId).join(',')}`,
+        (error, inputs) => `throw externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
     )
-    async createSyncedTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        if (input.exchangeRate !== 1) {
+    async createSyncedTransfers(inputs: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
+        if (inputs.some(input => input.exchangeRate !== 1)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal invariant
             throw new Error('Synced transfer exchange rate must be equal to 1');
         }
 
         return await transactionAsync(db, async tx => {
-            const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
+            const transactions: TransactionEntityInterface[] = [];
+            for (const input of inputs) {
+                // eslint-disable-next-line no-await-in-loop -- Sequential persists share one chunk transaction
+                transactions.push(await this.persistSyncedTransfer(input, tx));
+            }
 
-            const fromAmountInMicroUnits = convertToMicroUnits(fromEntry.amount);
-            const toAmountInMicroUnits = convertToMicroUnits(toEntry.amount);
+            await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs(inputs), tx);
 
-            const transaction = await transactionRepository.create({ ...input, exchangeRate: 1 }, tx);
-
-            await this.persistPrimaryTransfer({ transaction, input, fromEntry, toEntry, fromAmountInMicroUnits, toAmountInMicroUnits, tx });
-
-            return transaction;
+            return transactions;
         });
     }
 
@@ -200,15 +196,8 @@ class TransactionService {
                 },
                 tx
             );
-            await this.persistPrimaryTransfer({
-                transaction,
-                input,
-                fromEntry,
-                toEntry,
-                fromAmountInMicroUnits,
-                toAmountInMicroUnits: toAmount,
-                tx
-            });
+            await this.persistPrimaryTransfer(transaction, input, fromEntry, toEntry, fromAmountInMicroUnits, toAmount, tx);
+            await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs([input]), tx);
 
             return transaction;
         });
@@ -247,40 +236,32 @@ class TransactionService {
         });
     }
 
-    private async persistPrimaryTransfer({
-        transaction,
-        input,
-        fromEntry,
-        toEntry,
-        fromAmountInMicroUnits,
-        toAmountInMicroUnits,
-        tx
-    }: PersistPrimaryTransferInputInterface): Promise<void> {
-        const { additionalEntryValuations, fromValuation, toValuation } = await this.valueTransferLegs({
+    private async persistSyncedTransfer(input: TransactionCreateInputInterface, tx: DB): Promise<TransactionEntityInterface> {
+        const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
+        const transaction = await transactionRepository.create({ ...input, exchangeRate: 1 }, tx);
+        await this.persistPrimaryTransfer(
+            transaction,
             input,
             fromEntry,
             toEntry,
-            fromAmountInMicroUnits,
-            toAmountInMicroUnits,
+            convertToMicroUnits(fromEntry.amount),
+            convertToMicroUnits(toEntry.amount),
             tx
-        });
+        );
 
-        const primaryEntries = this.buildPrimaryTransferEntries(transaction.id, [
-            { entry: fromEntry, type: TransactionEntryTypeEnum.CREDIT, amount: fromAmountInMicroUnits, valuation: fromValuation },
-            { entry: toEntry, type: TransactionEntryTypeEnum.DEBIT, amount: toAmountInMicroUnits, valuation: toValuation }
-        ]);
-
-        await this.persistTransfer({ transaction, input, primaryEntries, fromEntry, toEntry, additionalEntryValuations, tx });
+        return transaction;
     }
 
-    private async valueTransferLegs({
-        input,
-        fromEntry,
-        toEntry,
-        fromAmountInMicroUnits,
-        toAmountInMicroUnits,
-        tx
-    }: ValueTransferLegsInputInterface): Promise<TransferLegValuationsInterface> {
+    // eslint-disable-next-line @typescript-eslint/max-params -- Transfer persistence keeps positional arguments instead of a single-consumer param-bag interface
+    private async persistPrimaryTransfer(
+        transaction: TransactionEntityInterface,
+        input: TransactionCreateInputInterface,
+        fromEntry: TransactionEntryCreateInputInterface,
+        toEntry: TransactionEntryCreateInputInterface,
+        fromAmountInMicroUnits: number,
+        toAmountInMicroUnits: number,
+        tx: DB
+    ): Promise<void> {
         const additionalEntryValuations = await entryBaseValuationService.valueEntries(
             input.entries,
             input.operatedAt,
@@ -288,30 +269,48 @@ class TransactionService {
             tx
         );
         const [fromValuation, toValuation] = await Promise.all([
-            entryBaseValuationService.valueMicroUnitEntry({
-                accountId: fromEntry.accountId,
-                amount: fromAmountInMicroUnits,
-                operatedAt: input.operatedAt,
-                externalSource: input.externalSource,
-                tx
-            }),
-            entryBaseValuationService.valueMicroUnitEntry({
-                accountId: toEntry.accountId,
-                amount: toAmountInMicroUnits,
-                operatedAt: input.operatedAt,
-                externalSource: input.externalSource,
-                tx
-            })
+            this.valueTransferLeg(fromEntry.accountId, fromAmountInMicroUnits, input, tx),
+            this.valueTransferLeg(toEntry.accountId, toAmountInMicroUnits, input, tx)
         ]);
 
-        return { additionalEntryValuations, fromValuation, toValuation };
+        const primaryEntries = [
+            this.buildPrimaryTransferEntry(
+                transaction.id,
+                fromEntry,
+                TransactionEntryTypeEnum.CREDIT,
+                fromAmountInMicroUnits,
+                fromValuation
+            ),
+            this.buildPrimaryTransferEntry(transaction.id, toEntry, TransactionEntryTypeEnum.DEBIT, toAmountInMicroUnits, toValuation)
+        ];
+
+        await this.persistTransfer(transaction, input, primaryEntries, fromEntry, toEntry, additionalEntryValuations, tx);
     }
 
-    private buildPrimaryTransferEntries(
+    private async valueTransferLeg(
+        accountId: number,
+        amount: number,
+        input: TransactionCreateInputInterface,
+        tx: DB
+    ): Promise<EntryBaseValuationInterface> {
+        return entryBaseValuationService.valueMicroUnitEntry({
+            accountId,
+            amount,
+            operatedAt: input.operatedAt,
+            externalSource: input.externalSource,
+            tx
+        });
+    }
+
+    // eslint-disable-next-line @typescript-eslint/max-params -- Entry construction keeps positional arguments instead of a single-consumer param-bag interface
+    private buildPrimaryTransferEntry(
         transactionId: number,
-        valuedEntries: readonly ValuedTransferEntryInterface[]
-    ): TransactionEntryCreateEntityInterface[] {
-        return valuedEntries.map(({ entry, type, amount, valuation }) => ({
+        entry: TransactionEntryCreateInputInterface,
+        type: TransactionEntryTypeEnum,
+        amount: number,
+        valuation: EntryBaseValuationInterface
+    ): TransactionEntryCreateEntityInterface {
+        return {
             transactionId,
             accountId: entry.accountId,
             categoryId: entry.categoryId,
@@ -324,18 +323,19 @@ class TransactionService {
             baseExchangeRate: valuation.baseExchangeRate,
             baseAmount: valuation.baseAmount,
             toIban: entry.toIban ?? null
-        }));
+        };
     }
 
-    private async persistTransfer({
-        transaction,
-        input,
-        primaryEntries,
-        fromEntry,
-        toEntry,
-        additionalEntryValuations,
-        tx
-    }: PersistTransferInputInterface): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/max-params -- Transfer persistence keeps positional arguments instead of a single-consumer param-bag interface
+    private async persistTransfer(
+        transaction: TransactionEntityInterface,
+        input: TransactionCreateInputInterface,
+        primaryEntries: readonly TransactionEntryCreateEntityInterface[],
+        fromEntry: TransactionEntryCreateInputInterface,
+        toEntry: TransactionEntryCreateInputInterface,
+        additionalEntryValuations: Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>,
+        tx: DB
+    ): Promise<void> {
         await transactionEntryRepository.bulkCreate(
             [
                 ...primaryEntries,
@@ -353,8 +353,6 @@ class TransactionService {
         if (isNotEmptyArray(input.tagIds)) {
             await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transaction.id), tx);
         }
-
-        await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs([input]), tx);
     }
 
     private getAccountIdsFromInputs(inputs: readonly Pick<TransactionCreateInputInterface, 'entries'>[]): number[] {
