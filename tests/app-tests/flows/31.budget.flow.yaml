@@ -298,7 +298,7 @@ env:
       timeout: 3000
 - assertVisible:
       id: 'BudgetWidget.CategorySpentLabel.42'
-      text: '€42'
+      text: '21%'
 - assertVisible:
       id: 'BudgetWidget.CategoryRow.11'
 - assertVisible:

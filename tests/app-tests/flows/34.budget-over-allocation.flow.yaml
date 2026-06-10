@@ -77,4 +77,4 @@ appId: ${APP_ID}
     id: 'BudgetWidget.CategoryRow.11'
 - assertVisible:
     id: 'BudgetWidget.CategorySpentLabel.11'
-    text: '€0'
+    text: '0%'

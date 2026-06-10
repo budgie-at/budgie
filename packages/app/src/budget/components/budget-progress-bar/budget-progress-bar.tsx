@@ -17,6 +17,7 @@ interface Props {
     readonly amountDecimalPlaces?: number;
     readonly currencySymbol?: string;
     readonly isAmountLight?: boolean;
+    readonly isCompact?: boolean;
     readonly isSummaryVisible?: boolean;
     readonly spent: number;
     readonly limit: number;
@@ -69,6 +70,7 @@ export const BudgetProgressBar = (props: Props) => {
         amountDecimalPlaces,
         currencySymbol = '',
         isAmountLight = false,
+        isCompact = false,
         isSummaryVisible = true,
         spent,
         limit,
@@ -84,6 +86,41 @@ export const BudgetProgressBar = (props: Props) => {
     const amountLabel = `${formatDigits(metrics.displaySpent, currencySymbol)} / ${formatDigits(metrics.displayLimit, currencySymbol)}`;
     const remainingLabel = metrics.isOverBudget ? t`Over budget` : t`Left`;
     const remainingAmountLabel = formatDigits(metrics.displayRemaining, currencySymbol);
+
+    const bar = (
+        <View className="h-3 bg-secondary-corner rounded-full overflow-hidden">
+            <View className={barVariants({ tone: resolveBudgetBarTone(metrics.ratio) })} style={metrics.widthStyle} />
+        </View>
+    );
+
+    if (isCompact) {
+        return (
+            <View testID={testID} className="gap-y-md">
+                {bar}
+
+                <View className="flex-row items-center justify-between">
+                    <View className="flex-row items-center gap-x-sm">
+                        <Text
+                            className={amountTextVariants({ isAmountLight })}
+                            testID={spentTestID}
+                            accessible
+                            accessibilityLabel={amountLabel}
+                        >
+                            {amountLabel}
+                        </Text>
+                        <Text className="text-secondary-foreground text-sm">{metrics.percentLabel}</Text>
+                    </View>
+
+                    <View className="flex-row items-center gap-x-xs">
+                        <Text className="text-secondary-foreground text-sm">{remainingLabel}</Text>
+                        <Text testID={remainingTestID} className={amountTextVariants({ isAmountLight })}>
+                            {remainingAmountLabel}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        );
+    }
 
     return (
         <View testID={testID} className="gap-y-md">
@@ -102,9 +139,7 @@ export const BudgetProgressBar = (props: Props) => {
                 </View>
             ) : null}
 
-            <View className="h-3 bg-secondary-corner rounded-full overflow-hidden">
-                <View className={barVariants({ tone: resolveBudgetBarTone(metrics.ratio) })} style={metrics.widthStyle} />
-            </View>
+            {bar}
 
             {isSummaryVisible ? (
                 <View className="flex-row items-center justify-between">

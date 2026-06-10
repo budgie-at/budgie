@@ -1,10 +1,11 @@
 import { Trans } from '@lingui/react/macro';
+import { Fragment } from 'react';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BudgetSelector } from '../../budget.selector';
-import { BudgetCategoryLimitRow } from '../budget-category-limit-row/budget-category-limit-row';
+import { BudgetWidgetCategoryChip } from '../budget-widget-category-chip/budget-widget-category-chip';
 
 import type { BudgetCategorySpentInterface } from '../../interface/budget-category-spent.interface';
 import type { BudgetCategoryLimitEntityInterface } from '@budgie/contracts';
@@ -13,11 +14,10 @@ const WIDGET_CATEGORY_LIMITS_MAX = 3;
 
 interface Props {
     readonly categoryLimits: readonly BudgetCategoryLimitEntityInterface[];
-    readonly currencySymbol: string;
     readonly spentByCategory: readonly BudgetCategorySpentInterface[];
 }
 
-export const BudgetWidgetCategoryList = ({ categoryLimits, currencySymbol, spentByCategory }: Props) => {
+export const BudgetWidgetCategoryList = ({ categoryLimits, spentByCategory }: Props) => {
     const spentByCategoryMap = new Map(spentByCategory.map(entry => [entry.categoryId, entry.spent]));
     const sortedCategoryLimits = [...categoryLimits].sort((firstCategoryLimit, secondCategoryLimit) => {
         const firstSpent = spentByCategoryMap.get(firstCategoryLimit.categoryId) ?? 0;
@@ -33,20 +33,21 @@ export const BudgetWidgetCategoryList = ({ categoryLimits, currencySymbol, spent
     }
 
     return (
-        <View className="gap-y-md pt-md">
-            {visibleCategoryLimits.map(limit => (
-                <BudgetCategoryLimitRow
-                    key={limit.id}
-                    categoryId={limit.categoryId}
-                    currencySymbol={currencySymbol}
-                    limitAmount={limit.limitAmount}
-                    spent={spentByCategoryMap.get(limit.categoryId) ?? 0}
-                    testID={BudgetSelector.WidgetCategoryRow(limit.categoryId)}
-                    spentTestID={BudgetSelector.WidgetCategorySpentLabel(limit.categoryId)}
-                />
+        <View className="flex-row flex-wrap items-center gap-x-sm gap-y-xs">
+            {visibleCategoryLimits.map((limit, index) => (
+                <Fragment key={limit.id}>
+                    {index > 0 && <Text className="text-secondary-foreground text-sm">·</Text>}
+                    <BudgetWidgetCategoryChip
+                        categoryId={limit.categoryId}
+                        limitAmount={limit.limitAmount}
+                        spent={spentByCategoryMap.get(limit.categoryId) ?? 0}
+                        testID={BudgetSelector.WidgetCategoryRow(limit.categoryId)}
+                        spentTestID={BudgetSelector.WidgetCategorySpentLabel(limit.categoryId)}
+                    />
+                </Fragment>
             ))}
             {isPositiveNumber(hiddenCategoryCount) && (
-                <Text testID={BudgetSelector.WidgetMoreCategoriesLabel} className="text-secondary-foreground text-sm text-center pt-xs">
+                <Text testID={BudgetSelector.WidgetMoreCategoriesLabel} className="text-secondary-foreground text-sm">
                     <Trans>+{hiddenCategoryCount} more</Trans>
                 </Text>
             )}

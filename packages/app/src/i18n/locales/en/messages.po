@@ -1677,7 +1677,6 @@ msgstr "Learning transactions"
 msgid "Learning up to date"
 msgstr "Learning up to date"
 
-#: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
 msgid "Left"
@@ -1691,7 +1690,6 @@ msgstr "Lent"
 msgid "Less Than"
 msgstr "Less Than"
 
-#: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 msgid "Limit"
 msgstr "Limit"
@@ -2129,7 +2127,6 @@ msgstr "Original transaction"
 msgid "Other"
 msgstr "Other"
 
-#: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
 msgid "Over budget"
@@ -2757,7 +2754,6 @@ msgstr "Spending by Category"
 msgid "Spending by Tag"
 msgstr "Spending by Tag"
 
-#: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
