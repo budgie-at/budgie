@@ -63,3 +63,6 @@ tests/app-tests/artifacts/
 nativewind-env.d.ts
 docs/plans
 docs/superpowers
+
+# OMC agent state (local-only)
+.omc/
