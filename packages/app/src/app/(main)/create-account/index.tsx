@@ -7,7 +7,7 @@ import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
-import { CreateBankSyncCard } from '../../../account/component/create-bank-sync-card/create-bank-sync-card';
+import { CreateSyncCard } from '../../../account/component/create-sync-card/create-sync-card';
 import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 
 export default function Index() {
@@ -49,28 +49,28 @@ export default function Index() {
                 />
 
                 <Text className="text-secondary-foreground text-sm px-md mt-xl">
-                    <Trans>Bank Sync</Trans>
+                    <Trans>Sync</Trans>
                 </Text>
 
-                <CreateBankSyncCard
+                <CreateSyncCard
                     description={t`Auto-sync accounts and transactions from Monobank`}
                     title={t`Monobank`}
                     route={`/create-account/${ExternalSourceEnum.MONOBANK}`}
                     bankProvider={ExternalSourceEnum.MONOBANK}
                 />
-                <CreateBankSyncCard
+                <CreateSyncCard
                     description={t`Import accounts and transactions from Privatbank XLSX export`}
                     title={t`Privatbank`}
                     route={`/create-account/${ExternalSourceEnum.PRIVATBANK}`}
                     bankProvider={ExternalSourceEnum.PRIVATBANK}
                 />
-                <CreateBankSyncCard
+                <CreateSyncCard
                     description={t`Import accounts and transactions from Erste Bank PDF statement`}
                     title={t`Erste Bank`}
                     route={`/create-account/${ExternalSourceEnum.ERSTE}`}
                     bankProvider={ExternalSourceEnum.ERSTE}
                 />
-                <CreateBankSyncCard
+                <CreateSyncCard
                     description={t`Sync crypto balances and transactions from Binance with a read-only API key`}
                     title={t`Binance`}
                     route={`/create-account/${ExternalSourceEnum.BINANCE}`}

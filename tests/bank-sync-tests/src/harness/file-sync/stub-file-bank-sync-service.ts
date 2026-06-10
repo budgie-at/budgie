@@ -1,6 +1,6 @@
 import { AbstractFileSyncService } from '@app/sync/service/abstract-file-sync.service';
 
-import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
+import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
 import type { ExternalSourceEnum, MccCategoryLookupInterface } from '@budgie/contracts';
 
@@ -9,7 +9,7 @@ export class StubFileBankSyncService extends AbstractFileSyncService {
 
     constructor(
         externalSource: ExternalSourceEnum,
-        private readonly client: FileBasedBankSyncClientInterface,
+        private readonly client: FileBasedSyncClientInterface,
         private readonly mccCategoryIdMap: Map<
             string,
             MccCategoryLookupInterface | null

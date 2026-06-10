@@ -19,7 +19,7 @@ import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-co
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
-import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
+import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';
 import type { AccountEntityInterface, ConsolidationScanScopeInterface, MccCategoryLookupInterface } from '@budgie/contracts';
 
@@ -28,7 +28,7 @@ const OPERATED_AT = new Date('2026-01-13T09:42:53.000Z');
 const TRANSFER_CATEGORY = 'transfer';
 const TRANSFER_MCC_CODE = '4829';
 
-class SingleIncomeFileClient implements FileBasedBankSyncClientInterface {
+class SingleIncomeFileClient implements FileBasedSyncClientInterface {
     constructor(
         private readonly account: BankAccountInterface,
         private readonly transaction: BankTransactionInterface

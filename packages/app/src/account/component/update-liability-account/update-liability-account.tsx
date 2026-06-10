@@ -8,7 +8,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { AccountBankSyncCard } from '../../../sync/component/account-bank-sync-card/account-bank-sync-card';
+import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -81,7 +81,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
                     </View>
                 </View>
             </FormItem>
-            {isSyncedAccount ? <AccountBankSyncCard accountId={account.id} /> : null}
+            {isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
             <IncludeInNetWorthField control={control} />
         </UpdateAccountScreen>
     );

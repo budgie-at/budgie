@@ -27,7 +27,7 @@ import { DefaultAccountSelector } from '../../../settings/components/default-acc
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
 import { RecalculateBalances } from '../../../settings/components/recalculate-balances/recalculate-balances';
-import { RepairBankSyncData } from '../../../settings/components/repair-bank-sync-data/repair-bank-sync-data';
+import { RepairSyncData } from '../../../settings/components/repair-sync-data/repair-sync-data';
 import { PinCard } from '../../../settings/components/security-settings/pin-card';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
@@ -199,7 +199,7 @@ export default function SettingsPage() {
                             <ImportDatabase />
                             <ExportDatabase />
                             <MoneyDataUpgradeStatusCard testID={SettingsPageSelector.MoneyDataUpgradeCard} />
-                            <RepairBankSyncData />
+                            <RepairSyncData />
                             <ConsolidateTransfers />
                             <RecalculateBalances />
                             <Animated.View {...anchorLayout('clear-data')} {...anchorHighlight('clear-data')}>

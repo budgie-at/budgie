@@ -11,7 +11,7 @@ import { expectFileImportConsolidationEnqueued, StubFileBankSyncService, testDb 
 import { AbstractFileSyncService } from '@app/sync/service/abstract-file-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 
-import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
+import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
 import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
@@ -52,7 +52,7 @@ const buildErsteTransaction = (): BankTransactionInterface => ({
     feeAmount: 0
 });
 
-class StubErsteFileClient implements FileBasedBankSyncClientInterface {
+class StubErsteFileClient implements FileBasedSyncClientInterface {
     getAccounts(): BankAccountInterface[] {
         return [buildErsteBankAccount()];
     }
@@ -102,7 +102,7 @@ class BarrierErsteSyncService extends AbstractFileSyncService {
     constructor(
         private readonly parseBarrier: TwoCallBarrier,
         private readonly resolveBarrier: TwoCallBarrier,
-        private readonly client: FileBasedBankSyncClientInterface
+        private readonly client: FileBasedSyncClientInterface
     ) {
         super(ExternalSourceEnum.ERSTE);
     }

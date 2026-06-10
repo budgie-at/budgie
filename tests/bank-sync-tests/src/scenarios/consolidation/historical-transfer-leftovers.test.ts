@@ -17,7 +17,7 @@ import {
 
 import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair, seedExchangeRate, testDb } from '../../harness';
 
-import { bankSyncRepairService } from '@app/sync/service/bank-sync-repair.service';
+import { syncRepairService } from '@app/sync/service/sync-repair.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 const SOURCE_IBAN = 'UA-FOP-EUR';
@@ -587,7 +587,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
     it('includes inactive manual target consolidation repairs in bank sync repair action', async () => {
         const { existingTransfer, privatAccount, privatIncome } = seedSameCurrencyPrivatArchivedTargetDuplicate();
 
-        const preview = await bankSyncRepairService.previewDuplicates();
+        const preview = await syncRepairService.previewDuplicates();
 
         expect(preview.duplicateTransactionCount).toBe(1);
         expect(preview.sources).toEqual([
@@ -597,7 +597,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
             })
         ]);
 
-        const result = await bankSyncRepairService.removeDuplicates();
+        const result = await syncRepairService.removeDuplicates();
 
         expect(result.repairedTransactionCount).toBe(1);
         expectPrivatTargetRetargeted(existingTransfer.id, privatAccount.id, UAH_AMOUNT);

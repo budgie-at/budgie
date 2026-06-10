@@ -1,0 +1,7 @@
+{
+  "tool_name": "mcp__plugin_oh-my-claudecode_t__lsp_diagnostics",
+  "tool_input_preview": "{\"file\":\"/Users/liaugust/Work/budgie-at/budgie/.claude/worktrees/purring-honking-quilt/packages/bank-sync/src/binance/client/binance-signed.client.ts\",\"severity\":\"error\"}",
+  "error": "MCP server \"plugin:oh-my-claudecode:t\" tool \"lsp_diagnostics\" timed out after 100000s",
+  "timestamp": "2026-06-08T07:59:10.840Z",
+  "retry_count": 1
+}

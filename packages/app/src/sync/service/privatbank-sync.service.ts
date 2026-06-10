@@ -8,12 +8,12 @@ import { readFileAsUint8Array } from '../util/read-file-as-uint8-array.util';
 import { AbstractFileSyncService } from './abstract-file-sync.service';
 import { privatbankCategoryMatcherMatch } from './privatbank-category-matcher.service';
 
-import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
+import type { FileBasedSyncClientInterface } from '../interface/file-based-sync-client.interface';
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { BankAccountInterface } from '@budgie/bank-sync';
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
-const collectUniqueCategories = (client: FileBasedBankSyncClientInterface, accountIds: string[]): string[] => {
+const collectUniqueCategories = (client: FileBasedSyncClientInterface, accountIds: string[]): string[] => {
     const categorySet = new Set<string>();
 
     for (const accountId of accountIds) {
@@ -41,7 +41,7 @@ class PrivatbankSyncService extends AbstractFileSyncService {
     }
 
     protected async resolveMccCategoryIdMap(
-        client: FileBasedBankSyncClientInterface,
+        client: FileBasedSyncClientInterface,
         bankAccounts: BankAccountInterface[]
     ): Promise<Map<string, MccCategoryLookupInterface | null>> {
         const accountIds = bankAccounts.map(account => account.id);

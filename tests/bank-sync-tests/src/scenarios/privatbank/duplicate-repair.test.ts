@@ -15,9 +15,9 @@ import { seed, testDb } from '../../harness';
 
 import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '@app/sync/constant/privatbank-duplicate-candidate-sql.constant';
-import { bankSyncRepairService } from '@app/sync/service/bank-sync-repair.service';
+import { syncRepairService } from '@app/sync/service/sync-repair.service';
 
-import type { BankSyncDuplicateCandidateRowInterface } from '@app/sync/interface/bank-sync-duplicate-candidate-row.interface';
+import type { SyncDuplicateCandidateRowInterface } from '@app/sync/interface/sync-duplicate-candidate-row.interface';
 import type {
     TransactionCreateEntityInterface,
     TransactionEntityInterface,
@@ -28,8 +28,8 @@ const PRIVATBANK_DUPLICATE_TITLE = "Зарплата, СУПЕРМАШ. Коме
 const PRIVATBANK_DUPLICATE_AMOUNT = 1_780_860_000;
 const PRIVATBANK_DUPLICATE_OPERATED_AT = new Date('2026-05-07T08:46:37.000Z');
 
-const fetchPrivatbankDuplicateCandidates = async (): Promise<BankSyncDuplicateCandidateRowInterface[]> =>
-    testDb.all<BankSyncDuplicateCandidateRowInterface>(sql.raw(PRIVATBANK_DUPLICATE_CANDIDATE_SQL));
+const fetchPrivatbankDuplicateCandidates = async (): Promise<SyncDuplicateCandidateRowInterface[]> =>
+    testDb.all<SyncDuplicateCandidateRowInterface>(sql.raw(PRIVATBANK_DUPLICATE_CANDIDATE_SQL));
 
 const expectTransferPairDuplicate = async (
     keptTransaction: TransactionEntityInterface,
@@ -415,7 +415,7 @@ describe('privatbank/duplicate-repair', () => {
         const updateAllBalancesSpy = vi.spyOn(accountBalanceIncrementalService, 'updateAllBalances').mockResolvedValue(undefined);
 
         try {
-            const result = await bankSyncRepairService.removeDuplicates();
+            const result = await syncRepairService.removeDuplicates();
 
             expect(result.repairedTransactionCount).toBe(1);
             expect(updateAllBalancesSpy).toHaveBeenCalledTimes(1);

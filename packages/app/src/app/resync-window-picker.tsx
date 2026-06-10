@@ -11,7 +11,7 @@ import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styl
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { RESYNC_WINDOW_OPTIONS } from '../sync/constant/resync-window-options.constant';
 import { useResyncWindowPickerModal } from '../sync/context/resync-window-picker-modal.context';
-import { resyncBankSyncService } from '../sync/service/resync-bank-sync.service';
+import { resyncService } from '../sync/service/resync.service';
 
 import type { ResyncWindowOptionInterface } from '../sync/interface/resync-window-option.interface';
 
@@ -52,7 +52,7 @@ export default function ResyncWindowPickerModal() {
         resolveResyncWindowPicker(null);
 
         try {
-            await resyncBankSyncService.resync({ accountId, sinceDays: option.sinceDays });
+            await resyncService.resync({ accountId, sinceDays: option.sinceDays });
             Toast.show({ type: 'success', text1: t`Bank sync reset`, text2: resolveSuccessMessage(option) });
         } catch (error: unknown) {
             Toast.show({ type: 'error', text1: t`Could not reset bank sync`, text2: getErrorMessage(error) });
@@ -74,7 +74,7 @@ export default function ResyncWindowPickerModal() {
         }
 
         try {
-            await resyncBankSyncService.resync({ accountId, sinceDays: null });
+            await resyncService.resync({ accountId, sinceDays: null });
             Toast.show({ type: 'success', text1: t`Bank sync reset`, text2: fullHistorySuccessMessage });
         } catch (error: unknown) {
             Toast.show({ type: 'error', text1: t`Could not reset bank sync`, text2: getErrorMessage(error) });

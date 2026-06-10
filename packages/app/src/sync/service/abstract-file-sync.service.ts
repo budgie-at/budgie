@@ -26,7 +26,7 @@ import { AbstractSyncService } from './abstract-sync.service';
 import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
-import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
+import type { FileBasedSyncClientInterface } from '../interface/file-based-sync-client.interface';
 import type { ImportContextInterface } from '../interface/import-context.interface';
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { BankAccountInterface } from '@budgie/bank-sync';
@@ -94,7 +94,7 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
                 .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')} error=${getErrorMessage(error)}`
     )
     private async importAccountTransactions(
-        client: FileBasedBankSyncClientInterface,
+        client: FileBasedSyncClientInterface,
         bankAccount: BankAccountInterface,
         context: ImportContextInterface
     ): Promise<TransactionEntityInterface[]> {
@@ -129,7 +129,7 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
         (error, _client, bankAccounts) =>
             `throw bankAccountIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
     )
-    private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
+    private async executeImport(client: FileBasedSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
         const importWork = async (): Promise<void> => {
             const [mccCategoryLookupMap, existingTransactionIdMap] = await Promise.all([
                 this.resolveMccCategoryIdMap(client, bankAccounts),
@@ -246,7 +246,7 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
     protected abstract parseFile(uri: string): Promise<ParsedFileResultInterface>;
 
     protected abstract resolveMccCategoryIdMap(
-        client: FileBasedBankSyncClientInterface,
+        client: FileBasedSyncClientInterface,
         bankAccounts: BankAccountInterface[]
     ): Promise<Map<string, MccCategoryLookupInterface | null>>;
 }
