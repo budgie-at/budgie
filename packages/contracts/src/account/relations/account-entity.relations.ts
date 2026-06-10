@@ -19,7 +19,7 @@ export const AccountEntityRelations = relations(AccountEntityTable, ({ many, one
         fields: [AccountEntityTable.instrumentId],
         references: [InstrumentEntityTable.id]
     }),
-    [AccountAssociationEnum.BANK_SYNC]: one(SyncEntityTable, {
+    [AccountAssociationEnum.SYNC]: one(SyncEntityTable, {
         fields: [AccountEntityTable.id],
         references: [SyncEntityTable.accountId]
     })

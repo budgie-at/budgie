@@ -7,10 +7,10 @@ import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enu
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from '../constant/bank-authoritative-account-types.constant';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
-import { AccountTypeEnum } from '../enum/account-type.enum';
 import { ExternalSourceEnum } from '../enum/external-source.enum';
 import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
@@ -62,7 +62,7 @@ export class AccountRepository {
         return await (tx ?? this.db)
             .select()
             .from(AccountEntityTable)
-            .where(and(isNull(AccountEntityTable.deletedAt), ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO_SYNC)));
+            .where(and(isNull(AccountEntityTable.deletedAt), notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES)));
     }
 
     findBySearchQuery(search: string, filter: AccountFilterInterface = {}) {
@@ -116,7 +116,7 @@ export class AccountRepository {
     }
 
     async findByIdsExceptBankAuthoritative(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
-        return await this.findActiveByIds(ids, tx, ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO_SYNC));
+        return await this.findActiveByIds(ids, tx, notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES));
     }
 
     async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {

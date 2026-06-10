@@ -4,6 +4,7 @@ import { type SQL, and, eq, inArray, isNull, notInArray, sql } from 'drizzle-orm
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { getExchangeRateWithHistoricalFallbackSql } from '../../@generic/util/get-exchange-rate-sql.util';
+import { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from '../../account/constant/bank-authoritative-account-types.constant';
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
@@ -217,7 +218,7 @@ export class AccountBalanceRepository {
         const bankAuthoritativeAccountIdsSql = database
             .select({ id: AccountEntityTable.id })
             .from(AccountEntityTable)
-            .where(eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO_SYNC));
+            .where(inArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES));
 
         await database
             .delete(AccountBalanceEntityTable)
@@ -265,7 +266,7 @@ export class AccountBalanceRepository {
               )
         `;
 
-        const ledgerSumSql = sql<number>`CASE WHEN ${sql.raw('accounts.type')} = ${AccountTypeEnum.CRYPTO_SYNC} THEN 0 ELSE COALESCE((${transactionsSumSinceLastBalanceSql}), 0) END`;
+        const ledgerSumSql = sql<number>`CASE WHEN ${inArray(sql.raw('accounts.type'), BANK_AUTHORITATIVE_ACCOUNT_TYPES)} THEN 0 ELSE COALESCE((${transactionsSumSinceLastBalanceSql}), 0) END`;
 
         return sql<number>`COALESCE((${latestAccountBalanceSql}), 0) + ${ledgerSumSql}`;
     }

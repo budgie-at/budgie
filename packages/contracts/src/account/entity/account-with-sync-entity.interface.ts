@@ -6,5 +6,5 @@ import { AccountEntityInterface } from './account-entity.interface';
 
 export interface AccountWithSyncEntityInterface extends AccountEntityInterface {
     [AccountAssociationEnum.INSTRUMENT]: InstrumentEntityInterface;
-    [AccountAssociationEnum.BANK_SYNC]: SyncEntityInterface | null;
+    [AccountAssociationEnum.SYNC]: SyncEntityInterface | null;
 }
