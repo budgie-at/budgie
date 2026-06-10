@@ -4,6 +4,7 @@ export { syncLogger } from './core/util/sync-logger.util';
 export { SyncAccountTypeEnum } from './core/enum/sync-account-type.enum';
 export { SyncProviderEnum } from './core/enum/sync-provider.enum';
 export { SyncErrorCodeEnum } from './core/enum/sync-error-code.enum';
+export { SyncError } from './core/error/sync.error';
 export { SyncTransactionTypeEnum } from './core/enum/sync-transaction-type.enum';
 export { CashbackTypeEnum } from './core/enum/cashback-type.enum';
 
@@ -38,7 +39,6 @@ export { extractCardEnding } from './privatbank/util/extract-card-ending.util';
 export { generatePrivatbankExternalId } from './privatbank/util/generate-privatbank-external-id.util';
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
-export { BinanceSyncService } from './binance/service/binance-sync.service';
 export { BinanceSignedClient } from './binance/client/binance-signed.client';
 export { binanceMapper } from './binance/mapper/binance.mapper';
 export { encodeBinanceAccountId, decodeBinanceAccountId } from './binance/util/binance-account-id.util';

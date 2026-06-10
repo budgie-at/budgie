@@ -153,7 +153,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             const bankAccount = bankAccounts.find(acc => acc.id === externalId);
             if (isDefined(bankAccount)) {
                 const account = await this.getOrCreateSyncAccount(bankAccount);
-                await this.createOrUpdateBankSync(account.id, token);
+                await this.createOrUpdateSync(account.id, token);
             }
         }
 

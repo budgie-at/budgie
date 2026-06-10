@@ -24,23 +24,33 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
     override readonly supportsTokenAuth: boolean = true;
 
+    protected runDeadlineAtMs = Number.POSITIVE_INFINITY;
+    protected runDeferred = false;
+
     private isRunning = false;
 
     protected abstract readonly rateLimitMs: number;
     protected abstract readonly backgroundTaskName: string;
 
-    @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
-    async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
+    @Log(
+        deadlineAtMs => `enter deadlineAtMs=${deadlineAtMs}`,
+        (result, deadlineAtMs) => `done deadlineAtMs=${deadlineAtMs} result=${String(result)}`,
+        (error, deadlineAtMs) => `throw deadlineAtMs=${deadlineAtMs} error=${getErrorMessage(error)}`
+    )
+    async sync(deadlineAtMs = Number.POSITIVE_INFINITY): Promise<BackgroundTask.BackgroundTaskResult> {
         if (this.isRunning) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
         this.isRunning = true;
+        this.runDeadlineAtMs = deadlineAtMs;
+        this.runDeferred = false;
         try {
             await this.beforeSyncRun();
 
             return await this.executeSyncLoop();
         } finally {
             this.isRunning = false;
+            await this.afterSyncRun();
         }
     }
 
@@ -88,6 +98,10 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
     @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
     protected async processPendingSyncs(): Promise<BackgroundTask.BackgroundTaskResult> {
+        if (this.runDeferred || Date.now() >= this.runDeadlineAtMs) {
+            return BackgroundTask.BackgroundTaskResult.Success;
+        }
+
         const pendingSync = await this.getNextPendingSync();
         if (!isDefined(pendingSync)) {
             return BackgroundTask.BackgroundTaskResult.Success;
@@ -95,7 +109,9 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
         const result = await this.executeSyncBatch(pendingSync);
         await this.applyProgressUpdate(pendingSync, result);
-        await microPause(this.rateLimitMs);
+        if (!this.isRunWorkComplete()) {
+            await microPause(this.rateLimitMs);
+        }
 
         return await this.executeSyncLoop();
     }
@@ -163,7 +179,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return BackgroundTask.BackgroundTaskResult.Failed;
     }
 
-    protected async createOrUpdateBankSync(accountId: number, token: string): Promise<void> {
+    protected async createOrUpdateSync(accountId: number, token: string): Promise<void> {
         const existingSync = await syncRepository.getByAccountId(accountId);
         if (isDefined(existingSync)) {
             await syncRepository.update(existingSync.id, { token, enabled: true, errorCount: 0, lastError: null });
@@ -189,6 +205,14 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
     protected async beforeProcessRun(_firstSyncToken: string): Promise<void> {
         return Promise.resolve();
+    }
+
+    protected async afterSyncRun(): Promise<void> {
+        return Promise.resolve();
+    }
+
+    protected isRunWorkComplete(): boolean {
+        return false;
     }
 
     protected validateToken(_token: string): void {
