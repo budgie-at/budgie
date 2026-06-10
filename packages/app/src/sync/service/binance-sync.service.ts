@@ -464,9 +464,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         instruments: InstrumentEntityInterface[]
     ): InstrumentEntityInterface | null {
         const instrumentCode = resolveBinanceInstrumentCode(bankAccount.currencyCode);
-        if (!isNotEmptyString(instrumentCode)) {
-            return null;
-        }
 
         return instruments.find(instrument => instrument.code === instrumentCode) ?? null;
     }

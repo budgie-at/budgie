@@ -37,12 +37,12 @@ describe('binance/fiat-orders', () => {
         expectSingleBinanceTransaction(TransactionTypeEnum.EXPENSE, 'fiat-wd-1');
     });
 
-    it('only syncs fiat orders matching the account asset', async () => {
+    it('parks fiat orders without a matching instrument', async () => {
         setupFiatScenario();
         binanceStub.fiatOrders(
             [
                 buildBinance.fiatOrder({ orderNo: 'fiat-eur', fiatCurrency: 'EUR', amount: '100' }),
-                buildBinance.fiatOrder({ orderNo: 'fiat-usd', fiatCurrency: 'USD', amount: '200' })
+                buildBinance.fiatOrder({ orderNo: 'fiat-zzz', fiatCurrency: 'ZZZ', amount: '200' })
             ],
             []
         );

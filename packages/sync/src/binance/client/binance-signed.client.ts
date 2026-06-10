@@ -91,15 +91,13 @@ const EARN_REWARD_TYPE_ALL = 'ALL';
 const EARN_PAGE_SIZE = 100;
 const TRADES_PER_SYMBOL_LIMIT = 1000;
 const EARN_LD_PREFIX = 'LD';
-const UNAUTHORIZED_STATUS = 401;
-const FORBIDDEN_STATUS = 403;
 
 export class BinanceSignedClient extends BaseSyncProviderClient {
     protected readonly provider = SyncProviderEnum.BINANCE;
     protected readonly baseUrl = BINANCE_API_BASE_URL;
 
     private readonly credentials: BinanceCredentialsInterface;
-    private readonly throttle = new BinanceWeightThrottle();
+    private readonly throttle: BinanceWeightThrottle;
     private readonly depositCache = new Map<string, BinanceDepositApiInterface[]>();
     private readonly withdrawalCache = new Map<string, BinanceWithdrawalApiInterface[]>();
     private readonly fiatOrderCache = new Map<string, BinanceFiatOrderApiInterface[]>();
@@ -109,9 +107,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private serverTimeOffsetMs: number | undefined;
     private validSymbols: Set<string> | undefined;
 
-    constructor(token: string) {
+    constructor(token: string, deadlineAtMs = Number.POSITIVE_INFINITY) {
         super(token, { retryStatusCodes: BINANCE_RETRY_STATUS_CODES, retryMethods: BINANCE_RETRY_METHODS });
-        this.credentials = BinanceCredentialsSchema.parse(JSON.parse(token));
+        this.credentials = BinanceSignedClient.parseCredentials(token);
+        this.throttle = new BinanceWeightThrottle(deadlineAtMs);
     }
 
     @Log('enter', 'done')
@@ -153,8 +152,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return this.failure(SyncError.invalidResponse(this.provider));
         }
 
-        const startTimeMs = from * MILLISECONDS_PER_SECOND;
-        const endTimeMs = (to ?? Math.floor(Date.now() / MILLISECONDS_PER_SECOND)) * MILLISECONDS_PER_SECOND;
+        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
 
         const sourcesResult = await this.fetchTransactionSources(decoded.wallet, startTimeMs, endTimeMs);
         if (!sourcesResult.success) {
@@ -257,8 +255,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return this.failure(SyncError.invalidResponse(this.provider));
         }
 
-        const startTimeMs = from * MILLISECONDS_PER_SECOND;
-        const endTimeMs = isDefined(to) ? to * MILLISECONDS_PER_SECOND : Date.now();
+        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
 
         return this.fetchAllTransfers(startTimeMs, endTimeMs);
     }
@@ -576,9 +573,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             ...fiatWithdrawalTransactions,
             ...c2cTransactions,
             ...earnRewardTransactions
-        ]
-            .sort((left, right) => right.time - left.time)
-            .slice(0, MAX_TRANSACTIONS_PER_WINDOW);
+        ].sort((left, right) => right.time - left.time);
     }
 
     private buildSourceTransactions(wallet: BinanceWalletEnum, sources: BinanceTransactionSourcesInterface): SyncTransactionInterface[] {
@@ -698,7 +693,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         endTimeMs: number,
         convertTransfers: BinanceTransferInterface[]
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const symbolsResult = await this.deriveTradeSymbols(convertTransfers);
+        const symbolsResult = await this.deriveTradeSymbols(startTimeMs, endTimeMs, convertTransfers);
         if (!symbolsResult.success) {
             return symbolsResult;
         }
@@ -725,6 +720,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private async deriveTradeSymbols(
+        startTimeMs: number,
+        endTimeMs: number,
         convertTransfers: BinanceTransferInterface[]
     ): Promise<SyncResultInterface<BinanceTradeSymbolInterface[]>> {
         const balanceResult = await this.signedRequest(SPOT_BALANCE_ENDPOINT, 'POST');
@@ -738,6 +735,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
 
         const baseAssets = this.collectBaseAssets(parsed.data, convertTransfers);
+        await this.addHistoryAssets(baseAssets, startTimeMs, endTimeMs);
         const candidates = this.buildSymbolPairs(baseAssets);
         const validSymbols = await this.resolveValidSymbols();
 
@@ -799,6 +797,23 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
 
         return baseAssets;
+    }
+
+    private async addHistoryAssets(baseAssets: Set<string>, startTimeMs: number, endTimeMs: number): Promise<void> {
+        const depositsResult = await this.fetchDeposits(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
+        if (depositsResult.success) {
+            depositsResult.data.forEach(deposit => baseAssets.add(deposit.coin));
+        }
+
+        const withdrawalsResult = await this.fetchWithdrawals(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
+        if (withdrawalsResult.success) {
+            withdrawalsResult.data.forEach(withdrawal => baseAssets.add(withdrawal.coin));
+        }
+
+        const c2cOrdersResult = await this.fetchC2cOrders(startTimeMs, endTimeMs);
+        if (c2cOrdersResult.success) {
+            c2cOrdersResult.data.forEach(order => baseAssets.add(order.asset));
+        }
     }
 
     private addTransferAssets(baseAssets: Set<string>, transfer: BinanceTransferInterface): void {
@@ -986,17 +1001,13 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         error: SyncErrorInterface,
         tradeType: string
     ): SyncResultInterface<{ orders: BinanceC2cOrderApiInterface[]; hasMore: boolean }> {
-        const isPermissionDenied =
-            error.code === SyncErrorCodeEnum.UNAUTHORIZED ||
-            error.message.includes(String(UNAUTHORIZED_STATUS)) ||
-            error.message.includes(String(FORBIDDEN_STATUS));
-        if (isPermissionDenied) {
+        if (error.code === SyncErrorCodeEnum.UNAUTHORIZED) {
             syncLogger.log('binance:c2c:unavailable', { tradeType, message: error.message });
 
             return this.success({ orders: [], hasMore: false });
         }
 
-        return this.failure(SyncError.invalidResponse(this.provider));
+        return this.failure(error);
     }
 
     private async fetchEarnRewards(startTimeMs: number, endTimeMs: number): Promise<SyncResultInterface<BinanceEarnRewardApiInterface[]>> {
@@ -1260,13 +1271,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private computeTotalBalance(balance: BinanceAssetBalanceApiInterface): number | null {
-        const free = binanceMapper.parseBinanceAmount(balance.free);
-        const locked = binanceMapper.parseBinanceAmount(balance.locked);
-        if (!isDefined(free) || !isDefined(locked)) {
+        const total = this.computeRawTotalBalance(balance);
+        if (!isDefined(total)) {
             return null;
         }
-
-        const total = free + locked;
 
         return total * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER ? null : total;
     }
@@ -1311,5 +1319,13 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     private sign(query: string): string {
         return bytesToHex(hmac(sha256, utf8ToBytes(this.credentials.apiSecret), utf8ToBytes(query)));
+    }
+
+    private static parseCredentials(token: string): BinanceCredentialsInterface {
+        try {
+            return BinanceCredentialsSchema.parse(JSON.parse(token));
+        } catch (error) {
+            throw new SyncError(SyncErrorCodeEnum.INVALID_TOKEN, 'Invalid Binance credentials', SyncProviderEnum.BINANCE, error);
+        }
     }
 }

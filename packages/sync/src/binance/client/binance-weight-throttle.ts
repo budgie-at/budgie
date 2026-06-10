@@ -1,5 +1,8 @@
 import { isDefined, isNumber } from '@rnw-community/shared';
 
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
+import { SyncError } from '../../core/error/sync.error';
+
 const RAW_IP_WEIGHT_CEILING = 3000;
 const SAPI_IP_WEIGHT_CEILING = 6000;
 const SAPI_UID_WEIGHT_CEILING = 90000;
@@ -19,6 +22,8 @@ export class BinanceWeightThrottle {
     private sapiUidWeight = 0;
     private requestTimestamps: number[] = [];
 
+    constructor(private readonly deadlineAtMs = Number.POSITIVE_INFINITY) {}
+
     recordHeaders(headers: Headers): void {
         this.rawIpWeight = this.readWeight(headers, RAW_IP_WEIGHT_HEADER, this.rawIpWeight);
         this.sapiIpWeight = this.readWeight(headers, SAPI_IP_WEIGHT_HEADER, this.sapiIpWeight);
@@ -27,6 +32,10 @@ export class BinanceWeightThrottle {
 
     async waitIfNeeded(): Promise<void> {
         if (this.shouldCoolDown()) {
+            if (Date.now() + WEIGHT_WINDOW_MS >= this.deadlineAtMs) {
+                throw SyncError.rateLimited(SyncProviderEnum.BINANCE);
+            }
+
             await this.coolDown();
             this.reset();
         }

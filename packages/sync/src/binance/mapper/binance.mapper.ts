@@ -7,7 +7,6 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
-import { syncLogger } from '../../core/util/sync-logger.util';
 import { BINANCE_NO_NUMERIC_CODE } from '../constant/binance-no-numeric-code.constant';
 import { BINANCE_MICRO_UNITS_PRECISION } from '../constant/binance-precision.constant';
 import { BinanceTransferSourceEnum } from '../enum/binance-transfer-source.enum';
@@ -89,11 +88,7 @@ class BinanceMapper {
             return null;
         }
 
-        const isDegenerateFee = fee >= amount;
-        if (isDegenerateFee) {
-            syncLogger.log('binance:withdrawal:degenerate-fee', { withdrawalId: withdrawal.id, coin: withdrawal.coin, amount, fee });
-        }
-        const feeAmount = isDegenerateFee ? 0 : fee;
+        const feeAmount = fee >= amount ? 0 : fee;
         const time = getUnixTime(new Date(withdrawal.applyTime));
 
         return {
@@ -120,11 +115,7 @@ class BinanceMapper {
             return null;
         }
 
-        const isDegenerateFee = fee >= amount;
-        if (isDegenerateFee) {
-            syncLogger.log('binance:fiat-order:degenerate-fee', { orderNo: order.orderNo, fiatCurrency: order.fiatCurrency, amount, fee });
-        }
-        const feeAmount = isDegenerateFee ? 0 : fee;
+        const feeAmount = fee >= amount ? 0 : fee;
         const time = Math.floor(order.createTime / MILLISECONDS_PER_SECOND);
         const description = isDeposit ? `Binance ${order.fiatCurrency} deposit` : `Binance ${order.fiatCurrency} withdrawal`;
 

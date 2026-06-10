@@ -9,6 +9,7 @@ import { syncLogger } from '../util/sync-logger.util';
 import type { SyncProviderEnum } from '../enum/sync-provider.enum';
 import type { SyncAccountInterface } from '../interface/sync-account.interface';
 import type { SyncClientInfoInterface } from '../interface/sync-client-info.interface';
+import type { SyncErrorInterface } from '../interface/sync-error.interface';
 import type { SyncProviderClientInterface } from '../interface/sync-provider-client.interface';
 import type { SyncResultInterface } from '../interface/sync-result.type';
 import type { SyncTransactionInterface } from '../interface/sync-transaction.interface';
@@ -16,6 +17,7 @@ import type { SyncTransactionInterface } from '../interface/sync-transaction.int
 const HTTP_STATUS_BAD_REQUEST = 400;
 
 const HTTP_STATUS_UNAUTHORIZED = 401;
+const HTTP_STATUS_FORBIDDEN = 403;
 const HTTP_STATUS_REQUEST_TIMEOUT = 408;
 const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
 const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
@@ -63,7 +65,7 @@ export abstract class BaseSyncProviderClient implements SyncProviderClientInterf
         return { success: true, data };
     }
 
-    protected failure<T>(error: SyncError): SyncResultInterface<T> {
+    protected failure<T>(error: SyncErrorInterface): SyncResultInterface<T> {
         return { success: false, error };
     }
 
@@ -111,7 +113,7 @@ export abstract class BaseSyncProviderClient implements SyncProviderClientInterf
             const { status, statusText } = error.response;
             syncLogger.error('http:response:httpError', { provider: this.provider, status, statusText });
 
-            if (status === HTTP_STATUS_UNAUTHORIZED) {
+            if (status === HTTP_STATUS_UNAUTHORIZED || status === HTTP_STATUS_FORBIDDEN) {
                 return this.failure(SyncError.unauthorized(this.provider));
             }
 
