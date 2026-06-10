@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -16,8 +16,6 @@ import { AccountInactiveIcon } from '../../../account/component/account-inactive
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
-
-const ANIMATION_DELAY = 170;
 
 export interface TransactionAccountRowRef {
     shake: () => void;
@@ -55,33 +53,25 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
     const isInactiveAccount = isDefined(account) && !account.isActive;
 
     return (
-        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)}>
-            <Animated.View style={shakeStyle}>
-                <HapticPressable
-                    className="flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl"
-                    onPress={handlePress}
-                    accessibilityLabel={accessibilityLabel}
-                    accessibilityRole="button"
-                    testID={testID}
-                >
-                    <AccountInactiveIcon isInactive={isInactiveAccount} size={28}>
-                        <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
-                    </AccountInactiveIcon>
+        <Animated.View style={shakeStyle} testID={testID} accessibilityLabel={accessibilityLabel} accessibilityRole="button">
+            <HapticPressable className="flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl" onPress={handlePress}>
+                <AccountInactiveIcon isInactive={isInactiveAccount} size={28}>
+                    <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
+                </AccountInactiveIcon>
 
-                    <View className="flex-1">
-                        <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>
-                        <Text
-                            className="text-md font-medium text-primary"
-                            numberOfLines={1}
-                            {...(isDefined(account?.title) && { testID: SimpleQuickFormSelector.SelectedAccount(account.title) })}
-                        >
-                            {account?.title ?? t`Select account`}
-                        </Text>
-                    </View>
+                <View className="flex-1">
+                    <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>
+                    <Text
+                        className="text-md font-medium text-primary"
+                        numberOfLines={1}
+                        {...(isDefined(account?.title) && { testID: SimpleQuickFormSelector.SelectedAccount(account.title) })}
+                    >
+                        {account?.title ?? t`Select account`}
+                    </Text>
+                </View>
 
-                    <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
-                </HapticPressable>
-            </Animated.View>
+                <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
+            </HapticPressable>
         </Animated.View>
     );
 };
