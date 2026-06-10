@@ -12,9 +12,8 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
@@ -62,21 +61,12 @@ const getDisplayState = (transaction: TransactionWithRelationsEntityInterface) =
 
 // eslint-disable-next-line max-statements -- Cross-currency display requires additional variables
 export const TransactionAmount = ({ transaction }: Props) => {
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
-    const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
+    const { defaultInstrument } = useSettingsContext();
+    const formatInstrumentAmount = useFormatInstrumentAmount();
     const { type, isAdjustment, fromEntry, toEntry } = getDisplayState(transaction);
 
-    const formatEntryAmount = (entry: AggregatedEntry): string => {
-        const amount = convertFromMicroUnits(entry.amount);
-        const instrumentSymbol = entry.account.instrument.symbol;
-
-        if (entry.account.instrument.type === InstrumentTypeEnum.CRYPTO) {
-            return `${formatCryptoDigits(amount)} ${instrumentSymbol}`;
-        }
-
-        return formatDigits(amount, instrumentSymbol);
-    };
+    const formatEntryAmount = (entry: AggregatedEntry): string =>
+        formatInstrumentAmount(convertFromMicroUnits(entry.amount), entry.account.instrument.symbol, entry.account.instrument.type);
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return (

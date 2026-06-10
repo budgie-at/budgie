@@ -24,19 +24,21 @@ interface Props {
     readonly accountsStepContent: ReactNode;
 }
 
-export const SyncAccountSetupPage = ({
-    onGoBack,
-    title,
-    description,
-    scrollViewTestID,
-    isInputStep,
-    isLoading,
-    isStartSyncDisabled,
-    onFetchAccounts,
-    onSetupSync,
-    inputStepContent,
-    accountsStepContent
-}: Props) => {
+export const SyncAccountSetupPage = (props: Props) => {
+    const {
+        onGoBack,
+        title,
+        description,
+        scrollViewTestID,
+        isInputStep,
+        isLoading,
+        isStartSyncDisabled,
+        onFetchAccounts,
+        onSetupSync,
+        inputStepContent,
+        accountsStepContent
+    } = props;
+
     const { t } = useLingui();
 
     const footer = isInputStep ? (
