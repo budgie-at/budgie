@@ -12,8 +12,8 @@ import {
 export const transactionRefundService = new RefundConsolidationService({
     database: db,
     refundPairRepository,
+    runTransaction: transactionAsync,
     transactionEntryRepository,
     transactionRepository,
-    transactionRunner: { run: transactionAsync },
     transactionTagsRepository
 });

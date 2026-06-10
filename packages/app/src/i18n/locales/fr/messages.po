@@ -2824,6 +2824,14 @@ msgstr "Basculer entre les thèmes clair et sombre"
 msgid "Sync Failed"
 msgstr "Échec de la synchronisation"
 
+#: src/sync/service/sync-workload.service.ts
+msgid "Sync workload is blocked for app reset"
+msgstr "La charge de synchronisation est bloquée par la réinitialisation de l’app"
+
+#: src/sync/service/sync-workload.service.ts
+msgid "Sync workload was cancelled by app reset"
+msgstr "La charge de synchronisation a été annulée par la réinitialisation de l’app"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Synchronisez vos comptes et transactions Monobank"
