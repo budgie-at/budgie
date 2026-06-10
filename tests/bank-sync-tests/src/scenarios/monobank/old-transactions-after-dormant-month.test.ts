@@ -22,7 +22,7 @@ describe('monobank/old-transactions-after-dormant-month', () => {
     // eslint-disable-next-line max-statements -- Backward sweep scenario: fixture + tx fixture + MSW stack + sync + 5 assertions
     it('surfaces an old transaction sitting beyond two empty 31-day windows, then terminates at the dormancy boundary', async () => {
         const sweepStart = new Date();
-        const bankSync = setupBackwardSweepFixture(sweepStart);
+        const sync = setupBackwardSweepFixture(sweepStart);
 
         const oldTransactionTimeSeconds = Math.floor(sweepStart.getTime() / MS_PER_SECOND) - OLD_TRANSACTION_AGE_DAYS * SECONDS_PER_DAY;
         const oldTransaction: MonobankTransactionApiInterface = buildMonobank.transaction({
@@ -41,7 +41,7 @@ describe('monobank/old-transactions-after-dormant-month', () => {
         const [persistedOld] = persisted;
         expect(persistedOld.externalId).toBe('tx-old-80d');
 
-        const finalSync = fetchBankSyncById(bankSync.id);
+        const finalSync = fetchBankSyncById(sync.id);
         expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
         expect(finalSync.transactionCount).toBe(EXPECTED_PERSISTED_COUNT);
     });

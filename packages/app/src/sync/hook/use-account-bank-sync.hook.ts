@@ -8,8 +8,8 @@ export const useAccountBankSync = (accountId: number) => {
     const { data, error } = useLiveQuery(syncRepository.findByAccountId(accountId), [accountId]);
 
     return {
-        bankSync: data ?? null,
-        hasBankSync: isDefined(data),
+        sync: data ?? null,
+        hasSync: isDefined(data),
         isLoading: !isDefined(data) && !isDefined(error),
         error
     };

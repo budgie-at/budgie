@@ -174,7 +174,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
     it('does not enqueue global consolidation after an empty stale Monobank sync', async () => {
         const staleForwardSyncDate = new Date(2026, 0, 1);
-        const { bankSync } = setupMonobankFixture();
+        const { sync } = setupMonobankFixture();
         seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
         monobankStub.statement([
             buildMonobank.transaction({
@@ -189,7 +189,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
         await monobankSyncService.sync();
         vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();
-        await syncRepository.update(bankSync.id, {
+        await syncRepository.update(sync.id, {
             forwardSyncedAt: staleForwardSyncDate,
             forwardSyncFromAt: staleForwardSyncDate
         });

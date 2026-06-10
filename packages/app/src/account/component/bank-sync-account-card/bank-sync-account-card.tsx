@@ -11,17 +11,17 @@ import { SyncStatusDot } from '../sync-status-dot/sync-status-dot';
 
 interface Props extends Pick<AccountWithSyncEntityInterface, 'id' | 'title' | 'icon'> {
     readonly balance: number;
-    readonly bankSync: SyncEntityInterface | null;
+    readonly sync: SyncEntityInterface | null;
     readonly className?: string;
     readonly instrumentSymbol: string;
 }
 
 export const BankSyncAccountCard = (props: Props) => {
-    const { id, title, icon, balance, className, instrumentSymbol, bankSync } = props;
+    const { id, title, icon, balance, className, instrumentSymbol, sync } = props;
 
     const [, hapticImpact] = useVibration();
 
-    const quickImportConfig = isDefined(bankSync) ? (quickImportConfigMap[bankSync.provider] ?? null) : null;
+    const quickImportConfig = isDefined(sync) ? (quickImportConfigMap[sync.provider] ?? null) : null;
     const { handleQuickImport } = useQuickImport(quickImportConfig);
 
     const handleLongPress = () => {
@@ -41,7 +41,7 @@ export const BankSyncAccountCard = (props: Props) => {
             className={className}
             onLongPress={longPressHandler}
         >
-            <SyncStatusDot bankSync={bankSync} />
+            <SyncStatusDot sync={sync} />
         </AccountCardBase>
     );
 };

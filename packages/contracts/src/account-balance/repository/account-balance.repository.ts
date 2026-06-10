@@ -1,4 +1,3 @@
- 
 import { Log } from '@budgie/logger';
 import { type SQL, and, eq, inArray, isNull, notInArray, sql } from 'drizzle-orm';
 
@@ -119,7 +118,7 @@ export class AccountBalanceRepository {
             .select({
                 account: AccountEntityTable,
                 balance: balanceSql,
-                bankSync: SyncEntityTable,
+                sync: SyncEntityTable,
                 convertedBalance: convertedBalanceSql,
                 convertedTargetBalance: sql<number>`COALESCE(${AccountEntityTable.targetBalance} * ${this.buildFiatExchangeRateConversionSql(defaultInstrumentId)}, 0)`,
                 instrument: InstrumentEntityTable

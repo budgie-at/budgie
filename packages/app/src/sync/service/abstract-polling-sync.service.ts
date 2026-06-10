@@ -62,12 +62,12 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     override async updateAccountToken(accountId: number, token: string): Promise<void> {
         this.validateToken(token);
 
-        const bankSync = await syncRepository.getByAccountId(accountId);
-        if (!isDefined(bankSync)) {
+        const sync = await syncRepository.getByAccountId(accountId);
+        if (!isDefined(sync)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
             throw new Error('Bank sync not found');
         }
-        await syncRepository.update(bankSync.id, { token, errorCount: 0, lastError: null });
+        await syncRepository.update(sync.id, { token, errorCount: 0, lastError: null });
     }
 
     @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)

@@ -25,12 +25,12 @@ class SyncProviderRegistryService {
         (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
     )
     async getServiceForAccount(accountId: number): Promise<AbstractSyncService | null> {
-        const bankSync = await syncRepository.getByAccountId(accountId);
-        if (!isDefined(bankSync)) {
+        const sync = await syncRepository.getByAccountId(accountId);
+        if (!isDefined(sync)) {
             return null;
         }
 
-        return this.getServiceForProvider(bankSync.provider);
+        return this.getServiceForProvider(sync.provider);
     }
 
     getServiceForProvider(provider: ExternalSourceEnum): AbstractSyncService | null {

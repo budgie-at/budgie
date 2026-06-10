@@ -51,7 +51,7 @@ export abstract class AbstractSyncService {
                 currencyCode: bankAccount.currencyCode,
                 iban: bankAccount.iban ?? null,
                 existingAccountId: existingAccount?.id ?? null,
-                hasBankSync: isDefined(existingAccount) && syncedAccountIds.has(existingAccount.id),
+                hasSync: isDefined(existingAccount) && syncedAccountIds.has(existingAccount.id),
                 isParked: isParked(bankAccount)
             };
         });

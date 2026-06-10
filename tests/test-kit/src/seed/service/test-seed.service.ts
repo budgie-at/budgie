@@ -99,7 +99,7 @@ export class TestSeedService {
         });
     }
 
-    bankSync(input: Partial<SyncCreateEntityInterface> & Pick<SyncCreateEntityInterface, 'accountId'>): SyncEntityInterface {
+    sync(input: Partial<SyncCreateEntityInterface> & Pick<SyncCreateEntityInterface, 'accountId'>): SyncEntityInterface {
         const rows = this.database
             .insert(SyncEntityTable)
             .values({

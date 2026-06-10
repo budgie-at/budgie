@@ -31,16 +31,16 @@ const statusTextVariants = cva('text-xs font-medium', {
 
 export const AccountBankSyncCard = ({ accountId }: Props) => {
     const { t } = useLingui();
-    const { bankSync, hasBankSync } = useAccountBankSync(accountId);
+    const { sync, hasSync } = useAccountBankSync(accountId);
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();
 
-    if (!hasBankSync || !isDefined(bankSync)) {
+    if (!hasSync || !isDefined(sync)) {
         return null;
     }
 
-    const isForwardMode = bankSync.mode === SyncModeEnum.FORWARD;
-    const isSyncing = bankSync.status === SyncStatusEnum.SYNCING;
-    const statusLabel = buildBankSyncStatusLabel({ status: bankSync.status, isForwardMode, isSyncing });
+    const isForwardMode = sync.mode === SyncModeEnum.FORWARD;
+    const isSyncing = sync.status === SyncStatusEnum.SYNCING;
+    const statusLabel = buildBankSyncStatusLabel({ status: sync.status, isForwardMode, isSyncing });
 
     const handleToggle = (enabled: boolean) => {
         void syncProviderRegistryService
@@ -48,7 +48,7 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
             .then(service => service?.setAccountSyncEnabled(accountId, enabled));
     };
 
-    const providerService = syncProviderRegistryService.getServiceForProvider(bankSync.provider);
+    const providerService = syncProviderRegistryService.getServiceForProvider(sync.provider);
     const supportsTokenAuth = providerService?.supportsTokenAuth === true;
 
     return (
@@ -59,41 +59,41 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
                     <Text className="text-primary font-semibold text-base">
                         <Trans>Bank Sync</Trans>
                     </Text>
-                    <Text className={statusTextVariants({ status: bankSync.status })}>{statusLabel}</Text>
+                    <Text className={statusTextVariants({ status: sync.status })}>{statusLabel}</Text>
                 </View>
                 <View className="content-center">
-                    <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} />
+                    <ThemedSwitch value={sync.enabled} onValueChange={handleToggle} />
                 </View>
             </View>
 
             <View className="gap-y-sm border-t border-secondary-corner pt-lg">
-                <SyncDataRow label={t`Transactions synced`} value={String(bankSync.transactionCount)} />
+                <SyncDataRow label={t`Transactions synced`} value={String(sync.transactionCount)} />
 
-                {isDefined(bankSync.forwardSyncedAt) && (
-                    <SyncDataRow label={t`Last sync`} value={formatDayAndMonthAndYearWithTime(bankSync.forwardSyncedAt)} />
+                {isDefined(sync.forwardSyncedAt) && (
+                    <SyncDataRow label={t`Last sync`} value={formatDayAndMonthAndYearWithTime(sync.forwardSyncedAt)} />
                 )}
 
-                {isDefined(bankSync.backwardSyncedAt) && (
-                    <SyncDataRow label={t`History synced`} value={formatDayAndMonthAndYearWithTime(bankSync.backwardSyncedAt)} />
+                {isDefined(sync.backwardSyncedAt) && (
+                    <SyncDataRow label={t`History synced`} value={formatDayAndMonthAndYearWithTime(sync.backwardSyncedAt)} />
                 )}
 
-                {bankSync.errorCount > 0 && (
+                {sync.errorCount > 0 && (
                     <>
-                        <SyncDataRow label={t`Errors`} value={String(bankSync.errorCount)} />
-                        {isNotEmptyString(bankSync.lastError) && (
+                        <SyncDataRow label={t`Errors`} value={String(sync.errorCount)} />
+                        {isNotEmptyString(sync.lastError) && (
                             <View className="gap-y-xs">
                                 <Text className="text-xs text-secondary-foreground">
                                     <Trans>Last error</Trans>
                                 </Text>
                                 <Text className="text-secondary-foreground text-destructive text-xs" numberOfLines={2}>
-                                    {bankSync.lastError}
+                                    {sync.lastError}
                                 </Text>
                             </View>
                         )}
                     </>
                 )}
 
-                {supportsTokenAuth && <BankSyncTokenSection accountId={accountId} token={bankSync.token} />}
+                {supportsTokenAuth && <BankSyncTokenSection accountId={accountId} token={sync.token} />}
             </View>
         </Card>
     );

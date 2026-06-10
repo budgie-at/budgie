@@ -25,13 +25,13 @@ export class SyncRepository {
             `throw id=${id} mode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async update(id: number, input: SyncUpdateEntityInterface, tx?: DB): Promise<SyncEntityInterface> {
-        const [bankSync] = await (tx ?? this.db)
+        const [sync] = await (tx ?? this.db)
             .update(SyncEntityTable)
             .set({ ...input })
             .where(eq(SyncEntityTable.id, id))
             .returning();
 
-        return bankSync;
+        return sync;
     }
 
     @Log(
@@ -77,9 +77,9 @@ export class SyncRepository {
     }
 
     async create(input: SyncCreateEntityInterface, tx?: DB): Promise<SyncEntityInterface> {
-        const [bankSync] = await (tx ?? this.db).insert(SyncEntityTable).values([input]).returning();
+        const [sync] = await (tx ?? this.db).insert(SyncEntityTable).values([input]).returning();
 
-        return bankSync;
+        return sync;
     }
 
     async getById(id: number): Promise<SyncEntityInterface | undefined> {
@@ -138,13 +138,13 @@ export class SyncRepository {
     }
 
     async recordError(id: number, error: string, tx?: DB): Promise<void> {
-        const bankSync = await this.getById(id);
-        if (isDefined(bankSync)) {
+        const sync = await this.getById(id);
+        if (isDefined(sync)) {
             await (tx ?? this.db)
                 .update(SyncEntityTable)
                 .set({
                     lastError: error,
-                    errorCount: bankSync.errorCount + 1
+                    errorCount: sync.errorCount + 1
                 })
                 .where(eq(SyncEntityTable.id, id));
         }

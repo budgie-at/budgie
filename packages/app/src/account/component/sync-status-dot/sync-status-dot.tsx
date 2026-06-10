@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 interface Props {
-    readonly bankSync: SyncEntityInterface | null;
+    readonly sync: SyncEntityInterface | null;
 }
 
 const syncStatusVariants = cva('absolute bottom-3 right-3 z-10 h-2 w-2 rounded-full will-change-animation', {
@@ -27,10 +27,10 @@ const syncStatusVariants = cva('absolute bottom-3 right-3 z-10 h-2 w-2 rounded-f
     ]
 });
 
-export const SyncStatusDot = ({ bankSync }: Props) => {
-    const shouldShow = isDefined(bankSync);
-    const isDisabled = shouldShow && !bankSync.enabled;
-    const status = shouldShow ? bankSync.status : SyncStatusEnum.IDLE;
+export const SyncStatusDot = ({ sync }: Props) => {
+    const shouldShow = isDefined(sync);
+    const isDisabled = shouldShow && !sync.enabled;
+    const status = shouldShow ? sync.status : SyncStatusEnum.IDLE;
     const statusClassName = syncStatusVariants({ status, disabled: isDisabled });
     const statusStyle = { opacity: shouldShow ? 1 : 0 };
 

@@ -13,12 +13,12 @@ describe('binance/error-recovery', () => {
         it(
             `marks the sync FAILED + disabled after ${SYNC_ERROR_THRESHOLD} consecutive ${label} errors`,
             async () => {
-                const { bankSync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
+                const { sync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
                 binanceServer.use(http.get(DEPOSIT_URL, () => new HttpResponse(null, { status })));
 
                 await binanceSyncService.sync();
 
-                expectSyncFailedAndDisabled(bankSync.id);
+                expectSyncFailedAndDisabled(sync.id);
             },
             RETRY_EXHAUSTION_TIMEOUT_MS
         );

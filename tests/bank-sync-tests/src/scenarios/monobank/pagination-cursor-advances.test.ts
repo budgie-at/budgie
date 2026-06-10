@@ -26,7 +26,7 @@ const buildBatch = (offset: number): MonobankTransactionApiInterface[] =>
 
 describe('monobank/pagination-cursor-advances', () => {
     it('processes a 500-row page, advances the cursor, and continues until the next page is empty', async () => {
-        const { bankSync } = setupMonobankFixture('mono-acc-1', SyncModeEnum.FORWARD, FIXTURE_FORWARD_FROM);
+        const { sync } = setupMonobankFixture('mono-acc-1', SyncModeEnum.FORWARD, FIXTURE_FORWARD_FROM);
 
         monobankStub.statementBatches([buildBatch(0)]);
 
@@ -34,7 +34,7 @@ describe('monobank/pagination-cursor-advances', () => {
 
         expect(fetchPersistedMonobankTransactions()).toHaveLength(PAGE_SIZE);
 
-        const finalSync = fetchBankSyncById(bankSync.id);
+        const finalSync = fetchBankSyncById(sync.id);
         expect(finalSync.forwardSyncedAt).not.toBeNull();
         expect(finalSync.transactionCount).toBe(PAGE_SIZE);
     });

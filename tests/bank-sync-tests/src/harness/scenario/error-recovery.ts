@@ -11,8 +11,8 @@ export const httpFailureCases = [
     { label: '429 rate limited', status: 429 }
 ] as const;
 
-export const expectSyncFailedAndDisabled = (bankSyncId: number): void => {
-    const finalSync = testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.id, bankSyncId)).all()[0];
+export const expectSyncFailedAndDisabled = (syncId: number): void => {
+    const finalSync = testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.id, syncId)).all()[0];
 
     expect(finalSync.errorCount).toBeGreaterThanOrEqual(SYNC_ERROR_THRESHOLD);
     expect(finalSync.enabled).toBe(false);

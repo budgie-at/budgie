@@ -72,7 +72,7 @@ describe('binance/deposits-withdrawals', () => {
 
     it('does not create duplicates on a second sync run', async () => {
         const staleForwardFrom = new Date(Date.now() - HOUR_MS);
-        const { bankSync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD, forwardSyncFromAt: staleForwardFrom });
+        const { sync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD, forwardSyncFromAt: staleForwardFrom });
         stubEmptyBinanceBalances();
         stubCapitalHistory([buildBinance.deposit({ id: 'dep-dup', coin: 'BTC', amount: '2' })], []);
 
@@ -80,7 +80,7 @@ describe('binance/deposits-withdrawals', () => {
         expect(fetchBinanceTransactions()).toHaveLength(1);
 
         resetBinanceSyncForResync();
-        await testDb.update(SyncEntityTable).set({ forwardSyncFromAt: staleForwardFrom }).where(eq(SyncEntityTable.id, bankSync.id));
+        await testDb.update(SyncEntityTable).set({ forwardSyncFromAt: staleForwardFrom }).where(eq(SyncEntityTable.id, sync.id));
         stubCapitalHistory([buildBinance.deposit({ id: 'dep-dup', coin: 'BTC', amount: '2' })], []);
         await binanceSyncService.sync();
 

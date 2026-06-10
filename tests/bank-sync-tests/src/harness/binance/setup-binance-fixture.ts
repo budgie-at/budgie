@@ -29,7 +29,7 @@ export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
         type: AccountTypeEnum.CRYPTO_SYNC,
         instrumentId: instrument.id
     });
-    const bankSync = seed.bankSync({
+    const sync = seed.sync({
         accountId: account.id,
         token: BINANCE_TOKEN,
         provider: ExternalSourceEnum.BINANCE,
@@ -54,5 +54,5 @@ export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
     binanceStub.lockedEarnPositions([]);
     binanceStub.earnRewards([]);
 
-    return { account, bankSync, instrument, externalId, token: BINANCE_TOKEN, asset, wallet };
+    return { account, sync, instrument, externalId, token: BINANCE_TOKEN, asset, wallet };
 };

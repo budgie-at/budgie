@@ -66,7 +66,7 @@ export const buildHomePageSections = (accounts: AccountWithSyncEntityInterface[]
 
     accounts.forEach(account => {
         if (account.type === AccountTypeEnum.BANK_SYNC) {
-            const provider = account.bankSync?.provider;
+            const provider = account.sync?.provider;
 
             if (isDefined(provider)) {
                 appendAccount(providerGroups, provider, account);

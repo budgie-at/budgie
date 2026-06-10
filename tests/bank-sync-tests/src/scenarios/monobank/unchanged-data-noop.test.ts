@@ -9,7 +9,7 @@ import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
 describe('monobank/unchanged-data-noop', () => {
     it('re-sync of identical data does not touch updatedAt on transactions or entries', async () => {
-        const { bankSync } = setupMonobankFixture();
+        const { sync } = setupMonobankFixture();
 
         const txPayload = buildMonobank.transaction({ id: 'tx-stable', amount: -2500, hold: false });
         monobankStub.statement([txPayload]);
@@ -29,7 +29,7 @@ describe('monobank/unchanged-data-noop', () => {
         testDb
             .update(SyncEntityTable)
             .set({ forwardSyncFromAt: new Date(2026, 0, 1) } as never)
-            .where(eq(SyncEntityTable.id, bankSync.id))
+            .where(eq(SyncEntityTable.id, sync.id))
             .run();
 
         monobankStub.statement([txPayload]);

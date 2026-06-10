@@ -10,7 +10,7 @@ export const setupMonobankFixture = (
     forwardSyncFromAt: Date = new Date(2026, 0, 1)
 ) => {
     const account = seed.account({ externalId, type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-    const bankSync = seed.bankSync({ accountId: account.id, mode, forwardSyncFromAt });
+    const sync = seed.sync({ accountId: account.id, mode, forwardSyncFromAt });
     monobankStub.clientInfo(buildMonobank.clientInfoWith([externalId]));
-    return { account, bankSync };
+    return { account, sync };
 };

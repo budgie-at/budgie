@@ -10,14 +10,14 @@ import { SyncStatusDot } from '../sync-status-dot/sync-status-dot';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly balance: number;
-    readonly bankSync: SyncEntityInterface | null;
+    readonly sync: SyncEntityInterface | null;
     readonly className?: string;
     readonly instrumentCode: string;
     readonly instrumentSymbol: string;
 }
 
 export const CryptoAccountCard = (props: Props) => {
-    const { id, title, icon, balance, bankSync, className, instrumentCode, instrumentSymbol } = props;
+    const { id, title, icon, balance, sync, className, instrumentCode, instrumentSymbol } = props;
     const formatDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
 
     const formattedBalance = `${formatDigits(balance)} ${instrumentCode}`;
@@ -40,7 +40,7 @@ export const CryptoAccountCard = (props: Props) => {
             instrumentSymbol={instrumentSymbol}
             balanceContent={balanceContent}
         >
-            <SyncStatusDot bankSync={bankSync} />
+            <SyncStatusDot sync={sync} />
         </AccountCardBase>
     );
 };

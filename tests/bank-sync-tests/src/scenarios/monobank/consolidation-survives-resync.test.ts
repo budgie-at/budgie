@@ -11,7 +11,7 @@ describe('monobank/consolidation-survives-resync', () => {
     it('re-importing a consolidated source transaction must not destroy the canonical TRANSFER (regression: bug 2)', async () => {
         const fromAccount = seed.account({ externalId: 'mono-acc-1', type: AccountTypeEnum.BANK_SYNC });
         const toAccount = seed.account({ externalId: 'mono-acc-2', type: AccountTypeEnum.BANK_SYNC });
-        seed.bankSync({ accountId: fromAccount.id, mode: SyncModeEnum.FORWARD, forwardSyncFromAt: new Date(2026, 0, 1) });
+        seed.sync({ accountId: fromAccount.id, mode: SyncModeEnum.FORWARD, forwardSyncFromAt: new Date(2026, 0, 1) });
 
         const operatedAt = new Date(2026, 0, 15);
 

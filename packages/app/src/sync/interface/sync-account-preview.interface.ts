@@ -7,6 +7,6 @@ export interface SyncAccountPreviewInterface {
     readonly currencyCode: string;
     readonly iban: string | null;
     readonly existingAccountId: number | null;
-    readonly hasBankSync: boolean;
+    readonly hasSync: boolean;
     readonly isParked: boolean;
 }

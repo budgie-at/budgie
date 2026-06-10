@@ -10,7 +10,7 @@ interface Props extends Pick<
     'id' | 'createdAt' | 'title' | 'type' | 'icon' | 'debtType' | 'targetBalance' | 'deadline'
 > {
     readonly balance: number;
-    readonly bankSync: SyncEntityInterface | null;
+    readonly sync: SyncEntityInterface | null;
     readonly className?: string;
     readonly instrumentId: number;
     readonly instrumentCode: string;

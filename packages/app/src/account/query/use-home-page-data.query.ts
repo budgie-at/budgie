@@ -87,7 +87,7 @@ export const useHomePageDataQuery = () => {
     const accounts = data.map(row => {
         const account: AccountWithSyncEntityInterface = {
             ...row.account,
-            bankSync: row.bankSync,
+            sync: row.sync,
             instrument: row.instrument
         };
 
@@ -95,7 +95,7 @@ export const useHomePageDataQuery = () => {
     });
 
     const balanceSummary: HomeAccountBalanceSummaryInterface = data.reduce((summary, row) => {
-        const rowBankProvider = isDefined(row.bankSync) ? row.bankSync.provider : null;
+        const rowBankProvider = isDefined(row.sync) ? row.sync.provider : null;
         const homeAccountBalance: HomeAccountBalanceInterface = {
             accountId: row.account.id,
             accountType: row.account.type,

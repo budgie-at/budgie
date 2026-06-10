@@ -10,7 +10,7 @@ const EXPECTED_DORMANCY_BOUNDARY_REQUESTS = 4;
 
 describe('monobank/empty-account-stops-at-dormancy-boundary', () => {
     it('records the first empty `from` then walks 3 more months past it before terminating', async () => {
-        const bankSync = setupBackwardSweepFixture(new Date());
+        const sync = setupBackwardSweepFixture(new Date());
 
         let monobankRequestCount = 0;
         monobankServer.use(
@@ -26,7 +26,7 @@ describe('monobank/empty-account-stops-at-dormancy-boundary', () => {
         expect(monobankRequestCount).toBe(EXPECTED_DORMANCY_BOUNDARY_REQUESTS);
         expect(fetchPersistedMonobankTransactions()).toHaveLength(0);
 
-        const finalSync = fetchBankSyncById(bankSync.id);
+        const finalSync = fetchBankSyncById(sync.id);
         expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
         expect(finalSync.transactionCount).toBe(0);
     });

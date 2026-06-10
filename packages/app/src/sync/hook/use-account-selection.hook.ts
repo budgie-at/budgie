@@ -10,7 +10,7 @@ export const useAccountSelection = (): AccountSelectionInterface => {
 
     const setPreviews = (previews: SyncAccountPreviewInterface[]) => {
         setAccountPreviews(previews);
-        setSelectedAccounts(new Set(previews.filter(preview => preview.hasBankSync).map(preview => preview.externalId)));
+        setSelectedAccounts(new Set(previews.filter(preview => preview.hasSync).map(preview => preview.externalId)));
     };
 
     const toggleAccount = (externalId: string) => {

@@ -14,7 +14,7 @@ describe('SyncProviderRegistryService', () => {
     describe('getServiceForAccount', () => {
         it('returns monobank service for account with MONOBANK bank sync', async () => {
             const account = seedAccount();
-            seed.bankSync({ accountId: account.id, provider: ExternalSourceEnum.MONOBANK });
+            seed.sync({ accountId: account.id, provider: ExternalSourceEnum.MONOBANK });
 
             const service = await syncProviderRegistryService.getServiceForAccount(account.id);
 
@@ -23,7 +23,7 @@ describe('SyncProviderRegistryService', () => {
 
         it('returns erste service for account with ERSTE bank sync', async () => {
             const account = seedAccount();
-            seed.bankSync({ accountId: account.id, provider: ExternalSourceEnum.ERSTE });
+            seed.sync({ accountId: account.id, provider: ExternalSourceEnum.ERSTE });
 
             const service = await syncProviderRegistryService.getServiceForAccount(account.id);
 

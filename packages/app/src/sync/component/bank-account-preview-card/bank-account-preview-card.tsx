@@ -29,7 +29,7 @@ export const BankAccountPreviewCard = ({ preview, isSelected, onToggle }: Props)
                         {preview.currencyCode}
                         {isNotEmptyString(preview.iban) && ` • ${preview.iban}`}
                     </Text>
-                    {preview.hasBankSync && (
+                    {preview.hasSync && (
                         <Text className="text-xs text-green-600">
                             <Trans>Already syncing</Trans>
                         </Text>

@@ -29,7 +29,7 @@ describe('binance/anchor-once-reset-ordering', () => {
             type: AccountTypeEnum.CRYPTO_SYNC,
             instrumentId: ethInstrument.id
         });
-        seed.bankSync({
+        seed.sync({
             accountId: ethAccount.id,
             token: JSON.stringify({ apiKey: 'test-api-key', apiSecret: 'test-api-secret' }),
             provider: ExternalSourceEnum.BINANCE,
