@@ -1,16 +1,11 @@
-import { SQL, and, eq, gte, inArray, isNull, lte, notInArray, sql } from 'drizzle-orm';
-import { alias } from 'drizzle-orm/sqlite-core';
+import { SQL, and, gte, inArray, isNull, lte, notInArray } from 'drizzle-orm';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
-import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
-import { PRECISION } from '../constant/precision.constant';
-import { AmountRangeInterface } from '../interface/amount-range.interface';
 import { DateRangeInterface } from '../interface/date-range.interface';
 import { DB } from '../type/db.type';
 
@@ -18,14 +13,13 @@ export abstract class BaseTransactionFilterRepository {
     constructor(protected db: DB) {}
 
     /* jscpd:ignore-start */
-    protected buildFilterWhere({ tagIds, categoryIds, accountIds, date, amount }: TransactionFilterInterface) {
+    protected buildFilterWhere({ tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
         const conditions: SQL[] = [
             this.buildVisibleTransactionCondition(),
             ...this.buildAccountCondition(accountIds),
             ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
             ...(isDefined(tagIds) ? [this.buildTagCondition(tagIds)] : []),
-            ...(isDefined(date) ? [this.buildDateCondition(date)] : []),
-            ...(isDefined(amount) ? [this.buildAmountCondition(amount)] : [])
+            ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
         ].filter(isDefined);
 
         // eslint-disable-next-line no-undefined
@@ -70,42 +64,6 @@ export abstract class BaseTransactionFilterRepository {
 
         // eslint-disable-next-line no-undefined
         return isNotEmptyArray(parts) ? and(...parts) : undefined;
-    }
-
-    protected buildAmountCondition({ from, to }: AmountRangeInterface) {
-        const transaction = alias(TransactionEntityTable, 'amount_filter_transaction');
-        const amountSum = sql<number>`SUM(CASE
-            WHEN ${transaction.type} = ${TransactionTypeEnum.EXPENSE} AND ${TransactionEntryEntityTable.type} IN (${TransactionEntryTypeEnum.CREDIT}, ${TransactionEntryTypeEnum.FEE}) THEN ${TransactionEntryEntityTable.amount}
-            WHEN ${transaction.type} IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.DEBT}) AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT} THEN ${TransactionEntryEntityTable.amount}
-            WHEN ${transaction.type} = ${TransactionTypeEnum.INCOME} AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.amount}
-            WHEN ${transaction.type} = ${TransactionTypeEnum.ADJUSTMENT} THEN ${TransactionEntryEntityTable.amount}
-            ELSE 0 END)`;
-
-        const havingParts: SQL[] = [];
-
-        if (isDefined(from)) {
-            havingParts.push(gte(amountSum, Math.round(from * PRECISION)));
-        }
-
-        if (isDefined(to)) {
-            havingParts.push(lte(amountSum, Math.round(to * PRECISION)));
-        }
-
-        if (isEmptyArray(havingParts)) {
-            // eslint-disable-next-line no-undefined
-            return undefined;
-        }
-
-        return inArray(
-            TransactionEntityTable.id,
-            this.db
-                .select({ transactionId: TransactionEntryEntityTable.transactionId })
-                .from(TransactionEntryEntityTable)
-                .innerJoin(transaction, eq(transaction.id, TransactionEntryEntityTable.transactionId))
-                .where(this.buildLedgerEntryCondition())
-                .groupBy(TransactionEntryEntityTable.transactionId)
-                .having(and(...havingParts))
-        );
     }
 
     protected buildVisibleTransactionCondition() {

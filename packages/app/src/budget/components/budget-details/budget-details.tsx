@@ -1,9 +1,10 @@
+import { budgetPeriodService } from '@budgie/budget';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FormPage } from '../../../@generic/component/form-page/form-page';
@@ -18,9 +19,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetCategoryLimitsQuery } from '../../query/use-get-budget-category-limits.query';
 import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
-import { computePeriodWindow } from '../../utils/compute-period-window.util';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
-import { getBudgetPeriodInclusiveEnd } from '../../utils/get-budget-period-inclusive-end.util';
 import { BudgetDetailsCategoryList } from '../budget-details-category-list/budget-details-category-list';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
@@ -40,9 +39,9 @@ export const BudgetDetails = ({ budget }: Props) => {
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const periodWindow = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
-    const periodEnd = getBudgetPeriodInclusiveEnd(periodWindow.nextPeriodStart);
-    const currencySymbol = instrument?.symbol ?? '';
+    const periodWindow = budgetPeriodService.computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
+    const periodEnd = budgetPeriodService.getInclusiveEnd(periodWindow.nextPeriodStart);
+    const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);
     const displaySpent = convertFromMicroUnits(spent.spentOverall);
     const hasCategoryLimitsContent = isNotEmptyArray(categoryLimits) || isPositiveNumber(budget.otherLimit);

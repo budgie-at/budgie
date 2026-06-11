@@ -1,3 +1,4 @@
+import { budgetAllocationService } from '@budgie/budget';
 import { BudgetCategoryLimitEntityInterface, BudgetPeriodEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
@@ -51,26 +52,19 @@ export const useBudgetForm = ({ editingId, templateKind = null }: UseBudgetFormO
             periodStartDay: DEFAULT_PERIOD_START_DAY,
             useLastDayOfMonth: false,
             overallLimit: 0,
+            otherLimit: 0,
             categoryLimits: [],
             instrumentId: isPositiveNumber(defaultInstrumentId) ? defaultInstrumentId : 0
         }
     });
 
-    const ensureInstrumentId = useCallback(() => {
-        if (!isPositiveNumber(defaultInstrumentId) || isPositiveNumber(form.getValues('instrumentId'))) {
+    useEffect(() => {
+        if (isEditing || !isPositiveNumber(defaultInstrumentId) || isPositiveNumber(form.getValues('instrumentId'))) {
             return;
         }
 
         form.setValue('instrumentId', defaultInstrumentId, { shouldDirty: false, shouldTouch: false, shouldValidate: true });
-    }, [defaultInstrumentId, form]);
-
-    useEffect(() => {
-        if (isEditing) {
-            return;
-        }
-
-        ensureInstrumentId();
-    }, [ensureInstrumentId, isEditing]);
+    }, [defaultInstrumentId, form, isEditing]);
 
     const resetFormFromBudget = useCallback(
         (categoryLimits: readonly BudgetCategoryLimitEntityInterface[]) => {
@@ -83,6 +77,7 @@ export const useBudgetForm = ({ editingId, templateKind = null }: UseBudgetFormO
                 periodStartDay: budget.periodStartDay,
                 useLastDayOfMonth: budget.useLastDayOfMonth,
                 overallLimit: convertFromMicroUnits(budget.overallLimit),
+                otherLimit: convertFromMicroUnits(budget.otherLimit),
                 categoryLimits: categoryLimits.map(limit => ({
                     categoryId: limit.categoryId,
                     limitAmount: convertFromMicroUnits(limit.limitAmount)
@@ -91,7 +86,7 @@ export const useBudgetForm = ({ editingId, templateKind = null }: UseBudgetFormO
             });
             setIsFormHydrated(true);
         },
-        [isEditing, budget, form]
+        [budget, form, isEditing]
     );
 
     useEffect(() => {
@@ -139,29 +134,25 @@ export const useBudgetForm = ({ editingId, templateKind = null }: UseBudgetFormO
             return emptyFn;
         }
 
-        let isActive = true;
+        const allocation = budgetAllocationService.computeAllocation({
+            overallLimit: templateDraft.overallLimit,
+            otherLimit: 0,
+            categoryLimits: templateDraft.categoryLimits
+        });
+        const otherLimit = Math.max(0, allocation.remaining);
 
-        const seedForm = async () => {
-            if (!isActive || form.formState.isDirty) {
-                return;
-            }
+        form.reset({
+            name: t`Monthly Budget`,
+            periodStartDay: DEFAULT_PERIOD_START_DAY,
+            useLastDayOfMonth: false,
+            overallLimit: templateDraft.overallLimit,
+            otherLimit,
+            categoryLimits: templateDraft.categoryLimits.map(limit => ({ ...limit })),
+            instrumentId: defaultInstrumentId
+        });
+        queueMicrotask(() => void setIsFormHydrated(true));
 
-            form.reset({
-                name: t`Monthly Budget`,
-                periodStartDay: DEFAULT_PERIOD_START_DAY,
-                useLastDayOfMonth: false,
-                overallLimit: templateDraft.overallLimit,
-                categoryLimits: templateDraft.categoryLimits.map(limit => ({ ...limit })),
-                instrumentId: defaultInstrumentId
-            });
-            setIsFormHydrated(true);
-        };
-
-        void seedForm();
-
-        return () => {
-            isActive = false;
-        };
+        return emptyFn;
     }, [defaultInstrumentId, form, form.formState.isDirty, hasAsyncTemplate, isEditing, isFormHydrated, isTemplateReady, t, templateDraft]);
 
     const handleDelete = async () => {
@@ -193,18 +184,19 @@ export const useBudgetForm = ({ editingId, templateKind = null }: UseBudgetFormO
     };
 
     const handleSubmit = () => {
-        ensureInstrumentId();
+        if (isPositiveNumber(defaultInstrumentId) && !isPositiveNumber(form.getValues('instrumentId'))) {
+            form.setValue('instrumentId', defaultInstrumentId, { shouldDirty: false, shouldTouch: false, shouldValidate: true });
+        }
+
         void form.handleSubmit(async values => {
             try {
-                const categoryLimitsTotal = values.categoryLimits.reduce((sum, limit) => sum + limit.limitAmount, 0);
-                const derivedOtherLimit = Math.max(0, values.overallLimit - categoryLimitsTotal);
                 const basePayload = {
                     name: values.name,
                     period: BudgetPeriodEnum.MONTHLY,
                     periodStartDay: values.periodStartDay,
                     useLastDayOfMonth: values.useLastDayOfMonth,
                     overallLimit: convertToMicroUnits(values.overallLimit),
-                    otherLimit: convertToMicroUnits(derivedOtherLimit),
+                    otherLimit: convertToMicroUnits(values.otherLimit),
                     instrumentId: values.instrumentId,
                     categoryLimits: values.categoryLimits.map(limit => ({
                         categoryId: limit.categoryId,

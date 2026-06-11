@@ -8,6 +8,7 @@ import { BudgetCategoryLimitEntityTable } from '../table/budget-category-limit-e
 import type { DB } from '../../@generic/type/db.type';
 import type { BudgetCategoryLimitCreateEntityInterface } from '../entity/budget-category-limit-create-entity.interface';
 import type { BudgetCategoryLimitEntityInterface } from '../entity/budget-category-limit-entity.interface';
+import type { BudgetCategoryLimitBulkUpdateInputInterface } from '../input/budget-category-limit-bulk-update-input.interface';
 
 export class BudgetCategoryLimitRepository {
     constructor(private db: DB) {}
@@ -36,7 +37,7 @@ export class BudgetCategoryLimitRepository {
         (error, updates, tx) =>
             `throw ids=${updates.map(update => update.id).join(',')} limitAmounts=${updates.map(update => update.limitAmount).join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
-    async bulkUpdate(updates: { id: number; limitAmount: number }[], tx?: DB): Promise<BudgetCategoryLimitEntityInterface[]> {
+    async bulkUpdate(updates: BudgetCategoryLimitBulkUpdateInputInterface[], tx?: DB): Promise<BudgetCategoryLimitEntityInterface[]> {
         if (!isNotEmptyArray(updates)) {
             return [];
         }

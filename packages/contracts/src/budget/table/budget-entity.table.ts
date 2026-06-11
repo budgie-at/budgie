@@ -12,10 +12,10 @@ export const BudgetEntityTable = sqliteTable(
         period: text('period', { enum: convertEnumToDrizzleEnum(BudgetPeriodEnum) })
             .$type<BudgetPeriodEnum>()
             .notNull(),
-        periodStartDay: int('period_start_day').notNull().default(1),
-        useLastDayOfMonth: int('use_last_day_of_month', { mode: 'boolean' }).notNull().default(false),
+        periodStartDay: int('period_start_day').notNull(),
+        useLastDayOfMonth: int('use_last_day_of_month', { mode: 'boolean' }).notNull(),
         overallLimit: int('overall_limit').notNull(),
-        otherLimit: int('other_limit').notNull().default(0),
+        otherLimit: int('other_limit').notNull(),
         instrumentId: int('instrument_id')
             .notNull()
             .references(() => InstrumentEntityTable.id)

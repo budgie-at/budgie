@@ -1,19 +1,30 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
 import * as Notifications from 'expo-notifications';
 import Toast from 'react-native-toast-message';
 
+import { getErrorMessage } from '@rnw-community/shared';
+
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
-import { useSettingsToggle } from '../../hook/use-settings-toggle.hook';
-import { SettingSwitch } from '../setting-switch/setting-switch';
-import { SettingsCard } from '../settings-card/settings-card';
+import { useSetting } from '../../hook/use-setting.hook';
+import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
+import { BudgetSettingCard } from '../budget-setting-card/budget-setting-card';
+
+const logger = getLogger('BudgetPushToggle');
 
 export const BudgetPushToggle = () => {
     const { t } = useLingui();
-    const { value, persist } = useSettingsToggle({
-        settingKey: 'isBudgetPushEnabled',
-        errorTitle: t`Could not update notifications`
-    });
+    const isBudgetPushEnabled = useSetting('isBudgetPushEnabled');
+
+    const persist = async (next: boolean): Promise<void> => {
+        try {
+            await updateSettingsMutation({ isBudgetPushEnabled: next });
+        } catch (error: unknown) {
+            logger.error('failed', { errorMessage: getErrorMessage(error) });
+            Toast.show({ type: 'error', text1: t`Could not update notifications`, text2: getErrorMessage(error) });
+        }
+    };
 
     const handleChange = async (next: boolean) => {
         if (!next) {
@@ -35,24 +46,18 @@ export const BudgetPushToggle = () => {
         }
     };
 
-    const switchSlot = (
-        <SettingSwitch
-            value={value}
-            onValueChange={handleChange}
-            testID={SettingsPageSelector.BudgetPushSwitch}
-            stateOnTestID={SettingsPageSelector.BudgetPushSwitchStateOn}
-            stateOffTestID={SettingsPageSelector.BudgetPushSwitchStateOff}
-        />
-    );
-
     return (
-        <SettingsCard
+        <BudgetSettingCard
             testID={SettingsPageSelector.BudgetPushCard}
             title={t`Budget alerts`}
             description={t`Get notified when a budget threshold is crossed`}
             icon={UserIconNameEnum.Bell}
+            value={isBudgetPushEnabled}
             variant="warning"
-            right={switchSlot}
+            onValueChange={handleChange}
+            switchTestID={SettingsPageSelector.BudgetPushSwitch}
+            stateOnTestID={SettingsPageSelector.BudgetPushSwitchStateOn}
+            stateOffTestID={SettingsPageSelector.BudgetPushSwitchStateOff}
         />
     );
 };

@@ -1,7 +1,6 @@
-import React, { ComponentProps, useEffect, useRef, useState } from 'react';
-import { InteractionManager } from 'react-native';
+import { ComponentProps, useRef, useState } from 'react';
 
-import { emptyFn, isDefined, isEmptyString, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isEmptyString, isNotEmptyString } from '@rnw-community/shared';
 
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -41,25 +40,18 @@ export const AmountInput = ({
     const formatDigits = useFormatDigits(visibleDecimalPlaces);
     const { intl } = useI18nContext();
 
-    const inputRef = useRef<TextInput>(null);
+    const didAutoFocusRef = useRef(false);
     const [displayValue, setDisplayValue] = useState(() => formatDigits(value === 0 ? '' : value.toString(), valuePrefix));
     const [isFocused, setIsFocused] = useState(false);
 
     const displayedText = isFocused ? displayValue : formatDigits(value === 0 ? '' : value.toString(), valuePrefix);
 
-    useEffect(() => {
-        if (!autoFocus) {
-            return emptyFn;
+    const handleInputRef = (input: TextInput | null) => {
+        if (autoFocus && isDefined(input) && !didAutoFocusRef.current) {
+            didAutoFocusRef.current = true;
+            input.focus();
         }
-
-        const interactionHandle = InteractionManager.runAfterInteractions(() => {
-            if (isDefined(inputRef.current)) {
-                inputRef.current.focus();
-            }
-        });
-
-        return () => void interactionHandle.cancel();
-    }, [autoFocus]);
+    };
 
     const handleChangeText = (text: string) => {
         const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator);
@@ -103,7 +95,7 @@ export const AmountInput = ({
             onFocus={handleFocus}
             onBlur={handleBlur}
             keyboardType="decimal-pad"
-            ref={inputRef}
+            ref={handleInputRef}
             className={inputClassName}
             {...rest}
         />

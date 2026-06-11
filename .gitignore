@@ -65,4 +65,4 @@ docs/plans
 docs/superpowers
 
 # Agent scratch worktrees
-.claude/
+.claude/worktrees/

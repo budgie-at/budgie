@@ -5,9 +5,10 @@ import { Text, View } from 'react-native';
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BudgetSelector } from '../../budget.selector';
+import { getBudgetCategorySpent } from '../../utils/get-budget-category-spent.util';
 import { BudgetWidgetCategoryChip } from '../budget-widget-category-chip/budget-widget-category-chip';
 
-import type { BudgetCategorySpentInterface } from '../../interface/budget-category-spent.interface';
+import type { BudgetCategorySpentInterface } from '@budgie/budget';
 import type { BudgetCategoryLimitEntityInterface } from '@budgie/contracts';
 
 const WIDGET_CATEGORY_LIMITS_MAX = 3;
@@ -19,9 +20,10 @@ interface Props {
 
 export const BudgetWidgetCategoryList = ({ categoryLimits, spentByCategory }: Props) => {
     const spentByCategoryMap = new Map(spentByCategory.map(entry => [entry.categoryId, entry.spent]));
+
     const sortedCategoryLimits = [...categoryLimits].sort((firstCategoryLimit, secondCategoryLimit) => {
-        const firstSpent = spentByCategoryMap.get(firstCategoryLimit.categoryId) ?? 0;
-        const secondSpent = spentByCategoryMap.get(secondCategoryLimit.categoryId) ?? 0;
+        const firstSpent = getBudgetCategorySpent(spentByCategoryMap, firstCategoryLimit.categoryId);
+        const secondSpent = getBudgetCategorySpent(spentByCategoryMap, secondCategoryLimit.categoryId);
 
         return secondSpent - firstSpent;
     });
@@ -40,7 +42,7 @@ export const BudgetWidgetCategoryList = ({ categoryLimits, spentByCategory }: Pr
                     <BudgetWidgetCategoryChip
                         categoryId={limit.categoryId}
                         limitAmount={limit.limitAmount}
-                        spent={spentByCategoryMap.get(limit.categoryId) ?? 0}
+                        spent={getBudgetCategorySpent(spentByCategoryMap, limit.categoryId)}
                         testID={BudgetSelector.WidgetCategoryRow(limit.categoryId)}
                         spentTestID={BudgetSelector.WidgetCategorySpentLabel(limit.categoryId)}
                     />

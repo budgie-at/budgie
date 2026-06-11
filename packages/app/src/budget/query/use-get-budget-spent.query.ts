@@ -1,12 +1,11 @@
+import { budgetPeriodService, budgetSpentService } from '@budgie/budget';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { budgetRepository } from '../../@generic/drizzle/db/db';
-import { computeBudgetSpent } from '../utils/compute-budget-spent.util';
-import { computePeriodWindow } from '../utils/compute-period-window.util';
 
-import type { BudgetSpentInterface } from '../interface/budget-spent.interface';
+import type { BudgetSpentInterface } from '@budgie/budget';
 import type { BudgetEntityInterface } from '@budgie/contracts';
 
 interface UseGetBudgetSpentResult {
@@ -19,9 +18,11 @@ const EMPTY_SPENT: BudgetSpentInterface = { spentOverall: 0, spentByCategory: []
 const EPOCH = new Date(0);
 
 export const useGetBudgetSpentQuery = (budget: BudgetEntityInterface | null): UseGetBudgetSpentResult => {
-    const window = isDefined(budget) ? computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date()) : null;
-    const periodStart = window?.periodStart ?? EPOCH;
-    const nextPeriodStart = window?.nextPeriodStart ?? EPOCH;
+    const window = isDefined(budget)
+        ? budgetPeriodService.computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date())
+        : null;
+    const periodStart = isDefined(window) ? window.periodStart : EPOCH;
+    const nextPeriodStart = isDefined(window) ? window.nextPeriodStart : EPOCH;
     const baseInstrumentId = isDefined(budget) ? budget.instrumentId : 0;
 
     const entriesQuery = budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, baseInstrumentId);
@@ -39,7 +40,7 @@ export const useGetBudgetSpentQuery = (budget: BudgetEntityInterface | null): Us
         return { spent: EMPTY_SPENT, isLoading: false };
     }
 
-    const spent = computeBudgetSpent(entriesData, baseInstrumentId);
+    const spent = budgetSpentService.computeSpent(entriesData, baseInstrumentId);
 
     return { spent, isLoading: false };
 };

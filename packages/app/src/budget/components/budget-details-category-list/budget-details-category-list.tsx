@@ -1,8 +1,9 @@
 import { BudgetSelector } from '../../budget.selector';
+import { getBudgetCategorySpent } from '../../utils/get-budget-category-spent.util';
 import { BudgetDetailsCategoryRow } from '../budget-details-category-row/budget-details-category-row';
 import { BudgetDetailsOtherCategoryRow } from '../budget-details-other-category-row/budget-details-other-category-row';
 
-import type { BudgetCategorySpentInterface } from '../../interface/budget-category-spent.interface';
+import type { BudgetCategorySpentInterface } from '@budgie/budget';
 import type { BudgetCategoryLimitEntityInterface } from '@budgie/contracts';
 
 interface Props {
@@ -18,23 +19,31 @@ interface Props {
 export const BudgetDetailsCategoryList = (props: Props) => {
     const { categoryLimits, spentByCategory, spentOverall, otherLimitAmount, periodStart, periodEnd, currencySymbol } = props;
     const spentByCategoryMap = new Map(spentByCategory.map(entry => [entry.categoryId, entry.spent]));
+
     const categoryIds = categoryLimits.map(limit => limit.categoryId);
-    const limitedCategorySpent = categoryLimits.reduce((total, limit) => total + (spentByCategoryMap.get(limit.categoryId) ?? 0), 0);
+    const limitedCategorySpent = categoryLimits.reduce(
+        (total, limit) => total + getBudgetCategorySpent(spentByCategoryMap, limit.categoryId),
+        0
+    );
     const otherSpent = Math.max(0, spentOverall - limitedCategorySpent);
 
-    const categoryLimitCards = categoryLimits.map(limit => (
-        <BudgetDetailsCategoryRow
-            key={limit.id}
-            categoryId={limit.categoryId}
-            limitAmount={limit.limitAmount}
-            spent={spentByCategoryMap.get(limit.categoryId) ?? 0}
-            periodStart={periodStart}
-            periodEnd={periodEnd}
-            currencySymbol={currencySymbol}
-            testID={BudgetSelector.DetailsCategoryRow(limit.categoryId)}
-            spentTestID={BudgetSelector.DetailsCategorySpentLabel(limit.categoryId)}
-        />
-    ));
+    const categoryLimitCards = categoryLimits.map(limit => {
+        const spent = getBudgetCategorySpent(spentByCategoryMap, limit.categoryId);
+
+        return (
+            <BudgetDetailsCategoryRow
+                key={limit.id}
+                categoryId={limit.categoryId}
+                limitAmount={limit.limitAmount}
+                spent={spent}
+                periodStart={periodStart}
+                periodEnd={periodEnd}
+                currencySymbol={currencySymbol}
+                testID={BudgetSelector.DetailsCategoryRow(limit.categoryId)}
+                spentTestID={BudgetSelector.DetailsCategorySpentLabel(limit.categoryId)}
+            />
+        );
+    });
 
     return (
         <>

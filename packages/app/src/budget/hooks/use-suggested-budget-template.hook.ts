@@ -1,18 +1,17 @@
-import { convertAmountToBase } from '@budgie/contracts';
-import { getMonth, getYear, subMonths } from 'date-fns';
+import { budgetPeriodService, budgetTemplateService } from '@budgie/budget';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { useState } from 'react';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { budgetRepository } from '../../@generic/drizzle/db/db';
 import { useSetting } from '../../settings/hook/use-setting.hook';
-import { buildSuggestedBudgetTemplate } from '../utils/build-suggested-budget-template.util';
-import { computeTrailingMonthsWindow } from '../utils/compute-trailing-months-window.util';
-import { resolveSuggestedWindowMonths } from '../utils/resolve-suggested-window-months.util';
 
-import type { BudgetTemplateDraftInterface } from '../interface/budget-template-draft.interface';
-import type { BudgetTemplateResolutionInterface } from '../interface/budget-template-resolution.interface';
+import type {
+    BudgetSuggestedTemplateConfigInterface,
+    BudgetTemplateDraftInterface,
+    BudgetTemplateResolutionInterface
+} from '@budgie/budget';
 
 const MIN_WINDOW_MONTHS = 2;
 const MAX_WINDOW_MONTHS = 4;
@@ -21,66 +20,11 @@ const MIN_DISTINCT_CATEGORIES = 4;
 
 const ZERO_DRAFT: BudgetTemplateDraftInterface = { overallLimit: 0, categoryLimits: [] };
 
-interface SuggestedSpentEntryInterface {
-    readonly amount: number;
-    readonly categoryId: number | null;
-    readonly instrumentId: number;
-    readonly rate: number | null;
-    readonly operatedAt: Date;
-}
-
-const groupMonthlySpentByCategory = (
-    entries: readonly SuggestedSpentEntryInterface[],
-    windowStart: Date,
-    months: number,
-    baseInstrumentId: number
-): { categoryId: number; monthlyAmounts: number[] }[] => {
-    const totalsByCategory = new Map<number, number[]>();
-
-    for (const entry of entries) {
-        const monthIndex = (getYear(entry.operatedAt) - getYear(windowStart)) * 12 + getMonth(entry.operatedAt) - getMonth(windowStart);
-        const isInsideWindow = monthIndex >= 0 && monthIndex < months;
-
-        if (isDefined(entry.categoryId) && isInsideWindow) {
-            const isBaseInstrument = entry.instrumentId === baseInstrumentId;
-            const { convertedAmount } = convertAmountToBase(entry.amount, isBaseInstrument ? 1 : entry.rate);
-            const monthlyAmounts = totalsByCategory.get(entry.categoryId) ?? new Array<number>(months).fill(0);
-            monthlyAmounts[monthIndex] += convertedAmount;
-            totalsByCategory.set(entry.categoryId, monthlyAmounts);
-        }
-    }
-
-    return [...totalsByCategory.entries()].map(([categoryId, monthlyAmounts]) => ({ categoryId, monthlyAmounts }));
-};
-
-const buildSuggestedResolution = (
-    entries: readonly SuggestedSpentEntryInterface[],
-    now: Date,
-    baseInstrumentId: number
-): BudgetTemplateResolutionInterface => {
-    const windowStartMax = computeTrailingMonthsWindow(now, MAX_WINDOW_MONTHS).start;
-    const effectiveMonths = resolveSuggestedWindowMonths(entries, windowStartMax, MAX_WINDOW_MONTHS, MIN_ENTRIES_PER_MONTH);
-
-    if (effectiveMonths < MIN_WINDOW_MONTHS) {
-        return { draft: ZERO_DRAFT, isReady: true, isAvailable: false, stats: null };
-    }
-
-    const minHistoryThreshold = subMonths(now, MIN_WINDOW_MONTHS).getTime();
-    const hasMinimumHistory = entries.some(entry => entry.operatedAt.getTime() <= minHistoryThreshold);
-
-    const windowStart = computeTrailingMonthsWindow(now, effectiveMonths).start;
-    const recentEntries = entries.filter(entry => entry.operatedAt.getTime() >= windowStart.getTime());
-    const monthlySpentByCategory = groupMonthlySpentByCategory(recentEntries, windowStart, effectiveMonths, baseInstrumentId);
-    const draft = buildSuggestedBudgetTemplate(monthlySpentByCategory);
-    const hasEnoughCategories = monthlySpentByCategory.length >= MIN_DISTINCT_CATEGORIES;
-    const isAvailable = isNotEmptyArray(draft.categoryLimits) && hasEnoughCategories && hasMinimumHistory;
-    const stats = {
-        months: effectiveMonths,
-        transactionsCount: recentEntries.length,
-        categoriesCount: monthlySpentByCategory.length
-    };
-
-    return { draft, isReady: true, isAvailable, stats };
+const SUGGESTED_TEMPLATE_CONFIG: BudgetSuggestedTemplateConfigInterface = {
+    minWindowMonths: MIN_WINDOW_MONTHS,
+    maxWindowMonths: MAX_WINDOW_MONTHS,
+    minEntriesPerMonth: MIN_ENTRIES_PER_MONTH,
+    minDistinctCategories: MIN_DISTINCT_CATEGORIES
 };
 
 export const useSuggestedBudgetTemplate = (): BudgetTemplateResolutionInterface => {
@@ -88,7 +32,7 @@ export const useSuggestedBudgetTemplate = (): BudgetTemplateResolutionInterface 
     const baseInstrumentId = isPositiveNumber(defaultInstrumentId) ? defaultInstrumentId : 0;
 
     const [now] = useState(() => new Date());
-    const window = computeTrailingMonthsWindow(now, MAX_WINDOW_MONTHS);
+    const window = budgetPeriodService.computeTrailingMonthsWindow(now, MAX_WINDOW_MONTHS);
 
     const entriesQuery = budgetRepository.findBudgetSpentEntries(window.start, window.end, baseInstrumentId);
     const { data: entriesData, updatedAt } = useLiveQuery(entriesQuery, [window.start.getTime(), window.end.getTime(), baseInstrumentId]);
@@ -101,5 +45,5 @@ export const useSuggestedBudgetTemplate = (): BudgetTemplateResolutionInterface 
         return { draft: ZERO_DRAFT, isReady: false, isAvailable: false, stats: null };
     }
 
-    return buildSuggestedResolution(entriesData, now, baseInstrumentId);
+    return budgetTemplateService.buildSuggestedBudgetTemplateResolution(entriesData, now, baseInstrumentId, SUGGESTED_TEMPLATE_CONFIG);
 };
