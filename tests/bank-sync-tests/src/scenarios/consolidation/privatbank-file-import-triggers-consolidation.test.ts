@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { BankAccountTypeEnum, BankProviderEnum, privatbankTransactionMapper } from '@budgie/bank-sync';
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 
-import { seed, StubFileBankSyncService } from '../../harness';
+import { expectFileImportConsolidationEnqueued, seed, StubFileBankSyncService, testDb } from '../../harness';
 
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 
 import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
@@ -75,11 +75,16 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
 
         await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledTimes(1);
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledWith(TransferConsolidationDrainReasonEnum.FILE_IMPORT);
+        const transaction = testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK))
+            .get();
+
+        expectFileImportConsolidationEnqueued(transaction?.id);
     });
 
-    it('enqueues consolidation after a re-import so the drainer can process existing confident candidates', async () => {
+    it('does not enqueue consolidation after a re-import with no new transactions', async () => {
         seedPrivatbankAccount();
         const syncService = buildPrivatbankSyncService([buildPrivatbankTransaction()]);
 
@@ -88,7 +93,6 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
 
         await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledTimes(1);
-        expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledWith(TransferConsolidationDrainReasonEnum.FILE_IMPORT);
+        expect(transferConsolidationDrainerService.enqueue).not.toHaveBeenCalled();
     });
 });

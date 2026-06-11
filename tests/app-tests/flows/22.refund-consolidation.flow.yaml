@@ -4,7 +4,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-        FIXTURE_ROW_ID_MATCH: '.*22\.db, db.*'
+        FIXTURE_ROW_ID_MATCH: '22.db(, db)?'
         FILE_PICKER_SEARCH_TEXT: '22.db'
         FILE_PICKER_REPEAT_TAP: 'true'
 
@@ -70,10 +70,11 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.ConvertToRefundButton'
 - tapOn:
     point: '10%,10%'
-- tapOn:
-    id: 'PageHeader.BackButton'
-
-- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- openLink: 'budgie://transactions'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionsPage.Container'
+    timeout: 10000
 
 - scrollUntilVisible:
     element:
