@@ -163,14 +163,14 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Select Xcode 26.3
+      - name: Select Xcode 26.4.1
         run: |
-          if [ -d /Applications/Xcode_26.3.app ]; then
-            XCODE_APP=/Applications/Xcode_26.3.app
+          if [ -d /Applications/Xcode_26.4.1.app ]; then
+            XCODE_APP=/Applications/Xcode_26.4.1.app
           elif [ -d /Applications/Xcode.app ]; then
             XCODE_APP=/Applications/Xcode.app
           else
-            echo "::error::Xcode 26.3 is not installed on this runner."
+            echo "::error::Xcode 26.4.1 is not installed on this runner."
             ls -1 /Applications | grep -i Xcode || true
             exit 1
           fi
@@ -315,14 +315,14 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Select Xcode 26.3
+      - name: Select Xcode 26.4.1
         run: |
-          if [ -d /Applications/Xcode_26.3.app ]; then
-            XCODE_APP=/Applications/Xcode_26.3.app
+          if [ -d /Applications/Xcode_26.4.1.app ]; then
+            XCODE_APP=/Applications/Xcode_26.4.1.app
           elif [ -d /Applications/Xcode.app ]; then
             XCODE_APP=/Applications/Xcode.app
           else
-            echo "::error::Xcode 26.3 is not installed on this runner."
+            echo "::error::Xcode 26.4.1 is not installed on this runner."
             ls -1 /Applications | grep -i Xcode || true
             exit 1
           fi
