@@ -223,7 +223,7 @@ export default function SettingsPage() {
                             onPress={handleReportBug}
                             title={t`Report a Bug`}
                             description={t`Found an issue or have an idea? Open GitHub issue templates.`}
-                            icon={UserIconNameEnum.Github}
+                            icon={UserIconNameEnum.Bug}
                             variant="ghost"
                             testID={SettingsPageSelector.ReportBugCard}
                         />
