@@ -1,4 +1,5 @@
 import { AccountTypeEnum, TransactionEntryKindEnum } from '@budgie/contracts';
+import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
@@ -18,7 +19,12 @@ export const useDebtSettlementTransactionActions = ({
     detachErrorMessage
 }: DebtSettlementTransactionActionsParamsInterface) => {
     const [openAccountSelector] = useAccountSelectorModal();
-    const hasDebtSettlement = transaction.entries.some(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
+    const transactionHasDebtSettlement = transaction.entries.some(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
+    const [hasDebtSettlement, setHasDebtSettlement] = useState(transactionHasDebtSettlement);
+
+    useEffect(() => {
+        setHasDebtSettlement(transactionHasDebtSettlement);
+    }, [transactionHasDebtSettlement]);
 
     const handleOpenDebtSettlement = () =>
         void openAccountSelector({
@@ -30,6 +36,7 @@ export const useDebtSettlementTransactionActions = ({
             .then(async debtAccountId => {
                 if (isDefined(debtAccountId)) {
                     await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
+                    setHasDebtSettlement(true);
                 }
 
                 return null;
@@ -39,6 +46,7 @@ export const useDebtSettlementTransactionActions = ({
     const handleDetachDebtSettlement = () =>
         void transactionDebtSettlementService
             .detach(transactionId)
+            .then(() => void setHasDebtSettlement(false))
             .catch(() => void Toast.show({ type: 'error', text1: detachErrorMessage }));
 
     return {

@@ -10,6 +10,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { getTransactionFeeEntries } from '../../utils/get-transaction-fee-entries.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
+import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
 import { TransactionMetadataRow } from '../transaction-metadata-row/transaction-metadata-row';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -65,7 +66,12 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
             {hasFee ? <TransactionMetadataRow icon={UserIconNameEnum.ReceiptText} label={feeLabel} testID={feeTestID} /> : null}
 
             {isDefined(debtSettlementLabel) ? (
-                <TransactionMetadataRow icon={UserIconNameEnum.HandCoins} label={debtSettlementLabel} testID={debtSettlementTestID} />
+                <TransactionMetaPill
+                    icon={UserIconNameEnum.HandCoins}
+                    label={debtSettlementLabel}
+                    testID={debtSettlementTestID}
+                    variant="warning"
+                />
             ) : null}
         </View>
     );
