@@ -1,4 +1,4 @@
-import { TransactionConsolidationTypeEnum, TransactionEntryKindEnum, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, TransactionEntryKindEnum, UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { View } from 'react-native';
 
@@ -9,8 +9,8 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { getTransactionFeeEntries } from '../../utils/get-transaction-fee-entries.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
+import { DebtSettlementPill } from '../debt-settlement-pill/debt-settlement-pill';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
-import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
 import { TransactionMetadataRow } from '../transaction-metadata-row/transaction-metadata-row';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -22,22 +22,6 @@ interface Props {
     readonly debtSettlementTestID: string;
 }
 
-const getDebtSettlementLabel = (transactionType: TransactionTypeEnum, accountTitle: string | null) => {
-    if (!isDefined(accountTitle)) {
-        return null;
-    }
-
-    if (transactionType === TransactionTypeEnum.INCOME) {
-        return t`Debt return · ${accountTitle}`;
-    }
-
-    if (transactionType === TransactionTypeEnum.EXPENSE) {
-        return t`Debt repayment · ${accountTitle}`;
-    }
-
-    return t`Debt · ${accountTitle}`;
-};
-
 export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTestID, debtSettlementTestID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -48,14 +32,10 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
     const feeCurrencySymbol = isDefined(feeEntry) ? feeEntry.account.instrument.symbol : '';
     const formattedFeeAmount = formatDigits(feeAmount, feeCurrencySymbol);
     const feeLabel = t`Fee · ${formattedFeeAmount}`;
-    const debtSettlementEntry = transaction.entries.find(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
-    const debtSettlementLabel = getDebtSettlementLabel(
-        transaction.type,
-        isDefined(debtSettlementEntry) ? debtSettlementEntry.account.title : null
-    );
+    const hasDebtSettlement = transaction.entries.some(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
     const isRefundTransaction = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
 
-    if (!isRefundTransaction && !hasFee && !isDefined(debtSettlementLabel)) {
+    if (!isRefundTransaction && !hasFee && !hasDebtSettlement) {
         return null;
     }
 
@@ -65,14 +45,7 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
 
             {hasFee ? <TransactionMetadataRow icon={UserIconNameEnum.ReceiptText} label={feeLabel} testID={feeTestID} /> : null}
 
-            {isDefined(debtSettlementLabel) ? (
-                <TransactionMetaPill
-                    icon={UserIconNameEnum.HandCoins}
-                    label={debtSettlementLabel}
-                    testID={debtSettlementTestID}
-                    variant="warning"
-                />
-            ) : null}
+            <DebtSettlementPill transaction={transaction} testID={debtSettlementTestID} />
         </View>
     );
 };

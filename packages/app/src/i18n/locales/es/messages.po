@@ -1012,7 +1012,7 @@ msgstr "Día {selectedDay}"
 msgid "Debt"
 msgstr "Deuda"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt · {accountTitle}"
 msgstr "Deuda · {accountTitle}"
 
@@ -1033,11 +1033,11 @@ msgstr "La cuenta de deuda no coincide con el tipo de transacción"
 msgid "Debt account not found"
 msgstr "Cuenta de deuda no encontrada"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt repayment · {accountTitle}"
 msgstr "Pago de deuda · {accountTitle}"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt return · {accountTitle}"
 msgstr "Devolución de deuda · {accountTitle}"
 

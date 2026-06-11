@@ -1012,7 +1012,7 @@ msgstr "Tag {selectedDay}"
 msgid "Debt"
 msgstr "Schulden"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt · {accountTitle}"
 msgstr "Schulden · {accountTitle}"
 
@@ -1033,11 +1033,11 @@ msgstr "Schuldenkonto passt nicht zum Transaktionstyp"
 msgid "Debt account not found"
 msgstr "Schuldenkonto nicht gefunden"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt repayment · {accountTitle}"
 msgstr "Schuldenrückzahlung · {accountTitle}"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt return · {accountTitle}"
 msgstr "Schuldenrückgabe · {accountTitle}"
 

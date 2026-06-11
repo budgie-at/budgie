@@ -1013,7 +1013,7 @@ msgstr "Day {selectedDay}"
 msgid "Debt"
 msgstr "Debt"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt · {accountTitle}"
 msgstr "Debt · {accountTitle}"
 
@@ -1034,11 +1034,11 @@ msgstr "Debt account does not match transaction type"
 msgid "Debt account not found"
 msgstr "Debt account not found"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt repayment · {accountTitle}"
 msgstr "Debt repayment · {accountTitle}"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt return · {accountTitle}"
 msgstr "Debt return · {accountTitle}"
 

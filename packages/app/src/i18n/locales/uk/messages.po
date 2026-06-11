@@ -1012,7 +1012,7 @@ msgstr "День {selectedDay}"
 msgid "Debt"
 msgstr "Борг"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt · {accountTitle}"
 msgstr "Борг · {accountTitle}"
 
@@ -1033,11 +1033,11 @@ msgstr "Борговий рахунок не відповідає типу тр�
 msgid "Debt account not found"
 msgstr "Борговий рахунок не знайдено"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt repayment · {accountTitle}"
 msgstr "Погашення боргу · {accountTitle}"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt return · {accountTitle}"
 msgstr "Повернення боргу · {accountTitle}"
 

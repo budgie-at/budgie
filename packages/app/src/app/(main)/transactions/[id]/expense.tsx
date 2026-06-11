@@ -5,6 +5,7 @@ import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -14,6 +15,7 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
+import { DebtSettlementPill } from '../../../../transaction/components/debt-settlement-pill/debt-settlement-pill';
 import { RefundedPill } from '../../../../transaction/components/refunded-pill/refunded-pill';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
 import { TransactionCardSelector } from '../../../../transaction/components/transaction-card/transaction-card.selector';
@@ -48,7 +50,10 @@ const useFeeHeaderAction = (control: Control<TransactionCreateInputInterface>) =
 };
 
 const useExpenseAmountTopContent = (transaction: UpdateTransactionFormPropsInterface['transaction'], onPress: () => void) => (
-    <RefundedPill transaction={transaction} onPress={onPress} testID={TransactionCardSelector.RefundedPill(transaction.id)} />
+    <View className="items-center gap-xs">
+        <RefundedPill transaction={transaction} onPress={onPress} testID={TransactionCardSelector.RefundedPill(transaction.id)} />
+        <DebtSettlementPill transaction={transaction} testID={TransactionCardSelector.DebtSettlementMetadata(transaction.id)} />
+    </View>
 );
 
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {

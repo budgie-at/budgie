@@ -14,7 +14,9 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
+import { DebtSettlementPill } from '../../../../transaction/components/debt-settlement-pill/debt-settlement-pill';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
+import { TransactionCardSelector } from '../../../../transaction/components/transaction-card/transaction-card.selector';
 import { UpdateTransactionActionsMenu } from '../../../../transaction/components/update-transaction-actions-menu/update-transaction-actions-menu';
 import { useUpdateIncomeTransactionActions } from '../../../../transaction/hook/use-update-income-transaction-actions.hook';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
@@ -31,6 +33,10 @@ import type { UpdateTransactionFormPropsInterface } from '../../../../transactio
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 import type { Control } from 'react-hook-form';
 /* jscpd:ignore-end */
+
+const getIncomeAmountTopContent = (transaction: UpdateTransactionFormPropsInterface['transaction']) => (
+    <DebtSettlementPill transaction={transaction} testID={TransactionCardSelector.DebtSettlementMetadata(transaction.id)} />
+);
 
 /* jscpd:ignore-start */
 const useFeeHeaderAction = (control: Control<TransactionCreateInputInterface>) => {
@@ -66,26 +72,21 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
     const handleGoBack = () => void goBackOrReplace('/');
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     const isConsolidated = isDefined(transaction.consolidationType);
-    const {
-        handleOpenConvert,
-        handleOpenRefundConvert,
-        handleOpenDebtSettlement,
-        handleDetachDebtSettlement,
-        handleRevert,
-        hasDebtSettlement
-    } = useUpdateIncomeTransactionActions({
+    const actions = useUpdateIncomeTransactionActions({
         transaction,
         transactionId,
         toAccountId
     });
     const refundConvertProps =
-        !isConsolidated && !isDefined(transaction.consolidationParentTransactionId) ? { onConvertToRefund: handleOpenRefundConvert } : {};
-    const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
-    const debtSettlementProps =
-        categoryEntries.length === 1 && !hasDebtSettlement
-            ? { onAttachDebtSettlement: handleOpenDebtSettlement, attachDebtSettlementLabel: t`Attach debt return` }
+        !isConsolidated && !isDefined(transaction.consolidationParentTransactionId)
+            ? { onConvertToRefund: actions.handleOpenRefundConvert }
             : {};
-    const detachDebtSettlementProps = hasDebtSettlement ? { onDetachDebtSettlement: handleDetachDebtSettlement } : {};
+    const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: actions.handleOpenConvert } : {};
+    const debtSettlementProps =
+        categoryEntries.length === 1 && !actions.hasDebtSettlement
+            ? { onAttachDebtSettlement: actions.handleOpenDebtSettlement, attachDebtSettlementLabel: t`Attach debt return` }
+            : {};
+    const detachDebtSettlementProps = actions.hasDebtSettlement ? { onDetachDebtSettlement: actions.handleDetachDebtSettlement } : {};
 
     return (
         <FormProvider {...form}>
@@ -98,7 +99,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                             <UpdateTransactionActionsMenu
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
-                                onRevert={handleRevert}
+                                onRevert={actions.handleRevert}
                                 onFeePress={handleFeePress}
                                 feeActionLabel={feeActionLabel}
                                 {...debtSettlementProps}
@@ -117,6 +118,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                     accountFieldName="toAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={categoryEntries.at(0)?.mccCategoryId ?? null}
+                    amountTopContent={getIncomeAmountTopContent(transaction)}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

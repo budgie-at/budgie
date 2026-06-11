@@ -1012,7 +1012,7 @@ msgstr "Jour {selectedDay}"
 msgid "Debt"
 msgstr "Dette"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt · {accountTitle}"
 msgstr "Dette · {accountTitle}"
 
@@ -1033,11 +1033,11 @@ msgstr "Le compte de dette ne correspond pas au type de transaction"
 msgid "Debt account not found"
 msgstr "Compte de dette introuvable"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt repayment · {accountTitle}"
 msgstr "Remboursement de dette · {accountTitle}"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
 msgid "Debt return · {accountTitle}"
 msgstr "Retour de dette · {accountTitle}"
 
