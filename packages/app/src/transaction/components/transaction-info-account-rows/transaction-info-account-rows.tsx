@@ -28,7 +28,7 @@ const getAccountDescription = (account: ReturnType<typeof getPrimaryAccount>): s
 
 export const TransactionInfoAccountRows = ({ transaction, hasFollowingRows }: TransactionInfoAccountRowsPropsInterface) => {
     const { t } = useLingui();
-    const { formatDayAndFullMonthAndYear, formatMonthAndDayWithTime } = useFormatDate();
+    const { formatDayAndFullMonthAndYear, formatWeekdayWithTime } = useFormatDate();
     const account = getPrimaryAccount(transaction);
     const isTransfer = transaction.type === TransactionTypeEnum.TRANSFER;
     const showFromAccount = isTransfer && isDefined(transaction.fromAccount);
@@ -43,7 +43,7 @@ export const TransactionInfoAccountRows = ({ transaction, hasFollowingRows }: Tr
                 icon={UserIconNameEnum.Calendar}
                 label={t`Date`}
                 value={formatDayAndFullMonthAndYear(transaction.operatedAt)}
-                description={formatMonthAndDayWithTime(transaction.operatedAt)}
+                description={formatWeekdayWithTime(transaction.operatedAt)}
                 testID={TransactionInfoPageSelector.Row.Date}
                 withBottomBorder={dateWithBottomBorder}
             />
