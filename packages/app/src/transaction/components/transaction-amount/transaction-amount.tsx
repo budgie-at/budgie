@@ -1,5 +1,6 @@
 import {
     InstrumentTypeEnum,
+    TransactionEntryTypeEnum,
     TransactionWithRelationsEntityInterface,
     UserIconNameEnum,
     isNegativeAdjustmentTransaction,
@@ -23,11 +24,13 @@ import { TransactionCardSelector } from '../transaction-card/transaction-card.se
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly accountId?: number | null;
 }
 
 interface AggregatedEntry {
     readonly amount: number;
     readonly baseAmount: number | null;
+    readonly type: TransactionEntryTypeEnum;
     readonly account: TransactionWithRelationsEntityInterface['entries'][number]['account'];
 }
 
@@ -49,21 +52,43 @@ const getAggregatedEntry = (transaction: TransactionWithRelationsEntityInterface
     return isNotEmptyArray(entries) ? { ...entries[0], amount: sumEntryAmounts(entries), baseAmount: sumEntryBaseAmounts(entries) } : null;
 };
 
+const getContextualEntry = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null): AggregatedEntry | null => {
+    const entry = getAggregatedEntry(transaction, accountId);
+
+    if (!isDefined(entry) || entry.account.id === transaction.fromAccountId || entry.account.id === transaction.toAccountId) {
+        return null;
+    }
+
+    return entry;
+};
+
 const getAmountTestID = (isAdjustment: boolean, amount: number, transactionId: number) =>
     isAdjustment ? TransactionCardSelector.AdjustmentAmount(amount) : TransactionCardSelector.Amount(transactionId);
 
-const getDisplayState = (transaction: TransactionWithRelationsEntityInterface) => ({
-    type: getTransactionType(transaction),
-    isAdjustment: isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction),
-    fromEntry: getAggregatedEntry(transaction, transaction.fromAccountId),
-    toEntry: getAggregatedEntry(transaction, transaction.toAccountId)
-});
+const getDisplayState = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null) => {
+    const contextualEntry = getContextualEntry(transaction, accountId);
+    const fromEntry =
+        contextualEntry?.type === TransactionEntryTypeEnum.CREDIT
+            ? contextualEntry
+            : getAggregatedEntry(transaction, transaction.fromAccountId);
+    const toEntry =
+        contextualEntry?.type === TransactionEntryTypeEnum.DEBIT
+            ? contextualEntry
+            : getAggregatedEntry(transaction, transaction.toAccountId);
+
+    return {
+        type: getTransactionType(transaction),
+        isAdjustment: isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction),
+        fromEntry,
+        toEntry
+    };
+};
 
 // eslint-disable-next-line max-statements -- Cross-currency display requires additional variables
-export const TransactionAmount = ({ transaction }: Props) => {
+export const TransactionAmount = ({ transaction, accountId = null }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const { type, isAdjustment, fromEntry, toEntry } = getDisplayState(transaction);
+    const { type, isAdjustment, fromEntry, toEntry } = getDisplayState(transaction, accountId);
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return (

@@ -18,9 +18,10 @@ interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly formattedDate: string;
     readonly categoryLabel: string | null;
+    readonly accountId?: number | null;
 }
 
-export const TransactionCardContent = ({ transaction, formattedDate, categoryLabel }: Props) => {
+export const TransactionCardContent = ({ transaction, formattedDate, categoryLabel, accountId = null }: Props) => {
     const categoryIcon = getTransactionIcon(transaction);
     const type = getTransactionType(transaction);
 
@@ -60,12 +61,12 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
                     )}
                 </View>
 
-                <TransactionAmount transaction={transaction} />
+                <TransactionAmount transaction={transaction} accountId={accountId} />
             </View>
 
             <View className="flex-row items-end flex-1 gap-x-lg">
                 <View className="flex-1 min-w-0">
-                    <TransactionCardAccountInfo transaction={transaction} />
+                    <TransactionCardAccountInfo transaction={transaction} accountId={accountId} />
                 </View>
 
                 <View className="items-end gap-y-xs shrink-0">

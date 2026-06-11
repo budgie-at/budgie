@@ -1,10 +1,16 @@
 import {
     AccountTypeEnum,
+    type DB,
     ExternalSourceEnum,
+    type TransactionCreateInputInterface,
+    type TransactionEntityInterface,
+    type TransactionEntryCreateInputInterface,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
+    type TransactionUpdateServiceInputInterface,
     TransactionUpdatedByEnum,
+    type TransactionWithEntriesEntityInterface,
     transactionAsync
 } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
@@ -27,15 +33,7 @@ import { upsertTransactionEntriesAndTags } from '../utils/upsert-transaction-ent
 
 import { importedTransactionEntryUpdateService } from './imported-transaction-entry-update.service';
 import { transactionBatchCreateService } from './transaction-batch-create.service';
-
-import type {
-    DB,
-    TransactionCreateInputInterface,
-    TransactionEntityInterface,
-    TransactionEntryCreateInputInterface,
-    TransactionUpdateServiceInputInterface,
-    TransactionWithEntriesEntityInterface
-} from '@budgie/contracts';
+import { transactionDebtSettlementService } from './transaction-debt-settlement.service';
 
 class TransactionService {
     @Log(
@@ -251,13 +249,20 @@ class TransactionService {
                 },
                 tx
             );
+            const inputWithDebtSettlementEntries = transactionDebtSettlementService.applyExistingSettlementToUpdate(
+                input,
+                existingTransaction
+            );
 
-            await upsertTransactionEntriesAndTags({ transactionId: id, input, operatedAt: transaction.operatedAt, isConsolidated }, tx);
+            await upsertTransactionEntriesAndTags(
+                { transactionId: id, input: inputWithDebtSettlementEntries, operatedAt: transaction.operatedAt, isConsolidated },
+                tx
+            );
 
             await accountBalanceIncrementalService.updateBalancesByAccountIds(
                 [
                     ...this.getAccountIdsFromTransactions(isDefined(existingTransaction) ? [existingTransaction] : []),
-                    ...this.getAccountIdsFromInputs([input])
+                    ...this.getAccountIdsFromInputs([inputWithDebtSettlementEntries])
                 ],
                 tx
             );

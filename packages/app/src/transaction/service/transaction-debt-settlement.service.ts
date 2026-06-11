@@ -15,9 +15,19 @@ import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shar
 import { accountRepository, db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
+import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
+import { getTransactionDebtSettlementEntries } from '../utils/get-transaction-debt-settlement-entries.util';
+import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 
 import type { AttachDebtSettlementParamsInterface } from '../interface/attach-debt-settlement-params.interface';
-import type { AccountEntityInterface, DB, TransactionEntryEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
+import type {
+    AccountEntityInterface,
+    DB,
+    TransactionEntryCreateInputInterface,
+    TransactionEntryEntityInterface,
+    TransactionUpdateServiceInputInterface,
+    TransactionWithEntriesEntityInterface
+} from '@budgie/contracts';
 
 class TransactionDebtSettlementService {
     @Log(
@@ -59,6 +69,37 @@ class TransactionDebtSettlementService {
                 tx
             );
         });
+    }
+
+    applyExistingSettlementToUpdate(
+        input: TransactionUpdateServiceInputInterface,
+        existingTransaction: TransactionWithEntriesEntityInterface | undefined
+    ): TransactionUpdateServiceInputInterface {
+        const regularEntries = input.entries.filter(entry => entry.kind !== TransactionEntryKindEnum.DEBT_SETTLEMENT);
+        const existingSettlementEntries = isDefined(existingTransaction)
+            ? getTransactionDebtSettlementEntries(existingTransaction.entries)
+            : [];
+
+        if (!isNotEmptyArray(existingSettlementEntries)) {
+            return regularEntries.length === input.entries.length ? input : { ...input, entries: regularEntries };
+        }
+
+        const categoryEntries = getTransactionCategoryEntries(regularEntries);
+        const categoryEntry = categoryEntries.at(0);
+
+        if (!isDefined(categoryEntry)) {
+            return input;
+        }
+
+        return {
+            ...input,
+            entries: [
+                ...regularEntries,
+                ...existingSettlementEntries.map(entry =>
+                    this.buildUpdatedDebtSettlementEntry(input.type, categoryEntries, categoryEntry, entry)
+                )
+            ]
+        };
     }
 
     private async getTransactionOrFail(transactionId: number, tx: DB): Promise<TransactionWithEntriesEntityInterface> {
@@ -153,6 +194,30 @@ class TransactionDebtSettlementService {
             baseInstrumentId: valuation.baseInstrumentId,
             baseExchangeRate: valuation.baseExchangeRate,
             baseAmount: valuation.baseAmount,
+            toIban: null,
+            originalTransactionId: null
+        };
+    }
+
+    private buildUpdatedDebtSettlementEntry(
+        transactionType: TransactionUpdateServiceInputInterface['type'],
+        categoryEntries: TransactionEntryCreateInputInterface[],
+        categoryEntry: TransactionEntryCreateInputInterface,
+        settlementEntry: TransactionEntryEntityInterface
+    ): TransactionEntryCreateInputInterface {
+        return {
+            accountId: settlementEntry.accountId,
+            categoryId: categoryEntry.categoryId,
+            categorySource: categoryEntry.categorySource,
+            mccCategoryId: categoryEntry.mccCategoryId,
+            type: transactionType === TransactionTypeEnum.INCOME ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
+            kind: TransactionEntryKindEnum.DEBT_SETTLEMENT,
+            amount: sumEntryAmounts(categoryEntries),
+            externalId: null,
+            exchangeRate: settlementEntry.exchangeRate,
+            baseInstrumentId: null,
+            baseExchangeRate: null,
+            baseAmount: null,
             toIban: null,
             originalTransactionId: null
         };

@@ -20,11 +20,19 @@ export interface TransactionCardProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly formattedDate: string;
     readonly categoryLabel: string | null;
+    readonly accountId?: number | null;
     readonly onPress?: (transaction: TransactionWithRelationsEntityInterface) => void;
     readonly onLongPress?: (transaction: TransactionWithRelationsEntityInterface, anchor: PopoverMenuAnchor) => void;
 }
 
-export const TransactionCard = ({ transaction, formattedDate, categoryLabel, onPress, onLongPress }: TransactionCardProps) => {
+export const TransactionCard = ({
+    transaction,
+    formattedDate,
+    categoryLabel,
+    accountId = null,
+    onPress,
+    onLongPress
+}: TransactionCardProps) => {
     const cardRef = useRef<View>(null);
 
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
@@ -57,7 +65,12 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel, onP
 
     const card = (
         <Card className="p-xl gap-y-8" testID={cardTestID} {...interactionProps}>
-            <TransactionCardContent transaction={transaction} formattedDate={formattedDate} categoryLabel={categoryLabel} />
+            <TransactionCardContent
+                transaction={transaction}
+                formattedDate={formattedDate}
+                categoryLabel={categoryLabel}
+                accountId={accountId}
+            />
         </Card>
     );
 

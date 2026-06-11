@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { accountBalanceRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { accountBalanceRepository, statisticsRepository, transactionRepository } from '@app/@generic/drizzle/db/db';
 import {
     AccountTypeEnum,
     CategoryEntityTable,
@@ -28,7 +28,7 @@ describe('debt settlement statistics', () => {
         const debtAccount = seed.account({ title: 'Alex owes me', type: AccountTypeEnum.DEBT });
 
         createDebtFundingTransaction(cashAccount.id, debtAccount.id, 300 * PRECISION);
-        createDebtReturnIncome(cashAccount.id, debtAccount.id, category.id, 100 * PRECISION);
+        const debtReturnTransactionId = createDebtReturnIncome(cashAccount.id, debtAccount.id, category.id, 100 * PRECISION);
 
         const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, cashAccount.instrumentId).get();
         const categoryRows = statisticsRepository
@@ -37,12 +37,17 @@ describe('debt settlement statistics', () => {
         const categoryAmount = categoryRows.find(row => row.category?.id === category.id)?.amount;
         const cashBalance = accountBalanceRepository.getByAccountId(cashAccount.id).get();
         const debtBalance = accountBalanceRepository.getByAccountId(debtAccount.id).get();
+        const debtAccountTransactionCount = transactionRepository
+            .countAll({ ...DEFAULT_TRANSACTION_FILTER, accountIds: [debtAccount.id] })
+            .get();
 
         expect(totals?.income).toBe(100 * PRECISION);
         expect(totals?.expense).toBe(300 * PRECISION);
         expect(categoryAmount).toBe(100 * PRECISION);
         expect(cashBalance?.balance).toBe(-200 * PRECISION);
         expect(debtBalance?.balance).toBe(200 * PRECISION);
+        expect(debtAccountTransactionCount?.value).toBe(2);
+        expect(debtReturnTransactionId).toBeGreaterThan(0);
     });
 });
 
@@ -79,7 +84,7 @@ const createDebtFundingTransaction = (cashAccountId: number, debtAccountId: numb
     });
 };
 
-const createDebtReturnIncome = (cashAccountId: number, debtAccountId: number, categoryId: number, amount: number): void => {
+const createDebtReturnIncome = (cashAccountId: number, debtAccountId: number, categoryId: number, amount: number): number => {
     const transaction = insertOne(TransactionEntityTable, {
         type: TransactionTypeEnum.INCOME,
         title: 'Alex returned money',
@@ -110,6 +115,8 @@ const createDebtReturnIncome = (cashAccountId: number, debtAccountId: number, ca
         amount,
         categoryId
     });
+
+    return transaction.id;
 };
 
 const createTransactionEntry = (
