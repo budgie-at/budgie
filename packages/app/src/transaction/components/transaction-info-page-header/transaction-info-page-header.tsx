@@ -22,7 +22,7 @@ export const TransactionInfoPageHeader = ({
 
     return (
         <PageHeader
-            title={t`Transaction`}
+            title=""
             size="md"
             onGoBack={onGoBack}
             right={
