@@ -50,7 +50,7 @@ export const Page = (props: Props) => {
             ) : null}
 
             {withBlur ? (
-                <BlurGradient position="bottom">
+                <BlurGradient position="bottom" edgeOffset={bottom}>
                     <View className="absolute bottom-0 right-0 left-0" style={bottomStyle}>
                         {footer}
                     </View>
