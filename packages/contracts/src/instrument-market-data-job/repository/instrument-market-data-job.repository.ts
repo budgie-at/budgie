@@ -122,14 +122,6 @@ export class InstrumentMarketDataJobRepository {
             .where(eq(InstrumentMarketDataJobEntityTable.id, jobId));
     }
 
-    @Log(
-        (instrumentId, quoteInstrumentId, tx) =>
-            `enter lookup=latest-job instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))}`,
-        (result, instrumentId, quoteInstrumentId, tx) =>
-            `done lookup=latest-job instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} queryBuilt=${String(isDefined(result))}`,
-        (error, instrumentId, quoteInstrumentId, tx) =>
-            `throw lookup=latest-job instrumentId=${instrumentId} quoteInstrumentId=${quoteInstrumentId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
     findLatestByInstrumentAndQuote(instrumentId: number, quoteInstrumentId: number, tx?: DB) {
         return (tx ?? this.db).query.InstrumentMarketDataJobEntityTable.findFirst({
             where: this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
