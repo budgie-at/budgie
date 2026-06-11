@@ -1,12 +1,17 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import { AccountTypeEnum, TransactionEntryTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    TransactionEntryTypeEnum,
+    TransferTransactionCreateInputSchema,
+    UserIconNameEnum
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
@@ -18,14 +23,19 @@ import { useAccountBalanceQuery } from '../../../../account/query/use-account-ba
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
+import { TransactionActionsMenuSelector } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu.selector';
+import { TransactionConvertMenuItem } from '../../../../transaction/components/transaction-convert-menu-item/transaction-convert-menu-item';
 import { TransferQuickForm } from '../../../../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConsolidationSourceModal } from '../../../../transaction/context/consolidation-source-modal.context';
 import { useRevertConsolidation } from '../../../../transaction/hook/use-revert-consolidation.hook';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
+import { getTransactionFeeEntries } from '../../../../transaction/utils/get-transaction-fee-entries.util';
 import { getTransactionHref } from '../../../../transaction/utils/get-transaction-href.util';
+import { sumEntryAmounts } from '../../../../transaction/utils/sum-entry-amounts.util';
 
+import type { SimpleQuickFormRefInterface } from '../../../../transaction/interface/simple-quick-form-ref.interface';
 import type { UpdateTransactionFormPropsInterface } from '../../../../transaction/interface/update-transaction-form-props.interface';
 /* jscpd:ignore-end */
 
@@ -35,6 +45,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransactionFor
     const { t } = useLingui();
     const { markForEmbedding } = useEmbeddingGenerator();
     const [openConsolidationSource] = useConsolidationSourceModal();
+    const quickFormRef = useRef<SimpleQuickFormRefInterface>(null);
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -54,16 +65,20 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransactionFor
         control: form.control,
         name: ['fromAccountId', 'amount']
     });
+    const entries = useWatch({ control: form.control, name: 'entries' });
     const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
     const { balance } = useAccountBalanceQuery(fromAccountId ?? 0);
 
     const isDebtAccount = account?.type === AccountTypeEnum.DEBT;
     const exceedsDebtBalance = isDebtAccount && amount > balance;
+    const feeAmount = sumEntryAmounts(getTransactionFeeEntries(entries));
+    const feeActionLabel = isPositiveNumber(feeAmount) ? t`Edit fee` : t`Set fee`;
 
     const handleConsolidationPress = () => {
         void openConsolidationSource({ transactionId });
     };
     const handleGoBack = () => void goBackOrReplace('/');
+    const handleFeePress = () => quickFormRef.current?.openFee();
 
     useEffect(() => {
         if (exceedsDebtBalance) {
@@ -85,16 +100,25 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransactionFor
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
                                 {...(isConsolidated && { onRevert: handleRevert })}
-                            />
+                            >
+                                <TransactionConvertMenuItem
+                                    icon={UserIconNameEnum.ReceiptText}
+                                    label={feeActionLabel}
+                                    onConvert={handleFeePress}
+                                    testID={TransactionActionsMenuSelector.FeeButton}
+                                />
+                            </TransactionActionsMenu>
                         }
                     />
                 }
             >
                 <TransferQuickForm
+                    ref={quickFormRef}
                     variant="default"
                     initialDestinationAmount={initialDestinationAmount}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
+                    showInlineFeeAction={false}
                     {...(isConsolidated && { onConsolidationPress: handleConsolidationPress })}
                 />
             </FullPage>

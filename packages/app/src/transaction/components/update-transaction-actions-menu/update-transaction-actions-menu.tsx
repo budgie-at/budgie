@@ -11,6 +11,8 @@ import type { TransactionActionsMenuPropsInterface } from '../../interface/trans
 
 interface Props extends Pick<TransactionActionsMenuPropsInterface, 'onDelete' | 'isConsolidated'> {
     readonly onRevert: () => void;
+    readonly onFeePress?: () => void;
+    readonly feeActionLabel?: string;
     readonly onAttachDebtSettlement?: () => void;
     readonly attachDebtSettlementLabel?: string;
     readonly onConvertToRefund?: () => void;
@@ -22,6 +24,8 @@ export const UpdateTransactionActionsMenu = ({
     onDelete,
     isConsolidated,
     onRevert,
+    onFeePress,
+    feeActionLabel,
     onAttachDebtSettlement,
     attachDebtSettlementLabel,
     onConvertToRefund,
@@ -29,6 +33,7 @@ export const UpdateTransactionActionsMenu = ({
     onDetachDebtSettlement
 }: Props) => {
     const { t } = useLingui();
+    const showFee = isDefined(onFeePress);
     const showAttachDebtSettlement = isDefined(onAttachDebtSettlement);
     const showConvertToRefund = isDefined(onConvertToRefund);
     const showConvertToTransfer = isDefined(onConvertToTransfer);
@@ -36,6 +41,14 @@ export const UpdateTransactionActionsMenu = ({
 
     return (
         <TransactionActionsMenu onDelete={onDelete} isConsolidated={isConsolidated} {...(isConsolidated && { onRevert })}>
+            {showFee ? (
+                <TransactionConvertMenuItem
+                    icon={UserIconNameEnum.ReceiptText}
+                    label={feeActionLabel ?? t`Set fee`}
+                    onConvert={onFeePress}
+                    testID={TransactionActionsMenuSelector.FeeButton}
+                />
+            ) : null}
             {showAttachDebtSettlement ? (
                 <TransactionConvertMenuItem
                     icon={UserIconNameEnum.HandCoins}

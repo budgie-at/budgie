@@ -3,9 +3,10 @@
 import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
+import { useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
@@ -23,12 +24,32 @@ import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-ge
 import { buildExpenseEntry } from '../../../../transaction/utils/build-expense-entry.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 import { getTransactionCategoryEntries } from '../../../../transaction/utils/get-transaction-category-entries.util';
+import { getTransactionFeeEntries } from '../../../../transaction/utils/get-transaction-fee-entries.util';
 import { getTransactionHref } from '../../../../transaction/utils/get-transaction-href.util';
+import { sumEntryAmounts } from '../../../../transaction/utils/sum-entry-amounts.util';
 
+import type { SimpleQuickFormRefInterface } from '../../../../transaction/interface/simple-quick-form-ref.interface';
 import type { UpdateTransactionFormPropsInterface } from '../../../../transaction/interface/update-transaction-form-props.interface';
+import type { TransactionCreateInputInterface } from '@budgie/contracts';
+import type { Control } from 'react-hook-form';
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
+
+const useFeeHeaderAction = (control: Control<TransactionCreateInputInterface>) => {
+    const { t } = useLingui();
+    const quickFormRef = useRef<SimpleQuickFormRefInterface>(null);
+    const entries = useWatch({ control, name: 'entries' });
+    const feeAmount = sumEntryAmounts(getTransactionFeeEntries(entries));
+    const feeActionLabel = isPositiveNumber(feeAmount) ? t`Edit fee` : t`Set fee`;
+    const handleFeePress = () => quickFormRef.current?.openFee();
+
+    return { feeActionLabel, handleFeePress, quickFormRef };
+};
+
+const useExpenseAmountTopContent = (transaction: UpdateTransactionFormPropsInterface['transaction'], onPress: () => void) => (
+    <RefundedPill transaction={transaction} onPress={onPress} testID={TransactionCardSelector.RefundedPill(transaction.id)} />
+);
 
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
@@ -42,6 +63,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
+    const { feeActionLabel, handleFeePress, quickFormRef } = useFeeHeaderAction(form.control);
 
     const ruleDetection = useSuggestRuleDetection({
         transaction,
@@ -69,6 +91,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
             ? { onAttachDebtSettlement: handleOpenDebtSettlement, attachDebtSettlementLabel: t`Attach debt repayment` }
             : {};
     const detachDebtSettlementProps = hasDebtSettlement ? { onDetachDebtSettlement: handleDetachDebtSettlement } : {};
+    const amountTopContent = useExpenseAmountTopContent(transaction, handleOpenRefundSources);
 
     return (
         <FormProvider {...form}>
@@ -82,6 +105,8 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
                                 onRevert={handleRevert}
+                                onFeePress={handleFeePress}
+                                feeActionLabel={feeActionLabel}
                                 {...debtSettlementProps}
                                 {...detachDebtSettlementProps}
                                 {...transferConvertProps}
@@ -91,18 +116,13 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                 }
             >
                 <SimpleQuickForm
+                    ref={quickFormRef}
                     variant="destructive"
                     transactionType={TransactionTypeEnum.EXPENSE}
                     accountFieldName="fromAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={categoryEntries.at(0)?.mccCategoryId ?? null}
-                    amountTopContent={
-                        <RefundedPill
-                            transaction={transaction}
-                            onPress={handleOpenRefundSources}
-                            testID={TransactionCardSelector.RefundedPill(transaction.id)}
-                        />
-                    }
+                    amountTopContent={amountTopContent}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
@@ -114,6 +134,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                     onRuleCreated={ruleDetection.onRuleCreated}
                     onDismiss={ruleDetection.onDismiss}
                     onCreatingChange={ruleDetection.onCreatingChange}
+                    showInlineFeeAction={false}
                 />
             </FullPage>
         </FormProvider>

@@ -3,9 +3,10 @@
 import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
+import { useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
@@ -21,12 +22,28 @@ import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-ge
 import { buildIncomeEntry } from '../../../../transaction/utils/build-income-entry.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 import { getTransactionCategoryEntries } from '../../../../transaction/utils/get-transaction-category-entries.util';
+import { getTransactionFeeEntries } from '../../../../transaction/utils/get-transaction-fee-entries.util';
 import { getTransactionHref } from '../../../../transaction/utils/get-transaction-href.util';
+import { sumEntryAmounts } from '../../../../transaction/utils/sum-entry-amounts.util';
 
+import type { SimpleQuickFormRefInterface } from '../../../../transaction/interface/simple-quick-form-ref.interface';
 import type { UpdateTransactionFormPropsInterface } from '../../../../transaction/interface/update-transaction-form-props.interface';
+import type { TransactionCreateInputInterface } from '@budgie/contracts';
+import type { Control } from 'react-hook-form';
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
+const useFeeHeaderAction = (control: Control<TransactionCreateInputInterface>) => {
+    const { t } = useLingui();
+    const quickFormRef = useRef<SimpleQuickFormRefInterface>(null);
+    const entries = useWatch({ control, name: 'entries' });
+    const feeAmount = sumEntryAmounts(getTransactionFeeEntries(entries));
+    const feeActionLabel = isPositiveNumber(feeAmount) ? t`Edit fee` : t`Set fee`;
+    const handleFeePress = () => quickFormRef.current?.openFee();
+
+    return { feeActionLabel, handleFeePress, quickFormRef };
+};
+
 const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const { markForEmbedding } = useEmbeddingGenerator();
@@ -39,6 +56,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
     });
 
     const toAccountId = useWatch({ control: form.control, name: 'toAccountId' });
+    const { feeActionLabel, handleFeePress, quickFormRef } = useFeeHeaderAction(form.control);
 
     const ruleDetection = useSuggestRuleDetection({
         transaction,
@@ -60,8 +78,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
         transactionId,
         toAccountId
     });
-    const canConvertToRefund = !isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
-    const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
+    const refundConvertProps =
+        !isConsolidated && !isDefined(transaction.consolidationParentTransactionId) ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
     const debtSettlementProps =
         categoryEntries.length === 1 && !hasDebtSettlement
@@ -81,6 +99,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
                                 onRevert={handleRevert}
+                                onFeePress={handleFeePress}
+                                feeActionLabel={feeActionLabel}
                                 {...debtSettlementProps}
                                 {...detachDebtSettlementProps}
                                 {...refundConvertProps}
@@ -91,6 +111,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                 }
             >
                 <SimpleQuickForm
+                    ref={quickFormRef}
                     variant="positive"
                     transactionType={TransactionTypeEnum.INCOME}
                     accountFieldName="toAccountId"
@@ -107,6 +128,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                     onRuleCreated={ruleDetection.onRuleCreated}
                     onDismiss={ruleDetection.onDismiss}
                     onCreatingChange={ruleDetection.onCreatingChange}
+                    showInlineFeeAction={false}
                 />
             </FullPage>
         </FormProvider>
