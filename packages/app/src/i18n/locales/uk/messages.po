@@ -1866,6 +1866,10 @@ msgstr "Немає результатів"
 msgid "No Rules Yet"
 msgstr "Правил ще немає"
 
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
+msgid "No similar transactions"
+msgstr "Немає схожих транзакцій"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "No source transactions"
 msgstr "Немає вихідних транзакцій"

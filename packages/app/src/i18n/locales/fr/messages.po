@@ -1866,6 +1866,10 @@ msgstr "Aucun résultat"
 msgid "No Rules Yet"
 msgstr "Aucune règle pour l'instant"
 
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
+msgid "No similar transactions"
+msgstr "Aucune transaction similaire"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "No source transactions"
 msgstr "Aucune transaction source"

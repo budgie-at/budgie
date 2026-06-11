@@ -1867,6 +1867,10 @@ msgstr "No Results"
 msgid "No Rules Yet"
 msgstr "No Rules Yet"
 
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
+msgid "No similar transactions"
+msgstr "No similar transactions"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "No source transactions"
 msgstr "No source transactions"

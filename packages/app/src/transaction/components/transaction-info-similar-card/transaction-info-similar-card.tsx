@@ -28,15 +28,13 @@ export const TransactionInfoSimilarCard = ({
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    if (!isDefined(stats) || !isPositiveNumber(stats.count)) {
-        return null;
-    }
-
-    const maxAmount = Math.max(...stats.months.map(month => month.totalAmount), 1);
-    const total = formatDigits(convertFromMicroUnits(stats.totalAmount), stats.currencySymbol);
-    const average = formatDigits(convertFromMicroUnits(stats.averageAmount), stats.currencySymbol);
-    const similarCount = stats.count;
+    const hasStats = isDefined(stats) && isPositiveNumber(stats.count);
+    const maxAmount = hasStats ? Math.max(...stats.months.map(month => month.totalAmount), 1) : 1;
+    const total = hasStats ? formatDigits(convertFromMicroUnits(stats.totalAmount), stats.currencySymbol) : null;
+    const average = hasStats ? formatDigits(convertFromMicroUnits(stats.averageAmount), stats.currencySymbol) : null;
+    const similarCount = hasStats ? stats.count : 0;
     const opacityClassName = isLoading ? 'opacity-60' : 'opacity-100';
+    const description = hasStats ? t`${similarCount} similar transactions` : t`No similar transactions`;
     const periodLabels: Record<TransactionInfoSimilarPeriodEnum, string> = {
         [TransactionInfoSimilarPeriodEnum.SIX_MONTHS]: t`6 months`,
         [TransactionInfoSimilarPeriodEnum.TWELVE_MONTHS]: t`12 months`
@@ -47,7 +45,7 @@ export const TransactionInfoSimilarCard = ({
             <View className="flex-row items-center gap-x-xl">
                 <View className="flex-1">
                     <Text className="text-md text-primary font-semibold">{title}</Text>
-                    <Text className="text-sm text-secondary-foreground">{t`${similarCount} similar transactions`}</Text>
+                    <Text className="text-sm text-secondary-foreground">{description}</Text>
                 </View>
 
                 <View className="flex-row rounded-full border border-secondary-corner bg-secondary-background p-xxs">
@@ -63,25 +61,29 @@ export const TransactionInfoSimilarCard = ({
                 </View>
             </View>
 
-            <View className="flex-row gap-x-lg">
-                <View className="flex-1">
-                    <Text className="text-xs text-secondary-foreground">{t`Total`}</Text>
-                    <Text className="text-lg text-primary font-semibold">{total}</Text>
+            {hasStats ? (
+                <View className="flex-row gap-x-lg">
+                    <View className="flex-1">
+                        <Text className="text-xs text-secondary-foreground">{t`Total`}</Text>
+                        <Text className="text-lg text-primary font-semibold">{total}</Text>
+                    </View>
+                    <View className="flex-1">
+                        <Text className="text-xs text-secondary-foreground">{t`Average`}</Text>
+                        <Text className="text-lg text-primary font-semibold">{average}</Text>
+                    </View>
                 </View>
-                <View className="flex-1">
-                    <Text className="text-xs text-secondary-foreground">{t`Average`}</Text>
-                    <Text className="text-lg text-primary font-semibold">{average}</Text>
+            ) : null}
+
+            {hasStats ? (
+                <View className="flex-row items-end gap-x-sm h-[116px]">
+                    {stats.months.map(month => {
+                        const height = Math.max(8, Math.round((month.totalAmount / maxAmount) * BAR_MAX_HEIGHT));
+                        const label = month.monthKey.slice(5);
+
+                        return <TransactionInfoSimilarBar key={month.monthKey} height={height} label={label} />;
+                    })}
                 </View>
-            </View>
-
-            <View className="flex-row items-end gap-x-sm h-[116px]">
-                {stats.months.map(month => {
-                    const height = Math.max(8, Math.round((month.totalAmount / maxAmount) * BAR_MAX_HEIGHT));
-                    const label = month.monthKey.slice(5);
-
-                    return <TransactionInfoSimilarBar key={month.monthKey} height={height} label={label} />;
-                })}
-            </View>
+            ) : null}
         </Card>
     );
 };
