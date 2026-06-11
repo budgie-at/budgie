@@ -81,7 +81,7 @@ export const TransactionInfoPage = (props: TransactionInfoPagePropsInterface) =>
             }
             testID={TransactionInfoPageSelector.Page}
         >
-            <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerClassName="px-5xl pb-8xl">
+            <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerClassName="px-5xl pb-8xl pt-16">
                 <TransactionInfoHero
                     transaction={transaction}
                     categoryLabel={categoryLabel}
