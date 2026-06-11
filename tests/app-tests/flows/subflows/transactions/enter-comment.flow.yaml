@@ -2,17 +2,6 @@ appId: ${APP_ID}
 ---
 - tapOn:
     id: 'TransactionForm.CommentInput'
-- waitForAnimationToEnd
-
-- runFlow:
-    when:
-      notVisible:
-        id: 'NoteInput.Input'
-    commands:
-      - tapOn:
-          point: '50%,50%'
-      - waitForAnimationToEnd
-
 - extendedWaitUntil:
     visible:
       id: 'NoteInput.Input'
@@ -21,4 +10,4 @@ appId: ${APP_ID}
     id: 'NoteInput.Input'
 - inputText: ${COMMENT}
 - tapOn:
-    point: '90%,57%'
+    id: 'NoteInput.SubmitButton'

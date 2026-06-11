@@ -1,11 +1,11 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
+    point: '80%,8%'
 - extendedWaitUntil:
-      visible:
-          id: 'TransactionActionsMenu.DeleteButton'
+    visible:
+      id: 'TransactionActionsMenu.DeleteButton'
 
 - tapOn:
-      id: 'TransactionActionsMenu.DeleteButton'
+    id: 'TransactionActionsMenu.DeleteButton'
 - runFlow: confirm-delete-dialog.flow.yaml
