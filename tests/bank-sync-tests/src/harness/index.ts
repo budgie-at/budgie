@@ -10,6 +10,7 @@ export { seedAmountTransferPair } from './seed/seed-amount-transfer-pair';
 export { StubFileBankSyncService } from './file-sync/stub-file-bank-sync-service';
 export { expectSingleConsolidation } from './consolidation/expect-single-consolidation';
 export { expectAtmCashWithdrawalConsolidation } from './consolidation/expect-atm-cash-withdrawal-consolidation';
+export { expectFileImportConsolidationEnqueued } from './consolidation/expect-file-import-consolidation-enqueued';
 export { seedBankSyncAccount } from './consolidation/seed-bank-sync-account';
 export { fetchTransactionById } from './db/fetch-transaction-by-id';
 export { fetchExpenseEntries } from './db/fetch-expense-entries';

@@ -1,13 +1,14 @@
-import { consolidationAutoCandidateService, consolidationCandidateService } from './test-context';
+import { consolidationAutoCandidateService } from './test-context';
 
-import type { ConsolidationCandidateGroupsInterface } from '@budgie/consolidation';
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
-export const runConsolidation = async (): Promise<{
+export const runConsolidation = async (
+    scope: ConsolidationScanScopeInterface | null = null
+): Promise<{
     readonly consolidated: number;
-    readonly groups: ConsolidationCandidateGroupsInterface;
+    readonly found: number;
 }> => {
-    const groups = await consolidationCandidateService.findGroups();
-    const consolidated = await consolidationAutoCandidateService.processGroups(groups);
+    const result = await consolidationAutoCandidateService.process(scope);
 
-    return { consolidated, groups };
+    return result;
 };

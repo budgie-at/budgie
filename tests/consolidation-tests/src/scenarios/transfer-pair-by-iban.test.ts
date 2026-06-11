@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { PRECISION, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { isDefined } from '@rnw-community/shared';
 
 import { runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService } from '../harness/test-context';
@@ -18,6 +19,9 @@ describe('consolidation/transfer-pair-by-iban', () => {
             { externalId: 'iban-income', operatedAt: new Date(operatedAt.getTime() + 5_000) },
             { accountId: toAccount.id, amount: 250 * PRECISION, mccCategoryId: transferMcc.id }
         );
+        const tag = testSeedService.tag('Transfer Source');
+        testSeedService.transactionTag(expense.id, tag.id);
+        testSeedService.transactionTag(income.id, tag.id);
 
         const result = await runConsolidation();
         expect(result.consolidated).toBe(1);
@@ -32,7 +36,8 @@ describe('consolidation/transfer-pair-by-iban', () => {
         expect(testQueryService.fetchTransactionById(income.id).consolidationParentTransactionId).toBe(canonicals[0].id);
 
         const movedEntries = testQueryService.fetchEntriesByTransactionId(canonicals[0].id);
-        const sourceIds = movedEntries.flatMap(entry => (entry.originalTransactionId ? [entry.originalTransactionId] : []));
+        const sourceIds = movedEntries.flatMap(entry => (isDefined(entry.originalTransactionId) ? [entry.originalTransactionId] : []));
         expect(sourceIds.sort()).toEqual([expense.id, income.id].sort());
+        expect(testQueryService.fetchTransactionTagIds(canonicals[0].id)).toHaveLength(0);
     });
 });

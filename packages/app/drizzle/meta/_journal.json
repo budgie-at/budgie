@@ -218,6 +218,13 @@
             "when": 1780738800000,
             "tag": "0030_seed_top_crypto_market_prices",
             "breakpoints": true
+        },
+        {
+            "idx": 31,
+            "version": "6",
+            "when": 1780825200000,
+            "tag": "0031_add_account_lookup_indexes",
+            "breakpoints": true
         }
     ]
 }

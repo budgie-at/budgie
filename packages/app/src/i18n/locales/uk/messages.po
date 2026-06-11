@@ -2558,6 +2558,14 @@ msgstr "Перемикайтеся між світлою та темною те�
 msgid "Sync Failed"
 msgstr "Синхронізація не вдалась"
 
+#: src/sync/service/sync-workload.service.ts
+msgid "Sync workload is blocked for app reset"
+msgstr "Синхронізаційне завдання заблоковано через скидання застосунку"
+
+#: src/sync/service/sync-workload.service.ts
+msgid "Sync workload was cancelled by app reset"
+msgstr "Синхронізаційне завдання скасовано через скидання застосунку"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Синхронізуйте свої рахунки та транзакції Монобанку"
