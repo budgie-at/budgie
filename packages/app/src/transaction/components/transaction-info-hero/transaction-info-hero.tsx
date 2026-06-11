@@ -1,7 +1,7 @@
 import { TransactionConsolidationTypeEnum, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
@@ -11,12 +11,9 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
-import { getTransactionFeeEntries } from '../../utils/get-transaction-fee-entries.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
-import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
-import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
 
 import type { TransactionInfoHeroPropsInterface } from '../../interface/transaction-info-hero-props.interface';
@@ -59,9 +56,6 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
     const variant = TRANSACTION_COLOR[getTransactionType(transaction)];
     const primaryEntry = getPrimaryEntry(transaction);
     const secondaryEntry = getSecondaryTransferEntry(transaction);
-    const feeEntries = getTransactionFeeEntries(transaction.entries);
-    const feeAmount = convertFromMicroUnits(sumEntryAmounts(feeEntries));
-    const feeCurrencySymbol = feeEntries.at(0)?.account.instrument.symbol ?? primaryEntry?.account.instrument.symbol ?? '';
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
     const amount = isDefined(primaryEntry) ? convertFromMicroUnits(primaryEntry.amount) : 0;
     const currencySymbol = primaryEntry?.account.instrument.symbol ?? '';
@@ -69,7 +63,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
     const secondaryAmount = isDefined(secondaryEntry)
         ? formatDigits(convertFromMicroUnits(secondaryEntry.amount), secondaryEntry.account.instrument.symbol)
         : null;
-    const showMetaPills = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND || isPositiveNumber(feeAmount);
+    const showMetaPills = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
 
     return (
         <View className="items-center gap-y-xl py-4xl">
@@ -102,7 +96,6 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
             {showMetaPills ? (
                 <View className="flex-row flex-wrap justify-center gap-xs">
                     <RefundedPill transaction={transaction} onPress={onOpenRefundSources} />
-                    <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} />
                 </View>
             ) : null}
 

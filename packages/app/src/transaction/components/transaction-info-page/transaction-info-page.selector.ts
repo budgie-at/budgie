@@ -2,6 +2,9 @@ export const TransactionInfoPageSelector = {
     Page: 'TransactionInfo.Page',
     EditButton: 'TransactionInfo.EditButton',
     SimilarCard: 'TransactionInfo.SimilarCard',
+    SimilarTotal: 'TransactionInfo.SimilarTotal',
+    SimilarAverage: 'TransactionInfo.SimilarAverage',
+    SimilarBar: (index: number) => `TransactionInfo.SimilarBar.${index}` as const,
     Row: {
         Account: 'TransactionInfo.Row.Account',
         Category: 'TransactionInfo.Row.Category',
@@ -12,7 +15,6 @@ export const TransactionInfoPageSelector = {
         FromAccount: 'TransactionInfo.Row.FromAccount',
         MerchantCode: 'TransactionInfo.Row.MerchantCode',
         Note: 'TransactionInfo.Row.Note',
-        Source: 'TransactionInfo.Row.Source',
         Tags: 'TransactionInfo.Row.Tags',
         ToAccount: 'TransactionInfo.Row.ToAccount'
     }

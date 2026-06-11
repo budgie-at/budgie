@@ -114,8 +114,8 @@ msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show #
 msgstr "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
-msgid "{similarCount} similar transactions"
-msgstr "{similarCount} similar transactions"
+msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
+msgstr "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "{source} error · {message}"
@@ -156,14 +156,6 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 #: src/app/(tabs)/settings/index.tsx
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
-
-#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
-msgid "12 months"
-msgstr "12 months"
-
-#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
-msgid "6 months"
-msgstr "6 months"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
@@ -1624,7 +1616,6 @@ msgid "Manage Tags"
 msgstr "Manage Tags"
 
 #: src/rule/constant/external-source.constant.ts
-#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "Manual"
 msgstr "Manual"
 
@@ -1866,10 +1857,6 @@ msgstr "No Results"
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "No Rules Yet"
 msgstr "No Rules Yet"
-
-#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
-msgid "No similar transactions"
-msgstr "No similar transactions"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "No source transactions"
@@ -2534,7 +2521,6 @@ msgstr "Something went wrong. Please try again later."
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
-#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "Source"
 msgstr "Source"
 
@@ -2791,10 +2777,6 @@ msgstr "Total: {formattedAmountToReturn}"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Touch ID"
 msgstr "Touch ID"
-
-#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
-msgid "Transaction"
-msgstr "Transaction"
 
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction must have a destination account"

@@ -814,7 +814,9 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     private getSimilarStatsSinceDate(query: SimilarTransactionStatsQueryInterface): Date {
         const since = new Date(query.operatedAt);
-        since.setMonth(since.getMonth() - query.months);
+        since.setDate(1);
+        since.setHours(0, 0, 0, 0);
+        since.setMonth(since.getMonth() - query.months + 1);
 
         return since;
     }

@@ -1,21 +1,19 @@
-import {
-    SimilarTransactionStatsInterface,
-    SimilarTransactionStatsQueryInterface,
-    TransactionTypeEnum,
-    TransactionWithRelationsEntityInterface
-} from '@budgie/contracts';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useEffect, useState } from 'react';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
-import { TransactionInfoSimilarPeriodEnum } from '../enum/transaction-info-similar-period.enum';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
-const PERIOD_MONTHS: Record<TransactionInfoSimilarPeriodEnum, number> = {
-    [TransactionInfoSimilarPeriodEnum.SIX_MONTHS]: 6,
-    [TransactionInfoSimilarPeriodEnum.TWELVE_MONTHS]: 12
-};
+import type {
+    SimilarTransactionMonthRowInterface,
+    SimilarTransactionStatsInterface,
+    SimilarTransactionStatsQueryInterface,
+    TransactionWithRelationsEntityInterface
+} from '@budgie/contracts';
+
+const SIMILAR_STATS_MONTHS = 6;
 
 const getPrimaryAccountId = (transaction: TransactionWithRelationsEntityInterface): number => {
     if (transaction.type === TransactionTypeEnum.EXPENSE) {
@@ -29,10 +27,7 @@ const getPrimaryAccountId = (transaction: TransactionWithRelationsEntityInterfac
     return 0;
 };
 
-const buildSimilarStatsQuery = (
-    transaction: TransactionWithRelationsEntityInterface,
-    period: TransactionInfoSimilarPeriodEnum
-): SimilarTransactionStatsQueryInterface | null => {
+const buildSimilarStatsQuery = (transaction: TransactionWithRelationsEntityInterface): SimilarTransactionStatsQueryInterface | null => {
     const accountId = getPrimaryAccountId(transaction);
     const categoryId = getTransactionCategoryEntries(transaction.entries).at(0)?.categoryId ?? null;
     const canFetch =
@@ -51,21 +46,51 @@ const buildSimilarStatsQuery = (
         comment: transaction.comment,
         accountId,
         categoryId,
-        months: PERIOD_MONTHS[period]
+        months: SIMILAR_STATS_MONTHS
     };
 };
 
-export const useTransactionInfoSimilarStatsQuery = (
-    transaction: TransactionWithRelationsEntityInterface,
-    period: TransactionInfoSimilarPeriodEnum
-) => {
+const buildMonthKey = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+
+    return `${year}-${month}`;
+};
+
+const buildSimilarMonthKeys = (operatedAt: Date): string[] =>
+    Array.from({ length: SIMILAR_STATS_MONTHS }, (_, index) => {
+        const monthDate = new Date(operatedAt);
+        monthDate.setDate(1);
+        monthDate.setHours(0, 0, 0, 0);
+        monthDate.setMonth(monthDate.getMonth() - SIMILAR_STATS_MONTHS + 1 + index);
+
+        return buildMonthKey(monthDate);
+    });
+
+const buildEmptyMonth = (monthKey: string, currencySymbol: string): SimilarTransactionMonthRowInterface => ({
+    monthKey,
+    totalAmount: 0,
+    count: 0,
+    currencySymbol
+});
+
+const fillSimilarStatsMonths = (stats: SimilarTransactionStatsInterface, operatedAt: Date): SimilarTransactionStatsInterface => {
+    const monthMap = new Map(stats.months.map(month => [month.monthKey, month]));
+    const months = buildSimilarMonthKeys(operatedAt).map(
+        monthKey => monthMap.get(monthKey) ?? buildEmptyMonth(monthKey, stats.currencySymbol)
+    );
+
+    return { ...stats, months };
+};
+
+export const useTransactionInfoSimilarStatsQuery = (transaction: TransactionWithRelationsEntityInterface) => {
     const [stats, setStats] = useState<SimilarTransactionStatsInterface | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         let isActive = true;
-        const query = buildSimilarStatsQuery(transaction, period);
+        const query = buildSimilarStatsQuery(transaction);
 
         if (!isDefined(query)) {
             setStats(null);
@@ -84,7 +109,7 @@ export const useTransactionInfoSimilarStatsQuery = (
             .findSimilarStats(query)
             .then(result => {
                 if (isActive) {
-                    setStats(result);
+                    setStats(isDefined(result) ? fillSimilarStatsMonths(result, transaction.operatedAt) : null);
                     setIsLoading(false);
                 }
 
@@ -101,7 +126,7 @@ export const useTransactionInfoSimilarStatsQuery = (
         return () => {
             isActive = false;
         };
-    }, [period, transaction]);
+    }, [transaction]);
 
     return { stats, error, isLoading };
 };

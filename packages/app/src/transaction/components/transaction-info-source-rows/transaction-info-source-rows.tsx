@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
@@ -11,22 +11,9 @@ import type { TransactionInfoSourceRowsPropsInterface } from '../../interface/tr
 export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSources }: TransactionInfoSourceRowsPropsInterface) => {
     const { t } = useLingui();
     const isConsolidated = isDefined(transaction.consolidationType);
-    const showSourceRow = isDefined(transaction.externalSource) || isNotEmptyString(transaction.externalId);
-    const sourceWithBottomBorder = isConsolidated && isDefined(onOpenConsolidationSources);
 
     return (
         <>
-            {showSourceRow ? (
-                <TransactionInfoRow
-                    icon={UserIconNameEnum.ReceiptText}
-                    label={t`Source`}
-                    value={transaction.externalSource ?? t`Manual`}
-                    description={transaction.externalId}
-                    testID={TransactionInfoPageSelector.Row.Source}
-                    withBottomBorder={sourceWithBottomBorder}
-                />
-            ) : null}
-
             {isConsolidated && isDefined(onOpenConsolidationSources) ? (
                 <TransactionInfoRow
                     icon={UserIconNameEnum.Workflow}

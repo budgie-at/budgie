@@ -1,7 +1,6 @@
 import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -9,7 +8,6 @@ import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '
 import { Button } from '../../../@generic/component/button/button';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { TransactionInfoSimilarPeriodEnum } from '../../enum/transaction-info-similar-period.enum';
 import { useTransactionInfoMatchingRules } from '../../hook/use-transaction-info-matching-rules.hook';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
 import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
@@ -57,10 +55,7 @@ const getRowVisibility = (
     const isConsolidated = isDefined(transaction.consolidationType);
     const hasCategoryRows = showCategoryRow || showMccRow || showNoteRow || showTagsRow;
     const hasMoneyRows = hasTransferConversionRow(transaction) || hasFeeRow(transaction);
-    const hasSourceRows =
-        isDefined(transaction.externalSource) ||
-        isNotEmptyString(transaction.externalId) ||
-        (isConsolidated && isDefined(onOpenConsolidationSources));
+    const hasSourceRows = isConsolidated && isDefined(onOpenConsolidationSources);
     const hasRowsAfterAccount = hasCategoryRows || hasMoneyRows || hasSourceRows;
     const hasRowsAfterCategory = hasMoneyRows || hasSourceRows;
 
@@ -86,8 +81,7 @@ export const TransactionInfoPage = (props: TransactionInfoPagePropsInterface) =>
     } = props;
     const router = useRouter();
     const { t } = useLingui();
-    const [similarPeriod, setSimilarPeriod] = useState(TransactionInfoSimilarPeriodEnum.SIX_MONTHS);
-    const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction, similarPeriod);
+    const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
     const matchingRuleIds = useTransactionInfoMatchingRules(transaction);
     const rowVisibility = getRowVisibility(transaction, onOpenConsolidationSources);
 
@@ -125,7 +119,7 @@ export const TransactionInfoPage = (props: TransactionInfoPagePropsInterface) =>
             }
             testID={TransactionInfoPageSelector.Page}
         >
-            <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerClassName="px-5xl pb-8xl pt-16">
+            <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerClassName="px-5xl pb-[140px] pt-16">
                 <TransactionInfoHero
                     transaction={transaction}
                     matchingRuleIds={matchingRuleIds}
@@ -144,13 +138,7 @@ export const TransactionInfoPage = (props: TransactionInfoPagePropsInterface) =>
                         <TransactionInfoSourceRows transaction={transaction} onOpenConsolidationSources={onOpenConsolidationSources} />
                     </View>
 
-                    <TransactionInfoSimilarCard
-                        stats={stats}
-                        period={similarPeriod}
-                        title={t`Similar transactions`}
-                        isLoading={isLoading}
-                        onPeriodChange={setSimilarPeriod}
-                    />
+                    <TransactionInfoSimilarCard stats={stats} title={t`Similar transactions`} isLoading={isLoading} />
                 </View>
             </ScrollView>
         </FullPage>
