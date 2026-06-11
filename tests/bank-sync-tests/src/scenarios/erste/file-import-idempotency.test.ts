@@ -1,14 +1,15 @@
 import { and, eq } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { BankAccountTypeEnum, BankProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { StubFileBankSyncService, testDb } from '../../harness';
+import { expectFileImportConsolidationEnqueued, StubFileBankSyncService, testDb } from '../../harness';
 
 import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
+import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 
 import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
 import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
@@ -138,6 +139,29 @@ const fetchImportedErsteTransactionCount = (): number =>
         .all().length;
 
 describe('erste/file-import-idempotency', () => {
+    beforeEach(() => {
+        vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();
+    });
+
+    it('enqueues consolidation after an Erste file import introduces new transactions', async () => {
+        const syncService = buildErsteSyncService();
+
+        await syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
+
+        const transaction = testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE),
+                    eq(TransactionEntityTable.externalId, ERSTE_EXTERNAL_ID)
+                )
+            )
+            .get();
+
+        expectFileImportConsolidationEnqueued(transaction?.id);
+    });
+
     it('keeps one transaction when the same statement import starts twice', async () => {
         const parseBarrier = new TwoCallBarrier();
         const resolveBarrier = new TwoCallBarrier();

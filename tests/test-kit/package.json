@@ -19,6 +19,7 @@
         "ts": "tsc --noEmit"
     },
     "dependencies": {
+        "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@rnw-community/shared": "^2.2.0",
         "better-sqlite3": "^12.10.0",

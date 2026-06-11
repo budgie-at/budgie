@@ -55,6 +55,14 @@ class RuleApplicationDrainerService {
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    cancelPending(): void {
+        this.pendingRuleIds = [];
+        this.pendingTransactionIds = [];
+        this.pendingTransactionInputs = [];
+        this.cancelScheduledDrain();
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async drainPending(): Promise<void> {
         this.cancelScheduledDrain();
 
