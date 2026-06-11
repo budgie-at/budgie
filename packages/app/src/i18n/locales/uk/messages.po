@@ -379,6 +379,18 @@ msgstr "Ви впевнені, що хочете видалити це прав�
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Attach debt"
+msgstr "Прикріпити борг"
+
+#: src/app/(main)/transactions/[id]/expense.tsx
+msgid "Attach debt repayment"
+msgstr "Прикріпити погашення боргу"
+
+#: src/app/(main)/transactions/[id]/income.tsx
+msgid "Attach debt return"
+msgstr "Прикріпити повернення боргу"
+
 #: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx
 msgid "Auto-assign categories from MCC"
 msgstr "Автоматично призначати категорії за MCC"
@@ -705,6 +717,14 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account"
 msgstr "Не вдалося архівувати рахунок"
 
+#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
+msgid "Could not attach debt repayment"
+msgstr "Не вдалося прикріпити погашення боргу"
+
+#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+msgid "Could not attach debt return"
+msgstr "Не вдалося прикріпити повернення боргу"
+
 #: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Could not check bank sync data"
 msgstr "Не вдалося перевірити дані банківської синхронізації"
@@ -762,6 +782,14 @@ msgstr "Не вдалося видалити тег"
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
+
+#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
+msgid "Could not detach debt repayment"
+msgstr "Не вдалося відкріпити погашення боргу"
+
+#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+msgid "Could not detach debt return"
+msgstr "Не вдалося відкріпити повернення боргу"
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Could not export CSV"
@@ -869,6 +897,14 @@ msgstr "Враховувати цей рахунок у розрахунку ч�
 #: src/export/components/export-database/export-database.tsx
 msgid "Create a backup of all your data"
 msgstr "Створити резервну копію всіх ваших даних"
+
+#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
+msgid "Create a borrowed debt account first."
+msgstr "Спочатку створіть рахунок боргу, який ви винні."
+
+#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+msgid "Create a lent debt account first."
+msgstr "Спочатку створіть рахунок боргу, який вам винні."
 
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
@@ -981,6 +1017,18 @@ msgstr "Борг"
 msgid "Debt Account"
 msgstr "Борговий рахунок"
 
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt account cannot match transaction account"
+msgstr "Борговий рахунок не може збігатися з рахунком транзакції"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt account does not match transaction type"
+msgstr "Борговий рахунок не відповідає типу транзакції"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt account not found"
+msgstr "Борговий рахунок не знайдено"
+
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
 msgstr "Рахунок за замовчуванням"
@@ -1019,6 +1067,10 @@ msgstr "Видалити транзакцію"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
 msgstr "Скасувати вибір"
+
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Detach debt"
+msgstr "Відкріпити борг"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
@@ -2732,6 +2784,10 @@ msgstr "Всього: {formattedAmountToReturn}"
 msgid "Touch ID"
 msgstr "Touch ID"
 
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Transaction already has a debt settlement"
+msgstr "Транзакція вже має погашення боргу"
+
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction must have a destination account"
 msgstr "Транзакція повинна мати рахунок призначення"
@@ -2740,6 +2796,11 @@ msgstr "Транзакція повинна мати рахунок призна
 msgid "Transaction must have a source account"
 msgstr "Транзакція повинна мати рахунок-джерело"
 
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Transaction must have exactly one primary entry"
+msgstr "Транзакція повинна мати рівно один основний запис"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"

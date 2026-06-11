@@ -24,12 +24,20 @@ export default function AccountSelectorModal() {
     const containerStyle = { flex: 1, backgroundColor };
 
     const initialAccountId = currentParams?.initialAccountId ?? null;
+    const debtType = currentParams?.debtType;
     const excludeAccountId = currentParams?.excludeAccountId;
     const excludeAccountTypes = currentParams?.excludeAccountTypes;
+    const includeAccountTypes = currentParams?.includeAccountTypes;
     const emptyStateDescription = currentParams?.emptyStateDescription;
     const onlyActive = currentParams?.onlyActive ?? true;
 
-    const { accounts } = useSearchAccountsSortedQuery(search, { excludeAccountId, excludeTypes: excludeAccountTypes, onlyActive });
+    const { accounts } = useSearchAccountsSortedQuery(search, {
+        debtType,
+        excludeAccountId,
+        excludeTypes: excludeAccountTypes,
+        includeTypes: includeAccountTypes,
+        onlyActive
+    });
 
     return (
         <View style={containerStyle} collapsable={false}>

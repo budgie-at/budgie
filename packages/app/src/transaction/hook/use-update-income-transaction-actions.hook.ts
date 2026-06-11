@@ -1,4 +1,5 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
@@ -8,6 +9,7 @@ import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace
 import { useConvertToRefundModal } from '../context/convert-to-refund-modal.context';
 import { useConvertToTransferModal } from '../context/convert-to-transfer-modal.context';
 
+import { useDebtSettlementTransactionActions } from './use-debt-settlement-transaction-actions.hook';
 import { useRevertConsolidation } from './use-revert-consolidation.hook';
 
 import type { UpdateIncomeTransactionActionsParamsInterface } from '../interface/update-income-transaction-actions-params.interface';
@@ -17,10 +19,20 @@ export const useUpdateIncomeTransactionActions = ({
     transactionId,
     toAccountId
 }: UpdateIncomeTransactionActionsParamsInterface) => {
+    const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const [openConvertToRefund] = useConvertToRefundModal();
     const [sourceEntry] = transaction.entries;
     const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
+    const { handleOpenDebtSettlement, handleDetachDebtSettlement, hasDebtSettlement } = useDebtSettlementTransactionActions({
+        transaction,
+        transactionId,
+        transactionAccountId: toAccountId,
+        debtType: AccountDebtTypeEnum.LENT,
+        emptyStateDescription: t`Create a lent debt account first.`,
+        attachErrorMessage: t`Could not attach debt return`,
+        detachErrorMessage: t`Could not detach debt return`
+    });
 
     const handleOpenConvert = () =>
         void openConvertToTransfer({
@@ -45,5 +57,12 @@ export const useUpdateIncomeTransactionActions = ({
             return null;
         });
 
-    return { handleOpenConvert, handleOpenRefundConvert, handleRevert };
+    return {
+        handleOpenConvert,
+        handleOpenRefundConvert,
+        handleOpenDebtSettlement,
+        handleDetachDebtSettlement,
+        handleRevert,
+        hasDebtSettlement
+    };
 };

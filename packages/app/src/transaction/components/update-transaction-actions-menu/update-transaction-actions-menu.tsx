@@ -11,17 +11,47 @@ import type { TransactionActionsMenuPropsInterface } from '../../interface/trans
 
 interface Props extends Pick<TransactionActionsMenuPropsInterface, 'onDelete' | 'isConsolidated'> {
     readonly onRevert: () => void;
+    readonly onAttachDebtSettlement?: () => void;
+    readonly attachDebtSettlementLabel?: string;
     readonly onConvertToRefund?: () => void;
     readonly onConvertToTransfer?: () => void;
+    readonly onDetachDebtSettlement?: () => void;
 }
 
-export const UpdateTransactionActionsMenu = ({ onDelete, isConsolidated, onRevert, onConvertToRefund, onConvertToTransfer }: Props) => {
+export const UpdateTransactionActionsMenu = ({
+    onDelete,
+    isConsolidated,
+    onRevert,
+    onAttachDebtSettlement,
+    attachDebtSettlementLabel,
+    onConvertToRefund,
+    onConvertToTransfer,
+    onDetachDebtSettlement
+}: Props) => {
     const { t } = useLingui();
+    const showAttachDebtSettlement = isDefined(onAttachDebtSettlement);
     const showConvertToRefund = isDefined(onConvertToRefund);
     const showConvertToTransfer = isDefined(onConvertToTransfer);
+    const showDetachDebtSettlement = isDefined(onDetachDebtSettlement);
 
     return (
         <TransactionActionsMenu onDelete={onDelete} isConsolidated={isConsolidated} {...(isConsolidated && { onRevert })}>
+            {showAttachDebtSettlement ? (
+                <TransactionConvertMenuItem
+                    icon={UserIconNameEnum.HandCoins}
+                    label={attachDebtSettlementLabel ?? t`Attach debt`}
+                    onConvert={onAttachDebtSettlement}
+                    testID={TransactionActionsMenuSelector.AttachDebtSettlementButton}
+                />
+            ) : null}
+            {showDetachDebtSettlement ? (
+                <TransactionConvertMenuItem
+                    icon={UserIconNameEnum.Unlink}
+                    label={t`Detach debt`}
+                    onConvert={onDetachDebtSettlement}
+                    testID={TransactionActionsMenuSelector.DetachDebtSettlementButton}
+                />
+            ) : null}
             {showConvertToRefund ? (
                 <TransactionConvertMenuItem
                     icon={UserIconNameEnum.ReceiptText}

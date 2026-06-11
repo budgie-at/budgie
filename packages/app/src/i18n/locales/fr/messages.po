@@ -379,6 +379,18 @@ msgstr "Voulez-vous vraiment supprimer cette règle ?"
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
 
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Attach debt"
+msgstr "Associer une dette"
+
+#: src/app/(main)/transactions/[id]/expense.tsx
+msgid "Attach debt repayment"
+msgstr "Associer le remboursement de dette"
+
+#: src/app/(main)/transactions/[id]/income.tsx
+msgid "Attach debt return"
+msgstr "Associer le retour de dette"
+
 #: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx
 msgid "Auto-assign categories from MCC"
 msgstr "Attribuer automatiquement les catégories via MCC"
@@ -705,6 +717,14 @@ msgstr "Impossible d'activer le compte."
 msgid "Could not archive account"
 msgstr "Impossible d'archiver le compte"
 
+#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
+msgid "Could not attach debt repayment"
+msgstr "Impossible d'associer le remboursement de dette"
+
+#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+msgid "Could not attach debt return"
+msgstr "Impossible d'associer le retour de dette"
+
 #: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Could not check bank sync data"
 msgstr "Impossible de vérifier les données de synchro bancaire"
@@ -762,6 +782,14 @@ msgstr "Impossible de supprimer le tag"
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not delete transaction."
 msgstr "Impossible de supprimer la transaction."
+
+#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
+msgid "Could not detach debt repayment"
+msgstr "Impossible de dissocier le remboursement de dette"
+
+#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+msgid "Could not detach debt return"
+msgstr "Impossible de dissocier le retour de dette"
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Could not export CSV"
@@ -869,6 +897,14 @@ msgstr "Comptabiliser ce compte dans le calcul de votre valeur nette"
 #: src/export/components/export-database/export-database.tsx
 msgid "Create a backup of all your data"
 msgstr "Créer une sauvegarde de toutes vos données"
+
+#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
+msgid "Create a borrowed debt account first."
+msgstr "Créez d'abord un compte de dette que vous devez."
+
+#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+msgid "Create a lent debt account first."
+msgstr "Créez d'abord un compte de dette qui vous est due."
 
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
@@ -981,6 +1017,18 @@ msgstr "Dette"
 msgid "Debt Account"
 msgstr "Compte de dette"
 
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt account cannot match transaction account"
+msgstr "Le compte de dette ne peut pas correspondre au compte de transaction"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt account does not match transaction type"
+msgstr "Le compte de dette ne correspond pas au type de transaction"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt account not found"
+msgstr "Compte de dette introuvable"
+
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
 msgstr "Compte par défaut"
@@ -1019,6 +1067,10 @@ msgstr "Supprimer la transaction"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
 msgstr "Tout désélectionner"
+
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Detach debt"
+msgstr "Dissocier la dette"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
@@ -2732,6 +2784,10 @@ msgstr "Total : {formattedAmountToReturn}"
 msgid "Touch ID"
 msgstr "Touch ID"
 
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Transaction already has a debt settlement"
+msgstr "La transaction a déjà un règlement de dette"
+
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction must have a destination account"
 msgstr "La transaction doit avoir un compte de destination"
@@ -2740,6 +2796,11 @@ msgstr "La transaction doit avoir un compte de destination"
 msgid "Transaction must have a source account"
 msgstr "La transaction doit avoir un compte source"
 
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Transaction must have exactly one primary entry"
+msgstr "La transaction doit avoir exactement une écriture principale"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction not found"
 msgstr "Transaction introuvable"

@@ -294,6 +294,7 @@ export { isNegativeAdjustmentTransaction } from './transaction/type-guard/is-neg
 export { isPositiveAdjustmentTransaction } from './transaction/type-guard/is-positive-adjustment-transaction.type-guard';
 
 export { CategorySourceEnum } from './transaction-entry/enum/category-source.enum';
+export { TransactionEntryKindEnum } from './transaction-entry/enum/transaction-entry-kind.enum';
 export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 

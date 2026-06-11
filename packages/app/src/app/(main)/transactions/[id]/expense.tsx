@@ -43,29 +43,32 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
 
-    const {
-        mode: ruleDetectionMode,
-        suggestRuleData,
-        updateRuleData,
-        matchingRulesCount,
-        matchingRuleIds,
-        onRuleCreated,
-        onDismiss,
-        onCreatingChange
-    } = useSuggestRuleDetection({
+    const ruleDetection = useSuggestRuleDetection({
         transaction,
         control: form.control
     });
 
     const handleGoBack = () => void goBackOrReplace('/');
     const isConsolidated = isDefined(transaction.consolidationType);
-    const { handleOpenConvert, handleOpenRefundSources, handleRevert } = useUpdateExpenseTransactionActions({
+    const {
+        handleOpenConvert,
+        handleOpenRefundSources,
+        handleOpenDebtSettlement,
+        handleDetachDebtSettlement,
+        handleRevert,
+        hasDebtSettlement
+    } = useUpdateExpenseTransactionActions({
         transaction,
         transactionId,
         fromAccountId
     });
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
+    const debtSettlementProps =
+        categoryEntries.length === 1 && !hasDebtSettlement
+            ? { onAttachDebtSettlement: handleOpenDebtSettlement, attachDebtSettlementLabel: t`Attach debt repayment` }
+            : {};
+    const detachDebtSettlementProps = hasDebtSettlement ? { onDetachDebtSettlement: handleDetachDebtSettlement } : {};
 
     return (
         <FormProvider {...form}>
@@ -79,6 +82,8 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
                                 onRevert={handleRevert}
+                                {...debtSettlementProps}
+                                {...detachDebtSettlementProps}
                                 {...transferConvertProps}
                             />
                         }
@@ -101,14 +106,14 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
-                    ruleDetectionMode={ruleDetectionMode}
-                    suggestRuleData={suggestRuleData}
-                    updateRuleData={updateRuleData}
-                    matchingRulesCount={matchingRulesCount}
-                    matchingRuleIds={matchingRuleIds}
-                    onRuleCreated={onRuleCreated}
-                    onDismiss={onDismiss}
-                    onCreatingChange={onCreatingChange}
+                    ruleDetectionMode={ruleDetection.mode}
+                    suggestRuleData={ruleDetection.suggestRuleData}
+                    updateRuleData={ruleDetection.updateRuleData}
+                    matchingRulesCount={ruleDetection.matchingRulesCount}
+                    matchingRuleIds={ruleDetection.matchingRuleIds}
+                    onRuleCreated={ruleDetection.onRuleCreated}
+                    onDismiss={ruleDetection.onDismiss}
+                    onCreatingChange={ruleDetection.onCreatingChange}
                 />
             </FullPage>
         </FormProvider>

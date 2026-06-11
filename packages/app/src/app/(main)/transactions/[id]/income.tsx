@@ -40,25 +40,22 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
 
     const toAccountId = useWatch({ control: form.control, name: 'toAccountId' });
 
-    const {
-        mode: ruleDetectionMode,
-        suggestRuleData,
-        updateRuleData,
-        matchingRulesCount,
-        matchingRuleIds,
-        onRuleCreated,
-        onDismiss,
-        onCreatingChange
-    } = useSuggestRuleDetection({
+    const ruleDetection = useSuggestRuleDetection({
         transaction,
         control: form.control
     });
 
     const handleGoBack = () => void goBackOrReplace('/');
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
-    const mccCategoryId = categoryEntries.at(0)?.mccCategoryId ?? null;
     const isConsolidated = isDefined(transaction.consolidationType);
-    const { handleOpenConvert, handleOpenRefundConvert, handleRevert } = useUpdateIncomeTransactionActions({
+    const {
+        handleOpenConvert,
+        handleOpenRefundConvert,
+        handleOpenDebtSettlement,
+        handleDetachDebtSettlement,
+        handleRevert,
+        hasDebtSettlement
+    } = useUpdateIncomeTransactionActions({
         transaction,
         transactionId,
         toAccountId
@@ -66,6 +63,11 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
     const canConvertToRefund = !isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
+    const debtSettlementProps =
+        categoryEntries.length === 1 && !hasDebtSettlement
+            ? { onAttachDebtSettlement: handleOpenDebtSettlement, attachDebtSettlementLabel: t`Attach debt return` }
+            : {};
+    const detachDebtSettlementProps = hasDebtSettlement ? { onDetachDebtSettlement: handleDetachDebtSettlement } : {};
 
     return (
         <FormProvider {...form}>
@@ -79,6 +81,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
                                 onRevert={handleRevert}
+                                {...debtSettlementProps}
+                                {...detachDebtSettlementProps}
                                 {...refundConvertProps}
                                 {...transferConvertProps}
                             />
@@ -91,18 +95,18 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                     transactionType={TransactionTypeEnum.INCOME}
                     accountFieldName="toAccountId"
                     transactionTitle={transaction.title}
-                    mccCategoryId={mccCategoryId}
+                    mccCategoryId={categoryEntries.at(0)?.mccCategoryId ?? null}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
-                    ruleDetectionMode={ruleDetectionMode}
-                    suggestRuleData={suggestRuleData}
-                    updateRuleData={updateRuleData}
-                    matchingRulesCount={matchingRulesCount}
-                    matchingRuleIds={matchingRuleIds}
-                    onRuleCreated={onRuleCreated}
-                    onDismiss={onDismiss}
-                    onCreatingChange={onCreatingChange}
+                    ruleDetectionMode={ruleDetection.mode}
+                    suggestRuleData={ruleDetection.suggestRuleData}
+                    updateRuleData={ruleDetection.updateRuleData}
+                    matchingRulesCount={ruleDetection.matchingRulesCount}
+                    matchingRuleIds={ruleDetection.matchingRuleIds}
+                    onRuleCreated={ruleDetection.onRuleCreated}
+                    onDismiss={ruleDetection.onDismiss}
+                    onCreatingChange={ruleDetection.onCreatingChange}
                 />
             </FullPage>
         </FormProvider>

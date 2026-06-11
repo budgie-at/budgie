@@ -24,6 +24,7 @@ import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enu
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
+import { TransactionEntryKindEnum } from '../../transaction-entry/enum/transaction-entry-kind.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
@@ -100,7 +101,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(and(baseWhere, this.buildLedgerEntryCondition()));
+            .where(and(baseWhere, this.buildLedgerEntryCondition(), this.buildPrimaryEntryCondition()));
     }
 
     getIncomeByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
@@ -144,6 +145,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 and(
                     baseWhere,
                     this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
                     eq(TransactionEntityTable.type, type)
                 )
@@ -159,7 +161,15 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .from(TransactionEntityTable)
             .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(and(baseWhere, this.buildLedgerEntryCondition(), ne(AccountEntityTable.type, AccountTypeEnum.DEBT), ...typeConditions));
+            .where(
+                and(
+                    baseWhere,
+                    this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
+                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
+                    ...typeConditions
+                )
+            );
     }
     /* jscpd:ignore-end */
 
@@ -217,6 +227,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 and(
                     inArray(TransactionEntityTable.id, transactionIdsSubquery),
                     this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
                 )
             )
@@ -241,6 +252,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 and(
                     inArray(TransactionEntityTable.id, transactionIdsSubquery),
                     this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
                 )
             )
@@ -273,6 +285,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                     this.buildStatisticsWhere(filters),
                     this.buildExpenseAnalyticsEntryCondition(),
                     this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
                 )
             )
@@ -298,6 +311,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                     this.buildStatisticsWhere(filters),
                     this.buildExpenseAnalyticsEntryCondition(),
                     this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
                 )
             )
@@ -314,6 +328,10 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
             )
         );
+    }
+
+    private buildPrimaryEntryCondition() {
+        return eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY);
     }
 
     private buildConversionRateSql(defaultInstrumentId: number, instrumentIdRef: SQL) {

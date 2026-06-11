@@ -1,6 +1,7 @@
 import {
     AccountTypeEnum,
     ExternalSourceEnum,
+    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     TransactionUpdatedByEnum,
@@ -198,6 +199,7 @@ class TransactionService {
                 categoryId: entry.categoryId,
                 mccCategoryId: entry.mccCategoryId,
                 type,
+                kind: TransactionEntryKindEnum.PRIMARY,
                 amount,
                 externalId: entry.externalId ?? null,
                 exchangeRate: entry.exchangeRate ?? 1,
@@ -273,8 +275,14 @@ class TransactionService {
     }
 
     private findPrimaryEntries(entries: TransactionEntryCreateInputInterface[], fromAccountId: number | null, toAccountId: number | null) {
-        const fromEntry = entries.find(({ accountId, type }) => accountId === fromAccountId && type === TransactionEntryTypeEnum.CREDIT);
-        const toEntry = entries.find(({ accountId, type }) => accountId === toAccountId && type === TransactionEntryTypeEnum.DEBIT);
+        const fromEntry = entries.find(
+            ({ accountId, kind, type }) =>
+                accountId === fromAccountId && type === TransactionEntryTypeEnum.CREDIT && kind !== TransactionEntryKindEnum.DEBT_SETTLEMENT
+        );
+        const toEntry = entries.find(
+            ({ accountId, kind, type }) =>
+                accountId === toAccountId && type === TransactionEntryTypeEnum.DEBIT && kind !== TransactionEntryKindEnum.DEBT_SETTLEMENT
+        );
 
         if (!isDefined(fromEntry) || !isDefined(toEntry)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
