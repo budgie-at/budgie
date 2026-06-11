@@ -33,6 +33,11 @@ const shiftTransactionsFixtureToNow = () => {
     const historicalAmount2011 = 39_975_247;
     const historicalAmount2026 = 220_435_025;
     const historicalBalance = -(historicalAmount2011 + historicalAmount2026);
+    const missingRateInstrumentId = 34;
+    const missingRateAccountId = 11;
+    const missingRateCategoryId = 42;
+    const missingRateTagId = 3;
+    const missingRateAmount = 15_000_000_000;
 
     backupFixture(sourcePath, targetPath);
     runSqlite(
@@ -200,6 +205,150 @@ const shiftTransactionsFixtureToNow = () => {
             END
         FROM transactions
         WHERE comment IN ('E2E Historical UAH 2011', 'E2E Historical UAH 2026');
+
+        INSERT INTO instruments (
+            id,
+            created_at,
+            updated_at,
+            type,
+            code,
+            name,
+            symbol
+        )
+        VALUES (
+            ${missingRateInstrumentId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'FIAT',
+            'NOFX',
+            'No Rate Currency',
+            'NF'
+        );
+
+        INSERT INTO accounts (
+            id,
+            created_at,
+            updated_at,
+            icon,
+            "order",
+            title,
+            type,
+            nature,
+            instrument_id,
+            include_in_net_worth,
+            is_active,
+            title_search
+        )
+        VALUES (
+            ${missingRateAccountId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'Wallet',
+            11,
+            'E2E Missing Rate',
+            'CASH',
+            'ASSET',
+            ${missingRateInstrumentId},
+            1,
+            1,
+            'e2e missing rate'
+        );
+
+        INSERT INTO account_balances (
+            created_at,
+            updated_at,
+            account_id,
+            amount
+        )
+        VALUES (
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            ${missingRateAccountId},
+            -${missingRateAmount}
+        );
+
+        INSERT INTO categories (
+            id,
+            created_at,
+            updated_at,
+            title,
+            icon,
+            title_search
+        )
+        VALUES (
+            ${missingRateCategoryId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'E2E Missing Rate Category',
+            'Wallet',
+            'e2e missing rate category'
+        );
+
+        INSERT INTO tags (
+            id,
+            created_at,
+            updated_at,
+            title,
+            title_search
+        )
+        VALUES (
+            ${missingRateTagId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'E2E Missing Rate Tag',
+            'e2e missing rate tag'
+        );
+
+        INSERT INTO transactions (
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            comment,
+            from_account_id,
+            exchange_rate
+        )
+        SELECT
+            MAX(operated_at) + 60,
+            MAX(operated_at) + 60,
+            'EXPENSE',
+            '',
+            MAX(operated_at) + 60,
+            'E2E Missing Rate Expense',
+            ${missingRateAccountId},
+            1.0
+        FROM transactions;
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            created_at,
+            updated_at,
+            'CREDIT',
+            ${missingRateAccountId},
+            ${missingRateCategoryId},
+            id,
+            ${missingRateAmount}
+        FROM transactions
+        WHERE id = last_insert_rowid();
+
+        INSERT INTO transaction_tags (
+            transaction_id,
+            tag_id
+        )
+        SELECT
+            transaction_id,
+            ${missingRateTagId}
+        FROM transaction_entries
+        WHERE id = last_insert_rowid();
 
         UPDATE settings
         SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
