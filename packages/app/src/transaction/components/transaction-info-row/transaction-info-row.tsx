@@ -8,8 +8,10 @@ import { Icon } from '../../../@generic/component/icon/icon';
 
 import type { TransactionInfoRowPropsInterface } from '../../interface/transaction-info-row-props.interface';
 
-export const TransactionInfoRow = ({ icon, label, value, description, testID, onPress }: TransactionInfoRowPropsInterface) => {
+export const TransactionInfoRow = ({ icon, label, value, description, children, testID, onPress }: TransactionInfoRowPropsInterface) => {
     const Component = isDefined(onPress) ? HapticPressable : View;
+    const hasValue = isNotEmptyString(value);
+    const hasChildren = isDefined(children);
 
     return (
         <Component className="flex-row items-center gap-x-xl py-xl border-b border-secondary-corner" onPress={onPress} testID={testID}>
@@ -19,14 +21,17 @@ export const TransactionInfoRow = ({ icon, label, value, description, testID, on
 
             <View className="flex-1 min-w-0">
                 <Text className="text-sm text-secondary-foreground font-medium">{label}</Text>
-                <Text className="text-md text-primary font-semibold" numberOfLines={2}>
-                    {value}
-                </Text>
+                {hasValue ? (
+                    <Text className="text-md text-primary font-semibold" numberOfLines={2} selectable>
+                        {value}
+                    </Text>
+                ) : null}
                 {isNotEmptyString(description) ? (
-                    <Text className="text-sm text-secondary-foreground" numberOfLines={1}>
+                    <Text className="text-sm text-secondary-foreground" numberOfLines={1} selectable>
                         {description}
                     </Text>
                 ) : null}
+                {hasChildren ? <View className="flex-row flex-wrap gap-xs pt-xs">{children}</View> : null}
             </View>
 
             {isDefined(onPress) ? <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" /> : null}

@@ -71,7 +71,7 @@ export const TransactionInfoPage = (props: TransactionInfoPagePropsInterface) =>
             footer={
                 <View className="px-5xl pb-md pt-lg">
                     <Button
-                        variant="primary"
+                        variant="cta"
                         leftIcon={UserIconNameEnum.Pencil}
                         content={t`Edit transaction`}
                         onPress={handleEditPress}
