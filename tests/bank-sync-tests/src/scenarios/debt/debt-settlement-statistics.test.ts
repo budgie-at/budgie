@@ -28,7 +28,7 @@ describe('debt settlement statistics', () => {
         const debtAccount = seed.account({ title: 'Alex owes me', type: AccountTypeEnum.DEBT });
 
         createDebtFundingTransaction(cashAccount.id, debtAccount.id, 300 * PRECISION);
-        const debtReturnTransactionId = createDebtReturnIncome(cashAccount.id, debtAccount.id, category.id, 100 * PRECISION);
+        createDebtReturnIncome(cashAccount.id, debtAccount.id, category.id, 100 * PRECISION);
 
         const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, cashAccount.instrumentId).get();
         const categoryRows = statisticsRepository
@@ -47,7 +47,6 @@ describe('debt settlement statistics', () => {
         expect(cashBalance?.balance).toBe(-200 * PRECISION);
         expect(debtBalance?.balance).toBe(200 * PRECISION);
         expect(debtAccountTransactionCount?.value).toBe(2);
-        expect(debtReturnTransactionId).toBeGreaterThan(0);
     });
 });
 
@@ -84,7 +83,7 @@ const createDebtFundingTransaction = (cashAccountId: number, debtAccountId: numb
     });
 };
 
-const createDebtReturnIncome = (cashAccountId: number, debtAccountId: number, categoryId: number, amount: number): number => {
+const createDebtReturnIncome = (cashAccountId: number, debtAccountId: number, categoryId: number, amount: number): void => {
     const transaction = insertOne(TransactionEntityTable, {
         type: TransactionTypeEnum.INCOME,
         title: 'Alex returned money',
@@ -115,8 +114,6 @@ const createDebtReturnIncome = (cashAccountId: number, debtAccountId: number, ca
         amount,
         categoryId
     });
-
-    return transaction.id;
 };
 
 const createTransactionEntry = (

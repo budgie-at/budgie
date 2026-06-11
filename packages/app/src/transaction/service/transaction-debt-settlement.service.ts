@@ -16,7 +16,6 @@ import { accountRepository, db, transactionEntryRepository, transactionRepositor
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
-import { getTransactionDebtSettlementEntries } from '../utils/get-transaction-debt-settlement-entries.util';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 
 import type { AttachDebtSettlementParamsInterface } from '../interface/attach-debt-settlement-params.interface';
@@ -76,9 +75,7 @@ class TransactionDebtSettlementService {
         existingTransaction: TransactionWithEntriesEntityInterface | undefined
     ): TransactionUpdateServiceInputInterface {
         const regularEntries = input.entries.filter(entry => entry.kind !== TransactionEntryKindEnum.DEBT_SETTLEMENT);
-        const existingSettlementEntries = isDefined(existingTransaction)
-            ? getTransactionDebtSettlementEntries(existingTransaction.entries)
-            : [];
+        const existingSettlementEntries = isDefined(existingTransaction) ? this.getSettlementEntries(existingTransaction) : [];
 
         if (!isNotEmptyArray(existingSettlementEntries)) {
             return regularEntries.length === input.entries.length ? input : { ...input, entries: regularEntries };
