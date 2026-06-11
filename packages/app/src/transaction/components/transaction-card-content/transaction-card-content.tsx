@@ -1,22 +1,18 @@
 import { TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
-import { getTransactionFeeEntries } from '../../utils/get-transaction-fee-entries.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
-import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
-import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { TransactionAmount } from '../transaction-amount/transaction-amount';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionCardAccountInfo } from '../transaction-card-account-info/transaction-card-account-info';
 import { TransactionCardTags } from '../transaction-card-tags/transaction-card-tags';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
-import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
+import { TransactionMetadataRows } from '../transaction-metadata-rows/transaction-metadata-rows';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -31,11 +27,8 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
     const refundedPillTestID = TransactionCardSelector.RefundedPill(transaction.id);
-    const feePillTestID = TransactionCardSelector.FeePill(transaction.id);
-    const feeEntries = getTransactionFeeEntries(transaction.entries);
-    const feeEntry = feeEntries.at(0);
-    const feeAmount = convertFromMicroUnits(sumEntryAmounts(feeEntries));
-    const feeCurrencySymbol = isDefined(feeEntry) ? feeEntry.account.instrument.symbol : '';
+    const feeTestID = TransactionCardSelector.FeeMetadata(transaction.id);
+    const debtSettlementTestID = TransactionCardSelector.DebtSettlementMetadata(transaction.id);
 
     return (
         <>
@@ -55,10 +48,12 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
                         </Text>
                     ) : null}
 
-                    <View className="flex-row flex-wrap gap-xs">
-                        <RefundedPill transaction={transaction} testID={refundedPillTestID} />
-                        <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} testID={feePillTestID} />
-                    </View>
+                    <TransactionMetadataRows
+                        transaction={transaction}
+                        refundedPillTestID={refundedPillTestID}
+                        feeTestID={feeTestID}
+                        debtSettlementTestID={debtSettlementTestID}
+                    />
 
                     {transaction.type === TransactionTypeEnum.TRANSFER || transaction.type === TransactionTypeEnum.DEBT ? null : (
                         <TransactionCategoryBadge transaction={transaction} categoryLabel={categoryLabel} />
