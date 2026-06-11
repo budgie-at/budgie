@@ -484,6 +484,10 @@ msgstr "Budgie"
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie kann doppelte Bank-Sync-Importe finden und Überweisungskonsolidierungen reparieren, die auf inaktiven Konten gelandet sind."
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
+msgstr "Budgie ist auf ein unerwartetes Problem gestoßen. Du kannst die App neu starten oder das Problem melden, damit wir es untersuchen können."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie füllt fehlende Werte in der Basiswährung mit historischen Wechselkursen. Analysen sind möglicherweise nicht verfügbar, bis dies abgeschlossen ist."
@@ -818,6 +822,10 @@ msgstr "Kategorie konnte nicht zusammengeführt werden"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Could not merge tag"
 msgstr "Tag konnte nicht zusammengeführt werden"
+
+#: src/app/(tabs)/settings/index.tsx
+msgid "Could not open GitHub"
+msgstr "GitHub konnte nicht geöffnet werden"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not read CSV file"
@@ -1384,6 +1392,10 @@ msgstr "Tags filtern"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Fehler beheben"
+
+#: src/app/(tabs)/settings/index.tsx
+msgid "Found an issue or have an idea? Open GitHub issue templates."
+msgstr "Ein Problem gefunden oder eine Idee? Öffne die GitHub-Issue-Vorlagen."
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -2224,9 +2236,18 @@ msgstr "Reparieren"
 msgid "Repair Bank Sync Data"
 msgstr "Bank-Sync-Daten reparieren"
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+#: src/app/(tabs)/settings/index.tsx
+msgid "Report a Bug"
+msgstr "Fehler melden"
+
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
 msgstr "Setzt den gesamten Sync-Status zurück"
+
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+msgid "Restart App"
+msgstr "App neu starten"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid "Restore"
@@ -2543,6 +2564,7 @@ msgstr "Überspringen"
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
 msgstr "Einige Transaktionen können auf mehrere Regeln zutreffen. Die erste passende Regel hat Vorrang."
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/@generic/hook/use-show-error.hook.ts
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 msgid "Something went wrong"

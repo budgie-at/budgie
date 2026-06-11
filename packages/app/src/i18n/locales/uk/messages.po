@@ -484,6 +484,10 @@ msgstr "Budgie"
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie може знайти дублікати імпортів банківської синхронізації та виправити консолідації переказів, що потрапили на неактивні рахунки."
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
+msgstr "Budgie зіткнувся з неочікуваною проблемою. Ви можете перезапустити застосунок або повідомити про проблему, щоб ми її дослідили."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie заповнить відсутні значення в базовій валюті за історичними курсами. Аналітика може бути недоступною, доки це не завершиться."
@@ -818,6 +822,10 @@ msgstr "Не вдалося об'єднати категорію"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Could not merge tag"
 msgstr "Не вдалося об'єднати тег"
+
+#: src/app/(tabs)/settings/index.tsx
+msgid "Could not open GitHub"
+msgstr "Не вдалося відкрити GitHub"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not read CSV file"
@@ -1384,6 +1392,10 @@ msgstr "Фільтрувати теги"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Виправити помилки"
+
+#: src/app/(tabs)/settings/index.tsx
+msgid "Found an issue or have an idea? Open GitHub issue templates."
+msgstr "Знайшли проблему або маєте ідею? Відкрийте шаблони GitHub Issues."
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -2224,9 +2236,18 @@ msgstr "Виправити"
 msgid "Repair Bank Sync Data"
 msgstr "Виправити дані банківської синхронізації"
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+#: src/app/(tabs)/settings/index.tsx
+msgid "Report a Bug"
+msgstr "Повідомити про помилку"
+
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
 msgstr "Скидає весь стан синхронізації"
+
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+msgid "Restart App"
+msgstr "Перезапустити застосунок"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid "Restore"
@@ -2543,6 +2564,7 @@ msgstr "Пропустити"
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
 msgstr "Деякі транзакції можуть відповідати кільком правилам. Перше відповідне правило матиме пріоритет."
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/@generic/hook/use-show-error.hook.ts
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 msgid "Something went wrong"
