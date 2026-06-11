@@ -15,7 +15,7 @@ describe('consolidation/idempotence', () => {
 
         expect(firstResult.consolidated).toBe(1);
         expect(secondResult.consolidated).toBe(0);
-        expect(secondResult.groups.pairCandidates).toHaveLength(0);
+        expect(secondResult.found).toBe(0);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
     });
 });

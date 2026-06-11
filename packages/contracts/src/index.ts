@@ -222,6 +222,7 @@ export type { TransactionCreateInputInterface } from './transaction/input/transa
 
 export type { TransactionUpdateInputInterface } from './transaction/input/transaction-update-input.interface';
 export type { TransactionUpdateServiceInputInterface } from './transaction/input/transaction-update-service-input.interface';
+export type { ConsolidationScanScopeInterface } from './transaction/interface/consolidation-scan-scope.interface';
 export type { ConsolidationSourceRowInterface } from './transaction/interface/consolidation-source-row.interface';
 export type { SimilarTransactionMonthRowInterface } from './transaction/interface/similar-transaction-month-row.interface';
 export type { SimilarTransactionStatsInterface } from './transaction/interface/similar-transaction-stats.interface';
@@ -267,23 +268,27 @@ export type { RepeatedTransactionPatternInterface } from './transaction/interfac
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
 export { TransactionRuleRepository } from './transaction/repository/transaction-rule.repository';
 
+export { TransferPairAutoConfidenceBucketEnum } from './transaction/enum/transfer-pair-auto-confidence-bucket.enum';
 export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
 export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
 export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
 export type { ExistingTransferBridgeCandidateInterface } from './transaction/interface/existing-transfer-bridge-candidate.interface';
+export type { ExistingTransferChainReclaimCandidateInterface } from './transaction/interface/existing-transfer-chain-reclaim-candidate.interface';
 export type { ExistingTransferIncomeDuplicateCandidateInterface } from './transaction/interface/existing-transfer-income-duplicate-candidate.interface';
 export type { IbanBridgeCanonicalDuplicateCandidateInterface } from './transaction/interface/iban-bridge-canonical-duplicate-candidate.interface';
 export type { IbanBridgeChainTransferCandidateInterface } from './transaction/interface/iban-bridge-chain-transfer-candidate.interface';
 export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
 export type { RefundAutoConfidenceBucket } from './transaction/interface/refund-auto-confidence-bucket.type';
+export type { RefundCandidateBaseInterface } from './transaction/interface/refund-candidate-base.interface';
+export type { RefundCandidateBaseRowInterface } from './transaction/interface/refund-candidate-base-row.interface';
 export type { RefundCandidateInterface } from './transaction/interface/refund-candidate.interface';
+export type { RefundCandidateRowInterface } from './transaction/interface/refund-candidate-row.interface';
 export type { RefundableExpenseCandidateInterface } from './transaction/interface/refundable-expense-candidate.interface';
+export type { RefundableExpenseCandidateRowInterface } from './transaction/interface/refundable-expense-candidate-row.interface';
 export type { RefundReviewConfidenceBucket } from './transaction/interface/refund-review-confidence-bucket.type';
 export type { RefundReviewCandidateInterface } from './transaction/interface/refund-review-candidate.interface';
-
-export { TransferPairRepository } from './transaction/repository/transfer-pair.repository';
-export { RefundPairRepository } from './transaction/repository/refund-pair.repository';
+export type { RefundReviewCandidateRowInterface } from './transaction/interface/refund-review-candidate-row.interface';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';
