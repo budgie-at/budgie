@@ -10,46 +10,6 @@ env:
 
 - tapOn:
     id: ${ACTION_ITEM_ID}
-    point: '85%,50%'
-- waitForAnimationToEnd
-
-- runFlow:
-    when:
-      notVisible: ${FORM_TITLE}
-    commands:
-      - runFlow:
-          when:
-            true: ${ACTION_ITEM_ID == 'ActionItem.Expense'}
-          commands:
-            - tapOn: 'Expense'
-      - runFlow:
-          when:
-            true: ${ACTION_ITEM_ID == 'ActionItem.Income'}
-          commands:
-            - tapOn: 'Income'
-      - runFlow:
-          when:
-            true: ${ACTION_ITEM_ID == 'ActionItem.Transfer'}
-          commands:
-            - tapOn: 'Transfer'
-      - runFlow:
-          when:
-            true: ${ACTION_ITEM_ID == 'ActionItem.AddAccount'}
-          commands:
-            - tapOn: 'Account'
-      - waitForAnimationToEnd
-
-- runFlow:
-    when:
-      notVisible: ${FORM_TITLE}
-    commands:
-      - runFlow:
-          when:
-            true: ${ACTION_ITEM_ID == 'ActionItem.Expense'}
-          commands:
-            - tapOn:
-                point: '91%,85%'
-      - waitForAnimationToEnd
-
 - extendedWaitUntil:
     visible: ${FORM_TITLE}
+

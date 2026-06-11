@@ -42,6 +42,12 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
+- scrollUntilVisible:
+    element:
+      id: 'TransactionForm.CommentInput'
+    direction: DOWN
+    centerElement: true
+
 - runFlow:
     file: enter-comment.flow.yaml
     env:

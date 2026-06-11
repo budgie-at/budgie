@@ -20,7 +20,6 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: 'E2E Savings Account'
       CURRENCY_CODE: 'CAD'
-      CURRENCY_SYMBOL: 'C\$'
       UPDATED_ACCOUNT_NAME: 'E2E Savings Account CAD'
       INITIAL_AMOUNT: '250'
       INCREASE_TO: '325'

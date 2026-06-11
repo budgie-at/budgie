@@ -1,37 +1,16 @@
 appId: ${APP_ID}
 ---
+
 - waitForAnimationToEnd
 - extendedWaitUntil:
-      visible:
-          id: 'CategoryPickerBottomSheet.Input'
-- tapOn:
+    visible:
       id: 'CategoryPickerBottomSheet.Input'
+- tapOn:
+    id: 'CategoryPickerBottomSheet.Input'
 - waitForAnimationToEnd
 - inputText: ${CATEGORY_NAME}
-- waitForAnimationToEnd
-- scrollUntilVisible:
-      element:
-          id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
-      direction: DOWN
-      centerElement: true
-- waitForAnimationToEnd
-- tapOn:
-      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
-- waitForAnimationToEnd
-- runFlow:
-      when:
-          visible:
-              id: 'CategoryPickerBottomSheet.Input'
-      commands:
-          - scrollUntilVisible:
-                element:
-                    id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
-                direction: DOWN
-                centerElement: true
-          - waitForAnimationToEnd
-          - tapOn:
-                id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
 - extendedWaitUntil:
-      notVisible:
-          id: 'CategoryPickerBottomSheet.Input'
-- waitForAnimationToEnd
+    visible:
+      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+- tapOn:
+    id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
