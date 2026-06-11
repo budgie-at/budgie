@@ -1,5 +1,5 @@
 import { AccountTypeEnum, TransactionEntryKindEnum } from '@budgie/contracts';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
@@ -19,12 +19,15 @@ export const useDebtSettlementTransactionActions = ({
     detachErrorMessage
 }: DebtSettlementTransactionActionsParamsInterface) => {
     const [openAccountSelector] = useAccountSelectorModal();
-    const transactionHasDebtSettlement = transaction.entries.some(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
-    const [hasDebtSettlement, setHasDebtSettlement] = useState(transactionHasDebtSettlement);
-
-    useEffect(() => {
-        setHasDebtSettlement(transactionHasDebtSettlement);
-    }, [transactionHasDebtSettlement]);
+    const transactionDebtSettlementEntry = transaction.entries.find(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
+    const transactionDebtSettlementAccountTitle = transactionDebtSettlementEntry?.account.title ?? null;
+    const transactionHasDebtSettlement = isDefined(transactionDebtSettlementEntry);
+    const [localDebtSettlementState, setLocalDebtSettlementState] = useState<{
+        readonly accountTitle: string | null;
+        readonly isAttached: boolean;
+    } | null>(null);
+    const hasDebtSettlement = localDebtSettlementState?.isAttached ?? transactionHasDebtSettlement;
+    const debtSettlementAccountTitle = localDebtSettlementState?.accountTitle ?? transactionDebtSettlementAccountTitle;
 
     const handleOpenDebtSettlement = () =>
         void openAccountSelector({
@@ -35,8 +38,9 @@ export const useDebtSettlementTransactionActions = ({
         })
             .then(async debtAccountId => {
                 if (isDefined(debtAccountId)) {
-                    await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
-                    setHasDebtSettlement(true);
+                    const debtAccount = await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
+
+                    setLocalDebtSettlementState({ accountTitle: debtAccount.title, isAttached: true });
                 }
 
                 return null;
@@ -46,12 +50,17 @@ export const useDebtSettlementTransactionActions = ({
     const handleDetachDebtSettlement = () =>
         void transactionDebtSettlementService
             .detach(transactionId)
-            .then(() => void setHasDebtSettlement(false))
+            .then(() => {
+                setLocalDebtSettlementState({ accountTitle: null, isAttached: false });
+
+                return null;
+            })
             .catch(() => void Toast.show({ type: 'error', text1: detachErrorMessage }));
 
     return {
         handleOpenDebtSettlement,
         handleDetachDebtSettlement,
-        hasDebtSettlement
+        hasDebtSettlement,
+        debtSettlementAccountTitle
     };
 };

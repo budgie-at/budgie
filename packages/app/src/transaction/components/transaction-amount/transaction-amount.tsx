@@ -1,5 +1,8 @@
 import {
+    AccountDebtTypeEnum,
+    AccountTypeEnum,
     InstrumentTypeEnum,
+    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionWithRelationsEntityInterface,
     UserIconNameEnum,
@@ -22,6 +25,8 @@ import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { ConvertedAmountLabel } from '../converted-amount-label/converted-amount-label';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
+import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly accountId?: number | null;
@@ -30,6 +35,7 @@ interface Props {
 interface AggregatedEntry {
     readonly amount: number;
     readonly baseAmount: number | null;
+    readonly kind: TransactionEntryKindEnum;
     readonly type: TransactionEntryTypeEnum;
     readonly account: TransactionWithRelationsEntityInterface['entries'][number]['account'];
 }
@@ -65,6 +71,18 @@ const getContextualEntry = (transaction: TransactionWithRelationsEntityInterface
 const getAmountTestID = (isAdjustment: boolean, amount: number, transactionId: number) =>
     isAdjustment ? TransactionCardSelector.AdjustmentAmount(amount) : TransactionCardSelector.Amount(transactionId);
 
+const getDebtSettlementAmountColor = (entry: AggregatedEntry | null): ColorPaletteVariant | null => {
+    if (!isDefined(entry) || entry.kind !== TransactionEntryKindEnum.DEBT_SETTLEMENT || entry.account.type !== AccountTypeEnum.DEBT) {
+        return null;
+    }
+
+    const isDebtReduction =
+        (entry.account.debtType === AccountDebtTypeEnum.LENT && entry.type === TransactionEntryTypeEnum.CREDIT) ||
+        (entry.account.debtType === AccountDebtTypeEnum.BORROW && entry.type === TransactionEntryTypeEnum.DEBIT);
+
+    return isDebtReduction ? 'positive' : 'warning';
+};
+
 const getDisplayState = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null) => {
     const contextualEntry = getContextualEntry(transaction, accountId);
     const fromEntry =
@@ -79,6 +97,7 @@ const getDisplayState = (transaction: TransactionWithRelationsEntityInterface, a
     return {
         type: getTransactionType(transaction),
         isAdjustment: isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction),
+        contextualEntry,
         fromEntry,
         toEntry
     };
@@ -88,7 +107,30 @@ const getDisplayState = (transaction: TransactionWithRelationsEntityInterface, a
 export const TransactionAmount = ({ transaction, accountId = null }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const { type, isAdjustment, fromEntry, toEntry } = getDisplayState(transaction, accountId);
+    const { type, isAdjustment, contextualEntry, fromEntry, toEntry } = getDisplayState(transaction, accountId);
+    const debtSettlementAmountColor = getDebtSettlementAmountColor(contextualEntry);
+
+    if (isDefined(contextualEntry) && isDefined(debtSettlementAmountColor)) {
+        const amount = convertFromMicroUnits(contextualEntry.amount);
+        const isCrossCurrency = contextualEntry.account.instrument.id !== defaultInstrument.id;
+
+        return (
+            <View className="items-end" testID={TransactionCardSelector.Amount(transaction.id)}>
+                <Text className={amountVariants({ type: debtSettlementAmountColor })}>
+                    {formatDigits(amount, contextualEntry.account.instrument.symbol)}
+                </Text>
+                {isCrossCurrency ? (
+                    <ConvertedAmountLabel
+                        instrumentId={contextualEntry.account.instrument.id}
+                        instrumentSymbol={contextualEntry.account.instrument.symbol}
+                        amount={contextualEntry.amount}
+                        baseAmount={contextualEntry.baseAmount}
+                        shouldShowExchangeRate={contextualEntry.account.instrument.type === InstrumentTypeEnum.CRYPTO}
+                    />
+                ) : null}
+            </View>
+        );
+    }
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return (

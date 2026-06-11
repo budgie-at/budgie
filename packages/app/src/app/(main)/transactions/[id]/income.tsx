@@ -34,8 +34,12 @@ import type { TransactionCreateInputInterface } from '@budgie/contracts';
 import type { Control } from 'react-hook-form';
 /* jscpd:ignore-end */
 
-const getIncomeAmountTopContent = (transaction: UpdateTransactionFormPropsInterface['transaction']) => (
-    <DebtSettlementPill transaction={transaction} testID={TransactionCardSelector.DebtSettlementMetadata(transaction.id)} />
+const getIncomeAmountTopContent = (transaction: UpdateTransactionFormPropsInterface['transaction'], accountTitle: string | null) => (
+    <DebtSettlementPill
+        transaction={transaction}
+        accountTitle={accountTitle}
+        testID={TransactionCardSelector.DebtSettlementMetadata(transaction.id)}
+    />
 );
 
 /* jscpd:ignore-start */
@@ -118,7 +122,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                     accountFieldName="toAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={categoryEntries.at(0)?.mccCategoryId ?? null}
-                    amountTopContent={getIncomeAmountTopContent(transaction)}
+                    amountTopContent={getIncomeAmountTopContent(transaction, actions.debtSettlementAccountTitle)}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

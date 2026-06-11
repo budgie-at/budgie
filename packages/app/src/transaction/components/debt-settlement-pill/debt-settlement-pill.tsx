@@ -9,6 +9,7 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly accountTitle?: string | null;
     readonly testID?: string;
 }
 
@@ -28,11 +29,11 @@ const getDebtSettlementLabel = (transactionType: TransactionTypeEnum, accountTit
     return t`Debt · ${accountTitle}`;
 };
 
-export const DebtSettlementPill = ({ transaction, testID }: Props) => {
+export const DebtSettlementPill = ({ transaction, accountTitle = null, testID }: Props) => {
     const debtSettlementEntry = transaction.entries.find(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
     const debtSettlementLabel = getDebtSettlementLabel(
         transaction.type,
-        isDefined(debtSettlementEntry) ? debtSettlementEntry.account.title : null
+        isDefined(debtSettlementEntry) ? debtSettlementEntry.account.title : accountTitle
     );
 
     if (!isDefined(debtSettlementLabel)) {

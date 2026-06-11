@@ -24,15 +24,16 @@ export const useUpdateIncomeTransactionActions = ({
     const [openConvertToRefund] = useConvertToRefundModal();
     const [sourceEntry] = transaction.entries;
     const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
-    const { handleOpenDebtSettlement, handleDetachDebtSettlement, hasDebtSettlement } = useDebtSettlementTransactionActions({
-        transaction,
-        transactionId,
-        transactionAccountId: toAccountId,
-        debtType: AccountDebtTypeEnum.LENT,
-        emptyStateDescription: t`Create a lent debt account first.`,
-        attachErrorMessage: t`Could not attach debt return`,
-        detachErrorMessage: t`Could not detach debt return`
-    });
+    const { handleOpenDebtSettlement, handleDetachDebtSettlement, hasDebtSettlement, debtSettlementAccountTitle } =
+        useDebtSettlementTransactionActions({
+            transaction,
+            transactionId,
+            transactionAccountId: toAccountId,
+            debtType: AccountDebtTypeEnum.LENT,
+            emptyStateDescription: t`Create a lent debt account first.`,
+            attachErrorMessage: t`Could not attach debt return`,
+            detachErrorMessage: t`Could not detach debt return`
+        });
 
     const handleOpenConvert = () =>
         void openConvertToTransfer({
@@ -63,6 +64,7 @@ export const useUpdateIncomeTransactionActions = ({
         handleOpenDebtSettlement,
         handleDetachDebtSettlement,
         handleRevert,
-        hasDebtSettlement
+        hasDebtSettlement,
+        debtSettlementAccountTitle
     };
 };

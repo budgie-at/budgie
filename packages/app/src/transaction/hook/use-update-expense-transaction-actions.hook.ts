@@ -21,15 +21,16 @@ export const useUpdateExpenseTransactionActions = ({
     const [openConsolidationSourceModal] = useConsolidationSourceModal();
     const [sourceEntry] = transaction.entries;
     const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
-    const { handleOpenDebtSettlement, handleDetachDebtSettlement, hasDebtSettlement } = useDebtSettlementTransactionActions({
-        transaction,
-        transactionId,
-        transactionAccountId: fromAccountId,
-        debtType: AccountDebtTypeEnum.BORROW,
-        emptyStateDescription: t`Create a borrowed debt account first.`,
-        attachErrorMessage: t`Could not attach debt repayment`,
-        detachErrorMessage: t`Could not detach debt repayment`
-    });
+    const { handleOpenDebtSettlement, handleDetachDebtSettlement, hasDebtSettlement, debtSettlementAccountTitle } =
+        useDebtSettlementTransactionActions({
+            transaction,
+            transactionId,
+            transactionAccountId: fromAccountId,
+            debtType: AccountDebtTypeEnum.BORROW,
+            emptyStateDescription: t`Create a borrowed debt account first.`,
+            attachErrorMessage: t`Could not attach debt repayment`,
+            detachErrorMessage: t`Could not detach debt repayment`
+        });
 
     const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId });
 
@@ -49,6 +50,7 @@ export const useUpdateExpenseTransactionActions = ({
         handleOpenDebtSettlement,
         handleDetachDebtSettlement,
         handleRevert,
-        hasDebtSettlement
+        hasDebtSettlement,
+        debtSettlementAccountTitle
     };
 };

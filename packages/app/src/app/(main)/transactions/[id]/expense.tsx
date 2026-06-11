@@ -49,10 +49,18 @@ const useFeeHeaderAction = (control: Control<TransactionCreateInputInterface>) =
     return { feeActionLabel, handleFeePress, quickFormRef };
 };
 
-const useExpenseAmountTopContent = (transaction: UpdateTransactionFormPropsInterface['transaction'], onPress: () => void) => (
+const useExpenseAmountTopContent = (
+    transaction: UpdateTransactionFormPropsInterface['transaction'],
+    accountTitle: string | null,
+    onPress: () => void
+) => (
     <View className="items-center gap-xs">
         <RefundedPill transaction={transaction} onPress={onPress} testID={TransactionCardSelector.RefundedPill(transaction.id)} />
-        <DebtSettlementPill transaction={transaction} testID={TransactionCardSelector.DebtSettlementMetadata(transaction.id)} />
+        <DebtSettlementPill
+            transaction={transaction}
+            accountTitle={accountTitle}
+            testID={TransactionCardSelector.DebtSettlementMetadata(transaction.id)}
+        />
     </View>
 );
 
@@ -83,7 +91,8 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
         handleOpenDebtSettlement,
         handleDetachDebtSettlement,
         handleRevert,
-        hasDebtSettlement
+        hasDebtSettlement,
+        debtSettlementAccountTitle
     } = useUpdateExpenseTransactionActions({
         transaction,
         transactionId,
@@ -96,7 +105,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
             ? { onAttachDebtSettlement: handleOpenDebtSettlement, attachDebtSettlementLabel: t`Attach debt repayment` }
             : {};
     const detachDebtSettlementProps = hasDebtSettlement ? { onDetachDebtSettlement: handleDetachDebtSettlement } : {};
-    const amountTopContent = useExpenseAmountTopContent(transaction, handleOpenRefundSources);
+    const amountTopContent = useExpenseAmountTopContent(transaction, debtSettlementAccountTitle, handleOpenRefundSources);
 
     return (
         <FormProvider {...form}>

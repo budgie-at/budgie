@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -27,14 +27,19 @@ const progressVariants = cva('absolute bottom-0 left-0 h-1', {
     }
 });
 
+const getDisplayBalance = (debtType: AccountDebtTypeEnum, balance: number) =>
+    debtType === AccountDebtTypeEnum.BORROW ? Math.abs(balance) : balance;
+
 export const DebtAccountCard = (props: Props) => {
     const { id, createdAt, title, icon, balance, debtType, targetBalance, deadline, className, instrumentSymbol } = props;
 
     const { formatCompactFullDate } = useFormatDate();
 
+    const displayBalance = getDisplayBalance(debtType, balance);
     const circleVariant = ACCOUNT_DEBT_TYPE_COLOR[debtType];
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
-    const progressStyle: ViewStyle = { width: `${(balance / targetBalance) * 100}%` };
+    const progressWidth = isPositiveNumber(targetBalance) ? Math.min((displayBalance / targetBalance) * 100, 100) : 0;
+    const progressStyle: ViewStyle = { width: `${progressWidth}%` };
 
     const topRight = isDefined(deadline) ? (
         <View className="flex-row items-center gap-x-xs">
@@ -46,7 +51,7 @@ export const DebtAccountCard = (props: Props) => {
     const balanceContent = (
         <DebtAccountCardSummary
             debtType={debtType}
-            currentBalance={balance}
+            currentBalance={displayBalance}
             targetBalance={targetBalance}
             instrumentSymbol={instrumentSymbol}
         />

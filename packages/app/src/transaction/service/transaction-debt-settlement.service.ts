@@ -31,12 +31,13 @@ import type {
 class TransactionDebtSettlementService {
     @Log(
         params => `enter transactionId=${params.transactionId} debtAccountId=${params.debtAccountId}`,
-        (result, params) => `done result=${String(result)} transactionId=${params.transactionId} debtAccountId=${params.debtAccountId}`,
+        (result, params) =>
+            `done debtAccountTitle="${result.title}" transactionId=${params.transactionId} debtAccountId=${params.debtAccountId}`,
         (error, params) =>
             `throw transactionId=${params.transactionId} debtAccountId=${params.debtAccountId} error=${getErrorMessage(error)}`
     )
-    async attach(params: AttachDebtSettlementParamsInterface): Promise<void> {
-        await transactionAsync(db, async tx => {
+    async attach(params: AttachDebtSettlementParamsInterface): Promise<AccountEntityInterface> {
+        return await transactionAsync(db, async tx => {
             const transaction = await this.getTransactionOrFail(params.transactionId, tx);
             const debtAccount = await this.getDebtAccountOrFail(params.debtAccountId, tx);
             const primaryEntry = this.getPrimaryEntryOrFail(transaction);
@@ -49,6 +50,8 @@ class TransactionDebtSettlementService {
 
             await transactionEntryRepository.create(settlementEntry, tx);
             await accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id], tx);
+
+            return debtAccount;
         });
     }
 
