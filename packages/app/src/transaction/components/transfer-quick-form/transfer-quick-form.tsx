@@ -1,6 +1,6 @@
 import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -23,7 +23,6 @@ import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
-import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 import {
@@ -31,10 +30,14 @@ import {
     TransactionTransferAccountsRowRef
 } from '../transaction-transfer-accounts-row/transaction-transfer-accounts-row';
 
+import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
+
 interface Props {
+    readonly ref?: RefObject<SimpleQuickFormRefInterface | null>;
     readonly variant: ColorPaletteVariant;
     readonly initialDestinationAmount?: number;
     readonly isSubmitting?: boolean;
+    readonly showInlineFeeAction?: boolean;
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
     readonly onConsolidationPress?: () => void;
@@ -42,7 +45,16 @@ interface Props {
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Transfer form orchestrates multiple hooks and display computations
 export const TransferQuickForm = (props: Props) => {
-    const { variant, initialDestinationAmount, isSubmitting, onSubmit, onCancel, onConsolidationPress } = props;
+    const {
+        ref,
+        variant,
+        initialDestinationAmount,
+        isSubmitting,
+        showInlineFeeAction = true,
+        onSubmit,
+        onCancel,
+        onConsolidationPress
+    } = props;
 
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
@@ -145,7 +157,7 @@ export const TransferQuickForm = (props: Props) => {
         }
     };
 
-    const handleFeePress = async () => {
+    const openFeeModal = async () => {
         const currentEntries = getValues('entries');
         const currentFeeEntries = getTransactionFeeEntries(currentEntries);
         const sourceAccountId = fromAccountId ?? 0;
@@ -165,6 +177,10 @@ export const TransferQuickForm = (props: Props) => {
 
         setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldValidate: false });
     };
+
+    const handleFeePress = () => void openFeeModal();
+
+    useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
 
     const handleConfirm = () => {
         if (isEditingDestination) {
@@ -208,13 +224,6 @@ export const TransferQuickForm = (props: Props) => {
         onSubmit();
     };
 
-    const handleFeePillPress = () => void handleFeePress();
-    const amountTopContent = (
-        <View className="h-[38px] items-center justify-end">
-            <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} showEmptyState onPress={handleFeePillPress} />
-        </View>
-    );
-
     return (
         <View className="flex-1">
             <TransactionAmountDisplay
@@ -226,7 +235,6 @@ export const TransferQuickForm = (props: Props) => {
                 label={display.amountLabel}
                 isLabelFlipped={isEditingDestination}
                 testID={SimpleQuickFormSelector.AmountInput}
-                topContent={amountTopContent}
                 {...(conversion.isCrossCurrency && {
                     onLabelPress: handleConversionRowPress,
                     onSecondaryAmountPress: handleConversionRowPress
@@ -240,6 +248,11 @@ export const TransferQuickForm = (props: Props) => {
                 onDatePress={handleDatePress}
                 onConsolidationPress={onConsolidationPress}
                 commentTestID={SimpleQuickFormSelector.CommentInput}
+                {...(showInlineFeeAction && {
+                    feeAmount,
+                    feeCurrencySymbol,
+                    onFeePress: handleFeePress
+                })}
             />
 
             <View className="mb-xl">

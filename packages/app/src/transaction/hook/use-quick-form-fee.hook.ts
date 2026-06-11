@@ -28,7 +28,7 @@ interface UseQuickFormFeeConfig {
 
 interface UseQuickFormFeeResult {
     readonly feeAmount: number;
-    readonly handleFeePillPress: () => void;
+    readonly handleFeePress: () => void;
 }
 
 export const useQuickFormFee = ({
@@ -66,7 +66,7 @@ export const useQuickFormFee = ({
         }
     };
 
-    const handleFeePress = async () => {
+    const openFeeModal = async () => {
         const currentEntries = getValues('entries');
         const currentFeeEntries = getTransactionFeeEntries(currentEntries);
         const selectedAccountId = getValues(accountFieldName);
@@ -85,7 +85,7 @@ export const useQuickFormFee = ({
         }
     };
 
-    const handleFeePillPress = () => void handleFeePress();
+    const handleFeePress = () => void openFeeModal();
 
-    return { feeAmount, handleFeePillPress };
+    return { feeAmount, handleFeePress };
 };

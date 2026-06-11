@@ -20,7 +20,6 @@ interface Props extends RulePillSlotPropsInterface {
     readonly comment: string;
     readonly currencySymbol: string;
     readonly displayValue: string;
-    readonly feeAmount: number;
     readonly hasTagsSelected: boolean;
     readonly isCategoryUserConfirmed: boolean;
     readonly isNewTransaction?: boolean;
@@ -29,7 +28,6 @@ interface Props extends RulePillSlotPropsInterface {
     readonly transactionTitle: string;
     readonly transactionType: TransactionTypeEnum;
     readonly variant: ColorPaletteVariant;
-    readonly onFeePress: () => void;
     readonly onFillPatternAmount: (patternAmount: number) => void;
     readonly onSelectCategory: (selectedCategoryId: number) => void;
     readonly onSelectComment: (selectedComment: string) => void;
@@ -46,7 +44,6 @@ export const SimpleQuickFormDisplay = ({
     comment,
     currencySymbol,
     displayValue,
-    feeAmount,
     hasTagsSelected,
     isCategoryUserConfirmed,
     isNewTransaction = false,
@@ -55,7 +52,6 @@ export const SimpleQuickFormDisplay = ({
     transactionTitle,
     transactionType,
     variant,
-    onFeePress,
     ruleDetectionMode,
     suggestRuleData,
     updateRuleData,
@@ -79,8 +75,6 @@ export const SimpleQuickFormDisplay = ({
                 topContent={
                     <SimpleQuickFormAmountHeader
                         amountTopContent={amountTopContent}
-                        currencySymbol={currencySymbol}
-                        feeAmount={feeAmount}
                         ruleDetectionMode={ruleDetectionMode}
                         suggestRuleData={suggestRuleData}
                         updateRuleData={updateRuleData}
@@ -89,7 +83,6 @@ export const SimpleQuickFormDisplay = ({
                         onRuleCreated={onRuleCreated}
                         onDismiss={onDismiss}
                         onCreatingChange={onCreatingChange}
-                        onFeePress={onFeePress}
                     />
                 }
                 testID={SimpleQuickFormSelector.AmountInput}
