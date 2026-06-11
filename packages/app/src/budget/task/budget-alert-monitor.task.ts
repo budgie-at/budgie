@@ -1,10 +1,10 @@
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { BUDGET_ALERT_MONITOR_TASK } from '../constant/budget-alert-monitor-task.constant';
+import { BudgetBackgroundTaskNameEnum } from '../enum/budget-background-task-name.enum';
 import { budgetAlertMonitorService } from '../service/budget-alert-monitor.service';
 
-TaskManager.defineTask(BUDGET_ALERT_MONITOR_TASK, async () => {
+TaskManager.defineTask(BudgetBackgroundTaskNameEnum.ALERT_MONITOR, async () => {
     try {
         await budgetAlertMonitorService.run();
     } catch {

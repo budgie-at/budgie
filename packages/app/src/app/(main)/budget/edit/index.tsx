@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
@@ -6,16 +5,15 @@ import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../../@generic/component/button/button';
 import { FormPage } from '../../../../@generic/component/form-page/form-page';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { isEnumValue } from '../../../../@generic/type-guard/is-enum-value.type-guard';
-import { BudgetSelector } from '../../../../budget/budget.selector';
 import { BudgetEditFooter } from '../../../../budget/components/budget-edit-footer/budget-edit-footer';
 import { BudgetInlineCategoryLimits } from '../../../../budget/components/budget-inline-category-limits/budget-inline-category-limits';
 import { BudgetMissingCurrencyGuard } from '../../../../budget/components/budget-missing-currency-guard/budget-missing-currency-guard';
 import { BudgetOverallLimitField } from '../../../../budget/components/budget-overall-limit-field/budget-overall-limit-field';
+import { BudgetSetupDeleteButton } from '../../../../budget/components/budget-setup-delete-button/budget-setup-delete-button';
 import { BudgetSetupProgressBar } from '../../../../budget/components/budget-setup-progress-bar/budget-setup-progress-bar';
 import { BudgetFormSchema } from '../../../../budget/constant/budget-form-schema.constant';
 import { BudgetTemplateKindEnum } from '../../../../budget/enum/budget-template-kind.enum';
@@ -44,19 +42,6 @@ const getFallbackScreen = (isLoading: boolean, defaultInstrumentId: number | nul
     return null;
 };
 
-const getDeleteButton = (isEditing: boolean, handleDelete: () => Promise<void>) => {
-    const onDeletePress = () => void handleDelete();
-
-    return isEditing ? (
-        <Button
-            testID={BudgetSelector.SetupDeleteButton}
-            variant="destructive"
-            leftIcon={UserIconNameEnum.Trash2}
-            onPress={onDeletePress}
-        />
-    ) : null;
-};
-
 // eslint-disable-next-line max-statements -- Form orchestration screen with multiple hooks and handlers
 export default function BudgetSetupScreen() {
     const { id, template } = useLocalSearchParams<{ id?: string; template?: string }>();
@@ -66,16 +51,18 @@ export default function BudgetSetupScreen() {
     const scrollViewRef = useRef<KeyboardAwareScrollViewRef | null>(null);
     const defaultInstrumentId = useSetting('defaultInstrumentId');
     const { form, handleCancel, handleSubmit, handleDelete, isEditing, isLoading, budget } = useBudgetForm({ editingId, templateKind });
-    const [overallLimit, categoryLimits, watchedInstrumentId] = useWatch({
+    const [overallLimit, otherLimit, categoryLimits, watchedInstrumentId] = useWatch({
         control: form.control,
-        name: ['overallLimit', 'categoryLimits', 'instrumentId']
+        name: ['overallLimit', 'otherLimit', 'categoryLimits', 'instrumentId']
     });
     const { spent } = useGetBudgetSpentQuery(budget);
-    const instrumentId = isPositiveNumber(watchedInstrumentId) ? watchedInstrumentId : (defaultInstrumentId ?? 0);
+    const fallbackInstrumentId = isDefined(defaultInstrumentId) ? defaultInstrumentId : 0;
+    const instrumentId = isPositiveNumber(watchedInstrumentId) ? watchedInstrumentId : fallbackInstrumentId;
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
-    const isSaveDisabled = !BudgetFormSchema.safeParse({ ...form.getValues(), overallLimit, categoryLimits, instrumentId }).success;
+    const isSaveDisabled = !BudgetFormSchema.safeParse({ ...form.getValues(), overallLimit, otherLimit, categoryLimits, instrumentId })
+        .success;
     const fallbackScreen = getFallbackScreen(isLoading, defaultInstrumentId);
-    const currencySymbol = instrument?.symbol ?? '';
+    const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const handleCategoryAdded = () => scrollViewRef.current?.scrollToEnd({ animated: true });
 
     if (isDefined(fallbackScreen)) {
@@ -93,7 +80,7 @@ export default function BudgetSetupScreen() {
                     <BudgetEditFooter
                         onSubmit={handleSubmit}
                         disabled={isSaveDisabled}
-                        deleteButton={getDeleteButton(isEditing, handleDelete)}
+                        deleteButton={<BudgetSetupDeleteButton isEditing={isEditing} onDelete={handleDelete} />}
                     />
                 }
                 contentContainerStyle={FORM_CONTENT_STYLE}

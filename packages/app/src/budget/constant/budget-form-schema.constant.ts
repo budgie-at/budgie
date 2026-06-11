@@ -14,11 +14,12 @@ export const BudgetFormSchema = z
         periodStartDay: z.number().int().min(MIN_PERIOD_START_DAY).max(MAX_PERIOD_START_DAY),
         useLastDayOfMonth: z.boolean(),
         overallLimit: z.number().positive(),
+        otherLimit: z.number().min(0),
         categoryLimits: z.array(BudgetCategoryLimitFormSchema),
         instrumentId: z.number().int().positive()
     })
-    .refine(values => values.categoryLimits.reduce((sum, limit) => sum + limit.limitAmount, 0) <= values.overallLimit, {
-        path: ['categoryLimits']
+    .refine(values => values.categoryLimits.reduce((sum, limit) => sum + limit.limitAmount, 0) + values.otherLimit <= values.overallLimit, {
+        path: ['otherLimit']
     })
     .transform(values => ({
         ...values,

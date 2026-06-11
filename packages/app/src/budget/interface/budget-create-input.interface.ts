@@ -1,4 +1,4 @@
-import type { BudgetCategoryLimitInputInterface } from './budget-category-limit-input.interface';
+import type { BudgetCategoryLimitInputInterface } from '@budgie/budget';
 import type { BudgetCreateEntityInterface } from '@budgie/contracts';
 
 export interface BudgetCreateInputInterface extends BudgetCreateEntityInterface {

@@ -1051,6 +1051,7 @@ __metadata:
     "@babel/core": "npm:^7.29.7"
     "@budgie/ai": "workspace:^"
     "@budgie/bank-sync": "workspace:*"
+    "@budgie/budget": "workspace:*"
     "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
@@ -1159,6 +1160,17 @@ __metadata:
     better-sqlite3: "npm:^12.10.0"
     drizzle-orm: "npm:^0.45.2"
     msw: "npm:^2.14.6"
+    typescript: "npm:^5.9.3"
+    vitest: "npm:^4.1.7"
+  languageName: unknown
+  linkType: soft
+
+"@budgie-at/budget-tests@workspace:tests/budget-tests":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/budget-tests@workspace:tests/budget-tests"
+  dependencies:
+    "@budgie/budget": "workspace:*"
+    "@types/node": "npm:^24.5.2"
     typescript: "npm:^5.9.3"
     vitest: "npm:^4.1.7"
   languageName: unknown
@@ -1289,6 +1301,15 @@ __metadata:
     date-fns: "npm:^4.3.0"
     ky: "npm:^2.0.2"
     xlsx: "npm:^0.18.5"
+  languageName: unknown
+  linkType: soft
+
+"@budgie/budget@workspace:*, @budgie/budget@workspace:packages/budget":
+  version: 0.0.0-use.local
+  resolution: "@budgie/budget@workspace:packages/budget"
+  dependencies:
+    "@rnw-community/shared": "npm:^2.2.0"
+    date-fns: "npm:^4.3.0"
   languageName: unknown
   linkType: soft
 

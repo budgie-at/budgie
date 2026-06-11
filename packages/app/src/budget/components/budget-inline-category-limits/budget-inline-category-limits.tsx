@@ -15,6 +15,7 @@ import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetCategoryLimitCompactRow } from '../budget-category-limit-compact-row/budget-category-limit-compact-row';
 import { BudgetCategoryLimitsEmptyState } from '../budget-category-limits-empty-state/budget-category-limits-empty-state';
+import { BudgetOtherLimitCompactRow } from '../budget-other-limit-compact-row/budget-other-limit-compact-row';
 
 const ADD_BUTTON_STYLE = { width: 26, height: 26 } as const;
 const BOTTOM_ADD_BUTTON_THRESHOLD = 5;
@@ -70,6 +71,7 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
             <Text className="text-secondary-foreground text-sm">
                 <Trans>Optional per-category caps within this budget</Trans>
             </Text>
+            <BudgetOtherLimitCompactRow currencySymbol={currencySymbol} />
             {isCategoryLimitsEmpty ? (
                 <BudgetCategoryLimitsEmptyState onPress={handleAddPress} testID={BudgetSelector.SetupCategoryLimitAddButton} />
             ) : (

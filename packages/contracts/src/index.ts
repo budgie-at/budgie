@@ -7,7 +7,6 @@ export { DatePeriodEnum } from './@generic/enum/date-period.enum';
 export { LanguageEnum } from './@generic/enum/language.enum';
 export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
 
-export type { AmountRangeInterface } from './@generic/interface/amount-range.interface';
 export type { CategoryScoreResultInterface } from './@generic/interface/category-score-result.interface';
 export type { DateRangeInterface } from './@generic/interface/date-range.interface';
 export type { EmbeddingPendingContextBaseInterface } from './@generic/interface/embedding-pending-context-base.interface';
@@ -462,4 +461,5 @@ export { BudgetCategoryLimitUpdateEntitySchema } from './budget-category-limit/s
 export type { BudgetCategoryLimitEntityInterface } from './budget-category-limit/entity/budget-category-limit-entity.interface';
 export type { BudgetCategoryLimitCreateEntityInterface } from './budget-category-limit/entity/budget-category-limit-create-entity.interface';
 export type { BudgetCategoryLimitUpdateEntityInterface } from './budget-category-limit/entity/budget-category-limit-update-entity.interface';
+export type { BudgetCategoryLimitBulkUpdateInputInterface } from './budget-category-limit/input/budget-category-limit-bulk-update-input.interface';
 export { BudgetCategoryLimitRepository } from './budget-category-limit/repository/budget-category-limit.repository';

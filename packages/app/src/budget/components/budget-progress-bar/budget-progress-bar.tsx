@@ -2,16 +2,10 @@ import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
-
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { buildBudgetProgressBarMetrics } from '../../utils/build-budget-progress-bar-metrics.util';
 import { BudgetBarTone, resolveBudgetBarTone } from '../../utils/resolve-budget-bar-tone.util';
-
-const MIN_PROGRESS = 0;
-const MAX_PROGRESS = 1;
-const PERCENT_MULTIPLIER = 100;
 
 interface Props {
     readonly amountDecimalPlaces?: number;
@@ -44,26 +38,6 @@ const amountTextVariants = cva('text-primary text-md', {
         }
     }
 });
-
-const buildBudgetProgressBarMetrics = (spent: number, limit: number) => {
-    const ratio = isPositiveNumber(limit) ? spent / limit : 0;
-    const clampedRatio = Math.max(MIN_PROGRESS, Math.min(MAX_PROGRESS, ratio));
-    const displaySpent = convertFromMicroUnits(spent);
-    const displayLimit = convertFromMicroUnits(limit);
-    const remainingAmount = displayLimit - displaySpent;
-    const displayRemaining = Math.abs(remainingAmount);
-    const widthPercent: `${number}%` = `${clampedRatio * PERCENT_MULTIPLIER}%`;
-
-    return {
-        displayLimit,
-        displayRemaining,
-        displaySpent,
-        isOverBudget: remainingAmount < 0,
-        percentLabel: `${Math.round(ratio * PERCENT_MULTIPLIER)}%`,
-        ratio,
-        widthStyle: { width: widthPercent }
-    };
-};
 
 export const BudgetProgressBar = (props: Props) => {
     const {

@@ -709,9 +709,9 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         );
     }
 
-    private buildWhere({ types, tagIds, categoryIds, accountIds, date, amount }: TransactionFilterInterface) {
+    private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
         const conditions: SQL[] = [
-            ...this.buildBaseFilterConditions({ accountIds, tagIds, date, amount }),
+            ...this.buildBaseFilterConditions({ accountIds, tagIds, date }),
             ...(isNotEmptyArray(types) ? [this.buildTypeCondition(types)] : []),
             ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : [])
         ].filter(isDefined);
@@ -719,9 +719,9 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return and(...conditions);
     }
 
-    private buildUncategorizedWhere({ tagIds, accountIds, date, amount }: TransactionFilterInterface, types: TransactionTypeEnum[]) {
+    private buildUncategorizedWhere({ tagIds, accountIds, date }: TransactionFilterInterface, types: TransactionTypeEnum[]) {
         const conditions: SQL[] = [
-            ...this.buildBaseFilterConditions({ accountIds, tagIds, date, amount }),
+            ...this.buildBaseFilterConditions({ accountIds, tagIds, date }),
             this.buildUncategorizedTypeCondition(types),
             this.buildCategoryCondition([])
         ].filter(isDefined);
@@ -729,18 +729,12 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return and(...conditions);
     }
 
-    private buildBaseFilterConditions({
-        accountIds,
-        tagIds,
-        date,
-        amount
-    }: Pick<TransactionFilterInterface, 'accountIds' | 'tagIds' | 'date' | 'amount'>) {
+    private buildBaseFilterConditions({ accountIds, tagIds, date }: Pick<TransactionFilterInterface, 'accountIds' | 'tagIds' | 'date'>) {
         return [
             this.buildVisibleTransactionCondition(),
             ...this.buildAccountCondition(accountIds),
             ...(isDefined(tagIds) ? [this.buildTagCondition(tagIds)] : []),
-            ...(isDefined(date) ? [this.buildDateCondition(date)] : []),
-            ...(isDefined(amount) ? [this.buildAmountCondition(amount)] : [])
+            ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
         ].filter(isDefined);
     }
 

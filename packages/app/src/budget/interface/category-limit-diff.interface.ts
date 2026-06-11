@@ -1,7 +1,8 @@
-import type { BudgetCategoryLimitInputInterface } from './budget-category-limit-input.interface';
+import type { BudgetCategoryLimitInputInterface } from '@budgie/budget';
+import type { BudgetCategoryLimitBulkUpdateInputInterface } from '@budgie/contracts';
 
 export interface CategoryLimitDiffInterface {
     readonly toCreate: BudgetCategoryLimitInputInterface[];
-    readonly toUpdate: { id: number; limitAmount: number }[];
+    readonly toUpdate: BudgetCategoryLimitBulkUpdateInputInterface[];
     readonly toDelete: number[];
 }

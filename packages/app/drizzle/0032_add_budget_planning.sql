@@ -5,9 +5,10 @@ CREATE TABLE `budgets` (
 	`deleted_at` integer,
 	`name` text NOT NULL,
 	`period` text NOT NULL,
-	`period_start_day` integer DEFAULT 1 NOT NULL,
-	`use_last_day_of_month` integer DEFAULT false NOT NULL,
+	`period_start_day` integer NOT NULL,
+	`use_last_day_of_month` integer NOT NULL,
 	`overall_limit` integer NOT NULL,
+	`other_limit` integer NOT NULL,
 	`instrument_id` integer NOT NULL,
 	FOREIGN KEY (`instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE no action
 );

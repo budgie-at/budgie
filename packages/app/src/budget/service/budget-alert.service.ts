@@ -1,24 +1,22 @@
+import { budgetAlertThresholdService, budgetPeriodService } from '@budgie/budget';
 import { Log } from '@budgie/logger';
 import Storage from 'expo-sqlite/kv-store';
+import { z } from 'zod';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { BudgetAlertScopeEnum } from '../enum/budget-alert-scope.enum';
-import { computePeriodWindow } from '../utils/compute-period-window.util';
-
-import type { BudgetAlertTriggerInterface } from '../interface/budget-alert-trigger.interface';
-import type { BudgetSpentInterface } from '../interface/budget-spent.interface';
+import type { BudgetAlertTriggerInterface, BudgetSpentInterface } from '@budgie/budget';
 import type { BudgetCategoryLimitEntityInterface, BudgetEntityInterface } from '@budgie/contracts';
 
 class BudgetAlertService {
-    private static readonly BUDGET_ALERT_THRESHOLDS = [80, 100] as const;
     private static readonly STORAGE_KEY_PREFIX = '@budgie:budget-alerts-fired';
+    private static readonly FiredTriggersSchema = z.array(z.string());
 
     @Log(
         (budget, spent, categoryLimits) =>
             `enter budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length}`,
         (result, budget, spent, categoryLimits) =>
-            `done budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length} newTriggers=${result.length} triggerKeys=${result.map(trigger => `${trigger.scope}:${trigger.categoryId ?? ''}:${trigger.threshold}`).join(',')}`,
+            `done budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length} newTriggers=${result.length} triggerKeys=${result.map(trigger => `${trigger.scope}:${isDefined(trigger.categoryId) ? trigger.categoryId : ''}:${trigger.threshold}`).join(',')}`,
         (error, budget, spent, categoryLimits) =>
             `throw budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length} error=${getErrorMessage(error)}`
     )
@@ -27,9 +25,8 @@ class BudgetAlertService {
         spent: BudgetSpentInterface,
         categoryLimits: readonly BudgetCategoryLimitEntityInterface[]
     ): Promise<BudgetAlertTriggerInterface[]> {
-        const { periodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
-        const triggers = this.computeTriggers(budget, spent, categoryLimits);
-
+        const { periodStart } = budgetPeriodService.computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
+        const triggers = budgetAlertThresholdService.computeTriggers(budget, spent, categoryLimits);
         const storageKey = this.buildStorageKey(budget.id, periodStart.getTime());
         const fired = await this.loadFired(storageKey);
 
@@ -38,10 +35,10 @@ class BudgetAlertService {
 
     @Log(
         (budgetId, periodStartMs, triggers) =>
-            `enter budgetId=${budgetId} periodStartMs=${periodStartMs} triggerKeys=${triggers.map(trigger => `${trigger.scope}:${trigger.categoryId ?? ''}:${trigger.threshold}`).join(',')}`,
+            `enter budgetId=${budgetId} periodStartMs=${periodStartMs} triggerKeys=${triggers.map(trigger => `${trigger.scope}:${isDefined(trigger.categoryId) ? trigger.categoryId : ''}:${trigger.threshold}`).join(',')}`,
         'done',
         (error, budgetId, periodStartMs, triggers) =>
-            `throw budgetId=${budgetId} periodStartMs=${periodStartMs} triggerKeys=${triggers.map(trigger => `${trigger.scope}:${trigger.categoryId ?? ''}:${trigger.threshold}`).join(',')} error=${getErrorMessage(error)}`
+            `throw budgetId=${budgetId} periodStartMs=${periodStartMs} triggerKeys=${triggers.map(trigger => `${trigger.scope}:${isDefined(trigger.categoryId) ? trigger.categoryId : ''}:${trigger.threshold}`).join(',')} error=${getErrorMessage(error)}`
     )
     async markDelivered(budgetId: number, periodStartMs: number, triggers: readonly BudgetAlertTriggerInterface[]): Promise<void> {
         if (!isNotEmptyArray(triggers)) {
@@ -61,7 +58,13 @@ class BudgetAlertService {
             return new Set();
         }
 
-        return new Set(JSON.parse(raw) as string[]);
+        const parsed = BudgetAlertService.FiredTriggersSchema.safeParse(JSON.parse(raw));
+
+        if (!parsed.success) {
+            return new Set();
+        }
+
+        return new Set(parsed.data);
     }
 
     private buildStorageKey(budgetId: number, periodStartMs: number): string {
@@ -69,47 +72,9 @@ class BudgetAlertService {
     }
 
     private buildTriggerKey(trigger: BudgetAlertTriggerInterface): string {
-        return `${trigger.scope}:${trigger.categoryId ?? ''}:${trigger.threshold}`;
-    }
+        const categoryKey = isDefined(trigger.categoryId) ? trigger.categoryId : '';
 
-    private computeTriggers(
-        budget: BudgetEntityInterface,
-        spent: BudgetSpentInterface,
-        categoryLimits: readonly BudgetCategoryLimitEntityInterface[]
-    ): BudgetAlertTriggerInterface[] {
-        const overallTriggers = this.computeOverallTriggers(budget, spent);
-        const categoryTriggers = this.computeCategoryTriggers(spent, categoryLimits);
-
-        return [...overallTriggers, ...categoryTriggers];
-    }
-
-    private computeOverallTriggers(budget: BudgetEntityInterface, spent: BudgetSpentInterface): BudgetAlertTriggerInterface[] {
-        return BudgetAlertService.BUDGET_ALERT_THRESHOLDS.filter(threshold =>
-            this.crossesThreshold(spent.spentOverall, budget.overallLimit, threshold)
-        ).map(threshold => ({ scope: BudgetAlertScopeEnum.OVERALL, categoryId: null, threshold }));
-    }
-
-    private computeCategoryTriggers(
-        spent: BudgetSpentInterface,
-        categoryLimits: readonly BudgetCategoryLimitEntityInterface[]
-    ): BudgetAlertTriggerInterface[] {
-        const spentByCategoryMap = new Map(spent.spentByCategory.map(entry => [entry.categoryId, entry.spent]));
-
-        return categoryLimits.flatMap(limit => {
-            if (!isPositiveNumber(limit.limitAmount)) {
-                return [];
-            }
-
-            const categorySpent = spentByCategoryMap.get(limit.categoryId) ?? 0;
-
-            return BudgetAlertService.BUDGET_ALERT_THRESHOLDS.filter(threshold =>
-                this.crossesThreshold(categorySpent, limit.limitAmount, threshold)
-            ).map(threshold => ({ scope: BudgetAlertScopeEnum.CATEGORY, categoryId: limit.categoryId, threshold }));
-        });
-    }
-
-    private crossesThreshold(spent: number, limit: number, thresholdPercent: number): boolean {
-        return isPositiveNumber(limit) && spent * 100 >= limit * thresholdPercent;
+        return `${trigger.scope}:${categoryKey}:${trigger.threshold}`;
     }
 }
 

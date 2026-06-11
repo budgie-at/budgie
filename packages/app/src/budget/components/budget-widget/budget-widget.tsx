@@ -35,7 +35,7 @@ export const BudgetWidget = () => {
 
     const handleNavigate = () => void router.push('/budget');
 
-    const currencySymbol = instrument?.symbol ?? '';
+    const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const dateLabel = formatBudgetPeriodLabel(budget, formatMonthAndDay);
 
     return (

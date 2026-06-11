@@ -1,6 +1,8 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetDetailsLimitCard } from '../budget-details-limit-card/budget-details-limit-card';
 
@@ -18,8 +20,8 @@ interface Props {
 export const BudgetDetailsCategoryRow = (props: Props) => {
     const { categoryId, limitAmount, spent, periodStart, periodEnd, currencySymbol, testID, spentTestID } = props;
     const { category } = useGetCategoryByIdQuery(categoryId);
-    const title = category?.title ?? '';
-    const icon = category?.icon ?? null;
+    const title = isDefined(category) ? category.title : '';
+    const icon = isDefined(category) ? category.icon : null;
 
     const handlePress = () => {
         router.push({

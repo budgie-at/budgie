@@ -349,7 +349,6 @@ msgstr "Ya sincronizando"
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
-#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "Amount"
 msgstr "Cantidad"
 
@@ -1456,14 +1455,9 @@ msgstr "Francés (Francia)"
 msgid "from"
 msgstr "de"
 
-#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
 msgstr "De"
-
-#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
-msgid "From {fromText}"
-msgstr "Desde {fromText}"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Account"
@@ -1789,10 +1783,6 @@ msgstr "coincide"
 msgid "Matches Regex"
 msgstr "Coincide con regex"
 
-#: src/app/transaction-amount-filter.tsx
-msgid "Maximum amount"
-msgstr "Importe máximo"
-
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
 msgstr "MCC"
@@ -1820,10 +1810,6 @@ msgstr "Fusionar con otra etiqueta"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Unir transferencias y reembolsos coincidentes"
-
-#: src/app/transaction-amount-filter.tsx
-msgid "Minimum amount"
-msgstr "Importe mínimo"
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -2122,9 +2108,18 @@ msgid "Original transaction"
 msgstr "Transacción original"
 
 #: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
+#: src/budget/components/budget-other-limit-compact-row/budget-other-limit-compact-row.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Other"
 msgstr "Otros"
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "Other budget: {threshold}% spent"
+msgstr "Presupuesto de otros: {threshold}% gastado"
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "Other budget: limit reached"
+msgstr "Presupuesto de otros: límite alcanzado"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
@@ -2684,10 +2679,6 @@ msgstr "Configuración"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
-#: src/app/transaction-amount-filter.tsx
-msgid "Show all amounts"
-msgstr "Mostrar todos los importes"
-
 #: src/app/date-filter.tsx
 msgid "Show all dates"
 msgstr "Mostrar todas las fechas"
@@ -2701,7 +2692,6 @@ msgid "Show Cents"
 msgstr "Mostrar centavos"
 
 #: src/app/date-filter.tsx
-#: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
 msgstr "Mostrar rango seleccionado"
 
@@ -2961,14 +2951,9 @@ msgstr "Título"
 msgid "to"
 msgstr "a"
 
-#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
 msgstr "A"
-
-#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
-msgid "To {toText}"
-msgstr "A {toText}"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "To Account"
@@ -3254,6 +3239,10 @@ msgstr "Ha utilizado {spentPercent}% de su presupuesto total."
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "You have used {threshold}% of the limit for {categoryName}."
 msgstr "Ha utilizado {threshold}% del límite para {categoryName}."
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "You have used {threshold}% of your budget for spending outside category limits."
+msgstr "Has usado el {threshold}% de tu presupuesto en gastos fuera de los límites de categoría."
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 #: src/account/constant/debt-section-kind-label.constant.ts

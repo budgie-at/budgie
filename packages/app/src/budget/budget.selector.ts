@@ -23,6 +23,8 @@ export const BudgetSelector = {
     SetupCategoryLimitBottomAddButton: 'BudgetSetup.CategoryLimitBottomAddButton',
     SetupCategoryLimitRow: (index: number) => `BudgetSetup.CategoryLimit.${index}.Row` as const,
     SetupCategoryLimitAmountInput: (index: number) => `BudgetSetup.CategoryLimit.${index}.AmountInput` as const,
+    SetupOtherLimitRow: 'BudgetSetup.OtherLimit.Row',
+    SetupOtherLimitAmountInput: 'BudgetSetup.OtherLimit.AmountInput',
     SetupAllocationSummaryOverBy: 'BudgetSetup.AllocationSummary.OverBy',
     SetupAllocationSummaryRemaining: 'BudgetSetup.AllocationSummary.Remaining',
     CreateTemplateSuggestedCard: 'BudgetCreate.Template.Suggested',

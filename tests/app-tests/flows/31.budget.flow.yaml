@@ -189,8 +189,7 @@ env:
       timeout: 3000
 
 - tapOn:
-      id: 'BudgetSetup.CategoryLimitsHeader'
-      point: '95%,50%'
+      id: 'BudgetSetup.CategoryLimitAddButton'
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -207,8 +206,7 @@ env:
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
-      id: 'BudgetSetup.CategoryLimitsHeader'
-      point: '95%,50%'
+      id: 'BudgetSetup.CategoryLimitAddButton'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
@@ -231,8 +229,7 @@ env:
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
-      id: 'BudgetSetup.CategoryLimitsHeader'
-      point: '95%,50%'
+      id: 'BudgetSetup.CategoryLimitAddButton'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
@@ -255,8 +252,7 @@ env:
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
-      id: 'BudgetSetup.CategoryLimitsHeader'
-      point: '95%,50%'
+      id: 'BudgetSetup.CategoryLimitAddButton'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
@@ -380,7 +376,7 @@ env:
 - scrollUntilVisible:
       element:
           id: 'BudgetDetails.CategoryRow.42'
-      direction: UP
+      direction: DOWN
       centerElement: true
 
 - tapOn:

@@ -18,5 +18,5 @@ export const useGetActiveBudgetQuery = (): UseGetActiveBudgetResult => {
         return { budget: null, isLoading: true };
     }
 
-    return { budget: data ?? null, isLoading: false };
+    return { budget: isDefined(data) ? data : null, isLoading: false };
 };

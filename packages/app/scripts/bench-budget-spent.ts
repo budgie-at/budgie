@@ -1,11 +1,13 @@
 /* eslint-disable no-console */
 import Database from 'better-sqlite3';
 import { existsSync, rmSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { benchPercentile, benchRandomInt, ensureBenchDir } from './bench-util';
+import { benchPercentile, benchRandomInt, ensureBenchDir } from './bench-util.ts';
 
-const DB_PATH = resolve(__dirname, '../.bench/budget-fixture.db');
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
+const DB_PATH = resolve(SCRIPT_DIR, '../.bench/budget-fixture.db');
 const WARMUP_ITERATIONS = 5;
 const TIMED_ITERATIONS = 10;
 const P95_THRESHOLD_MS = 20;
@@ -33,13 +35,18 @@ const PERIOD_START_SEC = Math.floor(PERIOD_START.getTime() / 1000);
 const PERIOD_END_SEC = Math.floor(PERIOD_END.getTime() / 1000);
 const OUTSIDE_PERIOD_SEC = Math.floor(new Date('2026-04-15T12:00:00Z').getTime() / 1000);
 
-interface CategoryFixture {
+const isDefinedValue = <T>(value: T | null | undefined): value is T => value !== null && value !== undefined;
+const isNumberValue = (value: unknown): value is number => typeof value === 'number';
+const isRecordValue = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null && !Array.isArray(value);
+
+interface CategoryFixtureInterface {
     readonly id: number;
     readonly title: string;
     readonly limitMicros: number | null;
 }
 
-const CATEGORY_FIXTURES: readonly CategoryFixture[] = [
+const CATEGORY_FIXTURES: readonly CategoryFixtureInterface[] = [
     { id: 1, title: 'Food', limitMicros: 200_000_000 },
     { id: 2, title: 'Transport', limitMicros: 100_000_000 },
     { id: 3, title: 'Entertainment', limitMicros: 50_000_000 },
@@ -57,21 +64,24 @@ const pickCategoryId = (cursor: { value: number }): number => {
     return next;
 };
 
-interface SeedCounters {
+interface SeedCountersInterface {
     nextTxId: number;
     nextEntryId: number;
     categoryCursor: { value: number };
 }
 
-interface ExpectedTotals {
+interface ExpectedTotalsInterface {
     plainExpenseSum: number;
     refundSum: number;
     consolidationNet: number;
     byCategory: Map<number, number>;
 }
 
-const addToCategoryTotal = (totals: ExpectedTotals, categoryId: number, amount: number): void => {
-    totals.byCategory.set(categoryId, (totals.byCategory.get(categoryId) ?? 0) + amount);
+const addToCategoryTotal = (totals: ExpectedTotalsInterface, categoryId: number, amount: number): void => {
+    const currentTotal = totals.byCategory.get(categoryId);
+    const nextTotal = isDefinedValue(currentTotal) ? currentTotal + amount : amount;
+
+    totals.byCategory.set(categoryId, nextTotal);
 };
 
 const buildSchema = (db: Database.Database): void => {
@@ -159,7 +169,7 @@ const buildSchema = (db: Database.Database): void => {
     `);
 };
 
-interface TxRow {
+interface TxRowInterface {
     readonly type: 'EXPENSE' | 'TRANSFER' | 'ADJUSTMENT' | 'INCOME';
     readonly operatedAt: number;
     readonly parentTransactionId?: number;
@@ -167,7 +177,7 @@ interface TxRow {
     readonly deletedAt?: number;
 }
 
-interface EntryRow {
+interface EntryRowInterface {
     readonly entryType: 'DEBIT' | 'CREDIT';
     readonly amount: number;
     readonly categoryId?: number;
@@ -207,25 +217,40 @@ const insertBudgetWithCategoryLimits = (db: Database.Database, nowSec: number): 
     }
 };
 
-const insertTransaction = (db: Database.Database, counters: SeedCounters, nowSec: number, tx: TxRow, entry: EntryRow): number => {
+const insertTransaction = (
+    db: Database.Database,
+    counters: SeedCountersInterface,
+    nowSec: number,
+    tx: TxRowInterface,
+    entry: EntryRowInterface
+): number => {
     const txId = counters.nextTxId++;
     const entryId = counters.nextEntryId++;
+    const parentTransactionId = isDefinedValue(tx.parentTransactionId) ? tx.parentTransactionId : null;
+    const consolidationType = isDefinedValue(tx.consolidationType) ? tx.consolidationType : null;
+    const deletedAt = isDefinedValue(tx.deletedAt) ? tx.deletedAt : null;
+    const categoryId = isDefinedValue(entry.categoryId) ? entry.categoryId : null;
 
     db.prepare(
         `INSERT INTO transactions
             (id, type, operated_at, exchange_rate, consolidation_parent_transaction_id, consolidation_type, created_at, updated_at, deleted_at)
             VALUES (?, ?, ?, 1, ?, ?, ?, ?, ?)`
-    ).run(txId, tx.type, tx.operatedAt, tx.parentTransactionId ?? null, tx.consolidationType ?? null, nowSec, nowSec, tx.deletedAt ?? null);
+    ).run(txId, tx.type, tx.operatedAt, parentTransactionId, consolidationType, nowSec, nowSec, deletedAt);
 
     db.prepare(
         `INSERT INTO transaction_entries (id, type, account_id, transaction_id, category_id, amount, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-    ).run(entryId, entry.entryType, ACCOUNT_ID, txId, entry.categoryId ?? null, entry.amount, nowSec, nowSec);
+    ).run(entryId, entry.entryType, ACCOUNT_ID, txId, categoryId, entry.amount, nowSec, nowSec);
 
     return txId;
 };
 
-const seedPlainExpenses = (db: Database.Database, counters: SeedCounters, nowSec: number, totals: ExpectedTotals): void => {
+const seedPlainExpenses = (
+    db: Database.Database,
+    counters: SeedCountersInterface,
+    nowSec: number,
+    totals: ExpectedTotalsInterface
+): void => {
     for (let i = 0; i < PLAIN_EXPENSE_COUNT; i++) {
         const amount = benchRandomInt(PLAIN_EXPENSE_MIN_MICROS, PLAIN_EXPENSE_MAX_MICROS);
         const categoryId = pickCategoryId(counters.categoryCursor);
@@ -241,7 +266,12 @@ const seedPlainExpenses = (db: Database.Database, counters: SeedCounters, nowSec
     }
 };
 
-const seedNegativeRefunds = (db: Database.Database, counters: SeedCounters, nowSec: number, totals: ExpectedTotals): void => {
+const seedNegativeRefunds = (
+    db: Database.Database,
+    counters: SeedCountersInterface,
+    nowSec: number,
+    totals: ExpectedTotalsInterface
+): void => {
     for (let i = 0; i < REFUND_EXPENSE_COUNT; i++) {
         const amount = -benchRandomInt(REFUND_MIN_MICROS, REFUND_MAX_MICROS);
         const categoryId = pickCategoryId(counters.categoryCursor);
@@ -259,7 +289,7 @@ const seedNegativeRefunds = (db: Database.Database, counters: SeedCounters, nowS
 
 const seedExcludedKind = (
     db: Database.Database,
-    counters: SeedCounters,
+    counters: SeedCountersInterface,
     nowSec: number,
     kind: 'TRANSFER' | 'ADJUSTMENT' | 'INCOME',
     count: number
@@ -272,7 +302,12 @@ const seedExcludedKind = (
     }
 };
 
-const seedConsolidatedRefundPairs = (db: Database.Database, counters: SeedCounters, nowSec: number, totals: ExpectedTotals): void => {
+const seedConsolidatedRefundPairs = (
+    db: Database.Database,
+    counters: SeedCountersInterface,
+    nowSec: number,
+    totals: ExpectedTotalsInterface
+): void => {
     for (let i = 0; i < CONSOLIDATED_REFUND_PAIRS; i++) {
         const parentAmount = benchRandomInt(PLAIN_EXPENSE_MIN_MICROS, PLAIN_EXPENSE_MAX_MICROS);
         const childAmount = -parentAmount;
@@ -297,7 +332,7 @@ const seedConsolidatedRefundPairs = (db: Database.Database, counters: SeedCounte
     }
 };
 
-const seedNegativeControls = (db: Database.Database, counters: SeedCounters, nowSec: number): void => {
+const seedNegativeControls = (db: Database.Database, counters: SeedCountersInterface, nowSec: number): void => {
     insertTransaction(
         db,
         counters,
@@ -314,14 +349,14 @@ const seedNegativeControls = (db: Database.Database, counters: SeedCounters, now
     );
 };
 
-interface SeedResult {
+interface SeedResultInterface {
     readonly db: Database.Database;
     readonly expectedSpent: number;
     readonly expectedByCategory: ReadonlyMap<number, number>;
     readonly txCount: number;
 }
 
-const seed = (): SeedResult => {
+const seed = (): SeedResultInterface => {
     ensureBenchDir(DB_PATH);
     if (existsSync(DB_PATH)) {
         rmSync(DB_PATH);
@@ -337,8 +372,8 @@ const seed = (): SeedResult => {
     insertCategories(db, nowSec);
     insertBudgetWithCategoryLimits(db, nowSec);
 
-    const counters: SeedCounters = { nextTxId: 1, nextEntryId: 1, categoryCursor: { value: 0 } };
-    const totals: ExpectedTotals = { plainExpenseSum: 0, refundSum: 0, consolidationNet: 0, byCategory: new Map() };
+    const counters: SeedCountersInterface = { nextTxId: 1, nextEntryId: 1, categoryCursor: { value: 0 } };
+    const totals: ExpectedTotalsInterface = { plainExpenseSum: 0, refundSum: 0, consolidationNet: 0, byCategory: new Map() };
 
     const batch = db.transaction(() => {
         seedPlainExpenses(db, counters, nowSec, totals);
@@ -384,28 +419,44 @@ const BUDGET_SPENT_BY_CATEGORY_QUERY = `
     GROUP BY te.category_id
 `;
 
-interface OverallQueryRow {
+interface OverallQueryRowInterface {
     readonly total: number;
 }
 
-interface ByCategoryQueryRow {
+interface ByCategoryQueryRowInterface {
     readonly categoryId: number;
     readonly spent: number;
 }
 
-interface OverallTimings {
+interface OverallTimingsInterface {
     readonly p50: number;
     readonly p95: number;
     readonly sample: number;
 }
 
-interface ByCategoryTimings {
+interface ByCategoryTimingsInterface {
     readonly p50: number;
     readonly p95: number;
     readonly rows: ReadonlyMap<number, number>;
 }
 
-const runOverall = (db: Database.Database): OverallTimings => {
+const parseOverallQueryRow = (row: unknown): OverallQueryRowInterface => {
+    if (isRecordValue(row) && isNumberValue(row.total)) {
+        return { total: row.total };
+    }
+
+    throw new Error('Invalid overall budget spent query row');
+};
+
+const parseByCategoryQueryRow = (row: unknown): ByCategoryQueryRowInterface => {
+    if (isRecordValue(row) && isNumberValue(row.categoryId) && isNumberValue(row.spent)) {
+        return { categoryId: row.categoryId, spent: row.spent };
+    }
+
+    throw new Error('Invalid category budget spent query row');
+};
+
+const runOverall = (db: Database.Database): OverallTimingsInterface => {
     const stmt = db.prepare(BUDGET_SPENT_OVERALL_QUERY);
     for (let i = 0; i < WARMUP_ITERATIONS; i++) {
         stmt.get(PERIOD_START_SEC, PERIOD_END_SEC);
@@ -414,7 +465,7 @@ const runOverall = (db: Database.Database): OverallTimings => {
     let sample = 0;
     for (let i = 0; i < TIMED_ITERATIONS; i++) {
         const start = process.hrtime.bigint();
-        const row = stmt.get(PERIOD_START_SEC, PERIOD_END_SEC) as OverallQueryRow;
+        const row = parseOverallQueryRow(stmt.get(PERIOD_START_SEC, PERIOD_END_SEC));
         const end = process.hrtime.bigint();
         timings.push(Number(end - start) / 1_000_000);
         sample = row.total;
@@ -423,7 +474,7 @@ const runOverall = (db: Database.Database): OverallTimings => {
     return { p50: benchPercentile(timings, 0.5), p95: benchPercentile(timings, 0.95), sample };
 };
 
-const runByCategory = (db: Database.Database): ByCategoryTimings => {
+const runByCategory = (db: Database.Database): ByCategoryTimingsInterface => {
     const stmt = db.prepare(BUDGET_SPENT_BY_CATEGORY_QUERY);
     for (let i = 0; i < WARMUP_ITERATIONS; i++) {
         stmt.all(PERIOD_START_SEC, PERIOD_END_SEC);
@@ -432,7 +483,7 @@ const runByCategory = (db: Database.Database): ByCategoryTimings => {
     let rows = new Map<number, number>();
     for (let i = 0; i < TIMED_ITERATIONS; i++) {
         const start = process.hrtime.bigint();
-        const result = stmt.all(PERIOD_START_SEC, PERIOD_END_SEC) as ByCategoryQueryRow[];
+        const result = stmt.all(PERIOD_START_SEC, PERIOD_END_SEC).map(parseByCategoryQueryRow);
         const end = process.hrtime.bigint();
         timings.push(Number(end - start) / 1_000_000);
         rows = new Map(result.map(row => [row.categoryId, row.spent]));
@@ -445,8 +496,10 @@ const compareByCategory = (expected: ReadonlyMap<number, number>, actual: Readon
     const mismatches: string[] = [];
     const allCategoryIds = new Set([...expected.keys(), ...actual.keys()]);
     for (const categoryId of allCategoryIds) {
-        const expectedValue = expected.get(categoryId) ?? 0;
-        const actualValue = actual.get(categoryId) ?? 0;
+        const expectedAmount = expected.get(categoryId);
+        const expectedValue = isDefinedValue(expectedAmount) ? expectedAmount : 0;
+        const actualAmount = actual.get(categoryId);
+        const actualValue = isDefinedValue(actualAmount) ? actualAmount : 0;
         if (expectedValue !== actualValue) {
             mismatches.push(`  categoryId=${categoryId} expected=${expectedValue} actual=${actualValue}`);
         }
@@ -466,7 +519,7 @@ const EUR_INSTRUMENT_ID = 2;
 const GBP_INSTRUMENT_ID = 3;
 const EUR_TO_BASE_RATE = 1.1;
 
-interface SpentEntryRowInterface {
+interface SpentEntryRowInterfaceInterface {
     readonly amount: number;
     readonly categoryId: number | null;
     readonly instrumentId: number;
@@ -482,7 +535,7 @@ const convertAmountToBase = (amount: number, rate: number | null): number => {
 };
 
 const computeBudgetSpent = (
-    entries: SpentEntryRowInterface[],
+    entries: SpentEntryRowInterfaceInterface[],
     baseInstrumentId: number
 ): { spentOverall: number; fallbackCount: number } => {
     let spentOverall = 0;
@@ -493,7 +546,9 @@ const computeBudgetSpent = (
         if (!isBase && rate === null) {
             fallbackCount += 1;
         }
-        spentOverall += convertAmountToBase(entry.amount, rate ?? null);
+        const exchangeRate = isDefinedValue(rate) ? rate : null;
+
+        spentOverall += convertAmountToBase(entry.amount, exchangeRate);
     }
 
     return { spentOverall, fallbackCount };
@@ -502,7 +557,7 @@ const computeBudgetSpent = (
 const runFxMixedInstrumentHappyPath = (): boolean => {
     const baseAmount = 100_000_000;
     const eurAmount = 50_000_000;
-    const entries: SpentEntryRowInterface[] = [
+    const entries: SpentEntryRowInterfaceInterface[] = [
         { amount: baseAmount, categoryId: 1, instrumentId: BASE_INSTRUMENT_ID, rate: null },
         { amount: eurAmount, categoryId: 2, instrumentId: EUR_INSTRUMENT_ID, rate: EUR_TO_BASE_RATE }
     ];
@@ -523,7 +578,7 @@ const runFxMixedInstrumentHappyPath = (): boolean => {
 const runFxMissingRateFallback = (): boolean => {
     const baseAmount = 80_000_000;
     const gbpAmount = 30_000_000;
-    const entries: SpentEntryRowInterface[] = [
+    const entries: SpentEntryRowInterfaceInterface[] = [
         { amount: baseAmount, categoryId: 1, instrumentId: BASE_INSTRUMENT_ID, rate: null },
         { amount: gbpAmount, categoryId: 2, instrumentId: GBP_INSTRUMENT_ID, rate: null }
     ];

@@ -33,7 +33,7 @@ export const BudgetCategoryLimitCompactRow = ({ currencySymbol, index, onRemove 
         <View style={ICON_PLACEHOLDER_STYLE} />
     );
 
-    const title = category?.title ?? '';
+    const title = isDefined(category) ? category.title : '';
     const confirmation = {
         title: t`Remove category limit?`,
         description: t`Swipe to remove this per-category cap from your budget.`,

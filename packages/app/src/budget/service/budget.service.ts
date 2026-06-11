@@ -5,10 +5,10 @@ import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-
 
 import { budgetCategoryLimitRepository, budgetRepository, db } from '../../@generic/drizzle/db/db';
 
-import type { BudgetCategoryLimitInputInterface } from '../interface/budget-category-limit-input.interface';
 import type { BudgetCreateInputInterface } from '../interface/budget-create-input.interface';
 import type { BudgetUpdateInputInterface } from '../interface/budget-update-input.interface';
 import type { CategoryLimitDiffInterface } from '../interface/category-limit-diff.interface';
+import type { BudgetCategoryLimitInputInterface } from '@budgie/budget';
 import type { BudgetCategoryLimitEntityInterface, BudgetEntityInterface, DB } from '@budgie/contracts';
 
 class BudgetService {
