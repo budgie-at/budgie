@@ -30,8 +30,8 @@ env:
 - scrollUntilVisible:
       element:
           id: 'SettingsPage.ImportDatabaseCard'
-      direction: UP
-      timeout: 5000
+      direction: DOWN
+      timeout: 20000
       centerElement: true
       waitToSettleTimeoutMs: 1000
 
