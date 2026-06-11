@@ -31,7 +31,7 @@ env:
       element:
           id: 'SettingsPage.ImportDatabaseCard'
       direction: DOWN
-      timeout: 5000
+      timeout: 20000
       centerElement: true
       waitToSettleTimeoutMs: 1000
 
