@@ -27,18 +27,21 @@ const progressVariants = cva('absolute bottom-0 left-0 h-1', {
     }
 });
 
-const getDisplayBalance = (debtType: AccountDebtTypeEnum, balance: number) =>
-    debtType === AccountDebtTypeEnum.BORROW ? Math.abs(balance) : balance;
+const getOutstandingBalance = (debtType: AccountDebtTypeEnum, balance: number) => {
+    const outstandingBalance = debtType === AccountDebtTypeEnum.BORROW ? -balance : balance;
+
+    return Math.max(outstandingBalance, 0);
+};
 
 export const DebtAccountCard = (props: Props) => {
     const { id, createdAt, title, icon, balance, debtType, targetBalance, deadline, className, instrumentSymbol } = props;
 
     const { formatCompactFullDate } = useFormatDate();
 
-    const displayBalance = getDisplayBalance(debtType, balance);
+    const outstandingBalance = getOutstandingBalance(debtType, balance);
     const circleVariant = ACCOUNT_DEBT_TYPE_COLOR[debtType];
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
-    const progressWidth = isPositiveNumber(targetBalance) ? Math.min((displayBalance / targetBalance) * 100, 100) : 0;
+    const progressWidth = isPositiveNumber(targetBalance) ? Math.min((outstandingBalance / targetBalance) * 100, 100) : 0;
     const progressStyle: ViewStyle = { width: `${progressWidth}%` };
 
     const topRight = isDefined(deadline) ? (
@@ -51,7 +54,7 @@ export const DebtAccountCard = (props: Props) => {
     const balanceContent = (
         <DebtAccountCardSummary
             debtType={debtType}
-            currentBalance={displayBalance}
+            currentBalance={outstandingBalance}
             targetBalance={targetBalance}
             instrumentSymbol={instrumentSymbol}
         />

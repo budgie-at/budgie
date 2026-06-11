@@ -54,7 +54,7 @@ export default function AccountDetails() {
         return <Redirect href="/" />;
     }
 
-    const { title, icon, type, instrument } = account;
+    const { title, icon, type, instrument, debtType } = account;
 
     return (
         <View className="relative flex-1">
@@ -88,6 +88,7 @@ export default function AccountDetails() {
                     {type === AccountTypeEnum.DEBT ? (
                         <DebtAccountBalance
                             balance={balance}
+                            debtType={debtType}
                             instrumentSymbol={instrument.symbol}
                             targetAmount={convertFromMicroUnits(account.targetBalance)}
                         />

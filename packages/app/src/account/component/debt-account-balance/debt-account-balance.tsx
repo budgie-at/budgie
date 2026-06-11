@@ -1,5 +1,8 @@
+import { AccountDebtTypeEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View, ViewStyle } from 'react-native';
+
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -7,18 +10,22 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
     readonly balance: number;
+    readonly debtType: AccountDebtTypeEnum;
     readonly targetAmount: number;
     readonly instrumentSymbol: string;
 }
 
-export const DebtAccountBalance = ({ balance, instrumentSymbol, targetAmount }: Props) => {
+export const DebtAccountBalance = ({ balance, debtType, instrumentSymbol, targetAmount }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const percentage = Number((targetAmount > 0 ? (balance / targetAmount) * 100 : 0).toFixed(2));
+    const outstandingBalance = debtType === AccountDebtTypeEnum.BORROW ? -balance : balance;
+    const currentBalance = Math.max(outstandingBalance, 0);
+    const paidAmount = Math.max(targetAmount - currentBalance, 0);
+    const percentage = isPositiveNumber(targetAmount) ? Math.min(Number(((paidAmount / targetAmount) * 100).toFixed(2)), 100) : 0;
     const barStyle: ViewStyle = { width: `${percentage}%` };
 
-    const formattedBalance = formatDigits(balance, instrumentSymbol);
+    const formattedPaidAmount = formatDigits(paidAmount, instrumentSymbol);
     const formattedAmountToReturn = formatDigits(targetAmount, instrumentSymbol);
 
     return (
@@ -28,7 +35,7 @@ export const DebtAccountBalance = ({ balance, instrumentSymbol, targetAmount }: 
             </Text>
 
             <ProtectedMoney className="justify-start" minFontSize={10} maxFontSize={36} instrumentSymbol={instrumentSymbol}>
-                {balance}
+                {currentBalance}
             </ProtectedMoney>
 
             <View className="my-3xl h-px bg-secondary-corner" />
@@ -48,7 +55,7 @@ export const DebtAccountBalance = ({ balance, instrumentSymbol, targetAmount }: 
 
                 <View className="flex-row items-center justify-between">
                     <Text className="text-secondary-foreground text-sm">
-                        <Trans>Paid: {formattedBalance}</Trans>
+                        <Trans>Paid: {formattedPaidAmount}</Trans>
                     </Text>
                     <Text className="text-secondary-foreground text-sm">
                         <Trans>Total: {formattedAmountToReturn}</Trans>

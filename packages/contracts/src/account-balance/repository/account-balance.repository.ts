@@ -119,7 +119,6 @@ export class AccountBalanceRepository {
                 balance: balanceSql,
                 bankSync: BankSyncEntityTable,
                 convertedBalance: convertedBalanceSql,
-                convertedTargetBalance: sql<number>`COALESCE(${AccountEntityTable.targetBalance} * ${this.buildFiatExchangeRateConversionSql(defaultInstrumentId)}, 0)`,
                 instrument: InstrumentEntityTable
             })
             .from(AccountEntityTable)
@@ -188,12 +187,14 @@ export class AccountBalanceRepository {
 
     getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
         const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
-        const remainingDebtSql = sql<number>`
-            MAX(${AccountEntityTable.targetBalance} - (${this.getAccountBalanceWithTransactionsSql()}), 0)
+        const balanceSql = this.getAccountBalanceWithTransactionsSql();
+        const outstandingDebtSql = debtType === AccountDebtTypeEnum.BORROW ? sql<number>`0 - (${balanceSql})` : balanceSql;
+        const outstandingDebtTotalSql = sql<number>`
+            MAX(${outstandingDebtSql}, 0)
         `;
 
         return this.db
-            .select({ total: sql<number>`COALESCE(SUM((${remainingDebtSql}) * ${exchangeRateSql}), 0)` })
+            .select({ total: sql<number>`COALESCE(SUM((${outstandingDebtTotalSql}) * ${exchangeRateSql}), 0)` })
             .from(AccountEntityTable)
             .where(
                 this.getActiveAccountWhereSql(eq(AccountEntityTable.type, AccountTypeEnum.DEBT), eq(AccountEntityTable.debtType, debtType))

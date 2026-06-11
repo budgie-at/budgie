@@ -48,10 +48,12 @@ const addBankProviderTotal = (
 };
 
 const addDebtTypeTotal = (totals: Map<AccountDebtTypeEnum, number>, homeAccountBalance: HomeAccountBalanceInterface): void => {
-    const { accountType, convertedTargetBalance, convertedBalance, debtType, isActive } = homeAccountBalance;
+    const { accountType, convertedBalance, debtType, isActive } = homeAccountBalance;
 
     if (isActive && accountType === AccountTypeEnum.DEBT) {
-        addTotal(totals, debtType, Math.max(convertedTargetBalance - convertedBalance, 0));
+        const outstandingBalance = debtType === AccountDebtTypeEnum.BORROW ? -convertedBalance : convertedBalance;
+
+        addTotal(totals, debtType, Math.max(outstandingBalance, 0));
     }
 };
 
@@ -102,7 +104,6 @@ export const useHomePageDataQuery = () => {
             balance: convertFromMicroUnits(row.balance),
             bankProvider: rowBankProvider,
             convertedBalance: convertFromMicroUnits(row.convertedBalance),
-            convertedTargetBalance: convertFromMicroUnits(row.convertedTargetBalance),
             debtType: row.account.debtType,
             includeInNetWorth: row.account.includeInNetWorth,
             isActive: row.account.isActive
