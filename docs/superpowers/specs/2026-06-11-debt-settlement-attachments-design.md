@@ -85,25 +85,39 @@ This keeps the core balance invariant intact: account balances continue to come 
 
 ## UX Flow
 
-Income transactions get an `Attach debt return` action.
+Debt settlement is a secondary relationship on an otherwise normal income or expense transaction. The user continues editing amount, account, category, tags, date, and notes as usual. Debt actions live in the transaction Actions menu; the edit form shows debt only after a settlement is attached.
+
+Attached secondary state is displayed as a compact single-line metadata row, not as a large pill. Empty secondary state is not displayed in the form.
+
+Income transactions get an `Attach debt return` action in Actions.
 
 - Opens a bottom sheet similar to the refund source search flow.
 - Lists and searches `LENT` debt accounts.
 - User selects one debt account and confirms.
 - Budgie adds the debt settlement entry.
-- Transaction detail shows a debt pill such as `Debt return · Alex`.
+- Transaction detail and transaction cards show one compact metadata row such as `Debt return · Alex`.
+- Actions then shows `Detach debt return`.
 - Detach removes only the debt settlement entry and keeps the income transaction intact.
 
-Expense transactions get an `Attach debt repayment` action.
+Expense transactions get an `Attach debt repayment` action in Actions.
 
 - Opens the same bottom sheet pattern.
 - Lists and searches `BORROW` debt accounts.
 - User selects one debt account and confirms.
 - Budgie adds the debt settlement entry.
-- Transaction detail shows a debt pill such as `Debt repayment · Credit card`.
+- Transaction detail and transaction cards show one compact metadata row such as `Debt repayment · Credit card`.
+- Actions then shows `Detach debt repayment`.
 - Detach removes only the debt settlement entry and keeps the expense transaction intact.
 
 Existing `Convert to Transfer` remains valid for pure transfers and initial lending or borrowing. The new attachment actions are the recommended path for returns and repayments.
+
+Fees should use the same secondary-action hierarchy. The transaction form should not show an empty fee pill because it competes with primary fields and consumes too much space.
+
+- When no fee exists, Actions shows `Set fee`.
+- `Set fee` opens the existing fee modal.
+- When a fee exists, transaction detail and transaction cards show one compact metadata row such as `Fee · 2.50 · Bank fees`.
+- Actions shows `Edit fee`.
+- Removing a fee remains available from the fee modal unless a later usability pass proves a separate `Remove fee` action is needed.
 
 ## Validation
 
