@@ -1012,6 +1012,10 @@ msgstr "Día {selectedDay}"
 msgid "Debt"
 msgstr "Deuda"
 
+#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+msgid "Debt · {accountTitle}"
+msgstr "Deuda · {accountTitle}"
+
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/app/(main)/create-account/index.tsx
 msgid "Debt Account"
@@ -1028,6 +1032,14 @@ msgstr "La cuenta de deuda no coincide con el tipo de transacción"
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account not found"
 msgstr "Cuenta de deuda no encontrada"
+
+#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+msgid "Debt repayment · {accountTitle}"
+msgstr "Pago de deuda · {accountTitle}"
+
+#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+msgid "Debt return · {accountTitle}"
+msgstr "Devolución de deuda · {accountTitle}"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
@@ -1129,6 +1141,13 @@ msgstr "Editar existente"
 #: src/app/(main)/transactions/[id]/expense.tsx
 msgid "Edit Expense"
 msgstr "Editar gasto"
+
+#: src/app/(main)/transactions/[id]/expense.tsx
+#: src/app/(main)/transactions/[id]/income.tsx
+#: src/app/(main)/transactions/[id]/transfer.tsx
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+msgid "Edit fee"
+msgstr "Editar comisión"
 
 #: src/app/(main)/transactions/[id]/income.tsx
 msgid "Edit Income"
@@ -1330,9 +1349,9 @@ msgstr "Error al guardar el PIN. Inténtalo de nuevo."
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Indexación rápida {done} de {total} • toca para pausar"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-msgid "Fee {formattedAmount}"
-msgstr "Comisión {formattedAmount}"
+#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+msgid "Fee · {formattedFeeAmount}"
+msgstr "Comisión · {formattedFeeAmount}"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
@@ -2480,7 +2499,11 @@ msgstr "Enviando {fromCode}"
 msgid "Set Category"
 msgstr "Establecer categoría"
 
-#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+#: src/app/(main)/transactions/[id]/expense.tsx
+#: src/app/(main)/transactions/[id]/income.tsx
+#: src/app/(main)/transactions/[id]/transfer.tsx
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Set fee"
 msgstr "Establecer comisión"
 

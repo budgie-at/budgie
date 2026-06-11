@@ -1,11 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import {
-    AccountTypeEnum,
-    TransactionEntryTypeEnum,
-    TransferTransactionCreateInputSchema,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { AccountTypeEnum, TransactionEntryTypeEnum, TransferTransactionCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef } from 'react';
