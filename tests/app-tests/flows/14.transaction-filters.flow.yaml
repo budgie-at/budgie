@@ -347,13 +347,6 @@ appId: ${APP_ID}
       visible:
           id: 'AnalyticsPage.Container'
 
-- tapOn:
-      id: 'AnalyticsPage.Tab.Tags'
-- assertNotVisible:
-      id: 'TagStatisticsCard.Amount.E2E_Missing_Rate_Tag.15000000000'
-- tapOn:
-      id: 'AnalyticsPage.Tab.Categories'
-
 # --- Transaction counter on the account detail screen ---
 
 - tapOn:

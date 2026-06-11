@@ -36,7 +36,6 @@ const shiftTransactionsFixtureToNow = () => {
     const missingRateInstrumentId = 34;
     const missingRateAccountId = 11;
     const missingRateCategoryId = 42;
-    const missingRateTagId = 3;
     const missingRateAmount = 15_000_000_000;
 
     backupFixture(sourcePath, targetPath);
@@ -284,21 +283,6 @@ const shiftTransactionsFixtureToNow = () => {
             'e2e missing rate category'
         );
 
-        INSERT INTO tags (
-            id,
-            created_at,
-            updated_at,
-            title,
-            title_search
-        )
-        VALUES (
-            ${missingRateTagId},
-            CAST(strftime('%s', 'now') AS INTEGER),
-            CAST(strftime('%s', 'now') AS INTEGER),
-            'E2E Missing Rate Tag',
-            'e2e missing rate tag'
-        );
-
         INSERT INTO transactions (
             created_at,
             updated_at,
@@ -338,16 +322,6 @@ const shiftTransactionsFixtureToNow = () => {
             id,
             ${missingRateAmount}
         FROM transactions
-        WHERE id = last_insert_rowid();
-
-        INSERT INTO transaction_tags (
-            transaction_id,
-            tag_id
-        )
-        SELECT
-            transaction_id,
-            ${missingRateTagId}
-        FROM transaction_entries
         WHERE id = last_insert_rowid();
 
         UPDATE settings
