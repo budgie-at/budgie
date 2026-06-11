@@ -223,6 +223,9 @@ export type { TransactionCreateInputInterface } from './transaction/input/transa
 export type { TransactionUpdateInputInterface } from './transaction/input/transaction-update-input.interface';
 export type { TransactionUpdateServiceInputInterface } from './transaction/input/transaction-update-service-input.interface';
 export type { ConsolidationSourceRowInterface } from './transaction/interface/consolidation-source-row.interface';
+export type { SimilarTransactionMonthRowInterface } from './transaction/interface/similar-transaction-month-row.interface';
+export type { SimilarTransactionStatsInterface } from './transaction/interface/similar-transaction-stats.interface';
+export type { SimilarTransactionStatsQueryInterface } from './transaction/interface/similar-transaction-stats-query.interface';
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 

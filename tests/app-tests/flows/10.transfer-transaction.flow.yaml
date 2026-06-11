@@ -91,6 +91,16 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Test_Transfer'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
+- assertVisible:
+    id: 'TransactionInfo.Row.FromAccount'
+- assertVisible:
+    id: 'TransactionInfo.Row.ToAccount'
+- tapOn:
+    id: 'TransactionInfo.EditButton'
 
 - assertVisible:
     id: 'TransferForm.SelectedFromAccount.E2E Txn Account'
@@ -115,7 +125,18 @@ appId: ${APP_ID}
     env:
       COMMENT: 'E2E Edited Transfer'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 15000
+- assertVisible:
+    id: 'TransactionInfo.Row.FromAccount'
+- assertVisible:
+    id: 'TransactionInfo.Row.ToAccount'
+- tapOn:
+    id: 'PageHeader.BackButton'
 
 - extendedWaitUntil:
     visible:
@@ -144,6 +165,10 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Edited_Transfer'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
 
 - runFlow: subflows/transactions/delete-transaction.flow.yaml
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml

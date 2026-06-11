@@ -77,7 +77,7 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'AccountCard.Balance.E2E_Txn_Account.25'
 - assertVisible:
-    text: 'E2E Foreign Account, .*164'
+    id: 'AccountCard.Balance.E2E_Foreign_Account.165'
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
@@ -85,6 +85,18 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Cross_Currency_Transfer'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
+- assertVisible:
+    id: 'TransactionInfo.Row.FromAccount'
+- assertVisible:
+    id: 'TransactionInfo.Row.ToAccount'
+- assertVisible:
+    id: 'TransactionInfo.Row.ExchangeRate'
+- tapOn:
+    id: 'TransactionInfo.EditButton'
 
 - extendedWaitUntil:
     visible:
@@ -97,7 +109,16 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TransactionKeypad.Digit.0'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 15000
+- assertVisible:
+    id: 'TransactionInfo.Row.ExchangeRate'
+- tapOn:
+    id: 'PageHeader.BackButton'
 
 - extendedWaitUntil:
     visible:
@@ -120,6 +141,10 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Cross_Currency_Transfer'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
 
 - runFlow: subflows/transactions/delete-transaction.flow.yaml
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml

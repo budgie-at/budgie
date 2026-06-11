@@ -3,7 +3,7 @@ import { Log } from '@budgie/logger';
 import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
-import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
@@ -29,6 +29,9 @@ import type { TransactionWithEntriesEntityInterface } from '../entity/transactio
 import type { TransactionWithEntriesMccCategoryEntityInterface } from '../entity/transaction-with-entries-mcc-category-entity.interface';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
 import type { ConsolidationSourceRowInterface } from '../interface/consolidation-source-row.interface';
+import type { SimilarTransactionMonthRowInterface } from '../interface/similar-transaction-month-row.interface';
+import type { SimilarTransactionStatsQueryInterface } from '../interface/similar-transaction-stats-query.interface';
+import type { SimilarTransactionStatsInterface } from '../interface/similar-transaction-stats.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private static readonly NON_INDEXABLE_EMBEDDING_TYPES: TransactionTypeEnum[] = [
@@ -151,6 +154,42 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             LIMIT ?`,
             [mccCategoryId, mccCategoryId, limit]
         );
+    }
+
+    @Log(
+        query =>
+            `enter transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${query.categoryId ?? 0} months=${query.months}`,
+        (result, query) =>
+            `done transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${query.categoryId ?? 0} months=${query.months} count=${result?.count ?? 0}`,
+        (error, query) =>
+            `throw transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${query.categoryId ?? 0} months=${query.months} error=${getErrorMessage(error)}`
+    )
+    async findSimilarStats(query: SimilarTransactionStatsQueryInterface): Promise<SimilarTransactionStatsInterface | null> {
+        if (!isPositiveNumber(query.accountId) || !isPositiveNumber(query.months)) {
+            return null;
+        }
+
+        const rows = await this.db.$client.getAllAsync<SimilarTransactionMonthRowInterface>(
+            this.buildSimilarStatsSql(query),
+            this.buildSimilarStatsParams(query)
+        );
+
+        if (isEmptyArray(rows)) {
+            return null;
+        }
+
+        const count = rows.reduce((sum, row) => sum + row.count, 0);
+        const totalAmount = rows.reduce((sum, row) => sum + row.totalAmount, 0);
+        const firstRow = rows.at(0);
+        const currencySymbol = firstRow?.currencySymbol ?? '';
+
+        return {
+            count,
+            totalAmount,
+            averageAmount: count > 0 ? totalAmount / count : 0,
+            currencySymbol,
+            months: rows
+        };
     }
 
     @Log(
@@ -707,6 +746,77 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
             or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
         );
+    }
+
+    private buildSimilarStatsSql(query: SimilarTransactionStatsQueryInterface): string {
+        const conditions = [
+            't.id != ?',
+            't.type = ?',
+            't.deleted_at IS NULL',
+            't.consolidation_parent_transaction_id IS NULL',
+            'te.deleted_at IS NULL',
+            'te.original_transaction_id IS NULL',
+            'te.account_id = ?',
+            't.operated_at >= ?',
+            't.operated_at < ?',
+            ...this.buildSimilarIdentityConditions(query)
+        ];
+
+        return `
+            SELECT
+                strftime('%Y-%m', t.operated_at, 'unixepoch') AS monthKey,
+                SUM(te.amount) AS totalAmount,
+                COUNT(DISTINCT t.id) AS count,
+                MAX(instrument.symbol) AS currencySymbol
+            FROM transactions t
+            INNER JOIN transaction_entries te ON te.transaction_id = t.id
+            INNER JOIN accounts account ON account.id = te.account_id
+            INNER JOIN instruments instrument ON instrument.id = account.instrument_id
+            WHERE ${conditions.join(' AND ')}
+            GROUP BY monthKey
+            ORDER BY monthKey ASC
+        `;
+    }
+
+    private buildSimilarStatsParams(query: SimilarTransactionStatsQueryInterface): (number | string)[] {
+        const operatedAtSeconds = Math.floor(query.operatedAt.getTime() / 1000);
+        const sinceSeconds = Math.floor(this.getSimilarStatsSinceDate(query).getTime() / 1000);
+        const params: (number | string)[] = [query.transactionId, query.type, query.accountId, sinceSeconds, operatedAtSeconds];
+
+        if (isNotEmptyString(query.title)) {
+            params.push(query.title);
+        } else if (isNotEmptyString(query.comment)) {
+            params.push(query.comment);
+        }
+
+        if (isDefined(query.categoryId) && isPositiveNumber(query.categoryId)) {
+            params.push(query.categoryId);
+        }
+
+        return params;
+    }
+
+    private buildSimilarIdentityConditions(query: SimilarTransactionStatsQueryInterface): string[] {
+        const conditions: string[] = [];
+
+        if (isNotEmptyString(query.title)) {
+            conditions.push('LOWER(t.title) = LOWER(?)');
+        } else if (isNotEmptyString(query.comment)) {
+            conditions.push('LOWER(t.comment) = LOWER(?)');
+        }
+
+        if (isDefined(query.categoryId) && isPositiveNumber(query.categoryId)) {
+            conditions.push('te.category_id = ?');
+        }
+
+        return conditions;
+    }
+
+    private getSimilarStatsSinceDate(query: SimilarTransactionStatsQueryInterface): Date {
+        const since = new Date(query.operatedAt);
+        since.setMonth(since.getMonth() - query.months);
+
+        return since;
     }
 
     private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {

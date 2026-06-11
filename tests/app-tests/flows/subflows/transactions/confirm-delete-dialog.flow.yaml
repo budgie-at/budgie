@@ -3,9 +3,12 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Are you sure?'
     timeout: 10000
-- tapOn:
-    text: 'Delete'
-    index: 0
-- extendedWaitUntil:
-    notVisible: 'Are you sure?'
-    timeout: 15000
+- waitForAnimationToEnd
+- retry:
+    maxRetries: 3
+    commands:
+      - tapOn:
+          point: '274,488'
+      - extendedWaitUntil:
+          notVisible: 'Are you sure?'
+          timeout: 5000

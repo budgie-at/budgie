@@ -117,6 +117,18 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Test_Expense'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
+- assertVisible:
+    id: 'TransactionInfo.Row.Account'
+- assertVisible:
+    id: 'TransactionInfo.Row.Category'
+- assertVisible:
+    id: 'TransactionInfo.Row.Tags'
+- tapOn:
+    id: 'TransactionInfo.EditButton'
 
 - tapOn:
     id: 'TransactionKeypad.Backspace'
@@ -137,7 +149,18 @@ appId: ${APP_ID}
     env:
       COMMENT: 'E2E Edited Expense'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 15000
+- assertVisible:
+    id: 'TransactionInfo.Row.Account'
+- assertVisible:
+    id: 'TransactionInfo.Row.Category'
+- tapOn:
+    id: 'PageHeader.BackButton'
 
 - extendedWaitUntil:
     visible:
@@ -169,6 +192,10 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Edited_Expense'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
 
 - runFlow: subflows/transactions/delete-transaction.flow.yaml
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
