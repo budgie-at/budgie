@@ -1,0 +1,57 @@
+name: Feature Request
+description: Suggest a new feature or improvement for Budgie
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing an idea for Budgie. A few details help us understand the problem and design the right thing.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe the situation or workflow that feels difficult today.
+      placeholder: When I try to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like Budgie to do?
+      description: Describe the feature or improvement you have in mind.
+      placeholder: I would like Budgie to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What have you tried instead?
+      description: Share any workaround or alternative you use today.
+      placeholder: Right now I...
+    validations:
+      required: false
+
+  - type: dropdown
+    id: importance
+    attributes:
+      label: How important is this to you?
+      options:
+        - Nice to have
+        - Would improve my experience
+        - Important for my workflow
+        - Blocking my usage
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Extra context
+      description: Add examples, screenshots, or anything else that helps explain the request.
+      placeholder: Add more details here.
+    validations:
+      required: false
