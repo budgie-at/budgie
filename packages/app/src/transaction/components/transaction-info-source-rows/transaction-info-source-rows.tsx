@@ -12,6 +12,7 @@ export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSour
     const { t } = useLingui();
     const isConsolidated = isDefined(transaction.consolidationType);
     const showSourceRow = isDefined(transaction.externalSource) || isNotEmptyString(transaction.externalId);
+    const sourceWithBottomBorder = isConsolidated && isDefined(onOpenConsolidationSources);
 
     return (
         <>
@@ -22,6 +23,7 @@ export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSour
                     value={transaction.externalSource ?? t`Manual`}
                     description={transaction.externalId}
                     testID={TransactionInfoPageSelector.Row.Source}
+                    withBottomBorder={sourceWithBottomBorder}
                 />
             ) : null}
 
@@ -32,6 +34,7 @@ export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSour
                     value={t`View source transactions`}
                     testID={TransactionInfoPageSelector.Row.Consolidation}
                     onPress={onOpenConsolidationSources}
+                    withBottomBorder={false}
                 />
             ) : null}
         </>

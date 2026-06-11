@@ -26,11 +26,16 @@ const getAccountDescription = (account: ReturnType<typeof getPrimaryAccount>): s
     return `... ${account.iban.slice(-4)}`;
 };
 
-export const TransactionInfoAccountRows = ({ transaction }: TransactionInfoAccountRowsPropsInterface) => {
+export const TransactionInfoAccountRows = ({ transaction, hasFollowingRows }: TransactionInfoAccountRowsPropsInterface) => {
     const { t } = useLingui();
     const { formatDayAndFullMonthAndYear, formatMonthAndDayWithTime } = useFormatDate();
     const account = getPrimaryAccount(transaction);
     const isTransfer = transaction.type === TransactionTypeEnum.TRANSFER;
+    const showFromAccount = isTransfer && isDefined(transaction.fromAccount);
+    const showToAccount = isTransfer && isDefined(transaction.toAccount);
+    const showAccount = !isTransfer && isDefined(account);
+    const dateWithBottomBorder = showFromAccount || showToAccount || showAccount || hasFollowingRows;
+    const fromAccountWithBottomBorder = showToAccount || hasFollowingRows;
 
     return (
         <>
@@ -40,35 +45,39 @@ export const TransactionInfoAccountRows = ({ transaction }: TransactionInfoAccou
                 value={formatDayAndFullMonthAndYear(transaction.operatedAt)}
                 description={formatMonthAndDayWithTime(transaction.operatedAt)}
                 testID={TransactionInfoPageSelector.Row.Date}
+                withBottomBorder={dateWithBottomBorder}
             />
 
-            {isTransfer && isDefined(transaction.fromAccount) ? (
+            {showFromAccount ? (
                 <TransactionInfoRow
                     icon={UserIconNameEnum.Wallet}
                     label={t`From account`}
                     value={transaction.fromAccount.title}
                     description={getAccountDescription(transaction.fromAccount)}
                     testID={TransactionInfoPageSelector.Row.FromAccount}
+                    withBottomBorder={fromAccountWithBottomBorder}
                 />
             ) : null}
 
-            {isTransfer && isDefined(transaction.toAccount) ? (
+            {showToAccount ? (
                 <TransactionInfoRow
                     icon={UserIconNameEnum.CreditCard}
                     label={t`To account`}
                     value={transaction.toAccount.title}
                     description={getAccountDescription(transaction.toAccount)}
                     testID={TransactionInfoPageSelector.Row.ToAccount}
+                    withBottomBorder={hasFollowingRows}
                 />
             ) : null}
 
-            {!isTransfer && isDefined(account) ? (
+            {showAccount ? (
                 <TransactionInfoRow
                     icon={UserIconNameEnum.Wallet}
                     label={t`Account`}
                     value={account.title}
                     description={getAccountDescription(account)}
                     testID={TransactionInfoPageSelector.Row.Account}
+                    withBottomBorder={hasFollowingRows}
                 />
             ) : null}
         </>

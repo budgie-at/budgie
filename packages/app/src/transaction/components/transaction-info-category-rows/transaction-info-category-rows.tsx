@@ -1,7 +1,7 @@
 import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
@@ -21,10 +21,20 @@ const getMccLabel = (transaction: TransactionWithRelationsEntityInterface): stri
     return `${mccCategory.mcc} · ${mccCategory.shortDescription}`;
 };
 
-export const TransactionInfoCategoryRows = ({ transaction, categoryLabel }: TransactionInfoCategoryRowsPropsInterface) => {
+export const TransactionInfoCategoryRows = ({
+    transaction,
+    categoryLabel,
+    hasFollowingRows
+}: TransactionInfoCategoryRowsPropsInterface) => {
     const { t } = useLingui();
     const mccLabel = getMccLabel(transaction);
     const showCategory = isNotEmptyString(categoryLabel) && transaction.type !== TransactionTypeEnum.TRANSFER;
+    const showMcc = isNotEmptyString(mccLabel);
+    const showNote = isNotEmptyString(transaction.comment);
+    const showTags = isNotEmptyArray(transaction.transactionTags);
+    const categoryWithBottomBorder = showMcc || showNote || showTags || hasFollowingRows;
+    const mccWithBottomBorder = showNote || showTags || hasFollowingRows;
+    const noteWithBottomBorder = showTags || hasFollowingRows;
 
     return (
         <>
@@ -34,28 +44,36 @@ export const TransactionInfoCategoryRows = ({ transaction, categoryLabel }: Tran
                     label={t`Category`}
                     value={categoryLabel}
                     testID={TransactionInfoPageSelector.Row.Category}
+                    withBottomBorder={categoryWithBottomBorder}
                 />
             ) : null}
 
-            {isNotEmptyString(mccLabel) ? (
+            {showMcc ? (
                 <TransactionInfoRow
                     icon={UserIconNameEnum.Hash}
                     label={t`Merchant code`}
                     value={mccLabel}
                     testID={TransactionInfoPageSelector.Row.MerchantCode}
+                    withBottomBorder={mccWithBottomBorder}
                 />
             ) : null}
 
-            {isNotEmptyString(transaction.comment) ? (
+            {showNote ? (
                 <TransactionInfoRow
                     icon={UserIconNameEnum.MessageSquare}
                     label={t`Note`}
                     value={transaction.comment}
                     testID={TransactionInfoPageSelector.Row.Note}
+                    withBottomBorder={noteWithBottomBorder}
                 />
             ) : null}
 
-            <TransactionInfoTagsRow transaction={transaction} label={t`Tags`} testID={TransactionInfoPageSelector.Row.Tags} />
+            <TransactionInfoTagsRow
+                transaction={transaction}
+                label={t`Tags`}
+                testID={TransactionInfoPageSelector.Row.Tags}
+                withBottomBorder={hasFollowingRows}
+            />
         </>
     );
 };

@@ -5,16 +5,30 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
 
 import type { TransactionInfoRowPropsInterface } from '../../interface/transaction-info-row-props.interface';
 
-export const TransactionInfoRow = ({ icon, label, value, description, children, testID, onPress }: TransactionInfoRowPropsInterface) => {
+export const TransactionInfoRow = ({
+    icon,
+    label,
+    value,
+    description,
+    children,
+    testID,
+    onPress,
+    withBottomBorder = true
+}: TransactionInfoRowPropsInterface) => {
     const Component = isDefined(onPress) ? HapticPressable : View;
     const hasValue = isNotEmptyString(value);
     const hasChildren = isDefined(children);
 
     return (
-        <Component className="flex-row items-center gap-x-xl py-xl border-b border-secondary-corner" onPress={onPress} testID={testID}>
+        <Component
+            className={cn('flex-row items-center gap-x-xl py-xl', withBottomBorder && 'border-b border-secondary-corner')}
+            onPress={onPress}
+            testID={testID}
+        >
             <View className="h-11 w-11 items-center justify-center rounded-2xl bg-secondary-background border border-secondary-corner">
                 <Icon icon={icon} size={22} className="text-secondary-foreground" />
             </View>

@@ -49,7 +49,7 @@ const getTransferExchangeRateLabel = (
     return `1 ${sourceEntry.account.instrument.code} = ${formatRate(transaction.exchangeRate)} ${destinationEntry.account.instrument.code}`;
 };
 
-export const TransactionInfoMoneyRows = ({ transaction }: TransactionInfoMoneyRowsPropsInterface) => {
+export const TransactionInfoMoneyRows = ({ transaction, hasFollowingRows }: TransactionInfoMoneyRowsPropsInterface) => {
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -58,6 +58,7 @@ export const TransactionInfoMoneyRows = ({ transaction }: TransactionInfoMoneyRo
     const transferDestinationAmount = getTransferDestinationAmount(transaction, formatDigits);
     const transferExchangeRateLabel = getTransferExchangeRateLabel(transaction, formatRate);
     const showTransferConversion = transaction.type === TransactionTypeEnum.TRANSFER && isNotEmptyString(transferExchangeRateLabel);
+    const transferConversionWithBottomBorder = isNotEmptyString(feeDisplay) || hasFollowingRows;
 
     return (
         <>
@@ -68,6 +69,7 @@ export const TransactionInfoMoneyRows = ({ transaction }: TransactionInfoMoneyRo
                     value={transferExchangeRateLabel}
                     description={transferDestinationAmount}
                     testID={TransactionInfoPageSelector.Row.ExchangeRate}
+                    withBottomBorder={transferConversionWithBottomBorder}
                 />
             ) : null}
 
@@ -77,6 +79,7 @@ export const TransactionInfoMoneyRows = ({ transaction }: TransactionInfoMoneyRo
                     label={t`Fee`}
                     value={feeDisplay}
                     testID={TransactionInfoPageSelector.Row.Fee}
+                    withBottomBorder={hasFollowingRows}
                 />
             ) : null}
         </>

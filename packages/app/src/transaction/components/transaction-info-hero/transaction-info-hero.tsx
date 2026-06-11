@@ -1,8 +1,7 @@
-import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { TransactionConsolidationTypeEnum, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
@@ -21,18 +20,6 @@ import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
 
 import type { TransactionInfoHeroPropsInterface } from '../../interface/transaction-info-hero-props.interface';
-
-const getTypeLabel = (type: TransactionTypeEnum, t: ReturnType<typeof useLingui>['t']): string => {
-    if (type === TransactionTypeEnum.EXPENSE) {
-        return t`Expense`;
-    }
-
-    if (type === TransactionTypeEnum.INCOME) {
-        return t`Income`;
-    }
-
-    return t`Transfer`;
-};
 
 const getPrimaryEntry = (transaction: TransactionInfoHeroPropsInterface['transaction']) => {
     if (transaction.type === TransactionTypeEnum.INCOME) {
@@ -66,13 +53,7 @@ const getFormattedAmount = (
     formatDigits: (value: number, symbol?: string) => string
 ): string => `${getAmountPrefix(transaction.type)}${formatDigits(amount, currencySymbol)}`;
 
-export const TransactionInfoHero = ({
-    transaction,
-    categoryLabel,
-    matchingRuleIds,
-    onOpenRefundSources
-}: TransactionInfoHeroPropsInterface) => {
-    const { t } = useLingui();
+export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources }: TransactionInfoHeroPropsInterface) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const variant = TRANSACTION_COLOR[getTransactionType(transaction)];
@@ -88,6 +69,7 @@ export const TransactionInfoHero = ({
     const secondaryAmount = isDefined(secondaryEntry)
         ? formatDigits(convertFromMicroUnits(secondaryEntry.amount), secondaryEntry.account.instrument.symbol)
         : null;
+    const showMetaPills = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND || isPositiveNumber(feeAmount);
 
     return (
         <View className="items-center gap-y-xl py-4xl">
@@ -117,12 +99,12 @@ export const TransactionInfoHero = ({
                 </Text>
             ) : null}
 
-            <View className="flex-row flex-wrap justify-center gap-xs">
-                <TransactionMetaPill label={getTypeLabel(transaction.type, t)} icon={UserIconNameEnum.ReceiptText} />
-                {isNotEmptyString(categoryLabel) ? <TransactionMetaPill label={categoryLabel} icon={UserIconNameEnum.Tags} /> : null}
-                <RefundedPill transaction={transaction} onPress={onOpenRefundSources} />
-                <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} />
-            </View>
+            {showMetaPills ? (
+                <View className="flex-row flex-wrap justify-center gap-xs">
+                    <RefundedPill transaction={transaction} onPress={onOpenRefundSources} />
+                    <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} />
+                </View>
+            ) : null}
 
             {isNotEmptyArray(matchingRuleIds) ? (
                 <MatchingRulesPill matchingRulesCount={matchingRuleIds.length} matchingRuleIds={matchingRuleIds} />

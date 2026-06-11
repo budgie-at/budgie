@@ -9,4 +9,5 @@ export interface TransactionInfoRowPropsInterface {
     readonly children?: ReactNode;
     readonly testID: string;
     readonly onPress?: () => void;
+    readonly withBottomBorder?: boolean;
 }
