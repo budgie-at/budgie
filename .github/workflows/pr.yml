@@ -398,8 +398,22 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+          set -euo pipefail
+          export MAESTRO_VERSION=2.4.0
+          if [ ! -x "$HOME/.maestro/bin/maestro" ]; then
+            for ATTEMPT in 1 2 3; do
+              echo "Installing Maestro attempt=$ATTEMPT"
+              if curl --fail --location --show-error --connect-timeout 20 --max-time 180 --retry 3 --retry-delay 5 --retry-all-errors "https://get.maestro.mobile.dev" | bash; then
+                break
+              fi
+              if [ "$ATTEMPT" -eq 3 ]; then
+                exit 1
+              fi
+              sleep 10
+            done
+          fi
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+          "$HOME/.maestro/bin/maestro" --version
 
       - name: Prepare iOS E2E artifact directories
         run: |
@@ -521,8 +535,22 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+          set -euo pipefail
+          export MAESTRO_VERSION=2.4.0
+          if [ ! -x "$HOME/.maestro/bin/maestro" ]; then
+            for ATTEMPT in 1 2 3; do
+              echo "Installing Maestro attempt=$ATTEMPT"
+              if curl --fail --location --show-error --connect-timeout 20 --max-time 180 --retry 3 --retry-delay 5 --retry-all-errors "https://get.maestro.mobile.dev" | bash; then
+                break
+              fi
+              if [ "$ATTEMPT" -eq 3 ]; then
+                exit 1
+              fi
+              sleep 10
+            done
+          fi
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+          "$HOME/.maestro/bin/maestro" --version
 
       - name: Сreate AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
