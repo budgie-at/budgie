@@ -858,10 +858,6 @@ msgstr "Konten konnten nicht abgerufen werden"
 msgid "Could not import CSV file"
 msgstr "CSV-Datei konnte nicht importiert werden"
 
-#: src/budget/hooks/use-budget-form.hook.ts
-msgid "Could not load budget"
-msgstr "Budget konnte nicht geladen werden"
-
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
 msgstr "Quellen konnten nicht geladen werden. Bitte erneut versuchen."
@@ -990,7 +986,7 @@ msgid "Create anyway"
 msgstr "Trotzdem erstellen"
 
 #: src/app/(main)/budget/create/index.tsx
-#: src/app/(main)/budget/edit/index.tsx
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Create budget"
 msgstr "Budget erstellen"
 
@@ -1191,7 +1187,7 @@ msgstr "z.B. Lebensmittel, Unterhaltung"
 msgid "e.g. Savings Account"
 msgstr "z. B. Sparkonto"
 
-#: src/app/(main)/budget/edit/index.tsx
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Edit budget"
 msgstr "Budget bearbeiten"
 
@@ -1727,7 +1723,7 @@ msgstr "Wird geladen..."
 msgid "Main Currency"
 msgstr "Hauptwährung"
 
-#: src/app/(tabs)/settings/index.tsx
+#: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Manage budget"
 msgstr "Budget verwalten"
 
@@ -2672,7 +2668,7 @@ msgstr "Senden {fromCode}"
 msgid "Set a default currency in Settings first"
 msgstr "Standardwährung zuerst in den Einstellungen festlegen"
 
-#: src/app/(tabs)/settings/index.tsx
+#: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Set a monthly limit and track spending"
 msgstr "Lege ein monatliches Limit fest und verfolge deine Ausgaben"
 
