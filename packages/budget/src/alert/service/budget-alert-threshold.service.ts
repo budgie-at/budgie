@@ -1,4 +1,6 @@
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { Log } from '@budgie/logger';
+
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { BudgetAlertScopeEnum } from '../enum/budget-alert-scope.enum';
 
@@ -10,6 +12,14 @@ import type { BudgetAlertTriggerInterface } from '../interface/budget-alert-trig
 class BudgetAlertThresholdService {
     private static readonly BUDGET_ALERT_THRESHOLDS = [80, 100] as const;
 
+    @Log(
+        (budget, spent, categoryLimits) =>
+            `enter overallLimit=${budget.overallLimit} otherLimit=${budget.otherLimit} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.map(entry => `${entry.categoryId}:${entry.spent}`).join(',')} categoryLimits=${categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')}`,
+        (result, budget, spent, categoryLimits) =>
+            `done overallLimit=${budget.overallLimit} otherLimit=${budget.otherLimit} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.map(entry => `${entry.categoryId}:${entry.spent}`).join(',')} categoryLimits=${categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')} triggers=${result.map(trigger => `${trigger.scope}:${isDefined(trigger.categoryId) ? trigger.categoryId : ''}:${trigger.threshold}`).join(',')}`,
+        (error, budget, spent, categoryLimits) =>
+            `throw overallLimit=${budget.overallLimit} otherLimit=${budget.otherLimit} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.map(entry => `${entry.categoryId}:${entry.spent}`).join(',')} categoryLimits=${categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')} error=${getErrorMessage(error)}`
+    )
     computeTriggers(
         budget: BudgetAlertBudgetInterface,
         spent: BudgetSpentInterface,

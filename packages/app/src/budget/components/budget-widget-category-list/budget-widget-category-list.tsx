@@ -38,7 +38,7 @@ export const BudgetWidgetCategoryList = ({ categoryLimits, spentByCategory }: Pr
         <View className="flex-row flex-wrap items-center gap-x-sm gap-y-xs">
             {visibleCategoryLimits.map((limit, index) => (
                 <Fragment key={limit.id}>
-                    {index > 0 && <Text className="text-secondary-foreground text-sm">·</Text>}
+                    {isPositiveNumber(index) && <Text className="text-secondary-foreground text-sm">·</Text>}
                     <BudgetWidgetCategoryChip
                         categoryId={limit.categoryId}
                         limitAmount={limit.limitAmount}
