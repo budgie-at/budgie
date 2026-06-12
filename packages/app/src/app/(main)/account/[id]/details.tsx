@@ -39,6 +39,7 @@ const useAccountEditHandler = (id: number) => {
     return useCallback(() => void router.push(`/account/${id}/update`), [id, router]);
 };
 
+// eslint-disable-next-line max-statements -- Page coordinates account header, balance, list, and create-transaction menu state
 export default function AccountDetails() {
     const params = useLocalSearchParams<IdParamInterface>();
     const id = Number(params.id);
@@ -50,6 +51,7 @@ export default function AccountDetails() {
 
     const handleGoBack = () => void goBackOrReplace('/');
     const handleEditAccount = useAccountEditHandler(id);
+    const handleOpenMenu = () => void setIsMenuOpen(true);
     const handleCloseMenu = () => void setIsMenuOpen(false);
 
     if (isLoading) {
@@ -103,7 +105,7 @@ export default function AccountDetails() {
                 <TransactionList accountId={id} footerSpacerMultiplier={3} />
             </Page>
 
-            <AccountFab isMenuOpen={isMenuOpen} onPress={() => void setIsMenuOpen(true)} />
+            <AccountFab isMenuOpen={isMenuOpen} onPress={handleOpenMenu} />
             <AnimatedBackdrop isVisible={isMenuOpen} onClose={handleCloseMenu} />
             <CreateTransactionMenu isOpen={isMenuOpen} onClose={handleCloseMenu} accountId={id} />
         </View>
