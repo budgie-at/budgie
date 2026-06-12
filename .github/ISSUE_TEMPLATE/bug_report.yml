@@ -1,0 +1,79 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in Budgie
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Budgie. Please share what happened in your own words, and skip anything you are not sure about.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the problem you noticed.
+      placeholder: I was trying to... and then...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: How can we reproduce it?
+      description: List the taps or actions that led to the problem.
+      placeholder: |
+        1. Open...
+        2. Tap...
+        3. See...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+      description: Tell us what should have happened.
+      placeholder: I expected...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      description: Where did this happen?
+      options:
+        - iPhone or iPad
+        - Android
+        - Web
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+      description: You can find this in Settings > About.
+      placeholder: "Example: 1.107.2"
+    validations:
+      required: false
+
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: Share your device model if you know it.
+      placeholder: "Example: iPhone 15, Pixel 8, Samsung Galaxy S24"
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or extra context
+      description: Add screenshots, screen recordings, error messages, or anything else that might help. Please hide financial details first.
+      placeholder: Drag screenshots here or add more details.
+    validations:
+      required: false
