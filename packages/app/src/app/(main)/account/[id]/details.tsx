@@ -3,13 +3,12 @@ import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { AnimatedBackdrop } from '../../../../@generic/component/animated-backdrop/animated-backdrop';
 import { CircleIcon } from '../../../../@generic/component/circle-icon/circle-icon';
-import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
@@ -74,7 +73,13 @@ export default function AccountDetails() {
                         title={title}
                         iconVariant={ACCOUNT_COLOR[type]}
                         right={
-                            <HapticPressable className="ml-auto" onPress={handleEditAccount} testID={AccountDetailsSelector.EditButton}>
+                            <Pressable
+                                accessibilityRole="button"
+                                className="ml-auto h-10 w-10 items-center justify-center rounded-full active:bg-secondary-background"
+                                hitSlop={10}
+                                onPress={handleEditAccount}
+                                testID={AccountDetailsSelector.EditButton}
+                            >
                                 <CircleIcon
                                     icon={UserIconNameEnum.EllipsisVertical}
                                     variant="ghost"
@@ -82,7 +87,7 @@ export default function AccountDetails() {
                                     iconSize={24}
                                     border={false}
                                 />
-                            </HapticPressable>
+                            </Pressable>
                         }
                         description={t(ACCOUNT_TYPE[type])}
                         descriptionClassName={descriptionVariants({ variant: ACCOUNT_COLOR[type] })}
