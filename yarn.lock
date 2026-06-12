@@ -1170,6 +1170,7 @@ __metadata:
   resolution: "@budgie-at/budget-tests@workspace:tests/budget-tests"
   dependencies:
     "@budgie/budget": "workspace:*"
+    "@rnw-community/shared": "npm:^2.2.0"
     "@types/node": "npm:^24.5.2"
     typescript: "npm:^5.9.3"
     vitest: "npm:^4.1.7"
@@ -1308,9 +1309,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie/budget@workspace:packages/budget"
   dependencies:
+    "@budgie/contracts": "workspace:*"
     "@budgie/logger": "workspace:*"
     "@rnw-community/shared": "npm:^2.2.0"
     date-fns: "npm:^4.3.0"
+    zod: "npm:4.1.12"
   languageName: unknown
   linkType: soft
 
@@ -1324,7 +1327,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/contracts@workspace:^, @budgie/contracts@workspace:packages/contracts":
+"@budgie/contracts@workspace:*, @budgie/contracts@workspace:^, @budgie/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
