@@ -226,15 +226,6 @@ jobs:
           EXPO_PUBLIC_AI_DISABLE: "true"
         run: pod install
 
-      - name: Restore Xcode DerivedData cache
-        uses: actions/cache/restore@v5
-        with:
-          path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
-          restore-keys: |
-            deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-
-            deriveddata-${{ runner.os }}-xcode26_4_1-e2e-
-
       - name: Build app
         working-directory: packages/app
         env:
@@ -297,13 +288,6 @@ jobs:
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-
-      - name: Save Xcode DerivedData cache
-        if: always()
-        uses: actions/cache/save@v5
-        with:
-          path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
 
   e2e-ios:
     needs: [build-ios-e2e-app]
