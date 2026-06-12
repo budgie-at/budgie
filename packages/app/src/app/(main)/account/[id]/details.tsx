@@ -33,6 +33,17 @@ const descriptionVariants = cva('uppercase', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
+const AccountEditButton = ({ id }: { readonly id: number }) => {
+    const router = useRouter();
+    const handleEditAccount = () => void router.push(`/account/${id}/update`);
+
+    return (
+        <HapticPressable className="ml-auto" onPress={handleEditAccount} testID={AccountDetailsSelector.EditButton}>
+            <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
+        </HapticPressable>
+    );
+};
+
 export default function AccountDetails() {
     const params = useLocalSearchParams<IdParamInterface>();
     const id = Number(params.id);
@@ -40,11 +51,9 @@ export default function AccountDetails() {
     const { account, isLoading } = useGetAccountByIdQuery(id);
     const { balance } = useAccountBalanceQuery(id);
     const { t } = useLingui();
-    const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleGoBack = () => void goBackOrReplace('/');
-    const handleEditAccount = () => void router.push(`/account/${id}/update`);
     const handleOpenMenu = () => void setIsMenuOpen(true);
     const handleCloseMenu = () => void setIsMenuOpen(false);
 
@@ -67,17 +76,7 @@ export default function AccountDetails() {
                         onGoBack={handleGoBack}
                         title={title}
                         iconVariant={ACCOUNT_COLOR[type]}
-                        right={
-                            <HapticPressable className="ml-auto" onPress={handleEditAccount} testID={AccountDetailsSelector.EditButton}>
-                                <CircleIcon
-                                    icon={UserIconNameEnum.EllipsisVertical}
-                                    variant="ghost"
-                                    size={40}
-                                    iconSize={24}
-                                    border={false}
-                                />
-                            </HapticPressable>
-                        }
+                        right={<AccountEditButton id={id} />}
                         description={t(ACCOUNT_TYPE[type])}
                         descriptionClassName={descriptionVariants({ variant: ACCOUNT_COLOR[type] })}
                     />
