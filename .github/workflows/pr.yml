@@ -73,7 +73,7 @@ jobs:
   eas-update-preview:
     name: EAS Update Preview
     needs: code-quality
-    runs-on: [self-hosted, linux-burst]
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     permissions:
       contents: read
     steps:
