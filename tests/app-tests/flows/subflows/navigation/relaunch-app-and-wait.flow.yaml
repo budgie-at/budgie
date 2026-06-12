@@ -35,4 +35,4 @@ env:
           - extendedWaitUntil:
                 visible:
                     id: '${DESTINATION_ID}'
-                timeout: 30000
+                timeout: 5000

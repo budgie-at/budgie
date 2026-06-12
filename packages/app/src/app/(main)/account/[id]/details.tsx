@@ -1,14 +1,15 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Link, Redirect, useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
+import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { AnimatedBackdrop } from '../../../../@generic/component/animated-backdrop/animated-backdrop';
 import { CircleIcon } from '../../../../@generic/component/circle-icon/circle-icon';
+import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
@@ -32,13 +33,6 @@ const descriptionVariants = cva('uppercase', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-const useAccountEditHandler = (id: number) => {
-    const router = useRouter();
-
-    return useCallback(() => void router.push(`/account/${id}/update`), [id, router]);
-};
-
-// eslint-disable-next-line max-statements -- Page coordinates account header, balance, list, and create-transaction menu state
 export default function AccountDetails() {
     const params = useLocalSearchParams<IdParamInterface>();
     const id = Number(params.id);
@@ -49,7 +43,6 @@ export default function AccountDetails() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleGoBack = () => void goBackOrReplace('/');
-    const handleEditAccount = useAccountEditHandler(id);
     const handleOpenMenu = () => void setIsMenuOpen(true);
     const handleCloseMenu = () => void setIsMenuOpen(false);
 
@@ -73,21 +66,17 @@ export default function AccountDetails() {
                         title={title}
                         iconVariant={ACCOUNT_COLOR[type]}
                         right={
-                            <Pressable
-                                accessibilityRole="button"
-                                className="ml-auto h-10 w-10 items-center justify-center rounded-full active:bg-secondary-background"
-                                hitSlop={10}
-                                onPress={handleEditAccount}
-                                testID={AccountDetailsSelector.EditButton}
-                            >
-                                <CircleIcon
-                                    icon={UserIconNameEnum.EllipsisVertical}
-                                    variant="ghost"
-                                    size={40}
-                                    iconSize={24}
-                                    border={false}
-                                />
-                            </Pressable>
+                            <Link href={`/account/${id}/update`} asChild>
+                                <HapticPressable className="ml-auto" testID={AccountDetailsSelector.EditButton}>
+                                    <CircleIcon
+                                        icon={UserIconNameEnum.EllipsisVertical}
+                                        variant="ghost"
+                                        size={40}
+                                        iconSize={24}
+                                        border={false}
+                                    />
+                                </HapticPressable>
+                            </Link>
                         }
                         description={t(ACCOUNT_TYPE[type])}
                         descriptionClassName={descriptionVariants({ variant: ACCOUNT_COLOR[type] })}
