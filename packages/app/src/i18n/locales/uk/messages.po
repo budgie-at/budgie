@@ -858,10 +858,6 @@ msgstr "Не вдалося отримати рахунки"
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
 
-#: src/budget/hooks/use-budget-form.hook.ts
-msgid "Could not load budget"
-msgstr "Не вдалося завантажити бюджет"
-
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
 msgstr "Не вдалося завантажити джерела. Спробуйте ще раз."
@@ -990,7 +986,7 @@ msgid "Create anyway"
 msgstr "Все одно створити"
 
 #: src/app/(main)/budget/create/index.tsx
-#: src/app/(main)/budget/edit/index.tsx
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Create budget"
 msgstr "Створити бюджет"
 
@@ -1191,7 +1187,7 @@ msgstr "напр. Продукти, Розваги"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/app/(main)/budget/edit/index.tsx
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Edit budget"
 msgstr "Редагувати бюджет"
 
@@ -1727,7 +1723,7 @@ msgstr "Завантаження..."
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(tabs)/settings/index.tsx
+#: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Manage budget"
 msgstr "Керувати бюджетом"
 
@@ -2672,7 +2668,7 @@ msgstr "Відправлення {fromCode}"
 msgid "Set a default currency in Settings first"
 msgstr "Спочатку оберіть валюту за замовчуванням у Налаштуваннях"
 
-#: src/app/(tabs)/settings/index.tsx
+#: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Set a monthly limit and track spending"
 msgstr "Встановіть місячний ліміт та відстежуйте витрати"
 
