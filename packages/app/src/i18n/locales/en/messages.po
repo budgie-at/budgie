@@ -2032,8 +2032,8 @@ msgid "Owes you"
 msgstr "Owes you"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Paid: {formattedBalance}"
-msgstr "Paid: {formattedBalance}"
+msgid "Paid: {formattedPaidAmount}"
+msgstr "Paid: {formattedPaidAmount}"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
