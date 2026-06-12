@@ -9,6 +9,8 @@ appId: ${APP_ID}
     id: 'AccountForm.NameInput'
 - eraseText: 60
 - inputText: ${UPDATED_ACCOUNT_NAME}
+- tapOn:
+    text: 'ACCOUNT NAME & ICON'
 - scrollUntilVisible:
     element:
       id: 'AccountForm.SubmitButton'

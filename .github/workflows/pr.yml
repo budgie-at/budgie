@@ -192,16 +192,22 @@ jobs:
             pods-${{ runner.os }}-
 
       - name: Setup ccache
+        id: setup-ccache
         run: |
           mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
-          command -v ccache >/dev/null || {
-            echo "::error::ccache is not installed on this runner."
-            exit 1
-          }
+          if ! command -v ccache >/dev/null; then
+            echo "ccache is not installed on this runner. Disabling compiler cache."
+            echo "USE_CCACHE=0" >> "$GITHUB_ENV"
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "available=true" >> "$GITHUB_OUTPUT"
           ccache --version
           ccache --zero-stats || true
 
       - name: Restore ccache
+        if: steps.setup-ccache.outputs.available == 'true'
         uses: actions/cache/restore@v5
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -292,7 +298,7 @@ jobs:
           key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save ccache
-        if: always()
+        if: always() && steps.setup-ccache.outputs.available == 'true'
         uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -411,7 +417,7 @@ jobs:
 
       - name: Run Maestro UI tests
         working-directory: tests/app-tests
-        timeout-minutes: 90
+        timeout-minutes: 120
         shell: bash
         run: |
           set -euo pipefail

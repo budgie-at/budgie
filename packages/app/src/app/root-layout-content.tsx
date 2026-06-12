@@ -47,6 +47,7 @@ import { useAppInitialization } from '../@generic/hook/use-app-initialization.ho
 import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
+import { isE2eApp } from '../@generic/utils/is-e2e-app.util';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
@@ -73,6 +74,10 @@ const drizzleStudioEnvironmentVariable = 'EXPO_PUBLIC_DRIZZLE_STUDIO_ENABLE';
 const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVariable] === 'true';
 
 const syncForegroundData = async (): Promise<void> => {
+    if (isE2eApp()) {
+        return;
+    }
+
     await exchangeRatesSyncService.sync().catch(emptyFn);
     await monobankSyncService.sync().catch(emptyFn);
     await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);

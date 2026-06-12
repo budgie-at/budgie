@@ -66,6 +66,13 @@ export abstract class BaseFileBankSyncService {
     }
 
     @Log(uri => `enter uri=${uri}`, (_result, uri) => `done uri=${uri}`, (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`)
+    async importAllAccounts(uri: string): Promise<void> {
+        return this.runQueuedImport(async () => {
+            await this.importAllAccountsInner(uri);
+        });
+    }
+
+    @Log(uri => `enter uri=${uri}`, (_result, uri) => `done uri=${uri}`, (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`)
     async quickImport(uri: string): Promise<void> {
         return this.runQueuedImport(async () => {
             await this.quickImportInner(uri);
@@ -162,6 +169,16 @@ export abstract class BaseFileBankSyncService {
         }
 
         await this.executeImport(client, selectedBankAccounts);
+    }
+
+    private async importAllAccountsInner(uri: string): Promise<void> {
+        const { client, bankAccounts } = await this.parseFile(uri);
+
+        if (!isNotEmptyArray(bankAccounts)) {
+            return;
+        }
+
+        await this.executeImport(client, bankAccounts);
     }
 
     private async quickImportInner(uri: string): Promise<void> {

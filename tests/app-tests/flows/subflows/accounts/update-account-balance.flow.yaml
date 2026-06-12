@@ -8,6 +8,8 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible: ${NEW_BALANCE}
       timeout: 3000
+- tapOn:
+      text: 'ACCOUNT NAME & ICON'
 - scrollUntilVisible:
       element:
           id: 'AccountForm.SubmitButton'
