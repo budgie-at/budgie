@@ -18,7 +18,7 @@ on: pull_request
 jobs:
   code-quality:
     name: Code quality checks
-    runs-on: [self-hosted, linux, arm64, linux-burst]
+    runs-on: [self-hosted, linux-burst]
     permissions:
       contents: read
       id-token: write
@@ -72,7 +72,7 @@ jobs:
   eas-update-preview:
     name: EAS Update Preview
     needs: code-quality
-    runs-on: [self-hosted, linux, arm64, linux-burst]
+    runs-on: [self-hosted, linux-burst]
     permissions:
       contents: read
     steps:
@@ -453,7 +453,7 @@ jobs:
     if: false
     needs: [code-quality, eas-update-preview]
     name: E2E Tests on Android
-    runs-on: [self-hosted, linux, arm64, linux-burst]
+    runs-on: [self-hosted, linux-burst]
     steps:
       - uses: actions/checkout@v5
 
