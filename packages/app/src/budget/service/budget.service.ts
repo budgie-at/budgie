@@ -1,3 +1,4 @@
+import { budgetCategoryLimitDiffService } from '@budgie/budget';
 import { transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
@@ -7,9 +8,8 @@ import { budgetCategoryLimitRepository, budgetRepository, db } from '../../@gene
 
 import type { BudgetCreateInputInterface } from '../interface/budget-create-input.interface';
 import type { BudgetUpdateInputInterface } from '../interface/budget-update-input.interface';
-import type { CategoryLimitDiffInterface } from '../interface/category-limit-diff.interface';
-import type { BudgetCategoryLimitInputInterface } from '@budgie/budget';
-import type { BudgetCategoryLimitEntityInterface, BudgetEntityInterface, DB } from '@budgie/contracts';
+import type { BudgetCategoryLimitDiffInterface, BudgetCategoryLimitInputInterface } from '@budgie/budget';
+import type { BudgetEntityInterface, DB } from '@budgie/contracts';
 
 class BudgetService {
     @Log(
@@ -80,34 +80,12 @@ class BudgetService {
         }
 
         const existingLimits = await budgetCategoryLimitRepository.getByBudget(budgetId, tx);
-        const diff = this.diffCategoryLimits(existingLimits, categoryLimits);
+        const diff = budgetCategoryLimitDiffService.diffCategoryLimits(existingLimits, categoryLimits);
 
         await this.applyCategoryLimitDiff(budgetId, diff, tx);
     }
 
-    private diffCategoryLimits(
-        existingLimits: readonly BudgetCategoryLimitEntityInterface[],
-        nextLimits: readonly BudgetCategoryLimitInputInterface[]
-    ): CategoryLimitDiffInterface {
-        const existingByCategory = new Map(existingLimits.map(limit => [limit.categoryId, limit]));
-        const nextCategoryIds = new Set(nextLimits.map(limit => limit.categoryId));
-
-        const toCreate = nextLimits.filter(next => !existingByCategory.has(next.categoryId));
-        const toUpdate = nextLimits
-            .map(next => {
-                const existing = existingByCategory.get(next.categoryId);
-
-                return isDefined(existing) && existing.limitAmount !== next.limitAmount
-                    ? { id: existing.id, limitAmount: next.limitAmount }
-                    : null;
-            })
-            .filter(isDefined);
-        const toDelete = existingLimits.filter(limit => !nextCategoryIds.has(limit.categoryId)).map(limit => limit.id);
-
-        return { toCreate, toUpdate, toDelete };
-    }
-
-    private async applyCategoryLimitDiff(budgetId: number, diff: CategoryLimitDiffInterface, tx: DB): Promise<void> {
+    private async applyCategoryLimitDiff(budgetId: number, diff: BudgetCategoryLimitDiffInterface, tx: DB): Promise<void> {
         await Promise.all([
             isNotEmptyArray(diff.toCreate)
                 ? budgetCategoryLimitRepository.bulkCreate(

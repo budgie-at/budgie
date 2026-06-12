@@ -1,3 +1,8 @@
+export { budgetCategoryLimitDiffService } from './category-limit/service/budget-category-limit-diff.service';
+export type { BudgetCategoryLimitDiffInterface } from './category-limit/interface/budget-category-limit-diff.interface';
+export type { BudgetCategoryLimitSnapshotInterface } from './category-limit/interface/budget-category-limit-snapshot.interface';
+export type { BudgetCategoryLimitUpdateInputInterface } from './category-limit/interface/budget-category-limit-update-input.interface';
+
 export { budgetAllocationService } from './allocation/service/budget-allocation.service';
 export type { BudgetAllocationInputInterface } from './allocation/interface/budget-allocation-input.interface';
 export type { BudgetAllocationInterface } from './allocation/interface/budget-allocation.interface';
