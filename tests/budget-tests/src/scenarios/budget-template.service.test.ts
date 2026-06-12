@@ -24,8 +24,8 @@ describe('budgetTemplateService', () => {
     it('resolves generic template categories without treating the default Other category specially', () => {
         const draft = budgetTemplateService.resolveGenericBudgetTemplate(
             [
-                { id: 11, title: 'Groceries', titleEn: 'Groceries', isDefault: true },
-                { id: 12, title: 'Other', titleEn: 'Other', isDefault: true }
+                { id: 11, isDefault: true },
+                { id: 38, isDefault: true }
             ],
             'USD'
         );

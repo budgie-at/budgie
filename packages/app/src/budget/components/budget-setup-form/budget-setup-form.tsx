@@ -8,6 +8,7 @@ import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
+import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormSchema } from '../../constant/budget-form-schema.constant';
 import { BudgetTemplateKindEnum } from '../../enum/budget-template-kind.enum';
 import { useBudgetForm } from '../../hooks/use-budget-form.hook';
@@ -15,8 +16,8 @@ import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
 import { BudgetEditFooter } from '../budget-edit-footer/budget-edit-footer';
 import { BudgetInlineCategoryLimits } from '../budget-inline-category-limits/budget-inline-category-limits';
 import { BudgetOverallLimitField } from '../budget-overall-limit-field/budget-overall-limit-field';
+import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 import { BudgetSetupDeleteButton } from '../budget-setup-delete-button/budget-setup-delete-button';
-import { BudgetSetupProgressBar } from '../budget-setup-progress-bar/budget-setup-progress-bar';
 
 import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controller';
 
@@ -48,6 +49,16 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const headerTitle = isEditing ? t`Edit budget` : t`Create budget`;
     const handleCategoryAdded = () => scrollViewRef.current?.scrollToEnd({ animated: true });
+    const setupProgressBar =
+        isEditing && isDefined(budget) ? (
+            <BudgetProgressBar
+                currencySymbol={currencySymbol}
+                spent={spent.spentOverall}
+                limit={budget.overallLimit}
+                spentTestID={BudgetSelector.SetupSpentLabel}
+                remainingTestID={BudgetSelector.SetupRemainingLabel}
+            />
+        ) : null;
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -68,12 +79,7 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
                 contentContainerStyle={FORM_CONTENT_STYLE}
                 extraBottomPadding={FORM_EXTRA_BOTTOM_PADDING}
             >
-                <BudgetSetupProgressBar
-                    budget={budget}
-                    currencySymbol={currencySymbol}
-                    isEditing={isEditing}
-                    spentOverall={spent.spentOverall}
-                />
+                {setupProgressBar}
                 <BudgetOverallLimitField control={form.control} currencySymbol={currencySymbol} />
                 <BudgetInlineCategoryLimits currencySymbol={currencySymbol} onCategoryAdded={handleCategoryAdded} />
             </FormPage>

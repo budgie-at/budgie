@@ -1,12 +1,21 @@
+import { Log } from '@budgie/logger';
 import { addMonths, endOfMonth, getMonth, getYear, lastDayOfMonth, setDate, startOfDay, startOfMonth, subMonths } from 'date-fns';
 
-import { isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import type { BudgetDatedEntryInterface } from '../interface/budget-dated-entry.interface';
 import type { BudgetPeriodWindowInterface } from '../interface/budget-period-window.interface';
 import type { BudgetTrailingMonthsWindowInterface } from '../interface/budget-trailing-months-window.interface';
 
 class BudgetPeriodService {
+    @Log(
+        (periodStartDay, useLastDayOfMonth, now) =>
+            `enter periodStartDay=${periodStartDay} useLastDayOfMonth=${useLastDayOfMonth} now=${now.toISOString()}`,
+        (result, periodStartDay, useLastDayOfMonth, now) =>
+            `done periodStartDay=${periodStartDay} useLastDayOfMonth=${useLastDayOfMonth} now=${now.toISOString()} periodStart=${result.periodStart.toISOString()} nextPeriodStart=${result.nextPeriodStart.toISOString()}`,
+        (error, periodStartDay, useLastDayOfMonth, now) =>
+            `throw periodStartDay=${periodStartDay} useLastDayOfMonth=${useLastDayOfMonth} now=${now.toISOString()} error=${getErrorMessage(error)}`
+    )
     computePeriodWindow(periodStartDay: number, useLastDayOfMonth: boolean, now: Date): BudgetPeriodWindowInterface {
         if (useLastDayOfMonth) {
             return this.computeEndOfMonthWindow(now);
@@ -15,10 +24,21 @@ class BudgetPeriodService {
         return this.computeStartDayWindow(periodStartDay, now);
     }
 
+    @Log(
+        nextPeriodStart => `enter nextPeriodStart=${nextPeriodStart.toISOString()}`,
+        (result, nextPeriodStart) => `done nextPeriodStart=${nextPeriodStart.toISOString()} inclusiveEnd=${result.toISOString()}`,
+        (error, nextPeriodStart) => `throw nextPeriodStart=${nextPeriodStart.toISOString()} error=${getErrorMessage(error)}`
+    )
     getInclusiveEnd(nextPeriodStart: Date): Date {
         return new Date(nextPeriodStart.getTime() - 1);
     }
 
+    @Log(
+        (now, months) => `enter now=${now.toISOString()} months=${months}`,
+        (result, now, months) =>
+            `done now=${now.toISOString()} months=${months} start=${result.start.toISOString()} end=${result.end.toISOString()}`,
+        (error, now, months) => `throw now=${now.toISOString()} months=${months} error=${getErrorMessage(error)}`
+    )
     computeTrailingMonthsWindow(now: Date, months: number): BudgetTrailingMonthsWindowInterface {
         return {
             start: startOfMonth(subMonths(now, months)),
@@ -26,6 +46,14 @@ class BudgetPeriodService {
         };
     }
 
+    @Log(
+        (entries, windowStart, maxMonths, minEntriesPerMonth) =>
+            `enter entries=${entries.map(entry => entry.operatedAt.toISOString()).join(',')} windowStart=${windowStart.toISOString()} maxMonths=${maxMonths} minEntriesPerMonth=${minEntriesPerMonth}`,
+        (result, ...[entries, windowStart, maxMonths, minEntriesPerMonth]) =>
+            `done entries=${entries.map(entry => entry.operatedAt.toISOString()).join(',')} windowStart=${windowStart.toISOString()} maxMonths=${maxMonths} minEntriesPerMonth=${minEntriesPerMonth} months=${result}`,
+        (error, ...[entries, windowStart, maxMonths, minEntriesPerMonth]) =>
+            `throw entries=${entries.map(entry => entry.operatedAt.toISOString()).join(',')} windowStart=${windowStart.toISOString()} maxMonths=${maxMonths} minEntriesPerMonth=${minEntriesPerMonth} error=${getErrorMessage(error)}`
+    )
     resolveSuggestedWindowMonths(
         entries: readonly BudgetDatedEntryInterface[],
         windowStart: Date,

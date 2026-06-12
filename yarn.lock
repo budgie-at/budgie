@@ -1308,6 +1308,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie/budget@workspace:packages/budget"
   dependencies:
+    "@budgie/logger": "workspace:*"
     "@rnw-community/shared": "npm:^2.2.0"
     date-fns: "npm:^4.3.0"
   languageName: unknown

@@ -1,6 +1,7 @@
 import { budgetPeriodService } from '@budgie/budget';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
@@ -61,7 +62,9 @@ export const BudgetDetails = ({ budget }: Props) => {
             currencySymbol={currencySymbol}
         />
     ) : (
-        <Text className="text-secondary-foreground text-sm">{t`No category limits yet`}</Text>
+        <Text className="text-secondary-foreground text-sm">
+            <Trans>No category limits yet</Trans>
+        </Text>
     );
 
     const headerAction = (
@@ -77,7 +80,9 @@ export const BudgetDetails = ({ budget }: Props) => {
         >
             <View className="gap-y-md">
                 <View className="flex-row items-center justify-between">
-                    <Text className="text-primary text-lg font-semibold">{t`Monthly budget`}</Text>
+                    <Text className="text-primary text-lg font-semibold">
+                        <Trans>Monthly budget</Trans>
+                    </Text>
                     <Text className="text-secondary-foreground text-sm">{formatDigits(displaySpent, currencySymbol)}</Text>
                 </View>
 
@@ -91,7 +96,9 @@ export const BudgetDetails = ({ budget }: Props) => {
             </View>
 
             <View className="gap-y-md">
-                <Text className="text-primary text-lg font-semibold">{t`Category limits`}</Text>
+                <Text className="text-primary text-lg font-semibold">
+                    <Trans>Category limits</Trans>
+                </Text>
 
                 {categoryLimitsContent}
             </View>

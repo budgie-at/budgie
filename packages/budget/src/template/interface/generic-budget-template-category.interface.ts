@@ -1,4 +1,4 @@
 export interface GenericBudgetTemplateCategoryInterface {
-    readonly defaultTitle: string;
+    readonly categoryId: number;
     readonly weight: number;
 }

@@ -1,6 +1,6 @@
-import { ComponentProps, useRef, useState } from 'react';
+import { ComponentProps, useState } from 'react';
 
-import { isDefined, isEmptyString, isNotEmptyString } from '@rnw-community/shared';
+import { isEmptyString, isNotEmptyString } from '@rnw-community/shared';
 
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -11,8 +11,6 @@ import { extractPartsFromNumeric } from '../../utils/extract-parts-from-numeric.
 import { normalizeDecimalSeparator } from '../../utils/normalize-decimal-separator.util';
 import { sanitizeAmountText } from '../../utils/sanitize-amount-text.util';
 import { Input } from '../input/input';
-
-import type { TextInput } from 'react-native';
 
 interface Props extends Omit<ComponentProps<typeof Input>, 'value'> {
     readonly value: number;
@@ -40,18 +38,10 @@ export const AmountInput = ({
     const formatDigits = useFormatDigits(visibleDecimalPlaces);
     const { intl } = useI18nContext();
 
-    const didAutoFocusRef = useRef(false);
     const [displayValue, setDisplayValue] = useState(() => formatDigits(value === 0 ? '' : value.toString(), valuePrefix));
     const [isFocused, setIsFocused] = useState(false);
 
     const displayedText = isFocused ? displayValue : formatDigits(value === 0 ? '' : value.toString(), valuePrefix);
-
-    const handleInputRef = (input: TextInput | null) => {
-        if (autoFocus && isDefined(input) && !didAutoFocusRef.current) {
-            didAutoFocusRef.current = true;
-            input.focus();
-        }
-    };
 
     const handleChangeText = (text: string) => {
         const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator);
@@ -95,7 +85,7 @@ export const AmountInput = ({
             onFocus={handleFocus}
             onBlur={handleBlur}
             keyboardType="decimal-pad"
-            ref={handleInputRef}
+            autoFocus={autoFocus}
             className={inputClassName}
             {...rest}
         />
