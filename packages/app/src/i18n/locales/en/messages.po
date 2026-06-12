@@ -473,6 +473,10 @@ msgstr "Budgie"
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
+msgstr "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -791,6 +795,10 @@ msgstr "Could not merge category"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Could not merge tag"
 msgstr "Could not merge tag"
+
+#: src/app/(tabs)/settings/index.tsx
+msgid "Could not open GitHub"
+msgstr "Could not open GitHub"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not read CSV file"
@@ -1314,6 +1322,10 @@ msgstr "Filter tags"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Fix Errors"
+
+#: src/app/(tabs)/settings/index.tsx
+msgid "Found an issue or have an idea? Open GitHub issue templates."
+msgstr "Found an issue or have an idea? Open GitHub issue templates."
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -2154,9 +2166,18 @@ msgstr "Repair"
 msgid "Repair Bank Sync Data"
 msgstr "Repair Bank Sync Data"
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+#: src/app/(tabs)/settings/index.tsx
+msgid "Report a Bug"
+msgstr "Report a Bug"
+
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
 msgstr "Resets all sync state"
+
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+msgid "Restart App"
+msgstr "Restart App"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid "Restore"
@@ -2469,6 +2490,7 @@ msgstr "Skip"
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
 msgstr "Some transactions may match multiple rules. The first matching rule will take priority."
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/@generic/hook/use-show-error.hook.ts
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 msgid "Something went wrong"

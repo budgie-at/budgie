@@ -118,7 +118,7 @@ jobs:
   build-ios-e2e-app:
     needs: [code-quality]
     name: Build iOS E2E app
-    runs-on: [self-hosted, macos, arm64, macos-tartelet]
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
@@ -186,9 +186,9 @@ jobs:
           path: |
             ~/Library/Caches/CocoaPods
             ~/.cocoapods
-          key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+          key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
           restore-keys: |
-            pods-${{ runner.os }}-xcode26_3-
+            pods-${{ runner.os }}-xcode26_4_1-
             pods-${{ runner.os }}-
 
       - name: Setup ccache
@@ -205,9 +205,9 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+          key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
           restore-keys: |
-            ccache-${{ runner.os }}-xcode26_3-e2e-
+            ccache-${{ runner.os }}-xcode26_4_1-e2e-
             ccache-${{ runner.os }}-
 
       - name: Expo Prebuild
@@ -230,10 +230,10 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
+          key: deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
           restore-keys: |
-            deriveddata-${{ runner.os }}-xcode26_3-e2e-release-
-            deriveddata-${{ runner.os }}-xcode26_3-e2e-
+            deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-
+            deriveddata-${{ runner.os }}-xcode26_4_1-e2e-
 
       - name: Build app
         working-directory: packages/app
@@ -289,26 +289,26 @@ jobs:
           path: |
             ~/Library/Caches/CocoaPods
             ~/.cocoapods
-          key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+          key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save ccache
         if: always()
         uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+          key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save Xcode DerivedData cache
         if: always()
         uses: actions/cache/save@v5
         with:
           path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
+          key: deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
 
   e2e-ios:
     needs: [build-ios-e2e-app]
     name: E2E Tests on iOS
-    runs-on: [self-hosted, macos, arm64, macos-tartelet]
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
