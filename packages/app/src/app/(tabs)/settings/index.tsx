@@ -4,6 +4,9 @@ import Constants from 'expo-constants';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
+
+import { getErrorMessage } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -13,6 +16,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useScrollToAnchor } from '../../../@generic/hook/use-scroll-to-anchor.hook';
+import { openGithubIssueCreation } from '../../../@generic/utils/open-github-issue-creation.util';
 import { AiEmbeddingStatusCard } from '../../../ai/component/ai-embedding-status-card/ai-embedding-status-card';
 import { AiSystemStatusBanner } from '../../../ai/component/ai-system-status-banner/ai-system-status-banner';
 import { AiTranslationStatusCard } from '../../../ai/component/ai-translation-status-card/ai-translation-status-card';
@@ -52,6 +56,10 @@ export default function SettingsPage() {
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const handleNavigateToTags = () => void router.push('/settings/tags');
     const handleNavigateToRules = () => void router.push('/settings/rules');
+    const handleReportBug = () =>
+        void openGithubIssueCreation().catch((error: unknown) => {
+            Toast.show({ type: 'error', text1: t`Could not open GitHub`, text2: getErrorMessage(error) });
+        });
 
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
@@ -212,17 +220,27 @@ export default function SettingsPage() {
                 </View>
 
                 <SettingsGroup title={t`About`}>
-                    <Card variant="ghost" className="items-center gap-y-3xl">
-                        <Text className="text-primary text-base font-medium text-center">{t`Budgie`}</Text>
-                        <Text className="text-secondary-foreground text-sm text-center">
-                            {t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.`}
-                        </Text>
-                        <View className="self-stretch h-px bg-secondary-corner" />
-                        <View className="items-center gap-y-xs">
-                            <Text className="text-secondary-foreground text-xs uppercase tracking-wide">{t`App Version`}</Text>
-                            <Text className="text-primary text-sm font-semibold">{appVersion}</Text>
-                        </View>
-                    </Card>
+                    <Animated.View className="gap-y-lg">
+                        <SettingsCard
+                            onPress={handleReportBug}
+                            title={t`Report a Bug`}
+                            description={t`Found an issue or have an idea? Open GitHub issue templates.`}
+                            icon={UserIconNameEnum.Bug}
+                            variant="ghost"
+                            testID={SettingsPageSelector.ReportBugCard}
+                        />
+                        <Card variant="ghost" className="items-center gap-y-3xl">
+                            <Text className="text-primary text-base font-medium text-center">{t`Budgie`}</Text>
+                            <Text className="text-secondary-foreground text-sm text-center">
+                                {t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.`}
+                            </Text>
+                            <View className="self-stretch h-px bg-secondary-corner" />
+                            <View className="items-center gap-y-xs">
+                                <Text className="text-secondary-foreground text-xs uppercase tracking-wide">{t`App Version`}</Text>
+                                <Text className="text-primary text-sm font-semibold">{appVersion}</Text>
+                            </View>
+                        </Card>
+                    </Animated.View>
                 </SettingsGroup>
                 <MenuSpacer />
             </ScrollView>

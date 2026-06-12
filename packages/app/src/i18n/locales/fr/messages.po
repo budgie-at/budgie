@@ -481,6 +481,10 @@ msgstr "Budgie"
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie peut détecter les imports de synchronisation bancaire en double et réparer les consolidations de virements associées à des comptes inactifs."
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
+msgstr "Budgie a rencontré un problème inattendu. Vous pouvez redémarrer l’application ou signaler le problème afin que nous puissions l’examiner."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie renseignera les valeurs manquantes dans la devise de base à partir des taux de change historiques. Les analyses peuvent être indisponibles jusqu’à la fin de l’opération."
@@ -661,6 +665,10 @@ msgstr "Consolider les correspondances"
 msgid "Consolidation"
 msgstr ""
 
+#: src/@generic/hook/use-contacts.hook.ts
+msgid "Contact"
+msgstr ""
+
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Contact (optional)"
 msgstr "Contact (optionnel)"
@@ -806,6 +814,10 @@ msgstr "Impossible de fusionner la catégorie"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Could not merge tag"
 msgstr "Impossible de fusionner l'étiquette"
+
+#: src/app/(tabs)/settings/index.tsx
+msgid "Could not open GitHub"
+msgstr "Impossible d’ouvrir GitHub"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not read CSV file"
@@ -1343,6 +1355,10 @@ msgstr "Filtrer les tags"
 msgid "Fix Errors"
 msgstr "Corriger les erreurs"
 
+#: src/app/(tabs)/settings/index.tsx
+msgid "Found an issue or have an idea? Open GitHub issue templates."
+msgstr "Vous avez trouvé un problème ou avez une idée ? Ouvrez les modèles d’issues GitHub."
+
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
 msgstr "Français"
@@ -1598,6 +1614,14 @@ msgstr "Chargement des modèles"
 msgid "Loading..."
 msgstr "Chargement..."
 
+#: src/@generic/hook/use-contacts.hook.ts
+msgid "Maestro E2E"
+msgstr ""
+
+#: src/@generic/hook/use-contacts.hook.ts
+msgid "Maestro E2E Contact"
+msgstr ""
+
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
 msgstr "Devise principale"
@@ -1782,10 +1806,6 @@ msgstr "Aucune catégorie ne correspond à votre recherche"
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
 msgstr "Aucun contact trouvé"
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "No contacts found on this device."
-msgstr "Aucun contact trouvé sur cet appareil."
 
 #: src/app/contact-selector.tsx
 msgid "No contacts yet"
@@ -2188,9 +2208,18 @@ msgstr "Réparer"
 msgid "Repair Bank Sync Data"
 msgstr "Réparer les données de synchro bancaire"
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+#: src/app/(tabs)/settings/index.tsx
+msgid "Report a Bug"
+msgstr "Signaler un bug"
+
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
 msgstr "Réinitialise tout l'état de synchronisation"
+
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+msgid "Restart App"
+msgstr "Redémarrer l’application"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid "Restore"
@@ -2507,6 +2536,7 @@ msgstr "Ignorer"
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
 msgstr "Certaines transactions peuvent correspondre à plusieurs règles. La première règle correspondante sera prioritaire."
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/@generic/hook/use-show-error.hook.ts
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 msgid "Something went wrong"

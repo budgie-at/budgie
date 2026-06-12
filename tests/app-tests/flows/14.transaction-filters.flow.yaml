@@ -15,9 +15,11 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Income'
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
 
 # Total transaction counter reflects all visible transactions when no filter is applied
-- assertVisible: '6 transactions'
+- assertVisible: '7 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -28,13 +30,15 @@ appId: ${APP_ID}
 
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Income'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
-# Counter is filter-aware: the expense type matches the seeded expense plus the two historical UAH expenses
-- assertVisible: '3 transactions'
+# Counter is filter-aware: the expense type matches the seeded expense, the missing-rate expense, and the two historical UAH expenses
+- assertVisible: '4 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -133,6 +137,8 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Income'
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
 
 - runFlow:
       file: subflows/categories/apply-category-filter.flow.yaml
@@ -323,6 +329,8 @@ appId: ${APP_ID}
       id: 'TransactionAnalyticsCard.Amount.Spent.40'
 - assertVisible:
       id: 'CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.40000000'
+- assertNotVisible:
+      id: 'CategoryStatisticsCard.Amount.E2E_Missing_Rate_Category.15000000000'
 - tapOn:
       id: 'CategoryStatisticsCard.E2E_Filter_Expense_Category'
 - extendedWaitUntil:
