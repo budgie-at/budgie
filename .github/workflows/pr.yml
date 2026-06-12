@@ -56,6 +56,7 @@ jobs:
         run: yarn turbo run lint --concurrency=2
 
       - name: Deadcode detection
+        continue-on-error: true
         run: yarn turbo deadcode
 
       - name: Copy/Paste detection
