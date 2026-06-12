@@ -37,12 +37,7 @@ executionOrder:
         - 30.crypto-decimal-monero-account.flow
         - 31.budget.flow
         - 32.budget-multi-currency.flow
-        - 33.budget-category-readd.flow
-        - 34.budget-over-allocation.flow
-        - 35.budget-transaction-update.flow
-        - 36.budget-multi-currency-category.flow
-        - 37.budget-refund-netting.flow
-        - 38.budget-template-chooser.flow
+        - 33.budget-transactions.flow
 
 platform:
     ios:
