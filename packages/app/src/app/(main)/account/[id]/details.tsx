@@ -2,7 +2,7 @@ import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -33,15 +33,10 @@ const descriptionVariants = cva('uppercase', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-const AccountEditButton = ({ id }: { readonly id: number }) => {
+const useAccountEditHandler = (id: number) => {
     const router = useRouter();
-    const handleEditAccount = () => void router.push(`/account/${id}/update`);
 
-    return (
-        <HapticPressable className="ml-auto" onPress={handleEditAccount} testID={AccountDetailsSelector.EditButton}>
-            <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
-        </HapticPressable>
-    );
+    return useCallback(() => void router.push(`/account/${id}/update`), [id, router]);
 };
 
 export default function AccountDetails() {
@@ -54,7 +49,7 @@ export default function AccountDetails() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleGoBack = () => void goBackOrReplace('/');
-    const handleOpenMenu = () => void setIsMenuOpen(true);
+    const handleEditAccount = useAccountEditHandler(id);
     const handleCloseMenu = () => void setIsMenuOpen(false);
 
     if (isLoading) {
@@ -76,7 +71,17 @@ export default function AccountDetails() {
                         onGoBack={handleGoBack}
                         title={title}
                         iconVariant={ACCOUNT_COLOR[type]}
-                        right={<AccountEditButton id={id} />}
+                        right={
+                            <HapticPressable className="ml-auto" onPress={handleEditAccount} testID={AccountDetailsSelector.EditButton}>
+                                <CircleIcon
+                                    icon={UserIconNameEnum.EllipsisVertical}
+                                    variant="ghost"
+                                    size={40}
+                                    iconSize={24}
+                                    border={false}
+                                />
+                            </HapticPressable>
+                        }
                         description={t(ACCOUNT_TYPE[type])}
                         descriptionClassName={descriptionVariants({ variant: ACCOUNT_COLOR[type] })}
                     />
@@ -98,7 +103,7 @@ export default function AccountDetails() {
                 <TransactionList accountId={id} footerSpacerMultiplier={3} />
             </Page>
 
-            <AccountFab isMenuOpen={isMenuOpen} onPress={handleOpenMenu} />
+            <AccountFab isMenuOpen={isMenuOpen} onPress={() => void setIsMenuOpen(true)} />
             <AnimatedBackdrop isVisible={isMenuOpen} onClose={handleCloseMenu} />
             <CreateTransactionMenu isOpen={isMenuOpen} onClose={handleCloseMenu} accountId={id} />
         </View>
