@@ -50,10 +50,10 @@ jobs:
         run: echo "${{env.PR_TITLE}}" | node_modules/.bin/commitlint
 
       - name: Typescript checks
-        run: yarn turbo ts
+        run: yarn turbo run ts --concurrency=2
 
       - name: ESLint checks
-        run: yarn turbo lint
+        run: yarn turbo run lint --concurrency=2
 
       - name: Deadcode detection
         run: yarn turbo deadcode
@@ -62,7 +62,7 @@ jobs:
         run: yarn turbo cpd
 
       - name: Unit tests
-        run: yarn test:coverage
+        run: yarn turbo run test:coverage --concurrency=2
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
