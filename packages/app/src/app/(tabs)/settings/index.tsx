@@ -4,8 +4,9 @@ import Constants from 'expo-constants';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
 
-import { isDefined } from '@rnw-community/shared';
+import { getErrorMessage } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -15,16 +16,17 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useScrollToAnchor } from '../../../@generic/hook/use-scroll-to-anchor.hook';
+import { openGithubIssueCreation } from '../../../@generic/utils/open-github-issue-creation.util';
 import { AiEmbeddingStatusCard } from '../../../ai/component/ai-embedding-status-card/ai-embedding-status-card';
 import { AiSystemStatusBanner } from '../../../ai/component/ai-system-status-banner/ai-system-status-banner';
 import { AiTranslationStatusCard } from '../../../ai/component/ai-translation-status-card/ai-translation-status-card';
-import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { MoneyDataUpgradeStatusCard } from '../../../money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card';
 import { AutoAssignMccCategory } from '../../../settings/components/auto-assign-mcc-category/auto-assign-mcc-category';
+import { BudgetManagementCard } from '../../../settings/components/budget-management-card/budget-management-card';
 import { BudgetPushToggle } from '../../../settings/components/budget-push-toggle/budget-push-toggle';
 import { BudgetWidgetToggle } from '../../../settings/components/budget-widget-toggle/budget-widget-toggle';
 import { ConsolidateTransfers } from '../../../settings/components/consolidate-transfers/consolidate-transfers';
@@ -51,22 +53,15 @@ export default function SettingsPage() {
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
-    const { budget, isLoading: isBudgetLoading } = useGetActiveBudgetQuery();
-
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const handleNavigateToTags = () => void router.push('/settings/tags');
     const handleNavigateToRules = () => void router.push('/settings/rules');
-    const handleNavigateToBudget = () => {
-        if (isDefined(budget)) {
-            void router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
-
-            return;
-        }
-
-        void router.push('/budget/create');
-    };
+    const handleReportBug = () =>
+        void openGithubIssueCreation().catch((error: unknown) => {
+            Toast.show({ type: 'error', text1: t`Could not open GitHub`, text2: getErrorMessage(error) });
+        });
 
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
@@ -183,15 +178,7 @@ export default function SettingsPage() {
                 <View {...anchorLayout('budget')}>
                     <SettingsGroup title={t`Budget`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('budget')}>
-                            <SettingsCard
-                                testID={SettingsPageSelector.BudgetManagementCard}
-                                onPress={handleNavigateToBudget}
-                                title={t`Manage budget`}
-                                description={t`Set a monthly limit and track spending`}
-                                icon={UserIconNameEnum.PiggyBank}
-                                variant="positive"
-                                isLoading={isBudgetLoading}
-                            />
+                            <BudgetManagementCard />
                             <BudgetWidgetToggle />
                             <BudgetPushToggle />
                         </Animated.View>
@@ -243,17 +230,27 @@ export default function SettingsPage() {
                 </View>
 
                 <SettingsGroup title={t`About`}>
-                    <Card variant="ghost" className="items-center gap-y-3xl">
-                        <Text className="text-primary text-base font-medium text-center">{t`Budgie`}</Text>
-                        <Text className="text-secondary-foreground text-sm text-center">
-                            {t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.`}
-                        </Text>
-                        <View className="self-stretch h-px bg-secondary-corner" />
-                        <View className="items-center gap-y-xs">
-                            <Text className="text-secondary-foreground text-xs uppercase tracking-wide">{t`App Version`}</Text>
-                            <Text className="text-primary text-sm font-semibold">{appVersion}</Text>
-                        </View>
-                    </Card>
+                    <Animated.View className="gap-y-lg">
+                        <SettingsCard
+                            onPress={handleReportBug}
+                            title={t`Report a Bug`}
+                            description={t`Found an issue or have an idea? Open GitHub issue templates.`}
+                            icon={UserIconNameEnum.Bug}
+                            variant="ghost"
+                            testID={SettingsPageSelector.ReportBugCard}
+                        />
+                        <Card variant="ghost" className="items-center gap-y-3xl">
+                            <Text className="text-primary text-base font-medium text-center">{t`Budgie`}</Text>
+                            <Text className="text-secondary-foreground text-sm text-center">
+                                {t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.`}
+                            </Text>
+                            <View className="self-stretch h-px bg-secondary-corner" />
+                            <View className="items-center gap-y-xs">
+                                <Text className="text-secondary-foreground text-xs uppercase tracking-wide">{t`App Version`}</Text>
+                                <Text className="text-primary text-sm font-semibold">{appVersion}</Text>
+                            </View>
+                        </Card>
+                    </Animated.View>
                 </SettingsGroup>
                 <MenuSpacer />
             </ScrollView>

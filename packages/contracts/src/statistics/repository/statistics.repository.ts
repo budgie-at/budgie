@@ -337,8 +337,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            1.0
+            ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
         )`;
     }
 
@@ -346,6 +345,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         return sql<number>`CASE
             WHEN ${TransactionEntryEntityTable.baseInstrumentId} = ${defaultInstrumentId}
             THEN ${TransactionEntryEntityTable.baseAmount}
+            WHEN ${AccountEntityTable.instrumentId} = ${defaultInstrumentId}
+            THEN ${TransactionEntryEntityTable.amount}
             ELSE ROUND(${TransactionEntryEntityTable.amount} * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('accounts.instrument_id'))})
         END`;
     }
@@ -374,6 +375,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         return sql<number>`COALESCE((
             SELECT SUM(CASE
                 WHEN refund_entry.base_instrument_id = ${defaultInstrumentId} THEN refund_entry.base_amount
+                WHEN refund_account.instrument_id = ${defaultInstrumentId} THEN refund_entry.amount
                 ELSE ROUND(refund_entry.amount * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('refund_account.instrument_id'))})
             END)
             FROM transaction_entries refund_entry
@@ -389,6 +391,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         return sql<number>`COALESCE((
             SELECT SUM(CASE
                 WHEN ledger_credit.base_instrument_id = ${defaultInstrumentId} THEN ledger_credit.base_amount
+                WHEN ledger_account.instrument_id = ${defaultInstrumentId} THEN ledger_credit.amount
                 ELSE ROUND(ledger_credit.amount * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('ledger_account.instrument_id'))})
             END)
             FROM transaction_entries ledger_credit

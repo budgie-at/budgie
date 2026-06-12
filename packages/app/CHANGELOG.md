@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.37.1](https://github.com/budgie-at/budgie/compare/v5.37.0...v5.37.1) (2026-06-12)
+
+**Note:** Version bump only for package @budgie-at/app
+
+# [5.37.0](https://github.com/budgie-at/budgie/compare/v5.36.2...v5.37.0) (2026-06-11)
+
+### Bug Fixes
+
+- **app:** guard missing icon exports ([0efddc7](https://github.com/budgie-at/budgie/commit/0efddc7c95f1f179a87cc3e9cb4ae4fae86456c9))
+
+### Features
+
+- **app:** add GitHub issue reporting ([bf7a309](https://github.com/budgie-at/budgie/commit/bf7a309d5bc319971050d255039364ef9cece478))
+
 ## [5.36.2](https://github.com/budgie-at/budgie/compare/v5.36.1...v5.36.2) (2026-06-09)
 
 ### Bug Fixes
