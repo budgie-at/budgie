@@ -24,6 +24,7 @@ export const seedRefundStatisticsScenario = (refundAmount: number) => {
 
     return {
         account,
-        category
+        category,
+        expense
     };
 };

@@ -11,6 +11,7 @@ import {
 import { computeRefundedSummary } from '@app/transaction/utils/compute-refunded-summary.util';
 
 import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario } from '../../harness';
+import { seed } from '../../harness/seed/seed';
 
 import { accountBalanceRepository, statisticsRepository, transactionRepository } from '@app/@generic/drizzle/db/db';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
@@ -39,7 +40,9 @@ describe('consolidation/refund-pair-partial', () => {
     });
 
     it('nets partial refunds out of totals and expense category analytics', async () => {
-        const { account, category } = seedRefundStatisticsScenario(40 * PRECISION);
+        const { account, category, expense } = seedRefundStatisticsScenario(40 * PRECISION);
+        const tag = seed.tag('Refunded');
+        seed.transactionTag(expense.id, tag.id);
 
         await transferConsolidationService.consolidate();
 
@@ -52,6 +55,10 @@ describe('consolidation/refund-pair-partial', () => {
             .all();
         const categoryRow = categoryRows.find(row => row.category?.id === category.id);
         expect(categoryRow?.amount).toBe(80 * PRECISION);
+
+        const tagRows = statisticsRepository.getExpenseByTagQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).all();
+        const tagRow = tagRows.find(row => row.tag?.id === tag.id);
+        expect(tagRow?.amount).toBe(80 * PRECISION);
     });
 
     it('keeps moved refund income entries in account balance calculations', async () => {
