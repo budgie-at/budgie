@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.37.1](https://github.com/budgie-at/budgie/compare/v5.37.0...v5.37.1) (2026-06-12)
+
+### Bug Fixes
+
+- **contracts:** avoid missing-rate analytics inflation ([18a7174](https://github.com/budgie-at/budgie/commit/18a7174fcd43f6f0362dfafb498ccc3d15700fec))
+
 # [5.37.0](https://github.com/budgie-at/budgie/compare/v5.36.2...v5.37.0) (2026-06-11)
 
 ### Bug Fixes
