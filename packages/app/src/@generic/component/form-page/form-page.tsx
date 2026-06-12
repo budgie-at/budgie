@@ -37,6 +37,7 @@ export const FormPage = ({ header, children, footer, testID, scrollViewTestID, o
             <KeyboardAwareScrollView
                 testID={scrollViewTestID}
                 onScroll={onScroll}
+                keyboardDismissMode="on-drag"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={scrollContentContainerStyle}

@@ -2,11 +2,16 @@ appId: ${APP_ID}
 ---
 - tapOn:
       id: 'CreateAccount.Amount'
-      point: '95%,50%'
-- eraseText: 100
+      point: '50%,50%'
+- eraseText: 20
 - inputText: ${NEW_BALANCE}
-- tapOn:
-      id: 'AccountForm.ScrollView'
+- extendedWaitUntil:
+      visible: ${NEW_BALANCE}
+      timeout: 3000
+- scrollUntilVisible:
+      element:
+          id: 'AccountForm.SubmitButton'
+      direction: DOWN
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.SubmitButton'
@@ -17,4 +22,4 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.${ACCOUNT_NAME}'
-      timeout: 3000
+      timeout: 10000

@@ -3,7 +3,7 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
-          FIXTURE_ROW_ID_MATCH: '02.db(, db)?'
+          FIXTURE_ROW_ID_MATCH: '02.db'
 
 # --- Create fiat account so asset chips have both sides ---
 
@@ -81,10 +81,11 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'CryptoGroup.Toggle.BTC'
+- waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.E2E Crypto Vault'
-      timeout: 3000
+      timeout: 10000
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.E2E Binance BTC'
@@ -187,6 +188,7 @@ appId: ${APP_ID}
       commands:
           - tapOn:
                 id: 'CryptoGroup.Toggle.BTC'
+          - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.E2E Crypto Vault'

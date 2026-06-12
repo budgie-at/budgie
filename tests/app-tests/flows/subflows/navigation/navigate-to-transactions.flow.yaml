@@ -1,5 +1,12 @@
 appId: ${APP_ID}
 ---
+- runFlow:
+      when:
+          notVisible:
+              id: 'TabBar.Transactions'
+      commands:
+          - openLink: 'budgie://transactions'
+          - waitForAnimationToEnd
 - tapOn:
       id: 'TabBar.Transactions'
       retryTapIfNoChange: true
@@ -8,7 +15,3 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionsPage.Container'
       timeout: 15000
-- tapOn:
-      id: 'TransactionsPage.Tab.Transactions'
-      retryTapIfNoChange: true
-- waitForAnimationToEnd

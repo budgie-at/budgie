@@ -1,12 +1,12 @@
 appId: ${APP_ID}
 env:
-    FIRST_PDF_ROW_ID_MATCH: 'erste-statement-008, pdf'
-    SECOND_PDF_ROW_ID_MATCH: 'erste-statement-009, pdf'
+    FIRST_PDF_ROW_ID_MATCH: 'erste-statement-008(, pdf)?'
+    SECOND_PDF_ROW_ID_MATCH: 'erste-statement-009(, pdf)?'
 ---
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
-          FIXTURE_ROW_ID_MATCH: '16.db(, db)?'
+          FIXTURE_ROW_ID_MATCH: '16.db'
 
 - evalScript: ${output.phase = 'clear-state-import'}
 
@@ -34,7 +34,8 @@ env:
       direction: DOWN
       timeout: 10000
 
-- assertVisible: 'Erste EUR, .*478'
+- assertVisible:
+      id: 'AccountCard.Balance.Erste_EUR._478'
 
 - tapOn:
       id: 'AccountCard.Erste EUR'
@@ -68,7 +69,8 @@ env:
           FILE_ROW_ID_MATCH: ${SECOND_PDF_ROW_ID_MATCH}
 
 - extendedWaitUntil:
-      visible: 'Erste EUR, .*3,412'
+      visible:
+          id: 'AccountCard.Balance.Erste_EUR._3_412'
       timeout: 3000
 
 - tapOn:
@@ -113,8 +115,16 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'AccountDetails.EditButton'
+          id: 'TransactionInfo.Page'
       timeout: 15000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.EditButton'
+      timeout: 10000
 
 - tapOn:
       id: 'PageHeader.BackButton'
@@ -124,7 +134,8 @@ env:
           id: 'AccountCard.Erste EUR'
       timeout: 10000
 
-- assertVisible: 'Erste EUR, .*3,412'
+- assertVisible:
+      id: 'AccountCard.Balance.Erste_EUR._3_412'
 
 - longPressOn:
       id: 'AccountCard.Erste EUR'
@@ -135,7 +146,8 @@ env:
           FILE_ROW_ID_MATCH: ${SECOND_PDF_ROW_ID_MATCH}
 
 - extendedWaitUntil:
-      visible: 'Erste EUR, .*3,412'
+      visible:
+          id: 'AccountCard.Balance.Erste_EUR._3_412'
       timeout: 5000
 
 - tapOn:

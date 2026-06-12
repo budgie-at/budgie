@@ -3,7 +3,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ROW_ID_MATCH: '19.db(, db)?'
+      FIXTURE_ROW_ID_MATCH: '19.db'
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
@@ -51,7 +51,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.NetWorthValue.78'
+      id: 'HomePage.NetWorthValue.77_5'
     timeout: 10000
 
 - runFlow:
@@ -109,16 +109,10 @@ appId: ${APP_ID}
     visible: 'Save to Files'
     timeout: 15000
 
-- swipe:
-    start: '50%,70%'
-    end: '50%,95%'
-
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-    timeout: 5000
+- runFlow:
+    file: subflows/navigation/relaunch-app-and-wait.flow.yaml
+    env:
+      DESTINATION_ID: 'TabBar.Home'
 
 - tapOn:
     id: 'TabBar.Home'
@@ -176,7 +170,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.NetWorthValue.78'
+      id: 'HomePage.NetWorthValue.77_5'
     timeout: 10000
 
 - runFlow:

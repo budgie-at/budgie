@@ -13,7 +13,6 @@ WORKSPACE_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
 APP_ID="$1"
 shift
 
-SUITE_CONFIG_PATH="${MAESTRO_SUITE_CONFIG_PATH:-$WORKSPACE_DIR/config.yaml}"
 E2E_RUN_TOKEN="${E2E_RUN_TOKEN:-$(date +%s)}"
 SIMULATOR_UDID="${SIMULATOR_UDID:-}"
 RECURRING_EMPTY_DAY="${RECURRING_EMPTY_DAY:-}"
@@ -70,6 +69,24 @@ compute_csv_fixtures_uri() {
     printf 'file://%s/Documents/E2ECsvFixtures' "$APP_DATA_CONTAINER"
 }
 
+compute_db_fixtures_uri() {
+    UDID="$1"
+
+    if [ -z "$UDID" ]; then
+        return 1
+    fi
+
+    APP_DATA_CONTAINER="$(
+        xcrun simctl get_app_container "$UDID" "$APP_ID" data 2>/dev/null || true
+    )"
+
+    if [ -z "$APP_DATA_CONTAINER" ] || [ ! -d "$APP_DATA_CONTAINER" ]; then
+        return 1
+    fi
+
+    printf 'file://%s/Documents/E2EFixtures' "$APP_DATA_CONTAINER"
+}
+
 refresh_ios_fixtures_if_needed() {
     DETECTED_SIMULATOR_UDID="$(detect_booted_simulator_udid || true)"
 
@@ -97,27 +114,32 @@ fi
 
 DETECTED_SIMULATOR_UDID="${DETECTED_SIMULATOR_UDID:-$(detect_booted_simulator_udid || true)}"
 E2E_CSV_FIXTURES_URI="$(compute_csv_fixtures_uri "$DETECTED_SIMULATOR_UDID" || true)"
+E2E_DB_FIXTURES_URI="$(compute_db_fixtures_uri "$DETECTED_SIMULATOR_UDID" || true)"
 
 if [ -z "$E2E_CSV_FIXTURES_URI" ]; then
     echo "Could not resolve E2E_CSV_FIXTURES_URI for $APP_ID; CSV-import flows will fail." >&2
 fi
 
+if [ -z "$E2E_DB_FIXTURES_URI" ]; then
+    echo "Could not resolve E2E_DB_FIXTURES_URI for $APP_ID; database-import flows will fail." >&2
+fi
+
 echo "Running Maestro suite from $WORKSPACE_DIR"
 if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
-    maestro test "$WORKSPACE_DIR" \
+    maestro test "$WORKSPACE_DIR"/flows/*.flow.yaml \
         --udid "$DETECTED_SIMULATOR_UDID" \
         -e APP_ID="$APP_ID" \
         -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
         -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \
         -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
-        --config "$SUITE_CONFIG_PATH" \
+        -e E2E_DB_FIXTURES_URI="$E2E_DB_FIXTURES_URI" \
         "$@"
 else
-    maestro test "$WORKSPACE_DIR" \
+    maestro test "$WORKSPACE_DIR"/flows/*.flow.yaml \
         -e APP_ID="$APP_ID" \
         -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
         -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \
         -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
-        --config "$SUITE_CONFIG_PATH" \
+        -e E2E_DB_FIXTURES_URI="$E2E_DB_FIXTURES_URI" \
         "$@"
 fi

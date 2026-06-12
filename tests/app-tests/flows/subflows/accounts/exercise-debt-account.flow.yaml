@@ -7,7 +7,7 @@ appId: ${APP_ID}
       ACCOUNT_NAME: ${ACCOUNT_NAME}
 
 - runFlow:
-    file: open-account-settings.flow.yaml
+    file: open-visible-account-settings.flow.yaml
     env:
       ACCOUNT_NAME: ${ACCOUNT_NAME}
 
@@ -48,7 +48,7 @@ appId: ${APP_ID}
     id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
 
 - runFlow:
-    file: open-account-settings.flow.yaml
+    file: open-visible-account-settings.flow.yaml
     env:
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 

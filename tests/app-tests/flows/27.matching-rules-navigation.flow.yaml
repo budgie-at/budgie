@@ -95,7 +95,8 @@ env:
 - tapOn:
     id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
-- assertVisible: 'Edit Expense'
+- assertVisible:
+    id: 'TransactionInfo.Page'
 
 - tapOn:
     id: 'PageHeader.BackButton'
@@ -201,4 +202,5 @@ env:
 - tapOn:
     id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
-- assertVisible: 'Edit Expense'
+- assertVisible:
+    id: 'TransactionInfo.Page'

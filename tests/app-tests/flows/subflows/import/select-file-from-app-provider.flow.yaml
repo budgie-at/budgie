@@ -24,6 +24,7 @@ env:
 
 - runFlow:
       when:
+          visible: 'Cancel'
           notVisible:
               id: '${FILE_ROW_ID_MATCH}'
       commands:
@@ -91,17 +92,13 @@ env:
       when:
           true: ${FILE_PICKER_SEARCH_TEXT != ''}
       commands:
-          - runFlow:
-                when:
-                    notVisible: '${FILE_ROW_TEXT_MATCH}'
-                commands:
-                    - tapOn: 'Search'
-                    - tapOn:
-                          text: 'Clear text'
-                          optional: true
-                    - eraseText: 80
-                    - inputText: ${FILE_PICKER_SEARCH_TEXT}
-                    - waitForAnimationToEnd
+          - tapOn: 'Search'
+          - tapOn:
+                text: 'Clear text'
+                optional: true
+          - eraseText: 80
+          - inputText: ${FILE_PICKER_SEARCH_TEXT}
+          - waitForAnimationToEnd
 
 - scrollUntilVisible:
       element:
@@ -115,6 +112,7 @@ env:
 
 - runFlow:
       when:
+          visible: 'Cancel'
           notVisible:
               id: '${FILE_ROW_ID_MATCH}'
       commands:
@@ -157,6 +155,7 @@ env:
 
 - runFlow:
       when:
+          visible: 'Cancel'
           notVisible:
               id: '${FILE_ROW_ID_MATCH}'
       commands:
@@ -179,8 +178,10 @@ env:
                     - tapOn:
                           id: '${FILE_ROW_ID_MATCH}'
                           retryTapIfNoChange: true
+
           - runFlow:
                 when:
+                    visible: 'Cancel'
                     notVisible:
                         id: '${FILE_ROW_ID_MATCH}'
                 commands:

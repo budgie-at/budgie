@@ -4,7 +4,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ROW_ID_MATCH: '15.db(, db)?'
+      FIXTURE_ROW_ID_MATCH: '15.db'
       FILE_PICKER_INITIAL_SCROLL_SHIFT: 'DOWN'
 
 # --- Create Expense for Long-Press Delete ---
@@ -66,8 +66,15 @@ appId: ${APP_ID}
 - tapOn:
     id: 'PageHeader.BackButton'
 - extendedWaitUntil:
-    visible: 'Transactions'
+    visible:
+      id: 'TransactionInfo.Page'
     timeout: 5000
+- tapOn:
+    id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionsPage.Container'
+    timeout: 10000
 
 # --- Long-Press Delete from List ---
 
@@ -150,14 +157,23 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'AccountPickerBottomSheet.Input'
-- tapOn:
-    id: 'AccountPickerBottomSheet.Input'
-- inputText: 'E2E Expense Target'
-- extendedWaitUntil:
-    visible:
+- scrollUntilVisible:
+    element:
       id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
+    direction: DOWN
+    centerElement: true
+    timeout: 10000
 - tapOn:
     id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: 'AccountPickerBottomSheet.Input'
+    commands:
+      - tapOn:
+          id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
+      - waitForAnimationToEnd
 - extendedWaitUntil:
     notVisible:
       id: 'AccountPickerBottomSheet.Input'
@@ -167,8 +183,9 @@ appId: ${APP_ID}
 - runFlow: subflows/transactions/confirm-convert-to-transfer.flow.yaml
 
 - extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 5000
+    visible:
+      id: 'TransactionsPage.Container'
+    timeout: 15000
 
 # --- Verify Transfer Created and Balances ---
 

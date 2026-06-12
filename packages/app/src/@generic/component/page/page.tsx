@@ -1,10 +1,12 @@
 import { View } from 'react-native';
+import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { cn } from '../../utils/cn.util';
 import { BlurGradient } from '../blur-gradient/blur-gradient';
 
 import type { ComponentProps, ReactNode } from 'react';
+import type { ViewStyle } from 'react-native';
 import type { Edge } from 'react-native-safe-area-context';
 
 interface Props extends ComponentProps<typeof View> {
@@ -30,6 +32,7 @@ export const Page = (props: Props) => {
     };
 
     const bottomStyle = { paddingBottom: bottom };
+    const footerStickyStyle = { position: 'absolute', right: 0, bottom: 0, left: 0 } satisfies ViewStyle;
 
     return (
         <>
@@ -50,11 +53,11 @@ export const Page = (props: Props) => {
             ) : null}
 
             {withBlur ? (
-                <BlurGradient position="bottom" edgeOffset={bottom}>
-                    <View className="absolute bottom-0 right-0 left-0" style={bottomStyle}>
-                        {footer}
-                    </View>
-                </BlurGradient>
+                <KeyboardStickyView style={footerStickyStyle}>
+                    <BlurGradient position="bottom" edgeOffset={bottom}>
+                        <View style={bottomStyle}>{footer}</View>
+                    </BlurGradient>
+                </KeyboardStickyView>
             ) : null}
         </>
     );

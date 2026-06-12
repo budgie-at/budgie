@@ -394,7 +394,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Prepare iOS E2E artifact directories
@@ -517,7 +517,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Сreate AVD and generate snapshot for caching
@@ -546,7 +546,7 @@ jobs:
           working-directory: tests/app-tests
           script: |
             cd ../../packages/app && eas build:run --platform android --path app.android.apk
-            sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
+            sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()

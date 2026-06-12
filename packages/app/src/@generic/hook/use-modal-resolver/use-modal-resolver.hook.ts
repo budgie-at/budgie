@@ -27,7 +27,17 @@ export const useModalResolver = <TParams, TResult>(route: Href): UseModalResolve
         resolverRef.current = null;
         setCurrentParams(null);
 
-        if (!options?.skipBack && router.canGoBack()) {
+        if (options?.skipBack) {
+            return;
+        }
+
+        if (router.canDismiss()) {
+            router.dismiss(1);
+
+            return;
+        }
+
+        if (router.canGoBack()) {
             router.back();
         }
     };

@@ -4,7 +4,7 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
-          FIXTURE_ROW_ID_MATCH: '07.db(, db)?'
+          FIXTURE_ROW_ID_MATCH: '07.db'
 
 - openLink: 'budgie://settings?anchor=general'
 
@@ -97,9 +97,9 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 
 - assertVisible:
-    id: 'SettingsPage.ShowCentsSwitch'
+    id: 'SettingsPage.ShowCentsCard'
 - tapOn:
-    id: 'SettingsPage.ShowCentsSwitch'
+    id: 'SettingsPage.ShowCentsCard'
 - waitForAnimationToEnd
 
 - tapOn:
@@ -119,10 +119,10 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      id: 'SettingsPage.ShowCentsSwitch'
+      id: 'SettingsPage.ShowCentsCard'
     timeout: 10000
 - tapOn:
-    id: 'SettingsPage.ShowCentsSwitch'
+    id: 'SettingsPage.ShowCentsCard'
 - waitForAnimationToEnd
 
 - tapOn:

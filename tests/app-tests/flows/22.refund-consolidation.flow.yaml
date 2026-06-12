@@ -4,8 +4,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-        FIXTURE_ROW_ID_MATCH: '22.db(, db)?'
-        FILE_PICKER_SEARCH_TEXT: '22.db'
+        FIXTURE_ROW_ID_MATCH: '22.db'
         FILE_PICKER_REPEAT_TAP: 'true'
 
 - openLink: 'budgie://transactions/3/income'
@@ -35,13 +34,29 @@ appId: ${APP_ID}
     visible: 'Convert to Refund?'
     timeout: 10000
 - tapOn:
-    point: '68%,60%'
+    point: '67%,57%'
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: 'Convert to Refund?'
+    commands:
+      - tapOn:
+          point: '67%,57%'
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: 'Convert to Refund?'
+    commands:
+      - tapOn:
+          point: '67%,57%'
+      - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.RefundedPill.2'
+    notVisible: 'Convert to Refund?'
     timeout: 10000
-- tapOn:
-    id: 'TransactionCard.RefundedPill.2'
+- extendedWaitUntil:
+    visible: 'Refunded ₴40'
+    timeout: 10000
+- tapOn: 'Refunded ₴40'
 - extendedWaitUntil:
     visible:
       id: 'ConsolidationSourceModal.Row.0'
@@ -58,7 +73,7 @@ appId: ${APP_ID}
     timeout: 10000
 - extendedWaitUntil:
     notVisible:
-      id: 'TransactionCard.RefundedPill.2'
+      text: 'Refunded.*'
     timeout: 10000
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
@@ -147,10 +162,10 @@ appId: ${APP_ID}
 - openLink: 'budgie://transactions/4/expense'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.RefundedPill.4'
+      id: 'TransactionInfo.RefundedPill'
     timeout: 10000
 - tapOn:
-    id: 'TransactionCard.RefundedPill.4'
+    id: 'TransactionInfo.RefundedPill'
 - extendedWaitUntil:
     visible:
       id: 'ConsolidationSourceModal.Row.0'
@@ -167,10 +182,10 @@ appId: ${APP_ID}
 - openLink: 'budgie://transactions/9/expense'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.RefundedPill.9'
+      id: 'TransactionInfo.RefundedPill'
     timeout: 10000
 - tapOn:
-    id: 'TransactionCard.RefundedPill.9'
+    point: '50%,33%'
 - extendedWaitUntil:
     visible:
       id: 'ConsolidationSourceModal.Row.0'
@@ -192,7 +207,7 @@ appId: ${APP_ID}
     id: 'TabBar.Analytics'
 - extendedWaitUntil:
     visible:
-      id: 'AnalyticsPage.Container'
+      id: 'AnalyticsPage.Tab.Categories'
     timeout: 10000
 - scrollUntilVisible:
     element:

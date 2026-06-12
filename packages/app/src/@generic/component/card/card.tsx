@@ -20,6 +20,8 @@ interface Props {
     readonly onLongPress?: OnEventFn;
     readonly variant?: ColorPaletteVariant;
     readonly testID?: string;
+    readonly accessible?: boolean;
+    readonly accessibilityLabel?: string;
 }
 
 const cardVariants = cva<{ size: Record<CardSizeType, ClassValue>; variant: Record<ColorPaletteVariant, ClassValue> }>(

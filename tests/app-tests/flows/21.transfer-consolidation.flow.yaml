@@ -5,7 +5,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ROW_ID_MATCH: '21.db(, db)?'
+      FIXTURE_ROW_ID_MATCH: '21.db'
       FILE_PICKER_INITIAL_SCROLL_SHIFT: 'DOUBLE_DOWN'
 - extendedWaitUntil:
     visible:
@@ -159,10 +159,10 @@ appId: ${APP_ID}
     id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionFieldIcon.Sources'
+      id: 'TransactionInfo.Row.Consolidation'
     timeout: 10000
 - tapOn:
-    id: 'TransactionFieldIcon.Sources'
+    id: 'TransactionInfo.Row.Consolidation'
 - extendedWaitUntil:
     visible:
       id: 'ConsolidationSourceModal.Row.0'

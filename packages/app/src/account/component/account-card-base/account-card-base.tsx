@@ -67,38 +67,42 @@ export const AccountCardBase = (props: Props) => {
 
     return (
         <Card
+            accessible
+            accessibilityLabel={title}
             testID={AccountCardBaseSelector.Card(title)}
             onPress={navigateToAccount}
             onLongPress={onLongPress}
             className={cn(cardVariants({ deadlinePriority }), className)}
         >
-            <View className="flex-row items-center justify-between">
-                <View className="flex-row items-center gap-x-lg">
-                    <CircleIcon size={36} iconSize={20} icon={icon} variant={circleVariant} border={false} />
-                    {topRight}
+            <View className="gap-3">
+                <View className="flex-row items-center justify-between">
+                    <View className="flex-row items-center gap-x-lg">
+                        <CircleIcon size={36} iconSize={20} icon={icon} variant={circleVariant} border={false} />
+                        {topRight}
+                    </View>
+
+                    <HapticPressable className="rounded-full active:bg-secondary-background" onPress={navigateToEditAccount}>
+                        <Icon className="text-primary" icon={UserIconNameEnum.EllipsisVertical} size={14} />
+                    </HapticPressable>
                 </View>
 
-                <HapticPressable className="rounded-full active:bg-secondary-background" onPress={navigateToEditAccount}>
-                    <Icon className="text-primary" icon={UserIconNameEnum.EllipsisVertical} size={14} />
-                </HapticPressable>
+                <View className="gap-1">
+                    <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1}>
+                        {title}
+                    </Text>
+
+                    {balanceContent ?? (
+                        <ProtectedText
+                            className="text-primary font-medium"
+                            testID={AccountCardBaseSelector.Balance(title, accountBalanceTestValue)}
+                        >
+                            {accountBalance}
+                        </ProtectedText>
+                    )}
+                </View>
+
+                {children}
             </View>
-
-            <View className="gap-1">
-                <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1}>
-                    {title}
-                </Text>
-
-                {balanceContent ?? (
-                    <ProtectedText
-                        className="text-primary font-medium"
-                        testID={AccountCardBaseSelector.Balance(title, accountBalanceTestValue)}
-                    >
-                        {accountBalance}
-                    </ProtectedText>
-                )}
-            </View>
-
-            {children}
         </Card>
     );
 };

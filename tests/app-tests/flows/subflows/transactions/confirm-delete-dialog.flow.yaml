@@ -4,11 +4,23 @@ appId: ${APP_ID}
     visible: 'Are you sure?'
     timeout: 10000
 - waitForAnimationToEnd
-- retry:
-    maxRetries: 3
+- tapOn:
+    point: '67%,55%'
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: 'Are you sure?'
     commands:
       - tapOn:
-          point: '274,488'
-      - extendedWaitUntil:
-          notVisible: 'Are you sure?'
-          timeout: 5000
+          point: '67%,55%'
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: 'Are you sure?'
+    commands:
+      - tapOn:
+          point: '67%,55%'
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    notVisible: 'Are you sure?'
+    timeout: 10000

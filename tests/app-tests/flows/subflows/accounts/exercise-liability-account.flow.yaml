@@ -14,7 +14,7 @@ appId: ${APP_ID}
     id: 'TransactionCard.AdjustmentAmount.${INITIAL_AMOUNT}'
 
 - runFlow:
-    file: open-account-settings.flow.yaml
+    file: open-visible-account-settings.flow.yaml
     env:
       ACCOUNT_NAME: ${ACCOUNT_NAME}
 
@@ -34,7 +34,7 @@ appId: ${APP_ID}
     timeout: 10000
 
 - runFlow:
-    file: open-account-settings.flow.yaml
+    file: open-visible-account-settings.flow.yaml
     env:
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
@@ -57,7 +57,7 @@ appId: ${APP_ID}
     id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
 
 - runFlow:
-    file: open-account-settings.flow.yaml
+    file: open-visible-account-settings.flow.yaml
     env:
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
@@ -108,11 +108,13 @@ appId: ${APP_ID}
     id: 'AccountForm.ActiveTitle'
 - tapOn:
     id: 'AccountForm.SubmitButton'
+- waitForAnimationToEnd
 
 - extendedWaitUntil:
     visible:
       id: 'HomePage.NetWorthValue.${DECREASE_TO}'
     timeout: 10000
+- waitForAnimationToEnd
 
 - assertNotVisible:
     id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'

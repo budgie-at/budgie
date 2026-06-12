@@ -9,8 +9,10 @@ import * as TaskManager from 'expo-task-manager';
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { databaseChangeService } from '../../@generic/service/database-change.service';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
+import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -56,7 +58,10 @@ class AppMonobankSyncService {
         try {
             await this.loadMccCategories();
 
-            return await this.executeSyncLoop();
+            const result = await this.executeSyncLoop();
+            databaseChangeService.markChanged();
+
+            return result;
         } finally {
             logger.log('sync:done', { durationMs: Date.now() - startedAt });
             this.isRunning = false;
@@ -411,7 +416,7 @@ class AppMonobankSyncService {
 
         if (isPositiveNumber(updatedTransactionCount)) {
             const balanceStartedAt = Date.now();
-            await transactionService.updateAllBalances();
+            await accountBalanceIncrementalService.updateAllBalances(true);
             logger.log('processFetchedTransactions:balances', {
                 accountId,
                 durationMs: Date.now() - balanceStartedAt,

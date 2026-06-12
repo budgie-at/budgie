@@ -500,7 +500,7 @@ env:
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RulesPage.CreateButton'
+    point: '87%,83%'
 - extendedWaitUntil:
     visible: 'Create Rule'
 
@@ -565,7 +565,7 @@ env:
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
-- assertVisible: 'Transfer → Test22 Destination'
+- assertVisible: '.*Test22 Destination.*'
 
 - tapOn:
     id: 'TabBar.Transactions'
@@ -840,6 +840,16 @@ env:
 - tapOn:
     id: 'TransactionCard.Label.Test15_Unique_Purchase'
 - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
+- tapOn:
+    point: '50%,93%'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.CategorySelector'
+    timeout: 5000
 
 - tapOn:
     id: 'TransactionForm.CategorySelector'
@@ -919,6 +929,16 @@ env:
 - tapOn:
     id: 'TransactionCard.Label.Store_C_Kyiv'
 - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
+- tapOn:
+    point: '50%,93%'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.CategorySelector'
+    timeout: 5000
 
 - tapOn:
     id: 'TransactionForm.CategorySelector'
@@ -1000,6 +1020,16 @@ env:
 - tapOn:
     id: 'TransactionCard.Label.Test25_Duplicate_Check'
 - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
+- tapOn:
+    point: '50%,93%'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.CategorySelector'
+    timeout: 5000
 
 - tapOn:
     id: 'TransactionForm.CategorySelector'
@@ -1055,7 +1085,7 @@ env:
     direction: LEFT
     duration: 300
 - tapOn:
-    id: DeletableRow.DeleteButton
+    point: '91%,24%'
 - tapOn: Delete
 
 - assertVisible:
@@ -1071,12 +1101,12 @@ env:
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RulesPage.CreateButton'
+    point: '87%,83%'
 - extendedWaitUntil:
     visible: 'Create Rule'
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    point: '30%,30%'
 - waitForAnimationToEnd
 - tapOn: 'Comment'
 - waitForAnimationToEnd

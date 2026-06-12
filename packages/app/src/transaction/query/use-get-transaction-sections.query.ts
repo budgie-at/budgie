@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useDatabaseChangeKey } from '../../@generic/hook/use-database-change-key.hook';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
 import { groupTransactionsByMonth } from '../utils/group-transactions-by-month.util';
 
@@ -16,13 +17,14 @@ export const useGetTransactionSectionsQuery = <Transaction extends TransactionWi
     queryKey: string
 ) => {
     const { formatMonthAndYear } = useFormatDate();
+    const databaseChangeKey = useDatabaseChangeKey();
     const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
 
     useEffect(() => {
         setLoadedCount(DEFAULT_LIMIT);
     }, [queryKey]);
 
-    const { data, error, updatedAt } = useLiveQuery(buildQuery(loadedCount + 1), [loadedCount, queryKey]);
+    const { data, error, updatedAt } = useLiveQuery(buildQuery(loadedCount + 1), [loadedCount, queryKey, databaseChangeKey]);
     const hasMore = data.length > loadedCount;
     const transactions = hasMore ? data.slice(0, -1) : data;
     const sections = groupTransactionsByMonth(transactions, formatMonthAndYear);

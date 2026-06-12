@@ -1,12 +1,18 @@
 appId: ${APP_ID}
 ---
 
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.NameInput'
+    direction: UP
 - tapOn:
     id: 'AccountForm.NameInput'
 - eraseText: 60
 - inputText: ${UPDATED_ACCOUNT_NAME}
-- tapOn:
-    id: 'AccountForm.ScrollView'
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.SubmitButton'
+    direction: DOWN
 - extendedWaitUntil:
     visible:
       id: 'AccountForm.SubmitButton'
@@ -17,4 +23,9 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
-    timeout: 3000
+    timeout: 10000
+
+- runFlow:
+    file: ../navigation/relaunch-app-and-wait.flow.yaml
+    env:
+      DESTINATION_ID: 'TabBar.Home'

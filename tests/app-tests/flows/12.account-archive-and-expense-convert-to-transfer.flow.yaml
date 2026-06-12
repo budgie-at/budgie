@@ -4,7 +4,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ROW_ID_MATCH: '12.db(, db)?'
+      FIXTURE_ROW_ID_MATCH: '12.db'
 
 - extendedWaitUntil:
     visible:
@@ -127,7 +127,7 @@ appId: ${APP_ID}
     id: 'TransactionCard.Label.E2E_Convert_Expense'
 
 - tapOn:
-    point: '80%,8%'
+    id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.ConvertToTransferButton'
@@ -143,14 +143,23 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'AccountPickerBottomSheet.Input'
-- tapOn:
-    id: 'AccountPickerBottomSheet.Input'
-- inputText: 'E2E Expense Target'
-- extendedWaitUntil:
-    visible:
+- scrollUntilVisible:
+    element:
       id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
+    direction: DOWN
+    centerElement: true
+    timeout: 10000
 - tapOn:
     id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: 'AccountPickerBottomSheet.Input'
+    commands:
+      - tapOn:
+          id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
+      - waitForAnimationToEnd
 - extendedWaitUntil:
     notVisible:
       id: 'AccountPickerBottomSheet.Input'
@@ -160,7 +169,9 @@ appId: ${APP_ID}
 - runFlow: subflows/transactions/confirm-convert-to-transfer.flow.yaml
 
 - extendedWaitUntil:
-    visible: 'Edit Transfer'
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 15000
 
 - tapOn:
     id: 'PageHeader.BackButton'

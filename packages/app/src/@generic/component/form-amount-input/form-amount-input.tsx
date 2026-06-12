@@ -120,6 +120,7 @@ export const FormAmountInput = (props: Props) => {
                     placeholder={formatDigits(0)}
                     autoFocus={autoFocus}
                     minimumDecimalPlaces={minimumDecimalPlaces}
+                    selectTextOnFocus
                     style={amountInputStyle}
                 />
 

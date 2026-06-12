@@ -1,66 +1,14 @@
 appId: ${APP_ID}
 env:
     FIXTURE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
-    FILE_PICKER_INITIAL_SCROLL_SHIFT: ${FILE_PICKER_INITIAL_SCROLL_SHIFT}
-    FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
-    FILE_PICKER_REPEAT_TAP: ${FILE_PICKER_REPEAT_TAP}
-    FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT || ''}
+    E2E_DB_FIXTURES_URI: ${E2E_DB_FIXTURES_URI}
 ---
-- openLink: 'budgie://settings?anchor=data'
-
 - runFlow:
-      when:
-          visible: 'Apple Account Verification'
-      commands:
-          - tapOn: 'Not Now'
-          - waitForAnimationToEnd
-
-- runFlow:
-      when:
-          visible: 'Open'
-      commands:
-          - tapOn: 'Open'
-
-- runFlow:
-      when:
-          notVisible:
-              id: 'SettingsPage.Container'
-      file: ../navigation/navigate-to-settings.flow.yaml
-
-- scrollUntilVisible:
-      element:
-          id: 'SettingsPage.ImportDatabaseCard'
-      direction: DOWN
-      timeout: 20000
-      centerElement: true
-      waitToSettleTimeoutMs: 1000
-
-- extendedWaitUntil:
-      visible:
-          id: 'SettingsPage.ImportDatabaseCard'
-      timeout: 3000
-
-- tapOn:
-      id: 'SettingsPage.ImportDatabaseCard'
-      retryTapIfNoChange: true
-
-- runFlow:
-      file: select-file-from-app-provider.flow.yaml
+      file: ../navigation/relaunch-app-and-wait.flow.yaml
       env:
-          FILE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
-          FILE_PICKER_INITIAL_SCROLL_SHIFT: ${FILE_PICKER_INITIAL_SCROLL_SHIFT}
-          FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
-          FILE_PICKER_REPEAT_TAP: ${FILE_PICKER_REPEAT_TAP}
-          FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT}
+          DESTINATION_ID: 'TabBar.Home'
 
-- extendedWaitUntil:
-      visible: 'Importing a database will replace all current data.*'
-      timeout: 3000
-
-- tapOn:
-      text: 'Import Database'
-      index: 1
-
+- openLink: 'budgie://settings/import-database?fileUri=${E2E_DB_FIXTURES_URI}/${FIXTURE_ROW_ID_MATCH}'
 - waitForAnimationToEnd
 
 - runFlow:

@@ -11,6 +11,7 @@ import { Log } from '@budgie/logger';
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
+import { databaseChangeService } from '../../@generic/service/database-change.service';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -55,7 +56,13 @@ class TransactionService {
         }
 
         if (!isDefined(tx)) {
-            return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
+            const transactions = await transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
+
+            if (isNotEmptyArray(transactions)) {
+                databaseChangeService.markChanged();
+            }
+
+            return transactions;
         }
 
         const { stampedInputs } = stampForDeferredEmbedding(inputs, 'bulkCreate');
@@ -79,6 +86,7 @@ class TransactionService {
     )
     async update(input: TransactionCreateInputInterface): Promise<void> {
         await transactionAsync(db, async tx => importedTransactionEntryUpdateService.update(input.entries, input, tx));
+        databaseChangeService.markChanged();
     }
 
     @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
@@ -97,6 +105,7 @@ class TransactionService {
                 await accountBalanceIncrementalService.updateBalancesByAccountIds(accountIds, tx);
             }
         });
+        databaseChangeService.markChanged();
     }
 
     @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
@@ -105,10 +114,7 @@ class TransactionService {
             await unconsolidateByIdInTransaction(id, tx);
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
         });
-    }
-
-    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
-        return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
+        databaseChangeService.markChanged();
     }
 
     async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
@@ -119,22 +125,21 @@ class TransactionService {
         return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
     }
 
-    async updateAllBalances(tx?: DB): Promise<void> {
-        await accountBalanceIncrementalService.updateAllBalances(true, tx);
-    }
-
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        return transactionAsync(db, async tx => {
+        const transaction = await transactionAsync(db, async tx => {
             const [transaction] = await this.bulkCreate([input], tx);
 
             return transaction;
         });
+        databaseChangeService.markChanged();
+
+        return transaction;
     }
 
     // eslint-disable-next-line max-lines-per-function -- Transfer orchestration: valuation, custom rate, debt handling, balance update
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         // eslint-disable-next-line max-statements -- Transfer creation with optional custom exchange rate
-        return await transactionAsync(db, async tx => {
+        const transaction = await transactionAsync(db, async tx => {
             const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
 
             const [fromAccount, toAccount] = await Promise.all([
@@ -229,10 +234,14 @@ class TransactionService {
 
             return transaction;
         });
+
+        databaseChangeService.markChanged();
+
+        return transaction;
     }
 
     async updateById(id: number, input: TransactionUpdateServiceInputInterface): Promise<TransactionEntityInterface> {
-        return await transactionAsync(db, async tx => {
+        const transaction = await transactionAsync(db, async tx => {
             const existingTransaction = await transactionRepository.getByIdWithEntries(id, tx);
             const isConsolidated = isDefined(existingTransaction?.consolidationType);
             const transaction = await transactionRepository.updateById(
@@ -262,6 +271,10 @@ class TransactionService {
 
             return transaction;
         });
+
+        databaseChangeService.markChanged();
+
+        return transaction;
     }
 
     private getAccountIdsFromInputs(inputs: readonly Pick<TransactionCreateInputInterface, 'entries'>[]): number[] {

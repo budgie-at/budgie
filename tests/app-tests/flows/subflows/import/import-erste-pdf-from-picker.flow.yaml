@@ -6,11 +6,12 @@ env:
 ---
 - extendedWaitUntil:
     visible:
-      text: 'Select File'
+      id: 'CreateFileBankAccount.SelectFileButton'
     timeout: 10000
 
 - tapOn:
-    text: 'Select File'
+    id: 'CreateFileBankAccount.SelectFileButton'
+    retryTapIfNoChange: true
 
 - runFlow:
     file: select-file-from-app-provider.flow.yaml
@@ -29,11 +30,12 @@ env:
 
 - extendedWaitUntil:
     visible:
-      text: 'Start Sync'
+      id: 'CreateFileBankAccount.StartSyncButton'
     timeout: 15000
 
 - tapOn:
-      text: 'Start Sync'
+      id: 'CreateFileBankAccount.StartSyncButton'
+      retryTapIfNoChange: true
 
 - runFlow:
       when:

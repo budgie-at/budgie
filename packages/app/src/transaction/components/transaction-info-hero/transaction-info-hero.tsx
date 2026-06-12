@@ -14,6 +14,7 @@ import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
+import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
 
 import type { TransactionInfoHeroPropsInterface } from '../../interface/transaction-info-hero-props.interface';
@@ -95,7 +96,11 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
 
             {showMetaPills ? (
                 <View className="flex-row flex-wrap justify-center gap-xs">
-                    <RefundedPill transaction={transaction} onPress={onOpenRefundSources} />
+                    <RefundedPill
+                        transaction={transaction}
+                        onPress={onOpenRefundSources}
+                        testID={TransactionInfoPageSelector.RefundedPill}
+                    />
                 </View>
             ) : null}
 

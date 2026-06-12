@@ -5,16 +5,18 @@ env:
 - retry:
       maxRetries: 2
       commands:
-          - launchApp:
-                permissions:
-                    contacts: allow
-                    microphone: allow
+          - launchApp
           - runFlow:
                 when:
-                    visible: 'budgie \(E2E\)'
+                    visible: 'Not Now'
                 commands:
-                    - tapOn:
-                          text: 'budgie \(E2E\)'
+                    - tapOn: 'Not Now'
+                    - waitForAnimationToEnd
+          - runFlow:
+                when:
+                    visible: 'Open'
+                commands:
+                    - tapOn: 'Open'
                     - waitForAnimationToEnd
           - runFlow:
                 when:

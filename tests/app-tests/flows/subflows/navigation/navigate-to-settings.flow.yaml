@@ -6,8 +6,12 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TabBar.Settings'
 - waitForAnimationToEnd
-- tapOn:
-    id: 'TabBar.Settings'
+- retry:
+    maxRetries: 3
+    commands:
+      - waitForAnimationToEnd
+      - tapOn:
+          id: 'TabBar.Settings'
 - extendedWaitUntil:
     visible:
       id: 'SettingsPage.Container'

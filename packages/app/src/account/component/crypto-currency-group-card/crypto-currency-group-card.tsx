@@ -43,26 +43,33 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
 
     return (
         <View className="mb-3 gap-y-3">
-            <Card className="border-warning-corner bg-secondary-background" size="md">
-                <View className="gap-y-3">
-                    <CryptoCurrencyGroupMarketLink
-                        instrumentCode={group.instrument.code}
-                        instrumentName={group.instrument.name}
-                        formattedBalance={formattedBalance}
-                        formattedValue={formattedValue}
-                        onPress={navigateToMarket}
-                    />
+            <Card
+                className="border-warning-corner bg-secondary-background"
+                size="md"
+                onPress={navigateToMarket}
+                testID={CryptoCurrencyGroupCardSelector.Market(group.instrument.code)}
+            >
+                <CryptoCurrencyGroupMarketLink
+                    instrumentCode={group.instrument.code}
+                    instrumentName={group.instrument.name}
+                    formattedBalance={formattedBalance}
+                    formattedValue={formattedValue}
+                />
+            </Card>
 
-                    <CryptoCurrencyGroupToggleRow
-                        onPress={toggleOpen}
-                        accountsCount={group.accounts.length}
-                        defaultInstrumentSymbol={defaultInstrument.symbol}
-                        formattedRate={formattedRate}
-                        instrumentCode={group.instrument.code}
-                        isOpen={isOpen}
-                        testID={CryptoCurrencyGroupCardSelector.Toggle(group.instrument.code)}
-                    />
-                </View>
+            <Card
+                className="border-warning-corner bg-secondary-background"
+                size="sm"
+                onPress={toggleOpen}
+                testID={CryptoCurrencyGroupCardSelector.Toggle(group.instrument.code)}
+            >
+                <CryptoCurrencyGroupToggleRow
+                    accountsCount={group.accounts.length}
+                    defaultInstrumentSymbol={defaultInstrument.symbol}
+                    formattedRate={formattedRate}
+                    instrumentCode={group.instrument.code}
+                    isOpen={isOpen}
+                />
             </Card>
 
             {isOpen ? <CryptoCurrencyGroupAccounts group={group} balancesByAccountId={balancesByAccountId} /> : null}

@@ -3,7 +3,9 @@ import * as Contacts from 'expo-contacts';
 import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
+
+import { isE2eApp } from '../utils/is-e2e-app.util';
 
 export type Contact = Contacts.ExistingContact;
 
@@ -22,10 +24,33 @@ const initialState: ContactsState = {
 };
 
 export const useContacts = () => {
-    const [state, setState] = useState<ContactsState>(initialState);
     const { t } = useLingui();
+    const e2eContact: Contact = {
+        id: 'maestro-e2e-contact',
+        contactType: Contacts.ContactTypes.Person,
+        name: t`Maestro E2E Contact`,
+        firstName: t`Maestro E2E`,
+        lastName: t`Contact`,
+        phoneNumbers: [{ id: 'maestro-e2e-phone', label: 'mobile', number: '+15555550123' }],
+        emails: [{ id: 'maestro-e2e-email', label: 'email', email: 'maestro-e2e@example.com' }]
+    };
+    const [state, setState] = useState<ContactsState>(() => {
+        if (isE2eApp()) {
+            return {
+                ...initialState,
+                contacts: [e2eContact],
+                hasLoaded: true
+            };
+        }
+
+        return initialState;
+    });
 
     useEffect(() => {
+        if (isE2eApp()) {
+            return;
+        }
+
         const loadContacts = async () => {
             setState(prev => ({ ...prev, loading: true, error: null }));
 
@@ -40,7 +65,7 @@ export const useContacts = () => {
                     setState({
                         contacts: data,
                         loading: false,
-                        error: isEmptyArray(data) ? t`No contacts found on this device.` : null,
+                        error: null,
                         hasLoaded: true
                     });
                 } else {
@@ -52,12 +77,12 @@ export const useContacts = () => {
                     });
                 }
             } catch {
-                setState(prev => ({
-                    ...prev,
+                setState({
+                    contacts: [],
                     loading: false,
                     hasLoaded: true,
                     error: t`Failed to load contacts.`
-                }));
+                });
             }
         };
 
