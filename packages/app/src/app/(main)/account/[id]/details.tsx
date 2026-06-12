@@ -1,7 +1,7 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Link, Redirect, useLocalSearchParams } from 'expo-router';
+import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
@@ -40,9 +40,11 @@ export default function AccountDetails() {
     const { account, isLoading } = useGetAccountByIdQuery(id);
     const { balance } = useAccountBalanceQuery(id);
     const { t } = useLingui();
+    const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleGoBack = () => void goBackOrReplace('/');
+    const handleEditAccount = () => void router.push(`/account/${id}/update`);
     const handleOpenMenu = () => void setIsMenuOpen(true);
     const handleCloseMenu = () => void setIsMenuOpen(false);
 
@@ -66,17 +68,15 @@ export default function AccountDetails() {
                         title={title}
                         iconVariant={ACCOUNT_COLOR[type]}
                         right={
-                            <Link href={`/account/${id}/update`} asChild>
-                                <HapticPressable className="ml-auto" testID={AccountDetailsSelector.EditButton}>
-                                    <CircleIcon
-                                        icon={UserIconNameEnum.EllipsisVertical}
-                                        variant="ghost"
-                                        size={40}
-                                        iconSize={24}
-                                        border={false}
-                                    />
-                                </HapticPressable>
-                            </Link>
+                            <HapticPressable className="ml-auto" onPress={handleEditAccount} testID={AccountDetailsSelector.EditButton}>
+                                <CircleIcon
+                                    icon={UserIconNameEnum.EllipsisVertical}
+                                    variant="ghost"
+                                    size={40}
+                                    iconSize={24}
+                                    border={false}
+                                />
+                            </HapticPressable>
                         }
                         description={t(ACCOUNT_TYPE[type])}
                         descriptionClassName={descriptionVariants({ variant: ACCOUNT_COLOR[type] })}
