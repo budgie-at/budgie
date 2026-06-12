@@ -1,9 +1,10 @@
-import { BudgetAlertScopeEnum, budgetPeriodService, budgetSpentService } from '@budgie/budget';
+import { BudgetAlertDeliveryService, BudgetAlertScopeEnum, budgetPeriodService, budgetSpentService } from '@budgie/budget';
 import { LanguageEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import * as BackgroundTask from 'expo-background-task';
+import Storage from 'expo-sqlite/kv-store';
 import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -12,13 +13,13 @@ import { budgetCategoryLimitRepository, budgetRepository, categoryRepository, se
 import { postLocalNotification } from '../../@generic/utils/request-push-permission.util';
 import { BudgetBackgroundTaskNameEnum } from '../enum/budget-background-task-name.enum';
 
-import { budgetAlertService } from './budget-alert.service';
-
 import type { BudgetAlertTriggerInterface, BudgetSpentInterface } from '@budgie/budget';
 import type { BudgetEntityInterface } from '@budgie/contracts';
 
 class BudgetAlertMonitorService {
     private static readonly MINIMUM_INTERVAL_SECONDS = 15 * 60;
+
+    private readonly budgetAlertService = new BudgetAlertDeliveryService(Storage);
 
     @Log('enter', result => `done newTriggers=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
     async run(): Promise<BudgetAlertTriggerInterface[]> {
@@ -35,7 +36,7 @@ class BudgetAlertMonitorService {
             .periodStart.getTime();
         const spent = await this.computeSpent(budget);
         const categoryLimits = await budgetCategoryLimitRepository.getByBudget(budget.id);
-        const newTriggers = await budgetAlertService.evaluate(budget, spent, categoryLimits);
+        const newTriggers = await this.budgetAlertService.evaluate(budget, spent, categoryLimits);
 
         await this.postAndMarkTriggers(newTriggers, budget, periodStartMs, spent);
 
@@ -90,7 +91,7 @@ class BudgetAlertMonitorService {
             .catch(() => false);
 
         if (posted) {
-            await budgetAlertService.markDelivered(budget.id, periodStartMs, [trigger]);
+            await this.budgetAlertService.markDelivered(budget.id, periodStartMs, [trigger]);
         }
     }
 

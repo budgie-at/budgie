@@ -31,3 +31,15 @@ export type { BudgetSuggestedStatsInterface } from './template/interface/budget-
 export type { BudgetSuggestedTemplateConfigInterface } from './template/interface/budget-suggested-template-config.interface';
 export type { BudgetTemplateDraftInterface } from './template/interface/budget-template-draft.interface';
 export type { BudgetTemplateResolutionInterface } from './template/interface/budget-template-resolution.interface';
+
+export { BudgetService } from './mutation/service/budget.service';
+export type { BudgetCreateInputInterface } from './mutation/interface/budget-create-input.interface';
+export type { BudgetServiceDependenciesInterface } from './mutation/interface/budget-service-dependencies.interface';
+export type { BudgetUpdateInputInterface } from './mutation/interface/budget-update-input.interface';
+
+export { BudgetAlertDeliveryService } from './alert/service/budget-alert-delivery.service';
+export type { BudgetAlertStorageInterface } from './alert/interface/budget-alert-storage.interface';
+export type { BudgetAlertTrackedBudgetInterface } from './alert/interface/budget-alert-tracked-budget.interface';
+
+export type { BudgetCategoryLimitMutationRepositoryInterface } from './mutation/interface/budget-category-limit-mutation-repository.interface';
+export type { BudgetMutationRepositoryInterface } from './mutation/interface/budget-mutation-repository.interface';

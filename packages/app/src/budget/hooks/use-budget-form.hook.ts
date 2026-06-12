@@ -2,12 +2,13 @@ import { budgetAllocationService } from '@budgie/budget';
 import { BudgetPeriodEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { budgetService } from '../../@generic/drizzle/db/db';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
@@ -16,12 +17,11 @@ import { BudgetFormSchema, BudgetFormValues } from '../constant/budget-form-sche
 import { BudgetTemplateKindEnum } from '../enum/budget-template-kind.enum';
 import { useGetActiveBudgetQuery } from '../query/use-get-active-budget.query';
 import { useGetBudgetCategoryLimitsQuery } from '../query/use-get-budget-category-limits.query';
-import { budgetService } from '../service/budget.service';
 
 import { useBudgetTemplateDraft } from './use-budget-template-draft.hook';
 
+import type { BudgetTemplateDraftInterface } from '@budgie/budget';
 import type { BudgetCategoryLimitEntityInterface, BudgetEntityInterface } from '@budgie/contracts';
-import type { UseFormReturn } from 'react-hook-form';
 
 const DEFAULT_PERIOD_START_DAY = 1;
 const EDITING_FALLBACK_ROUTE = '/budget' as const;
@@ -33,93 +33,122 @@ interface UseBudgetFormOptionsInterface {
     readonly templateKind?: BudgetTemplateKindEnum | null;
 }
 
-const resetBudgetForm = (
-    form: UseFormReturn<BudgetFormValues>,
+const buildBudgetFormValues = (
     budget: BudgetEntityInterface,
     categoryLimits: readonly BudgetCategoryLimitEntityInterface[]
-): void => {
-    form.reset({
-        name: budget.name,
-        periodStartDay: budget.periodStartDay,
-        useLastDayOfMonth: budget.useLastDayOfMonth,
-        overallLimit: convertFromMicroUnits(budget.overallLimit),
-        otherLimit: convertFromMicroUnits(budget.otherLimit),
-        categoryLimits: categoryLimits.map(limit => ({
-            categoryId: limit.categoryId,
-            limitAmount: convertFromMicroUnits(limit.limitAmount)
-        })),
-        instrumentId: budget.instrumentId
+): BudgetFormValues => ({
+    name: budget.name,
+    periodStartDay: budget.periodStartDay,
+    useLastDayOfMonth: budget.useLastDayOfMonth,
+    overallLimit: convertFromMicroUnits(budget.overallLimit),
+    otherLimit: convertFromMicroUnits(budget.otherLimit),
+    categoryLimits: categoryLimits.map(limit => ({
+        categoryId: limit.categoryId,
+        limitAmount: convertFromMicroUnits(limit.limitAmount)
+    })),
+    instrumentId: budget.instrumentId
+});
+
+const buildDefaultBudgetFormValues = (name: string, instrumentId: number): BudgetFormValues => ({
+    name,
+    periodStartDay: DEFAULT_PERIOD_START_DAY,
+    useLastDayOfMonth: false,
+    overallLimit: 0,
+    otherLimit: 0,
+    categoryLimits: [],
+    instrumentId
+});
+
+const buildTemplateBudgetFormValues = (
+    name: string,
+    defaultInstrumentId: number,
+    templateDraft: BudgetTemplateDraftInterface
+): BudgetFormValues => {
+    const allocation = budgetAllocationService.computeAllocation({
+        overallLimit: templateDraft.overallLimit,
+        otherLimit: 0,
+        categoryLimits: templateDraft.categoryLimits
+    });
+    const otherLimit = Math.max(0, allocation.remaining);
+
+    return {
+        name,
+        periodStartDay: DEFAULT_PERIOD_START_DAY,
+        useLastDayOfMonth: false,
+        overallLimit: templateDraft.overallLimit,
+        otherLimit,
+        categoryLimits: templateDraft.categoryLimits.map(limit => ({ ...limit })),
+        instrumentId: defaultInstrumentId
+    };
+};
+
+const areBudgetCategoryLimitsEqual = (left: BudgetFormValues['categoryLimits'], right: BudgetFormValues['categoryLimits']): boolean => {
+    if (left.length !== right.length) {
+        return false;
+    }
+
+    return left.every((leftLimit, index) => {
+        const rightLimit = right[index];
+
+        return isDefined(rightLimit) && leftLimit.categoryId === rightLimit.categoryId && leftLimit.limitAmount === rightLimit.limitAmount;
     });
 };
 
-// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration hook owns edit + template seed effects, delete confirmation, and submit lifecycle
+const areBudgetFormValuesEqual = (left: BudgetFormValues, right: BudgetFormValues): boolean =>
+    left.name === right.name &&
+    left.periodStartDay === right.periodStartDay &&
+    left.useLastDayOfMonth === right.useLastDayOfMonth &&
+    left.overallLimit === right.overallLimit &&
+    left.otherLimit === right.otherLimit &&
+    left.instrumentId === right.instrumentId &&
+    areBudgetCategoryLimitsEqual(left.categoryLimits, right.categoryLimits);
+
+// eslint-disable-next-line max-lines-per-function -- Form orchestration hook owns edit/template seeding, delete confirmation, and submit lifecycle
 export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = null }: UseBudgetFormOptionsInterface) => {
     const { t } = useLingui();
     const isEditing = isPositiveNumber(editingId);
     const hasAsyncTemplate = isDefined(templateKind) && templateKind !== BudgetTemplateKindEnum.EMPTY;
-    const isSeedDriven = isEditing || hasAsyncTemplate;
-    const [isFormHydrated, setIsFormHydrated] = useState(!isSeedDriven);
-
     const { budget, isLoading: isBudgetLoading } = useGetActiveBudgetQuery();
     const categoryLimitsBudgetId = isEditing && isDefined(budget) ? budget.id : null;
     const { categoryLimits: loadedCategoryLimits, isLoading: isCategoryLimitsLoading } =
         useGetBudgetCategoryLimitsQuery(categoryLimitsBudgetId);
     const { draft: templateDraft, isReady: isTemplateReady } = useBudgetTemplateDraft(isEditing ? null : templateKind);
 
+    const defaultFormValues = useMemo(() => buildDefaultBudgetFormValues(t`Monthly Budget`, defaultInstrumentId), [defaultInstrumentId, t]);
+    const formValues = useMemo(() => {
+        if (isEditing && isDefined(budget) && !isCategoryLimitsLoading) {
+            return buildBudgetFormValues(budget, loadedCategoryLimits);
+        }
+
+        if (!isEditing && hasAsyncTemplate && isTemplateReady) {
+            return buildTemplateBudgetFormValues(t`Monthly Budget`, defaultInstrumentId, templateDraft);
+        }
+
+        return defaultFormValues;
+    }, [
+        budget,
+        defaultFormValues,
+        defaultInstrumentId,
+        hasAsyncTemplate,
+        isCategoryLimitsLoading,
+        isEditing,
+        isTemplateReady,
+        loadedCategoryLimits,
+        t,
+        templateDraft
+    ]);
+
     const form = useForm<BudgetFormValues>({
         mode: 'onChange',
         resolver: zodResolver(BudgetFormSchema),
-        defaultValues: {
-            name: t`Monthly Budget`,
-            periodStartDay: DEFAULT_PERIOD_START_DAY,
-            useLastDayOfMonth: false,
-            overallLimit: 0,
-            otherLimit: 0,
-            categoryLimits: [],
-            instrumentId: defaultInstrumentId
+        defaultValues: defaultFormValues,
+        values: formValues,
+        resetOptions: {
+            keepDirtyValues: true,
+            keepErrors: true
         }
     });
-
-    useEffect(() => {
-        if (!isEditing || !isDefined(budget) || isCategoryLimitsLoading || form.formState.isDirty || isFormHydrated) {
-            return emptyFn;
-        }
-
-        resetBudgetForm(form, budget, loadedCategoryLimits);
-        queueMicrotask(() => void setIsFormHydrated(true));
-
-        return emptyFn;
-    }, [budget, form, form.formState.isDirty, isCategoryLimitsLoading, isEditing, isFormHydrated, loadedCategoryLimits]);
-
-    useEffect(() => {
-        if (isEditing || !hasAsyncTemplate || isFormHydrated || form.formState.isDirty) {
-            return emptyFn;
-        }
-
-        if (!isTemplateReady) {
-            return emptyFn;
-        }
-
-        const allocation = budgetAllocationService.computeAllocation({
-            overallLimit: templateDraft.overallLimit,
-            otherLimit: 0,
-            categoryLimits: templateDraft.categoryLimits
-        });
-        const otherLimit = Math.max(0, allocation.remaining);
-
-        form.reset({
-            name: t`Monthly Budget`,
-            periodStartDay: DEFAULT_PERIOD_START_DAY,
-            useLastDayOfMonth: false,
-            overallLimit: templateDraft.overallLimit,
-            otherLimit,
-            categoryLimits: templateDraft.categoryLimits.map(limit => ({ ...limit })),
-            instrumentId: defaultInstrumentId
-        });
-        queueMicrotask(() => void setIsFormHydrated(true));
-
-        return emptyFn;
-    }, [defaultInstrumentId, form, form.formState.isDirty, hasAsyncTemplate, isEditing, isFormHydrated, isTemplateReady, t, templateDraft]);
+    const isFormSyncing = !form.formState.isDirty && !areBudgetFormValuesEqual(form.getValues(), formValues);
 
     const handleDelete = async () => {
         if (!isDefined(budget)) {
@@ -145,7 +174,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
 
     const handleCancel = () => {
         if (isEditing && isDefined(budget)) {
-            resetBudgetForm(form, budget, loadedCategoryLimits);
+            form.reset(buildBudgetFormValues(budget, loadedCategoryLimits));
         }
         const fallbackRoute = isEditing ? EDITING_FALLBACK_ROUTE : DEFAULT_FALLBACK_ROUTE;
         goBackOrReplace(fallbackRoute);
@@ -194,6 +223,9 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
         handleDelete,
         isEditing,
         budget,
-        isLoading: (isEditing && (isBudgetLoading || isCategoryLimitsLoading || !isFormHydrated)) || (hasAsyncTemplate && !isFormHydrated)
+        isLoading:
+            (isEditing && (isBudgetLoading || isCategoryLimitsLoading || !isDefined(budget))) ||
+            (!isEditing && hasAsyncTemplate && !isTemplateReady) ||
+            isFormSyncing
     };
 };
