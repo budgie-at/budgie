@@ -77,6 +77,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     const isConsolidated = isDefined(transaction.consolidationType);
     const actions = useUpdateIncomeTransactionActions({
+        form,
         transaction,
         transactionId,
         toAccountId

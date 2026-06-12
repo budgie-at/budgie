@@ -1,4 +1,4 @@
-import { TransactionConsolidationTypeEnum, TransactionEntryKindEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, TransactionEntryKindEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { View } from 'react-native';
 
@@ -32,7 +32,9 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
     const feeCurrencySymbol = isDefined(feeEntry) ? feeEntry.account.instrument.symbol : '';
     const formattedFeeAmount = formatDigits(feeAmount, feeCurrencySymbol);
     const feeLabel = t`Fee · ${formattedFeeAmount}`;
-    const hasDebtSettlement = transaction.entries.some(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
+    const debtSettlementAccountTitle =
+        transaction.entries.find(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT)?.account.title ?? null;
+    const hasDebtSettlement = isDefined(debtSettlementAccountTitle);
     const isRefundTransaction = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
 
     if (!isRefundTransaction && !hasFee && !hasDebtSettlement) {
@@ -43,9 +45,9 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
         <View className="gap-y-xxs">
             <RefundedPill transaction={transaction} testID={refundedPillTestID} />
 
-            {hasFee ? <TransactionMetadataRow icon={UserIconNameEnum.ReceiptText} label={feeLabel} testID={feeTestID} /> : null}
+            {hasFee ? <TransactionMetadataRow label={feeLabel} testID={feeTestID} /> : null}
 
-            <DebtSettlementPill transaction={transaction} testID={debtSettlementTestID} />
+            <DebtSettlementPill transaction={transaction} accountTitle={debtSettlementAccountTitle} testID={debtSettlementTestID} />
         </View>
     );
 };

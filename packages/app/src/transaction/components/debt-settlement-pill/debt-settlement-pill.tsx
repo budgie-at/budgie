@@ -1,4 +1,4 @@
-import { TransactionEntryKindEnum, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -8,8 +8,8 @@ import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-p
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly accountTitle?: string | null;
+    readonly transaction: Pick<TransactionWithRelationsEntityInterface, 'type'>;
+    readonly accountTitle: string | null;
     readonly testID?: string;
 }
 
@@ -29,12 +29,8 @@ const getDebtSettlementLabel = (transactionType: TransactionTypeEnum, accountTit
     return t`Debt · ${accountTitle}`;
 };
 
-export const DebtSettlementPill = ({ transaction, accountTitle = null, testID }: Props) => {
-    const debtSettlementEntry = transaction.entries.find(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
-    const debtSettlementLabel = getDebtSettlementLabel(
-        transaction.type,
-        isDefined(debtSettlementEntry) ? debtSettlementEntry.account.title : accountTitle
-    );
+export const DebtSettlementPill = ({ transaction, accountTitle, testID }: Props) => {
+    const debtSettlementLabel = getDebtSettlementLabel(transaction.type, accountTitle);
 
     if (!isDefined(debtSettlementLabel)) {
         return null;

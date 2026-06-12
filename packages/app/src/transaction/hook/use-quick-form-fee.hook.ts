@@ -56,12 +56,12 @@ export const useQuickFormFee = ({
         const previousFeeAmount = sumEntryAmounts(currentFeeEntries);
         const nextFeeAmount = sumEntryAmounts(nextFeeEntries);
 
-        setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldValidate: false });
+        setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldDirty: true, shouldValidate: false });
 
         if (transactionType === TransactionTypeEnum.EXPENSE) {
             const nextAmount = Math.max(getValues('amount') - previousFeeAmount + nextFeeAmount, 0);
 
-            setValue('amount', nextAmount);
+            setValue('amount', nextAmount, { shouldDirty: true });
             setFromNumeric(nextAmount);
         }
     };

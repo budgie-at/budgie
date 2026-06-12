@@ -15,6 +15,7 @@ import { useRevertConsolidation } from './use-revert-consolidation.hook';
 import type { UpdateIncomeTransactionActionsParamsInterface } from '../interface/update-income-transaction-actions-params.interface';
 
 export const useUpdateIncomeTransactionActions = ({
+    form,
     transaction,
     transactionId,
     toAccountId
@@ -26,6 +27,7 @@ export const useUpdateIncomeTransactionActions = ({
     const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
     const { handleOpenDebtSettlement, handleDetachDebtSettlement, hasDebtSettlement, debtSettlementAccountTitle } =
         useDebtSettlementTransactionActions({
+            form,
             transaction,
             transactionId,
             transactionAccountId: toAccountId,

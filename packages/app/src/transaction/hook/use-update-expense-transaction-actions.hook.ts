@@ -12,6 +12,7 @@ import { useRevertConsolidation } from './use-revert-consolidation.hook';
 import type { UpdateExpenseTransactionActionsParamsInterface } from '../interface/update-expense-transaction-actions-params.interface';
 
 export const useUpdateExpenseTransactionActions = ({
+    form,
     transaction,
     transactionId,
     fromAccountId
@@ -23,6 +24,7 @@ export const useUpdateExpenseTransactionActions = ({
     const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
     const { handleOpenDebtSettlement, handleDetachDebtSettlement, hasDebtSettlement, debtSettlementAccountTitle } =
         useDebtSettlementTransactionActions({
+            form,
             transaction,
             transactionId,
             transactionAccountId: fromAccountId,

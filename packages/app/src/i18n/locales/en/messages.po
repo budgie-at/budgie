@@ -1154,7 +1154,6 @@ msgstr "Edit Expense"
 #: src/app/(main)/transactions/[id]/expense.tsx
 #: src/app/(main)/transactions/[id]/income.tsx
 #: src/app/(main)/transactions/[id]/transfer.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Edit fee"
 msgstr "Edit fee"
 
@@ -1361,6 +1360,10 @@ msgstr "Fast-indexing {done} of {total} • tap to pause"
 #: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
 msgid "Fee · {formattedFeeAmount}"
 msgstr "Fee · {formattedFeeAmount}"
+
+#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+msgid "Fee {formattedAmount}"
+msgstr "Fee {formattedAmount}"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
@@ -2524,7 +2527,7 @@ msgstr "Set Category"
 #: src/app/(main)/transactions/[id]/expense.tsx
 #: src/app/(main)/transactions/[id]/income.tsx
 #: src/app/(main)/transactions/[id]/transfer.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Set fee"
 msgstr "Set fee"

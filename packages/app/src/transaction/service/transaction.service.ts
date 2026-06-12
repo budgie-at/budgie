@@ -249,10 +249,7 @@ class TransactionService {
                 },
                 tx
             );
-            const inputWithDebtSettlementEntries = transactionDebtSettlementService.applyExistingSettlementToUpdate(
-                input,
-                existingTransaction
-            );
+            const inputWithDebtSettlementEntries = transactionDebtSettlementService.applyExistingSettlementToUpdate(input);
 
             await upsertTransactionEntriesAndTags(
                 { transactionId: id, input: inputWithDebtSettlementEntries, operatedAt: transaction.operatedAt, isConsolidated },

@@ -23,6 +23,7 @@ import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
+import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 import {
@@ -175,12 +176,15 @@ export const TransferQuickForm = (props: Props) => {
         const categoryEntries = getTransactionCategoryEntries(currentEntries);
         const nextFeeEntries = result.map(entry => ({ ...entry, accountId: sourceAccountId, type: TransactionEntryTypeEnum.FEE }));
 
-        setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldValidate: false });
+        setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldDirty: true, shouldValidate: false });
     };
 
     const handleFeePress = () => void openFeeModal();
 
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
+    const amountBottomContent = showInlineFeeAction ? (
+        <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} showEmptyState onPress={handleFeePress} />
+    ) : null;
 
     const handleConfirm = () => {
         if (isEditingDestination) {
@@ -233,6 +237,7 @@ export const TransferQuickForm = (props: Props) => {
                 variant={variant}
                 secondaryAmount={display.secondaryAmountText}
                 label={display.amountLabel}
+                bottomContent={amountBottomContent}
                 isLabelFlipped={isEditingDestination}
                 testID={SimpleQuickFormSelector.AmountInput}
                 {...(conversion.isCrossCurrency && {
@@ -248,14 +253,9 @@ export const TransferQuickForm = (props: Props) => {
                 onDatePress={handleDatePress}
                 onConsolidationPress={onConsolidationPress}
                 commentTestID={SimpleQuickFormSelector.CommentInput}
-                {...(showInlineFeeAction && {
-                    feeAmount,
-                    feeCurrencySymbol,
-                    onFeePress: handleFeePress
-                })}
             />
 
-            <View className="mb-xl">
+            <View className="mb-xl gap-sm">
                 <TransactionTransferAccountsRow ref={transferAccountsRef} variant={variant} />
             </View>
 

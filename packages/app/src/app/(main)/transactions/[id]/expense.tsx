@@ -85,27 +85,20 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
 
     const handleGoBack = () => void goBackOrReplace('/');
     const isConsolidated = isDefined(transaction.consolidationType);
-    const {
-        handleOpenConvert,
-        handleOpenRefundSources,
-        handleOpenDebtSettlement,
-        handleDetachDebtSettlement,
-        handleRevert,
-        hasDebtSettlement,
-        debtSettlementAccountTitle
-    } = useUpdateExpenseTransactionActions({
+    const actions = useUpdateExpenseTransactionActions({
+        form,
         transaction,
         transactionId,
         fromAccountId
     });
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
-    const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
+    const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: actions.handleOpenConvert } : {};
     const debtSettlementProps =
-        categoryEntries.length === 1 && !hasDebtSettlement
-            ? { onAttachDebtSettlement: handleOpenDebtSettlement, attachDebtSettlementLabel: t`Attach debt repayment` }
+        categoryEntries.length === 1 && !actions.hasDebtSettlement
+            ? { onAttachDebtSettlement: actions.handleOpenDebtSettlement, attachDebtSettlementLabel: t`Attach debt repayment` }
             : {};
-    const detachDebtSettlementProps = hasDebtSettlement ? { onDetachDebtSettlement: handleDetachDebtSettlement } : {};
-    const amountTopContent = useExpenseAmountTopContent(transaction, debtSettlementAccountTitle, handleOpenRefundSources);
+    const detachDebtSettlementProps = actions.hasDebtSettlement ? { onDetachDebtSettlement: actions.handleDetachDebtSettlement } : {};
+    const amountTopContent = useExpenseAmountTopContent(transaction, actions.debtSettlementAccountTitle, actions.handleOpenRefundSources);
 
     return (
         <FormProvider {...form}>
@@ -118,7 +111,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                             <UpdateTransactionActionsMenu
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
-                                onRevert={handleRevert}
+                                onRevert={actions.handleRevert}
                                 onFeePress={handleFeePress}
                                 feeActionLabel={feeActionLabel}
                                 {...debtSettlementProps}

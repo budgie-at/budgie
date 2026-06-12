@@ -16,6 +16,7 @@ import { accountRepository, db, transactionEntryRepository, transactionRepositor
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
+import { getTransactionDebtSettlementEntries } from '../utils/get-transaction-debt-settlement-entries.util';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 
 import type { AttachDebtSettlementParamsInterface } from '../interface/attach-debt-settlement-params.interface';
@@ -73,14 +74,11 @@ class TransactionDebtSettlementService {
         });
     }
 
-    applyExistingSettlementToUpdate(
-        input: TransactionUpdateServiceInputInterface,
-        existingTransaction: TransactionWithEntriesEntityInterface | undefined
-    ): TransactionUpdateServiceInputInterface {
+    applyExistingSettlementToUpdate(input: TransactionUpdateServiceInputInterface): TransactionUpdateServiceInputInterface {
         const regularEntries = input.entries.filter(entry => entry.kind !== TransactionEntryKindEnum.DEBT_SETTLEMENT);
-        const existingSettlementEntries = isDefined(existingTransaction) ? this.getSettlementEntries(existingTransaction) : [];
+        const inputSettlementEntries = getTransactionDebtSettlementEntries(input.entries);
 
-        if (!isNotEmptyArray(existingSettlementEntries)) {
+        if (!isNotEmptyArray(inputSettlementEntries)) {
             return regularEntries.length === input.entries.length ? input : { ...input, entries: regularEntries };
         }
 
@@ -95,7 +93,7 @@ class TransactionDebtSettlementService {
             ...input,
             entries: [
                 ...regularEntries,
-                ...existingSettlementEntries.map(entry =>
+                ...inputSettlementEntries.map(entry =>
                     this.buildUpdatedDebtSettlementEntry(input.type, categoryEntries, categoryEntry, entry)
                 )
             ]
@@ -142,7 +140,7 @@ class TransactionDebtSettlementService {
     }
 
     private getSettlementEntries(transaction: TransactionWithEntriesEntityInterface): TransactionEntryEntityInterface[] {
-        return transaction.entries.filter(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
+        return getTransactionDebtSettlementEntries(transaction.entries);
     }
 
     private assertDebtAccountMatchesTransaction(
@@ -203,7 +201,7 @@ class TransactionDebtSettlementService {
         transactionType: TransactionUpdateServiceInputInterface['type'],
         categoryEntries: TransactionEntryCreateInputInterface[],
         categoryEntry: TransactionEntryCreateInputInterface,
-        settlementEntry: TransactionEntryEntityInterface
+        settlementEntry: TransactionEntryCreateInputInterface
     ): TransactionEntryCreateInputInterface {
         return {
             accountId: settlementEntry.accountId,

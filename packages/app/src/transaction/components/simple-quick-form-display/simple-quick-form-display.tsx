@@ -15,6 +15,7 @@ interface Props extends RulePillSlotPropsInterface {
     readonly aiContext?: string;
     readonly amount: number;
     readonly amountDisplayRef: RefObject<TransactionAmountDisplayRef | null>;
+    readonly amountBottomContent?: ReactNode;
     readonly amountTopContent?: ReactNode;
     readonly categoryId: number | null;
     readonly comment: string;
@@ -38,6 +39,7 @@ export const SimpleQuickFormDisplay = ({
     accountId,
     aiContext = '',
     amount,
+    amountBottomContent,
     amountDisplayRef,
     amountTopContent,
     categoryId,
@@ -72,6 +74,7 @@ export const SimpleQuickFormDisplay = ({
                 amount={displayValue}
                 currencySymbol={currencySymbol}
                 variant={variant}
+                bottomContent={amountBottomContent}
                 topContent={
                     <SimpleQuickFormAmountHeader
                         amountTopContent={amountTopContent}

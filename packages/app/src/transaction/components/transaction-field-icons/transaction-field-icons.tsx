@@ -6,13 +6,11 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import {
@@ -41,12 +39,9 @@ interface Props {
     readonly transactionType: TransactionTypeEnum;
     readonly splitEntryCount?: number;
     readonly isAmountPositive?: boolean;
-    readonly feeAmount?: number;
-    readonly feeCurrencySymbol?: string;
     readonly onCommentPress: EmptyFn;
     readonly onDatePress: EmptyFn;
     readonly onConsolidationPress?: EmptyFn;
-    readonly onFeePress?: EmptyFn;
     readonly onSplitPress?: EmptyFn;
     readonly categoryTestID?: string;
     readonly tagsTestID?: string;
@@ -61,12 +56,9 @@ export const TransactionFieldIcons = (props: Props) => {
         transactionType,
         splitEntryCount = 0,
         isAmountPositive = false,
-        feeAmount,
-        feeCurrencySymbol,
         onCommentPress,
         onDatePress,
         onConsolidationPress,
-        onFeePress,
         onSplitPress,
         categoryTestID,
         tagsTestID,
@@ -74,11 +66,9 @@ export const TransactionFieldIcons = (props: Props) => {
     } = props;
     const { t } = useLingui();
     const { intl } = useI18nContext();
-    const { decimalPlaces } = useSettingsContext();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
     const [openCategorySelector] = useCategorySelectorModal();
     const [openTagsSelector] = useTagsSelectorModal();
-    const formatDigits = useFormatDigits(decimalPlaces);
 
     const categoryIconRef = useRef<TransactionFieldIconRef>(null);
 
@@ -137,9 +127,6 @@ export const TransactionFieldIcons = (props: Props) => {
 
     const showSplitIcon = isDefined(onSplitPress);
     const showConsolidationIcon = isDefined(onConsolidationPress);
-    const hasFee = isDefined(feeAmount) && isPositiveNumber(feeAmount);
-    const feeValue = hasFee && isDefined(feeCurrencySymbol) ? formatDigits(feeAmount, feeCurrencySymbol) : void 0;
-    const feeLabel = hasFee ? t`Edit fee` : t`Set fee`;
     const splitValue = isSplitActive
         ? t({
               message: plural(splitEntryCount, {
@@ -156,21 +143,9 @@ export const TransactionFieldIcons = (props: Props) => {
     }));
 
     const splitPointerEvents = splitEnabled ? 'auto' : 'none';
-    const feeIcon = isDefined(onFeePress) ? (
-        <TransactionFieldIcon
-            icon={UserIconNameEnum.ReceiptText}
-            label={feeLabel}
-            value={feeValue}
-            variant={variant}
-            onPress={onFeePress}
-            testID={TransactionFieldIconsSelector.Fee}
-        />
-    ) : null;
 
     return (
         <View className="flex-row py-lg">
-            {feeIcon}
-
             {showSplitIcon ? (
                 <Animated.View style={splitOpacityStyle} pointerEvents={splitPointerEvents} className="flex-1">
                     <TransactionFieldIcon

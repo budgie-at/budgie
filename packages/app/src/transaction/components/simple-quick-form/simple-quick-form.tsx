@@ -11,6 +11,7 @@ import { useQuickFormSubmit } from '../../hook/use-quick-form-submit.hook';
 import { useSimpleQuickFormState } from '../../hook/use-simple-quick-form-state.hook';
 import { SimpleQuickFormControls } from '../simple-quick-form-controls/simple-quick-form-controls';
 import { SimpleQuickFormDisplay } from '../simple-quick-form-display/simple-quick-form-display';
+import { SimpleQuickFormFeePill } from '../simple-quick-form-fee-pill/simple-quick-form-fee-pill';
 
 import type { QuickFormAccountFieldName } from '../../interface/quick-form-account-field-name.type';
 import type { QuickFormBuildEntryParamsInterface } from '../../interface/quick-form-build-entry-params.interface';
@@ -50,8 +51,6 @@ export const SimpleQuickForm = (props: Props) => {
     });
     const formState = useSimpleQuickFormState({ accountFieldName: props.accountFieldName, setFromNumeric });
 
-    const entryType = getEntryTypeForTransaction(props.transactionType);
-    const isSplitActive = formState.splitEntryCount > 1;
     const { feeAmount, handleFeePress } = useQuickFormFee({
         accountFieldName: props.accountFieldName,
         currencySymbol,
@@ -64,7 +63,7 @@ export const SimpleQuickForm = (props: Props) => {
     const { handleSplitIconPress } = useQuickFormSplit({
         accountFieldName: props.accountFieldName,
         currencySymbol,
-        entryType,
+        entryType: getEntryTypeForTransaction(props.transactionType),
         transactionType: props.transactionType,
         variant: props.variant,
         setFromNumeric
@@ -73,6 +72,7 @@ export const SimpleQuickForm = (props: Props) => {
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
     const fieldIconsRef = useRef<TransactionFieldIconsRefInterface>(null);
     const accountRowRef = useRef<TransactionAccountRowRef>(null);
+    const isSplitActive = formState.splitEntryCount > 1;
 
     const { handleConfirm } = useQuickFormSubmit({
         accountFieldName: props.accountFieldName,
@@ -85,12 +85,21 @@ export const SimpleQuickForm = (props: Props) => {
         transactionType: props.transactionType,
         onSubmit: props.onSubmit
     });
+    const amountBottomContent = (
+        <SimpleQuickFormFeePill
+            amount={feeAmount}
+            currencySymbol={currencySymbol}
+            showInlineAction={showInlineFeeAction}
+            onPress={handleFeePress}
+        />
+    );
 
     return (
         <View className="flex-1">
             <SimpleQuickFormDisplay
                 {...quickFormProps}
                 amountDisplayRef={amountDisplayRef}
+                amountBottomContent={amountBottomContent}
                 currencySymbol={currencySymbol}
                 displayValue={displayValue}
                 categoryId={formState.categoryId}
@@ -109,17 +118,13 @@ export const SimpleQuickForm = (props: Props) => {
             <SimpleQuickFormControls
                 {...quickFormProps}
                 accountRowRef={accountRowRef}
-                feeAmount={feeAmount}
-                feeCurrencySymbol={currencySymbol}
                 fieldIconsRef={fieldIconsRef}
                 splitEntryCount={formState.splitEntryCount}
-                showInlineFeeAction={showInlineFeeAction}
                 isAmountPositive={formState.isAmountPositive}
                 keypadHandlers={keypadHandlers}
                 onCommentPress={handleCommentPress}
                 onConfirm={handleConfirm}
                 onDatePress={handleDatePress}
-                onFeePress={handleFeePress}
                 onSplitPress={handleSplitIconPress}
             />
         </View>
