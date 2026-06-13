@@ -379,8 +379,8 @@ msgstr "Voulez-vous vraiment supprimer cette règle ?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
 
@@ -518,10 +518,10 @@ msgstr "Budgie supprimera de façon réversible {countText}. Vos transactions ma
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "Cancel"
 msgstr "Annuler"
@@ -1019,8 +1019,8 @@ msgid "Default Account"
 msgstr "Compte par défaut"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -2703,8 +2703,8 @@ msgstr "Ce compte sera masqué de votre vue principale et ne sera pas inclus dan
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "This action cannot be undone."
 msgstr "Cette action ne peut pas être annulée."
 
