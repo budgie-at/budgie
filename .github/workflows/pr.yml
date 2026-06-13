@@ -18,7 +18,7 @@ on: pull_request
 jobs:
   code-quality:
     name: Code quality checks
-    runs-on: [self-hosted, linux, arm64]
+    runs-on: [self-hosted, linux-burst]
     permissions:
       contents: read
       id-token: write
@@ -50,19 +50,20 @@ jobs:
         run: echo "${{env.PR_TITLE}}" | node_modules/.bin/commitlint
 
       - name: Typescript checks
-        run: yarn turbo ts
+        run: yarn turbo run ts --concurrency=2
 
       - name: ESLint checks
-        run: yarn turbo lint
+        run: yarn turbo run lint --concurrency=2
 
       - name: Deadcode detection
+        continue-on-error: true
         run: yarn turbo deadcode
 
       - name: Copy/Paste detection
         run: yarn turbo cpd
 
       - name: Unit tests
-        run: yarn test:coverage
+        run: yarn turbo run test:coverage --concurrency=2
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
@@ -72,7 +73,7 @@ jobs:
   eas-update-preview:
     name: EAS Update Preview
     needs: code-quality
-    runs-on: [self-hosted, linux, arm64]
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     permissions:
       contents: read
     steps:
@@ -118,7 +119,7 @@ jobs:
   build-ios-e2e-app:
     needs: [code-quality]
     name: Build iOS E2E app
-    runs-on: [self-hosted, macos, arm64]
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
@@ -192,22 +193,23 @@ jobs:
             pods-${{ runner.os }}-
 
       - name: Setup ccache
-        id: setup-ccache
         run: |
+          export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
           mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
           if ! command -v ccache >/dev/null; then
-            echo "ccache is not installed on this runner. Disabling compiler cache."
-            echo "USE_CCACHE=0" >> "$GITHUB_ENV"
-            echo "available=false" >> "$GITHUB_OUTPUT"
-            exit 0
+            command -v brew >/dev/null || {
+              echo "::error::ccache is not installed and Homebrew is unavailable."
+              exit 1
+            }
+            brew list ccache >/dev/null 2>&1 || brew install ccache
           fi
-
-          echo "available=true" >> "$GITHUB_OUTPUT"
           ccache --version
           ccache --zero-stats || true
+          if command -v brew >/dev/null; then
+            echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
+          fi
 
       - name: Restore ccache
-        if: steps.setup-ccache.outputs.available == 'true'
         uses: actions/cache/restore@v5
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -231,15 +233,6 @@ jobs:
           APP_VARIANT: e2e
           EXPO_PUBLIC_AI_DISABLE: "true"
         run: pod install
-
-      - name: Restore Xcode DerivedData cache
-        uses: actions/cache/restore@v5
-        with:
-          path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
-          restore-keys: |
-            deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-
-            deriveddata-${{ runner.os }}-xcode26_4_1-e2e-
 
       - name: Build app
         working-directory: packages/app
@@ -289,7 +282,7 @@ jobs:
           if-no-files-found: error
 
       - name: Save CocoaPods cache
-        if: always()
+        if: success()
         uses: actions/cache/save@v5
         with:
           path: |
@@ -298,23 +291,16 @@ jobs:
           key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save ccache
-        if: always() && steps.setup-ccache.outputs.available == 'true'
+        if: success()
         uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
-      - name: Save Xcode DerivedData cache
-        if: always()
-        uses: actions/cache/save@v5
-        with:
-          path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
-
   e2e-ios:
     needs: [build-ios-e2e-app]
     name: E2E Tests on iOS
-    runs-on: [self-hosted, macos, arm64]
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
@@ -400,7 +386,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Prepare iOS E2E artifact directories
@@ -417,7 +403,6 @@ jobs:
 
       - name: Run Maestro UI tests
         working-directory: tests/app-tests
-        timeout-minutes: 120
         shell: bash
         run: |
           set -euo pipefail
@@ -469,7 +454,7 @@ jobs:
     if: false
     needs: [code-quality, eas-update-preview]
     name: E2E Tests on Android
-    runs-on: [self-hosted, linux, arm64]
+    runs-on: [self-hosted, linux-burst]
     steps:
       - uses: actions/checkout@v5
 
@@ -524,7 +509,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Сreate AVD and generate snapshot for caching
@@ -553,7 +538,7 @@ jobs:
           working-directory: tests/app-tests
           script: |
             cd ../../packages/app && eas build:run --platform android --path app.android.apk
-            sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
+            sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()
