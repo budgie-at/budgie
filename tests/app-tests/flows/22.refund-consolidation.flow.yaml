@@ -31,7 +31,9 @@ appId: ${APP_ID}
 - tapOn:
     id: 'ConvertToRefund.ConvertButton'
 - waitForAnimationToEnd
-- tapOn: 'Convert'
+- tapOn:
+    text: 'Convert'
+    index: 0
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
