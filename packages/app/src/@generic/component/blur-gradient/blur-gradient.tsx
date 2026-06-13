@@ -16,10 +16,10 @@ interface Props {
     readonly safeAreaTop?: number;
 }
 
-const GRADIENT_START = 0.6;
-const GRADIENT_END = 0.6;
-const DEFAULT_HEADER_HEIGHT = 150;
-const DEFAULT_HEIGHT_BOTTOM = 150;
+const GRADIENT_START = 0.45;
+const GRADIENT_END = 0.45;
+const DEFAULT_HEADER_HEIGHT = 112;
+const DEFAULT_HEIGHT_BOTTOM = 112;
 const DARK_GRADIENT_EDGE = '#000000';
 const DARK_GRADIENT_TRANSPARENT = 'rgba(0, 0, 0, 0)';
 const LIGHT_GRADIENT_EDGE = '#ffffff';
