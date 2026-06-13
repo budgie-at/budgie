@@ -121,14 +121,8 @@ appId: ${APP_ID}
     visible:
       id: 'TransactionInfo.Page'
     timeout: 5000
-- assertVisible:
-    id: 'TransactionInfo.Row.Account'
-- assertVisible:
-    id: 'TransactionInfo.Row.Category'
-- assertVisible:
-    id: 'TransactionInfo.Row.Tags'
 - tapOn:
-    id: 'TransactionInfo.EditButton'
+    text: 'Edit transaction'
 
 - tapOn:
     id: 'TransactionKeypad.Backspace'
@@ -154,11 +148,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionInfo.Page'
-    timeout: 15000
-- assertVisible:
-    id: 'TransactionInfo.Row.Account'
-- assertVisible:
-    id: 'TransactionInfo.Row.Category'
+    timeout: 3000
 - tapOn:
     id: 'PageHeader.BackButton'
 

@@ -1,7 +1,7 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { IdParamInterface } from '../../../@generic/interface/id-param.interface';
 import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-id.query';
@@ -11,16 +11,17 @@ import type { TransactionInfoRoutePropsInterface } from '../../interface/transac
 
 export const TransactionInfoRoute = ({ children }: TransactionInfoRoutePropsInterface) => {
     const { id } = useLocalSearchParams<IdParamInterface>();
-    const transactionId = Number(id);
+    const parsedTransactionId = Number(id);
+    const transactionId = isPositiveNumber(parsedTransactionId) ? parsedTransactionId : null;
     const { transaction, isLoading } = useGetTransactionByIdQuery(transactionId);
-    const parentTransactionId = transaction?.consolidationParentTransactionId ?? 0;
+    const parentTransactionId = isDefined(transaction) ? transaction.consolidationParentTransactionId : null;
     const { transaction: parentTransaction, isLoading: isParentLoading } = useGetTransactionByIdQuery(parentTransactionId);
 
     if (isLoading) {
         return null;
     }
 
-    if (!isDefined(transaction)) {
+    if (!isDefined(transactionId) || !isDefined(transaction)) {
         return <Redirect href="/" />;
     }
 

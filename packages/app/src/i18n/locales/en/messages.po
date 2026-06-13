@@ -882,6 +882,10 @@ msgstr "Could not unconsolidate transaction."
 msgid "Could not update rule"
 msgstr "Could not update rule"
 
+#: src/app/(tabs)/settings/index.tsx
+msgid "Could not update settings"
+msgstr "Could not update settings"
+
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 msgid "Could not update token"
 msgstr "Could not update token"
@@ -1095,6 +1099,10 @@ msgstr "e.g. Groceries, Entertainment"
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
+
+#: src/account/component/account-card-base/account-card-base.tsx
+msgid "Edit account"
+msgstr "Edit account"
 
 #: src/category/components/category-form/category-form.tsx
 msgid "Edit Category"

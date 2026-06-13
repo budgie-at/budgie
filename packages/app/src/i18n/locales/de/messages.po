@@ -114,7 +114,7 @@ msgstr "{selectedCount, plural, =0 {Alle Tags anzeigen} one {# Tag anzeigen} oth
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
-msgstr ""
+msgstr "{similarCount, plural, one {# ähnliche Transaktion} other {# ähnliche Transaktionen}}"
 
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "{source} error · {message}"
@@ -402,7 +402,7 @@ msgstr "Verfügbare Spalten"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
-msgstr ""
+msgstr "Durchschnitt"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -663,11 +663,11 @@ msgstr "Treffer konsolidieren"
 
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "Consolidation"
-msgstr ""
+msgstr "Konsolidierung"
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Contact"
-msgstr ""
+msgstr "Kontakt"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Contact (optional)"
@@ -880,6 +880,10 @@ msgstr "Transaktion konnte nicht entkonsolidiert werden."
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Could not update rule"
 msgstr "Regel konnte nicht aktualisiert werden"
+
+#: src/app/(tabs)/settings/index.tsx
+msgid "Could not update settings"
+msgstr "Einstellungen konnten nicht aktualisiert werden"
 
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 msgid "Could not update token"
@@ -1095,6 +1099,10 @@ msgstr "z.B. Lebensmittel, Unterhaltung"
 msgid "e.g. Savings Account"
 msgstr "z. B. Sparkonto"
 
+#: src/account/component/account-card-base/account-card-base.tsx
+msgid "Edit account"
+msgstr "Konto bearbeiten"
+
 #: src/category/components/category-form/category-form.tsx
 msgid "Edit Category"
 msgstr "Kategorie bearbeiten"
@@ -1121,7 +1129,7 @@ msgstr "Tag bearbeiten"
 
 #: src/transaction/components/transaction-info-page/transaction-info-page.tsx
 msgid "Edit transaction"
-msgstr ""
+msgstr "Transaktion bearbeiten"
 
 #: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
 msgid "Edit Transaction"
@@ -1247,7 +1255,7 @@ msgstr "Alltägliche Transaktionen und Ausgaben"
 
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Exchange rate"
-msgstr ""
+msgstr "Wechselkurs"
 
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
@@ -1317,7 +1325,7 @@ msgstr "Schnellindexierung {done} von {total} • zum Pausieren tippen"
 
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
-msgstr ""
+msgstr "Gebühr"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Fee {formattedAmount}"
@@ -1377,7 +1385,7 @@ msgstr "Von"
 
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
-msgstr ""
+msgstr "Von Konto"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Account"
@@ -1616,11 +1624,11 @@ msgstr "Wird geladen..."
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Maestro E2E"
-msgstr ""
+msgstr "Maestro E2E"
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Maestro E2E Contact"
-msgstr ""
+msgstr "Maestro E2E Kontakt"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
@@ -2526,7 +2534,7 @@ msgstr "Dieses Konto auf der Hauptseite anzeigen"
 
 #: src/transaction/components/transaction-info-page/transaction-info-page.tsx
 msgid "Similar transactions"
-msgstr ""
+msgstr "Ähnliche Transaktionen"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
@@ -2771,7 +2779,7 @@ msgstr "Nach"
 
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
-msgstr ""
+msgstr "Auf Konto"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "To Account"
@@ -3009,7 +3017,7 @@ msgstr "Archivierte Konten anzeigen und wiederherstellen"
 
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"
-msgstr ""
+msgstr "Quelltransaktionen anzeigen"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"

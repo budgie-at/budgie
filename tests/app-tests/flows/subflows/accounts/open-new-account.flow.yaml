@@ -32,8 +32,12 @@ appId: ${APP_ID}
             notVisible:
               id: 'ActionButton'
           commands:
+            - extendedWaitUntil:
+                visible:
+                  id: 'ActionButton'
+                timeout: 10000
             - tapOn:
-                point: '91%,91%'
+                id: 'ActionButton'
       - waitForAnimationToEnd
       - extendedWaitUntil:
           visible:

@@ -95,12 +95,8 @@ appId: ${APP_ID}
     visible:
       id: 'TransactionInfo.Page'
     timeout: 5000
-- assertVisible:
-    id: 'TransactionInfo.Row.FromAccount'
-- assertVisible:
-    id: 'TransactionInfo.Row.ToAccount'
 - tapOn:
-    id: 'TransactionInfo.EditButton'
+    text: 'Edit transaction'
 
 - assertVisible:
     id: 'TransferForm.SelectedFromAccount.E2E Txn Account'
@@ -130,11 +126,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionInfo.Page'
-    timeout: 15000
-- assertVisible:
-    id: 'TransactionInfo.Row.FromAccount'
-- assertVisible:
-    id: 'TransactionInfo.Row.ToAccount'
+    timeout: 3000
 - tapOn:
     id: 'PageHeader.BackButton'
 

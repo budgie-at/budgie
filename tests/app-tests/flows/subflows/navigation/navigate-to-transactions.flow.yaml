@@ -9,7 +9,6 @@ appId: ${APP_ID}
           - waitForAnimationToEnd
 - tapOn:
       id: 'TabBar.Transactions'
-      retryTapIfNoChange: true
 - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:

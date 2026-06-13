@@ -12,24 +12,40 @@ export default function ImportDatabaseScreen() {
     const { fileUri } = useLocalSearchParams<{ fileUri?: string }>();
 
     useEffect(() => {
+        let isMounted = true;
+
         if (!isE2eApp() || !isNotEmptyString(fileUri)) {
             router.replace('/settings');
 
-            return;
+            return () => {
+                isMounted = false;
+            };
         }
 
-        void databaseImportService
-            .replaceFromUri(fileUri)
-            .then(() => {
+        void databaseImportService.replaceFromUri(fileUri).then(
+            () => {
+                if (!isMounted) {
+                    return false;
+                }
+
                 dismissAllOrReplace('/');
 
-                return null;
-            })
-            .catch(() => {
+                return true;
+            },
+            () => {
+                if (!isMounted) {
+                    return false;
+                }
+
                 router.replace('/settings');
 
-                return null;
-            });
+                return true;
+            }
+        );
+
+        return () => {
+            isMounted = false;
+        };
     }, [fileUri]);
 
     return (

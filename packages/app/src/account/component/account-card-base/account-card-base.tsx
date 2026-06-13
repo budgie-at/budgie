@@ -1,4 +1,5 @@
 import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
@@ -57,6 +58,7 @@ export const AccountCardBase = (props: Props) => {
         onLongPress
     } = props;
 
+    const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
 
     const navigateToAccount = () => void router.push(`/account/${id}/details`);
@@ -68,7 +70,7 @@ export const AccountCardBase = (props: Props) => {
     return (
         <Card
             accessible
-            accessibilityLabel={title}
+            accessibilityLabel={`${title}, ${accountBalance}`}
             testID={AccountCardBaseSelector.Card(title)}
             onPress={navigateToAccount}
             onLongPress={onLongPress}
@@ -81,7 +83,12 @@ export const AccountCardBase = (props: Props) => {
                         {topRight}
                     </View>
 
-                    <HapticPressable className="rounded-full active:bg-secondary-background" onPress={navigateToEditAccount}>
+                    <HapticPressable
+                        className="rounded-full active:bg-secondary-background"
+                        onPress={navigateToEditAccount}
+                        accessibilityRole="button"
+                        accessibilityLabel={t`Edit account`}
+                    >
                         <Icon className="text-primary" icon={UserIconNameEnum.EllipsisVertical} size={14} />
                     </HapticPressable>
                 </View>

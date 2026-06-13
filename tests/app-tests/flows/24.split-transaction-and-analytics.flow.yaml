@@ -66,21 +66,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SplitEntries.ConfirmButton'
 
-- tapOn:
-    id: 'TransactionForm.SubmitButton'
-- waitForAnimationToEnd
-- runFlow:
-    when:
-      visible:
-        id: 'TransactionInfo.Page'
-    commands:
-      - tapOn:
-          id: 'PageHeader.BackButton'
-      - waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionsPage.Container'
-    timeout: 15000
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -144,10 +130,10 @@ appId: ${APP_ID}
 - assertNotVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
-    point: '10%,10%'
+    text: 'Close menu'
 
 - tapOn:
-    point: '50%,93%'
+    text: 'Edit transaction'
 - extendedWaitUntil:
     visible:
       id: 'TransactionFieldIcon.Split'
@@ -179,21 +165,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SplitEntries.ConfirmButton'
 
-- tapOn:
-    id: 'TransactionForm.SubmitButton'
-- waitForAnimationToEnd
-- runFlow:
-    when:
-      visible:
-        id: 'TransactionInfo.Page'
-    commands:
-      - tapOn:
-          id: 'PageHeader.BackButton'
-      - waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionsPage.Container'
-    timeout: 15000
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -223,7 +195,7 @@ appId: ${APP_ID}
       id: 'TransactionInfo.Page'
     timeout: 5000
 - tapOn:
-    point: '50%,93%'
+    text: 'Edit transaction'
 - extendedWaitUntil:
     visible:
       id: 'TransactionFieldIcon.Split'
@@ -247,21 +219,7 @@ appId: ${APP_ID}
     notVisible: 'Remove split?'
     timeout: 15000
 
-- tapOn:
-    id: 'TransactionForm.SubmitButton'
-- waitForAnimationToEnd
-- runFlow:
-    when:
-      visible:
-        id: 'TransactionInfo.Page'
-    commands:
-      - tapOn:
-          id: 'PageHeader.BackButton'
-      - waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionsPage.Container'
-    timeout: 10000
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -284,7 +242,7 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
-    point: '10%,10%'
+    text: 'Close menu'
 
 # --- Delete Expense ---
 

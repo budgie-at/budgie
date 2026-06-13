@@ -96,7 +96,7 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionInfo.Row.ExchangeRate'
 - tapOn:
-    id: 'TransactionInfo.EditButton'
+    text: 'Edit transaction'
 
 - extendedWaitUntil:
     visible:

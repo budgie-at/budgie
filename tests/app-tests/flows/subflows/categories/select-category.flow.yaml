@@ -11,7 +11,7 @@ appId: ${APP_ID}
 - tapOn: return
 - waitForAnimationToEnd
 - tapOn:
-    point: '18%,75%'
+    id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
 - extendedWaitUntil:
     notVisible:
       id: 'CategoryPickerBottomSheet.Input'

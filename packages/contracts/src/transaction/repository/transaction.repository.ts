@@ -158,11 +158,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     @Log(
         query =>
-            `enter transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${query.categoryId ?? 0} months=${query.months}`,
+            `enter transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months}`,
         (result, query) =>
-            `done transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${query.categoryId ?? 0} months=${query.months} count=${result?.count ?? 0}`,
+            `done transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months} count=${isDefined(result) ? result.count : 0}`,
         (error, query) =>
-            `throw transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${query.categoryId ?? 0} months=${query.months} error=${getErrorMessage(error)}`
+            `throw transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months} error=${getErrorMessage(error)}`
     )
     async findSimilarStats(query: SimilarTransactionStatsQueryInterface): Promise<SimilarTransactionStatsInterface | null> {
         if (!isPositiveNumber(query.accountId) || !isPositiveNumber(query.months)) {
@@ -181,7 +181,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         const count = rows.reduce((sum, row) => sum + row.count, 0);
         const totalAmount = rows.reduce((sum, row) => sum + row.totalAmount, 0);
         const firstRow = rows.at(0);
-        const currencySymbol = firstRow?.currencySymbol ?? '';
+        const currencySymbol = isDefined(firstRow) ? firstRow.currencySymbol : '';
 
         return {
             count,

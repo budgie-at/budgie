@@ -23,11 +23,8 @@ env:
 - extendedWaitUntil:
     visible: 'Create Rule'
 
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/select-comment-condition-field.flow.yaml
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
@@ -42,7 +39,7 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    text: '^Save$'
 - extendedWaitUntil:
     visible: 'Apply to existing transactions?'
     timeout: 10000
@@ -75,7 +72,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -93,11 +91,6 @@ env:
 - extendedWaitUntil:
     visible: 'Create Rule'
 
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
-- waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Starbucks'
@@ -117,7 +110,7 @@ env:
     text: ${TAG_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    text: '^Save$'
 - extendedWaitUntil:
     visible: 'Apply to existing transactions?'
     timeout: 10000
@@ -133,10 +126,8 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.Tag.Rules_Test_Tag'
-- extendedWaitUntil:
-    visible:
       id: 'TransactionCard.Label.Starbucks_Coffee'
+      text: '.*Rules Test Tag.*'
 
 # Delete rule
 
@@ -150,7 +141,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -168,11 +160,8 @@ env:
 - extendedWaitUntil:
     visible: 'Create Rule'
 
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/select-comment-condition-field.flow.yaml
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Amazon'
@@ -210,7 +199,7 @@ env:
 - tapOn: ${TAG_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    text: '^Save$'
 - extendedWaitUntil:
     visible: 'Apply to existing transactions?'
     timeout: 10000
@@ -219,10 +208,13 @@ env:
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
+    text: '.*Category → Rules Test Category.*'
 - assertVisible:
-    id: 'RulesPage.RuleCardConditions.0'
+    id: 'RulesPage.RuleCard.0'
+    text: '.*Amazon.*'
 - assertVisible:
-    id: 'RulesPage.RuleCardActions.0'
+    id: 'RulesPage.RuleCard.0'
+    text: '.*Tag → Rules Test Tag.*'
 
 - tapOn:
     id: 'TabBar.Transactions'
@@ -233,11 +225,8 @@ env:
       id: 'TransactionCard.Category.Rules_Test_Category'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.Tag.Rules_Test_Tag'
-
-- extendedWaitUntil:
-    visible:
       id: 'TransactionCard.Label.Amazon_Purchase'
+      text: '.*Rules Test Tag.*'
 
 # Delete rule
 
@@ -251,7 +240,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -269,16 +259,10 @@ env:
 - extendedWaitUntil:
     visible: 'Create Rule'
 
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-- inputText: 'Spotify'
-
-- tapOn: return
+- runFlow:
+    file: subflows/rules/enter-condition-value.flow.yaml
+    env:
+      VALUE: 'Spotify'
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -288,7 +272,7 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    text: '^Save$'
 - runFlow:
     when:
       visible: 'Apply to existing transactions?'
@@ -315,7 +299,7 @@ env:
     visible: 'Edit Rule'
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    text: '^Save$'
 - extendedWaitUntil:
     visible: 'Apply to existing transactions?'
     timeout: 10000
@@ -341,7 +325,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -373,7 +358,7 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    text: '^Save$'
 - waitForAnimationToEnd
 
 - assertVisible:
@@ -406,7 +391,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -440,7 +426,7 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    text: '^Save$'
 - runFlow:
     when:
       visible: 'Apply to existing transactions?'
@@ -474,7 +460,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -500,21 +487,17 @@ env:
 - waitForAnimationToEnd
 
 - tapOn:
-    point: '87%,83%'
+    id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
 
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- tapOn: 'Comment'
-- waitForAnimationToEnd
-
+- runFlow:
+    file: subflows/rules/select-comment-condition-field.flow.yaml
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Auto Transfer'
 
-- tapOn:
-    text: 'return'
+- tapOn: return
 - waitForAnimationToEnd
 
 # Convert to Transfer is selectable even without a Transaction Type condition
@@ -553,11 +536,12 @@ env:
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- extendedWaitUntil:
-    visible: 'Apply to existing transactions?'
-    timeout: 10000
-- tapOn: 'Apply'
+    text: '^Save$'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Apply'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
@@ -565,7 +549,9 @@ env:
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
-- assertVisible: '.*Test22 Destination.*'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+    text: '.*Transfer → Test22 Destination.*'
 
 - tapOn:
     id: 'TabBar.Transactions'
@@ -592,7 +578,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -613,6 +600,7 @@ env:
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
+- waitForAnimationToEnd
 - inputText: 'Test'
 
 - tapOn: return
@@ -626,7 +614,7 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    text: '^Save$'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
@@ -649,6 +637,7 @@ env:
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
+- waitForAnimationToEnd
 - inputText: 'Other'
 
 - tapOn: return
@@ -670,7 +659,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -688,11 +678,8 @@ env:
 - extendedWaitUntil:
     visible: 'Create Rule'
 
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/select-comment-condition-field.flow.yaml
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
@@ -719,7 +706,7 @@ env:
       CATEGORY_NAME: Groceries
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    text: '^Save$'
 - runFlow:
     when:
       visible: 'Apply to existing transactions?'
@@ -741,11 +728,8 @@ env:
 - extendedWaitUntil:
     visible: 'Create Rule'
 
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/select-comment-condition-field.flow.yaml
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Starbucks'
@@ -765,7 +749,7 @@ env:
     text: Subscription
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    text: '^Save$'
 - runFlow:
     when:
       visible: 'Apply to existing transactions?'
@@ -807,7 +791,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 - waitForAnimationToEnd
 
 - swipe:
@@ -817,7 +802,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -845,7 +831,7 @@ env:
       id: 'TransactionInfo.Page'
     timeout: 5000
 - tapOn:
-    point: '50%,93%'
+    text: 'Edit transaction'
 - extendedWaitUntil:
     visible:
       id: 'TransactionForm.CategorySelector'
@@ -906,7 +892,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -934,7 +921,7 @@ env:
       id: 'TransactionInfo.Page'
     timeout: 5000
 - tapOn:
-    point: '50%,93%'
+    text: 'Edit transaction'
 - extendedWaitUntil:
     visible:
       id: 'TransactionForm.CategorySelector'
@@ -997,7 +984,8 @@ env:
     duration: 300
 - tapOn:
     id: DeletableRow.DeleteButton
-- tapOn: Delete
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -1025,7 +1013,7 @@ env:
       id: 'TransactionInfo.Page'
     timeout: 5000
 - tapOn:
-    point: '50%,93%'
+    text: 'Edit transaction'
 - extendedWaitUntil:
     visible:
       id: 'TransactionForm.CategorySelector'
@@ -1085,8 +1073,9 @@ env:
     direction: LEFT
     duration: 300
 - tapOn:
-    point: '91%,24%'
-- tapOn: Delete
+    id: 'DeletableRow.DeleteButton'
+- tapOn:
+    text: '^Delete$'
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -1101,15 +1090,10 @@ env:
 - waitForAnimationToEnd
 
 - tapOn:
-    point: '87%,83%'
+    id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
 
-- tapOn:
-    point: '30%,30%'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
-- waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
@@ -1136,7 +1120,7 @@ env:
       CATEGORY_NAME: Groceries
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    text: '^Save$'
 - runFlow:
     when:
       visible: 'Apply to existing transactions?'

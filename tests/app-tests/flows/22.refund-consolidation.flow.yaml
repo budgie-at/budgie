@@ -30,29 +30,9 @@ appId: ${APP_ID}
     id: 'ConvertToRefund.CandidateRow.2'
 - tapOn:
     id: 'ConvertToRefund.ConvertButton'
-- extendedWaitUntil:
-    visible: 'Convert to Refund?'
-    timeout: 10000
-- tapOn:
-    point: '67%,57%'
 - waitForAnimationToEnd
-- runFlow:
-    when:
-      visible: 'Convert to Refund?'
-    commands:
-      - tapOn:
-          point: '67%,57%'
-      - waitForAnimationToEnd
-- runFlow:
-    when:
-      visible: 'Convert to Refund?'
-    commands:
-      - tapOn:
-          point: '67%,57%'
-      - waitForAnimationToEnd
-- extendedWaitUntil:
-    notVisible: 'Convert to Refund?'
-    timeout: 10000
+- tapOn: 'Convert'
+- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'TransactionInfo.Row.Consolidation'
@@ -75,7 +55,7 @@ appId: ${APP_ID}
     timeout: 10000
 - extendedWaitUntil:
     notVisible:
-      text: 'Refunded.*'
+      id: 'TransactionInfo.RefundedPill'
     timeout: 10000
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
@@ -86,7 +66,7 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToRefundButton'
 - tapOn:
-    point: '10%,10%'
+    text: 'Close menu'
 - openLink: 'budgie://transactions'
 - extendedWaitUntil:
     visible:
@@ -124,7 +104,7 @@ appId: ${APP_ID}
       id: 'TransactionContextMenu.ConvertToRefundButton'
     timeout: 3000
 - tapOn:
-    point: '10%,10%'
+    text: 'Close menu'
 
 - runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
 

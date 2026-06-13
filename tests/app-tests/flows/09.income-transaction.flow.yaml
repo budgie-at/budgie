@@ -75,7 +75,7 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionInfo.Row.Category'
 - tapOn:
-    id: 'TransactionInfo.EditButton'
+    text: 'Edit transaction'
 
 - longPressOn:
     id: 'TransactionKeypad.Backspace'

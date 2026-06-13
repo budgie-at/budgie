@@ -38,7 +38,7 @@ appId: ${APP_ID}
     visible: 'Archive Account?'
     timeout: 10000
 - tapOn:
-    point: '68%,58%'
+    text: '^Archive$'
 - extendedWaitUntil:
     notVisible: 'Archive Account?'
     timeout: 10000
@@ -60,7 +60,7 @@ appId: ${APP_ID}
     visible: 'Restore Account?'
     timeout: 10000
 - tapOn:
-    point: '68%,58%'
+    text: '^Restore$'
 - extendedWaitUntil:
     notVisible: 'Restore Account?'
     timeout: 10000
@@ -143,26 +143,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'AccountPickerBottomSheet.Input'
-- scrollUntilVisible:
-    element:
-      id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
-    direction: DOWN
-    centerElement: true
-    timeout: 10000
-- tapOn:
-    id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
-- waitForAnimationToEnd
 - runFlow:
-    when:
-      visible:
-        id: 'AccountPickerBottomSheet.Input'
-    commands:
-      - tapOn:
-          id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
-      - waitForAnimationToEnd
-- extendedWaitUntil:
-    notVisible:
-      id: 'AccountPickerBottomSheet.Input'
+    file: subflows/shared/select-account-from-native-picker.flow.yaml
+    env:
+      ACCOUNT_OPTION_ID: 'AccountPickerBottomSheet.Option.E2E Expense Target'
 
 - tapOn:
     id: 'TransactionForm.SubmitButton'
@@ -171,7 +155,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionInfo.Page'
-    timeout: 15000
+    timeout: 3000
 
 - tapOn:
     id: 'PageHeader.BackButton'
@@ -209,8 +193,10 @@ appId: ${APP_ID}
 - runFlow: subflows/transactions/delete-transaction.flow.yaml
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
-- assertNotVisible:
-    id: 'TransactionCard.Label.E2E_Convert_Expense'
+- extendedWaitUntil:
+    notVisible:
+      id: 'TransactionCard.Label.E2E_Convert_Expense'
+    timeout: 10000
 
 - tapOn:
     id: 'TabBar.Home'

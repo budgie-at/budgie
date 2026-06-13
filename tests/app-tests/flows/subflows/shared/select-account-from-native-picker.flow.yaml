@@ -1,0 +1,24 @@
+appId: ${APP_ID}
+env:
+  ACCOUNT_OPTION_ID: ${ACCOUNT_OPTION_ID}
+---
+- scrollUntilVisible:
+    element:
+      id: ${ACCOUNT_OPTION_ID}
+    direction: DOWN
+    centerElement: true
+    timeout: 10000
+- tapOn:
+    id: ${ACCOUNT_OPTION_ID}
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: 'AccountPickerBottomSheet.Input'
+    commands:
+      - tapOn:
+          id: ${ACCOUNT_OPTION_ID}
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'

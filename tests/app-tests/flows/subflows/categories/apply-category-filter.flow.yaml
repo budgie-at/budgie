@@ -13,8 +13,10 @@ env:
 - inputText: ${CATEGORY_NAME}
 - pressKey: Enter
 - extendedWaitUntil:
-    visible: ${CATEGORY_NAME}
+    visible:
+      id: 'TransactionFilters.CategoryOption.${CATEGORY_NAME}'
     timeout: 5000
-- tapOn: ${CATEGORY_NAME}
+- tapOn:
+    id: 'TransactionFilters.CategoryOption.${CATEGORY_NAME}'
 - tapOn:
     id: 'TransactionFilters.CategoryApplyButton'

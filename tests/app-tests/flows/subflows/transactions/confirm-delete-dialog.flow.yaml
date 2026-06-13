@@ -1,26 +1,5 @@
 appId: ${APP_ID}
 ---
-- extendedWaitUntil:
-    visible: 'Are you sure?'
-    timeout: 10000
 - waitForAnimationToEnd
-- tapOn:
-    point: '67%,55%'
+- tapOn: 'Delete'
 - waitForAnimationToEnd
-- runFlow:
-    when:
-      visible: 'Are you sure?'
-    commands:
-      - tapOn:
-          point: '67%,55%'
-      - waitForAnimationToEnd
-- runFlow:
-    when:
-      visible: 'Are you sure?'
-    commands:
-      - tapOn:
-          point: '67%,55%'
-      - waitForAnimationToEnd
-- extendedWaitUntil:
-    notVisible: 'Are you sure?'
-    timeout: 10000

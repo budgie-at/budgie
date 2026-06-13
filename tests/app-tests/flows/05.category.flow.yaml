@@ -96,7 +96,7 @@ appId: ${APP_ID}
 - tapOn: return
 - waitForAnimationToEnd
 - tapOn:
-    point: '18%,75%'
+    id: 'CategoryPickerBottomSheet.Card.E2E Category Primary'
 - extendedWaitUntil:
     notVisible:
       id: 'CategoryPickerBottomSheet.Input'

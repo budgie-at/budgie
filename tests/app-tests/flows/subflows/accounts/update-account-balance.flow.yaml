@@ -2,7 +2,6 @@ appId: ${APP_ID}
 ---
 - tapOn:
       id: 'CreateAccount.Amount'
-      point: '50%,50%'
 - eraseText: 20
 - inputText: ${NEW_BALANCE}
 - extendedWaitUntil:

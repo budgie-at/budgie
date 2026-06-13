@@ -127,6 +127,7 @@ fi
 echo "Running Maestro suite from $WORKSPACE_DIR"
 if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
     maestro test "$WORKSPACE_DIR"/flows/*.flow.yaml \
+        --config "$WORKSPACE_DIR/config.yaml" \
         --udid "$DETECTED_SIMULATOR_UDID" \
         -e APP_ID="$APP_ID" \
         -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
@@ -136,6 +137,7 @@ if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
         "$@"
 else
     maestro test "$WORKSPACE_DIR"/flows/*.flow.yaml \
+        --config "$WORKSPACE_DIR/config.yaml" \
         -e APP_ID="$APP_ID" \
         -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
         -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \

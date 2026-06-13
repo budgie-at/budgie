@@ -173,9 +173,11 @@ appId: ${APP_ID}
 - inputText: 'Expense Tag'
 - pressKey: Enter
 - extendedWaitUntil:
-      visible: 'E2E Filter Expense Tag'
+      visible:
+          id: 'TagPickerBottomSheet.Card.E2E Filter Expense Tag'
       timeout: 5000
-- tapOn: 'E2E Filter Expense Tag'
+- tapOn:
+      id: 'TagPickerBottomSheet.Card.E2E Filter Expense Tag'
 - tapOn:
       id: 'TransactionFilters.TagApplyButton'
 

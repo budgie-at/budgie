@@ -10,11 +10,7 @@ env:
 - tapOn:
     id: 'TransactionContextMenu.ConvertToTransferButton'
 - waitForAnimationToEnd
-- runFlow:
-    when:
-      visible:
-        id: 'TransactionContextMenu.ConvertToTransferButton'
-    commands:
-      - tapOn:
-          id: 'TransactionContextMenu.ConvertToTransferButton'
-      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'ConvertToTransfer.Page'
+    timeout: 10000

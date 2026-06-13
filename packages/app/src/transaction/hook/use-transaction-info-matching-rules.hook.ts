@@ -1,7 +1,5 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { useGetEnabledRulesQuery } from '../../rule/query/use-get-enabled-rules.query';
 import { doesRuleMatchTransaction } from '../../rule/util/does-rule-match-transaction.util';
 import { convertTransactionToInput } from '../utils/convert-transaction-to-input.util';
@@ -29,5 +27,5 @@ export const useTransactionInfoMatchingRules = (transaction: TransactionWithRela
     const transactionInput = convertTransactionToInput(transaction);
     const matchingRules = enabledRules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData));
 
-    return isDefined(matchingRules) ? matchingRules.map(rule => rule.id) : [];
+    return matchingRules.map(rule => rule.id);
 };
