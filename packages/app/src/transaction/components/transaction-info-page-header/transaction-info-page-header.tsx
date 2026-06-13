@@ -26,7 +26,11 @@ export const TransactionInfoPageHeader = ({
             size="md"
             onGoBack={onGoBack}
             right={
-                <TransactionActionsMenu onDelete={onDelete} isConsolidated={isConsolidated} {...(isConsolidated && { onRevert })}>
+                <TransactionActionsMenu
+                    onDelete={onDelete}
+                    isConsolidated={isConsolidated}
+                    {...(isConsolidated && isDefined(onRevert) && { onRevert })}
+                >
                     {isDefined(onConvertToRefund) ? (
                         <TransactionConvertMenuItem
                             icon={UserIconNameEnum.ReceiptText}

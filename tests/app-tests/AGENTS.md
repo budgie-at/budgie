@@ -10,7 +10,7 @@ Maestro flows for Budgie.
 4. Prefer positive-state flow control: `tap -> extendedWaitUntil destination visible`.
 5. Keep retries only for real native instability like app relaunch or submit confirmation.
 6. Refresh dynamic fixtures before running the suite, especially date-based database fixtures.
-7. Use exact `testID` selectors for stable controls. Use text only when no stable id exists.
+7. Use exact `testID` selectors for stable controls. Use text only when no stable id exists, such as native alert buttons.
 8. If a guard proves load-bearing, keep the smallest specific guard instead of reintroducing blanket waits.
 9. Use `3000` as the default `extendedWaitUntil` timeout. Increase only for clearly slow native or import work.
 10. If a step is expected in the happy path, do not hide it behind `runFlow when:`. Wait for it explicitly and fail there if it does not appear.

@@ -84,7 +84,6 @@ export const TransactionInfoPage = (props: TransactionInfoPagePropsInterface) =>
     const { t } = useLingui();
     const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
     const matchingRuleIds = useTransactionInfoMatchingRules(transaction);
-    const rowVisibility = getRowVisibility(transaction, onOpenRefundSources, onOpenConsolidationSources);
 
     const handleEditPress = () => {
         router.push(editHref);
@@ -92,6 +91,8 @@ export const TransactionInfoPage = (props: TransactionInfoPagePropsInterface) =>
     const handleGoBack = () => {
         router.back();
     };
+
+    const rowVisibility = getRowVisibility(transaction, onOpenRefundSources, onOpenConsolidationSources);
 
     return (
         <FullPage
