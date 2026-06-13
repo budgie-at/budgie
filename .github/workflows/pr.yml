@@ -50,23 +50,23 @@ jobs:
         run: echo "${{env.PR_TITLE}}" | node_modules/.bin/commitlint
 
       - name: Typescript checks
-        run: yarn turbo run ts --concurrency=2
+        run: yarn turbo run ts
 
       - name: Maestro selector checks
         run: yarn workspace @budgie-at/app-tests selectors:check
 
       - name: ESLint checks
-        run: yarn turbo run lint --concurrency=1
+        run: yarn turbo run lint
 
       - name: Deadcode detection
         continue-on-error: true
-        run: yarn turbo deadcode --concurrency=1
+        run: yarn turbo deadcode
 
       - name: Copy/Paste detection
         run: yarn turbo cpd
 
       - name: Unit tests
-        run: yarn turbo run test:coverage --concurrency=2
+        run: yarn turbo run test:coverage
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
