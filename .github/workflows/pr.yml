@@ -53,7 +53,7 @@ jobs:
         run: yarn turbo run ts --concurrency=2
 
       - name: ESLint checks
-        run: yarn turbo run lint --concurrency=2
+        run: yarn turbo run lint --concurrency=1
 
       - name: Deadcode detection
         continue-on-error: true
