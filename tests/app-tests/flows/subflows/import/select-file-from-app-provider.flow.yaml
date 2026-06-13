@@ -15,6 +15,14 @@ env:
 
 - runFlow:
       when:
+          visible: 'Apple Account Verification'
+      commands:
+          - tapOn:
+                text: 'Not Now'
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
           visible: 'No Results for .*'
       commands:
           - tapOn:
