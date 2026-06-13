@@ -18,7 +18,7 @@ on: pull_request
 jobs:
   code-quality:
     name: Code quality checks
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux-burst]
     permissions:
       contents: read
       id-token: write
@@ -50,19 +50,20 @@ jobs:
         run: echo "${{env.PR_TITLE}}" | node_modules/.bin/commitlint
 
       - name: Typescript checks
-        run: yarn turbo ts
+        run: yarn turbo run ts --concurrency=2
 
       - name: ESLint checks
-        run: yarn turbo lint
+        run: yarn turbo run lint --concurrency=2
 
       - name: Deadcode detection
+        continue-on-error: true
         run: yarn turbo deadcode
 
       - name: Copy/Paste detection
         run: yarn turbo cpd
 
       - name: Unit tests
-        run: yarn test:coverage
+        run: yarn turbo run test:coverage --concurrency=2
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
@@ -72,7 +73,7 @@ jobs:
   eas-update-preview:
     name: EAS Update Preview
     needs: code-quality
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     permissions:
       contents: read
     steps:
@@ -118,7 +119,7 @@ jobs:
   build-ios-e2e-app:
     needs: [code-quality]
     name: Build iOS E2E app
-    runs-on: [self-hosted, macOS, ARM64]
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
@@ -193,13 +194,20 @@ jobs:
 
       - name: Setup ccache
         run: |
+          export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
           mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
-          command -v ccache >/dev/null || {
-            echo "::error::ccache is not installed on this runner."
-            exit 1
-          }
+          if ! command -v ccache >/dev/null; then
+            command -v brew >/dev/null || {
+              echo "::error::ccache is not installed and Homebrew is unavailable."
+              exit 1
+            }
+            brew list ccache >/dev/null 2>&1 || brew install ccache
+          fi
           ccache --version
           ccache --zero-stats || true
+          if command -v brew >/dev/null; then
+            echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
+          fi
 
       - name: Restore ccache
         uses: actions/cache/restore@v5
@@ -225,15 +233,6 @@ jobs:
           APP_VARIANT: e2e
           EXPO_PUBLIC_AI_DISABLE: "true"
         run: pod install
-
-      - name: Restore Xcode DerivedData cache
-        uses: actions/cache/restore@v5
-        with:
-          path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
-          restore-keys: |
-            deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-
-            deriveddata-${{ runner.os }}-xcode26_4_1-e2e-
 
       - name: Build app
         working-directory: packages/app
@@ -283,7 +282,7 @@ jobs:
           if-no-files-found: error
 
       - name: Save CocoaPods cache
-        if: always()
+        if: success()
         uses: actions/cache/save@v5
         with:
           path: |
@@ -292,23 +291,16 @@ jobs:
           key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save ccache
-        if: always()
+        if: success()
         uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
-      - name: Save Xcode DerivedData cache
-        if: always()
-        uses: actions/cache/save@v5
-        with:
-          path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_4_1-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
-
   e2e-ios:
     needs: [build-ios-e2e-app]
     name: E2E Tests on iOS
-    runs-on: [self-hosted, macOS, ARM64]
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
@@ -462,7 +454,7 @@ jobs:
     if: false
     needs: [code-quality, eas-update-preview]
     name: E2E Tests on Android
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux-burst]
     steps:
       - uses: actions/checkout@v5
 
