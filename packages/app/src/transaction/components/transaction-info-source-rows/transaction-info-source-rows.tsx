@@ -8,19 +8,24 @@ import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row
 
 import type { TransactionInfoSourceRowsPropsInterface } from '../../interface/transaction-info-source-rows-props.interface';
 
-export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSources }: TransactionInfoSourceRowsPropsInterface) => {
+export const TransactionInfoSourceRows = ({
+    transaction,
+    onOpenConsolidationSources,
+    onOpenRefundSources
+}: TransactionInfoSourceRowsPropsInterface) => {
     const { t } = useLingui();
     const isConsolidated = isDefined(transaction.consolidationType);
+    const handleOpenSources = onOpenConsolidationSources ?? onOpenRefundSources;
 
     return (
         <>
-            {isConsolidated && isDefined(onOpenConsolidationSources) ? (
+            {isConsolidated && isDefined(handleOpenSources) ? (
                 <TransactionInfoRow
                     icon={UserIconNameEnum.Workflow}
                     label={t`Consolidation`}
                     value={t`View source transactions`}
                     testID={TransactionInfoPageSelector.Row.Consolidation}
-                    onPress={onOpenConsolidationSources}
+                    onPress={handleOpenSources}
                     withBottomBorder={false}
                 />
             ) : null}

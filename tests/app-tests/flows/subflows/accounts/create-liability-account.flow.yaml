@@ -59,10 +59,10 @@ appId: ${APP_ID}
 - tapOn:
       id: 'AccountForm.SubmitButton'
 
-- runFlow:
-      file: ../navigation/relaunch-app-and-wait.flow.yaml
-      env:
-          DESTINATION_ID: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
 
 - extendedWaitUntil:
       visible:

@@ -93,12 +93,13 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CategoryPickerBottomSheet.Input'
 - inputText: 'Primary'
-- extendedWaitUntil:
-    visible:
-      id: 'CategoryPickerBottomSheet.Card.E2E Category Primary'
-    timeout: 10000
+- tapOn: return
+- waitForAnimationToEnd
 - tapOn:
-    id: 'CategoryPickerBottomSheet.Card.E2E Category Primary'
+    point: '18%,75%'
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryPickerBottomSheet.Input'
 
 - assertNotVisible:
     id: 'CategoryCard.E2E Category Search'

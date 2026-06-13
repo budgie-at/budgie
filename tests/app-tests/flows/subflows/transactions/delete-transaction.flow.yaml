@@ -8,4 +8,5 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionActionsMenu.DeleteButton'
+- waitForAnimationToEnd
 - runFlow: confirm-delete-dialog.flow.yaml

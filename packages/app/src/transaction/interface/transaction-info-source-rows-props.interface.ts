@@ -3,7 +3,7 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 
 export interface TransactionInfoSourceRowsPropsInterface extends Pick<
     TransactionInfoActionHandlersInterface,
-    'onOpenConsolidationSources'
+    'onOpenConsolidationSources' | 'onOpenRefundSources'
 > {
     readonly transaction: TransactionWithRelationsEntityInterface;
 }

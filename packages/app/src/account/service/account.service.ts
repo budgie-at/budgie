@@ -220,7 +220,7 @@ class AccountService {
     }
 
     private async adjustBalanceTo(accountId: number, targetBalance: number, tx: DB): Promise<void> {
-        const result = await accountBalanceRepository.getByAccountId(accountId);
+        const result = await accountBalanceRepository.getByAccountId(accountId, tx);
         const currentBalanceMicro = result.at(0)?.balance ?? 0;
 
         const targetBalanceMicro = convertToMicroUnits(targetBalance);
@@ -232,8 +232,6 @@ class AccountService {
 
         const isIncome = isPositiveNumber(delta);
         const absDelta = Math.abs(delta);
-
-        await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro }, tx);
 
         const transaction = await transactionRepository.create(
             {
@@ -262,6 +260,8 @@ class AccountService {
             },
             tx
         );
+
+        await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro }, tx);
     }
 
     private async createLiabilityAccount(

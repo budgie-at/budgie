@@ -45,6 +45,7 @@ const hasFeeRow = (transaction: TransactionWithRelationsEntityInterface): boolea
 
 const getRowVisibility = (
     transaction: TransactionWithRelationsEntityInterface,
+    onOpenRefundSources: TransactionInfoPagePropsInterface['onOpenRefundSources'],
     onOpenConsolidationSources: TransactionInfoPagePropsInterface['onOpenConsolidationSources']
 ) => {
     const categoryLabel = getCategoryLabel(transaction);
@@ -55,7 +56,7 @@ const getRowVisibility = (
     const isConsolidated = isDefined(transaction.consolidationType);
     const hasCategoryRows = showCategoryRow || showMccRow || showNoteRow || showTagsRow;
     const hasMoneyRows = hasTransferConversionRow(transaction) || hasFeeRow(transaction);
-    const hasSourceRows = isConsolidated && isDefined(onOpenConsolidationSources);
+    const hasSourceRows = isConsolidated && (isDefined(onOpenConsolidationSources) || isDefined(onOpenRefundSources));
     const hasRowsAfterAccount = hasCategoryRows || hasMoneyRows || hasSourceRows;
     const hasRowsAfterCategory = hasMoneyRows || hasSourceRows;
 
@@ -83,7 +84,7 @@ export const TransactionInfoPage = (props: TransactionInfoPagePropsInterface) =>
     const { t } = useLingui();
     const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
     const matchingRuleIds = useTransactionInfoMatchingRules(transaction);
-    const rowVisibility = getRowVisibility(transaction, onOpenConsolidationSources);
+    const rowVisibility = getRowVisibility(transaction, onOpenRefundSources, onOpenConsolidationSources);
 
     const handleEditPress = () => {
         router.push(editHref);
@@ -139,7 +140,11 @@ export const TransactionInfoPage = (props: TransactionInfoPagePropsInterface) =>
                             hasFollowingRows={rowVisibility.hasRowsAfterCategory}
                         />
                         <TransactionInfoMoneyRows transaction={transaction} hasFollowingRows={rowVisibility.hasSourceRows} />
-                        <TransactionInfoSourceRows transaction={transaction} onOpenConsolidationSources={onOpenConsolidationSources} />
+                        <TransactionInfoSourceRows
+                            transaction={transaction}
+                            onOpenRefundSources={onOpenRefundSources}
+                            onOpenConsolidationSources={onOpenConsolidationSources}
+                        />
                     </View>
 
                     <TransactionInfoSimilarCard stats={stats} title={t`Similar transactions`} isLoading={isLoading} />

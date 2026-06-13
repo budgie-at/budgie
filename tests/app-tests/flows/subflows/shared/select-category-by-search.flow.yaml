@@ -9,9 +9,10 @@ appId: ${APP_ID}
     id: 'CategoryPickerBottomSheet.Input'
 - waitForAnimationToEnd
 - inputText: ${CATEGORY_NAME}
-- hideKeyboard
-- extendedWaitUntil:
-    visible:
-      text: '${CATEGORY_NAME}'
+- tapOn: return
+- waitForAnimationToEnd
 - tapOn:
-    point: '18%,48%'
+    point: '18%,75%'
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryPickerBottomSheet.Input'
