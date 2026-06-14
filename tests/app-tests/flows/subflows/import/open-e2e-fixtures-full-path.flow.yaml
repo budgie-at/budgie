@@ -21,7 +21,7 @@ appId: ${APP_ID}
 - runFlow:
       when:
           notVisible:
-              id: 'budgie \(E2E\), Container'
+              id: 'budgie \(E2E\)'
       commands:
           - runFlow:
                 when:
@@ -34,11 +34,11 @@ appId: ${APP_ID}
 - runFlow:
       when:
           notVisible:
-              id: 'budgie \(E2E\), Container'
+              id: 'budgie \(E2E\)'
       commands:
           - scrollUntilVisible:
                 element:
-                    id: 'budgie \(E2E\), Container'
+                    id: 'budgie \(E2E\)'
                 direction: DOWN
                 timeout: 10000
                 speed: 20
@@ -47,22 +47,22 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'budgie \(E2E\), Container'
+          id: 'budgie \(E2E\)'
       timeout: 3000
 
 - tapOn:
-      id: 'budgie \(E2E\), Container'
+      id: 'budgie \(E2E\)'
       retryTapIfNoChange: true
 
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
       visible:
-          id: 'E2EFixtures, Folder'
+          id: 'E2EFixtures'
       timeout: 3000
 
 - tapOn:
-      id: 'E2EFixtures, Folder'
+      id: 'E2EFixtures'
       retryTapIfNoChange: true
 
 - waitForAnimationToEnd

@@ -8,8 +8,10 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { PRESSED_SCALE } from '../../constant/pressed-scale.constant';
 
 export interface TransactionFieldIconRef {
@@ -80,7 +82,11 @@ export const TransactionFieldIcon = (props: Props) => {
                             <Text className="text-xs text-secondary-foreground uppercase" numberOfLines={1}>
                                 {label}
                             </Text>
-                            <Text className="text-xs text-primary font-medium max-w-[68px] min-h-[14px]" numberOfLines={1}>
+                            <Text
+                                className="text-xs text-primary font-medium max-w-[68px] min-h-[14px]"
+                                numberOfLines={1}
+                                {...testIDProps(testID, TestIDPartEnum.TITLE)}
+                            >
                                 {hasValue ? value : ''}
                             </Text>
                         </View>

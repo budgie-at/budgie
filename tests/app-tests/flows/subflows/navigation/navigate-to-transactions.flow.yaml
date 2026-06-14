@@ -2,11 +2,16 @@ appId: ${APP_ID}
 ---
 - runFlow:
       when:
-          notVisible:
-              id: 'TabBar.Transactions'
+          visible:
+              id: 'TransactionInfo.Page'
       commands:
-          - openLink: 'budgie://transactions'
+          - tapOn:
+                id: 'PageHeader.BackButton'
           - waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Transactions'
+      timeout: 15000
 - tapOn:
       id: 'TabBar.Transactions'
 - waitForAnimationToEnd

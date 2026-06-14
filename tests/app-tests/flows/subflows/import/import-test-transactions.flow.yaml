@@ -1,20 +1,27 @@
 appId: ${APP_ID}
+env:
+    EXPECTED_TRANSACTION_LABEL_ID: ${EXPECTED_TRANSACTION_LABEL_ID || ''}
 ---
-
 - openLink: 'budgie://settings/import?fileUri=${E2E_CSV_FIXTURES_URI}/${CSV_DISPLAY_NAME}.csv'
 
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'ImportScreen.PresetChip.Budgie'
+      timeout: 10000
+
+- tapOn:
       id: 'ImportScreen.PresetChip.Budgie'
-    timeout: 10000
 
 - tapOn:
-    id: 'ImportScreen.PresetChip.Budgie'
+      id: 'CsvPage.StartImportButton.Label'
 
-- tapOn:
-    id: 'CsvPage.StartImportButton'
+- runFlow: ../navigation/navigate-to-transactions.flow.yaml
 
-- extendedWaitUntil:
-    visible:
-      id: 'TabBar.Transactions'
-    timeout: 30000
+- runFlow:
+      when:
+          true: ${EXPECTED_TRANSACTION_LABEL_ID != ''}
+      commands:
+          - extendedWaitUntil:
+                visible:
+                    id: ${EXPECTED_TRANSACTION_LABEL_ID}
+                timeout: 30000

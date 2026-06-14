@@ -12,6 +12,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
@@ -53,6 +54,7 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
     const displayLabel = label ?? t`Account`;
     const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Select`}`;
     const isInactiveAccount = isDefined(account) && !account.isActive;
+    const selectedAccountTestID = isDefined(account?.title) ? SimpleQuickFormSelector.SelectedAccount(account.title) : null;
 
     return (
         <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)}>
@@ -70,11 +72,7 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
 
                     <View className="flex-1">
                         <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>
-                        <Text
-                            className="text-md font-medium text-primary"
-                            numberOfLines={1}
-                            {...(isDefined(account?.title) && { testID: SimpleQuickFormSelector.SelectedAccount(account.title) })}
-                        >
+                        <Text className="text-md font-medium text-primary" numberOfLines={1} {...testIDProps(selectedAccountTestID)}>
                             {account?.title ?? t`Select account`}
                         </Text>
                     </View>

@@ -133,7 +133,7 @@ appId: ${APP_ID}
     text: 'Close menu'
 
 - tapOn:
-    text: 'Edit transaction'
+    id: 'TransactionInfo.EditButton.Label'
 - extendedWaitUntil:
     visible:
       id: 'TransactionFieldIcon.Split'
@@ -195,7 +195,7 @@ appId: ${APP_ID}
       id: 'TransactionInfo.Page'
     timeout: 5000
 - tapOn:
-    text: 'Edit transaction'
+    id: 'TransactionInfo.EditButton.Label'
 - extendedWaitUntil:
     visible:
       id: 'TransactionFieldIcon.Split'
@@ -234,6 +234,10 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Split_Expense'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
@@ -250,6 +254,10 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Split_Expense'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
 
 - runFlow: subflows/transactions/delete-transaction.flow.yaml
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml

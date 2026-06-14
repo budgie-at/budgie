@@ -1,37 +1,15 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-    when:
-      notVisible: ${ACCOUNT_NAME}
-    commands:
-      - tapOn:
-          id: 'TransactionForm.AccountSelector'
-      - extendedWaitUntil:
-          visible:
-            id: 'AccountPickerBottomSheet.Input'
-      - runFlow:
-          when:
-            visible:
-              id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
-          commands:
-            - tapOn:
-                id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
-
-      - runFlow:
-          when:
-            visible:
-              id: 'AccountPickerBottomSheet.Input'
-          commands:
-            - tapOn:
-                id: 'AccountPickerBottomSheet.Input'
-            - inputText: ${ACCOUNT_NAME}
-            - extendedWaitUntil:
+      when:
+          notVisible: ${ACCOUNT_NAME}
+      commands:
+          - tapOn:
+                id: 'TransactionForm.AccountSelector'
+          - extendedWaitUntil:
                 visible:
-                  id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
-                timeout: 15000
-            - tapOn:
-                id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
-
-      - extendedWaitUntil:
-          notVisible:
-            id: 'AccountPickerBottomSheet.Input'
+                    id: 'AccountPickerBottomSheet.Input'
+          - runFlow:
+                file: ../shared/select-account-by-search.flow.yaml
+                env:
+                    ACCOUNT_NAME: ${ACCOUNT_NAME}

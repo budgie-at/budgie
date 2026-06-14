@@ -24,9 +24,12 @@ appId: ${APP_ID}
     id: 'TransactionForm.SubmitButton'
 - assertVisible: 'New Income'
 
-- tapOn: '1'
-- tapOn: '0'
-- tapOn: '0'
+- tapOn:
+    id: 'TransactionKeypad.Digit.1'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
 
 - runFlow:
     file: subflows/transactions/select-account.flow.yaml
@@ -75,7 +78,7 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionInfo.Row.Category'
 - tapOn:
-    text: 'Edit transaction'
+    id: 'TransactionInfo.EditButton.Label'
 
 - longPressOn:
     id: 'TransactionKeypad.Backspace'

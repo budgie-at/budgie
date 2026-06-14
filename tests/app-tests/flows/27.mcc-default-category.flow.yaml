@@ -22,6 +22,7 @@ appId: ${APP_ID}
       file: subflows/import/import-test-transactions.flow.yaml
       env:
           CSV_DISPLAY_NAME: e2e-mcc-default-category
+          EXPECTED_TRANSACTION_LABEL_ID: TransactionCard.Label.E2E_MCC_No_Code
 
 - tapOn:
       id: 'TabBar.Home'

@@ -171,7 +171,7 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.TagSearchInput'
 - inputText: 'Expense Tag'
-- pressKey: Enter
+- pressKey: enter
 - extendedWaitUntil:
       visible:
           id: 'TagPickerBottomSheet.Card.E2E Filter Expense Tag'

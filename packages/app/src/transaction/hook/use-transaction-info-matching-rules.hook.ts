@@ -3,6 +3,7 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 import { useGetEnabledRulesQuery } from '../../rule/query/use-get-enabled-rules.query';
 import { doesRuleMatchTransaction } from '../../rule/util/does-rule-match-transaction.util';
 import { convertTransactionToInput } from '../utils/convert-transaction-to-input.util';
+import { getTransactionDisplayTitle } from '../utils/get-transaction-display-title.util';
 
 import type { SuggestRuleDataInterface } from '../../rule/interface/suggest-rule-data.interface';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -18,7 +19,7 @@ export const useTransactionInfoMatchingRules = (transaction: TransactionWithRela
     }
 
     const suggestRuleData: SuggestRuleDataInterface = {
-        title: transaction.title,
+        title: getTransactionDisplayTitle(transaction),
         comment: transaction.comment,
         mccCode,
         categoryId,

@@ -11,12 +11,13 @@ env:
 
 - tapOn:
       id: 'ActionButton'
+      retryTapIfNoChange: true
 - extendedWaitUntil:
       visible:
-          id: 'RulesPage.CreateButton'
+          id: 'RulesPage.CreateButton.Label'
 - waitForAnimationToEnd
 - tapOn:
-      id: 'RulesPage.CreateButton'
+      id: 'RulesPage.CreateButton.Label'
 - extendedWaitUntil:
       visible: 'Create Rule'
 
@@ -24,7 +25,8 @@ env:
       id: 'RuleForm.Condition.0.ValueInput'
 - inputText: Toolsense
 
-- tapOn: return
+- tapOn: Done
+- waitForAnimationToEnd
 
 - tapOn:
       id: 'RuleForm.Action.0.CategorySelector'
@@ -34,7 +36,7 @@ env:
           CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-      id: 'RuleForm.Footer.SubmitButton'
+      id: 'RuleForm.Footer.SubmitButton.Label'
 - runFlow:
       when:
           visible: 'Apply to existing transactions?'
@@ -53,12 +55,13 @@ env:
 
 - tapOn:
       id: 'ActionButton'
+      retryTapIfNoChange: true
 - extendedWaitUntil:
       visible:
-          id: 'RulesPage.CreateButton'
+          id: 'RulesPage.CreateButton.Label'
 - waitForAnimationToEnd
 - tapOn:
-      id: 'RulesPage.CreateButton'
+      id: 'RulesPage.CreateButton.Label'
 - extendedWaitUntil:
       visible: 'Create Rule'
 
@@ -66,7 +69,8 @@ env:
       id: 'RuleForm.Condition.0.ValueInput'
 - inputText: Tango office loan service new salary entry
 
-- tapOn: return
+- tapOn: Done
+- waitForAnimationToEnd
 
 - tapOn:
       id: 'RuleForm.Action.0.CategorySelector'
@@ -76,7 +80,7 @@ env:
           CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-      id: 'RuleForm.Footer.SubmitButton'
+      id: 'RuleForm.Footer.SubmitButton.Label'
 - runFlow:
       when:
           visible: 'Apply to existing transactions?'
@@ -122,29 +126,10 @@ env:
 - eraseText
 - assertVisible:
       id: 'RulesPage.RuleCard.0'
-- tapOn: return
 
-- swipe:
-      from:
-          id: 'RulesPage.RuleCard.0'
-      direction: LEFT
-      duration: 300
+- runFlow: subflows/rules/delete-first-rule-via-form.flow.yaml
 
-- tapOn:
-      id: DeletableRow.DeleteButton
-
-- tapOn: Delete
-
-- swipe:
-      from:
-          id: 'RulesPage.RuleCard.0'
-      direction: LEFT
-      duration: 300
-
-- tapOn:
-      id: DeletableRow.DeleteButton
-
-- tapOn: Delete
+- runFlow: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
       id: 'RulesPage.EmptyState'

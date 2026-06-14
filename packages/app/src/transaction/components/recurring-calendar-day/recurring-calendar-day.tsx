@@ -6,6 +6,7 @@ import { CalendarDay as DatePickerCalendarDay } from 'react-native-ui-datepicker
 import { isDefined } from '@rnw-community/shared';
 
 import { cn } from '../../../@generic/utils/cn.util';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 
@@ -119,17 +120,17 @@ export const RecurringCalendarDay = (props: Props) => {
     const dayTextClassName = cn(textClassName, hasDots && '-mt-1');
     const isCurrentMonthToday = day.isToday && day.isCurrentMonth;
     const hasCurrentMonthDaySelector = day.isCurrentMonth && !day.isToday;
-    let testID = null;
+    let dayTestID = null;
 
     if (isCurrentMonthToday) {
-        testID = RecurringCalendarSelector.Today;
+        dayTestID = RecurringCalendarSelector.Today;
     } else if (hasCurrentMonthDaySelector) {
-        testID = RecurringCalendarSelector.CurrentMonthDay(dayOfMonth);
+        dayTestID = RecurringCalendarSelector.CurrentMonthDay(dayOfMonth);
     }
 
     return (
         <View className="items-center py-px">
-            <View className={circleClassName} accessible={isDefined(testID)} {...(isDefined(testID) && { testID })}>
+            <View className={circleClassName} accessible={isDefined(dayTestID)} {...testIDProps(dayTestID)}>
                 <Text className={dayTextClassName}>{day.text}</Text>
                 {hasDots ? (
                     <Animated.View

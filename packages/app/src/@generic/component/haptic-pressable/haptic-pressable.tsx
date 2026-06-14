@@ -52,6 +52,7 @@ export const HapticPressable = ({ onLongPress, onPress, onPressOut, disabled, cl
             onPress={handlePress}
             onPressOut={handlePressOut}
             disabled={disabled}
+            collapsable={false}
             {...rest}
         />
     );

@@ -10,4 +10,8 @@ appId: ${APP_ID}
     id: 'NoteInput.Input'
 - inputText: ${COMMENT}
 - tapOn:
-    id: 'NoteInput.SubmitButton'
+    id: 'NoteInput.SubmitButton.Label'
+- extendedWaitUntil:
+    notVisible:
+      id: 'NoteInput.Input'
+    timeout: 5000

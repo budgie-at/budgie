@@ -1,8 +1,6 @@
 appId: ${APP_ID}
 env:
     XLSX_ROW_ID_MATCH: ${XLSX_ROW_ID_MATCH}
-    FILE_PICKER_INITIAL_SCROLL_SHIFT: ${FILE_PICKER_INITIAL_SCROLL_SHIFT}
-    FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
 ---
 - extendedWaitUntil:
     visible:
@@ -17,8 +15,6 @@ env:
       file: select-file-from-app-provider.flow.yaml
       env:
           FILE_ROW_ID_MATCH: ${XLSX_ROW_ID_MATCH}
-          FILE_PICKER_INITIAL_SCROLL_SHIFT: ${FILE_PICKER_INITIAL_SCROLL_SHIFT}
-          FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
 
 - extendedWaitUntil:
       visible:

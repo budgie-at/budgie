@@ -41,10 +41,10 @@ appId: ${APP_ID}
       - waitForAnimationToEnd
       - extendedWaitUntil:
           visible:
-            id: 'ActionItem.AddAccount'
+            id: 'ActionItem.AddAccount.Label'
           timeout: 10000
       - tapOn:
-          id: 'ActionItem.AddAccount'
+          id: 'ActionItem.AddAccount.Label'
       - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:

@@ -239,7 +239,7 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'TransactionCard.Category.E2E_Crypto_Buy'
 - assertVisible:
-      id: 'TransactionCard.Account.E2E_Crypto_Vault'
+      id: 'TransactionCard.Account.E2E_Crypto_Vault.Label'
 
 - tapOn:
       id: 'PageHeader.BackButton'

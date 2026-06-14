@@ -4,13 +4,15 @@ import { ClassValue } from 'clsx';
 import { ComponentProps, ReactNode } from 'react';
 import { ActivityIndicator, Text } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
+import { TestIDPartEnum } from '../../enum/test-id-part.enum';
 import { ButtonSizeType } from '../../type/button-size.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
+import { testID as testIDProps } from '../../utils/test-id.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -52,15 +54,34 @@ const textVariants = cva<{
 });
 
 export const Button = (props: Props) => {
-    const { content, className, onPress, disabled, leftIcon, rightIcon, variant = 'ghost', size = 'md', isLoading, ...rest } = props;
+    const {
+        content,
+        className,
+        onPress,
+        disabled,
+        leftIcon,
+        rightIcon,
+        variant = 'ghost',
+        size = 'md',
+        isLoading,
+        testID,
+        accessibilityLabel,
+        accessibilityRole = 'button',
+        ...rest
+    } = props;
 
     const isDisabled = disabled || isLoading;
+    const resolvedAccessibilityLabel = accessibilityLabel ?? (isString(content) ? content : testID);
 
     return (
         <HapticPressable
             onPress={onPress}
             disabled={isDisabled}
             className={cn(buttonVariants({ disabled: isDisabled, size, variant }), className)}
+            testID={testID}
+            accessible
+            accessibilityLabel={resolvedAccessibilityLabel}
+            accessibilityRole={accessibilityRole}
             {...rest}
         >
             {isLoading ? (
@@ -69,7 +90,11 @@ export const Button = (props: Props) => {
                 <>
                     {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
 
-                    {isDefined(content) && <Text className={textVariants({ variant })}>{content}</Text>}
+                    {isDefined(content) && (
+                        <Text className={textVariants({ variant })} {...testIDProps(testID, TestIDPartEnum.LABEL)}>
+                            {content}
+                        </Text>
+                    )}
 
                     {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={rightIcon} /> : null}
                 </>

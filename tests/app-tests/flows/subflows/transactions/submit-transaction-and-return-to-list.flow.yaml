@@ -2,13 +2,16 @@ appId: ${APP_ID}
 ---
 - tapOn:
     id: 'TransactionForm.SubmitButton'
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionInfo.Page'
-    timeout: 5000
-- tapOn:
-    id: 'PageHeader.BackButton'
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: 'TransactionInfo.Page'
+    commands:
+      - tapOn:
+          id: 'PageHeader.BackButton'
+      - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'TransactionsPage.Container'
-    timeout: 5000
+    timeout: 15000

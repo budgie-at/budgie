@@ -522,7 +522,8 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Maestro against that bundle id. Local build/run procedure and cache/stale-binary traps: `tests/app-tests/E2E-RUNBOOK.md`.
 7. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
 8. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the E2E app before rerunning the test.
-9. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
+9. When an app component derives a child or state-specific `testID` from a base id, use `testID` from `packages/app/src/@generic/utils/test-id.util.ts` and spread it in JSX, for example `<Text {...testID(parentTestID, 'Label')} />`. If the component already has a `testID` prop in scope, alias the import as `testIDProps`. Do not hand-build strings like `` `${testID}.Label` `` inside components. Selector factory files that intentionally create canonical ids are excluded.
+10. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
 
 ### Maestro Robustness
 
@@ -567,13 +568,13 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 Add `eslint-disable-next-line` with justification for these specific cases:
 
-| Rule                            | When to Disable                                                                                                                                           | Justification Pattern                                                          |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `max-statements`                | Form orchestration components with multiple hooks/handlers                                                                                                | `-- Form orchestration component with multiple hooks and handlers`             |
-| `max-lines-per-function`        | Layout files, complex form components                                                                                                                     | `-- Layout/form component requires many lines`                                 |
-| `max-lines`                     | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together`   |
-| `@typescript-eslint/max-params` | Existing public APIs must preserve positional argument shape. For `@Log` callbacks, prefer rest-arg destructuring from rule 57 instead                   | `-- Existing public API intentionally keeps positional arguments`              |
-| `func-style`                    | Next.js `generateMetadata` requires `export async function`, not `const`                                                                                  | `-- Next.js generateMetadata must be a function declaration`                   |
+| Rule                            | When to Disable                                                                                                                                           | Justification Pattern                                                        |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `max-statements`                | Form orchestration components with multiple hooks/handlers                                                                                                | `-- Form orchestration component with multiple hooks and handlers`           |
+| `max-lines-per-function`        | Layout files, complex form components                                                                                                                     | `-- Layout/form component requires many lines`                               |
+| `max-lines`                     | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together` |
+| `@typescript-eslint/max-params` | Existing public APIs must preserve positional argument shape. For `@Log` callbacks, prefer rest-arg destructuring from rule 57 instead                    | `-- Existing public API intentionally keeps positional arguments`            |
+| `func-style`                    | Next.js `generateMetadata` requires `export async function`, not `const`                                                                                  | `-- Next.js generateMetadata must be a function declaration`                 |
 
 Example:
 

@@ -11,6 +11,7 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
+import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
@@ -57,7 +58,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
     const variant = TRANSACTION_COLOR[getTransactionType(transaction)];
     const primaryEntry = getPrimaryEntry(transaction);
     const secondaryEntry = getSecondaryTransferEntry(transaction);
-    const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
+    const title = getTransactionDisplayTitle(transaction);
     const amount = isDefined(primaryEntry) ? convertFromMicroUnits(primaryEntry.amount) : 0;
     const currencySymbol = primaryEntry?.account.instrument.symbol ?? '';
     const formattedAmount = getFormattedAmount(transaction, amount, currencySymbol, formatDigits);
