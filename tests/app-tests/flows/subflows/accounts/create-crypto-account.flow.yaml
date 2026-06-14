@@ -65,9 +65,12 @@ appId: ${APP_ID}
 - scrollUntilVisible:
       element:
           id: 'AccountForm.SubmitButton'
+          enabled: true
       direction: DOWN
 - tapOn:
       id: 'AccountForm.SubmitButton'
+      enabled: true
+      retryTapIfNoChange: true
 
 - extendedWaitUntil:
       visible:

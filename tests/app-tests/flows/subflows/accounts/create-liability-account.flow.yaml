@@ -54,10 +54,13 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.SubmitButton'
+          enabled: true
       timeout: 3000
 
 - tapOn:
       id: 'AccountForm.SubmitButton'
+      enabled: true
+      retryTapIfNoChange: true
 
 - extendedWaitUntil:
       visible:
