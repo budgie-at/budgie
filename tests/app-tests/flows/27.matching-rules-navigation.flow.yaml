@@ -88,10 +88,12 @@ env:
       timeout: 10000
 - tapOn:
       id: 'MatchingRules.Pill'
+      retryTapIfNoChange: true
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
       visible: 'Edit Rule'
+      timeout: 10000
 - assertVisible: 'Edit Rule'
 
 - tapOn:
@@ -180,6 +182,7 @@ env:
       timeout: 10000
 - tapOn:
       id: 'MatchingRules.Pill'
+      retryTapIfNoChange: true
 - waitForAnimationToEnd
 
 - extendedWaitUntil:

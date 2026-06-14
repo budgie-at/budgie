@@ -9,11 +9,26 @@ env:
           id: 'ImportScreen.PresetChip.Budgie'
       timeout: 10000
 
-- tapOn:
-      id: 'ImportScreen.PresetChip.Budgie'
+- tapOn: 'Budgie'
+
+- extendedWaitUntil:
+      visible: 'Preset applied. Adjust columns below if needed.'
+      timeout: 10000
+
+- extendedWaitUntil:
+      visible:
+          id: 'CsvPage.StartImportButton.Label'
+          text: 'Start Import'
+      timeout: 10000
 
 - tapOn:
       id: 'CsvPage.StartImportButton.Label'
+      retryTapIfNoChange: true
+
+- extendedWaitUntil:
+      notVisible:
+          id: 'ImportScreen.PresetChip.Budgie'
+      timeout: 60000
 
 - runFlow: ../navigation/navigate-to-transactions.flow.yaml
 
