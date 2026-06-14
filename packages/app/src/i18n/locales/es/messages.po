@@ -1019,6 +1019,7 @@ msgid "Default Account"
 msgstr "Cuenta predeterminada"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Delete"
