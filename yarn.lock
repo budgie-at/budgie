@@ -1084,7 +1084,6 @@ __metadata:
     drizzle-orm: "npm:^0.45.2"
     eas-build-cache-provider: "npm:^19.0.0"
     expo: "npm:^56.0.8"
-    expo-application: "npm:~56.0.3"
     expo-asset: "npm:~56.0.15"
     expo-background-task: "npm:~56.0.16"
     expo-blur: "npm:~56.0.3"

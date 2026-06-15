@@ -5,9 +5,16 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 import { TransactionCardTagChip } from '../transaction-card-tag-chip/transaction-card-tag-chip';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 
-import type { TransactionInfoTagsRowPropsInterface } from '../../interface/transaction-info-tags-row-props.interface';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-export const TransactionInfoTagsRow = ({ transaction, label, testID, withBottomBorder }: TransactionInfoTagsRowPropsInterface) => {
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly label: string;
+    readonly testID: string;
+    readonly withBottomBorder?: boolean;
+}
+
+export const TransactionInfoTagsRow = ({ transaction, label, testID, withBottomBorder }: Props) => {
     if (!isNotEmptyArray(transaction.transactionTags)) {
         return null;
     }

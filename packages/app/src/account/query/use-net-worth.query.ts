@@ -1,7 +1,6 @@
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseChangeKey } from '../../@generic/hook/use-database-change-key.hook';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { useSettingsContext } from '../../settings/context/settings.context';
 
@@ -11,10 +10,9 @@ import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
 export const useNetWorthQuery = () => {
     const { defaultInstrument } = useSettingsContext();
     const defaultInstrumentId = defaultInstrument.id;
-    const databaseChangeKey = useDatabaseChangeKey();
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
-    const queryDependencies = [defaultInstrumentId, accountBalancesUpdatedAt, exchangeRatesUpdatedAt, databaseChangeKey];
+    const queryDependencies = [defaultInstrumentId, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
     const query = accountBalanceRepository.getNetWorth(defaultInstrumentId);
     const { data } = useLiveQuery(query, queryDependencies);
 

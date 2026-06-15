@@ -12,7 +12,6 @@ import { Log } from '@budgie/logger';
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
-import { databaseChangeService } from '../../@generic/service/database-change.service';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -157,7 +156,6 @@ export abstract class BaseFileBankSyncService {
         };
 
         await syncWorkloadService.run(`${this.provider}-file-import`, importWork);
-        databaseChangeService.markChanged();
     }
 
     private async executeImportForSelectedAccountsInner(uri: string, selectedAccountIds: string[]): Promise<void> {

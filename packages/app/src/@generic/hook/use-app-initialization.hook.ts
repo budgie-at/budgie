@@ -10,17 +10,12 @@ import { historicalMarketDataLoaderService } from '../../market-data/service/his
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
-import { isE2eApp } from '../utils/is-e2e-app.util';
 import { scheduleIdleCallback } from '../utils/schedule-idle-callback.util';
 
 const SPLASH_HIDE_DELAY_MS = 200;
 const STARTUP_SERVICE_DELAY_MS = 1_000;
 
 const syncAppData = async (): Promise<void> => {
-    if (isE2eApp()) {
-        return;
-    }
-
     await exchangeRatesSyncService.sync().catch(emptyFn);
     await monobankSyncService.sync().catch(emptyFn);
     await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);

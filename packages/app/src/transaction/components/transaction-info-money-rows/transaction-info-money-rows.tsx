@@ -11,8 +11,12 @@ import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 
-import type { TransactionInfoMoneyRowsPropsInterface } from '../../interface/transaction-info-money-rows-props.interface';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly hasFollowingRows: boolean;
+}
 
 const getFeeDisplay = (transaction: TransactionWithRelationsEntityInterface, formatDigits: (value: number, symbol?: string) => string) => {
     const feeEntries = getTransactionFeeEntries(transaction.entries);
@@ -46,10 +50,14 @@ const getTransferExchangeRateLabel = (
         return null;
     }
 
+    if (sourceEntry.account.instrument.id === destinationEntry.account.instrument.id) {
+        return null;
+    }
+
     return `1 ${sourceEntry.account.instrument.code} = ${formatRate(transaction.exchangeRate)} ${destinationEntry.account.instrument.code}`;
 };
 
-export const TransactionInfoMoneyRows = ({ transaction, hasFollowingRows }: TransactionInfoMoneyRowsPropsInterface) => {
+export const TransactionInfoMoneyRows = ({ transaction, hasFollowingRows }: Props) => {
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);

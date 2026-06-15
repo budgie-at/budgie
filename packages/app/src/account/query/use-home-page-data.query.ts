@@ -4,7 +4,6 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { isDefined } from '@rnw-community/shared';
 
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseChangeKey } from '../../@generic/hook/use-database-change-key.hook';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { useSettingsContext } from '../../settings/context/settings.context';
@@ -81,10 +80,9 @@ const addNetWorthAssetTotals = (
 
 export const useHomePageDataQuery = () => {
     const { defaultInstrument } = useSettingsContext();
-    const databaseChangeKey = useDatabaseChangeKey();
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
-    const queryDependencies = [defaultInstrument.id, accountBalancesUpdatedAt, exchangeRatesUpdatedAt, databaseChangeKey];
+    const queryDependencies = [defaultInstrument.id, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
     const { data } = useLiveQuery(accountBalanceRepository.getHomeAccountRows(defaultInstrument.id), queryDependencies);
     const accounts = data.map(row => {
         const account: AccountWithBankSyncEntityInterface = {

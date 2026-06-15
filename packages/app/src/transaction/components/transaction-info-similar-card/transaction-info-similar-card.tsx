@@ -14,9 +14,15 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoSimilarBar } from '../transaction-info-similar-bar/transaction-info-similar-bar';
 
-import type { TransactionInfoSimilarCardPropsInterface } from '../../interface/transaction-info-similar-card-props.interface';
+import type { SimilarTransactionStatsInterface } from '@budgie/contracts';
 
 const BAR_MAX_HEIGHT = 92;
+
+interface Props {
+    readonly stats: SimilarTransactionStatsInterface | null;
+    readonly title: string;
+    readonly isLoading: boolean;
+}
 
 const getMonthLabelDate = (monthKey: string): Date => {
     const [year = '0', month = '1'] = monthKey.split('-');
@@ -24,7 +30,7 @@ const getMonthLabelDate = (monthKey: string): Date => {
     return new Date(Number(year), Number(month) - 1, 1);
 };
 
-export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: TransactionInfoSimilarCardPropsInterface) => {
+export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) => {
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -48,7 +54,12 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Transact
     });
 
     return (
-        <Card size="md" className={cn('gap-y-xl', opacityClassName)} testID={TransactionInfoPageSelector.SimilarCard}>
+        <Card
+            size="md"
+            variant="ghost"
+            className={cn('border-0 gap-y-xl', opacityClassName)}
+            testID={TransactionInfoPageSelector.SimilarCard}
+        >
             <View className="items-center gap-y-xs">
                 <Text className="text-md text-primary font-semibold text-center" numberOfLines={1}>
                     {title}
@@ -68,18 +79,22 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Transact
                 </View>
             </View>
 
-            <View className="flex-row items-end gap-x-sm h-[116px]">
+            <View className="flex-row items-end gap-x-sm h-[132px]">
                 {stats.months.map((month, index) => {
                     const height = isPositiveNumber(month.totalAmount)
                         ? Math.max(8, Math.round((month.totalAmount / maxAmount) * BAR_MAX_HEIGHT))
                         : 0;
                     const label = format(getMonthLabelDate(month.monthKey), 'MMM yy', { locale: enUS });
+                    const value = isPositiveNumber(month.totalAmount)
+                        ? formatDigits(convertFromMicroUnits(month.totalAmount), stats.currencySymbol)
+                        : null;
 
                     return (
                         <TransactionInfoSimilarBar
                             key={month.monthKey}
                             height={height}
                             label={label}
+                            value={value}
                             testID={TransactionInfoPageSelector.SimilarBar(index)}
                         />
                     );

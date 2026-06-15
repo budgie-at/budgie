@@ -7,8 +7,12 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 
-import type { TransactionInfoAccountRowsPropsInterface } from '../../interface/transaction-info-account-rows-props.interface';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly hasFollowingRows: boolean;
+}
 
 const getPrimaryAccount = (transaction: TransactionWithRelationsEntityInterface) => {
     if (transaction.type === TransactionTypeEnum.INCOME) {
@@ -26,7 +30,7 @@ const getAccountDescription = (account: ReturnType<typeof getPrimaryAccount>): s
     return `... ${account.iban.slice(-4)}`;
 };
 
-export const TransactionInfoAccountRows = ({ transaction, hasFollowingRows }: TransactionInfoAccountRowsPropsInterface) => {
+export const TransactionInfoAccountRows = ({ transaction, hasFollowingRows }: Props) => {
     const { t } = useLingui();
     const { formatDayAndFullMonthAndYear, formatWeekdayWithTime } = useFormatDate();
     const account = getPrimaryAccount(transaction);

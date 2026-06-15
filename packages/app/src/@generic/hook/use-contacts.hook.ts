@@ -5,8 +5,6 @@ import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { isE2eApp } from '../utils/is-e2e-app.util';
-
 export type Contact = Contacts.ExistingContact;
 
 type ContactsState = {
@@ -25,32 +23,9 @@ const initialState: ContactsState = {
 
 export const useContacts = () => {
     const { t } = useLingui();
-    const e2eContact: Contact = {
-        id: 'maestro-e2e-contact',
-        contactType: Contacts.ContactTypes.Person,
-        name: t`Maestro E2E Contact`,
-        firstName: t`Maestro E2E`,
-        lastName: t`Contact`,
-        phoneNumbers: [{ id: 'maestro-e2e-phone', label: 'mobile', number: '+15555550123' }],
-        emails: [{ id: 'maestro-e2e-email', label: 'email', email: 'maestro-e2e@example.com' }]
-    };
-    const [state, setState] = useState<ContactsState>(() => {
-        if (isE2eApp()) {
-            return {
-                ...initialState,
-                contacts: [e2eContact],
-                hasLoaded: true
-            };
-        }
-
-        return initialState;
-    });
+    const [state, setState] = useState<ContactsState>(initialState);
 
     useEffect(() => {
-        if (isE2eApp()) {
-            return;
-        }
-
         const loadContacts = async () => {
             setState(prev => ({ ...prev, loading: true, error: null }));
 

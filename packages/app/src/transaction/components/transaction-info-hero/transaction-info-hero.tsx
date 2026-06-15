@@ -18,9 +18,15 @@ import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
 
-import type { TransactionInfoHeroPropsInterface } from '../../interface/transaction-info-hero-props.interface';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-const getPrimaryEntry = (transaction: TransactionInfoHeroPropsInterface['transaction']) => {
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly matchingRuleIds: readonly number[];
+    readonly onOpenRefundSources?: () => void;
+}
+
+const getPrimaryEntry = (transaction: TransactionWithRelationsEntityInterface) => {
     if (transaction.type === TransactionTypeEnum.INCOME) {
         return transaction.entries.find(entry => entry.accountId === transaction.toAccountId) ?? transaction.entries.at(0);
     }
@@ -28,7 +34,7 @@ const getPrimaryEntry = (transaction: TransactionInfoHeroPropsInterface['transac
     return transaction.entries.find(entry => entry.accountId === transaction.fromAccountId) ?? transaction.entries.at(0);
 };
 
-const getSecondaryTransferEntry = (transaction: TransactionInfoHeroPropsInterface['transaction']) =>
+const getSecondaryTransferEntry = (transaction: TransactionWithRelationsEntityInterface) =>
     transaction.type === TransactionTypeEnum.TRANSFER
         ? transaction.entries.find(entry => entry.accountId === transaction.toAccountId)
         : null;
@@ -46,13 +52,13 @@ const getAmountPrefix = (type: TransactionTypeEnum): string => {
 };
 
 const getFormattedAmount = (
-    transaction: TransactionInfoHeroPropsInterface['transaction'],
+    transaction: TransactionWithRelationsEntityInterface,
     amount: number,
     currencySymbol: string,
     formatDigits: (value: number, symbol?: string) => string
 ): string => `${getAmountPrefix(transaction.type)}${formatDigits(amount, currencySymbol)}`;
 
-export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources }: TransactionInfoHeroPropsInterface) => {
+export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const variant = TRANSACTION_COLOR[getTransactionType(transaction)];

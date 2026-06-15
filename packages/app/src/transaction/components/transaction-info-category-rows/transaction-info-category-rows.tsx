@@ -8,8 +8,13 @@ import { TransactionInfoPageSelector } from '../transaction-info-page/transactio
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 import { TransactionInfoTagsRow } from '../transaction-info-tags-row/transaction-info-tags-row';
 
-import type { TransactionInfoCategoryRowsPropsInterface } from '../../interface/transaction-info-category-rows-props.interface';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly categoryLabel: string | null;
+    readonly hasFollowingRows: boolean;
+}
 
 const getMccLabel = (transaction: TransactionWithRelationsEntityInterface): string | null => {
     const mccCategory = getTransactionCategoryEntries(transaction.entries).at(0)?.mccCategory;
@@ -21,11 +26,7 @@ const getMccLabel = (transaction: TransactionWithRelationsEntityInterface): stri
     return `${mccCategory.mcc} · ${mccCategory.shortDescription}`;
 };
 
-export const TransactionInfoCategoryRows = ({
-    transaction,
-    categoryLabel,
-    hasFollowingRows
-}: TransactionInfoCategoryRowsPropsInterface) => {
+export const TransactionInfoCategoryRows = ({ transaction, categoryLabel, hasFollowingRows }: Props) => {
     const { t } = useLingui();
     const mccLabel = getMccLabel(transaction);
     const showCategory = isNotEmptyString(categoryLabel) && transaction.type !== TransactionTypeEnum.TRANSFER;

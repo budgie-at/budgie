@@ -10,6 +10,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-close.hook';
+import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { TransactionActionsMenuContext } from '../../context/transaction-actions-menu.context';
 
 import { TransactionActionsMenuSelector } from './transaction-actions-menu.selector';
@@ -57,9 +58,22 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
             return;
         }
 
-        closeMenu(() => {
-            void onDelete();
-        });
+        closeMenu(
+            () =>
+                void confirmAlert({
+                    title: t`Are you sure?`,
+                    message: t`This action cannot be undone.`,
+                    confirmText: t`Delete`,
+                    cancelText: t`Cancel`,
+                    isDestructive: true
+                }).then(confirmed => {
+                    if (confirmed) {
+                        void onDelete();
+                    }
+
+                    return null;
+                })
+        );
     };
 
     const showAction = !isConsolidated || isDefined(onRevert);

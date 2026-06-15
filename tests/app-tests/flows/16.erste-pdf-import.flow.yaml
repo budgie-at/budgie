@@ -7,12 +7,23 @@ appId: ${APP_ID}
 
 - evalScript: ${output.phase = 'clear-state-import'}
 
-- openLink: 'budgie://settings/import-bank-file?source=ERSTE&fileUri=${E2E_DB_FIXTURES_URI}/erste-statement-008.pdf&runId=${E2E_RUN_TOKEN}-first'
+- runFlow: subflows/accounts/open-new-account.flow.yaml
 
-- extendedWaitUntil:
-      visible:
-          id: 'HomePage.TotalBalance'
-      timeout: 60000
+- scrollUntilVisible:
+      element:
+          text: '.*Erste Bank.*'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 50
+      speed: 20
+
+- tapOn:
+      text: '.*Erste Bank.*'
+
+- runFlow:
+      file: subflows/import/import-erste-pdf-from-picker.flow.yaml
+      env:
+          PDF_ROW_ID_MATCH: 'erste-statement-008, pdf'
 
 - scrollUntilVisible:
       element:
@@ -46,12 +57,13 @@ appId: ${APP_ID}
 
 - evalScript: ${output.phase = 'existing-account-quick-import'}
 
-- openLink: 'budgie://settings/import-bank-file?source=ERSTE&fileUri=${E2E_DB_FIXTURES_URI}/erste-statement-009.pdf&runId=${E2E_RUN_TOKEN}-second'
+- longPressOn:
+      id: 'AccountCard.Erste EUR'
 
-- extendedWaitUntil:
-      visible:
-          id: 'HomePage.TotalBalance'
-      timeout: 60000
+- runFlow:
+      file: subflows/import/select-file-from-app-provider.flow.yaml
+      env:
+          FILE_ROW_ID_MATCH: 'erste-statement-009, pdf'
 
 - extendedWaitUntil:
       visible:
@@ -127,12 +139,13 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'AccountCard.Balance.Erste_EUR._3_412'
 
-- openLink: 'budgie://settings/import-bank-file?source=ERSTE&fileUri=${E2E_DB_FIXTURES_URI}/erste-statement-009.pdf&runId=${E2E_RUN_TOKEN}-third'
+- longPressOn:
+      id: 'AccountCard.Erste EUR'
 
-- extendedWaitUntil:
-      visible:
-          id: 'HomePage.TotalBalance'
-      timeout: 60000
+- runFlow:
+      file: subflows/import/select-file-from-app-provider.flow.yaml
+      env:
+          FILE_ROW_ID_MATCH: 'erste-statement-009, pdf'
 
 - extendedWaitUntil:
       visible:

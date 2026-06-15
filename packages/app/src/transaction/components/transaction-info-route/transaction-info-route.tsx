@@ -7,9 +7,14 @@ import { IdParamInterface } from '../../../@generic/interface/id-param.interface
 import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-id.query';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
 
-import type { TransactionInfoRoutePropsInterface } from '../../interface/transaction-info-route-props.interface';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type { ReactNode } from 'react';
 
-export const TransactionInfoRoute = ({ children }: TransactionInfoRoutePropsInterface) => {
+interface Props {
+    readonly children: (transaction: TransactionWithRelationsEntityInterface, transactionId: number) => ReactNode;
+}
+
+export const TransactionInfoRoute = ({ children }: Props) => {
     const { id } = useLocalSearchParams<IdParamInterface>();
     const parsedTransactionId = Number(id);
     const transactionId = isPositiveNumber(parsedTransactionId) ? parsedTransactionId : null;

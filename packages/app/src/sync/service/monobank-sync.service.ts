@@ -9,7 +9,6 @@ import * as TaskManager from 'expo-task-manager';
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
-import { databaseChangeService } from '../../@generic/service/database-change.service';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -58,10 +57,7 @@ class AppMonobankSyncService {
         try {
             await this.loadMccCategories();
 
-            const result = await this.executeSyncLoop();
-            databaseChangeService.markChanged();
-
-            return result;
+            return await this.executeSyncLoop();
         } finally {
             logger.log('sync:done', { durationMs: Date.now() - startedAt });
             this.isRunning = false;

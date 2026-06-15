@@ -7,18 +7,20 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 
-import type { TransactionInfoRowPropsInterface } from '../../interface/transaction-info-row-props.interface';
+import type { ReactNode } from 'react';
 
-export const TransactionInfoRow = ({
-    icon,
-    label,
-    value,
-    description,
-    children,
-    testID,
-    onPress,
-    withBottomBorder = true
-}: TransactionInfoRowPropsInterface) => {
+interface Props {
+    readonly icon: UserIconNameEnum;
+    readonly label: string;
+    readonly value?: string | null;
+    readonly description?: string | null;
+    readonly children?: ReactNode;
+    readonly testID: string;
+    readonly onPress?: () => void;
+    readonly withBottomBorder?: boolean;
+}
+
+export const TransactionInfoRow = ({ icon, label, value, description, children, testID, onPress, withBottomBorder = true }: Props) => {
     const Component = isDefined(onPress) ? HapticPressable : View;
     const hasValue = isNotEmptyString(value);
     const hasChildren = isDefined(children);

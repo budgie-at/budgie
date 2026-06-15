@@ -8,7 +8,16 @@ import { TransactionActionsMenu } from '../transaction-actions-menu/transaction-
 import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
 import { TransactionConvertMenuItem } from '../transaction-convert-menu-item/transaction-convert-menu-item';
 
-import type { TransactionInfoPageHeaderPropsInterface } from '../../interface/transaction-info-page-header-props.interface';
+import type { EmptyFn } from '@rnw-community/shared';
+
+interface Props {
+    readonly isConsolidated: boolean;
+    readonly onGoBack: EmptyFn;
+    readonly onDelete: () => Promise<void> | void;
+    readonly onRevert?: () => void;
+    readonly onConvertToTransfer?: () => void;
+    readonly onConvertToRefund?: () => void;
+}
 
 export const TransactionInfoPageHeader = ({
     isConsolidated,
@@ -17,7 +26,7 @@ export const TransactionInfoPageHeader = ({
     onRevert,
     onConvertToRefund,
     onConvertToTransfer
-}: TransactionInfoPageHeaderPropsInterface) => {
+}: Props) => {
     const { t } = useLingui();
 
     return (

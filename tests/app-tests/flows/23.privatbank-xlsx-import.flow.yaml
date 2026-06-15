@@ -7,7 +7,23 @@ appId: ${APP_ID}
 
 - evalScript: ${output.phase = 'clear-state-import'}
 
-- openLink: 'budgie://settings/import-bank-file?source=PRIVATBANK&fileUri=${E2E_DB_FIXTURES_URI}/privatbank-statement-001.xlsx&runId=privatbank-first'
+- runFlow: subflows/accounts/open-new-account.flow.yaml
+
+- scrollUntilVisible:
+      element:
+          text: '.*Privatbank.*'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 50
+      speed: 20
+
+- tapOn:
+      text: '.*Privatbank.*'
+
+- runFlow:
+      file: subflows/import/import-privatbank-xlsx-from-picker.flow.yaml
+      env:
+          XLSX_ROW_ID_MATCH: 'privatbank-statement-001, xlsx'
 
 - scrollUntilVisible:
       element:
@@ -85,7 +101,14 @@ appId: ${APP_ID}
           id: 'AccountCard.Privatbank •1234'
       timeout: 10000
 
-- openLink: 'budgie://settings/import-bank-file?source=PRIVATBANK&fileUri=${E2E_DB_FIXTURES_URI}/privatbank-statement-002.xlsx&runId=privatbank-second'
+- longPressOn:
+      id: 'AccountCard.Privatbank •1234'
+
+- runFlow:
+      file: subflows/import/select-file-from-app-provider.flow.yaml
+      env:
+          FILE_ROW_ID_MATCH: 'privatbank-statement-002, xlsx'
+          FILE_PICKER_INITIAL_SCROLL_SHIFT: 'DOWN'
 
 - extendedWaitUntil:
       visible:
@@ -156,7 +179,14 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'AccountCard.Balance.Privatbank_1234.547'
 
-- openLink: 'budgie://settings/import-bank-file?source=PRIVATBANK&fileUri=${E2E_DB_FIXTURES_URI}/privatbank-statement-002.xlsx&runId=privatbank-third'
+- longPressOn:
+      id: 'AccountCard.Privatbank •1234'
+
+- runFlow:
+      file: subflows/import/select-file-from-app-provider.flow.yaml
+      env:
+          FILE_ROW_ID_MATCH: 'privatbank-statement-002, xlsx'
+          FILE_PICKER_INITIAL_SCROLL_SHIFT: 'DOWN'
 
 - extendedWaitUntil:
       visible:

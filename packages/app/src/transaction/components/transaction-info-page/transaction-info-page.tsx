@@ -23,8 +23,19 @@ import { TransactionInfoSourceRows } from '../transaction-info-source-rows/trans
 
 import { TransactionInfoPageSelector } from './transaction-info-page.selector';
 
-import type { TransactionInfoPagePropsInterface } from '../../interface/transaction-info-page-props.interface';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type { Href } from 'expo-router';
+
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly editHref: Href;
+    readonly onDelete: () => Promise<void> | void;
+    readonly onRevert?: () => void;
+    readonly onConvertToTransfer?: () => void;
+    readonly onConvertToRefund?: () => void;
+    readonly onOpenRefundSources?: () => void;
+    readonly onOpenConsolidationSources?: () => void;
+}
 
 const getCategoryLabel = (transaction: TransactionWithRelationsEntityInterface): string | null =>
     getTransactionCategoryEntries(transaction.entries).at(0)?.category?.title ?? null;
@@ -33,7 +44,12 @@ const hasTransferConversionRow = (transaction: TransactionWithRelationsEntityInt
     const sourceEntry = transaction.entries.find(entry => entry.accountId === transaction.fromAccountId);
     const destinationEntry = transaction.entries.find(entry => entry.accountId === transaction.toAccountId);
 
-    return transaction.type === TransactionTypeEnum.TRANSFER && isDefined(sourceEntry) && isDefined(destinationEntry);
+    return (
+        transaction.type === TransactionTypeEnum.TRANSFER &&
+        isDefined(sourceEntry) &&
+        isDefined(destinationEntry) &&
+        sourceEntry.account.instrument.id !== destinationEntry.account.instrument.id
+    );
 };
 
 const hasFeeRow = (transaction: TransactionWithRelationsEntityInterface): boolean => {
@@ -45,8 +61,8 @@ const hasFeeRow = (transaction: TransactionWithRelationsEntityInterface): boolea
 
 const getRowVisibility = (
     transaction: TransactionWithRelationsEntityInterface,
-    onOpenRefundSources: TransactionInfoPagePropsInterface['onOpenRefundSources'],
-    onOpenConsolidationSources: TransactionInfoPagePropsInterface['onOpenConsolidationSources']
+    onOpenRefundSources: Props['onOpenRefundSources'],
+    onOpenConsolidationSources: Props['onOpenConsolidationSources']
 ) => {
     const categoryLabel = getCategoryLabel(transaction);
     const showCategoryRow = isNotEmptyString(categoryLabel) && transaction.type !== TransactionTypeEnum.TRANSFER;
@@ -69,7 +85,7 @@ const getRowVisibility = (
     };
 };
 
-export const TransactionInfoPage = (props: TransactionInfoPagePropsInterface) => {
+export const TransactionInfoPage = (props: Props) => {
     const {
         transaction,
         editHref,
