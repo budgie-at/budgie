@@ -1,16 +1,13 @@
 #!/usr/bin/env node
 
-import { execFileSync } from 'node:child_process';
-import { mkdirSync } from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const { execFileSync } = require('node:child_process');
+const { mkdirSync } = require('node:fs');
+const path = require('node:path');
 const fixturesDirectoryPath = path.resolve(__dirname, '../fixtures');
 const outputDirectoryPath = process.argv[2];
 
 if (!outputDirectoryPath) {
-    console.error('Usage: prepare-date-sensitive-fixtures.mjs <output-directory>');
+    console.error('Usage: prepare-date-sensitive-fixtures.js <output-directory>');
     process.exit(1);
 }
 

@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite';
-import { BudgetService } from '@budgie/budget';
+import { BudgetCategoryLimitRepository } from '@budgie/budget/query/budget-category-limit-repository';
+import { BudgetRepository } from '@budgie/budget/query/budget-repository';
 import {
     AtmCashWithdrawalRepository,
     ExistingTransferRepository,
@@ -13,9 +14,6 @@ import {
     AccountBalanceRepository,
     AccountRepository,
     BankSyncRepository,
-    BudgetCategoryLimitRepository,
-    BudgetRepository,
-    transactionAsync,
     CategoryRepository,
     CommentEmbeddingRepository,
     ExchangeRateRepository,
@@ -149,9 +147,3 @@ export const ibanBridgeTransferRepository = new IbanBridgeTransferRepository(db)
 export const refundPairRepository = new RefundPairRepository(db);
 export const budgetRepository = new BudgetRepository(db);
 export const budgetCategoryLimitRepository = new BudgetCategoryLimitRepository(db);
-export const budgetService = new BudgetService({
-    database: db,
-    budgetRepository,
-    budgetCategoryLimitRepository,
-    runTransaction: transactionAsync
-});

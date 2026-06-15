@@ -11,7 +11,19 @@
             "react-native": "./dist/esm/index.js",
             "default": "./dist/esm/index.js"
         },
-        "./package.json": "./package.json"
+        "./package.json": "./package.json",
+        "./query/budget-repository": {
+            "types": "./dist/esm/query/repository/budget.repository.d.ts",
+            "import": "./dist/esm/query/repository/budget.repository.js",
+            "react-native": "./dist/esm/query/repository/budget.repository.js",
+            "default": "./dist/esm/query/repository/budget.repository.js"
+        },
+        "./query/budget-category-limit-repository": {
+            "types": "./dist/esm/query/repository/budget-category-limit.repository.d.ts",
+            "import": "./dist/esm/query/repository/budget-category-limit.repository.js",
+            "react-native": "./dist/esm/query/repository/budget-category-limit.repository.js",
+            "default": "./dist/esm/query/repository/budget-category-limit.repository.js"
+        }
     },
     "main": "./dist/esm/index.js",
     "react-native": "./dist/esm/index.js",
@@ -29,6 +41,6 @@
         "@budgie/logger": "workspace:*",
         "@rnw-community/shared": "^2.2.0",
         "date-fns": "^4.3.0",
-        "zod": "4.1.12"
+        "drizzle-orm": "^0.45.2"
     }
 }

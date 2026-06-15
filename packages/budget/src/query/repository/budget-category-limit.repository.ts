@@ -1,13 +1,14 @@
+import { BudgetCategoryLimitEntityTable } from '@budgie/contracts';
 import { and, eq, inArray, isNull } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { BudgetCategoryLimitEntityTable } from '../table/budget-category-limit-entity.table';
-
-import type { DB } from '../../@generic/type/db.type';
-import type { BudgetCategoryLimitCreateEntityInterface } from '../entity/budget-category-limit-create-entity.interface';
-import type { BudgetCategoryLimitEntityInterface } from '../entity/budget-category-limit-entity.interface';
-import type { BudgetCategoryLimitBulkUpdateInputInterface } from '../input/budget-category-limit-bulk-update-input.interface';
+import type {
+    BudgetCategoryLimitBulkUpdateInputInterface,
+    BudgetCategoryLimitCreateEntityInterface,
+    BudgetCategoryLimitEntityInterface,
+    DB
+} from '@budgie/contracts';
 
 export class BudgetCategoryLimitRepository {
     constructor(private db: DB) {}

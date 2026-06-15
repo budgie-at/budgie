@@ -2116,7 +2116,7 @@ msgid "Original transaction"
 msgstr "Transaction d’origine"
 
 #: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
-#: src/budget/components/budget-other-limit-compact-row/budget-other-limit-compact-row.tsx
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Other"
 msgstr "Autre"

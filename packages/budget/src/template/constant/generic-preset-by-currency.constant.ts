@@ -1,6 +1,6 @@
-export const GENERIC_PRESET_TOTAL_DEFAULT = 1500;
+export const GENERIC_INITIAL_PRESET_TOTAL_DEFAULT = 1500;
 
-export const GENERIC_PRESET_TOTAL_BY_CURRENCY: Record<string, number> = {
+export const GENERIC_INITIAL_PRESET_TOTAL_BY_CURRENCY: Record<string, number> = {
     UAH: 40000,
     USD: 1500,
     EUR: 1500,

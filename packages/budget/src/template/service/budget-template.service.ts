@@ -6,7 +6,10 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@
 import { budgetPeriodService } from '../../period/service/budget-period.service';
 import { budgetSpentService } from '../../spent/service/budget-spent.service';
 import { GENERIC_BUDGET_TEMPLATE_CATEGORIES } from '../constant/generic-budget-template.constant';
-import { GENERIC_PRESET_TOTAL_BY_CURRENCY, GENERIC_PRESET_TOTAL_DEFAULT } from '../constant/generic-preset-by-currency.constant';
+import {
+    GENERIC_INITIAL_PRESET_TOTAL_BY_CURRENCY,
+    GENERIC_INITIAL_PRESET_TOTAL_DEFAULT
+} from '../constant/generic-preset-by-currency.constant';
 
 import type { BudgetCategoryLimitInputInterface } from '../interface/budget-category-limit-input.interface';
 import type { BudgetCategoryMonthlySpentInterface } from '../interface/budget-category-monthly-spent.interface';
@@ -70,7 +73,7 @@ class BudgetTemplateService {
         categories: readonly BudgetGenericCategoryRowInterface[],
         currencyCode: string
     ): BudgetTemplateDraftInterface {
-        const total = GENERIC_PRESET_TOTAL_BY_CURRENCY[currencyCode] ?? GENERIC_PRESET_TOTAL_DEFAULT;
+        const total = GENERIC_INITIAL_PRESET_TOTAL_BY_CURRENCY[currencyCode] ?? GENERIC_INITIAL_PRESET_TOTAL_DEFAULT;
         const categoryLimits = this.resolveGenericCategoryLimits(categories, total);
         const overallLimit = isNotEmptyArray(categoryLimits) ? categoryLimits.reduce((sum, entry) => sum + entry.limitAmount, 0) : total;
 
@@ -120,7 +123,12 @@ class BudgetTemplateService {
     ): number {
         const windowStartMax = budgetPeriodService.computeTrailingMonthsWindow(now, config.maxWindowMonths).start;
 
-        return budgetPeriodService.resolveSuggestedWindowMonths(entries, windowStartMax, config.maxWindowMonths, config.minEntriesPerMonth);
+        return budgetPeriodService.resolveSuggestedWindowMonths(
+            entries.map(entry => entry.operatedAt),
+            windowStartMax,
+            config.maxWindowMonths,
+            config.minEntriesPerMonth
+        );
     }
 
     private hasMinimumHistory(entries: readonly BudgetSuggestedSpentEntryInterface[], now: Date, minWindowMonths: number): boolean {

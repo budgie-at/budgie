@@ -110,7 +110,6 @@ jobs:
         working-directory: packages/app
         env:
           APP_VARIANT: development
-          USE_CCACHE: "1"
         run: |
           yarn expo export --output-dir dist --dump-assetmap --platform ios --platform android
           eas update --skip-bundler --input-dir dist --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
@@ -123,12 +122,6 @@ jobs:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
       IOS_DERIVED_DATA: ${{ github.workspace }}/.ci-cache/DerivedData/budgie-e2e
-      USE_CCACHE: "1"
-      CCACHE_DIR: ${{ github.workspace }}/.ci-cache/ccache
-      CCACHE_BASEDIR: ${{ github.workspace }}
-      CCACHE_COMPRESS: "true"
-      CCACHE_MAXSIZE: 2G
-      CCACHE_NOHASHDIR: "true"
     steps:
       - uses: actions/checkout@v5
 
@@ -140,8 +133,6 @@ jobs:
           ls -1 /Applications | grep -i Xcode || true
           which pod || true
           pod --version || true
-          which ccache || true
-          ccache --version || true
           xcode-select -p || true
           xcodebuild -version || true
 
@@ -191,28 +182,6 @@ jobs:
             pods-${{ runner.os }}-xcode26_4_1-
             pods-${{ runner.os }}-
 
-      - name: Setup ccache
-        run: |
-          mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
-          if ! command -v ccache >/dev/null && command -v brew >/dev/null; then
-            brew install ccache
-          fi
-          if command -v ccache >/dev/null; then
-            ccache --version
-            ccache --zero-stats || true
-          else
-            echo "USE_CCACHE=0" >> "$GITHUB_ENV"
-            echo "::warning::ccache is not installed on this runner; continuing without compiler cache."
-          fi
-
-      - name: Restore ccache
-        uses: actions/cache/restore@v5
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-          restore-keys: |
-            ccache-${{ runner.os }}-xcode26_4_1-e2e-
-            ccache-${{ runner.os }}-
 
       - name: Expo Prebuild
         working-directory: packages/app
@@ -295,12 +264,6 @@ jobs:
             ~/.cocoapods
           key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
-      - name: Save ccache
-        if: always()
-        uses: actions/cache/save@v5
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save Xcode DerivedData cache
         if: always()

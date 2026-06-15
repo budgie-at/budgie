@@ -3,10 +3,6 @@ import { addMonths, endOfMonth, getMonth, getYear, lastDayOfMonth, setDate, star
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import type { BudgetDatedEntryInterface } from '../interface/budget-dated-entry.interface';
-import type { BudgetPeriodWindowInterface } from '../interface/budget-period-window.interface';
-import type { BudgetTrailingMonthsWindowInterface } from '../interface/budget-trailing-months-window.interface';
-
 class BudgetPeriodService {
     @Log(
         (periodStartDay, useLastDayOfMonth, now) =>
@@ -16,7 +12,11 @@ class BudgetPeriodService {
         (error, periodStartDay, useLastDayOfMonth, now) =>
             `throw periodStartDay=${periodStartDay} useLastDayOfMonth=${useLastDayOfMonth} now=${now.toISOString()} error=${getErrorMessage(error)}`
     )
-    computePeriodWindow(periodStartDay: number, useLastDayOfMonth: boolean, now: Date): BudgetPeriodWindowInterface {
+    computePeriodWindow(
+        periodStartDay: number,
+        useLastDayOfMonth: boolean,
+        now: Date
+    ): { readonly periodStart: Date; readonly nextPeriodStart: Date } {
         if (useLastDayOfMonth) {
             return this.computeEndOfMonthWindow(now);
         }
@@ -39,7 +39,7 @@ class BudgetPeriodService {
             `done now=${now.toISOString()} months=${months} start=${result.start.toISOString()} end=${result.end.toISOString()}`,
         (error, now, months) => `throw now=${now.toISOString()} months=${months} error=${getErrorMessage(error)}`
     )
-    computeTrailingMonthsWindow(now: Date, months: number): BudgetTrailingMonthsWindowInterface {
+    computeTrailingMonthsWindow(now: Date, months: number): { readonly start: Date; readonly end: Date } {
         return {
             start: startOfMonth(subMonths(now, months)),
             end: startOfMonth(now)
@@ -47,20 +47,20 @@ class BudgetPeriodService {
     }
 
     @Log(
-        (entries, windowStart, maxMonths, minEntriesPerMonth) =>
-            `enter entries=${entries.map(entry => entry.operatedAt.toISOString()).join(',')} windowStart=${windowStart.toISOString()} maxMonths=${maxMonths} minEntriesPerMonth=${minEntriesPerMonth}`,
-        (result, ...[entries, windowStart, maxMonths, minEntriesPerMonth]) =>
-            `done entries=${entries.map(entry => entry.operatedAt.toISOString()).join(',')} windowStart=${windowStart.toISOString()} maxMonths=${maxMonths} minEntriesPerMonth=${minEntriesPerMonth} months=${result}`,
-        (error, ...[entries, windowStart, maxMonths, minEntriesPerMonth]) =>
-            `throw entries=${entries.map(entry => entry.operatedAt.toISOString()).join(',')} windowStart=${windowStart.toISOString()} maxMonths=${maxMonths} minEntriesPerMonth=${minEntriesPerMonth} error=${getErrorMessage(error)}`
+        (operatedAtDates, windowStart, maxMonths, minEntriesPerMonth) =>
+            `enter operatedAtDates=${operatedAtDates.map(date => date.toISOString()).join(',')} windowStart=${windowStart.toISOString()} maxMonths=${maxMonths} minEntriesPerMonth=${minEntriesPerMonth}`,
+        (result, ...[operatedAtDates, windowStart, maxMonths, minEntriesPerMonth]) =>
+            `done operatedAtDates=${operatedAtDates.map(date => date.toISOString()).join(',')} windowStart=${windowStart.toISOString()} maxMonths=${maxMonths} minEntriesPerMonth=${minEntriesPerMonth} months=${result}`,
+        (error, ...[operatedAtDates, windowStart, maxMonths, minEntriesPerMonth]) =>
+            `throw operatedAtDates=${operatedAtDates.map(date => date.toISOString()).join(',')} windowStart=${windowStart.toISOString()} maxMonths=${maxMonths} minEntriesPerMonth=${minEntriesPerMonth} error=${getErrorMessage(error)}`
     )
     resolveSuggestedWindowMonths(
-        entries: readonly BudgetDatedEntryInterface[],
+        operatedAtDates: readonly Date[],
         windowStart: Date,
         maxMonths: number,
         minEntriesPerMonth: number
     ): number {
-        const countsByMonth = this.buildCountsByMonth(entries);
+        const countsByMonth = this.buildCountsByMonth(operatedAtDates);
         let months = 0;
 
         for (let offset = maxMonths - 1; offset >= 0; offset -= 1) {
@@ -78,7 +78,7 @@ class BudgetPeriodService {
         return months;
     }
 
-    private computeEndOfMonthWindow(now: Date): BudgetPeriodWindowInterface {
+    private computeEndOfMonthWindow(now: Date): { readonly periodStart: Date; readonly nextPeriodStart: Date } {
         const currentMonthEnd = startOfDay(endOfMonth(now));
 
         if (now.getTime() >= currentMonthEnd.getTime()) {
@@ -88,7 +88,7 @@ class BudgetPeriodService {
         return { periodStart: startOfDay(endOfMonth(subMonths(now, 1))), nextPeriodStart: currentMonthEnd };
     }
 
-    private computeStartDayWindow(periodStartDay: number, now: Date): BudgetPeriodWindowInterface {
+    private computeStartDayWindow(periodStartDay: number, now: Date): { readonly periodStart: Date; readonly nextPeriodStart: Date } {
         const year = now.getFullYear();
         const monthIndex = now.getMonth();
         const startThisMonth = this.clampDayToMonth(year, monthIndex, periodStartDay);
@@ -117,11 +117,11 @@ class BudgetPeriodService {
         return startOfDay(new Date(year, monthIndex, clampedDay));
     }
 
-    private buildCountsByMonth(entries: readonly BudgetDatedEntryInterface[]): Map<string, number> {
+    private buildCountsByMonth(operatedAtDates: readonly Date[]): Map<string, number> {
         const countsByMonth = new Map<string, number>();
 
-        for (const entry of entries) {
-            const key = this.buildMonthKey(entry.operatedAt);
+        for (const operatedAt of operatedAtDates) {
+            const key = this.buildMonthKey(operatedAt);
             const previousCount = countsByMonth.get(key);
             const count = isDefined(previousCount) ? previousCount : 0;
             countsByMonth.set(key, count + 1);

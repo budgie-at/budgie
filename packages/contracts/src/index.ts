@@ -451,7 +451,6 @@ export { BudgetUpdateEntitySchema } from './budget/schema/budget-update-entity.s
 export type { BudgetEntityInterface } from './budget/entity/budget-entity.interface';
 export type { BudgetCreateEntityInterface } from './budget/entity/budget-create-entity.interface';
 export type { BudgetUpdateEntityInterface } from './budget/entity/budget-update-entity.interface';
-export { BudgetRepository } from './budget/repository/budget.repository';
 
 export { BudgetCategoryLimitEntityTable } from './budget-category-limit/table/budget-category-limit-entity.table';
 export { BudgetCategoryLimitEntityRelations } from './budget-category-limit/relations/budget-category-limit-entity.relations';
@@ -462,4 +461,3 @@ export type { BudgetCategoryLimitEntityInterface } from './budget-category-limit
 export type { BudgetCategoryLimitCreateEntityInterface } from './budget-category-limit/entity/budget-category-limit-create-entity.interface';
 export type { BudgetCategoryLimitUpdateEntityInterface } from './budget-category-limit/entity/budget-category-limit-update-entity.interface';
 export type { BudgetCategoryLimitBulkUpdateInputInterface } from './budget-category-limit/input/budget-category-limit-bulk-update-input.interface';
-export { BudgetCategoryLimitRepository } from './budget-category-limit/repository/budget-category-limit.repository';

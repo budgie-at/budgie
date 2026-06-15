@@ -1,4 +1,4 @@
-import { budgetAllocationService } from '@budgie/budget';
+import { budgetComputeAllocation } from '@budgie/budget';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -46,7 +46,7 @@ export const BudgetAllocationSummary = () => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const allocation = budgetAllocationService.computeAllocation({ overallLimit, otherLimit, categoryLimits });
+    const allocation = budgetComputeAllocation({ overallLimit, otherLimit, categoryLimits });
     const status: AllocationStatus = allocation.isOverAllocated ? 'over' : 'normal';
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const allocatedLabel = formatDigits(allocation.allocated, currencySymbol);

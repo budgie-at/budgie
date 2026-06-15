@@ -1,9 +1,4 @@
-export { budgetCategoryLimitDiffService } from './category-limit/service/budget-category-limit-diff.service';
-export type { BudgetCategoryLimitDiffInterface } from './category-limit/interface/budget-category-limit-diff.interface';
-export type { BudgetCategoryLimitSnapshotInterface } from './category-limit/interface/budget-category-limit-snapshot.interface';
-export type { BudgetCategoryLimitUpdateInputInterface } from './category-limit/interface/budget-category-limit-update-input.interface';
-
-export { budgetAllocationService } from './allocation/service/budget-allocation.service';
+export { budgetComputeAllocation } from './allocation/utils/budget-compute-allocation.util';
 export type { BudgetAllocationInputInterface } from './allocation/interface/budget-allocation-input.interface';
 export type { BudgetAllocationInterface } from './allocation/interface/budget-allocation.interface';
 
@@ -13,9 +8,6 @@ export type { BudgetAlertBudgetInterface } from './alert/interface/budget-alert-
 export type { BudgetAlertTriggerInterface } from './alert/interface/budget-alert-trigger.interface';
 
 export { budgetPeriodService } from './period/service/budget-period.service';
-export type { BudgetDatedEntryInterface } from './period/interface/budget-dated-entry.interface';
-export type { BudgetPeriodWindowInterface } from './period/interface/budget-period-window.interface';
-export type { BudgetTrailingMonthsWindowInterface } from './period/interface/budget-trailing-months-window.interface';
 
 export { budgetSpentService } from './spent/service/budget-spent.service';
 export type { BudgetCategorySpentInterface } from './spent/interface/budget-category-spent.interface';
@@ -34,12 +26,5 @@ export type { BudgetTemplateResolutionInterface } from './template/interface/bud
 
 export { BudgetService } from './mutation/service/budget.service';
 export type { BudgetCreateInputInterface } from './mutation/interface/budget-create-input.interface';
-export type { BudgetServiceDependenciesInterface } from './mutation/interface/budget-service-dependencies.interface';
 export type { BudgetUpdateInputInterface } from './mutation/interface/budget-update-input.interface';
-
-export { BudgetAlertDeliveryService } from './alert/service/budget-alert-delivery.service';
-export type { BudgetAlertStorageInterface } from './alert/interface/budget-alert-storage.interface';
 export type { BudgetAlertTrackedBudgetInterface } from './alert/interface/budget-alert-tracked-budget.interface';
-
-export type { BudgetCategoryLimitMutationRepositoryInterface } from './mutation/interface/budget-category-limit-mutation-repository.interface';
-export type { BudgetMutationRepositoryInterface } from './mutation/interface/budget-mutation-repository.interface';

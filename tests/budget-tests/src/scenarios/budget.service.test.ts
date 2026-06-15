@@ -126,12 +126,7 @@ const buildBudgetService = () => {
         databaseInput: TestBudgetTransactionInterface,
         callback: (transaction: TestBudgetTransactionInterface) => Promise<T>
     ): Promise<T> => callback(databaseInput);
-    const budgetService = new BudgetService({
-        database,
-        budgetRepository,
-        budgetCategoryLimitRepository,
-        runTransaction
-    });
+    const budgetService = new BudgetService(database, budgetRepository, budgetCategoryLimitRepository, runTransaction);
 
     return { budgetService, budgetRepository, budgetCategoryLimitRepository };
 };
