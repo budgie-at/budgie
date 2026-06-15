@@ -1313,7 +1313,7 @@ __metadata:
     "@budgie/logger": "workspace:*"
     "@rnw-community/shared": "npm:^2.2.0"
     date-fns: "npm:^4.3.0"
-    zod: "npm:4.1.12"
+    drizzle-orm: "npm:^0.45.2"
   languageName: unknown
   linkType: soft
 

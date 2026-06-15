@@ -2,17 +2,43 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
-import { budgetCategoryLimitDiffService } from '../../category-limit/service/budget-category-limit-diff.service';
-
-import type { BudgetCategoryLimitDiffInterface } from '../../category-limit/interface/budget-category-limit-diff.interface';
 import type { BudgetCategoryLimitInputInterface } from '../../template/interface/budget-category-limit-input.interface';
 import type { BudgetCreateInputInterface } from '../interface/budget-create-input.interface';
-import type { BudgetServiceDependenciesInterface } from '../interface/budget-service-dependencies.interface';
 import type { BudgetUpdateInputInterface } from '../interface/budget-update-input.interface';
-import type { BudgetEntityInterface } from '@budgie/contracts';
+import type {
+    BudgetCategoryLimitBulkUpdateInputInterface,
+    BudgetCategoryLimitCreateEntityInterface,
+    BudgetCategoryLimitEntityInterface,
+    BudgetCreateEntityInterface,
+    BudgetEntityInterface,
+    BudgetUpdateEntityInterface
+} from '@budgie/contracts';
 
-export class BudgetService<Transaction> {
-    constructor(private readonly dependencies: BudgetServiceDependenciesInterface<Transaction>) {}
+export class BudgetService<Database, Transaction> {
+    constructor(
+        private readonly database: Database,
+        private readonly budgetRepository: {
+            readonly create: (input: BudgetCreateEntityInterface, tx?: Transaction) => Promise<BudgetEntityInterface>;
+            readonly update: (id: number, input: BudgetUpdateEntityInterface, tx?: Transaction) => Promise<BudgetEntityInterface>;
+            readonly delete: (id: number, tx?: Transaction) => Promise<void>;
+        },
+        private readonly budgetCategoryLimitRepository: {
+            readonly bulkCreate: (
+                inputs: BudgetCategoryLimitCreateEntityInterface[],
+                tx?: Transaction
+            ) => Promise<BudgetCategoryLimitEntityInterface[]>;
+            readonly bulkUpdate: (
+                updates: BudgetCategoryLimitBulkUpdateInputInterface[],
+                tx?: Transaction
+            ) => Promise<BudgetCategoryLimitEntityInterface[]>;
+            readonly bulkDelete: (ids: number[], tx?: Transaction) => Promise<void>;
+            readonly getByBudget: (budgetId: number, tx?: Transaction) => Promise<BudgetCategoryLimitEntityInterface[]>;
+        },
+        private readonly runTransaction: <Result>(
+            database: Database,
+            callback: (transaction: Transaction) => Promise<Result>
+        ) => Promise<Result>
+    ) {}
 
     @Log(
         input =>
@@ -23,9 +49,9 @@ export class BudgetService<Transaction> {
             `throw name="${input.name}" period=${input.period} overallLimit=${input.overallLimit} otherLimit=${input.otherLimit} periodStartDay=${input.periodStartDay} useLastDayOfMonth=${String(input.useLastDayOfMonth)} categoryLimits=${input.categoryLimits.length} error=${getErrorMessage(error)}`
     )
     async createBudget(input: BudgetCreateInputInterface): Promise<BudgetEntityInterface> {
-        return this.dependencies.runTransaction(this.dependencies.database, async tx => {
+        return this.runTransaction(this.database, async tx => {
             const { categoryLimits, ...budgetFields } = input;
-            const createdBudget = await this.dependencies.budgetRepository.create(budgetFields, tx);
+            const createdBudget = await this.budgetRepository.create(budgetFields, tx);
 
             await this.createCategoryLimits(createdBudget.id, categoryLimits, tx);
 
@@ -35,16 +61,16 @@ export class BudgetService<Transaction> {
 
     @Log(
         (id, input) =>
-            `enter id=${id} fields=${Object.keys(input).join(',')} categoryLimits=${input.categoryLimits?.length ?? 'unchanged'}`,
+            `enter id=${id} fields=${Object.keys(input).join(',')} categoryLimits=${isDefined(input.categoryLimits) ? input.categoryLimits.length : 'unchanged'}`,
         (result, id, input) =>
-            `done id=${id} fields=${Object.keys(input).join(',')} categoryLimits=${input.categoryLimits?.length ?? 'unchanged'} updatedId=${result.id}`,
+            `done id=${id} fields=${Object.keys(input).join(',')} categoryLimits=${isDefined(input.categoryLimits) ? input.categoryLimits.length : 'unchanged'} updatedId=${result.id}`,
         (error, id, input) =>
-            `throw id=${id} fields=${Object.keys(input).join(',')} categoryLimits=${input.categoryLimits?.length ?? 'unchanged'} error=${getErrorMessage(error)}`
+            `throw id=${id} fields=${Object.keys(input).join(',')} categoryLimits=${isDefined(input.categoryLimits) ? input.categoryLimits.length : 'unchanged'} error=${getErrorMessage(error)}`
     )
     async updateBudget(id: number, input: BudgetUpdateInputInterface): Promise<BudgetEntityInterface> {
-        return this.dependencies.runTransaction(this.dependencies.database, async tx => {
+        return this.runTransaction(this.database, async tx => {
             const { categoryLimits, ...budgetFields } = input;
-            const updatedBudget = await this.dependencies.budgetRepository.update(id, budgetFields, tx);
+            const updatedBudget = await this.budgetRepository.update(id, budgetFields, tx);
 
             await this.syncCategoryLimits(id, categoryLimits, tx);
 
@@ -58,7 +84,7 @@ export class BudgetService<Transaction> {
         (error, id) => `throw id=${id} error=${getErrorMessage(error)}`
     )
     async deleteBudget(id: number): Promise<void> {
-        await this.dependencies.budgetRepository.delete(id);
+        await this.budgetRepository.delete(id);
     }
 
     private async createCategoryLimits(
@@ -70,7 +96,7 @@ export class BudgetService<Transaction> {
             return;
         }
 
-        await this.dependencies.budgetCategoryLimitRepository.bulkCreate(
+        await this.budgetCategoryLimitRepository.bulkCreate(
             categoryLimits.map(limit => ({ budgetId, categoryId: limit.categoryId, limitAmount: limit.limitAmount })),
             tx
         );
@@ -85,22 +111,37 @@ export class BudgetService<Transaction> {
             return;
         }
 
-        const existingLimits = await this.dependencies.budgetCategoryLimitRepository.getByBudget(budgetId, tx);
-        const diff = budgetCategoryLimitDiffService.diffCategoryLimits(existingLimits, categoryLimits);
+        const existingLimits = await this.budgetCategoryLimitRepository.getByBudget(budgetId, tx);
+        const existingByCategory = new Map(existingLimits.map(limit => [limit.categoryId, limit]));
+        const nextCategoryIds = new Set(categoryLimits.map(limit => limit.categoryId));
+        const toCreate = categoryLimits.filter(next => !existingByCategory.has(next.categoryId));
+        const toUpdate = this.buildCategoryLimitUpdates(categoryLimits, existingByCategory);
+        const toDelete = existingLimits.filter(limit => !nextCategoryIds.has(limit.categoryId)).map(limit => limit.id);
 
-        await this.applyCategoryLimitDiff(budgetId, diff, tx);
-    }
-
-    private async applyCategoryLimitDiff(budgetId: number, diff: BudgetCategoryLimitDiffInterface, tx: Transaction): Promise<void> {
         await Promise.all([
-            isNotEmptyArray(diff.toCreate)
-                ? this.dependencies.budgetCategoryLimitRepository.bulkCreate(
-                      diff.toCreate.map(limit => ({ budgetId, categoryId: limit.categoryId, limitAmount: limit.limitAmount })),
+            isNotEmptyArray(toCreate)
+                ? this.budgetCategoryLimitRepository.bulkCreate(
+                      toCreate.map(limit => ({ budgetId, categoryId: limit.categoryId, limitAmount: limit.limitAmount })),
                       tx
                   )
                 : null,
-            isNotEmptyArray(diff.toUpdate) ? this.dependencies.budgetCategoryLimitRepository.bulkUpdate(diff.toUpdate, tx) : null,
-            isNotEmptyArray(diff.toDelete) ? this.dependencies.budgetCategoryLimitRepository.bulkDelete(diff.toDelete, tx) : null
+            isNotEmptyArray(toUpdate) ? this.budgetCategoryLimitRepository.bulkUpdate([...toUpdate], tx) : null,
+            isNotEmptyArray(toDelete) ? this.budgetCategoryLimitRepository.bulkDelete([...toDelete], tx) : null
         ]);
+    }
+
+    private buildCategoryLimitUpdates(
+        categoryLimits: readonly BudgetCategoryLimitInputInterface[],
+        existingByCategory: ReadonlyMap<number, BudgetCategoryLimitEntityInterface>
+    ): BudgetCategoryLimitBulkUpdateInputInterface[] {
+        return categoryLimits
+            .map(next => {
+                const existing = existingByCategory.get(next.categoryId);
+
+                return isDefined(existing) && existing.limitAmount !== next.limitAmount
+                    ? { id: existing.id, limitAmount: next.limitAmount }
+                    : null;
+            })
+            .filter(isDefined);
     }
 }

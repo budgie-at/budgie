@@ -25,7 +25,7 @@ describe('budgetTemplateService', () => {
         const draft = budgetTemplateService.resolveGenericBudgetTemplate(
             [
                 { id: 11, isDefault: true },
-                { id: 38, isDefault: true }
+                { id: 37, isDefault: true }
             ],
             'USD'
         );

@@ -1,18 +1,16 @@
+import {
+    AccountEntityTable,
+    BudgetEntityTable,
+    ExchangeRateEntityTable,
+    TransactionConsolidationTypeEnum,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { and, between, desc, eq, isNull, sql } from 'drizzle-orm';
 
-import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
-import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
-import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
-import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
-import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { BudgetEntityTable } from '../table/budget-entity.table';
-
-import type { DB } from '../../@generic/type/db.type';
-import type { BudgetCreateEntityInterface } from '../entity/budget-create-entity.interface';
-import type { BudgetEntityInterface } from '../entity/budget-entity.interface';
-import type { BudgetUpdateEntityInterface } from '../entity/budget-update-entity.interface';
+import type { BudgetCreateEntityInterface, BudgetEntityInterface, BudgetUpdateEntityInterface, DB } from '@budgie/contracts';
 
 export class BudgetRepository {
     constructor(private db: DB) {}

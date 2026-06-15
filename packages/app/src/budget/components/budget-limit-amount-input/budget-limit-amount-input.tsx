@@ -4,12 +4,6 @@ import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 
-const CATEGORY_LIMIT_AMOUNT_INPUT_STYLE = {
-    minWidth: 104,
-    maxWidth: 136,
-    textAlign: 'right' as const
-};
-
 interface Props {
     readonly currencySymbol: string;
     readonly name: `categoryLimits.${number}.limitAmount` | 'otherLimit';
@@ -28,7 +22,7 @@ export const BudgetLimitAmountInput = ({ currencySymbol, name, testID }: Props) 
             placeholder={t`e.g. 200`}
             valuePrefix={currencySymbol}
             size="md"
-            style={CATEGORY_LIMIT_AMOUNT_INPUT_STYLE}
+            inputClassName="min-w-[104px] max-w-[136px] text-right"
         />
     );
 

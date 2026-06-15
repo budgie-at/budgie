@@ -1,4 +1,4 @@
-import { budgetAllocationService } from '@budgie/budget';
+import { budgetComputeAllocation } from '@budgie/budget';
 import { BudgetPeriodEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
@@ -8,7 +8,6 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { budgetService } from '../../@generic/drizzle/db/db';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
@@ -17,6 +16,7 @@ import { BudgetFormSchema, BudgetFormValues } from '../constant/budget-form-sche
 import { BudgetTemplateKindEnum } from '../enum/budget-template-kind.enum';
 import { useGetActiveBudgetQuery } from '../query/use-get-active-budget.query';
 import { useGetBudgetCategoryLimitsQuery } from '../query/use-get-budget-category-limits.query';
+import { budgetService } from '../service/budget.service';
 
 import { useBudgetTemplateDraft } from './use-budget-template-draft.hook';
 
@@ -64,7 +64,7 @@ const buildTemplateBudgetFormValues = (
     defaultInstrumentId: number,
     templateDraft: BudgetTemplateDraftInterface
 ): BudgetFormValues => {
-    const allocation = budgetAllocationService.computeAllocation({
+    const allocation = budgetComputeAllocation({
         overallLimit: templateDraft.overallLimit,
         otherLimit: 0,
         categoryLimits: templateDraft.categoryLimits

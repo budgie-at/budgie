@@ -1,8 +1,8 @@
-import { budgetAllocationService } from '@budgie/budget';
+import { budgetComputeAllocation } from '@budgie/budget';
 
-describe('budgetAllocationService', () => {
+describe('budgetComputeAllocation', () => {
     it('includes synthetic other in planned allocation', () => {
-        const allocation = budgetAllocationService.computeAllocation({
+        const allocation = budgetComputeAllocation({
             overallLimit: 1000,
             otherLimit: 200,
             categoryLimits: [
@@ -15,7 +15,7 @@ describe('budgetAllocationService', () => {
     });
 
     it('detects over-allocation when categories and synthetic other exceed overall limit', () => {
-        const allocation = budgetAllocationService.computeAllocation({
+        const allocation = budgetComputeAllocation({
             overallLimit: 1000,
             otherLimit: 250,
             categoryLimits: [

@@ -14,8 +14,9 @@ import { useCategorySelectorModal } from '../../../category/context/category-sel
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetCategoryLimitCompactRow } from '../budget-category-limit-compact-row/budget-category-limit-compact-row';
+import { BudgetCategoryLimitCompactRowLayout } from '../budget-category-limit-compact-row-layout/budget-category-limit-compact-row-layout';
 import { BudgetCategoryLimitsEmptyState } from '../budget-category-limits-empty-state/budget-category-limits-empty-state';
-import { BudgetOtherLimitCompactRow } from '../budget-other-limit-compact-row/budget-other-limit-compact-row';
+import { BudgetLimitAmountInput } from '../budget-limit-amount-input/budget-limit-amount-input';
 
 const ADD_BUTTON_STYLE = { width: 26, height: 26 } as const;
 const BOTTOM_ADD_BUTTON_THRESHOLD = 5;
@@ -71,7 +72,18 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
             <Text className="text-secondary-foreground text-sm">
                 <Trans>Optional per-category caps within this budget</Trans>
             </Text>
-            <BudgetOtherLimitCompactRow currencySymbol={currencySymbol} />
+            <BudgetCategoryLimitCompactRowLayout
+                amountInput={
+                    <BudgetLimitAmountInput
+                        currencySymbol={currencySymbol}
+                        name="otherLimit"
+                        testID={BudgetSelector.SetupOtherLimitAmountInput}
+                    />
+                }
+                icon={<CircleIcon icon={UserIconNameEnum.CircleEllipsis} variant="ghost" size={32} iconSize={16} />}
+                testID={BudgetSelector.SetupOtherLimitRow}
+                title={t`Other`}
+            />
             {isCategoryLimitsEmpty ? (
                 <BudgetCategoryLimitsEmptyState onPress={handleAddPress} testID={BudgetSelector.SetupCategoryLimitAddButton} />
             ) : (
