@@ -16,6 +16,31 @@ concurrency:
 on: pull_request
 
 jobs:
+  changes:
+    name: Detect changed areas
+    runs-on: [self-hosted, linux-burst]
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      native-e2e: ${{ steps.filter.outputs.native-e2e }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            native-e2e:
+              - "package.json"
+              - "yarn.lock"
+              - ".yarn/**"
+              - "turbo.json"
+              - "packages/app/**"
+              - "packages/contracts/**"
+              - "packages/ai/**"
+              - "packages/bank-sync/**"
+              - "packages/consolidation/**"
+              - "tests/app-tests/**"
+
   code-quality:
     name: Code quality checks
     runs-on: [self-hosted, linux-burst]
@@ -72,7 +97,6 @@ jobs:
 
   eas-update-preview:
     name: EAS Update Preview
-    needs: code-quality
     runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     permissions:
       contents: read
@@ -117,7 +141,8 @@ jobs:
           eas update --skip-bundler --input-dir dist --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
 
   build-ios-e2e-app:
-    needs: [code-quality]
+    if: needs.changes.outputs.native-e2e == 'true'
+    needs: [changes, code-quality, eas-update-preview]
     name: Build iOS E2E app
     runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     env:
