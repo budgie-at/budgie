@@ -318,7 +318,7 @@ msgid "Amount"
 msgstr "Сума"
 
 #: src/app/(main)/create-transaction/transfer.tsx
-#: src/app/(main)/transactions/[id]/transfer/edit.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Amount exceeds debt account balance"
 msgstr "Сума перевищує баланс боргового рахунку"
 
@@ -1111,11 +1111,11 @@ msgstr "Редагувати категорію"
 msgid "Edit existing"
 msgstr "Редагувати наявне"
 
-#: src/app/(main)/transactions/[id]/expense/edit.tsx
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income/edit.tsx
+#: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -1135,7 +1135,7 @@ msgstr "Редагувати транзакцію"
 msgid "Edit Transaction"
 msgstr "Редагувати транзакцію"
 
-#: src/app/(main)/transactions/[id]/transfer/edit.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
 
@@ -1806,6 +1806,10 @@ msgstr "Жодна категорія не відповідає вашому п�
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
 msgstr "Контактів не знайдено"
+
+#: src/@generic/hook/use-contacts.hook.ts
+msgid "No contacts found on this device."
+msgstr "На цьому пристрої контакти не знайдено."
 
 #: src/app/contact-selector.tsx
 msgid "No contacts yet"

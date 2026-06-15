@@ -319,7 +319,7 @@ msgid "Amount"
 msgstr "Amount"
 
 #: src/app/(main)/create-transaction/transfer.tsx
-#: src/app/(main)/transactions/[id]/transfer/edit.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
@@ -1112,11 +1112,11 @@ msgstr "Edit Category"
 msgid "Edit existing"
 msgstr "Edit existing"
 
-#: src/app/(main)/transactions/[id]/expense/edit.tsx
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
-#: src/app/(main)/transactions/[id]/income/edit.tsx
+#: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
 msgstr "Edit Income"
 
@@ -1136,7 +1136,7 @@ msgstr "Edit transaction"
 msgid "Edit Transaction"
 msgstr "Edit Transaction"
 
-#: src/app/(main)/transactions/[id]/transfer/edit.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
 
@@ -1807,6 +1807,10 @@ msgstr "No categories match your search"
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
 msgstr "No contacts found"
+
+#: src/@generic/hook/use-contacts.hook.ts
+msgid "No contacts found on this device."
+msgstr "No contacts found on this device."
 
 #: src/app/contact-selector.tsx
 msgid "No contacts yet"

@@ -318,7 +318,7 @@ msgid "Amount"
 msgstr "Betrag"
 
 #: src/app/(main)/create-transaction/transfer.tsx
-#: src/app/(main)/transactions/[id]/transfer/edit.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Amount exceeds debt account balance"
 msgstr "Betrag übersteigt den Schuldenkontostand"
 
@@ -1111,11 +1111,11 @@ msgstr "Kategorie bearbeiten"
 msgid "Edit existing"
 msgstr "Bestehende bearbeiten"
 
-#: src/app/(main)/transactions/[id]/expense/edit.tsx
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
 msgid "Edit Expense"
 msgstr "Ausgabe bearbeiten"
 
-#: src/app/(main)/transactions/[id]/income/edit.tsx
+#: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
 msgstr "Einnahme bearbeiten"
 
@@ -1135,7 +1135,7 @@ msgstr "Transaktion bearbeiten"
 msgid "Edit Transaction"
 msgstr "Transaktion bearbeiten"
 
-#: src/app/(main)/transactions/[id]/transfer/edit.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Edit Transfer"
 msgstr "Überweisung bearbeiten"
 
@@ -1806,6 +1806,10 @@ msgstr "Keine Kategorien entsprechen Ihrer Suche"
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
 msgstr "Keine Kontakte gefunden"
+
+#: src/@generic/hook/use-contacts.hook.ts
+msgid "No contacts found on this device."
+msgstr "Keine Kontakte auf diesem Gerät gefunden."
 
 #: src/app/contact-selector.tsx
 msgid "No contacts yet"
