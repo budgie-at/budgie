@@ -14,7 +14,7 @@ import type {
 } from '@budgie/budget';
 
 const MIN_WINDOW_MONTHS = 2;
-const MAX_WINDOW_MONTHS = 6;
+const MAX_WINDOW_MONTHS = 4;
 const MIN_ENTRIES_PER_MONTH = 15;
 const MIN_DISTINCT_CATEGORIES = 4;
 
