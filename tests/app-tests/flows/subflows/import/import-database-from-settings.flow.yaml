@@ -10,8 +10,24 @@ env:
 
 - openLink: 'budgie://settings/import-database?fileUri=${E2E_DB_FIXTURES_URI}/${FIXTURE_ROW_ID_MATCH}'
 - waitForAnimationToEnd
+- runFlow:
+      when:
+          visible: 'Open'
+      commands:
+          - tapOn: 'Open'
+          - waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'ImportScreen.DatabaseImportReady'
+      timeout: 30000
 
 - runFlow:
       file: ../navigation/relaunch-app-and-wait.flow.yaml
       env:
           DESTINATION_ID: 'TabBar.Home'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 5000

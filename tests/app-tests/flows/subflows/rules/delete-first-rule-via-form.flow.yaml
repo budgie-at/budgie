@@ -8,11 +8,9 @@ appId: ${APP_ID}
 - tapOn:
     id: 'RuleForm.Footer.DeleteButton.Label'
 - extendedWaitUntil:
-    visible:
-      text: '^Delete$'
+    visible: 'Delete'
     timeout: 3000
-- tapOn:
-    text: '^Delete$'
+- tapOn: 'Delete'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'

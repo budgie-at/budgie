@@ -6,18 +6,7 @@ env:
       maxRetries: 2
       commands:
           - launchApp
-          - runFlow:
-                when:
-                    visible: 'Not Now'
-                commands:
-                    - tapOn: 'Not Now'
-                    - waitForAnimationToEnd
-          - runFlow:
-                when:
-                    visible: 'Open'
-                commands:
-                    - tapOn: 'Open'
-                    - waitForAnimationToEnd
+          - waitForAnimationToEnd
           - runFlow:
                 when:
                     visible:

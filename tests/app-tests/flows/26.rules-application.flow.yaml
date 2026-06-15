@@ -32,8 +32,10 @@ env:
 - tapOn: Done
 - waitForAnimationToEnd
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector.Value'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -155,8 +157,10 @@ env:
 - tapOn: Done
 - waitForAnimationToEnd
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector.Value'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -166,19 +170,19 @@ env:
       id: 'RuleForm.ActionSection.AddButton'
 
 - tapOn:
-      id: 'RuleForm.Action.1.TypeSelector'
+      id: 'RuleForm.Action.1.TypeSelector.Value'
 - tapOn:
       id: 'RuleForm.SelectorCard.ADD_TAG.Label'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
       element:
-          id: 'RuleForm.Action.1.TagSelector.Value'
+          id: 'RuleForm.Action.1.TagSelector'
       direction: DOWN
       centerElement: true
 
 - tapOn:
-      id: 'RuleForm.Action.1.TagSelector.Value'
+      id: 'RuleForm.Action.1.TagSelector'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
@@ -244,8 +248,10 @@ env:
       env:
           VALUE: 'Spotify'
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector.Value'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -323,8 +329,10 @@ env:
 - tapOn: Done
 - waitForAnimationToEnd
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector.Value'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -384,8 +392,10 @@ env:
 - tapOn: Done
 - waitForAnimationToEnd
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector.Value'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -470,12 +480,12 @@ env:
 
 - scrollUntilVisible:
       element:
-          id: 'RuleForm.Action.0.AccountSelector.Value'
+          id: 'RuleForm.Action.0.AccountSelector'
       direction: DOWN
       centerElement: true
 
 - tapOn:
-      id: 'RuleForm.Action.0.AccountSelector.Value'
+      id: 'RuleForm.Action.0.AccountSelector'
 - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
@@ -567,8 +577,10 @@ env:
 - tapOn: Done
 - waitForAnimationToEnd
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector.Value'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
@@ -654,10 +666,12 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'RuleForm.Action.0.CategorySelector.Value'
+          id: 'RuleForm.Action.0.CategorySelector'
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector.Value'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -821,9 +835,9 @@ env:
 - extendedWaitUntil:
       visible: 'Edit Rule'
 - assertVisible:
-      id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector'
 - assertVisible:
-      id: 'RuleForm.Condition.1.FieldSelector.Value'
+      id: 'RuleForm.Condition.1.FieldSelector'
 - tapOn:
       id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
@@ -904,11 +918,11 @@ env:
 - extendedWaitUntil:
       visible: 'Edit Rule'
 - assertVisible:
-      id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector'
 - assertVisible:
-      id: 'RuleForm.Condition.1.FieldSelector.Value'
+      id: 'RuleForm.Condition.1.FieldSelector'
 - assertVisible:
-      id: 'RuleForm.Condition.2.FieldSelector.Value'
+      id: 'RuleForm.Condition.2.FieldSelector'
 - tapOn:
       id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
@@ -989,9 +1003,9 @@ env:
 - extendedWaitUntil:
       visible: 'Edit Rule'
 - assertVisible:
-      id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector'
 - assertVisible:
-      id: 'RuleForm.Condition.1.FieldSelector.Value'
+      id: 'RuleForm.Condition.1.FieldSelector'
 - tapOn:
       id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
@@ -1032,10 +1046,12 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'RuleForm.Action.0.CategorySelector.Value'
+          id: 'RuleForm.Action.0.CategorySelector'
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector.Value'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:

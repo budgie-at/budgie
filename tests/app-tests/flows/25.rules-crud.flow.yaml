@@ -32,8 +32,10 @@ env:
 - tapOn: Done
 - waitForAnimationToEnd
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
@@ -158,8 +160,10 @@ env:
       direction: DOWN
       centerElement: true
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
@@ -212,8 +216,10 @@ env:
 - tapOn: Done
 - waitForAnimationToEnd
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -318,8 +324,10 @@ env:
 - tapOn: Done
 - waitForAnimationToEnd
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
@@ -403,8 +411,10 @@ env:
       direction: DOWN
       centerElement: true
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -495,8 +505,10 @@ env:
       direction: DOWN
       centerElement: true
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -557,8 +569,10 @@ env:
       direction: DOWN
       centerElement: true
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -605,8 +619,10 @@ env:
 - tapOn: Done
 - waitForAnimationToEnd
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -663,8 +679,10 @@ env:
       direction: DOWN
       centerElement: true
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -744,8 +762,10 @@ env:
       direction: DOWN
       centerElement: true
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -809,8 +829,10 @@ env:
       direction: DOWN
       centerElement: true
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -865,8 +887,10 @@ env:
       direction: DOWN
       centerElement: true
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -912,8 +936,10 @@ env:
 - tapOn: Done
 - waitForAnimationToEnd
 
-- tapOn:
-      id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+      file: subflows/rules/open-action-category-selector.flow.yaml
+      env:
+          ACTION_INDEX: 0
 
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml

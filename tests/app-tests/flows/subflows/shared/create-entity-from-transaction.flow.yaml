@@ -18,15 +18,8 @@ env:
 - waitForAnimationToEnd
 - tapOn:
     id: ${CREATE_BUTTON_ID}
+    retryTapIfNoChange: true
 - waitForAnimationToEnd
-- runFlow:
-    when:
-      notVisible:
-        id: ${FORM_INPUT_ID}
-    commands:
-      - tapOn:
-          id: ${CREATE_BUTTON_ID}
-      - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: ${FORM_INPUT_ID}
