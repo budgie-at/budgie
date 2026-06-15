@@ -3,7 +3,7 @@ import * as Contacts from 'expo-contacts';
 import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 export type Contact = Contacts.ExistingContact;
 
@@ -22,8 +22,8 @@ const initialState: ContactsState = {
 };
 
 export const useContacts = () => {
-    const { t } = useLingui();
     const [state, setState] = useState<ContactsState>(initialState);
+    const { t } = useLingui();
 
     useEffect(() => {
         const loadContacts = async () => {
@@ -40,7 +40,7 @@ export const useContacts = () => {
                     setState({
                         contacts: data,
                         loading: false,
-                        error: null,
+                        error: isEmptyArray(data) ? t`No contacts found on this device.` : null,
                         hasLoaded: true
                     });
                 } else {
@@ -52,12 +52,12 @@ export const useContacts = () => {
                     });
                 }
             } catch {
-                setState({
-                    contacts: [],
+                setState(prev => ({
+                    ...prev,
                     loading: false,
                     hasLoaded: true,
                     error: t`Failed to load contacts.`
-                });
+                }));
             }
         };
 

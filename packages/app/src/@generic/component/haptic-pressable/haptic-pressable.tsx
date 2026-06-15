@@ -2,8 +2,6 @@ import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { ComponentProps, useRef } from 'react';
 import { GestureResponderEvent, Keyboard, Pressable } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { useVibration } from '../../hook/use-vibration.hook';
 import { cn } from '../../utils/cn.util';
 
@@ -28,12 +26,12 @@ export const HapticPressable = ({ onLongPress, onPress, onPressOut, disabled, cl
     };
 
     const handleLongPress = (event: GestureResponderEvent) => {
-        if (disabled || !isDefined(onLongPress)) {
+        if (disabled) {
             return;
         }
 
         isLongPressActiveRef.current = true;
-        onLongPress(event);
+        onLongPress?.(event);
     };
 
     const handlePressOut = (event: GestureResponderEvent) => {
@@ -52,7 +50,6 @@ export const HapticPressable = ({ onLongPress, onPress, onPressOut, disabled, cl
             onPress={handlePress}
             onPressOut={handlePressOut}
             disabled={disabled}
-            collapsable={false}
             {...rest}
         />
     );

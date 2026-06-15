@@ -7,6 +7,10 @@ env:
       commands:
           - launchApp
           - waitForAnimationToEnd
+          - tapOn:
+                text: 'Not Now'
+                optional: true
+          - waitForAnimationToEnd
           - runFlow:
                 when:
                     visible:

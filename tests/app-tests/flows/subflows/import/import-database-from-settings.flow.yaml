@@ -3,67 +3,75 @@ env:
     FIXTURE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
     FILE_PICKER_INITIAL_SCROLL_SHIFT: ${FILE_PICKER_INITIAL_SCROLL_SHIFT}
     FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
-    FILE_PICKER_REPEAT_TAP: ${FILE_PICKER_REPEAT_TAP}
     FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT || ''}
+    DATABASE_FIXTURE_SEEDED: ${DATABASE_FIXTURE_SEEDED || 'false'}
 ---
-- openLink: 'budgie://settings?anchor=data'
-
 - runFlow:
       when:
-          visible: 'Apple Account Verification'
-      commands:
-          - tapOn: 'Not Now'
-          - waitForAnimationToEnd
-
-- runFlow:
-      when:
-          visible: 'Open'
-      commands:
-          - tapOn: 'Open'
-
-- runFlow:
-      when:
-          notVisible:
-              id: 'SettingsPage.Container'
-      file: ../navigation/navigate-to-settings.flow.yaml
-
-- scrollUntilVisible:
-      element:
-          id: 'SettingsPage.ImportDatabaseCard'
-      direction: UP
-      timeout: 5000
-      centerElement: true
-      waitToSettleTimeoutMs: 1000
-
-- extendedWaitUntil:
-      visible:
-          id: 'SettingsPage.ImportDatabaseCard'
-      timeout: 3000
-
-- tapOn:
-      id: 'SettingsPage.ImportDatabaseCard'
-      retryTapIfNoChange: true
-
-- runFlow:
-      file: select-file-from-app-provider.flow.yaml
-      env:
-          FILE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
-          FILE_PICKER_INITIAL_SCROLL_SHIFT: ${FILE_PICKER_INITIAL_SCROLL_SHIFT}
-          FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
-          FILE_PICKER_REPEAT_TAP: ${FILE_PICKER_REPEAT_TAP}
-          FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT}
-
-- extendedWaitUntil:
-      visible: 'Importing a database will replace all current data.*'
-      timeout: 3000
-
-- tapOn:
-      text: 'Import Database'
-      index: 1
-
-- waitForAnimationToEnd
-
-- runFlow:
+          true: ${DATABASE_FIXTURE_SEEDED == 'true'}
       file: ../navigation/relaunch-app-and-wait.flow.yaml
       env:
           DESTINATION_ID: 'TabBar.Home'
+
+- runFlow:
+      when:
+          true: ${DATABASE_FIXTURE_SEEDED != 'true'}
+      commands:
+          - openLink: 'budgie://settings?anchor=data'
+
+          - tapOn:
+                text: 'Not Now'
+                optional: true
+          - waitForAnimationToEnd
+
+          - runFlow:
+                when:
+                    visible: 'Open'
+                commands:
+                    - tapOn: 'Open'
+
+          - runFlow:
+                when:
+                    notVisible:
+                        id: 'SettingsPage.Container'
+                file: ../navigation/navigate-to-settings.flow.yaml
+
+          - scrollUntilVisible:
+                element:
+                    id: 'SettingsPage.ImportDatabaseCard'
+                direction: DOWN
+                timeout: 5000
+                centerElement: true
+                waitToSettleTimeoutMs: 1000
+
+          - extendedWaitUntil:
+                visible:
+                    id: 'SettingsPage.ImportDatabaseCard'
+                timeout: 3000
+
+          - tapOn:
+                id: 'SettingsPage.ImportDatabaseCard'
+                retryTapIfNoChange: true
+
+          - runFlow:
+                file: select-file-from-app-provider.flow.yaml
+                env:
+                    FILE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
+                    FILE_PICKER_INITIAL_SCROLL_SHIFT: ${FILE_PICKER_INITIAL_SCROLL_SHIFT}
+                    FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
+                    FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT}
+
+          - extendedWaitUntil:
+                visible: 'Importing a database will replace all current data.*'
+                timeout: 3000
+
+          - tapOn:
+                text: 'Import Database'
+                index: 1
+
+          - waitForAnimationToEnd
+
+          - runFlow:
+                file: ../navigation/relaunch-app-and-wait.flow.yaml
+                env:
+                    DESTINATION_ID: 'TabBar.Home'

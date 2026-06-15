@@ -40,7 +40,8 @@ export const CollapsibleHeader = ({ scrollY, netWorth, fiatTotal, cryptoTotal, f
     const [expandedHeaderWidth, setExpandedHeaderWidth] = useState(0);
 
     const formattedNetWorth = formatDigits(netWorth, defaultInstrument.symbol);
-    const netWorthValueTestID = HomePageSelector.NetWorthValue(netWorth);
+    const formattedNetWorthValue = formatDigits(netWorth);
+    const netWorthValueTestID = HomePageSelector.NetWorthValue(formattedNetWorthValue);
 
     const expandedHeaderStyle = useAnimatedStyle(() => {
         const currentScrollY = scrollY.get();
@@ -119,7 +120,7 @@ export const CollapsibleHeader = ({ scrollY, netWorth, fiatTotal, cryptoTotal, f
                         <Trans>Total Balance</Trans>
                     </Text>
 
-                    <View collapsable={false} testID={netWorthValueTestID}>
+                    <View testID={netWorthValueTestID}>
                         <ProtectedMoney
                             minFontSize={24}
                             maxFontSize={60}
