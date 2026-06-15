@@ -379,6 +379,7 @@ msgstr "Ви впевнені, що хочете видалити це прав�
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Are you sure?"
@@ -518,6 +519,7 @@ msgstr "Budgie позначить як видалені такі записи: {
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -664,10 +666,6 @@ msgstr "Консолідувати збіги"
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "Consolidation"
 msgstr "Консолідація"
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "Contact"
-msgstr "Контакт"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Contact (optional)"
@@ -1020,6 +1018,7 @@ msgstr "Рахунок за замовчуванням"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Delete"
@@ -1622,14 +1621,6 @@ msgstr "Завантаження моделей"
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx
 msgid "Loading..."
 msgstr "Завантаження..."
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "Maestro E2E"
-msgstr "Maestro E2E"
-
-#: src/@generic/hook/use-contacts.hook.ts
-msgid "Maestro E2E Contact"
-msgstr "Контакт Maestro E2E"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
@@ -2704,6 +2695,7 @@ msgstr "Цей рахунок буде приховано з головного 
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "This action cannot be undone."
