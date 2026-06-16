@@ -18,7 +18,7 @@ on: pull_request
 jobs:
   changes:
     name: Detect changed areas
-    runs-on: [self-hosted, linux-burst]
+    runs-on: [self-hosted, linux-ci]
     permissions:
       contents: read
       pull-requests: read
@@ -43,7 +43,7 @@ jobs:
 
   code-quality:
     name: Code quality checks
-    runs-on: [self-hosted, linux-burst]
+    runs-on: [self-hosted, linux-ci]
     permissions:
       contents: read
       id-token: write
@@ -481,7 +481,7 @@ jobs:
     if: false
     needs: [code-quality, eas-update-preview]
     name: E2E Tests on Android
-    runs-on: [self-hosted, linux-burst]
+    runs-on: [self-hosted, linux-ci]
     steps:
       - uses: actions/checkout@v5
 
