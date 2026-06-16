@@ -14,45 +14,30 @@ import type { UpdateTransactionFormPropsInterface } from '../../interface/update
 
 export const UpdateIncomeTransaction = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
-    const {
-        form,
-        handleSubmit,
-        handleDelete,
-        handleGoBack,
-        categoryEntries,
-        isConsolidated,
-        ruleDetectionMode,
-        suggestRuleData,
-        updateRuleData,
-        matchingRulesCount,
-        matchingRuleIds,
-        onRuleCreated,
-        onDismiss,
-        onCreatingChange
-    } = useUpdateSimpleTransaction({
+    const simpleTransaction = useUpdateSimpleTransaction({
         transaction,
         transactionId,
         schema: IncomeTransactionCreateInputSchema
     });
 
-    const toAccountId = useWatch({ control: form.control, name: 'toAccountId' });
-    const mccCategoryId = categoryEntries.at(0)?.mccCategoryId ?? null;
+    const toAccountId = useWatch({ control: simpleTransaction.form.control, name: 'toAccountId' });
+    const mccCategoryId = simpleTransaction.categoryEntries.at(0)?.mccCategoryId ?? null;
     const { handleOpenConvert, handleOpenRefundConvert, handleRevert } = useUpdateIncomeTransactionActions({
         transaction,
         transactionId,
         toAccountId
     });
-    const canConvertToRefund = !isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
+    const canConvertToRefund = !simpleTransaction.isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
-    const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
+    const transferConvertProps = simpleTransaction.categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
 
     return (
         <UpdateSimpleTransactionPage
-            form={form}
+            form={simpleTransaction.form}
             title={t`Edit Income`}
-            isConsolidated={isConsolidated}
-            onGoBack={handleGoBack}
-            onDelete={handleDelete}
+            isConsolidated={simpleTransaction.isConsolidated}
+            onGoBack={simpleTransaction.handleGoBack}
+            onDelete={simpleTransaction.handleDelete}
             onRevert={handleRevert}
             {...refundConvertProps}
             {...transferConvertProps}
@@ -64,16 +49,16 @@ export const UpdateIncomeTransaction = ({ transaction, transactionId }: UpdateTr
                 transactionTitle={transaction.title}
                 mccCategoryId={mccCategoryId}
                 buildEntries={buildIncomeEntry}
-                onSubmit={handleSubmit}
-                onCancel={handleGoBack}
-                ruleDetectionMode={ruleDetectionMode}
-                suggestRuleData={suggestRuleData}
-                updateRuleData={updateRuleData}
-                matchingRulesCount={matchingRulesCount}
-                matchingRuleIds={matchingRuleIds}
-                onRuleCreated={onRuleCreated}
-                onDismiss={onDismiss}
-                onCreatingChange={onCreatingChange}
+                onSubmit={simpleTransaction.handleSubmit}
+                onCancel={simpleTransaction.handleGoBack}
+                ruleDetectionMode={simpleTransaction.ruleDetectionMode}
+                suggestRuleData={simpleTransaction.suggestRuleData}
+                updateRuleData={simpleTransaction.updateRuleData}
+                matchingRulesCount={simpleTransaction.matchingRulesCount}
+                matchingRuleIds={simpleTransaction.matchingRuleIds}
+                onRuleCreated={simpleTransaction.onRuleCreated}
+                onDismiss={simpleTransaction.onDismiss}
+                onCreatingChange={simpleTransaction.onCreatingChange}
             />
         </UpdateSimpleTransactionPage>
     );

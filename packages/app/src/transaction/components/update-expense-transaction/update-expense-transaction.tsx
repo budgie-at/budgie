@@ -14,43 +14,28 @@ import type { UpdateTransactionFormPropsInterface } from '../../interface/update
 
 export const UpdateExpenseTransaction = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
-    const {
-        form,
-        handleSubmit,
-        handleDelete,
-        handleGoBack,
-        categoryEntries,
-        isConsolidated,
-        ruleDetectionMode,
-        suggestRuleData,
-        updateRuleData,
-        matchingRulesCount,
-        matchingRuleIds,
-        onRuleCreated,
-        onDismiss,
-        onCreatingChange
-    } = useUpdateSimpleTransaction({
+    const simpleTransaction = useUpdateSimpleTransaction({
         transaction,
         transactionId,
         schema: ExpenseTransactionCreateInputSchema
     });
 
-    const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
+    const fromAccountId = useWatch({ control: simpleTransaction.form.control, name: 'fromAccountId' });
     const { handleOpenConvert, handleOpenRefundSources, handleRevert } = useUpdateExpenseTransactionActions({
         transaction,
         transactionId,
         fromAccountId
     });
-    const mccCategoryId = categoryEntries.at(0)?.mccCategoryId ?? null;
-    const canConvertToTransfer = categoryEntries.length === 1;
+    const mccCategoryId = simpleTransaction.categoryEntries.at(0)?.mccCategoryId ?? null;
+    const canConvertToTransfer = simpleTransaction.categoryEntries.length === 1;
 
     return (
         <UpdateSimpleTransactionPage
-            form={form}
+            form={simpleTransaction.form}
             title={t`Edit Expense`}
-            isConsolidated={isConsolidated}
-            onGoBack={handleGoBack}
-            onDelete={handleDelete}
+            isConsolidated={simpleTransaction.isConsolidated}
+            onGoBack={simpleTransaction.handleGoBack}
+            onDelete={simpleTransaction.handleDelete}
             onRevert={handleRevert}
             {...(canConvertToTransfer && { onConvertToTransfer: handleOpenConvert })}
         >
@@ -68,16 +53,16 @@ export const UpdateExpenseTransaction = ({ transaction, transactionId }: UpdateT
                     />
                 }
                 buildEntries={buildExpenseEntry}
-                onSubmit={handleSubmit}
-                onCancel={handleGoBack}
-                ruleDetectionMode={ruleDetectionMode}
-                suggestRuleData={suggestRuleData}
-                updateRuleData={updateRuleData}
-                matchingRulesCount={matchingRulesCount}
-                matchingRuleIds={matchingRuleIds}
-                onRuleCreated={onRuleCreated}
-                onDismiss={onDismiss}
-                onCreatingChange={onCreatingChange}
+                onSubmit={simpleTransaction.handleSubmit}
+                onCancel={simpleTransaction.handleGoBack}
+                ruleDetectionMode={simpleTransaction.ruleDetectionMode}
+                suggestRuleData={simpleTransaction.suggestRuleData}
+                updateRuleData={simpleTransaction.updateRuleData}
+                matchingRulesCount={simpleTransaction.matchingRulesCount}
+                matchingRuleIds={simpleTransaction.matchingRuleIds}
+                onRuleCreated={simpleTransaction.onRuleCreated}
+                onDismiss={simpleTransaction.onDismiss}
+                onCreatingChange={simpleTransaction.onCreatingChange}
             />
         </UpdateSimpleTransactionPage>
     );
