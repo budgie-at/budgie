@@ -21,6 +21,7 @@ interface Props extends ComponentProps<typeof HapticPressable> {
     readonly size?: ButtonSizeType;
     readonly variant?: ColorPaletteVariant;
     readonly isLoading?: boolean;
+    readonly contentTestID?: string;
 }
 
 const buttonVariants = cva<{
@@ -52,7 +53,19 @@ const textVariants = cva<{
 });
 
 export const Button = (props: Props) => {
-    const { content, className, onPress, disabled, leftIcon, rightIcon, variant = 'ghost', size = 'md', isLoading, ...rest } = props;
+    const {
+        content,
+        className,
+        onPress,
+        disabled,
+        leftIcon,
+        rightIcon,
+        variant = 'ghost',
+        size = 'md',
+        isLoading,
+        contentTestID,
+        ...rest
+    } = props;
 
     const isDisabled = disabled || isLoading;
 
@@ -69,7 +82,11 @@ export const Button = (props: Props) => {
                 <>
                     {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
 
-                    {isDefined(content) && <Text className={textVariants({ variant })}>{content}</Text>}
+                    {isDefined(content) && (
+                        <Text testID={contentTestID} className={textVariants({ variant })}>
+                            {content}
+                        </Text>
+                    )}
 
                     {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={rightIcon} /> : null}
                 </>

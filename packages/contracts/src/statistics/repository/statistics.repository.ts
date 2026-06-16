@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- File owns the single multi-stage statistics SQL aggregation pipeline that must stay together */
-import { SQL, and, desc, eq, getTableColumns, inArray, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, desc, eq, getTableColumns, inArray, isNull, ne, notInArray, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -172,11 +172,27 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             this.buildVisibleTransactionCondition(),
             ...(isDefined(dateCondition) ? [dateCondition] : []),
             ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : []),
+            ...(isNotEmptyArray(filters.excludedCategoryIds) ? [this.buildExcludedCategoryCondition(filters.excludedCategoryIds)] : []),
             ...(isDefined(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : [])
         ].filter(isDefined);
 
         // eslint-disable-next-line no-undefined
         return isNotEmptyArray(conditions) ? and(...conditions) : undefined;
+    }
+
+    private buildExcludedCategoryCondition(categoryIds: number[]) {
+        return inArray(
+            TransactionEntityTable.id,
+            this.db
+                .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                .from(TransactionEntryEntityTable)
+                .where(
+                    and(
+                        or(isNull(TransactionEntryEntityTable.categoryId), notInArray(TransactionEntryEntityTable.categoryId, categoryIds)),
+                        this.buildLedgerEntryCondition()
+                    )
+                )
+        );
     }
 
     private buildTransactionIdsQuery(filters: TransactionFilterInterface, type: TransactionTypeEnum) {

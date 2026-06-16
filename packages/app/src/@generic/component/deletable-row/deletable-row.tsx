@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { styled } from 'nativewind';
-import { ReactNode, useRef } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import { Alert } from 'react-native';
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { SharedValue } from 'react-native-reanimated';
@@ -26,6 +26,11 @@ export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) =>
     const ref = useRef<SwipeableMethods>(null);
     const { t } = useLingui();
 
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleOpen = () => void setIsOpen(true);
+    const handleClose = () => void setIsOpen(false);
+
     const confirmTitle = confirmation?.title ?? t`Are you sure?`;
     const confirmDescription = confirmation?.description ?? t`This action cannot be undone.`;
     const confirmButtonText = confirmation?.buttonText ?? t`Delete`;
@@ -44,10 +49,20 @@ export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) =>
             }
         ]);
 
-    const renderRightActions = (_: SharedValue<number>, drag: SharedValue<number>) => <DeletableRowAction drag={drag} onPress={confirm} />;
+    const renderRightActions = (_: SharedValue<number>, drag: SharedValue<number>) => (
+        <DeletableRowAction drag={drag} isOpen={isOpen} onPress={confirm} />
+    );
 
     return (
-        <Swipable ref={ref} friction={2} enableTrackpadTwoFingerGesture rightThreshold={40} renderRightActions={renderRightActions}>
+        <Swipable
+            ref={ref}
+            friction={2}
+            enableTrackpadTwoFingerGesture
+            rightThreshold={40}
+            renderRightActions={renderRightActions}
+            onSwipeableOpen={handleOpen}
+            onSwipeableClose={handleClose}
+        >
             {children}
         </Swipable>
     );

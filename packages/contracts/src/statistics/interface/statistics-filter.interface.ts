@@ -5,5 +5,6 @@ export interface StatisticsFilterInterface {
     readonly type: TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE | null;
     readonly date: DateRangeInterface | null;
     readonly categoryIds: number[] | null;
+    readonly excludedCategoryIds: number[] | null;
     readonly tagIds: number[] | null;
 }

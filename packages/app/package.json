@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "android": "expo run:android",
+        "bench:budget-spent": "node --experimental-strip-types scripts/bench-budget-spent.ts",
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo .expo",
         "db:generate": "drizzle-kit generate",
         "eas-build-post-install": "cd ../.. && yarn build",
@@ -23,6 +24,7 @@
     "dependencies": {
         "@budgie/ai": "workspace:^",
         "@budgie/bank-sync": "workspace:*",
+        "@budgie/budget": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/logger": "workspace:*",

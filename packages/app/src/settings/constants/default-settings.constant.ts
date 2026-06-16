@@ -14,5 +14,7 @@ export const DEFAULT_SETTINGS = {
     isBiometricEnabled: false,
     language: LanguageEnum.EN,
     isScreenshotProtectionEnabled: false,
-    applyMccDefaultCategory: true
+    applyMccDefaultCategory: true,
+    isBudgetWidgetEnabled: true,
+    isBudgetPushEnabled: false
 } satisfies SettingsEntityInterface;

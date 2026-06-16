@@ -9,18 +9,19 @@ import { CreateAccountScreenSelector } from '../create-account-screen/create-acc
 
 interface Props<T extends { targetBalance: number }> {
     readonly control: Control<T>;
+    readonly instrumentSymbol: string;
 }
 
-export const AccountTargetBalanceField = <T extends { targetBalance: number }>({ control }: Props<T>) => {
+export const AccountTargetBalanceField = <T extends { targetBalance: number }>({ control, instrumentSymbol }: Props<T>) => {
     const { t } = useLingui();
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => (
         <FormItem label={t`Target balance`}>
             <AmountInput
                 testID={CreateAccountScreenSelector.TargetBalanceInput}
-                placeholder={formatDigits(0, defaultInstrument.symbol)}
+                placeholder={formatDigits(0, instrumentSymbol)}
                 size="lg"
                 value={value}
                 onChangeValue={onChange}

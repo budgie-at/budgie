@@ -1,0 +1,72 @@
+import { budgetComputeAllocation } from '@budgie/budget';
+import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { Text, View } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
+
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
+import { useSettingsContext } from '../../../settings/context/settings.context';
+import { BudgetSelector } from '../../budget.selector';
+import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
+
+type AllocationStatus = 'normal' | 'over';
+
+const containerVariants = cva<{ status: Record<AllocationStatus, string> }>(
+    'flex-row items-center justify-between rounded-2xl border px-xl py-md',
+    {
+        variants: {
+            status: {
+                normal: 'bg-secondary-background border-secondary-corner',
+                over: 'bg-destructive-background border-destructive-corner'
+            }
+        }
+    }
+);
+
+const remainingTextVariants = cva<{ status: Record<AllocationStatus, string> }>('text-md font-semibold', {
+    variants: {
+        status: {
+            normal: 'text-positive-foreground',
+            over: 'text-destructive-foreground'
+        }
+    }
+});
+
+export const BudgetAllocationSummary = () => {
+    const { t } = useLingui();
+    const { control } = useFormContext<BudgetFormValues>();
+    const [overallLimit, otherLimit, categoryLimits, instrumentId] = useWatch({
+        control,
+        name: ['overallLimit', 'otherLimit', 'categoryLimits', 'instrumentId']
+    });
+    const { instrument } = useGetInstrumentByIdQuery(instrumentId);
+    const { decimalPlaces } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
+
+    const allocation = budgetComputeAllocation({ overallLimit, otherLimit, categoryLimits });
+    const status: AllocationStatus = allocation.isOverAllocated ? 'over' : 'normal';
+    const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
+    const allocatedLabel = formatDigits(allocation.allocated, currencySymbol);
+    const remainingLabel = formatDigits(Math.abs(allocation.remaining), currencySymbol);
+    const remainingHeader = status === 'over' ? t`Over by` : t`Remaining`;
+    const remainingHeaderTestID =
+        status === 'over' ? BudgetSelector.SetupAllocationSummaryOverBy : BudgetSelector.SetupAllocationSummaryRemaining;
+
+    return (
+        <View className={containerVariants({ status })}>
+            <View>
+                <Text className="text-secondary-foreground text-xs">{t`Allocated`}</Text>
+                <Text className="text-primary text-md font-semibold">{allocatedLabel}</Text>
+            </View>
+            <View className="items-end">
+                <Text testID={remainingHeaderTestID} className="text-secondary-foreground text-xs">
+                    {remainingHeader}
+                </Text>
+                <Text className={remainingTextVariants({ status })}>{remainingLabel}</Text>
+            </View>
+        </View>
+    );
+};

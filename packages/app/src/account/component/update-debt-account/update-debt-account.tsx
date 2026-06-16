@@ -45,7 +45,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
 
     return (
         <UpdateAccountScreen instrumentSymbol={instrument.symbol} onSubmit={handleSubmit} account={account} control={control}>
-            <AccountTargetBalanceField control={control} />
+            <AccountTargetBalanceField control={control} instrumentSymbol={instrument.symbol} />
             <DebtAccountContactField control={control} />
             <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
             <IncludeInNetWorthField control={control} />

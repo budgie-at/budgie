@@ -1,4 +1,5 @@
 import { sql } from 'drizzle-orm';
+
 import type { SQLWrapper } from 'drizzle-orm';
 
 const MUTABLE_TABLES = [
