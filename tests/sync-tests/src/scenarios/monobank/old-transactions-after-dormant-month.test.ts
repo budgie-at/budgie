@@ -2,13 +2,7 @@ import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { SyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import {
-    buildMonobank,
-    fetchBankSyncById,
-    fetchPersistedMonobankTransactions,
-    monobankStub,
-    setupBackwardSweepFixture
-} from '../../harness';
+import { buildMonobank, fetchPersistedMonobankTransactions, fetchSyncById, monobankStub, setupBackwardSweepFixture } from '../../harness';
 
 import type { MonobankTransactionApiInterface } from '@budgie/sync';
 
@@ -41,7 +35,7 @@ describe('monobank/old-transactions-after-dormant-month', () => {
         const [persistedOld] = persisted;
         expect(persistedOld.externalId).toBe('tx-old-80d');
 
-        const finalSync = fetchBankSyncById(sync.id);
+        const finalSync = fetchSyncById(sync.id);
         expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
         expect(finalSync.transactionCount).toBe(EXPECTED_PERSISTED_COUNT);
     });

@@ -3,7 +3,7 @@ import { SyncModeEnum } from '@budgie/contracts';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
-import { fetchBankSyncById, fetchPersistedMonobankTransactions, setupBackwardSweepFixture } from '../../harness';
+import { fetchPersistedMonobankTransactions, fetchSyncById, setupBackwardSweepFixture } from '../../harness';
 import { monobankServer } from '../../harness/monobank/monobank-server';
 
 const EXPECTED_DORMANCY_BOUNDARY_REQUESTS = 4;
@@ -26,7 +26,7 @@ describe('monobank/empty-account-stops-at-dormancy-boundary', () => {
         expect(monobankRequestCount).toBe(EXPECTED_DORMANCY_BOUNDARY_REQUESTS);
         expect(fetchPersistedMonobankTransactions()).toHaveLength(0);
 
-        const finalSync = fetchBankSyncById(sync.id);
+        const finalSync = fetchSyncById(sync.id);
         expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
         expect(finalSync.transactionCount).toBe(0);
     });
