@@ -1,5 +1,4 @@
-import { describe, expect, it } from 'vitest';
-
+import { statisticsRepository } from '@app/@generic/drizzle/db/db';
 import {
     AccountTypeEnum,
     CategoryEntityTable,
@@ -9,13 +8,12 @@ import {
     LanguageEnum,
     PRECISION,
     SettingsEntityTable,
+    TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
-    TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
-
-import { statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { describe, expect, it } from 'vitest';
 
 import { requireInstrument } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
@@ -23,6 +21,8 @@ import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
 import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
+
+const UNCONVERTIBLE_EXPENSE_AMOUNT = Number('15000') * PRECISION;
 
 describe('statistics fallback for unvalued entries', () => {
     it('includes an unvalued foreign income entry via live conversion instead of dropping it', async () => {
@@ -97,7 +97,7 @@ describe('statistics fallback for unvalued entries', () => {
             transactionId: transaction.id,
             accountId: account.id,
             type: TransactionEntryTypeEnum.CREDIT,
-            amount: 15_000 * PRECISION,
+            amount: UNCONVERTIBLE_EXPENSE_AMOUNT,
             categoryId: category.id,
             mccCategoryId: null,
             externalId: null,
@@ -110,13 +110,13 @@ describe('statistics fallback for unvalued entries', () => {
 
         seed.transactionTag(transaction.id, tag.id);
 
-        const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id).get();
         const categoryRows = statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, euro.id, LanguageEnum.EN).all();
         const tagRows = statisticsRepository.getExpenseByTagQuery(DEFAULT_TRANSACTION_FILTER, euro.id).all();
 
-        const categoryAmount = categoryRows.find(row => row.category?.id === category.id)?.amount ?? 0;
-        const tagAmount = tagRows.find(row => row.tag?.id === tag.id)?.amount ?? 0;
-
-        expect([totals?.expense, categoryAmount, tagAmount]).toStrictEqual([0, 0, 0]);
+        expect([
+            statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id).get()?.expense,
+            categoryRows.find(row => row.category?.id === category.id)?.amount ?? 0,
+            tagRows.find(row => row.tag?.id === tag.id)?.amount ?? 0
+        ]).toStrictEqual([0, 0, 0]);
     });
 });

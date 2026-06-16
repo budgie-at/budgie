@@ -18,6 +18,7 @@ interface Props {
     readonly iconSize?: number;
     readonly className?: string;
     readonly iconClassName?: string;
+    readonly testID?: string;
     readonly variant?: ColorPaletteVariant;
 }
 
@@ -36,11 +37,11 @@ const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('
 });
 
 export const CircleIcon = (props: Props) => {
-    const { size = 42, iconSize = 20, radius = 20, icon, variant = 'positive', border = true, className, iconClassName } = props;
+    const { size = 42, iconSize = 20, radius = 20, icon, variant = 'positive', border = true, className, iconClassName, testID } = props;
     const style: ViewStyle = { width: size, height: size, borderRadius: radius };
 
     return (
-        <View className={cn(wrapperVariants({ variant, border }), className)} style={style}>
+        <View className={cn(wrapperVariants({ variant, border }), className)} style={style} testID={testID}>
             <Icon className={cn(iconVariants({ variant }), iconClassName)} icon={icon} size={iconSize} />
         </View>
     );
