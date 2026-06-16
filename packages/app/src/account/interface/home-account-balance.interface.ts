@@ -6,6 +6,9 @@ export interface HomeAccountBalanceInterface {
     readonly balance: number;
     readonly bankProvider: ExternalSourceEnum | null;
     readonly convertedBalance: number;
+    readonly convertedCreditAmount: number;
+    readonly convertedDebitAmount: number;
+    readonly convertedTargetBalance: number;
     readonly debtType: AccountDebtTypeEnum;
     readonly includeInNetWorth: boolean;
     readonly isActive: boolean;

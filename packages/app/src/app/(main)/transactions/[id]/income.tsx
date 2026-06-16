@@ -35,11 +35,7 @@ import type { Control } from 'react-hook-form';
 /* jscpd:ignore-end */
 
 const getIncomeAmountTopContent = (transaction: UpdateTransactionFormPropsInterface['transaction'], accountTitle: string | null) => (
-    <DebtSettlementPill
-        transaction={transaction}
-        accountTitle={accountTitle}
-        testID={TransactionCardSelector.DebtSettlementMetadata(transaction.id)}
-    />
+    <DebtSettlementPill accountTitle={accountTitle} testID={TransactionCardSelector.DebtSettlementMetadata(transaction.id)} />
 );
 
 /* jscpd:ignore-start */
@@ -88,9 +84,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
             : {};
     const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: actions.handleOpenConvert } : {};
     const debtSettlementProps =
-        categoryEntries.length === 1 && !actions.hasDebtSettlement
-            ? { onAttachDebtSettlement: actions.handleOpenDebtSettlement, attachDebtSettlementLabel: t`Attach debt return` }
-            : {};
+        categoryEntries.length === 1 && !actions.hasDebtSettlement ? { onAttachDebtSettlement: actions.handleOpenDebtSettlement } : {};
     const detachDebtSettlementProps = actions.hasDebtSettlement ? { onDetachDebtSettlement: actions.handleDetachDebtSettlement } : {};
 
     return (

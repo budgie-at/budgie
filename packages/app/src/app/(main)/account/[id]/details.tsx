@@ -2,12 +2,10 @@ import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Link, Redirect, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { AnimatedBackdrop } from '../../../../@generic/component/animated-backdrop/animated-backdrop';
 import { CircleIcon } from '../../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
@@ -18,13 +16,14 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { AccountBalance } from '../../../../account/component/account-balance/account-balance';
-import { AccountFab } from '../../../../account/component/account-fab/account-fab';
+import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { ACCOUNT_COLOR } from '../../../../account/constant/account-color.constant';
+import { ACCOUNT_DEBT_TYPE_COLOR } from '../../../../account/constant/account-debt-type-color.constant';
 import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
+import { useDebtAccountLedgerTotalsQuery } from '../../../../account/query/use-debt-account-ledger-totals.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
-import { CreateTransactionMenu } from '../../../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { TransactionList } from '../../../../transaction/components/transaction-list/transaction-list';
 
 import { AccountDetailsSelector } from './account-details.selector';
@@ -39,12 +38,10 @@ export default function AccountDetails() {
 
     const { account, isLoading } = useGetAccountByIdQuery(id);
     const { balance } = useAccountBalanceQuery(id);
+    const { debitAmount, creditAmount } = useDebtAccountLedgerTotalsQuery(id);
     const { t } = useLingui();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleGoBack = () => void goBackOrReplace('/');
-    const handleOpenMenu = () => void setIsMenuOpen(true);
-    const handleCloseMenu = () => void setIsMenuOpen(false);
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -55,6 +52,7 @@ export default function AccountDetails() {
     }
 
     const { title, icon, type, instrument, debtType } = account;
+    const accountVariant = type === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[debtType] : ACCOUNT_COLOR[type];
 
     return (
         <View className="relative flex-1">
@@ -64,7 +62,7 @@ export default function AccountDetails() {
                         icon={icon}
                         onGoBack={handleGoBack}
                         title={title}
-                        iconVariant={ACCOUNT_COLOR[type]}
+                        iconVariant={accountVariant}
                         right={
                             <Link href={`/account/${id}/update`} asChild>
                                 <HapticPressable className="ml-auto" testID={AccountDetailsSelector.EditButton}>
@@ -79,7 +77,7 @@ export default function AccountDetails() {
                             </Link>
                         }
                         description={t(ACCOUNT_TYPE[type])}
-                        descriptionClassName={descriptionVariants({ variant: ACCOUNT_COLOR[type] })}
+                        descriptionClassName={descriptionVariants({ variant: accountVariant })}
                     />
                 }
                 contentClassName="px-0 flex-1"
@@ -88,6 +86,8 @@ export default function AccountDetails() {
                     {type === AccountTypeEnum.DEBT ? (
                         <DebtAccountBalance
                             balance={balance}
+                            creditAmount={creditAmount}
+                            debitAmount={debitAmount}
                             debtType={debtType}
                             instrumentSymbol={instrument.symbol}
                             targetAmount={convertFromMicroUnits(account.targetBalance)}
@@ -100,9 +100,7 @@ export default function AccountDetails() {
                 <TransactionList accountId={id} footerSpacerMultiplier={3} />
             </Page>
 
-            <AccountFab isMenuOpen={isMenuOpen} onPress={handleOpenMenu} />
-            <AnimatedBackdrop isVisible={isMenuOpen} onClose={handleCloseMenu} />
-            <CreateTransactionMenu isOpen={isMenuOpen} onClose={handleCloseMenu} accountId={id} />
+            <AccountDetailsMenuControls accountId={id} />
         </View>
     );
 }

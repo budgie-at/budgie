@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
@@ -31,10 +31,9 @@ export const useUpdateIncomeTransactionActions = ({
             transaction,
             transactionId,
             transactionAccountId: toAccountId,
-            debtType: AccountDebtTypeEnum.LENT,
-            emptyStateDescription: t`Create a lent debt account first.`,
-            attachErrorMessage: t`Could not attach debt return`,
-            detachErrorMessage: t`Could not detach debt return`
+            emptyStateDescription: t`Create a debt account first.`,
+            attachErrorMessage: t`Could not attach debt`,
+            detachErrorMessage: t`Could not detach debt`
         });
 
     const handleOpenConvert = () =>

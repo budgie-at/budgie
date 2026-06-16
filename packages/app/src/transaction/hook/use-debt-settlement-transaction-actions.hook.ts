@@ -74,8 +74,8 @@ export const useDebtSettlementTransactionActions = ({
     const handleOpenDebtSettlement = () =>
         void openAccountSelector({
             includeAccountTypes: [AccountTypeEnum.DEBT],
-            debtType,
             excludeAccountId: transactionAccountId ?? 0,
+            ...(isDefined(debtType) && { debtType }),
             emptyStateDescription
         })
             .then(async debtAccountId => {

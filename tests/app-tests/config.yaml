@@ -35,6 +35,7 @@ executionOrder:
         - 28.rules-search.flow
         - 29.crypto-account-and-market.flow
         - 30.crypto-decimal-monero-account.flow
+        - 31.debt-settlement-attachments.flow
 
 platform:
     ios:

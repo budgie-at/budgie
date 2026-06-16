@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
@@ -28,10 +28,9 @@ export const useUpdateExpenseTransactionActions = ({
             transaction,
             transactionId,
             transactionAccountId: fromAccountId,
-            debtType: AccountDebtTypeEnum.BORROW,
-            emptyStateDescription: t`Create a borrowed debt account first.`,
-            attachErrorMessage: t`Could not attach debt repayment`,
-            detachErrorMessage: t`Could not detach debt repayment`
+            emptyStateDescription: t`Create a debt account first.`,
+            attachErrorMessage: t`Could not attach debt`,
+            detachErrorMessage: t`Could not detach debt`
         });
 
     const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId });

@@ -383,14 +383,6 @@ msgstr "Ви впевнені?"
 msgid "Attach debt"
 msgstr "Прикріпити борг"
 
-#: src/app/(main)/transactions/[id]/expense.tsx
-msgid "Attach debt repayment"
-msgstr "Прикріпити погашення боргу"
-
-#: src/app/(main)/transactions/[id]/income.tsx
-msgid "Attach debt return"
-msgstr "Прикріпити повернення боргу"
-
 #: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx
 msgid "Auto-assign categories from MCC"
 msgstr "Автоматично призначати категорії за MCC"
@@ -472,6 +464,7 @@ msgstr "Binance"
 msgid "Biometric Authentication"
 msgstr "Біометрична автентифікація"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Borrowed"
 msgstr "Позичено"
@@ -722,12 +715,9 @@ msgid "Could not archive account"
 msgstr "Не вдалося архівувати рахунок"
 
 #: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-msgid "Could not attach debt repayment"
-msgstr "Не вдалося прикріпити погашення боргу"
-
 #: src/transaction/hook/use-update-income-transaction-actions.hook.ts
-msgid "Could not attach debt return"
-msgstr "Не вдалося прикріпити повернення боргу"
+msgid "Could not attach debt"
+msgstr "Не вдалося прив’язати борг"
 
 #: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Could not check bank sync data"
@@ -788,12 +778,9 @@ msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
 #: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-msgid "Could not detach debt repayment"
-msgstr "Не вдалося відкріпити погашення боргу"
-
 #: src/transaction/hook/use-update-income-transaction-actions.hook.ts
-msgid "Could not detach debt return"
-msgstr "Не вдалося відкріпити повернення боргу"
+msgid "Could not detach debt"
+msgstr "Не вдалося відв’язати борг"
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Could not export CSV"
@@ -907,12 +894,9 @@ msgid "Create a backup of all your data"
 msgstr "Створити резервну копію всіх ваших даних"
 
 #: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-msgid "Create a borrowed debt account first."
-msgstr "Спочатку створіть рахунок боргу, який ви винні."
-
 #: src/transaction/hook/use-update-income-transaction-actions.hook.ts
-msgid "Create a lent debt account first."
-msgstr "Спочатку створіть рахунок боргу, який вам винні."
+msgid "Create a debt account first."
+msgstr "Спочатку створіть борговий рахунок."
 
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
@@ -985,7 +969,6 @@ msgid "Currency"
 msgstr "Валюта"
 
 #: src/account/component/account-balance/account-balance.tsx
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Current Balance"
 msgstr "Поточний баланс"
 
@@ -1034,20 +1017,12 @@ msgid "Debt account cannot match transaction account"
 msgstr "Борговий рахунок не може збігатися з рахунком транзакції"
 
 #: src/transaction/service/transaction-debt-settlement.service.ts
-msgid "Debt account does not match transaction type"
-msgstr "Борговий рахунок не відповідає типу транзакції"
-
-#: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account not found"
 msgstr "Борговий рахунок не знайдено"
 
-#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
-msgid "Debt repayment · {accountTitle}"
-msgstr "Погашення боргу · {accountTitle}"
-
-#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
-msgid "Debt return · {accountTitle}"
-msgstr "Повернення боргу · {accountTitle}"
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt settlement is only available for income and expense transactions"
+msgstr "Прив’язка боргу доступна лише для доходів і витрат"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
@@ -1619,6 +1594,15 @@ msgstr "Навчання на транзакціях"
 msgid "Learning up to date"
 msgstr "Навчання актуальне"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Left to receive"
+msgstr "Залишилось отримати"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Left to repay"
+msgstr "Залишилось повернути"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Позичено"
@@ -2033,17 +2017,9 @@ msgstr "Вам винні"
 msgid "Owes you"
 msgstr "Винен вам"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Paid: {formattedPaidAmount}"
-msgstr "Сплачено: {formattedPaidAmount}"
-
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
 msgstr "Вставте ваш API-токен нижче:"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Payment Progress"
-msgstr "Прогрес платежу"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
@@ -2230,6 +2206,10 @@ msgstr "Прибрати розділення"
 msgid "Remove split?"
 msgstr "Прибрати розділення?"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Repaid"
+msgstr "Погашено"
+
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 msgid "Repair"
 msgstr "Виправити"
@@ -2238,6 +2218,10 @@ msgstr "Виправити"
 #: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
 msgid "Repair Bank Sync Data"
 msgstr "Виправити дані банківської синхронізації"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Repayment Progress"
+msgstr "Прогрес погашення"
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -2268,6 +2252,14 @@ msgstr "Відновити з файлу резервної копії"
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Return Progress"
+msgstr "Прогрес повернення"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Returned"
+msgstr "Повернено"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -2823,10 +2815,6 @@ msgstr "Загалом"
 #: src/@generic/component/collapsible-header/collapsible-header.tsx
 msgid "Total Balance"
 msgstr "Загальний баланс"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Total: {formattedAmountToReturn}"
-msgstr "Всього: {formattedAmountToReturn}"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Touch ID"

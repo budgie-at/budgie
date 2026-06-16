@@ -1,5 +1,4 @@
 import {
-    AccountDebtTypeEnum,
     AccountTypeEnum,
     TransactionEntryCreateEntityInterface,
     TransactionEntryKindEnum,
@@ -41,10 +40,10 @@ class TransactionDebtSettlementService {
         return await transactionAsync(db, async tx => {
             const transaction = await this.getTransactionOrFail(params.transactionId, tx);
             const debtAccount = await this.getDebtAccountOrFail(params.debtAccountId, tx);
-            const primaryEntry = this.getPrimaryEntryOrFail(transaction);
 
+            this.assertTransactionSupportsDebtSettlement(transaction);
             this.assertNoSettlement(transaction);
-            this.assertDebtAccountMatchesTransaction(transaction, debtAccount);
+            const primaryEntry = this.getPrimaryEntryOrFail(transaction);
             this.assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
 
             const settlementEntry = await this.buildSettlementEntry(transaction, primaryEntry, debtAccount, tx);
@@ -143,19 +142,12 @@ class TransactionDebtSettlementService {
         return getTransactionDebtSettlementEntries(transaction.entries);
     }
 
-    private assertDebtAccountMatchesTransaction(
-        transaction: TransactionWithEntriesEntityInterface,
-        debtAccount: AccountEntityInterface
-    ): void {
-        if (transaction.type === TransactionTypeEnum.INCOME && debtAccount.debtType === AccountDebtTypeEnum.LENT) {
+    private assertTransactionSupportsDebtSettlement(transaction: TransactionWithEntriesEntityInterface): void {
+        if (transaction.type === TransactionTypeEnum.INCOME || transaction.type === TransactionTypeEnum.EXPENSE) {
             return;
         }
 
-        if (transaction.type === TransactionTypeEnum.EXPENSE && debtAccount.debtType === AccountDebtTypeEnum.BORROW) {
-            return;
-        }
-
-        throw new Error(t`Debt account does not match transaction type`);
+        throw new Error(t`Debt settlement is only available for income and expense transactions`);
     }
 
     private assertDebtAccountIsNotPrimaryAccount(primaryEntry: TransactionEntryEntityInterface, debtAccount: AccountEntityInterface): void {

@@ -76,6 +76,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                         THEN 0
                         WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
                              AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
+                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.DEBT}
                              AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
                         THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
                         ELSE 0

@@ -56,11 +56,7 @@ const useExpenseAmountTopContent = (
 ) => (
     <View className="items-center gap-xs">
         <RefundedPill transaction={transaction} onPress={onPress} testID={TransactionCardSelector.RefundedPill(transaction.id)} />
-        <DebtSettlementPill
-            transaction={transaction}
-            accountTitle={accountTitle}
-            testID={TransactionCardSelector.DebtSettlementMetadata(transaction.id)}
-        />
+        <DebtSettlementPill accountTitle={accountTitle} testID={TransactionCardSelector.DebtSettlementMetadata(transaction.id)} />
     </View>
 );
 
@@ -94,9 +90,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: actions.handleOpenConvert } : {};
     const debtSettlementProps =
-        categoryEntries.length === 1 && !actions.hasDebtSettlement
-            ? { onAttachDebtSettlement: actions.handleOpenDebtSettlement, attachDebtSettlementLabel: t`Attach debt repayment` }
-            : {};
+        categoryEntries.length === 1 && !actions.hasDebtSettlement ? { onAttachDebtSettlement: actions.handleOpenDebtSettlement } : {};
     const detachDebtSettlementProps = actions.hasDebtSettlement ? { onDetachDebtSettlement: actions.handleDetachDebtSettlement } : {};
     const amountTopContent = useExpenseAmountTopContent(transaction, actions.debtSettlementAccountTitle, actions.handleOpenRefundSources);
 

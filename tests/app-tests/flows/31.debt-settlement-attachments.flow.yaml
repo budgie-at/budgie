@@ -1,0 +1,167 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: '09.db(, db)?'
+
+- runFlow:
+    file: subflows/accounts/create-debt-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Debt Attachment'
+      CURRENCY_CODE: 'USD'
+      DEBT_TYPE: 'LENT'
+      TARGET_BALANCE: '1000'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+# --- Expense attached to lent debt increases the amount owed to us ---
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
+
+- tapOn:
+    id: 'TransactionKeypad.Digit.1'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
+
+- runFlow:
+    file: subflows/transactions/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+    file: subflows/categories/create-category-from-transaction.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Debt Attachment Category'
+
+- runFlow:
+    file: subflows/transactions/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Debt Attach Expense'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
+    timeout: 5000
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
+- extendedWaitUntil:
+    visible: 'Edit Expense'
+    timeout: 5000
+
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- tapOn:
+    id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- runFlow:
+    file: subflows/shared/select-account-by-search.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Debt Attachment'
+
+- assertVisible: 'Debt · E2E Debt Attachment'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
+    timeout: 5000
+- assertVisible: 'Debt · E2E Debt Attachment'
+
+# --- Income attached to lent debt closes part of the amount owed to us ---
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Income'
+      FORM_TITLE: 'New Income'
+
+- tapOn:
+    id: 'TransactionKeypad.Digit.4'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
+
+- runFlow:
+    file: subflows/transactions/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+    file: subflows/categories/select-category.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Debt Attachment Category'
+
+- runFlow:
+    file: subflows/transactions/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Debt Attach Income'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
+    timeout: 5000
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
+- extendedWaitUntil:
+    visible: 'Edit Income'
+    timeout: 5000
+
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- tapOn:
+    id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- runFlow:
+    file: subflows/shared/select-account-by-search.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Debt Attachment'
+
+- assertVisible: 'Debt · E2E Debt Attachment'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
+    timeout: 5000
+- assertVisible: 'Debt · E2E Debt Attachment'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000
+
+- runFlow:
+    file: subflows/accounts/open-account-details.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Debt Attachment'
+
+- assertVisible: 'Left to receive'
+- assertVisible: 'Return Progress'
+- assertVisible: '40%'

@@ -383,14 +383,6 @@ msgstr "¿Estás seguro?"
 msgid "Attach debt"
 msgstr "Vincular deuda"
 
-#: src/app/(main)/transactions/[id]/expense.tsx
-msgid "Attach debt repayment"
-msgstr "Vincular pago de deuda"
-
-#: src/app/(main)/transactions/[id]/income.tsx
-msgid "Attach debt return"
-msgstr "Vincular devolución de deuda"
-
 #: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx
 msgid "Auto-assign categories from MCC"
 msgstr "Asignar categorías automáticamente por MCC"
@@ -472,6 +464,7 @@ msgstr "Binance"
 msgid "Biometric Authentication"
 msgstr "Autenticación biométrica"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Borrowed"
 msgstr "Prestado"
@@ -722,12 +715,9 @@ msgid "Could not archive account"
 msgstr "No se pudo archivar la cuenta"
 
 #: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-msgid "Could not attach debt repayment"
-msgstr "No se pudo vincular el pago de deuda"
-
 #: src/transaction/hook/use-update-income-transaction-actions.hook.ts
-msgid "Could not attach debt return"
-msgstr "No se pudo vincular la devolución de deuda"
+msgid "Could not attach debt"
+msgstr "No se pudo vincular la deuda"
 
 #: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Could not check bank sync data"
@@ -788,12 +778,9 @@ msgid "Could not delete transaction."
 msgstr "No se pudo eliminar la transacción."
 
 #: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-msgid "Could not detach debt repayment"
-msgstr "No se pudo desvincular el pago de deuda"
-
 #: src/transaction/hook/use-update-income-transaction-actions.hook.ts
-msgid "Could not detach debt return"
-msgstr "No se pudo desvincular la devolución de deuda"
+msgid "Could not detach debt"
+msgstr "No se pudo desvincular la deuda"
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Could not export CSV"
@@ -907,12 +894,9 @@ msgid "Create a backup of all your data"
 msgstr "Crear una copia de seguridad de todos tus datos"
 
 #: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-msgid "Create a borrowed debt account first."
-msgstr "Crea primero una cuenta de deuda que debes."
-
 #: src/transaction/hook/use-update-income-transaction-actions.hook.ts
-msgid "Create a lent debt account first."
-msgstr "Crea primero una cuenta de deuda que te deben."
+msgid "Create a debt account first."
+msgstr "Crea primero una cuenta de deuda."
 
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
@@ -985,7 +969,6 @@ msgid "Currency"
 msgstr "Moneda"
 
 #: src/account/component/account-balance/account-balance.tsx
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Current Balance"
 msgstr "Saldo actual"
 
@@ -1034,20 +1017,12 @@ msgid "Debt account cannot match transaction account"
 msgstr "La cuenta de deuda no puede coincidir con la cuenta de la transacción"
 
 #: src/transaction/service/transaction-debt-settlement.service.ts
-msgid "Debt account does not match transaction type"
-msgstr "La cuenta de deuda no coincide con el tipo de transacción"
-
-#: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account not found"
 msgstr "Cuenta de deuda no encontrada"
 
-#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
-msgid "Debt repayment · {accountTitle}"
-msgstr "Pago de deuda · {accountTitle}"
-
-#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
-msgid "Debt return · {accountTitle}"
-msgstr "Devolución de deuda · {accountTitle}"
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt settlement is only available for income and expense transactions"
+msgstr "La liquidación de deuda solo está disponible para ingresos y gastos"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
@@ -1619,6 +1594,15 @@ msgstr "Aprendiendo transacciones"
 msgid "Learning up to date"
 msgstr "Aprendizaje actualizado"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Left to receive"
+msgstr "Por recibir"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Left to repay"
+msgstr "Por devolver"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Prestado"
@@ -2033,17 +2017,9 @@ msgstr "Te deben"
 msgid "Owes you"
 msgstr "Te debe"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Paid: {formattedPaidAmount}"
-msgstr "Pagado: {formattedPaidAmount}"
-
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
 msgstr "Pegue su token API a continuación:"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Payment Progress"
-msgstr "Progreso del pago"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
@@ -2230,6 +2206,10 @@ msgstr "Eliminar división"
 msgid "Remove split?"
 msgstr "¿Eliminar división?"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Repaid"
+msgstr "Devuelto"
+
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 msgid "Repair"
 msgstr "Reparar"
@@ -2238,6 +2218,10 @@ msgstr "Reparar"
 #: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
 msgid "Repair Bank Sync Data"
 msgstr "Reparar datos de sincronización bancaria"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Repayment Progress"
+msgstr "Progreso de devolución"
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -2268,6 +2252,14 @@ msgstr "Restaurar desde un archivo de copia de seguridad"
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "Resuming AI…"
 msgstr "Reanudando IA…"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Return Progress"
+msgstr "Progreso de devolución recibida"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Returned"
+msgstr "Recibido"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -2823,10 +2815,6 @@ msgstr "Total"
 #: src/@generic/component/collapsible-header/collapsible-header.tsx
 msgid "Total Balance"
 msgstr "Saldo total"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Total: {formattedAmountToReturn}"
-msgstr "Total: {formattedAmountToReturn}"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Touch ID"

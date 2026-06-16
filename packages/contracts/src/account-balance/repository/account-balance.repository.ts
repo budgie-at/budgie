@@ -22,7 +22,6 @@ import type { AccountBalanceEntityInterface } from '../entity/account-balance-en
 
 export class AccountBalanceRepository {
     private static readonly ACCOUNT_INSTRUMENT_ID_SQL = sql.raw('accounts.instrument_id');
-
     constructor(private db: DB) {}
 
     @Log(
@@ -111,7 +110,11 @@ export class AccountBalanceRepository {
 
     getHomeAccountRows(defaultInstrumentId: number) {
         const balanceSql = this.getAccountBalanceWithTransactionsSql();
-        const convertedBalanceSql = sql<number>`COALESCE((${balanceSql}) * ${this.buildNetWorthExchangeRateConversionSql(defaultInstrumentId)}, 0)`;
+        const exchangeRateSql = this.buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
+        const convertedBalanceSql = sql<number>`COALESCE((${balanceSql}) * ${exchangeRateSql}, 0)`;
+        const convertedDebitAmountSql = sql<number>`COALESCE((${this.getTransactionEntryAmountSumSql(TransactionEntryTypeEnum.DEBIT)}) * ${exchangeRateSql}, 0)`;
+        const convertedCreditAmountSql = sql<number>`COALESCE((${this.getTransactionEntryAmountSumSql(TransactionEntryTypeEnum.CREDIT)}) * ${exchangeRateSql}, 0)`;
+        const convertedTargetBalanceSql = sql<number>`COALESCE(${AccountEntityTable.targetBalance} * ${exchangeRateSql}, 0)`;
 
         return this.db
             .select({
@@ -119,6 +122,9 @@ export class AccountBalanceRepository {
                 balance: balanceSql,
                 bankSync: BankSyncEntityTable,
                 convertedBalance: convertedBalanceSql,
+                convertedCreditAmount: convertedCreditAmountSql,
+                convertedDebitAmount: convertedDebitAmountSql,
+                convertedTargetBalance: convertedTargetBalanceSql,
                 instrument: InstrumentEntityTable
             })
             .from(AccountEntityTable)
@@ -189,9 +195,7 @@ export class AccountBalanceRepository {
         const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
         const balanceSql = this.getAccountBalanceWithTransactionsSql();
         const outstandingDebtSql = debtType === AccountDebtTypeEnum.BORROW ? sql<number>`0 - (${balanceSql})` : balanceSql;
-        const outstandingDebtTotalSql = sql<number>`
-            MAX(${outstandingDebtSql}, 0)
-        `;
+        const outstandingDebtTotalSql = sql<number>`MAX(${outstandingDebtSql}, 0)`;
 
         return this.db
             .select({ total: sql<number>`COALESCE(SUM((${outstandingDebtTotalSql}) * ${exchangeRateSql}), 0)` })
@@ -237,13 +241,11 @@ export class AccountBalanceRepository {
             FROM ${AccountBalanceEntityTable}
             WHERE ${AccountBalanceEntityTable.accountId} = ${accountIdReference}
             LIMIT 1`;
-
         const lastBalanceUpdatedAtSql = sql`
             SELECT MAX(${AccountBalanceEntityTable.updatedAt})
             FROM ${AccountBalanceEntityTable}
             WHERE ${AccountBalanceEntityTable.accountId} = ${accountIdReference}
         `;
-
         const transactionsSumSinceLastBalanceSql = sql<number>`
             SELECT ${this.getTransactionsSumSql()}
             FROM ${TransactionEntryEntityTable}
@@ -267,6 +269,17 @@ export class AccountBalanceRepository {
                 WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.amount}
                 ELSE 0
             END)
+        `;
+    }
+
+    private getTransactionEntryAmountSumSql(transactionEntryType: TransactionEntryTypeEnum, accountIdReference = sql.raw('accounts.id')) {
+        return sql<number>`
+            SELECT COALESCE(SUM(${TransactionEntryEntityTable.amount}), 0)
+            FROM ${TransactionEntryEntityTable}
+            WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference}
+              AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+              AND ${TransactionEntryEntityTable.type} = ${transactionEntryType}
+              AND ${this.getBalanceLedgerEntryConditionSql()}
         `;
     }
 

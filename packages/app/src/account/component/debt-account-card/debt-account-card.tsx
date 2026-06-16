@@ -3,12 +3,14 @@ import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
+import { useDebtAccountLedgerTotalsQuery } from '../../query/use-debt-account-ledger-totals.query';
 import { getDeadlinePriority } from '../../util/get-deadline-priority.util';
+import { buildDebtAccountProgressSummary } from '../../utils/build-debt-account-progress-summary.util';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
 
@@ -27,22 +29,16 @@ const progressVariants = cva('absolute bottom-0 left-0 h-1', {
     }
 });
 
-const getOutstandingBalance = (debtType: AccountDebtTypeEnum, balance: number) => {
-    const outstandingBalance = debtType === AccountDebtTypeEnum.BORROW ? -balance : balance;
-
-    return Math.max(outstandingBalance, 0);
-};
-
 export const DebtAccountCard = (props: Props) => {
     const { id, createdAt, title, icon, balance, debtType, targetBalance, deadline, className, instrumentSymbol } = props;
 
     const { formatCompactFullDate } = useFormatDate();
+    const { debitAmount, creditAmount } = useDebtAccountLedgerTotalsQuery(id);
 
-    const outstandingBalance = getOutstandingBalance(debtType, balance);
+    const summary = buildDebtAccountProgressSummary({ balance, creditAmount, debitAmount, debtType, targetAmount: targetBalance });
     const circleVariant = ACCOUNT_DEBT_TYPE_COLOR[debtType];
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
-    const progressWidth = isPositiveNumber(targetBalance) ? Math.min((outstandingBalance / targetBalance) * 100, 100) : 0;
-    const progressStyle: ViewStyle = { width: `${progressWidth}%` };
+    const progressStyle: ViewStyle = { width: `${summary.percentage}%` };
 
     const topRight = isDefined(deadline) ? (
         <View className="flex-row items-center gap-x-xs">
@@ -54,8 +50,8 @@ export const DebtAccountCard = (props: Props) => {
     const balanceContent = (
         <DebtAccountCardSummary
             debtType={debtType}
-            currentBalance={outstandingBalance}
-            targetBalance={targetBalance}
+            currentBalance={summary.outstandingAmount}
+            targetBalance={summary.totalAmount}
             instrumentSymbol={instrumentSymbol}
         />
     );

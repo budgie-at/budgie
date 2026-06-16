@@ -7,6 +7,7 @@ import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { useSettingsContext } from '../../settings/context/settings.context';
+import { buildDebtAccountProgressSummary } from '../utils/build-debt-account-progress-summary.util';
 
 import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated-at.query';
 
@@ -48,12 +49,19 @@ const addBankProviderTotal = (
 };
 
 const addDebtTypeTotal = (totals: Map<AccountDebtTypeEnum, number>, homeAccountBalance: HomeAccountBalanceInterface): void => {
-    const { accountType, convertedBalance, debtType, isActive } = homeAccountBalance;
+    const { accountType, convertedBalance, convertedCreditAmount, convertedDebitAmount, convertedTargetBalance, debtType, isActive } =
+        homeAccountBalance;
 
     if (isActive && accountType === AccountTypeEnum.DEBT) {
-        const outstandingBalance = debtType === AccountDebtTypeEnum.BORROW ? -convertedBalance : convertedBalance;
+        const summary = buildDebtAccountProgressSummary({
+            balance: convertedBalance,
+            creditAmount: convertedCreditAmount,
+            debitAmount: convertedDebitAmount,
+            debtType,
+            targetAmount: convertedTargetBalance
+        });
 
-        addTotal(totals, debtType, Math.max(outstandingBalance, 0));
+        addTotal(totals, debtType, summary.outstandingAmount);
     }
 };
 
@@ -104,6 +112,9 @@ export const useHomePageDataQuery = () => {
             balance: convertFromMicroUnits(row.balance),
             bankProvider: rowBankProvider,
             convertedBalance: convertFromMicroUnits(row.convertedBalance),
+            convertedCreditAmount: convertFromMicroUnits(row.convertedCreditAmount),
+            convertedDebitAmount: convertFromMicroUnits(row.convertedDebitAmount),
+            convertedTargetBalance: convertFromMicroUnits(row.convertedTargetBalance),
             debtType: row.account.debtType,
             includeInNetWorth: row.account.includeInNetWorth,
             isActive: row.account.isActive

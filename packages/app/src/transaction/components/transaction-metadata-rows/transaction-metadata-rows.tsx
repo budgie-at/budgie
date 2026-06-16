@@ -47,7 +47,7 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
 
             {hasFee ? <TransactionMetadataRow label={feeLabel} testID={feeTestID} /> : null}
 
-            <DebtSettlementPill transaction={transaction} accountTitle={debtSettlementAccountTitle} testID={debtSettlementTestID} />
+            <DebtSettlementPill accountTitle={debtSettlementAccountTitle} testID={debtSettlementTestID} />
         </View>
     );
 };
