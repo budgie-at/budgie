@@ -96,6 +96,8 @@ jobs:
           use_oidc: true
 
   eas-update-preview:
+    if: needs.changes.outputs.native-e2e == 'true'
+    needs: [changes]
     name: EAS Update Preview
     runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     permissions:
