@@ -55,14 +55,7 @@ export const UpdateExpenseTransaction = ({ transaction, transactionId }: UpdateT
                 buildEntries={buildExpenseEntry}
                 onSubmit={simpleTransaction.handleSubmit}
                 onCancel={simpleTransaction.handleGoBack}
-                ruleDetectionMode={simpleTransaction.ruleDetectionMode}
-                suggestRuleData={simpleTransaction.suggestRuleData}
-                updateRuleData={simpleTransaction.updateRuleData}
-                matchingRulesCount={simpleTransaction.matchingRulesCount}
-                matchingRuleIds={simpleTransaction.matchingRuleIds}
-                onRuleCreated={simpleTransaction.onRuleCreated}
-                onDismiss={simpleTransaction.onDismiss}
-                onCreatingChange={simpleTransaction.onCreatingChange}
+                rulePillSlotProps={simpleTransaction}
             />
         </UpdateSimpleTransactionPage>
     );
