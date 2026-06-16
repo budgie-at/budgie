@@ -2,9 +2,10 @@ appId: ${APP_ID}
 ---
 - waitForAnimationToEnd
 - extendedWaitUntil:
-      visible:
-          text: '^Delete$'
+      visible: 'Are you sure?'
       timeout: 3000
-- tapOn:
-      text: '^Delete$'
+- tapOn: 'Delete'
 - waitForAnimationToEnd
+- extendedWaitUntil:
+      notVisible: 'Are you sure?'
+      timeout: 10000

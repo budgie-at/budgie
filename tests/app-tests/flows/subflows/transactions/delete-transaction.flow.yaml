@@ -1,5 +1,13 @@
 appId: ${APP_ID}
 ---
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 20000
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.TriggerButton'
+    timeout: 20000
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:

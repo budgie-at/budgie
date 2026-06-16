@@ -97,7 +97,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 2. **No type assertions** - Never use `as Type`, `@ts-ignore`, `@ts-expect-error` (`as const` is allowed — it's a const assertion, not a type assertion)
 3. **No comments** - Self-documenting code with clear names
 4. **Never disable ESLint without approval** - NEVER add `eslint-disable` comments without explicit user approval
-5. **Single const declarations** - Each variable gets its own `const` declaration
+5. **Single const declarations, no throwaway derived consts** - Each variable gets its own `const` declaration. Do not create a derived `const` that is used only once when inlining it is equally readable, such as `const queryDependencies = [...]` passed immediately into one call. Keep named locals when they are required for hook ordering, type narrowing, repeated use, JSX prop extraction, or genuinely clearer nontrivial logic.
 6. **Use `emptyFn` for no-op callbacks** - Use `emptyFn` from `@rnw-community/shared` instead of `() => void 0`
 7. **No IIFEs** - Use `.catch(handleError)` or `.then(onSuccess, onError)` instead of `void (async () => {})()`
 8. **Use `getErrorMessage`** - Use `getErrorMessage(e)` from `@rnw-community/shared` instead of `e instanceof Error ? e.message : String(e)`
@@ -158,6 +158,8 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.
 57. **For `@Log` callbacks, preserve APIs and destructure callback rest args.** If logging callbacks trip `max-params`, use `(result, ...[argA, argB]) => ...`; never reshape the method signature or add a lint disable just for the decorator.
 58. **Do not decorate query-builder factory methods with `@Log`.** If a repository method returns a Drizzle builder for callers to finish with `.get()` / `.all()` / `.execute()`, keep it plain and log the executed service or repository boundary instead.
+59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the Maestro flow, fixture, or test harness.
+60. **Database live-query boundaries are explicit.** React reads that render app database state use `useDatabaseLiveQuery`, not raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. Class service methods that perform top-level app database writes use `@InvalidateDatabaseLiveQuery()` so subscribers refresh after successful writes without manual invalidation inside business logic. Use the predicate form only to preserve real transaction ownership, such as nested writes that receive an existing `tx`. Do not add event names, groups, or metadata until profiling proves broad invalidation is a real rerender problem. Free-function mutations may invalidate directly only when converting to a service would create a one-method class.
 
 ### Naming Conventions
 

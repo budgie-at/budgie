@@ -25,6 +25,7 @@ E2E_RUN_TOKEN="${E2E_RUN_TOKEN:-$(date +%s)}"
 SIMULATOR_UDID="${SIMULATOR_UDID:-}"
 RECURRING_EMPTY_DAY="${RECURRING_EMPTY_DAY:-}"
 DATABASE_FIXTURE_SEEDED="false"
+IOS_SIMULATOR_REBOOT_EVERY="${E2E_IOS_SIMULATOR_REBOOT_EVERY:-6}"
 
 compute_recurring_empty_day() {
     node <<'EOF'
@@ -229,6 +230,31 @@ refresh_ios_fixtures_if_needed() {
     sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID"
 }
 
+reboot_ios_simulator_if_needed() {
+    local flow_index="$1"
+
+    if [ -z "$DETECTED_SIMULATOR_UDID" ]; then
+        return 0
+    fi
+
+    if [ "$IOS_SIMULATOR_REBOOT_EVERY" -le 0 ]; then
+        return 0
+    fi
+
+    if [ "$flow_index" -le 1 ]; then
+        return 0
+    fi
+
+    if [ "$(((flow_index - 1) % IOS_SIMULATOR_REBOOT_EVERY))" -ne 0 ]; then
+        return 0
+    fi
+
+    echo "Rebooting iOS simulator before flow $flow_index"
+    xcrun simctl shutdown "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
+    xcrun simctl boot "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
+    xcrun simctl bootstatus "$DETECTED_SIMULATOR_UDID" -b >/dev/null
+}
+
 build_maestro_args() {
     local flow_output_path="$1"
     local args=("${MAESTRO_ARGS[@]}")
@@ -377,6 +403,8 @@ for FLOW_PATH in "$WORKSPACE_DIR"/flows/*.flow.yaml; do
     if [ -n "$OUTPUT_PATH" ]; then
         FLOW_OUTPUT_PATH="$REPORT_DIR/$FLOW_INDEX-$FLOW_NAME.xml"
     fi
+
+    reboot_ios_simulator_if_needed "$FLOW_INDEX"
 
     if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH"; then
         if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then

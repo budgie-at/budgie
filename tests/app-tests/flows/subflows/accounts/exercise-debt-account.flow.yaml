@@ -12,10 +12,8 @@ appId: ${APP_ID}
       ACCOUNT_NAME: ${ACCOUNT_NAME}
 
 - runFlow:
-    file: set-debt-contact-and-date.flow.yaml
+    file: set-debt-return-date.flow.yaml
     env:
-      CONTACT_NAME: ${CONTACT_NAME}
-      CONTACT_NAME_ID: ${CONTACT_NAME_ID}
       RETURN_DAY: ${RETURN_DAY}
       RETURN_DATE_LABEL: ${RETURN_DATE_LABEL}
 

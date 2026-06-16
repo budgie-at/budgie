@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings, max-lines -- Sync orchestration requires sequential awaits and many log tags */
+/* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings -- Sync orchestration requires sequential awaits and many log tags */
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { consolidationScopeService } from '@budgie/consolidation';
 import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';

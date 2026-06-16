@@ -10,7 +10,6 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-close.hook';
-import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { TransactionActionsMenuContext } from '../../context/transaction-actions-menu.context';
 
 import { TransactionActionsMenuSelector } from './transaction-actions-menu.selector';
@@ -58,36 +57,17 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
             return;
         }
 
-        closeMenu(
-            () =>
-                void confirmAlert({
-                    title: t`Are you sure?`,
-                    message: t`This action cannot be undone.`,
-                    confirmText: t`Delete`,
-                    cancelText: t`Cancel`,
-                    isDestructive: true
-                }).then(confirmed => {
-                    if (confirmed) {
-                        void onDelete();
-                    }
-
-                    return null;
-                })
-        );
+        closeMenu(() => {
+            void onDelete();
+        });
     };
 
     const showAction = !isConsolidated || isDefined(onRevert);
 
     return (
         <View>
-            <View collapsable={false}>
-                <HapticPressable
-                    className="mr-lg"
-                    onPress={emptyFn}
-                    onPressIn={handleToggleMenu}
-                    testID={TransactionActionsMenuSelector.TriggerButton}
-                    hitSlop={16}
-                >
+            <View collapsable={false} testID={TransactionActionsMenuSelector.TriggerButton}>
+                <HapticPressable className="mr-lg" onPress={emptyFn} onPressIn={handleToggleMenu} hitSlop={16}>
                     <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
                 </HapticPressable>
             </View>
