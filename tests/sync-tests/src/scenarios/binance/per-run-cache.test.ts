@@ -14,16 +14,16 @@ import {
     stubBinanceServerTime,
     stubEmptyC2cAndEarnRewards
 } from '../../harness';
-import { binanceServer } from '../../harness/binance/binance-server';
+import { mockServer } from '../../harness/scenario/mock-server';
 
 describe('binance/per-run-cache', () => {
     it('serves the second asset in the same wallet from the cached window without re-fetching', async () => {
         stubBinanceServerTime();
-        binanceServer.use(http.get(FIAT_ORDERS_URL, () => HttpResponse.json(EMPTY_FIAT_RESPONSE)));
+        mockServer.use(http.get(FIAT_ORDERS_URL, () => HttpResponse.json(EMPTY_FIAT_RESPONSE)));
         stubEmptyC2cAndEarnRewards();
-        binanceServer.use(http.get(WITHDRAW_URL, () => HttpResponse.json([])));
-        binanceServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json([])));
-        binanceServer.use(
+        mockServer.use(http.get(WITHDRAW_URL, () => HttpResponse.json([])));
+        mockServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json([])));
+        mockServer.use(
             http.get(
                 DEPOSIT_URL,
                 () =>

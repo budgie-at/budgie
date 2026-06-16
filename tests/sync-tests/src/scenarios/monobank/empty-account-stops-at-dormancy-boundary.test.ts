@@ -4,7 +4,7 @@ import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
 import { fetchPersistedMonobankTransactions, fetchSyncById, setupBackwardSweepFixture } from '../../harness';
-import { monobankServer } from '../../harness/monobank/monobank-server';
+import { mockServer } from '../../harness/scenario/mock-server';
 
 const EXPECTED_DORMANCY_BOUNDARY_REQUESTS = 4;
 
@@ -13,7 +13,7 @@ describe('monobank/empty-account-stops-at-dormancy-boundary', () => {
         const sync = setupBackwardSweepFixture(new Date());
 
         let monobankRequestCount = 0;
-        monobankServer.use(
+        mockServer.use(
             http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => {
                 monobankRequestCount += 1;
 

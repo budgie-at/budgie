@@ -29,10 +29,10 @@ vi.mock('@budgie/contracts', async importOriginal => {
     };
 });
 
-import { monobankServer } from '../monobank/monobank-server';
+import { mockServer } from './mock-server';
 
 beforeAll(() => {
-    monobankServer.listen({ onUnhandledRequest: 'error' });
+    mockServer.listen({ onUnhandledRequest: 'error' });
 });
 
 beforeEach(async () => {
@@ -42,9 +42,9 @@ beforeEach(async () => {
 });
 
 afterEach(() => {
-    monobankServer.resetHandlers();
+    mockServer.resetHandlers();
 });
 
 afterAll(() => {
-    monobankServer.close();
+    mockServer.close();
 });

@@ -1,6 +1,6 @@
 import { HttpResponse, http } from 'msw';
 
-import { binanceServer } from './binance-server';
+import { mockServer } from '../scenario/mock-server';
 
 export const BINANCE_TEST_TOKEN = JSON.stringify({ apiKey: 'k', apiSecret: 's' });
 export const BINANCE_WINDOW_FROM = 1_700_000_000;
@@ -18,10 +18,10 @@ const EMPTY_C2C_RESPONSE = { code: '000000', message: 'success', data: [], total
 const EMPTY_EARN_REWARDS_RESPONSE = { rows: [], total: 0 };
 
 export const stubBinanceServerTime = (): void => {
-    binanceServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() })));
+    mockServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() })));
 };
 
 export const stubEmptyC2cAndEarnRewards = (): void => {
-    binanceServer.use(http.get(C2C_ORDERS_URL, () => HttpResponse.json(EMPTY_C2C_RESPONSE)));
-    binanceServer.use(http.get(EARN_REWARDS_URL, () => HttpResponse.json(EMPTY_EARN_REWARDS_RESPONSE)));
+    mockServer.use(http.get(C2C_ORDERS_URL, () => HttpResponse.json(EMPTY_C2C_RESPONSE)));
+    mockServer.use(http.get(EARN_REWARDS_URL, () => HttpResponse.json(EMPTY_EARN_REWARDS_RESPONSE)));
 };

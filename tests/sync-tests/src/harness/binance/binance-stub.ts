@@ -1,6 +1,6 @@
 import { HttpResponse, http } from 'msw';
 
-import { binanceServer } from './binance-server';
+import { mockServer } from '../scenario/mock-server';
 
 import type {
     BinanceAssetBalanceApiInterface,
@@ -81,16 +81,16 @@ const buildPagedEarnResponse = <TRow>(url: URL, rows: TRow[]): { rows: TRow[]; t
 
 export const binanceStub = {
     serverTime: (): void => {
-        binanceServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() }, { headers: WEIGHT_HEADERS })));
+        mockServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() }, { headers: WEIGHT_HEADERS })));
     },
     spotBalances: (balances: BinanceAssetBalanceApiInterface[]): void => {
-        binanceServer.use(http.post(SPOT_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
+        mockServer.use(http.post(SPOT_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
     },
     fundingBalances: (balances: BinanceAssetBalanceApiInterface[]): void => {
-        binanceServer.use(http.post(FUNDING_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
+        mockServer.use(http.post(FUNDING_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
     },
     deposits: (deposits: BinanceDepositApiInterface[]): void => {
-        binanceServer.use(
+        mockServer.use(
             http.get(DEPOSIT_URL, ({ request }) => {
                 const window = parseTimeWindow(new URL(request.url), 'startTime', 'endTime');
                 const matched = deposits.filter(deposit => isWithinWindow(deposit.insertTime, window));
@@ -100,7 +100,7 @@ export const binanceStub = {
         );
     },
     withdrawals: (withdrawals: BinanceWithdrawalApiInterface[]): void => {
-        binanceServer.use(
+        mockServer.use(
             http.get(WITHDRAW_URL, ({ request }) => {
                 const window = parseTimeWindow(new URL(request.url), 'startTime', 'endTime');
                 const matched = withdrawals.filter(withdrawal => isWithinWindow(new Date(withdrawal.applyTime).getTime(), window));
@@ -114,7 +114,7 @@ export const binanceStub = {
         fiatWithdrawals: BinanceFiatOrderApiInterface[],
         requestedWindows?: TimeWindow[]
     ): void => {
-        binanceServer.use(
+        mockServer.use(
             http.get(FIAT_ORDERS_URL, ({ request }) => {
                 const url = new URL(request.url);
                 const isDeposit = url.searchParams.get('transactionType') === FIAT_DEPOSIT_TRANSACTION_TYPE;
@@ -137,7 +137,7 @@ export const binanceStub = {
         sellOrders: BinanceC2cOrderApiInterface[],
         requestedWindows?: TimeWindow[]
     ): void => {
-        binanceServer.use(
+        mockServer.use(
             http.get(C2C_ORDERS_URL, ({ request }) => {
                 const url = new URL(request.url);
                 const isBuy = url.searchParams.get('tradeType') === C2C_BUY_TRADE_TYPE;
@@ -156,7 +156,7 @@ export const binanceStub = {
         );
     },
     c2cUnavailable: (): void => {
-        binanceServer.use(
+        mockServer.use(
             http.get(C2C_ORDERS_URL, () =>
                 HttpResponse.json(
                     { code: '-2015', msg: 'Invalid API-key, IP, or permissions for action.' },
@@ -166,7 +166,7 @@ export const binanceStub = {
         );
     },
     exchangeInfo: (symbols: string[]): void => {
-        binanceServer.use(
+        mockServer.use(
             http.get(EXCHANGE_INFO_URL, () =>
                 HttpResponse.json({ symbols: symbols.map(symbol => ({ symbol, status: 'TRADING' })) }, { headers: WEIGHT_HEADERS })
             )
@@ -176,7 +176,7 @@ export const binanceStub = {
         binanceStub.exchangeInfo(buildAllValidSymbols());
     },
     myTrades: (tradesBySymbol: Record<string, BinanceTradeApiInterface[]>, requestedSymbols?: Set<string>): void => {
-        binanceServer.use(
+        mockServer.use(
             http.get(MY_TRADES_URL, ({ request }) => {
                 const url = new URL(request.url);
                 const symbol = url.searchParams.get('symbol') ?? '';
@@ -190,7 +190,7 @@ export const binanceStub = {
         );
     },
     convertTradeFlow: (flows: BinanceConvertFlowApiInterface[]): void => {
-        binanceServer.use(
+        mockServer.use(
             http.get(CONVERT_TRADE_FLOW_URL, ({ request }) => {
                 const url = new URL(request.url);
                 const startTime = Number(url.searchParams.get('startTime') ?? '0');
@@ -202,21 +202,21 @@ export const binanceStub = {
         );
     },
     earnPositions: (positions: BinanceEarnPositionApiInterface[]): void => {
-        binanceServer.use(
+        mockServer.use(
             http.get(EARN_POSITION_URL, ({ request }) =>
                 HttpResponse.json(buildPagedEarnResponse(new URL(request.url), positions), { headers: WEIGHT_HEADERS })
             )
         );
     },
     lockedEarnPositions: (positions: BinanceLockedEarnPositionApiInterface[]): void => {
-        binanceServer.use(
+        mockServer.use(
             http.get(LOCKED_EARN_POSITION_URL, ({ request }) =>
                 HttpResponse.json(buildPagedEarnResponse(new URL(request.url), positions), { headers: WEIGHT_HEADERS })
             )
         );
     },
     earnRewards: (rewards: BinanceEarnRewardApiInterface[]): void => {
-        binanceServer.use(
+        mockServer.use(
             http.get(EARN_REWARDS_URL, ({ request }) => {
                 const url = new URL(request.url);
                 const isFirstPage = url.searchParams.get('current') === FIRST_PAGE;

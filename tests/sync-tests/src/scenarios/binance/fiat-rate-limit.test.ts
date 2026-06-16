@@ -14,7 +14,7 @@ import {
     stubEmptyC2cAndEarnRewards,
     withCoolDownSpy
 } from '../../harness';
-import { binanceServer } from '../../harness/binance/binance-server';
+import { mockServer } from '../../harness/scenario/mock-server';
 
 const NEAR_CEILING_UID_WEIGHT = '80000';
 const COOL_DOWN_WINDOW_MS = 60_000;
@@ -22,10 +22,10 @@ const COOL_DOWN_WINDOW_MS = 60_000;
 describe('binance/fiat-rate-limit', () => {
     it('schedules a cool-down before the next heavy call when fiat used-weight crosses the ceiling threshold', async () => {
         stubBinanceServerTime();
-        binanceServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json([])));
-        binanceServer.use(http.get(WITHDRAW_URL, () => HttpResponse.json([])));
+        mockServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json([])));
+        mockServer.use(http.get(WITHDRAW_URL, () => HttpResponse.json([])));
         stubEmptyC2cAndEarnRewards();
-        binanceServer.use(
+        mockServer.use(
             http.get(FIAT_ORDERS_URL, () =>
                 HttpResponse.json(EMPTY_FIAT_RESPONSE, { headers: { 'x-sapi-used-uid-weight-1m': NEAR_CEILING_UID_WEIGHT } })
             )

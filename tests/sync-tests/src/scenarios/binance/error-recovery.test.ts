@@ -4,7 +4,7 @@ import { HttpResponse, http } from 'msw';
 import { describe, it } from 'vitest';
 
 import { DEPOSIT_URL, SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases, setupBinanceFixture } from '../../harness';
-import { binanceServer } from '../../harness/binance/binance-server';
+import { mockServer } from '../../harness/scenario/mock-server';
 
 const RETRY_EXHAUSTION_TIMEOUT_MS = 30000;
 
@@ -14,7 +14,7 @@ describe('binance/error-recovery', () => {
             `marks the sync FAILED + disabled after ${SYNC_ERROR_THRESHOLD} consecutive ${label} errors`,
             async () => {
                 const { sync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
-                binanceServer.use(http.get(DEPOSIT_URL, () => new HttpResponse(null, { status })));
+                mockServer.use(http.get(DEPOSIT_URL, () => new HttpResponse(null, { status })));
 
                 await binanceSyncService.sync();
 
