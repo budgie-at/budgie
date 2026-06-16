@@ -30,10 +30,10 @@ maestro test tests/app-tests/flows/14.transaction-filters.flow.yaml \
 
 ## After merging `main` into a fixture-changing branch
 
-E2E fixtures (`tests/app-tests/scripts/prepare-date-sensitive-fixtures.mjs`) feed hard-coded assertions in the flows. If your branch adds/removes seeded transactions, `main`'s newer count/total assertions drift and `yarn ts/lint/cpd` cannot catch it. Re-run every Maestro flow that touches the changed fixture and reconcile counts against the **regenerated** fixture, e.g.:
+E2E fixtures (`tests/app-tests/scripts/prepare-date-sensitive-fixtures.js`) feed hard-coded assertions in the flows. If your branch adds/removes seeded transactions, `main`'s newer count/total assertions drift and `yarn ts/lint/cpd` cannot catch it. Re-run every Maestro flow that touches the changed fixture and reconcile counts against the **regenerated** fixture, e.g.:
 
 ```bash
-node tests/app-tests/scripts/prepare-date-sensitive-fixtures.mjs /tmp/fx
+node tests/app-tests/scripts/prepare-date-sensitive-fixtures.js /tmp/fx
 sqlite3 /tmp/fx/14.db "SELECT type, COUNT(*) FROM transactions WHERE deleted_at IS NULL GROUP BY type;"
 ```
 

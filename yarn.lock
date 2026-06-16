@@ -1050,6 +1050,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.29.7"
     "@budgie/ai": "workspace:^"
+    "@budgie/budget": "workspace:*"
     "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
@@ -1142,6 +1143,18 @@ __metadata:
     tailwindcss: "npm:^4.3.0"
     whisper.rn: "npm:^0.6.0"
     zod: "npm:4.1.12"
+  languageName: unknown
+  linkType: soft
+
+"@budgie-at/budget-tests@workspace:tests/budget-tests":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/budget-tests@workspace:tests/budget-tests"
+  dependencies:
+    "@budgie/budget": "workspace:*"
+    "@rnw-community/shared": "npm:^2.2.0"
+    "@types/node": "npm:^24.5.2"
+    typescript: "npm:^5.9.3"
+    vitest: "npm:^4.1.7"
   languageName: unknown
   linkType: soft
 
@@ -1280,6 +1293,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@budgie/budget@workspace:*, @budgie/budget@workspace:packages/budget":
+  version: 0.0.0-use.local
+  resolution: "@budgie/budget@workspace:packages/budget"
+  dependencies:
+    "@budgie/contracts": "workspace:*"
+    "@budgie/logger": "workspace:*"
+    "@rnw-community/shared": "npm:^2.2.0"
+    date-fns: "npm:^4.3.0"
+    drizzle-orm: "npm:^0.45.2"
+  languageName: unknown
+  linkType: soft
+
 "@budgie/consolidation@workspace:*, @budgie/consolidation@workspace:packages/consolidation":
   version: 0.0.0-use.local
   resolution: "@budgie/consolidation@workspace:packages/consolidation"
@@ -1290,7 +1315,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/contracts@workspace:^, @budgie/contracts@workspace:packages/contracts":
+"@budgie/contracts@workspace:*, @budgie/contracts@workspace:^, @budgie/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:

@@ -22,9 +22,9 @@ interface Props {
 const statusTextVariants = cva('text-xs font-medium', {
     variants: {
         status: {
-            [SyncStatusEnum.FAILED]: 'text-destructive',
-            [SyncStatusEnum.SYNCING]: 'text-amber-600',
-            [SyncStatusEnum.IDLE]: 'text-green-600'
+            [SyncStatusEnum.FAILED]: 'text-destructive-foreground',
+            [SyncStatusEnum.SYNCING]: 'text-dark-warning-foreground',
+            [SyncStatusEnum.IDLE]: 'text-positive-foreground'
         }
     }
 });

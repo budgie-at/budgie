@@ -1,4 +1,4 @@
-import React, { ComponentProps, useState } from 'react';
+import { ComponentProps, useState } from 'react';
 
 import { isEmptyString, isNotEmptyString } from '@rnw-community/shared';
 

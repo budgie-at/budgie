@@ -1,16 +1,13 @@
 #!/usr/bin/env node
 
-import { execFileSync } from 'node:child_process';
-import { mkdirSync } from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const { execFileSync } = require('node:child_process');
+const { mkdirSync } = require('node:fs');
+const path = require('node:path');
 const fixturesDirectoryPath = path.resolve(__dirname, '../fixtures');
 const outputDirectoryPath = process.argv[2];
 
 if (!outputDirectoryPath) {
-    console.error('Usage: prepare-date-sensitive-fixtures.mjs <output-directory>');
+    console.error('Usage: prepare-date-sensitive-fixtures.js <output-directory>');
     process.exit(1);
 }
 
@@ -33,6 +30,10 @@ const shiftTransactionsFixtureToNow = () => {
     const historicalAmount2011 = 39_975_247;
     const historicalAmount2026 = 220_435_025;
     const historicalBalance = -(historicalAmount2011 + historicalAmount2026);
+    const missingRateInstrumentId = 34;
+    const missingRateAccountId = 11;
+    const missingRateCategoryId = 42;
+    const missingRateAmount = 15_000_000_000;
 
     backupFixture(sourcePath, targetPath);
     runSqlite(
@@ -201,6 +202,125 @@ const shiftTransactionsFixtureToNow = () => {
         FROM transactions
         WHERE comment IN ('E2E Historical UAH 2011', 'E2E Historical UAH 2026');
 
+        INSERT INTO instruments (
+            id,
+            created_at,
+            updated_at,
+            type,
+            code,
+            name,
+            symbol
+        )
+        VALUES (
+            ${missingRateInstrumentId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'FIAT',
+            'NOFX',
+            'No Rate Currency',
+            'NF'
+        );
+
+        INSERT INTO accounts (
+            id,
+            created_at,
+            updated_at,
+            icon,
+            "order",
+            title,
+            type,
+            nature,
+            instrument_id,
+            include_in_net_worth,
+            is_active,
+            title_search
+        )
+        VALUES (
+            ${missingRateAccountId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'Wallet',
+            11,
+            'E2E Missing Rate',
+            'CASH',
+            'ASSET',
+            ${missingRateInstrumentId},
+            1,
+            1,
+            'e2e missing rate'
+        );
+
+        INSERT INTO account_balances (
+            created_at,
+            updated_at,
+            account_id,
+            amount
+        )
+        VALUES (
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            ${missingRateAccountId},
+            -${missingRateAmount}
+        );
+
+        INSERT INTO categories (
+            id,
+            created_at,
+            updated_at,
+            title,
+            icon,
+            title_search
+        )
+        VALUES (
+            ${missingRateCategoryId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'E2E Missing Rate Category',
+            'Wallet',
+            'e2e missing rate category'
+        );
+
+        INSERT INTO transactions (
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            comment,
+            from_account_id,
+            exchange_rate
+        )
+        SELECT
+            MAX(operated_at) + 60,
+            MAX(operated_at) + 60,
+            'EXPENSE',
+            '',
+            MAX(operated_at) + 60,
+            'E2E Missing Rate Expense',
+            ${missingRateAccountId},
+            1.0
+        FROM transactions;
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            created_at,
+            updated_at,
+            'CREDIT',
+            ${missingRateAccountId},
+            ${missingRateCategoryId},
+            id,
+            ${missingRateAmount}
+        FROM transactions
+        WHERE id = last_insert_rowid();
+
         UPDATE settings
         SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
 
@@ -228,6 +348,37 @@ const buildMonthlyTimestamp = (monthOffset, desiredDay) => {
     const targetDate = buildLocalNoonDate(targetYear, targetMonth, clampedDay);
 
     return Math.floor(targetDate.getTime() / 1000);
+};
+
+const generateBudgetMultiCurrencyFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, 'budget-multi-currency.db');
+    const targetPath = path.join(outputDirectoryPath, 'budget-multi-currency.db');
+    const transactionTimestamp = buildMonthlyTimestamp(0, 19);
+
+    backupFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        UPDATE transactions
+        SET operated_at = ${transactionTimestamp},
+            created_at = ${transactionTimestamp},
+            updated_at = ${transactionTimestamp}
+        WHERE id IN (9, 10);
+
+        UPDATE transaction_entries
+        SET created_at = ${transactionTimestamp},
+            updated_at = ${transactionTimestamp}
+        WHERE transaction_id IN (9, 10);
+
+        UPDATE settings
+        SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
+
+        COMMIT;
+        VACUUM;
+        `
+    );
 };
 
 const generateRecurringFixture = () => {
@@ -595,6 +746,7 @@ const generateRefundConsolidationFixture = () => {
 };
 
 shiftTransactionsFixtureToNow();
+generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
 generateConsolidationFixture();
 generateRefundConsolidationFixture();

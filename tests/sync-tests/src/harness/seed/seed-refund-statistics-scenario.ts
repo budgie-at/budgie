@@ -1,18 +1,19 @@
-import { eq } from 'drizzle-orm';
-
 import { CategoryEntityTable, PRECISION, TransactionEntryEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 
 import { testDb } from '../scenario/setup';
 
-import { seedRefundedExpense } from './seed-refund-fixture';
 import { seed } from './seed';
+import { seedRefundedExpense } from './seed-refund-fixture';
+
+const REFUNDED_EXPENSE_AMOUNT = Number('120') * PRECISION;
 
 export const seedRefundStatisticsScenario = (refundAmount: number) => {
     const [category] = testDb.select().from(CategoryEntityTable).all();
     const account = seed.account({ externalId: `mono-refund-${refundAmount}` });
     const { expense } = seedRefundedExpense({
         accountId: account.id,
-        expenseAmount: 120 * PRECISION,
+        expenseAmount: REFUNDED_EXPENSE_AMOUNT,
         refundAmounts: [refundAmount]
     });
 
@@ -24,6 +25,7 @@ export const seedRefundStatisticsScenario = (refundAmount: number) => {
 
     return {
         account,
-        category
+        category,
+        expense
     };
 };

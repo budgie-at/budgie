@@ -66,3 +66,6 @@ docs/superpowers
 
 # OMC agent state (local-only)
 .omc/
+
+# Agent scratch worktrees
+.claude/worktrees/
