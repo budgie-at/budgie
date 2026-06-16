@@ -11,14 +11,15 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
       element:
-          text: '.*Erste Bank.*'
+          id: 'CreateAccount.ERSTE'
       direction: DOWN
       timeout: 10000
-      visibilityPercentage: 50
+      visibilityPercentage: 80
+      centerElement: true
       speed: 20
 
 - tapOn:
-      text: '.*Erste Bank.*'
+      id: 'CreateAccount.ERSTE'
 
 - runFlow:
       file: subflows/import/import-erste-pdf-from-picker.flow.yaml

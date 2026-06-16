@@ -11,14 +11,15 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
       element:
-          text: '.*Privatbank.*'
+          id: 'CreateAccount.PRIVATBANK'
       direction: DOWN
       timeout: 10000
-      visibilityPercentage: 50
+      visibilityPercentage: 80
+      centerElement: true
       speed: 20
 
 - tapOn:
-      text: '.*Privatbank.*'
+      id: 'CreateAccount.PRIVATBANK'
 
 - runFlow:
       file: subflows/import/import-privatbank-xlsx-from-picker.flow.yaml
