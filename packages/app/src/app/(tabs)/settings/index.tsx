@@ -26,6 +26,9 @@ import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { MoneyDataUpgradeStatusCard } from '../../../money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card';
 import { AutoAssignMccCategory } from '../../../settings/components/auto-assign-mcc-category/auto-assign-mcc-category';
+import { BudgetManagementCard } from '../../../settings/components/budget-management-card/budget-management-card';
+import { BudgetPushToggle } from '../../../settings/components/budget-push-toggle/budget-push-toggle';
+import { BudgetWidgetToggle } from '../../../settings/components/budget-widget-toggle/budget-widget-toggle';
 import { ConsolidateTransfers } from '../../../settings/components/consolidate-transfers/consolidate-transfers';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
@@ -50,7 +53,6 @@ export default function SettingsPage() {
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
-
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
@@ -173,6 +175,16 @@ export default function SettingsPage() {
                                 variant="dark-warning"
                                 testID={SettingsPageSelector.InactiveCard}
                             />
+                        </Animated.View>
+                    </SettingsGroup>
+                </View>
+
+                <View {...anchorLayout('budget')}>
+                    <SettingsGroup title={t`Budget`}>
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('budget')}>
+                            <BudgetManagementCard />
+                            <BudgetWidgetToggle />
+                            <BudgetPushToggle />
                         </Animated.View>
                     </SettingsGroup>
                 </View>

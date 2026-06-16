@@ -16,6 +16,7 @@ import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-
 import { HomeSectionHeader } from '../home-section-header/home-section-header';
 import { HomeSectionItem } from '../home-section-item/home-section-item';
 
+import type { ReactElement } from 'react';
 import type { SharedValue } from 'react-native-reanimated';
 
 interface Props {
@@ -24,11 +25,11 @@ interface Props {
     readonly activeAccountCount: number;
     readonly bottomInset: number;
     readonly balanceSummary: HomeAccountBalanceSummaryInterface;
+    readonly listHeaderComponent?: ReactElement;
 }
 
-export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottomInset, balanceSummary }: Props) => {
+export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottomInset, balanceSummary, listHeaderComponent }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
-
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset;
     const contentContainerStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20 };
     const emptyStateStyle = { paddingBottom: bottomPadding };
@@ -52,6 +53,7 @@ export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottom
     if (!isNotEmptyArray(sections)) {
         return (
             <View className="flex-1 px-5xl" style={emptyStateStyle}>
+                {listHeaderComponent}
                 <AccountsEmptyState />
             </View>
         );
@@ -69,6 +71,7 @@ export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottom
             showsVerticalScrollIndicator={false}
             stickySectionHeadersEnabled={false}
             contentContainerStyle={contentContainerStyle}
+            ListHeaderComponent={listHeaderComponent}
             ListFooterComponent={listFooterComponent}
         />
     );

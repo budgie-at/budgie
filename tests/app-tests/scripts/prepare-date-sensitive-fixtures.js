@@ -1,16 +1,13 @@
 #!/usr/bin/env node
 
-import { execFileSync } from 'node:child_process';
-import { mkdirSync } from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const { execFileSync } = require('node:child_process');
+const { mkdirSync } = require('node:fs');
+const path = require('node:path');
 const fixturesDirectoryPath = path.resolve(__dirname, '../fixtures');
 const outputDirectoryPath = process.argv[2];
 
 if (!outputDirectoryPath) {
-    console.error('Usage: prepare-date-sensitive-fixtures.mjs <output-directory>');
+    console.error('Usage: prepare-date-sensitive-fixtures.js <output-directory>');
     process.exit(1);
 }
 
@@ -351,6 +348,37 @@ const buildMonthlyTimestamp = (monthOffset, desiredDay) => {
     const targetDate = buildLocalNoonDate(targetYear, targetMonth, clampedDay);
 
     return Math.floor(targetDate.getTime() / 1000);
+};
+
+const generateBudgetMultiCurrencyFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, 'budget-multi-currency.db');
+    const targetPath = path.join(outputDirectoryPath, 'budget-multi-currency.db');
+    const transactionTimestamp = buildMonthlyTimestamp(0, 19);
+
+    backupFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        UPDATE transactions
+        SET operated_at = ${transactionTimestamp},
+            created_at = ${transactionTimestamp},
+            updated_at = ${transactionTimestamp}
+        WHERE id IN (9, 10);
+
+        UPDATE transaction_entries
+        SET created_at = ${transactionTimestamp},
+            updated_at = ${transactionTimestamp}
+        WHERE transaction_id IN (9, 10);
+
+        UPDATE settings
+        SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
+
+        COMMIT;
+        VACUUM;
+        `
+    );
 };
 
 const generateRecurringFixture = () => {
@@ -718,6 +746,7 @@ const generateRefundConsolidationFixture = () => {
 };
 
 shiftTransactionsFixtureToNow();
+generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
 generateConsolidationFixture();
 generateRefundConsolidationFixture();

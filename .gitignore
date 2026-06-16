@@ -63,3 +63,6 @@ tests/app-tests/artifacts/
 nativewind-env.d.ts
 docs/plans
 docs/superpowers
+
+# Agent scratch worktrees
+.claude/worktrees/

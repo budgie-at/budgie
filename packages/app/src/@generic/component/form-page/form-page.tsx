@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, RefObject } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { Edge, useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -9,6 +9,7 @@ import { Footer } from '../footer/footer';
 import { Page } from '../page/page';
 
 import type { ViewStyle } from 'react-native';
+import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controller';
 
 interface Props {
     readonly header: ReactNode;
@@ -19,14 +20,27 @@ interface Props {
     readonly onScroll?: EmptyFn;
     readonly safeEdges?: Edge[];
     readonly contentContainerStyle?: ViewStyle;
+    readonly scrollViewRef?: RefObject<KeyboardAwareScrollViewRef | null>;
+    readonly extraBottomPadding?: number;
 }
 
-export const FormPage = ({ header, children, footer, testID, scrollViewTestID, onScroll, safeEdges, contentContainerStyle }: Props) => {
+export const FormPage = ({
+    header,
+    children,
+    footer,
+    testID,
+    scrollViewTestID,
+    onScroll,
+    safeEdges,
+    contentContainerStyle,
+    scrollViewRef,
+    extraBottomPadding = 0
+}: Props) => {
     const { bottom } = useSafeAreaInsets();
 
     const defaultContentContainerStyle = {
         paddingTop: FORM_PAGE_TOP_PADDING,
-        paddingBottom: bottom + FORM_PAGE_FOOTER_PADDING
+        paddingBottom: bottom + FORM_PAGE_FOOTER_PADDING + extraBottomPadding
     } satisfies ViewStyle;
     const scrollContentContainerStyle = [defaultContentContainerStyle, contentContainerStyle];
 
@@ -35,6 +49,7 @@ export const FormPage = ({ header, children, footer, testID, scrollViewTestID, o
     return (
         <Page testID={testID} header={header} footer={footerContent} safeEdges={safeEdges} withBlur>
             <KeyboardAwareScrollView
+                ref={scrollViewRef}
                 testID={scrollViewTestID}
                 onScroll={onScroll}
                 keyboardDismissMode="on-drag"

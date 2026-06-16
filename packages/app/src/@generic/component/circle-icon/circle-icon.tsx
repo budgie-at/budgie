@@ -18,8 +18,8 @@ interface Props {
     readonly iconSize?: number;
     readonly className?: string;
     readonly iconClassName?: string;
-    readonly variant?: ColorPaletteVariant;
     readonly testID?: string;
+    readonly variant?: ColorPaletteVariant;
 }
 
 const wrapperVariants = cva<{

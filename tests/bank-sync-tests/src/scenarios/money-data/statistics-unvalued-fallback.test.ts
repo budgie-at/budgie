@@ -11,9 +11,9 @@ import {
     LanguageEnum,
     PRECISION,
     SettingsEntityTable,
+    TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
-    TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
@@ -24,6 +24,8 @@ import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
 import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
+
+const UNCONVERTIBLE_EXPENSE_AMOUNT = Number('15000') * PRECISION;
 
 const seedUnconvertibleExpense = async (title: string) => {
     const euro = await requireInstrument(CurrencyEnum.EUR);
@@ -54,7 +56,7 @@ const seedUnconvertibleExpense = async (title: string) => {
         transactionId: transaction.id,
         accountId: account.id,
         type: TransactionEntryTypeEnum.CREDIT,
-        amount: 15_000 * PRECISION,
+        amount: UNCONVERTIBLE_EXPENSE_AMOUNT,
         categoryId: category.id,
         mccCategoryId: null,
         externalId: null,
@@ -127,7 +129,6 @@ describe('statistics fallback for unvalued entries', () => {
 
         const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id).get();
         const tagRows = statisticsRepository.getExpenseByTagQuery(DEFAULT_TRANSACTION_FILTER, euro.id).all();
-
         const categoryAmount = getExpenseCategoryAmount(category.id, euro.id);
         const tagAmount = tagRows.find(row => row.tag?.id === tag.id)?.amount ?? 0;
 
