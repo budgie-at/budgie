@@ -135,26 +135,56 @@ class TransactionService {
         });
     }
 
+    @Log(
+        externalSource => `enter externalSource=${externalSource}`,
+        (result, externalSource) => `done externalSource=${externalSource} count=${result.size}`,
+        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
+    )
     async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
         return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
     }
 
+    @Log(
+        externalSource => `enter externalSource=${externalSource}`,
+        (result, externalSource) => `done externalSource=${externalSource} count=${result.size}`,
+        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
+    )
     async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
         return transactionRepository.findIdMapByExternalSource(externalSource);
     }
 
+    @Log(
+        accountId => `enter accountId=${accountId}`,
+        (result, accountId) => `done accountId=${accountId} earliestAt=${result?.toISOString() ?? 'null'}`,
+        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
+    )
     async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
         return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
     }
 
+    @Log(
+        externalSource => `enter externalSource=${externalSource}`,
+        (result, externalSource) => `done externalSource=${externalSource} earliestAt=${result?.toISOString() ?? 'null'}`,
+        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
+    )
     async getEarliestTransactionTimeByExternalSource(externalSource: ExternalSourceEnum): Promise<Date | null> {
         return transactionRepository.getEarliestTransactionTimeByExternalSource(externalSource);
     }
 
+    @Log(
+        tx => `enter hasTx=${String(isDefined(tx))}`,
+        (_result, tx) => `done hasTx=${String(isDefined(tx))}`,
+        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async updateAllBalances(tx?: DB): Promise<void> {
         await accountBalanceIncrementalService.updateAllBalances(true, tx);
     }
 
+    @Log(
+        input => `enter type=${input.type} title="${input.title}"`,
+        (result, input) => `done id=${result.id} type=${input.type} title="${input.title}"`,
+        (error, input) => `throw type=${input.type} title="${input.title}" error=${getErrorMessage(error)}`
+    )
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return transactionAsync(db, async tx => {
             const [transaction] = await this.bulkCreate([input], tx);
@@ -163,6 +193,11 @@ class TransactionService {
         });
     }
 
+    @Log(
+        input => `enter type=${input.type} fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId}`,
+        (result, input) => `done id=${result.id} fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId}`,
+        (error, input) => `throw fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} error=${getErrorMessage(error)}`
+    )
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
             const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
@@ -203,6 +238,11 @@ class TransactionService {
         });
     }
 
+    @Log(
+        (id, input) => `enter id=${id} type=${input.type} title="${input.title}"`,
+        (_result, id, input) => `done id=${id} type=${input.type} title="${input.title}"`,
+        (error, id, input) => `throw id=${id} type=${input.type} title="${input.title}" error=${getErrorMessage(error)}`
+    )
     async updateById(id: number, input: TransactionUpdateServiceInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
             const existingTransaction = await transactionRepository.getByIdWithEntries(id, tx);
