@@ -44,10 +44,10 @@ env:
                 commands:
                     - extendedWaitUntil:
                           visible:
-                              id: 'E2EFixtures'
+                              text: 'E2EFixtures'
                           timeout: 3000
                     - tapOn:
-                          id: 'E2EFixtures'
+                          text: 'E2EFixtures'
                           retryTapIfNoChange: true
                     - waitForAnimationToEnd
 
