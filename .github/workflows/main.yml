@@ -23,7 +23,8 @@ jobs:
         uses: actions/checkout@v5
         with:
           persist-credentials: false
-          fetch-depth: 0
+          fetch-depth: 1
+          fetch-tags: true
           ref: main
 
       - name: Setup Node
@@ -38,7 +39,8 @@ jobs:
           git config user.email "vitalyiegorov@gmail.com"
           git remote rm origin
           git remote add origin https://vitalyiegorov:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          git fetch origin main --tags
+          git fetch --force --prune --tags --unshallow origin +refs/heads/main:refs/remotes/origin/main || \
+            git fetch --force --prune --tags origin +refs/heads/main:refs/remotes/origin/main
           git switch main
           git branch --set-upstream-to=origin/main main
 
