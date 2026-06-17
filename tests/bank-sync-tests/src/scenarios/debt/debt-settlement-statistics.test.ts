@@ -108,6 +108,94 @@ describe('debt settlement statistics', () => {
         expect(settlementEntry?.amount).toBe(100 * PRECISION);
     });
 
+    it('creates lent debt accounts by treating current balance as an already returned amount', async () => {
+        const account = await accountService.createDebt({
+            title: 'Nikita owes me',
+            iban: null,
+            icon: UserIconNameEnum.HandCoins,
+            instrumentId: 1,
+            type: AccountTypeEnum.DEBT,
+            debtType: AccountDebtTypeEnum.LENT,
+            currentBalance: 2_000,
+            targetBalance: 15_000,
+            contactId: null,
+            deadline: null
+        });
+        const balance = accountBalanceRepository.getByAccountId(account.id).get();
+
+        expect(balance?.balance).toBe(13_000 * PRECISION);
+    });
+
+    it('updates lent debt accounts by treating current balance as an already returned amount', async () => {
+        const account = await accountService.createDebt({
+            title: 'Nikita owes me',
+            iban: null,
+            icon: UserIconNameEnum.HandCoins,
+            instrumentId: 1,
+            type: AccountTypeEnum.DEBT,
+            debtType: AccountDebtTypeEnum.LENT,
+            currentBalance: 0,
+            targetBalance: 15_000,
+            contactId: null,
+            deadline: null
+        });
+
+        await accountService.updateDebtById(account.id, {
+            debtType: AccountDebtTypeEnum.LENT,
+            currentBalance: 2_000,
+            targetBalance: 15_000
+        });
+
+        const balance = accountBalanceRepository.getByAccountId(account.id).get();
+
+        expect(balance?.balance).toBe(13_000 * PRECISION);
+    });
+
+    it('summarizes lent debt returns from the returned amount input and attached income', async () => {
+        const [category] = testDb.select().from(CategoryEntityTable).all();
+        const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+        const debtAccount = await accountService.createDebt({
+            title: 'Nikita owes me',
+            iban: null,
+            icon: UserIconNameEnum.HandCoins,
+            instrumentId: cashAccount.instrumentId,
+            type: AccountTypeEnum.DEBT,
+            debtType: AccountDebtTypeEnum.LENT,
+            currentBalance: 2_000,
+            targetBalance: 15_000,
+            contactId: null,
+            deadline: null
+        });
+        const transaction = createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
+
+        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+
+        const balance = accountBalanceRepository.getByAccountId(debtAccount.id).get();
+        const debtEntries = testDb
+            .select()
+            .from(TransactionEntryEntityTable)
+            .all()
+            .filter(entry => entry.accountId === debtAccount.id);
+        const debitAmount = debtEntries
+            .filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT)
+            .reduce((total, entry) => total + entry.amount, 0);
+        const creditAmount = debtEntries
+            .filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT)
+            .reduce((total, entry) => total + entry.amount, 0);
+        const summary = buildDebtAccountProgressSummary({
+            debtType: AccountDebtTypeEnum.LENT,
+            balance: balance?.balance ?? 0,
+            debitAmount,
+            creditAmount,
+            targetAmount: debtAccount.targetBalance
+        });
+
+        expect(summary.outstandingAmount).toBe(12_891 * PRECISION);
+        expect(summary.paidAmount).toBe(2_109 * PRECISION);
+        expect(summary.totalAmount).toBe(15_000 * PRECISION);
+        expect(summary.percentage).toBe(14.06);
+    });
+
     it('summarizes lent debt progress against the original target amount', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.LENT,

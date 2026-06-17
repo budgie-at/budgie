@@ -20,7 +20,8 @@ interface Props {
 
 export const UpdateDebtAccount = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
-    const currentBalance = account.debtType === AccountDebtTypeEnum.BORROW ? Math.abs(balance) : balance;
+    const targetBalance = convertFromMicroUnits(account.targetBalance);
+    const currentBalance = account.debtType === AccountDebtTypeEnum.BORROW ? Math.abs(balance) : Math.max(targetBalance - balance, 0);
 
     const { control, handleSubmit, instrument } = useDebtAccountForm(
         {
@@ -33,7 +34,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
             deadline: account.deadline,
             contactId: account.contactId,
             instrumentId: account.instrumentId,
-            targetBalance: convertFromMicroUnits(account.targetBalance),
+            targetBalance,
             includeInNetWorth: account.includeInNetWorth,
             isActive: account.isActive
         },

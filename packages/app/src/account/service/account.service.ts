@@ -22,6 +22,7 @@ import {
     transactionEntryRepository,
     transactionRepository
 } from '../../@generic/drizzle/db/db';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
@@ -35,7 +36,6 @@ class AccountService {
             const [{ count }] = await accountRepository.count();
             const account = await this.createLiabilityAccount({ ...input }, count, tx);
             await this.adjustBalanceTo(account.id, input.currentBalance, tx);
-
             if (!isPositiveNumber(count)) {
                 await settingsRepository.update({ defaultAccountId: account.id }, tx);
             }
@@ -52,7 +52,8 @@ class AccountService {
                 count,
                 tx
             );
-            await this.adjustBalanceTo(account.id, this.getDebtBalanceInput(input), tx);
+            const debtBalance = this.getDebtBalanceInput(input.currentBalance, input.debtType, input.targetBalance);
+            await this.adjustBalanceTo(account.id, debtBalance, tx);
 
             return account;
         });
@@ -91,11 +92,9 @@ class AccountService {
                 tx
             );
             if (isNumber(input.currentBalance)) {
-                await this.adjustBalanceTo(
-                    account.id,
-                    this.getDebtBalanceInput({ currentBalance: input.currentBalance, debtType: account.debtType }),
-                    tx
-                );
+                const targetBalance = convertFromMicroUnits(account.targetBalance);
+                const debtBalance = this.getDebtBalanceInput(input.currentBalance, account.debtType, targetBalance);
+                await this.adjustBalanceTo(account.id, debtBalance, tx);
             }
 
             return account;
@@ -261,8 +260,10 @@ class AccountService {
         );
     }
 
-    private getDebtBalanceInput(input: Pick<DebtAccountCreateInputInterface, 'currentBalance' | 'debtType'>): number {
-        return input.debtType === AccountDebtTypeEnum.BORROW ? -Math.abs(input.currentBalance) : Math.abs(input.currentBalance);
+    private getDebtBalanceInput(currentBalanceInput: number, debtType: AccountDebtTypeEnum, targetBalance: number): number {
+        const currentBalance = Math.abs(currentBalanceInput);
+
+        return debtType === AccountDebtTypeEnum.LENT ? Math.max(targetBalance - currentBalance, 0) : -currentBalance;
     }
 
     private async createLiabilityAccount(
