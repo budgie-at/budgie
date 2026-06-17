@@ -11,8 +11,8 @@ permissions:
 
 jobs:
   build-and-publish:
-    name: Build & Publish to App Stores
-    runs-on: [self-hosted, linux-burst]
+    name: Build & Submit iOS to App Store
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -24,6 +24,21 @@ jobs:
         with:
           node-version: 22.x
           cache: yarn
+
+      - name: Select Xcode
+        run: |
+          if [ -d /Applications/Xcode_26.4.1.app ]; then
+            XCODE_APP=/Applications/Xcode_26.4.1.app
+          elif [ -d /Applications/Xcode.app ]; then
+            XCODE_APP=/Applications/Xcode.app
+          else
+            echo "::error::Xcode is not installed on this runner."
+            ls -1 /Applications | grep -i Xcode || true
+            exit 1
+          fi
+
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
 
       - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
@@ -37,15 +52,23 @@ jobs:
           base64-encoded-secret: ${{ secrets.EXPO_IOS_ASC_API_KEY }}
           filename: "packages/app/asc_api_key.p8"
 
-      - name: Play Market Console Key file creation
-        uses: MobileDevOps/secret-to-file-action@v1.0.0
-        with:
-          base64-encoded-secret: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-          filename: "packages/app/google-service-account.json"
-
       - name: Install dependencies
         run: yarn install
 
-      - name: Build on EAS
+      - name: Build iOS app locally
         working-directory: packages/app
-        run: eas build --platform ios --non-interactive --auto-submit --no-wait
+        run: |
+          mkdir -p ../../artifacts
+          eas build --platform ios --profile production --local --non-interactive --output ../../artifacts/budgie-production.ipa
+
+      - name: Upload iOS artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: budgie-production-ios
+          path: artifacts/budgie-production.ipa
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Submit iOS app
+        working-directory: packages/app
+        run: eas submit --platform ios --profile production --path ../../artifacts/budgie-production.ipa --non-interactive

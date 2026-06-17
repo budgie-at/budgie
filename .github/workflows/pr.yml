@@ -18,7 +18,7 @@ on: pull_request
 jobs:
   code-quality:
     name: Code quality checks
-    runs-on: [self-hosted, linux-burst]
+    runs-on: [self-hosted, linux-ci]
     permissions:
       contents: read
       id-token: write
@@ -50,10 +50,10 @@ jobs:
         run: echo "${{env.PR_TITLE}}" | node_modules/.bin/commitlint
 
       - name: Typescript checks
-        run: yarn turbo run ts --concurrency=2
+        run: yarn turbo run ts
 
       - name: ESLint checks
-        run: yarn turbo run lint --concurrency=2
+        run: yarn turbo run lint
 
       - name: Deadcode detection
         continue-on-error: true
@@ -63,7 +63,7 @@ jobs:
         run: yarn turbo cpd
 
       - name: Unit tests
-        run: yarn turbo run test:coverage --concurrency=2
+        run: yarn turbo run test:coverage
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
@@ -72,7 +72,6 @@ jobs:
 
   eas-update-preview:
     name: EAS Update Preview
-    needs: code-quality
     runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     permissions:
       contents: read
@@ -117,7 +116,7 @@ jobs:
           eas update --skip-bundler --input-dir dist --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
 
   build-ios-e2e-app:
-    needs: [code-quality]
+    needs: [code-quality, eas-update-preview]
     name: Build iOS E2E app
     runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     env:
@@ -454,7 +453,7 @@ jobs:
     if: false
     needs: [code-quality, eas-update-preview]
     name: E2E Tests on Android
-    runs-on: [self-hosted, linux-burst]
+    runs-on: [self-hosted, linux-ci]
     steps:
       - uses: actions/checkout@v5
 
