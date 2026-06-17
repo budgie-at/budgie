@@ -164,4 +164,4 @@ appId: ${APP_ID}
 
 - assertVisible: 'Left to receive'
 - assertVisible: 'Return Progress'
-- assertVisible: '40%'
+- assertVisible: '94%'

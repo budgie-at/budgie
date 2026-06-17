@@ -1,4 +1,4 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountEntityInterface } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -20,6 +20,7 @@ interface Props {
 
 export const UpdateDebtAccount = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
+    const currentBalance = account.debtType === AccountDebtTypeEnum.BORROW ? Math.abs(balance) : balance;
 
     const { control, handleSubmit, instrument } = useDebtAccountForm(
         {
@@ -27,7 +28,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
             type: account.type,
             icon: account.icon,
             title: account.title,
-            currentBalance: balance,
+            currentBalance,
             debtType: account.debtType,
             deadline: account.deadline,
             contactId: account.contactId,

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { accountBalanceRepository, statisticsRepository, transactionRepository } from '@app/@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
+import { accountService } from '@app/account/service/account.service';
 import { buildDebtAccountProgressSummary } from '@app/account/utils/build-debt-account-progress-summary.util';
 import { transactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
 import {
@@ -16,7 +17,8 @@ import {
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionEntityTable,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    UserIconNameEnum
 } from '@budgie/contracts';
 import { isDefined } from '@rnw-community/shared';
 
@@ -106,7 +108,7 @@ describe('debt settlement statistics', () => {
         expect(settlementEntry?.amount).toBe(100 * PRECISION);
     });
 
-    it('summarizes lent debt progress from debit openings and credit returns', () => {
+    it('summarizes lent debt progress against the original target amount', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.LENT,
             balance: 7_900 * PRECISION,
@@ -116,12 +118,12 @@ describe('debt settlement statistics', () => {
         });
 
         expect(summary.outstandingAmount).toBe(7_900 * PRECISION);
-        expect(summary.paidAmount).toBe(2_100 * PRECISION);
-        expect(summary.totalAmount).toBe(10_000 * PRECISION);
-        expect(summary.percentage).toBe(21);
+        expect(summary.paidAmount).toBe(7_100 * PRECISION);
+        expect(summary.totalAmount).toBe(15_000 * PRECISION);
+        expect(summary.percentage).toBe(47.33);
     });
 
-    it('summarizes lent debt progress from an existing balance and later debit openings', () => {
+    it('keeps the lent target amount as the denominator when existing balance predates ledger entries', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.LENT,
             balance: 8_000 * PRECISION,
@@ -131,9 +133,9 @@ describe('debt settlement statistics', () => {
         });
 
         expect(summary.outstandingAmount).toBe(8_000 * PRECISION);
-        expect(summary.paidAmount).toBe(2_100 * PRECISION);
-        expect(summary.totalAmount).toBe(10_100 * PRECISION);
-        expect(summary.percentage).toBe(20.79);
+        expect(summary.paidAmount).toBe(7_000 * PRECISION);
+        expect(summary.totalAmount).toBe(15_000 * PRECISION);
+        expect(summary.percentage).toBe(46.67);
     });
 
     it('summarizes a lent debt target as outstanding before any ledger entries exist', () => {
@@ -182,7 +184,7 @@ describe('debt settlement statistics', () => {
         expect(summary.percentage).toBe(0);
     });
 
-    it('summarizes borrowed debt progress from credit openings and debit repayments', () => {
+    it('summarizes borrowed debt progress against the original target amount', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.BORROW,
             balance: -7_900 * PRECISION,
@@ -192,24 +194,24 @@ describe('debt settlement statistics', () => {
         });
 
         expect(summary.outstandingAmount).toBe(7_900 * PRECISION);
-        expect(summary.paidAmount).toBe(2_100 * PRECISION);
-        expect(summary.totalAmount).toBe(10_000 * PRECISION);
-        expect(summary.percentage).toBe(21);
+        expect(summary.paidAmount).toBe(7_100 * PRECISION);
+        expect(summary.totalAmount).toBe(15_000 * PRECISION);
+        expect(summary.percentage).toBe(47.33);
     });
 
-    it('summarizes borrowed debt progress from an existing balance and later credit openings', () => {
+    it('keeps the borrowed target amount as the denominator when existing balance predates ledger entries', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.BORROW,
-            balance: -36_000 * PRECISION,
-            debitAmount: 10_000 * PRECISION,
-            creditAmount: 1_000 * PRECISION,
+            balance: -8_066 * PRECISION,
+            debitAmount: 8_066 * PRECISION,
+            creditAmount: 0,
             targetAmount: 45_000 * PRECISION
         });
 
-        expect(summary.outstandingAmount).toBe(36_000 * PRECISION);
-        expect(summary.paidAmount).toBe(10_000 * PRECISION);
-        expect(summary.totalAmount).toBe(46_000 * PRECISION);
-        expect(summary.percentage).toBe(21.74);
+        expect(summary.outstandingAmount).toBe(8_066 * PRECISION);
+        expect(summary.paidAmount).toBe(36_934 * PRECISION);
+        expect(summary.totalAmount).toBe(45_000 * PRECISION);
+        expect(summary.percentage).toBe(82.08);
     });
 
     it('summarizes a borrowed debt target as outstanding before any ledger entries exist', () => {
@@ -225,6 +227,49 @@ describe('debt settlement statistics', () => {
         expect(summary.paidAmount).toBe(0);
         expect(summary.totalAmount).toBe(45_000 * PRECISION);
         expect(summary.percentage).toBe(0);
+    });
+
+    it('creates borrowed debt accounts with a negative outstanding balance', async () => {
+        const account = await accountService.createDebt({
+            title: 'Borrowed account',
+            iban: null,
+            icon: UserIconNameEnum.HandCoins,
+            instrumentId: 1,
+            type: AccountTypeEnum.DEBT,
+            debtType: AccountDebtTypeEnum.BORROW,
+            currentBalance: 8_066,
+            targetBalance: 45_000,
+            contactId: null,
+            deadline: null
+        });
+        const balance = accountBalanceRepository.getByAccountId(account.id).get();
+
+        expect(balance?.balance).toBe(-8_066 * PRECISION);
+    });
+
+    it('updates borrowed debt accounts with a negative outstanding balance', async () => {
+        const account = await accountService.createDebt({
+            title: 'Borrowed account',
+            iban: null,
+            icon: UserIconNameEnum.HandCoins,
+            instrumentId: 1,
+            type: AccountTypeEnum.DEBT,
+            debtType: AccountDebtTypeEnum.BORROW,
+            currentBalance: 8_066,
+            targetBalance: 45_000,
+            contactId: null,
+            deadline: null
+        });
+
+        await accountService.updateDebtById(account.id, {
+            debtType: AccountDebtTypeEnum.BORROW,
+            currentBalance: 1_900,
+            targetBalance: 15_000
+        });
+
+        const balance = accountBalanceRepository.getByAccountId(account.id).get();
+
+        expect(balance?.balance).toBe(-1_900 * PRECISION);
     });
 
     it('counts debt repayments once in expense analytics while updating the borrowed debt balance', () => {

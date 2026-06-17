@@ -1,6 +1,8 @@
 import {
+    AccountDebtTypeEnum,
     AccountEntityInterface,
     AccountNatureEnum,
+    type DB,
     DebtAccountCreateInputInterface,
     LiabilityAccountCreateInputInterface,
     TransactionEntryCreateEntityInterface,
@@ -27,14 +29,11 @@ import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsol
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 
-import type { DB } from '@budgie/contracts';
-
 class AccountService {
     async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const [{ count }] = await accountRepository.count();
             const account = await this.createLiabilityAccount({ ...input }, count, tx);
-
             await this.adjustBalanceTo(account.id, input.currentBalance, tx);
 
             if (!isPositiveNumber(count)) {
@@ -53,8 +52,7 @@ class AccountService {
                 count,
                 tx
             );
-
-            await this.adjustBalanceTo(account.id, input.currentBalance, tx);
+            await this.adjustBalanceTo(account.id, this.getDebtBalanceInput(input), tx);
 
             return account;
         });
@@ -76,7 +74,6 @@ class AccountService {
     async updateById(id: number, input: Partial<Omit<LiabilityAccountCreateInputInterface, 'type'>>): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const account = await accountRepository.updateById(id, input, tx);
-
             if (isNumber(input.currentBalance)) {
                 await this.adjustBalanceTo(account.id, input.currentBalance, tx);
             }
@@ -93,9 +90,12 @@ class AccountService {
                 { ...input, targetBalance: isNumber(input.targetBalance) ? convertToMicroUnits(input.targetBalance) : undefined },
                 tx
             );
-
             if (isNumber(input.currentBalance)) {
-                await this.adjustBalanceTo(account.id, input.currentBalance, tx);
+                await this.adjustBalanceTo(
+                    account.id,
+                    this.getDebtBalanceInput({ currentBalance: input.currentBalance, debtType: account.debtType }),
+                    tx
+                );
             }
 
             return account;
@@ -104,7 +104,6 @@ class AccountService {
 
     async findByIdOrFail(id: number): Promise<AccountEntityInterface> {
         const account = await accountRepository.findById(id);
-
         if (!isDefined(account)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings
             throw new Error(`Account with id ${id} not found`);
@@ -120,7 +119,6 @@ class AccountService {
             await accountRepository.archiveById(id, tx);
             await transactionEntryRepository.archiveByAccountIds([id], tx);
             await transactionRepository.archiveByAccountIds([id], tx);
-
             const settings = await settingsRepository.getSettings();
             if (settings.defaultAccountId === id) {
                 await settingsRepository.update({ defaultAccountId: null }, tx);
@@ -222,7 +220,6 @@ class AccountService {
     private async adjustBalanceTo(accountId: number, targetBalance: number, tx: DB): Promise<void> {
         const result = await accountBalanceRepository.getByAccountId(accountId);
         const currentBalanceMicro = result.at(0)?.balance ?? 0;
-
         const targetBalanceMicro = convertToMicroUnits(targetBalance);
         const delta = targetBalanceMicro - currentBalanceMicro;
 
@@ -264,6 +261,10 @@ class AccountService {
         );
     }
 
+    private getDebtBalanceInput(input: Pick<DebtAccountCreateInputInterface, 'currentBalance' | 'debtType'>): number {
+        return input.debtType === AccountDebtTypeEnum.BORROW ? -Math.abs(input.currentBalance) : Math.abs(input.currentBalance);
+    }
+
     private async createLiabilityAccount(
         input: Omit<LiabilityAccountCreateInputInterface, 'currentBalance'> & Record<string, unknown>,
         count: number,
@@ -285,12 +286,10 @@ class AccountService {
 
     private async processBatchInner(batch: LiabilityAccountCreateInputInterface[], tx: DB): Promise<AccountEntityInterface[]> {
         const [{ count }] = await accountRepository.count();
-
         const accounts = await accountRepository.bulkCreate(
             batch.map((input, index) => ({ ...input, order: count + index + 1, nature: AccountNatureEnum.LIABILITY })),
             tx
         );
-
         await Promise.all(accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance, tx)));
 
         return accounts;
