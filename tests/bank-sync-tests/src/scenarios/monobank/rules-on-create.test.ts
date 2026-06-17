@@ -1,6 +1,4 @@
-import { describe, expect, it } from 'vitest';
-import { eq } from 'drizzle-orm';
-
+import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import {
     CategoryEntityTable,
     ExternalSourceEnum,
@@ -15,10 +13,10 @@ import {
     TransactionEntryEntityTable,
     TransactionTagsEntityTable
 } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
+import { describe, expect, it } from 'vitest';
 
 import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
-
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
 describe('monobank/rules-on-create', () => {
     it('persists matching rule category and tag when inserting new synced transactions', async () => {
@@ -83,10 +81,10 @@ describe('monobank/rules-on-create', () => {
         const [transactionTag] = testDb
             .select()
             .from(TransactionTagsEntityTable)
-            .where(eq(TransactionTagsEntityTable.transactionId, entry?.transactionId ?? 0))
+            .where(eq(TransactionTagsEntityTable.transactionId, entry.transactionId))
             .all();
 
-        expect(entry?.categoryId).toBe(category.id);
-        expect(transactionTag?.tagId).toBe(tag.id);
+        expect(entry.categoryId).toBe(category.id);
+        expect(transactionTag.tagId).toBe(tag.id);
     });
 });
