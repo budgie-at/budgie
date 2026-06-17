@@ -137,7 +137,7 @@ class TransactionService {
 
     @Log(
         externalSource => `enter externalSource=${externalSource}`,
-        (result, externalSource) => `done externalSource=${externalSource} count=${result.size}`,
+        (result, externalSource) => `done externalSource=${externalSource} externalIdCount=${result.size}`,
         (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
     )
     async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
@@ -146,7 +146,7 @@ class TransactionService {
 
     @Log(
         externalSource => `enter externalSource=${externalSource}`,
-        (result, externalSource) => `done externalSource=${externalSource} count=${result.size}`,
+        (result, externalSource) => `done externalSource=${externalSource} idMapSize=${result.size}`,
         (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
     )
     async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
