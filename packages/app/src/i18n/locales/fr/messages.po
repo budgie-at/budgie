@@ -781,8 +781,7 @@ msgstr "Impossible d'activer le compte."
 msgid "Could not archive account"
 msgstr "Impossible d'archiver le compte"
 
-#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Could not attach debt"
 msgstr "Impossible d'associer la dette"
 
@@ -852,8 +851,7 @@ msgstr "Impossible de supprimer le tag"
 msgid "Could not delete transaction."
 msgstr "Impossible de supprimer la transaction."
 
-#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Could not detach debt"
 msgstr "Impossible de dissocier la dette"
 
@@ -980,8 +978,7 @@ msgstr "Comptabiliser ce compte dans le calcul de votre valeur nette"
 msgid "Create a backup of all your data"
 msgstr "Créer une sauvegarde de toutes vos données"
 
-#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Create a debt account first."
 msgstr "Créez d'abord un compte de dette."
 

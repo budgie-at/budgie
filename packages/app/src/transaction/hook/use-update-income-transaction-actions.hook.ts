@@ -1,5 +1,4 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
@@ -9,8 +8,8 @@ import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace
 import { useConvertToRefundModal } from '../context/convert-to-refund-modal.context';
 import { useConvertToTransferModal } from '../context/convert-to-transfer-modal.context';
 
-import { useDebtSettlementTransactionActions } from './use-debt-settlement-transaction-actions.hook';
 import { useRevertConsolidation } from './use-revert-consolidation.hook';
+import { useUpdateTransactionDebtSettlementActions } from './use-update-transaction-debt-settlement-actions.hook';
 
 import type { UpdateIncomeTransactionActionsParamsInterface } from '../interface/update-income-transaction-actions-params.interface';
 
@@ -20,20 +19,16 @@ export const useUpdateIncomeTransactionActions = ({
     transactionId,
     toAccountId
 }: UpdateIncomeTransactionActionsParamsInterface) => {
-    const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const [openConvertToRefund] = useConvertToRefundModal();
     const [sourceEntry] = transaction.entries;
     const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
     const { handleOpenDebtSettlement, handleDetachDebtSettlement, hasDebtSettlement, debtSettlementAccountTitle } =
-        useDebtSettlementTransactionActions({
+        useUpdateTransactionDebtSettlementActions({
             form,
             transaction,
             transactionId,
-            transactionAccountId: toAccountId,
-            emptyStateDescription: t`Create a debt account first.`,
-            attachErrorMessage: t`Could not attach debt`,
-            detachErrorMessage: t`Could not detach debt`
+            transactionAccountId: toAccountId
         });
 
     const handleOpenConvert = () =>

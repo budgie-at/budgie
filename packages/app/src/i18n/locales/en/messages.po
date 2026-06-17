@@ -782,8 +782,7 @@ msgstr "Could not activate account."
 msgid "Could not archive account"
 msgstr "Could not archive account"
 
-#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Could not attach debt"
 msgstr "Could not attach debt"
 
@@ -853,8 +852,7 @@ msgstr "Could not delete tag"
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
 
-#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Could not detach debt"
 msgstr "Could not detach debt"
 
@@ -981,8 +979,7 @@ msgstr "Count this account in your net worth calculation"
 msgid "Create a backup of all your data"
 msgstr "Create a backup of all your data"
 
-#: src/transaction/hook/use-update-expense-transaction-actions.hook.ts
-#: src/transaction/hook/use-update-income-transaction-actions.hook.ts
+#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Create a debt account first."
 msgstr "Create a debt account first."
 
