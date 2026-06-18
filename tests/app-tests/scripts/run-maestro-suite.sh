@@ -9,6 +9,7 @@ fi
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 WORKSPACE_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
+cd "$WORKSPACE_DIR"
 
 APP_ID="$1"
 shift
@@ -102,11 +103,40 @@ if [ -z "$E2E_CSV_FIXTURES_URI" ]; then
     echo "Could not resolve E2E_CSV_FIXTURES_URI for $APP_ID; CSV-import flows will fail." >&2
 fi
 
+HAS_FLOW_TARGETS=false
+for ARG in "$@"; do
+    case "$ARG" in
+        *.yaml | *.yml | */flows | */flows/)
+            HAS_FLOW_TARGETS=true
+            ;;
+    esac
+done
+
+if [ "$HAS_FLOW_TARGETS" = false ]; then
+    set -- "$@" flows/*.flow.yaml
+fi
+
 echo "Running Maestro suite from $WORKSPACE_DIR"
-maestro test "$WORKSPACE_DIR" \
-    -e APP_ID="$APP_ID" \
-    -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
-    -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \
-    -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
-    --config "$SUITE_CONFIG_PATH" \
-    "$@"
+run_maestro_test() {
+    if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
+        maestro test \
+            --udid "$DETECTED_SIMULATOR_UDID" \
+            -e APP_ID="$APP_ID" \
+            -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
+            -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \
+            -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
+            --config "$SUITE_CONFIG_PATH" \
+            "$@"
+        return
+    fi
+
+    maestro test \
+        -e APP_ID="$APP_ID" \
+        -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
+        -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \
+        -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
+        --config "$SUITE_CONFIG_PATH" \
+        "$@"
+}
+
+run_maestro_test "$@"

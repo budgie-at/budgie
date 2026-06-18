@@ -5,8 +5,7 @@ appId: ${APP_ID}
     id: 'AccountForm.NameInput'
 - eraseText: 60
 - inputText: ${UPDATED_ACCOUNT_NAME}
-- tapOn:
-    id: 'AccountForm.ScrollView'
+- pressKey: Enter
 - extendedWaitUntil:
     visible:
       id: 'AccountForm.SubmitButton'

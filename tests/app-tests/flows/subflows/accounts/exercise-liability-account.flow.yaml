@@ -41,7 +41,7 @@ appId: ${APP_ID}
 - runFlow:
     file: update-account-balance.flow.yaml
     env:
-      NEW_BALANCE: ${INCREASE_TO}
+      NEW_BALANCE: ${UPDATED_BALANCE}
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - runFlow:
@@ -54,32 +54,7 @@ appId: ${APP_ID}
       id: 'TransactionCard.Badge.Adjustment'
     timeout: 10000
 - assertVisible:
-    id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
-
-- runFlow:
-    file: open-account-settings.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
-
-- runFlow:
-    file: update-account-balance.flow.yaml
-    env:
-      NEW_BALANCE: ${DECREASE_TO}
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
-
-- runFlow:
-    file: open-account-details.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
-
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Badge.Adjustment'
-    timeout: 10000
-- assertVisible:
-    id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
-- assertVisible:
-    id: 'TransactionCard.AdjustmentAmount.${DECREASE_DELTA}'
+    id: 'TransactionCard.AdjustmentAmount.${BALANCE_DELTA}'
 
 - runFlow: exit-account-details-to-home.flow.yaml
 
@@ -90,7 +65,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+      id: 'HomePage.NetWorthValue.${UPDATED_BALANCE}'
     timeout: 10000
 - assertVisible:
     id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
@@ -111,7 +86,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+      id: 'HomePage.NetWorthValue.${UPDATED_BALANCE}'
     timeout: 10000
 
 - assertNotVisible:
@@ -132,7 +107,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+      id: 'HomePage.NetWorthValue.${UPDATED_BALANCE}'
     timeout: 10000
 
 - scrollUntilVisible:
@@ -184,7 +159,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+      id: 'HomePage.NetWorthValue.${UPDATED_BALANCE}'
     timeout: 10000
 
 - runFlow:

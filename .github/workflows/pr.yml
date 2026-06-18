@@ -6,6 +6,7 @@ env:
   PR_NUMBER: ${{ github.event.pull_request.number }}
   PR_TITLE: ${{ github.event.pull_request.title }}
   MAESTRO_CLI_NO_ANALYTICS: false
+  MAESTRO_VERSION: "2.6.0"
   RCT_USE_PREBUILT_RNCORE: 1
   RCT_USE_RN_DEP: 1
 
@@ -472,7 +473,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Prepare iOS E2E artifact directories
@@ -595,7 +596,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Сreate AVD and generate snapshot for caching

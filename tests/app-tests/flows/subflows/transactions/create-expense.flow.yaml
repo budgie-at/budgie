@@ -21,14 +21,18 @@ env:
           when:
             true: ${AMOUNT == '25'}
           commands:
-            - tapOn: '2'
-            - tapOn: '5'
+            - tapOn:
+                id: 'TransactionKeypad.Digit.2'
+            - tapOn:
+                id: 'TransactionKeypad.Digit.5'
       - runFlow:
           when:
             true: ${AMOUNT == '10'}
           commands:
-            - tapOn: '1'
-            - tapOn: '0'
+            - tapOn:
+                id: 'TransactionKeypad.Digit.1'
+            - tapOn:
+                id: 'TransactionKeypad.Digit.0'
 
 - runFlow:
     file: select-account.flow.yaml

@@ -13,9 +13,14 @@ env:
                 when:
                     visible: 'budgie \(E2E\)'
                 commands:
-                    - tapOn:
-                          text: 'budgie \(E2E\)'
-                    - waitForAnimationToEnd
+                    - runFlow:
+                          when:
+                              notVisible:
+                                  id: 'SplashScreenLogo'
+                          commands:
+                              - tapOn:
+                                    text: 'budgie \(E2E\)'
+                              - waitForAnimationToEnd
           - runFlow:
                 when:
                     visible:

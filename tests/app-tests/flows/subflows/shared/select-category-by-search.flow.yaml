@@ -14,3 +14,7 @@ appId: ${APP_ID}
       id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
 - tapOn:
     id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryPickerBottomSheet.Input'
+    timeout: 5000

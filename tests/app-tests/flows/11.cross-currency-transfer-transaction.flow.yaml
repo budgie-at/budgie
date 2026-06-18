@@ -16,8 +16,10 @@ appId: ${APP_ID}
       ACTION_ITEM_ID: 'ActionItem.Transfer'
       FORM_TITLE: 'New Transfer'
 
-- tapOn: '7'
-- tapOn: '5'
+- tapOn:
+    id: 'TransactionKeypad.Digit.7'
+- tapOn:
+    id: 'TransactionKeypad.Digit.5'
 
 - tapOn:
     id: 'TransferForm.FromAccount'
@@ -77,7 +79,7 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'AccountCard.Balance.E2E_Txn_Account.25'
 - assertVisible:
-    text: 'E2E Foreign Account, .*164'
+    id: 'AccountCard.Balance.E2E_Foreign_Account.165'
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 

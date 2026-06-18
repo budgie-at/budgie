@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-    point: '80%,8%'
+    id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.DeleteButton'

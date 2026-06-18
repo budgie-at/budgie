@@ -4,9 +4,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-        FIXTURE_ROW_ID_MATCH: '.*22\.db, db.*'
-        FILE_PICKER_SEARCH_TEXT: '22.db'
-        FILE_PICKER_REPEAT_TAP: 'true'
+        FIXTURE_ROW_ID_MATCH: '22.db(, db)?'
 
 - openLink: 'budgie://transactions/3/income'
 - extendedWaitUntil:
@@ -34,8 +32,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Convert to Refund?'
     timeout: 10000
-- tapOn:
-    point: '68%,60%'
+- runFlow: subflows/transactions/confirm-convert-to-refund.flow.yaml
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.RefundedPill.2'
@@ -68,12 +65,24 @@ appId: ${APP_ID}
     timeout: 3000
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToRefundButton'
+- tapOn: 'Close menu'
+- extendedWaitUntil:
+    notVisible:
+      id: 'TransactionActionsMenu.ConvertToRefundButton'
+    timeout: 3000
+- openLink: 'budgie://transactions'
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionsPage.Container'
+    timeout: 10000
 - tapOn:
-    point: '10%,10%'
-- tapOn:
-    id: 'PageHeader.BackButton'
-
-- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+    id: 'TransactionsPage.Tab.Transactions'
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
     element:
@@ -105,8 +114,11 @@ appId: ${APP_ID}
     visible:
       id: 'TransactionContextMenu.ConvertToRefundButton'
     timeout: 3000
-- tapOn:
-    point: '10%,10%'
+- tapOn: 'Close menu'
+- extendedWaitUntil:
+    notVisible:
+      id: 'TransactionContextMenu.ConvertToRefundButton'
+    timeout: 3000
 
 - runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
 
