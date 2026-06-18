@@ -6,6 +6,7 @@ env:
   PR_NUMBER: ${{ github.event.pull_request.number }}
   PR_TITLE: ${{ github.event.pull_request.title }}
   MAESTRO_CLI_NO_ANALYTICS: false
+  MAESTRO_VERSION: "2.6.0"
   RCT_USE_PREBUILT_RNCORE: 1
   RCT_USE_RN_DEP: 1
 

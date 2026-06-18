@@ -15,6 +15,7 @@ fi
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 WORKSPACE_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
+cd "$WORKSPACE_DIR"
 
 APP_ID="$1"
 shift
@@ -271,6 +272,55 @@ build_maestro_args() {
     printf '%s\0' "${args[@]}"
 }
 
+collect_flow_paths() {
+    local arg
+    local flow_path
+    local flows_dir
+    local filtered_args=()
+
+    FLOW_PATHS=()
+
+    for arg in "${MAESTRO_ARGS[@]}"; do
+        case "$arg" in
+            *.flow.yaml | *.yaml | *.yml)
+                if [[ "$arg" = /* ]]; then
+                    FLOW_PATHS+=("$arg")
+                else
+                    FLOW_PATHS+=("$WORKSPACE_DIR/$arg")
+                fi
+                ;;
+            flows | flows/ | */flows | */flows/)
+                flows_dir="${arg%/}"
+
+                if [[ "$flows_dir" != /* ]]; then
+                    flows_dir="$WORKSPACE_DIR/$flows_dir"
+                fi
+
+                for flow_path in "$flows_dir"/*.flow.yaml; do
+                    if [ -e "$flow_path" ]; then
+                        FLOW_PATHS+=("$flow_path")
+                    fi
+                done
+                ;;
+            *)
+                filtered_args+=("$arg")
+                ;;
+        esac
+    done
+
+    MAESTRO_ARGS=("${filtered_args[@]}")
+
+    if [ "${#FLOW_PATHS[@]}" -ne 0 ]; then
+        return
+    fi
+
+    for flow_path in "$WORKSPACE_DIR"/flows/*.flow.yaml; do
+        if [ -e "$flow_path" ]; then
+            FLOW_PATHS+=("$flow_path")
+        fi
+    done
+}
+
 run_maestro_flow() {
     local flow_path="$1"
     local flow_output_path="$2"
@@ -381,6 +431,7 @@ if [ -z "$E2E_DB_FIXTURES_URI" ]; then
     echo "Could not resolve E2E_DB_FIXTURES_URI for $APP_ID; database-import flows will fail." >&2
 fi
 
+collect_flow_paths
 capture_output_path
 
 echo "Running Maestro suite from $WORKSPACE_DIR"
@@ -395,7 +446,7 @@ if [ -n "$OUTPUT_PATH" ]; then
     mkdir -p "$REPORT_DIR"
 fi
 
-for FLOW_PATH in "$WORKSPACE_DIR"/flows/*.flow.yaml; do
+for FLOW_PATH in "${FLOW_PATHS[@]}"; do
     FLOW_INDEX=$((FLOW_INDEX + 1))
     FLOW_NAME="$(basename "$FLOW_PATH")"
     FLOW_OUTPUT_PATH=""
