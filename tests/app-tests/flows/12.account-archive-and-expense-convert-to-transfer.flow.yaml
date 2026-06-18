@@ -37,8 +37,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Archive Account?'
     timeout: 10000
-- tapOn:
-    point: '68%,58%'
+- tapOn: 'Archive'
 - extendedWaitUntil:
     notVisible: 'Archive Account?'
     timeout: 10000
@@ -59,8 +58,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Restore Account?'
     timeout: 10000
-- tapOn:
-    point: '68%,58%'
+- tapOn: 'Restore'
 - extendedWaitUntil:
     notVisible: 'Restore Account?'
     timeout: 10000
@@ -84,8 +82,10 @@ appId: ${APP_ID}
       ACTION_ITEM_ID: 'ActionItem.Expense'
       FORM_TITLE: 'New Expense'
 
-- tapOn: '3'
-- tapOn: '0'
+- tapOn:
+    id: 'TransactionKeypad.Digit.3'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
 
 - runFlow:
     file: subflows/transactions/select-account.flow.yaml
@@ -127,7 +127,7 @@ appId: ${APP_ID}
     id: 'TransactionCard.Label.E2E_Convert_Expense'
 
 - tapOn:
-    point: '80%,8%'
+    id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.ConvertToTransferButton'

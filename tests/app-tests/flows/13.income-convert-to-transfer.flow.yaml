@@ -14,9 +14,12 @@ appId: ${APP_ID}
       ACTION_ITEM_ID: 'ActionItem.Income'
       FORM_TITLE: 'New Income'
 
-- tapOn: '0'
-- tapOn: '3'
-- tapOn: '0'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
+- tapOn:
+    id: 'TransactionKeypad.Digit.3'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
 
 - runFlow:
     file: subflows/transactions/select-account.flow.yaml
@@ -58,7 +61,7 @@ appId: ${APP_ID}
     id: 'TransactionCard.Label.E2E_Convert_Income'
 
 - tapOn:
-    point: '80%,8%'
+    id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.ConvertToTransferButton'

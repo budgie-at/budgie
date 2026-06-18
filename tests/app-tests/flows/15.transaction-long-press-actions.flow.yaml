@@ -17,8 +17,10 @@ appId: ${APP_ID}
       ACTION_ITEM_ID: 'ActionItem.Expense'
       FORM_TITLE: 'New Expense'
 
-- tapOn: '2'
-- tapOn: '5'
+- tapOn:
+    id: 'TransactionKeypad.Digit.2'
+- tapOn:
+    id: 'TransactionKeypad.Digit.5'
 
 - runFlow:
     file: subflows/transactions/select-account.flow.yaml
@@ -99,8 +101,10 @@ appId: ${APP_ID}
       ACTION_ITEM_ID: 'ActionItem.Expense'
       FORM_TITLE: 'New Expense'
 
-- tapOn: '3'
-- tapOn: '0'
+- tapOn:
+    id: 'TransactionKeypad.Digit.3'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
 
 - runFlow:
     file: subflows/transactions/select-account.flow.yaml

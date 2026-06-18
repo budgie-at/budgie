@@ -17,7 +17,7 @@ Maestro flows for Budgie.
 11. Keep flows pinned to English. If a preferences flow changes language, it must switch back to English before it ends.
 12. Before any `inputText`, focus the real input first with `tapOn`. For native selector sheets, prefer the visible search placeholder text over internal search-input ids.
 13. After selecting an option from a native search sheet, wait for that search field to disappear before tapping the underlying form again.
-14. For formatted numeric inputs that must be cleared and replaced, tap near the trailing edge first so the caret lands at the end before `eraseText`. For Budgie amount fields, use `point: '95%,50%'` on the input `testID` before clearing.
+14. Do not use coordinate taps in committed flows. If a flow cannot target the real control by `testID`, add or fix the app selector first.
 15. Do not take screenshots or run `maestro hierarchy` during an active Maestro run. Inspect only after failure or outside the run.
 16. Do not use `hideKeyboard` in Maestro flows. It is unreliable here and can break later execution. Prefer flows that continue without explicit keyboard dismissal.
 17. Do not `scrollUntilVisible` to submit controls that live in sticky footers. If the form already exposes the submit button outside scrollable content, wait for it and tap it directly.

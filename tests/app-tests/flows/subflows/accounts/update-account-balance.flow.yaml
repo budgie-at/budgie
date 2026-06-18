@@ -2,11 +2,11 @@ appId: ${APP_ID}
 ---
 - tapOn:
       id: 'CreateAccount.Amount'
-      point: '95%,50%'
 - eraseText: 100
 - inputText: ${NEW_BALANCE}
 - tapOn:
-      id: 'AccountForm.ScrollView'
+      id: 'AccountForm.NameInput'
+- pressKey: Enter
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.SubmitButton'

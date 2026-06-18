@@ -12,26 +12,19 @@ env:
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
     id: 'RuleForm.Condition.0.FieldSelector'
 - waitForAnimationToEnd
-- tapOn: 'Comment'
+- tapOn:
+    id: 'RuleForm.SelectorCard.COMMENT'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: ${FIRST_RULE_MATCH}
-- tapOn: return
+- pressKey: Enter
 
 - tapOn:
     id: 'RuleForm.Action.0.TypeSelector'
@@ -52,13 +45,8 @@ env:
     env:
       CATEGORY_NAME: Groceries
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
+    file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - waitForAnimationToEnd
 
 - assertVisible:
@@ -72,13 +60,11 @@ env:
       CATEGORY_NAME: ${TRANSACTION_CATEGORY_NAME}
       COMMENT: ${FIRST_RULE_MATCH}
 
+- openLink: budgie://transactions/9/expense
+
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.E2E_Pill_Navigation'
+    visible: 'Edit Expense'
     timeout: 10000
-- tapOn:
-    id: 'TransactionCard.Label.E2E_Pill_Navigation'
-- waitForAnimationToEnd
 
 - extendedWaitUntil:
     visible:
@@ -104,26 +90,19 @@ env:
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
     id: 'RuleForm.Condition.0.FieldSelector'
 - waitForAnimationToEnd
-- tapOn: 'Comment'
+- tapOn:
+    id: 'RuleForm.SelectorCard.COMMENT'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: ${SECOND_RULE_MATCH}
-- tapOn: return
+- pressKey: Enter
 
 - tapOn:
     id: 'RuleForm.Action.0.TypeSelector'
@@ -140,16 +119,13 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.TagSelector'
 - waitForAnimationToEnd
-- tapOn:
-    text: ${TAG_NAME}
-
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
+    file: subflows/shared/select-tag-by-search.flow.yaml
+    env:
+      TAG_NAME: ${TAG_NAME}
+
+- runFlow:
+    file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - waitForAnimationToEnd
 
 - assertVisible:
@@ -157,17 +133,11 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCard.1'
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
+- openLink: budgie://transactions/9/expense
 
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.E2E_Pill_Navigation'
+    visible: 'Edit Expense'
     timeout: 10000
-- tapOn:
-    id: 'TransactionCard.Label.E2E_Pill_Navigation'
-- waitForAnimationToEnd
 
 - extendedWaitUntil:
     visible:

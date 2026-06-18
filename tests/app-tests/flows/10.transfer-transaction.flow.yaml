@@ -24,8 +24,10 @@ appId: ${APP_ID}
     id: 'TransactionForm.SubmitButton'
 - assertVisible: 'New Transfer'
 
-- tapOn: '5'
-- tapOn: '0'
+- tapOn:
+    id: 'TransactionKeypad.Digit.5'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
 
 - tapOn:
     id: 'TransferForm.FromAccount'
