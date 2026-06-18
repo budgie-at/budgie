@@ -169,6 +169,35 @@ describe('debt settlement statistics', () => {
         expectDebtProgressSummary(summary, 12_891 * PRECISION, 2_109 * PRECISION, 15_000 * PRECISION, 14.06);
     });
 
+    it('returns canonical debt progress fields from home account rows', async () => {
+        const [category] = testDb.select().from(CategoryEntityTable).all();
+        const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+        const debtAccount = await createDebtAccount(AccountDebtTypeEnum.LENT, 0, 15_000, cashAccount.instrumentId);
+
+        await accountService.updateDebtById(debtAccount.id, {
+            debtType: AccountDebtTypeEnum.LENT,
+            currentBalance: 2_000,
+            targetBalance: 15_000
+        });
+
+        const transaction = createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
+
+        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+
+        const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
+
+        expect(row).toBeDefined();
+
+        if (!isDefined(row)) {
+            return;
+        }
+
+        expect(convertFromMicroUnits(row.convertedDebtOutstandingAmount)).toBe(12_891);
+        expect(convertFromMicroUnits(row.convertedDebtPaidAmount)).toBe(2_109);
+        expect(convertFromMicroUnits(row.convertedDebtTotalAmount)).toBe(15_000);
+        expect(row.debtProgressPercentage).toBe(14.06);
+    });
+
     it('summarizes lent debt progress against the original target amount', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.LENT,
@@ -391,6 +420,25 @@ describe('debt settlement statistics', () => {
         expectDebtProgressSummary(summary, 13_109 * PRECISION, 2_000 * PRECISION, 15_109 * PRECISION, 13.24);
     });
 
+    it('uses canonical borrowed outstanding in remaining debt totals', async () => {
+        const [category] = testDb.select().from(CategoryEntityTable).all();
+        const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+        const debtAccount = await createDebtAccount(AccountDebtTypeEnum.BORROW, 15_000, 15_000, cashAccount.instrumentId);
+        const repayment = createExpenseTransaction(cashAccount.id, category.id, 2_000 * PRECISION);
+
+        await transactionDebtSettlementService.attach({ transactionId: repayment.id, debtAccountId: debtAccount.id });
+
+        const additionalBorrowing = createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
+
+        await transactionDebtSettlementService.attach({ transactionId: additionalBorrowing.id, debtAccountId: debtAccount.id });
+
+        const remainingBorrowedDebt = accountBalanceRepository
+            .getTotalRemainingDebtByType(cashAccount.instrumentId, AccountDebtTypeEnum.BORROW)
+            .get();
+
+        expect(remainingBorrowedDebt?.total).toBe(13_109 * PRECISION);
+    });
+
     it('summarizes fully returned lent debt as complete', async () => {
         const [category] = testDb.select().from(CategoryEntityTable).all();
         const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
@@ -456,6 +504,12 @@ const buildSummaryFromDebtAccount = (debtAccount: Pick<AccountEntityInterface, '
         targetAmount: debtAccount.targetBalance
     });
 };
+
+const findHomeRow = (accountId: number, instrumentId: number) =>
+    accountBalanceRepository
+        .getHomeAccountRows(instrumentId)
+        .all()
+        .find(row => row.account.id === accountId);
 
 const getDebtEntryAmount = (debtAccountId: number, type: TransactionEntryTypeEnum): number =>
     testDb
