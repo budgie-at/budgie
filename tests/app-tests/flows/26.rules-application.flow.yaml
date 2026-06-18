@@ -302,10 +302,15 @@ env:
 
 - openLink: budgie://transactions/9/expense
 - extendedWaitUntil:
-    visible: 'Edit Expense'
+    visible:
+      id: 'TransactionInfo.Page'
     timeout: 10000
-- assertVisible: 'Note: Uber Ride'
-- assertVisible: 'Category: Other'
+- assertVisible:
+    id: 'TransactionInfo.Row.Note'
+- assertVisible: 'Uber Ride'
+- assertVisible:
+    id: 'TransactionInfo.Row.Category'
+- assertVisible: 'Other'
 
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml
@@ -351,10 +356,15 @@ env:
 
 - openLink: budgie://transactions/10/expense
 - extendedWaitUntil:
-    visible: 'Edit Expense'
+    visible:
+      id: 'TransactionInfo.Page'
     timeout: 10000
-- assertVisible: 'Note: Random Purchase'
-- assertVisible: 'Category: Other'
+- assertVisible:
+    id: 'TransactionInfo.Row.Note'
+- assertVisible: 'Random Purchase'
+- assertVisible:
+    id: 'TransactionInfo.Row.Category'
+- assertVisible: 'Other'
 
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml

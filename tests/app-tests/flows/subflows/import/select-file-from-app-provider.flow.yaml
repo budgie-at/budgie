@@ -2,6 +2,7 @@ appId: ${APP_ID}
 env:
     FILE_ROW_ID_MATCH: ${FILE_ROW_ID_MATCH}
     FILE_ROW_TEXT_MATCH: ${FILE_ROW_TEXT_MATCH || FILE_ROW_ID_MATCH}
+    FILE_PICKER_REPEAT_TAP: ${FILE_PICKER_REPEAT_TAP}
     FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT || ''}
 ---
 - waitForAnimationToEnd
@@ -29,7 +30,6 @@ env:
 
 - runFlow:
       when:
-          visible: 'Cancel'
           notVisible:
               id: '${FILE_ROW_ID_MATCH}'
       commands:
@@ -44,10 +44,10 @@ env:
                 commands:
                     - extendedWaitUntil:
                           visible:
-                              text: 'E2EFixtures'
+                              id: 'E2EFixtures, Folder'
                           timeout: 3000
                     - tapOn:
-                          text: 'E2EFixtures'
+                          id: 'E2EFixtures, Folder'
                           retryTapIfNoChange: true
                     - waitForAnimationToEnd
 
@@ -66,13 +66,17 @@ env:
       when:
           true: ${FILE_PICKER_SEARCH_TEXT != ''}
       commands:
-          - tapOn: 'Search'
-          - tapOn:
-                text: 'Clear text'
-                optional: true
-          - eraseText: 80
-          - inputText: ${FILE_PICKER_SEARCH_TEXT}
-          - waitForAnimationToEnd
+          - runFlow:
+                when:
+                    notVisible: '${FILE_ROW_TEXT_MATCH}'
+                commands:
+                    - tapOn: 'Search'
+                    - tapOn:
+                          text: 'Clear text'
+                          optional: true
+                    - eraseText: 80
+                    - inputText: ${FILE_PICKER_SEARCH_TEXT}
+                    - waitForAnimationToEnd
 
 - scrollUntilVisible:
       element:
@@ -80,13 +84,11 @@ env:
       direction: DOWN
       timeout: 15000
       speed: 20
-      centerElement: true
       waitToSettleTimeoutMs: 2000
       optional: true
 
 - runFlow:
       when:
-          visible: 'Cancel'
           notVisible:
               id: '${FILE_ROW_ID_MATCH}'
       commands:
@@ -111,7 +113,6 @@ env:
 
 - runFlow:
       when:
-          visible: 'Cancel'
           notVisible:
               id: '${FILE_ROW_ID_MATCH}'
       commands:
@@ -124,23 +125,50 @@ env:
 
 - runFlow:
       when:
-          visible:
-              id: '${FILE_ROW_ID_MATCH}'
+          visible: 'Continue'
       commands:
-          - tapOn:
-                id: '${FILE_ROW_ID_MATCH}'
-                retryTapIfNoChange: true
+          - tapOn: 'Continue'
+          - waitForAnimationToEnd
+          - runFlow:
+                when:
+                    visible:
+                        id: '${FILE_ROW_ID_MATCH}'
+                commands:
+                    - tapOn:
+                          id: '${FILE_ROW_ID_MATCH}'
+                          retryTapIfNoChange: true
+          - runFlow:
+                when:
+                    notVisible:
+                        id: '${FILE_ROW_ID_MATCH}'
+                commands:
+                    - tapOn:
+                          text: '${FILE_ROW_TEXT_MATCH}'
+                          retryTapIfNoChange: true
+                          optional: true
+          - waitForAnimationToEnd
 
 - runFlow:
       when:
-          visible: 'Cancel'
-          notVisible:
-              id: '${FILE_ROW_ID_MATCH}'
+          true: ${FILE_PICKER_REPEAT_TAP == 'true'}
       commands:
-          - tapOn:
-                text: '${FILE_ROW_TEXT_MATCH}'
-                retryTapIfNoChange: true
-                optional: true
+          - runFlow:
+                when:
+                    visible:
+                        id: '${FILE_ROW_ID_MATCH}'
+                commands:
+                    - tapOn:
+                          id: '${FILE_ROW_ID_MATCH}'
+                          retryTapIfNoChange: true
+          - runFlow:
+                when:
+                    notVisible:
+                        id: '${FILE_ROW_ID_MATCH}'
+                commands:
+                    - tapOn:
+                          text: '${FILE_ROW_TEXT_MATCH}'
+                          retryTapIfNoChange: true
+                          optional: true
 
 - runFlow:
       when:

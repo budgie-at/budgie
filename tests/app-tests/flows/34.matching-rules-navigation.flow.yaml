@@ -63,7 +63,8 @@ env:
 - openLink: budgie://transactions/9/expense
 
 - extendedWaitUntil:
-    visible: 'Edit Expense'
+    visible:
+      id: 'TransactionInfo.Page'
     timeout: 10000
 
 - extendedWaitUntil:
@@ -81,7 +82,8 @@ env:
 - tapOn:
     id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
-- assertVisible: 'Edit Expense'
+- assertVisible:
+    id: 'TransactionInfo.Page'
 
 - tapOn:
     id: 'PageHeader.BackButton'
@@ -136,7 +138,8 @@ env:
 - openLink: budgie://transactions/9/expense
 
 - extendedWaitUntil:
-    visible: 'Edit Expense'
+    visible:
+      id: 'TransactionInfo.Page'
     timeout: 10000
 
 - extendedWaitUntil:
@@ -171,4 +174,5 @@ env:
 - tapOn:
     id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
-- assertVisible: 'Edit Expense'
+- assertVisible:
+    id: 'TransactionInfo.Page'

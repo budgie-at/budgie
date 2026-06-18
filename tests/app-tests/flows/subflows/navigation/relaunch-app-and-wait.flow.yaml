@@ -5,12 +5,26 @@ env:
 - retry:
       maxRetries: 2
       commands:
-          - launchApp
-          - waitForAnimationToEnd
+          - launchApp:
+                permissions:
+                    contacts: allow
+                    microphone: allow
           - tapOn:
                 text: 'Not Now'
                 optional: true
           - waitForAnimationToEnd
+          - runFlow:
+                when:
+                    visible: 'budgie \(E2E\)'
+                commands:
+                    - runFlow:
+                          when:
+                              notVisible:
+                                  id: 'SplashScreenLogo'
+                          commands:
+                              - tapOn:
+                                    text: 'budgie \(E2E\)'
+                              - waitForAnimationToEnd
           - runFlow:
                 when:
                     visible:

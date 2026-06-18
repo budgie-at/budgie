@@ -1,60 +1,60 @@
 appId: ${APP_ID}
 env:
-    AMOUNT: ${AMOUNT}
-    ACCOUNT_NAME: ${ACCOUNT_NAME}
-    CATEGORY_NAME: ${CATEGORY_NAME}
-    COMMENT: ${COMMENT}
+  AMOUNT: ${AMOUNT}
+  ACCOUNT_NAME: ${ACCOUNT_NAME}
+  CATEGORY_NAME: ${CATEGORY_NAME}
+  COMMENT: ${COMMENT}
 ---
 - runFlow: ../navigation/navigate-to-transactions.flow.yaml
 
 - runFlow:
-      file: open-transaction-form.flow.yaml
-      env:
-          ACTION_ITEM_ID: 'ActionItem.Expense'
-          FORM_TITLE: 'New Expense'
+    file: open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
 
 - runFlow:
-      when:
-          visible: 'New Expense'
-      commands:
-          - runFlow:
-                when:
-                    true: ${AMOUNT == '25'}
-                commands:
-                    - tapOn:
-                          id: 'TransactionKeypad.Digit.2'
-                    - tapOn:
-                          id: 'TransactionKeypad.Digit.5'
-          - runFlow:
-                when:
-                    true: ${AMOUNT == '10'}
-                commands:
-                    - tapOn:
-                          id: 'TransactionKeypad.Digit.1'
-                    - tapOn:
-                          id: 'TransactionKeypad.Digit.0'
+    when:
+      visible: 'New Expense'
+    commands:
+      - runFlow:
+          when:
+            true: ${AMOUNT == '25'}
+          commands:
+            - tapOn:
+                id: 'TransactionKeypad.Digit.2'
+            - tapOn:
+                id: 'TransactionKeypad.Digit.5'
+      - runFlow:
+          when:
+            true: ${AMOUNT == '10'}
+          commands:
+            - tapOn:
+                id: 'TransactionKeypad.Digit.1'
+            - tapOn:
+                id: 'TransactionKeypad.Digit.0'
 
 - runFlow:
-      file: select-account.flow.yaml
-      env:
-          ACCOUNT_NAME: ${ACCOUNT_NAME}
+    file: select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
 
 - tapOn:
-      id: 'TransactionForm.CategorySelector.Title'
+    id: 'TransactionForm.CategorySelector'
 - runFlow:
-      file: ../shared/select-category-by-search.flow.yaml
-      env:
-          CATEGORY_NAME: ${CATEGORY_NAME}
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
 - scrollUntilVisible:
-      element:
-          id: 'TransactionForm.CommentInput'
-      direction: DOWN
-      centerElement: true
+    element:
+      id: 'TransactionForm.CommentInput'
+    direction: DOWN
+    centerElement: true
 
 - runFlow:
-      file: enter-comment.flow.yaml
-      env:
-          COMMENT: ${COMMENT}
+    file: enter-comment.flow.yaml
+    env:
+      COMMENT: ${COMMENT}
 
 - runFlow: submit-transaction-and-wait.flow.yaml
