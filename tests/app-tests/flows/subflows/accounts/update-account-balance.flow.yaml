@@ -4,15 +4,15 @@ appId: ${APP_ID}
       id: 'CreateAccount.Amount'
 - eraseText: 100
 - inputText: ${NEW_BALANCE}
-- tapOn:
-      id: 'AccountForm.NameInput'
-- tapOn: Done
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.SubmitButton'
+          enabled: true
       timeout: 3000
 - tapOn:
       id: 'AccountForm.SubmitButton'
+      enabled: true
+      retryTapIfNoChange: true
 
 - extendedWaitUntil:
       visible:
