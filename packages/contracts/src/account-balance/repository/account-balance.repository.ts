@@ -82,8 +82,12 @@ export class AccountBalanceRepository {
         return this.db.select({ updatedAt: sql<Date | null>`MAX(${AccountBalanceEntityTable.updatedAt})` }).from(AccountBalanceEntityTable).where(isNull(AccountBalanceEntityTable.deletedAt));
     }
 
-    getByAccountId(accountId: number) {
-        return this.db.select({ balance: this.getAccountBalanceWithTransactionsSql(sql`${accountId}`) }).from(AccountEntityTable).where(eq(AccountEntityTable.id, accountId)).limit(1);
+    getByAccountId(accountId: number, tx?: DB) {
+        return (tx ?? this.db)
+            .select({ balance: this.getAccountBalanceWithTransactionsSql(sql`${accountId}`) })
+            .from(AccountEntityTable)
+            .where(eq(AccountEntityTable.id, accountId))
+            .limit(1);
     }
 
     getDebtAccountProgressByAccountId(accountId: number) {

@@ -112,6 +112,22 @@ describe('debt settlement statistics', () => {
         expect(balance?.balance).toBe(13_000 * PRECISION);
     });
 
+    it('summarizes updated lent debt accounts by treating current balance as an already returned amount', async () => {
+        const account = await createDebtAccount(AccountDebtTypeEnum.LENT, 0, 15_000, 1);
+
+        await accountService.updateDebtById(account.id, {
+            debtType: AccountDebtTypeEnum.LENT,
+            currentBalance: 2_000,
+            targetBalance: 15_000
+        });
+
+        const balance = accountBalanceRepository.getByAccountId(account.id).get();
+        const summary = buildSummaryFromDebtAccount(account, AccountDebtTypeEnum.LENT);
+
+        expect(balance?.balance).toBe(13_000 * PRECISION);
+        expectDebtProgressSummary(summary, 13_000 * PRECISION, 2_000 * PRECISION, 15_000 * PRECISION, 13.33);
+    });
+
     it('summarizes lent debt returns from the returned amount input and attached income', async () => {
         const [category] = testDb.select().from(CategoryEntityTable).all();
         const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
