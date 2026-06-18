@@ -1,0 +1,23 @@
+import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+
+import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
+import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
+import { BudgetPeriodEnum } from '../enum/budget-period.enum';
+
+export const BudgetEntityTable = sqliteTable(
+    'budgets',
+    withBaseEntityTableColumns({
+        name: text('name').notNull(),
+        period: text('period', { enum: convertEnumToDrizzleEnum(BudgetPeriodEnum) })
+            .$type<BudgetPeriodEnum>()
+            .notNull(),
+        periodStartDay: int('period_start_day').notNull(),
+        useLastDayOfMonth: int('use_last_day_of_month', { mode: 'boolean' }).notNull(),
+        overallLimit: int('overall_limit').notNull(),
+        otherLimit: int('other_limit').notNull(),
+        instrumentId: int('instrument_id')
+            .notNull()
+            .references(() => InstrumentEntityTable.id)
+    })
+);

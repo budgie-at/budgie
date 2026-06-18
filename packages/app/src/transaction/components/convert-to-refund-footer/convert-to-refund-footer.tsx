@@ -7,15 +7,17 @@ import { isDefined } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { ConvertToRefundModalSelector } from '../../../app/convert-to-refund-modal.selector';
 
-import type { ConvertToRefundFooterPropsInterface } from '../../interface/convert-to-refund-footer-props.interface';
+import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
 
-export const ConvertToRefundFooter = ({
-    selectedCandidate,
-    showRevert,
-    onClose,
-    onConvert,
-    onRevert
-}: ConvertToRefundFooterPropsInterface) => {
+interface Props {
+    readonly selectedCandidate: TransactionPickerItemInterface | null;
+    readonly showRevert: boolean;
+    readonly onClose: () => void;
+    readonly onConvert: () => void;
+    readonly onRevert: () => void;
+}
+
+export const ConvertToRefundFooter = ({ selectedCandidate, showRevert, onClose, onConvert, onRevert }: Props) => {
     const { t } = useLingui();
     const isConvertDisabled = !isDefined(selectedCandidate);
     const leftAction = showRevert ? t`Done` : t`Cancel`;

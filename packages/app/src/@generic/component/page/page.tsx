@@ -18,7 +18,17 @@ interface Props extends ComponentProps<typeof View> {
 const DEFAULT_SAFE_EDGES: Edge[] = ['top'];
 
 export const Page = (props: Props) => {
-    const { className, header, footer, children, safeEdges = DEFAULT_SAFE_EDGES, contentClassName, withBlur = false, ...rest } = props;
+    const {
+        className,
+        header,
+        footer,
+        children,
+        safeEdges = DEFAULT_SAFE_EDGES,
+        contentClassName,
+        withBlur = false,
+        collapsable = false,
+        ...rest
+    } = props;
 
     const { top, left, right, bottom } = useSafeAreaInsets();
 
@@ -33,7 +43,7 @@ export const Page = (props: Props) => {
 
     return (
         <>
-            <View {...rest} className={cn('relative flex-1', className)} style={style}>
+            <View {...rest} collapsable={collapsable} className={cn('relative flex-1', className)} style={style}>
                 {withBlur ? null : header}
 
                 <View className={cn('px-5xl flex-1', contentClassName)}>{children}</View>
@@ -42,7 +52,7 @@ export const Page = (props: Props) => {
             </View>
 
             {withBlur ? (
-                <BlurGradient position="top">
+                <BlurGradient position="top" edgeOffset={top}>
                     <View className="absolute top-0 right-0 left-0" style={style}>
                         {header}
                     </View>

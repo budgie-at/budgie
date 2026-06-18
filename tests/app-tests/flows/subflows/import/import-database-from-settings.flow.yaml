@@ -14,9 +14,22 @@ env:
 
 - runFlow:
       when:
+          visible: 'Apple Account Verification'
+      commands:
+          - tapOn: 'Not Now'
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
           visible: 'Open'
       commands:
           - tapOn: 'Open'
+
+- runFlow:
+      when:
+          notVisible:
+              id: 'SettingsPage.Container'
+      file: ../navigation/navigate-to-settings.flow.yaml
 
 - scrollUntilVisible:
       element:

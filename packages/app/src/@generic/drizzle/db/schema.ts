@@ -20,6 +20,8 @@ export {
     ExchangeRateEntityTable,
     ExchangeRateEntityRelations,
     HistoricalExchangeRateEntityTable,
+    InstrumentDailyMarketPriceEntityTable,
+    InstrumentMarketDataJobEntityTable,
     InstrumentEntityTable,
     InstrumentEntityRelations,
     SettingsEntityTable,
@@ -41,5 +43,9 @@ export {
     RuleConditionEntityTable,
     RuleConditionEntityRelations,
     RuleActionEntityTable,
-    RuleActionEntityRelations
+    RuleActionEntityRelations,
+    BudgetEntityTable,
+    BudgetEntityRelations,
+    BudgetCategoryLimitEntityTable,
+    BudgetCategoryLimitEntityRelations
 } from '@budgie/contracts';

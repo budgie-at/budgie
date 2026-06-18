@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { statisticsRepository } from '@app/@generic/drizzle/db/db';
 import { entryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
 import {
@@ -10,46 +8,21 @@ import {
     LanguageEnum,
     PRECISION,
     SettingsEntityTable,
+    TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
-    TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it } from 'vitest';
 
-import { requireInstrument } from '../../harness';
+import { requireInstrument, seedBitcoinCryptoAccount } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
 import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
 
-describe('base valuation', () => {
-    it('values imported UAH entries with seeded historical NBU rates', async () => {
-        await expectHistoricalUahValuation(ExternalSourceEnum.CSV);
-    });
-
-    it('values a manually back-dated UAH entry with the historical rate, not the current one', async () => {
-        await expectHistoricalUahValuation(null);
-    });
-
-    it('sums analytics with historical base amounts from different periods', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
-        const [category] = await dbCategories();
-        const account = seed.account({ instrumentId: hryvnia.id });
-
-        await setDefaultInstrument(euro.id);
-        await createHistoricalExpense(account.id, category.id, new Date('2011-05-25T12:00:00.000Z'));
-        await createHistoricalExpense(account.id, category.id, new Date('2026-05-25T12:00:00.000Z'));
-
-        const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id).get();
-        const [categoryTotal] = statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, euro.id, LanguageEnum.EN).all();
-
-        expect(totals?.expense).toBe(5_419_222);
-        expect(totals?.income).toBe(0);
-        expect(categoryTotal?.amount).toBe(5_419_222);
-    });
-});
+const HISTORICAL_ANALYTICS_EXPENSE_AMOUNT = 5_419_222;
 
 const setDefaultInstrument = async (defaultInstrumentId: number): Promise<void> => {
     await testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
@@ -76,9 +49,7 @@ const expectHistoricalUahValuation = async (externalSource: ExternalSourceEnum |
     });
 };
 
-const dbCategories = async () => {
-    return await testDb.select().from(CategoryEntityTable);
-};
+const dbCategories = async () => await testDb.select().from(CategoryEntityTable);
 
 const createHistoricalExpense = async (accountId: number, categoryId: number, operatedAt: Date): Promise<void> => {
     const transaction = insertOne(TransactionEntityTable, {
@@ -115,3 +86,48 @@ const createHistoricalExpense = async (accountId: number, categoryId: number, op
         toIban: null
     } satisfies TransactionEntryCreateEntityInterface);
 };
+
+describe('base valuation', () => {
+    it('values imported UAH entries with seeded historical NBU rates', async () => {
+        await expectHistoricalUahValuation(ExternalSourceEnum.CSV);
+    });
+
+    it('values a manually back-dated UAH entry with the historical rate, not the current one', async () => {
+        await expectHistoricalUahValuation(null);
+    });
+
+    it('allows manual crypto entries to remain unvalued when no live crypto rate exists', async () => {
+        const { account } = await seedBitcoinCryptoAccount();
+
+        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
+            accountId: account.id,
+            amount: 100 * PRECISION,
+            operatedAt: new Date('2026-06-04T15:35:37.321Z'),
+            externalSource: null
+        });
+
+        expect(valuation).toStrictEqual({
+            baseInstrumentId: null,
+            baseExchangeRate: null,
+            baseAmount: null
+        });
+    });
+
+    it('sums analytics with historical base amounts from different periods', async () => {
+        const euro = await requireInstrument(CurrencyEnum.EUR);
+        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+        const [category] = await dbCategories();
+        const account = seed.account({ instrumentId: hryvnia.id });
+
+        await setDefaultInstrument(euro.id);
+        await createHistoricalExpense(account.id, category.id, new Date('2011-05-25T12:00:00.000Z'));
+        await createHistoricalExpense(account.id, category.id, new Date('2026-05-25T12:00:00.000Z'));
+
+        const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id).get();
+        const [categoryTotal] = statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, euro.id, LanguageEnum.EN).all();
+
+        expect(totals?.expense).toBe(HISTORICAL_ANALYTICS_EXPENSE_AMOUNT);
+        expect(totals?.income).toBe(0);
+        expect(categoryTotal.amount).toBe(HISTORICAL_ANALYTICS_EXPENSE_AMOUNT);
+    });
+});

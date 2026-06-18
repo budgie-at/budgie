@@ -1,0 +1,752 @@
+#!/usr/bin/env node
+
+const { execFileSync } = require('node:child_process');
+const { mkdirSync } = require('node:fs');
+const path = require('node:path');
+const fixturesDirectoryPath = path.resolve(__dirname, '../fixtures');
+const outputDirectoryPath = process.argv[2];
+
+if (!outputDirectoryPath) {
+    console.error('Usage: prepare-date-sensitive-fixtures.js <output-directory>');
+    process.exit(1);
+}
+
+mkdirSync(outputDirectoryPath, { recursive: true });
+
+const runSqlite = (databasePath, sql) => {
+    execFileSync('sqlite3', [databasePath, sql], { stdio: 'inherit' });
+};
+
+const backupFixture = (sourcePath, targetPath) => {
+    execFileSync('sqlite3', [sourcePath, `.backup ${targetPath}`], { stdio: 'inherit' });
+};
+
+const shiftTransactionsFixtureToNow = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '14.db');
+    const targetPath = path.join(outputDirectoryPath, '14.db');
+    const historicalAccountId = 10;
+    const historicalTimestamp2011 = 1_306_324_800;
+    const historicalTimestamp2026 = 1_779_710_400;
+    const historicalAmount2011 = 39_975_247;
+    const historicalAmount2026 = 220_435_025;
+    const historicalBalance = -(historicalAmount2011 + historicalAmount2026);
+    const missingRateInstrumentId = 34;
+    const missingRateAccountId = 11;
+    const missingRateCategoryId = 42;
+    const missingRateAmount = 15_000_000_000;
+
+    backupFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+        CREATE TEMP TABLE fixture_offset AS
+        SELECT CAST(strftime('%s', 'now') AS INTEGER) - 86400 - MAX(operated_at) AS seconds
+        FROM transactions;
+
+        UPDATE transactions
+        SET operated_at = operated_at + (SELECT seconds FROM fixture_offset),
+            created_at = created_at + (SELECT seconds FROM fixture_offset),
+            updated_at = updated_at + (SELECT seconds FROM fixture_offset);
+
+        UPDATE transaction_entries
+        SET created_at = created_at + (SELECT seconds FROM fixture_offset),
+            updated_at = updated_at + (SELECT seconds FROM fixture_offset);
+
+        UPDATE account_balances
+        SET created_at = created_at + (SELECT seconds FROM fixture_offset),
+            updated_at = updated_at + (SELECT seconds FROM fixture_offset);
+
+        INSERT INTO transactions (
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            comment,
+            to_account_id,
+            exchange_rate
+        )
+        SELECT
+            MIN(operated_at) - 60,
+            MIN(operated_at) - 60,
+            'INCOME',
+            '',
+            MIN(operated_at) - 60,
+            'E2E Uncategorized Income',
+            2,
+            1.0
+        FROM transactions;
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            created_at,
+            updated_at,
+            'DEBIT',
+            2,
+            NULL,
+            id,
+            7000000
+        FROM transactions
+        WHERE id = last_insert_rowid();
+
+        UPDATE account_balances
+        SET amount = amount + 7000000
+        WHERE account_id = 2;
+
+        INSERT INTO accounts (
+            id,
+            created_at,
+            updated_at,
+            icon,
+            "order",
+            title,
+            type,
+            nature,
+            instrument_id,
+            include_in_net_worth,
+            is_active,
+            title_search
+        )
+        VALUES (
+            ${historicalAccountId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'Wallet',
+            10,
+            'E2E Historical UAH',
+            'CASH',
+            'ASSET',
+            33,
+            1,
+            1,
+            'e2e historical uah'
+        );
+
+        INSERT INTO account_balances (
+            created_at,
+            updated_at,
+            account_id,
+            amount
+        )
+        VALUES (
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            ${historicalAccountId},
+            ${historicalBalance}
+        );
+
+        INSERT INTO transactions (
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            comment,
+            from_account_id,
+            exchange_rate,
+            external_source
+        )
+        VALUES
+            (
+                ${historicalTimestamp2011},
+                ${historicalTimestamp2011},
+                'EXPENSE',
+                '',
+                ${historicalTimestamp2011},
+                'E2E Historical UAH 2011',
+                ${historicalAccountId},
+                1.0,
+                'CSV'
+            ),
+            (
+                ${historicalTimestamp2026},
+                ${historicalTimestamp2026},
+                'EXPENSE',
+                '',
+                ${historicalTimestamp2026},
+                'E2E Historical UAH 2026',
+                ${historicalAccountId},
+                1.0,
+                'CSV'
+            );
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            created_at,
+            updated_at,
+            'CREDIT',
+            ${historicalAccountId},
+            40,
+            id,
+            CASE comment
+                WHEN 'E2E Historical UAH 2011' THEN ${historicalAmount2011}
+                ELSE ${historicalAmount2026}
+            END
+        FROM transactions
+        WHERE comment IN ('E2E Historical UAH 2011', 'E2E Historical UAH 2026');
+
+        INSERT INTO instruments (
+            id,
+            created_at,
+            updated_at,
+            type,
+            code,
+            name,
+            symbol
+        )
+        VALUES (
+            ${missingRateInstrumentId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'FIAT',
+            'NOFX',
+            'No Rate Currency',
+            'NF'
+        );
+
+        INSERT INTO accounts (
+            id,
+            created_at,
+            updated_at,
+            icon,
+            "order",
+            title,
+            type,
+            nature,
+            instrument_id,
+            include_in_net_worth,
+            is_active,
+            title_search
+        )
+        VALUES (
+            ${missingRateAccountId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'Wallet',
+            11,
+            'E2E Missing Rate',
+            'CASH',
+            'ASSET',
+            ${missingRateInstrumentId},
+            1,
+            1,
+            'e2e missing rate'
+        );
+
+        INSERT INTO account_balances (
+            created_at,
+            updated_at,
+            account_id,
+            amount
+        )
+        VALUES (
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            ${missingRateAccountId},
+            -${missingRateAmount}
+        );
+
+        INSERT INTO categories (
+            id,
+            created_at,
+            updated_at,
+            title,
+            icon,
+            title_search
+        )
+        VALUES (
+            ${missingRateCategoryId},
+            CAST(strftime('%s', 'now') AS INTEGER),
+            CAST(strftime('%s', 'now') AS INTEGER),
+            'E2E Missing Rate Category',
+            'Wallet',
+            'e2e missing rate category'
+        );
+
+        INSERT INTO transactions (
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            comment,
+            from_account_id,
+            exchange_rate
+        )
+        SELECT
+            MAX(operated_at) + 60,
+            MAX(operated_at) + 60,
+            'EXPENSE',
+            '',
+            MAX(operated_at) + 60,
+            'E2E Missing Rate Expense',
+            ${missingRateAccountId},
+            1.0
+        FROM transactions;
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            created_at,
+            updated_at,
+            'CREDIT',
+            ${missingRateAccountId},
+            ${missingRateCategoryId},
+            id,
+            ${missingRateAmount}
+        FROM transactions
+        WHERE id = last_insert_rowid();
+
+        UPDATE settings
+        SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
+
+        DROP TABLE fixture_offset;
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
+const buildLocalNoonDate = (year, month, day) => new Date(year, month, day, 12, 0, 0, 0);
+
+const getClampedDay = (year, month, day) => {
+    const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+
+    return Math.min(day, lastDayOfMonth);
+};
+
+const buildMonthlyTimestamp = (monthOffset, desiredDay) => {
+    const now = new Date();
+    const targetMonthDate = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
+    const targetYear = targetMonthDate.getFullYear();
+    const targetMonth = targetMonthDate.getMonth();
+    const clampedDay = getClampedDay(targetYear, targetMonth, desiredDay);
+    const targetDate = buildLocalNoonDate(targetYear, targetMonth, clampedDay);
+
+    return Math.floor(targetDate.getTime() / 1000);
+};
+
+const generateBudgetMultiCurrencyFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, 'budget-multi-currency.db');
+    const targetPath = path.join(outputDirectoryPath, 'budget-multi-currency.db');
+    const transactionTimestamp = buildMonthlyTimestamp(0, 19);
+
+    backupFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        UPDATE transactions
+        SET operated_at = ${transactionTimestamp},
+            created_at = ${transactionTimestamp},
+            updated_at = ${transactionTimestamp}
+        WHERE id IN (9, 10);
+
+        UPDATE transaction_entries
+        SET created_at = ${transactionTimestamp},
+            updated_at = ${transactionTimestamp}
+        WHERE transaction_id IN (9, 10);
+
+        UPDATE settings
+        SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
+const generateRecurringFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '07.db');
+    const targetPath = path.join(outputDirectoryPath, '20-recurring-calendar.db');
+
+    const now = new Date();
+    const today = now.getDate();
+    const lastDayOfCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const upcomingDay = Math.min(lastDayOfCurrentMonth, today + 5);
+    const rentAmount = 120_000_000;
+    const gymAmount = 25_000_000;
+    const rentDates = [-3, -2, -1, 0].map(monthOffset => buildMonthlyTimestamp(monthOffset, today));
+    const gymDates = [-3, -2, -1].map(monthOffset => buildMonthlyTimestamp(monthOffset, upcomingDay));
+    const transactionValues = [
+        ...rentDates.map(timestamp => `(${timestamp}, ${timestamp}, 'EXPENSE', 'E2E Recurring Rent', ${timestamp}, '', 1.0)`),
+        ...gymDates.map(timestamp => `(${timestamp}, ${timestamp}, 'EXPENSE', 'E2E Recurring Gym', ${timestamp}, '', 1.0)`)
+    ].join(',\n            ');
+    const totalRecurringAmount = rentAmount * rentDates.length + gymAmount * gymDates.length;
+
+    backupFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        DELETE FROM transaction_entries;
+        DELETE FROM transactions;
+        DELETE FROM account_balances;
+        DELETE FROM sqlite_sequence
+        WHERE name IN ('transactions', 'transaction_entries', 'account_balances');
+
+        UPDATE accounts
+        SET title = CASE id
+            WHEN 1 THEN 'E2E Recurring Account'
+            WHEN 2 THEN 'E2E Recurring Spare'
+            ELSE title
+        END,
+            updated_at = CAST(strftime('%s', 'now') AS INTEGER),
+            is_active = 1,
+            include_in_net_worth = 1;
+
+        UPDATE settings
+        SET default_account_id = 1,
+            default_instrument_id = 1,
+            language = 'en',
+            show_cents = 0,
+            updated_at = CAST(strftime('%s', 'now') AS INTEGER);
+
+        INSERT INTO transactions (
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            comment,
+            exchange_rate
+        )
+        VALUES
+            ${transactionValues};
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            transactions.created_at,
+            transactions.updated_at,
+            'CREDIT',
+            1,
+            CASE transactions.title
+                WHEN 'E2E Recurring Rent' THEN 10
+                ELSE 15
+            END,
+            transactions.id,
+            CASE transactions.title
+                WHEN 'E2E Recurring Rent' THEN ${rentAmount}
+                ELSE ${gymAmount}
+            END
+        FROM transactions
+        ORDER BY transactions.id;
+
+        INSERT INTO account_balances (
+            created_at,
+            updated_at,
+            account_id,
+            amount
+        )
+        VALUES
+            (CAST(strftime('%s', 'now') AS INTEGER), CAST(strftime('%s', 'now') AS INTEGER), 1, ${totalRecurringAmount}),
+            (CAST(strftime('%s', 'now') AS INTEGER), CAST(strftime('%s', 'now') AS INTEGER), 2, 0);
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
+const generateConsolidationFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '07.db');
+    const targetPath = path.join(outputDirectoryPath, '21.db');
+
+    const now = Math.floor(Date.now() / 1000);
+    const tOpening = now - 24 * 60 * 60;
+    const tFastExpense = now - 30;
+    const tFastIncome = now - 25;
+    const tCross = now - 60 * 60;
+    const tAtm = now - 90 * 60;
+    const tSameBankExpense = now - 120 * 60;
+    const tSameBankIncome = tSameBankExpense + 60;
+    const tBridge = now - 150 * 60;
+    const tBridgeIncome = tBridge + 20;
+    const tBridgeChain = now - 180 * 60;
+    const tBridgeChainIncome = tBridgeChain + 20;
+    const tBridgeChainExpense = tBridgeChain + 30;
+    const tBridgeChainTarget = tBridgeChain + 40;
+    const tUntouched = now - 5 * 60;
+
+    const uahId = 33;
+    const usdId = 1;
+    const eurId = 2;
+
+    const u1030 = 1_030_000_000;
+    const u200 = 200_000_000;
+    const u100 = 100_000_000;
+    const u92 = 92_000_000;
+    const u500 = 500_000_000;
+    const u400 = 400_000_000;
+    const u300 = 300_000_000;
+    const u50 = 50_000_000;
+    const u1000 = 1_000_000_000;
+
+    const balanceA = u1000 - u200 - u50;
+    const balanceB = u200;
+    const balanceUsd = 0;
+    const balanceEur = u92;
+    const balanceCard = u1000 - u500;
+
+    backupFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        ALTER TABLE transaction_entries ADD exchange_rate real DEFAULT 1 NOT NULL;
+        ALTER TABLE transaction_entries ADD to_iban text;
+        INSERT INTO __drizzle_migrations (hash, created_at)
+        VALUES ('', 1776196800000);
+        `
+    );
+
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        DELETE FROM transaction_entries;
+        DELETE FROM transactions;
+        DELETE FROM transaction_tags;
+        DELETE FROM account_balances;
+        DELETE FROM accounts;
+        DELETE FROM sqlite_sequence
+        WHERE name IN ('transactions', 'transaction_entries', 'accounts', 'account_balances', 'transaction_tags');
+
+        INSERT INTO accounts (id, created_at, updated_at, icon, "order", title, type, nature, instrument_id, external_source, iban, is_active, include_in_net_worth)
+        VALUES
+            (1, ${now}, ${now}, 'Wallet',     1, 'E2E Consolidation A',          'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000A1', 1, 1),
+            (2, ${now}, ${now}, 'Wallet',     2, 'E2E Consolidation B',          'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000B1', 1, 1),
+            (3, ${now}, ${now}, 'Wallet',     3, 'E2E Consolidation USD',        'BANK_SYNC', 'ASSET', ${usdId}, 'MONOBANK', 'UA000000000000000000000000U1', 1, 1),
+            (4, ${now}, ${now}, 'Wallet',     4, 'E2E Consolidation EUR',        'BANK_SYNC', 'ASSET', ${eurId}, 'MONOBANK', 'UA000000000000000000000000E1', 1, 1),
+            (5, ${now}, ${now}, 'CreditCard', 5, 'E2E Consolidation Card',       'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000C1', 1, 1),
+            (6, ${now}, ${now}, 'Wallet',     6, 'E2E Consolidation Cash',       'CASH',      'ASSET', ${uahId}, NULL,       NULL,                            1, 1),
+            (7, ${now}, ${now}, 'Wallet',     7, 'E2E Consolidation Untouched',  'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000T1', 1, 1),
+            (8, ${now}, ${now}, 'Wallet',     8, 'E2E Consolidation Privat Source', 'BANK_SYNC', 'ASSET', ${uahId}, 'PRIVATBANK', 'UA1111111000000000000000000356', 1, 1),
+            (9, ${now}, ${now}, 'Wallet',     9, 'E2E Consolidation Privat Target', 'BANK_SYNC', 'ASSET', ${uahId}, 'PRIVATBANK', 'UA1111111000000000000000005524', 1, 1),
+            (10, ${now}, ${now}, 'Wallet',   10, 'E2E Consolidation Bridge Source', 'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA00000000000000000000000BSRC', 1, 1),
+            (11, ${now}, ${now}, 'Wallet',   11, 'E2E Consolidation Bridge Middle', 'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA00000000000000000000000BMID', 1, 1),
+            (12, ${now}, ${now}, 'Wallet',   12, 'E2E Consolidation Bridge Target', 'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA00000000000000000000000BTGT', 1, 1),
+            (13, ${now}, ${now}, 'Wallet',   13, 'E2E Consolidation Chain Source',  'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA00000000000000000000000CSRC', 1, 1),
+            (14, ${now}, ${now}, 'Wallet',   14, 'E2E Consolidation Chain Middle',  'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA00000000000000000000000CMID', 1, 1),
+            (15, ${now}, ${now}, 'Wallet',   15, 'E2E Consolidation Chain Target',  'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA00000000000000000000000CTGT', 1, 1);
+
+        INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, token, created_at, updated_at)
+        VALUES
+            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (2, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (3, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (4, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (5, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (7, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (8, 'PRIVATBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (9, 'PRIVATBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (10, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (11, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (12, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (13, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (14, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (15, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now});
+
+        INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, from_account_id, to_account_id, external_source, external_id)
+        VALUES
+            (1, ${tOpening},     ${tOpening},     'ADJUSTMENT', '',                              '', ${tOpening},     1.0, NULL, 1,    NULL,       NULL),
+            (2, ${tOpening},     ${tOpening},     'ADJUSTMENT', '',                              '', ${tOpening},     1.0, NULL, 3,    NULL,       NULL),
+            (3, ${tOpening},     ${tOpening},     'ADJUSTMENT', '',                              '', ${tOpening},     1.0, NULL, 5,    NULL,       NULL),
+            (4, ${tFastExpense}, ${tFastExpense}, 'EXPENSE',    'E2E Consolidation P1 Out',     '', ${tFastExpense}, 1.0, 1,    NULL, 'MONOBANK', 'e2e-p1-out'),
+            (5, ${tFastIncome},  ${tFastIncome},  'INCOME',     'E2E Consolidation P1 In',      '', ${tFastIncome},  1.0, NULL, 2,    'MONOBANK', 'e2e-p1-in'),
+            (6, ${tCross},       ${tCross},       'EXPENSE',    'E2E Consolidation P2 Out',     '', ${tCross},       1.0, 3,    NULL, 'MONOBANK', 'e2e-p2-out'),
+            (7, ${tCross},       ${tCross},       'INCOME',     'E2E Consolidation P2 In',      '', ${tCross},       1.0, NULL, 4,    'MONOBANK', 'e2e-p2-in'),
+            (8, ${tAtm},         ${tAtm},         'EXPENSE',    'E2E Consolidation ATM Out',    '', ${tAtm},         1.0, 5,    NULL, 'MONOBANK', 'e2e-atm-out'),
+            (9, ${tUntouched},   ${tUntouched},   'EXPENSE',    'E2E Consolidation Untouched',  '', ${tUntouched},   1.0, 1,    NULL, NULL,        NULL),
+            (10, ${tSameBankExpense}, ${tSameBankExpense}, 'EXPENSE', 'E2E Consolidation SameBank Out *5524', '', ${tSameBankExpense}, 1.0, 8, NULL, 'PRIVATBANK', 'e2e-same-bank-out'),
+            (11, ${tSameBankIncome}, ${tSameBankIncome}, 'INCOME', 'E2E Consolidation SameBank In *0356', '', ${tSameBankIncome}, 1.0, NULL, 9, 'PRIVATBANK', 'e2e-same-bank-in'),
+            (12, ${tBridge}, ${tBridge}, 'EXPENSE', 'E2E Consolidation Bridge Out', '', ${tBridge}, 1.0, 11, NULL, 'MONOBANK', 'e2e-bridge-out'),
+            (13, ${tBridgeIncome}, ${tBridgeIncome}, 'INCOME', 'E2E Consolidation Bridge In', '', ${tBridgeIncome}, 1.0, NULL, 11, 'MONOBANK', 'e2e-bridge-in'),
+            (14, ${tBridgeChain}, ${tBridgeChain}, 'EXPENSE', 'E2E Consolidation Chain Source', '', ${tBridgeChain}, 1.0, 13, NULL, 'MONOBANK', 'e2e-chain-source'),
+            (15, ${tBridgeChainIncome}, ${tBridgeChainIncome}, 'INCOME', 'E2E Consolidation Chain Middle In', '', ${tBridgeChainIncome}, 1.0, NULL, 14, 'MONOBANK', 'e2e-chain-middle-in'),
+            (16, ${tBridgeChainExpense}, ${tBridgeChainExpense}, 'EXPENSE', 'E2E Consolidation Bridge Chain Out', '', ${tBridgeChainExpense}, 1.0, 14, NULL, 'MONOBANK', 'e2e-chain-middle-out'),
+            (17, ${tBridgeChainTarget}, ${tBridgeChainTarget}, 'INCOME', 'E2E Consolidation Chain Target', '', ${tBridgeChainTarget}, 1.0, NULL, 15, 'MONOBANK', 'e2e-chain-target');
+
+        INSERT INTO transaction_entries (transaction_id, account_id, type, amount, external_id, mcc_category_id, to_iban, created_at, updated_at)
+        VALUES
+            (1, 1, 'DEBIT',  ${u1000}, NULL,                NULL,                                                       NULL,                                     ${tOpening},     ${tOpening}),
+            (2, 3, 'DEBIT',  ${u100},  NULL,                NULL,                                                       NULL,                                     ${tOpening},     ${tOpening}),
+            (3, 5, 'DEBIT',  ${u1000}, NULL,                NULL,                                                       NULL,                                     ${tOpening},     ${tOpening}),
+            (4, 1, 'CREDIT', ${u200},  'e2e-p1-out-entry',  (SELECT id FROM mcc_categories WHERE mcc = '6011' LIMIT 1), NULL,                                     ${tFastExpense}, ${tFastExpense}),
+            (5, 2, 'DEBIT',  ${u200},  'e2e-p1-in-entry',   (SELECT id FROM mcc_categories WHERE mcc = '6011' LIMIT 1), NULL,                                     ${tFastIncome},  ${tFastIncome}),
+            (6, 3, 'CREDIT', ${u100},  'e2e-p2-out-entry',  NULL,                                                       NULL,                                     ${tCross},       ${tCross}),
+            (7, 4, 'DEBIT',  ${u92},   'e2e-p2-in-entry',   NULL,                                                       NULL,                                     ${tCross},       ${tCross}),
+            (8, 5, 'CREDIT', ${u500},  'e2e-atm-out-entry', (SELECT id FROM mcc_categories WHERE mcc = '6011' LIMIT 1), NULL,                                     ${tAtm},         ${tAtm}),
+            (9, 1, 'CREDIT', ${u50},   NULL,                NULL,                                                       NULL,                                     ${tUntouched},   ${tUntouched}),
+            (10, 8, 'CREDIT', ${u1030}, 'e2e-same-bank-out-entry', (SELECT id FROM mcc_categories WHERE mcc = '4829' LIMIT 1), NULL,                               ${tSameBankExpense}, ${tSameBankExpense}),
+            (11, 9, 'DEBIT', ${u1000}, 'e2e-same-bank-in-entry', (SELECT id FROM mcc_categories WHERE mcc = '4829' LIMIT 1), NULL,                                 ${tSameBankIncome}, ${tSameBankIncome}),
+            (12, 11, 'CREDIT', ${u300}, 'e2e-bridge-out-entry', (SELECT id FROM mcc_categories WHERE mcc = '4829' LIMIT 1), 'UA00000000000000000000000BTGT',       ${tBridge}, ${tBridge}),
+            (13, 11, 'DEBIT', ${u300}, 'e2e-bridge-in-entry', (SELECT id FROM mcc_categories WHERE mcc = '4829' LIMIT 1), 'UA00000000000000000000000BSRC',         ${tBridgeIncome}, ${tBridgeIncome}),
+            (14, 13, 'CREDIT', ${u400}, 'e2e-chain-source-entry', (SELECT id FROM mcc_categories WHERE mcc = '4829' LIMIT 1), 'UA00000000000000000000000CTGT',     ${tBridgeChain}, ${tBridgeChain}),
+            (15, 14, 'DEBIT', ${u400}, 'e2e-chain-middle-in-entry', (SELECT id FROM mcc_categories WHERE mcc = '4829' LIMIT 1), 'UA00000000000000000000000CSRC',    ${tBridgeChainIncome}, ${tBridgeChainIncome}),
+            (16, 14, 'CREDIT', ${u400}, 'e2e-chain-middle-out-entry', (SELECT id FROM mcc_categories WHERE mcc = '4829' LIMIT 1), 'UA00000000000000000000000CTGT',  ${tBridgeChainExpense}, ${tBridgeChainExpense}),
+            (17, 15, 'DEBIT', ${u400}, 'e2e-chain-target-entry', (SELECT id FROM mcc_categories WHERE mcc = '4829' LIMIT 1), NULL,                                ${tBridgeChainTarget}, ${tBridgeChainTarget});
+
+        INSERT INTO account_balances (account_id, amount, created_at, updated_at)
+        VALUES
+            (1, ${balanceA},     ${now}, ${now}),
+            (2, ${balanceB},     ${now}, ${now}),
+            (3, ${balanceUsd},   ${now}, ${now}),
+            (4, ${balanceEur},   ${now}, ${now}),
+            (5, ${balanceCard},  ${now}, ${now}),
+            (6, 0,               ${now}, ${now}),
+            (7, 0,               ${now}, ${now}),
+            (8, -${u1030},       ${now}, ${now}),
+            (9, ${u1000},        ${now}, ${now}),
+            (10, 0,              ${now}, ${now}),
+            (11, 0,              ${now}, ${now}),
+            (12, 0,              ${now}, ${now}),
+            (13, -${u400},       ${now}, ${now}),
+            (14, 0,              ${now}, ${now}),
+            (15, ${u400},        ${now}, ${now});
+
+        UPDATE settings
+        SET default_account_id = 1,
+            default_instrument_id = ${uahId},
+            language = 'en',
+            show_cents = 0,
+            updated_at = ${now};
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
+const generateRefundConsolidationFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '07.db');
+    const targetPath = path.join(outputDirectoryPath, '22.db');
+
+    const now = Math.floor(Date.now() / 1000);
+    const tOpening = now - 24 * 60 * 60;
+    const tPartialExpense = now - 5 * 60;
+    const tPartialRefund = now - 4 * 60;
+    const tFullExpense = now - 10 * 60;
+    const tFullRefund = now - 9 * 60;
+    const tAmbiguousFirstExpense = now - 15 * 60;
+    const tAmbiguousSecondExpense = now - 14 * 60;
+    const tAmbiguousRefund = now - 13 * 60;
+    const tLocalizedExpense = now - 2 * 60;
+    const tLocalizedRefund = now - 1 * 60;
+
+    const uahId = 33;
+
+    const u30 = 30_000_000;
+    const u40 = 40_000_000;
+    const u55 = 55_000_000;
+    const u18 = 18_000_000;
+    const u120 = 120_000_000;
+    const u1000 = 1_000_000_000;
+
+    const balance = u1000 - u120 + u40 - u55 + u55 - u30 - u30 + u30 - u18 + u18;
+
+    backupFixture(sourcePath, targetPath);
+
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        DELETE FROM transaction_entries;
+        DELETE FROM transactions;
+        DELETE FROM transaction_tags;
+        DELETE FROM account_balances;
+        DELETE FROM accounts;
+        DELETE FROM sqlite_sequence
+        WHERE name IN ('transactions', 'transaction_entries', 'accounts', 'account_balances', 'transaction_tags');
+
+        INSERT INTO accounts (id, created_at, updated_at, icon, "order", title, type, nature, instrument_id, external_source, iban, is_active, include_in_net_worth)
+        VALUES
+            (1, ${now}, ${now}, 'Wallet', 1, 'E2E Refund Card', 'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000R1', 1, 1);
+
+        INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, token, created_at, updated_at)
+        VALUES
+            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now});
+
+        INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, from_account_id, to_account_id, external_source, external_id)
+        VALUES
+            (1, ${tOpening},                 ${tOpening},                 'ADJUSTMENT', '',                     '', ${tOpening},                 1.0, NULL, 1,    NULL,       NULL),
+            (2, ${tPartialExpense},          ${tPartialExpense},          'EXPENSE',    'E2E Refund Partial',   '', ${tPartialExpense},          1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-partial-expense'),
+            (3, ${tPartialRefund},           ${tPartialRefund},           'INCOME',     'E2E Refund Partial',   '', ${tPartialRefund},           1.0, NULL, 1,    'MONOBANK', 'e2e-refund-partial-income'),
+            (4, ${tFullExpense},             ${tFullExpense},             'EXPENSE',    'E2E Refund Full',      '', ${tFullExpense},             1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-full-expense'),
+            (5, ${tFullRefund},              ${tFullRefund},              'INCOME',     'E2E Refund Full',      '', ${tFullRefund},              1.0, NULL, 1,    'MONOBANK', 'e2e-refund-full-income'),
+            (6, ${tAmbiguousFirstExpense},   ${tAmbiguousFirstExpense},   'EXPENSE',    'E2E Refund Ambiguous', '', ${tAmbiguousFirstExpense},   1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-ambiguous-expense-first'),
+            (7, ${tAmbiguousSecondExpense},  ${tAmbiguousSecondExpense},  'EXPENSE',    'E2E Refund Ambiguous', '', ${tAmbiguousSecondExpense},  1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-ambiguous-expense-second'),
+            (8, ${tAmbiguousRefund},         ${tAmbiguousRefund},         'INCOME',     'E2E Refund Ambiguous', '', ${tAmbiguousRefund},         1.0, NULL, 1,    'MONOBANK', 'e2e-refund-ambiguous-income'),
+            (9, ${tLocalizedExpense},        ${tLocalizedExpense},        'EXPENSE',    'E2E Refund Localized', '', ${tLocalizedExpense},        1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-localized-expense'),
+            (10, ${tLocalizedRefund},        ${tLocalizedRefund},        'INCOME',     'Скасування. E2E Refund Localized', '', ${tLocalizedRefund}, 1.0, NULL, 1,    'MONOBANK', 'e2e-refund-localized-income');
+
+        INSERT INTO transaction_entries (transaction_id, account_id, type, amount, external_id, category_id, mcc_category_id, created_at, updated_at)
+        VALUES
+            (1, 1, 'DEBIT',  ${u1000}, NULL,                         NULL, NULL, ${tOpening},                ${tOpening}),
+            (2, 1, 'CREDIT', ${u120},  'e2e-refund-partial-expense',  12,   NULL, ${tPartialExpense},         ${tPartialExpense}),
+            (3, 1, 'DEBIT',  ${u40},   'e2e-refund-partial-income',   12,   NULL, ${tPartialRefund},          ${tPartialRefund}),
+            (4, 1, 'CREDIT', ${u55},   'e2e-refund-full-expense',     13,   NULL, ${tFullExpense},            ${tFullExpense}),
+            (5, 1, 'DEBIT',  ${u55},   'e2e-refund-full-income',      13,   NULL, ${tFullRefund},             ${tFullRefund}),
+            (6, 1, 'CREDIT', ${u30},   'e2e-refund-ambiguous-first',  NULL, NULL, ${tAmbiguousFirstExpense},  ${tAmbiguousFirstExpense}),
+            (7, 1, 'CREDIT', ${u30},   'e2e-refund-ambiguous-second', NULL, NULL, ${tAmbiguousSecondExpense}, ${tAmbiguousSecondExpense}),
+            (8, 1, 'DEBIT',  ${u30},   'e2e-refund-ambiguous-income', NULL, NULL, ${tAmbiguousRefund},        ${tAmbiguousRefund}),
+            (9, 1, 'CREDIT', ${u18},   'e2e-refund-localized-expense', 12,   NULL, ${tLocalizedExpense},       ${tLocalizedExpense}),
+            (10, 1, 'DEBIT', ${u18},   'e2e-refund-localized-income',  12,   NULL, ${tLocalizedRefund},        ${tLocalizedRefund});
+
+        INSERT INTO account_balances (account_id, amount, created_at, updated_at)
+        VALUES
+            (1, ${balance}, ${now}, ${now});
+
+        UPDATE settings
+        SET default_account_id = 1,
+            default_instrument_id = ${uahId},
+            language = 'en',
+            show_cents = 0,
+            updated_at = ${now};
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
+shiftTransactionsFixtureToNow();
+generateBudgetMultiCurrencyFixture();
+generateRecurringFixture();
+generateConsolidationFixture();
+generateRefundConsolidationFixture();

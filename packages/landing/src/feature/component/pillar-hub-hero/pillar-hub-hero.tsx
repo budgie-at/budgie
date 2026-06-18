@@ -11,26 +11,17 @@ interface Props {
     readonly heading: ReactNode;
     readonly tagline: ReactNode;
     readonly breadcrumbs: ReactNode;
-    readonly bullets: readonly ReactNode[];
+    readonly children: ReactNode;
 }
 
-export const PillarHubHero = ({ locale, heading, tagline, breadcrumbs, bullets }: Props) => (
+export const PillarHubHero = ({ locale, heading, tagline, breadcrumbs, children }: Props) => (
     <section className="w-full pt-12 pb-16 md:pt-20 md:pb-24 bg-gradient-to-b from-emerald-50/40 to-background dark:from-emerald-950/20">
         <div className="container px-4 md:px-6 max-w-4xl">
             <Motion>
                 {breadcrumbs}
                 <h1 className="mt-6 text-3xl md:text-5xl font-bold tracking-tight">{heading}</h1>
                 <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-2xl">{tagline}</p>
-                <ul className="mt-6 space-y-2">
-                    {bullets.map((bullet, index) => (
-                        <li className="flex items-start gap-2 text-muted-foreground" key={index}>
-                            <span aria-hidden className="mt-1 text-emerald-500">
-                                ✓
-                            </span>
-                            <span>{bullet}</span>
-                        </li>
-                    ))}
-                </ul>
+                {children}
                 <div className="mt-8 flex flex-wrap gap-3">
                     <Button asChild size="lg">
                         <Link href={`/${locale}#waitlist`}>

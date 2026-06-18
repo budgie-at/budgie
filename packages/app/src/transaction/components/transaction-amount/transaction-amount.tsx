@@ -1,4 +1,5 @@
 import {
+    InstrumentTypeEnum,
     TransactionWithRelationsEntityInterface,
     UserIconNameEnum,
     isNegativeAdjustmentTransaction,
@@ -93,8 +94,10 @@ export const TransactionAmount = ({ transaction }: Props) => {
                 {isCrossCurrency ? (
                     <ConvertedAmountLabel
                         instrumentId={fromEntry.account.instrument.id}
+                        instrumentSymbol={fromEntry.account.instrument.symbol}
                         amount={fromEntry.amount}
                         baseAmount={fromEntry.baseAmount}
+                        shouldShowExchangeRate={fromEntry.account.instrument.type === InstrumentTypeEnum.CRYPTO}
                     />
                 ) : null}
             </View>
@@ -114,8 +117,10 @@ export const TransactionAmount = ({ transaction }: Props) => {
                 {isCrossCurrency ? (
                     <ConvertedAmountLabel
                         instrumentId={toEntry.account.instrument.id}
+                        instrumentSymbol={toEntry.account.instrument.symbol}
                         amount={toEntry.amount}
                         baseAmount={toEntry.baseAmount}
+                        shouldShowExchangeRate={toEntry.account.instrument.type === InstrumentTypeEnum.CRYPTO}
                     />
                 ) : null}
             </View>
