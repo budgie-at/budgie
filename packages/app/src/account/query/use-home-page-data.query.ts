@@ -7,7 +7,6 @@ import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { useSettingsContext } from '../../settings/context/settings.context';
-import { buildDebtAccountProgressSummary } from '../utils/build-debt-account-progress-summary.util';
 
 import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated-at.query';
 
@@ -49,19 +48,10 @@ const addBankProviderTotal = (
 };
 
 const addDebtTypeTotal = (totals: Map<AccountDebtTypeEnum, number>, homeAccountBalance: HomeAccountBalanceInterface): void => {
-    const { accountType, convertedBalance, convertedCreditAmount, convertedDebitAmount, convertedTargetBalance, debtType, isActive } =
-        homeAccountBalance;
+    const { accountType, debtProgressSummary, debtType, isActive } = homeAccountBalance;
 
     if (isActive && accountType === AccountTypeEnum.DEBT) {
-        const summary = buildDebtAccountProgressSummary({
-            balance: convertedBalance,
-            creditAmount: convertedCreditAmount,
-            debitAmount: convertedDebitAmount,
-            debtType,
-            targetAmount: convertedTargetBalance
-        });
-
-        addTotal(totals, debtType, summary.outstandingAmount);
+        addTotal(totals, debtType, debtProgressSummary.outstandingAmount);
     }
 };
 
@@ -106,6 +96,16 @@ export const useHomePageDataQuery = () => {
 
     const balanceSummary: HomeAccountBalanceSummaryInterface = data.reduce((summary, row) => {
         const rowBankProvider = isDefined(row.bankSync) ? row.bankSync.provider : null;
+        const debtProgressSummary = {
+            closedAmount: convertFromMicroUnits(row.convertedDebtClosedAmount),
+            creditAmount: convertFromMicroUnits(row.convertedCreditAmount),
+            debitAmount: convertFromMicroUnits(row.convertedDebitAmount),
+            openedAmount: convertFromMicroUnits(row.convertedDebtOpenedAmount),
+            outstandingAmount: convertFromMicroUnits(row.convertedDebtOutstandingAmount),
+            paidAmount: convertFromMicroUnits(row.convertedDebtPaidAmount),
+            percentage: row.debtProgressPercentage,
+            totalAmount: convertFromMicroUnits(row.convertedDebtTotalAmount)
+        };
         const homeAccountBalance: HomeAccountBalanceInterface = {
             accountId: row.account.id,
             accountType: row.account.type,
@@ -115,6 +115,7 @@ export const useHomePageDataQuery = () => {
             convertedCreditAmount: convertFromMicroUnits(row.convertedCreditAmount),
             convertedDebitAmount: convertFromMicroUnits(row.convertedDebitAmount),
             convertedTargetBalance: convertFromMicroUnits(row.convertedTargetBalance),
+            debtProgressSummary,
             debtType: row.account.debtType,
             includeInNetWorth: row.account.includeInNetWorth,
             isActive: row.account.isActive

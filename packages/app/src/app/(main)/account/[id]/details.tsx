@@ -13,7 +13,6 @@ import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foreground-color-palette.constant';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
-import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { AccountBalance } from '../../../../account/component/account-balance/account-balance';
 import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
@@ -22,7 +21,7 @@ import { ACCOUNT_COLOR } from '../../../../account/constant/account-color.consta
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../../../account/constant/account-debt-type-color.constant';
 import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
-import { useDebtAccountLedgerTotalsQuery } from '../../../../account/query/use-debt-account-ledger-totals.query';
+import { useDebtAccountProgressSummaryQuery } from '../../../../account/query/use-debt-account-progress-summary.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { TransactionList } from '../../../../transaction/components/transaction-list/transaction-list';
 
@@ -38,7 +37,7 @@ export default function AccountDetails() {
 
     const { account, isLoading } = useGetAccountByIdQuery(id);
     const { balance } = useAccountBalanceQuery(id);
-    const { debitAmount, creditAmount } = useDebtAccountLedgerTotalsQuery(id);
+    const debtProgressSummary = useDebtAccountProgressSummaryQuery(id);
     const { t } = useLingui();
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -84,14 +83,7 @@ export default function AccountDetails() {
             >
                 <View className="pb-md">
                     {type === AccountTypeEnum.DEBT ? (
-                        <DebtAccountBalance
-                            balance={balance}
-                            creditAmount={creditAmount}
-                            debitAmount={debitAmount}
-                            debtType={debtType}
-                            instrumentSymbol={instrument.symbol}
-                            targetAmount={convertFromMicroUnits(account.targetBalance)}
-                        />
+                        <DebtAccountBalance debtType={debtType} instrumentSymbol={instrument.symbol} summary={debtProgressSummary} />
                     ) : (
                         <AccountBalance instrumentSymbol={instrument.symbol} balance={balance} />
                     )}
