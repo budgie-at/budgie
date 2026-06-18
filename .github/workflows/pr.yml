@@ -18,7 +18,7 @@ on: pull_request
 jobs:
   code-quality:
     name: Code quality checks
-    runs-on: [self-hosted, linux-burst]
+    runs-on: [self-hosted, linux-ci]
     permissions:
       contents: read
       id-token: write
@@ -75,7 +75,6 @@ jobs:
 
   eas-update-preview:
     name: EAS Update Preview
-    needs: code-quality
     runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     permissions:
       contents: read
@@ -120,7 +119,7 @@ jobs:
           eas update --skip-bundler --input-dir dist --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
 
   build-ios-e2e-app:
-    needs: [code-quality]
+    needs: [code-quality, eas-update-preview]
     name: Build iOS E2E app
     runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     env:
@@ -457,7 +456,7 @@ jobs:
     if: false
     needs: [code-quality, eas-update-preview]
     name: E2E Tests on Android
-    runs-on: [self-hosted, linux-burst]
+    runs-on: [self-hosted, linux-ci]
     steps:
       - uses: actions/checkout@v5
 
