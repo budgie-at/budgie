@@ -58,11 +58,11 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          text: 'E2EFixtures'
+          id: 'E2EFixtures, Folder'
       timeout: 3000
 
 - tapOn:
-      text: 'E2EFixtures'
+      id: 'E2EFixtures, Folder'
       retryTapIfNoChange: true
 
 - waitForAnimationToEnd
