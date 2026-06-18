@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { type SQL, type SQLWrapper, and, eq, inArray, isNull, ne, sql } from 'drizzle-orm';
+import { type SQL, and, eq, inArray, isNull, ne, sql } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
@@ -10,11 +10,13 @@ import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankSyncEntityTable } from '../../bank-sync/table/bank-sync-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
-import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
+
+import { accountBalanceDebtProgressSqlBuilder } from './account-balance-debt-progress-sql.builder';
+import { accountBalanceLedgerSqlBuilder } from './account-balance-ledger-sql.builder';
 
 import type { DB } from '../../@generic/type/db.type';
 import type { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
@@ -32,10 +34,23 @@ export class AccountBalanceRepository {
     )
     async getNewTransactionEntriesDeltas(accountIds: number[], tx?: DB): Promise<Map<number, number>> {
         const database = tx ?? this.db;
-        const results = await database.select({ accountId: TransactionEntryEntityTable.accountId, delta: this.getTransactionsSumSql().mapWith(Number) }).from(TransactionEntryEntityTable).innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id)).where(and(isNull(TransactionEntryEntityTable.deletedAt), this.getLiveTransactionConditionSql(), this.getBalanceLedgerEntryConditionSql(), inArray(TransactionEntryEntityTable.accountId, accountIds), sql`(
+        const results = await database
+            .select({ accountId: TransactionEntryEntityTable.accountId, delta: this.getTransactionsSumSql().mapWith(Number) })
+            .from(TransactionEntryEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .where(
+                and(
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
+                    accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql(),
+                    inArray(TransactionEntryEntityTable.accountId, accountIds),
+                    sql`(
                         NOT EXISTS (SELECT 1 FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${TransactionEntryEntityTable.accountId})
                         OR ${TransactionEntryEntityTable.createdAt} > (SELECT MAX(${AccountBalanceEntityTable.updatedAt}) FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${TransactionEntryEntityTable.accountId})
-                    )`)).groupBy(TransactionEntryEntityTable.accountId);
+                    )`
+                )
+            )
+            .groupBy(TransactionEntryEntityTable.accountId);
 
         return new Map(results.map(({ accountId, delta }) => [accountId, delta]));
     }
@@ -45,21 +60,47 @@ export class AccountBalanceRepository {
         const cryptoExchangeRateSql = this.buildStrictExchangeRateConversionSql(defaultInstrumentId);
         const balanceSql = this.getAccountBalanceWithTransactionsSql();
 
-        return this.db.select({ fiatTotal: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${fiatExchangeRateSql} ELSE 0 END), 0)`, cryptoTotal: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${cryptoExchangeRateSql} ELSE 0 END), 0)`, fiatCount: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)`, cryptoCount: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)` }).from(AccountEntityTable).where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
+        return this.db
+            .select({
+                fiatTotal: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${fiatExchangeRateSql} ELSE 0 END), 0)`,
+                cryptoTotal: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN (${balanceSql}) * ${cryptoExchangeRateSql} ELSE 0 END), 0)`,
+                fiatCount: sql<number>`COALESCE(SUM(CASE WHEN ${ne(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)`,
+                cryptoCount: sql<number>`COALESCE(SUM(CASE WHEN ${eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO)} THEN 1 ELSE 0 END), 0)`
+            })
+            .from(AccountEntityTable)
+            .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
     getTotalByCryptoInstrument(instrumentId: number) {
-        return this.db.select({ balance: sql<number>`COALESCE(SUM(${this.getAccountBalanceWithTransactionsSql()}), 0)` }).from(AccountEntityTable).where(this.getActiveAccountWhereSql(eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO), eq(AccountEntityTable.instrumentId, instrumentId)));
+        return this.db
+            .select({ balance: sql<number>`COALESCE(SUM(${this.getAccountBalanceWithTransactionsSql()}), 0)` })
+            .from(AccountEntityTable)
+            .where(
+                this.getActiveAccountWhereSql(
+                    eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO),
+                    eq(AccountEntityTable.instrumentId, instrumentId)
+                )
+            );
     }
 
     async upsert(input: AccountBalanceCreateEntityInterface, tx?: DB): Promise<AccountBalanceEntityInterface> {
-        const [accountBalance] = await (tx ?? this.db).insert(AccountBalanceEntityTable).values([input]).onConflictDoUpdate({ target: AccountBalanceEntityTable.accountId, set: { amount: input.amount, updatedAt: input.updatedAt ?? new Date() } }).returning();
+        const [accountBalance] = await (tx ?? this.db)
+            .insert(AccountBalanceEntityTable)
+            .values([input])
+            .onConflictDoUpdate({
+                target: AccountBalanceEntityTable.accountId,
+                set: { amount: input.amount, updatedAt: input.updatedAt ?? new Date() }
+            })
+            .returning();
 
         return accountBalance;
     }
 
     async getByAccountIds(accountIds: number[], tx?: DB): Promise<AccountBalanceEntityInterface[]> {
-        return await (tx ?? this.db).select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
+        return await (tx ?? this.db)
+            .select()
+            .from(AccountBalanceEntityTable)
+            .where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
     async deleteByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
@@ -73,13 +114,44 @@ export class AccountBalanceRepository {
         const convertedDebitAmountSql = sql<number>`COALESCE((${this.getTransactionEntryAmountSumSql(TransactionEntryTypeEnum.DEBIT)}) * ${exchangeRateSql}, 0)`;
         const convertedCreditAmountSql = sql<number>`COALESCE((${this.getTransactionEntryAmountSumSql(TransactionEntryTypeEnum.CREDIT)}) * ${exchangeRateSql}, 0)`;
         const convertedTargetBalanceSql = sql<number>`COALESCE(${AccountEntityTable.targetBalance} * ${exchangeRateSql}, 0)`;
-        const debtProgressSql = this.getDebtProgressSql(convertedBalanceSql, convertedDebitAmountSql, convertedCreditAmountSql, convertedTargetBalanceSql);
+        const debtProgressSql = accountBalanceDebtProgressSqlBuilder.getDebtProgressSql(
+            convertedBalanceSql,
+            convertedDebitAmountSql,
+            convertedCreditAmountSql,
+            convertedTargetBalanceSql
+        );
 
-        return this.db.select({ account: AccountEntityTable, balance: balanceSql, bankSync: BankSyncEntityTable, convertedBalance: convertedBalanceSql, convertedCreditAmount: convertedCreditAmountSql, convertedDebtClosedAmount: debtProgressSql.closedAmount, convertedDebtOpenedAmount: debtProgressSql.openedAmount, convertedDebtOutstandingAmount: debtProgressSql.outstandingAmount, convertedDebtPaidAmount: debtProgressSql.paidAmount, convertedDebtTotalAmount: debtProgressSql.totalAmount, convertedDebitAmount: convertedDebitAmountSql, convertedTargetBalance: convertedTargetBalanceSql, debtProgressPercentage: debtProgressSql.percentage, instrument: InstrumentEntityTable }).from(AccountEntityTable).innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId)).leftJoin(BankSyncEntityTable, and(eq(BankSyncEntityTable.accountId, AccountEntityTable.id), isNull(BankSyncEntityTable.deletedAt))).where(isNull(AccountEntityTable.deletedAt));
+        return this.db
+            .select({
+                account: AccountEntityTable,
+                balance: balanceSql,
+                bankSync: BankSyncEntityTable,
+                convertedBalance: convertedBalanceSql,
+                convertedCreditAmount: convertedCreditAmountSql,
+                convertedDebtClosedAmount: debtProgressSql.closedAmount,
+                convertedDebtOpenedAmount: debtProgressSql.openedAmount,
+                convertedDebtOutstandingAmount: debtProgressSql.outstandingAmount,
+                convertedDebtPaidAmount: debtProgressSql.paidAmount,
+                convertedDebtTotalAmount: debtProgressSql.totalAmount,
+                convertedDebitAmount: convertedDebitAmountSql,
+                convertedTargetBalance: convertedTargetBalanceSql,
+                debtProgressPercentage: debtProgressSql.percentage,
+                instrument: InstrumentEntityTable
+            })
+            .from(AccountEntityTable)
+            .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))
+            .leftJoin(
+                BankSyncEntityTable,
+                and(eq(BankSyncEntityTable.accountId, AccountEntityTable.id), isNull(BankSyncEntityTable.deletedAt))
+            )
+            .where(isNull(AccountEntityTable.deletedAt));
     }
 
     getLatestUpdatedAt() {
-        return this.db.select({ updatedAt: sql<Date | null>`MAX(${AccountBalanceEntityTable.updatedAt})` }).from(AccountBalanceEntityTable).where(isNull(AccountBalanceEntityTable.deletedAt));
+        return this.db
+            .select({ updatedAt: sql<Date | null>`MAX(${AccountBalanceEntityTable.updatedAt})` })
+            .from(AccountBalanceEntityTable)
+            .where(isNull(AccountBalanceEntityTable.deletedAt));
     }
 
     getByAccountId(accountId: number, tx?: DB) {
@@ -95,9 +167,27 @@ export class AccountBalanceRepository {
         const balanceSql = this.getAccountBalanceWithTransactionsSql(accountIdReference);
         const debitAmountSql = this.getTransactionEntryAmountSumSql(TransactionEntryTypeEnum.DEBIT, accountIdReference);
         const creditAmountSql = this.getTransactionEntryAmountSumSql(TransactionEntryTypeEnum.CREDIT, accountIdReference);
-        const debtProgressSql = this.getDebtProgressSql(balanceSql, debitAmountSql, creditAmountSql, AccountEntityTable.targetBalance);
+        const debtProgressSql = accountBalanceDebtProgressSqlBuilder.getDebtProgressSql(
+            balanceSql,
+            debitAmountSql,
+            creditAmountSql,
+            AccountEntityTable.targetBalance
+        );
 
-        return this.db.select({ closedAmount: debtProgressSql.closedAmount, creditAmount: creditAmountSql.mapWith(Number), debitAmount: debitAmountSql.mapWith(Number), openedAmount: debtProgressSql.openedAmount, outstandingAmount: debtProgressSql.outstandingAmount, paidAmount: debtProgressSql.paidAmount, percentage: debtProgressSql.percentage, totalAmount: debtProgressSql.totalAmount }).from(AccountEntityTable).where(eq(AccountEntityTable.id, accountId)).limit(1);
+        return this.db
+            .select({
+                closedAmount: debtProgressSql.closedAmount,
+                creditAmount: creditAmountSql.mapWith(Number),
+                debitAmount: debitAmountSql.mapWith(Number),
+                openedAmount: debtProgressSql.openedAmount,
+                outstandingAmount: debtProgressSql.outstandingAmount,
+                paidAmount: debtProgressSql.paidAmount,
+                percentage: debtProgressSql.percentage,
+                totalAmount: debtProgressSql.totalAmount
+            })
+            .from(AccountEntityTable)
+            .where(eq(AccountEntityTable.id, accountId))
+            .limit(1);
     }
 
     getArchivedAccountBalance(accountId: number) {
@@ -107,8 +197,8 @@ export class AccountBalanceRepository {
                 FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId}
                 WHERE ${TransactionEntryEntityTable.accountId} = ${accountId}
                   AND ${TransactionEntryEntityTable.deletedAt} IS NULL
-                  AND ${this.getLiveTransactionConditionSql()}
-                  AND ${this.getBalanceLedgerEntryConditionSql()}
+                  AND ${accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql()}
+                  AND ${accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()}
             ), 0)`;
 
         return this.db.select({ balance: totalBalanceSql }).from(AccountEntityTable).where(eq(AccountEntityTable.id, accountId)).limit(1);
@@ -117,7 +207,10 @@ export class AccountBalanceRepository {
     getNetWorth(defaultInstrumentId: number) {
         const exchangeRateSql = this.buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
 
-        return this.db.select({ netWorth: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` }).from(AccountEntityTable).where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
+        return this.db
+            .select({ netWorth: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
+            .from(AccountEntityTable)
+            .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
     getTotalByAccountType(defaultInstrumentId: number, accountType: AccountTypeEnum) {
@@ -126,7 +219,10 @@ export class AccountBalanceRepository {
                 ? this.buildStrictExchangeRateConversionSql(defaultInstrumentId)
                 : this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
 
-        return this.db.select({ total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` }).from(AccountEntityTable).where(this.getActiveAccountWhereSql(eq(AccountEntityTable.type, accountType)));
+        return this.db
+            .select({ total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
+            .from(AccountEntityTable)
+            .where(this.getActiveAccountWhereSql(eq(AccountEntityTable.type, accountType)));
     }
 
     getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
@@ -134,15 +230,29 @@ export class AccountBalanceRepository {
         const balanceSql = this.getAccountBalanceWithTransactionsSql();
         const debitAmountSql = this.getTransactionEntryAmountSumSql(TransactionEntryTypeEnum.DEBIT);
         const creditAmountSql = this.getTransactionEntryAmountSumSql(TransactionEntryTypeEnum.CREDIT);
-        const debtProgressSql = this.getDebtProgressSql(balanceSql, debitAmountSql, creditAmountSql, AccountEntityTable.targetBalance);
+        const debtProgressSql = accountBalanceDebtProgressSqlBuilder.getDebtProgressSql(
+            balanceSql,
+            debitAmountSql,
+            creditAmountSql,
+            AccountEntityTable.targetBalance
+        );
 
-        return this.db.select({ total: sql<number>`COALESCE(SUM((${debtProgressSql.outstandingAmount}) * ${exchangeRateSql}), 0)` }).from(AccountEntityTable).where(this.getActiveAccountWhereSql(eq(AccountEntityTable.type, AccountTypeEnum.DEBT), eq(AccountEntityTable.debtType, debtType)));
+        return this.db
+            .select({ total: sql<number>`COALESCE(SUM((${debtProgressSql.outstandingAmount}) * ${exchangeRateSql}), 0)` })
+            .from(AccountEntityTable)
+            .where(
+                this.getActiveAccountWhereSql(eq(AccountEntityTable.type, AccountTypeEnum.DEBT), eq(AccountEntityTable.debtType, debtType))
+            );
     }
 
     getTotalByBankProvider(defaultInstrumentId: number, provider: ExternalSourceEnum) {
         const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
 
-        return this.db.select({ total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` }).from(AccountEntityTable).innerJoin(BankSyncEntityTable, eq(BankSyncEntityTable.accountId, AccountEntityTable.id)).where(this.getActiveAccountWhereSql(eq(BankSyncEntityTable.provider, provider), isNull(BankSyncEntityTable.deletedAt)));
+        return this.db
+            .select({ total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
+            .from(AccountEntityTable)
+            .innerJoin(BankSyncEntityTable, eq(BankSyncEntityTable.accountId, AccountEntityTable.id))
+            .where(this.getActiveAccountWhereSql(eq(BankSyncEntityTable.provider, provider), isNull(BankSyncEntityTable.deletedAt)));
     }
 
     async truncate(tx?: DB): Promise<void> {
@@ -168,7 +278,7 @@ export class AccountBalanceRepository {
     private getAccountBalanceWithTransactionsSql(accountIdReference = sql.raw('accounts.id')) {
         const latestAccountBalanceSql = sql<number>`SELECT ${AccountBalanceEntityTable.amount} FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${accountIdReference} LIMIT 1`;
         const lastBalanceUpdatedAtSql = sql`SELECT MAX(${AccountBalanceEntityTable.updatedAt}) FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${accountIdReference}`;
-        const transactionsSumSinceLastBalanceSql = sql<number>`SELECT ${this.getTransactionsSumSql()} FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId} WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference} AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${this.getLiveTransactionConditionSql()} AND ${this.getBalanceLedgerEntryConditionSql()} AND ((${lastBalanceUpdatedAtSql}) IS NULL OR ${TransactionEntryEntityTable.createdAt} > (${lastBalanceUpdatedAtSql}))`;
+        const transactionsSumSinceLastBalanceSql = sql<number>`SELECT ${this.getTransactionsSumSql()} FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId} WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference} AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql()} AND ${accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()} AND ((${lastBalanceUpdatedAtSql}) IS NULL OR ${TransactionEntryEntityTable.createdAt} > (${lastBalanceUpdatedAtSql}))`;
 
         return sql<number>`COALESCE((${latestAccountBalanceSql}), 0) + COALESCE((${transactionsSumSinceLastBalanceSql}), 0)`;
     }
@@ -178,46 +288,6 @@ export class AccountBalanceRepository {
     }
 
     private getTransactionEntryAmountSumSql(transactionEntryType: TransactionEntryTypeEnum, accountIdReference = sql.raw('accounts.id')) {
-        return sql<number>`SELECT COALESCE(SUM(${TransactionEntryEntityTable.amount}), 0) FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId} WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference} AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${this.getLiveTransactionConditionSql()} AND ${TransactionEntryEntityTable.type} = ${transactionEntryType} AND ${this.getBalanceLedgerEntryConditionSql()}`;
-    }
-
-    private getDebtProgressSql(balanceSql: SQL, debitAmountSql: SQL, creditAmountSql: SQL, targetAmountSql: SQL | SQLWrapper) {
-        const balanceValueSql = sql<number>`(${balanceSql})`;
-        const debitAmountValueSql = sql<number>`(${debitAmountSql})`;
-        const creditAmountValueSql = sql<number>`(${creditAmountSql})`;
-        const targetAmountValueSql = sql<number>`(${targetAmountSql})`;
-        const closedAmountSql = sql<number>`CASE WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} THEN ${debitAmountValueSql} ELSE ${creditAmountValueSql} END`;
-        const openedAmountSql = sql<number>`CASE WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} THEN ${creditAmountValueSql} ELSE ${debitAmountValueSql} END`;
-        const signedOutstandingAmountSql = sql<number>`CASE WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} THEN 0 - ${balanceValueSql} ELSE ${balanceValueSql} END`;
-
-        return this.getDebtProgressComputedSql(closedAmountSql, openedAmountSql, signedOutstandingAmountSql, targetAmountValueSql);
-    }
-
-    private getDebtProgressComputedSql(closedAmountSql: SQL<number>, openedAmountSql: SQL<number>, signedOutstandingAmountSql: SQL<number>, targetAmountSql: SQL<number>) {
-        const hasLedgerActivitySql = sql`(${openedAmountSql} > 0 OR ${closedAmountSql} > 0)`;
-        const ledgerOutstandingAmountSql = sql<number>`MAX(${openedAmountSql} - ${closedAmountSql}, 0)`;
-        const signedFallbackOutstandingAmountSql = sql<number>`CASE WHEN ${signedOutstandingAmountSql} > 0 THEN ${signedOutstandingAmountSql} ELSE 0 END`;
-        const targetOnlyOutstandingAmountSql = sql<number>`CASE WHEN ${signedOutstandingAmountSql} = 0 THEN MAX(${targetAmountSql}, 0) ELSE 0 END`;
-        const fallbackOutstandingAmountSql = sql<number>`MAX(${signedFallbackOutstandingAmountSql}, ${targetOnlyOutstandingAmountSql})`;
-        const outstandingAmountSql = sql<number>`CASE WHEN ${hasLedgerActivitySql} THEN ${ledgerOutstandingAmountSql} ELSE ${fallbackOutstandingAmountSql} END`;
-        const observedTotalAmountSql = sql<number>`CASE WHEN ${hasLedgerActivitySql} THEN MAX(${openedAmountSql}, ${closedAmountSql}, ${closedAmountSql} + ${outstandingAmountSql}) ELSE ${outstandingAmountSql} END`;
-        const totalAmountSql = sql<number>`MAX(${targetAmountSql}, ${observedTotalAmountSql}, 0)`;
-        const paidAmountSql = sql<number>`MIN(MAX(${totalAmountSql} - ${outstandingAmountSql}, 0), ${totalAmountSql})`;
-        const percentageSql = sql<number>`CASE WHEN ${totalAmountSql} > 0 THEN MIN(ROUND((${paidAmountSql} * 100.0) / ${totalAmountSql}, 2), 100) ELSE 0 END`;
-
-        return { closedAmount: closedAmountSql.mapWith(Number), openedAmount: openedAmountSql.mapWith(Number), outstandingAmount: outstandingAmountSql.mapWith(Number), paidAmount: paidAmountSql.mapWith(Number), percentage: percentageSql.mapWith(Number), totalAmount: totalAmountSql.mapWith(Number) };
-    }
-
-    private getLiveTransactionConditionSql() {
-        return sql`${TransactionEntityTable.deletedAt} IS NULL AND ${TransactionEntityTable.consolidationParentTransactionId} IS NULL`;
-    }
-
-    private getBalanceLedgerEntryConditionSql() {
-        return sql`
-            (
-                ${TransactionEntryEntityTable.originalTransactionId} IS NULL
-                OR ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
-            )
-        `;
+        return sql<number>`SELECT COALESCE(SUM(${TransactionEntryEntityTable.amount}), 0) FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId} WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference} AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql()} AND ${TransactionEntryEntityTable.type} = ${transactionEntryType} AND ${accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()}`;
     }
 }
