@@ -1,47 +1,36 @@
-/* jscpd:ignore-start */
-import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { useRouter } from 'expo-router';
-import { View } from 'react-native';
-
-import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { useLingui } from '@lingui/react/macro';
 
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
-import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
-import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer/filter-sheet-searchable-drawer';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
+import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
-import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
-import { TransactionCategoryFilterItem } from '../transaction/components/transaction-category-filter/transaction-category-filter-item';
-import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
+import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
+import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionCategoryFilterModal } from '../transaction/context/transaction-category-filter-modal.context';
+import { prepareTransactionFilterGridData } from '../transaction/utils/prepare-transaction-filter-grid-data.util';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
+
+const FOOTER_BOTTOM_SPACE = 132;
+const LIST_TOP_SPACE = 88;
 
 export default function TransactionCategoryFilterModal() {
     const { t } = useLingui();
-    const router = useRouter();
     const [, resolveTransactionCategoryFilter, currentParams] = useTransactionCategoryFilterModal();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);
     const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
-    const { categories, total } = useSearchCategoriesQuery(search, true);
+    const { categories, isLoading } = useSearchCategoriesQuery(search, true);
 
-    const items = categories ?? [];
-    const showControls = !(isEmptyArray(items) && isEmptyString(search));
-    const showEmptySearch = isNotEmptyString(search) && isPositiveNumber(total);
+    const selectedCategoryIds = localValue ?? [];
+    const data = prepareTransactionFilterGridData(categories, selectedCategoryIds);
 
-    const handleSelect = (selected: number) => void setLocalValue(prev => toggleFilterSelection(prev, [selected]));
-    const handleSelectAll = () => void setLocalValue(() => items.map(item => item.id));
+    const handleSelect = (selected: number) => void setLocalValue(previous => toggleFilterSelection(previous, [selected]));
+    const handleSelectAll = () => void setLocalValue(() => (categories ?? []).map(category => category.id));
     const handleApply = () => void resolveTransactionCategoryFilter({ value: localValueRef.current });
-
-    const handleNavigateToCreate = () => {
-        resolveTransactionCategoryFilter(null, { skipBack: true });
-        router.dismiss();
-        router.push('/settings/categories');
-    };
+    const handleClose = () => void resolveTransactionCategoryFilter(null);
 
     const applyLabel = t({
         message: plural(selectedCount, {
@@ -53,47 +42,29 @@ export default function TransactionCategoryFilterModal() {
 
     return (
         <FilterSheet>
-            <FilterSheetList alignToBottom={isNotEmptyString(search)}>
-                {isNotEmptyArray(items) ? (
-                    <View className="gap-y-sm">
-                        {items.map(category => (
-                            <TransactionCategoryFilterItem
-                                isSelected={localValue?.includes(category.id) ?? false}
-                                category={category}
-                                key={category.id}
-                                onSelect={handleSelect}
-                            />
-                        ))}
-                    </View>
-                ) : null}
+            <TransactionFilterSelectorHeader title={t`Filter categories`} onClose={handleClose} />
 
-                {isEmptyArray(items) && showEmptySearch ? (
-                    <SearchableFilterEmptyResult>
-                        <Trans>No categories found</Trans>
-                    </SearchableFilterEmptyResult>
-                ) : null}
+            <CategorySelectContent
+                data={data}
+                variant="cta"
+                initialCategoryId={null}
+                selectedCategoryIds={selectedCategoryIds}
+                isLoading={isLoading}
+                additionalBottomPadding={FOOTER_BOTTOM_SPACE}
+                topOffset={LIST_TOP_SPACE}
+                onSelect={handleSelect}
+            />
 
-                {isEmptyArray(items) && !showEmptySearch ? (
-                    <TransactionFilterEmptyState
-                        icon={UserIconNameEnum.Tag}
-                        title={t`No Categories Yet`}
-                        buttonText={t`Create Categories`}
-                        onCreate={handleNavigateToCreate}
-                        description={t`Create custom categories in Settings to label and filter your transactions`}
-                    />
-                ) : null}
-            </FilterSheetList>
-
-            <FilterSheetSearchableDrawer
-                showControls={showControls}
+            <TransactionFilterSelectorFooter
                 searchValue={search}
                 searchPlaceholder={t`Search categories...`}
                 onSearchChange={setSearch}
+                isLoading={isLoading}
+                selectedCount={selectedCount}
+                applyLabel={applyLabel}
                 onSelectAll={handleSelectAll}
                 onDeselectAll={handleDeselectAll}
                 onApply={handleApply}
-                applyLabel={applyLabel}
-                selectedCount={selectedCount}
                 searchTestID={TransactionFiltersSelector.CategorySearchInput}
                 selectAllTestID={TransactionFiltersSelector.CategorySelectAllButton}
                 deselectAllTestID={TransactionFiltersSelector.CategoryDeselectAllButton}
@@ -102,4 +73,3 @@ export default function TransactionCategoryFilterModal() {
         </FilterSheet>
     );
 }
-/* jscpd:ignore-end */

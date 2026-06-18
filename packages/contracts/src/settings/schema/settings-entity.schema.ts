@@ -15,5 +15,7 @@ export const SettingsEntitySchema = createSelectSchema(SettingsEntityTable, {
     isBiometricEnabled: schema => schema.describe('Determines whether biometric authentication is enabled in the application.'),
     isPinEnabled: schema => schema.describe('Determines whether PIN authentication is enabled in the application.'),
     isScreenshotProtectionEnabled: schema =>
-        schema.describe('Determines whether screenshot protection is enabled to hide sensitive financial data.')
+        schema.describe('Determines whether screenshot protection is enabled to hide sensitive financial data.'),
+    isBudgetWidgetEnabled: schema => schema.describe('Determines whether the budget widget is shown on the home screen.'),
+    isBudgetPushEnabled: schema => schema.describe('Determines whether push notifications are sent when a budget threshold is crossed.')
 });

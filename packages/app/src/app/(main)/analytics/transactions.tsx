@@ -3,8 +3,7 @@ import { useLocalSearchParams } from 'expo-router';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { StatisticsAnalyticsTransactionsPage } from '../../../transaction/components/statistics-analytics-transactions-page/statistics-analytics-transactions-page';
-import { UncategorizedAnalyticsTransactionsPage } from '../../../transaction/components/uncategorized-analytics-transactions-page/uncategorized-analytics-transactions-page';
+import { AnalyticsTransactionsRoute } from '../../../transaction/components/analytics-transactions-route/analytics-transactions-route';
 import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../../transaction/interface/analytics-transactions-route-params.interface';
@@ -40,6 +39,18 @@ const getTransactionTypes = (value: string | string[] | undefined): TransactionT
 
 const getNumberParams = (value: string | string[] | undefined): number[] => getRouteParamValues(value).map(Number).filter(Number.isFinite);
 
+const getAnalyticsMode = (value: string | null): AnalyticsTransactionsModeEnum | null => {
+    if (value === AnalyticsTransactionsModeEnum.BUDGET_OTHER) {
+        return AnalyticsTransactionsModeEnum.BUDGET_OTHER;
+    }
+
+    if (value === AnalyticsTransactionsModeEnum.UNCATEGORIZED) {
+        return AnalyticsTransactionsModeEnum.UNCATEGORIZED;
+    }
+
+    return null;
+};
+
 export default function AnalyticsTransactionsPage() {
     const searchParams = useLocalSearchParams<{
         readonly mode?: string | string[];
@@ -50,9 +61,10 @@ export default function AnalyticsTransactionsPage() {
         readonly type?: string | string[];
         readonly types?: string | string[];
         readonly accountIds?: string | string[];
+        readonly excludedCategoryIds?: string | string[];
         readonly tagIds?: string | string[];
     }>();
-    const mode = getRouteParam(searchParams.mode);
+    const mode = getAnalyticsMode(getRouteParam(searchParams.mode));
     const startDate = getRouteParam(searchParams.startDate);
     const endDate = getRouteParam(searchParams.endDate);
     const categoryId = getRouteParam(searchParams.categoryId);
@@ -60,9 +72,10 @@ export default function AnalyticsTransactionsPage() {
     const type = getTransactionType(getRouteParam(searchParams.type));
     const types = getTransactionTypes(searchParams.types);
     const accountIds = getNumberParams(searchParams.accountIds);
+    const excludedCategoryIds = getNumberParams(searchParams.excludedCategoryIds);
     const tagIds = getNumberParams(searchParams.tagIds);
     const params: AnalyticsTransactionsRouteParamsInterface = {
-        ...(mode === AnalyticsTransactionsModeEnum.UNCATEGORIZED && { mode }),
+        ...(isDefined(mode) && { mode }),
         ...(isDefined(startDate) && { startDate }),
         ...(isDefined(endDate) && { endDate }),
         ...(isDefined(categoryId) && { categoryId }),
@@ -70,12 +83,9 @@ export default function AnalyticsTransactionsPage() {
         ...(isDefined(type) && { type }),
         ...(isNotEmptyArray(types) && { types }),
         ...(isNotEmptyArray(accountIds) && { accountIds }),
+        ...(isNotEmptyArray(excludedCategoryIds) && { excludedCategoryIds }),
         ...(isNotEmptyArray(tagIds) && { tagIds })
     };
 
-    if (params.mode === AnalyticsTransactionsModeEnum.UNCATEGORIZED) {
-        return <UncategorizedAnalyticsTransactionsPage {...params} />;
-    }
-
-    return <StatisticsAnalyticsTransactionsPage {...params} />;
+    return <AnalyticsTransactionsRoute params={params} />;
 }

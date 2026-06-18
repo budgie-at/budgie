@@ -181,7 +181,12 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
                         />
                     ))}
 
-                    <CircularActionButton icon={UserIconNameEnum.Plus} onPress={handleClose} animatedStyle={buttonStyle} />
+                    <CircularActionButton
+                        icon={UserIconNameEnum.Plus}
+                        onPress={handleClose}
+                        animatedStyle={buttonStyle}
+                        testID={CreateTransactionMenuSelector.Trigger}
+                    />
                 </View>
             </View>
         </View>

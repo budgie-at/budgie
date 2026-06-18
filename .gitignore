@@ -65,3 +65,6 @@ docs/plans
 docs/superpowers
 .vercel
 .env*.local
+
+# Agent scratch worktrees
+.claude/worktrees/

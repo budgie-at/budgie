@@ -1,7 +1,7 @@
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useEffect } from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { View, ViewStyle } from 'react-native';
+import Animated, { AnimatedStyle, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -9,12 +9,13 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
 
 interface Props {
     readonly label: string;
     readonly account: AccountWithInstrumentEntityInterface | null | undefined;
     readonly variant: ColorPaletteVariant;
-    readonly animatedStyle?: StyleProp<ViewStyle>;
+    readonly animatedStyle?: AnimatedStyle<ViewStyle>;
     readonly testID?: string;
     readonly selectedTestID?: string;
     readonly onPress: () => void;
@@ -34,6 +35,7 @@ export const TransferAccountPicker = ({ label, account, variant, animatedStyle, 
         titleFontSize.set(withSpring(hasAccount ? TITLE_FONT_SIZE_SELECTED : TITLE_FONT_SIZE_UNSELECTED, SPRING_CONFIG));
     }, [hasAccount, titleFontSize]);
 
+    const isInactiveAccount = hasAccount && !account.isActive;
     const titleClassName = hasAccount ? 'font-medium text-primary' : 'font-medium text-secondary-foreground';
     const titleAnimatedStyle = useAnimatedStyle(() => ({
         fontSize: titleFontSize.value
@@ -48,7 +50,9 @@ export const TransferAccountPicker = ({ label, account, variant, animatedStyle, 
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="button"
             >
-                <CircleIcon icon={icon} variant={variant} size={28} iconSize={14} radius={8} />
+                <AccountInactiveIcon isInactive={isInactiveAccount} size={28}>
+                    <CircleIcon icon={icon} variant={variant} size={28} iconSize={14} radius={8} />
+                </AccountInactiveIcon>
 
                 <View className="flex-1 justify-center">
                     <Animated.Text

@@ -3,6 +3,68 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.38.0](https://github.com/budgie-at/budgie/compare/v5.37.1...v5.38.0) (2026-06-16)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.37.1](https://github.com/budgie-at/budgie/compare/v5.37.0...v5.37.1) (2026-06-12)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.36.2](https://github.com/budgie-at/budgie/compare/v5.36.1...v5.36.2) (2026-06-09)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.36.1](https://github.com/budgie-at/budgie/compare/v5.36.0...v5.36.1) (2026-06-07)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.36.0](https://github.com/budgie-at/budgie/compare/v5.35.6...v5.36.0) (2026-06-07)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.35.5](https://github.com/budgie-at/budgie/compare/v5.35.4...v5.35.5) (2026-06-06)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.35.3](https://github.com/budgie-at/budgie/compare/v5.35.2...v5.35.3) (2026-06-06)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.35.1](https://github.com/budgie-at/budgie/compare/v5.35.0...v5.35.1) (2026-06-06)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.35.0](https://github.com/budgie-at/budgie/compare/v5.34.1...v5.35.0) (2026-06-05)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.34.0](https://github.com/budgie-at/budgie/compare/v5.33.1...v5.34.0) (2026-06-04)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.31.0](https://github.com/budgie-at/budgie/compare/v5.30.1...v5.31.0) (2026-06-01)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.29.1](https://github.com/budgie-at/budgie/compare/v5.29.0...v5.29.1) (2026-05-31)
+
+### Bug Fixes
+
+- **ai:** deduplicate generated keywords ([f8a2b31](https://github.com/budgie-at/budgie/commit/f8a2b310ca748a19af3f69a364b216e17f36da82))
+
+# [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.28.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.28.0) (2026-05-30)
+
+**Note:** Version bump only for package @budgie/ai
+
 # [5.27.0](https://github.com/budgie-at/budgie/compare/v5.26.0...v5.27.0) (2026-05-29)
 
 **Note:** Version bump only for package @budgie/ai

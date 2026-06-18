@@ -15,6 +15,8 @@ export { MccCategoryEntityRelations } from './mcc-category/relations/mcc-categor
 export { ExchangeRateEntityTable } from './exchange-rate/table/exchange-rate-entity.table';
 export { ExchangeRateEntityRelations } from './exchange-rate/relations/exchange-rate-entity.relations';
 export { HistoricalExchangeRateEntityTable } from './historical-exchange-rate/table/historical-exchange-rate-entity.table';
+export { InstrumentDailyMarketPriceEntityTable } from './instrument-daily-market-price/table/instrument-daily-market-price-entity.table';
+export { InstrumentMarketDataJobEntityTable } from './instrument-market-data-job/table/instrument-market-data-job-entity.table';
 export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';
 export { InstrumentEntityRelations } from './instrument/relations/instrument-entity.relations';
 export { SettingsEntityTable } from './settings/table/settings-entity.table';
@@ -35,6 +37,10 @@ export { RuleConditionEntityTable } from './rule-condition/table/rule-condition-
 export { RuleConditionEntityRelations } from './rule-condition/relations/rule-condition-entity.relations';
 export { RuleActionEntityTable } from './rule-action/table/rule-action-entity.table';
 export { RuleActionEntityRelations } from './rule-action/relations/rule-action-entity.relations';
+export { BudgetEntityTable } from './budget/table/budget-entity.table';
+export { BudgetEntityRelations } from './budget/relations/budget-entity.relations';
+export { BudgetCategoryLimitEntityTable } from './budget-category-limit/table/budget-category-limit-entity.table';
+export { BudgetCategoryLimitEntityRelations } from './budget-category-limit/relations/budget-category-limit-entity.relations';
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';

@@ -18,7 +18,7 @@ interface Props extends Pick<CategoryEntityInterface, 'id' | 'icon' | 'title'> {
     readonly testID?: string;
 }
 
-const cardVariants = cva(`flex-1 rounded-2xl p-sm gap-y-0.5 border-2 items-center h-[72px]`, {
+const cardVariants = cva(`flex-1 rounded-2xl px-sm py-xs gap-y-0.5 border-2 items-center h-[72px]`, {
     variants: {
         isSelected: {
             true: '',
@@ -37,7 +37,7 @@ const textVariants = cva('font-medium text-xs text-center leading-tight', {
     variants: {
         isSelected: {
             true: '',
-            false: 'text-primary'
+            false: 'text-secondary-foreground'
         },
         variant: Object.fromEntries(typedObjectEntries(FOREGROUND_COLOR_PALETTE).map(([variant]) => [variant, '']))
     },
@@ -57,10 +57,14 @@ export const CategorySelectorCard = (props: Props) => {
 
     return (
         <HapticPressable className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect} testID={testID}>
-            <CircleIcon size={28} iconSize={14} className="rounded-4xl" icon={icon} variant={iconVariant} border={false} />
+            <CircleIcon size={24} iconSize={13} className="rounded-4xl" icon={icon} variant={iconVariant} border={false} />
 
-            <View className="flex-1 justify-center">
-                <Text className={textVariants({ isSelected, variant })} numberOfLines={2}>
+            <View className="self-stretch flex-1 justify-center">
+                <Text
+                    className={cn(textVariants({ isSelected, variant }), 'self-stretch flex-shrink')}
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                >
                     {title}
                 </Text>
             </View>

@@ -3,6 +3,123 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.38.0](https://github.com/budgie-at/budgie/compare/v5.37.1...v5.38.0) (2026-06-16)
+
+### Features
+
+- **app:** add budget planning v1 (monthly budgets, alerts, push, multi-currency) ([#426](https://github.com/budgie-at/budgie/issues/426)) ([3eb1b23](https://github.com/budgie-at/budgie/commit/3eb1b238b32968b7f49133c6a10836dfda63445f)), closes [#2](https://github.com/budgie-at/budgie/issues/2) [#483](https://github.com/budgie-at/budgie/issues/483) [#1](https://github.com/budgie-at/budgie/issues/1) [#483](https://github.com/budgie-at/budgie/issues/483) [#3](https://github.com/budgie-at/budgie/issues/3) [#483](https://github.com/budgie-at/budgie/issues/483)
+
+## [5.37.1](https://github.com/budgie-at/budgie/compare/v5.37.0...v5.37.1) (2026-06-12)
+
+### Bug Fixes
+
+- **contracts:** avoid missing-rate analytics inflation ([18a7174](https://github.com/budgie-at/budgie/commit/18a7174fcd43f6f0362dfafb498ccc3d15700fec))
+
+## [5.36.2](https://github.com/budgie-at/budgie/compare/v5.36.1...v5.36.2) (2026-06-09)
+
+### Bug Fixes
+
+- address consolidation review feedback ([0c833ad](https://github.com/budgie-at/budgie/commit/0c833adf397ac05b22d7079b889f701ccb497e66))
+- consolidate ATM withdrawals with fees ([776719d](https://github.com/budgie-at/budgie/commit/776719d8c13b15eb55289e9830e621a94b3f9f2d))
+- dedupe repeated bank imports ([b3594e5](https://github.com/budgie-at/budgie/commit/b3594e56b606fcd887fa82104487e0cf094080ee))
+- optimize consolidation query plans ([6ca844c](https://github.com/budgie-at/budgie/commit/6ca844cf22985bc5ae35a3b06f0b9a7c7c26ac9c))
+
+### Performance Improvements
+
+- **app:** scope sync consolidation scans ([2868bda](https://github.com/budgie-at/budgie/commit/2868bda7daca64fec6134594d880b1327813f942))
+
+## [5.36.1](https://github.com/budgie-at/budgie/compare/v5.36.0...v5.36.1) (2026-06-07)
+
+### Bug Fixes
+
+- **contracts:** keep market query builders undecorated ([#560](https://github.com/budgie-at/budgie/issues/560)) ([3d349c2](https://github.com/budgie-at/budgie/commit/3d349c2cffb4868fa659a80e0356a61af6f74e35))
+
+# [5.36.0](https://github.com/budgie-at/budgie/compare/v5.35.6...v5.36.0) (2026-06-07)
+
+### Features
+
+- **app:** add crypto market history ([#543](https://github.com/budgie-at/budgie/issues/543)) ([24f7c37](https://github.com/budgie-at/budgie/commit/24f7c37928b31067f9560b4ff5ac9bf8588f0239))
+
+## [5.35.5](https://github.com/budgie-at/budgie/compare/v5.35.4...v5.35.5) (2026-06-06)
+
+### Bug Fixes
+
+- **app:** scope balance refreshes ([c3afcd4](https://github.com/budgie-at/budgie/commit/c3afcd427669b7c798a72f953483dfb5f9e91da6))
+- **app:** stabilize transaction processing ([b2d6717](https://github.com/budgie-at/budgie/commit/b2d6717d8361842cc1987bd4b25a9c3b49f211b3))
+
+## [5.35.3](https://github.com/budgie-at/budgie/compare/v5.35.2...v5.35.3) (2026-06-06)
+
+### Bug Fixes
+
+- **app:** reduce Home tab SQLite fanout ([3f9e2eb](https://github.com/budgie-at/budgie/commit/3f9e2eb779f1c9976c0b69552f0b7fe10aa3ac5f))
+
+### Performance Improvements
+
+- **app:** consolidate Home data query ([c536bb6](https://github.com/budgie-at/budgie/commit/c536bb64c4d51d39ad3d2896234180b933c38dd1))
+
+## [5.35.1](https://github.com/budgie-at/budgie/compare/v5.35.0...v5.35.1) (2026-06-06)
+
+### Bug Fixes
+
+- dedupe repeated bank imports ([7a67803](https://github.com/budgie-at/budgie/commit/7a67803024cc590a1129209bf984dc65a8f008f9))
+
+# [5.35.0](https://github.com/budgie-at/budgie/compare/v5.34.1...v5.35.0) (2026-06-05)
+
+### Bug Fixes
+
+- **app:** address crypto review comments ([f48d0fe](https://github.com/budgie-at/budgie/commit/f48d0fe02bf5d2f364f837be0a6e0e958b109caa))
+- **app:** reduce crypto rate refresh jank ([6d27ac8](https://github.com/budgie-at/budgie/commit/6d27ac808123fd73e996199951af46638d29233e))
+- **app:** refresh crypto valuations from rates ([a08f784](https://github.com/budgie-at/budgie/commit/a08f7840e4c9cb48d45c3a6e49af6215d7493472))
+
+### Features
+
+- **app:** add manual crypto accounts ([d279e1b](https://github.com/budgie-at/budgie/commit/d279e1b75d2a86010ae479392c88eea76aebdab8))
+- **app:** group crypto accounts by currency ([b9baee5](https://github.com/budgie-at/budgie/commit/b9baee50b90e9d04fd37b2911518712cbc3a14c2))
+
+# [5.34.0](https://github.com/budgie-at/budgie/compare/v5.33.1...v5.34.0) (2026-06-04)
+
+### Bug Fixes
+
+- address bot review feedback ([179dc7b](https://github.com/budgie-at/budgie/commit/179dc7ba5a4b08eff152780bc50c3d3fd3faa2cf))
+- improve category filter search ([6850658](https://github.com/budgie-at/budgie/commit/68506582621fa2bfa097ae872de0facbcb0be5a9))
+- preserve ATM fees and split transaction flows ([1925786](https://github.com/budgie-at/budgie/commit/192578635d55c383430b589d3d37c854f38cc552))
+
+### Features
+
+- add fee entries to transactions ([efc62e2](https://github.com/budgie-at/budgie/commit/efc62e25448c74b5da28fac9952ff640f915f3a3))
+
+## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
+
+**Note:** Version bump only for package @budgie/contracts
+
+# [5.31.0](https://github.com/budgie-at/budgie/compare/v5.30.1...v5.31.0) (2026-06-01)
+
+### Bug Fixes
+
+- address bank sync repair review ([a568946](https://github.com/budgie-at/budgie/commit/a5689460d52dfb3f24e35f120a89efa3eeb4ab00))
+- **app:** repair bank sync duplicate consolidations ([c8be995](https://github.com/budgie-at/budgie/commit/c8be995d2362b8490c309f43cec02d8724a95ae9))
+
+# [5.29.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.29.0) (2026-05-31)
+
+### Bug Fixes
+
+- **app:** value pre-range transactions at the oldest historical rate ([#514](https://github.com/budgie-at/budgie/issues/514)) ([8eddce2](https://github.com/budgie-at/budgie/commit/8eddce2f16d7cf9232ac255a421228ab2f417368))
+- **contracts:** fall back to historical rate for net worth, never 1:1 ([e679484](https://github.com/budgie-at/budgie/commit/e679484036052164a89c5e92c9d51690d89d7d37))
+- **contracts:** stop analytics from dropping unvalued entries ([#513](https://github.com/budgie-at/budgie/issues/513)) ([9b0c68f](https://github.com/budgie-at/budgie/commit/9b0c68f33a689654027580e55bd374212df24d2f))
+- exclude deleted-account data from analytics and batch rule application ([#516](https://github.com/budgie-at/budgie/issues/516)) ([51a2f4e](https://github.com/budgie-at/budgie/commit/51a2f4e354fc3d5a8d54c2986e56c20a3ca1ade9)), closes [#509](https://github.com/budgie-at/budgie/issues/509)
+
+### Features
+
+- add historical money data valuation ([998187d](https://github.com/budgie-at/budgie/commit/998187d3d21f1400e80947cbbf20c5931d62fe6c))
+- **app:** always allow convert-to-transfer rule action and show account on rule card ([#506](https://github.com/budgie-at/budgie/issues/506)) ([83dde51](https://github.com/budgie-at/budgie/commit/83dde5191466672c30c7ed588bb0291d9bd90cfd))
+- capture bank fees as a categorized split on sync and import ([#502](https://github.com/budgie-at/budgie/issues/502)) ([2a8a3f7](https://github.com/budgie-at/budgie/commit/2a8a3f7dd57202b0fe08a17d9aa3cad9a3bf29c2))
+
+# [5.28.0](https://github.com/budgie-at/budgie/compare/v5.27.0...v5.28.0) (2026-05-30)
+
+### Features
+
+- **app:** always allow convert-to-transfer rule action and show account on rule card ([#506](https://github.com/budgie-at/budgie/issues/506)) ([83dde51](https://github.com/budgie-at/budgie/commit/83dde5191466672c30c7ed588bb0291d9bd90cfd))
+
 # [5.27.0](https://github.com/budgie-at/budgie/compare/v5.26.0...v5.27.0) (2026-05-29)
 
 ### Features

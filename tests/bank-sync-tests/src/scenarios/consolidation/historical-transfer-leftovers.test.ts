@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 
 import {
+    AccountEntityTable,
     AccountTypeEnum,
     ExchangeRateCreateEntityInterface,
     ExchangeRateEntityTable,
@@ -18,6 +19,7 @@ import {
 
 import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair, testDb } from '../../harness';
 
+import { bankSyncRepairService } from '@app/sync/service/bank-sync-repair.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 const SOURCE_IBAN = 'UA-FOP-EUR';
@@ -153,6 +155,14 @@ const seedMovedSourceEntry = (canonicalTransactionId: number, accountId: number)
     return movedSource;
 };
 
+const archiveAccount = (accountId: number): void => {
+    testDb.update(AccountEntityTable).set({ includeInNetWorth: false, isActive: false }).where(eq(AccountEntityTable.id, accountId)).run();
+};
+
+const setTransactionExternalSource = (transactionId: number, externalSource: ExternalSourceEnum): void => {
+    testDb.update(TransactionEntityTable).set({ externalSource }).where(eq(TransactionEntityTable.id, transactionId)).run();
+};
+
 const seedExistingTransferBridgeCandidate = (
     externalIdPrefix: string,
     title: string,
@@ -171,6 +181,96 @@ const seedExistingTransferBridgeCandidate = (
     const existingCardTransfer = seedTransfer(title, operatedAt, bridgeAccount.id, targetAccount.id, UAH_AMOUNT, consolidationType);
 
     return { bridgeAccount, bridgeIncome, existingCardTransfer, sourceAccount, sourceExpense, targetAccount };
+};
+
+const seedSameCurrencyPrivatArchivedTargetDuplicate = () => {
+    const operatedAt = new Date(2026, 0, 5, 13, 56, 56);
+    const transferMcc = findMccByCode('4829');
+    const sourceAccount = seed.account({
+        title: 'Monobank Black',
+        type: AccountTypeEnum.BANK_SYNC,
+        iban: BLACK_IBAN,
+        externalSource: ExternalSourceEnum.MONOBANK
+    });
+    const archivedTargetAccount = seed.account({ title: 'приватбанк UAH', type: AccountTypeEnum.BANK });
+    const privatAccount = seed.account({
+        title: 'Privatbank •5524',
+        type: AccountTypeEnum.BANK_SYNC,
+        iban: PRIVAT_IBAN
+    });
+    const existingTransfer = seedTransfer('Приват Сина', operatedAt, sourceAccount.id, archivedTargetAccount.id, UAH_AMOUNT);
+
+    archiveAccount(archivedTargetAccount.id);
+    setTransactionExternalSource(existingTransfer.id, ExternalSourceEnum.MONOBANK);
+
+    const privatIncome = seedBankPair.income(
+        { externalId: 'same-currency-privat-income', operatedAt: new Date(operatedAt.getTime() + 2 * 60 * 60 * 1000) },
+        { accountId: privatAccount.id, amount: UAH_AMOUNT, mccCategoryId: transferMcc.id }
+    );
+
+    testDb
+        .update(TransactionEntityTable)
+        .set({ externalSource: ExternalSourceEnum.PRIVATBANK, title: 'від YEHOROV IHOR' })
+        .where(eq(TransactionEntityTable.id, privatIncome.id))
+        .run();
+
+    return { archivedTargetAccount, existingTransfer, privatAccount, privatIncome };
+};
+
+const seedSameCurrencyPrivatArchivedSyncedTargetDuplicate = () => {
+    const candidate = seedSameCurrencyPrivatArchivedTargetDuplicate();
+
+    testDb
+        .update(AccountEntityTable)
+        .set({
+            iban: 'UA-ARCHIVED-PRIVAT',
+            type: AccountTypeEnum.BANK_SYNC
+        })
+        .where(eq(AccountEntityTable.id, candidate.archivedTargetAccount.id))
+        .run();
+
+    return candidate;
+};
+
+const seedLegacyCsvDeletedSourcePrivatDuplicate = () => {
+    const operatedAt = new Date(2025, 9, 23, 9, 56, 45);
+    const transferMcc = findMccByCode('4829');
+    const sourceAccount = seed.account({ title: 'monobank EUR', type: AccountTypeEnum.BANK });
+    const archivedTargetAccount = seed.account({ title: 'приватбанк UAH', type: AccountTypeEnum.BANK });
+    const privatAccount = seed.account({
+        title: 'Privatbank •0356',
+        type: AccountTypeEnum.BANK_SYNC,
+        iban: PRIVAT_IBAN
+    });
+    const existingTransfer = seedTransfer('', operatedAt, sourceAccount.id, archivedTargetAccount.id, UAH_AMOUNT);
+    const deletedAt = new Date(2026, 0, 1);
+
+    testDb.update(AccountEntityTable).set({ deletedAt }).where(eq(AccountEntityTable.id, sourceAccount.id)).run();
+    testDb
+        .update(TransactionEntryEntityTable)
+        .set({ deletedAt })
+        .where(
+            and(
+                eq(TransactionEntryEntityTable.transactionId, existingTransfer.id),
+                eq(TransactionEntryEntityTable.accountId, sourceAccount.id)
+            )
+        )
+        .run();
+    archiveAccount(archivedTargetAccount.id);
+    setTransactionExternalSource(existingTransfer.id, ExternalSourceEnum.CSV);
+
+    const privatIncome = seedBankPair.income(
+        { externalId: 'legacy-csv-privat-income', operatedAt: new Date(operatedAt.getTime() + 2 * 60 * 60 * 1000 + 17_000) },
+        { accountId: privatAccount.id, amount: UAH_AMOUNT, mccCategoryId: transferMcc.id }
+    );
+
+    testDb
+        .update(TransactionEntityTable)
+        .set({ externalSource: ExternalSourceEnum.PRIVATBANK, title: 'від IHOR YEHOROV' })
+        .where(eq(TransactionEntityTable.id, privatIncome.id))
+        .run();
+
+    return { archivedTargetAccount, existingTransfer, privatAccount, privatIncome, sourceAccount };
 };
 
 const fetchMovedSourceIds = (canonicalId: number): number[] =>
@@ -238,6 +338,15 @@ const expectIncomeDuplicateConsolidated = async (
     expect(fetchTransactionById(existingTransfer.id).consolidationType).toBe(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
     expect(fetchTransactionById(duplicateIncome.id).consolidationParentTransactionId).toBe(existingTransfer.id);
     expect(fetchMovedSourceIds(existingTransfer.id)).toEqual([duplicateIncome.id]);
+};
+
+const expectPrivatTargetRetargeted = (existingTransferId: number, privatAccountId: number, amount: number): void => {
+    const transfer = fetchTransactionById(existingTransferId);
+    const debitEntry = fetchLiveDebitEntry(existingTransferId);
+
+    expect(transfer.toAccountId).toBe(privatAccountId);
+    expect(debitEntry?.accountId).toBe(privatAccountId);
+    expect(debitEntry?.amount).toBe(amount);
 };
 
 const expectExistingTransferBridgeConsolidated = async (
@@ -397,8 +506,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
         const privatAccount = seed.account({
             title: 'Privatbank',
             type: AccountTypeEnum.BANK_SYNC,
-            iban: PRIVAT_IBAN,
-            externalSource: ExternalSourceEnum.PRIVATBANK
+            iban: PRIVAT_IBAN
         });
         const existingTransfer = seedTransfer(
             'приват сина 3',
@@ -408,6 +516,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
             APPROXIMATE_TRANSFER_TARGET_AMOUNT
         );
 
+        testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, oldTargetAccount.id)).run();
         testDb
             .update(TransactionEntityTable)
             .set({
@@ -439,8 +548,73 @@ describe('consolidation/historical-transfer-leftovers', () => {
             .run();
 
         await expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
-        expect(fetchTransactionById(existingTransfer.id).toAccountId).toBe(privatAccount.id);
-        expect(fetchLiveDebitEntry(existingTransfer.id)?.accountId).toBe(privatAccount.id);
-        expect(fetchLiveDebitEntry(existingTransfer.id)?.amount).toBe(APPROXIMATE_PRIVAT_INCOME_AMOUNT);
+        expectPrivatTargetRetargeted(existingTransfer.id, privatAccount.id, APPROXIMATE_PRIVAT_INCOME_AMOUNT);
+    });
+
+    it('retargets a same-currency Privat income from an inactive manual target account to the synced account', async () => {
+        const { existingTransfer, privatAccount, privatIncome } = seedSameCurrencyPrivatArchivedTargetDuplicate();
+
+        await expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
+        expectPrivatTargetRetargeted(existingTransfer.id, privatAccount.id, UAH_AMOUNT);
+    });
+
+    it('retargets a same-currency Privat income from an inactive synced target account to the active synced account', async () => {
+        const { existingTransfer, privatAccount, privatIncome } = seedSameCurrencyPrivatArchivedSyncedTargetDuplicate();
+
+        await expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
+        expectPrivatTargetRetargeted(existingTransfer.id, privatAccount.id, UAH_AMOUNT);
+    });
+
+    it('retargets a legacy CSV transfer from a deleted source account to the active synced Privat account', async () => {
+        const { existingTransfer, privatAccount, privatIncome, sourceAccount } = seedLegacyCsvDeletedSourcePrivatDuplicate();
+
+        await expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
+        expect(fetchTransactionById(existingTransfer.id).fromAccountId).toBe(sourceAccount.id);
+        expectPrivatTargetRetargeted(existingTransfer.id, privatAccount.id, UAH_AMOUNT);
+    });
+
+    it('does not retarget a legacy CSV transfer when the source account is still active', async () => {
+        const { existingTransfer, privatIncome, sourceAccount } = seedLegacyCsvDeletedSourcePrivatDuplicate();
+
+        testDb
+            .update(AccountEntityTable)
+            .set({ deletedAt: null, includeInNetWorth: true, isActive: true })
+            .where(eq(AccountEntityTable.id, sourceAccount.id))
+            .run();
+        testDb
+            .update(TransactionEntryEntityTable)
+            .set({ deletedAt: null })
+            .where(
+                and(
+                    eq(TransactionEntryEntityTable.transactionId, existingTransfer.id),
+                    eq(TransactionEntryEntityTable.accountId, sourceAccount.id)
+                )
+            )
+            .run();
+
+        const result = await transferConsolidationService.consolidate();
+
+        expect(result).toEqual({ found: 0, consolidated: 0 });
+        expect(fetchTransactionById(privatIncome.id).consolidationParentTransactionId).toBeNull();
+    });
+
+    it('includes inactive manual target consolidation repairs in bank sync repair action', async () => {
+        const { existingTransfer, privatAccount, privatIncome } = seedSameCurrencyPrivatArchivedTargetDuplicate();
+
+        const preview = await bankSyncRepairService.previewDuplicates();
+
+        expect(preview.duplicateTransactionCount).toBe(1);
+        expect(preview.sources).toEqual([
+            expect.objectContaining({
+                duplicateTransactionCount: 1,
+                externalSource: ExternalSourceEnum.PRIVATBANK
+            })
+        ]);
+
+        const result = await bankSyncRepairService.removeDuplicates();
+
+        expect(result.repairedTransactionCount).toBe(1);
+        expectPrivatTargetRetargeted(existingTransfer.id, privatAccount.id, UAH_AMOUNT);
+        expect(fetchTransactionById(privatIncome.id).consolidationParentTransactionId).toBe(existingTransfer.id);
     });
 });
