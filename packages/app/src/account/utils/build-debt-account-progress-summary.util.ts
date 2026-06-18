@@ -14,15 +14,22 @@ export const buildDebtAccountProgressSummary = ({
     const closedAmount = debtType === AccountDebtTypeEnum.BORROW ? debitAmount : creditAmount;
     const openedAmount = debtType === AccountDebtTypeEnum.BORROW ? creditAmount : debitAmount;
     const signedOutstandingAmount = debtType === AccountDebtTypeEnum.BORROW ? -balance : balance;
-    const observedOutstandingAmount = Math.max(signedOutstandingAmount, 0);
-    const observedTotalAmount = Math.max(openedAmount, closedAmount + observedOutstandingAmount);
-    const hasDebtActivity = isPositiveNumber(Math.abs(balance)) || isPositiveNumber(openedAmount) || isPositiveNumber(closedAmount);
-    const totalAmount = hasDebtActivity ? Math.max(targetAmount, observedTotalAmount, 0) : Math.max(targetAmount, 0);
-    const outstandingAmount = hasDebtActivity ? observedOutstandingAmount : totalAmount;
+    const hasLedgerActivity = isPositiveNumber(openedAmount) || isPositiveNumber(closedAmount);
+    const ledgerOutstandingAmount = Math.max(openedAmount - closedAmount, 0);
+    const signedFallbackOutstandingAmount = isPositiveNumber(signedOutstandingAmount) ? signedOutstandingAmount : 0;
+    const targetOnlyOutstandingAmount = signedOutstandingAmount === 0 ? Math.max(targetAmount, 0) : 0;
+    const fallbackOutstandingAmount = Math.max(signedFallbackOutstandingAmount, targetOnlyOutstandingAmount);
+    const outstandingAmount = hasLedgerActivity ? ledgerOutstandingAmount : fallbackOutstandingAmount;
+    const observedTotalAmount = hasLedgerActivity
+        ? Math.max(openedAmount, closedAmount, closedAmount + outstandingAmount)
+        : outstandingAmount;
+    const totalAmount = Math.max(targetAmount, observedTotalAmount, 0);
     const paidAmount = Math.min(Math.max(totalAmount - outstandingAmount, 0), totalAmount);
     const percentage = isPositiveNumber(totalAmount) ? Math.min(Number(((paidAmount / totalAmount) * 100).toFixed(2)), 100) : 0;
 
     return {
+        closedAmount,
+        openedAmount,
         outstandingAmount,
         paidAmount,
         totalAmount,
