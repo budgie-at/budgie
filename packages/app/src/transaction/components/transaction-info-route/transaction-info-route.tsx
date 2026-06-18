@@ -11,7 +11,7 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 import type { ReactNode } from 'react';
 
 interface Props {
-    readonly children: (transaction: TransactionWithRelationsEntityInterface, transactionId: number) => ReactNode;
+    readonly children: (transaction: TransactionWithRelationsEntityInterface) => ReactNode;
 }
 
 export const TransactionInfoRoute = ({ children }: Props) => {
@@ -38,5 +38,5 @@ export const TransactionInfoRoute = ({ children }: Props) => {
         return <Redirect href={getTransactionHref(transaction)} />;
     }
 
-    return children(transaction, transactionId);
+    return children(transaction);
 };

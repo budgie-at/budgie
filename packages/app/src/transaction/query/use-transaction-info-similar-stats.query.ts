@@ -15,7 +15,7 @@ import type {
 
 const SIMILAR_STATS_MONTHS = 6;
 
-const getPrimaryAccountId = (transaction: TransactionWithRelationsEntityInterface): number => {
+const getPrimaryAccountId = (transaction: TransactionWithRelationsEntityInterface): number | null => {
     if (transaction.type === TransactionTypeEnum.EXPENSE) {
         return transaction.fromAccountId ?? 0;
     }
@@ -24,13 +24,14 @@ const getPrimaryAccountId = (transaction: TransactionWithRelationsEntityInterfac
         return transaction.toAccountId ?? 0;
     }
 
-    return 0;
+    return null;
 };
 
 const buildSimilarStatsQuery = (transaction: TransactionWithRelationsEntityInterface): SimilarTransactionStatsQueryInterface | null => {
     const accountId = getPrimaryAccountId(transaction);
     const categoryId = getTransactionCategoryEntries(transaction.entries).at(0)?.categoryId ?? null;
     const canFetch =
+        isDefined(accountId) &&
         isPositiveNumber(accountId) &&
         (transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.INCOME);
 

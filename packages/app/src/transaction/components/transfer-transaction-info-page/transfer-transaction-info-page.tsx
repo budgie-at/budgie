@@ -9,11 +9,12 @@ import { TransactionInfoPage } from '../transaction-info-page/transaction-info-p
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
-export const TransferTransactionInfoPage = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
+export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const router = useRouter();
     const deleteTransaction = useDeleteTransaction();
     const [openConsolidationSource] = useConsolidationSourceModal();
     const isConsolidated = isDefined(transaction.consolidationType);
+    const transactionId = transaction.id;
     const handleRevert = useRevertConsolidation(transactionId, () => {
         router.back();
     });

@@ -1,1 +1,6 @@
-export { UpdateIncomeTransactionRoute as default } from '../../../../../transaction/components/update-income-transaction-route/update-income-transaction-route';
+import { UpdateIncomeTransaction } from '../../../../../transaction/components/update-income-transaction/update-income-transaction';
+import { UpdateTransactionRoute } from '../../../../../transaction/components/update-transaction-route/update-transaction-route';
+
+export default function EditIncomeTransactionRoute() {
+    return <UpdateTransactionRoute Component={UpdateIncomeTransaction} />;
+}

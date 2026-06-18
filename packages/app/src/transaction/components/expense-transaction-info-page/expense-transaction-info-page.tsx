@@ -7,9 +7,10 @@ import { TransactionInfoPage } from '../transaction-info-page/transaction-info-p
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
-export const ExpenseTransactionInfoPage = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
+export const ExpenseTransactionInfoPage = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const deleteTransaction = useDeleteTransaction();
     const isConsolidated = isDefined(transaction.consolidationType);
+    const transactionId = transaction.id;
     const { handleOpenConvert, handleOpenRefundSources, handleRevert } = useUpdateExpenseTransactionActions({
         transaction,
         transactionId,

@@ -37,5 +37,5 @@ export const UpdateTransactionRoute = ({ Component }: Props) => {
         return <Redirect href={getTransactionHref(transaction)} />;
     }
 
-    return <Component transaction={transaction} transactionId={transactionId} />;
+    return <Component transaction={transaction} />;
 };

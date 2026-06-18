@@ -22,7 +22,7 @@ import { TransferQuickForm } from '../transfer-quick-form/transfer-quick-form';
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
-export const UpdateTransferTransaction = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
+export const UpdateTransferTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const { markForEmbedding } = useEmbeddingGenerator();
     const [openConsolidationSource] = useConsolidationSourceModal();
@@ -30,13 +30,13 @@ export const UpdateTransferTransaction = ({ transaction, transactionId }: Update
     const debitEntry = transaction.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
     const initialDestinationAmount = isDefined(debitEntry) ? convertFromMicroUnits(debitEntry.amount) : 0;
     const isConsolidated = isDefined(transaction.consolidationType);
-    const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
+    const handleRevert = useRevertConsolidation(transaction.id, () => void dismissAllOrReplace('/'));
 
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: convertTransactionToInput(transaction),
         schema: TransferTransactionCreateInputSchema,
-        id: transactionId,
-        onAfterSubmit: () => void markForEmbedding(transactionId)
+        id: transaction.id,
+        onAfterSubmit: () => void markForEmbedding(transaction.id)
     });
 
     const [fromAccountId, amount] = useWatch({
@@ -80,7 +80,7 @@ export const UpdateTransferTransaction = ({ transaction, transactionId }: Update
                     initialDestinationAmount={initialDestinationAmount}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
-                    {...(isConsolidated && { onConsolidationPress: () => void openConsolidationSource({ transactionId }) })}
+                    {...(isConsolidated && { onConsolidationPress: () => void openConsolidationSource({ transactionId: transaction.id }) })}
                 />
             </FullPage>
         </FormProvider>

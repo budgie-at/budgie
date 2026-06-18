@@ -30,7 +30,7 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly onLongPress?: OnEventFn;
 }
 
-const cardVariants = cva('relative gap-3 active:scale-xs overflow-hidden', {
+const cardVariants = cva('relative flex-none gap-3 active:scale-xs overflow-hidden', {
     variants: {
         deadlinePriority: {
             high: 'border-dark-warning-corner',

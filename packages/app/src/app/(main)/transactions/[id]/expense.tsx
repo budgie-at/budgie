@@ -2,9 +2,5 @@ import { ExpenseTransactionInfoPage } from '../../../../transaction/components/e
 import { TransactionInfoRoute } from '../../../../transaction/components/transaction-info-route/transaction-info-route';
 
 export default function ExpenseTransactionInfoRoute() {
-    return (
-        <TransactionInfoRoute>
-            {(transaction, transactionId) => <ExpenseTransactionInfoPage transaction={transaction} transactionId={transactionId} />}
-        </TransactionInfoRoute>
-    );
+    return <TransactionInfoRoute>{transaction => <ExpenseTransactionInfoPage transaction={transaction} />}</TransactionInfoRoute>;
 }

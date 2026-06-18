@@ -82,7 +82,7 @@ class EntryBaseValuationService {
         (result, ...inputs) => {
             const [sourceInstrumentId, targetInstrumentId, operatedAt, tx] = inputs;
 
-            return `done sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} baseExchangeRate=${result ?? ''} hasTx=${String(isDefined(tx))}`;
+            return `done sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} baseExchangeRate=${result ?? 'missing'} hasTx=${String(isDefined(tx))}`;
         },
         (error, ...inputs) => {
             const [sourceInstrumentId, targetInstrumentId, operatedAt, tx] = inputs;

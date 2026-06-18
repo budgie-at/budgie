@@ -12,8 +12,9 @@ import { UpdateSimpleTransactionPage } from '../update-simple-transaction-page/u
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
-export const UpdateExpenseTransaction = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
+export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
+    const transactionId = transaction.id;
     const simpleTransaction = useUpdateSimpleTransaction({
         transaction,
         transactionId,
