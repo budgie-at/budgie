@@ -16,7 +16,7 @@ env:
       when:
           true: ${DATABASE_FIXTURE_SEEDED != 'true'}
       commands:
-          - openLink: 'budgie://settings?anchor=data'
+          - openLink: 'budgie://settings?anchor=import-database'
 
           - tapOn:
                 text: 'Not Now'
@@ -35,18 +35,10 @@ env:
                         id: 'SettingsPage.Container'
                 file: ../navigation/navigate-to-settings.flow.yaml
 
-          - scrollUntilVisible:
-                element:
-                    id: 'SettingsPage.ImportDatabaseCard'
-                direction: DOWN
-                timeout: 5000
-                centerElement: true
-                waitToSettleTimeoutMs: 1000
-
           - extendedWaitUntil:
                 visible:
                     id: 'SettingsPage.ImportDatabaseCard'
-                timeout: 3000
+                timeout: 10000
 
           - tapOn:
                 id: 'SettingsPage.ImportDatabaseCard'

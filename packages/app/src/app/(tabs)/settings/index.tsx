@@ -221,7 +221,9 @@ export default function SettingsPage() {
                         <Animated.View className="gap-y-lg" {...anchorHighlight('data')}>
                             <ImportCsv />
                             <ExportCsv />
-                            <ImportDatabase />
+                            <View {...anchorLayout('import-database')}>
+                                <ImportDatabase />
+                            </View>
                             <ExportDatabase />
                             <MoneyDataUpgradeStatusCard testID={SettingsPageSelector.MoneyDataUpgradeCard} />
                             <RepairBankSyncData />

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { LayoutChangeEvent, ScrollView, ViewStyle } from 'react-native';
 import {
     AnimatedStyle,
@@ -40,11 +40,7 @@ export const useScrollToAnchor = (activeAnchor: string | null | undefined) => {
     }));
     const emptyStyle = useAnimatedStyle(() => ({}));
 
-    useEffect(() => {
-        scrolledAnchor.current = null;
-    }, [activeAnchor]);
-
-    const scrollToActive = (): void => {
+    const scrollToActive = useCallback((): void => {
         if (!isDefined(activeAnchor) || scrolledAnchor.current === activeAnchor) {
             return;
         }
@@ -64,7 +60,12 @@ export const useScrollToAnchor = (activeAnchor: string | null | undefined) => {
         highlightProgress.set(
             withSequence(withTiming(1, { duration: FADE_IN_MS }), withDelay(HOLD_MS, withTiming(0, { duration: FADE_OUT_MS })))
         );
-    };
+    }, [activeAnchor, highlightProgress]);
+
+    useEffect(() => {
+        scrolledAnchor.current = null;
+        scrollToActive();
+    }, [activeAnchor, scrollToActive]);
 
     const scrollViewRef = (node: ScrollView | null): void => {
         scrollViewInstance.current = node;
