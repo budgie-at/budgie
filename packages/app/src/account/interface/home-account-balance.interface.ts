@@ -10,6 +10,7 @@ export interface HomeAccountBalanceInterface {
     readonly convertedBalance: number;
     readonly convertedCreditAmount: number;
     readonly convertedDebitAmount: number;
+    readonly convertedDebtProgressSummary: DebtAccountProgressSummaryInterface;
     readonly convertedTargetBalance: number;
     readonly debtProgressSummary: DebtAccountProgressSummaryInterface;
     readonly debtType: AccountDebtTypeEnum;

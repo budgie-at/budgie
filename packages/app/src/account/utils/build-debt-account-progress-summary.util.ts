@@ -4,27 +4,33 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import type { DebtAccountProgressSummaryParamsInterface } from '../interface/debt-account-progress-summary-params.interface';
 
+const getInitialClosedAmount = (balance: number, debtType: AccountDebtTypeEnum, targetAmount: number): number => {
+    if (debtType === AccountDebtTypeEnum.LENT) {
+        return balance < 0 ? targetAmount : Math.max(balance, 0);
+    }
+
+    return balance > 0 ? targetAmount : 0;
+};
+
 export const buildDebtAccountProgressSummary = ({
     balance,
-    creditAmount,
-    debitAmount,
+    closedAmount: movementClosedAmount,
     debtType,
+    openedExtraAmount,
+    openedPrincipalAmount,
     targetAmount
 }: DebtAccountProgressSummaryParamsInterface) => {
-    const closedAmount = debtType === AccountDebtTypeEnum.BORROW ? debitAmount : creditAmount;
-    const openedAmount = debtType === AccountDebtTypeEnum.BORROW ? creditAmount : debitAmount;
-    const signedOutstandingAmount = debtType === AccountDebtTypeEnum.BORROW ? -balance : balance;
-    const hasLedgerActivity = isPositiveNumber(openedAmount) || isPositiveNumber(closedAmount);
-    const ledgerOutstandingAmount = Math.max(openedAmount - closedAmount, 0);
-    const signedFallbackOutstandingAmount = isPositiveNumber(signedOutstandingAmount) ? signedOutstandingAmount : 0;
-    const targetOnlyOutstandingAmount = signedOutstandingAmount === 0 ? Math.max(targetAmount, 0) : 0;
-    const fallbackOutstandingAmount = Math.max(signedFallbackOutstandingAmount, targetOnlyOutstandingAmount);
-    const outstandingAmount = hasLedgerActivity ? ledgerOutstandingAmount : fallbackOutstandingAmount;
-    const observedTotalAmount = hasLedgerActivity
-        ? Math.max(openedAmount, closedAmount, closedAmount + outstandingAmount)
-        : outstandingAmount;
-    const totalAmount = Math.max(targetAmount, observedTotalAmount, 0);
-    const paidAmount = Math.min(Math.max(totalAmount - outstandingAmount, 0), totalAmount);
+    const initialClosedAmount = getInitialClosedAmount(balance, debtType, targetAmount);
+    const initialOutstandingAmount = debtType === AccountDebtTypeEnum.BORROW && balance < 0 ? -balance : 0;
+    const closedAmount = Math.max(initialClosedAmount + movementClosedAmount, 0);
+    const openedBasisAmount = Math.max(initialOutstandingAmount + openedPrincipalAmount, 0);
+    const openedAmount = openedPrincipalAmount + openedExtraAmount;
+    const effectiveDebtBasisAmount = isPositiveNumber(openedBasisAmount)
+        ? openedBasisAmount + openedExtraAmount
+        : targetAmount + openedExtraAmount;
+    const totalAmount = Math.max(targetAmount + openedExtraAmount, openedBasisAmount + openedExtraAmount, closedAmount, 0);
+    const outstandingAmount = Math.max(effectiveDebtBasisAmount - closedAmount, 0);
+    const paidAmount = Math.max(totalAmount - outstandingAmount, 0);
     const percentage = isPositiveNumber(totalAmount) ? Math.min(Number(((paidAmount / totalAmount) * 100).toFixed(2)), 100) : 0;
 
     return {

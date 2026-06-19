@@ -35,6 +35,7 @@ import m0030 from './0030_seed_top_crypto_market_prices.sql';
 import m0031 from './0031_add_account_lookup_indexes.sql';
 import m0032 from './0032_add_budget_planning.sql';
 import m0033 from './0033_add_transaction_entry_kind.sql';
+import m0034 from './0034_add_debt_target_base_valuation.sql';
 
 export default {
     journal,
@@ -72,6 +73,7 @@ export default {
         m0030,
         m0031,
         m0032,
-        m0033
+        m0033,
+        m0034
     }
 };

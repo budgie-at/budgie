@@ -80,6 +80,9 @@ export class TestSeedService {
                 parentId: input.parentId ?? null,
                 contactId: input.contactId ?? null,
                 targetBalance: input.targetBalance ?? 0,
+                targetBaseInstrumentId: input.targetBaseInstrumentId ?? null,
+                targetBaseExchangeRate: input.targetBaseExchangeRate ?? null,
+                targetBaseAmount: input.targetBaseAmount ?? null,
                 includeInNetWorth: input.includeInNetWorth ?? true,
                 isActive: input.isActive ?? true
             } satisfies AccountCreateEntityInterface)

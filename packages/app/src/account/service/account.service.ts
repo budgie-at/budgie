@@ -5,14 +5,12 @@ import {
     type DB,
     DebtAccountCreateInputInterface,
     LiabilityAccountCreateInputInterface,
-    TransactionEntryCreateEntityInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
-    TransactionWithEntriesEntityInterface,
     transactionAsync
 } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray, isNumber, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     accountBalanceRepository,
@@ -22,13 +20,14 @@ import {
     transactionEntryRepository,
     transactionRepository
 } from '../../@generic/drizzle/db/db';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
+import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
+import { accountTransferConversionService } from './account-transfer-conversion.service';
 
 class AccountService {
     async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {
@@ -47,15 +46,17 @@ class AccountService {
     async createDebt(input: DebtAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const [{ count }] = await accountRepository.count();
+            const operatedAt = new Date();
             const account = await this.createLiabilityAccount(
                 { ...input, targetBalance: convertToMicroUnits(input.targetBalance) },
                 count,
                 tx
             );
-            const debtBalance = this.getDebtBalanceInput(input.currentBalance, input.debtType, input.targetBalance);
-            await this.adjustBalanceTo(account.id, debtBalance, tx);
+            const valuedAccount = await this.updateDebtTargetBaseValuation(account, operatedAt, tx);
+            const debtBalance = this.getDebtBalanceInput(input.currentBalance, input.debtType);
+            await this.adjustBalanceTo(account.id, debtBalance, tx, operatedAt);
 
-            return account;
+            return valuedAccount;
         });
     }
 
@@ -85,19 +86,22 @@ class AccountService {
 
     async updateDebtById(id: number, input: Partial<DebtAccountCreateInputInterface>): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
-            const account = await accountRepository.updateById(
-                id,
-                // eslint-disable-next-line no-undefined
-                { ...input, targetBalance: isNumber(input.targetBalance) ? convertToMicroUnits(input.targetBalance) : undefined },
-                tx
-            );
-            if (isNumber(input.currentBalance)) {
-                const targetBalance = convertFromMicroUnits(account.targetBalance);
-                const debtBalance = this.getDebtBalanceInput(input.currentBalance, account.debtType, targetBalance);
+            const { currentBalance, targetBalance, ...accountInput } = input;
+            const accountUpdateInput = isNumber(targetBalance)
+                ? { ...accountInput, targetBalance: convertToMicroUnits(targetBalance) }
+                : accountInput;
+            const account = await accountRepository.updateById(id, accountUpdateInput, tx);
+            const shouldUpdateTargetBaseValuation = isNumber(targetBalance) || isNumber(accountInput.instrumentId);
+            const valuedAccount = shouldUpdateTargetBaseValuation
+                ? await this.updateDebtTargetBaseValuation(account, new Date(), tx)
+                : account;
+
+            if (isNumber(currentBalance)) {
+                const debtBalance = this.getDebtBalanceInput(currentBalance, account.debtType);
                 await this.adjustBalanceTo(account.id, debtBalance, tx);
             }
 
-            return account;
+            return valuedAccount;
         });
     }
 
@@ -138,7 +142,7 @@ class AccountService {
     async deleteById(id: number): Promise<void> {
         return transactionAsync(db, async tx => {
             await this.unconsolidateActiveAutoByAccountId(id, tx);
-            await this.convertAccountTransfers(id, tx);
+            await accountTransferConversionService.convertAccountTransfers(id, tx);
             await transactionEntryRepository.deleteByAccountId(id, tx);
             await transactionRepository.deleteByAccountId(id, tx);
 
@@ -164,63 +168,10 @@ class AccountService {
         }
     }
 
-    private async convertAccountTransfers(accountId: number, tx: DB): Promise<void> {
-        const transfers = await transactionRepository.findTransfersForConversion(accountId, tx);
-
-        if (!isNotEmptyArray(transfers)) {
-            return;
-        }
-
-        await transactionRepository.convertTransfersFromAccountToIncome(accountId, tx);
-        await transactionRepository.convertTransfersToAccountToExpense(accountId, tx);
-
-        const entriesToCreate = this.collectTransferEntries(transfers, accountId);
-        const transactionIds = transfers.map(t => t.id);
-
-        await transactionEntryRepository.deleteByTransactionIds(transactionIds, tx);
-
-        if (isNotEmptyArray(entriesToCreate)) {
-            await transactionEntryRepository.bulkCreate(entriesToCreate, tx);
-        }
-    }
-
-    private collectTransferEntries(transfers: TransactionWithEntriesEntityInterface[], accountId: number) {
-        const entriesToCreate: TransactionEntryCreateEntityInterface[] = [];
-
-        for (const transfer of transfers) {
-            const isFromDeleted = transfer.fromAccountId === accountId;
-
-            if (isFromDeleted) {
-                const debitEntry = transfer.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
-                if (isDefined(debitEntry) && isDefined(transfer.toAccountId)) {
-                    entriesToCreate.push({
-                        ...debitEntry,
-                        transactionId: transfer.id,
-                        accountId: transfer.toAccountId,
-                        type: TransactionEntryTypeEnum.DEBIT
-                    });
-                }
-            } else {
-                const creditEntry = transfer.entries.find(entry => entry.type === TransactionEntryTypeEnum.CREDIT);
-                if (isDefined(creditEntry) && isDefined(transfer.fromAccountId)) {
-                    entriesToCreate.push({
-                        ...creditEntry,
-                        transactionId: transfer.id,
-                        accountId: transfer.fromAccountId,
-                        type: TransactionEntryTypeEnum.CREDIT
-                    });
-                }
-            }
-        }
-
-        return entriesToCreate;
-    }
-
-    private async adjustBalanceTo(accountId: number, targetBalance: number, tx: DB): Promise<void> {
+    private async adjustBalanceTo(accountId: number, targetBalance: number, tx: DB, operatedAt = new Date()): Promise<void> {
         const result = await accountBalanceRepository.getByAccountId(accountId, tx);
-        const currentBalanceMicro = result.at(0)?.balance ?? 0;
         const targetBalanceMicro = convertToMicroUnits(targetBalance);
-        const delta = targetBalanceMicro - currentBalanceMicro;
+        const delta = targetBalanceMicro - (result.at(0)?.balance ?? 0);
 
         if (delta === 0) {
             return;
@@ -228,6 +179,7 @@ class AccountService {
 
         const isIncome = isPositiveNumber(delta);
         const amount = Math.abs(delta);
+        const valuation = await entryBaseValuationService.valueMicroUnitEntry({ accountId, amount, operatedAt, externalSource: null, tx });
 
         const transaction = await transactionRepository.create(
             {
@@ -236,8 +188,8 @@ class AccountService {
                 comment: '',
                 externalId: null,
                 externalSource: null,
-                operatedAt: new Date(),
-                exchangeRate: 1,
+                operatedAt,
+                exchangeRate: valuation.baseExchangeRate ?? 1,
                 fromAccountId: isIncome ? null : accountId,
                 toAccountId: isIncome ? accountId : null,
                 updatedBy: null
@@ -252,7 +204,11 @@ class AccountService {
                 categoryId: null,
                 mccCategoryId: null,
                 amount,
-                type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
+                type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
+                exchangeRate: valuation.baseExchangeRate ?? 1,
+                baseInstrumentId: valuation.baseInstrumentId,
+                baseExchangeRate: valuation.baseExchangeRate,
+                baseAmount: valuation.baseAmount
             },
             tx
         );
@@ -260,10 +216,34 @@ class AccountService {
         await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro, updatedAt: new Date() }, tx);
     }
 
-    private getDebtBalanceInput(currentBalanceInput: number, debtType: AccountDebtTypeEnum, targetBalance: number): number {
+    private getDebtBalanceInput(currentBalanceInput: number, debtType: AccountDebtTypeEnum): number {
         const currentBalance = Math.abs(currentBalanceInput);
 
-        return debtType === AccountDebtTypeEnum.LENT ? Math.max(targetBalance - currentBalance, 0) : -currentBalance;
+        return debtType === AccountDebtTypeEnum.LENT ? currentBalance : -currentBalance;
+    }
+
+    private async updateDebtTargetBaseValuation(
+        account: AccountEntityInterface,
+        operatedAt: Date,
+        tx: DB
+    ): Promise<AccountEntityInterface> {
+        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
+            accountId: account.id,
+            amount: account.targetBalance,
+            operatedAt,
+            externalSource: null,
+            tx
+        });
+
+        return accountRepository.updateById(
+            account.id,
+            {
+                targetBaseInstrumentId: valuation.baseInstrumentId,
+                targetBaseExchangeRate: valuation.baseExchangeRate,
+                targetBaseAmount: valuation.baseAmount
+            },
+            tx
+        );
     }
 
     private async createLiabilityAccount(
@@ -271,14 +251,7 @@ class AccountService {
         count: number,
         tx: DB
     ): Promise<AccountEntityInterface> {
-        return accountRepository.create(
-            {
-                ...input,
-                order: count + 1,
-                nature: AccountNatureEnum.LIABILITY
-            },
-            tx
-        );
+        return accountRepository.create({ ...input, order: count + 1, nature: AccountNatureEnum.LIABILITY }, tx);
     }
 
     private async processBatch(batch: LiabilityAccountCreateInputInterface[]): Promise<AccountEntityInterface[]> {

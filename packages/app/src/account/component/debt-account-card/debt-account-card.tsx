@@ -40,9 +40,10 @@ export const DebtAccountCard = (props: Props) => {
 
     const fallbackSummary = buildDebtAccountProgressSummary({
         balance,
-        creditAmount: 0,
-        debitAmount: 0,
+        closedAmount: 0,
         debtType,
+        openedExtraAmount: 0,
+        openedPrincipalAmount: 0,
         targetAmount: targetBalance
     });
     const summary: DebtAccountProgressSummaryInterface = debtProgressSummary ?? {

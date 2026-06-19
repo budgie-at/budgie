@@ -48,10 +48,10 @@ const addBankProviderTotal = (
 };
 
 const addDebtTypeTotal = (totals: Map<AccountDebtTypeEnum, number>, homeAccountBalance: HomeAccountBalanceInterface): void => {
-    const { accountType, debtProgressSummary, debtType, isActive } = homeAccountBalance;
+    const { accountType, convertedDebtProgressSummary, debtType, isActive } = homeAccountBalance;
 
     if (isActive && accountType === AccountTypeEnum.DEBT) {
-        addTotal(totals, debtType, debtProgressSummary.outstandingAmount);
+        addTotal(totals, debtType, convertedDebtProgressSummary.outstandingAmount);
     }
 };
 
@@ -96,7 +96,7 @@ export const useHomePageDataQuery = () => {
 
     const balanceSummary: HomeAccountBalanceSummaryInterface = data.reduce((summary, row) => {
         const rowBankProvider = isDefined(row.bankSync) ? row.bankSync.provider : null;
-        const debtProgressSummary = {
+        const convertedDebtProgressSummary = {
             closedAmount: convertFromMicroUnits(row.convertedDebtClosedAmount),
             creditAmount: convertFromMicroUnits(row.convertedCreditAmount),
             debitAmount: convertFromMicroUnits(row.convertedDebitAmount),
@@ -106,6 +106,16 @@ export const useHomePageDataQuery = () => {
             percentage: row.debtProgressPercentage,
             totalAmount: convertFromMicroUnits(row.convertedDebtTotalAmount)
         };
+        const debtProgressSummary = {
+            closedAmount: convertFromMicroUnits(row.debtClosedAmount),
+            creditAmount: convertFromMicroUnits(row.creditAmount),
+            debitAmount: convertFromMicroUnits(row.debitAmount),
+            openedAmount: convertFromMicroUnits(row.debtOpenedAmount),
+            outstandingAmount: convertFromMicroUnits(row.debtOutstandingAmount),
+            paidAmount: convertFromMicroUnits(row.debtPaidAmount),
+            percentage: row.debtProgressPercentage,
+            totalAmount: convertFromMicroUnits(row.debtTotalAmount)
+        };
         const homeAccountBalance: HomeAccountBalanceInterface = {
             accountId: row.account.id,
             accountType: row.account.type,
@@ -114,6 +124,7 @@ export const useHomePageDataQuery = () => {
             convertedBalance: convertFromMicroUnits(row.convertedBalance),
             convertedCreditAmount: convertFromMicroUnits(row.convertedCreditAmount),
             convertedDebitAmount: convertFromMicroUnits(row.convertedDebitAmount),
+            convertedDebtProgressSummary,
             convertedTargetBalance: convertFromMicroUnits(row.convertedTargetBalance),
             debtProgressSummary,
             debtType: row.account.debtType,

@@ -1,6 +1,13 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { accountBalanceRepository, statisticsRepository, transactionRepository } from '@app/@generic/drizzle/db/db';
+import {
+    accountBalanceRepository,
+    exchangeRateRepository,
+    historicalExchangeRateRepository,
+    settingsRepository,
+    statisticsRepository,
+    transactionRepository
+} from '@app/@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
 import { accountService } from '@app/account/service/account.service';
 import { buildDebtAccountProgressSummary } from '@app/account/utils/build-debt-account-progress-summary.util';
@@ -9,6 +16,7 @@ import {
     AccountDebtTypeEnum,
     AccountTypeEnum,
     CategoryEntityTable,
+    CurrencyEnum,
     DEFAULT_TRANSACTION_FILTER,
     ExternalSourceEnum,
     LanguageEnum,
@@ -22,11 +30,20 @@ import {
 } from '@budgie/contracts';
 import { isDefined } from '@rnw-community/shared';
 
+import { requireInstrument } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
 import type { AccountEntityInterface, TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
+
+const CURRENT_USD_TO_EUR_RATE = 0.7;
+const HISTORICAL_USD_TO_EUR_RATE = 0.8;
+const HISTORICAL_USD_TO_EUR_RATE_DATE = '1999-01-01';
+
+afterEach(() => {
+    vi.useRealTimers();
+});
 
 describe('debt settlement statistics', () => {
     it('counts debt returns once in income analytics while updating the lent debt balance', () => {
@@ -78,7 +95,7 @@ describe('debt settlement statistics', () => {
         const account = await createDebtAccount(AccountDebtTypeEnum.LENT, 2_000, 15_000, 1);
         const balance = accountBalanceRepository.getByAccountId(account.id).get();
 
-        expect(balance?.balance).toBe(13_000 * PRECISION);
+        expect(balance?.balance).toBe(2_000 * PRECISION);
     });
 
     it('updates lent debt accounts by treating current balance as an already returned amount', async () => {
@@ -89,7 +106,7 @@ describe('debt settlement statistics', () => {
             targetBalance: 15_000
         });
 
-        expect(balance?.balance).toBe(13_000 * PRECISION);
+        expect(balance?.balance).toBe(2_000 * PRECISION);
     });
 
     it('summarizes updated lent debt accounts by treating current balance as an already returned amount', async () => {
@@ -100,7 +117,7 @@ describe('debt settlement statistics', () => {
             targetBalance: 15_000
         });
 
-        expect(balance?.balance).toBe(13_000 * PRECISION);
+        expect(balance?.balance).toBe(2_000 * PRECISION);
         expectDebtProgressSummary(summary, 13_000 * PRECISION, 2_000 * PRECISION, 15_000 * PRECISION, 13.33);
     });
 
@@ -113,9 +130,10 @@ describe('debt settlement statistics', () => {
     it('uses lent ledger entries instead of a stale signed balance when debt activity exists', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.LENT,
-            balance: 1_891 * PRECISION,
-            debitAmount: 13_000 * PRECISION,
-            creditAmount: 109 * PRECISION,
+            balance: 2_000 * PRECISION,
+            closedAmount: 109 * PRECISION,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 0,
             targetAmount: 15_000 * PRECISION
         });
 
@@ -125,9 +143,10 @@ describe('debt settlement statistics', () => {
     it('uses borrowed ledger entries instead of a stale signed balance when debt activity exists', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.BORROW,
-            balance: -1_891 * PRECISION,
-            debitAmount: 2_109 * PRECISION,
-            creditAmount: 15_000 * PRECISION,
+            balance: -15_000 * PRECISION,
+            closedAmount: 2_109 * PRECISION,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 0,
             targetAmount: 15_000 * PRECISION
         });
 
@@ -161,12 +180,32 @@ describe('debt settlement statistics', () => {
         expect(row.debtProgressPercentage).toBe(14.06);
     });
 
+    it('returns canonical debt progress fields from account details rows', async () => {
+        const { debtAccount } = await createLentDebtIncomeSettlementScenario({
+            initialCurrentBalance: 0,
+            updatedCurrentBalance: 2_000
+        });
+        const row = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
+
+        expect(row).toBeDefined();
+
+        if (!isDefined(row)) {
+            return;
+        }
+
+        expect(convertFromMicroUnits(row.outstandingAmount)).toBe(12_891);
+        expect(convertFromMicroUnits(row.paidAmount)).toBe(2_109);
+        expect(convertFromMicroUnits(row.totalAmount)).toBe(15_000);
+        expect(row.percentage).toBe(14.06);
+    });
+
     it('summarizes lent debt progress against the original target amount', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.LENT,
-            balance: 7_900 * PRECISION,
-            debitAmount: 10_000 * PRECISION,
-            creditAmount: 2_100 * PRECISION,
+            balance: 0,
+            closedAmount: 2_100 * PRECISION,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 10_000 * PRECISION,
             targetAmount: 15_000 * PRECISION
         });
 
@@ -176,9 +215,10 @@ describe('debt settlement statistics', () => {
     it('keeps the lent target amount as the denominator when ledger activity settles the debt', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.LENT,
-            balance: 8_000 * PRECISION,
-            debitAmount: 100 * PRECISION,
-            creditAmount: 2_100 * PRECISION,
+            balance: 0,
+            closedAmount: 2_100 * PRECISION,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 100 * PRECISION,
             targetAmount: 15_000 * PRECISION
         });
 
@@ -189,32 +229,68 @@ describe('debt settlement statistics', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.LENT,
             balance: 0,
-            debitAmount: 0,
-            creditAmount: 0,
+            closedAmount: 0,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 0,
             targetAmount: 13_000 * PRECISION
         });
 
         expectDebtProgressSummary(summary, 13_000 * PRECISION, 0, 13_000 * PRECISION, 0);
     });
 
-    it('summarizes lent debt from the signed balance when no ledger entries exist', () => {
+    it('summarizes lent debt from the returned balance when no ledger entries exist', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.LENT,
-            balance: 13_000 * PRECISION,
-            debitAmount: 0,
-            creditAmount: 0,
+            balance: 2_000 * PRECISION,
+            closedAmount: 0,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 0,
             targetAmount: 15_000 * PRECISION
         });
 
         expectDebtProgressSummary(summary, 13_000 * PRECISION, 2_000 * PRECISION, 15_000 * PRECISION, 13.33);
     });
 
+    it('stores historical base valuation on debt account adjustment entries at creation', async () => {
+        const { euroInstrument, usdInstrument } = await setupUsdDebtExchangeRateScenario();
+        const account = await createDebtAccount(AccountDebtTypeEnum.LENT, 2_000, 15_000, usdInstrument.id);
+        const adjustmentEntry = findAdjustmentEntry(account.id);
+
+        expect(account.targetBaseInstrumentId).toBe(euroInstrument.id);
+        expect(account.targetBaseExchangeRate).toBe(HISTORICAL_USD_TO_EUR_RATE);
+        expect(account.targetBaseAmount).toBe(12_000 * PRECISION);
+        expect(adjustmentEntry?.baseInstrumentId).toBe(euroInstrument.id);
+        expect(adjustmentEntry?.baseExchangeRate).toBe(HISTORICAL_USD_TO_EUR_RATE);
+        expect(adjustmentEntry?.baseAmount).toBe(1_600 * PRECISION);
+    });
+
+    it('uses stored base valuation for converted home debt progress', async () => {
+        const { euroInstrument, usdInstrument } = await setupUsdDebtExchangeRateScenario();
+        const account = await createDebtAccount(AccountDebtTypeEnum.LENT, 2_000, 15_000, usdInstrument.id);
+        const row = findHomeRow(account.id, euroInstrument.id);
+
+        expect(row).toBeDefined();
+
+        if (!isDefined(row)) {
+            return;
+        }
+
+        expect(row.debtPaidAmount).toBe(2_000 * PRECISION);
+        expect(row.debtOutstandingAmount).toBe(13_000 * PRECISION);
+        expect(row.debtTotalAmount).toBe(15_000 * PRECISION);
+        expect(row.convertedTargetBalance).toBe(12_000 * PRECISION);
+        expect(row.convertedDebtPaidAmount).toBe(1_600 * PRECISION);
+        expect(row.convertedDebtOutstandingAmount).toBe(10_400 * PRECISION);
+        expect(row.convertedDebtTotalAmount).toBe(12_000 * PRECISION);
+    });
+
     it('summarizes lent debt as complete when signed balance is negative and no ledger entries exist', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.LENT,
             balance: -100 * PRECISION,
-            debitAmount: 0,
-            creditAmount: 0,
+            closedAmount: 0,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 0,
             targetAmount: 15_000 * PRECISION
         });
 
@@ -241,8 +317,9 @@ describe('debt settlement statistics', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: row.account.debtType,
             balance: convertFromMicroUnits(row.convertedBalance),
-            debitAmount: convertFromMicroUnits(row.convertedDebitAmount),
-            creditAmount: convertFromMicroUnits(row.convertedCreditAmount),
+            closedAmount: 0,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 0,
             targetAmount: convertFromMicroUnits(row.convertedTargetBalance)
         });
 
@@ -252,9 +329,10 @@ describe('debt settlement statistics', () => {
     it('summarizes borrowed debt progress against the original target amount', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.BORROW,
-            balance: -7_900 * PRECISION,
-            debitAmount: 2_100 * PRECISION,
-            creditAmount: 10_000 * PRECISION,
+            balance: 0,
+            closedAmount: 2_100 * PRECISION,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 10_000 * PRECISION,
             targetAmount: 15_000 * PRECISION
         });
 
@@ -264,9 +342,10 @@ describe('debt settlement statistics', () => {
     it('keeps the borrowed target amount as the denominator when ledger activity settles the debt', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.BORROW,
-            balance: -8_066 * PRECISION,
-            debitAmount: 8_066 * PRECISION,
-            creditAmount: 0,
+            balance: 0,
+            closedAmount: 8_066 * PRECISION,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 8_066 * PRECISION,
             targetAmount: 45_000 * PRECISION
         });
 
@@ -277,8 +356,9 @@ describe('debt settlement statistics', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.BORROW,
             balance: 0,
-            debitAmount: 0,
-            creditAmount: 0,
+            closedAmount: 0,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 0,
             targetAmount: 45_000 * PRECISION
         });
 
@@ -289,8 +369,9 @@ describe('debt settlement statistics', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.BORROW,
             balance: -8_066 * PRECISION,
-            debitAmount: 0,
-            creditAmount: 0,
+            closedAmount: 0,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 0,
             targetAmount: 45_000 * PRECISION
         });
 
@@ -301,8 +382,9 @@ describe('debt settlement statistics', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.BORROW,
             balance: 100 * PRECISION,
-            debitAmount: 0,
-            creditAmount: 0,
+            closedAmount: 0,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 0,
             targetAmount: 45_000 * PRECISION
         });
 
@@ -560,15 +642,55 @@ const createBorrowedDebtSettlementScenario = async () => {
 };
 
 const buildSummaryFromDebtAccount = (debtAccount: Pick<AccountEntityInterface, 'id' | 'targetBalance'>, debtType: AccountDebtTypeEnum) => {
-    const balance = accountBalanceRepository.getByAccountId(debtAccount.id).get();
-    const debitAmount = getDebtEntryAmount(debtAccount.id, TransactionEntryTypeEnum.DEBIT);
-    const creditAmount = getDebtEntryAmount(debtAccount.id, TransactionEntryTypeEnum.CREDIT);
+    const adjustmentDebitAmount = getDebtEntryAmount(
+        debtAccount.id,
+        TransactionEntryTypeEnum.DEBIT,
+        TransactionEntryKindEnum.PRIMARY,
+        TransactionTypeEnum.ADJUSTMENT
+    );
+    const adjustmentCreditAmount = getDebtEntryAmount(
+        debtAccount.id,
+        TransactionEntryTypeEnum.CREDIT,
+        TransactionEntryKindEnum.PRIMARY,
+        TransactionTypeEnum.ADJUSTMENT
+    );
+    const debitSettlementAmount = getDebtEntryAmount(
+        debtAccount.id,
+        TransactionEntryTypeEnum.DEBIT,
+        TransactionEntryKindEnum.DEBT_SETTLEMENT,
+        null
+    );
+    const creditSettlementAmount = getDebtEntryAmount(
+        debtAccount.id,
+        TransactionEntryTypeEnum.CREDIT,
+        TransactionEntryKindEnum.DEBT_SETTLEMENT,
+        null
+    );
+    const debtPrimaryDebitAmount = getDebtEntryAmount(
+        debtAccount.id,
+        TransactionEntryTypeEnum.DEBIT,
+        TransactionEntryKindEnum.PRIMARY,
+        TransactionTypeEnum.DEBT
+    );
+    const debtPrimaryCreditAmount = getDebtEntryAmount(
+        debtAccount.id,
+        TransactionEntryTypeEnum.CREDIT,
+        TransactionEntryKindEnum.PRIMARY,
+        TransactionTypeEnum.DEBT
+    );
+    const closedAmount =
+        debtType === AccountDebtTypeEnum.BORROW
+            ? debtPrimaryDebitAmount + debitSettlementAmount
+            : debtPrimaryCreditAmount + creditSettlementAmount;
+    const openedPrincipalAmount = debtType === AccountDebtTypeEnum.BORROW ? debtPrimaryCreditAmount : debtPrimaryDebitAmount;
+    const openedExtraAmount = debtType === AccountDebtTypeEnum.BORROW ? creditSettlementAmount : debitSettlementAmount;
 
     return buildDebtAccountProgressSummary({
         debtType,
-        balance: balance?.balance ?? 0,
-        debitAmount,
-        creditAmount,
+        balance: adjustmentDebitAmount - adjustmentCreditAmount,
+        closedAmount,
+        openedExtraAmount,
+        openedPrincipalAmount,
         targetAmount: debtAccount.targetBalance
     });
 };
@@ -579,13 +701,57 @@ const findHomeRow = (accountId: number, instrumentId: number) =>
         .all()
         .find(row => row.account.id === accountId);
 
-const getDebtEntryAmount = (debtAccountId: number, type: TransactionEntryTypeEnum): number =>
-    testDb
+const setupUsdDebtExchangeRateScenario = async () => {
+    const euroInstrument = await requireInstrument(CurrencyEnum.EUR);
+    const usdInstrument = await requireInstrument(CurrencyEnum.USD);
+
+    await settingsRepository.update({ defaultInstrumentId: euroInstrument.id });
+    await exchangeRateRepository.upsert(usdInstrument.id, euroInstrument.id, CURRENT_USD_TO_EUR_RATE, 'test');
+    await historicalExchangeRateRepository.upsert({
+        sourceInstrumentId: usdInstrument.id,
+        targetInstrumentId: euroInstrument.id,
+        rate: HISTORICAL_USD_TO_EUR_RATE,
+        rateDate: HISTORICAL_USD_TO_EUR_RATE_DATE
+    });
+    vi.useFakeTimers({ now: new Date(`${HISTORICAL_USD_TO_EUR_RATE_DATE}T12:00:00.000Z`) });
+
+    return { euroInstrument, usdInstrument };
+};
+
+const findAdjustmentEntry = (accountId: number) => {
+    const transactions = testDb.select().from(TransactionEntityTable).all();
+
+    return testDb
         .select()
         .from(TransactionEntryEntityTable)
         .all()
-        .filter(entry => entry.accountId === debtAccountId && entry.type === type)
+        .find(entry => {
+            const transaction = transactions.find(item => item.id === entry.transactionId);
+
+            return entry.accountId === accountId && transaction?.type === TransactionTypeEnum.ADJUSTMENT;
+        });
+};
+
+const getDebtEntryAmount = (
+    debtAccountId: number,
+    type: TransactionEntryTypeEnum,
+    kind: TransactionEntryKindEnum,
+    transactionType: TransactionTypeEnum | null
+): number => {
+    const transactions = testDb.select().from(TransactionEntityTable).all();
+
+    return testDb
+        .select()
+        .from(TransactionEntryEntityTable)
+        .all()
+        .filter(entry => {
+            const transaction = transactions.find(item => item.id === entry.transactionId);
+            const isTransactionTypeMatch = !isDefined(transactionType) || transaction?.type === transactionType;
+
+            return entry.accountId === debtAccountId && entry.type === type && entry.kind === kind && isTransactionTypeMatch;
+        })
         .reduce((total, entry) => total + entry.amount, 0);
+};
 
 const expectDebtProgressSummary = (
     summary: ReturnType<typeof buildDebtAccountProgressSummary>,

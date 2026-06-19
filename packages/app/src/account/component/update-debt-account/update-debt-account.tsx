@@ -6,7 +6,7 @@ import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-scre
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
-import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+import { useDebtAccountProgressSummaryQuery } from '../../query/use-debt-account-progress-summary.query';
 import { accountService } from '../../service/account.service';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
@@ -19,9 +19,10 @@ interface Props {
 }
 
 export const UpdateDebtAccount = ({ account }: Props) => {
-    const { balance } = useAccountBalanceQuery(account.id);
+    const debtProgressSummary = useDebtAccountProgressSummaryQuery(account.id);
     const targetBalance = convertFromMicroUnits(account.targetBalance);
-    const currentBalance = account.debtType === AccountDebtTypeEnum.BORROW ? Math.abs(balance) : Math.max(targetBalance - balance, 0);
+    const currentBalance =
+        account.debtType === AccountDebtTypeEnum.BORROW ? debtProgressSummary.outstandingAmount : debtProgressSummary.paidAmount;
 
     const { control, handleSubmit, instrument } = useDebtAccountForm(
         {

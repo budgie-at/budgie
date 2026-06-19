@@ -31,9 +31,23 @@ env:
       element:
           id: 'SettingsPage.ImportDatabaseCard'
       direction: UP
-      timeout: 5000
+      timeout: 10000
       centerElement: true
       waitToSettleTimeoutMs: 1000
+      optional: true
+
+- runFlow:
+      when:
+          notVisible:
+              id: 'SettingsPage.ImportDatabaseCard'
+      commands:
+          - scrollUntilVisible:
+                element:
+                    id: 'SettingsPage.ImportDatabaseCard'
+                direction: DOWN
+                timeout: 10000
+                centerElement: true
+                waitToSettleTimeoutMs: 1000
 
 - extendedWaitUntil:
       visible:

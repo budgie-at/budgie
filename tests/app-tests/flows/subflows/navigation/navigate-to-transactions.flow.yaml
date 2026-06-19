@@ -11,4 +11,9 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionsPage.Tab.Transactions'
       retryTapIfNoChange: true
+      optional: true
+- tapOn:
+      text: 'Transactions'
+      retryTapIfNoChange: true
+      optional: true
 - waitForAnimationToEnd

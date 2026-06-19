@@ -91,6 +91,22 @@ appId: ${APP_ID}
           DEBT_TYPE: 'LENT'
           TARGET_BALANCE: '15000'
 
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Lent Debt'
+
+- assertVisible:
+      id: 'DebtAccountBalance.OutstandingAmount.13000'
+- assertVisible:
+      id: 'DebtAccountBalance.PaidAmount.2000'
+- assertVisible:
+      id: 'DebtAccountBalance.TotalAmount.15000'
+- assertVisible:
+      id: 'DebtAccountBalance.Percentage.13_33'
+
+- runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
+
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - runFlow:

@@ -1,41 +1,152 @@
-import { type SQL, type SQLWrapper, sql } from 'drizzle-orm';
+import { type SQL, sql } from 'drizzle-orm';
 
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 
-class AccountBalanceDebtProgressSqlBuilder {
-    getDebtProgressSql(balanceSql: SQL, debitAmountSql: SQL, creditAmountSql: SQL, targetAmountSql: SQL | SQLWrapper) {
-        const balanceValueSql = sql<number>`(${balanceSql})`;
-        const debitAmountValueSql = sql<number>`(${debitAmountSql})`;
-        const creditAmountValueSql = sql<number>`(${creditAmountSql})`;
-        const targetAmountValueSql = sql<number>`(${targetAmountSql})`;
-        const closedAmountSql = sql<number>`CASE WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} THEN ${debitAmountValueSql} ELSE ${creditAmountValueSql} END`;
-        const openedAmountSql = sql<number>`CASE WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} THEN ${creditAmountValueSql} ELSE ${debitAmountValueSql} END`;
-        const signedOutstandingAmountSql = sql<number>`CASE WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} THEN 0 - ${balanceValueSql} ELSE ${balanceValueSql} END`;
+import type { AccountBalanceDebtProgressComputedSqlInputInterface } from '../interface/account-balance-debt-progress-computed-sql-input.interface';
+import type { AccountBalanceDebtProgressSqlInputInterface } from '../interface/account-balance-debt-progress-sql-input.interface';
 
-        return this.getDebtProgressComputedSql(closedAmountSql, openedAmountSql, signedOutstandingAmountSql, targetAmountValueSql);
+class AccountBalanceDebtProgressSqlBuilder {
+    getDebtProgressSql(input: AccountBalanceDebtProgressSqlInputInterface) {
+        return this.getDebtProgressComputedSql(this.getDebtProgressComputedInput(input));
     }
 
-    private getDebtProgressComputedSql(
-        closedAmountSql: SQL<number>,
-        openedAmountSql: SQL<number>,
-        signedOutstandingAmountSql: SQL<number>,
-        targetAmountSql: SQL<number>
+    getDebtProgressSelectSql(input: AccountBalanceDebtProgressSqlInputInterface) {
+        const debtProgressSql = this.getDebtProgressSql(input);
+
+        return {
+            closedAmount: debtProgressSql.closedAmount,
+            creditAmount: sql<number>`(${input.creditSettlementAmountSql})`.mapWith(Number),
+            debitAmount: sql<number>`(${input.debitSettlementAmountSql})`.mapWith(Number),
+            openedAmount: debtProgressSql.openedAmount,
+            outstandingAmount: debtProgressSql.outstandingAmount,
+            paidAmount: debtProgressSql.paidAmount,
+            percentage: debtProgressSql.percentage,
+            totalAmount: debtProgressSql.totalAmount
+        };
+    }
+
+    private getNormalizedDebtProgressSqlInput(input: AccountBalanceDebtProgressSqlInputInterface) {
+        const {
+            adjustmentCreditAmountSql,
+            adjustmentDebitAmountSql,
+            debtPrimaryCreditAmountSql,
+            debtPrimaryDebitAmountSql,
+            debitSettlementAmountSql,
+            creditSettlementAmountSql,
+            targetAmountSql
+        } = input;
+        const adjustmentDebitAmountValueSql = sql<number>`(${adjustmentDebitAmountSql})`;
+        const adjustmentCreditAmountValueSql = sql<number>`(${adjustmentCreditAmountSql})`;
+        const adjustmentBalanceValueSql = sql<number>`${adjustmentDebitAmountValueSql} - ${adjustmentCreditAmountValueSql}`;
+        const debtPrimaryDebitAmountValueSql = sql<number>`(${debtPrimaryDebitAmountSql})`;
+        const debtPrimaryCreditAmountValueSql = sql<number>`(${debtPrimaryCreditAmountSql})`;
+        const debitSettlementAmountValueSql = sql<number>`(${debitSettlementAmountSql})`;
+        const creditSettlementAmountValueSql = sql<number>`(${creditSettlementAmountSql})`;
+        const targetAmountValueSql = sql<number>`(${targetAmountSql})`;
+
+        return {
+            adjustmentBalanceValueSql,
+            creditSettlementAmountValueSql,
+            debitSettlementAmountValueSql,
+            debtPrimaryCreditAmountValueSql,
+            debtPrimaryDebitAmountValueSql,
+            targetAmountValueSql
+        };
+    }
+
+    private getDebtProgressComputedInput(input: AccountBalanceDebtProgressSqlInputInterface) {
+        const {
+            adjustmentBalanceValueSql,
+            creditSettlementAmountValueSql,
+            debitSettlementAmountValueSql,
+            debtPrimaryCreditAmountValueSql,
+            debtPrimaryDebitAmountValueSql,
+            targetAmountValueSql
+        } = this.getNormalizedDebtProgressSqlInput(input);
+        const initialClosedAmountSql = this.getInitialClosedAmountSql(adjustmentBalanceValueSql, targetAmountValueSql);
+        const initialOutstandingAmountSql = this.getInitialOutstandingAmountSql(adjustmentBalanceValueSql);
+        const closedMovementAmountSql = this.getClosedMovementAmountSql(
+            debtPrimaryDebitAmountValueSql,
+            debitSettlementAmountValueSql,
+            debtPrimaryCreditAmountValueSql,
+            creditSettlementAmountValueSql
+        );
+        const openedPrincipalAmountSql = this.getOpenedPrincipalAmountSql(debtPrimaryCreditAmountValueSql, debtPrimaryDebitAmountValueSql);
+        const openedExtraAmountSql = this.getOpenedExtraAmountSql(creditSettlementAmountValueSql, debitSettlementAmountValueSql);
+
+        return {
+            initialClosedAmountSql,
+            initialOutstandingAmountSql,
+            closedMovementAmountSql,
+            openedExtraAmountSql,
+            openedPrincipalAmountSql,
+            targetAmountSql: targetAmountValueSql
+        };
+    }
+
+    private getInitialClosedAmountSql(adjustmentBalanceValueSql: SQL<number>, targetAmountValueSql: SQL<number>) {
+        return sql<number>`
+            CASE
+                WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.LENT} AND ${adjustmentBalanceValueSql} > 0 THEN ${adjustmentBalanceValueSql}
+                WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.LENT} AND ${adjustmentBalanceValueSql} < 0 THEN ${targetAmountValueSql}
+                WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} AND ${adjustmentBalanceValueSql} > 0 THEN ${targetAmountValueSql}
+                ELSE 0
+            END
+        `;
+    }
+
+    private getInitialOutstandingAmountSql(adjustmentBalanceValueSql: SQL<number>) {
+        return sql<number>`
+            CASE
+                WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} AND ${adjustmentBalanceValueSql} < 0 THEN 0 - ${adjustmentBalanceValueSql}
+                ELSE 0
+            END
+        `;
+    }
+
+    private getClosedMovementAmountSql(
+        debtPrimaryDebitAmountValueSql: SQL<number>,
+        debitSettlementAmountValueSql: SQL<number>,
+        debtPrimaryCreditAmountValueSql: SQL<number>,
+        creditSettlementAmountValueSql: SQL<number>
     ) {
-        const hasLedgerActivitySql = sql`(${openedAmountSql} > 0 OR ${closedAmountSql} > 0)`;
-        const ledgerOutstandingAmountSql = sql<number>`MAX(${openedAmountSql} - ${closedAmountSql}, 0)`;
-        const signedFallbackOutstandingAmountSql = sql<number>`CASE WHEN ${signedOutstandingAmountSql} > 0 THEN ${signedOutstandingAmountSql} ELSE 0 END`;
-        const targetOnlyOutstandingAmountSql = sql<number>`CASE WHEN ${signedOutstandingAmountSql} = 0 THEN MAX(${targetAmountSql}, 0) ELSE 0 END`;
-        const fallbackOutstandingAmountSql = sql<number>`MAX(${signedFallbackOutstandingAmountSql}, ${targetOnlyOutstandingAmountSql})`;
-        const outstandingAmountSql = sql<number>`CASE WHEN ${hasLedgerActivitySql} THEN ${ledgerOutstandingAmountSql} ELSE ${fallbackOutstandingAmountSql} END`;
-        const observedTotalAmountSql = sql<number>`CASE WHEN ${hasLedgerActivitySql} THEN MAX(${openedAmountSql}, ${closedAmountSql}, ${closedAmountSql} + ${outstandingAmountSql}) ELSE ${outstandingAmountSql} END`;
-        const totalAmountSql = sql<number>`MAX(${targetAmountSql}, ${observedTotalAmountSql}, 0)`;
-        const paidAmountSql = sql<number>`MIN(MAX(${totalAmountSql} - ${outstandingAmountSql}, 0), ${totalAmountSql})`;
+        return sql<number>`CASE WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} THEN ${debtPrimaryDebitAmountValueSql} + ${debitSettlementAmountValueSql} ELSE ${debtPrimaryCreditAmountValueSql} + ${creditSettlementAmountValueSql} END`;
+    }
+
+    private getOpenedPrincipalAmountSql(debtPrimaryCreditAmountValueSql: SQL<number>, debtPrimaryDebitAmountValueSql: SQL<number>) {
+        return sql<number>`CASE WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} THEN ${debtPrimaryCreditAmountValueSql} ELSE ${debtPrimaryDebitAmountValueSql} END`;
+    }
+
+    private getOpenedExtraAmountSql(creditSettlementAmountValueSql: SQL<number>, debitSettlementAmountValueSql: SQL<number>) {
+        return sql<number>`CASE WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} THEN ${creditSettlementAmountValueSql} ELSE ${debitSettlementAmountValueSql} END`;
+    }
+
+    private getDebtProgressComputedSql(input: AccountBalanceDebtProgressComputedSqlInputInterface) {
+        const {
+            initialClosedAmountSql,
+            initialOutstandingAmountSql,
+            closedMovementAmountSql,
+            openedExtraAmountSql,
+            openedPrincipalAmountSql,
+            targetAmountSql
+        } = input;
+        const closedAmountSql = sql<number>`MAX(${initialClosedAmountSql} + ${closedMovementAmountSql}, 0)`;
+        const openedBasisAmountSql = sql<number>`MAX(${initialOutstandingAmountSql} + ${openedPrincipalAmountSql}, 0)`;
+        const effectiveDebtBasisAmountSql = sql<number>`
+            CASE
+                WHEN ${openedBasisAmountSql} > 0 THEN ${openedBasisAmountSql} + ${openedExtraAmountSql}
+                ELSE ${targetAmountSql} + ${openedExtraAmountSql}
+            END
+        `;
+        const totalAmountSql = sql<number>`MAX(${targetAmountSql} + ${openedExtraAmountSql}, ${openedBasisAmountSql} + ${openedExtraAmountSql}, ${closedAmountSql}, 0)`;
+        const outstandingAmountSql = sql<number>`MAX(${effectiveDebtBasisAmountSql} - ${closedAmountSql}, 0)`;
+        const paidAmountSql = sql<number>`MAX(${totalAmountSql} - ${outstandingAmountSql}, 0)`;
         const percentageSql = sql<number>`CASE WHEN ${totalAmountSql} > 0 THEN MIN(ROUND((${paidAmountSql} * 100.0) / ${totalAmountSql}, 2), 100) ELSE 0 END`;
 
         return {
             closedAmount: closedAmountSql.mapWith(Number),
-            openedAmount: openedAmountSql.mapWith(Number),
+            openedAmount: sql<number>`${openedPrincipalAmountSql} + ${openedExtraAmountSql}`.mapWith(Number),
             outstandingAmount: outstandingAmountSql.mapWith(Number),
             paidAmount: paidAmountSql.mapWith(Number),
             percentage: percentageSql.mapWith(Number),
