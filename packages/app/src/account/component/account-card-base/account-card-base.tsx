@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { OnEventFn } from '@rnw-community/shared';
 
@@ -64,7 +64,6 @@ export const AccountCardBase = (props: Props) => {
     const navigateToAccount = () => void router.push(`/account/${id}/details`);
     const navigateToEditAccount = () => void router.push(`/account/${id}/update`);
 
-    const cardTestID = AccountCardBaseSelector.Card(title);
     const accountBalance = formatDigits(balance, instrumentSymbol);
     const accountBalanceTestValue = formatDigits(balance);
 
@@ -72,13 +71,11 @@ export const AccountCardBase = (props: Props) => {
         <Card
             accessible
             accessibilityLabel={`${title}, ${accountBalance}`}
-            nativeID={cardTestID}
-            testID={cardTestID}
+            testID={AccountCardBaseSelector.Card(title)}
             onPress={navigateToAccount}
             onLongPress={onLongPress}
             className={cn(cardVariants({ deadlinePriority }), className)}
         >
-            <View collapsable={false} nativeID={cardTestID} pointerEvents="none" style={StyleSheet.absoluteFill} testID={cardTestID} />
             <View className="gap-3">
                 <View className="flex-row items-center justify-between">
                     <View className="flex-row items-center gap-x-lg">

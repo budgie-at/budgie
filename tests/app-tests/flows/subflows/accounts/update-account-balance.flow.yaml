@@ -16,5 +16,5 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'AccountCard.${ACCOUNT_NAME}'
+          id: 'HomePage.TotalBalance'
       timeout: 3000

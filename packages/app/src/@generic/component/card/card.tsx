@@ -20,7 +20,6 @@ interface Props {
     readonly onLongPress?: OnEventFn;
     readonly variant?: ColorPaletteVariant;
     readonly testID?: string;
-    readonly nativeID?: string;
     readonly accessible?: boolean;
     readonly accessibilityLabel?: string;
 }

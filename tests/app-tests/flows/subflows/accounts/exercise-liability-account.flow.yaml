@@ -92,8 +92,11 @@ appId: ${APP_ID}
     visible:
       id: 'HomePage.NetWorthValue.${DECREASE_TO}'
     timeout: 10000
-- assertVisible:
-    id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+    direction: DOWN
+    timeout: 8000
 
 - runFlow:
     file: open-account-settings.flow.yaml
