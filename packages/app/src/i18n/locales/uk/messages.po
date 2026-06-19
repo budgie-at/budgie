@@ -1545,6 +1545,10 @@ msgstr "Отримати API-токен"
 msgid "Get notified when a budget threshold is crossed"
 msgstr "Сповіщати, коли перетинається порогове значення бюджету"
 
+#: src/@generic/component/go-back-button/go-back-button.tsx
+msgid "Go back"
+msgstr "Назад"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Greater Than"
 msgstr "Більше ніж"

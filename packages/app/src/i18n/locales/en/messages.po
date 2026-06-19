@@ -1546,6 +1546,10 @@ msgstr "Get API Token"
 msgid "Get notified when a budget threshold is crossed"
 msgstr "Get notified when a budget threshold is crossed"
 
+#: src/@generic/component/go-back-button/go-back-button.tsx
+msgid "Go back"
+msgstr "Go back"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Greater Than"
 msgstr "Greater Than"

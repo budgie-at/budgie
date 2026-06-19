@@ -1545,6 +1545,10 @@ msgstr "Obtenir le jeton API"
 msgid "Get notified when a budget threshold is crossed"
 msgstr "Soyez averti lorsqu'un seuil de budget est franchi"
 
+#: src/@generic/component/go-back-button/go-back-button.tsx
+msgid "Go back"
+msgstr "Retour"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Greater Than"
 msgstr "Supérieur à"
