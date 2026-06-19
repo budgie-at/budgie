@@ -3,13 +3,9 @@ import { router } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { useConvertToRefundModal } from '../context/convert-to-refund-modal.context';
-import { useConvertToTransferModal } from '../context/convert-to-transfer-modal.context';
 
-import { useRevertConsolidation } from './use-revert-consolidation.hook';
-import { useUpdateTransactionDebtSettlementActions } from './use-update-transaction-debt-settlement-actions.hook';
+import { useUpdateTransactionSharedActions } from './use-update-transaction-shared-actions.hook';
 
 import type { UpdateIncomeTransactionActionsParamsInterface } from '../interface/update-income-transaction-actions-params.interface';
 
@@ -19,27 +15,14 @@ export const useUpdateIncomeTransactionActions = ({
     transactionId,
     toAccountId
 }: UpdateIncomeTransactionActionsParamsInterface) => {
-    const [openConvertToTransfer] = useConvertToTransferModal();
     const [openConvertToRefund] = useConvertToRefundModal();
-    const [sourceEntry] = transaction.entries;
-    const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
-    const { handleOpenDebtSettlement, handleDetachDebtSettlement, hasDebtSettlement, debtSettlementAccountTitle } =
-        useUpdateTransactionDebtSettlementActions({
-            form,
-            transaction,
-            transactionId,
-            transactionAccountId: toAccountId
-        });
-
-    const handleOpenConvert = () =>
-        void openConvertToTransfer({
-            transactionId,
-            transactionType: TransactionTypeEnum.INCOME,
-            excludeAccountId: toAccountId ?? 0,
-            sourceAmount: convertFromMicroUnits(sourceEntry.amount),
-            sourceInstrumentId: sourceEntry.account.instrumentId,
-            sourceCode: sourceEntry.account.instrument.code
-        });
+    const transactionActions = useUpdateTransactionSharedActions({
+        form,
+        transaction,
+        transactionAccountId: toAccountId,
+        transactionId,
+        transactionType: TransactionTypeEnum.INCOME
+    });
 
     const handleOpenRefundConvert = () =>
         void openConvertToRefund({
@@ -55,12 +38,7 @@ export const useUpdateIncomeTransactionActions = ({
         });
 
     return {
-        handleOpenConvert,
         handleOpenRefundConvert,
-        handleOpenDebtSettlement,
-        handleDetachDebtSettlement,
-        handleRevert,
-        hasDebtSettlement,
-        debtSettlementAccountTitle
+        ...transactionActions
     };
 };
