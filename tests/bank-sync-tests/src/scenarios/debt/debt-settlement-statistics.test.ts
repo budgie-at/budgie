@@ -200,16 +200,7 @@ describe('debt settlement statistics', () => {
     });
 
     it('summarizes lent debt progress against the original target amount', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.LENT,
-            balance: 0,
-            closedAmount: 2_100 * PRECISION,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 10_000 * PRECISION,
-            targetAmount: 15_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 7_900 * PRECISION, 7_100 * PRECISION, 15_000 * PRECISION, 47.33);
+        expectOriginalTargetDebtProgressSummary(AccountDebtTypeEnum.LENT);
     });
 
     it('keeps the lent target amount as the denominator when ledger activity settles the debt', () => {
@@ -327,16 +318,7 @@ describe('debt settlement statistics', () => {
     });
 
     it('summarizes borrowed debt progress against the original target amount', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.BORROW,
-            balance: 0,
-            closedAmount: 2_100 * PRECISION,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 10_000 * PRECISION,
-            targetAmount: 15_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 7_900 * PRECISION, 7_100 * PRECISION, 15_000 * PRECISION, 47.33);
+        expectOriginalTargetDebtProgressSummary(AccountDebtTypeEnum.BORROW);
     });
 
     it('keeps the borrowed target amount as the denominator when ledger activity settles the debt', () => {
@@ -565,6 +547,19 @@ const expectDebtSettlementAnalyticsState = ({
     expect(debtBalance?.balance).toBe(expectedDebtBalance);
     expect(remainingDebt?.total).toBe(expectedRemainingDebt);
     expect(debtAccountTransactionCount?.value).toBe(2);
+};
+
+const expectOriginalTargetDebtProgressSummary = (debtType: AccountDebtTypeEnum): void => {
+    const summary = buildDebtAccountProgressSummary({
+        debtType,
+        balance: 0,
+        closedAmount: 2_100 * PRECISION,
+        openedExtraAmount: 0,
+        openedPrincipalAmount: 10_000 * PRECISION,
+        targetAmount: 15_000 * PRECISION
+    });
+
+    expectDebtProgressSummary(summary, 7_900 * PRECISION, 7_100 * PRECISION, 15_000 * PRECISION, 47.33);
 };
 
 const updateDebtCurrentBalanceAndReadState = async ({
