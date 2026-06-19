@@ -55,7 +55,7 @@ env:
     file: subflows/navigate-to-rules.flow.yaml
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -112,7 +112,7 @@ env:
     file: subflows/navigate-to-rules.flow.yaml
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -193,7 +193,7 @@ env:
     file: subflows/navigate-to-rules.flow.yaml
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -240,7 +240,7 @@ env:
     file: subflows/navigate-to-rules.flow.yaml
 
 - tapOn:
-    id: 'RulesPage.RuleCard.0'
+    id: 'RulesPage.RuleCardActions.0'
 - extendedWaitUntil:
     visible: 'Edit Rule'
 
@@ -258,7 +258,7 @@ env:
     file: subflows/navigate-to-rules.flow.yaml
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -282,7 +282,7 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    id: 'RuleForm.Footer.SubmitButton.Label'
 - waitForAnimationToEnd
 
 - assertVisible:
@@ -316,7 +316,7 @@ env:
     file: subflows/navigate-to-rules.flow.yaml
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -370,7 +370,7 @@ env:
     file: subflows/navigate-to-rules.flow.yaml
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'

@@ -86,24 +86,25 @@ appId: ${APP_ID}
     visible: 'Save to Files'
     timeout: 15000
 
-- runFlow:
-    file: subflows/navigation/relaunch-app-and-wait.flow.yaml
-    env:
-      DESTINATION_ID: 'TabBar.Home'
-
 - tapOn:
-    id: 'TabBar.Home'
+    id: 'PopoverDismissRegion'
 
 - waitForAnimationToEnd
 
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.Container'
+    timeout: 5000
+
 - runFlow:
     when:
-      notVisible:
-        id: 'HomePage.TotalBalance'
+      visible: 'Value historical entries?'
     commands:
-      - tapOn:
-          id: 'TabBar.Home'
+      - tapOn: 'Cancel'
       - waitForAnimationToEnd
+
+- tapOn:
+    id: 'TabBar.Home'
 
 - extendedWaitUntil:
     visible:

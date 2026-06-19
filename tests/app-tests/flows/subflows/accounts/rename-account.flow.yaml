@@ -26,8 +26,3 @@ appId: ${APP_ID}
     visible:
       id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
     timeout: 10000
-
-- runFlow:
-    file: ../navigation/relaunch-app-and-wait.flow.yaml
-    env:
-      DESTINATION_ID: 'TabBar.Home'

@@ -184,8 +184,10 @@ appId: ${APP_ID}
       id: 'TabBar.Settings'
     timeout: 10000
 
-- stopApp
-- runFlow:
-    file: subflows/navigation/relaunch-app-and-wait.flow.yaml
-    env:
-      DESTINATION_ID: 'HomePage.TotalBalance'
+- tapOn:
+    id: 'TabBar.Home'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000

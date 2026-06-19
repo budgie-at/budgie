@@ -1,9 +1,13 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+    id: 'RuleForm.Footer.SubmitButton.Label'
 - runFlow:
     when:
       visible: 'Apply to existing transactions?'
     commands:
       - tapOn: 'Skip'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 10000

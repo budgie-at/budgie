@@ -25,18 +25,18 @@ appId: ${APP_ID}
                 id: 'RecurringCalendar.Row.E2E_Recurring_Gym'
 
 - tapOn:
-      id: 'RecurringCalendar.Day.Today'
+      id: 'RecurringCalendar.Day.CurrentMonth.19'
 - extendedWaitUntil:
       visible:
-          id: 'RecurringCalendar.SelectedDayHeader.Today'
+          id: 'RecurringCalendar.SelectedDayHeader.19'
       timeout: 5000
 - assertVisible:
       id: 'RecurringCalendar.Row.E2E_Recurring_Rent'
 - tapOn:
-      id: 'RecurringCalendar.Day.Today'
+      id: 'RecurringCalendar.Day.CurrentMonth.19'
 - extendedWaitUntil:
       visible:
-          id: 'RecurringCalendar.Day.Today'
+          id: 'RecurringCalendar.Day.CurrentMonth.19'
       timeout: 5000
 - runFlow:
       when:

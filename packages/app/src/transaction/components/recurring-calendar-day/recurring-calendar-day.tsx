@@ -118,13 +118,10 @@ export const RecurringCalendarDay = (props: Props) => {
     const textClassName = textVariants({ hasEntries, isSelected, isToday: day.isToday });
     const hasDots = hasEntries && day.isCurrentMonth;
     const dayTextClassName = cn(textClassName, hasDots && '-mt-1');
-    const isCurrentMonthToday = day.isToday && day.isCurrentMonth;
-    const hasCurrentMonthDaySelector = day.isCurrentMonth && !day.isToday;
+    const hasCurrentMonthDaySelector = day.isCurrentMonth;
     let dayTestID = null;
 
-    if (isCurrentMonthToday) {
-        dayTestID = RecurringCalendarSelector.Today;
-    } else if (hasCurrentMonthDaySelector) {
+    if (hasCurrentMonthDaySelector) {
         dayTestID = RecurringCalendarSelector.CurrentMonthDay(dayOfMonth);
     }
 

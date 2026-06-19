@@ -15,8 +15,12 @@ appId: ${APP_ID}
       direction: DOWN
       timeout: 10000
       visibilityPercentage: 80
-      centerElement: true
+      centerElement: false
       speed: 20
+
+- scroll
+
+- waitForAnimationToEnd
 
 - tapOn:
       id: 'CreateAccount.ERSTE'
@@ -31,6 +35,7 @@ appId: ${APP_ID}
           id: 'AccountCard.Erste EUR'
       direction: DOWN
       timeout: 10000
+      visibilityPercentage: 30
 
 - assertVisible:
       id: 'AccountCard.Balance.Erste_EUR._478'
@@ -51,10 +56,12 @@ appId: ${APP_ID}
 - tapOn:
       id: 'PageHeader.BackButton'
 
-- runFlow:
-      file: subflows/navigation/relaunch-app-and-wait.flow.yaml
-      env:
-          DESTINATION_ID: 'AccountCard.Erste EUR'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountCard.Erste EUR'
+      timeout: 10000
 
 - evalScript: ${output.phase = 'existing-account-quick-import'}
 
@@ -132,10 +139,12 @@ appId: ${APP_ID}
 - tapOn:
       id: 'PageHeader.BackButton'
 
-- runFlow:
-      file: subflows/navigation/relaunch-app-and-wait.flow.yaml
-      env:
-          DESTINATION_ID: 'AccountCard.Erste EUR'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountCard.Erste EUR'
+      timeout: 10000
 
 - assertVisible:
       id: 'AccountCard.Balance.Erste_EUR._3_412'

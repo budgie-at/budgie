@@ -237,5 +237,9 @@ appId: ${APP_ID}
       id: 'AccountCard.Balance.E2E_Consolidation_A.750'
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Consolidation_B.200'
+- scrollUntilVisible:
+      element:
+          id: 'AccountCard.Balance.E2E_Consolidation_Untouched.0'
+      direction: DOWN
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Consolidation_Untouched.0'

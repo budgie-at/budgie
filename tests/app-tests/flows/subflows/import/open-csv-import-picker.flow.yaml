@@ -10,19 +10,28 @@ appId: ${APP_ID}
 
 - waitForAnimationToEnd
 
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.ImportDatabaseCard'
-    direction: DOWN
-    centerElement: true
-    waitToSettleTimeoutMs: 500
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.Container'
+    timeout: 15000
 
-- waitForAnimationToEnd
+- runFlow:
+    when:
+      notVisible:
+        id: 'CsvPage.ImportCard'
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: 'CsvPage.ImportCard'
+          direction: DOWN
+          centerElement: true
+          waitToSettleTimeoutMs: 500
+      - waitForAnimationToEnd
 
 - extendedWaitUntil:
     visible:
       id: 'CsvPage.ImportCard'
-    timeout: 3000
+    timeout: 5000
 
 - retry:
     maxRetries: 2

@@ -64,6 +64,7 @@ export const AccountCardBase = (props: Props) => {
     const navigateToAccount = () => void router.push(`/account/${id}/details`);
     const navigateToEditAccount = () => void router.push(`/account/${id}/update`);
 
+    const accountCardTestID = AccountCardBaseSelector.Card(title);
     const accountBalance = formatDigits(balance, instrumentSymbol);
     const accountBalanceTestValue = formatDigits(balance);
 
@@ -71,7 +72,6 @@ export const AccountCardBase = (props: Props) => {
         <Card
             accessible
             accessibilityLabel={`${title}, ${accountBalance}`}
-            testID={AccountCardBaseSelector.Card(title)}
             onPress={navigateToAccount}
             onLongPress={onLongPress}
             className={cn(cardVariants({ deadlinePriority }), className)}
@@ -94,7 +94,7 @@ export const AccountCardBase = (props: Props) => {
                 </View>
 
                 <View className="gap-1">
-                    <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1}>
+                    <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1} testID={accountCardTestID}>
                         {title}
                     </Text>
 

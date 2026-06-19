@@ -98,6 +98,13 @@ appId: ${APP_ID}
       env:
           CATEGORY_NAME: 'E2E Convert Category'
 
+- waitForAnimationToEnd
+- scrollUntilVisible:
+      element:
+          id: 'TransactionForm.CommentInput'
+      direction: DOWN
+      centerElement: true
+
 - runFlow:
       file: subflows/transactions/enter-comment.flow.yaml
       env:

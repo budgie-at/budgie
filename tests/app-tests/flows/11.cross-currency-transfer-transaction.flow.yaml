@@ -84,7 +84,13 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Foreign_Account.165'
 
-- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- tapOn:
+      id: 'TabBar.Transactions'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 15000
 
 # --- Edit Cross-Currency Transfer ---
 
@@ -140,7 +146,13 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Foreign_Account.150'
 
-- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- tapOn:
+      id: 'TabBar.Transactions'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 15000
 
 # --- Delete Cross-Currency Transfer ---
 

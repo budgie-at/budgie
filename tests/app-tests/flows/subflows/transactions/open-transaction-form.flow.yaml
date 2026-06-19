@@ -12,3 +12,7 @@ env:
     id: '${ACTION_ITEM_ID}.Label'
 - extendedWaitUntil:
     visible: ${FORM_TITLE}
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionKeypad.Digit.1'
+- waitForAnimationToEnd

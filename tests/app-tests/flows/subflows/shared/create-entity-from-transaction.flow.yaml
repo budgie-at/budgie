@@ -15,6 +15,7 @@ env:
 - tapOn:
     id: ${PICKER_INPUT_ID}
 - inputText: ${ENTITY_NAME}
+- pressKey: enter
 - waitForAnimationToEnd
 - tapOn:
     id: ${CREATE_BUTTON_ID}

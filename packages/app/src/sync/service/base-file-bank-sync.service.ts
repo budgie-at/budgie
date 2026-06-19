@@ -12,6 +12,7 @@ import { Log } from '@budgie/logger';
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -131,6 +132,7 @@ export abstract class BaseFileBankSyncService {
         (error, _client, bankAccounts) =>
             `throw bankAccountIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
     )
+    @InvalidateDatabaseLiveQuery()
     private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
         const importWork = async (): Promise<void> => {
             const [mccCategoryLookupMap, existingTransactionIdMap] = await Promise.all([

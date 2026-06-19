@@ -8,9 +8,21 @@ env:
 - runFlow:
       when:
           true: ${DATABASE_FIXTURE_SEEDED == 'true'}
-      file: ../navigation/relaunch-app-and-wait.flow.yaml
-      env:
-          DESTINATION_ID: 'TabBar.Home'
+      commands:
+          - launchApp:
+                permissions:
+                    contacts: allow
+                    microphone: allow
+          - extendedWaitUntil:
+                visible:
+                    id: 'TabBar.Home'
+                timeout: 30000
+          - tapOn:
+                id: 'TabBar.Home'
+          - extendedWaitUntil:
+                visible:
+                    id: 'HomePage.TotalBalance'
+                timeout: 30000
 
 - runFlow:
       when:
@@ -35,18 +47,29 @@ env:
                         id: 'SettingsPage.Container'
                 file: ../navigation/navigate-to-settings.flow.yaml
 
-          - scrollUntilVisible:
-                element:
-                    id: 'SettingsPage.ImportDatabaseCard'
-                direction: DOWN
-                timeout: 20000
-                centerElement: true
-                waitToSettleTimeoutMs: 1000
+          - extendedWaitUntil:
+                visible:
+                    id: 'SettingsPage.Container'
+                timeout: 15000
+
+          - runFlow:
+                when:
+                    notVisible:
+                        id: 'SettingsPage.ImportDatabaseCard'
+                commands:
+                    - scrollUntilVisible:
+                          element:
+                              id: 'SettingsPage.ImportDatabaseCard'
+                          direction: DOWN
+                          timeout: 20000
+                          centerElement: true
+                          waitToSettleTimeoutMs: 1000
+                    - waitForAnimationToEnd
 
           - extendedWaitUntil:
                 visible:
                     id: 'SettingsPage.ImportDatabaseCard'
-                timeout: 3000
+                timeout: 5000
 
           - tapOn:
                 id: 'SettingsPage.ImportDatabaseCard'
@@ -69,7 +92,15 @@ env:
 
           - waitForAnimationToEnd
 
-          - runFlow:
-                file: ../navigation/relaunch-app-and-wait.flow.yaml
-                env:
-                    DESTINATION_ID: 'TabBar.Home'
+          - extendedWaitUntil:
+                visible:
+                    id: 'TabBar.Home'
+                timeout: 30000
+
+          - tapOn:
+                id: 'TabBar.Home'
+
+          - extendedWaitUntil:
+                visible:
+                    id: 'HomePage.TotalBalance'
+                timeout: 30000
