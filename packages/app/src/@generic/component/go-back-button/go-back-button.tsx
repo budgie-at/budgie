@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import React, { ComponentProps } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
@@ -22,11 +23,13 @@ export const GoBackButton = ({
             accessible
             accessibilityLabel={resolvedAccessibilityLabel}
             accessibilityRole={accessibilityRole}
-            className={cn('p-md', className)}
+            className={cn('relative p-md', className)}
             collapsable={false}
+            nativeID={testID}
             testID={testID}
             {...rest}
         >
+            <View collapsable={false} nativeID={testID} style={StyleSheet.absoluteFill} testID={testID} />
             <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={24} />
         </HapticPressable>
     );
