@@ -90,7 +90,7 @@ class AccountBalanceDebtProgressSqlBuilder {
             CASE
                 WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.LENT} AND ${adjustmentBalanceValueSql} > 0 THEN ${adjustmentBalanceValueSql}
                 WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.LENT} AND ${adjustmentBalanceValueSql} < 0 THEN ${targetAmountValueSql}
-                WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} AND ${adjustmentBalanceValueSql} > 0 THEN ${targetAmountValueSql}
+                WHEN ${AccountEntityTable.debtType} = ${AccountDebtTypeEnum.BORROW} AND ${adjustmentBalanceValueSql} > 0 THEN ${adjustmentBalanceValueSql}
                 ELSE 0
             END
         `;

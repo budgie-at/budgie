@@ -9,7 +9,7 @@ const getInitialClosedAmount = (balance: number, debtType: AccountDebtTypeEnum, 
         return balance < 0 ? targetAmount : Math.max(balance, 0);
     }
 
-    return balance > 0 ? targetAmount : 0;
+    return Math.max(balance, 0);
 };
 
 export const buildDebtAccountProgressSummary = ({

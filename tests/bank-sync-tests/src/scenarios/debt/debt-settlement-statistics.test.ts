@@ -153,6 +153,19 @@ describe('debt settlement statistics', () => {
         expectDebtProgressSummary(summary, 12_891 * PRECISION, 2_109 * PRECISION, 15_000 * PRECISION, 14.06);
     });
 
+    it('treats a positive borrowed balance as already repaid when debt activity exists', () => {
+        const summary = buildDebtAccountProgressSummary({
+            debtType: AccountDebtTypeEnum.BORROW,
+            balance: 4_100 * PRECISION,
+            closedAmount: 3_966 * PRECISION,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 0,
+            targetAmount: 45_000 * PRECISION
+        });
+
+        expectDebtProgressSummary(summary, 36_934 * PRECISION, 8_066 * PRECISION, 45_000 * PRECISION, 17.92);
+    });
+
     it('summarizes lent debt after correcting returned amount and attaching income', async () => {
         const { summary } = await createLentDebtIncomeSettlementScenario({
             initialCurrentBalance: 0,
@@ -360,7 +373,7 @@ describe('debt settlement statistics', () => {
         expectDebtProgressSummary(summary, 8_066 * PRECISION, 36_934 * PRECISION, 45_000 * PRECISION, 82.08);
     });
 
-    it('summarizes borrowed debt as complete when signed balance is negative and no ledger entries exist', () => {
+    it('summarizes borrowed debt from the already repaid balance when no ledger entries exist', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.BORROW,
             balance: 100 * PRECISION,
@@ -370,7 +383,7 @@ describe('debt settlement statistics', () => {
             targetAmount: 45_000 * PRECISION
         });
 
-        expectDebtProgressSummary(summary, 0, 45_000 * PRECISION, 45_000 * PRECISION, 100);
+        expectDebtProgressSummary(summary, 44_900 * PRECISION, 100 * PRECISION, 45_000 * PRECISION, 0.22);
     });
 
     it('creates borrowed debt accounts with a negative outstanding balance', async () => {
@@ -462,6 +475,27 @@ describe('debt settlement statistics', () => {
         expect(progress.paidAmount).toBe(2_000 * PRECISION);
         expect(progress.totalAmount).toBe(15_109 * PRECISION);
         expect(progress.percentage).toBe(13.24);
+    });
+
+    it('returns canonical borrowed progress when the opening adjustment is already covered', () => {
+        const { debtAccount, row } = createBorrowedDebtCoveredOpeningScenario();
+        const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
+
+        expect(row).toBeDefined();
+        expect(progress).toBeDefined();
+
+        if (!isDefined(row) || !isDefined(progress)) {
+            return;
+        }
+
+        expect(row.debtOutstandingAmount).toBe(36_934 * PRECISION);
+        expect(row.debtPaidAmount).toBe(8_066 * PRECISION);
+        expect(row.debtTotalAmount).toBe(45_000 * PRECISION);
+        expect(row.debtProgressPercentage).toBe(17.92);
+        expect(progress.outstandingAmount).toBe(36_934 * PRECISION);
+        expect(progress.paidAmount).toBe(8_066 * PRECISION);
+        expect(progress.totalAmount).toBe(45_000 * PRECISION);
+        expect(progress.percentage).toBe(17.92);
     });
 
     it('summarizes fully returned lent debt as complete', async () => {
@@ -668,6 +702,24 @@ const createBorrowedDebtSettlementScenario = async () => {
     return { cashAccount, debtAccount, remainingBorrowedDebt, summary };
 };
 
+const createBorrowedDebtCoveredOpeningScenario = () => {
+    const [category] = testDb.select().from(CategoryEntityTable).all();
+    const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+    const debtAccount = seed.account({
+        title: 'Covered borrowed account',
+        type: AccountTypeEnum.DEBT,
+        debtType: AccountDebtTypeEnum.BORROW,
+        targetBalance: 45_000 * PRECISION
+    });
+
+    createDebtAdjustmentTransaction(debtAccount.id, 4_100 * PRECISION);
+    createDebtRepaymentExpense(cashAccount.id, debtAccount.id, category.id, 3_966 * PRECISION);
+
+    const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
+
+    return { debtAccount, row };
+};
+
 const buildSummaryFromDebtAccount = (debtAccount: Pick<AccountEntityInterface, 'id' | 'targetBalance'>, debtType: AccountDebtTypeEnum) => {
     const adjustmentDebitAmount = getDebtEntryAmount(
         debtAccount.id,
@@ -859,6 +911,25 @@ const createDebtRepaymentExpense = (cashAccountId: number, debtAccountId: number
         kind: TransactionEntryKindEnum.DEBT_SETTLEMENT,
         amount,
         categoryId
+    });
+};
+
+const createDebtAdjustmentTransaction = (debtAccountId: number, amount: number): void => {
+    const transaction = createTransaction({
+        type: TransactionTypeEnum.ADJUSTMENT,
+        title: 'Already covered borrowed amount',
+        externalSource: null,
+        fromAccountId: null,
+        toAccountId: debtAccountId
+    });
+
+    createTransactionEntry({
+        transactionId: transaction.id,
+        accountId: debtAccountId,
+        type: TransactionEntryTypeEnum.DEBIT,
+        kind: TransactionEntryKindEnum.PRIMARY,
+        amount,
+        categoryId: null
     });
 };
 
