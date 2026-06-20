@@ -83,6 +83,18 @@ env:
 
 - openLink: budgie://transactions/9/transfer
 - extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 10000
+- assertVisible:
+    id: 'TransactionInfo.Row.Note'
+- assertVisible:
+    id: 'TransactionInfo.Row.FromAccount'
+- assertVisible:
+    id: 'TransactionInfo.Row.ToAccount'
+- tapOn:
+    id: 'TransactionInfo.EditButton.Label'
+- extendedWaitUntil:
     visible: 'Edit Transfer'
     timeout: 10000
 - assertVisible: 'Note: Auto Transfer'
