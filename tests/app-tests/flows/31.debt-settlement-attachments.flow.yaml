@@ -206,6 +206,8 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.12891'
 - assertVisible:
+      id: 'DebtAccountCardSummary.PaidAmount.E2E_Lent_Debt.2109'
+- assertVisible:
       id: 'DebtAccountCardSummary.TotalAmount.E2E_Lent_Debt.15000'
 
 - runFlow:

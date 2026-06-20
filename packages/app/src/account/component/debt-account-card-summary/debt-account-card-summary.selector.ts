@@ -5,8 +5,8 @@ const normalizeAmount = (value: string) => normalizePart(value);
 export const DebtAccountCardSummarySelector = {
     OutstandingAmount: (title: string, amount: number) =>
         `DebtAccountCardSummary.OutstandingAmount.${normalizePart(title)}.${normalizeAmount(String(amount))}` as const,
-    Percentage: (title: string, percentage: number) =>
-        `DebtAccountCardSummary.Percentage.${normalizePart(title)}.${normalizeAmount(String(percentage))}` as const,
+    PaidAmount: (title: string, amount: number) =>
+        `DebtAccountCardSummary.PaidAmount.${normalizePart(title)}.${normalizeAmount(String(amount))}` as const,
     TotalAmount: (title: string, amount: number) =>
         `DebtAccountCardSummary.TotalAmount.${normalizePart(title)}.${normalizeAmount(String(amount))}` as const
 } as const;

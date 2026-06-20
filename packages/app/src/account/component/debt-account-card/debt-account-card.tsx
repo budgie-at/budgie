@@ -72,7 +72,7 @@ export const DebtAccountCard = (props: Props) => {
             debtType={debtType}
             instrumentSymbol={instrumentSymbol}
             outstandingAmount={summary.outstandingAmount}
-            percentage={summary.percentage}
+            paidAmount={summary.paidAmount}
             title={title}
             totalAmount={summary.totalAmount}
         />

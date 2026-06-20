@@ -15,7 +15,7 @@ interface Props {
     readonly debtType: AccountDebtTypeEnum;
     readonly instrumentSymbol: string;
     readonly outstandingAmount: number;
-    readonly percentage: number;
+    readonly paidAmount: number;
     readonly title: string;
     readonly totalAmount: number;
 }
@@ -24,14 +24,14 @@ const textVariant = cva('flex-1 text-xxs font-semibold text-right border-b borde
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const DebtAccountCardSummary = ({ debtType, instrumentSymbol, outstandingAmount, percentage, title, totalAmount }: Props) => {
+export const DebtAccountCardSummary = ({ debtType, instrumentSymbol, outstandingAmount, paidAmount, title, totalAmount }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatMoney = useFormatDigits(decimalPlaces);
     const amountLeft = formatMoney(outstandingAmount, instrumentSymbol);
-    const compactOutstandingAmountLabel = `${instrumentSymbol}${abbreviateNumber(outstandingAmount, 2)}`;
+    const compactPaidAmountLabel = `${instrumentSymbol}${abbreviateNumber(paidAmount, 2)}`;
     const totalAmountLabel = `${instrumentSymbol}${abbreviateNumber(totalAmount, 2)}`;
     const outstandingAmountSelector = DebtAccountCardSummarySelector.OutstandingAmount(title, outstandingAmount);
-    const percentageSelector = DebtAccountCardSummarySelector.Percentage(title, percentage);
+    const paidAmountSelector = DebtAccountCardSummarySelector.PaidAmount(title, paidAmount);
     const totalAmountSelector = DebtAccountCardSummarySelector.TotalAmount(title, totalAmount);
 
     return (
@@ -41,8 +41,8 @@ export const DebtAccountCardSummary = ({ debtType, instrumentSymbol, outstanding
             </ProtectedText>
 
             <View>
-                <ProtectedText className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })} testID={percentageSelector}>
-                    {compactOutstandingAmountLabel}
+                <ProtectedText className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })} testID={paidAmountSelector}>
+                    {compactPaidAmountLabel}
                 </ProtectedText>
                 <ProtectedText className="text-secondary-foreground text-xxs font-medium text-right" testID={totalAmountSelector}>
                     {totalAmountLabel}

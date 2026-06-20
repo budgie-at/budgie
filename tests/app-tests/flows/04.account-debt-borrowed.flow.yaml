@@ -18,6 +18,13 @@ appId: ${APP_ID}
       visible: 'You owe'
       timeout: 10000
 
+- assertVisible:
+      id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Borrowed_Account.800'
+- assertVisible:
+      id: 'DebtAccountCardSummary.PaidAmount.E2E_Borrowed_Account.0'
+- assertVisible:
+      id: 'DebtAccountCardSummary.TotalAmount.E2E_Borrowed_Account.800'
+
 - runFlow:
       file: subflows/accounts/exercise-debt-account.flow.yaml
       env:
