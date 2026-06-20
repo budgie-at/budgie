@@ -132,14 +132,9 @@ class AccountBalanceDebtProgressSqlBuilder {
             targetAmountSql
         } = input;
         const closedAmountSql = sql<number>`MAX(${initialClosedAmountSql} + ${closedMovementAmountSql}, 0)`;
-        const openedBasisAmountSql = sql<number>`MAX(${initialOutstandingAmountSql} + ${openedPrincipalAmountSql}, 0)`;
-        const effectiveDebtBasisAmountSql = sql<number>`
-            CASE
-                WHEN ${openedBasisAmountSql} > 0 THEN ${openedBasisAmountSql} + ${openedExtraAmountSql}
-                ELSE ${targetAmountSql} + ${openedExtraAmountSql}
-            END
-        `;
-        const totalAmountSql = sql<number>`MAX(${targetAmountSql} + ${openedExtraAmountSql}, ${openedBasisAmountSql} + ${openedExtraAmountSql}, ${closedAmountSql}, 0)`;
+        const baselineAmountSql = sql<number>`MAX(${targetAmountSql}, ${initialOutstandingAmountSql})`;
+        const effectiveDebtBasisAmountSql = sql<number>`MAX(${baselineAmountSql} + ${openedPrincipalAmountSql} + ${openedExtraAmountSql}, 0)`;
+        const totalAmountSql = sql<number>`MAX(${effectiveDebtBasisAmountSql}, ${closedAmountSql}, 0)`;
         const outstandingAmountSql = sql<number>`MAX(${effectiveDebtBasisAmountSql} - ${closedAmountSql}, 0)`;
         const paidAmountSql = sql<number>`MAX(${totalAmountSql} - ${outstandingAmountSql}, 0)`;
         const percentageSql = sql<number>`CASE WHEN ${totalAmountSql} > 0 THEN MIN(ROUND((${paidAmountSql} * 100.0) / ${totalAmountSql}, 2), 100) ELSE 0 END`;

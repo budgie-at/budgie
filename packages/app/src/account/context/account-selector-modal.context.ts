@@ -10,6 +10,7 @@ export interface AccountSelectorModalParams {
     readonly includeAccountTypes?: AccountTypeEnum[];
     readonly emptyStateDescription?: string;
     readonly onlyActive?: boolean;
+    readonly showDebtTotal?: boolean;
 }
 
 export type AccountSelectorResult = number | null;

@@ -76,7 +76,8 @@ export const useDebtSettlementTransactionActions = ({
             includeAccountTypes: [AccountTypeEnum.DEBT],
             excludeAccountId: transactionAccountId ?? 0,
             ...(isDefined(debtType) && { debtType }),
-            emptyStateDescription
+            emptyStateDescription,
+            showDebtTotal: true
         })
             .then(async debtAccountId => {
                 if (isDefined(debtAccountId)) {

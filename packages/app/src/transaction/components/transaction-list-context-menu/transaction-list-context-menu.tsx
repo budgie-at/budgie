@@ -73,7 +73,8 @@ const openTransactionListDebtSettlementAttachment = (
     openAccountSelector({
         includeAccountTypes: [AccountTypeEnum.DEBT],
         excludeAccountId: options.transactionAccountId,
-        emptyStateDescription: options.emptyStateDescription
+        emptyStateDescription: options.emptyStateDescription,
+        showDebtTotal: true
     })
         .then(async debtAccountId => {
             if (isDefined(debtAccountId)) {

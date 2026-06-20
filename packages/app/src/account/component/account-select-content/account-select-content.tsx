@@ -15,12 +15,13 @@ interface Props {
     readonly search: string;
     readonly onSelect: (accountId: number) => void;
     readonly emptyStateDescription?: string;
+    readonly showDebtTotal: boolean;
 }
 
 const keyExtractor = (item: AccountWithInstrumentEntityInterface) => item.id.toString();
 
 export const AccountSelectContent = (props: Props) => {
-    const { data, initialAccountId, search, onSelect, emptyStateDescription } = props;
+    const { data, initialAccountId, search, onSelect, emptyStateDescription, showDebtTotal } = props;
     const { t } = useLingui();
     const { flatListStyle, contentContainerStyle } = useFormsheetListStyles();
 
@@ -34,6 +35,9 @@ export const AccountSelectContent = (props: Props) => {
             icon={item.icon}
             type={item.type}
             id={item.id}
+            debtType={item.debtType}
+            showDebtTotal={showDebtTotal}
+            targetBalance={item.targetBalance}
         />
     );
 

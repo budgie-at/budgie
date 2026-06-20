@@ -1094,6 +1094,7 @@ msgstr "Дата"
 msgid "Day {selectedDay}"
 msgstr "День {selectedDay}"
 
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Debt"
@@ -3067,6 +3068,14 @@ msgstr "Загалом"
 #: src/@generic/component/collapsible-header/collapsible-header.tsx
 msgid "Total Balance"
 msgstr "Загальний баланс"
+
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+msgid "Total borrowed"
+msgstr "Усього позичено"
+
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+msgid "Total lent"
+msgstr "Усього надано в борг"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Touch ID"

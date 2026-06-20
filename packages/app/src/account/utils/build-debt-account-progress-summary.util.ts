@@ -23,12 +23,10 @@ export const buildDebtAccountProgressSummary = ({
     const initialClosedAmount = getInitialClosedAmount(balance, debtType, targetAmount);
     const initialOutstandingAmount = debtType === AccountDebtTypeEnum.BORROW && balance < 0 ? -balance : 0;
     const closedAmount = Math.max(initialClosedAmount + movementClosedAmount, 0);
-    const openedBasisAmount = Math.max(initialOutstandingAmount + openedPrincipalAmount, 0);
     const openedAmount = openedPrincipalAmount + openedExtraAmount;
-    const effectiveDebtBasisAmount = isPositiveNumber(openedBasisAmount)
-        ? openedBasisAmount + openedExtraAmount
-        : targetAmount + openedExtraAmount;
-    const totalAmount = Math.max(targetAmount + openedExtraAmount, openedBasisAmount + openedExtraAmount, closedAmount, 0);
+    const baselineAmount = Math.max(targetAmount, initialOutstandingAmount);
+    const effectiveDebtBasisAmount = Math.max(baselineAmount + openedPrincipalAmount + openedExtraAmount, 0);
+    const totalAmount = Math.max(effectiveDebtBasisAmount, closedAmount, 0);
     const outstandingAmount = Math.max(effectiveDebtBasisAmount - closedAmount, 0);
     const paidAmount = Math.max(totalAmount - outstandingAmount, 0);
     const percentage = isPositiveNumber(totalAmount) ? Math.min(Number(((paidAmount / totalAmount) * 100).toFixed(2)), 100) : 0;

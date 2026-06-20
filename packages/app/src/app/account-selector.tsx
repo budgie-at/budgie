@@ -54,6 +54,7 @@ export default function AccountSelectorModal() {
                 search={search}
                 onSelect={resolveAccountSelector}
                 emptyStateDescription={emptyStateDescription}
+                showDebtTotal={currentParams?.showDebtTotal ?? false}
             />
         </View>
     );

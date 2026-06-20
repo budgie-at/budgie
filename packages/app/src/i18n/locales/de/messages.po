@@ -1094,6 +1094,7 @@ msgstr "Datum"
 msgid "Day {selectedDay}"
 msgstr "Tag {selectedDay}"
 
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Debt"
@@ -3067,6 +3068,14 @@ msgstr "Gesamt"
 #: src/@generic/component/collapsible-header/collapsible-header.tsx
 msgid "Total Balance"
 msgstr "Gesamtsaldo"
+
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+msgid "Total borrowed"
+msgstr "Gesamt geliehen"
+
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+msgid "Total lent"
+msgstr "Gesamt verliehen"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Touch ID"
