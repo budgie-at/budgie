@@ -51,19 +51,13 @@ appId: ${APP_ID}
           id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
       timeout: 5000
 
-- tapOn:
+- longPressOn:
       id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
 - extendedWaitUntil:
-      visible: 'Edit Expense'
-      timeout: 5000
-
-- tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
-- extendedWaitUntil:
       visible:
-          id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+          id: 'TransactionContextMenu.AttachDebtSettlementButton'
 - tapOn:
-      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+      id: 'TransactionContextMenu.AttachDebtSettlementButton'
 - extendedWaitUntil:
       visible:
           id: 'AccountPickerBottomSheet.Input'
@@ -73,8 +67,6 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Lent Expense Debt'
 
 - assertVisible: 'Debt · E2E Lent Expense Debt'
-
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
 
 - extendedWaitUntil:
       visible:

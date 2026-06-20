@@ -432,6 +432,38 @@ describe('debt settlement statistics', () => {
         expect(remainingBorrowedDebt?.total).toBe(13_109 * PRECISION);
     });
 
+    it('returns canonical borrowed progress in home account rows', async () => {
+        const { cashAccount, debtAccount } = await createBorrowedDebtSettlementScenario();
+        const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
+
+        expect(row).toBeDefined();
+
+        if (!isDefined(row)) {
+            return;
+        }
+
+        expect(row.debtOutstandingAmount).toBe(13_109 * PRECISION);
+        expect(row.debtPaidAmount).toBe(2_000 * PRECISION);
+        expect(row.debtTotalAmount).toBe(15_109 * PRECISION);
+        expect(row.debtProgressPercentage).toBe(13.24);
+    });
+
+    it('returns canonical borrowed progress in debt account details', async () => {
+        const { debtAccount } = await createBorrowedDebtSettlementScenario();
+        const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
+
+        expect(progress).toBeDefined();
+
+        if (!isDefined(progress)) {
+            return;
+        }
+
+        expect(progress.outstandingAmount).toBe(13_109 * PRECISION);
+        expect(progress.paidAmount).toBe(2_000 * PRECISION);
+        expect(progress.totalAmount).toBe(15_109 * PRECISION);
+        expect(progress.percentage).toBe(13.24);
+    });
+
     it('summarizes fully returned lent debt as complete', async () => {
         const [category] = testDb.select().from(CategoryEntityTable).all();
         const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
@@ -633,7 +665,7 @@ const createBorrowedDebtSettlementScenario = async () => {
         .get();
     const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.BORROW);
 
-    return { debtAccount, remainingBorrowedDebt, summary };
+    return { cashAccount, debtAccount, remainingBorrowedDebt, summary };
 };
 
 const buildSummaryFromDebtAccount = (debtAccount: Pick<AccountEntityInterface, 'id' | 'targetBalance'>, debtType: AccountDebtTypeEnum) => {
