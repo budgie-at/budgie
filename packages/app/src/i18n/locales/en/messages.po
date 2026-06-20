@@ -420,6 +420,7 @@ msgstr "Are you sure you want to delete this rule?"
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Attach debt"
 msgstr "Attach debt"
@@ -782,6 +783,7 @@ msgstr "Could not activate account."
 msgid "Could not archive account"
 msgstr "Could not archive account"
 
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
 #: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Could not attach debt"
 msgstr "Could not attach debt"
@@ -979,6 +981,7 @@ msgstr "Count this account in your net worth calculation"
 msgid "Create a backup of all your data"
 msgstr "Create a backup of all your data"
 
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
 #: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Create a debt account first."
 msgstr "Create a debt account first."

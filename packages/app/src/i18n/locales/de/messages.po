@@ -419,6 +419,7 @@ msgstr "Möchten Sie diese Regel wirklich löschen?"
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Attach debt"
 msgstr "Schuld verknüpfen"
@@ -781,6 +782,7 @@ msgstr "Konto konnte nicht aktiviert werden."
 msgid "Could not archive account"
 msgstr "Konto konnte nicht archiviert werden"
 
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
 #: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Could not attach debt"
 msgstr "Schuld konnte nicht verknüpft werden"
@@ -978,6 +980,7 @@ msgstr "Dieses Konto in die Berechnung des Nettovermögens einbeziehen"
 msgid "Create a backup of all your data"
 msgstr "Erstellen Sie eine Sicherung aller Ihrer Daten"
 
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
 #: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Create a debt account first."
 msgstr "Erstellen Sie zuerst ein Schuldenkonto."

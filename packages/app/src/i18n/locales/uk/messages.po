@@ -419,6 +419,7 @@ msgstr "Ви впевнені, що хочете видалити це прав�
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Attach debt"
 msgstr "Прикріпити борг"
@@ -781,6 +782,7 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account"
 msgstr "Не вдалося архівувати рахунок"
 
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
 #: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Could not attach debt"
 msgstr "Не вдалося прив’язати борг"
@@ -978,6 +980,7 @@ msgstr "Враховувати цей рахунок у розрахунку ч�
 msgid "Create a backup of all your data"
 msgstr "Створити резервну копію всіх ваших даних"
 
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
 #: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
 msgid "Create a debt account first."
 msgstr "Спочатку створіть борговий рахунок."
