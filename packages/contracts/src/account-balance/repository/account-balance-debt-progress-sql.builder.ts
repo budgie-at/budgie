@@ -78,6 +78,7 @@ class AccountBalanceDebtProgressSqlBuilder {
         return {
             initialClosedAmountSql,
             initialOutstandingAmountSql,
+            initialBalanceAmountSql: adjustmentBalanceValueSql,
             closedMovementAmountSql,
             openedExtraAmountSql,
             openedPrincipalAmountSql,
@@ -123,29 +124,67 @@ class AccountBalanceDebtProgressSqlBuilder {
     }
 
     private getDebtProgressComputedSql(input: AccountBalanceDebtProgressComputedSqlInputInterface) {
-        const {
-            initialClosedAmountSql,
-            initialOutstandingAmountSql,
-            closedMovementAmountSql,
-            openedExtraAmountSql,
-            openedPrincipalAmountSql,
-            targetAmountSql
-        } = input;
-        const closedAmountSql = sql<number>`MAX(${initialClosedAmountSql} + ${closedMovementAmountSql}, 0)`;
-        const baselineAmountSql = sql<number>`MAX(${targetAmountSql}, ${initialOutstandingAmountSql})`;
-        const effectiveDebtBasisAmountSql = sql<number>`MAX(${baselineAmountSql} + ${openedPrincipalAmountSql} + ${openedExtraAmountSql}, 0)`;
-        const totalAmountSql = sql<number>`MAX(${effectiveDebtBasisAmountSql}, ${closedAmountSql}, 0)`;
-        const outstandingAmountSql = sql<number>`MAX(${effectiveDebtBasisAmountSql} - ${closedAmountSql}, 0)`;
+        const { closedAmountSql, openedAmountSql, outstandingAmountSql, totalAmountSql } = this.getDebtProgressAmountSql(input);
         const paidAmountSql = sql<number>`MAX(${totalAmountSql} - ${outstandingAmountSql}, 0)`;
         const percentageSql = sql<number>`CASE WHEN ${totalAmountSql} > 0 THEN MIN(ROUND((${paidAmountSql} * 100.0) / ${totalAmountSql}, 2), 100) ELSE 0 END`;
 
         return {
             closedAmount: closedAmountSql.mapWith(Number),
-            openedAmount: sql<number>`${openedPrincipalAmountSql} + ${openedExtraAmountSql}`.mapWith(Number),
+            openedAmount: openedAmountSql.mapWith(Number),
             outstandingAmount: outstandingAmountSql.mapWith(Number),
             paidAmount: paidAmountSql.mapWith(Number),
             percentage: percentageSql.mapWith(Number),
             totalAmount: totalAmountSql.mapWith(Number)
+        };
+    }
+
+    private getDebtProgressAmountSql(input: AccountBalanceDebtProgressComputedSqlInputInterface) {
+        const {
+            initialClosedAmountSql,
+            initialOutstandingAmountSql,
+            initialBalanceAmountSql,
+            closedMovementAmountSql,
+            openedExtraAmountSql,
+            openedPrincipalAmountSql,
+            targetAmountSql
+        } = input;
+        const movementAmountSql = sql<number>`${closedMovementAmountSql} + ${openedExtraAmountSql} + ${openedPrincipalAmountSql}`;
+        const closedAmountSql = sql<number>`MAX(${initialClosedAmountSql} + ${closedMovementAmountSql}, 0)`;
+        const snapshotTotalAmountSql = sql<number>`MAX(${targetAmountSql}, ${initialOutstandingAmountSql}, ${initialClosedAmountSql}, 0)`;
+        const noMovementOutstandingAmountSql = sql<number>`CASE WHEN ${initialOutstandingAmountSql} > 0 THEN ${initialOutstandingAmountSql} ELSE MAX(${targetAmountSql} - ${initialClosedAmountSql}, 0) END`;
+        const movementDebtBasisAmountSql = sql<number>`
+            CASE
+                WHEN ${initialBalanceAmountSql} != 0
+                THEN MAX(${targetAmountSql}, ${initialOutstandingAmountSql}) + ${openedPrincipalAmountSql} + ${openedExtraAmountSql}
+                ELSE MAX(${targetAmountSql}, ${openedPrincipalAmountSql}) + ${openedExtraAmountSql}
+            END
+        `;
+        const syntheticPrincipalClosedAmountSql = sql<number>`
+            CASE
+                WHEN ${initialBalanceAmountSql} = 0 AND ${openedPrincipalAmountSql} > 0
+                THEN MAX(${targetAmountSql} - ${openedPrincipalAmountSql}, 0)
+                ELSE 0
+            END
+        `;
+        const settlementBasisAmountSql = sql<number>`MAX(${initialClosedAmountSql} + ${syntheticPrincipalClosedAmountSql} + ${closedMovementAmountSql}, 0)`;
+        const totalAmountSql = sql<number>`
+            CASE
+                WHEN ${movementAmountSql} > 0 THEN MAX(${movementDebtBasisAmountSql}, ${closedAmountSql}, 0)
+                ELSE ${snapshotTotalAmountSql}
+            END
+        `;
+        const outstandingAmountSql = sql<number>`
+            CASE
+                WHEN ${movementAmountSql} > 0 THEN MAX(${movementDebtBasisAmountSql} - ${settlementBasisAmountSql}, 0)
+                ELSE ${noMovementOutstandingAmountSql}
+            END
+        `;
+
+        return {
+            closedAmountSql,
+            openedAmountSql: sql<number>`${openedPrincipalAmountSql} + ${openedExtraAmountSql}`,
+            outstandingAmountSql,
+            totalAmountSql
         };
     }
 }

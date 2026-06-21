@@ -318,6 +318,13 @@ describe('debt settlement statistics', () => {
             return;
         }
 
+        expect(row.debtOutstandingAmount).toBe(13_000 * PRECISION);
+        expect(row.debtPaidAmount).toBe(0);
+        expect(row.debtTotalAmount).toBe(13_000 * PRECISION);
+        expect(row.debtProgressPercentage).toBe(0);
+        expect(row.convertedDebtOutstandingAmount).toBe(13_000 * PRECISION);
+        expect(row.convertedDebtPaidAmount).toBe(0);
+        expect(row.convertedDebtTotalAmount).toBe(13_000 * PRECISION);
         const summary = buildDebtAccountProgressSummary({
             debtType: row.account.debtType,
             balance: convertFromMicroUnits(row.convertedBalance),
