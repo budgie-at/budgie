@@ -10,6 +10,7 @@ export const resetSingletons = (): void => {
         isAcceptingWork: true,
         priorityGeneration: 0,
         queue: Promise.resolve(),
+        queuedUserWorkListeners: new Set(),
         queuedCount: 0,
         queuedUserCount: 0,
         userQueue: Promise.resolve()

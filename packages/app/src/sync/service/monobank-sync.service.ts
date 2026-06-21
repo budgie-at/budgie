@@ -378,12 +378,27 @@ class AppMonobankSyncService {
         const result = await this.executeSyncBatch(pendingSync);
         await this.updateSyncProgress(pendingSync, result);
         this.recordProcessedSyncBatch(pendingSync, result, startedAt);
-        if (this.shouldYieldToQueuedWork(pendingSync, startedAt)) {
+        const shouldYield =
+            this.shouldYieldToQueuedWork(pendingSync, startedAt) || (await this.shouldYieldAfterRateLimit(pendingSync, startedAt));
+        if (shouldYield) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
-        await microPause(MONOBANK_RATE_LIMIT_MS);
 
         return await this.executeSyncLoop();
+    }
+
+    private async shouldYieldAfterRateLimit(pendingSync: BankSyncEntityInterface, startedAt: number): Promise<boolean> {
+        if (!(await syncWorkloadService.waitForQueuedUserWork(MONOBANK_RATE_LIMIT_MS))) {
+            return false;
+        }
+
+        logger.log('processPendingSyncs:yield-rate-limit-user-work', {
+            durationMs: Date.now() - startedAt,
+            mode: pendingSync.mode,
+            syncId: pendingSync.id
+        });
+
+        return true;
     }
 
     private recordProcessedSyncBatch(pendingSync: BankSyncEntityInterface, result: BankSyncBatchResultInterface, startedAt: number): void {
