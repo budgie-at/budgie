@@ -1,8 +1,14 @@
 appId: ${APP_ID}
 ---
 
-- runFlow:
-    file: navigation/navigate-to-settings.flow.yaml
+- openLink: 'budgie://settings?anchor=organization'
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.Container'
+    timeout: 15000
+
+- waitForAnimationToEnd
 
 - runFlow:
     file: navigation/open-settings-card.flow.yaml
