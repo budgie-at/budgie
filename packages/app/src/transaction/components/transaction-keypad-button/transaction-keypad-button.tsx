@@ -129,8 +129,9 @@ export const TransactionKeypadButton = (props: Props) => {
             onPress={onPress}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
+            testID={testID}
         >
-            <Animated.View className="items-center justify-center" style={animatedStyle} testID={testID}>
+            <Animated.View className="items-center justify-center" style={animatedStyle}>
                 {isDefined(icon) ? (
                     <Icon className={contentClassName} icon={icon} size={ICON_SIZE} />
                 ) : (
