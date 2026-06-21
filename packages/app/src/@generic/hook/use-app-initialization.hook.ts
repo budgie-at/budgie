@@ -18,7 +18,15 @@ const STARTUP_SERVICE_DELAY_MS = 1_000;
 
 const syncAppData = async (): Promise<void> => {
     await exchangeRatesSyncService.sync().catch(emptyFn);
+    if (syncWorkloadService.hasQueuedUserWork()) {
+        return;
+    }
+
     await monobankSyncService.sync().catch(emptyFn);
+    if (syncWorkloadService.hasQueuedUserWork()) {
+        return;
+    }
+
     await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
 };
 

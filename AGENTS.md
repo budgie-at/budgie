@@ -472,7 +472,15 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 ### Build-time gate
 
-`EXPO_PUBLIC_LOGGING_DISABLE=true` (e2e profile in `eas.json`) suppresses all output. Build-time only — flipping requires a rebuild.
+`EXPO_PUBLIC_LOGGING_DISABLE=true` (e2e profile in `eas.json`) suppresses release-bundle output. App logging stays enabled for Metro dev bundles (`__DEV__`) and for native configs where `APP_VARIANT=development` or profiling is enabled. Build-time config changes still require a rebuild for non-dev bundles.
+
+When starting Metro to watch service logs, always include the development app variant:
+
+```bash
+APP_VARIANT=development EXPO_PUBLIC_AI_DISABLE=true yarn workspace @budgie-at/app start --port <port>
+```
+
+Also verify the foreground bundle is the dev app (`com.vitalyiegorov.budgie.dev` on iOS), not the E2E app. The E2E build (`com.vitalyiegorov.budgie.e2e`) has `EXPO_PUBLIC_LOGGING_DISABLE=true` baked in, so Metro cannot re-enable service logs for that installed binary. If the wrong app is foreground, launch/reinstall the dev build or rebuild the target variant with logging enabled before debugging logs.
 
 ### `bank-sync` exception
 

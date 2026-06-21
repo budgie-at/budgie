@@ -74,7 +74,15 @@ const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVa
 
 const syncForegroundData = async (): Promise<void> => {
     await exchangeRatesSyncService.sync().catch(emptyFn);
+    if (syncWorkloadService.hasQueuedUserWork()) {
+        return;
+    }
+
     await monobankSyncService.sync().catch(emptyFn);
+    if (syncWorkloadService.hasQueuedUserWork()) {
+        return;
+    }
+
     await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
     void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
 };

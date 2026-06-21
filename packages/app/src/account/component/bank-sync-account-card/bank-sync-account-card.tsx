@@ -1,4 +1,5 @@
-import { AccountWithBankSyncEntityInterface, BankSyncEntityInterface, BankSyncStatusEnum } from '@budgie/contracts';
+import { AccountWithBankSyncEntityInterface, BankSyncEntityInterface, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { View } from 'react-native';
@@ -9,6 +10,8 @@ import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { quickImportConfigMap } from '../../../sync/constant/quick-import-config-map.constant';
 import { useQuickImport } from '../../../sync/hook/use-quick-import.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
+
+const logger = getLogger('BankSyncAccountCard');
 
 interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' | 'icon'> {
     readonly balance: number;
@@ -34,14 +37,34 @@ export const BankSyncAccountCard = (props: Props) => {
 
     const shouldShow = isDefined(bankSync);
     const quickImportConfig = isDefined(bankSync) ? (quickImportConfigMap[bankSync.provider] ?? null) : null;
+    const provider = isDefined(bankSync) ? bankSync.provider : null;
+    const isPrivatbankCard = provider === ExternalSourceEnum.PRIVATBANK;
+    const hasQuickImportConfig = isDefined(quickImportConfig);
     const { handleQuickImport } = useQuickImport(quickImportConfig);
 
     const handleLongPress = () => {
+        if (isPrivatbankCard) {
+            logger.log('long-press', { accountId: id, title, provider, hasQuickImportConfig });
+        }
+
+        if (!hasQuickImportConfig) {
+            if (isPrivatbankCard) {
+                logger.log('long-press:skip-no-config', { accountId: id, title, provider });
+            }
+
+            return;
+        }
+
         hapticImpact(ImpactFeedbackStyle.Medium);
         handleQuickImport();
+
+        if (isPrivatbankCard) {
+            logger.log('quick-import:dispatched', { accountId: id, title, provider });
+        }
     };
 
-    const longPressHandler = isDefined(quickImportConfig) ? handleLongPress : emptyFn;
+    const shouldHandleLongPress = hasQuickImportConfig || isPrivatbankCard;
+    const longPressHandler = shouldHandleLongPress ? handleLongPress : emptyFn;
     const statusClassName = shouldShow
         ? syncStatusVariants({ status: bankSync.status })
         : syncStatusVariants({ status: BankSyncStatusEnum.IDLE });

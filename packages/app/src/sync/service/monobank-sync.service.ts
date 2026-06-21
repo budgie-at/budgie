@@ -24,6 +24,7 @@ import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.u
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
+import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
 import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
@@ -43,6 +44,7 @@ class AppMonobankSyncService {
     private readonly provider = ExternalSourceEnum.MONOBANK;
     private isRunning = false;
     private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
+    private readonly processedForwardSyncIds = new Set<number>();
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
@@ -53,12 +55,14 @@ class AppMonobankSyncService {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
         this.isRunning = true;
+        this.processedForwardSyncIds.clear();
         try {
             await this.loadMccCategories();
 
             return await this.executeSyncLoop();
         } finally {
             logger.log('sync:done', { durationMs: Date.now() - startedAt });
+            this.processedForwardSyncIds.clear();
             this.isRunning = false;
         }
     }
@@ -171,10 +175,19 @@ class AppMonobankSyncService {
         if (!isNotEmptyArray(forwardSyncs)) {
             return null;
         }
+        const forwardSync = forwardSyncs.find(sync => !this.processedForwardSyncIds.has(sync.id));
+        if (!isDefined(forwardSync)) {
+            logger.log('findNextForwardSync:all-processed', {
+                candidateIds: forwardSyncs.map(sync => sync.id).join(','),
+                processedIds: [...this.processedForwardSyncIds].join(',')
+            });
 
-        await bankSyncRepository.setStatus(forwardSyncs[0].id, BankSyncStatusEnum.SYNCING);
+            return null;
+        }
 
-        return forwardSyncs[0];
+        await bankSyncRepository.setStatus(forwardSync.id, BankSyncStatusEnum.SYNCING);
+
+        return forwardSync;
     }
 
     @Log(
@@ -364,6 +377,19 @@ class AppMonobankSyncService {
 
         const result = await this.executeSyncBatch(pendingSync);
         await this.updateSyncProgress(pendingSync, result);
+        this.recordProcessedSyncBatch(pendingSync, result, startedAt);
+        if (this.shouldYieldToQueuedWork(pendingSync, startedAt)) {
+            return BackgroundTask.BackgroundTaskResult.Success;
+        }
+        await microPause(MONOBANK_RATE_LIMIT_MS);
+
+        return await this.executeSyncLoop();
+    }
+
+    private recordProcessedSyncBatch(pendingSync: BankSyncEntityInterface, result: BankSyncBatchResultInterface, startedAt: number): void {
+        if (pendingSync.mode === BankSyncModeEnum.FORWARD) {
+            this.processedForwardSyncIds.add(pendingSync.id);
+        }
         logger.log('processPendingSyncs:batch', {
             completed: result.completed,
             durationMs: Date.now() - startedAt,
@@ -371,9 +397,20 @@ class AppMonobankSyncService {
             syncId: pendingSync.id,
             transactionCount: result.transactions.length
         });
-        await microPause(MONOBANK_RATE_LIMIT_MS);
+    }
 
-        return await this.executeSyncLoop();
+    private shouldYieldToQueuedWork(pendingSync: BankSyncEntityInterface, startedAt: number): boolean {
+        if (!syncWorkloadService.hasQueuedWork()) {
+            return false;
+        }
+
+        logger.log('processPendingSyncs:yield-queued-work', {
+            durationMs: Date.now() - startedAt,
+            mode: pendingSync.mode,
+            syncId: pendingSync.id
+        });
+
+        return true;
     }
 
     // eslint-disable-next-line max-statements -- Sync import path keeps adjacent phase timing logs for live performance debugging
