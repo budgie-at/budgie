@@ -89,7 +89,7 @@ env:
 - waitForAnimationToEnd
 
 - runFlow:
-    file: delete-first-rule.flow.yaml
+    file: delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
