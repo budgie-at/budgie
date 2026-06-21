@@ -23,8 +23,14 @@ env:
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
+      id: 'TransactionInfo.Page'
+    timeout: 10000
+- tapOn:
+    id: 'TransactionInfo.EditButton.Label'
+- extendedWaitUntil:
+    visible:
       id: 'TransactionForm.CategorySelector'
-    timeout: 5000
+    timeout: 10000
 
 - tapOn:
     id: 'TransactionForm.CategorySelector'
