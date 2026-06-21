@@ -17,15 +17,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}.Label'
     retryTapIfNoChange: true
-- runFlow:
-    when:
-      visible:
-        id: 'CategoryPickerBottomSheet.Input'
-    commands:
-      - waitForAnimationToEnd
-      - tapOn:
-          id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}.Label'
-          retryTapIfNoChange: true
+- waitForAnimationToEnd
 - extendedWaitUntil:
     notVisible:
       id: 'CategoryPickerBottomSheet.Input'
