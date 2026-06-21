@@ -86,10 +86,15 @@ appId: ${APP_ID}
     visible: 'Save to Files'
     timeout: 15000
 
-- tapOn:
-    id: 'PopoverDismissRegion'
-
-- waitForAnimationToEnd
+- retry:
+    maxRetries: 2
+    commands:
+      - swipe:
+          from: 'Save to Files'
+          direction: DOWN
+      - extendedWaitUntil:
+          notVisible: 'Save to Files'
+          timeout: 3000
 
 - extendedWaitUntil:
     visible:
