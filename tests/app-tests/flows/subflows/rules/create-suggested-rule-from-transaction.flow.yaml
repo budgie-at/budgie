@@ -65,9 +65,13 @@ env:
     visible:
       id: 'RulesPage.RuleCard.0'
     timeout: 10000
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.RuleCardActions.0'
+    timeout: 10000
 
 - tapOn:
-    id: 'RulesPage.RuleCard.0'
+    id: 'RulesPage.RuleCardActions.0'
 - extendedWaitUntil:
     visible: 'Edit Rule'
 - assertVisible:
