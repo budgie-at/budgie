@@ -5,15 +5,11 @@ import { transferConsolidationService } from '@app/sync/service/transfer-consoli
 export const resetSingletons = (): void => {
     Object.assign(monobankSyncService, { isRunning: false, mccCategoryLookupMap: new Map() });
     Object.assign(syncWorkloadService, {
-        activeWork: null,
-        generation: 0,
+        backgroundQueue: [],
         isAcceptingWork: true,
-        priorityGeneration: 0,
-        queue: Promise.resolve(),
+        isRunning: false,
         queuedUserWorkListeners: new Set(),
-        queuedCount: 0,
-        queuedUserCount: 0,
-        userQueue: Promise.resolve()
+        userQueue: []
     });
     Object.assign(transferConsolidationService, { isRunning: false });
 };

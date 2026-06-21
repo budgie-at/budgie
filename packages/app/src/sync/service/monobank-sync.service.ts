@@ -402,7 +402,7 @@ class AppMonobankSyncService {
     }
 
     private recordProcessedSyncBatch(pendingSync: BankSyncEntityInterface, result: BankSyncBatchResultInterface, startedAt: number): void {
-        if (pendingSync.mode === BankSyncModeEnum.FORWARD) {
+        if (pendingSync.mode === BankSyncModeEnum.FORWARD && result.completed) {
             this.processedForwardSyncIds.add(pendingSync.id);
         }
         logger.log('processPendingSyncs:batch', {
