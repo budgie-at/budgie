@@ -12,10 +12,13 @@ appId: ${APP_ID}
       visible:
           id: 'TabBar.Transactions'
       timeout: 15000
-- tapOn:
-      id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionsPage.Container'
-      timeout: 15000
+- retry:
+      maxRetries: 3
+      commands:
+          - tapOn:
+                id: 'TabBar.Transactions'
+          - waitForAnimationToEnd
+          - extendedWaitUntil:
+                visible:
+                    id: 'TransactionsPage.Container'
+                timeout: 5000

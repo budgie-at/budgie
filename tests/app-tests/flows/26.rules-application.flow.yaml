@@ -40,9 +40,8 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -97,9 +96,8 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -174,9 +172,8 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCardActions.0'
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -229,9 +226,8 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - assertVisible:
     id: 'TransactionCard.Label.Spotify_Premium'
@@ -247,9 +243,8 @@ env:
 - runFlow:
     file: subflows/rules/submit-rule-apply-existing.flow.yaml
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - assertVisible:
     id: 'TransactionCard.Category.Rules_Test_Category'
