@@ -18,8 +18,6 @@ import { CryptoCurrencyGroupAccounts } from '../crypto-currency-group-accounts/c
 import { CryptoCurrencyGroupMarketLink } from '../crypto-currency-group-market-link/crypto-currency-group-market-link';
 import { CryptoCurrencyGroupToggleRow } from '../crypto-currency-group-toggle-row/crypto-currency-group-toggle-row';
 
-import { CryptoCurrencyGroupCardSelector } from './crypto-currency-group-card.selector';
-
 interface Props {
     readonly group: CryptoCurrencyGroupInterface;
     readonly balance: number;
@@ -43,12 +41,7 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
 
     return (
         <View className="mb-3 gap-y-3">
-            <Card
-                className="border-warning-corner bg-secondary-background"
-                size="md"
-                onPress={navigateToMarket}
-                testID={CryptoCurrencyGroupCardSelector.Market(group.instrument.code)}
-            >
+            <Card className="border-warning-corner bg-secondary-background" size="md" onPress={navigateToMarket}>
                 <CryptoCurrencyGroupMarketLink
                     instrumentCode={group.instrument.code}
                     instrumentName={group.instrument.name}
@@ -57,12 +50,7 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
                 />
             </Card>
 
-            <Card
-                className="border-warning-corner bg-secondary-background"
-                size="sm"
-                onPress={toggleOpen}
-                testID={CryptoCurrencyGroupCardSelector.Toggle(group.instrument.code)}
-            >
+            <Card className="border-warning-corner bg-secondary-background" size="sm" onPress={toggleOpen}>
                 <CryptoCurrencyGroupToggleRow
                     accountsCount={group.accounts.length}
                     defaultInstrumentSymbol={defaultInstrument.symbol}

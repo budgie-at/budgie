@@ -27,7 +27,11 @@ export const CryptoCurrencyGroupToggleRow = ({ accountsCount, defaultInstrumentS
     });
 
     return (
-        <View className="min-h-10 flex-row items-center justify-between gap-x-md">
+        <View
+            className="min-h-10 flex-row items-center justify-between gap-x-md"
+            collapsable={false}
+            testID={CryptoCurrencyGroupCardSelector.Toggle(instrumentCode)}
+        >
             <View className="min-h-10 flex-row items-center gap-x-xs pr-lg">
                 <Text className="text-secondary-foreground text-xs" testID={CryptoCurrencyGroupCardSelector.AccountCount(instrumentCode)}>
                     {accountsCountLabel}
