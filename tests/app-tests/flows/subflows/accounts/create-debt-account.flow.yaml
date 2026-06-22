@@ -50,21 +50,21 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
     element:
-      id: 'AccountForm.TargetBalanceInput'
+      id: 'AccountForm.DebtType.${DEBT_TYPE}'
     direction: DOWN
+- tapOn:
+    id: 'AccountForm.DebtType.${DEBT_TYPE}'
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.TargetBalanceInput'
+    direction: UP
 - tapOn:
     id: 'AccountForm.TargetBalanceInput'
 - eraseText: 100
 - inputText: ${TARGET_BALANCE}
 - tapOn:
-    text: 'TARGET BALANCE'
-
-- scrollUntilVisible:
-    element:
-      id: 'AccountForm.DebtType.${DEBT_TYPE}'
-    direction: DOWN
-- tapOn:
-    id: 'AccountForm.DebtType.${DEBT_TYPE}'
+    text: 'Debt Account'
 - scrollUntilVisible:
     element:
       id: 'AccountForm.SubmitButton'
