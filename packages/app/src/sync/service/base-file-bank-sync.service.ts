@@ -51,12 +51,11 @@ export abstract class BaseFileBankSyncService {
 
     @Log(
         (uri, selectedAccountIds) => `enter uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')}`,
-        (result, uri, selectedAccountIds) =>
-            `done uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')} accountCount=${result.accountCount} parsedTransactionCount=${result.parsedTransactionCount} newTransactionCount=${result.newTransactionCount} existingTransactionCount=${result.existingTransactionCount}`,
+        (_result, uri, selectedAccountIds) => `done uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')}`,
         (error, uri, selectedAccountIds) =>
             `throw uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')} error=${getErrorMessage(error)}`
     )
-    async executeImportForSelectedAccounts(uri: string, selectedAccountIds: string[]): Promise<FileBankSyncImportResultInterface> {
+    async executeImportForSelectedAccounts(uri: string, selectedAccountIds: string[]): Promise<void> {
         return this.runQueuedImport(() => this.executeImportForSelectedAccountsInner(uri, selectedAccountIds));
     }
 
@@ -207,18 +206,15 @@ export abstract class BaseFileBankSyncService {
         return this.executeImport(client, enabledBankAccounts);
     }
 
-    private async executeImportForSelectedAccountsInner(
-        uri: string,
-        selectedAccountIds: string[]
-    ): Promise<FileBankSyncImportResultInterface> {
+    private async executeImportForSelectedAccountsInner(uri: string, selectedAccountIds: string[]): Promise<void> {
         const { client, bankAccounts } = await this.parseFile(uri);
         const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
 
         if (!isNotEmptyArray(selectedBankAccounts)) {
-            return this.buildEmptyImportResult(0);
+            return;
         }
 
-        return this.executeImport(client, selectedBankAccounts);
+        await this.executeImport(client, selectedBankAccounts);
     }
 
     private async runQueuedImport<T>(handler: () => Promise<T>): Promise<T> {

@@ -114,21 +114,20 @@ describe('privatbank/import-dedupe', () => {
 
         seedPrivatbankParsedDateTransaction(accountId);
 
-        const result = await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
+        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
         const transactions = fetchPrivatbankTransactions();
 
-        expect(result).toEqual({ accountCount: 1, parsedTransactionCount: 1, newTransactionCount: 0, existingTransactionCount: 1 });
         expect(transactions).toHaveLength(1);
         expect(transactions[0]).toEqual(expect.objectContaining({ externalId: importedTransaction?.id }));
     });
 
-    it('returns an empty result when the selected card is missing from the file', async () => {
+    it('skips import when the selected card is missing from the file', async () => {
         const client = new StubPrivatbankFileClient();
         const syncService = new StubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, client);
 
-        const result = await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, ['4731 **** **** 0000']);
+        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, ['4731 **** **** 0000']);
 
-        expect(result).toEqual({ accountCount: 0, parsedTransactionCount: 0, newTransactionCount: 0, existingTransactionCount: 0 });
+        expect(fetchPrivatbankTransactions()).toHaveLength(0);
     });
 });

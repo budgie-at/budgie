@@ -1,4 +1,4 @@
-import { AccountWithBankSyncEntityInterface, BankSyncEntityInterface, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { AccountWithBankSyncEntityInterface, BankSyncEntityInterface, BankSyncStatusEnum } from '@budgie/contracts';
 import { getLogger } from '@budgie/logger';
 import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
@@ -38,41 +38,24 @@ export const BankSyncAccountCard = (props: Props) => {
     const shouldShow = isDefined(bankSync);
     const quickImportConfig = isDefined(bankSync) ? (quickImportConfigMap[bankSync.provider] ?? null) : null;
     const provider = isDefined(bankSync) ? bankSync.provider : null;
-    const isPrivatbankCard = provider === ExternalSourceEnum.PRIVATBANK;
     const hasQuickImportConfig = isDefined(quickImportConfig);
     const { handleQuickImport, isLoading: isQuickImportLoading } = useQuickImport(quickImportConfig, externalId);
 
     const handleLongPress = () => {
-        if (isPrivatbankCard) {
-            logger.log('long-press', { accountId: id, externalId, title, provider, hasQuickImportConfig, isQuickImportLoading });
-        }
-
-        if (!hasQuickImportConfig) {
-            if (isPrivatbankCard) {
-                logger.log('long-press:skip-no-config', { accountId: id, externalId, title, provider });
-            }
-
-            return;
-        }
+        logger.log('quick-import:long-press', { accountId: id, externalId, title, provider, isQuickImportLoading });
 
         if (isQuickImportLoading) {
-            if (isPrivatbankCard) {
-                logger.log('long-press:skip-loading', { accountId: id, externalId, title, provider });
-            }
+            logger.log('quick-import:skip-loading', { accountId: id, externalId, title, provider });
 
             return;
         }
 
         hapticImpact(ImpactFeedbackStyle.Medium);
         handleQuickImport();
-
-        if (isPrivatbankCard) {
-            logger.log('quick-import:dispatched', { accountId: id, externalId, title, provider });
-        }
+        logger.log('quick-import:dispatched', { accountId: id, externalId, title, provider });
     };
 
-    const shouldHandleLongPress = hasQuickImportConfig || isPrivatbankCard;
-    const longPressHandler = shouldHandleLongPress ? handleLongPress : emptyFn;
+    const longPressHandler = hasQuickImportConfig ? handleLongPress : emptyFn;
     const statusClassName = shouldShow
         ? syncStatusVariants({ status: bankSync.status })
         : syncStatusVariants({ status: BankSyncStatusEnum.IDLE });

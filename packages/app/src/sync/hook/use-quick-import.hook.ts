@@ -14,16 +14,36 @@ const logger = getLogger('useQuickImport');
 
 interface QuickImportResult {
     readonly isLoading: boolean;
-    readonly error: string | null;
     readonly handleQuickImport: () => void;
-    readonly clearError: () => void;
 }
 
 export const useQuickImport = (config: QuickImportConfigInterface | null, triggerAccountExternalId: string | null): QuickImportResult => {
     const { t } = useLingui();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+
+    const showImportDoneToast = (importResult: FileBankSyncImportResultInterface) => {
+        const hasAccounts = isPositiveNumber(importResult.accountCount);
+        const hasNewTransactions = isPositiveNumber(importResult.newTransactionCount);
+
+        if (!hasAccounts) {
+            Toast.show({
+                type: 'success',
+                text1: t`No matching accounts`,
+                text2: t`No enabled accounts were found in this file`
+            });
+
+            return;
+        }
+
+        const title = hasNewTransactions ? t`Transactions imported` : t`No new transactions`;
+        const { newTransactionCount } = importResult;
+        const { existingTransactionCount } = importResult;
+        const { parsedTransactionCount } = importResult;
+        const message = t`${newTransactionCount} new, ${existingTransactionCount} already imported, ${parsedTransactionCount} checked`;
+
+        Toast.show({ type: 'success', text1: title, text2: message });
+    };
 
     const handleQuickImport = () => {
         if (!isDefined(config)) {
@@ -38,32 +58,8 @@ export const useQuickImport = (config: QuickImportConfigInterface | null, trigge
             return;
         }
 
-        const showImportDoneToast = (importResult: FileBankSyncImportResultInterface) => {
-            const hasAccounts = isPositiveNumber(importResult.accountCount);
-            const hasNewTransactions = isPositiveNumber(importResult.newTransactionCount);
-
-            if (!hasAccounts) {
-                Toast.show({
-                    type: 'success',
-                    text1: t`No matching accounts`,
-                    text2: t`No enabled accounts were found in this file`
-                });
-
-                return;
-            }
-
-            const title = hasNewTransactions ? t`Transactions imported` : t`No new transactions`;
-            const { newTransactionCount } = importResult;
-            const { existingTransactionCount } = importResult;
-            const { parsedTransactionCount } = importResult;
-            const message = t`${newTransactionCount} new, ${existingTransactionCount} already imported, ${parsedTransactionCount} checked`;
-
-            Toast.show({ type: 'success', text1: title, text2: message });
-        };
-
         const execute = async (): Promise<void> => {
             setIsLoading(true);
-            setError(null);
             logger.log('picker:open', { source: config.source, mimeType: config.mimeType, triggerAccountExternalId });
 
             const result = await DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true });
@@ -94,7 +90,6 @@ export const useQuickImport = (config: QuickImportConfigInterface | null, trigge
             .catch((importError: unknown) => {
                 const errorMessage = getErrorMessage(importError);
                 logger.error('import:throw', importError);
-                setError(errorMessage);
                 Toast.show({ type: 'error', text1: t`Import failed`, text2: errorMessage });
             })
             .finally(() => {
@@ -102,9 +97,5 @@ export const useQuickImport = (config: QuickImportConfigInterface | null, trigge
             });
     };
 
-    const clearError = () => {
-        setError(null);
-    };
-
-    return { isLoading, error, handleQuickImport, clearError };
+    return { isLoading, handleQuickImport };
 };
