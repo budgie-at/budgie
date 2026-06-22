@@ -7,9 +7,11 @@ class DatabaseRefreshService {
     readonly subscribe = (listener: () => void): (() => void) => {
         this.listeners.add(listener);
 
-        return () => {
+        const unsubscribe = () => {
             this.listeners.delete(listener);
         };
+
+        return unsubscribe;
     };
 
     readonly getSnapshot = (): number => this.version;

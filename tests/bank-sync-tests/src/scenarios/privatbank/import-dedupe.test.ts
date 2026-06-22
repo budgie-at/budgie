@@ -2,20 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 
 import { BankAccountTypeEnum, BankProviderEnum, privatbankTransactionMapper } from '@budgie/bank-sync';
-import {
-    ExternalSourceEnum,
-    TransactionEntityTable,
-    TransactionEntryEntityTable,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 
-import { insertOne } from '../../harness/db/insert-one';
 import { seed, StubFileBankSyncService, testDb } from '../../harness';
 
 import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
 import type { BankAccountInterface, BankTransactionInterface, PrivatbankRowInterface } from '@budgie/bank-sync';
-import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
 
 const PRIVATBANK_CARD_ID = '4731 **** **** 5524';
 const PRIVATBANK_STATEMENT_URI = 'privatbank-statement.xlsx';
@@ -70,34 +62,20 @@ const seedPrivatbankAccount = (): number => {
 
 const seedPrivatbankParsedDateTransaction = (accountId: number): void => {
     const row = buildPrivatbankRow();
-    const transaction = insertOne(TransactionEntityTable, {
-        type: TransactionTypeEnum.EXPENSE,
-        title: row.description,
-        externalId: PRIVATBANK_PARSED_DATE_EXTERNAL_ID,
+
+    const transaction = seed.bankPairExpense(
+        { externalId: PRIVATBANK_PARSED_DATE_EXTERNAL_ID, operatedAt: row.date },
+        {
+            amount: PRIVATBANK_TRANSACTION_AMOUNT,
+            accountId
+        }
+    );
+
+    seed.updateTransaction(transaction.id, {
         externalSource: ExternalSourceEnum.PRIVATBANK,
-        operatedAt: row.date,
-        exchangeRate: 1,
-        fromAccountId: accountId,
-        toAccountId: null,
-        comment: '',
-        updatedBy: null,
-        consolidationParentTransactionId: null,
-        consolidationType: null
-    } satisfies TransactionCreateEntityInterface);
-
-    insertOne(TransactionEntryEntityTable, {
-        transactionId: transaction.id,
-        accountId,
-        type: TransactionEntryTypeEnum.CREDIT,
-        amount: PRIVATBANK_TRANSACTION_AMOUNT,
-        externalId: PRIVATBANK_PARSED_DATE_EXTERNAL_ID,
-        exchangeRate: 1,
-        categoryId: null,
-        mccCategoryId: null,
-        originalTransactionId: null
-    } satisfies TransactionEntryCreateEntityInterface);
+        title: row.description
+    });
 };
-
 const fetchPrivatbankTransactions = () =>
     testDb
         .select()

@@ -21,9 +21,9 @@ class SyncWorkloadService {
     }
 
     @Log(
-        (name, work) => `enter name="${name}" workName="${work.name}"`,
-        (result, name, work) => `done name="${name}" workName="${work.name}" result=${String(result)}`,
-        (error, name, work) => `throw name="${name}" workName="${work.name}" error=${getErrorMessage(error)}`
+        (name, work) => `enter queue=background name="${name}" workName="${work.name}"`,
+        (result, name, work) => `done queue=background name="${name}" workName="${work.name}" result=${String(result)}`,
+        (error, name, work) => `throw queue=background name="${name}" workName="${work.name}" error=${getErrorMessage(error)}`
     )
     async run<T>(name: string, work: () => Promise<T>): Promise<T> {
         this.throwIfBlocked();
@@ -32,9 +32,9 @@ class SyncWorkloadService {
     }
 
     @Log(
-        (name, work) => `enter name="${name}" workName="${work.name}"`,
-        (result, name, work) => `done name="${name}" workName="${work.name}" result=${String(result)}`,
-        (error, name, work) => `throw name="${name}" workName="${work.name}" error=${getErrorMessage(error)}`
+        (name, work) => `enter queue=user name="${name}" workName="${work.name}"`,
+        (result, name, work) => `done queue=user name="${name}" workName="${work.name}" result=${String(result)}`,
+        (error, name, work) => `throw queue=user name="${name}" workName="${work.name}" error=${getErrorMessage(error)}`
     )
     async runUser<T>(name: string, work: () => Promise<T>): Promise<T> {
         this.throwIfBlocked();

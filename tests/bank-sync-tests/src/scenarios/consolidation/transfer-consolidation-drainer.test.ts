@@ -3,9 +3,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { emptyFn } from '@rnw-community/shared';
 
 import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
-import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+
+import { flushScheduledDrain } from '../../harness/scheduler/flush-scheduled-drain';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
@@ -26,24 +27,11 @@ const flushImmediateTimers = async (): Promise<void> => {
     await Promise.resolve();
 };
 
-const flushScheduledDrain = async (): Promise<void> => {
-    await vi.advanceTimersByTimeAsync(drainDelayMs);
-    await vi.runOnlyPendingTimersAsync();
-    await Promise.resolve();
-};
-
 describe('consolidation/transfer-consolidation-drainer', () => {
     beforeEach(() => {
         vi.useFakeTimers();
         vi.stubGlobal('requestIdleCallback', null);
         vi.stubGlobal('cancelIdleCallback', null);
-        Object.assign(syncWorkloadService, {
-            backgroundQueue: [],
-            isAcceptingWork: true,
-            isRunning: false,
-            queuedUserWorkListeners: new Set(),
-            userQueue: []
-        });
         Object.assign(transferConsolidationDrainerService, {
             cancelIdleCallback: null,
             hasPendingRun: false,
@@ -101,7 +89,7 @@ describe('consolidation/transfer-consolidation-drainer', () => {
             .mockResolvedValue(emptyConsolidationResult);
 
         transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT, firstScope);
-        await flushScheduledDrain();
+        await flushScheduledDrain(drainDelayMs);
         expect(transferConsolidationService.consolidate).toHaveBeenCalledTimes(1);
 
         transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, secondScope);
@@ -112,7 +100,7 @@ describe('consolidation/transfer-consolidation-drainer', () => {
         await flushImmediateTimers();
         expect(transferConsolidationService.consolidate).toHaveBeenCalledTimes(1);
 
-        await flushScheduledDrain();
+        await flushScheduledDrain(drainDelayMs);
         expect(transferConsolidationService.consolidate).toHaveBeenCalledTimes(2);
         expect(transferConsolidationService.consolidate).toHaveBeenLastCalledWith(secondScope);
     });

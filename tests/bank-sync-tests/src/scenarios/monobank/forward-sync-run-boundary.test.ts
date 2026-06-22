@@ -1,12 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 
-import { AccountTypeEnum, BankSyncModeEnum, ExternalSourceEnum } from '@budgie/contracts';
-
 import { microPause } from '@app/@generic/utils/micro-pause.util';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
-import { seed } from '../../harness';
+import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { monobankServer } from '../../harness/monobank/monobank-server';
 
 const statementEndpoint = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
@@ -38,15 +36,7 @@ describe('monobank/forward-sync-run-boundary', () => {
             resolveDuplicateRequest = resolve;
         });
 
-        for (const externalId of externalIds) {
-            const account = seed.account({ externalId, externalSource: ExternalSourceEnum.MONOBANK, type: AccountTypeEnum.BANK_SYNC });
-            seed.bankSync({
-                accountId: account.id,
-                forwardSyncFromAt: staleForwardSyncFromAt,
-                mode: BankSyncModeEnum.FORWARD,
-                provider: ExternalSourceEnum.MONOBANK
-            });
-        }
+        seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
 
         vi.mocked(microPause).mockImplementation(async (): Promise<void> => {
             if (shouldStopSync) {

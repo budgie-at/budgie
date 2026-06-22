@@ -2,16 +2,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-import { emptyFn } from '@rnw-community/shared';
-
 import { ruleApplicationDrainerService } from '@app/rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '@app/rule/service/rule-engine.service';
-import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
+
+import { flushScheduledDrain } from '../../harness/scheduler/flush-scheduled-drain';
+import { PausedUserWork } from '../../harness/sync-workload/paused-user-work';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
 const drainDelayMs = 250;
-const immediateTimerMs = 0;
 
 const buildTransactionInput = (): TransactionCreateInputInterface => ({
     amount: 10,
@@ -41,25 +40,11 @@ const buildTransactionInput = (): TransactionCreateInputInterface => ({
     updatedBy: null
 });
 
-const flushScheduledDrain = async (): Promise<void> => {
-    await vi.advanceTimersByTimeAsync(drainDelayMs);
-    await vi.advanceTimersByTimeAsync(immediateTimerMs);
-    await vi.runOnlyPendingTimersAsync();
-    await Promise.resolve();
-};
-
 describe('rule/rule-application-drainer', () => {
     beforeEach(() => {
         vi.useFakeTimers();
         vi.stubGlobal('requestIdleCallback', null);
         vi.stubGlobal('cancelIdleCallback', null);
-        Object.assign(syncWorkloadService, {
-            backgroundQueue: [],
-            isAcceptingWork: true,
-            isRunning: false,
-            queuedUserWorkListeners: new Set(),
-            userQueue: []
-        });
         Object.assign(ruleApplicationDrainerService, {
             cancelIdleCallback: null,
             isRunning: false,
@@ -80,27 +65,17 @@ describe('rule/rule-application-drainer', () => {
     });
 
     it('waits for active user import work before applying queued transaction rules', async () => {
-        let releaseImport = emptyFn;
-        const importRelease = new Promise<void>(resolve => {
-            releaseImport = resolve;
-        });
-        let markImportStarted = emptyFn;
-        const importStarted = new Promise<void>(resolve => {
-            markImportStarted = resolve;
-        });
-        const importWork = syncWorkloadService.runUser('file-import', async () => {
+        const importWork = new PausedUserWork('file-import', () => {
             ruleApplicationDrainerService.enqueueTransactions([42], [buildTransactionInput()]);
-            markImportStarted();
-            await importRelease;
         });
 
-        await importStarted;
-        await flushScheduledDrain();
+        await importWork.started;
+        await flushScheduledDrain(drainDelayMs);
         expect(ruleEngineService.applyRulesToTransactions).not.toHaveBeenCalled();
 
-        releaseImport();
-        await importWork;
-        await flushScheduledDrain();
+        importWork.release();
+        await importWork.work;
+        await flushScheduledDrain(drainDelayMs);
 
         expect(ruleEngineService.applyRulesToTransactions).toHaveBeenCalledTimes(1);
         expect(ruleEngineService.applyRulesToTransactions).toHaveBeenCalledWith([42], [buildTransactionInput()]);
