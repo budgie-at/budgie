@@ -1297,6 +1297,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie/bank-sync@workspace:packages/bank-sync"
   dependencies:
+    "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
     "@rnw-community/shared": "npm:^2.2.0"
     date-fns: "npm:^4.3.0"
