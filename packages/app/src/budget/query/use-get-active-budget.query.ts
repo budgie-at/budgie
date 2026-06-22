@@ -1,8 +1,7 @@
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-
 import { isDefined } from '@rnw-community/shared';
 
 import { budgetRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 
 import type { BudgetEntityInterface } from '@budgie/contracts';
 
@@ -12,7 +11,7 @@ interface UseGetActiveBudgetResult {
 }
 
 export const useGetActiveBudgetQuery = (): UseGetActiveBudgetResult => {
-    const { data, updatedAt } = useLiveQuery(budgetRepository.findActive());
+    const { data, updatedAt } = useDatabaseLiveQuery(budgetRepository.findActive());
 
     if (!isDefined(updatedAt)) {
         return { budget: null, isLoading: true };
