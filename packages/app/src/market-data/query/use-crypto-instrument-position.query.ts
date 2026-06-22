@@ -1,9 +1,9 @@
 import { TransactionEntryTypeEnum } from '@budgie/contracts';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionEntryPositionRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 
 import type { CryptoPositionEntryRowInterface } from '@budgie/contracts';
@@ -62,7 +62,7 @@ const calculatePosition = (entries: CryptoPositionEntryRowInterface[]) => {
 
 export const useCryptoInstrumentPositionQuery = (instrumentId: number, baseInstrumentId: number) => {
     const dependencies = [instrumentId, baseInstrumentId];
-    const { data } = useLiveQuery(
+    const { data } = useDatabaseLiveQuery(
         transactionEntryPositionRepository.findCryptoPositionEntries(instrumentId, baseInstrumentId),
         dependencies
     );

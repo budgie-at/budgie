@@ -1,15 +1,14 @@
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-
 import { isDefined } from '@rnw-community/shared';
 
 import { exchangeRateRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 
 export const useGetRatesByBaseAndQuoteIdsQuery = (baseInstrumentId: number, quoteInstrumentId: number) => {
     const {
         data: rate,
         updatedAt,
         error
-    } = useLiveQuery(exchangeRateRepository.findByBaseAndQuoteIds(baseInstrumentId, quoteInstrumentId), [
+    } = useDatabaseLiveQuery(exchangeRateRepository.findByBaseAndQuoteIds(baseInstrumentId, quoteInstrumentId), [
         baseInstrumentId,
         quoteInstrumentId
     ]);

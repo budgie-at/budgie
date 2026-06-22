@@ -7,7 +7,7 @@ vi.mock('@app/sync/service/transfer-consolidation-drainer.service', () => ({
 }));
 
 vi.mock('@app/@generic/utils/micro-pause.util', () => ({
-    microPause: async (): Promise<void> => undefined
+    microPause: vi.fn(async (): Promise<void> => undefined)
 }));
 
 export const testDb = buildTestDb();
