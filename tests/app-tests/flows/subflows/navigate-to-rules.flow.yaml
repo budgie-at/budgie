@@ -5,13 +5,15 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'SettingsPage.Container'
+      id: 'SettingsPage.ManageRulesCard'
     timeout: 15000
 
 - waitForAnimationToEnd
 
-- runFlow:
-    file: navigation/open-settings-card.flow.yaml
-    env:
-      CARD_ID: SettingsPage.ManageRulesCard
-      DESTINATION_ID: RulesPage.Page
+- tapOn:
+    id: 'SettingsPage.ManageRulesCard'
+
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 15000
