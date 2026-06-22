@@ -1,9 +1,9 @@
 import { AccountFilterInterface } from '@budgie/contracts';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { accountRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 
 export const useSearchAccountsSortedQuery = (search = '', filter?: AccountFilterInterface) => {
     const excludeAccountId = filter?.excludeAccountId;
@@ -14,7 +14,7 @@ export const useSearchAccountsSortedQuery = (search = '', filter?: AccountFilter
     const onlyActive = filter?.onlyActive;
     const debtType = filter?.debtType;
 
-    const { data, updatedAt, error } = useLiveQuery(
+    const { data, updatedAt, error } = useDatabaseLiveQuery(
         accountRepository.findBySearchQuerySortedByBalance(search, { debtType, excludeAccountId, excludeTypes, includeTypes, onlyActive }),
         [search, debtType, excludeAccountId, excludeTypesKey, includeTypesKey, onlyActive]
     );

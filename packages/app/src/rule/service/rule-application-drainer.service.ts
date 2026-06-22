@@ -4,6 +4,7 @@ import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-commu
 
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
+import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 
 import { ruleEngineService } from './rule-engine.service';
 
@@ -113,13 +114,15 @@ class RuleApplicationDrainerService {
         this.pendingTransactionIds = [];
         this.pendingTransactionInputs = [];
 
-        await ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs).catch((error: unknown) => {
-            logger.error('processPendingTransactionBatch:throw', {
-                queuedTransactionIds: transactionIds.join(','),
-                queuedInputCount: transactionInputs.length,
-                errorMessage: getErrorMessage(error)
+        await syncWorkloadService
+            .run('rule-application-transactions', () => ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs))
+            .catch((error: unknown) => {
+                logger.error('processPendingTransactionBatch:throw', {
+                    queuedTransactionIds: transactionIds.join(','),
+                    queuedInputCount: transactionInputs.length,
+                    errorMessage: getErrorMessage(error)
+                });
             });
-        });
         await microPause();
     }
 
@@ -130,12 +133,14 @@ class RuleApplicationDrainerService {
             return;
         }
 
-        await ruleEngineService.applyRuleToMatchingTransactions(ruleId, null).catch((error: unknown) => {
-            logger.error('processPendingRuleBatch:throw', {
-                ruleId,
-                errorMessage: getErrorMessage(error)
+        await syncWorkloadService
+            .run('rule-application-rule', () => ruleEngineService.applyRuleToMatchingTransactions(ruleId, null))
+            .catch((error: unknown) => {
+                logger.error('processPendingRuleBatch:throw', {
+                    ruleId,
+                    errorMessage: getErrorMessage(error)
+                });
             });
-        });
         await microPause();
         await this.processPendingRuleBatch();
     }

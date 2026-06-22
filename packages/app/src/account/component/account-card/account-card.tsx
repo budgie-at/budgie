@@ -10,7 +10,7 @@ import type { AccountWithBankSyncEntityInterface, BankSyncEntityInterface } from
 
 interface Props extends Pick<
     AccountWithBankSyncEntityInterface,
-    'id' | 'createdAt' | 'title' | 'type' | 'icon' | 'debtType' | 'targetBalance' | 'deadline'
+    'id' | 'createdAt' | 'title' | 'type' | 'icon' | 'externalId' | 'debtType' | 'targetBalance' | 'deadline'
 > {
     readonly balance: number;
     readonly bankSync: BankSyncEntityInterface | null;

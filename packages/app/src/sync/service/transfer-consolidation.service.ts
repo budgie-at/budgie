@@ -1,4 +1,4 @@
-import { Log, getLogger } from '@budgie/logger';
+import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -16,8 +16,6 @@ import type {
     ConsolidationResultInterface
 } from '@budgie/consolidation';
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-const logger = getLogger('TransferConsolidationService');
 
 class TransferConsolidationService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 30;
@@ -47,11 +45,11 @@ class TransferConsolidationService {
 
     @Log(
         scope =>
-            `enter appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIds=${scope?.transactionIds.join(',') ?? ''}`,
+            `enter appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIdCount=${scope?.transactionIds.length ?? 0}`,
         (result, scope) =>
-            `done appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIds=${scope?.transactionIds.join(',') ?? ''} found=${result.found} consolidated=${result.consolidated}`,
+            `done appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIdCount=${scope?.transactionIds.length ?? 0} found=${result.found} consolidated=${result.consolidated}`,
         (error, scope) =>
-            `throw appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIds=${scope?.transactionIds.join(',') ?? ''} error=${getErrorMessage(error)}`
+            `throw appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIdCount=${scope?.transactionIds.length ?? 0} error=${getErrorMessage(error)}`
     )
     async consolidate(scope: ConsolidationScanScopeInterface | null = null): Promise<ConsolidationResultInterface> {
         return this.runExclusive(() => this.runConsolidationIfIdle(scope));
@@ -71,17 +69,9 @@ class TransferConsolidationService {
         scope: ConsolidationScanScopeInterface | null,
         onProgress?: (processedCandidateGroupCount: number) => void
     ): Promise<ConsolidationResultInterface> {
-        const startedAt = Date.now();
         const result = await consolidationCoordinatorService.consolidate(scope, onProgress);
 
         await this.updateBalancesAfterConsolidation(result.consolidated);
-
-        logger.log('consolidate:duration', {
-            durationMs: Date.now() - startedAt,
-            found: result.found,
-            consolidated: result.consolidated,
-            scopeTransactionIds: scope?.transactionIds ?? []
-        });
 
         return result;
     }
@@ -91,20 +81,12 @@ class TransferConsolidationService {
             return;
         }
 
-        const startedAt = Date.now();
         await accountBalanceIncrementalService.updateAllBalances(true);
-        logger.log('balanceUpdate:duration', { durationMs: Date.now() - startedAt });
     }
 
     private async buildPreview(): Promise<ConsolidationPreviewInterface> {
-        const startedAt = Date.now();
         const autoCandidateCount = await consolidationCoordinatorService.countAutoCandidates();
         const manualReviewCandidateCount = await consolidationCoordinatorService.countManualReviewCandidates();
-        logger.log('preview:duration', {
-            autoCandidateCount,
-            durationMs: Date.now() - startedAt,
-            manualReviewCandidateCount
-        });
 
         return {
             autoCandidateCount,
@@ -113,17 +95,9 @@ class TransferConsolidationService {
     }
 
     private async buildProgressSnapshot(): Promise<ConsolidationProgressSnapshotInterface> {
-        const startedAt = Date.now();
         const autoCandidateCount = await consolidationCoordinatorService.countAutoCandidates();
         const manualReviewCandidateCount = await consolidationCoordinatorService.countManualReviewCandidates();
         const remainingCandidateGroupCount = autoCandidateCount + manualReviewCandidateCount;
-        logger.log('progressSnapshot:duration', {
-            autoCandidateCount,
-            durationMs: Date.now() - startedAt,
-            isRunning: this.isRunning,
-            manualReviewCandidateCount,
-            remainingCandidateGroupCount
-        });
 
         return {
             autoCandidateCount,

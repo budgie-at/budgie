@@ -6,6 +6,8 @@ Main mobile application built with Expo 54, React 19 + Compiler, Expo Router 6, 
 
 ```bash
 yarn start                    # Expo dev server
+APP_VARIANT=development EXPO_PUBLIC_AI_DISABLE=true yarn start --port 8082
+                              # Expo dev server with @budgie/logger service logs enabled
 yarn ios                      # Run on iOS simulator
 yarn android                  # Run on Android emulator
 yarn web                      # Run on web
@@ -43,6 +45,10 @@ src/
 ```
 
 ## Code Quality Rules (from PR reviews)
+
+### Use `useDatabaseLiveQuery` for database-backed UI
+
+Import `useDatabaseLiveQuery` from `src/@generic/hook/use-database-live-query.hook` instead of importing Drizzle's `useLiveQuery` directly. The wrapper wires `databaseRefreshService.notifyChanged()` into every live query, so database imports refresh visible screens without duplicated hook dependencies.
 
 ### Use `isDefined` for null checks in context hooks
 
@@ -691,8 +697,8 @@ class SomeService {
 Output:
 
 ```
-[SomeService::doThing] doThing:enter input=hello
-[SomeService::doThing] doThing:done input=hello result=42
+[SomeService::doThing] enter input=hello
+[SomeService::doThing] done input=hello result=42
 ```
 
 If a method has multiple log points today, extract each phase into a private method and decorate each. The outer method's `@Log` covers the outer lifecycle.
@@ -714,7 +720,15 @@ Free-form `context: string`. Convention: hook/file/component name. No enum.
 
 ### Build-time gate
 
-`EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses app log output. App logging is enabled only for `APP_VARIANT=development` builds unless disabled explicitly. **Build-time only** — flipping it on a deployed binary requires a rebuild.
+`EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle app log output. App logging stays enabled for Metro dev bundles (`__DEV__`) and for native configs where `APP_VARIANT=development` or profiling is enabled unless disabled explicitly. **Build-time config changes still require a rebuild for non-dev bundles.**
+
+When starting Metro to watch service logs, always include `APP_VARIANT=development`, for example:
+
+```bash
+APP_VARIANT=development EXPO_PUBLIC_AI_DISABLE=true yarn start --port 8082
+```
+
+Also verify the foreground bundle is the dev app (`com.vitalyiegorov.budgie.dev` on iOS), not the E2E app. The E2E build (`com.vitalyiegorov.budgie.e2e`) has `EXPO_PUBLIC_LOGGING_DISABLE=true` baked in, so Metro cannot re-enable service logs for that installed binary. If the wrong app is foreground, launch/reinstall the dev build or rebuild the target variant with logging enabled before debugging logs.
 
 ### `packages/bank-sync` exception
 
