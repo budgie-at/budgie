@@ -7,27 +7,10 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 import { readFileAsUint8Array } from '../util/read-file-as-uint8-array.util';
 
 import { BaseFileBankSyncService } from './base-file-bank-sync.service';
-import { privatbankCategoryMatcherMatch } from './privatbank-category-matcher.service';
+import { privatbankCategoryMatcherService } from './privatbank-category-matcher.service';
 
-import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
-import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
-import type { BankAccountInterface } from '@budgie/bank-sync';
+import type { BankAccountInterface, FileBasedBankSyncClientInterface, ParsedFileResultInterface } from '@budgie/bank-sync';
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
-
-const collectUniqueCategories = (client: FileBasedBankSyncClientInterface, accountIds: string[]): string[] => {
-    const categorySet = new Set<string>();
-
-    for (const accountId of accountIds) {
-        const transactions = client.getTransactions(accountId);
-        for (const transaction of transactions) {
-            if (isDefined(transaction.category) && isNotEmptyString(transaction.category)) {
-                categorySet.add(transaction.category);
-            }
-        }
-    }
-
-    return [...categorySet];
-};
 
 class PrivatbankSyncService extends BaseFileBankSyncService {
     constructor() {
@@ -35,47 +18,42 @@ class PrivatbankSyncService extends BaseFileBankSyncService {
     }
 
     @Log(
-        uri => `enter uri=${uri}`,
-        (result, uri) =>
-            `done uri=${uri} bankAccountCount=${result.bankAccounts.length} bankAccountIds=${result.bankAccounts
-                .map(account => account.id)
-                .join(',')}`,
-        (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`
-    )
-    protected async parseFile(uri: string): Promise<ParsedFileResultInterface> {
-        const buffer = await readFileAsUint8Array(uri);
-        const client = new PrivatbankFileClient(buffer);
-
-        return { client, bankAccounts: client.getAccounts() };
-    }
-
-    @Log(
-        (client, bankAccounts) =>
-            `enter clientAccountIds=${client
-                .getAccounts()
-                .map(account => account.id)
-                .join(',')} bankAccountIds=${bankAccounts.map(account => account.id).join(',')}`,
+        (client, bankAccounts) => `enter client="${client.constructor.name}" accountCount=${bankAccounts.length}`,
         (result, client, bankAccounts) =>
-            `done clientAccountIds=${client
-                .getAccounts()
-                .map(account => account.id)
-                .join(',')} bankAccountIds=${bankAccounts
-                .map(account => account.id)
-                .join(',')} categoryKeys=${[...result.keys()].join(',')} matchedCount=${[...result.values()].filter(isDefined).length}`,
+            `done client="${client.constructor.name}" accountCount=${bankAccounts.length} categoryCount=${result.size} matchedCount=${[...result.values()].filter(isDefined).length}`,
         (error, client, bankAccounts) =>
-            `throw clientAccountIds=${client
-                .getAccounts()
-                .map(account => account.id)
-                .join(',')} bankAccountIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
+            `throw client="${client.constructor.name}" accountCount=${bankAccounts.length} error=${getErrorMessage(error)}`
     )
     protected async resolveMccCategoryIdMap(
         client: FileBasedBankSyncClientInterface,
         bankAccounts: BankAccountInterface[]
     ): Promise<Map<string, MccCategoryLookupInterface | null>> {
         const accountIds = bankAccounts.map(account => account.id);
-        const uniqueCategories = collectUniqueCategories(client, accountIds);
+        const uniqueCategories = this.collectUniqueCategories(client, accountIds);
 
-        return privatbankCategoryMatcherMatch(uniqueCategories);
+        return privatbankCategoryMatcherService.match(uniqueCategories);
+    }
+
+    protected async parseFileContent(uri: string): Promise<ParsedFileResultInterface> {
+        const buffer = await readFileAsUint8Array(uri);
+        const client = new PrivatbankFileClient(buffer);
+
+        return { client, bankAccounts: client.getAccounts() };
+    }
+
+    private collectUniqueCategories(client: FileBasedBankSyncClientInterface, accountIds: string[]): string[] {
+        const categorySet = new Set<string>();
+
+        for (const accountId of accountIds) {
+            const transactions = client.getTransactions(accountId);
+            for (const transaction of transactions) {
+                if (isDefined(transaction.category) && isNotEmptyString(transaction.category)) {
+                    categorySet.add(transaction.category);
+                }
+            }
+        }
+
+        return [...categorySet];
     }
 }
 

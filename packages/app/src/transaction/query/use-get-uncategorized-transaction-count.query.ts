@@ -1,16 +1,14 @@
 import { TransactionFilterInterface } from '@budgie/contracts';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseRefreshVersion } from '../../@generic/hook/use-database-refresh-version.hook';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { buildTransactionFilterKey } from '../utils/build-transaction-filter-key.util';
 
 export const useGetUncategorizedTransactionCountQuery = (filters: TransactionFilterInterface) => {
     const filterKey = buildTransactionFilterKey(filters);
-    const databaseRefreshVersion = useDatabaseRefreshVersion();
-    const { data, error, updatedAt } = useLiveQuery(transactionRepository.countUncategorized(filters), [filterKey, databaseRefreshVersion]);
+    const { data, error, updatedAt } = useDatabaseLiveQuery(transactionRepository.countUncategorized(filters), [filterKey]);
     const row = data.at(0);
     const income = row?.income ?? 0;
     const expense = row?.expense ?? 0;

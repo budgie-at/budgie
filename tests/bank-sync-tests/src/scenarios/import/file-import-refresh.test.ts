@@ -7,7 +7,7 @@ import { seed, StubFileBankSyncService } from '../../harness';
 
 import { databaseRefreshService } from '@app/@generic/service/database-refresh.service';
 
-import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
+import type { FileBasedBankSyncClientInterface } from '@budgie/bank-sync';
 import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';
 
 const BANK_ACCOUNT_ID = 'AT_REFRESH';

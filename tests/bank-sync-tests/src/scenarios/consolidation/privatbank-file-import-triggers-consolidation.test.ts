@@ -8,7 +8,7 @@ import { expectFileImportConsolidationEnqueued, seed, StubFileBankSyncService, t
 
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 
-import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
+import type { FileBasedBankSyncClientInterface } from '@budgie/bank-sync';
 import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';
 
 const PRIVATBANK_CARD_ID = 'privat-card';

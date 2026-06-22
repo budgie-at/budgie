@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+import { mapBankTransactionToCreateInput } from '@budgie/bank-sync';
 import { consolidationScopeService } from '@budgie/consolidation';
 import { BankSyncModeEnum, ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
@@ -18,15 +19,12 @@ import { FileBankSyncAccountImportResultInterface } from '../interface/file-bank
 import { FileBankSyncImportResultInterface } from '../interface/file-bank-sync-import-result.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
-import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
-import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
 import type { ImportContextInterface } from '../interface/import-context.interface';
-import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
-import type { BankAccountInterface } from '@budgie/bank-sync';
+import type { BankAccountInterface, FileBasedBankSyncClientInterface, ParsedFileResultInterface } from '@budgie/bank-sync';
 import type { DB, MccCategoryLookupInterface, TransactionCreateInputInterface, TransactionEntityInterface } from '@budgie/contracts';
 
 export abstract class BaseFileBankSyncService {
@@ -50,10 +48,10 @@ export abstract class BaseFileBankSyncService {
     }
 
     @Log(
-        (uri, selectedAccountIds) => `enter uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')}`,
-        (_result, uri, selectedAccountIds) => `done uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')}`,
+        (uri, selectedAccountIds) => `enter uri=${uri} selectedAccountCount=${selectedAccountIds.length}`,
+        (_result, uri, selectedAccountIds) => `done uri=${uri} selectedAccountCount=${selectedAccountIds.length}`,
         (error, uri, selectedAccountIds) =>
-            `throw uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')} error=${getErrorMessage(error)}`
+            `throw uri=${uri} selectedAccountCount=${selectedAccountIds.length} error=${getErrorMessage(error)}`
     )
     async executeImportForSelectedAccounts(uri: string, selectedAccountIds: string[]): Promise<void> {
         return this.runQueuedImport(() => this.executeImportForSelectedAccountsInner(uri, selectedAccountIds));
@@ -69,7 +67,16 @@ export abstract class BaseFileBankSyncService {
         return this.runQueuedImport(async () => this.quickImportInner(uri));
     }
 
-    @Log('enter', result => `done count=${result.size} ids=${[...result].join(',')}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log(
+        uri => `enter uri=${uri}`,
+        (result, uri) => `done uri=${uri} accountCount=${result.bankAccounts.length}`,
+        (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`
+    )
+    protected async parseFile(uri: string): Promise<ParsedFileResultInterface> {
+        return this.parseFileContent(uri);
+    }
+
+    @Log('enter', result => `done count=${result.size}`, error => `throw error=${getErrorMessage(error)}`)
     private async getEnabledExternalIds(): Promise<Set<string>> {
         const enabledSyncs = await bankSyncRepository.getEnabledByProvider(this.provider);
         if (!isNotEmptyArray(enabledSyncs)) {
@@ -83,16 +90,11 @@ export abstract class BaseFileBankSyncService {
     }
 
     @Log(
-        (bankAccounts, enabledExternalIds) =>
-            `enter bankAccountIds=${bankAccounts.map(account => account.id).join(',')} enabledExternalIds=${[...enabledExternalIds].join(',')}`,
+        (bankAccounts, enabledExternalIds) => `enter accountCount=${bankAccounts.length} enabledExternalIdCount=${enabledExternalIds.size}`,
         (result, bankAccounts, enabledExternalIds) =>
-            `done bankAccountIds=${bankAccounts.map(account => account.id).join(',')} enabledExternalIds=${[...enabledExternalIds].join(
-                ','
-            )} enabledBankAccountIds=${result.map(account => account.id).join(',')}`,
+            `done accountCount=${bankAccounts.length} enabledExternalIdCount=${enabledExternalIds.size} enabledAccountCount=${result.length}`,
         (error, bankAccounts, enabledExternalIds) =>
-            `throw bankAccountIds=${bankAccounts.map(account => account.id).join(',')} enabledExternalIds=${[...enabledExternalIds].join(
-                ','
-            )} error=${getErrorMessage(error)}`
+            `throw accountCount=${bankAccounts.length} enabledExternalIdCount=${enabledExternalIds.size} error=${getErrorMessage(error)}`
     )
     private getEnabledBankAccounts(bankAccounts: BankAccountInterface[], enabledExternalIds: Set<string>): BankAccountInterface[] {
         return bankAccounts.filter(account => enabledExternalIds.has(account.id));
@@ -102,7 +104,7 @@ export abstract class BaseFileBankSyncService {
         (client, bankAccount, context) =>
             `enter client="${client.constructor.name}" accountId=${bankAccount.id} existingKeyCount=${context.existingTransactionIdMap.size} mccCategoryCount=${context.mccCategoryLookupMap.size}`,
         (result, client, bankAccount, context) =>
-            `done client="${client.constructor.name}" accountId=${bankAccount.id} parsedTransactionCount=${result.parsedTransactionCount} newTransactionCount=${result.newTransactions.length} newTransactionIds=${result.newTransactions.map(transaction => transaction.id).join(',')} existingKeyCount=${context.existingTransactionIdMap.size} mccCategoryCount=${context.mccCategoryLookupMap.size}`,
+            `done client="${client.constructor.name}" accountId=${bankAccount.id} parsedTransactionCount=${result.parsedTransactionCount} newTransactionCount=${result.newTransactions.length} existingKeyCount=${context.existingTransactionIdMap.size} mccCategoryCount=${context.mccCategoryLookupMap.size}`,
         (error, client, bankAccount, context) =>
             `throw client="${client.constructor.name}" accountId=${bankAccount.id} existingKeyCount=${context.existingTransactionIdMap.size} mccCategoryCount=${context.mccCategoryLookupMap.size} error=${getErrorMessage(error)}`
     )
@@ -111,7 +113,7 @@ export abstract class BaseFileBankSyncService {
         bankAccount: BankAccountInterface,
         context: ImportContextInterface
     ): Promise<FileBankSyncAccountImportResultInterface> {
-        const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
+        const account = await getOrCreateBankAccount(bankAccount, context.tx);
         await this.createBankSyncRecord(account.id, context.tx);
 
         const transactions = client.getTransactions(bankAccount.id);
@@ -121,7 +123,7 @@ export abstract class BaseFileBankSyncService {
         const transactionInputs = transactions.map(transaction => {
             const lookup = context.mccCategoryLookupMap.get(transaction.category ?? '') ?? null;
 
-            return mapBankTransactionToCreateInput(transaction, account.id, lookup, this.provider);
+            return mapBankTransactionToCreateInput(transaction, account.id, lookup);
         });
         const prepared = transactionImportService.prepareImportedInputs(transactionInputs, context.existingTransactionIdMap);
 
@@ -143,12 +145,11 @@ export abstract class BaseFileBankSyncService {
     }
 
     @Log(
-        (client, bankAccounts) =>
-            `enter client="${client.constructor.name}" bankAccountIds=${bankAccounts.map(account => account.id).join(',')}`,
+        (client, bankAccounts) => `enter client="${client.constructor.name}" accountCount=${bankAccounts.length}`,
         (result, client, bankAccounts) =>
-            `done accountCount=${result.accountCount} parsedTransactionCount=${result.parsedTransactionCount} newTransactionCount=${result.newTransactionCount} existingTransactionCount=${result.existingTransactionCount} client="${client.constructor.name}" bankAccountIds=${bankAccounts.map(account => account.id).join(',')}`,
+            `done client="${client.constructor.name}" requestedAccountCount=${bankAccounts.length} accountCount=${result.accountCount} parsedTransactionCount=${result.parsedTransactionCount} newTransactionCount=${result.newTransactionCount} existingTransactionCount=${result.existingTransactionCount}`,
         (error, client, bankAccounts) =>
-            `throw client="${client.constructor.name}" bankAccountIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
+            `throw client="${client.constructor.name}" accountCount=${bankAccounts.length} error=${getErrorMessage(error)}`
     )
     private async executeImport(
         client: FileBasedBankSyncClientInterface,
@@ -285,7 +286,7 @@ export abstract class BaseFileBankSyncService {
         return newTransactions;
     }
 
-    protected abstract parseFile(uri: string): Promise<ParsedFileResultInterface>;
+    protected abstract parseFileContent(uri: string): Promise<ParsedFileResultInterface>;
 
     protected abstract resolveMccCategoryIdMap(
         client: FileBasedBankSyncClientInterface,

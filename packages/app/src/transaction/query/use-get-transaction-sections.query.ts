@@ -1,9 +1,8 @@
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { useEffect, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useDatabaseRefreshVersion } from '../../@generic/hook/use-database-refresh-version.hook';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
 import { groupTransactionsByMonth } from '../utils/group-transactions-by-month.util';
 
@@ -17,14 +16,13 @@ export const useGetTransactionSectionsQuery = <Transaction extends TransactionWi
     queryKey: string
 ) => {
     const { formatMonthAndYear } = useFormatDate();
-    const databaseRefreshVersion = useDatabaseRefreshVersion();
     const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
 
     useEffect(() => {
         setLoadedCount(DEFAULT_LIMIT);
     }, [queryKey]);
 
-    const { data, error, updatedAt } = useLiveQuery(buildQuery(loadedCount + 1), [loadedCount, queryKey, databaseRefreshVersion]);
+    const { data, error, updatedAt } = useDatabaseLiveQuery(buildQuery(loadedCount + 1), [loadedCount, queryKey]);
     const hasMore = data.length > loadedCount;
     const transactions = hasMore ? data.slice(0, -1) : data;
     const sections = groupTransactionsByMonth(transactions, formatMonthAndYear);

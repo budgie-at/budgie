@@ -79,10 +79,7 @@ export const useQuickImport = (config: QuickImportConfigInterface | null, trigge
             }
 
             Toast.show({ type: 'info', text1: t`Import started`, text2: t`Budgie will notify you when it finishes` });
-            logger.log('import:begin', { source: config.source, triggerAccountExternalId, uri });
-            logger.log('import:enabled-accounts', { source: config.source, triggerAccountExternalId, uri });
             const importResult = await config.importHandler(uri);
-            logger.log('import:done', { source: config.source, triggerAccountExternalId, uri, ...importResult });
             showImportDoneToast(importResult);
         };
 

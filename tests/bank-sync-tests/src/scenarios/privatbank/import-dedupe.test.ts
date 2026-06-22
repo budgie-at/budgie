@@ -6,7 +6,7 @@ import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 
 import { seed, StubFileBankSyncService, testDb } from '../../harness';
 
-import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
+import type { FileBasedBankSyncClientInterface } from '@budgie/bank-sync';
 import type { BankAccountInterface, BankTransactionInterface, PrivatbankRowInterface } from '@budgie/bank-sync';
 
 const PRIVATBANK_CARD_ID = '4731 **** **** 5524';

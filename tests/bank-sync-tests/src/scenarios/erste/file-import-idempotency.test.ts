@@ -1,7 +1,13 @@
 import { and, eq } from 'drizzle-orm';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { BankAccountTypeEnum, BankProviderEnum, BankTransactionTypeEnum, ersteMapper } from '@budgie/bank-sync';
+import {
+    BankAccountTypeEnum,
+    BankProviderEnum,
+    BankTransactionTypeEnum,
+    ersteMapper,
+    mapBankTransactionToCreateInput
+} from '@budgie/bank-sync';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
@@ -10,12 +16,15 @@ import { expectFileImportConsolidationEnqueued, seed, StubFileBankSyncService, t
 
 import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
 import { transactionImportService } from '@app/transaction/service/transaction-import.service';
 
-import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
-import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
-import type { BankAccountInterface, BankTransactionInterface, ErsteRowInterface } from '@budgie/bank-sync';
+import type {
+    BankAccountInterface,
+    BankTransactionInterface,
+    ErsteRowInterface,
+    FileBasedBankSyncClientInterface,
+    ParsedFileResultInterface
+} from '@budgie/bank-sync';
 import type { MccCategoryLookupInterface, TransactionCreateInputInterface, TransactionEntityInterface } from '@budgie/contracts';
 
 const ERSTE_ACCOUNT_ID = 'AT123';
@@ -73,7 +82,7 @@ const buildLegacyErsteInput = (
     accountId: number,
     externalId: string
 ): TransactionCreateInputInterface => {
-    const input = mapBankTransactionToCreateInput(bankTransaction, accountId, null, ExternalSourceEnum.ERSTE);
+    const input = mapBankTransactionToCreateInput(bankTransaction, accountId, null);
 
     return {
         ...input,
@@ -142,7 +151,7 @@ class BarrierErsteSyncService extends BaseFileBankSyncService {
         super(ExternalSourceEnum.ERSTE);
     }
 
-    protected override async parseFile(): Promise<ParsedFileResultInterface> {
+    protected override async parseFileContent(): Promise<ParsedFileResultInterface> {
         await this.parseBarrier.wait();
 
         return { client: this.client, bankAccounts: this.client.getAccounts() };

@@ -46,6 +46,10 @@ src/
 
 ## Code Quality Rules (from PR reviews)
 
+### Use `useDatabaseLiveQuery` for database-backed UI
+
+Import `useDatabaseLiveQuery` from `src/@generic/hook/use-database-live-query.hook` instead of importing Drizzle's `useLiveQuery` directly. The wrapper wires `databaseRefreshService.notifyChanged()` into every live query, so database imports refresh visible screens without duplicated hook dependencies.
+
 ### Use `isDefined` for null checks in context hooks
 
 ```typescript
@@ -693,8 +697,8 @@ class SomeService {
 Output:
 
 ```
-[SomeService::doThing] doThing:enter input=hello
-[SomeService::doThing] doThing:done input=hello result=42
+[SomeService::doThing] enter input=hello
+[SomeService::doThing] done input=hello result=42
 ```
 
 If a method has multiple log points today, extract each phase into a private method and decorate each. The outer method's `@Log` covers the outer lifecycle.
@@ -716,7 +720,7 @@ Free-form `context: string`. Convention: hook/file/component name. No enum.
 
 ### Build-time gate
 
-`EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle app log output. App logging stays enabled for Metro dev bundles (`__DEV__`) and for native configs where `APP_VARIANT=development` unless disabled explicitly. **Build-time config changes still require a rebuild for non-dev bundles.**
+`EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle app log output. App logging stays enabled for Metro dev bundles (`__DEV__`) and for native configs where `APP_VARIANT=development` or profiling is enabled unless disabled explicitly. **Build-time config changes still require a rebuild for non-dev bundles.**
 
 When starting Metro to watch service logs, always include `APP_VARIANT=development`, for example:
 

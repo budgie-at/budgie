@@ -17,19 +17,14 @@ export class PrivatbankFileClient {
         this.rows = parsePrivatbankXlsx(buffer);
     }
 
-    @Log(
-        'enter',
-        result => `done count=${result.length} ids=${result.map(account => account.id).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
+    @Log('enter', result => `done count=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
     getAccounts(): BankAccountInterface[] {
         return privatbankAccountMapper(this.rows);
     }
 
     @Log(
         accountId => `enter accountId=${accountId}`,
-        (result, accountId) =>
-            `done accountId=${accountId} count=${result.length} ids=${result.map(transaction => transaction.id).join(',')}`,
+        (result, accountId) => `done accountId=${accountId} count=${result.length}`,
         (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
     )
     getTransactions(accountId: string): BankTransactionInterface[] {
