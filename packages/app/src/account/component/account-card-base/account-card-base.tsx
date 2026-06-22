@@ -76,7 +76,8 @@ export const AccountCardBase = (props: Props) => {
             onLongPress={onLongPress}
             className={cn(cardVariants({ deadlinePriority }), className)}
         >
-            <View className="gap-3" collapsable={false} testID={accountCardTestID}>
+            <View className="absolute inset-0" collapsable={false} pointerEvents="none" testID={accountCardTestID} />
+            <View className="gap-3">
                 <View className="flex-row items-center justify-between">
                     <View className="flex-row items-center gap-x-lg">
                         <CircleIcon size={36} iconSize={20} icon={icon} variant={circleVariant} border={false} />
