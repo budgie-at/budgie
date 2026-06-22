@@ -3,7 +3,7 @@ import { budgetTemplateService } from '@budgie/budget';
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { categoryRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/drizzle/hook/use-database-live-query.hook';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { BudgetTemplateKindEnum } from '../enum/budget-template-kind.enum';

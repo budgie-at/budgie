@@ -3,7 +3,7 @@ import { AccountDebtTypeEnum, AccountTypeEnum, ExternalSourceEnum } from '@budgi
 import { isDefined } from '@rnw-community/shared';
 
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/drizzle/hook/use-database-live-query.hook';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { useSettingsContext } from '../../settings/context/settings.context';
@@ -82,11 +82,8 @@ export const useHomePageDataQuery = () => {
     const { defaultInstrument } = useSettingsContext();
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
-    const { data } = useDatabaseLiveQuery(accountBalanceRepository.getHomeAccountRows(defaultInstrument.id), [
-        defaultInstrument.id,
-        accountBalancesUpdatedAt,
-        exchangeRatesUpdatedAt
-    ]);
+    const queryDependencies = [defaultInstrument.id, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
+    const { data } = useDatabaseLiveQuery(accountBalanceRepository.getHomeAccountRows(defaultInstrument.id), queryDependencies);
     const accounts = data.map(row => {
         const account: AccountWithBankSyncEntityInterface = {
             ...row.account,

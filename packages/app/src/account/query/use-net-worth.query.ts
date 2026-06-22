@@ -1,5 +1,5 @@
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/drizzle/hook/use-database-live-query.hook';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { useSettingsContext } from '../../settings/context/settings.context';
 
@@ -11,11 +11,9 @@ export const useNetWorthQuery = () => {
     const defaultInstrumentId = defaultInstrument.id;
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
-    const { data } = useDatabaseLiveQuery(accountBalanceRepository.getNetWorth(defaultInstrumentId), [
-        defaultInstrumentId,
-        accountBalancesUpdatedAt,
-        exchangeRatesUpdatedAt
-    ]);
+    const queryDependencies = [defaultInstrumentId, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
+    const query = accountBalanceRepository.getNetWorth(defaultInstrumentId);
+    const { data } = useDatabaseLiveQuery(query, queryDependencies);
 
     return useCachedMicroUnitQuery(data.at(0)?.netWorth);
 };

@@ -1,20 +1,20 @@
 import { InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { instrumentDailyMarketPriceRepository, instrumentMarketDataJobRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 
 const FULL_PERCENT = 100;
 
 export const useInstrumentMarketDataProgressQuery = (instrumentId: number, quoteInstrumentId: number) => {
     const dependencies = [instrumentId, quoteInstrumentId];
-    const { data: job } = useLiveQuery(
+    const { data: job } = useDatabaseLiveQuery(
         instrumentMarketDataJobRepository.findLatestByInstrumentAndQuote(instrumentId, quoteInstrumentId),
         dependencies
     );
-    const { data: countRows } = useLiveQuery(
+    const { data: countRows } = useDatabaseLiveQuery(
         instrumentDailyMarketPriceRepository.countByInstrumentAndQuote(instrumentId, quoteInstrumentId),
         dependencies
     );
