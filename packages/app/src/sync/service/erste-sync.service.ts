@@ -44,4 +44,3 @@ class ErsteSyncService extends BaseFileBankSyncService {
 export const ersteSyncService = new ErsteSyncService();
 
 export const ersteSyncQuickImportFromUri = ersteSyncService.quickImport.bind(ersteSyncService);
-export const ersteSyncImportSelectedAccountsFromUri = ersteSyncService.executeImportForSelectedAccounts.bind(ersteSyncService);

@@ -19,7 +19,7 @@ interface QuickImportResult {
     readonly clearError: () => void;
 }
 
-export const useQuickImport = (config: QuickImportConfigInterface | null, selectedAccountId: string | null): QuickImportResult => {
+export const useQuickImport = (config: QuickImportConfigInterface | null, triggerAccountExternalId: string | null): QuickImportResult => {
     const { t } = useLingui();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -33,22 +33,10 @@ export const useQuickImport = (config: QuickImportConfigInterface | null, select
         }
 
         if (isLoading) {
-            logger.log('skip:loading', { source: config.source, selectedAccountId });
+            logger.log('skip:loading', { source: config.source, triggerAccountExternalId });
 
             return;
         }
-
-        const importFromUri = async (uri: string): Promise<FileBankSyncImportResultInterface> => {
-            if (isNotEmptyString(selectedAccountId)) {
-                logger.log('import:selected-account', { source: config.source, uri, selectedAccountId });
-
-                return config.selectedImportHandler(uri, [selectedAccountId]);
-            }
-
-            logger.log('import:enabled-accounts', { source: config.source, uri });
-
-            return config.importHandler(uri);
-        };
 
         const showImportDoneToast = (importResult: FileBankSyncImportResultInterface) => {
             const hasAccounts = isPositiveNumber(importResult.accountCount);
@@ -58,16 +46,16 @@ export const useQuickImport = (config: QuickImportConfigInterface | null, select
                 Toast.show({
                     type: 'success',
                     text1: t`No matching accounts`,
-                    text2: t`The selected account was not found in this file`
+                    text2: t`No enabled accounts were found in this file`
                 });
 
                 return;
             }
 
             const title = hasNewTransactions ? t`Transactions imported` : t`No new transactions`;
-            const {newTransactionCount} = importResult;
-            const {existingTransactionCount} = importResult;
-            const {parsedTransactionCount} = importResult;
+            const { newTransactionCount } = importResult;
+            const { existingTransactionCount } = importResult;
+            const { parsedTransactionCount } = importResult;
             const message = t`${newTransactionCount} new, ${existingTransactionCount} already imported, ${parsedTransactionCount} checked`;
 
             Toast.show({ type: 'success', text1: title, text2: message });
@@ -76,7 +64,7 @@ export const useQuickImport = (config: QuickImportConfigInterface | null, select
         const execute = async (): Promise<void> => {
             setIsLoading(true);
             setError(null);
-            logger.log('picker:open', { source: config.source, mimeType: config.mimeType, selectedAccountId });
+            logger.log('picker:open', { source: config.source, mimeType: config.mimeType, triggerAccountExternalId });
 
             const result = await DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true });
             const uri = result.assets?.at(0)?.uri;
@@ -84,21 +72,21 @@ export const useQuickImport = (config: QuickImportConfigInterface | null, select
                 source: config.source,
                 canceled: result.canceled,
                 assetCount: result.assets?.length ?? 0,
-                selectedAccountId,
+                triggerAccountExternalId,
                 uri
             });
 
             if (result.canceled || !isNotEmptyString(uri)) {
-                logger.log('skip:no-uri', { source: config.source, canceled: result.canceled, selectedAccountId, uri });
-                setIsLoading(false);
+                logger.log('skip:no-uri', { source: config.source, canceled: result.canceled, triggerAccountExternalId, uri });
 
                 return;
             }
 
             Toast.show({ type: 'info', text1: t`Import started`, text2: t`Budgie will notify you when it finishes` });
-            logger.log('import:begin', { source: config.source, selectedAccountId, uri });
-            const importResult = await importFromUri(uri);
-            logger.log('import:done', { source: config.source, selectedAccountId, uri, ...importResult });
+            logger.log('import:begin', { source: config.source, triggerAccountExternalId, uri });
+            logger.log('import:enabled-accounts', { source: config.source, triggerAccountExternalId, uri });
+            const importResult = await config.importHandler(uri);
+            logger.log('import:done', { source: config.source, triggerAccountExternalId, uri, ...importResult });
             showImportDoneToast(importResult);
         };
 

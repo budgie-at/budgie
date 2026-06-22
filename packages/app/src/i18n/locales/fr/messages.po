@@ -1954,6 +1954,10 @@ msgstr "Aucune devise trouvée"
 msgid "No Custom Categories"
 msgstr "Aucune catégorie personnalisée"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No enabled accounts were found in this file"
+msgstr "Aucun compte activé n'a été trouvé dans ce fichier"
+
 #: src/app/icon-selector.tsx
 msgid "No icons found"
 msgstr "Aucune icône trouvée"
@@ -2901,10 +2905,6 @@ msgstr "Appuyez pour sélectionner"
 #: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx
 msgid "Target balance"
 msgstr "Solde cible"
-
-#: src/sync/hook/use-quick-import.hook.ts
-msgid "The selected account was not found in this file"
-msgstr "Le compte sélectionné est introuvable dans ce fichier"
 
 #: src/account/component/archive-account/archive-account.tsx
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."

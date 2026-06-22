@@ -1954,6 +1954,10 @@ msgstr "Не знайдено жодної валюти"
 msgid "No Custom Categories"
 msgstr "Немає власних категорій"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No enabled accounts were found in this file"
+msgstr "У цьому файлі не знайдено активованих рахунків"
+
 #: src/app/icon-selector.tsx
 msgid "No icons found"
 msgstr "Іконки не знайдено"
@@ -2901,10 +2905,6 @@ msgstr "Торкніться для вибору"
 #: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx
 msgid "Target balance"
 msgstr "Цільовий баланс"
-
-#: src/sync/hook/use-quick-import.hook.ts
-msgid "The selected account was not found in this file"
-msgstr "Вибраний рахунок не знайдено в цьому файлі"
 
 #: src/account/component/archive-account/archive-account.tsx
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
