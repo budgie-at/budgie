@@ -75,6 +75,7 @@ export const AccountCardBase = (props: Props) => {
             onPress={navigateToAccount}
             onLongPress={onLongPress}
             className={cn(cardVariants({ deadlinePriority }), className)}
+            testID={accountCardTestID}
         >
             <View className="gap-3">
                 <View className="flex-row items-center justify-between">
@@ -94,7 +95,7 @@ export const AccountCardBase = (props: Props) => {
                 </View>
 
                 <View className="gap-1">
-                    <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1} testID={accountCardTestID}>
+                    <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1}>
                         {title}
                     </Text>
 
