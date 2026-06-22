@@ -13,7 +13,7 @@ import { AccountCardBase } from '../account-card-base/account-card-base';
 
 const logger = getLogger('BankSyncAccountCard');
 
-interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' | 'icon'> {
+interface Props extends Pick<AccountWithBankSyncEntityInterface, 'id' | 'title' | 'icon' | 'externalId'> {
     readonly balance: number;
     readonly bankSync: BankSyncEntityInterface | null;
     readonly className?: string;
@@ -31,7 +31,7 @@ const syncStatusVariants = cva('absolute bottom-3 right-3 z-10 h-2 w-2 rounded-f
 });
 
 export const BankSyncAccountCard = (props: Props) => {
-    const { id, title, icon, balance, className, instrumentSymbol, bankSync } = props;
+    const { id, title, icon, externalId, balance, className, instrumentSymbol, bankSync } = props;
 
     const [, hapticImpact] = useVibration();
 
@@ -40,16 +40,24 @@ export const BankSyncAccountCard = (props: Props) => {
     const provider = isDefined(bankSync) ? bankSync.provider : null;
     const isPrivatbankCard = provider === ExternalSourceEnum.PRIVATBANK;
     const hasQuickImportConfig = isDefined(quickImportConfig);
-    const { handleQuickImport } = useQuickImport(quickImportConfig);
+    const { handleQuickImport, isLoading: isQuickImportLoading } = useQuickImport(quickImportConfig, externalId);
 
     const handleLongPress = () => {
         if (isPrivatbankCard) {
-            logger.log('long-press', { accountId: id, title, provider, hasQuickImportConfig });
+            logger.log('long-press', { accountId: id, externalId, title, provider, hasQuickImportConfig, isQuickImportLoading });
         }
 
         if (!hasQuickImportConfig) {
             if (isPrivatbankCard) {
-                logger.log('long-press:skip-no-config', { accountId: id, title, provider });
+                logger.log('long-press:skip-no-config', { accountId: id, externalId, title, provider });
+            }
+
+            return;
+        }
+
+        if (isQuickImportLoading) {
+            if (isPrivatbankCard) {
+                logger.log('long-press:skip-loading', { accountId: id, externalId, title, provider });
             }
 
             return;
@@ -59,7 +67,7 @@ export const BankSyncAccountCard = (props: Props) => {
         handleQuickImport();
 
         if (isPrivatbankCard) {
-            logger.log('quick-import:dispatched', { accountId: id, title, provider });
+            logger.log('quick-import:dispatched', { accountId: id, externalId, title, provider });
         }
     };
 

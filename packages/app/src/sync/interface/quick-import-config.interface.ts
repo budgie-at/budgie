@@ -5,4 +5,5 @@ export interface QuickImportConfigInterface {
     readonly mimeType: string;
     readonly source: ExternalSourceEnum;
     readonly importHandler: (uri: string) => Promise<FileBankSyncImportResultInterface>;
+    readonly selectedImportHandler: (uri: string, selectedAccountIds: string[]) => Promise<FileBankSyncImportResultInterface>;
 }

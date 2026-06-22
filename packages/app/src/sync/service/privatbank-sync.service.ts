@@ -82,3 +82,5 @@ class PrivatbankSyncService extends BaseFileBankSyncService {
 export const privatbankSyncService = new PrivatbankSyncService();
 
 export const privatbankSyncQuickImportFromUri = privatbankSyncService.quickImport.bind(privatbankSyncService);
+export const privatbankSyncImportSelectedAccountsFromUri =
+    privatbankSyncService.executeImportForSelectedAccounts.bind(privatbankSyncService);

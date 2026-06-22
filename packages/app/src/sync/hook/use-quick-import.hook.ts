@@ -1,10 +1,14 @@
 import { getLogger } from '@budgie/logger';
+import { useLingui } from '@lingui/react/macro';
 import * as DocumentPicker from 'expo-document-picker';
 import { useState } from 'react';
+import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { QuickImportConfigInterface } from '../interface/quick-import-config.interface';
+
+import type { FileBankSyncImportResultInterface } from '../interface/file-bank-sync-import-result.interface';
 
 const logger = getLogger('useQuickImport');
 
@@ -15,7 +19,9 @@ interface QuickImportResult {
     readonly clearError: () => void;
 }
 
-export const useQuickImport = (config: QuickImportConfigInterface | null): QuickImportResult => {
+export const useQuickImport = (config: QuickImportConfigInterface | null, selectedAccountId: string | null): QuickImportResult => {
+    const { t } = useLingui();
+
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -26,31 +32,82 @@ export const useQuickImport = (config: QuickImportConfigInterface | null): Quick
             return;
         }
 
+        if (isLoading) {
+            logger.log('skip:loading', { source: config.source, selectedAccountId });
+
+            return;
+        }
+
+        const importFromUri = async (uri: string): Promise<FileBankSyncImportResultInterface> => {
+            if (isNotEmptyString(selectedAccountId)) {
+                logger.log('import:selected-account', { source: config.source, uri, selectedAccountId });
+
+                return config.selectedImportHandler(uri, [selectedAccountId]);
+            }
+
+            logger.log('import:enabled-accounts', { source: config.source, uri });
+
+            return config.importHandler(uri);
+        };
+
+        const showImportDoneToast = (importResult: FileBankSyncImportResultInterface) => {
+            const hasAccounts = isPositiveNumber(importResult.accountCount);
+            const hasNewTransactions = isPositiveNumber(importResult.newTransactionCount);
+
+            if (!hasAccounts) {
+                Toast.show({
+                    type: 'success',
+                    text1: t`No matching accounts`,
+                    text2: t`The selected account was not found in this file`
+                });
+
+                return;
+            }
+
+            const title = hasNewTransactions ? t`Transactions imported` : t`No new transactions`;
+            const {newTransactionCount} = importResult;
+            const {existingTransactionCount} = importResult;
+            const {parsedTransactionCount} = importResult;
+            const message = t`${newTransactionCount} new, ${existingTransactionCount} already imported, ${parsedTransactionCount} checked`;
+
+            Toast.show({ type: 'success', text1: title, text2: message });
+        };
+
         const execute = async (): Promise<void> => {
             setIsLoading(true);
             setError(null);
-            logger.log('picker:open', { source: config.source, mimeType: config.mimeType });
+            logger.log('picker:open', { source: config.source, mimeType: config.mimeType, selectedAccountId });
 
             const result = await DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true });
             const uri = result.assets?.at(0)?.uri;
-            logger.log('picker:result', { source: config.source, canceled: result.canceled, assetCount: result.assets?.length ?? 0, uri });
+            logger.log('picker:result', {
+                source: config.source,
+                canceled: result.canceled,
+                assetCount: result.assets?.length ?? 0,
+                selectedAccountId,
+                uri
+            });
 
             if (result.canceled || !isNotEmptyString(uri)) {
-                logger.log('skip:no-uri', { source: config.source, canceled: result.canceled, uri });
+                logger.log('skip:no-uri', { source: config.source, canceled: result.canceled, selectedAccountId, uri });
                 setIsLoading(false);
 
                 return;
             }
 
-            logger.log('import:begin', { source: config.source, uri });
-            const importResult = await config.importHandler(uri);
-            logger.log('import:done', { source: config.source, uri, ...importResult });
+            Toast.show({ type: 'info', text1: t`Import started`, text2: t`Budgie will notify you when it finishes` });
+            logger.log('import:begin', { source: config.source, selectedAccountId, uri });
+            const importResult = await importFromUri(uri);
+            logger.log('import:done', { source: config.source, selectedAccountId, uri, ...importResult });
+            showImportDoneToast(importResult);
         };
 
         void execute()
             .catch((importError: unknown) => {
+                const errorMessage = getErrorMessage(importError);
                 logger.error('import:throw', importError);
-                setError(getErrorMessage(importError));
+                setError(errorMessage);
+                Toast.show({ type: 'error', text1: t`Import failed`, text2: errorMessage });
             })
             .finally(() => {
                 setIsLoading(false);

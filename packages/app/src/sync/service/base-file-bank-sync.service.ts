@@ -1,12 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import { consolidationScopeService } from '@budgie/consolidation';
-import {
-    BankSyncModeEnum,
-    ExternalSourceEnum,
-    TransactionCreateInputInterface,
-    TransactionEntityInterface,
-    transactionAsync
-} from '@budgie/contracts';
+import { BankSyncModeEnum, ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -33,7 +27,7 @@ import type { FileBasedBankSyncClientInterface } from '../interface/file-based-b
 import type { ImportContextInterface } from '../interface/import-context.interface';
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { BankAccountInterface } from '@budgie/bank-sync';
-import type { DB, MccCategoryLookupInterface } from '@budgie/contracts';
+import type { DB, MccCategoryLookupInterface, TransactionCreateInputInterface, TransactionEntityInterface } from '@budgie/contracts';
 
 export abstract class BaseFileBankSyncService {
     private importQueue: Promise<unknown> = Promise.resolve();
@@ -57,11 +51,12 @@ export abstract class BaseFileBankSyncService {
 
     @Log(
         (uri, selectedAccountIds) => `enter uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')}`,
-        (_result, uri, selectedAccountIds) => `done uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')}`,
+        (result, uri, selectedAccountIds) =>
+            `done uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')} accountCount=${result.accountCount} parsedTransactionCount=${result.parsedTransactionCount} newTransactionCount=${result.newTransactionCount} existingTransactionCount=${result.existingTransactionCount}`,
         (error, uri, selectedAccountIds) =>
             `throw uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')} error=${getErrorMessage(error)}`
     )
-    async executeImportForSelectedAccounts(uri: string, selectedAccountIds: string[]): Promise<void> {
+    async executeImportForSelectedAccounts(uri: string, selectedAccountIds: string[]): Promise<FileBankSyncImportResultInterface> {
         return this.runQueuedImport(() => this.executeImportForSelectedAccountsInner(uri, selectedAccountIds));
     }
 
@@ -212,15 +207,18 @@ export abstract class BaseFileBankSyncService {
         return this.executeImport(client, enabledBankAccounts);
     }
 
-    private async executeImportForSelectedAccountsInner(uri: string, selectedAccountIds: string[]): Promise<void> {
+    private async executeImportForSelectedAccountsInner(
+        uri: string,
+        selectedAccountIds: string[]
+    ): Promise<FileBankSyncImportResultInterface> {
         const { client, bankAccounts } = await this.parseFile(uri);
         const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
 
         if (!isNotEmptyArray(selectedBankAccounts)) {
-            return;
+            return this.buildEmptyImportResult(0);
         }
 
-        await this.executeImport(client, selectedBankAccounts);
+        return this.executeImport(client, selectedBankAccounts);
     }
 
     private async runQueuedImport<T>(handler: () => Promise<T>): Promise<T> {

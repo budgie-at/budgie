@@ -110,6 +110,10 @@ msgstr "{matchingRulesCount, plural, one {# відповідне правило}
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
+msgstr "{newTransactionCount} нових, {existingTransactionCount} вже імпортовано, {parsedTransactionCount} перевірено"
+
 #: src/category/components/category-statistics-card/category-statistics-card.tsx
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
 msgid "{percentage}% of expenses"
@@ -543,6 +547,10 @@ msgstr "Budgie заповнить відсутні значення в базо�
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
 msgstr "Budgie об'єднає надійні збіги переказів і відшкодувань. Неоднозначні збіги залишаться без змін."
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Budgie will notify you when it finishes"
+msgstr "Budgie повідомить, коли імпорт завершиться"
 
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
@@ -1550,12 +1558,17 @@ msgid "Import Erste Bank"
 msgstr "Імпортувати Erste Bank"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/hook/use-quick-import.hook.ts
 msgid "Import failed"
 msgstr "Помилка імпорту"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
 msgstr "Імпорт Приватбанку"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Import started"
+msgstr "Імпорт розпочато"
 
 #: src/import/components/import-csv/import-csv.tsx
 msgid "Import transactions from a CSV file"
@@ -1961,6 +1974,10 @@ msgstr "Немає елементів для збереження"
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No matching accounts"
+msgstr "Немає відповідних рахунків"
+
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "No matching expenses"
 msgstr "Немає відповідних витрат"
@@ -1977,6 +1994,10 @@ msgstr "Немає доступних MCC-кодів"
 #: src/app/rule-mcc-selector.tsx
 msgid "No MCC codes found"
 msgstr "MCC-кодів не знайдено"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No new transactions"
+msgstr "Нових транзакцій немає"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
@@ -2828,14 +2849,6 @@ msgstr "Перемикайтеся між світлою та темною те�
 msgid "Sync Failed"
 msgstr "Синхронізація не вдалась"
 
-#: src/sync/service/sync-workload.service.ts
-msgid "Sync workload is blocked for app reset"
-msgstr "Синхронізаційне завдання заблоковано через скидання застосунку"
-
-#: src/sync/service/sync-workload.service.ts
-msgid "Sync workload was cancelled by app reset"
-msgstr "Синхронізаційне завдання скасовано через скидання застосунку"
-
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Синхронізуйте свої рахунки та транзакції Монобанку"
@@ -2888,6 +2901,10 @@ msgstr "Торкніться для вибору"
 #: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx
 msgid "Target balance"
 msgstr "Цільовий баланс"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "The selected account was not found in this file"
+msgstr "Вибраний рахунок не знайдено в цьому файлі"
 
 #: src/account/component/archive-account/archive-account.tsx
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
@@ -3022,6 +3039,10 @@ msgstr "Транзакцію не знайдено"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Транзакції"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Transactions imported"
+msgstr "Транзакції імпортовано"
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
 msgid "Transactions synced"
