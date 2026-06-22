@@ -1,10 +1,10 @@
 import { budgetPeriodService, budgetTemplateService } from '@budgie/budget';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { useState } from 'react';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { budgetRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
 import type {
@@ -35,7 +35,11 @@ export const useSuggestedBudgetTemplate = (): BudgetTemplateResolutionInterface 
     const window = budgetPeriodService.computeTrailingMonthsWindow(now, MAX_WINDOW_MONTHS);
 
     const entriesQuery = budgetRepository.findBudgetSpentEntries(window.start, window.end, baseInstrumentId);
-    const { data: entriesData, updatedAt } = useLiveQuery(entriesQuery, [window.start.getTime(), window.end.getTime(), baseInstrumentId]);
+    const { data: entriesData, updatedAt } = useDatabaseLiveQuery(entriesQuery, [
+        window.start.getTime(),
+        window.end.getTime(),
+        baseInstrumentId
+    ]);
 
     if (!isPositiveNumber(baseInstrumentId)) {
         return { draft: ZERO_DRAFT, isReady: true, isAvailable: false, stats: null };

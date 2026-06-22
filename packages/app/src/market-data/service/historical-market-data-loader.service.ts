@@ -14,6 +14,7 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 import { coinGeckoMarketChartFetchApi } from '../api/coin-gecko-market-chart-fetch.api';
 
 import type {
@@ -60,17 +61,13 @@ class HistoricalMarketDataLoaderService {
     }
 
     cancelScheduledDrain(): void {
-        const { timer } = this;
-        const { cancelIdleCallback } = this;
-
-        this.timer = null;
-        this.cancelIdleCallback = null;
-
-        if (isDefined(timer)) {
-            clearTimeout(timer);
+        if (isDefined(this.timer)) {
+            clearTimeout(this.timer);
         }
 
-        cancelIdleCallback?.();
+        this.cancelIdleCallback?.();
+        this.timer = null;
+        this.cancelIdleCallback = null;
     }
 
     scheduleDrain(): void {
@@ -106,14 +103,18 @@ class HistoricalMarketDataLoaderService {
 
     private async drainNextJob(): Promise<boolean> {
         const staleLockedBefore = new Date(Date.now() - HistoricalMarketDataLoaderService.STALE_LOCK_MS);
-        const job = await instrumentMarketDataJobRepository.claimNext(HistoricalMarketDataLoaderService.MAX_ATTEMPTS, staleLockedBefore);
+        const job = await syncWorkloadService.run('historical-market-data-claim', () =>
+            instrumentMarketDataJobRepository.claimNext(HistoricalMarketDataLoaderService.MAX_ATTEMPTS, staleLockedBefore)
+        );
 
         if (!isDefined(job)) {
             return false;
         }
 
         await this.processJob(job).catch(async (error: unknown) => {
-            await instrumentMarketDataJobRepository.markFailed(job.id, getErrorMessage(error));
+            await syncWorkloadService.run('historical-market-data-fail', () =>
+                instrumentMarketDataJobRepository.markFailed(job.id, getErrorMessage(error))
+            );
         });
 
         return true;
@@ -128,11 +129,13 @@ class HistoricalMarketDataLoaderService {
 
         const prices = await this.fetchHistoricalPrices(instrument, job);
 
-        await transactionAsync(db, async tx => {
-            await instrumentDailyMarketPriceRepository.bulkUpsert(prices, tx);
-            await historicalExchangeRateRepository.bulkUpsert(this.buildHistoricalRateInputs(prices), tx);
-            await instrumentMarketDataJobRepository.markCompleted(job.id, tx);
-        });
+        await syncWorkloadService.run('historical-market-data-complete', () =>
+            transactionAsync(db, async tx => {
+                await instrumentDailyMarketPriceRepository.bulkUpsert(prices, tx);
+                await historicalExchangeRateRepository.bulkUpsert(this.buildHistoricalRateInputs(prices), tx);
+                await instrumentMarketDataJobRepository.markCompleted(job.id, tx);
+            })
+        );
     }
 
     private async buildAccountJobInputs(

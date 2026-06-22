@@ -1,7 +1,7 @@
 import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
 
-import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
-import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
+import type { FileBasedBankSyncClientInterface } from '@budgie/bank-sync';
+import type { ParsedFileResultInterface } from '@budgie/bank-sync';
 import type { ExternalSourceEnum, MccCategoryLookupInterface } from '@budgie/contracts';
 
 export class StubFileBankSyncService extends BaseFileBankSyncService {
@@ -18,7 +18,7 @@ export class StubFileBankSyncService extends BaseFileBankSyncService {
         super(externalSource);
     }
 
-    protected parseFile(): Promise<ParsedFileResultInterface> {
+    protected parseFileContent(): Promise<ParsedFileResultInterface> {
         return Promise.resolve({ client: this.client, bankAccounts: this.client.getAccounts() });
     }
 

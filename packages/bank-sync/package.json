@@ -25,6 +25,7 @@
         "ts": "run -T tsc -p ."
     },
     "dependencies": {
+        "@budgie/contracts": "workspace:^",
         "@budgie/logger": "workspace:*",
         "@rnw-community/shared": "^2.2.0",
         "date-fns": "^4.3.0",

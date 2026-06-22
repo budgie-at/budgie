@@ -19,7 +19,7 @@ import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-co
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
-import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
+import type { FileBasedBankSyncClientInterface } from '@budgie/bank-sync';
 import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';
 import type { AccountEntityInterface, ConsolidationScanScopeInterface, MccCategoryLookupInterface } from '@budgie/contracts';
 

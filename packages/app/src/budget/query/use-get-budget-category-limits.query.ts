@@ -1,8 +1,7 @@
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-
 import { isDefined } from '@rnw-community/shared';
 
 import { budgetCategoryLimitRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 
 import type { BudgetCategoryLimitEntityInterface } from '@budgie/contracts';
 
@@ -15,7 +14,7 @@ const EMPTY_LIMITS: readonly BudgetCategoryLimitEntityInterface[] = [];
 
 export const useGetBudgetCategoryLimitsQuery = (budgetId: number | null): UseGetBudgetCategoryLimitsResult => {
     const lookupId = budgetId ?? 0;
-    const { data, updatedAt } = useLiveQuery(budgetCategoryLimitRepository.findByBudget(lookupId), [lookupId]);
+    const { data, updatedAt } = useDatabaseLiveQuery(budgetCategoryLimitRepository.findByBudget(lookupId), [lookupId]);
 
     if (!isDefined(budgetId) || !isDefined(updatedAt)) {
         return { categoryLimits: EMPTY_LIMITS, isLoading: true };

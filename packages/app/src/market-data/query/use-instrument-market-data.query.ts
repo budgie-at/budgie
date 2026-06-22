@@ -1,12 +1,11 @@
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-
 import { instrumentDailyMarketPriceRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 
 const MARKET_DATA_HISTORY_LIMIT = 90;
 
 export const useInstrumentMarketDataQuery = (instrumentId: number, quoteInstrumentId: number) => {
     const dependencies = [instrumentId, quoteInstrumentId];
-    const { data, updatedAt, ...rest } = useLiveQuery(
+    const { data, updatedAt, ...rest } = useDatabaseLiveQuery(
         instrumentDailyMarketPriceRepository.findRecent(instrumentId, quoteInstrumentId, MARKET_DATA_HISTORY_LIMIT),
         dependencies
     );

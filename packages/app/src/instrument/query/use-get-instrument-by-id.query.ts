@@ -1,11 +1,10 @@
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-
 import { isDefined } from '@rnw-community/shared';
 
 import { instrumentRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 
 export const useGetInstrumentByIdQuery = (id: number) => {
-    const { data, updatedAt, error } = useLiveQuery(instrumentRepository.findById(id), [id]);
+    const { data, updatedAt, error } = useDatabaseLiveQuery(instrumentRepository.findById(id), [id]);
 
     if (!isDefined(data)) {
         return { isLoading: !isDefined(updatedAt), instrument: null, updatedAt, error };

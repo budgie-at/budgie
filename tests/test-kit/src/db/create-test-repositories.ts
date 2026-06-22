@@ -17,6 +17,8 @@ export const createTestRepositories = (db: DB) => ({
     instrumentRepository: new contracts.InstrumentRepository(db),
     exchangeRateRepository: new contracts.ExchangeRateRepository(db),
     historicalExchangeRateRepository: new contracts.HistoricalExchangeRateRepository(db),
+    instrumentDailyMarketPriceRepository: new contracts.InstrumentDailyMarketPriceRepository(db),
+    instrumentMarketDataJobRepository: new contracts.InstrumentMarketDataJobRepository(db),
     accountBalanceRepository: new contracts.AccountBalanceRepository(db),
     bankSyncRepository: new contracts.BankSyncRepository(db),
     ruleRepository: new contracts.RuleRepository(db),

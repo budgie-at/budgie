@@ -110,6 +110,10 @@ msgstr "{matchingRulesCount, plural, one {# regla coincidente} other {# reglas c
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# mes} other {# meses}}"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
+msgstr "{newTransactionCount} nuevas, {existingTransactionCount} ya importadas, {parsedTransactionCount} comprobadas"
+
 #: src/category/components/category-statistics-card/category-statistics-card.tsx
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
 msgid "{percentage}% of expenses"
@@ -543,6 +547,10 @@ msgstr "Budgie rellenará los valores faltantes en la moneda base usando tipos d
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
 msgstr "Budgie fusionará coincidencias de transferencias y reembolsos de alta confianza. Las coincidencias ambiguas no se modificarán."
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Budgie will notify you when it finishes"
+msgstr "Budgie te avisará cuando termine"
 
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
@@ -1550,12 +1558,17 @@ msgid "Import Erste Bank"
 msgstr "Importar Erste Bank"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/hook/use-quick-import.hook.ts
 msgid "Import failed"
 msgstr "Error de importación"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
 msgstr "Importar Privatbank"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Import started"
+msgstr "Importación iniciada"
 
 #: src/import/components/import-csv/import-csv.tsx
 msgid "Import transactions from a CSV file"
@@ -1941,6 +1954,10 @@ msgstr "No se encontraron monedas"
 msgid "No Custom Categories"
 msgstr "Sin categorías personalizadas"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No enabled accounts were found in this file"
+msgstr "No se encontraron cuentas activadas en este archivo"
+
 #: src/app/icon-selector.tsx
 msgid "No icons found"
 msgstr "No se encontraron iconos"
@@ -1961,6 +1978,10 @@ msgstr "No hay elementos para guardar"
 msgid "No languages found"
 msgstr "No se encontraron idiomas"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No matching accounts"
+msgstr "No hay cuentas coincidentes"
+
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "No matching expenses"
 msgstr "No hay gastos coincidentes"
@@ -1977,6 +1998,10 @@ msgstr "No hay códigos MCC disponibles"
 #: src/app/rule-mcc-selector.tsx
 msgid "No MCC codes found"
 msgstr "No se encontraron códigos MCC"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No new transactions"
+msgstr "No hay transacciones nuevas"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
@@ -2828,14 +2853,6 @@ msgstr "Cambiar entre temas claro y oscuro"
 msgid "Sync Failed"
 msgstr "Sincronización fallida"
 
-#: src/sync/service/sync-workload.service.ts
-msgid "Sync workload is blocked for app reset"
-msgstr "La carga de sincronización está bloqueada por el restablecimiento de la app"
-
-#: src/sync/service/sync-workload.service.ts
-msgid "Sync workload was cancelled by app reset"
-msgstr "La carga de sincronización fue cancelada por el restablecimiento de la app"
-
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Sincronice sus cuentas y transacciones de Monobank"
@@ -3022,6 +3039,10 @@ msgstr "Transacción no encontrada"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Transacciones"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Transactions imported"
+msgstr "Transacciones importadas"
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
 msgid "Transactions synced"

@@ -444,10 +444,10 @@ Mix freely: any of the three hooks can independently be a string or a function.
 5. **Strings (short or business-identifying)** → output quoted values: `title="${transactionTitle}"`. Do not log `titleLen=${title.length}` because length is not useful for debugging identifiers.
 6. **Strings (long, sensitive, or prompt-sized)** → use a quoted preview plus a scalar only when the full value would be noisy or unsafe: `promptPreview="${prompt.slice(0, 120)}" promptLen=${prompt.length}`.
 7. **Numbers / IDs** → output directly: `id=${row.id}`.
-8. **Arrays of entities** → `.map(item => item.<scalarField>).join(',')`. Pick the most identifying scalar (`id`, `externalId`, `title`). Never `.length` — the join makes the failing entries debuggable.
-9. **Arrays of primitives** (`string[]`, `number[]`) → `.join(',')`. Same reason.
-10. **`Map<K, V>`** → `[...map.keys()].join(',')`. Keys are usually the debuggable handle; `.size` loses information.
-11. **`Set<T>`** → `[...set].join(',')`.
+8. **Arrays of entities** → default to counts, for example `transactionCount=${transactions.length}`. Include joined IDs only when the collection is small or the specific entries are the debugging handle.
+9. **Arrays of primitives** (`string[]`, `number[]`) → default to counts. Include `.join(',')` only when the values are small, non-sensitive, and identify the failure.
+10. **`Map<K, V>`** → default to `.size`. Include keys only when the key set is small and materially useful.
+11. **`Set<T>`** → default to `.size`. Include values only when the value set is small and materially useful.
 12. **Typed arrays** (`Uint8Array`, `Float32Array`, embedding buffers) → KEEP `.length` as `dimensions=${vec.length}`. Raw bytes are meaningless inline.
 13. **Objects** → destructure their identifying scalars; do not stringify the whole object.
 14. **Errors** → `getErrorMessage(error)` from `@rnw-community/shared`. Never `String(error)` or `error.message`.
@@ -472,7 +472,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 ### Build-time gate
 
-`EXPO_PUBLIC_LOGGING_DISABLE=true` (e2e profile in `eas.json`) suppresses all output. Build-time only — flipping requires a rebuild.
+`EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle output. Metro dev bundles still log through `__DEV__`; native development and profiling builds set logging at build time, so non-dev bundle changes require rebuilds. App-specific Metro commands and bundle-id traps live in `packages/app/AGENTS.md`.
 
 ### `bank-sync` exception
 

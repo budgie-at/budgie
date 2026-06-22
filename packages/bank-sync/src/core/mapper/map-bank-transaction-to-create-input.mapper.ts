@@ -1,15 +1,12 @@
-import { BankTransactionTypeEnum } from '@budgie/bank-sync';
-import {
-    BANK_FEE_CATEGORY_ID,
-    CategorySourceEnum,
-    ExternalSourceEnum,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import type { BankTransactionInterface } from '@budgie/bank-sync';
+import { BankTransactionTypeEnum } from '../enum/bank-transaction-type.enum';
+
+import { mapBankProviderToExternalSource } from './map-bank-provider-to-external-source.mapper';
+
+import type { BankTransactionInterface } from '../interface/bank-transaction.interface';
 import type { MccCategoryLookupInterface, TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 const FEE_ENTRY_EXTERNAL_ID_SUFFIX = ':fee';
@@ -20,8 +17,7 @@ const getExchangeRate = (mainAmount: number, operationAmount: number): number =>
 export const mapBankTransactionToCreateInput = (
     bankTransaction: BankTransactionInterface,
     accountId: number,
-    mccCategoryLookup: MccCategoryLookupInterface | null,
-    provider: ExternalSourceEnum
+    mccCategoryLookup: MccCategoryLookupInterface | null
 ): TransactionCreateInputInterface => {
     const isIncome = bankTransaction.type === BankTransactionTypeEnum.INCOME;
     const amount = Math.abs(bankTransaction.amount);
@@ -32,6 +28,7 @@ export const mapBankTransactionToCreateInput = (
     const mainAmount = hasFee ? amount - feeAmount : amount;
     const exchangeRate = getExchangeRate(mainAmount, Math.abs(bankTransaction.operationAmount));
     const externalIdAliases = bankTransaction.legacyExternalIds ?? [];
+    const externalSource = mapBankProviderToExternalSource(bankTransaction.provider);
 
     const mainEntry: TransactionEntryCreateInputInterface = {
         accountId,
@@ -67,7 +64,7 @@ export const mapBankTransactionToCreateInput = (
         externalId: bankTransaction.id,
         ...(isNotEmptyArray(externalIdAliases) && { externalIdAliases: [...externalIdAliases] }),
         updatedBy: null,
-        externalSource: provider,
+        externalSource,
         fromAccountId: isIncome ? null : accountId,
         toAccountId: isIncome ? accountId : null,
         tagIds: [],

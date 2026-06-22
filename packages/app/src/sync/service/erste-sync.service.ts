@@ -1,13 +1,10 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
-
-import { getErrorMessage } from '@rnw-community/shared';
 
 import { extractPdfTextItems } from '../util/extract-pdf-text-items.util';
 
 import { BaseFileBankSyncService } from './base-file-bank-sync.service';
 
-import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
+import type { ParsedFileResultInterface } from '@budgie/bank-sync';
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
 class ErsteSyncService extends BaseFileBankSyncService {
@@ -15,13 +12,7 @@ class ErsteSyncService extends BaseFileBankSyncService {
         super(ExternalSourceEnum.ERSTE);
     }
 
-    @Log(
-        uri => `enter uri=${uri}`,
-        (result, uri) =>
-            `done uri=${uri} bankAccountIds=${result.bankAccounts.map(account => account.id).join(',')} bankAccountCount=${result.bankAccounts.length}`,
-        (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`
-    )
-    protected async parseFile(uri: string): Promise<ParsedFileResultInterface> {
+    protected async parseFileContent(uri: string): Promise<ParsedFileResultInterface> {
         const items = await extractPdfTextItems(uri);
         const module = await import('@budgie/bank-sync');
         const ersteClient = new module.ErsteFileClient();

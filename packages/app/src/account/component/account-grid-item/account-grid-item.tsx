@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const AccountGridItem = ({ account, balance, type, isLeft }: Props) => {
-    const { id, title, icon, instrument, deadline, debtType, targetBalance, createdAt, bankSync } = account;
+    const { id, title, icon, externalId, instrument, deadline, debtType, targetBalance, createdAt, bankSync } = account;
 
     const containerClassName = isLeft ? 'flex-1 pr-1.5' : 'flex-1 pl-1.5';
 
@@ -26,6 +26,7 @@ export const AccountGridItem = ({ account, balance, type, isLeft }: Props) => {
                 deadline={deadline}
                 debtType={debtType}
                 icon={icon}
+                externalId={externalId}
                 title={title}
                 createdAt={createdAt}
                 bankSync={bankSync}

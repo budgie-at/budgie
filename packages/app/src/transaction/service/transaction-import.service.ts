@@ -28,11 +28,11 @@ import type {
 class TransactionImportService {
     @Log(
         (inputs, existingTransactionIdMap, tx, options) =>
-            `enter externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
+            `enter inputCount=${inputs.length} existingKeyCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
         (result, ...[inputs, existingTransactionIdMap, tx, options]) =>
-            `done externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upsertedIds=${result.map(row => row.id).join(',')}`,
+            `done inputCount=${inputs.length} existingKeyCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upsertedCount=${result.length} upsertedIds=${result.map(row => row.id).join(',')}`,
         (error, ...[inputs, existingTransactionIdMap, tx, options]) =>
-            `throw externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
+            `throw inputCount=${inputs.length} existingKeyCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
     )
     async bulkUpsertImported(
         inputs: TransactionCreateInputInterface[],
@@ -55,11 +55,11 @@ class TransactionImportService {
 
     @Log(
         (prepared, tx, options) =>
-            `enter externalIds=${prepared.transactionInputs.map(input => input.externalId).join(',')} existingKeys=${[...prepared.externalIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
+            `enter inputCount=${prepared.transactionInputs.length} existingKeyCount=${prepared.externalIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
         (result, ...[prepared, tx, options]) =>
-            `done externalIds=${prepared.transactionInputs.map(input => input.externalId).join(',')} existingKeys=${[...prepared.externalIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upsertedIds=${result.map(row => row.id).join(',')}`,
+            `done inputCount=${prepared.transactionInputs.length} existingKeyCount=${prepared.externalIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upsertedCount=${result.length} upsertedIds=${result.map(row => row.id).join(',')}`,
         (error, ...[prepared, tx, options]) =>
-            `throw externalIds=${prepared.transactionInputs.map(input => input.externalId).join(',')} existingKeys=${[...prepared.externalIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
+            `throw inputCount=${prepared.transactionInputs.length} existingKeyCount=${prepared.externalIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
     )
     async bulkUpsertPreparedImported(
         prepared: ImportedBatchPreparationInterface,

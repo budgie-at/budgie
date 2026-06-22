@@ -17,6 +17,12 @@ export type { BankTokenStorageInterface } from './core/interface/bank-token-stor
 export type { BankSyncOptionsInterface } from './core/interface/bank-sync-options.interface';
 export type { BankSyncBatchResultInterface } from './core/interface/bank-sync-batch-result.interface';
 export type { BankSyncedDataInterface } from './core/interface/bank-synced-data.interface';
+export type { FileBasedBankSyncClientInterface } from './core/interface/file-based-bank-sync-client.interface';
+export type { ParsedFileResultInterface } from './core/interface/parsed-file-result.interface';
+export { mapBankAccountToCreateInput } from './core/mapper/map-bank-account-to-create-input.mapper';
+export { mapBankProviderToExternalSource } from './core/mapper/map-bank-provider-to-external-source.mapper';
+export { mapBankTransactionToCreateInput } from './core/mapper/map-bank-transaction-to-create-input.mapper';
+export { formatBankAccountTitle } from './core/util/format-bank-account-title.util';
 
 export { MonobankSyncService } from './monobank/service/monobank-sync.service';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
@@ -35,7 +41,6 @@ export { privatbankTransactionMapper } from './privatbank/mapper/privatbank-tran
 export { privatbankCurrencyCodeMapper } from './privatbank/mapper/privatbank-currency-code.mapper';
 export { parsePrivatbankXlsx } from './privatbank/util/parse-privatbank-xlsx.util';
 export { extractCardEnding } from './privatbank/util/extract-card-ending.util';
-export { generatePrivatbankExternalId } from './privatbank/util/generate-privatbank-external-id.util';
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
 export { ErsteFileClient } from './erste/client/erste-file.client';

@@ -1,20 +1,13 @@
-import { BankAccountInterface } from '@budgie/bank-sync';
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { BankAccountInterface, mapBankAccountToCreateInput } from '@budgie/bank-sync';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
 
-import { mapBankAccountToCreateInput } from './map-bank-account-to-create-input.util';
-
 import type { AccountEntityInterface, DB, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 
-export const getOrCreateBankAccount = async (
-    bankAccount: BankAccountInterface,
-    provider: ExternalSourceEnum,
-    tx?: DB
-): Promise<AccountEntityInterface> => {
+export const getOrCreateBankAccount = async (bankAccount: BankAccountInterface, tx?: DB): Promise<AccountEntityInterface> => {
     const existingByExternalId = await accountRepository.findByExternalIds([bankAccount.id]);
     if (isNotEmptyArray(existingByExternalId)) {
         return existingByExternalId[0];
@@ -34,7 +27,7 @@ export const getOrCreateBankAccount = async (
         throw new Error(`Instrument not found for currency: ${bankAccount.currencyCode}`);
     }
 
-    const input: LiabilityAccountCreateInputInterface = mapBankAccountToCreateInput(bankAccount, instrument.id, provider);
+    const input: LiabilityAccountCreateInputInterface = mapBankAccountToCreateInput(bankAccount, instrument.id);
 
     const [createdAccount] = Object.values(await accountService.bulkCreate([input], tx));
     if (!isDefined(createdAccount)) {
