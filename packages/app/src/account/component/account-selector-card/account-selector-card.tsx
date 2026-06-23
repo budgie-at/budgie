@@ -31,31 +31,30 @@ export const AccountSelectorCard = (props: Props) => {
     const optionTestID = AccountSelectorModalSelector.Option(title);
 
     return (
-        <View collapsable={false} testID={optionTestID}>
-            <SelectorCard
-                identifier={id}
-                isSelected={isSelected}
-                allowReselect
-                onSelect={onSelect}
-                className={className}
-                iconSlot={
-                    <AccountInactiveIcon isInactive={!isActive} size={48}>
-                        <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
-                    </AccountInactiveIcon>
-                }
-                title={title}
-                subtitle={
-                    <View className="flex-row items-center">
-                        <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
-                            {t(ACCOUNT_TYPE[type])}
-                        </Text>
-                        <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
-                        <ProtectedText className="text-sm font-medium text-primary" numberOfLines={1}>
-                            {formatDigits(balance, instrument.symbol)}
-                        </ProtectedText>
-                    </View>
-                }
-            />
-        </View>
+        <SelectorCard
+            identifier={id}
+            isSelected={isSelected}
+            allowReselect
+            onSelect={onSelect}
+            className={className}
+            testID={optionTestID}
+            iconSlot={
+                <AccountInactiveIcon isInactive={!isActive} size={48}>
+                    <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
+                </AccountInactiveIcon>
+            }
+            title={title}
+            subtitle={
+                <View className="flex-row items-center">
+                    <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
+                        {t(ACCOUNT_TYPE[type])}
+                    </Text>
+                    <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
+                    <ProtectedText className="text-sm font-medium text-primary" numberOfLines={1}>
+                        {formatDigits(balance, instrument.symbol)}
+                    </ProtectedText>
+                </View>
+            }
+        />
     );
 };
