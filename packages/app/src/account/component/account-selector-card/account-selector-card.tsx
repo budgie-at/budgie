@@ -1,10 +1,13 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
+import { cn } from '../../../@generic/utils/cn.util';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -21,6 +24,15 @@ interface Props extends Pick<
     readonly className?: string;
 }
 
+const cardVariants = cva('rounded-3xl p-3xl border-2 gap-x-xl flex-row items-center', {
+    variants: {
+        isSelected: {
+            true: 'bg-secondary-background/30 border-secondary-corner',
+            false: 'border-secondary-corner/50'
+        }
+    }
+});
+
 export const AccountSelectorCard = (props: Props) => {
     const { className, isSelected, title, onSelect, id, icon, type, instrument, isActive } = props;
 
@@ -29,25 +41,29 @@ export const AccountSelectorCard = (props: Props) => {
     const { balance } = useAccountBalanceQuery(id);
     const formatDigits = useFormatDigits(decimalPlaces);
     const optionTestID = AccountSelectorModalSelector.Option(title);
+    const handleSelect = () => void onSelect(id);
+    const cardClassName = cn(cardVariants({ isSelected }), className);
+    const right = isSelected ? (
+        <View className="bg-primary rounded-full p-xs">
+            <Icon className="text-primary-reverse" icon={UserIconNameEnum.Check} size={16} />
+        </View>
+    ) : null;
 
     return (
-        <SelectorCard
-            identifier={id}
-            isSelected={isSelected}
-            allowReselect
-            onSelect={onSelect}
-            className={className}
+        <HapticPressable
+            className={cardClassName}
+            onPress={handleSelect}
             testID={optionTestID}
             accessible
             accessibilityLabel={title}
             accessibilityRole="button"
-            iconSlot={
-                <AccountInactiveIcon isInactive={!isActive} size={48}>
-                    <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
-                </AccountInactiveIcon>
-            }
-            title={title}
-            subtitle={
+        >
+            <AccountInactiveIcon isInactive={!isActive} size={48}>
+                <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
+            </AccountInactiveIcon>
+
+            <View className="gap-y-xxs flex-1 justify-center">
+                <Text className="text-md font-semibold text-primary">{title}</Text>
                 <View className="flex-row items-center">
                     <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
                         {t(ACCOUNT_TYPE[type])}
@@ -57,7 +73,9 @@ export const AccountSelectorCard = (props: Props) => {
                         {formatDigits(balance, instrument.symbol)}
                     </ProtectedText>
                 </View>
-            }
-        />
+            </View>
+
+            {right}
+        </HapticPressable>
     );
 };
