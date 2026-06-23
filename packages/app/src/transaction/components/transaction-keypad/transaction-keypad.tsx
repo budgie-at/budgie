@@ -68,15 +68,14 @@ export const TransactionKeypad = (props: Props) => {
 
                 <View className="flex-row gap-md">
                     <TransactionKeypadButton icon={UserIconNameEnum.X} variant="cancel" onPress={onCancel} />
-                    <View className="flex-2" collapsable={false} testID={confirmTestID}>
-                        <TransactionKeypadButton
-                            icon={UserIconNameEnum.CircleCheck}
-                            variant="confirm"
-                            colorVariant={variant}
-                            onPress={onConfirm}
-                            disabled={isConfirmDisabled}
-                        />
-                    </View>
+                    <TransactionKeypadButton
+                        icon={UserIconNameEnum.CircleCheck}
+                        variant="confirm"
+                        colorVariant={variant}
+                        onPress={onConfirm}
+                        disabled={isConfirmDisabled}
+                        testID={confirmTestID}
+                    />
                 </View>
             </View>
         </Animated.View>
