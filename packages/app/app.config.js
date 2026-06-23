@@ -113,10 +113,10 @@ export default ({ config }) => ({
         [
             'expo-build-properties',
             {
-                buildReactNativeFromSource: true,
                 useHermesV1: true,
                 ios: {
-                    ccacheEnabled: true
+                    ccacheEnabled: true,
+                    usePrecompiledModules: true
                 }
             }
         ],

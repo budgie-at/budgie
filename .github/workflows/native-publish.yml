@@ -57,6 +57,10 @@ jobs:
 
       - name: Build iOS app locally
         working-directory: packages/app
+        env:
+          EXPO_USE_PRECOMPILED_MODULES: "1"
+          RCT_USE_PREBUILT_RNCORE: "1"
+          RCT_USE_RN_DEP: "1"
         run: |
           mkdir -p ../../artifacts
           eas build --platform ios --profile production --local --non-interactive --output ../../artifacts/budgie-production.ipa
