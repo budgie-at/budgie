@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { ComponentProps, ReactNode } from 'react';
-import { ActivityIndicator, Text } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
 
@@ -29,7 +29,7 @@ const buttonVariants = cva<{
     variant: Record<ColorPaletteVariant, ClassValue>;
     size: Record<ButtonSizeType, ClassValue>;
     disabled: Record<'true', ClassValue>;
-}>('flex-row items-center gap-x-xl justify-center border', {
+}>('relative flex-row items-center gap-x-xl justify-center border', {
     variants: {
         disabled: { true: 'opacity-50' },
         variant: BACKGROUND_COLOR_PALETTE,
@@ -72,6 +72,7 @@ export const Button = (props: Props) => {
 
     const isDisabled = disabled || isLoading;
     const resolvedAccessibilityLabel = accessibilityLabel ?? (isString(content) ? content : testID);
+    const hasTestID = isNotEmptyString(testID);
 
     return (
         <HapticPressable
@@ -79,11 +80,15 @@ export const Button = (props: Props) => {
             disabled={isDisabled}
             className={cn(buttonVariants({ disabled: isDisabled, size, variant }), className)}
             testID={testID}
+            collapsable={false}
+            nativeID={testID}
             accessible
             accessibilityLabel={resolvedAccessibilityLabel}
             accessibilityRole={accessibilityRole}
             {...rest}
         >
+            {hasTestID ? <View collapsable={false} nativeID={testID} style={StyleSheet.absoluteFill} testID={testID} /> : null}
+
             {isLoading ? (
                 <ActivityIndicator size="small" />
             ) : (
