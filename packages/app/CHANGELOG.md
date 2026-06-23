@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.38.2](https://github.com/budgie-at/budgie/compare/v5.38.1...v5.38.2) (2026-06-23)
+
+**Note:** Version bump only for package @budgie-at/app
+
 ## [5.38.1](https://github.com/budgie-at/budgie/compare/v5.38.0...v5.38.1) (2026-06-22)
 
 ### Bug Fixes
