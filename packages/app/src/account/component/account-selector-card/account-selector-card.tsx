@@ -38,6 +38,9 @@ export const AccountSelectorCard = (props: Props) => {
             onSelect={onSelect}
             className={className}
             testID={optionTestID}
+            accessible
+            accessibilityLabel={title}
+            accessibilityRole="button"
             iconSlot={
                 <AccountInactiveIcon isInactive={!isActive} size={48}>
                     <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
