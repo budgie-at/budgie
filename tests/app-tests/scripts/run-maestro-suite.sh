@@ -127,7 +127,7 @@ extract_database_fixture_name() {
     local nested_flow_path
     local nested_fixture_name
 
-    fixture_name="$(sed -n "s/^[[:space:]]*FIXTURE_ROW_ID_MATCH:[[:space:]]*['\"]\\([^'\"]*\\.db\\)['\"].*/\\1/p" "$flow_path" | head -n 1)"
+    fixture_name="$(sed -n "s/^[[:space:]]*FIXTURE_ROW_ID_MATCH:[[:space:]]*['\"]\\([^'\"]*\\.db\\).*['\"].*/\\1/p" "$flow_path" | head -n 1)"
 
     if [ -n "$fixture_name" ]; then
         printf '%s\n' "$fixture_name"
