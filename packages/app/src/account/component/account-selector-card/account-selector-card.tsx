@@ -1,7 +1,7 @@
 import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -24,7 +24,7 @@ interface Props extends Pick<
     readonly className?: string;
 }
 
-const cardVariants = cva('rounded-3xl p-3xl border-2 gap-x-xl flex-row items-center', {
+const cardVariants = cva('relative rounded-3xl p-3xl border-2 gap-x-xl flex-row items-center', {
     variants: {
         isSelected: {
             true: 'bg-secondary-background/30 border-secondary-corner',
@@ -57,7 +57,11 @@ export const AccountSelectorCard = (props: Props) => {
             accessible
             accessibilityLabel={title}
             accessibilityRole="button"
+            collapsable={false}
+            nativeID={optionTestID}
         >
+            <View collapsable={false} nativeID={optionTestID} style={StyleSheet.absoluteFill} testID={optionTestID} />
+
             <AccountInactiveIcon isInactive={!isActive} size={48}>
                 <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
             </AccountInactiveIcon>
