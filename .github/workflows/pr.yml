@@ -122,6 +122,9 @@ jobs:
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
+      EXPO_USE_PRECOMPILED_MODULES: "1"
+      RCT_USE_PREBUILT_RNCORE: "1"
+      RCT_USE_RN_DEP: "1"
       IOS_DERIVED_DATA: ${{ github.workspace }}/.ci-cache/DerivedData/budgie-e2e
       USE_CCACHE: "1"
       CCACHE_DIR: ${{ github.workspace }}/.ci-cache/ccache
@@ -222,8 +225,6 @@ jobs:
         env:
           APP_VARIANT: e2e
           EXPO_PUBLIC_AI_DISABLE: "true"
-          RCT_USE_PREBUILT_RNCORE: "1"
-          RCT_USE_RN_DEP: "1"
         run: npx expo prebuild -p ios --clean
 
       - name: Sync CocoaPods
