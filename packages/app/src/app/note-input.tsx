@@ -48,17 +48,16 @@ export default function NoteInputModal() {
                     />
                 </View>
 
-                <View collapsable={false} nativeID={NoteInputModalSelector.SubmitButton} testID={NoteInputModalSelector.SubmitButton}>
-                    <Button
-                        onPress={handleSubmit}
-                        accessible
-                        accessibilityLabel={t`Apply`}
-                        className="min-h-[48px] px-4xl"
-                        content={t`Apply`}
-                        size="sm"
-                        variant="default"
-                    />
-                </View>
+                <Button
+                    onPress={handleSubmit}
+                    accessible
+                    accessibilityLabel={t`Apply`}
+                    className="min-h-[48px] px-4xl"
+                    content={t`Apply`}
+                    size="sm"
+                    testID={NoteInputModalSelector.SubmitButton}
+                    variant="default"
+                />
             </View>
         </View>
     );
