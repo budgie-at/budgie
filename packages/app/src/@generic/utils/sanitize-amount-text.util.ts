@@ -1,4 +1,4 @@
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 const isDigit = (char: string): boolean => char >= '0' && char <= '9';
 
@@ -17,8 +17,10 @@ export const sanitizeAmountText = (
     const lastSeparatorIndex = chars.reduce((lastIndex, char, index) => (separators.includes(char) ? index : lastIndex), -1);
     const digitCountAfterLastSeparator = chars.slice(lastSeparatorIndex + 1).filter(isDigit).length;
     const decimalChar = chars[lastSeparatorIndex];
+    const canKeepDecimalSeparator = isPositiveNumber(decimalPlaces);
     const shouldKeepDecimalSeparator =
-        lastSeparatorIndex === chars.length - 1 || (decimalChar === decimalSeparator && digitCountAfterLastSeparator <= decimalPlaces);
+        canKeepDecimalSeparator &&
+        (lastSeparatorIndex === chars.length - 1 || (decimalChar === decimalSeparator && digitCountAfterLastSeparator <= decimalPlaces));
 
     const result = chars.reduce(
         (acc, char, index) => {
@@ -29,11 +31,9 @@ export const sanitizeAmountText = (
                 };
             }
 
-            const currentChar = index === lastSeparatorIndex && shouldKeepDecimalSeparator ? decimalSeparator : char;
-
-            if (currentChar === decimalSeparator && !acc.hasDecimalSeparator) {
+            if (index === lastSeparatorIndex && shouldKeepDecimalSeparator && !acc.hasDecimalSeparator) {
                 return {
-                    cleaned: acc.cleaned.concat(currentChar),
+                    cleaned: acc.cleaned.concat(decimalSeparator),
                     hasDecimalSeparator: true
                 };
             }
