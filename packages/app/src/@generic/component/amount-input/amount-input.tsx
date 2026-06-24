@@ -44,7 +44,7 @@ export const AmountInput = ({
     const displayedText = isFocused ? displayValue : formatDigits(value === 0 ? '' : value.toString(), valuePrefix);
 
     const handleChangeText = (text: string) => {
-        const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator);
+        const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator, visibleDecimalPlaces);
 
         if (isEmptyString(cleaned)) {
             setDisplayValue('');
