@@ -29,3 +29,4 @@ env:
 - extendedWaitUntil:
     notVisible:
       id: ${FORM_INPUT_ID}
+- waitForAnimationToEnd
