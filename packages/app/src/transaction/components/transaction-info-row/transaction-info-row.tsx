@@ -33,7 +33,7 @@ export const TransactionInfoRow = ({
     const hasChildren = isDefined(children);
 
     return (
-        <Component className={rowVariants({ withBottomBorder })} onPress={onPress} testID={testID}>
+        <Component className={rowVariants({ withBottomBorder })} collapsable={false} nativeID={testID} onPress={onPress} testID={testID}>
             <View className="h-11 w-11 items-center justify-center rounded-2xl bg-secondary-background border border-secondary-corner">
                 <Icon icon={icon} size={22} className="text-secondary-foreground" />
             </View>
