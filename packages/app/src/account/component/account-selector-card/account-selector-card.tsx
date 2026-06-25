@@ -1,7 +1,7 @@
 import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -53,13 +53,13 @@ export const AccountSelectorCard = (props: Props) => {
         <HapticPressable
             className={cardClassName}
             onPress={handleSelect}
+            testID={optionTestID}
+            nativeID={optionTestID}
             accessible
             accessibilityLabel={title}
             accessibilityRole="button"
             collapsable={false}
         >
-            <View collapsable={false} nativeID={optionTestID} style={StyleSheet.absoluteFill} testID={optionTestID} />
-
             <AccountInactiveIcon isInactive={!isActive} size={48}>
                 <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
             </AccountInactiveIcon>
