@@ -53,18 +53,16 @@ export const AccountSelectorCard = (props: Props) => {
         <HapticPressable
             className={cardClassName}
             onPress={handleSelect}
-            testID={optionTestID}
             accessible
             accessibilityLabel={title}
             accessibilityRole="button"
             collapsable={false}
-            nativeID={optionTestID}
         >
             <AccountInactiveIcon isInactive={!isActive} size={48}>
                 <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
             </AccountInactiveIcon>
 
-            <View className="gap-y-xxs flex-1 justify-center">
+            <View className="gap-y-xxs flex-1 justify-center" testID={optionTestID} collapsable={false}>
                 <Text className="text-md font-semibold text-primary">{title}</Text>
                 <View className="flex-row items-center">
                     <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
