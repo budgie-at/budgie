@@ -53,31 +53,31 @@ export const AccountSelectorCard = (props: Props) => {
         <HapticPressable
             className={cardClassName}
             onPress={handleSelect}
-            testID={optionTestID}
-            nativeID={optionTestID}
             accessible
             accessibilityLabel={title}
             accessibilityRole="button"
             collapsable={false}
         >
-            <AccountInactiveIcon isInactive={!isActive} size={48}>
-                <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
-            </AccountInactiveIcon>
+            <View className="flex-row items-center gap-x-xl flex-1" testID={optionTestID} nativeID={optionTestID} collapsable={false}>
+                <AccountInactiveIcon isInactive={!isActive} size={48}>
+                    <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
+                </AccountInactiveIcon>
 
-            <View className="gap-y-xxs flex-1 justify-center">
-                <Text className="text-md font-semibold text-primary">{title}</Text>
-                <View className="flex-row items-center">
-                    <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
-                        {t(ACCOUNT_TYPE[type])}
-                    </Text>
-                    <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
-                    <ProtectedText className="text-sm font-medium text-primary" numberOfLines={1}>
-                        {formatDigits(balance, instrument.symbol)}
-                    </ProtectedText>
+                <View className="gap-y-xxs flex-1 justify-center">
+                    <Text className="text-md font-semibold text-primary">{title}</Text>
+                    <View className="flex-row items-center">
+                        <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
+                            {t(ACCOUNT_TYPE[type])}
+                        </Text>
+                        <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
+                        <ProtectedText className="text-sm font-medium text-primary" numberOfLines={1}>
+                            {formatDigits(balance, instrument.symbol)}
+                        </ProtectedText>
+                    </View>
                 </View>
-            </View>
 
-            {right}
+                {right}
+            </View>
         </HapticPressable>
     );
 };
