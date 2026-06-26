@@ -28,12 +28,13 @@ export const TransactionInfoRow = ({
     onPress,
     withBottomBorder = true
 }: TransactionInfoRowPropsInterface) => {
-    const Component = isDefined(onPress) ? HapticPressable : View;
     const hasValue = isNotEmptyString(value);
     const hasChildren = isDefined(children);
-
-    return (
-        <Component className={rowVariants({ withBottomBorder })} collapsable={false} nativeID={testID} onPress={onPress} testID={testID}>
+    const rightSlot = isDefined(onPress) ? (
+        <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />
+    ) : null;
+    const rowContent = (
+        <>
             <View className="h-11 w-11 items-center justify-center rounded-2xl bg-secondary-background border border-secondary-corner">
                 <Icon icon={icon} size={22} className="text-secondary-foreground" />
             </View>
@@ -53,7 +54,23 @@ export const TransactionInfoRow = ({
                 {hasChildren ? <View className="flex-row flex-wrap gap-xs pt-xs">{children}</View> : null}
             </View>
 
-            {isDefined(onPress) ? <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" /> : null}
-        </Component>
+            {rightSlot}
+        </>
+    );
+
+    if (isDefined(onPress)) {
+        return (
+            <HapticPressable onPress={onPress}>
+                <View className={rowVariants({ withBottomBorder })} collapsable={false} nativeID={testID} testID={testID}>
+                    {rowContent}
+                </View>
+            </HapticPressable>
+        );
+    }
+
+    return (
+        <View className={rowVariants({ withBottomBorder })} collapsable={false} nativeID={testID} testID={testID}>
+            {rowContent}
+        </View>
     );
 };
