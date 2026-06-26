@@ -9,19 +9,19 @@ import { TabButtonsSelector } from './tab-buttons.selector';
 export const TabButtons = () => (
     <View className="flex-row items-center gap-sm">
         <TabTrigger name="home" asChild resetOnFocus>
-            <TabButton testID={TabButtonsSelector.Home} icon={UserIconNameEnum.Home} />
+            <TabButton buttonTestID={TabButtonsSelector.Home} icon={UserIconNameEnum.Home} />
         </TabTrigger>
 
         <TabTrigger name="transactions" asChild resetOnFocus>
-            <TabButton testID={TabButtonsSelector.Transactions} icon={UserIconNameEnum.Receipt} />
+            <TabButton buttonTestID={TabButtonsSelector.Transactions} icon={UserIconNameEnum.Receipt} />
         </TabTrigger>
 
         <TabTrigger name="analytics" asChild resetOnFocus>
-            <TabButton testID={TabButtonsSelector.Analytics} icon={UserIconNameEnum.ChartNoAxesColumn} />
+            <TabButton buttonTestID={TabButtonsSelector.Analytics} icon={UserIconNameEnum.ChartNoAxesColumn} />
         </TabTrigger>
 
         <TabTrigger name="settings" asChild resetOnFocus>
-            <TabButton testID={TabButtonsSelector.Settings} icon={UserIconNameEnum.Settings} />
+            <TabButton buttonTestID={TabButtonsSelector.Settings} icon={UserIconNameEnum.Settings} />
         </TabTrigger>
     </View>
 );
