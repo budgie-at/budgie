@@ -48,12 +48,19 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
     const tabStyle = { width: TAB_SIZE, height: TAB_SIZE };
 
     return (
-        <View testID={testID} nativeID={testID} collapsable={false} style={tabStyle}>
-            <HapticPressable {...rest} onPress={handlePress} hitSlop={12} accessibilityRole="button">
-                <View className={tabVariants({ isFocused })} style={tabStyle}>
-                    <Icon className={tabIconVariants({ isFocused })} icon={icon} size={ICON_SIZE} />
-                </View>
-            </HapticPressable>
-        </View>
+        <HapticPressable
+            {...rest}
+            onPress={handlePress}
+            testID={testID}
+            nativeID={testID}
+            collapsable={false}
+            hitSlop={12}
+            accessibilityRole="button"
+            style={tabStyle}
+        >
+            <View className={tabVariants({ isFocused })} style={tabStyle}>
+                <Icon className={tabIconVariants({ isFocused })} icon={icon} size={ICON_SIZE} />
+            </View>
+        </HapticPressable>
     );
 };
