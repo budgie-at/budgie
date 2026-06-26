@@ -65,9 +65,15 @@ export default function AccountDetails() {
                         title={account.title}
                         iconVariant={ACCOUNT_COLOR[account.type]}
                         right={
-                            <HapticPressable className="ml-auto h-10 w-10 items-center justify-center" onPress={handleOpenAccountSettings}>
+                            <HapticPressable
+                                className="ml-auto h-10 w-10 items-center justify-center"
+                                onPress={handleOpenAccountSettings}
+                                testID={AccountDetailsSelector.EditButton}
+                                nativeID={AccountDetailsSelector.EditButton}
+                                collapsable={false}
+                                accessibilityRole="button"
+                            >
                                 <CircleIcon
-                                    testID={AccountDetailsSelector.EditButton}
                                     icon={UserIconNameEnum.EllipsisVertical}
                                     variant="ghost"
                                     size={40}
