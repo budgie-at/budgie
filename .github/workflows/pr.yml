@@ -72,7 +72,7 @@ jobs:
 
   eas-update-preview:
     name: EAS Update Preview
-    runs-on: [self-hosted, linux-ci]
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     permissions:
       contents: read
     steps:
