@@ -1,9 +1,13 @@
 appId: ${APP_ID}
 ---
-- tapOn:
-    id: 'PageHeader.BackButton'
-    optional: true
-- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: 'PageHeader.BackButton'
+    commands:
+      - tapOn:
+          id: 'PageHeader.BackButton'
+      - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'TabBar.Home'
