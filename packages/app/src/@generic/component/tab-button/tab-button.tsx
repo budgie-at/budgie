@@ -48,7 +48,15 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
     const tabStyle = { width: TAB_SIZE, height: TAB_SIZE };
 
     return (
-        <HapticPressable {...rest} onPress={handlePress} testID={testID} hitSlop={12} accessibilityRole="button">
+        <HapticPressable
+            {...rest}
+            onPress={handlePress}
+            testID={testID}
+            nativeID={testID}
+            collapsable={false}
+            hitSlop={12}
+            accessibilityRole="button"
+        >
             <View className={tabVariants({ isFocused })} style={tabStyle}>
                 <Icon className={tabIconVariants({ isFocused })} icon={icon} size={ICON_SIZE} />
             </View>
