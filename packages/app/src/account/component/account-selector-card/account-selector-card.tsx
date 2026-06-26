@@ -58,13 +58,15 @@ export const AccountSelectorCard = (props: Props) => {
             accessibilityRole="button"
             collapsable={false}
         >
-            <View className="flex-row items-center gap-x-xl flex-1" testID={optionTestID} nativeID={optionTestID} collapsable={false}>
+            <View className="flex-row items-center gap-x-xl flex-1">
                 <AccountInactiveIcon isInactive={!isActive} size={48}>
                     <CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />
                 </AccountInactiveIcon>
 
                 <View className="gap-y-xxs flex-1 justify-center">
-                    <Text className="text-md font-semibold text-primary">{title}</Text>
+                    <Text className="text-md font-semibold text-primary" testID={optionTestID}>
+                        {title}
+                    </Text>
                     <View className="flex-row items-center">
                         <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
                             {t(ACCOUNT_TYPE[type])}
