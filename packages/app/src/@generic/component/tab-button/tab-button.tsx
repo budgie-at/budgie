@@ -13,6 +13,7 @@ import type { GestureResponderEvent } from 'react-native';
 interface TabButtonProps extends Omit<TabTriggerSlotProps, 'href'> {
     readonly icon: UserIconNameEnum;
     readonly navigateTo?: Href;
+    readonly testID: string;
 }
 
 const TAB_SIZE = 52;
@@ -36,7 +37,7 @@ const tabIconVariants = cva('', {
     }
 });
 
-export const TabButton = ({ children, isFocused = false, onPress, icon, navigateTo, style: _, ...rest }: TabButtonProps) => {
+export const TabButton = ({ children, isFocused = false, onPress, icon, navigateTo, style: _, testID, ...rest }: TabButtonProps) => {
     const handlePress = (event: GestureResponderEvent) => {
         if (navigateTo) {
             router.push(navigateTo);
@@ -48,7 +49,18 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
     const tabStyle = { width: TAB_SIZE, height: TAB_SIZE };
 
     return (
-        <HapticPressable {...rest} onPress={handlePress} hitSlop={12} accessibilityRole="button" style={tabStyle}>
+        <HapticPressable
+            {...rest}
+            accessibilityLabel={testID}
+            accessibilityRole="button"
+            accessible
+            collapsable={false}
+            hitSlop={12}
+            nativeID={testID}
+            onPress={handlePress}
+            style={tabStyle}
+            testID={testID}
+        >
             <View className={tabVariants({ isFocused })} style={tabStyle}>
                 <Icon className={tabIconVariants({ isFocused })} icon={icon} size={ICON_SIZE} />
             </View>
