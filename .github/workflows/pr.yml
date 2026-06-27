@@ -398,7 +398,7 @@ jobs:
       - name: Start iOS Simulator log capture
         run: |
           ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
-          xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level debug > "$ARTIFACT_DIR/simulator.log" 2>&1 &
+          xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level default > "$ARTIFACT_DIR/simulator.log" 2>&1 &
           echo $! > "$ARTIFACT_DIR/simulator-log.pid"
 
       - name: Run Maestro UI tests
@@ -422,6 +422,11 @@ jobs:
 
           if [ -f "$ARTIFACT_DIR/simulator-log.pid" ]; then
             kill "$(cat "$ARTIFACT_DIR/simulator-log.pid")" || true
+          fi
+
+          if [ -f "$ARTIFACT_DIR/simulator.log" ]; then
+            tail -n 20000 "$ARTIFACT_DIR/simulator.log" > "$ARTIFACT_DIR/simulator.log.tail" || true
+            mv "$ARTIFACT_DIR/simulator.log.tail" "$ARTIFACT_DIR/simulator.log" || true
           fi
 
           find "$HOME/Library/Logs/DiagnosticReports" -maxdepth 1 -type f \
