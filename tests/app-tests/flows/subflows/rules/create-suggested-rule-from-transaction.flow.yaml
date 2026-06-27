@@ -29,11 +29,11 @@ env:
     id: 'TransactionInfo.EditButton.Label'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionForm.CategorySelector'
+      id: 'TransactionForm.CategorySelector.Title'
     timeout: 10000
 
 - tapOn:
-    id: 'TransactionForm.CategorySelector'
+    id: 'TransactionForm.CategorySelector.Title'
 - waitForAnimationToEnd
 - runFlow:
     file: ../shared/select-category-by-search.flow.yaml
