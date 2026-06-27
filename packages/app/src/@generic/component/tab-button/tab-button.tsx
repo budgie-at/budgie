@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
@@ -13,7 +13,6 @@ import type { GestureResponderEvent } from 'react-native';
 interface TabButtonProps extends Omit<TabTriggerSlotProps, 'href'> {
     readonly icon: UserIconNameEnum;
     readonly navigateTo?: Href;
-    readonly buttonTestID: string;
 }
 
 const TAB_SIZE = 52;
@@ -37,7 +36,7 @@ const tabIconVariants = cva('', {
     }
 });
 
-export const TabButton = ({ children, isFocused = false, onPress, icon, navigateTo, style: _, buttonTestID, ...rest }: TabButtonProps) => {
+export const TabButton = ({ children, isFocused = false, onPress, icon, navigateTo, style: _, ...rest }: TabButtonProps) => {
     const handlePress = (event: GestureResponderEvent) => {
         if (navigateTo) {
             router.push(navigateTo);
@@ -49,18 +48,7 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
     const tabStyle = { width: TAB_SIZE, height: TAB_SIZE };
 
     return (
-        <HapticPressable
-            {...rest}
-            onPress={handlePress}
-            testID={buttonTestID}
-            nativeID={buttonTestID}
-            collapsable={false}
-            hitSlop={12}
-            accessibilityRole="button"
-            style={tabStyle}
-        >
-            <View collapsable={false} nativeID={buttonTestID} style={StyleSheet.absoluteFill} testID={buttonTestID} />
-
+        <HapticPressable {...rest} onPress={handlePress} hitSlop={12} accessibilityRole="button" style={tabStyle}>
             <View className={tabVariants({ isFocused })} style={tabStyle}>
                 <Icon className={tabIconVariants({ isFocused })} icon={icon} size={ICON_SIZE} />
             </View>
