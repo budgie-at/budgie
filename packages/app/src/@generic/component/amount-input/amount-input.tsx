@@ -1,6 +1,6 @@
 import { ComponentProps, useState } from 'react';
 
-import { isEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -28,6 +28,7 @@ export const AmountInput = ({
     inputClassName,
     status,
     autoFocus,
+    selectTextOnFocus = false,
     valuePrefix = '',
     minimumDecimalPlaces = 0,
     ...rest
@@ -40,6 +41,7 @@ export const AmountInput = ({
 
     const [displayValue, setDisplayValue] = useState('');
     const [isFocused, setIsFocused] = useState(false);
+    const [selection, setSelection] = useState<NonNullable<ComponentProps<typeof Input>['selection']> | null>(null);
 
     const editableText =
         value === 0
@@ -48,13 +50,14 @@ export const AmountInput = ({
                   useGrouping: false,
                   maximumFractionDigits: visibleDecimalPlaces
               });
-    const formattedText = formatDigits(value === 0 ? '' : value.toString(), valuePrefix);
-    const displayedText = isFocused ? displayValue : formattedText;
+    const displayedText = isFocused ? displayValue : formatDigits(value === 0 ? '' : value.toString(), valuePrefix);
 
     const handleChangeText = (text: string) => {
+        setSelection(null);
+
         const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator, visibleDecimalPlaces);
 
-        if (isEmptyString(cleaned)) {
+        if (!isNotEmptyString(cleaned)) {
             setDisplayValue('');
             onChangeValue(0);
 
@@ -74,12 +77,20 @@ export const AmountInput = ({
     const handleFocus = () => {
         setIsFocused(true);
         setDisplayValue(editableText);
+
+        const editableTextEnd = editableText.length;
+        const selectionStart = selectTextOnFocus ? 0 : editableTextEnd;
+
+        setSelection({ start: selectionStart, end: editableTextEnd });
     };
 
     const handleBlur = () => {
         setIsFocused(false);
         setDisplayValue('');
+        setSelection(null);
     };
+
+    const selectionProps = isDefined(selection) ? { selection } : {};
 
     return (
         <Input
@@ -90,8 +101,10 @@ export const AmountInput = ({
             onBlur={handleBlur}
             keyboardType="decimal-pad"
             autoFocus={autoFocus}
+            selectTextOnFocus={selectTextOnFocus}
             className={inputClassName}
             {...rest}
+            {...selectionProps}
         />
     );
 };
