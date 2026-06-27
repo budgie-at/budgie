@@ -7,7 +7,10 @@ env:
 - runFlow:
       file: setup/setup-budget-test.flow.yaml
 
-- openLink: 'budgie://budget'
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://budget'
 - extendedWaitUntil:
       visible:
           id: 'BudgetWidget.EmptyState'
@@ -20,7 +23,8 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
-- inputText: '1000'
+- setClipboard: '1000'
+- pasteText
 
 - scrollUntilVisible:
       element:
@@ -40,7 +44,8 @@ env:
       timeout: 3000
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
-- inputText: '200'
+- setClipboard: '200'
+- pasteText
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
@@ -157,7 +162,10 @@ env:
       id: 'BudgetWidget.CategorySpentLabel.42'
       text: '50%'
 
-- openLink: 'budgie://transactions/10/income'
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/10/income'
 - extendedWaitUntil:
       visible:
           id: 'TransactionActionsMenu.TriggerButton'

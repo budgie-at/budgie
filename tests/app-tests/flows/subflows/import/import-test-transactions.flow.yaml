@@ -2,7 +2,10 @@ appId: ${APP_ID}
 env:
     EXPECTED_TRANSACTION_LABEL_ID: ${EXPECTED_TRANSACTION_LABEL_ID || ''}
 ---
-- openLink: 'budgie://settings/import?fileUri=${E2E_CSV_FIXTURES_URI}/${CSV_DISPLAY_NAME}.csv'
+- runFlow:
+      file: ../navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings/import?fileUri=${E2E_CSV_FIXTURES_URI}/${CSV_DISPLAY_NAME}.csv'
 
 - extendedWaitUntil:
       visible:

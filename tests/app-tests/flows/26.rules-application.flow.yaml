@@ -295,7 +295,10 @@ env:
       CATEGORY_NAME: Other
       COMMENT: 'Uber Ride'
 
-- openLink: budgie://transactions/9/expense
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: budgie://transactions/9/expense
 - extendedWaitUntil:
     visible:
       id: 'TransactionInfo.Page'
@@ -349,7 +352,10 @@ env:
       CATEGORY_NAME: Other
       COMMENT: 'Random Purchase'
 
-- openLink: budgie://transactions/10/expense
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: budgie://transactions/10/expense
 - extendedWaitUntil:
     visible:
       id: 'TransactionInfo.Page'

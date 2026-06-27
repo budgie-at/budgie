@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
@@ -61,6 +61,7 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
             style={tabStyle}
             testID={testID}
         >
+            <View collapsable={false} nativeID={testID} style={StyleSheet.absoluteFill} testID={testID} />
             <View className={tabVariants({ isFocused })} style={tabStyle}>
                 <Icon className={tabIconVariants({ isFocused })} icon={icon} size={ICON_SIZE} />
             </View>

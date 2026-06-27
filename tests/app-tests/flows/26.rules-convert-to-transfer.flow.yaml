@@ -81,7 +81,10 @@ env:
     id: 'RulesPage.RuleCard.0'
     text: '.*Transfer → Test22 Destination.*'
 
-- openLink: budgie://transactions/9/transfer
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: budgie://transactions/9/transfer
 - extendedWaitUntil:
     visible:
       id: 'TransactionInfo.Page'

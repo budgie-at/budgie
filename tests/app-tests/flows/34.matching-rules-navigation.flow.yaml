@@ -60,7 +60,10 @@ env:
       CATEGORY_NAME: ${TRANSACTION_CATEGORY_NAME}
       COMMENT: ${FIRST_RULE_MATCH}
 
-- openLink: budgie://transactions/9/expense
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: budgie://transactions/9/expense
 
 - extendedWaitUntil:
     visible:
@@ -135,7 +138,10 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCard.1'
 
-- openLink: budgie://transactions/9/expense
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: budgie://transactions/9/expense
 
 - extendedWaitUntil:
     visible:

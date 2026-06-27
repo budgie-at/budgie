@@ -1,6 +1,6 @@
 import { ComponentProps, useState } from 'react';
 
-import { isEmptyString, isNotEmptyString } from '@rnw-community/shared';
+import { isEmptyString } from '@rnw-community/shared';
 
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -38,10 +38,18 @@ export const AmountInput = ({
     const formatDigits = useFormatDigits(visibleDecimalPlaces);
     const { intl } = useI18nContext();
 
-    const [displayValue, setDisplayValue] = useState(() => formatDigits(value === 0 ? '' : value.toString(), valuePrefix));
+    const [displayValue, setDisplayValue] = useState('');
     const [isFocused, setIsFocused] = useState(false);
 
-    const displayedText = isFocused ? displayValue : formatDigits(value === 0 ? '' : value.toString(), valuePrefix);
+    const editableText =
+        value === 0
+            ? ''
+            : intl.formatNumber(value, {
+                  useGrouping: false,
+                  maximumFractionDigits: visibleDecimalPlaces
+              });
+    const formattedText = formatDigits(value === 0 ? '' : value.toString(), valuePrefix);
+    const displayedText = isFocused ? displayValue : formattedText;
 
     const handleChangeText = (text: string) => {
         const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator, visibleDecimalPlaces);
@@ -57,11 +65,7 @@ export const AmountInput = ({
 
         const { integerPart, decimalPart, hasDecimal } = extractPartsFromNumeric(normalizedNumeric, visibleDecimalPlaces);
 
-        const formattedInteger = isNotEmptyString(integerPart)
-            ? intl.formatNumber(Number(integerPart), { useGrouping: true, maximumFractionDigits: 0 })
-            : '';
-
-        const displayValue = hasDecimal ? `${formattedInteger}${decimalSeparator}${decimalPart}` : formattedInteger;
+        const displayValue = hasDecimal ? `${integerPart}${decimalSeparator}${decimalPart}` : integerPart;
 
         setDisplayValue(displayValue);
         onChangeValue(parseFloat(normalizedNumeric) || 0);
@@ -69,7 +73,7 @@ export const AmountInput = ({
 
     const handleFocus = () => {
         setIsFocused(true);
-        setDisplayValue(displayedText);
+        setDisplayValue(editableText);
     };
 
     const handleBlur = () => {

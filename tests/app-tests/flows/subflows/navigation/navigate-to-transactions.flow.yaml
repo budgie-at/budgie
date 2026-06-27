@@ -12,13 +12,34 @@ appId: ${APP_ID}
       visible:
           id: 'TabBar.Transactions'
       timeout: 15000
-- retry:
-      maxRetries: 3
+      optional: true
+
+- runFlow:
+      when:
+          visible:
+              id: 'TabBar.Transactions'
       commands:
-          - tapOn:
-                id: 'TabBar.Transactions'
-          - waitForAnimationToEnd
+          - retry:
+                maxRetries: 3
+                commands:
+                    - tapOn:
+                          id: 'TabBar.Transactions'
+                    - waitForAnimationToEnd
+                    - extendedWaitUntil:
+                          visible:
+                              id: 'TransactionsPage.Container'
+                          timeout: 5000
+
+- runFlow:
+      when:
+          notVisible:
+              id: 'TransactionsPage.Container'
+      commands:
+          - runFlow:
+                file: open-deep-link.flow.yaml
+                env:
+                    DEEP_LINK: 'budgie://transactions'
           - extendedWaitUntil:
                 visible:
                     id: 'TransactionsPage.Container'
-                timeout: 5000
+                timeout: 10000

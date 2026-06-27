@@ -6,7 +6,10 @@ appId: ${APP_ID}
     env:
         FIXTURE_ROW_ID_MATCH: '22.db'
 
-- openLink: 'budgie://transactions/3/income'
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://transactions/3/income'
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.TriggerButton'
@@ -49,7 +52,10 @@ appId: ${APP_ID}
 - tapOn:
     id: 'ConsolidationSourceModal.RevertButton'
 - runFlow: subflows/transactions/confirm-revert-consolidation.flow.yaml
-- openLink: 'budgie://transactions/3/income'
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://transactions/3/income'
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.TriggerButton'
@@ -68,7 +74,10 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.ConvertToRefundButton'
 - tapOn:
     text: 'Close menu'
-- openLink: 'budgie://transactions'
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://transactions'
 - extendedWaitUntil:
     visible:
       id: 'TransactionsPage.Container'
@@ -156,7 +165,10 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
 
-- openLink: 'budgie://transactions/4/expense'
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://transactions/4/expense'
 - extendedWaitUntil:
     visible:
       id: 'TransactionInfo.Row.Consolidation'
@@ -176,7 +188,10 @@ appId: ${APP_ID}
       id: 'ConsolidationSourceModal.Row.0'
     timeout: 5000
 
-- openLink: 'budgie://transactions/9/expense'
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://transactions/9/expense'
 - extendedWaitUntil:
     visible:
       id: 'TransactionInfo.Row.Consolidation'

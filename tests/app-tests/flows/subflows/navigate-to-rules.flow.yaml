@@ -1,7 +1,10 @@
 appId: ${APP_ID}
 ---
 
-- openLink: 'budgie://settings?anchor=organization'
+- runFlow:
+    file: navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://settings?anchor=organization'
 
 - extendedWaitUntil:
     visible:

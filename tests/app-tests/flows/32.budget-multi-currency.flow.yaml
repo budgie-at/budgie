@@ -1,13 +1,15 @@
 appId: ${APP_ID}
 env:
-    BUDGET_LIMIT: '200'
     EUR_ACCOUNT: E2E Foreign Account
     CATEGORY_NAME: Groceries
 ---
 - runFlow:
       file: setup/setup-multi-currency-budget.flow.yaml
 
-- openLink: 'budgie://budget'
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://budget'
 - extendedWaitUntil:
       visible:
           id: 'BudgetWidget.EmptyState'
@@ -20,7 +22,8 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
-- inputText: ${BUDGET_LIMIT}
+- setClipboard: '200'
+- pasteText
 
 - scrollUntilVisible:
       element:
@@ -42,7 +45,8 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
-- inputText: '80'
+- setClipboard: '80'
+- pasteText
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
