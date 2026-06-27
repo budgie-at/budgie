@@ -8,33 +8,20 @@ import { TabButtonsSelector } from './tab-buttons.selector';
 
 export const TabButtons = () => (
     <View className="flex-row items-center gap-sm">
-        <View testID={TabButtonsSelector.Home} nativeID={TabButtonsSelector.Home} collapsable={false} pointerEvents="box-none">
-            <TabTrigger name="home" asChild resetOnFocus>
-                <TabButton buttonTestID={TabButtonsSelector.Home} icon={UserIconNameEnum.Home} />
-            </TabTrigger>
-        </View>
+        <TabTrigger name="home" asChild resetOnFocus>
+            <TabButton buttonTestID={TabButtonsSelector.Home} icon={UserIconNameEnum.Home} />
+        </TabTrigger>
 
-        <View
-            testID={TabButtonsSelector.Transactions}
-            nativeID={TabButtonsSelector.Transactions}
-            collapsable={false}
-            pointerEvents="box-none"
-        >
-            <TabTrigger name="transactions" asChild resetOnFocus>
-                <TabButton buttonTestID={TabButtonsSelector.Transactions} icon={UserIconNameEnum.Receipt} />
-            </TabTrigger>
-        </View>
+        <TabTrigger name="transactions" asChild resetOnFocus>
+            <TabButton buttonTestID={TabButtonsSelector.Transactions} icon={UserIconNameEnum.Receipt} />
+        </TabTrigger>
 
-        <View testID={TabButtonsSelector.Analytics} nativeID={TabButtonsSelector.Analytics} collapsable={false} pointerEvents="box-none">
-            <TabTrigger name="analytics" asChild resetOnFocus>
-                <TabButton buttonTestID={TabButtonsSelector.Analytics} icon={UserIconNameEnum.ChartNoAxesColumn} />
-            </TabTrigger>
-        </View>
+        <TabTrigger name="analytics" asChild resetOnFocus>
+            <TabButton buttonTestID={TabButtonsSelector.Analytics} icon={UserIconNameEnum.ChartNoAxesColumn} />
+        </TabTrigger>
 
-        <View testID={TabButtonsSelector.Settings} nativeID={TabButtonsSelector.Settings} collapsable={false} pointerEvents="box-none">
-            <TabTrigger name="settings" asChild resetOnFocus>
-                <TabButton buttonTestID={TabButtonsSelector.Settings} icon={UserIconNameEnum.Settings} />
-            </TabTrigger>
-        </View>
+        <TabTrigger name="settings" asChild resetOnFocus>
+            <TabButton buttonTestID={TabButtonsSelector.Settings} icon={UserIconNameEnum.Settings} />
+        </TabTrigger>
     </View>
 );
