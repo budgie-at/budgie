@@ -1,6 +1,6 @@
 {
     "name": "@budgie/bank-sync",
-    "version": "5.35.2",
+    "version": "5.38.1",
     "private": true,
     "description": "Bank synchronization package with multi-bank support",
     "sideEffects": false,
@@ -25,6 +25,7 @@
         "ts": "run -T tsc -p ."
     },
     "dependencies": {
+        "@budgie/contracts": "workspace:^",
         "@budgie/logger": "workspace:*",
         "@rnw-community/shared": "^2.2.0",
         "date-fns": "^4.3.0",
