@@ -31,5 +31,11 @@ appId: ${APP_ID}
     visible:
       id: 'SettingsPage.MainCurrencyValue.${CURRENCY_CODE}'
     timeout: 10000
+- waitForAnimationToEnd
 - tapOn:
     id: 'TabBar.Home'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 30000
