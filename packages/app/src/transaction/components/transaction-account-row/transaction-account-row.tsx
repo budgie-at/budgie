@@ -2,10 +2,10 @@ import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contr
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -55,17 +55,25 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
     const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Select`}`;
     const isInactiveAccount = isDefined(account) && !account.isActive;
     const selectedAccountTestID = isDefined(account?.title) ? SimpleQuickFormSelector.SelectedAccount(account.title) : null;
+    const hasTestID = isNotEmptyString(testID);
 
     return (
         <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)}>
             <Animated.View style={shakeStyle}>
                 <HapticPressable
-                    className="flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl"
+                    className="relative flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl"
                     onPress={handlePress}
                     accessibilityLabel={accessibilityLabel}
                     accessibilityRole="button"
+                    accessible
+                    collapsable={false}
+                    nativeID={testID}
                     testID={testID}
                 >
+                    {hasTestID ? (
+                        <View collapsable={false} nativeID={testID} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testID} />
+                    ) : null}
+
                     <AccountInactiveIcon isInactive={isInactiveAccount} size={28}>
                         <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
                     </AccountInactiveIcon>

@@ -1,4 +1,4 @@
-import { ComponentProps, useState } from 'react';
+import { ComponentProps, useRef, useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -17,10 +17,26 @@ interface Props extends Omit<ComponentProps<typeof Input>, 'value'> {
     readonly inputClassName?: string;
     readonly status?: FormFieldStatus;
     readonly autoFocus?: boolean;
+    readonly commitOnBlur?: boolean;
     readonly valuePrefix?: string;
     readonly minimumDecimalPlaces?: number;
     readonly onChangeValue: (value: number) => void;
 }
+
+const parseAmountText = (text: string, decimalSeparator: string, digitGroupingSeparator: string, visibleDecimalPlaces: number) => {
+    const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator, visibleDecimalPlaces);
+
+    if (!isNotEmptyString(cleaned)) {
+        return null;
+    }
+
+    const normalizedNumeric = normalizeDecimalSeparator(cleaned, decimalSeparator);
+    const { integerPart, decimalPart, hasDecimal } = extractPartsFromNumeric(normalizedNumeric, visibleDecimalPlaces);
+    const displayValue = hasDecimal ? `${integerPart}${decimalSeparator}${decimalPart}` : integerPart;
+    const parsedValue = parseFloat(normalizedNumeric) || 0;
+
+    return { displayValue, parsedValue };
+};
 
 export const AmountInput = ({
     value,
@@ -28,6 +44,7 @@ export const AmountInput = ({
     inputClassName,
     status,
     autoFocus,
+    commitOnBlur = false,
     selectTextOnFocus = false,
     valuePrefix = '',
     minimumDecimalPlaces = 0,
@@ -42,41 +59,46 @@ export const AmountInput = ({
     const [displayValue, setDisplayValue] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const [selection, setSelection] = useState<NonNullable<ComponentProps<typeof Input>['selection']> | null>(null);
+    const pendingValueRef = useRef(value);
 
-    const editableText =
-        value === 0
-            ? ''
-            : intl.formatNumber(value, {
-                  useGrouping: false,
-                  maximumFractionDigits: visibleDecimalPlaces
-              });
     const displayedText = isFocused ? displayValue : formatDigits(value === 0 ? '' : value.toString(), valuePrefix);
 
     const handleChangeText = (text: string) => {
         setSelection(null);
 
-        const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator, visibleDecimalPlaces);
+        const parsedAmount = parseAmountText(text, decimalSeparator, digitGroupingSeparator, visibleDecimalPlaces);
 
-        if (!isNotEmptyString(cleaned)) {
+        if (!isDefined(parsedAmount)) {
             setDisplayValue('');
-            onChangeValue(0);
+            pendingValueRef.current = 0;
+
+            if (!commitOnBlur) {
+                onChangeValue(0);
+            }
 
             return;
         }
 
-        const normalizedNumeric = normalizeDecimalSeparator(cleaned, decimalSeparator);
+        setDisplayValue(parsedAmount.displayValue);
+        pendingValueRef.current = parsedAmount.parsedValue;
 
-        const { integerPart, decimalPart, hasDecimal } = extractPartsFromNumeric(normalizedNumeric, visibleDecimalPlaces);
-
-        const displayValue = hasDecimal ? `${integerPart}${decimalSeparator}${decimalPart}` : integerPart;
-
-        setDisplayValue(displayValue);
-        onChangeValue(parseFloat(normalizedNumeric) || 0);
+        if (!commitOnBlur) {
+            onChangeValue(parsedAmount.parsedValue);
+        }
     };
 
     const handleFocus = () => {
+        const editableText =
+            value === 0
+                ? ''
+                : intl.formatNumber(value, {
+                      useGrouping: false,
+                      maximumFractionDigits: visibleDecimalPlaces
+                  });
+
         setIsFocused(true);
         setDisplayValue(editableText);
+        pendingValueRef.current = value;
 
         const editableTextEnd = editableText.length;
         const selectionStart = selectTextOnFocus ? 0 : editableTextEnd;
@@ -88,6 +110,10 @@ export const AmountInput = ({
         setIsFocused(false);
         setDisplayValue('');
         setSelection(null);
+
+        if (commitOnBlur) {
+            onChangeValue(pendingValueRef.current);
+        }
     };
 
     const selectionProps = isDefined(selection) ? { selection } : {};

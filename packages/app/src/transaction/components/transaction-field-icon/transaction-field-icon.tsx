@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { RefObject, useImperativeHandle } from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInUp, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -53,6 +53,7 @@ export const TransactionFieldIcon = (props: Props) => {
     };
 
     const hasValue = isNotEmptyString(value);
+    const hasTestID = isNotEmptyString(testID);
     const circleIconVariant = hasValue ? variant : 'ghost';
     const accessibilityLabel = `${label}: ${value ?? t`not set`}`;
 
@@ -75,8 +76,20 @@ export const TransactionFieldIcon = (props: Props) => {
                         onPressOut={handlePressOut}
                         accessibilityLabel={accessibilityLabel}
                         accessibilityRole="button"
+                        accessible
+                        collapsable={false}
+                        nativeID={testID}
                         testID={testID}
                     >
+                        {hasTestID ? (
+                            <View
+                                collapsable={false}
+                                nativeID={testID}
+                                pointerEvents="none"
+                                style={StyleSheet.absoluteFill}
+                                testID={testID}
+                            />
+                        ) : null}
                         <CircleIcon icon={icon} variant={circleIconVariant} size={44} iconSize={20} radius={14} />
                         <View className="items-center gap-y-0.5 h-[28px]">
                             <Text className="text-xs text-secondary-foreground uppercase" numberOfLines={1}>

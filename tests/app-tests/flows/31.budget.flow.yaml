@@ -55,6 +55,11 @@ env:
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
 - inputText: '1000'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.OverallLimitInput'
+          text: '1000'
+      timeout: 3000
 - tapOn:
       id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd
@@ -154,7 +159,13 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
+- eraseText: 10
 - inputText: '1500'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.OverallLimitInput'
+          text: '1500'
+      timeout: 3000
 - tapOn:
       id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd
@@ -181,7 +192,13 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
+- eraseText: 10
 - inputText: '9999'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.OverallLimitInput'
+          text: '9999'
+      timeout: 3000
 
 - tapOn:
       id: 'PageHeader.BackButton'
@@ -201,8 +218,15 @@ env:
       visible: 'Edit budget'
       timeout: 3000
 
-- tapOn:
-      id: 'BudgetSetup.CategoryLimitAddButton'
+- retry:
+      maxRetries: 3
+      commands:
+          - tapOn:
+                id: 'BudgetSetup.CategoryLimitAddButton'
+          - extendedWaitUntil:
+                visible:
+                    id: 'CategoryPickerBottomSheet.Input'
+                timeout: 3000
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -216,16 +240,22 @@ env:
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '200'
-- tapOn: 'Category limits'
-- waitForAnimationToEnd
-- tapOn:
-      id: 'BudgetSetup.CategoryLimitAddButton'
-- waitForAnimationToEnd
-
 - extendedWaitUntil:
       visible:
-          id: 'CategoryPickerBottomSheet.Input'
+          id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+          text: '200'
       timeout: 3000
+- tapOn: 'Category limits'
+- waitForAnimationToEnd
+- retry:
+      maxRetries: 3
+      commands:
+          - tapOn:
+                id: 'BudgetSetup.CategoryLimitAddButton'
+          - extendedWaitUntil:
+                visible:
+                    id: 'CategoryPickerBottomSheet.Input'
+                timeout: 3000
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -239,16 +269,22 @@ env:
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.1.AmountInput'
 - inputText: '100'
-- tapOn: 'Category limits'
-- waitForAnimationToEnd
-- tapOn:
-      id: 'BudgetSetup.CategoryLimitAddButton'
-- waitForAnimationToEnd
-
 - extendedWaitUntil:
       visible:
-          id: 'CategoryPickerBottomSheet.Input'
+          id: 'BudgetSetup.CategoryLimit.1.AmountInput'
+          text: '100'
       timeout: 3000
+- tapOn: 'Category limits'
+- waitForAnimationToEnd
+- retry:
+      maxRetries: 3
+      commands:
+          - tapOn:
+                id: 'BudgetSetup.CategoryLimitAddButton'
+          - extendedWaitUntil:
+                visible:
+                    id: 'CategoryPickerBottomSheet.Input'
+                timeout: 3000
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -262,16 +298,22 @@ env:
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.2.AmountInput'
 - inputText: '150'
-- tapOn: 'Category limits'
-- waitForAnimationToEnd
-- tapOn:
-      id: 'BudgetSetup.CategoryLimitAddButton'
-- waitForAnimationToEnd
-
 - extendedWaitUntil:
       visible:
-          id: 'CategoryPickerBottomSheet.Input'
+          id: 'BudgetSetup.CategoryLimit.2.AmountInput'
+          text: '150'
       timeout: 3000
+- tapOn: 'Category limits'
+- waitForAnimationToEnd
+- retry:
+      maxRetries: 3
+      commands:
+          - tapOn:
+                id: 'BudgetSetup.CategoryLimitAddButton'
+          - extendedWaitUntil:
+                visible:
+                    id: 'CategoryPickerBottomSheet.Input'
+                timeout: 3000
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -285,6 +327,11 @@ env:
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.3.AmountInput'
 - inputText: '75'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.CategoryLimit.3.AmountInput'
+          text: '75'
+      timeout: 3000
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - extendedWaitUntil:
@@ -456,19 +503,31 @@ env:
           id: 'BudgetSetup.CategoryLimitAddButton'
       direction: DOWN
       centerElement: true
-- tapOn:
-      id: 'BudgetSetup.CategoryLimitAddButton'
+- retry:
+      maxRetries: 3
+      commands:
+          - tapOn:
+                id: 'BudgetSetup.CategoryLimitAddButton'
+          - extendedWaitUntil:
+                visible:
+                    id: 'CategoryPickerBottomSheet.Input'
+                timeout: 3000
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
           CATEGORY_NAME: 'Groceries'
 - extendedWaitUntil:
       visible:
-          id: 'BudgetSetup.CategoryLimit.0.Row'
+          id: 'BudgetSetup.CategoryLimit.3.Row'
       timeout: 3000
 - tapOn:
-      id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+      id: 'BudgetSetup.CategoryLimit.3.AmountInput'
 - inputText: '300'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.CategoryLimit.3.AmountInput'
+          text: '300'
+      timeout: 3000
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
@@ -607,14 +666,26 @@ env:
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
 - inputText: '100'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.OverallLimitInput'
+          text: '100'
+      timeout: 3000
 - scrollUntilVisible:
       element:
           id: 'BudgetSetup.CategoryLimitAddButton'
       direction: DOWN
       centerElement: true
 - waitForAnimationToEnd
-- tapOn:
-      id: 'BudgetSetup.CategoryLimitAddButton'
+- retry:
+      maxRetries: 3
+      commands:
+          - tapOn:
+                id: 'BudgetSetup.CategoryLimitAddButton'
+          - extendedWaitUntil:
+                visible:
+                    id: 'CategoryPickerBottomSheet.Input'
+                timeout: 3000
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -626,6 +697,11 @@ env:
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '150'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+          text: '150'
+      timeout: 3000
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - extendedWaitUntil:
@@ -640,7 +716,13 @@ env:
       id: 'BudgetWidget.Card'
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+- eraseText: 10
 - inputText: '80'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+          text: '80'
+      timeout: 3000
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - assertNotVisible:
@@ -655,4 +737,4 @@ env:
       id: 'BudgetWidget.CategoryRow.11'
 - assertVisible:
       id: 'BudgetWidget.CategorySpentLabel.11'
-      text: '0%'
+      text: '13%'

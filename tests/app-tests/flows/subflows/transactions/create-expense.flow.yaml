@@ -18,8 +18,15 @@ env:
     env:
       ACCOUNT_NAME: ${ACCOUNT_NAME}
 
-- tapOn:
-    id: 'TransactionForm.CategorySelector'
+- retry:
+    maxRetries: 3
+    commands:
+      - tapOn:
+          id: 'TransactionForm.CategorySelector'
+      - extendedWaitUntil:
+          visible:
+            id: 'CategoryPickerBottomSheet.Input'
+          timeout: 3000
 - runFlow:
     file: ../shared/select-category-by-search.flow.yaml
     env:

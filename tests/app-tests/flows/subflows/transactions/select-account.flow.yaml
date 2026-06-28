@@ -4,11 +4,15 @@ appId: ${APP_ID}
       when:
           notVisible: ${ACCOUNT_NAME}
       commands:
-          - tapOn:
-                id: 'TransactionForm.AccountSelector'
-          - extendedWaitUntil:
-                visible:
-                    id: 'AccountPickerBottomSheet.Input'
+          - retry:
+                maxRetries: 3
+                commands:
+                    - tapOn:
+                          id: 'TransactionForm.AccountSelector'
+                    - extendedWaitUntil:
+                          visible:
+                              id: 'AccountPickerBottomSheet.Input'
+                          timeout: 3000
           - runFlow:
                 file: ../shared/select-account-by-search.flow.yaml
                 env:

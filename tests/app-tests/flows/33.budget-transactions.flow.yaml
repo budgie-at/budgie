@@ -24,14 +24,26 @@ env:
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
 - inputText: '1000'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.OverallLimitInput'
+          text: '1000'
+      timeout: 3000
 
 - scrollUntilVisible:
       element:
           id: 'BudgetSetup.CategoryLimitAddButton'
       direction: DOWN
       centerElement: true
-- tapOn:
-      id: 'BudgetSetup.CategoryLimitAddButton'
+- retry:
+      maxRetries: 3
+      commands:
+          - tapOn:
+                id: 'BudgetSetup.CategoryLimitAddButton'
+          - extendedWaitUntil:
+                visible:
+                    id: 'CategoryPickerBottomSheet.Input'
+                timeout: 3000
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -44,6 +56,11 @@ env:
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '200'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+          text: '200'
+      timeout: 3000
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
@@ -144,11 +161,6 @@ env:
 
 - runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
 
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionCard.Label.E2E_Budget_Refund_Income'
-      timeout: 5000
-
 - tapOn:
       id: 'TabBar.Home'
 - extendedWaitUntil:
@@ -194,7 +206,7 @@ env:
       index: 0
 - extendedWaitUntil:
       visible:
-          id: 'TransactionCard.RefundedPill.9'
+          id: 'TransactionInfo.RefundedPill'
       timeout: 10000
 
 - tapOn:

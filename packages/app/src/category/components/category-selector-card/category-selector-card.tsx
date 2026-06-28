@@ -1,6 +1,8 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -56,16 +58,23 @@ export const CategorySelectorCard = (props: Props) => {
     const handleSelect = () => void onSelect(id);
 
     const iconVariant = isSelected ? variant : 'ghost';
+    const hasTestID = isNotEmptyString(testID);
 
     return (
         <HapticPressable
-            className={cn(cardVariants({ isSelected, variant }), className)}
+            className={cn(cardVariants({ isSelected, variant }), 'relative', className)}
             onPress={handleSelect}
             testID={testID}
+            collapsable={false}
+            nativeID={testID}
             accessible
             accessibilityLabel={title}
             accessibilityRole="button"
         >
+            {hasTestID ? (
+                <View collapsable={false} nativeID={testID} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testID} />
+            ) : null}
+
             <CircleIcon size={24} iconSize={13} className="rounded-4xl" icon={icon} variant={iconVariant} border={false} />
 
             <View className="self-stretch flex-1 justify-center">
