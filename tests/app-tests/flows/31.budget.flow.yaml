@@ -54,8 +54,7 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
-- setClipboard: '1000'
-- pasteText
+- inputText: '1000'
 - tapOn:
       id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd
@@ -155,9 +154,7 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
-- eraseText: 10
-- setClipboard: '1500'
-- pasteText
+- inputText: '1500'
 - tapOn:
       id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd
@@ -184,9 +181,7 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
-- eraseText: 10
-- setClipboard: '9999'
-- pasteText
+- inputText: '9999'
 
 - tapOn:
       id: 'PageHeader.BackButton'
@@ -220,8 +215,7 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
-- setClipboard: '200'
-- pasteText
+- inputText: '200'
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
@@ -244,8 +238,7 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.1.AmountInput'
-- setClipboard: '100'
-- pasteText
+- inputText: '100'
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
@@ -268,8 +261,7 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.2.AmountInput'
-- setClipboard: '150'
-- pasteText
+- inputText: '150'
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
@@ -292,8 +284,7 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.3.AmountInput'
-- setClipboard: '75'
-- pasteText
+- inputText: '75'
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - extendedWaitUntil:
@@ -477,8 +468,7 @@ env:
       timeout: 3000
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
-- setClipboard: '300'
-- pasteText
+- inputText: '300'
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
@@ -616,8 +606,7 @@ env:
       file: subflows/budget/choose-empty-canvas.flow.yaml
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
-- setClipboard: '100'
-- pasteText
+- inputText: '100'
 - scrollUntilVisible:
       element:
           id: 'BudgetSetup.CategoryLimitAddButton'
@@ -636,8 +625,7 @@ env:
       timeout: 3000
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
-- setClipboard: '150'
-- pasteText
+- inputText: '150'
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - extendedWaitUntil:
@@ -652,9 +640,7 @@ env:
       id: 'BudgetWidget.Card'
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
-- eraseText: 10
-- setClipboard: '80'
-- pasteText
+- inputText: '80'
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - assertNotVisible:

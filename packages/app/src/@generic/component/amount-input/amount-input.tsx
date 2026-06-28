@@ -100,6 +100,7 @@ export const AmountInput = ({
             onFocus={handleFocus}
             onBlur={handleBlur}
             keyboardType="decimal-pad"
+            submitBehavior="submit"
             autoFocus={autoFocus}
             selectTextOnFocus={selectTextOnFocus}
             className={inputClassName}

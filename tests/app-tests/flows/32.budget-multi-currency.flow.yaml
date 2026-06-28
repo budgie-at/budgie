@@ -22,8 +22,7 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
-- setClipboard: '200'
-- pasteText
+- inputText: '200'
 
 - scrollUntilVisible:
       element:
@@ -45,8 +44,7 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
-- setClipboard: '80'
-- pasteText
+- inputText: '80'
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
