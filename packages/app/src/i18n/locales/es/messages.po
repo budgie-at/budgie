@@ -1782,6 +1782,7 @@ msgstr "Cargando..."
 msgid "Main Currency"
 msgstr "Moneda principal"
 
+#: src/budget/components/budget-details/budget-details.tsx
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Manage budget"
 msgstr "Gestionar presupuesto"
