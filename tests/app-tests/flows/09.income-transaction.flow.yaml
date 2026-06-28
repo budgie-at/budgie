@@ -104,8 +104,7 @@ appId: ${APP_ID}
     id: 'TransactionInfo.Row.Account'
 - assertVisible:
     id: 'TransactionInfo.Row.Category'
-- tapOn:
-    id: 'PageHeader.BackButton'
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - extendedWaitUntil:
     visible:
