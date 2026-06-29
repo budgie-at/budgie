@@ -7,6 +7,7 @@ import {
 import { View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { RuleActionPill } from '../rule-action-pill/rule-action-pill';
 
 import { RuleSummaryConditionItem } from './rule-summary-condition-item';
@@ -28,22 +29,29 @@ export const RuleSummaryPills = ({ conditions, actions, conditionMatchType, cond
     return (
         <View className="flex-row flex-wrap items-center gap-sm">
             <View testID={conditionsTestID} className="flex-row flex-wrap items-center gap-sm">
-                {conditions.map((condition, index) => (
-                    <RuleSummaryConditionItem
-                        key={condition.id}
-                        condition={condition}
-                        isLast={index === lastConditionIndex}
-                        isMatchAll={isMatchAll}
-                    />
-                ))}
+                {conditions.map((condition, index) => {
+                    const isFirstCondition = index === 0;
+
+                    return (
+                        <RuleSummaryConditionItem
+                            key={condition.id}
+                            condition={condition}
+                            isLast={index === lastConditionIndex}
+                            isMatchAll={isMatchAll}
+                            {...testIDProps(isFirstCondition && conditionsTestID)}
+                        />
+                    );
+                })}
             </View>
 
             <Icon icon={UserIconNameEnum.ArrowRight} size={ARROW_ICON_SIZE} className="text-secondary-foreground" />
 
             <View testID={actionsTestID} className="flex-row flex-wrap items-center gap-sm">
-                {actions.map(action => (
-                    <RuleActionPill key={action.id} action={action} />
-                ))}
+                {actions.map((action, index) => {
+                    const isFirstAction = index === 0;
+
+                    return <RuleActionPill key={action.id} action={action} {...testIDProps(isFirstAction && actionsTestID)} />;
+                })}
             </View>
         </View>
     );

@@ -1,13 +1,22 @@
 appId: ${APP_ID}
 ---
-# Navigate to Home first to avoid Maestro freeze with nested Stack
+- runFlow:
+    when:
+      visible:
+        id: 'PageHeader.BackButton'
+    commands:
+      - tapOn:
+          id: 'PageHeader.BackButton'
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TabBar.Home'
+    timeout: 15000
 - tapOn:
     id: 'TabBar.Home'
 - tapOn:
     id: 'TabBar.Settings'
 - waitForAnimationToEnd
-- tapOn:
-    id: 'TabBar.Settings'
 - extendedWaitUntil:
     visible:
       id: 'SettingsPage.Container'

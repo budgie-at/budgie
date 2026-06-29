@@ -5,6 +5,8 @@ import { Text } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useRuleSelectorModal } from '../../context/rule-selector-modal.context';
 
 interface Option<T extends string> {
@@ -48,7 +50,9 @@ export const RuleConditionBottomSheetSelector = <T extends string>(props: Props<
             onPress={handleOpen}
             className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner"
         >
-            <Text className="text-primary text-sm">{displayLabel}</Text>
+            <Text className="text-primary text-sm" {...testIDProps(testID, TestIDPartEnum.VALUE)}>
+                {displayLabel}
+            </Text>
         </HapticPressable>
     );
 };

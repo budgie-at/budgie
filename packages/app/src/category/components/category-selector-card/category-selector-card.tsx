@@ -1,13 +1,17 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { typedObjectEntries } from '../../../@generic/utils/typed-object-entries.util';
 
 interface Props extends Pick<CategoryEntityInterface, 'id' | 'icon' | 'title'> {
@@ -54,9 +58,23 @@ export const CategorySelectorCard = (props: Props) => {
     const handleSelect = () => void onSelect(id);
 
     const iconVariant = isSelected ? variant : 'ghost';
+    const hasTestID = isNotEmptyString(testID);
 
     return (
-        <HapticPressable className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect} testID={testID}>
+        <HapticPressable
+            className={cn(cardVariants({ isSelected, variant }), 'relative', className)}
+            onPress={handleSelect}
+            testID={testID}
+            collapsable={false}
+            nativeID={testID}
+            accessible
+            accessibilityLabel={title}
+            accessibilityRole="button"
+        >
+            {hasTestID ? (
+                <View collapsable={false} nativeID={testID} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testID} />
+            ) : null}
+
             <CircleIcon size={24} iconSize={13} className="rounded-4xl" icon={icon} variant={iconVariant} border={false} />
 
             <View className="self-stretch flex-1 justify-center">
@@ -64,6 +82,7 @@ export const CategorySelectorCard = (props: Props) => {
                     className={cn(textVariants({ isSelected, variant }), 'self-stretch flex-shrink')}
                     numberOfLines={2}
                     ellipsizeMode="tail"
+                    {...testIDProps(testID, TestIDPartEnum.LABEL)}
                 >
                     {title}
                 </Text>

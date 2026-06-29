@@ -1,6 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
@@ -25,5 +27,5 @@ export const TransactionListConvertMenuItem = ({ isVisible, isRefund, onConvert 
         ? TransactionListContextMenuSelector.ConvertToRefundButton
         : TransactionListContextMenuSelector.ConvertToTransferButton;
 
-    return <PopoverMenuItem icon={icon} label={label} onPress={onConvert} testID={testID} />;
+    return <PopoverMenuItem icon={icon} label={label} onPress={emptyFn} onPressIn={onConvert} testID={testID} />;
 };

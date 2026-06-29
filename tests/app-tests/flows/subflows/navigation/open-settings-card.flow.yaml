@@ -6,10 +6,24 @@ env:
 - scrollUntilVisible:
     element:
       id: '${CARD_ID}'
-    direction: DOWN
+    direction: UP
     speed: 20
     centerElement: true
     waitToSettleTimeoutMs: 1000
+    optional: true
+
+- runFlow:
+    when:
+      notVisible:
+        id: '${CARD_ID}'
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: '${CARD_ID}'
+          direction: DOWN
+          speed: 20
+          centerElement: true
+          waitToSettleTimeoutMs: 1000
 
 - waitForAnimationToEnd
 - extendedWaitUntil:

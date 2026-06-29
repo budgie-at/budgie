@@ -2,15 +2,17 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { ComponentProps, ReactNode } from 'react';
-import { ActivityIndicator, Text } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
+import { TestIDPartEnum } from '../../enum/test-id-part.enum';
 import { ButtonSizeType } from '../../type/button-size.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
+import { testID as testIDProps } from '../../utils/test-id.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -21,14 +23,13 @@ interface Props extends ComponentProps<typeof HapticPressable> {
     readonly size?: ButtonSizeType;
     readonly variant?: ColorPaletteVariant;
     readonly isLoading?: boolean;
-    readonly contentTestID?: string;
 }
 
 const buttonVariants = cva<{
     variant: Record<ColorPaletteVariant, ClassValue>;
     size: Record<ButtonSizeType, ClassValue>;
     disabled: Record<'true', ClassValue>;
-}>('flex-row items-center gap-x-xl justify-center border', {
+}>('relative flex-row items-center gap-x-xl justify-center border', {
     variants: {
         disabled: { true: 'opacity-50' },
         variant: BACKGROUND_COLOR_PALETTE,
@@ -63,19 +64,31 @@ export const Button = (props: Props) => {
         variant = 'ghost',
         size = 'md',
         isLoading,
-        contentTestID,
+        testID,
+        accessibilityLabel,
+        accessibilityRole = 'button',
         ...rest
     } = props;
 
     const isDisabled = disabled || isLoading;
+    const resolvedAccessibilityLabel = accessibilityLabel ?? (isString(content) ? content : testID);
+    const hasTestID = isNotEmptyString(testID);
 
     return (
         <HapticPressable
             onPress={onPress}
             disabled={isDisabled}
             className={cn(buttonVariants({ disabled: isDisabled, size, variant }), className)}
+            testID={testID}
+            collapsable={false}
+            nativeID={testID}
+            accessible
+            accessibilityLabel={resolvedAccessibilityLabel}
+            accessibilityRole={accessibilityRole}
             {...rest}
         >
+            {hasTestID ? <View collapsable={false} nativeID={testID} style={StyleSheet.absoluteFill} testID={testID} /> : null}
+
             {isLoading ? (
                 <ActivityIndicator size="small" />
             ) : (
@@ -83,7 +96,7 @@ export const Button = (props: Props) => {
                     {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
 
                     {isDefined(content) && (
-                        <Text testID={contentTestID} className={textVariants({ variant })}>
+                        <Text className={textVariants({ variant })} {...testIDProps(testID, TestIDPartEnum.LABEL)}>
                             {content}
                         </Text>
                     )}

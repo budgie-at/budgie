@@ -24,8 +24,9 @@ export const BudgetManagementCard = () => {
 
     return (
         <SettingsCard
-            testID={SettingsPageSelector.BudgetManagementCard}
             onPress={handlePress}
+            onTitlePress={handlePress}
+            titleTestID={SettingsPageSelector.BudgetManagementCard}
             title={t`Manage budget`}
             description={t`Set a monthly limit and track spending`}
             icon={UserIconNameEnum.PiggyBank}

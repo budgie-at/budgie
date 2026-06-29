@@ -68,9 +68,19 @@ export const CreateMonobankAccount = () => {
     const isStartSyncDisabled = isLoading || selectedAccounts.size === 0;
     const footer =
         step === 'token' ? (
-            <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />
+            <Button
+                onPress={handleFetchAccounts}
+                disabled={isLoading}
+                content={t`Fetch Accounts`}
+                testID={CreateMonobankAccountSelector.FetchAccountsButton}
+            />
         ) : (
-            <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />
+            <Button
+                onPress={handleSetupSync}
+                disabled={isStartSyncDisabled}
+                content={t`Start Sync`}
+                testID={CreateMonobankAccountSelector.StartSyncButton}
+            />
         );
 
     return (

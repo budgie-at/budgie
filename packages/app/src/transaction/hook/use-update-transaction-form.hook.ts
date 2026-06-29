@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { transactionService } from '../service/transaction.service';
@@ -48,6 +49,18 @@ export const useUpdateTransactionForm = <T extends TransactionCreateInputInterfa
     };
 
     const handleDelete = async () => {
+        const confirmed = await confirmAlert({
+            title: t`Are you sure?`,
+            message: t`This action cannot be undone.`,
+            confirmText: t`Delete`,
+            cancelText: t`Cancel`,
+            isDestructive: true
+        });
+
+        if (!confirmed) {
+            return;
+        }
+
         try {
             await transactionService.deleteById(id);
             dismissAllOrReplace('/');

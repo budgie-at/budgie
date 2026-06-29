@@ -3,7 +3,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ROW_ID_MATCH: '17.db(, db)?'
+      FIXTURE_ROW_ID_MATCH: '17.db'
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
@@ -184,8 +184,10 @@ appId: ${APP_ID}
       id: 'TabBar.Settings'
     timeout: 10000
 
-- stopApp
-- runFlow:
-    file: subflows/navigation/relaunch-app-and-wait.flow.yaml
-    env:
-      DESTINATION_ID: 'HomePage.TotalBalance'
+- tapOn:
+    id: 'TabBar.Home'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000

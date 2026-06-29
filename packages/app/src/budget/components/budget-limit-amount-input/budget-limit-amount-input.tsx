@@ -24,6 +24,8 @@ export const BudgetLimitAmountInput = ({ currencySymbol, name, testID }: Props) 
             size="md"
             textAlign="right"
             inputClassName="min-w-[104px] max-w-[136px]"
+            commitOnBlur
+            selectTextOnFocus
         />
     );
 

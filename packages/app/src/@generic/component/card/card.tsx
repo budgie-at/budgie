@@ -12,6 +12,7 @@ import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
 import type { OnEventFn } from '@rnw-community/shared';
 import type { PropsWithChildren } from 'react';
+import type { AccessibilityRole } from 'react-native';
 
 interface Props {
     readonly className?: string;
@@ -20,6 +21,9 @@ interface Props {
     readonly onLongPress?: OnEventFn;
     readonly variant?: ColorPaletteVariant;
     readonly testID?: string;
+    readonly accessible?: boolean;
+    readonly accessibilityLabel?: string;
+    readonly accessibilityRole?: AccessibilityRole;
 }
 
 const cardVariants = cva<{ size: Record<CardSizeType, ClassValue>; variant: Record<ColorPaletteVariant, ClassValue> }>(

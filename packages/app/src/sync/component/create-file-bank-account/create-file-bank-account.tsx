@@ -30,14 +30,11 @@ interface CreateFileBankAccountProps {
 
 export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) => {
     const { t } = useLingui();
-
     const [step, setStep] = useState<SetupStep>('file');
     const [isLoading, setIsLoading] = useState(false);
     const { accountPreviews, selectedAccounts, setPreviews, toggleAccount, selectAllAccounts, deselectAllAccounts } = useAccountSelection();
     const [fileUri, setFileUri] = useState<string | null>(null);
-
     const handleGoBack = () => void goBackOrReplace('/');
-
     const handleSelectFile = async () => {
         setIsLoading(true);
         try {
@@ -60,7 +57,6 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             setIsLoading(false);
         }
     };
-
     const handleSetupSync = async () => {
         if (!isDefined(fileUri)) {
             return;
@@ -76,44 +72,48 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             setIsLoading(false);
         }
     };
-
-    const isStartSyncDisabled = isLoading || selectedAccounts.size === 0;
-    const footer =
-        step === 'file' ? (
-            <Button onPress={handleSelectFile} disabled={isLoading} content={t`Select File`} leftIcon={UserIconNameEnum.Upload} />
-        ) : (
-            <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />
-        );
+    const isFileStep = step === 'file';
+    const footerProps = isFileStep
+        ? {
+              onPress: handleSelectFile,
+              disabled: isLoading,
+              content: t`Select File`,
+              leftIcon: UserIconNameEnum.Upload,
+              testID: CreateFileBankAccountSelector.SelectFileButton
+          }
+        : {
+              onPress: handleSetupSync,
+              disabled: isLoading || selectedAccounts.size === 0,
+              content: t`Start Sync`,
+              testID: CreateFileBankAccountSelector.StartSyncButton
+          };
+    const formStep = isFileStep ? (
+        <FileUploadStep
+            steps={config.steps}
+            fileIcon={config.fileIcon}
+            fileTypeLabel={config.fileTypeLabel}
+            selectFileText={config.selectFileText}
+            onSelectFile={handleSelectFile}
+            isLoading={isLoading}
+        />
+    ) : (
+        <AccountSelectionStep
+            accountPreviews={accountPreviews}
+            selectedAccounts={selectedAccounts}
+            onToggle={toggleAccount}
+            onSelectAll={selectAllAccounts}
+            onDeselectAll={deselectAllAccounts}
+        />
+    );
 
     return (
         <FormPage
             header={<PageHeader onGoBack={handleGoBack} title={config.title} description={config.description} />}
-            footer={footer}
+            footer={<Button {...footerProps} />}
             safeEdges={FORM_PAGE_SAFE_EDGES}
             scrollViewTestID={CreateFileBankAccountSelector.ScrollView}
         >
-            <FormLayoutGroup>
-                {step === 'file' && (
-                    <FileUploadStep
-                        steps={config.steps}
-                        fileIcon={config.fileIcon}
-                        fileTypeLabel={config.fileTypeLabel}
-                        selectFileText={config.selectFileText}
-                        onSelectFile={handleSelectFile}
-                        isLoading={isLoading}
-                    />
-                )}
-
-                {step === 'accounts' && (
-                    <AccountSelectionStep
-                        accountPreviews={accountPreviews}
-                        selectedAccounts={selectedAccounts}
-                        onToggle={toggleAccount}
-                        onSelectAll={selectAllAccounts}
-                        onDeselectAll={deselectAllAccounts}
-                    />
-                )}
-            </FormLayoutGroup>
+            <FormLayoutGroup>{formStep}</FormLayoutGroup>
         </FormPage>
     );
 };

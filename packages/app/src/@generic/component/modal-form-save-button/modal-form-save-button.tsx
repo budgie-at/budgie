@@ -1,4 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
+import { StyleSheet, View } from 'react-native';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../button/button';
 
@@ -10,6 +13,14 @@ interface Props {
 
 export const ModalFormSaveButton = ({ disabled, onPress, testID }: Props) => {
     const { t } = useLingui();
+    const hasTestID = isNotEmptyString(testID);
 
-    return <Button className="flex-1" variant="cta" onPress={onPress} disabled={disabled} content={t`Save`} contentTestID={testID} />;
+    return (
+        <View className="relative flex-1">
+            <Button className="w-full" variant="cta" onPress={onPress} disabled={disabled} content={t`Save`} testID={testID} />
+            {hasTestID ? (
+                <View collapsable={false} nativeID={testID} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testID} />
+            ) : null}
+        </View>
+    );
 };

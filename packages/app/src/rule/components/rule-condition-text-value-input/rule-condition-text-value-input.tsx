@@ -17,7 +17,14 @@ export const RuleConditionTextValueInput = ({ index, testID }: Props) => {
     const renderValueInput = ({
         field: { value, onChange }
     }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.value`>) => (
-        <Input testID={testID} value={value} onChangeText={onChange} placeholder={t`Enter value...`} />
+        <Input
+            testID={testID}
+            value={value}
+            onChangeText={onChange}
+            placeholder={t`Enter value...`}
+            returnKeyType="done"
+            submitBehavior="blurAndSubmit"
+        />
     );
 
     return (

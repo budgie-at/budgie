@@ -10,7 +10,9 @@ import { cn } from '../../utils/cn.util';
 import { StaticChar } from './static-char';
 import { Tick } from './tick';
 
-interface Props {
+import type { ViewProps } from 'react-native';
+
+interface Props extends Pick<ViewProps, 'testID'> {
     readonly number: number | string;
     readonly textClassName?: string;
     readonly minFontSize?: number;
@@ -33,7 +35,8 @@ export const Ticker = (props: Props) => {
         minFontSize = 10,
         maxFontSize = 200,
         hasAnimation = true,
-        availableWidth
+        availableWidth,
+        testID
     } = props;
 
     const [containerWidth, setContainerWidth] = useState(0);
@@ -87,7 +90,7 @@ export const Ticker = (props: Props) => {
     });
 
     return (
-        <View className="w-full" {...(!isDefined(availableWidth) && { onLayout: handleLayout })}>
+        <View className="w-full" testID={testID} {...(!isDefined(availableWidth) && { onLayout: handleLayout })}>
             <View className={cn('flex-row justify-center', className)}>{elements}</View>
         </View>
     );

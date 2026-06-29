@@ -23,8 +23,6 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: 'E2E Borrowed Account'
       CURRENCY_CODE: 'CHF'
-      CONTACT_NAME: 'Maestro E2E Contact'
-      CONTACT_NAME_ID: 'Maestro_E2E_Contact'
       UPDATED_ACCOUNT_NAME: 'E2E Borrowed CHF'
       RETURN_DAY: '18'
       RETURN_DATE_LABEL: '.*18,.*'

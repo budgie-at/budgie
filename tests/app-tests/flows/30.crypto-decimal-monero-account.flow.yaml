@@ -3,7 +3,7 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
-          FIXTURE_ROW_ID_MATCH: '02.db(, db)?'
+          FIXTURE_ROW_ID_MATCH: '02.db'
 
 - runFlow:
       file: subflows/accounts/create-crypto-account.flow.yaml
@@ -38,7 +38,7 @@ appId: ${APP_ID}
       id: 'CryptoGroup.Market.XMR'
 - extendedWaitUntil:
       visible:
-          id: 'CurrencyMarket.Header.XMR'
+          id: 'CurrencyMarket.Holdings.XMR'
       timeout: 10000
 - assertVisible:
       id: 'CurrencyMarket.Holdings.XMR'

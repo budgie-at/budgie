@@ -7,16 +7,17 @@ import { RuleActionPillContainer } from '../rule-action-pill-container/rule-acti
 
 interface Props {
     readonly action: RuleActionWithRelationsEntityInterface;
+    readonly testID?: string;
 }
 
-export const RuleActionPill = ({ action }: Props) => {
+export const RuleActionPill = ({ action, testID }: Props) => {
     const { type, category, tag, account } = action;
 
     if (type === RuleActionTypeEnum.SET_CATEGORY && isDefined(category)) {
         const categoryTitle = category.title;
 
         return (
-            <RuleActionPillContainer icon={UserIconNameEnum.FolderOpen}>
+            <RuleActionPillContainer icon={UserIconNameEnum.FolderOpen} testID={testID}>
                 <Trans>Category → {categoryTitle}</Trans>
             </RuleActionPillContainer>
         );
@@ -26,7 +27,7 @@ export const RuleActionPill = ({ action }: Props) => {
         const tagTitle = tag.title;
 
         return (
-            <RuleActionPillContainer icon={UserIconNameEnum.Tag}>
+            <RuleActionPillContainer icon={UserIconNameEnum.Tag} testID={testID}>
                 <Trans>Tag → {tagTitle}</Trans>
             </RuleActionPillContainer>
         );
@@ -36,7 +37,7 @@ export const RuleActionPill = ({ action }: Props) => {
         const accountTitle = account.title;
 
         return (
-            <RuleActionPillContainer icon={UserIconNameEnum.ArrowRightLeft}>
+            <RuleActionPillContainer icon={UserIconNameEnum.ArrowRightLeft} testID={testID}>
                 <Trans>Transfer → {accountTitle}</Trans>
             </RuleActionPillContainer>
         );

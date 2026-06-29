@@ -66,6 +66,10 @@ export default function SettingsPage() {
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
     };
+    const handleToggleShowCents = () =>
+        void updateSettingsMutation({ showCents: !showCents }).catch((error: unknown) => {
+            Toast.show({ type: 'error', text1: t`Could not update settings`, text2: getErrorMessage(error) });
+        });
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
     return (
@@ -194,6 +198,7 @@ export default function SettingsPage() {
                             />
                             <SettingsCard
                                 testID={SettingsPageSelector.ShowCentsCard}
+                                onPress={handleToggleShowCents}
                                 title={t`Show Cents`}
                                 description={t`Show $1,234.56 instead of $1,235`}
                                 icon={UserIconNameEnum.DollarSign}

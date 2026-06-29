@@ -3,38 +3,50 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TabBar.Home'
+- waitForAnimationToEnd
 
-- tapOn:
-    text: 'Add Account'
-    optional: true
+- runFlow:
+    when:
+      visible: 'No accounts yet'
+    commands:
+      - tapOn: 'Add Account'
+      - extendedWaitUntil:
+          visible:
+            id: 'CreateAccount.BANK'
+          timeout: 10000
 
 - runFlow:
     when:
       notVisible:
-        text: '.*Monobank.*'
+        id: 'CreateAccount.BANK'
     commands:
-      - tapOn:
-          id: 'ActionButton'
-          optional: true
+      - runFlow:
+          when:
+            visible:
+              id: 'ActionButton'
+          commands:
+            - tapOn:
+                id: 'ActionButton'
       - runFlow:
           when:
             notVisible:
-              id: 'ActionItem.AddAccount'
+              id: 'ActionButton'
           commands:
+            - extendedWaitUntil:
+                visible:
+                  id: 'ActionButton'
+                timeout: 10000
             - tapOn:
-                point: '88%,94%'
+                id: 'ActionButton'
+      - waitForAnimationToEnd
       - extendedWaitUntil:
           visible:
-            id: 'ActionItem.AddAccount'
+            id: 'ActionItem.AddAccount.Label'
           timeout: 10000
       - tapOn:
-          id: 'ActionItem.AddAccount'
-- extendedWaitUntil:
-    visible:
-      text: '.*Monobank.*'
-    timeout: 3000
-- waitForAnimationToEnd
+          id: 'ActionItem.AddAccount.Label'
+      - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'CreateAccount.BANK'
-    timeout: 3000
+    timeout: 10000

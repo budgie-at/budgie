@@ -8,7 +8,7 @@ appId: ${APP_ID}
     id: 'ActionButton'
 - extendedWaitUntil:
     visible:
-      id: 'ActionItem.AddAccount'
+      id: 'ActionItem.AddAccount.Label'
 - waitForAnimationToEnd
 - tapOn:
     text: 'Account'

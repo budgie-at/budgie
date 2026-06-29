@@ -1,0 +1,58 @@
+appId: ${APP_ID}
+env:
+  CATEGORY_NAME: Rules Test Category
+---
+- runFlow:
+    file: setup/setup-rules-test.flow.yaml
+
+- runFlow:
+    file: subflows/navigate-to-rules.flow.yaml
+
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Test'
+
+- tapOn: Done
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+
+- runFlow:
+    file: subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Other'
+
+- tapOn: Done
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      text: 'Some transactions may match multiple rules\..*'
+
+- runFlow:
+    file: subflows/navigate-to-rules.flow.yaml
+
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'

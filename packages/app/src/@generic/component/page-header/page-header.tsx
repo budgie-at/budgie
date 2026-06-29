@@ -43,6 +43,7 @@ export const PageHeader = ({
     description,
     iconVariant = 'default',
     descriptionClassName,
+    titleClassName,
     icon,
     onGoBack,
     right
@@ -56,9 +57,11 @@ export const PageHeader = ({
             ) : null}
 
             <View className="gap-y-xs mr-auto flex-1">
-                <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
-                    {title}
-                </Text>
+                {isNotEmptyString(title) ? (
+                    <Text className={cn('text-primary font-medium text-3xl', titleClassName)} numberOfLines={1}>
+                        {title}
+                    </Text>
+                ) : null}
 
                 {isNotEmptyString(description) ? (
                     <Text className={cn('text-xs text-secondary-foreground', descriptionClassName)}>{description}</Text>

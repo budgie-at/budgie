@@ -45,7 +45,7 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
         const confirmed = await confirmAlert({
             title: t`Are you sure you want to delete this rule?`,
             message: t`This action cannot be undone.`,
-            confirmText: t`Delete rule`,
+            confirmText: t`Delete`,
             cancelText: t`Cancel`,
             isDestructive: true
         });

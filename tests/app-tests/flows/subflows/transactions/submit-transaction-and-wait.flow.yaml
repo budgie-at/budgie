@@ -1,11 +1,9 @@
 appId: ${APP_ID}
 ---
-- retry:
-    maxRetries: 2
-    commands:
-      - tapOn:
-          id: 'TransactionForm.SubmitButton'
-      - extendedWaitUntil:
-          visible:
-            id: 'TransactionsPage.Container'
-          timeout: 15000
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionsPage.Container'
+    timeout: 60000

@@ -1,15 +1,22 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-    id: 'TransactionForm.CategorySelector'
+      id: 'TransactionForm.CategorySelector.Title'
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'CategoryPickerBottomSheet.Input'
+- tapOn:
       id: 'CategoryPickerBottomSheet.Input'
-- tapOn:
-    id: 'CategoryPickerBottomSheet.Input'
 - inputText: ${CATEGORY_NAME}
+- tapOn: Done
+- waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+      visible:
+          id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}.Label'
+      timeout: 15000
 - tapOn:
-    id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}.Label'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      notVisible:
+          id: 'CategoryPickerBottomSheet.Input'

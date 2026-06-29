@@ -3,8 +3,7 @@ appId: ${APP_ID}
 - runFlow:
     file: ../subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ROW_ID_MATCH: '25.db(, db)?'
-      FILE_PICKER_REPEAT_TAP: 'true'
+      FIXTURE_ROW_ID_MATCH: '25.db'
 
 - stopApp
 - launchApp:

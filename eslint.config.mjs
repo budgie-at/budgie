@@ -243,6 +243,12 @@ export default defineConfig(
         }
     },
     {
+        files: ['**/*.service.ts'],
+        rules: {
+            'max-lines': ['error', { max: 500, skipBlankLines: true, skipComments: true }]
+        }
+    },
+    {
         files: ['**/*.{ts,tsx}'],
         extends: [importPlugin.flatConfigs.recommended, importPlugin.flatConfigs.typescript],
         languageOptions: {

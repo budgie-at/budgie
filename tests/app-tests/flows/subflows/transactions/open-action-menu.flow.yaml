@@ -6,4 +6,5 @@ env:
     id: 'ActionButton'
 - extendedWaitUntil:
     visible:
-      id: ${ACTION_ITEM_ID}
+      id: '${ACTION_ITEM_ID}.Label'
+- waitForAnimationToEnd

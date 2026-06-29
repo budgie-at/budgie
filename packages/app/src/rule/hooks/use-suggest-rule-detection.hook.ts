@@ -5,6 +5,7 @@ import { useWatch } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { convertTransactionToInput } from '../../transaction/utils/convert-transaction-to-input.util';
+import { getTransactionDisplayTitle } from '../../transaction/utils/get-transaction-display-title.util';
 import { RuleDetectionModeEnum } from '../enum/rule-detection-mode.enum';
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
 import { buildDismissKey } from '../util/build-dismiss-key.util';
@@ -61,7 +62,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const mccCode = isDefined(mccCategory) ? mccCategory.mcc : null;
 
     const suggestRuleData: SuggestRuleDataInterface = {
-        title: transaction.title,
+        title: getTransactionDisplayTitle(transaction),
         comment: transaction.comment,
         mccCode,
         categoryId,
@@ -85,7 +86,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         tagsChanged
     });
 
-    const dismissKey = buildDismissKey(transaction.id, transaction.title, transaction.comment, mccCode);
+    const dismissKey = buildDismissKey(transaction.id, getTransactionDisplayTitle(transaction), transaction.comment, mccCode);
     const wasPreviouslyDismissed = dismissedSuggestions.has(dismissKey);
 
     const mode = isAdjustment

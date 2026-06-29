@@ -4,7 +4,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ROW_ID_MATCH: '08.db(, db)?'
+      FIXTURE_ROW_ID_MATCH: '08.db'
 
 # --- Create Split Expense ---
 
@@ -66,7 +66,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SplitEntries.ConfirmButton'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -91,7 +91,7 @@ appId: ${APP_ID}
     id: 'TabBar.Analytics'
 - extendedWaitUntil:
     visible:
-      id: 'AnalyticsPage.Container'
+      id: 'AnalyticsPage.Tab.Categories'
 - assertVisible:
     id: 'TransactionAnalyticsCard.Amount.Spent.45'
 - assertVisible:
@@ -109,7 +109,7 @@ appId: ${APP_ID}
     id: 'PageHeader.BackButton'
 - extendedWaitUntil:
     visible:
-      id: 'AnalyticsPage.Container'
+      id: 'AnalyticsPage.Tab.Categories'
 
 # --- Edit Split Rows ---
 
@@ -117,6 +117,10 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Split_Expense'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
 
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
@@ -126,8 +130,14 @@ appId: ${APP_ID}
 - assertNotVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
+    text: 'Close menu'
 
+- tapOn:
+    id: 'TransactionInfo.EditButton.Label'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFieldIcon.Split'
+    timeout: 5000
 - tapOn:
     id: 'TransactionFieldIcon.Split'
 - extendedWaitUntil:
@@ -155,7 +165,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SplitEntries.ConfirmButton'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -180,6 +190,16 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Split_Expense'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionInfo.EditButton.Label'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFieldIcon.Split'
+    timeout: 5000
 
 - tapOn:
     id: 'TransactionFieldIcon.Split'
@@ -199,7 +219,7 @@ appId: ${APP_ID}
     notVisible: 'Remove split?'
     timeout: 15000
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -214,6 +234,10 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Split_Expense'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
@@ -222,7 +246,7 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
+    text: 'Close menu'
 
 # --- Delete Expense ---
 
@@ -230,6 +254,10 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Split_Expense'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
 
 - runFlow: subflows/transactions/delete-transaction.flow.yaml
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml

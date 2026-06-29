@@ -19,7 +19,7 @@ import type { TransactionFieldIconsRefInterface } from '../../interface/transact
 import type { TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import type { TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 
-interface Props extends RulePillSlotPropsInterface {
+interface Props {
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
     readonly accountFieldName: QuickFormAccountFieldName;
@@ -31,6 +31,7 @@ interface Props extends RulePillSlotPropsInterface {
     readonly buildEntries: (params: QuickFormBuildEntryParamsInterface) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
+    readonly rulePillSlotProps?: RulePillSlotPropsInterface;
 }
 
 const EXPENSE_ENTRY_TYPE = TransactionEntryTypeEnum.CREDIT;
@@ -40,6 +41,7 @@ const getEntryTypeForTransaction = (transactionType: TransactionTypeEnum): Trans
     transactionType === TransactionTypeEnum.EXPENSE ? EXPENSE_ENTRY_TYPE : INCOME_ENTRY_TYPE;
 
 export const SimpleQuickForm = (props: Props) => {
+    const { rulePillSlotProps, ...formProps } = props;
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { displayValue, currencySymbol, keypadHandlers, setFromNumeric } = useQuickFormAmount({
         accountFieldName: props.accountFieldName
@@ -84,7 +86,8 @@ export const SimpleQuickForm = (props: Props) => {
     return (
         <View className="flex-1">
             <SimpleQuickFormDisplay
-                {...props}
+                {...formProps}
+                {...rulePillSlotProps}
                 amountDisplayRef={amountDisplayRef}
                 currencySymbol={currencySymbol}
                 displayValue={displayValue}
@@ -104,7 +107,8 @@ export const SimpleQuickForm = (props: Props) => {
             />
 
             <SimpleQuickFormControls
-                {...props}
+                {...formProps}
+                {...rulePillSlotProps}
                 accountRowRef={accountRowRef}
                 fieldIconsRef={fieldIconsRef}
                 splitEntryCount={formState.splitEntryCount}

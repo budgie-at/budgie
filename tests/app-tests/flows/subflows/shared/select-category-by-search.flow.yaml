@@ -9,8 +9,15 @@ appId: ${APP_ID}
     id: 'CategoryPickerBottomSheet.Input'
 - waitForAnimationToEnd
 - inputText: ${CATEGORY_NAME}
+- tapOn: Done
 - extendedWaitUntil:
     visible:
-      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}.Label'
+- waitForAnimationToEnd
 - tapOn:
-    id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+    id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}.Label'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryPickerBottomSheet.Input'
+    timeout: 5000

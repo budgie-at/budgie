@@ -107,20 +107,12 @@ class TransactionService {
         });
     }
 
-    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
-        return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
-    }
-
     async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
         return transactionRepository.findIdMapByExternalSource(externalSource);
     }
 
     async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
         return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
-    }
-
-    async updateAllBalances(tx?: DB): Promise<void> {
-        await accountBalanceIncrementalService.updateAllBalances(true, tx);
     }
 
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {

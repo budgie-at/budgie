@@ -3,7 +3,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -68,7 +68,23 @@ export const BudgetDetails = ({ budget }: Props) => {
     );
 
     const headerAction = (
-        <HapticPressable className="ml-auto" testID={BudgetSelector.DetailsEditButton} onPress={handleEditPress}>
+        <HapticPressable
+            accessible
+            accessibilityLabel={t`Manage budget`}
+            accessibilityRole="button"
+            className="relative ml-auto h-[40px] w-[40px]"
+            collapsable={false}
+            nativeID={BudgetSelector.DetailsEditButton}
+            testID={BudgetSelector.DetailsEditButton}
+            onPress={handleEditPress}
+        >
+            <View
+                collapsable={false}
+                nativeID={BudgetSelector.DetailsEditButton}
+                pointerEvents="none"
+                style={StyleSheet.absoluteFill}
+                testID={BudgetSelector.DetailsEditButton}
+            />
             <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
         </HapticPressable>
     );

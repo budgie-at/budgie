@@ -14,6 +14,7 @@ interface Props {
     readonly icon: UserIconNameEnum;
     readonly label: string;
     readonly onPress: EmptyFn;
+    readonly onPressIn?: EmptyFn;
     readonly variant?: MenuItemVariant;
     readonly rightLabel?: string | null;
     readonly testID?: string;
@@ -41,8 +42,8 @@ const iconVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('', {
     defaultVariants: { variant: 'default' }
 });
 
-export const PopoverMenuItem = ({ icon, label, onPress, variant = 'default', rightLabel, testID }: Props) => (
-    <HapticPressable onPress={onPress} className={containerClassName()} accessibilityRole="menuitem" testID={testID}>
+export const PopoverMenuItem = ({ icon, label, onPress, onPressIn, variant = 'default', rightLabel, testID }: Props) => (
+    <HapticPressable onPress={onPress} onPressIn={onPressIn} className={containerClassName()} accessibilityRole="menuitem" testID={testID}>
         <Icon icon={icon} size={20} className={iconVariants({ variant })} />
         <Text className={textVariants({ variant })}>{label}</Text>
         {isDefined(rightLabel) ? <Text className="text-sm text-secondary-foreground">{rightLabel}</Text> : null}

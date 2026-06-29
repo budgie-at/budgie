@@ -1,0 +1,32 @@
+appId: ${APP_ID}
+env:
+  TAG_NAME: ${TAG_NAME}
+---
+- extendedWaitUntil:
+    visible:
+      id: 'TagPickerBottomSheet.Input'
+- tapOn:
+    id: 'TagPickerBottomSheet.Input'
+- inputText: ${TAG_NAME}
+- tapOn: Done
+- extendedWaitUntil:
+    visible:
+      id: 'TagPickerBottomSheet.Card.${TAG_NAME}'
+    timeout: 15000
+- waitForAnimationToEnd
+- tapOn:
+    id: 'TagPickerBottomSheet.Card.${TAG_NAME}'
+    retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible:
+        id: 'TagPickerBottomSheet.Input'
+    commands:
+      - waitForAnimationToEnd
+      - tapOn:
+          id: 'TagPickerBottomSheet.Card.${TAG_NAME}'
+          retryTapIfNoChange: true
+- extendedWaitUntil:
+    notVisible:
+      id: 'TagPickerBottomSheet.Input'
+    timeout: 5000

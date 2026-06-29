@@ -19,8 +19,12 @@ export const TransactionCardTags = ({ transaction }: Props) => {
     }
 
     return (
-        <View className="flex-row items-center gap-x-xs" testID={TransactionCardSelector.Tag(primaryTag.title)}>
-            <TransactionCardTagChip title={primaryTag.title} isPrimary={hasMultipleTags} />
+        <View className="flex-row items-center gap-x-xs">
+            <TransactionCardTagChip
+                title={primaryTag.title}
+                isPrimary={hasMultipleTags}
+                testID={TransactionCardSelector.Tag(primaryTag.title)}
+            />
             {hasMultipleTags ? (
                 <View className="rounded-full border border-secondary-corner px-sm py-[2px]">
                     <Text

@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- State machine service co-locates recompute, derivation, and action dispatcher */
 import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 

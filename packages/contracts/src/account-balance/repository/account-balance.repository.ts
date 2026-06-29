@@ -138,8 +138,8 @@ export class AccountBalanceRepository {
             .where(isNull(AccountBalanceEntityTable.deletedAt));
     }
 
-    getByAccountId(accountId: number) {
-        return this.db
+    getByAccountId(accountId: number, tx?: DB) {
+        return (tx ?? this.db)
             .select({ balance: this.getAccountBalanceWithTransactionsSql(sql`${accountId}`) })
             .from(AccountEntityTable)
             .where(eq(AccountEntityTable.id, accountId))

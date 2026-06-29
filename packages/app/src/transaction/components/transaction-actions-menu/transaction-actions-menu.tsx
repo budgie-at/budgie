@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { GestureResponderEvent, View } from 'react-native';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
@@ -9,23 +9,39 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-close.hook';
-import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { TransactionActionsMenuContext } from '../../context/transaction-actions-menu.context';
 
 import { TransactionActionsMenuSelector } from './transaction-actions-menu.selector';
 
 import type { TransactionActionsMenuPropsInterface } from '../../interface/transaction-actions-menu-props.interface';
+import type { EmptyFn } from '@rnw-community/shared';
 
 const TRIGGER_SIZE = 40;
 
 export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = false, children }: TransactionActionsMenuPropsInterface) => {
     const { t } = useLingui();
-    const { isMenuOpen, closeMenu, handleCloseComplete, openMenu } = useDeferredMenuClose();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
+    const pendingActionRef = useRef<EmptyFn | null>(null);
     const actionLabel = isConsolidated ? t`Revert` : t`Delete Transaction`;
     const actionIcon = isConsolidated ? UserIconNameEnum.Undo2 : UserIconNameEnum.Trash2;
     const actionTestID = isConsolidated ? TransactionActionsMenuSelector.RevertButton : TransactionActionsMenuSelector.DeleteButton;
+
+    const openMenu = () => {
+        setIsMenuOpen(true);
+    };
+
+    const closeMenu = (afterClose?: EmptyFn) => {
+        pendingActionRef.current = afterClose ?? null;
+        setIsMenuOpen(false);
+    };
+
+    const handleCloseComplete = () => {
+        if (isDefined(pendingActionRef.current)) {
+            pendingActionRef.current();
+            pendingActionRef.current = null;
+        }
+    };
 
     const handleToggleMenu = (event: GestureResponderEvent) => {
         if (isMenuOpen) {
@@ -58,36 +74,17 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
             return;
         }
 
-        closeMenu(
-            () =>
-                void confirmAlert({
-                    title: t`Are you sure?`,
-                    message: t`This action cannot be undone.`,
-                    confirmText: t`Delete`,
-                    cancelText: t`Cancel`,
-                    isDestructive: true
-                }).then(confirmed => {
-                    if (confirmed) {
-                        void onDelete();
-                    }
-
-                    return null;
-                })
-        );
+        closeMenu(() => {
+            void onDelete();
+        });
     };
 
     const showAction = !isConsolidated || isDefined(onRevert);
 
     return (
         <View>
-            <View collapsable={false}>
-                <HapticPressable
-                    className="mr-lg"
-                    onPress={emptyFn}
-                    onPressIn={handleToggleMenu}
-                    testID={TransactionActionsMenuSelector.TriggerButton}
-                    hitSlop={16}
-                >
+            <View collapsable={false} testID={TransactionActionsMenuSelector.TriggerButton}>
+                <HapticPressable className="mr-lg" onPress={emptyFn} onPressIn={handleToggleMenu} hitSlop={16}>
                     <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
                 </HapticPressable>
             </View>

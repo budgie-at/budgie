@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -33,33 +33,36 @@ export const BudgetDetailsLimitCard = (props: Props) => {
     const remainingLabel = metrics.isOverBudget ? t`Over budget` : t`Left`;
 
     return (
-        <Card testID={testID} variant="ghost" size="md" onPress={onPress} className="gap-y-md">
-            <View className="flex-row items-center gap-x-md">
-                {isDefined(icon) ? <CircleIcon icon={icon} variant="ghost" size={40} iconSize={18} /> : null}
+        <View className="relative" collapsable={false}>
+            <Card variant="ghost" size="md" onPress={onPress} className="gap-y-md">
+                <View className="flex-row items-center gap-x-md">
+                    {isDefined(icon) ? <CircleIcon icon={icon} variant="ghost" size={40} iconSize={18} /> : null}
 
-                <Text className="text-primary text-md font-semibold flex-1" numberOfLines={1}>
-                    {title}
-                </Text>
-            </View>
-
-            <BudgetProgressBar isSummaryVisible={false} spent={spent} limit={limitAmount} />
-
-            <View className="flex-row justify-between gap-x-md">
-                <View className="flex-1">
-                    <Text className="text-secondary-foreground text-xs">{t`Spent`}</Text>
-                    <Text testID={spentTestID} className="text-primary text-sm font-semibold">
-                        {formatDigits(metrics.displaySpent, currencySymbol)}
+                    <Text className="text-primary text-md font-semibold flex-1" numberOfLines={1}>
+                        {title}
                     </Text>
                 </View>
-                <View className="flex-1 items-center">
-                    <Text className="text-secondary-foreground text-xs">{remainingLabel}</Text>
-                    <Text className="text-primary text-sm font-semibold">{formatDigits(metrics.displayRemaining, currencySymbol)}</Text>
+
+                <BudgetProgressBar isSummaryVisible={false} spent={spent} limit={limitAmount} />
+
+                <View className="flex-row justify-between gap-x-md">
+                    <View className="flex-1">
+                        <Text className="text-secondary-foreground text-xs">{t`Spent`}</Text>
+                        <Text testID={spentTestID} className="text-primary text-sm font-semibold">
+                            {formatDigits(metrics.displaySpent, currencySymbol)}
+                        </Text>
+                    </View>
+                    <View className="flex-1 items-center">
+                        <Text className="text-secondary-foreground text-xs">{remainingLabel}</Text>
+                        <Text className="text-primary text-sm font-semibold">{formatDigits(metrics.displayRemaining, currencySymbol)}</Text>
+                    </View>
+                    <View className="flex-1 items-end">
+                        <Text className="text-secondary-foreground text-xs">{t`Limit`}</Text>
+                        <Text className="text-primary text-sm font-semibold">{formatDigits(metrics.displayLimit, currencySymbol)}</Text>
+                    </View>
                 </View>
-                <View className="flex-1 items-end">
-                    <Text className="text-secondary-foreground text-xs">{t`Limit`}</Text>
-                    <Text className="text-primary text-sm font-semibold">{formatDigits(metrics.displayLimit, currencySymbol)}</Text>
-                </View>
-            </View>
-        </Card>
+            </Card>
+            <View collapsable={false} nativeID={testID} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testID} />
+        </View>
     );
 };

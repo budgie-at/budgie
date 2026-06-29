@@ -18,7 +18,7 @@ export const RuleFormSectionHeader = ({ title, onAdd, testID, addButtonTestID }:
         <Text className="text-primary text-lg font-semibold">{title}</Text>
 
         <HapticPressable testID={addButtonTestID} onPress={onAdd}>
-            <CircleIcon icon={UserIconNameEnum.Plus} variant="ghost" size={26} iconSize={14} />
+            <CircleIcon testID={addButtonTestID} icon={UserIconNameEnum.Plus} variant="ghost" size={26} iconSize={14} />
         </HapticPressable>
     </View>
 );

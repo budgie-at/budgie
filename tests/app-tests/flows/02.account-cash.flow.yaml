@@ -16,13 +16,19 @@ appId: ${APP_ID}
       ACCOUNT_AMOUNT: '250'
 
 - runFlow:
-    file: subflows/accounts/exercise-liability-account.flow.yaml
+    file: subflows/accounts/open-account-details.flow.yaml
     env:
       ACCOUNT_NAME: 'E2E Savings Account'
-      CURRENCY_CODE: 'CAD'
-      UPDATED_ACCOUNT_NAME: 'E2E Savings Account CAD'
-      INITIAL_AMOUNT: '250'
-      INCREASE_TO: '325'
-      INCREASE_DELTA: '75'
-      DECREASE_TO: '275'
-      DECREASE_DELTA: '50'
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Badge.Adjustment'
+    timeout: 10000
+
+- assertVisible:
+    id: 'TransactionCard.AdjustmentAmount.250'
+
+- runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
+
+- assertVisible:
+    id: 'AccountCard.E2E Savings Account'

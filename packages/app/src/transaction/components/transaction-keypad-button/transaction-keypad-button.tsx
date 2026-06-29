@@ -118,6 +118,7 @@ export const TransactionKeypadButton = (props: Props) => {
     );
 
     const contentClassName = cn(textVariants({ buttonVariant: variant }), isConfirm && confirmTextVariants({ variant: colorVariant }));
+    const hasTestID = isDefined(testID);
 
     return (
         <HapticPressable
@@ -129,9 +130,14 @@ export const TransactionKeypadButton = (props: Props) => {
             onPress={onPress}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
-            testID={testID}
+            {...(!isConfirm && hasTestID && { testID })}
         >
-            <Animated.View className="items-center justify-center" style={animatedStyle}>
+            <Animated.View
+                className="items-center justify-center"
+                collapsable={false}
+                style={animatedStyle}
+                {...(isConfirm && hasTestID && { testID })}
+            >
                 {isDefined(icon) ? (
                     <Icon className={contentClassName} icon={icon} size={ICON_SIZE} />
                 ) : (

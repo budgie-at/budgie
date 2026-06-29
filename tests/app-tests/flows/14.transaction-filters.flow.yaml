@@ -3,7 +3,7 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
-          FIXTURE_ROW_ID_MATCH: '14.db(, db)?'
+          FIXTURE_ROW_ID_MATCH: '14.db'
 
 - runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
 
@@ -110,8 +110,11 @@ appId: ${APP_ID}
       id: 'TransactionFilters.AccountOption.E2E Filter Cash A'
 - extendedWaitUntil:
       visible:
-          id: 'TransactionFilters.AccountOptionSelected.E2E Filter Cash A'
+          id: 'TransactionFilters.AccountApplyButton'
       timeout: 5000
+- assertVisible:
+      id: 'TransactionFilters.AccountApplyButton'
+      text: 'Show 1 account'
 - tapOn:
       id: 'TransactionFilters.AccountApplyButton'
 
@@ -168,13 +171,13 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.TagSearchInput'
 - inputText: 'Expense Tag'
-- pressKey: Enter
+- pressKey: enter
 - extendedWaitUntil:
       visible:
-          id: 'TransactionFilters.TagOption.E2E Filter Expense Tag'
+          id: 'TagPickerBottomSheet.Card.E2E Filter Expense Tag'
       timeout: 5000
 - tapOn:
-      id: 'TransactionFilters.TagOption.E2E Filter Expense Tag'
+      id: 'TagPickerBottomSheet.Card.E2E Filter Expense Tag'
 - tapOn:
       id: 'TransactionFilters.TagApplyButton'
 

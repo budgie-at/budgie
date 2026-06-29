@@ -1,9 +1,15 @@
 appId: ${APP_ID}
 ---
 
-- runFlow: ../navigation/navigate-to-settings.flow.yaml
+- openLink: 'budgie://settings/inactive'
+
 - runFlow:
-    file: ../navigation/open-settings-card.flow.yaml
-    env:
-      CARD_ID: 'SettingsPage.InactiveCard'
-      DESTINATION_ID: 'InactiveAccountsPage.Container'
+      when:
+          visible: 'Open'
+      commands:
+          - tapOn: 'Open'
+
+- extendedWaitUntil:
+      visible:
+          id: 'InactiveAccountsPage.Container'
+      timeout: 15000

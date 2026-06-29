@@ -9,14 +9,15 @@ interface Props {
     readonly condition: Pick<RuleConditionEntityInterface, 'field' | 'operator' | 'value' | 'id'>;
     readonly isLast: boolean;
     readonly isMatchAll: boolean;
+    readonly testID?: string;
 }
 
-export const RuleSummaryConditionItem = ({ condition, isLast, isMatchAll }: Props) => {
+export const RuleSummaryConditionItem = ({ condition, isLast, isMatchAll, testID }: Props) => {
     const separator = isMatchAll ? <Trans>and</Trans> : <Trans>or</Trans>;
 
     return (
         <Fragment>
-            <RuleConditionPill condition={condition} />
+            <RuleConditionPill condition={condition} testID={testID} />
             {isLast ? null : <Text className="text-xs text-secondary-foreground">{separator}</Text>}
         </Fragment>
     );

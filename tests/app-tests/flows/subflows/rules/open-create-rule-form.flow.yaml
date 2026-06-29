@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'ActionButton'
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton.Label'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton.Label'
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible: 'Create Rule'

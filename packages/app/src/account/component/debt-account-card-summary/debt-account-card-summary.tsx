@@ -16,7 +16,7 @@ interface Props {
     readonly debtType: AccountDebtTypeEnum;
 }
 
-const textVariant = cva('flex-1 text-xxs font-semibold text-right border-b border-b-secondary-corner pb-[2px]', {
+const textVariant = cva('text-xxs font-semibold text-right border-b border-b-secondary-corner pb-[2px]', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 

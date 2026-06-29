@@ -11,6 +11,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
+import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { TransactionCardContent } from '../transaction-card-content/transaction-card-content';
 
@@ -29,7 +30,7 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel, onP
 
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
-    const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
+    const title = getTransactionDisplayTitle(transaction);
     let cardTestID: string = TransactionCardSelector.Card(transaction.id);
 
     if (isAdjustment) {

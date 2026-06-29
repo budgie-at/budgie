@@ -15,8 +15,12 @@ env:
 - tapOn:
     id: ${PICKER_INPUT_ID}
 - inputText: ${ENTITY_NAME}
+- pressKey: enter
+- waitForAnimationToEnd
 - tapOn:
     id: ${CREATE_BUTTON_ID}
+    retryTapIfNoChange: true
+- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: ${FORM_INPUT_ID}
@@ -25,4 +29,4 @@ env:
 - extendedWaitUntil:
     notVisible:
       id: ${FORM_INPUT_ID}
-
+- waitForAnimationToEnd

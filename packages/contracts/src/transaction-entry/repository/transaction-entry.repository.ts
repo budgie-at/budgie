@@ -269,8 +269,6 @@ export class TransactionEntryRepository {
     private buildPendingBaseValuationWhere(baseInstrumentId: number) {
         return and(
             or(
-                isNull(TransactionEntryEntityTable.baseAmount),
-                isNull(TransactionEntryEntityTable.baseExchangeRate),
                 isNull(TransactionEntryEntityTable.baseInstrumentId),
                 sql`${TransactionEntryEntityTable.baseInstrumentId} != ${baseInstrumentId}`
             ),

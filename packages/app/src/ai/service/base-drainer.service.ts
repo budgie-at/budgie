@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/member-ordering, max-lines -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
+/* eslint-disable @typescript-eslint/member-ordering -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
 import { Log } from '@budgie/logger';
 import { AppState } from 'react-native';
 

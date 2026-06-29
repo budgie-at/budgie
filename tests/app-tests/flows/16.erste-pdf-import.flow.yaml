@@ -1,12 +1,9 @@
 appId: ${APP_ID}
-env:
-    FIRST_PDF_ROW_ID_MATCH: 'erste-statement-008, pdf'
-    SECOND_PDF_ROW_ID_MATCH: 'erste-statement-009, pdf'
 ---
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
-          FIXTURE_ROW_ID_MATCH: '16.db(, db)?'
+          FIXTURE_ROW_ID_MATCH: '16.db'
 
 - evalScript: ${output.phase = 'clear-state-import'}
 
@@ -14,27 +11,34 @@ env:
 
 - scrollUntilVisible:
       element:
-          text: '.*Erste Bank.*'
+          id: 'CreateAccount.ERSTE'
       direction: DOWN
       timeout: 10000
-      visibilityPercentage: 50
+      visibilityPercentage: 80
+      centerElement: false
       speed: 20
 
+- scroll
+
+- waitForAnimationToEnd
+
 - tapOn:
-      text: '.*Erste Bank.*'
+      id: 'CreateAccount.ERSTE'
 
 - runFlow:
       file: subflows/import/import-erste-pdf-from-picker.flow.yaml
       env:
-          PDF_ROW_ID_MATCH: ${FIRST_PDF_ROW_ID_MATCH}
+          PDF_ROW_ID_MATCH: 'erste-statement-008, pdf'
 
 - scrollUntilVisible:
       element:
           id: 'AccountCard.Erste EUR'
       direction: DOWN
       timeout: 10000
+      visibilityPercentage: 30
 
-- assertVisible: 'Erste EUR, .*478'
+- assertVisible:
+      id: 'AccountCard.Balance.Erste_EUR._478'
 
 - tapOn:
       id: 'AccountCard.Erste EUR'
@@ -52,6 +56,8 @@ env:
 - tapOn:
       id: 'PageHeader.BackButton'
 
+- waitForAnimationToEnd
+
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.Erste EUR'
@@ -65,11 +71,12 @@ env:
 - runFlow:
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
-          FILE_ROW_ID_MATCH: ${SECOND_PDF_ROW_ID_MATCH}
+          FILE_ROW_ID_MATCH: 'erste-statement-009, pdf'
 
 - extendedWaitUntil:
-      visible: 'Erste EUR, .*3,412'
-      timeout: 3000
+      visible:
+          id: 'AccountCard.Balance.Erste_EUR._3_412'
+      timeout: 60000
 
 - tapOn:
       id: 'AccountCard.Erste EUR'
@@ -99,21 +106,26 @@ env:
       timeout: 5000
 
 - runFlow:
-      file: subflows/categories/create-category-from-transaction.flow.yaml
+      file: subflows/categories/select-category.flow.yaml
       env:
-          CATEGORY_NAME: 'E2E Erste Import Category'
+          CATEGORY_NAME: 'Groceries'
 
 - runFlow:
       file: subflows/transactions/edit-comment.flow.yaml
       env:
           COMMENT: 'EDITED FOR DEDUP TEST'
 
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionForm.SubmitButton'
+      timeout: 15000
+
 - tapOn:
       id: 'TransactionForm.SubmitButton'
 
 - extendedWaitUntil:
       visible:
-          id: 'AccountDetails.EditButton'
+          id: 'TransactionInfo.Page'
       timeout: 15000
 
 - tapOn:
@@ -121,10 +133,21 @@ env:
 
 - extendedWaitUntil:
       visible:
+          id: 'AccountDetails.EditButton'
+      timeout: 10000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
           id: 'AccountCard.Erste EUR'
       timeout: 10000
 
-- assertVisible: 'Erste EUR, .*3,412'
+- assertVisible:
+      id: 'AccountCard.Balance.Erste_EUR._3_412'
 
 - longPressOn:
       id: 'AccountCard.Erste EUR'
@@ -132,11 +155,12 @@ env:
 - runFlow:
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
-          FILE_ROW_ID_MATCH: ${SECOND_PDF_ROW_ID_MATCH}
+          FILE_ROW_ID_MATCH: 'erste-statement-009, pdf'
 
 - extendedWaitUntil:
-      visible: 'Erste EUR, .*3,412'
-      timeout: 5000
+      visible:
+          id: 'AccountCard.Balance.Erste_EUR._3_412'
+      timeout: 60000
 
 - tapOn:
       id: 'AccountCard.Erste EUR'

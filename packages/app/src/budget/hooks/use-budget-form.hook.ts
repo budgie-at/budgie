@@ -148,7 +148,8 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
             keepErrors: true
         }
     });
-    const isFormSyncing = !form.formState.isDirty && !areBudgetFormValuesEqual(form.getValues(), formValues);
+    const isFormSyncing =
+        (isEditing || hasAsyncTemplate) && !form.formState.isDirty && !areBudgetFormValuesEqual(form.getValues(), formValues);
 
     const handleDelete = async () => {
         if (!isDefined(budget)) {

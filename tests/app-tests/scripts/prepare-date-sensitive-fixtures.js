@@ -385,14 +385,12 @@ const generateRecurringFixture = () => {
     const sourcePath = path.join(fixturesDirectoryPath, '07.db');
     const targetPath = path.join(outputDirectoryPath, '20-recurring-calendar.db');
 
-    const now = new Date();
-    const today = now.getDate();
-    const lastDayOfCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    const upcomingDay = Math.min(lastDayOfCurrentMonth, today + 5);
+    const rentDay = 19;
+    const gymDay = 24;
     const rentAmount = 120_000_000;
     const gymAmount = 25_000_000;
-    const rentDates = [-3, -2, -1, 0].map(monthOffset => buildMonthlyTimestamp(monthOffset, today));
-    const gymDates = [-3, -2, -1].map(monthOffset => buildMonthlyTimestamp(monthOffset, upcomingDay));
+    const rentDates = [-3, -2, -1, 0].map(monthOffset => buildMonthlyTimestamp(monthOffset, rentDay));
+    const gymDates = [-3, -2, -1].map(monthOffset => buildMonthlyTimestamp(monthOffset, gymDay));
     const transactionValues = [
         ...rentDates.map(timestamp => `(${timestamp}, ${timestamp}, 'EXPENSE', 'E2E Recurring Rent', ${timestamp}, '', 1.0)`),
         ...gymDates.map(timestamp => `(${timestamp}, ${timestamp}, 'EXPENSE', 'E2E Recurring Gym', ${timestamp}, '', 1.0)`)

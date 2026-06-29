@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- Service with multiple matching strategies (SQL, fallback, legacy); absorbs SQL where-builder chain per CLAUDE.md rule 51 */
 import {
     MccCategoryEntityTable,
     RuleConditionCreateInputInterface,
