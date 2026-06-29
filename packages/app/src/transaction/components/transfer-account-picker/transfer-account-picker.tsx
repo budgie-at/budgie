@@ -9,6 +9,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
 
 interface Props {
@@ -59,7 +60,7 @@ export const TransferAccountPicker = ({ label, account, variant, animatedStyle, 
                         style={titleAnimatedStyle}
                         className={titleClassName}
                         numberOfLines={1}
-                        {...(hasAccount && { testID: selectedTestID })}
+                        {...testIDProps(hasAccount && selectedTestID)}
                     >
                         {account?.title ?? label}
                     </Animated.Text>

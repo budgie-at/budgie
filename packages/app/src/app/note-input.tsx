@@ -1,10 +1,9 @@
-import { TRANSACTION_COMMENT_MAX_LENGTH, UserIconNameEnum } from '@budgie/contracts';
+import { TRANSACTION_COMMENT_MAX_LENGTH } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { View } from 'react-native';
 
-import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../@generic/component/icon/icon';
+import { Button } from '../@generic/component/button/button';
 import { TextArea } from '../@generic/component/textarea/text-area';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useNoteInputModal } from '../transaction/context/note-input-modal.context';
@@ -49,15 +48,16 @@ export default function NoteInputModal() {
                     />
                 </View>
 
-                <HapticPressable
+                <Button
                     onPress={handleSubmit}
+                    accessible
                     accessibilityLabel={t`Apply`}
-                    accessibilityRole="button"
-                    className="h-[48px] w-[48px] items-center justify-center rounded-full bg-white"
+                    className="min-h-[48px] px-4xl"
+                    content={t`Apply`}
+                    size="sm"
                     testID={NoteInputModalSelector.SubmitButton}
-                >
-                    <Icon icon={UserIconNameEnum.Check} size={22} className="text-black" />
-                </HapticPressable>
+                    variant="default"
+                />
             </View>
         </View>
     );

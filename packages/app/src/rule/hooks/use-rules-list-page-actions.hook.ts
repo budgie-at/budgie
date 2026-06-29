@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { useCreateAction } from '../../@generic/hook/use-create-action.hook';
+import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { useRuleFormModal } from '../context/rule-form-modal.context';
 import { useGetAllRulesQuery } from '../query/use-get-all-rules.query';
 import { RulesPageSelector } from '../selector/rules-page.selector';
@@ -14,7 +15,8 @@ import { ruleService } from '../service/rule.service';
 export const useRulesListPageActions = () => {
     const { t } = useLingui();
     const [rulesRefreshKey, setRulesRefreshKey] = useState(0);
-    const { rules } = useGetAllRulesQuery(rulesRefreshKey);
+    const focusKey = useFocusKey();
+    const { rules } = useGetAllRulesQuery(rulesRefreshKey + focusKey);
     const { openRuleForm } = useRuleFormModal();
 
     const refreshRules = () => {

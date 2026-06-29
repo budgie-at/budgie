@@ -8,6 +8,9 @@ export const useFormatDate = () => {
     const formatMonthAndDayWithTime = (date: Date | string) =>
         intl.formatDate(date, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h24' });
 
+    const formatWeekdayWithTime = (date: Date | string) =>
+        intl.formatDate(date, { weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h24' });
+
     const formatMonthAndYear = (date: Date | string) => intl.formatDate(date, { month: 'short', year: 'numeric' });
 
     const formatDayAndMonthAndYear = (date: Date | string) => intl.formatDate(date, { month: 'short', year: 'numeric', day: 'numeric' });
@@ -25,6 +28,7 @@ export const useFormatDate = () => {
         formatMonthAndYear,
         formatDayAndMonthAndYear,
         formatMonthAndDayWithTime,
+        formatWeekdayWithTime,
         formatDayAndFullMonthAndYear,
         formatDayAndMonthAndYearWithTime
     };

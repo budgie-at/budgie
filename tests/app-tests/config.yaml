@@ -30,15 +30,21 @@ executionOrder:
         - 24.split-transaction-and-analytics.flow
         - 25.rules-crud.flow
         - 26.rules-application.flow
+        - 26.rules-conflicts.flow
+        - 26.rules-convert-to-transfer.flow
+        - 26.rules-import-application.flow
+        - 26.rules-suggestions.flow
         - 27.mcc-default-category.flow
-        - 27.matching-rules-navigation.flow
         - 28.rules-search.flow
+        - 28.matching-rules-navigation.flow
         - 29.crypto-account-and-market.flow
         - 30.crypto-decimal-monero-account.flow
         - 31.debt-settlement-attachments.flow
+        - 31.transaction-info.flow
         - 31.budget.flow
         - 32.budget-multi-currency.flow
         - 33.budget-transactions.flow
+        - 34.matching-rules-navigation.flow
 
 platform:
     ios:

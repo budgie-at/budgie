@@ -1,7 +1,7 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Link, Redirect, useLocalSearchParams } from 'expo-router';
+import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -32,15 +32,16 @@ const descriptionVariants = cva('uppercase', {
 });
 
 export default function AccountDetails() {
-    const params = useLocalSearchParams<IdParamInterface>();
-    const id = Number(params.id);
+    const id = Number(useLocalSearchParams<IdParamInterface>().id);
 
+    const router = useRouter();
     const { account, isLoading } = useGetAccountByIdQuery(id);
     const { balance } = useAccountBalanceQuery(id);
     const debtProgressSummary = useDebtAccountProgressSummaryQuery(id);
     const { t } = useLingui();
 
     const handleGoBack = () => void goBackOrReplace('/');
+    const handleOpenAccountSettings = () => void router.navigate(`/account/${id}/update`);
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -50,42 +51,50 @@ export default function AccountDetails() {
         return <Redirect href="/" />;
     }
 
-    const { title, icon, type, instrument, debtType } = account;
-    const accountVariant = type === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[debtType] : ACCOUNT_COLOR[type];
+    const accountVariant = account.type === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[account.type];
 
     return (
         <View className="relative flex-1">
             <Page
                 header={
                     <PageHeader
-                        icon={icon}
+                        icon={account.icon}
                         onGoBack={handleGoBack}
-                        title={title}
+                        title={account.title}
                         iconVariant={accountVariant}
                         right={
-                            <Link href={`/account/${id}/update`} asChild>
-                                <HapticPressable className="ml-auto" testID={AccountDetailsSelector.EditButton}>
-                                    <CircleIcon
-                                        icon={UserIconNameEnum.EllipsisVertical}
-                                        variant="ghost"
-                                        size={40}
-                                        iconSize={24}
-                                        border={false}
-                                    />
-                                </HapticPressable>
-                            </Link>
+                            <HapticPressable
+                                className="ml-auto h-10 w-10 items-center justify-center"
+                                onPress={handleOpenAccountSettings}
+                                testID={AccountDetailsSelector.EditButton}
+                                nativeID={AccountDetailsSelector.EditButton}
+                                collapsable={false}
+                                accessibilityRole="button"
+                            >
+                                <CircleIcon
+                                    icon={UserIconNameEnum.EllipsisVertical}
+                                    variant="ghost"
+                                    size={40}
+                                    iconSize={24}
+                                    border={false}
+                                />
+                            </HapticPressable>
                         }
-                        description={t(ACCOUNT_TYPE[type])}
+                        description={t(ACCOUNT_TYPE[account.type])}
                         descriptionClassName={descriptionVariants({ variant: accountVariant })}
                     />
                 }
                 contentClassName="px-0 flex-1"
             >
                 <View className="pb-md">
-                    {type === AccountTypeEnum.DEBT ? (
-                        <DebtAccountBalance debtType={debtType} instrumentSymbol={instrument.symbol} summary={debtProgressSummary} />
+                    {account.type === AccountTypeEnum.DEBT ? (
+                        <DebtAccountBalance
+                            debtType={account.debtType}
+                            instrumentSymbol={account.instrument.symbol}
+                            summary={debtProgressSummary}
+                        />
                     ) : (
-                        <AccountBalance instrumentSymbol={instrument.symbol} balance={balance} />
+                        <AccountBalance instrumentSymbol={account.instrument.symbol} balance={balance} />
                     )}
                 </View>
 

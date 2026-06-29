@@ -2,6 +2,8 @@ import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 
 import type { UserIconNameEnum } from '@budgie/contracts';
 
@@ -19,7 +21,11 @@ export const TransactionAccountLine = ({ direction, icon, title, testID }: Props
         <View className="flex-row items-center gap-x-sm" testID={testID}>
             <Text className="text-xs text-secondary-foreground">{directionLabel}</Text>
             <Icon icon={icon} className="text-secondary-foreground" size={12} />
-            <Text className="text-xs font-medium text-secondary-foreground flex-1" numberOfLines={1}>
+            <Text
+                className="text-xs font-medium text-secondary-foreground flex-1"
+                numberOfLines={1}
+                {...testIDProps(testID, TestIDPartEnum.LABEL)}
+            >
                 {title}
             </Text>
         </View>

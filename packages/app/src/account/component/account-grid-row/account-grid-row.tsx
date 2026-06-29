@@ -28,7 +28,7 @@ export const AccountGridRow = ({ row, accountType, balancesByAccountId, classNam
     );
 
     return (
-        <View className={cn('flex-row', className)}>
+        <View className={cn('flex-row items-start', className)}>
             <AccountGridItem account={row.left} balance={leftBalance} balanceRow={leftBalanceRow} type={accountType} isLeft />
             {rightItem}
         </View>

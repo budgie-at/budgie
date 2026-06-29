@@ -1,14 +1,4 @@
-import {
-    AccountDebtTypeEnum,
-    AccountEntityInterface,
-    AccountNatureEnum,
-    type DB,
-    DebtAccountCreateInputInterface,
-    LiabilityAccountCreateInputInterface,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    transactionAsync
-} from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountNatureEnum, TransactionEntryTypeEnum, TransactionTypeEnum, transactionAsync } from '@budgie/contracts';
 
 import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
@@ -20,6 +10,7 @@ import {
     transactionEntryRepository,
     transactionRepository
 } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
@@ -29,99 +20,94 @@ import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsol
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 import { accountTransferConversionService } from './account-transfer-conversion.service';
 
+import type {
+    AccountEntityInterface,
+    DB,
+    DebtAccountCreateInputInterface,
+    LiabilityAccountCreateInputInterface
+} from '@budgie/contracts';
+
 class AccountService {
+    @InvalidateDatabaseLiveQuery()
     async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const [{ count }] = await accountRepository.count();
-            const account = await this.createLiabilityAccount({ ...input }, count, tx);
-            await this.adjustBalanceTo(account.id, input.currentBalance, tx);
+            const createdAccount = await this.createLiabilityAccount({ ...input }, count, tx);
+
+            await this.adjustBalanceTo(createdAccount.id, input.currentBalance, tx);
+
             if (!isPositiveNumber(count)) {
-                await settingsRepository.update({ defaultAccountId: account.id }, tx);
+                await settingsRepository.update({ defaultAccountId: createdAccount.id }, tx);
             }
 
-            return account;
+            return createdAccount;
         });
     }
 
+    @InvalidateDatabaseLiveQuery()
     async createDebt(input: DebtAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const [{ count }] = await accountRepository.count();
             const operatedAt = new Date();
-            const account = await this.createLiabilityAccount(
+            const createdAccount = await this.createLiabilityAccount(
                 { ...input, targetBalance: convertToMicroUnits(input.targetBalance) },
                 count,
                 tx
             );
-            const valuedAccount = await this.updateDebtTargetBaseValuation(account, operatedAt, tx);
+            const valuedAccount = await this.updateDebtTargetBaseValuation(createdAccount, operatedAt, tx);
             const debtBalance = this.getDebtBalanceInput(input.currentBalance, input.debtType);
-            await this.adjustBalanceTo(account.id, debtBalance, tx, operatedAt);
+
+            await this.adjustBalanceTo(createdAccount.id, debtBalance, tx, operatedAt);
 
             return valuedAccount;
         });
     }
 
-    async bulkCreate(
-        inputs: LiabilityAccountCreateInputInterface[],
-        tx?: DB,
-        batchSize = 100
-    ): Promise<Record<string, AccountEntityInterface>> {
-        const batchProcessor = isDefined(tx)
-            ? (batch: LiabilityAccountCreateInputInterface[]) => this.processBatchInner(batch, tx)
-            : this.processBatch.bind(this);
-        const result = await processInputWithBatches(inputs, batchSize, batchProcessor);
-
-        return result.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
-    }
-
+    @InvalidateDatabaseLiveQuery()
     async updateById(id: number, input: Partial<Omit<LiabilityAccountCreateInputInterface, 'type'>>): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
-            const account = await accountRepository.updateById(id, input, tx);
+            const updatedAccount = await accountRepository.updateById(id, input, tx);
+
             if (isNumber(input.currentBalance)) {
-                await this.adjustBalanceTo(account.id, input.currentBalance, tx);
+                await this.adjustBalanceTo(updatedAccount.id, input.currentBalance, tx);
             }
 
-            return account;
+            return updatedAccount;
         });
     }
 
+    @InvalidateDatabaseLiveQuery()
     async updateDebtById(id: number, input: Partial<DebtAccountCreateInputInterface>): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const { currentBalance, targetBalance, ...accountInput } = input;
             const accountUpdateInput = isNumber(targetBalance)
                 ? { ...accountInput, targetBalance: convertToMicroUnits(targetBalance) }
                 : accountInput;
-            const account = await accountRepository.updateById(id, accountUpdateInput, tx);
+            const updatedAccount = await accountRepository.updateById(id, accountUpdateInput, tx);
             const shouldUpdateTargetBaseValuation = isNumber(targetBalance) || isNumber(accountInput.instrumentId);
             const valuedAccount = shouldUpdateTargetBaseValuation
-                ? await this.updateDebtTargetBaseValuation(account, new Date(), tx)
-                : account;
+                ? await this.updateDebtTargetBaseValuation(updatedAccount, new Date(), tx)
+                : updatedAccount;
 
             if (isNumber(currentBalance)) {
-                const debtBalance = this.getDebtBalanceInput(currentBalance, account.debtType);
-                await this.adjustBalanceTo(account.id, debtBalance, tx);
+                const debtBalance = this.getDebtBalanceInput(currentBalance, updatedAccount.debtType);
+
+                await this.adjustBalanceTo(updatedAccount.id, debtBalance, tx);
             }
 
             return valuedAccount;
         });
     }
 
-    async findByIdOrFail(id: number): Promise<AccountEntityInterface> {
-        const account = await accountRepository.findById(id);
-        if (!isDefined(account)) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings
-            throw new Error(`Account with id ${id} not found`);
-        }
-
-        return account;
-    }
-
+    @InvalidateDatabaseLiveQuery()
     async archiveById(id: number): Promise<void> {
-        return transactionAsync(db, async tx => {
+        await transactionAsync(db, async tx => {
             await this.unconsolidateActiveAutoByAccountId(id, tx);
 
             await accountRepository.archiveById(id, tx);
             await transactionEntryRepository.archiveByAccountIds([id], tx);
             await transactionRepository.archiveByAccountIds([id], tx);
+
             const settings = await settingsRepository.getSettings();
             if (settings.defaultAccountId === id) {
                 await settingsRepository.update({ defaultAccountId: null }, tx);
@@ -129,18 +115,20 @@ class AccountService {
         });
     }
 
+    @InvalidateDatabaseLiveQuery()
     async restoreById(id: number): Promise<void> {
         await microPause();
 
-        return transactionAsync(db, async tx => {
+        await transactionAsync(db, async tx => {
             await accountRepository.restoreById(id, tx);
             await transactionEntryRepository.restoreByAccountIds([id], tx);
             await transactionRepository.restoreByAccountIds([id], tx);
         });
     }
 
+    @InvalidateDatabaseLiveQuery()
     async deleteById(id: number): Promise<void> {
-        return transactionAsync(db, async tx => {
+        await transactionAsync(db, async tx => {
             await this.unconsolidateActiveAutoByAccountId(id, tx);
             await accountTransferConversionService.convertAccountTransfers(id, tx);
             await transactionEntryRepository.deleteByAccountId(id, tx);
@@ -156,8 +144,34 @@ class AccountService {
         });
     }
 
+    @InvalidateDatabaseLiveQuery()
     async activateById(id: number): Promise<void> {
         await accountRepository.updateById(id, { isActive: true });
+    }
+
+    @InvalidateDatabaseLiveQuery((_inputs, tx) => !isDefined(tx))
+    async bulkCreate(
+        inputs: LiabilityAccountCreateInputInterface[],
+        tx?: DB,
+        batchSize = 100
+    ): Promise<Record<string, AccountEntityInterface>> {
+        const batchProcessor = isDefined(tx)
+            ? (batch: LiabilityAccountCreateInputInterface[]) => this.processBatchInner(batch, tx)
+            : this.processBatch.bind(this);
+        const result = await processInputWithBatches(inputs, batchSize, batchProcessor);
+
+        return result.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
+    }
+
+    async findByIdOrFail(id: number): Promise<AccountEntityInterface> {
+        const account = await accountRepository.findById(id);
+
+        if (!isDefined(account)) {
+            // eslint-disable-next-line lingui/no-unlocalized-strings
+            throw new Error(`Account with id ${id} not found`);
+        }
+
+        return account;
     }
 
     private async unconsolidateActiveAutoByAccountId(id: number, tx: DB): Promise<void> {
@@ -264,6 +278,7 @@ class AccountService {
             batch.map((input, index) => ({ ...input, order: count + index + 1, nature: AccountNatureEnum.LIABILITY })),
             tx
         );
+
         await Promise.all(accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance, tx)));
 
         return accounts;

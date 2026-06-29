@@ -6,6 +6,7 @@ env:
   PR_NUMBER: ${{ github.event.pull_request.number }}
   PR_TITLE: ${{ github.event.pull_request.title }}
   MAESTRO_CLI_NO_ANALYTICS: false
+  MAESTRO_VERSION: "2.6.0"
   RCT_USE_PREBUILT_RNCORE: 1
   RCT_USE_RN_DEP: 1
 
@@ -51,6 +52,9 @@ jobs:
 
       - name: Typescript checks
         run: yarn turbo run ts
+
+      - name: Maestro selector checks
+        run: yarn workspace @budgie-at/app-tests selectors:check
 
       - name: ESLint checks
         run: yarn turbo run lint
@@ -122,6 +126,9 @@ jobs:
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
+      EXPO_USE_PRECOMPILED_MODULES: "1"
+      RCT_USE_PREBUILT_RNCORE: "1"
+      RCT_USE_RN_DEP: "1"
       IOS_DERIVED_DATA: ${{ github.workspace }}/.ci-cache/DerivedData/budgie-e2e
       USE_CCACHE: "1"
       CCACHE_DIR: ${{ github.workspace }}/.ci-cache/ccache
@@ -222,8 +229,6 @@ jobs:
         env:
           APP_VARIANT: e2e
           EXPO_PUBLIC_AI_DISABLE: "true"
-          RCT_USE_PREBUILT_RNCORE: "1"
-          RCT_USE_RN_DEP: "1"
         run: npx expo prebuild -p ios --clean
 
       - name: Sync CocoaPods
@@ -385,7 +390,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Prepare iOS E2E artifact directories
@@ -397,7 +402,7 @@ jobs:
       - name: Start iOS Simulator log capture
         run: |
           ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
-          xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level debug > "$ARTIFACT_DIR/simulator.log" 2>&1 &
+          xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level default > "$ARTIFACT_DIR/simulator.log" 2>&1 &
           echo $! > "$ARTIFACT_DIR/simulator-log.pid"
 
       - name: Run Maestro UI tests
@@ -421,6 +426,11 @@ jobs:
 
           if [ -f "$ARTIFACT_DIR/simulator-log.pid" ]; then
             kill "$(cat "$ARTIFACT_DIR/simulator-log.pid")" || true
+          fi
+
+          if [ -f "$ARTIFACT_DIR/simulator.log" ]; then
+            tail -n 20000 "$ARTIFACT_DIR/simulator.log" > "$ARTIFACT_DIR/simulator.log.tail" || true
+            mv "$ARTIFACT_DIR/simulator.log.tail" "$ARTIFACT_DIR/simulator.log" || true
           fi
 
           find "$HOME/Library/Logs/DiagnosticReports" -maxdepth 1 -type f \
@@ -508,7 +518,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Сreate AVD and generate snapshot for caching

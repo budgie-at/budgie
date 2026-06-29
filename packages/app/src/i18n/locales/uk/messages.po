@@ -136,6 +136,10 @@ msgstr "{selectedCount, plural, =0 {Показати всі категорії} 
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Показати всі теги} one {Показати # тег} few {Показати # теги} many {Показати # тегів} other {Показати # тега}}"
 
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
+msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
+msgstr "{similarCount, plural, one {# схожа транзакція} other {# схожих транзакцій}}"
+
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "{source} error · {message}"
 msgstr "Помилка {source} · {message}"
@@ -197,6 +201,7 @@ msgstr "Про застосунок"
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Account"
 msgstr "Рахунок"
 
@@ -357,7 +362,7 @@ msgid "Amount"
 msgstr "Сума"
 
 #: src/app/(main)/create-transaction/transfer.tsx
-#: src/app/(main)/transactions/[id]/transfer.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Amount exceeds debt account balance"
 msgstr "Сума перевищує баланс боргового рахунку"
 
@@ -418,8 +423,8 @@ msgstr "Ви впевнені, що хочете видалити це прав�
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
@@ -443,6 +448,10 @@ msgstr "Автоматична синхронізація рахунків та 
 #: src/app/import-column-mapper.tsx
 msgid "Available Columns"
 msgstr "Доступні стовпці"
+
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
+msgid "Average"
+msgstr "Середнє"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -584,10 +593,10 @@ msgstr "Budgie позначить як видалені такі записи: {
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "Cancel"
 msgstr "Скасувати"
@@ -613,6 +622,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/category/components/category-form-selector/category-form-selector.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Category"
 msgstr "Категорія"
 
@@ -732,6 +742,10 @@ msgstr "Консолідувати"
 msgid "Consolidate Matches"
 msgstr "Консолідувати збіги"
 
+#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+msgid "Consolidation"
+msgstr "Консолідація"
+
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Contact (optional)"
 msgstr "Контакт (необов'язково)"
@@ -758,6 +772,7 @@ msgstr "Помилка конвертації"
 msgid "Convert"
 msgstr "Конвертувати"
 
+#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
 #: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Refund"
@@ -769,6 +784,7 @@ msgstr "Перетворити на повернення?"
 
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
+#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
 #: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Transfer"
@@ -967,6 +983,10 @@ msgstr "Не вдалося оновити сповіщення"
 msgid "Could not update rule"
 msgstr "Не вдалося оновити правило"
 
+#: src/app/(tabs)/settings/index.tsx
+msgid "Could not update settings"
+msgstr "Не вдалося оновити налаштування"
+
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 msgid "Could not update token"
 msgstr "Не вдалося оновити токен"
@@ -1095,6 +1115,7 @@ msgstr "Базу даних експортовано"
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Date"
 msgstr "Дата"
 
@@ -1135,8 +1156,9 @@ msgstr "Рахунок за замовчуванням"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Delete"
 msgstr "Видалити"
 
@@ -1235,6 +1257,10 @@ msgstr "напр. Продукти, Розваги"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
+#: src/account/component/account-card-base/account-card-base.tsx
+msgid "Edit account"
+msgstr "Редагувати рахунок"
+
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Edit budget"
 msgstr "Редагувати бюджет"
@@ -1247,17 +1273,17 @@ msgstr "Редагувати категорію"
 msgid "Edit existing"
 msgstr "Редагувати наявне"
 
-#: src/app/(main)/transactions/[id]/expense.tsx
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/expense.tsx
-#: src/app/(main)/transactions/[id]/income.tsx
-#: src/app/(main)/transactions/[id]/transfer.tsx
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
+#: src/transaction/components/update-income-transaction/update-income-transaction.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Edit fee"
 msgstr "Редагувати комісію"
 
-#: src/app/(main)/transactions/[id]/income.tsx
+#: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -1269,11 +1295,15 @@ msgstr "Редагувати правило"
 msgid "Edit Tag"
 msgstr "Редагувати тег"
 
+#: src/transaction/components/transaction-info-page/transaction-info-page.tsx
+msgid "Edit transaction"
+msgstr "Редагувати транзакцію"
+
 #: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
 msgid "Edit Transaction"
 msgstr "Редагувати транзакцію"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
 
@@ -1399,6 +1429,10 @@ msgstr "Erste Bank"
 msgid "Everyday transactions and spending"
 msgstr "Щоденні транзакції та витрати"
 
+#: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
+msgid "Exchange rate"
+msgstr "Обмінний курс"
+
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
 msgstr "Обмінний курс {sourceInstrumentId}->{targetInstrumentId} не знайдено"
@@ -1465,6 +1499,10 @@ msgstr "Не вдалося зберегти PIN-код. Спробуйте ще
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Швидке індексування {done} з {total} • торкніться, щоб призупинити"
 
+#: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
+msgid "Fee"
+msgstr "Комісія"
+
 #: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
 msgid "Fee · {formattedFeeAmount}"
 msgstr "Комісія · {formattedFeeAmount}"
@@ -1525,6 +1563,10 @@ msgstr "від"
 msgid "From"
 msgstr "З"
 
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
+msgid "From account"
+msgstr "З рахунку"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Account"
 msgstr "З рахунку"
@@ -1560,6 +1602,10 @@ msgstr "Отримати API-токен"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Get notified when a budget threshold is crossed"
 msgstr "Сповіщати, коли перетинається порогове значення бюджету"
+
+#: src/@generic/component/go-back-button/go-back-button.tsx
+msgid "Go back"
+msgstr "Назад"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Greater Than"
@@ -1795,6 +1841,7 @@ msgstr "Завантаження..."
 msgid "Main Currency"
 msgstr "Основна валюта"
 
+#: src/budget/components/budget-details/budget-details.tsx
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Manage budget"
 msgstr "Керувати бюджетом"
@@ -1876,6 +1923,7 @@ msgid "MCC Code"
 msgstr "MCC-код"
 
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Merchant code"
 msgstr "Код торговця"
 
@@ -1995,7 +2043,7 @@ msgstr "Контактів не знайдено"
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "No contacts found on this device."
-msgstr "На цьому пристрої не знайдено контактів."
+msgstr "На цьому пристрої контакти не знайдено."
 
 #: src/app/contact-selector.tsx
 msgid "No contacts yet"
@@ -2136,6 +2184,7 @@ msgid "not set"
 msgstr "не встановлено"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
 msgstr "Нотатка"
 
@@ -2812,6 +2861,10 @@ msgstr "Показати вибраний діапазон"
 msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
 
+#: src/transaction/components/transaction-info-page/transaction-info-page.tsx
+msgid "Similar transactions"
+msgstr "Схожі транзакції"
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Пропустити"
@@ -2952,6 +3005,7 @@ msgstr "Позначайте транзакції тегами, щоб поба�
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags"
 msgstr "Теги"
@@ -2983,8 +3037,8 @@ msgstr "Цей рахунок буде приховано з головного 
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
@@ -3061,6 +3115,10 @@ msgstr "до"
 msgid "To"
 msgstr "На"
 
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
+msgid "To account"
+msgstr "На рахунок"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "To Account"
 msgstr "На рахунок"
@@ -3079,6 +3137,7 @@ msgid "Token required"
 msgstr "Потрібен токен"
 
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
 msgstr "Загалом"
 
@@ -3310,6 +3369,10 @@ msgstr "Перегляд та видалення власних категорі
 #: src/app/(tabs)/settings/index.tsx
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
+
+#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+msgid "View source transactions"
+msgstr "Переглянути вихідні транзакції"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"
