@@ -24,16 +24,16 @@ export const useDebtAccountForm = (
         mode: 'onSubmit',
         defaultValues: initialValues
     });
-    const { isDirty } = form.formState;
+    const { dirtyFields } = form.formState;
     const { reset } = form;
 
     useEffect(() => {
-        if (!syncInitialValues || isDirty) {
+        if (!syncInitialValues) {
             return;
         }
 
-        reset(initialValues);
-    }, [initialValues, isDirty, reset, syncInitialValues]);
+        reset(initialValues, { keepDirtyValues: true });
+    }, [dirtyFields, initialValues, reset, syncInitialValues]);
 
     const [instrumentId, debtType] = useWatch({
         control: form.control,
