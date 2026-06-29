@@ -12,10 +12,10 @@ appId: ${APP_ID}
 - tapOn: Done
 - extendedWaitUntil:
     visible:
-      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}.Label'
 - waitForAnimationToEnd
 - tapOn:
-    id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+    id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}.Label'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     notVisible:

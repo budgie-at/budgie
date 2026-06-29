@@ -299,7 +299,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.AMOUNT
 - waitForAnimationToEnd
@@ -372,7 +372,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.ACCOUNT_ID
 - waitForAnimationToEnd
@@ -491,7 +491,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.COMMENT
 - waitForAnimationToEnd
@@ -527,7 +527,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.AMOUNT
 - waitForAnimationToEnd
@@ -590,7 +590,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.AMOUNT
 - waitForAnimationToEnd
@@ -654,7 +654,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.EXTERNAL_SOURCE
 - waitForAnimationToEnd
@@ -695,7 +695,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.MCC_CODE
 - waitForAnimationToEnd

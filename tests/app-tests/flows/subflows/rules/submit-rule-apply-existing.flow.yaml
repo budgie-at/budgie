@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton.Label'
+    id: 'RuleForm.Footer.SubmitButton'
 - extendedWaitUntil:
     visible: 'Apply to existing transactions?'
     timeout: 10000

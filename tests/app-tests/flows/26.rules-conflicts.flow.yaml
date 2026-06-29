@@ -26,7 +26,7 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton.Label'
+    id: 'RuleForm.Footer.SubmitButton'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'

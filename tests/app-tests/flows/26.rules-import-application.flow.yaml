@@ -10,7 +10,7 @@ appId: ${APP_ID}
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.SelectorCard.COMMENT'
@@ -51,7 +51,7 @@ appId: ${APP_ID}
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.SelectorCard.COMMENT'

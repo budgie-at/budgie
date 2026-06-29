@@ -566,31 +566,36 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'SettingsPage.BudgetPushSwitch.State.Off'
+          id: 'SettingsPage.BudgetPushSwitch'
+          text: '0'
       timeout: 3000
 
 - tapOn:
       id: 'SettingsPage.BudgetPushSwitch'
 - extendedWaitUntil:
       visible:
-          id: 'SettingsPage.BudgetPushSwitch.State.On'
+          id: 'SettingsPage.BudgetPushSwitch'
+          text: '1'
       timeout: 3000
 
 - tapOn:
       id: 'SettingsPage.BudgetPushSwitch'
 - extendedWaitUntil:
       visible:
-          id: 'SettingsPage.BudgetPushSwitch.State.Off'
+          id: 'SettingsPage.BudgetPushSwitch'
+          text: '0'
       timeout: 3000
 
 - assertVisible:
-      id: 'SettingsPage.BudgetWidgetSwitch.State.On'
+      id: 'SettingsPage.BudgetWidgetSwitch'
+      text: '1'
 
 - tapOn:
       id: 'SettingsPage.BudgetWidgetSwitch'
 - extendedWaitUntil:
       visible:
-          id: 'SettingsPage.BudgetWidgetSwitch.State.Off'
+          id: 'SettingsPage.BudgetWidgetSwitch'
+          text: '0'
       timeout: 3000
 
 - tapOn:
@@ -610,14 +615,16 @@ env:
           DEEP_LINK: 'budgie://settings?anchor=budget'
 - extendedWaitUntil:
       visible:
-          id: 'SettingsPage.BudgetWidgetSwitch.State.Off'
+          id: 'SettingsPage.BudgetWidgetSwitch'
+          text: '0'
       timeout: 3000
 
 - tapOn:
       id: 'SettingsPage.BudgetWidgetSwitch'
 - extendedWaitUntil:
       visible:
-          id: 'SettingsPage.BudgetWidgetSwitch.State.On'
+          id: 'SettingsPage.BudgetWidgetSwitch'
+          text: '1'
       timeout: 3000
 
 - tapOn:

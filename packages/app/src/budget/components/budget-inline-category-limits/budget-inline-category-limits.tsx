@@ -3,7 +3,7 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -18,6 +18,13 @@ import { BudgetCategoryLimitsEmptyState } from '../budget-category-limits-empty-
 import { BudgetLimitAmountInput } from '../budget-limit-amount-input/budget-limit-amount-input';
 
 const BOTTOM_ADD_BUTTON_THRESHOLD = 5;
+
+const styles = StyleSheet.create({
+    headerAddButtonTarget: {
+        height: 46,
+        width: 46
+    }
+});
 
 interface Props {
     readonly currencySymbol: string;
@@ -62,14 +69,22 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
                 <Text className="text-primary text-lg font-semibold">
                     <Trans>Category limits</Trans>
                 </Text>
-                <Button
-                    accessibilityLabel={t`Add category`}
-                    leftIcon={UserIconNameEnum.Plus}
-                    onPress={handleAddPress}
-                    size="sm"
-                    testID={BudgetSelector.SetupCategoryLimitAddButton}
-                    variant="ghost"
-                />
+                <View className="relative" collapsable={false} style={styles.headerAddButtonTarget}>
+                    <Button
+                        accessibilityLabel={t`Add category`}
+                        leftIcon={UserIconNameEnum.Plus}
+                        onPress={handleAddPress}
+                        size="sm"
+                        variant="ghost"
+                    />
+                    <View
+                        collapsable={false}
+                        nativeID={BudgetSelector.SetupCategoryLimitAddButton}
+                        pointerEvents="none"
+                        style={StyleSheet.absoluteFill}
+                        testID={BudgetSelector.SetupCategoryLimitAddButton}
+                    />
+                </View>
             </View>
             <Text className="text-secondary-foreground text-sm">
                 <Trans>Optional per-category caps within this budget</Trans>

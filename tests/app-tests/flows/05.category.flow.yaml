@@ -95,7 +95,7 @@ appId: ${APP_ID}
 - pressKey: enter
 - waitForAnimationToEnd
 - tapOn:
-      id: 'CategoryPickerBottomSheet.Card.E2E Category Primary'
+      id: 'CategoryPickerBottomSheet.Card.E2E Category Primary.Label'
 - extendedWaitUntil:
       notVisible:
           id: 'CategoryPickerBottomSheet.Input'

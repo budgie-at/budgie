@@ -142,6 +142,12 @@ appId: ${APP_ID}
 
 # --- Seeded ETH market page ---
 
+- scrollUntilVisible:
+      element:
+          id: 'CryptoGroup.Market.ETH'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 100
 - tapOn:
       id: 'CryptoGroup.Market.ETH'
 - extendedWaitUntil:

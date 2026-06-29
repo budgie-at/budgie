@@ -16,7 +16,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.SelectorCard.COMMENT'
@@ -65,7 +65,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.SelectorCard.COMMENT'
@@ -121,7 +121,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.SelectorCard.COMMENT'
@@ -201,7 +201,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.SelectorCard.COMMENT'
@@ -277,7 +277,7 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton.Label'
+    id: 'RuleForm.Footer.SubmitButton'
 - waitForAnimationToEnd
 
 - assertVisible:

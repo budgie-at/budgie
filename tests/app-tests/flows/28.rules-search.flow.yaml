@@ -38,7 +38,7 @@ env:
           CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-      id: 'RuleForm.Footer.SubmitButton.Label'
+      id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
       when:
           visible: 'Apply to existing transactions?'
@@ -84,7 +84,7 @@ env:
           CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-      id: 'RuleForm.Footer.SubmitButton.Label'
+      id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
       when:
           visible: 'Apply to existing transactions?'

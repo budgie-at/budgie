@@ -21,7 +21,7 @@ env:
     file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: 'RuleForm.SelectorCard.COMMENT'
 - waitForAnimationToEnd

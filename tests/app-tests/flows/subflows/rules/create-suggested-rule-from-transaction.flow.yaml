@@ -75,7 +75,7 @@ env:
 - extendedWaitUntil:
     visible: 'Edit Rule'
 - assertVisible:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - assertVisible:
     id: 'RuleForm.Condition.1.FieldSelector'
 - runFlow:
