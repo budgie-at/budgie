@@ -52,6 +52,7 @@ export const FormPage = ({
                 ref={scrollViewRef}
                 testID={scrollViewTestID}
                 onScroll={onScroll}
+                keyboardDismissMode="on-drag"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={scrollContentContainerStyle}

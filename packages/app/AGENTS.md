@@ -122,6 +122,27 @@ if (isRunning) {
 <Text>{t`Prepare AI Data`}</Text>
 ```
 
+### Use the shared `testID` util for child selectors
+
+When a component derives a child or state-specific `testID` from a base id, use `testID` from `packages/app/src/@generic/utils/test-id.util.ts` (`src/@generic/utils/test-id.util.ts` inside this package) and spread the returned props in JSX:
+
+```tsx
+// Good
+import { testID } from 'src/@generic/utils/test-id.util';
+
+<Text {...testID(parentTestID, 'Label')} />
+
+// Good when a component prop is also named testID
+import { testID as testIDProps } from 'src/@generic/utils/test-id.util';
+
+<Text {...testIDProps(parentTestID, 'Label')} />
+
+// Bad
+<Text testID={`${parentTestID}.Label`} />
+```
+
+Selector factory files that intentionally define canonical ids are excluded.
+
 ### Inline redundant handler wrappers
 
 Don't create named constants that only delegate to another function:

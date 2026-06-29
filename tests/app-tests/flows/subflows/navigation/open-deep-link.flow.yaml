@@ -1,0 +1,21 @@
+appId: ${APP_ID}
+env:
+    DEEP_LINK: ${DEEP_LINK}
+---
+- openLink: ${DEEP_LINK}
+
+- runFlow:
+      when:
+          visible: 'Open'
+      commands:
+          - tapOn: 'Open'
+          - waitForAnimationToEnd
+
+- waitForAnimationToEnd
+
+- runFlow:
+      when:
+          visible: 'Open'
+      commands:
+          - tapOn: 'Open'
+          - waitForAnimationToEnd

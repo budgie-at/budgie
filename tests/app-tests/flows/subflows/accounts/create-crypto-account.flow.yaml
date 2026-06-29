@@ -18,33 +18,23 @@ appId: ${APP_ID}
 - tapOn:
       id: 'AccountForm.NameInput'
 - inputText: ${ACCOUNT_NAME}
-- hideKeyboard
 
+- scrollUntilVisible:
+      element:
+          id: 'AccountForm.CurrencySelector'
+      direction: DOWN
 - tapOn:
       id: 'AccountForm.CurrencySelector'
       retryTapIfNoChange: true
 - waitForAnimationToEnd
-- runFlow:
-      when:
-          notVisible:
-              id: 'CurrencySelector.SearchInput'
-      commands:
-          - tapOn:
-                id: 'AccountForm.CurrencySelector'
-                retryTapIfNoChange: true
-          - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'CurrencySelector.SearchInput'
       timeout: 3000
-- runFlow:
-      when:
-          notVisible:
-              id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
-      commands:
-          - tapOn:
-                id: 'CurrencySelector.SearchInput'
-          - inputText: ${CURRENCY_CODE}
+- tapOn:
+      id: 'CurrencySelector.SearchInput'
+- eraseText: 100
+- inputText: ${CURRENCY_CODE}
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
@@ -63,7 +53,6 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'CreateAccount.Amount'
-      point: '95%,50%'
 - eraseText: 100
 - inputText: ${ACCOUNT_AMOUNT}
 - tapOn:
@@ -73,12 +62,15 @@ appId: ${APP_ID}
           id: 'AccountForm.SelectedCurrency.${CURRENCY_CODE}'
       timeout: 3000
 
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'AccountForm.SubmitButton'
-      timeout: 3000
+          enabled: true
+      direction: DOWN
 - tapOn:
       id: 'AccountForm.SubmitButton'
+      enabled: true
+      retryTapIfNoChange: true
 
 - extendedWaitUntil:
       visible:

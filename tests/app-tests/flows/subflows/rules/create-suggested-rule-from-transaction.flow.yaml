@@ -1,0 +1,95 @@
+appId: ${APP_ID}
+env:
+  CATEGORY_NAME: ${CATEGORY_NAME}
+  CSV_DISPLAY_NAME: ${CSV_DISPLAY_NAME}
+  EXPECTED_CONDITION_COUNT: ${EXPECTED_CONDITION_COUNT}
+  TRANSACTION_CARD_ID: ${TRANSACTION_CARD_ID}
+---
+- runFlow:
+    file: ../import/import-test-transactions.flow.yaml
+    env:
+      CSV_DISPLAY_NAME: ${CSV_DISPLAY_NAME}
+
+- tapOn:
+    id: 'TabBar.Transactions'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: ${TRANSACTION_CARD_ID}
+    timeout: 10000
+- tapOn:
+    id: ${TRANSACTION_CARD_ID}
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 10000
+- tapOn:
+    id: 'TransactionInfo.EditButton.Label'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.CategorySelector.Title'
+    timeout: 10000
+
+- tapOn:
+    id: 'TransactionForm.CategorySelector.Title'
+- waitForAnimationToEnd
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'SuggestRule.Card'
+    timeout: 10000
+
+- tapOn:
+    id: 'SuggestRule.CreateRuleButton'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'SuggestRule.Card'
+    timeout: 10000
+
+- tapOn:
+    id: 'PageHeader.BackButton'
+- waitForAnimationToEnd
+
+- runFlow:
+    file: ../navigate-to-rules.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.RuleCard.0'
+    timeout: 10000
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.RuleCardActions.0'
+    timeout: 10000
+
+- tapOn:
+    id: 'RulesPage.RuleCardActions.0'
+- extendedWaitUntil:
+    visible: 'Edit Rule'
+- assertVisible:
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
+- assertVisible:
+    id: 'RuleForm.Condition.1.FieldSelector'
+- runFlow:
+    when:
+      true: ${EXPECTED_CONDITION_COUNT == '3'}
+    commands:
+      - assertVisible:
+          id: 'RuleForm.Condition.2.FieldSelector'
+- tapOn:
+    id: 'PageHeader.BackButton'
+- waitForAnimationToEnd
+
+- runFlow:
+    file: delete-first-rule-via-form.flow.yaml
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'
