@@ -5,3 +5,9 @@ appId: ${APP_ID}
     env:
       TRANSACTION_CARD_ID: ${TRANSACTION_CARD_ID}
       ACTION_BUTTON_ID: 'TransactionContextMenu.EditButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.EditButton.Label'
+    timeout: 10000
+- tapOn:
+    id: 'TransactionInfo.EditButton.Label'
