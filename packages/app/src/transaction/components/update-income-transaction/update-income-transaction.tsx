@@ -24,6 +24,7 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
     const toAccountId = useWatch({ control: simpleTransaction.form.control, name: 'toAccountId' });
     const mccCategoryId = simpleTransaction.categoryEntries.at(0)?.mccCategoryId ?? null;
     const { handleOpenConvert, handleOpenRefundConvert, handleRevert } = useUpdateIncomeTransactionActions({
+        form: simpleTransaction.form,
         transaction,
         transactionId,
         toAccountId

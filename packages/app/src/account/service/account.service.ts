@@ -20,12 +20,7 @@ import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsol
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 import { accountTransferConversionService } from './account-transfer-conversion.service';
 
-import type {
-    AccountEntityInterface,
-    DB,
-    DebtAccountCreateInputInterface,
-    LiabilityAccountCreateInputInterface
-} from '@budgie/contracts';
+import type { AccountEntityInterface, DB, DebtAccountCreateInputInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 
 class AccountService {
     @InvalidateDatabaseLiveQuery()

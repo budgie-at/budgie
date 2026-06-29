@@ -37,22 +37,7 @@ class TransactionDebtSettlementService {
             `throw transactionId=${params.transactionId} debtAccountId=${params.debtAccountId} error=${getErrorMessage(error)}`
     )
     async attach(params: AttachDebtSettlementParamsInterface): Promise<AccountEntityInterface> {
-        return await transactionAsync(db, async tx => {
-            const transaction = await this.getTransactionOrFail(params.transactionId, tx);
-            const debtAccount = await this.getDebtAccountOrFail(params.debtAccountId, tx);
-
-            this.assertTransactionSupportsDebtSettlement(transaction);
-            this.assertNoSettlement(transaction);
-            const primaryEntry = this.getPrimaryEntryOrFail(transaction);
-            this.assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
-
-            const settlementEntry = await this.buildSettlementEntry(transaction, primaryEntry, debtAccount, tx);
-
-            await transactionEntryRepository.create(settlementEntry, tx);
-            await accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id], tx);
-
-            return debtAccount;
-        });
+        return await transactionAsync(db, async tx => this.attachInTransaction(params, tx));
     }
 
     @Log(
@@ -71,6 +56,23 @@ class TransactionDebtSettlementService {
                 tx
             );
         });
+    }
+
+    async attachInTransaction(params: AttachDebtSettlementParamsInterface, tx: DB): Promise<AccountEntityInterface> {
+        const transaction = await this.getTransactionOrFail(params.transactionId, tx);
+        const debtAccount = await this.getDebtAccountOrFail(params.debtAccountId, tx);
+
+        this.assertTransactionSupportsDebtSettlement(transaction);
+        this.assertNoSettlement(transaction);
+        const primaryEntry = this.getPrimaryEntryOrFail(transaction);
+        this.assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
+
+        const settlementEntry = await this.buildSettlementEntry(transaction, primaryEntry, debtAccount, tx);
+
+        await transactionEntryRepository.create(settlementEntry, tx);
+        await accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id], tx);
+
+        return debtAccount;
     }
 
     applyExistingSettlementToUpdate(input: TransactionUpdateServiceInputInterface): TransactionUpdateServiceInputInterface {

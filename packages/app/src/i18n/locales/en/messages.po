@@ -210,6 +210,10 @@ msgstr "Account"
 msgid "Account {accountId} not found"
 msgstr "Account {accountId} not found"
 
+#: src/account/service/account-debt-opening.service.ts
+msgid "Account {id} not found"
+msgstr "Account {id} not found"
+
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
 msgstr "Account Name & Icon"
@@ -527,6 +531,10 @@ msgstr "Biometric Authentication"
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Borrowed"
 msgstr "Borrowed"
+
+#: src/account/service/account-debt-opening.service.ts
+msgid "Borrowed debt account expected"
+msgstr "Borrowed debt account expected"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Budget"
@@ -1278,12 +1286,6 @@ msgstr "Edit existing"
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
-#: src/transaction/components/update-income-transaction/update-income-transaction.tsx
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
-msgid "Edit fee"
-msgstr "Edit fee"
-
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
 msgstr "Edit Income"
@@ -1300,7 +1302,7 @@ msgstr "Edit Tag"
 msgid "Edit transaction"
 msgstr "Edit transaction"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu-items.tsx
 msgid "Edit Transaction"
 msgstr "Edit Transaction"
 
@@ -1357,6 +1359,7 @@ msgstr "English Translation"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Enter a {PIN_LENGTH}-digit PIN"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Enter all amounts"
 msgstr "Enter all amounts"
@@ -1564,6 +1567,7 @@ msgstr "from"
 msgid "From"
 msgstr "From"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
 msgstr "From account"
@@ -1805,6 +1809,10 @@ msgstr "Left to repay"
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Lent"
+
+#: src/account/service/account-debt-opening.service.ts
+msgid "Lent debt account expected"
+msgstr "Lent debt account expected"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Less Than"
@@ -2197,6 +2205,7 @@ msgstr "Only expense and income transactions are converted: expenses transfer to
 msgid "Only expense transactions can be converted"
 msgstr "Only expense transactions can be converted"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only income transactions can be converted"
 msgstr "Only income transactions can be converted"
@@ -2205,6 +2214,7 @@ msgstr "Only income transactions can be converted"
 msgid "Only single-entry expenses can be converted"
 msgstr "Only single-entry expenses can be converted"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Only single-entry incomes can be converted"
@@ -2473,6 +2483,7 @@ msgstr "Refunded {formattedRefundedAmount}"
 msgid "Remaining"
 msgstr "Remaining"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove"
 msgstr "Remove"
@@ -2708,6 +2719,7 @@ msgstr "Select a tag to merge into"
 msgid "Select a valid column"
 msgstr "Select a valid column"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Select account"
@@ -2822,9 +2834,6 @@ msgstr "Set a monthly limit and track your spending"
 msgid "Set Category"
 msgstr "Set Category"
 
-#: src/app/(main)/transactions/[id]/expense.tsx
-#: src/app/(main)/transactions/[id]/income.tsx
-#: src/app/(main)/transactions/[id]/transfer.tsx
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Set fee"
@@ -3174,6 +3183,7 @@ msgstr "Transaction must have a source account"
 msgid "Transaction must have exactly one primary entry"
 msgstr "Transaction must have exactly one primary entry"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/transaction/service/transaction-debt-settlement.service.ts
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction not found"

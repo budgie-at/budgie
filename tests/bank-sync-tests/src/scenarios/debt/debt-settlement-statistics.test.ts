@@ -9,6 +9,7 @@ import {
     transactionRepository
 } from '@app/@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
+import { accountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import { accountService } from '@app/account/service/account.service';
 import { buildDebtAccountProgressSummary } from '@app/account/utils/build-debt-account-progress-summary.util';
 import { transactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
@@ -516,6 +517,60 @@ describe('debt settlement statistics', () => {
         const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.LENT);
 
         expectDebtProgressSummary(summary, 0, 300 * PRECISION, 300 * PRECISION, 100);
+    });
+
+    it('creates a lent debt account from a real outgoing transfer without an opening adjustment', async () => {
+        const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+        const debtAccount = await accountDebtOpeningService.createLentDebtFromTransfer(
+            {
+                title: 'Oleh owes me',
+                iban: null,
+                icon: UserIconNameEnum.HandCoins,
+                instrumentId: cashAccount.instrumentId,
+                type: AccountTypeEnum.DEBT,
+                debtType: AccountDebtTypeEnum.LENT,
+                currentBalance: 500,
+                targetBalance: 500,
+                contactId: null,
+                deadline: null
+            },
+            cashAccount.id
+        );
+        const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.LENT);
+        const adjustmentEntry = findAdjustmentEntry(debtAccount.id);
+
+        expect(adjustmentEntry).toBeUndefined();
+        expectDebtProgressSummary(summary, 500 * PRECISION, 0, 500 * PRECISION, 0);
+    });
+
+    it('creates a borrowed debt account from an existing income and lets later incomes increase the borrowed total', async () => {
+        const [category] = testDb.select().from(CategoryEntityTable).all();
+        const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+        const openingIncome = createIncomeTransaction(cashAccount.id, category.id, 500 * PRECISION);
+        const debtAccount = await accountDebtOpeningService.createBorrowedDebtFromIncome(
+            {
+                title: 'I owe Oleh',
+                iban: null,
+                icon: UserIconNameEnum.HandCoins,
+                instrumentId: cashAccount.instrumentId,
+                type: AccountTypeEnum.DEBT,
+                debtType: AccountDebtTypeEnum.BORROW,
+                currentBalance: 0,
+                targetBalance: 500,
+                contactId: null,
+                deadline: null
+            },
+            openingIncome.id
+        );
+        const additionalIncome = createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
+
+        await transactionDebtSettlementService.attach({ transactionId: additionalIncome.id, debtAccountId: debtAccount.id });
+
+        const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.BORROW);
+        const adjustmentEntry = findAdjustmentEntry(debtAccount.id);
+
+        expect(adjustmentEntry).toBeUndefined();
+        expectDebtProgressSummary(summary, 600 * PRECISION, 0, 600 * PRECISION, 0);
     });
 });
 

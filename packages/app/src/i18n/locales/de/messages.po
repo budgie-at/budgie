@@ -209,6 +209,10 @@ msgstr "Konto"
 msgid "Account {accountId} not found"
 msgstr "Konto {accountId} nicht gefunden"
 
+#: src/account/service/account-debt-opening.service.ts
+msgid "Account {id} not found"
+msgstr "Konto {id} nicht gefunden"
+
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
 msgstr "Kontoname & Symbol"
@@ -526,6 +530,10 @@ msgstr "Biometrische Authentifizierung"
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Borrowed"
 msgstr "Geliehen"
+
+#: src/account/service/account-debt-opening.service.ts
+msgid "Borrowed debt account expected"
+msgstr "Geliehenes Schuldkonto erwartet"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Budget"
@@ -1277,12 +1285,6 @@ msgstr "Bestehende bearbeiten"
 msgid "Edit Expense"
 msgstr "Ausgabe bearbeiten"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
-#: src/transaction/components/update-income-transaction/update-income-transaction.tsx
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
-msgid "Edit fee"
-msgstr "Gebühr bearbeiten"
-
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
 msgstr "Einnahme bearbeiten"
@@ -1299,7 +1301,7 @@ msgstr "Tag bearbeiten"
 msgid "Edit transaction"
 msgstr "Transaktion bearbeiten"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu-items.tsx
 msgid "Edit Transaction"
 msgstr "Transaktion bearbeiten"
 
@@ -1356,6 +1358,7 @@ msgstr "Englische Übersetzung"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Geben Sie eine {PIN_LENGTH}-stellige PIN ein"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Enter all amounts"
 msgstr "Alle Beträge eingeben"
@@ -1563,6 +1566,7 @@ msgstr "von"
 msgid "From"
 msgstr "Von"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
 msgstr "Von Konto"
@@ -1804,6 +1808,10 @@ msgstr "Noch zurückzuzahlen"
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Verliehen"
+
+#: src/account/service/account-debt-opening.service.ts
+msgid "Lent debt account expected"
+msgstr "Verliehenes Schuldkonto erwartet"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Less Than"
@@ -2196,6 +2204,7 @@ msgstr "Nur Ausgaben- und Einnahmentransaktionen werden umgewandelt: Ausgaben we
 msgid "Only expense transactions can be converted"
 msgstr "Nur Ausgaben können umgewandelt werden"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only income transactions can be converted"
 msgstr "Nur Einnahmen können umgewandelt werden"
@@ -2204,6 +2213,7 @@ msgstr "Nur Einnahmen können umgewandelt werden"
 msgid "Only single-entry expenses can be converted"
 msgstr "Nur Ausgaben mit einem Eintrag können umgewandelt werden"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Nur Einnahmen mit einem Eintrag können umgewandelt werden"
@@ -2472,6 +2482,7 @@ msgstr "Erstattet {formattedRefundedAmount}"
 msgid "Remaining"
 msgstr "Verbleibend"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove"
 msgstr "Entfernen"
@@ -2707,6 +2718,7 @@ msgstr "Wählen Sie einen Tag zum Zusammenführen"
 msgid "Select a valid column"
 msgstr "Wählen Sie eine gültige Spalte"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Select account"
@@ -2821,9 +2833,6 @@ msgstr "Lege ein monatliches Limit fest und verfolge deine Ausgaben"
 msgid "Set Category"
 msgstr "Kategorie festlegen"
 
-#: src/app/(main)/transactions/[id]/expense.tsx
-#: src/app/(main)/transactions/[id]/income.tsx
-#: src/app/(main)/transactions/[id]/transfer.tsx
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Set fee"
@@ -3173,6 +3182,7 @@ msgstr "Transaktion muss ein Quellkonto haben"
 msgid "Transaction must have exactly one primary entry"
 msgstr "Transaktion muss genau einen primären Eintrag haben"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/transaction/service/transaction-debt-settlement.service.ts
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction not found"

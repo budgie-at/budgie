@@ -2,6 +2,8 @@ import { AccountDebtTypeEnum, AccountTypeEnum } from '@budgie/contracts';
 
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
+import type { AccountSelectorCreateActionInterface } from '../interface/account-selector-create-action.interface';
+
 export interface AccountSelectorModalParams {
     readonly initialAccountId?: number | null;
     readonly debtType?: AccountDebtTypeEnum;
@@ -11,6 +13,7 @@ export interface AccountSelectorModalParams {
     readonly emptyStateDescription?: string;
     readonly onlyActive?: boolean;
     readonly showDebtTotal?: boolean;
+    readonly createAction?: AccountSelectorCreateActionInterface;
 }
 
 export type AccountSelectorResult = number | null;

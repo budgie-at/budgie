@@ -1,6 +1,9 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
+import Toast from 'react-native-toast-message';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { AccountSelectContent } from '../account/component/account-select-content/account-select-content';
@@ -20,24 +23,35 @@ export default function AccountSelectorModal() {
 
     const [search, setSearch] = useState('');
 
-    const backgroundColor = isDarkColorSchema ? BG_DARK : BG_LIGHT;
-    const containerStyle = { flex: 1, backgroundColor };
-
-    const initialAccountId = currentParams?.initialAccountId ?? null;
-    const debtType = currentParams?.debtType;
-    const excludeAccountId = currentParams?.excludeAccountId;
-    const excludeAccountTypes = currentParams?.excludeAccountTypes;
-    const includeAccountTypes = currentParams?.includeAccountTypes;
-    const emptyStateDescription = currentParams?.emptyStateDescription;
-    const onlyActive = currentParams?.onlyActive ?? true;
+    const containerStyle = { flex: 1, backgroundColor: isDarkColorSchema ? BG_DARK : BG_LIGHT };
+    const createAction = currentParams?.createAction;
 
     const { accounts } = useSearchAccountsSortedQuery(search, {
-        debtType,
-        excludeAccountId,
-        excludeTypes: excludeAccountTypes,
-        includeTypes: includeAccountTypes,
-        onlyActive
+        debtType: currentParams?.debtType,
+        excludeAccountId: currentParams?.excludeAccountId,
+        excludeTypes: currentParams?.excludeAccountTypes,
+        includeTypes: currentParams?.includeAccountTypes,
+        onlyActive: currentParams?.onlyActive ?? true
     });
+
+    const handleCreateAction = () => {
+        if (!isDefined(createAction)) {
+            return;
+        }
+
+        createAction
+            .onCreate()
+            .then(() => void resolveAccountSelector(null))
+            .catch(() => void Toast.show({ type: 'error', text1: createAction.errorMessage }));
+    };
+    const contentCreateAction = isDefined(createAction)
+        ? {
+              title: createAction.title,
+              subtitle: createAction.subtitle,
+              errorMessage: createAction.errorMessage,
+              onCreate: handleCreateAction
+          }
+        : void 0;
 
     return (
         <View style={containerStyle} collapsable={false}>
@@ -50,11 +64,12 @@ export default function AccountSelectorModal() {
 
             <AccountSelectContent
                 data={accounts}
-                initialAccountId={initialAccountId}
+                initialAccountId={currentParams?.initialAccountId ?? null}
                 search={search}
                 onSelect={resolveAccountSelector}
-                emptyStateDescription={emptyStateDescription}
+                emptyStateDescription={currentParams?.emptyStateDescription}
                 showDebtTotal={currentParams?.showDebtTotal ?? false}
+                createAction={contentCreateAction}
             />
         </View>
     );

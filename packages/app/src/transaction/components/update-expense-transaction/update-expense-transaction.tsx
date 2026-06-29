@@ -23,6 +23,7 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
 
     const fromAccountId = useWatch({ control: simpleTransaction.form.control, name: 'fromAccountId' });
     const { handleOpenConvert, handleOpenRefundSources, handleRevert } = useUpdateExpenseTransactionActions({
+        form: simpleTransaction.form,
         transaction,
         transactionId,
         fromAccountId
