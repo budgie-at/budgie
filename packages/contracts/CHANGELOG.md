@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.39.0](https://github.com/budgie-at/budgie/compare/v5.38.2...v5.39.0) (2026-06-29)
+
+### Features
+
+- **app:** add transaction info page ([#568](https://github.com/budgie-at/budgie/issues/568)) ([5059c95](https://github.com/budgie-at/budgie/commit/5059c959d0754e5f030c04f81b08bfff1f70b7d6))
+
 # [5.38.0](https://github.com/budgie-at/budgie/compare/v5.37.1...v5.38.0) (2026-06-16)
 
 ### Features
