@@ -16,6 +16,7 @@ import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
+import { updateDebtTargetBaseValuation } from '../util/update-debt-target-base-valuation.util';
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 import { accountTransferConversionService } from './account-transfer-conversion.service';
@@ -49,7 +50,7 @@ class AccountService {
                 count,
                 tx
             );
-            const valuedAccount = await this.updateDebtTargetBaseValuation(createdAccount, operatedAt, tx);
+            const valuedAccount = await updateDebtTargetBaseValuation(createdAccount, operatedAt, tx);
             const debtBalance = this.getDebtBalanceInput(input.currentBalance, input.debtType);
 
             await this.adjustBalanceTo(createdAccount.id, debtBalance, tx, operatedAt);
@@ -81,7 +82,7 @@ class AccountService {
             const updatedAccount = await accountRepository.updateById(id, accountUpdateInput, tx);
             const shouldUpdateTargetBaseValuation = isNumber(targetBalance) || isNumber(accountInput.instrumentId);
             const valuedAccount = shouldUpdateTargetBaseValuation
-                ? await this.updateDebtTargetBaseValuation(updatedAccount, new Date(), tx)
+                ? await updateDebtTargetBaseValuation(updatedAccount, new Date(), tx)
                 : updatedAccount;
 
             if (isNumber(currentBalance)) {
@@ -229,30 +230,6 @@ class AccountService {
         const currentBalance = Math.abs(currentBalanceInput);
 
         return debtType === AccountDebtTypeEnum.LENT ? currentBalance : -currentBalance;
-    }
-
-    private async updateDebtTargetBaseValuation(
-        account: AccountEntityInterface,
-        operatedAt: Date,
-        tx: DB
-    ): Promise<AccountEntityInterface> {
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
-            accountId: account.id,
-            amount: account.targetBalance,
-            operatedAt,
-            externalSource: null,
-            tx
-        });
-
-        return accountRepository.updateById(
-            account.id,
-            {
-                targetBaseInstrumentId: valuation.baseInstrumentId,
-                targetBaseExchangeRate: valuation.baseExchangeRate,
-                targetBaseAmount: valuation.baseAmount
-            },
-            tx
-        );
     }
 
     private async createLiabilityAccount(

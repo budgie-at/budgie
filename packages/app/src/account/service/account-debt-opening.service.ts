@@ -18,6 +18,7 @@ import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { transactionDebtSettlementService } from '../../transaction/service/transaction-debt-settlement.service';
 import { getTransactionCategoryEntries } from '../../transaction/utils/get-transaction-category-entries.util';
+import { updateDebtTargetBaseValuation } from '../util/update-debt-target-base-valuation.util';
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 
@@ -259,30 +260,6 @@ class AccountDebtOpeningService {
         throw new Error(t`Borrowed debt account expected`);
     }
 
-    private async updateDebtTargetBaseValuation(
-        account: AccountEntityInterface,
-        operatedAt: Date,
-        tx: DB
-    ): Promise<AccountEntityInterface> {
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
-            accountId: account.id,
-            amount: account.targetBalance,
-            operatedAt,
-            externalSource: null,
-            tx
-        });
-
-        return accountRepository.updateById(
-            account.id,
-            {
-                targetBaseInstrumentId: valuation.baseInstrumentId,
-                targetBaseExchangeRate: valuation.baseExchangeRate,
-                targetBaseAmount: valuation.baseAmount
-            },
-            tx
-        );
-    }
-
     private async updateDebtTargetAmount(
         account: AccountEntityInterface,
         targetBalance: number,
@@ -291,7 +268,7 @@ class AccountDebtOpeningService {
     ): Promise<AccountEntityInterface> {
         const updatedAccount = await accountRepository.updateById(account.id, { targetBalance }, tx);
 
-        return this.updateDebtTargetBaseValuation(updatedAccount, operatedAt, tx);
+        return updateDebtTargetBaseValuation(updatedAccount, operatedAt, tx);
     }
 }
 
