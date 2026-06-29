@@ -1,4 +1,5 @@
 import { AccountDebtTypeEnum, AccountEntityInterface } from '@budgie/contracts';
+import { useMemo } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -23,9 +24,8 @@ export const UpdateDebtAccount = ({ account }: Props) => {
     const targetBalance = convertFromMicroUnits(account.targetBalance);
     const currentBalance =
         account.debtType === AccountDebtTypeEnum.BORROW ? debtProgressSummary.outstandingAmount : debtProgressSummary.paidAmount;
-
-    const { control, handleSubmit, instrument } = useDebtAccountForm(
-        {
+    const initialValues = useMemo(
+        () => ({
             iban: account.iban,
             type: account.type,
             icon: account.icon,
@@ -38,8 +38,27 @@ export const UpdateDebtAccount = ({ account }: Props) => {
             targetBalance,
             includeInNetWorth: account.includeInNetWorth,
             isActive: account.isActive
-        },
-        values => accountService.updateDebtById(account.id, values)
+        }),
+        [
+            account.contactId,
+            account.deadline,
+            account.debtType,
+            account.iban,
+            account.icon,
+            account.includeInNetWorth,
+            account.instrumentId,
+            account.isActive,
+            account.title,
+            account.type,
+            currentBalance,
+            targetBalance
+        ]
+    );
+
+    const { control, handleSubmit, instrument } = useDebtAccountForm(
+        initialValues,
+        values => accountService.updateDebtById(account.id, values),
+        true
     );
 
     if (!isDefined(instrument)) {
