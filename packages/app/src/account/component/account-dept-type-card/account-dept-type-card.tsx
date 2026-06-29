@@ -3,6 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -30,9 +32,10 @@ export const AccountDeptTypeCard = ({ type, onSelect, isSelected, testID }: Prop
     const { t } = useLingui();
 
     const handleSelect = () => void onSelect(type);
+    const selectedTestIDProps = isSelected && isDefined(testID) ? { testID: `${testID}.Selected` } : {};
 
     const selectedIndicator = isSelected ? (
-        <View className="bg-primary rounded-full p-xs">
+        <View {...selectedTestIDProps} className="bg-primary rounded-full p-xs">
             <Icon className="text-primary-reverse" icon={UserIconNameEnum.Check} size={16} />
         </View>
     ) : (
