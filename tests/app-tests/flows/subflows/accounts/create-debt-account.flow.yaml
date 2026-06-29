@@ -57,17 +57,6 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
       element:
-          id: 'AccountForm.TargetBalanceInput'
-      direction: DOWN
-- tapOn:
-      id: 'AccountForm.TargetBalanceInput'
-- eraseText: 100
-- inputText: ${TARGET_BALANCE}
-- tapOn:
-      text: 'Debt Account'
-
-- scrollUntilVisible:
-      element:
           id: 'AccountForm.DebtType.${DEBT_TYPE}'
       direction: DOWN
 - tapOn:
@@ -75,9 +64,15 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
       element:
-          id: 'AccountForm.SubmitButton'
-          enabled: true
-      direction: DOWN
+          id: 'AccountForm.TargetBalanceInput'
+      direction: UP
+- tapOn:
+      id: 'AccountForm.TargetBalanceInput'
+- eraseText: 100
+- inputText: ${TARGET_BALANCE}
+- tapOn:
+      text: 'Debt Account'
+
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.SubmitButton'
