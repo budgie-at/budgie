@@ -55,12 +55,27 @@ appId: ${APP_ID}
           id: 'AccountForm.SelectedCurrency.${CURRENCY_CODE}'
       timeout: 3000
 
-- scrollUntilVisible:
-      element:
-          id: 'AccountForm.DebtType.${DEBT_TYPE}'
-      direction: DOWN
-- tapOn:
-      id: 'AccountForm.DebtType.${DEBT_TYPE}'
+- runFlow:
+      when:
+          true: ${DEBT_TYPE == 'LENT'}
+      commands:
+          - scrollUntilVisible:
+                element:
+                    id: 'AccountForm.DebtType.LENT'
+                direction: DOWN
+          - tapOn:
+                id: 'AccountForm.DebtType.LENT'
+
+- runFlow:
+      when:
+          true: ${DEBT_TYPE == 'BORROW'}
+      commands:
+          - scrollUntilVisible:
+                element:
+                    id: 'AccountForm.DebtType.BORROW'
+                direction: DOWN
+          - tapOn:
+                id: 'AccountForm.DebtType.BORROW'
 
 - scrollUntilVisible:
       element:
