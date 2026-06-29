@@ -36,6 +36,6 @@ appId: ${APP_ID}
           RETURN_DAY: '18'
           RETURN_DATE_LABEL: '.*18,.*'
           INCREASE_TO: '300'
-          INCREASE_DELTA: '300'
+          INCREASE_DELTA: '500'
           DECREASE_TO: '175'
           DECREASE_DELTA: '125'
