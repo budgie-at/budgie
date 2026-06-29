@@ -71,6 +71,7 @@ export const AccountCardBase = (props: Props) => {
     return (
         <Card
             accessible
+            testID={accountCardTestID}
             accessibilityLabel={`${title}, ${accountBalance}`}
             onPress={navigateToAccount}
             onLongPress={onLongPress}
@@ -94,7 +95,7 @@ export const AccountCardBase = (props: Props) => {
                 </View>
 
                 <View className="gap-1">
-                    <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1} testID={accountCardTestID}>
+                    <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1}>
                         {title}
                     </Text>
 
