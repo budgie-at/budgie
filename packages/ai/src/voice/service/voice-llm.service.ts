@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- Cohesive language-keyed keyword tables (numbers, currency aliases, separators) for the voice extractor must stay together */
 import { CurrencyEnum, LanguageEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { z } from 'zod';

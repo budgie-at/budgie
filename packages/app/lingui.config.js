@@ -1,7 +1,9 @@
 import { lstatSync } from 'fs';
 import { defineConfig } from '@lingui/cli';
-import { babelExtractor } from '@lingui/cli/api/extractors/babel';
+import babelExtractorModule from '@lingui/cli/api/extractors/babel';
 import { formatter } from '@lingui/format-po';
+
+const babelExtractor = babelExtractorModule.default ?? babelExtractorModule;
 
 const isDirectoryPath = (filename) => {
     try {

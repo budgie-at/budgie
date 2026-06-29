@@ -24,9 +24,12 @@ appId: ${APP_ID}
     id: 'TransactionForm.SubmitButton'
 - assertVisible: 'New Income'
 
-- tapOn: '1'
-- tapOn: '0'
-- tapOn: '0'
+- tapOn:
+    id: 'TransactionKeypad.Digit.1'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
 
 - runFlow:
     file: subflows/transactions/select-account.flow.yaml
@@ -66,6 +69,16 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Test_Income'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
+- assertVisible:
+    id: 'TransactionInfo.Row.Account'
+- assertVisible:
+    id: 'TransactionInfo.Row.Category'
+- tapOn:
+    id: 'TransactionInfo.EditButton.Label'
 
 - longPressOn:
     id: 'TransactionKeypad.Backspace'
@@ -81,7 +94,17 @@ appId: ${APP_ID}
     env:
       COMMENT: 'E2E Edited Income'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 15000
+- assertVisible:
+    id: 'TransactionInfo.Row.Account'
+- assertVisible:
+    id: 'TransactionInfo.Row.Category'
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -104,6 +127,10 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Edited_Income'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 5000
 
 - runFlow: subflows/transactions/delete-transaction.flow.yaml
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml

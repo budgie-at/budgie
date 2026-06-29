@@ -32,6 +32,8 @@ export const SearchInput = (props: Props) => {
         autoCapitalize,
         autoCorrect,
         placeholderTextColor,
+        returnKeyType,
+        submitBehavior,
         ...rest
     } = props;
     const { t } = useLingui();
@@ -42,6 +44,8 @@ export const SearchInput = (props: Props) => {
     const resolvedAutoCapitalize = autoCapitalize ?? 'none';
     const resolvedAutoCorrect = autoCorrect ?? false;
     const resolvedPlaceholderTextColor = placeholderTextColor ?? theme['--color-secondary-foreground'];
+    const resolvedReturnKeyType = returnKeyType ?? 'done';
+    const resolvedSubmitBehavior = submitBehavior ?? 'blurAndSubmit';
 
     const handleClear = () => {
         onChangeText('');
@@ -62,6 +66,8 @@ export const SearchInput = (props: Props) => {
                 placeholderTextColor={resolvedPlaceholderTextColor}
                 autoCapitalize={resolvedAutoCapitalize}
                 autoCorrect={resolvedAutoCorrect}
+                returnKeyType={resolvedReturnKeyType}
+                submitBehavior={resolvedSubmitBehavior}
                 className={cn('ml-sm flex-1 text-md text-primary', className, inputClassName)}
             />
             <View className="ml-sm h-[32px] w-[32px] items-center justify-center">

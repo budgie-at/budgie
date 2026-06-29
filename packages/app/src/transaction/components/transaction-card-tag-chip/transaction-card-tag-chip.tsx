@@ -44,7 +44,7 @@ export const TransactionCardTagChip = ({ title, isPrimary = false, isDimmed = fa
     const labelClassName = textVariants({ isPrimary });
 
     const body = (
-        <View className={chipVariants({ isPrimary, isDimmed })}>
+        <View className={chipVariants({ isPrimary, isDimmed })} testID={testID}>
             <Icon icon={UserIconNameEnum.Tag} size={12} className={labelClassName} />
             <Text className={labelClassName} numberOfLines={1} ellipsizeMode="tail">
                 {title}
@@ -57,7 +57,7 @@ export const TransactionCardTagChip = ({ title, isPrimary = false, isDimmed = fa
     }
 
     return (
-        <HapticPressable onPress={onPress} onLongPress={onLongPress} testID={testID}>
+        <HapticPressable onPress={onPress} onLongPress={onLongPress}>
             {body}
         </HapticPressable>
     );

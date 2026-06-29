@@ -1,15 +1,18 @@
 appId: ${APP_ID}
 ---
-
 - tapOn:
-    id: 'AccountPickerBottomSheet.Input'
-- inputText: ${ACCOUNT_NAME}
-- extendedWaitUntil:
-    visible:
-      id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
-- tapOn:
-    id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
-- extendedWaitUntil:
-    notVisible:
       id: 'AccountPickerBottomSheet.Input'
+- inputText: ${ACCOUNT_NAME}
+- tapOn: Done
+- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+- tapOn:
+      id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+      retryTapIfNoChange: true
+- waitForAnimationToEnd
+- extendedWaitUntil:
+      notVisible:
+          id: 'AccountPickerBottomSheet.Input'
 - waitForAnimationToEnd
