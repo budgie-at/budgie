@@ -20,7 +20,8 @@ export const useDebtAccountForm = (
     const form = useForm<DebtAccountFormValues>({
         resolver: zodResolver(DebtAccountCreateInputSchema) as Resolver<DebtAccountFormValues>,
         mode: 'onSubmit',
-        defaultValues: initialValues
+        defaultValues: initialValues,
+        values: initialValues
     });
 
     const [instrumentId, debtType] = useWatch({

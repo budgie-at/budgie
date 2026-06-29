@@ -1,7 +1,7 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 // jscpd:ignore-start
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
@@ -32,9 +32,8 @@ export const CreateDebtAccount = () => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
     const [openingAccountId, setOpeningAccountId] = useState<number | null>(null);
-
-    const { control, handleSubmit, instrument, debtType, setValue } = useDebtAccountForm(
-        {
+    const initialValues = useMemo(
+        () => ({
             iban: null,
             title: '',
             deadline: null,
@@ -46,20 +45,22 @@ export const CreateDebtAccount = () => {
             type: AccountTypeEnum.DEBT,
             debtType: AccountDebtTypeEnum.LENT,
             instrumentId: defaultInstrument.id
-        },
-        async values => {
-            const effectiveOpeningAccountId = values.debtType === AccountDebtTypeEnum.LENT ? openingAccountId : null;
-
-            if (isDefined(effectiveOpeningAccountId)) {
-                return accountDebtOpeningService.createLentDebtFromTransfer(
-                    { ...values, targetBalance: values.currentBalance },
-                    effectiveOpeningAccountId
-                );
-            }
-
-            return accountService.createDebt(values);
-        }
+        }),
+        [defaultInstrument.id]
     );
+
+    const { control, handleSubmit, instrument, debtType, setValue } = useDebtAccountForm(initialValues, async values => {
+        const effectiveOpeningAccountId = values.debtType === AccountDebtTypeEnum.LENT ? openingAccountId : null;
+
+        if (isDefined(effectiveOpeningAccountId)) {
+            return accountDebtOpeningService.createLentDebtFromTransfer(
+                { ...values, targetBalance: values.currentBalance },
+                effectiveOpeningAccountId
+            );
+        }
+
+        return accountService.createDebt(values);
+    });
     const currentBalance = useWatch({ control, name: 'currentBalance' });
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
     const isOpeningFromAccount = isLentDebt && isDefined(openingAccountId);
