@@ -66,6 +66,7 @@ appId: ${APP_ID}
                           element:
                               id: 'AccountForm.DebtType.LENT'
                           direction: DOWN
+                          centerElement: true
                     - tapOn:
                           id: 'AccountForm.DebtType.LENT'
                           retryTapIfNoChange: true
@@ -85,6 +86,7 @@ appId: ${APP_ID}
                           element:
                               id: 'AccountForm.DebtType.BORROW'
                           direction: DOWN
+                          centerElement: true
                     - tapOn:
                           id: 'AccountForm.DebtType.BORROW'
                           retryTapIfNoChange: true
