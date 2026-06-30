@@ -139,8 +139,14 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
 - extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 10000
+- tapOn:
+      id: 'TransactionInfo.EditButton.Label'
+- extendedWaitUntil:
       visible: 'Edit Income'
-      timeout: 5000
+      timeout: 10000
 
 - tapOn:
       id: 'TransactionActionsMenu.TriggerButton'
@@ -367,8 +373,14 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Expense'
 - extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 10000
+- tapOn:
+      id: 'TransactionInfo.EditButton.Label'
+- extendedWaitUntil:
       visible: 'Edit Expense'
-      timeout: 5000
+      timeout: 10000
 
 - tapOn:
       id: 'TransactionActionsMenu.TriggerButton'
@@ -433,8 +445,14 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Income'
 - extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 10000
+- tapOn:
+      id: 'TransactionInfo.EditButton.Label'
+- extendedWaitUntil:
       visible: 'Edit Income'
-      timeout: 5000
+      timeout: 10000
 
 - tapOn:
       id: 'TransactionActionsMenu.TriggerButton'
@@ -543,8 +561,14 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionCard.Label.E2E_Completed_Debt_Attach_Income'
 - extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 10000
+- tapOn:
+      id: 'TransactionInfo.EditButton.Label'
+- extendedWaitUntil:
       visible: 'Edit Income'
-      timeout: 5000
+      timeout: 10000
 
 - tapOn:
       id: 'TransactionActionsMenu.TriggerButton'
