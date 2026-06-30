@@ -66,13 +66,13 @@ appId: ${APP_ID}
       env:
           ACCOUNT_NAME: 'E2E Lent Expense Debt'
 
-- assertVisible: 'Debt · E2E Lent Expense Debt'
-
 - extendedWaitUntil:
       visible:
           id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
       timeout: 5000
-- assertVisible: 'Debt · E2E Lent Expense Debt'
+- extendedWaitUntil:
+      visible: 'Debt · E2E Lent Expense Debt'
+      timeout: 10000
 
 - runFlow:
       file: subflows/accounts/create-debt-account.flow.yaml

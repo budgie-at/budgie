@@ -51,6 +51,7 @@ class TransactionDebtSettlementService {
             const settlementEntries = this.getSettlementEntries(transaction);
 
             await transactionEntryRepository.deleteDebtSettlementByTransactionId(transactionId, tx);
+            await transactionRepository.touchUpdatedAt(transactionId, tx);
             await accountBalanceIncrementalService.updateBalancesByAccountIds(
                 [...new Set(settlementEntries.map(entry => entry.accountId))],
                 tx
@@ -70,6 +71,7 @@ class TransactionDebtSettlementService {
         const settlementEntry = await this.buildSettlementEntry(transaction, primaryEntry, debtAccount, tx);
 
         await transactionEntryRepository.create(settlementEntry, tx);
+        await transactionRepository.touchUpdatedAt(transaction.id, tx);
         await accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id], tx);
 
         return debtAccount;
