@@ -439,6 +439,7 @@ echo "Running Maestro suite from $WORKSPACE_DIR"
 REPORT_DIR=""
 REPORTS=()
 FLOW_INDEX=0
+FLOW_TOTAL="${#FLOW_PATHS[@]}"
 
 if [ -n "$OUTPUT_PATH" ]; then
     REPORT_DIR="$(dirname "$OUTPUT_PATH")/.maestro-flow-reports"
@@ -457,7 +458,11 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
 
     reboot_ios_simulator_if_needed "$FLOW_INDEX"
 
+    echo "Running Maestro flow $FLOW_INDEX/$FLOW_TOTAL: $FLOW_NAME"
+
     if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH"; then
+        echo "Completed Maestro flow $FLOW_INDEX/$FLOW_TOTAL: $FLOW_NAME"
+
         if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
             REPORTS+=("$FLOW_OUTPUT_PATH")
             merge_reports "$OUTPUT_PATH" "${REPORTS[@]}"
