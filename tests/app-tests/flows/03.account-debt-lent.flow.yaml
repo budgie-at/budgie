@@ -39,3 +39,4 @@ appId: ${APP_ID}
           INCREASE_DELTA: '400'
           DECREASE_TO: '250'
           DECREASE_DELTA: '150'
+          NET_WORTH_WHEN_INCLUDED: '250'
