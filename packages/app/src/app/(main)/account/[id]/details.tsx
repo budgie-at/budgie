@@ -56,6 +56,7 @@ export default function AccountDetails() {
     return (
         <View className="relative flex-1">
             <Page
+                testID={AccountDetailsSelector.Page}
                 header={
                     <PageHeader
                         icon={account.icon}
