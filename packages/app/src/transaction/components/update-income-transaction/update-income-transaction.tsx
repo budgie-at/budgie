@@ -23,7 +23,15 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
 
     const toAccountId = useWatch({ control: simpleTransaction.form.control, name: 'toAccountId' });
     const mccCategoryId = simpleTransaction.categoryEntries.at(0)?.mccCategoryId ?? null;
-    const { handleOpenConvert, handleOpenRefundConvert, handleRevert } = useUpdateIncomeTransactionActions({
+    const {
+        debtSettlementAccountTitle,
+        handleDetachDebtSettlement,
+        handleOpenConvert,
+        handleOpenDebtSettlement,
+        handleOpenRefundConvert,
+        handleRevert,
+        hasDebtSettlement
+    } = useUpdateIncomeTransactionActions({
         form: simpleTransaction.form,
         transaction,
         transactionId,
@@ -32,6 +40,12 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
     const canConvertToRefund = !simpleTransaction.isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const transferConvertProps = simpleTransaction.categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
+    const debtSettlementProps = hasDebtSettlement
+        ? { onDetachDebtSettlement: handleDetachDebtSettlement }
+        : {
+              onAttachDebtSettlement: handleOpenDebtSettlement,
+              ...(isDefined(debtSettlementAccountTitle) && { attachDebtSettlementLabel: debtSettlementAccountTitle })
+          };
 
     return (
         <UpdateSimpleTransactionPage
@@ -43,6 +57,7 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
             onRevert={handleRevert}
             {...refundConvertProps}
             {...transferConvertProps}
+            {...debtSettlementProps}
         >
             <SimpleQuickForm
                 variant="positive"

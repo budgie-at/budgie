@@ -2,6 +2,8 @@ import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgi
 import { useLingui } from '@lingui/react/macro';
 import { useWatch } from 'react-hook-form';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useUpdateExpenseTransactionActions } from '../../hook/use-update-expense-transaction-actions.hook';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
 import { buildExpenseEntry } from '../../utils/build-expense-entry.util';
@@ -22,7 +24,15 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
     });
 
     const fromAccountId = useWatch({ control: simpleTransaction.form.control, name: 'fromAccountId' });
-    const { handleOpenConvert, handleOpenRefundSources, handleRevert } = useUpdateExpenseTransactionActions({
+    const {
+        debtSettlementAccountTitle,
+        handleDetachDebtSettlement,
+        handleOpenConvert,
+        handleOpenDebtSettlement,
+        handleOpenRefundSources,
+        handleRevert,
+        hasDebtSettlement
+    } = useUpdateExpenseTransactionActions({
         form: simpleTransaction.form,
         transaction,
         transactionId,
@@ -30,6 +40,12 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
     });
     const mccCategoryId = simpleTransaction.categoryEntries.at(0)?.mccCategoryId ?? null;
     const canConvertToTransfer = simpleTransaction.categoryEntries.length === 1;
+    const debtSettlementProps = hasDebtSettlement
+        ? { onDetachDebtSettlement: handleDetachDebtSettlement }
+        : {
+              onAttachDebtSettlement: handleOpenDebtSettlement,
+              ...(isDefined(debtSettlementAccountTitle) && { attachDebtSettlementLabel: debtSettlementAccountTitle })
+          };
 
     return (
         <UpdateSimpleTransactionPage
@@ -40,6 +56,7 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
             onDelete={simpleTransaction.handleDelete}
             onRevert={handleRevert}
             {...(canConvertToTransfer && { onConvertToTransfer: handleOpenConvert })}
+            {...debtSettlementProps}
         >
             <SimpleQuickForm
                 variant="destructive"
