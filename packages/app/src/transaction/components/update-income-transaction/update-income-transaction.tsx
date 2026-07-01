@@ -65,6 +65,7 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
                 accountFieldName="toAccountId"
                 transactionTitle={transaction.title}
                 mccCategoryId={mccCategoryId}
+                debtSettlementAccountTitle={debtSettlementAccountTitle}
                 buildEntries={buildIncomeEntry}
                 onSubmit={simpleTransaction.handleSubmit}
                 onCancel={simpleTransaction.handleGoBack}

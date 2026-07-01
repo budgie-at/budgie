@@ -9,9 +9,9 @@ import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormSplit } from '../../hook/use-quick-form-split.hook';
 import { useQuickFormSubmit } from '../../hook/use-quick-form-submit.hook';
 import { useSimpleQuickFormState } from '../../hook/use-simple-quick-form-state.hook';
+import { SimpleQuickFormAmountBottomContent } from '../simple-quick-form-amount-bottom-content/simple-quick-form-amount-bottom-content';
 import { SimpleQuickFormControls } from '../simple-quick-form-controls/simple-quick-form-controls';
 import { SimpleQuickFormDisplay } from '../simple-quick-form-display/simple-quick-form-display';
-import { SimpleQuickFormFeePill } from '../simple-quick-form-fee-pill/simple-quick-form-fee-pill';
 
 import type { QuickFormAccountFieldName } from '../../interface/quick-form-account-field-name.type';
 import type { QuickFormBuildEntryParamsInterface } from '../../interface/quick-form-build-entry-params.interface';
@@ -30,6 +30,7 @@ interface Props {
     readonly mccCategoryId: number | null;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
+    readonly debtSettlementAccountTitle?: string | null;
     readonly amountTopContent?: ReactNode;
     readonly showInlineFeeAction?: boolean;
     readonly buildEntries: (params: QuickFormBuildEntryParamsInterface) => TransactionEntryCreateInputInterface[];
@@ -45,7 +46,7 @@ const getEntryTypeForTransaction = (transactionType: TransactionTypeEnum): Trans
     transactionType === TransactionTypeEnum.EXPENSE ? EXPENSE_ENTRY_TYPE : INCOME_ENTRY_TYPE;
 
 export const SimpleQuickForm = (props: Props) => {
-    const { ref, rulePillSlotProps, showInlineFeeAction = true, ...formProps } = props;
+    const { debtSettlementAccountTitle = null, ref, rulePillSlotProps, showInlineFeeAction = true, ...formProps } = props;
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { displayValue, currencySymbol, keypadHandlers, setFromNumeric } = useQuickFormAmount({
         accountFieldName: props.accountFieldName
@@ -53,7 +54,6 @@ export const SimpleQuickForm = (props: Props) => {
     const formState = useSimpleQuickFormState({ accountFieldName: props.accountFieldName, setFromNumeric });
     const entryType = getEntryTypeForTransaction(props.transactionType);
     const isSplitActive = formState.splitEntryCount > 1;
-
     const { feeAmount, handleFeePress } = useQuickFormFee({
         accountFieldName: props.accountFieldName,
         currencySymbol,
@@ -62,9 +62,7 @@ export const SimpleQuickForm = (props: Props) => {
         variant: props.variant,
         setFromNumeric
     });
-
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
-
     const { handleSplitIconPress } = useQuickFormSplit({
         accountFieldName: props.accountFieldName,
         currencySymbol,
@@ -89,14 +87,6 @@ export const SimpleQuickForm = (props: Props) => {
         transactionType: props.transactionType,
         onSubmit: props.onSubmit
     });
-    const amountBottomContent = (
-        <SimpleQuickFormFeePill
-            amount={feeAmount}
-            currencySymbol={currencySymbol}
-            showInlineAction={showInlineFeeAction}
-            onPress={handleFeePress}
-        />
-    );
 
     return (
         <View className="flex-1">
@@ -104,7 +94,15 @@ export const SimpleQuickForm = (props: Props) => {
                 {...formProps}
                 {...rulePillSlotProps}
                 amountDisplayRef={amountDisplayRef}
-                amountBottomContent={amountBottomContent}
+                amountBottomContent={
+                    <SimpleQuickFormAmountBottomContent
+                        debtSettlementAccountTitle={debtSettlementAccountTitle}
+                        feeAmount={feeAmount}
+                        feeCurrencySymbol={currencySymbol}
+                        showInlineFeeAction={showInlineFeeAction}
+                        onFeePress={handleFeePress}
+                    />
+                }
                 currencySymbol={currencySymbol}
                 displayValue={displayValue}
                 categoryId={formState.categoryId}

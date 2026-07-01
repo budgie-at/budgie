@@ -64,6 +64,7 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
                 accountFieldName="fromAccountId"
                 transactionTitle={transaction.title}
                 mccCategoryId={mccCategoryId}
+                debtSettlementAccountTitle={debtSettlementAccountTitle}
                 amountTopContent={
                     <RefundedPill
                         transaction={transaction}
