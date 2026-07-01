@@ -485,6 +485,44 @@ describe('debt settlement statistics', () => {
         expect(progress.percentage).toBe(13.24);
     });
 
+    it('summarizes borrowed debt after transfer repayment and additional borrowed income', async () => {
+        const [category] = testDb.select().from(CategoryEntityTable).all();
+        const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+        const debtAccount = seed.account({
+            title: 'Transfer repayment borrowed account',
+            type: AccountTypeEnum.DEBT,
+            debtType: AccountDebtTypeEnum.BORROW,
+            targetBalance: 15_000 * PRECISION
+        });
+        const additionalBorrowing = createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
+
+        createDebtTransferTransaction(debtAccount.id, cashAccount.id, 15_000 * PRECISION, 'Borrow money from Alex');
+        createDebtTransferTransaction(cashAccount.id, debtAccount.id, 2_000 * PRECISION, 'Return money to Alex');
+
+        await transactionDebtSettlementService.attach({ transactionId: additionalBorrowing.id, debtAccountId: debtAccount.id });
+
+        const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.BORROW);
+        const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
+        const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
+
+        expectDebtProgressSummary(summary, 13_109 * PRECISION, 2_000 * PRECISION, 15_109 * PRECISION, 13.24);
+        expect(row).toBeDefined();
+        expect(progress).toBeDefined();
+
+        if (!isDefined(row) || !isDefined(progress)) {
+            return;
+        }
+
+        expect(row.debtOutstandingAmount).toBe(13_109 * PRECISION);
+        expect(row.debtPaidAmount).toBe(2_000 * PRECISION);
+        expect(row.debtTotalAmount).toBe(15_109 * PRECISION);
+        expect(row.debtProgressPercentage).toBe(13.24);
+        expect(progress.outstandingAmount).toBe(13_109 * PRECISION);
+        expect(progress.paidAmount).toBe(2_000 * PRECISION);
+        expect(progress.totalAmount).toBe(15_109 * PRECISION);
+        expect(progress.percentage).toBe(13.24);
+    });
+
     it('returns canonical borrowed progress when the opening adjustment is already covered', () => {
         const { debtAccount, row } = createBorrowedDebtCoveredOpeningScenario();
         const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
