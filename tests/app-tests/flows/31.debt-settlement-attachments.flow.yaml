@@ -44,7 +44,7 @@ appId: ${APP_ID}
       env:
           COMMENT: 'E2E Debt Attach Expense'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
       visible:
@@ -129,7 +129,7 @@ appId: ${APP_ID}
       env:
           COMMENT: 'E2E Debt Attach Income'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
       visible:
@@ -175,7 +175,7 @@ appId: ${APP_ID}
 
 - assertVisible: 'Debt · E2E Lent Debt'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
       visible:
@@ -280,7 +280,7 @@ appId: ${APP_ID}
       env:
           COMMENT: 'E2E Lent Debt Extra Transfer'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
       visible:
@@ -363,7 +363,7 @@ appId: ${APP_ID}
       env:
           COMMENT: 'E2E Borrowed Debt Attach Expense'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
       visible:
@@ -399,7 +399,7 @@ appId: ${APP_ID}
 
 - assertVisible: 'Debt · E2E Borrowed Debt'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
       visible:
@@ -435,7 +435,7 @@ appId: ${APP_ID}
       env:
           COMMENT: 'E2E Borrowed Debt Attach Income'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
       visible:
@@ -481,7 +481,7 @@ appId: ${APP_ID}
 
 - assertVisible: 'Debt · E2E Borrowed Debt'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
       visible:
@@ -551,7 +551,7 @@ appId: ${APP_ID}
       env:
           COMMENT: 'E2E Completed Debt Attach Income'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
       visible:
@@ -587,7 +587,7 @@ appId: ${APP_ID}
 
 - assertVisible: 'Debt · E2E Completed Debt'
 
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
       visible:
