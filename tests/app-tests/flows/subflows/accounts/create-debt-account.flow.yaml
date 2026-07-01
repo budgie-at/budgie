@@ -64,12 +64,9 @@ appId: ${APP_ID}
                 commands:
                     - scrollUntilVisible:
                           element:
-                              id: 'AccountForm.DebtType.LENT'
+                              id: 'AccountForm.DebtType.LENT.Selected'
                           direction: DOWN
                           centerElement: true
-                    - tapOn:
-                          id: 'AccountForm.DebtType.LENT'
-                          retryTapIfNoChange: true
                     - extendedWaitUntil:
                           visible:
                               id: 'AccountForm.DebtType.LENT.Selected'
