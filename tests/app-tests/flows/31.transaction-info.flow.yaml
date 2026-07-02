@@ -113,6 +113,12 @@ appId: ${APP_ID}
 - assertVisible: '$20'
 - assertVisible: 'Average'
 - assertVisible: '$10'
+
+- scrollUntilVisible:
+    element: 'Jan 26'
+    direction: DOWN
+    centerElement: true
+
 - assertVisible: 'Jan 26'
 - assertVisible: 'Feb 26'
 - assertVisible: 'Mar 26'
