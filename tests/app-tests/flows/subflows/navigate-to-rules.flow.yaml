@@ -2,10 +2,31 @@ appId: ${APP_ID}
 ---
 
 - runFlow:
-    file: navigation/navigate-to-settings.flow.yaml
+    file: navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://settings/rules'
+
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 15000
+    optional: true
 
 - runFlow:
-    file: navigation/open-settings-card.flow.yaml
-    env:
-      CARD_ID: 'SettingsPage.ManageRulesCard'
-      DESTINATION_ID: 'RulesPage.Page'
+    when:
+      notVisible:
+        id: 'RulesPage.Page'
+    commands:
+      - runFlow:
+          file: navigation/navigate-to-settings.flow.yaml
+
+      - runFlow:
+          file: navigation/open-settings-card.flow.yaml
+          env:
+            CARD_ID: 'SettingsPage.ManageRulesCard'
+            DESTINATION_ID: 'RulesPage.Page'
+
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 15000
