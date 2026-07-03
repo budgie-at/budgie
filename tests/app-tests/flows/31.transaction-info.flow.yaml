@@ -115,15 +115,22 @@ appId: ${APP_ID}
 - assertVisible: '$10'
 
 - scrollUntilVisible:
-    element: 'Jan 26'
+    element:
+      id: 'TransactionInfo.SimilarBar.5'
     direction: DOWN
     centerElement: true
 
-- assertVisible: 'Jan 26'
-- assertVisible: 'Feb 26'
-- assertVisible: 'Mar 26'
-- assertVisible: 'Apr 26'
-- assertVisible: 'May 26'
-- assertVisible: 'Jun 26'
+- assertVisible:
+    id: 'TransactionInfo.SimilarBar.0'
+- assertVisible:
+    id: 'TransactionInfo.SimilarBar.1'
+- assertVisible:
+    id: 'TransactionInfo.SimilarBar.2'
+- assertVisible:
+    id: 'TransactionInfo.SimilarBar.3'
+- assertVisible:
+    id: 'TransactionInfo.SimilarBar.4'
+- assertVisible:
+    id: 'TransactionInfo.SimilarBar.5'
 - assertNotVisible:
     id: 'TransactionInfo.Row.Source'
