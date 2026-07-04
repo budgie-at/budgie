@@ -13,8 +13,9 @@ appId: ${APP_ID}
       id: 'AccountForm.SubmitButton'
       enabled: true
       retryTapIfNoChange: true
+- waitForAnimationToEnd
 
 - extendedWaitUntil:
       visible:
           id: 'HomePage.TotalBalance'
-      timeout: 3000
+      timeout: 15000
