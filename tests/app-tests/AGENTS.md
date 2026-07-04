@@ -24,6 +24,17 @@ Maestro flows for Budgie.
 18. For money assertions, prefer rendered rounded values over raw repository floats. If a balance selector is derived from what the user sees, assert that displayed value or the card accessibility text, not an unrounded internal decimal.
 19. Native relaunch is a valid narrow retry case. If `launchApp` occasionally returns to SpringBoard, recover inside one shared relaunch-and-wait subflow, including tapping the app icon when needed, instead of duplicating ad hoc launch retries through business flows.
 
+## Speed Rules
+
+1. Deep links (`openLink: budgie://...`) never show an iOS Open confirmation in this suite. Do not add `when: visible: 'Open'` probes around them — each probe costs ~7s. The only legitimate Open handling is the native Files picker inside `select-file-from-app-provider.flow.yaml`. Enforced by `selectors:check`.
+2. Do not combine `optional: true` with `extendedWaitUntil` timeouts above 5000 — an absent element silently burns the whole timeout. Enforced by `selectors:check`.
+3. Navigation subflows deep-link first and wait for the destination identity once. Do not reintroduce tab-tap fallbacks with long optional waits.
+4. Prefer seeded database fixtures over creating setup entities through the UI. UI creation belongs only where creation itself is the coverage. To regenerate a captured fixture, run the matching `flows/setup/capture-*.flow.yaml` through `scripts/capture-fixture.sh <capture-flow> <fixture-name>` against a fresh E2E build, then commit the updated `fixtures/*.db`.
+
+## Shards
+
+CI runs the suite as 4 parallel shard jobs. `shards/shard-*.txt` list top-level flow file names; every `flows/*.flow.yaml` must appear in exactly one shard (enforced by `selectors:check` via `scripts/validate-shards.sh`). When adding a flow, add it to the lightest shard; rebalance using the junit durations from the `maestro-ios-artifacts-shard-*` artifacts.
+
 ## Flow Design
 
 1. Navigation coverage belongs in dedicated navigation flows. Business flows should not repeatedly retest the same navigation path.

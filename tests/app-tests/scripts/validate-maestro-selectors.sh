@@ -38,3 +38,34 @@ if find_selector_matches "$NUMERIC_TAP_PATTERN"; then
     echo "Maestro flows must tap keypad digits by TransactionKeypad.Digit.* ids."
     exit 1
 fi
+
+DEEP_LINK_OPEN_PROBES=$(
+    grep -R -E -n "visible:[[:space:]]*['\"]Open['\"]" "$FLOW_DIR" |
+        grep -v "select-file-from-app-provider.flow.yaml" || true
+)
+
+if [ -n "$DEEP_LINK_OPEN_PROBES" ]; then
+    printf '%s\n' "$DEEP_LINK_OPEN_PROBES"
+    echo "Deep links do not show an Open confirmation on iOS; remove the visible: 'Open' probe (each costs ~7s). The native Files picker Open handling lives only in select-file-from-app-provider.flow.yaml."
+    exit 1
+fi
+
+LONG_OPTIONAL_WAITS=$(
+    find "$FLOW_DIR" -name '*.yaml' -exec awk '
+        FNR == 1 { block = 0 }
+        /-[[:space:]]*extendedWaitUntil/ { block = 1; has_timeout = 0; has_optional = 0; start = FNR; next }
+        block && /^[[:space:]]*-[[:space:]]/ { block = 0 }
+        block && /timeout:[[:space:]]*([6-9][0-9]{3}|[0-9]{5,})/ { has_timeout = 1 }
+        block && /optional:[[:space:]]*true/ { has_optional = 1 }
+        block && has_timeout && has_optional {
+            printf "%s:%d\n", FILENAME, start
+            block = 0
+        }
+    ' {} + || true
+)
+
+if [ -n "$LONG_OPTIONAL_WAITS" ]; then
+    printf '%s\n' "$LONG_OPTIONAL_WAITS"
+    echo "extendedWaitUntil with optional: true and timeout > 5000 silently burns the full timeout when the element is absent. Use a required wait or keep the optional grace wait at 5000 or less."
+    exit 1
+fi

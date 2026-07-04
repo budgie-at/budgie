@@ -3,13 +3,13 @@ env:
     XLSX_ROW_ID_MATCH: ${XLSX_ROW_ID_MATCH}
 ---
 - extendedWaitUntil:
-    visible:
-      id: 'CreateFileBankAccount.SelectFileButton'
-    timeout: 10000
+      visible:
+          id: 'CreateFileBankAccount.SelectFileButton'
+      timeout: 10000
 
 - tapOn:
-    id: 'CreateFileBankAccount.SelectFileButton'
-    retryTapIfNoChange: true
+      id: 'CreateFileBankAccount.SelectFileButton'
+      retryTapIfNoChange: true
 
 - runFlow:
       file: select-file-from-app-provider.flow.yaml

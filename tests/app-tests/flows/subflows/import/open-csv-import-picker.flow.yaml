@@ -2,42 +2,36 @@ appId: ${APP_ID}
 ---
 - openLink: 'budgie://settings?anchor=data'
 
-- runFlow:
-    when:
-      visible: 'Open'
-    commands:
-      - tapOn: 'Open'
-
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-    timeout: 15000
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 15000
 
 - runFlow:
-    when:
-      notVisible:
-        id: 'CsvPage.ImportCard'
-    commands:
-      - scrollUntilVisible:
-          element:
-            id: 'CsvPage.ImportCard'
-          direction: DOWN
-          centerElement: true
-          waitToSettleTimeoutMs: 500
-      - waitForAnimationToEnd
+      when:
+          notVisible:
+              id: 'CsvPage.ImportCard'
+      commands:
+          - scrollUntilVisible:
+                element:
+                    id: 'CsvPage.ImportCard'
+                direction: DOWN
+                centerElement: true
+                waitToSettleTimeoutMs: 500
+          - waitForAnimationToEnd
 
 - extendedWaitUntil:
-    visible:
-      id: 'CsvPage.ImportCard'
-    timeout: 5000
+      visible:
+          id: 'CsvPage.ImportCard'
+      timeout: 5000
 
 - retry:
-    maxRetries: 2
-    commands:
-      - tapOn:
-          id: 'CsvPage.ImportCard'
-      - extendedWaitUntil:
-          visible: 'Cancel'
-          timeout: 5000
+      maxRetries: 2
+      commands:
+          - tapOn:
+                id: 'CsvPage.ImportCard'
+          - extendedWaitUntil:
+                visible: 'Cancel'
+                timeout: 5000
