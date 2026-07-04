@@ -1,8 +1,7 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 // jscpd:ignore-start
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useMemo, useState } from 'react';
-import { useWatch } from 'react-hook-form';
+import { useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -32,24 +31,21 @@ export const CreateDebtAccount = () => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
     const [openingAccountId, setOpeningAccountId] = useState<number | null>(null);
-    const initialValues = useMemo(
-        () => ({
-            iban: null,
-            title: '',
-            deadline: null,
-            contactId: null,
-            targetBalance: 0,
-            currentBalance: 0,
-            icon: DEFAULT_ICON,
-            includeInNetWorth: false,
-            type: AccountTypeEnum.DEBT,
-            debtType: AccountDebtTypeEnum.LENT,
-            instrumentId: defaultInstrument.id
-        }),
-        [defaultInstrument.id]
-    );
+    const initialValues = {
+        iban: null,
+        title: '',
+        deadline: null,
+        contactId: null,
+        targetBalance: 0,
+        currentBalance: 0,
+        icon: DEFAULT_ICON,
+        includeInNetWorth: false,
+        type: AccountTypeEnum.DEBT,
+        debtType: AccountDebtTypeEnum.LENT,
+        instrumentId: defaultInstrument.id
+    };
 
-    const { control, handleSubmit, instrument, debtType, setValue } = useDebtAccountForm(initialValues, async values => {
+    const { control, handleSubmit, instrument, debtType, setValue, getValues } = useDebtAccountForm(initialValues, async values => {
         const effectiveOpeningAccountId = values.debtType === AccountDebtTypeEnum.LENT ? openingAccountId : null;
 
         if (isDefined(effectiveOpeningAccountId)) {
@@ -61,23 +57,24 @@ export const CreateDebtAccount = () => {
 
         return accountService.createDebt(values);
     });
-    const currentBalance = useWatch({ control, name: 'currentBalance' });
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
     const isOpeningFromAccount = isLentDebt && isDefined(openingAccountId);
     const variant = ACCOUNT_DEBT_TYPE_COLOR[debtType];
 
-    useEffect(() => {
+    const handleCreateDebtAccountSubmit = () => {
         if (isOpeningFromAccount) {
-            setValue('targetBalance', currentBalance, { shouldDirty: false, shouldValidate: false });
+            setValue('targetBalance', getValues('currentBalance'), { shouldDirty: false, shouldValidate: false });
         }
-    }, [currentBalance, isOpeningFromAccount, setValue]);
+
+        return handleSubmit();
+    };
 
     if (!isDefined(instrument)) {
         return <EmptyScreen />;
     }
 
     return (
-        <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleSubmit}>
+        <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleCreateDebtAccountSubmit}>
             <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
             <FormLayoutGroup>

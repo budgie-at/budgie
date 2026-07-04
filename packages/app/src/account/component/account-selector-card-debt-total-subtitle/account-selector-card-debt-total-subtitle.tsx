@@ -1,5 +1,5 @@
 import { AccountDebtTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
@@ -33,7 +33,7 @@ export const AccountSelectorCardDebtTotalSubtitle = ({ accountId, debtType, inst
     return (
         <View className="flex-row items-center">
             <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
-                {t`Debt`}
+                <Trans>Debt</Trans>
             </Text>
             <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
             <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
