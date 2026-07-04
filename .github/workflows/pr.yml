@@ -1,560 +1,571 @@
 name: Pull Request
 env:
-  MAESTRO_DRIVER_STARTUP_TIMEOUT: "120000"
-  TURBO_TEAM: vitalyiegorov
-  TURBO_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  PR_NUMBER: ${{ github.event.pull_request.number }}
-  PR_TITLE: ${{ github.event.pull_request.title }}
-  MAESTRO_CLI_NO_ANALYTICS: false
-  MAESTRO_VERSION: "2.6.0"
-  RCT_USE_PREBUILT_RNCORE: 1
-  RCT_USE_RN_DEP: 1
+    MAESTRO_DRIVER_STARTUP_TIMEOUT: '120000'
+    TURBO_TEAM: vitalyiegorov
+    TURBO_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    PR_NUMBER: ${{ github.event.pull_request.number }}
+    PR_TITLE: ${{ github.event.pull_request.title }}
+    MAESTRO_CLI_NO_ANALYTICS: false
+    MAESTRO_VERSION: '2.6.0'
+    RCT_USE_PREBUILT_RNCORE: 1
+    RCT_USE_RN_DEP: 1
 
 concurrency:
-  group: pr-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+    group: pr-${{ github.event.pull_request.number }}
+    cancel-in-progress: true
 
 on: pull_request
 
 jobs:
-  code-quality:
-    name: Code quality checks
-    runs-on: [self-hosted, linux-ci]
-    permissions:
-      contents: read
-      id-token: write
-      pull-requests: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+    code-quality:
+        name: Code quality checks
+        runs-on: [self-hosted, linux-ci]
+        permissions:
+            contents: read
+            id-token: write
+            pull-requests: write
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22.x
-          cache: yarn
+            - name: Setup Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22.x
+                  cache: yarn
 
-      - name: Install dependencies
-        run: yarn install
+            - name: Install dependencies
+              run: yarn install
 
-      - name: Lingui catalogs are up to date
-        run: |
-          yarn i18n:sync
+            - name: Lingui catalogs are up to date
+              run: |
+                  yarn i18n:sync
 
-          if ! git diff --quiet HEAD -- packages/app/src/i18n/locales packages/landing/src/i18n/locales; then
-            echo "::error::Lingui catalogs are stale. Run yarn i18n:sync and commit .po plus messages.ts files."
-            git diff --name-only HEAD -- packages/app/src/i18n/locales packages/landing/src/i18n/locales
-            exit 1
-          fi
+                  if ! git diff --quiet HEAD -- packages/app/src/i18n/locales packages/landing/src/i18n/locales; then
+                    echo "::error::Lingui catalogs are stale. Run yarn i18n:sync and commit .po plus messages.ts files."
+                    git diff --name-only HEAD -- packages/app/src/i18n/locales packages/landing/src/i18n/locales
+                    exit 1
+                  fi
 
-      - name: Lint the PR Title
-        run: echo "${{env.PR_TITLE}}" | node_modules/.bin/commitlint
+            - name: Lint the PR Title
+              run: echo "${{env.PR_TITLE}}" | node_modules/.bin/commitlint
 
-      - name: Typescript checks
-        run: yarn turbo run ts
+            - name: Typescript checks
+              run: yarn turbo run ts
 
-      - name: Maestro selector checks
-        run: yarn workspace @budgie-at/app-tests selectors:check
+            - name: Maestro selector checks
+              run: yarn workspace @budgie-at/app-tests selectors:check
 
-      - name: ESLint checks
-        run: yarn turbo run lint
+            - name: ESLint checks
+              run: yarn turbo run lint
 
-      - name: Deadcode detection
-        continue-on-error: true
-        run: yarn turbo deadcode
+            - name: Deadcode detection
+              continue-on-error: true
+              run: yarn turbo deadcode
 
-      - name: Copy/Paste detection
-        run: yarn turbo cpd
+            - name: Copy/Paste detection
+              run: yarn turbo cpd
 
-      - name: Unit tests
-        run: yarn turbo run test:coverage
+            - name: Unit tests
+              run: yarn turbo run test:coverage
 
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          use_oidc: true
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v5
+              with:
+                  use_oidc: true
 
-  eas-update-preview:
-    name: EAS Update Preview
-    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
-    permissions:
-      contents: read
-    steps:
-      - name: Check for EXPO_TOKEN
-        run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-            echo "You must provide an EXPO_TOKEN secret linked to this project."
-            echo "Learn more: https://docs.expo.dev/eas/github-actions"
-            exit 1
-          fi
+    eas-update-preview:
+        name: EAS Update Preview
+        runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+        permissions:
+            contents: read
+        steps:
+            - name: Check for EXPO_TOKEN
+              run: |
+                  if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+                    echo "You must provide an EXPO_TOKEN secret linked to this project."
+                    echo "Learn more: https://docs.expo.dev/eas/github-actions"
+                    exit 1
+                  fi
 
-      - name: Checkout repository
-        uses: actions/checkout@v5
+            - name: Checkout repository
+              uses: actions/checkout@v5
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22.x
-          cache: yarn
+            - name: Setup Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22.x
+                  cache: yarn
 
-      - name: Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+            - name: Setup EAS
+              uses: expo/expo-github-action@v8
+              with:
+                  eas-version: latest
+                  token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Install dependencies
-        run: yarn install
+            - name: Install dependencies
+              run: yarn install
 
-      - name: Build internal workspace packages
-        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
+            - name: Build internal workspace packages
+              run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
 
-      - name: Create preview
-        id: create-preview
-        working-directory: packages/app
+            - name: Create preview
+              id: create-preview
+              working-directory: packages/app
+              env:
+                  APP_VARIANT: development
+                  USE_CCACHE: '1'
+              run: |
+                  yarn expo export --output-dir dist --dump-assetmap --platform ios --platform android
+                  eas update --skip-bundler --input-dir dist --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
+
+    build-ios-e2e-app:
+        needs: [code-quality, eas-update-preview]
+        name: Build iOS E2E app
+        runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
         env:
-          APP_VARIANT: development
-          USE_CCACHE: "1"
-        run: |
-          yarn expo export --output-dir dist --dump-assetmap --platform ios --platform android
-          eas update --skip-bundler --input-dir dist --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
+            APP_VARIANT: e2e
+            EXPO_PUBLIC_AI_DISABLE: 'true'
+            EXPO_USE_PRECOMPILED_MODULES: '1'
+            RCT_USE_PREBUILT_RNCORE: '1'
+            RCT_USE_RN_DEP: '1'
+            IOS_DERIVED_DATA: ${{ github.workspace }}/.ci-cache/DerivedData/budgie-e2e
+            USE_CCACHE: '1'
+            CCACHE_DIR: ${{ github.workspace }}/.ci-cache/ccache
+            CCACHE_BASEDIR: ${{ github.workspace }}
+            CCACHE_COMPRESS: 'true'
+            CCACHE_MAXSIZE: 2G
+            CCACHE_NOHASHDIR: 'true'
+        steps:
+            - uses: actions/checkout@v5
 
-  build-ios-e2e-app:
-    needs: [code-quality, eas-update-preview]
-    name: Build iOS E2E app
-    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
-    env:
-      APP_VARIANT: e2e
-      EXPO_PUBLIC_AI_DISABLE: "true"
-      EXPO_USE_PRECOMPILED_MODULES: "1"
-      RCT_USE_PREBUILT_RNCORE: "1"
-      RCT_USE_RN_DEP: "1"
-      IOS_DERIVED_DATA: ${{ github.workspace }}/.ci-cache/DerivedData/budgie-e2e
-      USE_CCACHE: "1"
-      CCACHE_DIR: ${{ github.workspace }}/.ci-cache/ccache
-      CCACHE_BASEDIR: ${{ github.workspace }}
-      CCACHE_COMPRESS: "true"
-      CCACHE_MAXSIZE: 2G
-      CCACHE_NOHASHDIR: "true"
-    steps:
-      - uses: actions/checkout@v5
+            - name: Runner diagnostics
+              run: |
+                  whoami
+                  uname -m
+                  hostname
+                  ls -1 /Applications | grep -i Xcode || true
+                  which pod || true
+                  pod --version || true
+                  which ccache || true
+                  ccache --version || true
+                  xcode-select -p || true
+                  xcodebuild -version || true
 
-      - name: Runner diagnostics
-        run: |
-          whoami
-          uname -m
-          hostname
-          ls -1 /Applications | grep -i Xcode || true
-          which pod || true
-          pod --version || true
-          which ccache || true
-          ccache --version || true
-          xcode-select -p || true
-          xcodebuild -version || true
+            - name: Setup Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22.x
+                  cache: yarn
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22.x
-          cache: yarn
+            - name: Install dependencies
+              run: yarn install
 
-      - name: Install dependencies
-        run: yarn install
+            - name: Build internal workspace packages
+              run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
 
-      - name: Build internal workspace packages
-        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
+            - name: Setup EAS
+              uses: expo/expo-github-action@v8
+              with:
+                  eas-version: latest
+                  token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+            - name: Select Xcode 26.4.1
+              run: |
+                  if [ -d /Applications/Xcode_26.4.1.app ]; then
+                    XCODE_APP=/Applications/Xcode_26.4.1.app
+                  elif [ -d /Applications/Xcode.app ]; then
+                    XCODE_APP=/Applications/Xcode.app
+                  else
+                    echo "::error::Xcode 26.4.1 is not installed on this runner."
+                    ls -1 /Applications | grep -i Xcode || true
+                    exit 1
+                  fi
 
-      - name: Select Xcode 26.4.1
-        run: |
-          if [ -d /Applications/Xcode_26.4.1.app ]; then
-            XCODE_APP=/Applications/Xcode_26.4.1.app
-          elif [ -d /Applications/Xcode.app ]; then
-            XCODE_APP=/Applications/Xcode.app
-          else
-            echo "::error::Xcode 26.4.1 is not installed on this runner."
-            ls -1 /Applications | grep -i Xcode || true
-            exit 1
-          fi
+                  echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+                  echo "Using Xcode at $XCODE_APP"
+                  xcode-select -p || true
+                  xcodebuild -version
 
-          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
-          echo "Using Xcode at $XCODE_APP"
-          xcode-select -p || true
-          xcodebuild -version
+            - name: Restore CocoaPods cache
+              uses: actions/cache/restore@v5
+              with:
+                  path: |
+                      ~/Library/Caches/CocoaPods
+                      ~/.cocoapods
+                  key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+                  restore-keys: |
+                      pods-${{ runner.os }}-xcode26_4_1-
+                      pods-${{ runner.os }}-
 
-      - name: Restore CocoaPods cache
-        uses: actions/cache/restore@v5
-        with:
-          path: |
-            ~/Library/Caches/CocoaPods
-            ~/.cocoapods
-          key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-          restore-keys: |
-            pods-${{ runner.os }}-xcode26_4_1-
-            pods-${{ runner.os }}-
+            - name: Setup ccache
+              run: |
+                  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+                  mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
+                  if ! command -v ccache >/dev/null; then
+                    command -v brew >/dev/null || {
+                      echo "::error::ccache is not installed and Homebrew is unavailable."
+                      exit 1
+                    }
+                    brew list ccache >/dev/null 2>&1 || brew install ccache
+                  fi
+                  ccache --version
+                  ccache --zero-stats || true
+                  if command -v brew >/dev/null; then
+                    echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
+                  fi
 
-      - name: Setup ccache
-        run: |
-          export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
-          mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
-          if ! command -v ccache >/dev/null; then
-            command -v brew >/dev/null || {
-              echo "::error::ccache is not installed and Homebrew is unavailable."
-              exit 1
-            }
-            brew list ccache >/dev/null 2>&1 || brew install ccache
-          fi
-          ccache --version
-          ccache --zero-stats || true
-          if command -v brew >/dev/null; then
-            echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
-          fi
+            - name: Restore ccache
+              uses: actions/cache/restore@v5
+              with:
+                  path: ${{ env.CCACHE_DIR }}
+                  key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+                  restore-keys: |
+                      ccache-${{ runner.os }}-xcode26_4_1-e2e-
+                      ccache-${{ runner.os }}-
 
-      - name: Restore ccache
-        uses: actions/cache/restore@v5
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-          restore-keys: |
-            ccache-${{ runner.os }}-xcode26_4_1-e2e-
-            ccache-${{ runner.os }}-
+            - name: Expo Prebuild
+              working-directory: packages/app
+              env:
+                  APP_VARIANT: e2e
+                  EXPO_PUBLIC_AI_DISABLE: 'true'
+              run: npx expo prebuild -p ios --clean
 
-      - name: Expo Prebuild
-        working-directory: packages/app
+            - name: Sync CocoaPods
+              working-directory: packages/app/ios
+              env:
+                  APP_VARIANT: e2e
+                  EXPO_PUBLIC_AI_DISABLE: 'true'
+              run: pod install
+
+            - name: Build app
+              working-directory: packages/app
+              env:
+                  APP_VARIANT: e2e
+                  EXPO_PUBLIC_AI_DISABLE: 'true'
+              run: |
+                  cd ios
+                  WORKSPACE=$(ls -d *.xcworkspace | head -1)
+                  SCHEME=$(echo "$WORKSPACE" | sed 's/.xcworkspace//')
+                  echo "Building workspace: $WORKSPACE, scheme: $SCHEME"
+                  xcodebuild build \
+                    -workspace "$WORKSPACE" \
+                    -scheme "$SCHEME" \
+                    -sdk iphonesimulator \
+                    -configuration Release \
+                    -derivedDataPath "$IOS_DERIVED_DATA" \
+                    -destination "generic/platform=iOS Simulator" \
+                    -jobs $(sysctl -n hw.ncpu) \
+                    CODE_SIGN_IDENTITY="-" \
+                    AD_HOC_CODE_SIGNING_ALLOWED=YES \
+                    PROVISIONING_PROFILE_SPECIFIER="" \
+                    COMPILER_INDEX_STORE_ENABLE=NO \
+                    ONLY_ACTIVE_ARCH=YES \
+                    ARCHS=arm64 \
+                    EXCLUDED_ARCHS=x86_64
+
+            - name: Package iOS E2E app
+              run: |
+                  APP_PATH=$(find "$IOS_DERIVED_DATA" -name "*.app" -path "*Release-iphonesimulator*" | head -1)
+                  if [ -z "$APP_PATH" ]; then
+                    echo "::error::Built iOS app bundle was not found in $IOS_DERIVED_DATA."
+                    find "$IOS_DERIVED_DATA" -maxdepth 6 -name "*.app" || true
+                    exit 1
+                  fi
+
+                  ARTIFACT_DIR="$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app"
+                  APP_BUNDLE_NAME=$(basename "$APP_PATH")
+                  mkdir -p "$ARTIFACT_DIR"
+                  tar -C "$(dirname "$APP_PATH")" -czf "$ARTIFACT_DIR/$APP_BUNDLE_NAME.tar.gz" "$APP_BUNDLE_NAME"
+
+            - name: Upload iOS E2E app artifact
+              uses: actions/upload-artifact@v6
+              with:
+                  name: ios-e2e-app
+                  path: .ci-artifacts/ios-e2e-app/*.tar.gz
+                  if-no-files-found: error
+
+            - name: Save CocoaPods cache
+              if: success()
+              uses: actions/cache/save@v5
+              with:
+                  path: |
+                      ~/Library/Caches/CocoaPods
+                      ~/.cocoapods
+                  key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+
+            - name: Save ccache
+              if: success()
+              uses: actions/cache/save@v5
+              with:
+                  path: ${{ env.CCACHE_DIR }}
+                  key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+
+    e2e-ios:
+        needs: [build-ios-e2e-app]
+        name: E2E Tests on iOS (shard ${{ matrix.shard }})
+        runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+        strategy:
+            fail-fast: false
+            matrix:
+                shard: [1, 2, 3, 4]
         env:
-          APP_VARIANT: e2e
-          EXPO_PUBLIC_AI_DISABLE: "true"
-        run: npx expo prebuild -p ios --clean
+            APP_VARIANT: e2e
+            EXPO_PUBLIC_AI_DISABLE: 'true'
+        steps:
+            - uses: actions/checkout@v5
 
-      - name: Sync CocoaPods
-        working-directory: packages/app/ios
-        env:
-          APP_VARIANT: e2e
-          EXPO_PUBLIC_AI_DISABLE: "true"
-        run: pod install
+            - name: Select Xcode 26.4.1
+              run: |
+                  if [ -d /Applications/Xcode_26.4.1.app ]; then
+                    XCODE_APP=/Applications/Xcode_26.4.1.app
+                  elif [ -d /Applications/Xcode.app ]; then
+                    XCODE_APP=/Applications/Xcode.app
+                  else
+                    echo "::error::Xcode 26.4.1 is not installed on this runner."
+                    ls -1 /Applications | grep -i Xcode || true
+                    exit 1
+                  fi
 
-      - name: Build app
-        working-directory: packages/app
-        env:
-          APP_VARIANT: e2e
-          EXPO_PUBLIC_AI_DISABLE: "true"
-        run: |
-          cd ios
-          WORKSPACE=$(ls -d *.xcworkspace | head -1)
-          SCHEME=$(echo "$WORKSPACE" | sed 's/.xcworkspace//')
-          echo "Building workspace: $WORKSPACE, scheme: $SCHEME"
-          xcodebuild build \
-            -workspace "$WORKSPACE" \
-            -scheme "$SCHEME" \
-            -sdk iphonesimulator \
-            -configuration Release \
-            -derivedDataPath "$IOS_DERIVED_DATA" \
-            -destination "generic/platform=iOS Simulator" \
-            -jobs $(sysctl -n hw.ncpu) \
-            CODE_SIGN_IDENTITY="-" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES \
-            PROVISIONING_PROFILE_SPECIFIER="" \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            ONLY_ACTIVE_ARCH=YES \
-            ARCHS=arm64 \
-            EXCLUDED_ARCHS=x86_64
+                  echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+                  echo "Using Xcode at $XCODE_APP"
+                  xcode-select -p || true
+                  xcodebuild -version
 
-      - name: Package iOS E2E app
-        run: |
-          APP_PATH=$(find "$IOS_DERIVED_DATA" -name "*.app" -path "*Release-iphonesimulator*" | head -1)
-          if [ -z "$APP_PATH" ]; then
-            echo "::error::Built iOS app bundle was not found in $IOS_DERIVED_DATA."
-            find "$IOS_DERIVED_DATA" -maxdepth 6 -name "*.app" || true
-            exit 1
-          fi
+            - name: Shutdown stale simulators
+              run: xcrun simctl shutdown all || true
 
-          ARTIFACT_DIR="$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app"
-          APP_BUNDLE_NAME=$(basename "$APP_PATH")
-          mkdir -p "$ARTIFACT_DIR"
-          tar -C "$(dirname "$APP_PATH")" -czf "$ARTIFACT_DIR/$APP_BUNDLE_NAME.tar.gz" "$APP_BUNDLE_NAME"
+            - name: Start iOS Simulator
+              uses: futureware-tech/simulator-action@v4
+              with:
+                  model: 'iPhone 17 Pro'
 
-      - name: Upload iOS E2E app artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: ios-e2e-app
-          path: .ci-artifacts/ios-e2e-app/*.tar.gz
-          if-no-files-found: error
+            - name: Capture simulator UDID
+              run: |
+                  BOOTED_UDIDS="$(
+                    xcrun simctl list devices booted |
+                      sed -n 's/.*(\([A-F0-9-]\{36\}\)) (Booted).*/\1/p'
+                  )"
 
-      - name: Save CocoaPods cache
-        if: success()
-        uses: actions/cache/save@v5
-        with:
-          path: |
-            ~/Library/Caches/CocoaPods
-            ~/.cocoapods
-          key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+                  BOOTED_COUNT="$(printf '%s\n' "$BOOTED_UDIDS" | sed '/^$/d' | wc -l | tr -d ' ')"
+                  if [ "$BOOTED_COUNT" -ne 1 ]; then
+                    echo "::error::Expected exactly 1 booted simulator, found $BOOTED_COUNT."
+                    xcrun simctl list devices booted
+                    exit 1
+                  fi
 
-      - name: Save ccache
-        if: success()
-        uses: actions/cache/save@v5
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+                  SIMULATOR_UDID="$(printf '%s\n' "$BOOTED_UDIDS" | sed -n '1p')"
+                  echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
+                  echo "Using simulator UDID: $SIMULATOR_UDID"
+                  xcrun simctl list devices booted
 
-  e2e-ios:
-    needs: [build-ios-e2e-app]
-    name: E2E Tests on iOS
-    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
-    env:
-      APP_VARIANT: e2e
-      EXPO_PUBLIC_AI_DISABLE: "true"
-    steps:
-      - uses: actions/checkout@v5
+            - name: Download iOS E2E app artifact
+              uses: actions/download-artifact@v6
+              with:
+                  name: ios-e2e-app
+                  path: .ci-artifacts/ios-e2e-app
 
-      - name: Select Xcode 26.4.1
-        run: |
-          if [ -d /Applications/Xcode_26.4.1.app ]; then
-            XCODE_APP=/Applications/Xcode_26.4.1.app
-          elif [ -d /Applications/Xcode.app ]; then
-            XCODE_APP=/Applications/Xcode.app
-          else
-            echo "::error::Xcode 26.4.1 is not installed on this runner."
-            ls -1 /Applications | grep -i Xcode || true
-            exit 1
-          fi
+            - name: Extract iOS E2E app artifact
+              run: |
+                  APP_ARCHIVE=$(find "$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app" -name "*.tar.gz" | head -1)
+                  if [ -z "$APP_ARCHIVE" ]; then
+                    echo "::error::iOS E2E app artifact was not downloaded."
+                    find "$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app" -maxdepth 3 -type f || true
+                    exit 1
+                  fi
 
-          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
-          echo "Using Xcode at $XCODE_APP"
-          xcode-select -p || true
-          xcodebuild -version
+                  APP_DIR="$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app/extracted"
+                  mkdir -p "$APP_DIR"
+                  tar -xzf "$APP_ARCHIVE" -C "$APP_DIR"
+                  APP_PATH=$(find "$APP_DIR" -maxdepth 2 -name "*.app" | head -1)
 
-      - name: Shutdown stale simulators
-        run: xcrun simctl shutdown all || true
+                  if [ -z "$APP_PATH" ]; then
+                    echo "::error::Extracted iOS app bundle was not found."
+                    find "$APP_DIR" -maxdepth 4 -type f || true
+                    exit 1
+                  fi
 
-      - name: Start iOS Simulator
-        uses: futureware-tech/simulator-action@v4
-        with:
-          model: 'iPhone 17 Pro'
+                  echo "APP_PATH=$APP_PATH" >> "$GITHUB_ENV"
 
-      - name: Capture simulator UDID
-        run: |
-          BOOTED_UDIDS="$(
-            xcrun simctl list devices booted |
-              sed -n 's/.*(\([A-F0-9-]\{36\}\)) (Booted).*/\1/p'
-          )"
+            - name: Install app on Simulator
+              run: |
+                  echo "Installing app from: $APP_PATH"
+                  xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
 
-          BOOTED_COUNT="$(printf '%s\n' "$BOOTED_UDIDS" | sed '/^$/d' | wc -l | tr -d ' ')"
-          if [ "$BOOTED_COUNT" -ne 1 ]; then
-            echo "::error::Expected exactly 1 booted simulator, found $BOOTED_COUNT."
-            xcrun simctl list devices booted
-            exit 1
-          fi
+            - name: Install Maestro
+              run: |
+                  export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+                  echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-          SIMULATOR_UDID="$(printf '%s\n' "$BOOTED_UDIDS" | sed -n '1p')"
-          echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
-          echo "Using simulator UDID: $SIMULATOR_UDID"
-          xcrun simctl list devices booted
+            - name: Prepare iOS E2E artifact directories
+              run: |
+                  mkdir -p tests/app-tests/artifacts/maestro
+                  mkdir -p tests/app-tests/artifacts/simulator
+                  mkdir -p tests/app-tests/artifacts/diagnostics
 
-      - name: Download iOS E2E app artifact
-        uses: actions/download-artifact@v6
-        with:
-          name: ios-e2e-app
-          path: .ci-artifacts/ios-e2e-app
+            - name: Start iOS Simulator log capture
+              run: |
+                  ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
+                  xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level default > "$ARTIFACT_DIR/simulator.log" 2>&1 &
+                  echo $! > "$ARTIFACT_DIR/simulator-log.pid"
 
-      - name: Extract iOS E2E app artifact
-        run: |
-          APP_ARCHIVE=$(find "$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app" -name "*.tar.gz" | head -1)
-          if [ -z "$APP_ARCHIVE" ]; then
-            echo "::error::iOS E2E app artifact was not downloaded."
-            find "$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app" -maxdepth 3 -type f || true
-            exit 1
-          fi
+            - name: Run Maestro UI tests
+              working-directory: tests/app-tests
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  SHARD_FLOWS=()
+                  while IFS= read -r FLOW_NAME; do
+                    if [ -n "$FLOW_NAME" ]; then
+                      SHARD_FLOWS+=("flows/$FLOW_NAME")
+                    fi
+                  done < "shards/shard-${{ matrix.shard }}.txt"
+                  sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e \
+                    "${SHARD_FLOWS[@]}" \
+                    --format junit \
+                    --output ./artifacts/maestro/report.xml \
+                    --debug-output ./artifacts/maestro \
+                    --test-output-dir ./artifacts/maestro \
+                    2>&1 | tee ./artifacts/maestro/maestro-console.log
 
-          APP_DIR="$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app/extracted"
-          mkdir -p "$APP_DIR"
-          tar -xzf "$APP_ARCHIVE" -C "$APP_DIR"
-          APP_PATH=$(find "$APP_DIR" -maxdepth 2 -name "*.app" | head -1)
+            - name: Stop iOS Simulator captures
+              if: always()
+              run: |
+                  ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
+                  DIAGNOSTIC_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/diagnostics"
+                  xcrun simctl io "$SIMULATOR_UDID" screenshot "$ARTIFACT_DIR/final-screen.png" || true
 
-          if [ -z "$APP_PATH" ]; then
-            echo "::error::Extracted iOS app bundle was not found."
-            find "$APP_DIR" -maxdepth 4 -type f || true
-            exit 1
-          fi
+                  if [ -f "$ARTIFACT_DIR/simulator-log.pid" ]; then
+                    kill "$(cat "$ARTIFACT_DIR/simulator-log.pid")" || true
+                  fi
 
-          echo "APP_PATH=$APP_PATH" >> "$GITHUB_ENV"
+                  if [ -f "$ARTIFACT_DIR/simulator.log" ]; then
+                    tail -n 20000 "$ARTIFACT_DIR/simulator.log" > "$ARTIFACT_DIR/simulator.log.tail" || true
+                    mv "$ARTIFACT_DIR/simulator.log.tail" "$ARTIFACT_DIR/simulator.log" || true
+                  fi
 
-      - name: Install app on Simulator
-        run: |
-          echo "Installing app from: $APP_PATH"
-          xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
+                  find "$HOME/Library/Logs/DiagnosticReports" -maxdepth 1 -type f \
+                    \( -name 'budgieE2E*' -o -name 'budgie*' -o -name 'JetsamEvent*' \) \
+                    -exec cp {} "$DIAGNOSTIC_DIR/" \; || true
 
-      - name: Install Maestro
-        run: |
-          export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+            - name: Upload Maestro artifacts (report, logs, screenshots)
+              if: always()
+              uses: actions/upload-artifact@v6
+              with:
+                  name: maestro-ios-artifacts-shard-${{ matrix.shard }}
+                  include-hidden-files: true
+                  path: |
+                      tests/app-tests/artifacts/maestro/**
+                      tests/app-tests/.maestro/**
+                  if-no-files-found: warn
 
-      - name: Prepare iOS E2E artifact directories
-        run: |
-          mkdir -p tests/app-tests/artifacts/maestro
-          mkdir -p tests/app-tests/artifacts/simulator
-          mkdir -p tests/app-tests/artifacts/diagnostics
+            - name: Upload iOS simulator crash artifacts
+              if: failure()
+              uses: actions/upload-artifact@v6
+              with:
+                  name: maestro-ios-simulator-failure-artifacts-shard-${{ matrix.shard }}
+                  include-hidden-files: true
+                  path: |
+                      tests/app-tests/artifacts/simulator/**
+                      tests/app-tests/artifacts/diagnostics/**
+                  if-no-files-found: warn
 
-      - name: Start iOS Simulator log capture
-        run: |
-          ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
-          xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level default > "$ARTIFACT_DIR/simulator.log" 2>&1 &
-          echo $! > "$ARTIFACT_DIR/simulator-log.pid"
+    e2e-android:
+        if: false
+        needs: [code-quality, eas-update-preview]
+        name: E2E Tests on Android
+        runs-on: [self-hosted, linux-ci]
+        steps:
+            - uses: actions/checkout@v5
 
-      - name: Run Maestro UI tests
-        working-directory: tests/app-tests
-        shell: bash
-        run: |
-          set -euo pipefail
-          sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e \
-            --format junit \
-            --output ./artifacts/maestro/report.xml \
-            --debug-output ./artifacts/maestro \
-            --test-output-dir ./artifacts/maestro \
-            2>&1 | tee ./artifacts/maestro/maestro-console.log
+            - name: Enable KVM group perms
+              run: |
+                  echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+                  sudo udevadm control --reload-rules
+                  sudo udevadm trigger --name-match=kvm
 
-      - name: Stop iOS Simulator captures
-        if: always()
-        run: |
-          ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
-          DIAGNOSTIC_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/diagnostics"
-          xcrun simctl io "$SIMULATOR_UDID" screenshot "$ARTIFACT_DIR/final-screen.png" || true
+            - name: Setup Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22.x
+                  cache: yarn
 
-          if [ -f "$ARTIFACT_DIR/simulator-log.pid" ]; then
-            kill "$(cat "$ARTIFACT_DIR/simulator-log.pid")" || true
-          fi
+            - name: Setup EAS
+              uses: expo/expo-github-action@v8
+              with:
+                  eas-version: latest
+                  token: ${{ secrets.EXPO_TOKEN }}
 
-          if [ -f "$ARTIFACT_DIR/simulator.log" ]; then
-            tail -n 20000 "$ARTIFACT_DIR/simulator.log" > "$ARTIFACT_DIR/simulator.log.tail" || true
-            mv "$ARTIFACT_DIR/simulator.log.tail" "$ARTIFACT_DIR/simulator.log" || true
-          fi
+            - name: Install dependencies
+              run: |
+                  yarn install
 
-          find "$HOME/Library/Logs/DiagnosticReports" -maxdepth 1 -type f \
-            \( -name 'budgieE2E*' -o -name 'budgie*' -o -name 'JetsamEvent*' \) \
-            -exec cp {} "$DIAGNOSTIC_DIR/" \; || true
+            - name: Expo Prebuild
+              working-directory: packages/app
+              run: npx expo prebuild -p android --clean
 
-      - name: Upload Maestro artifacts (report, logs, screenshots)
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: maestro-ios-artifacts
-          include-hidden-files: true
-          path: |
-            tests/app-tests/artifacts/maestro/**
-            tests/app-tests/.maestro/**
-          if-no-files-found: warn
+            - name: Cache Gradle
+              uses: actions/cache@v5
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('packages/app/android/**/*.gradle*', 'packages/app/android/gradle/wrapper/gradle-wrapper.properties') }}
+                  restore-keys: ${{ runner.os }}-gradle-
 
-      - name: Upload iOS simulator crash artifacts
-        if: failure()
-        uses: actions/upload-artifact@v6
-        with:
-          name: maestro-ios-simulator-failure-artifacts
-          include-hidden-files: true
-          path: |
-            tests/app-tests/artifacts/simulator/**
-            tests/app-tests/artifacts/diagnostics/**
-          if-no-files-found: warn
+            - name: AVD cache
+              uses: actions/cache@v5
+              id: avd-cache
+              with:
+                  path: |
+                      ~/.android/avd/*
+                      ~/.android/adb*
+                  key: avd-34
 
-  e2e-android:
-    if: false
-    needs: [code-quality, eas-update-preview]
-    name: E2E Tests on Android
-    runs-on: [self-hosted, linux-ci]
-    steps:
-      - uses: actions/checkout@v5
+            - name: Build app
+              working-directory: packages/app
+              run: |
+                  eas build --profile=e2e --platform android --non-interactive --local --output app.android.apk
 
-      - name: Enable KVM group perms
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
+            - name: Install Maestro
+              run: |
+                  export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+                  echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22.x
-          cache: yarn
+            - name: Сreate AVD and generate snapshot for caching
+              if: steps.avd-cache.outputs.cache-hit != 'true'
+              uses: reactivecircus/android-emulator-runner@v2
+              with:
+                  api-level: 34
+                  target: aosp_atd
+                  channel: canary
+                  arch: x86_64
+                  force-avd-creation: false
+                  emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+                  disable-animations: false
+                  script: echo "Generated AVD snapshot for caching."
 
-      - name: Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+            - name: Start emulator and run Maestro tests
+              uses: reactivecircus/android-emulator-runner@v2
+              with:
+                  api-level: 34
+                  target: aosp_atd
+                  channel: canary
+                  arch: x86_64
+                  force-avd-creation: false
+                  emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+                  disable-animations: true
+                  working-directory: tests/app-tests
+                  script: |
+                      cd ../../packages/app && eas build:run --platform android --path app.android.apk
+                      sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
 
-      - name: Install dependencies
-        run: |
-          yarn install
-
-      - name: Expo Prebuild
-        working-directory: packages/app
-        run: npx expo prebuild -p android --clean
-
-      - name: Cache Gradle
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('packages/app/android/**/*.gradle*', 'packages/app/android/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-
-
-      - name: AVD cache
-        uses: actions/cache@v5
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-34
-
-      - name: Build app
-        working-directory: packages/app
-        run: |
-          eas build --profile=e2e --platform android --non-interactive --local --output app.android.apk
-
-      - name: Install Maestro
-        run: |
-          export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
-
-      - name: Сreate AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          target: aosp_atd
-          channel: canary
-          arch: x86_64
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: false
-          script: echo "Generated AVD snapshot for caching."
-
-      - name: Start emulator and run Maestro tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          target: aosp_atd
-          channel: canary
-          arch: x86_64
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          working-directory: tests/app-tests
-          script: |
-            cd ../../packages/app && eas build:run --platform android --path app.android.apk
-            sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
-
-      - name: Upload Maestro artifacts (report, logs, videos, screenshots)
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: maestro-android-artifacts
-          include-hidden-files: true
-          path: |
-            tests/app-tests/.maestro/**
-            tests/app-tests/*.mp4
+            - name: Upload Maestro artifacts (report, logs, videos, screenshots)
+              if: always()
+              uses: actions/upload-artifact@v6
+              with:
+                  name: maestro-android-artifacts
+                  include-hidden-files: true
+                  path: |
+                      tests/app-tests/.maestro/**
+                      tests/app-tests/*.mp4
