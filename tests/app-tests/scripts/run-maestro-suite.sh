@@ -207,6 +207,8 @@ seed_ios_database_fixture_if_needed() {
     mkdir -p "$sqlite_dir"
     rm -f "$sqlite_dir"/budgie.db*
     cp "$fixture_path" "$sqlite_dir/budgie.db"
+    xcrun simctl launch "$DETECTED_SIMULATOR_UDID" "$APP_ID" >/dev/null
+    sleep 3
 
     DATABASE_FIXTURE_SEEDED="true"
     echo "Seeded active iOS database fixture $fixture_name"

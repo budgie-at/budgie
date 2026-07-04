@@ -12,7 +12,7 @@ env:
           true: ${DATABASE_FIXTURE_SEEDED == 'true'}
       commands:
           - launchApp:
-                stopApp: true
+                stopApp: false
                 permissions:
                     contacts: allow
                     microphone: allow
