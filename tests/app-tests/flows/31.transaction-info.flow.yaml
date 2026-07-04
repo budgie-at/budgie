@@ -1,113 +1,46 @@
 appId: ${APP_ID}
 ---
-
 - runFlow:
-    file: subflows/import/import-database-from-settings.flow.yaml
-    env:
-      FIXTURE_ROW_ID_MATCH: '08.db'
+      file: subflows/import/import-database-from-settings.flow.yaml
+      env:
+          FIXTURE_ROW_ID_MATCH: '31-transaction-info.db'
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
-- runFlow:
-    file: subflows/transactions/open-transaction-form.flow.yaml
-    env:
-      ACTION_ITEM_ID: 'ActionItem.Expense'
-      FORM_TITLE: 'New Expense'
-
 - tapOn:
-    id: 'TransactionKeypad.Digit.1'
-- tapOn:
-    id: 'TransactionKeypad.Digit.0'
-
-- runFlow:
-    file: subflows/transactions/select-account.flow.yaml
-    env:
-      ACCOUNT_NAME: 'E2E Txn Account'
-
-- runFlow:
-    file: subflows/categories/create-category-from-transaction.flow.yaml
-    env:
-      CATEGORY_NAME: 'E2E Info Category'
-
-- runFlow:
-    file: subflows/tags/create-tag-from-transaction.flow.yaml
-    env:
-      TAG_NAME: 'E2E Info Tag'
-
+      id: 'TransactionCard.Label.E2E_Similar_Expense'
+      index: 1
 - extendedWaitUntil:
-    visible:
-      id: 'tags-selector-modal-done-button'
-- tapOn:
-    id: 'tags-selector-modal-done-button'
-- extendedWaitUntil:
-    notVisible:
-      id: 'TagPickerBottomSheet.Input'
-
-- scrollUntilVisible:
-    element:
-      id: 'TransactionForm.CommentInput'
-    direction: DOWN
-    centerElement: true
-
-- runFlow:
-    file: subflows/transactions/enter-comment.flow.yaml
-    env:
-      COMMENT: 'E2E Similar Expense'
-
-- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
-
-- tapOn:
-    id: 'TransactionCard.Label.E2E_Similar_Expense'
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionInfo.Page'
-    timeout: 5000
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 5000
 - assertVisible:
-    id: 'TransactionInfo.Row.Account'
+      id: 'TransactionInfo.Row.Account'
 - assertVisible:
-    id: 'TransactionInfo.Row.Category'
+      id: 'TransactionInfo.Row.Category'
 - assertVisible:
-    id: 'TransactionInfo.Row.Tags'
+      id: 'TransactionInfo.Row.Tags'
 - assertNotVisible:
-    id: 'TransactionInfo.Row.Source'
+      id: 'TransactionInfo.Row.Source'
 - assertNotVisible:
-    id: 'TransactionInfo.SimilarCard'
+      id: 'TransactionInfo.SimilarCard'
 - tapOn:
-    id: 'PageHeader.BackButton'
+      id: 'PageHeader.BackButton'
 
 - runFlow:
-    file: subflows/transactions/create-expense.flow.yaml
-    env:
-      AMOUNT: '10'
-      ACCOUNT_NAME: 'E2E Txn Account'
-      CATEGORY_NAME: 'E2E Info Category'
-      COMMENT: 'E2E Similar Expense'
+      file: subflows/transactions/create-expense.flow.yaml
+      env:
+          AMOUNT: '10'
+          ACCOUNT_NAME: 'E2E Txn Account'
+          CATEGORY_NAME: 'E2E Info Category'
+          COMMENT: 'E2E Similar Expense'
 
 - tapOn:
-    id: 'TransactionCard.Label.E2E_Similar_Expense'
+      id: 'TransactionCard.Label.E2E_Similar_Expense'
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionInfo.Page'
-    timeout: 5000
-- assertNotVisible:
-    id: 'TransactionInfo.SimilarCard'
-- tapOn:
-    id: 'PageHeader.BackButton'
-
-- runFlow:
-    file: subflows/transactions/create-expense.flow.yaml
-    env:
-      AMOUNT: '10'
-      ACCOUNT_NAME: 'E2E Txn Account'
-      CATEGORY_NAME: 'E2E Info Category'
-      COMMENT: 'E2E Similar Expense'
-
-- tapOn:
-    id: 'TransactionCard.Label.E2E_Similar_Expense'
-- extendedWaitUntil:
-    visible:
-      text: 'Similar transactions'
-    timeout: 10000
+      visible:
+          text: 'Similar transactions'
+      timeout: 10000
 - assertVisible: '2 similar transactions'
 - assertVisible: 'Total'
 - assertVisible: '$20'
@@ -115,22 +48,22 @@ appId: ${APP_ID}
 - assertVisible: '$10'
 
 - scrollUntilVisible:
-    element:
-      id: 'TransactionInfo.SimilarBar.5'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'TransactionInfo.SimilarBar.5'
+      direction: DOWN
+      centerElement: true
 
 - assertVisible:
-    id: 'TransactionInfo.SimilarBar.0'
+      id: 'TransactionInfo.SimilarBar.0'
 - assertVisible:
-    id: 'TransactionInfo.SimilarBar.1'
+      id: 'TransactionInfo.SimilarBar.1'
 - assertVisible:
-    id: 'TransactionInfo.SimilarBar.2'
+      id: 'TransactionInfo.SimilarBar.2'
 - assertVisible:
-    id: 'TransactionInfo.SimilarBar.3'
+      id: 'TransactionInfo.SimilarBar.3'
 - assertVisible:
-    id: 'TransactionInfo.SimilarBar.4'
+      id: 'TransactionInfo.SimilarBar.4'
 - assertVisible:
-    id: 'TransactionInfo.SimilarBar.5'
+      id: 'TransactionInfo.SimilarBar.5'
 - assertNotVisible:
-    id: 'TransactionInfo.Row.Source'
+      id: 'TransactionInfo.Row.Source'
