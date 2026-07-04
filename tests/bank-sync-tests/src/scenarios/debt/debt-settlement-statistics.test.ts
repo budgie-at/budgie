@@ -217,7 +217,7 @@ describe('debt settlement statistics', () => {
         expectOriginalTargetDebtProgressSummary(AccountDebtTypeEnum.LENT);
     });
 
-    it('keeps the lent target amount as the denominator when ledger activity settles the debt', () => {
+    it('keeps the lent target amount as the denominator when ledger activity partially settles the debt', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.LENT,
             balance: 0,
@@ -227,7 +227,42 @@ describe('debt settlement statistics', () => {
             targetAmount: 15_000 * PRECISION
         });
 
-        expectDebtProgressSummary(summary, 0, 15_000 * PRECISION, 15_000 * PRECISION, 100);
+        expectDebtProgressSummary(summary, 12_900 * PRECISION, 2_100 * PRECISION, 15_000 * PRECISION, 14);
+    });
+
+    it('keeps target-backed lent debt partially outstanding when ledger entries exist without a returned snapshot', () => {
+        const [category] = testDb.select().from(CategoryEntityTable).all();
+        const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+        const debtAccount = seed.account({
+            title: 'Target-backed lent account',
+            type: AccountTypeEnum.DEBT,
+            debtType: AccountDebtTypeEnum.LENT,
+            targetBalance: 64_000 * PRECISION
+        });
+
+        createDebtTransferTransaction(cashAccount.id, debtAccount.id, 500 * PRECISION, 'Lend extra money to Alex');
+        createDebtReturnIncome(cashAccount.id, debtAccount.id, category.id, 6_000 * PRECISION);
+
+        const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.LENT);
+        const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
+        const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
+
+        expectDebtProgressSummary(summary, 58_000 * PRECISION, 6_000 * PRECISION, 64_000 * PRECISION, 9.38);
+        expect(row).toBeDefined();
+        expect(progress).toBeDefined();
+
+        if (!isDefined(row) || !isDefined(progress)) {
+            return;
+        }
+
+        expect(progress.outstandingAmount).toBe(58_000 * PRECISION);
+        expect(progress.paidAmount).toBe(6_000 * PRECISION);
+        expect(progress.totalAmount).toBe(64_000 * PRECISION);
+        expect(progress.percentage).toBe(9.38);
+        expect(row.debtOutstandingAmount).toBe(58_000 * PRECISION);
+        expect(row.debtPaidAmount).toBe(6_000 * PRECISION);
+        expect(row.debtTotalAmount).toBe(64_000 * PRECISION);
+        expect(row.debtProgressPercentage).toBe(9.38);
     });
 
     it('summarizes a lent debt target as outstanding before any ledger entries exist', () => {
@@ -342,7 +377,7 @@ describe('debt settlement statistics', () => {
         expectOriginalTargetDebtProgressSummary(AccountDebtTypeEnum.BORROW);
     });
 
-    it('keeps the borrowed target amount as the denominator when ledger activity settles the debt', () => {
+    it('keeps the borrowed target amount as the denominator when ledger activity partially settles the debt', () => {
         const summary = buildDebtAccountProgressSummary({
             debtType: AccountDebtTypeEnum.BORROW,
             balance: 0,
@@ -352,7 +387,41 @@ describe('debt settlement statistics', () => {
             targetAmount: 45_000 * PRECISION
         });
 
-        expectDebtProgressSummary(summary, 0, 45_000 * PRECISION, 45_000 * PRECISION, 100);
+        expectDebtProgressSummary(summary, 36_934 * PRECISION, 8_066 * PRECISION, 45_000 * PRECISION, 17.92);
+    });
+
+    it('keeps target-backed borrowed debt partially outstanding when principal and repayment ledger entries exist without a snapshot', () => {
+        const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+        const debtAccount = seed.account({
+            title: 'Target-backed borrowed account',
+            type: AccountTypeEnum.DEBT,
+            debtType: AccountDebtTypeEnum.BORROW,
+            targetBalance: 64_000 * PRECISION
+        });
+
+        createDebtTransferTransaction(debtAccount.id, cashAccount.id, 500 * PRECISION, 'Borrow extra money from Alex');
+        createDebtTransferTransaction(cashAccount.id, debtAccount.id, 6_000 * PRECISION, 'Return money to Alex');
+
+        const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.BORROW);
+        const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
+        const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
+
+        expectDebtProgressSummary(summary, 58_000 * PRECISION, 6_000 * PRECISION, 64_000 * PRECISION, 9.38);
+        expect(row).toBeDefined();
+        expect(progress).toBeDefined();
+
+        if (!isDefined(row) || !isDefined(progress)) {
+            return;
+        }
+
+        expect(progress.outstandingAmount).toBe(58_000 * PRECISION);
+        expect(progress.paidAmount).toBe(6_000 * PRECISION);
+        expect(progress.totalAmount).toBe(64_000 * PRECISION);
+        expect(progress.percentage).toBe(9.38);
+        expect(row.debtOutstandingAmount).toBe(58_000 * PRECISION);
+        expect(row.debtPaidAmount).toBe(6_000 * PRECISION);
+        expect(row.debtTotalAmount).toBe(64_000 * PRECISION);
+        expect(row.debtProgressPercentage).toBe(9.38);
     });
 
     it('summarizes a borrowed debt target as outstanding before any ledger entries exist', () => {
@@ -725,7 +794,7 @@ const expectOriginalTargetDebtProgressSummary = (debtType: AccountDebtTypeEnum):
         targetAmount: 15_000 * PRECISION
     });
 
-    expectDebtProgressSummary(summary, 7_900 * PRECISION, 7_100 * PRECISION, 15_000 * PRECISION, 47.33);
+    expectDebtProgressSummary(summary, 12_900 * PRECISION, 2_100 * PRECISION, 15_000 * PRECISION, 14);
 };
 
 const updateDebtCurrentBalanceAndReadState = async ({

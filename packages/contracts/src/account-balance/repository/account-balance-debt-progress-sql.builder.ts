@@ -150,34 +150,22 @@ class AccountBalanceDebtProgressSqlBuilder {
         } = input;
         const movementAmountSql = sql<number>`${closedMovementAmountSql} + ${openedExtraAmountSql} + ${openedPrincipalAmountSql}`;
         const closedAmountSql = sql<number>`MAX(${initialClosedAmountSql} + ${closedMovementAmountSql}, 0)`;
+        const snapshotPrincipalAmountSql = sql<number>`MAX(${targetAmountSql}, ${initialClosedAmountSql} + ${initialOutstandingAmountSql}, 0)`;
         const snapshotTotalAmountSql = sql<number>`MAX(${targetAmountSql}, ${initialOutstandingAmountSql}, ${initialClosedAmountSql}, 0)`;
         const noMovementOutstandingAmountSql = sql<number>`CASE WHEN ${initialOutstandingAmountSql} > 0 THEN ${initialOutstandingAmountSql} ELSE MAX(${targetAmountSql} - ${initialClosedAmountSql}, 0) END`;
-        const movementDebtBasisAmountSql = sql<number>`
+        const countedOpenedPrincipalAmountSql = sql<number>`
             CASE
                 WHEN ${initialBalanceAmountSql} != 0
-                THEN MAX(${targetAmountSql}, ${initialOutstandingAmountSql}) + ${openedPrincipalAmountSql} + ${openedExtraAmountSql}
-                ELSE MAX(${targetAmountSql}, ${openedPrincipalAmountSql}) + ${openedExtraAmountSql}
+                THEN ${openedPrincipalAmountSql}
+                ELSE MAX(${openedPrincipalAmountSql} - ${snapshotPrincipalAmountSql}, 0)
             END
         `;
-        const syntheticPrincipalClosedAmountSql = sql<number>`
-            CASE
-                WHEN ${initialBalanceAmountSql} = 0 AND ${openedPrincipalAmountSql} > 0
-                THEN MAX(${targetAmountSql} - ${openedPrincipalAmountSql}, 0)
-                ELSE 0
-            END
-        `;
-        const settlementBasisAmountSql = sql<number>`MAX(${initialClosedAmountSql} + ${syntheticPrincipalClosedAmountSql} + ${closedMovementAmountSql}, 0)`;
+        const movementTotalAmountSql = sql<number>`${snapshotPrincipalAmountSql} + ${countedOpenedPrincipalAmountSql} + ${openedExtraAmountSql}`;
         const totalAmountSql = sql<number>`
-            CASE
-                WHEN ${movementAmountSql} > 0 THEN MAX(${movementDebtBasisAmountSql}, ${closedAmountSql}, 0)
-                ELSE ${snapshotTotalAmountSql}
-            END
+            CASE WHEN ${movementAmountSql} > 0 THEN MAX(${movementTotalAmountSql}, ${closedAmountSql}, 0) ELSE ${snapshotTotalAmountSql} END
         `;
         const outstandingAmountSql = sql<number>`
-            CASE
-                WHEN ${movementAmountSql} > 0 THEN MAX(${movementDebtBasisAmountSql} - ${settlementBasisAmountSql}, 0)
-                ELSE ${noMovementOutstandingAmountSql}
-            END
+            CASE WHEN ${movementAmountSql} > 0 THEN MAX(${movementTotalAmountSql} - ${closedAmountSql}, 0) ELSE ${noMovementOutstandingAmountSql} END
         `;
 
         return {

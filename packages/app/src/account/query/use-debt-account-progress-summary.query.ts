@@ -1,8 +1,7 @@
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-
 import { isDefined } from '@rnw-community/shared';
 
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 
 import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated-at.query';
 import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
@@ -22,7 +21,7 @@ const EMPTY_DEBT_ACCOUNT_PROGRESS_SUMMARY: DebtAccountProgressSummaryInterface =
 
 export const useDebtAccountProgressSummaryQuery = (accountId: number): DebtAccountProgressSummaryInterface => {
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
-    const { data } = useLiveQuery(accountBalanceRepository.getDebtAccountProgressByAccountId(accountId), [
+    const { data } = useDatabaseLiveQuery(accountBalanceRepository.getDebtAccountProgressByAccountId(accountId), [
         accountId,
         accountBalancesUpdatedAt
     ]);

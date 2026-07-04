@@ -57,6 +57,12 @@ WHERE transactions.type = 'DEBT'
   AND (
       (cash_entry.type = 'CREDIT' AND debt_entry.type = 'DEBIT')
       OR (cash_entry.type = 'DEBIT' AND debt_entry.type = 'CREDIT')
+  )
+  AND NOT (
+      transactions.from_account_id = cash_entry.account_id
+      AND transactions.to_account_id = debt_entry.account_id
+      AND cash_entry.type = 'CREDIT'
+      AND debt_entry.type = 'DEBIT'
   );
 --> statement-breakpoint
 UPDATE transaction_entries

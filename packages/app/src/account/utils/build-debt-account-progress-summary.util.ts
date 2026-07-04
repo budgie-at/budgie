@@ -22,32 +22,27 @@ const hasLedgerMovement = ({
 }: DebtAccountProgressSummaryParamsInterface): boolean =>
     isPositiveNumber(closedAmount) || isPositiveNumber(openedExtraAmount) || isPositiveNumber(openedPrincipalAmount);
 
-const getMovementDebtBasisAmount = (
-    { balance, openedExtraAmount, openedPrincipalAmount, targetAmount }: DebtAccountProgressSummaryParamsInterface,
-    initialOutstandingAmount: number
-): number =>
-    balance === 0
-        ? Math.max(targetAmount, openedPrincipalAmount) + openedExtraAmount
-        : Math.max(targetAmount, initialOutstandingAmount) + openedPrincipalAmount + openedExtraAmount;
-
-const getSyntheticPrincipalClosedAmount = ({
-    balance,
-    openedPrincipalAmount,
-    targetAmount
-}: DebtAccountProgressSummaryParamsInterface): number =>
-    balance === 0 && isPositiveNumber(openedPrincipalAmount) ? Math.max(targetAmount - openedPrincipalAmount, 0) : 0;
-
 const getActualClosedAmount = (initialClosedAmount: number, movementClosedAmount: number): number =>
     Math.max(initialClosedAmount + movementClosedAmount, 0);
 
 const getNoMovementOutstandingAmount = (initialOutstandingAmount: number, targetAmount: number, initialClosedAmount: number): number =>
     isPositiveNumber(initialOutstandingAmount) ? initialOutstandingAmount : Math.max(targetAmount - initialClosedAmount, 0);
 
-const getSettlementBasisAmount = (
+const getSnapshotPrincipalAmount = (targetAmount: number, initialClosedAmount: number, initialOutstandingAmount: number): number =>
+    Math.max(targetAmount, initialClosedAmount + initialOutstandingAmount, 0);
+
+const getCountedOpenedPrincipalAmount = (params: DebtAccountProgressSummaryParamsInterface, snapshotPrincipalAmount: number): number =>
+    params.balance === 0 ? Math.max(params.openedPrincipalAmount - snapshotPrincipalAmount, 0) : params.openedPrincipalAmount;
+
+const getMovementTotalAmount = (
     params: DebtAccountProgressSummaryParamsInterface,
     initialClosedAmount: number,
-    movementClosedAmount: number
-): number => Math.max(initialClosedAmount + getSyntheticPrincipalClosedAmount(params) + movementClosedAmount, 0);
+    initialOutstandingAmount: number
+): number => {
+    const snapshotPrincipalAmount = getSnapshotPrincipalAmount(params.targetAmount, initialClosedAmount, initialOutstandingAmount);
+
+    return snapshotPrincipalAmount + getCountedOpenedPrincipalAmount(params, snapshotPrincipalAmount) + params.openedExtraAmount;
+};
 
 const getOutstandingAmount = (
     params: DebtAccountProgressSummaryParamsInterface,
@@ -59,8 +54,8 @@ const getOutstandingAmount = (
     }
 
     return Math.max(
-        getMovementDebtBasisAmount(params, initialOutstandingAmount) -
-            getSettlementBasisAmount(params, initialClosedAmount, params.closedAmount),
+        getMovementTotalAmount(params, initialClosedAmount, initialOutstandingAmount) -
+            getActualClosedAmount(initialClosedAmount, params.closedAmount),
         0
     );
 };
@@ -75,7 +70,7 @@ const getTotalAmount = (
         return Math.max(params.targetAmount, initialOutstandingAmount, initialClosedAmount, 0);
     }
 
-    return Math.max(getMovementDebtBasisAmount(params, initialOutstandingAmount), actualClosedAmount, 0);
+    return Math.max(getMovementTotalAmount(params, initialClosedAmount, initialOutstandingAmount), actualClosedAmount, 0);
 };
 
 export const buildDebtAccountProgressSummary = ({
