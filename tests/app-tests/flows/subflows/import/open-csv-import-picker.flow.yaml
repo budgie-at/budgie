@@ -25,7 +25,8 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'CsvPage.ImportCard'
-      timeout: 5000
+      timeout: 10000
+- waitForAnimationToEnd
 
 - retry:
       maxRetries: 2
@@ -34,4 +35,4 @@ appId: ${APP_ID}
                 id: 'CsvPage.ImportCard'
           - extendedWaitUntil:
                 visible: 'Cancel'
-                timeout: 5000
+                timeout: 15000
