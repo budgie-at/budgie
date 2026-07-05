@@ -53,6 +53,7 @@ export default function TransactionCategoryFilterModal() {
                 additionalBottomPadding={FOOTER_BOTTOM_SPACE}
                 topOffset={LIST_TOP_SPACE}
                 onSelect={handleSelect}
+                cardTestID={TransactionFiltersSelector.CategoryOption}
             />
 
             <TransactionFilterSelectorFooter

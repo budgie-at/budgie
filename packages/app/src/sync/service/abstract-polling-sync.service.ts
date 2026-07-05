@@ -14,6 +14,7 @@ import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 
 import { AbstractSyncService } from './abstract-sync.service';
+import { syncWorkloadService } from './sync-workload.service';
 
 import type { SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/contracts';
 import type { SyncBatchResultInterface } from '@budgie/sync';
@@ -28,6 +29,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     protected runDeferred = false;
 
     private isRunning = false;
+    private readonly processedForwardSyncIds = new Set<number>();
 
     protected abstract readonly rateLimitMs: number;
     protected abstract readonly backgroundTaskName: string;
@@ -44,11 +46,13 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         this.isRunning = true;
         this.runDeadlineAtMs = deadlineAtMs;
         this.runDeferred = false;
+        this.processedForwardSyncIds.clear();
         try {
             await this.beforeSyncRun();
 
             return await this.executeSyncLoop();
         } finally {
+            this.processedForwardSyncIds.clear();
             this.isRunning = false;
             await this.afterSyncRun();
         }
@@ -98,7 +102,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
     @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
     protected async processPendingSyncs(): Promise<BackgroundTask.BackgroundTaskResult> {
-        if (this.runDeferred || Date.now() >= this.runDeadlineAtMs) {
+        if (this.shouldStopProcessing()) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
@@ -107,10 +111,13 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
-        const result = await this.executeSyncBatch(pendingSync);
-        await this.applyProgressUpdate(pendingSync, result);
-        if (!this.isRunWorkComplete()) {
-            await microPause(this.rateLimitMs);
+        await this.processSyncBatch(pendingSync);
+        if (this.isRunWorkComplete()) {
+            return await this.executeSyncLoop();
+        }
+
+        if (await this.shouldYieldAfterBatch()) {
+            return BackgroundTask.BackgroundTaskResult.Success;
         }
 
         return await this.executeSyncLoop();
@@ -129,10 +136,11 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             this.provider,
             AbstractPollingSyncService.FORWARD_SYNC_STALE_THRESHOLD_MS
         );
-        if (isNotEmptyArray(forwardSyncs)) {
-            await syncRepository.setStatus(forwardSyncs[0].id, SyncStatusEnum.SYNCING);
+        const forwardSync = forwardSyncs.find(sync => !this.processedForwardSyncIds.has(sync.id));
+        if (isDefined(forwardSync)) {
+            await syncRepository.setStatus(forwardSync.id, SyncStatusEnum.SYNCING);
 
-            return forwardSyncs[0];
+            return forwardSync;
         }
 
         return null;
@@ -162,19 +170,11 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return BackgroundTask.BackgroundTaskResult.Failed;
         }
 
-        const syncToRetry = enabledSyncs.find(sync => sync.errorCount < SYNC_ERROR_THRESHOLD);
-        if (isDefined(syncToRetry)) {
-            await syncRepository.recordError(syncToRetry.id, errorMessage);
-            await microPause(this.rateLimitMs);
-
+        if (await this.retryAfterError(enabledSyncs, errorMessage)) {
             return this.executeSyncLoop();
         }
 
-        await Promise.all(
-            enabledSyncs.map(sync =>
-                syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false })
-            )
-        );
+        await this.disableFailedSyncs(enabledSyncs, errorMessage);
 
         return BackgroundTask.BackgroundTaskResult.Failed;
     }
@@ -215,8 +215,65 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return false;
     }
 
-    protected validateToken(_token: string): void {
-        // Providers without credential parsing accept any token; Binance overrides to validate.
+    protected validateToken(token: string): void {
+        if (!isDefined(token)) {
+            throw new Error(UNKNOWN_SYNC_ERROR);
+        }
+    }
+
+    private async retryAfterError(enabledSyncs: SyncEntityInterface[], errorMessage: string): Promise<boolean> {
+        const syncToRetry = enabledSyncs.find(sync => sync.errorCount < SYNC_ERROR_THRESHOLD);
+        if (!isDefined(syncToRetry)) {
+            return false;
+        }
+
+        await syncRepository.recordError(syncToRetry.id, errorMessage);
+        await microPause(this.rateLimitMs);
+
+        return true;
+    }
+
+    private async disableFailedSyncs(enabledSyncs: SyncEntityInterface[], errorMessage: string): Promise<void> {
+        const disableSyncPromises: Array<Promise<unknown>> = [];
+        for (const sync of enabledSyncs) {
+            disableSyncPromises.push(
+                syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false })
+            );
+        }
+
+        await Promise.all(disableSyncPromises);
+    }
+
+    private shouldStopProcessing(): boolean {
+        return this.runDeferred || Date.now() >= this.runDeadlineAtMs;
+    }
+
+    private async processSyncBatch(pendingSync: SyncEntityInterface): Promise<void> {
+        const result = await this.executeSyncBatch(pendingSync);
+        await this.applyProgressUpdate(pendingSync, result);
+        this.recordProcessedSyncBatch(pendingSync, result);
+    }
+
+    private async shouldYieldAfterBatch(): Promise<boolean> {
+        return this.shouldYieldToQueuedWork() || (await this.shouldYieldAfterRateLimit());
+    }
+
+    private async shouldYieldAfterRateLimit(): Promise<boolean> {
+        if (!(await syncWorkloadService.waitForQueuedUserWork(this.rateLimitMs))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private shouldYieldToQueuedWork(): boolean {
+        return syncWorkloadService.hasQueuedWork();
+    }
+
+    private recordProcessedSyncBatch(pendingSync: SyncEntityInterface, result: SyncBatchResultInterface): void {
+        if (pendingSync.mode === SyncModeEnum.FORWARD && result.completed) {
+            this.processedForwardSyncIds.add(pendingSync.id);
+        }
     }
 
     private resolveProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface {

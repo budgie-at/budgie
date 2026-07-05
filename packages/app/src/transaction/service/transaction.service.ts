@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- File owns the cohesive transaction-service: bulk create, dual transfer orchestration (internal + synced), update, and shared transfer valuation/persistence helpers -- approved by human */
 import {
     AccountTypeEnum,
     ExternalSourceEnum,

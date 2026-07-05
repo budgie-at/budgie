@@ -23,6 +23,8 @@ export const BudgetOverallLimitField = ({ control, currencySymbol }: Props) => {
                 placeholder={t`e.g. 1000`}
                 valuePrefix={currencySymbol}
                 size="lg"
+                commitOnBlur
+                selectTextOnFocus
             />
         </FormItem>
     );

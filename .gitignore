@@ -63,9 +63,13 @@ tests/app-tests/artifacts/
 nativewind-env.d.ts
 docs/plans
 docs/superpowers
+.vercel
+.env*.local
 
 # OMC agent state (local-only)
 .omc/
 
 # Agent scratch worktrees
 .claude/worktrees/
+.vercel
+.env*.local

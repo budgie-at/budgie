@@ -1,8 +1,10 @@
+import { privatbankTransactionMapper } from '@budgie/sync';
 import { describe, expect, it } from 'vitest';
 
-import { generatePrivatbankExternalId, privatbankTransactionMapper } from '@budgie/sync';
+const INITIAL_END_BALANCE = 12_345.67;
+const CHANGED_END_BALANCE = 54_321.01;
 
-const buildPrivatbankRow = (date: Date, endBalance = 12_345.67) => ({
+const buildPrivatbankRow = (date: Date, endBalance = INITIAL_END_BALANCE) => ({
     rawDate: '13.01.2026 11:42:53',
     date,
     category: 'Зарахування переказу',
@@ -20,17 +22,18 @@ describe('privatbank/external-id', () => {
     it('uses raw statement data instead of parsed date identity', () => {
         const first = buildPrivatbankRow(new Date('2026-01-13T09:42:53.000Z'));
         const shifted = buildPrivatbankRow(new Date('2026-01-13T10:42:53.000Z'));
+        const firstTransaction = privatbankTransactionMapper(first);
+        const shiftedTransaction = privatbankTransactionMapper(shifted);
 
-        expect(generatePrivatbankExternalId(first)).toBe(generatePrivatbankExternalId(shifted));
+        expect(firstTransaction.id).toBe(shiftedTransaction.id);
     });
 
     it('ignores volatile statement balance identity and keeps legacy identity', () => {
         const first = buildPrivatbankRow(new Date('2026-01-13T09:42:53.000Z'));
-        const changedBalance = buildPrivatbankRow(new Date('2026-01-13T09:42:53.000Z'), 54_321.01);
+        const changedBalance = buildPrivatbankRow(new Date('2026-01-13T09:42:53.000Z'), CHANGED_END_BALANCE);
         const firstTransaction = privatbankTransactionMapper(first);
         const changedBalanceTransaction = privatbankTransactionMapper(changedBalance);
 
-        expect(generatePrivatbankExternalId(first)).toBe(generatePrivatbankExternalId(changedBalance));
         expect(firstTransaction.id).toBe(changedBalanceTransaction.id);
         expect(firstTransaction.legacyExternalIds?.[0]).not.toBe(changedBalanceTransaction.legacyExternalIds?.[0]);
         expect(firstTransaction.id).not.toBe(firstTransaction.legacyExternalIds?.[0]);
@@ -42,7 +45,9 @@ describe('privatbank/external-id', () => {
             ...first,
             description: 'З гривневого рахунку ТОВ'
         };
+        const firstTransaction = privatbankTransactionMapper(first);
+        const changedDescriptionTransaction = privatbankTransactionMapper(changedDescription);
 
-        expect(generatePrivatbankExternalId(first)).not.toBe(generatePrivatbankExternalId(changedDescription));
+        expect(firstTransaction.id).not.toBe(changedDescriptionTransaction.id);
     });
 });

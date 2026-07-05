@@ -10,14 +10,14 @@ Maestro flows for Budgie.
 4. Prefer positive-state flow control: `tap -> extendedWaitUntil destination visible`.
 5. Keep retries only for real native instability like app relaunch or submit confirmation.
 6. Refresh dynamic fixtures before running the suite, especially date-based database fixtures.
-7. Use exact `testID` selectors for stable controls. Use text only when no stable id exists.
+7. Use exact `testID` selectors for stable controls. Use text only when no stable id exists, such as native alert buttons.
 8. If a guard proves load-bearing, keep the smallest specific guard instead of reintroducing blanket waits.
 9. Use `3000` as the default `extendedWaitUntil` timeout. Increase only for clearly slow native or import work.
 10. If a step is expected in the happy path, do not hide it behind `runFlow when:`. Wait for it explicitly and fail there if it does not appear.
 11. Keep flows pinned to English. If a preferences flow changes language, it must switch back to English before it ends.
 12. Before any `inputText`, focus the real input first with `tapOn`. For native selector sheets, prefer the visible search placeholder text over internal search-input ids.
 13. After selecting an option from a native search sheet, wait for that search field to disappear before tapping the underlying form again.
-14. For formatted numeric inputs that must be cleared and replaced, tap near the trailing edge first so the caret lands at the end before `eraseText`. For Budgie amount fields, use `point: '95%,50%'` on the input `testID` before clearing.
+14. Do not use coordinate taps in committed flows. If a flow cannot target the real control by `testID`, add or fix the app selector first. If a formatted input needs stable replacement, focus it by `testID`, then use keyboard-aware commands such as `eraseText` against the focused input.
 15. Do not take screenshots or run `maestro hierarchy` during an active Maestro run. Inspect only after failure or outside the run.
 16. Do not use `hideKeyboard` in Maestro flows. It is unreliable here and can break later execution. Prefer flows that continue without explicit keyboard dismissal.
 17. Do not `scrollUntilVisible` to submit controls that live in sticky footers. If the form already exposes the submit button outside scrollable content, wait for it and tap it directly.
@@ -28,7 +28,7 @@ Maestro flows for Budgie.
 
 1. Navigation coverage belongs in dedicated navigation flows. Business flows should not repeatedly retest the same navigation path.
 2. Shared subflows should remove duplication, but not hide uncertain behavior behind generic retries.
-3. Coordinate taps are last resort only. Prefer app selectors whenever possible.
+3. Coordinate taps are prohibited. Use `testID`, visible text, accessibility label, or another Maestro selector that resolves through the UI hierarchy.
 4. Shared subflows must have one clear responsibility. Delete thin wrappers that only rename parameters or forward to another flow.
 5. Use plain step sequences over nested `runFlow` blocks when the steps are linear and expected.
 

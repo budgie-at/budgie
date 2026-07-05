@@ -10,20 +10,20 @@ interface Props {
     readonly onChange: (isIncrease: boolean) => void;
 }
 
-const increaseButtonVariants = cva('flex-1 flex-row items-center justify-center gap-sm rounded-2xl border py-md', {
+const increaseButtonVariants = cva('flex-1 flex-row items-center justify-center gap-sm rounded-2xl py-md', {
     variants: {
         selected: {
-            true: 'bg-positive-background border-positive-border',
-            false: 'bg-ghost-background border-border'
+            true: 'bg-positive-background',
+            false: 'bg-secondary-background'
         }
     }
 });
 
-const decreaseButtonVariants = cva('flex-1 flex-row items-center justify-center gap-sm rounded-2xl border py-md', {
+const decreaseButtonVariants = cva('flex-1 flex-row items-center justify-center gap-sm rounded-2xl py-md', {
     variants: {
         selected: {
-            true: 'bg-destructive-background border-destructive-border',
-            false: 'bg-ghost-background border-border'
+            true: 'bg-destructive-background',
+            false: 'bg-secondary-background'
         }
     }
 });

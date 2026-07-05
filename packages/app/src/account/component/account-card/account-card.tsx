@@ -7,7 +7,7 @@ import { SyncAccountCard } from '../sync-account-card/sync-account-card';
 
 interface Props extends Pick<
     AccountWithSyncEntityInterface,
-    'id' | 'createdAt' | 'title' | 'type' | 'icon' | 'debtType' | 'targetBalance' | 'deadline'
+    'id' | 'createdAt' | 'title' | 'type' | 'icon' | 'externalId' | 'debtType' | 'targetBalance' | 'deadline'
 > {
     readonly balance: number;
     readonly sync: SyncEntityInterface | null;

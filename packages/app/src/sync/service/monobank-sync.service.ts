@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop, max-lines -- Sync orchestration requires sequential awaits and many log tags */
+/* eslint-disable no-await-in-loop -- Sync orchestration requires sequential awaits and many log tags */
 import { consolidationScopeService } from '@budgie/consolidation';
 import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log, getLogger } from '@budgie/logger';

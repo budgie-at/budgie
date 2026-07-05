@@ -1,10 +1,14 @@
 import { getUnixTime } from 'date-fns';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
-import { generatePrivatbankExternalId, generatePrivatbankLegacyExternalId } from '../util/generate-privatbank-external-id.util';
+import {
+    generatePrivatbankExternalId,
+    generatePrivatbankLegacyExternalId,
+    generatePrivatbankParsedDateLegacyExternalId
+} from '../util/generate-privatbank-external-id.util';
 
 import { privatbankCurrencyCodeMapper } from './privatbank-currency-code.mapper';
 
@@ -27,10 +31,12 @@ const getFeeAmount = (row: PrivatbankRowInterface): number => {
 export const privatbankTransactionMapper = (row: PrivatbankRowInterface): SyncTransactionInterface => {
     const id = generatePrivatbankExternalId(row);
     const legacyExternalId = generatePrivatbankLegacyExternalId(row);
+    const parsedDateLegacyExternalId = generatePrivatbankParsedDateLegacyExternalId(row);
+    const legacyExternalIds = [...new Set([legacyExternalId, parsedDateLegacyExternalId].filter(item => item !== id))];
 
     return {
         id,
-        ...(id !== legacyExternalId && { legacyExternalIds: [legacyExternalId] }),
+        ...(isNotEmptyArray(legacyExternalIds) && { legacyExternalIds }),
         provider: SyncProviderEnum.PRIVATBANK,
         accountId: row.card,
         type: getTransactionType(row.cardAmount),

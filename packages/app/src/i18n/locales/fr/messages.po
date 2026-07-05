@@ -110,6 +110,10 @@ msgstr "{matchingRulesCount, plural, one {# règle correspondante} other {# règ
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# mois} other {# mois}}"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
+msgstr ""
+
 #: src/category/components/category-statistics-card/category-statistics-card.tsx
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
 msgid "{percentage}% of expenses"
@@ -131,6 +135,10 @@ msgstr "{selectedCount, plural, =0 {Afficher toutes les catégories} one {Affich
 #: src/app/transaction-tag-filter.tsx
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Afficher tous les tags} one {Afficher # tag} other {Afficher # tags}}"
+
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
+msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
+msgstr ""
 
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "{source} error · {message}"
@@ -193,6 +201,7 @@ msgstr "À propos"
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Account"
 msgstr "Compte"
 
@@ -353,7 +362,7 @@ msgid "Amount"
 msgstr "Montant"
 
 #: src/app/(main)/create-transaction/transfer.tsx
-#: src/app/(main)/transactions/[id]/transfer.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Amount exceeds debt account balance"
 msgstr "Le montant dépasse le solde du compte de dette"
 
@@ -414,8 +423,8 @@ msgstr "Voulez-vous vraiment supprimer cette règle ?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
 
@@ -434,6 +443,10 @@ msgstr "Synchroniser automatiquement les comptes et transactions de Monobank"
 #: src/app/import-column-mapper.tsx
 msgid "Available Columns"
 msgstr "Colonnes disponibles"
+
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
+msgid "Average"
+msgstr ""
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -535,6 +548,10 @@ msgstr "Budgie renseignera les valeurs manquantes dans la devise de base à part
 msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
 msgstr "Budgie fusionnera les correspondances fiables de virements et de remboursements. Les correspondances ambiguës resteront inchangées."
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Budgie will notify you when it finishes"
+msgstr ""
+
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie supprimera de façon réversible {countText}. Vos transactions manuelles resteront inchangées."
@@ -561,10 +578,10 @@ msgstr "Budgie supprimera de façon réversible {countText}. Vos transactions ma
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "Cancel"
 msgstr "Annuler"
@@ -590,6 +607,7 @@ msgstr "Catégories ({selectedCategoriesCount})"
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/category/components/category-form-selector/category-form-selector.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Category"
 msgstr "Catégorie"
 
@@ -713,6 +731,10 @@ msgstr "Consolider"
 msgid "Consolidate Matches"
 msgstr "Consolider les correspondances"
 
+#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+msgid "Consolidation"
+msgstr ""
+
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Contact (optional)"
 msgstr "Contact (optionnel)"
@@ -739,6 +761,7 @@ msgstr "Échec de la conversion"
 msgid "Convert"
 msgstr "Convertir"
 
+#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
 #: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Refund"
@@ -750,6 +773,7 @@ msgstr "Convertir en remboursement ?"
 
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
+#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
 #: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Transfer"
@@ -944,6 +968,10 @@ msgstr "Impossible de mettre à jour les notifications"
 msgid "Could not update rule"
 msgstr "Impossible de mettre à jour la règle"
 
+#: src/app/(tabs)/settings/index.tsx
+msgid "Could not update settings"
+msgstr ""
+
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Could not update token"
 msgstr "Impossible de mettre à jour le jeton"
@@ -1088,6 +1116,7 @@ msgstr "Base de données exportée"
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Date"
 msgstr "Date"
 
@@ -1111,8 +1140,9 @@ msgstr "Compte par défaut"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1207,6 +1237,10 @@ msgstr "p. ex. Courses, Divertissement"
 msgid "e.g. Savings Account"
 msgstr "ex. Compte d'épargne"
 
+#: src/account/component/account-card-base/account-card-base.tsx
+msgid "Edit account"
+msgstr ""
+
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Edit budget"
 msgstr "Modifier le budget"
@@ -1219,11 +1253,11 @@ msgstr "Modifier la catégorie"
 msgid "Edit existing"
 msgstr "Modifier l'existante"
 
-#: src/app/(main)/transactions/[id]/expense.tsx
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
 msgid "Edit Expense"
 msgstr "Modifier la dépense"
 
-#: src/app/(main)/transactions/[id]/income.tsx
+#: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
 msgstr "Modifier le revenu"
 
@@ -1235,11 +1269,15 @@ msgstr "Modifier la règle"
 msgid "Edit Tag"
 msgstr "Modifier l'étiquette"
 
+#: src/transaction/components/transaction-info-page/transaction-info-page.tsx
+msgid "Edit transaction"
+msgstr ""
+
 #: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
 msgid "Edit Transaction"
 msgstr "Modifier la transaction"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Edit Transfer"
 msgstr "Modifier le transfert"
 
@@ -1373,6 +1411,10 @@ msgstr "Erste Bank"
 msgid "Everyday transactions and spending"
 msgstr "Transactions et dépenses quotidiennes"
 
+#: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
+msgid "Exchange rate"
+msgstr ""
+
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
 msgstr "Taux de change {sourceInstrumentId}->{targetInstrumentId} introuvable"
@@ -1439,6 +1481,10 @@ msgstr "Échec de l'enregistrement du code PIN. Veuillez réessayer."
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Indexation rapide {done} sur {total} • touchez pour mettre en pause"
 
+#: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
+msgid "Fee"
+msgstr ""
+
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Fee {formattedAmount}"
 msgstr "Frais {formattedAmount}"
@@ -1495,6 +1541,10 @@ msgstr "de"
 msgid "From"
 msgstr "De"
 
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
+msgid "From account"
+msgstr ""
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Account"
 msgstr "Du compte"
@@ -1534,6 +1584,10 @@ msgstr "Obtenir le jeton API"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Get notified when a budget threshold is crossed"
 msgstr "Soyez averti lorsqu'un seuil de budget est franchi"
+
+#: src/@generic/component/go-back-button/go-back-button.tsx
+msgid "Go back"
+msgstr ""
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Greater Than"
@@ -1586,12 +1640,17 @@ msgid "Import Erste Bank"
 msgstr "Importer Erste Bank"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/hook/use-quick-import.hook.ts
 msgid "Import failed"
 msgstr "Échec de l'importation"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
 msgstr "Importer Privatbank"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Import started"
+msgstr ""
 
 #: src/import/components/import-csv/import-csv.tsx
 msgid "Import transactions from a CSV file"
@@ -1763,6 +1822,7 @@ msgstr "Chargement..."
 msgid "Main Currency"
 msgstr "Devise principale"
 
+#: src/budget/components/budget-details/budget-details.tsx
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Manage budget"
 msgstr "Gérer le budget"
@@ -1844,6 +1904,7 @@ msgid "MCC Code"
 msgstr "Code MCC"
 
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Merchant code"
 msgstr "Code marchand"
 
@@ -1977,6 +2038,10 @@ msgstr "Aucune devise trouvée"
 msgid "No Custom Categories"
 msgstr "Aucune catégorie personnalisée"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No enabled accounts were found in this file"
+msgstr ""
+
 #: src/app/icon-selector.tsx
 msgid "No icons found"
 msgstr "Aucune icône trouvée"
@@ -1997,6 +2062,10 @@ msgstr "Aucun élément à enregistrer"
 msgid "No languages found"
 msgstr "Aucune langue trouvée"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No matching accounts"
+msgstr ""
+
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "No matching expenses"
 msgstr "Aucune dépense correspondante"
@@ -2013,6 +2082,10 @@ msgstr "Aucun code MCC disponible"
 #: src/app/rule-mcc-selector.tsx
 msgid "No MCC codes found"
 msgstr "Aucun code MCC trouvé"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No new transactions"
+msgstr ""
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
@@ -2092,6 +2165,7 @@ msgid "not set"
 msgstr "non défini"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
 msgstr "Note"
 
@@ -2776,6 +2850,10 @@ msgstr "Afficher la plage sélectionnée"
 msgid "Show this account on the main page"
 msgstr "Afficher ce compte sur la page principale"
 
+#: src/transaction/components/transaction-info-page/transaction-info-page.tsx
+msgid "Similar transactions"
+msgstr ""
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Ignorer"
@@ -2905,14 +2983,6 @@ msgstr "Échec de la synchronisation"
 msgid "Sync Repairs"
 msgstr "Réparations de synchronisation"
 
-#: src/sync/service/sync-workload.service.ts
-msgid "Sync workload is blocked for app reset"
-msgstr "La charge de synchronisation est bloquée par la réinitialisation de l’app"
-
-#: src/sync/service/sync-workload.service.ts
-msgid "Sync workload was cancelled by app reset"
-msgstr "La charge de synchronisation a été annulée par la réinitialisation de l’app"
-
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
 msgstr "Synchronisez vos soldes et transactions Binance"
@@ -2945,6 +3015,7 @@ msgstr "Étiquetez vos transactions pour voir la répartition de vos dépenses p
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags"
 msgstr "Étiquettes"
@@ -2984,8 +3055,8 @@ msgstr "Ce compte sera masqué de votre vue principale et ne sera pas inclus dan
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "This action cannot be undone."
 msgstr "Cette action ne peut pas être annulée."
 
@@ -3062,6 +3133,10 @@ msgstr "à"
 msgid "To"
 msgstr "Vers"
 
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
+msgid "To account"
+msgstr ""
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "To Account"
 msgstr "Vers le compte"
@@ -3080,6 +3155,7 @@ msgid "Token required"
 msgstr "Jeton requis"
 
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
 msgstr "Total"
 
@@ -3111,6 +3187,10 @@ msgstr "Transaction introuvable"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Transactions"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Transactions imported"
+msgstr ""
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Transactions synced"
@@ -3298,6 +3378,10 @@ msgstr "Afficher et supprimer les catégories personnalisées"
 #: src/app/(tabs)/settings/index.tsx
 msgid "View and restore archived accounts"
 msgstr "Afficher et restaurer les comptes archivés"
+
+#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+msgid "View source transactions"
+msgstr ""
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"

@@ -31,3 +31,8 @@ export const generatePrivatbankLegacyExternalId = (input: PrivatbankExternalIdIn
             input.balanceCurrency
         ].join('|')
     ).slice(0, PRIVATBANK_EXTERNAL_ID_LENGTH);
+
+export const generatePrivatbankParsedDateLegacyExternalId = (input: PrivatbankExternalIdInputInterface): string =>
+    generateStableExternalIdHash(
+        `${input.date.toISOString()}|${input.card}|${input.cardAmount}|${input.operationAmount}|${input.description}`
+    ).slice(0, PRIVATBANK_EXTERNAL_ID_LENGTH);

@@ -1,6 +1,5 @@
-import { AccountTypeEnum } from '@budgie/contracts';
-
 import { AbstractFileSyncService } from '@app/sync/service/abstract-file-sync.service';
+import { AccountTypeEnum } from '@budgie/contracts';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
@@ -9,12 +8,12 @@ import type { ExternalSourceEnum, MccCategoryLookupInterface } from '@budgie/con
 export class StubFileBankSyncService extends AbstractFileSyncService {
     private static readonly EMPTY_MCC_CATEGORY_ID_MAP = new Map<string, MccCategoryLookupInterface | null>();
 
-    protected readonly provider: ExternalSourceEnum;
-    protected readonly providerTitle: string;
+    protected readonly providerTitle = 'Stub';
+
     protected readonly accountType = AccountTypeEnum.BANK_SYNC;
 
     constructor(
-        externalSource: ExternalSourceEnum,
+        protected readonly provider: ExternalSourceEnum,
         private readonly client: FileBasedSyncClientInterface,
         private readonly mccCategoryIdMap: Map<
             string,
@@ -22,8 +21,6 @@ export class StubFileBankSyncService extends AbstractFileSyncService {
         > = StubFileBankSyncService.EMPTY_MCC_CATEGORY_ID_MAP
     ) {
         super();
-        this.provider = externalSource;
-        this.providerTitle = externalSource.charAt(0) + externalSource.slice(1).toLowerCase();
     }
 
     protected parseFile(): Promise<ParsedFileResultInterface> {

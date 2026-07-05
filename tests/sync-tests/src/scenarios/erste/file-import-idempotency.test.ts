@@ -1,23 +1,23 @@
+import { AbstractFileSyncService } from '@app/sync/service/abstract-file-sync.service';
+import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
+import { transactionImportService } from '@app/transaction/service/transaction-import.service';
+import { AccountTypeEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum, ersteMapper } from '@budgie/sync';
 import { and, eq } from 'drizzle-orm';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
-import { AccountTypeEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
-
 import { isDefined } from '@rnw-community/shared';
 
-import { expectFileImportConsolidationEnqueued, StubFileBankSyncService, testDb } from '../../harness';
-
-import { AbstractFileSyncService } from '@app/sync/service/abstract-file-sync.service';
-import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { StubFileBankSyncService, expectFileImportConsolidationEnqueued, seed, testDb } from '../../harness';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
-import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
-import type { MccCategoryLookupInterface } from '@budgie/contracts';
+import type { MccCategoryLookupInterface, TransactionCreateInputInterface, TransactionEntityInterface } from '@budgie/contracts';
+import type { ErsteRowInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
 const ERSTE_ACCOUNT_ID = 'AT123';
 const ERSTE_EXTERNAL_ID = 'erste-transaction-1';
+const ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID = 'd7bc0c964d4e918ed257dacef404ce32';
 const ERSTE_STATEMENT_URI = 'erste-statement.pdf';
 
 const buildErsteBankAccount = (): SyncAccountInterface => ({
@@ -52,51 +52,76 @@ const buildErsteTransaction = (): SyncTransactionInterface => ({
     feeAmount: 0
 });
 
-class StubErsteFileClient implements FileBasedSyncClientInterface {
-    getAccounts(): SyncAccountInterface[] {
-        return [buildErsteBankAccount()];
-    }
+const buildErsteRow = (): ErsteRowInterface => ({
+    date: new Date('2026-01-13T11:00:00.000Z'),
+    reference: 'ERSTE CARD PAYMENT',
+    description: 'ERSTE CARD PAYMENT',
+    details: 'Parsed card location',
+    amount: -42.5,
+    isCredit: false,
+    city: 'WIEN',
+    countryAlpha2: 'AT'
+});
 
-    getTransactions(): SyncTransactionInterface[] {
-        return [buildErsteTransaction()];
-    }
-}
+const buildMappedErsteTransaction = (): SyncTransactionInterface => ersteMapper.mapTransaction(buildErsteRow(), ERSTE_ACCOUNT_ID);
 
-class TwoCallBarrier {
-    private static readonly FALLBACK_RELEASE_MS = 25;
+const buildLegacyErsteInput = (
+    bankTransaction: SyncTransactionInterface,
+    accountId: number,
+    externalId: string
+): TransactionCreateInputInterface => {
+    const input = mapBankTransactionToCreateInput(bankTransaction, accountId, null);
 
-    private pendingResolvers: Array<() => void> = [];
-    private timer: ReturnType<typeof setTimeout> | null = null;
+    return {
+        ...input,
+        externalId,
+        entries: input.entries.map(entry => ({
+            ...entry,
+            externalId: entry.externalId === bankTransaction.id ? externalId : entry.externalId
+        }))
+    };
+};
 
-    async wait(): Promise<void> {
-        return new Promise(resolve => {
-            this.pendingResolvers.push(resolve);
+const buildStubErsteFileClient = (transactions: SyncTransactionInterface[] = [buildErsteTransaction()]): FileBasedSyncClientInterface => ({
+    getAccounts: () => [buildErsteBankAccount()],
+    getTransactions: () => transactions
+});
 
-            if (this.pendingResolvers.length === 2) {
-                this.release();
-            }
+const buildTwoCallBarrier = () => {
+    const fallbackReleaseMs = 25;
+    let pendingResolvers: Array<() => void> = [];
+    let timer: ReturnType<typeof setTimeout> | null = null;
 
-            if (this.pendingResolvers.length === 1) {
-                this.timer = setTimeout(() => {
-                    this.release();
-                }, TwoCallBarrier.FALLBACK_RELEASE_MS);
-            }
-        });
-    }
-
-    private release(): void {
-        if (isDefined(this.timer)) {
-            clearTimeout(this.timer);
-            this.timer = null;
+    const release = (): void => {
+        if (isDefined(timer)) {
+            clearTimeout(timer);
+            timer = null;
         }
 
-        const resolvers = this.pendingResolvers;
-        this.pendingResolvers = [];
+        const resolvers = pendingResolvers;
+        pendingResolvers = [];
         resolvers.forEach(resolve => {
             resolve();
         });
-    }
-}
+    };
+
+    return {
+        wait: (): Promise<void> =>
+            new Promise(resolve => {
+                pendingResolvers.push(resolve);
+
+                if (pendingResolvers.length === 2) {
+                    release();
+                }
+
+                if (pendingResolvers.length === 1) {
+                    timer = setTimeout(() => {
+                        release();
+                    }, fallbackReleaseMs);
+                }
+            })
+    };
+};
 
 class BarrierErsteSyncService extends AbstractFileSyncService {
     protected readonly provider = ExternalSourceEnum.ERSTE;
@@ -104,8 +129,8 @@ class BarrierErsteSyncService extends AbstractFileSyncService {
     protected readonly accountType = AccountTypeEnum.BANK_SYNC;
 
     constructor(
-        private readonly parseBarrier: TwoCallBarrier,
-        private readonly resolveBarrier: TwoCallBarrier,
+        private readonly parseBarrier: ReturnType<typeof buildTwoCallBarrier>,
+        private readonly resolveBarrier: ReturnType<typeof buildTwoCallBarrier>,
         private readonly client: FileBasedSyncClientInterface
     ) {
         super();
@@ -124,11 +149,13 @@ class BarrierErsteSyncService extends AbstractFileSyncService {
     }
 }
 
-const buildErsteSyncService = (): StubFileBankSyncService =>
-    new StubFileBankSyncService(ExternalSourceEnum.ERSTE, new StubErsteFileClient());
+const buildErsteSyncService = (client: FileBasedSyncClientInterface = buildStubErsteFileClient()): StubFileBankSyncService =>
+    new StubFileBankSyncService(ExternalSourceEnum.ERSTE, client);
 
-const buildBarrierErsteSyncService = (parseBarrier: TwoCallBarrier, resolveBarrier: TwoCallBarrier): BarrierErsteSyncService =>
-    new BarrierErsteSyncService(parseBarrier, resolveBarrier, new StubErsteFileClient());
+const buildBarrierErsteSyncService = (
+    parseBarrier: ReturnType<typeof buildTwoCallBarrier>,
+    resolveBarrier: ReturnType<typeof buildTwoCallBarrier>
+): BarrierErsteSyncService => new BarrierErsteSyncService(parseBarrier, resolveBarrier, buildStubErsteFileClient());
 
 const fetchImportedErsteTransactionCount = (): number =>
     testDb
@@ -142,9 +169,12 @@ const fetchImportedErsteTransactionCount = (): number =>
         )
         .all().length;
 
+const fetchImportedErsteTransactions = (): TransactionEntityInterface[] =>
+    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE)).all();
+
 describe('erste/file-import-idempotency', () => {
     beforeEach(() => {
-        vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();
+        vi.clearAllMocks();
     });
 
     it('enqueues consolidation after an Erste file import introduces new transactions', async () => {
@@ -167,8 +197,8 @@ describe('erste/file-import-idempotency', () => {
     });
 
     it('keeps one transaction when the same statement import starts twice', async () => {
-        const parseBarrier = new TwoCallBarrier();
-        const resolveBarrier = new TwoCallBarrier();
+        const parseBarrier = buildTwoCallBarrier();
+        const resolveBarrier = buildTwoCallBarrier();
         const firstSyncService = buildBarrierErsteSyncService(parseBarrier, resolveBarrier);
         const secondSyncService = buildBarrierErsteSyncService(parseBarrier, resolveBarrier);
 
@@ -187,5 +217,26 @@ describe('erste/file-import-idempotency', () => {
         await syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
 
         expect(fetchImportedErsteTransactionCount()).toBe(1);
+    });
+
+    it('updates an older Erste PDF transaction instead of creating a duplicate', async () => {
+        const account = seed.account({ externalId: ERSTE_ACCOUNT_ID, externalSource: ExternalSourceEnum.ERSTE });
+        const bankTransaction = buildMappedErsteTransaction();
+        const [legacyTransaction] = await transactionImportService.bulkUpsertImported(
+            [buildLegacyErsteInput(bankTransaction, account.id, ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID)],
+            new Map()
+        );
+        if (!isDefined(legacyTransaction)) {
+            throw new Error('Expected legacy Erste transaction to be inserted');
+        }
+        const syncService = buildErsteSyncService(buildStubErsteFileClient([bankTransaction]));
+
+        await syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
+
+        const transactions = fetchImportedErsteTransactions();
+
+        expect(transactions).toHaveLength(1);
+        expect(transactions[0].id).toBe(legacyTransaction.id);
+        expect(transactions[0].externalId).toBe(bankTransaction.id);
     });
 });

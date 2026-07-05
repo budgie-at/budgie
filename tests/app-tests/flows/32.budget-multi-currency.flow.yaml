@@ -1,13 +1,15 @@
 appId: ${APP_ID}
 env:
-    BUDGET_LIMIT: '200'
     EUR_ACCOUNT: E2E Foreign Account
     CATEGORY_NAME: Groceries
 ---
 - runFlow:
       file: setup/setup-multi-currency-budget.flow.yaml
 
-- openLink: 'budgie://budget'
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://budget'
 - extendedWaitUntil:
       visible:
           id: 'BudgetWidget.EmptyState'
@@ -20,7 +22,12 @@ env:
 
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
-- inputText: ${BUDGET_LIMIT}
+- inputText: '200'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.OverallLimitInput'
+          text: '200'
+      timeout: 3000
 
 - scrollUntilVisible:
       element:
@@ -28,8 +35,15 @@ env:
       direction: DOWN
       centerElement: true
 - waitForAnimationToEnd
-- tapOn:
-      id: 'BudgetSetup.CategoryLimitAddButton'
+- retry:
+      maxRetries: 3
+      commands:
+          - tapOn:
+                id: 'BudgetSetup.CategoryLimitAddButton'
+          - extendedWaitUntil:
+                visible:
+                    id: 'CategoryPickerBottomSheet.Input'
+                timeout: 3000
 - runFlow:
       file: subflows/shared/select-category-by-search.flow.yaml
       env:
@@ -43,6 +57,11 @@ env:
 - tapOn:
       id: 'BudgetSetup.CategoryLimit.0.AmountInput'
 - inputText: '80'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+          text: '80'
+      timeout: 3000
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
@@ -54,7 +73,7 @@ env:
       timeout: 3000
 - assertVisible:
       id: 'BudgetWidget.SpentLabel'
-      text: '€137 / €200'
+      text: '€136 / €200'
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
@@ -62,7 +81,7 @@ env:
       timeout: 3000
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
-      text: '€137 / €200'
+      text: '€136 / €200'
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:

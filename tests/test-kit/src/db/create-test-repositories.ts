@@ -1,4 +1,3 @@
-import * as contracts from '@budgie/contracts';
 import {
     AtmCashWithdrawalRepository,
     ExistingTransferRepository,
@@ -6,6 +5,7 @@ import {
     RefundPairRepository,
     TransferPairRepository
 } from '@budgie/consolidation';
+import * as contracts from '@budgie/contracts';
 
 import type { DB } from '@budgie/contracts';
 
@@ -17,6 +17,8 @@ export const createTestRepositories = (db: DB) => ({
     instrumentRepository: new contracts.InstrumentRepository(db),
     exchangeRateRepository: new contracts.ExchangeRateRepository(db),
     historicalExchangeRateRepository: new contracts.HistoricalExchangeRateRepository(db),
+    instrumentDailyMarketPriceRepository: new contracts.InstrumentDailyMarketPriceRepository(db),
+    instrumentMarketDataJobRepository: new contracts.InstrumentMarketDataJobRepository(db),
     accountBalanceRepository: new contracts.AccountBalanceRepository(db),
     syncRepository: new contracts.SyncRepository(db),
     ruleRepository: new contracts.RuleRepository(db),

@@ -6,10 +6,12 @@ import { Text, View } from 'react-native';
 import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
 
+import { AccountsEmptyStateSelector } from './accounts-empty-state.selector';
+
 export const AccountsEmptyState = () => {
     const router = useRouter();
 
-    const handleAddAccount = () => void router.push('/create-account');
+    const handleAddAccount = () => void router.push('/(main)/create-account');
 
     return (
         <View className="flex-1 items-center justify-center pb-20">
@@ -31,6 +33,7 @@ export const AccountsEmptyState = () => {
                     leftIcon={UserIconNameEnum.Plus}
                     onPress={handleAddAccount}
                     content={<Trans>Add Account</Trans>}
+                    testID={AccountsEmptyStateSelector.AddAccountButton}
                 />
             </View>
         </View>

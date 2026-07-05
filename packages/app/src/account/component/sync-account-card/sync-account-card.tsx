@@ -9,7 +9,7 @@ import { useQuickImport } from '../../../sync/hook/use-quick-import.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { SyncStatusDot } from '../sync-status-dot/sync-status-dot';
 
-interface Props extends Pick<AccountWithSyncEntityInterface, 'id' | 'title' | 'icon'> {
+interface Props extends Pick<AccountWithSyncEntityInterface, 'id' | 'title' | 'icon' | 'externalId'> {
     readonly balance: number;
     readonly sync: SyncEntityInterface | null;
     readonly className?: string;
@@ -17,12 +17,12 @@ interface Props extends Pick<AccountWithSyncEntityInterface, 'id' | 'title' | 'i
 }
 
 export const SyncAccountCard = (props: Props) => {
-    const { id, title, icon, balance, className, instrumentSymbol, sync } = props;
+    const { id, title, icon, externalId, balance, className, instrumentSymbol, sync } = props;
 
     const [, hapticImpact] = useVibration();
 
     const quickImportConfig = isDefined(sync) ? (quickImportConfigMap[sync.provider] ?? null) : null;
-    const { handleQuickImport } = useQuickImport(quickImportConfig);
+    const { handleQuickImport } = useQuickImport(quickImportConfig, externalId);
 
     const handleLongPress = () => {
         hapticImpact(ImpactFeedbackStyle.Medium);

@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- File owns the cohesive Binance sync service: run lifecycle, snapshot anchoring, source and transfer commits -- approved by human (PR #561 review) */
 import {
     AccountTypeEnum,
     BANK_FEE_CATEGORY_ID,

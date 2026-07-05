@@ -3,6 +3,7 @@ import { Href, router } from 'expo-router';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { CreateAccountSelector } from '../../../app/(main)/create-account/create-account.selector';
 
 interface Props {
     readonly title: string;
@@ -17,6 +18,7 @@ export const CreateSyncCard = ({ title, description, route, bankProvider }: Prop
 
     return (
         <SimpleHorizontalCell
+            testID={CreateAccountSelector.bankProvider(bankProvider)}
             size="lg"
             left={<BankLogo bankProvider={bankProvider} />}
             onPress={handleNavigate}

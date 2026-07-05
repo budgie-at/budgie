@@ -6,6 +6,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
+import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionFeeEntries } from '../../utils/get-transaction-fee-entries.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
@@ -28,7 +29,7 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
     const categoryIcon = getTransactionIcon(transaction);
     const type = getTransactionType(transaction);
 
-    const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
+    const title = getTransactionDisplayTitle(transaction);
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
     const refundedPillTestID = TransactionCardSelector.RefundedPill(transaction.id);
     const feePillTestID = TransactionCardSelector.FeePill(transaction.id);

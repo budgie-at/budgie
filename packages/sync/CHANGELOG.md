@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.39.0](https://github.com/budgie-at/budgie/compare/v5.38.2...v5.39.0) (2026-06-29)
+
+**Note:** Version bump only for package @budgie/bank-sync
+
+## [5.38.1](https://github.com/budgie-at/budgie/compare/v5.38.0...v5.38.1) (2026-06-22)
+
+### Bug Fixes
+
+- stabilize bank file imports ([#574](https://github.com/budgie-at/budgie/issues/574)) ([23b2773](https://github.com/budgie-at/budgie/commit/23b277369a10c980bba344979854625e4e001fc2))
+
 ## [5.35.2](https://github.com/budgie-at/budgie/compare/v5.35.1...v5.35.2) (2026-06-06)
 
 **Note:** Version bump only for package @budgie/bank-sync

@@ -7,7 +7,9 @@ import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } fro
 import { Icon } from '../../../@generic/component/icon/icon';
 import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { CreateTransactionMenuSelector } from '../create-transaction-menu/create-transaction-menu.selector';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -73,18 +75,23 @@ export const ActionItem = ({ icon, label, testID, variant, index, totalItems, is
         onPress();
     };
 
+    const actionItemTestID = testID ?? CreateTransactionMenuSelector.item(index);
+
     return (
         <Animated.View className="absolute right-0" style={animatedStyle}>
             <Pressable
                 className="flex-row-reverse items-center p-sm"
                 hitSlop={10}
                 onPress={handlePress}
-                testID={testID ?? CreateTransactionMenuSelector.item(index)}
+                testID={actionItemTestID}
+                collapsable={false}
             >
                 <View className={containerVariants({ variant })}>
                     <Icon className={iconVariants({ variant })} icon={icon} size={ICON_SIZE} />
                 </View>
-                <Text className="text-white text-sm font-medium mr-lg">{label}</Text>
+                <Text className="text-white text-sm font-medium mr-lg" {...testIDProps(actionItemTestID, TestIDPartEnum.LABEL)}>
+                    {label}
+                </Text>
             </Pressable>
         </Animated.View>
     );

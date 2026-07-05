@@ -1,7 +1,7 @@
 import { Log } from '@budgie/logger';
 import { getUnixTime } from 'date-fns';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
@@ -40,11 +40,11 @@ class ErsteMapper {
     )
     mapTransaction(row: ErsteRowInterface, iban: string): SyncTransactionInterface {
         const id = this.generateExternalId(row, iban);
-        const legacyExternalId = this.generateLegacyExternalId(row, iban);
+        const legacyExternalIds = this.generateLegacyExternalIds(row, iban, id);
 
         return {
             id,
-            ...(id !== legacyExternalId && { legacyExternalIds: [legacyExternalId] }),
+            ...(isNotEmptyArray(legacyExternalIds) && { legacyExternalIds }),
             provider: SyncProviderEnum.ERSTE,
             accountId: iban,
             type: row.isCredit ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
@@ -85,7 +85,17 @@ class ErsteMapper {
         return generateStableExternalIdHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
     }
 
-    private generateLegacyExternalId(row: ErsteRowInterface, iban: string): string {
+    private generateLegacyExternalIds(row: ErsteRowInterface, iban: string, id: string): string[] {
+        return [
+            ...new Set([
+                this.generateLocationLegacyExternalId(row, iban),
+                this.generateInstantReferenceDetailsLegacyExternalId(row, iban),
+                this.generateInstantDescriptionLegacyExternalId(row, iban)
+            ])
+        ].filter(legacyExternalId => legacyExternalId !== id);
+    }
+
+    private generateLocationLegacyExternalId(row: ErsteRowInterface, iban: string): string {
         const seed = [
             this.buildStatementDateKey(row.date),
             iban,
@@ -96,6 +106,18 @@ class ErsteMapper {
             row.city ?? '',
             row.countryAlpha2 ?? ''
         ].join('|');
+
+        return generateStableExternalIdHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
+    }
+
+    private generateInstantReferenceDetailsLegacyExternalId(row: ErsteRowInterface, iban: string): string {
+        const seed = `${row.date.toISOString()}|${iban}|${row.amount}|${row.reference}|${row.details}`;
+
+        return generateStableExternalIdHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
+    }
+
+    private generateInstantDescriptionLegacyExternalId(row: ErsteRowInterface, iban: string): string {
+        const seed = `${row.date.toISOString()}|${iban}|${row.amount}|${row.description}`;
 
         return generateStableExternalIdHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
     }

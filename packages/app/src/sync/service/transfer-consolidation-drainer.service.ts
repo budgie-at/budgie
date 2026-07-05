@@ -14,19 +14,23 @@ import { transferConsolidationService } from './transfer-consolidation.service';
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 class TransferConsolidationDrainerService {
+    private static readonly FOREGROUND_BUSY_RESCHEDULE_MS = 1000;
+    private static readonly DEFAULT_DRAIN_DELAY_MS = TransferConsolidationDrainerService.FOREGROUND_BUSY_RESCHEDULE_MS + 500;
+
     private static readonly DRAIN_DELAY_MS_BY_REASON: Record<TransferConsolidationDrainReasonEnum, number> = {
-        [TransferConsolidationDrainReasonEnum.MONOBANK_SYNC]: 1500,
-        [TransferConsolidationDrainReasonEnum.BINANCE_SYNC]: 1500,
-        [TransferConsolidationDrainReasonEnum.FILE_IMPORT]: 1500
+        [TransferConsolidationDrainReasonEnum.MONOBANK_SYNC]: TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS,
+        [TransferConsolidationDrainReasonEnum.BINANCE_SYNC]: TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS,
+        [TransferConsolidationDrainReasonEnum.FILE_IMPORT]: TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS
     };
 
-    private static readonly FOREGROUND_BUSY_RESCHEDULE_MS = 1000;
+    private static readonly FOLLOW_UP_DRAIN_DELAY_MS = TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS;
 
     private hasPendingRun = false;
     private pendingScope: ConsolidationScanScopeInterface | null = null;
     private isRunning = false;
     private timer: ReturnType<typeof setTimeout> | null = null;
     private timerFiresAt: number | null = null;
+    private cancelIdleCallback: (() => void) | null = null;
 
     @Log(
         (reason, scope) =>
@@ -45,6 +49,10 @@ class TransferConsolidationDrainerService {
         }
 
         const incomingFiresAt = Date.now() + TransferConsolidationDrainerService.DRAIN_DELAY_MS_BY_REASON[reason];
+
+        if (isDefined(this.cancelIdleCallback)) {
+            return;
+        }
 
         if (isDefined(this.timer) && isDefined(this.timerFiresAt) && this.timerFiresAt <= incomingFiresAt) {
             return;
@@ -72,27 +80,27 @@ class TransferConsolidationDrainerService {
             return;
         }
 
-        this.isRunning = true;
-
-        try {
-            await this.drainPendingRuns();
-        } finally {
-            this.isRunning = false;
-        }
-    }
-
-    private async drainPendingRuns(): Promise<void> {
         if (!this.hasPendingRun) {
             return;
         }
 
+        this.isRunning = true;
+
+        try {
+            await this.drainPendingRun();
+        } finally {
+            this.isRunning = false;
+            this.schedulePendingFollowUpRun();
+        }
+    }
+
+    private async drainPendingRun(): Promise<void> {
         const scope = this.pendingScope;
         this.hasPendingRun = false;
         this.pendingScope = null;
         await microPause();
         await syncWorkloadService.run('transfer-consolidation-drain', () => transferConsolidationService.consolidate(scope));
         await microPause();
-        await this.drainPendingRuns();
     }
 
     private addPendingScope(scope: ConsolidationScanScopeInterface | null): void {
@@ -115,6 +123,14 @@ class TransferConsolidationDrainerService {
         this.pendingScope = consolidationScopeService.merge(this.pendingScope, scope);
     }
 
+    private schedulePendingFollowUpRun(): void {
+        if (!this.hasPendingRun) {
+            return;
+        }
+
+        this.scheduleAfter(TransferConsolidationDrainerService.FOLLOW_UP_DRAIN_DELAY_MS);
+    }
+
     private scheduleAfter(delay: number): void {
         this.cancelScheduledRun();
 
@@ -122,7 +138,8 @@ class TransferConsolidationDrainerService {
         this.timer = setTimeout(() => {
             this.timer = null;
             this.timerFiresAt = null;
-            scheduleIdleCallback(() => {
+            this.cancelIdleCallback = scheduleIdleCallback(() => {
+                this.cancelIdleCallback = null;
                 this.run().catch(emptyFn);
             });
         }, delay);
@@ -135,6 +152,11 @@ class TransferConsolidationDrainerService {
         }
 
         this.timerFiresAt = null;
+
+        if (isDefined(this.cancelIdleCallback)) {
+            this.cancelIdleCallback();
+            this.cancelIdleCallback = null;
+        }
     }
 }
 
