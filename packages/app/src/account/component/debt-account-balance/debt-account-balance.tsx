@@ -63,6 +63,7 @@ export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Prop
             <Text className="font-medium text-xs uppercase text-secondary-foreground text-center">{labels.balance}</Text>
 
             <ProtectedMoney
+                accessible
                 className="justify-start"
                 minFontSize={10}
                 maxFontSize={36}
