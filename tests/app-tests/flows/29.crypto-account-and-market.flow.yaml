@@ -45,6 +45,8 @@ appId: ${APP_ID}
           id: 'CryptoGroup.Market.BTC'
       timeout: 10000
 - assertVisible:
+      id: 'CryptoGroup.Card.BTC'
+- assertVisible:
       id: 'CryptoGroup.Container.BTC'
 - assertVisible:
       id: 'NetWorthAssetChips'
@@ -66,6 +68,8 @@ appId: ${APP_ID}
       visible:
           id: 'CryptoGroup.Market.ETH'
       timeout: 10000
+- assertVisible:
+      id: 'CryptoGroup.Card.ETH'
 - assertVisible:
       id: 'CryptoGroup.Container.ETH'
 - assertVisible:

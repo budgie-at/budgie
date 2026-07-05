@@ -1,4 +1,5 @@
 export const CryptoCurrencyGroupCardSelector = {
+    Card: (instrumentCode: string) => `CryptoGroup.Card.${instrumentCode}` as const,
     Container: (instrumentCode: string) => `CryptoGroup.Container.${instrumentCode}` as const,
     Market: (instrumentCode: string) => `CryptoGroup.Market.${instrumentCode}` as const,
     Balance: (instrumentCode: string) => `CryptoGroup.Balance.${instrumentCode}` as const,

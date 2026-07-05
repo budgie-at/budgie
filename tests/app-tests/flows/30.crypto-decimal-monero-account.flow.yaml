@@ -17,6 +17,8 @@ appId: ${APP_ID}
           id: 'CryptoGroup.Market.XMR'
       timeout: 10000
 - assertVisible:
+      id: 'CryptoGroup.Card.XMR'
+- assertVisible:
       id: 'CryptoGroup.Container.XMR'
 - assertVisible:
       id: 'CryptoGroup.Balance.XMR'
