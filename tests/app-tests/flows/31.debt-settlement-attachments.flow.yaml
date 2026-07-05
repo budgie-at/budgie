@@ -620,12 +620,18 @@ appId: ${APP_ID}
       timeout: 10000
 
 - runFlow:
-      file: subflows/accounts/open-account-details.flow.yaml
+      file: subflows/navigation/open-deep-link.flow.yaml
       env:
-          ACCOUNT_NAME: 'E2E Completed Debt'
+          DEEP_LINK: 'budgie://account/7/details'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.Page'
+      timeout: 10000
 
-- assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.0'
+- extendedWaitUntil:
+      visible:
+          id: 'DebtAccountBalance.OutstandingAmount.0'
+      timeout: 10000
 - assertVisible:
       id: 'DebtAccountBalance.PaidAmount.300'
 - assertVisible:
