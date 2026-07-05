@@ -123,6 +123,8 @@ jobs:
         needs: [code-quality, eas-update-preview]
         name: Build iOS E2E app
         runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+        permissions:
+            contents: read
         env:
             APP_VARIANT: e2e
             EXPO_PUBLIC_AI_DISABLE: 'true'
@@ -305,6 +307,8 @@ jobs:
         needs: [build-ios-e2e-app]
         name: E2E Tests on iOS (shard ${{ matrix.shard }})
         runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+        permissions:
+            contents: read
         strategy:
             fail-fast: false
             matrix:
@@ -475,6 +479,8 @@ jobs:
         needs: [code-quality, eas-update-preview]
         name: E2E Tests on Android
         runs-on: [self-hosted, linux-ci]
+        permissions:
+            contents: read
         steps:
             - uses: actions/checkout@v5
 

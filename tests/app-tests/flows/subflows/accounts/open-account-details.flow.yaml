@@ -6,9 +6,11 @@ appId: ${APP_ID}
       id: 'AccountCard.${ACCOUNT_NAME}'
     direction: DOWN
     visibilityPercentage: 40
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'AccountCard.${ACCOUNT_NAME}'
+    retryTapIfNoChange: true
 - extendedWaitUntil:
     visible:
       id: 'AccountDetails.Page'

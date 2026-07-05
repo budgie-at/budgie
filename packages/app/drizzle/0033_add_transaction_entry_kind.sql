@@ -236,6 +236,8 @@ WHERE id IN (
     INNER JOIN debt_settlement_entry_kind_migration migration
         ON migration.transaction_id = debt_entry.transaction_id
         AND migration.debt_account_id = debt_entry.account_id
+    WHERE debt_entry.deleted_at IS NULL
+      AND debt_entry.original_transaction_id IS NULL
 );
 --> statement-breakpoint
 UPDATE transaction_entries
