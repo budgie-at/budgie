@@ -433,8 +433,25 @@ if [ -z "$E2E_DB_FIXTURES_URI" ]; then
     echo "Could not resolve E2E_DB_FIXTURES_URI for $APP_ID; database-import flows will fail." >&2
 fi
 
+prime_deep_links() {
+    local prime_flow_path="$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml"
+
+    if [ ! -f "$prime_flow_path" ]; then
+        return 0
+    fi
+
+    echo "Priming deep-link scheme confirmation"
+
+    if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
+        maestro --udid "$DETECTED_SIMULATOR_UDID" test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID" || true
+    else
+        maestro test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID" || true
+    fi
+}
+
 collect_flow_paths
 capture_output_path
+prime_deep_links
 
 echo "Running Maestro suite from $WORKSPACE_DIR"
 

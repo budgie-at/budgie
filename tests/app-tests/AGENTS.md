@@ -26,7 +26,7 @@ Maestro flows for Budgie.
 
 ## Speed Rules
 
-1. Deep links (`openLink: budgie://...`) never show an iOS Open confirmation in this suite. Do not add `when: visible: 'Open'` probes around them — each probe costs ~7s. The only legitimate Open handling is the native Files picker inside `select-file-from-app-provider.flow.yaml`. Enforced by `selectors:check`.
+1. The iOS deep-link Open confirmation fires once per fresh simulator, and `run-maestro-suite.sh` handles it by running `flows/setup/prime-deep-links.flow.yaml` before the suite. Do not add `when: visible: 'Open'` probes to business flows — each probe costs ~7s. The only other legitimate Open handling is the native Files picker inside `select-file-from-app-provider.flow.yaml`. Enforced by `selectors:check`.
 2. Do not combine `optional: true` with `extendedWaitUntil` timeouts above 5000 — an absent element silently burns the whole timeout. Enforced by `selectors:check`.
 3. Navigation subflows deep-link first and wait for the destination identity once. Do not reintroduce tab-tap fallbacks with long optional waits.
 4. Prefer seeded database fixtures over creating setup entities through the UI. UI creation belongs only where creation itself is the coverage. To regenerate a captured fixture, run the matching `flows/setup/capture-*.flow.yaml` through `scripts/capture-fixture.sh <capture-flow> <fixture-name>` against a fresh E2E build, then commit the updated `fixtures/*.db`.

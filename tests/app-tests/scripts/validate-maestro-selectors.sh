@@ -41,12 +41,12 @@ fi
 
 DEEP_LINK_OPEN_PROBES=$(
     grep -R -E -n "visible:[[:space:]]*['\"]Open['\"]" "$FLOW_DIR" |
-        grep -v "select-file-from-app-provider.flow.yaml" || true
+        grep -v -e "select-file-from-app-provider.flow.yaml" -e "prime-deep-links.flow.yaml" || true
 )
 
 if [ -n "$DEEP_LINK_OPEN_PROBES" ]; then
     printf '%s\n' "$DEEP_LINK_OPEN_PROBES"
-    echo "Deep links do not show an Open confirmation on iOS; remove the visible: 'Open' probe (each costs ~7s). The native Files picker Open handling lives only in select-file-from-app-provider.flow.yaml."
+    echo "The deep-link Open confirmation fires once per fresh simulator and is handled by flows/setup/prime-deep-links.flow.yaml at suite start; do not add per-call visible: 'Open' probes (each costs ~7s). The native Files picker Open handling lives only in select-file-from-app-provider.flow.yaml."
     exit 1
 fi
 

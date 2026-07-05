@@ -41,6 +41,7 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
       timeout: 5000
+- waitForAnimationToEnd
 
 - longPressOn:
       id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
@@ -125,6 +126,7 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
       timeout: 5000
+- waitForAnimationToEnd
 
 - tapOn:
       id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
@@ -279,6 +281,7 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Lent_Debt_Extra_Transfer'
       timeout: 5000
+- waitForAnimationToEnd
 
 - tapOn:
       id: 'TabBar.Home'
@@ -353,6 +356,7 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Expense'
       timeout: 5000
+- waitForAnimationToEnd
 
 - tapOn:
       id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Expense'
@@ -451,9 +455,12 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Income'
       timeout: 5000
+- waitForAnimationToEnd
 
-- tapOn:
-      id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Income'
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/12/income'
 - extendedWaitUntil:
       visible:
           id: 'TransactionInfo.Page'
@@ -561,9 +568,12 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Completed_Debt_Attach_Income'
       timeout: 5000
+- waitForAnimationToEnd
 
-- tapOn:
-      id: 'TransactionCard.Label.E2E_Completed_Debt_Attach_Income'
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/13/income'
 - extendedWaitUntil:
       visible:
           id: 'TransactionInfo.Page'
