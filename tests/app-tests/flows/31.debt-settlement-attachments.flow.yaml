@@ -41,7 +41,6 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
       timeout: 5000
-- waitForAnimationToEnd
 
 - longPressOn:
       id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
@@ -126,7 +125,6 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
       timeout: 5000
-- waitForAnimationToEnd
 
 - tapOn:
       id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
@@ -281,7 +279,6 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Lent_Debt_Extra_Transfer'
       timeout: 5000
-- waitForAnimationToEnd
 
 - tapOn:
       id: 'TabBar.Home'
@@ -356,7 +353,6 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Expense'
       timeout: 5000
-- waitForAnimationToEnd
 
 - tapOn:
       id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Expense'
@@ -455,7 +451,6 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Income'
       timeout: 5000
-- waitForAnimationToEnd
 
 - runFlow:
       file: subflows/navigation/open-deep-link.flow.yaml
@@ -568,7 +563,6 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Completed_Debt_Attach_Income'
       timeout: 5000
-- waitForAnimationToEnd
 
 - runFlow:
       file: subflows/navigation/open-deep-link.flow.yaml
@@ -630,11 +624,11 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'DebtAccountBalance.OutstandingAmount.0'
+          id: 'DebtAccountBalance.Percentage.100'
       timeout: 10000
+- assertVisible:
+      id: 'DebtAccountBalance.OutstandingAmount.0'
 - assertVisible:
       id: 'DebtAccountBalance.PaidAmount.300'
 - assertVisible:
       id: 'DebtAccountBalance.TotalAmount.300'
-- assertVisible:
-      id: 'DebtAccountBalance.Percentage.100'

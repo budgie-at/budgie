@@ -88,7 +88,7 @@ export const Ticker = (props: Props) => {
     });
 
     return (
-        <View className="w-full" testID={testID} {...(!isDefined(availableWidth) && { onLayout: handleLayout })}>
+        <View accessible className="w-full" testID={testID} {...(!isDefined(availableWidth) && { onLayout: handleLayout })}>
             <View className={cn('flex-row justify-center', className)}>{elements}</View>
         </View>
     );
