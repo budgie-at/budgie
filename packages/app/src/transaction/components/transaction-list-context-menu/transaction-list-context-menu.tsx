@@ -149,10 +149,18 @@ const getBorrowedDebtCreateAction = ({
     };
 };
 
-const useTransactionListContextMenuClose = ({ onClose, onCloseComplete }: Pick<Props, 'onClose' | 'onCloseComplete'>) => {
+const useTransactionListContextMenuClose = ({
+    isOpen,
+    onClose,
+    onCloseComplete
+}: Pick<Props, 'isOpen' | 'onClose' | 'onCloseComplete'>) => {
     const pendingActionRef = useRef<EmptyFn | null>(null);
 
     const closeMenu = (afterClose?: EmptyFn) => {
+        if (!isOpen) {
+            return;
+        }
+
         pendingActionRef.current = afterClose ?? null;
         onClose();
     };
@@ -181,7 +189,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
     const [openConvertToTransfer] = useConvertToTransferModal();
     const transactionId = transaction?.id ?? 0;
     const revertConsolidation = useRevertConsolidation(transactionId);
-    const { closeMenu, handleCloseComplete } = useTransactionListContextMenuClose({ onClose, onCloseComplete });
+    const { closeMenu, handleCloseComplete } = useTransactionListContextMenuClose({ isOpen, onClose, onCloseComplete });
 
     if (!isDefined(transaction)) {
         return null;
