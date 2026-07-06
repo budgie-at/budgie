@@ -1,13 +1,12 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { router } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
-import { useConvertToRefundModal } from '../../context/convert-to-refund-modal.context';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
+import { useOpenRefundConvert } from '../../hook/use-open-refund-convert.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
@@ -16,7 +15,6 @@ import type { UpdateTransactionFormPropsInterface } from '../../interface/update
 
 export const IncomeTransactionInfoPage = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const deleteTransaction = useDeleteTransaction();
-    const [openConvertToRefund] = useConvertToRefundModal();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const isConsolidated = isDefined(transaction.consolidationType);
     const transactionId = transaction.id;
@@ -40,18 +38,7 @@ export const IncomeTransactionInfoPage = ({ transaction }: UpdateTransactionForm
             sourceCode: sourceEntry.account.instrument.code
         });
     };
-    const handleOpenRefundConvert = () =>
-        void openConvertToRefund({
-            refundIncomeTransactionId: transactionId
-        }).then(canonicalId => {
-            if (isDefined(canonicalId)) {
-                const expenseRoute = `/transactions/${canonicalId}/expense` as const;
-
-                router.replace(expenseRoute);
-            }
-
-            return null;
-        });
+    const handleOpenRefundConvert = useOpenRefundConvert(transactionId);
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
     const editHref = `/transactions/${transactionId}/income/edit` as const;
