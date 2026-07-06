@@ -11,6 +11,8 @@ import tseslint from 'typescript-eslint';
 import pluginLingui from 'eslint-plugin-lingui';
 import rnwcPlugin from '@rnw-community/eslint-plugin';
 
+import { maxComponentPropsRule } from './eslint-rules/max-component-props.mjs';
+
 export default defineConfig(
     {
         ignores: [
@@ -230,6 +232,33 @@ export default defineConfig(
                         'abstract-method',
                         'decorated-method',
                         'method'
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        files: ['**/*.{ts,tsx}'],
+        plugins: { budgie: { rules: { 'max-component-props': maxComponentPropsRule } } },
+        rules: {
+            'budgie/max-component-props': [
+                'error',
+                {
+                    max: 10,
+                    allow: [
+                        'packages/app/src/transaction/components/simple-quick-form-display/simple-quick-form-display.tsx',
+                        'packages/app/src/transaction/components/quick-form-bottom-overlay/quick-form-bottom-overlay.tsx',
+                        'packages/app/src/transaction/components/simple-quick-form/simple-quick-form.tsx',
+                        'packages/app/src/transaction/components/transaction-picker/transaction-picker.tsx',
+                        'packages/app/src/transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer.tsx',
+                        'packages/app/src/transaction/components/transaction-amount-display/transaction-amount-display.tsx',
+                        'packages/app/src/transaction/components/transaction-field-icons/transaction-field-icons.tsx',
+                        'packages/app/src/transaction/interface/update-simple-transaction-page-props.interface.ts',
+                        'packages/app/src/@generic/component/page-header/page-header.tsx',
+                        'packages/app/src/@generic/component/searchable-page/searchable-page.tsx',
+                        'packages/app/src/@generic/component/selector-card/selector-card.tsx',
+                        'packages/app/src/transaction/components/simple-quick-form-controls/simple-quick-form-controls.tsx',
+                        'packages/landing/src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx'
                     ]
                 }
             ]
