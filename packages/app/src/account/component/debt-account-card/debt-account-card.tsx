@@ -3,12 +3,11 @@ import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
-import { getDeadlinePriority } from '../../util/get-deadline-priority.util';
 import { buildDebtAccountProgressSummary } from '../../utils/build-debt-account-progress-summary.util';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
@@ -31,6 +30,17 @@ const progressVariants = cva('absolute bottom-0 left-0 h-1', {
         }
     }
 });
+
+const getDeadlinePriority = (createdAt: Date, deadline: Date): 'high' | 'normal' => {
+    const totalMs = deadline.getTime() - createdAt.getTime();
+    const remainingMs = deadline.getTime() - Date.now();
+
+    if (!isPositiveNumber(totalMs)) {
+        return 'normal';
+    }
+
+    return remainingMs <= totalMs * 0.3 ? 'high' : 'normal';
+};
 
 export const DebtAccountCard = (props: Props) => {
     const { id, createdAt, title, icon, balance, debtType, targetBalance, deadline, className, debtProgressSummary, instrumentSymbol } =
