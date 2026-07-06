@@ -9,23 +9,13 @@ appId: ${APP_ID}
           id: 'SettingsPage.Container'
       timeout: 15000
 
-- runFlow:
-      when:
-          notVisible:
-              id: 'CsvPage.ImportCard'
-      commands:
-          - scrollUntilVisible:
-                element:
-                    id: 'CsvPage.ImportCard'
-                direction: DOWN
-                centerElement: true
-                waitToSettleTimeoutMs: 500
-          - waitForAnimationToEnd
-
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'CsvPage.ImportCard'
-      timeout: 10000
+      direction: DOWN
+      timeout: 20000
+      centerElement: true
+      waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
 
 - retry:
