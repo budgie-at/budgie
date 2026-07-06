@@ -189,15 +189,22 @@ export const binanceStub = {
             })
         );
     },
-    convertTradeFlow: (flows: BinanceConvertFlowApiInterface[]): void => {
+    convertTradeFlow: (flows: BinanceConvertFlowApiInterface[], requestedWindows?: TimeWindow[], forceMoreData = false): void => {
         mockServer.use(
             http.get(CONVERT_TRADE_FLOW_URL, ({ request }) => {
                 const url = new URL(request.url);
                 const startTime = Number(url.searchParams.get('startTime') ?? '0');
                 const endTime = Number(url.searchParams.get('endTime') ?? '0');
                 const limit = Number(url.searchParams.get('limit') ?? '0');
+                const window = { startMs: startTime, endMs: endTime };
+                const matched = flows.filter(flow => isWithinWindow(flow.createTime, window));
+                const hasMore = forceMoreData && matched.length > 1;
+                requestedWindows?.push(window);
 
-                return HttpResponse.json({ list: flows, startTime, endTime, limit, moreData: false }, { headers: WEIGHT_HEADERS });
+                return HttpResponse.json(
+                    { list: hasMore ? matched.slice(0, 1) : matched, startTime, endTime, limit, moreData: hasMore },
+                    { headers: WEIGHT_HEADERS }
+                );
             })
         );
     },

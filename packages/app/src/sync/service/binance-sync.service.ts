@@ -111,6 +111,11 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             createdCount += 1;
         }
 
+        if (isPositiveNumber(createdCount)) {
+            void this.registerBackgroundTask();
+            void this.sync();
+        }
+
         return createdCount;
     }
 
@@ -144,9 +149,15 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC);
         }
 
-        const now = new Date();
+        const progressDate = this.runDeferred ? (sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date()) : new Date();
 
-        return { transactions: [], nextTo: now, nextFrom: now, completed: !this.runDeferred };
+        return {
+            transactions: [],
+            transactionCount: changedCount,
+            nextTo: progressDate,
+            nextFrom: progressDate,
+            completed: !this.runDeferred
+        };
     }
 
     protected override validateToken(token: string): void {
@@ -178,20 +189,21 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private async runSyncPhases(sync: SyncEntityInterface, externalAccountId: string): Promise<number> {
+        let changedCount = 0;
         try {
-            const changedSourceCount = await this.processSources(sync);
+            changedCount += await this.processSources(sync);
             await microPause();
-            const changedTransferCount = await this.processTransfers(sync, externalAccountId);
+            changedCount += await this.processTransfers(sync, externalAccountId);
             await microPause();
 
-            return changedSourceCount + changedTransferCount;
+            return changedCount;
         } catch (error) {
             if (!this.isDeadlineDeferral(error)) {
                 throw error;
             }
             this.runDeferred = true;
 
-            return 0;
+            return changedCount;
         }
     }
 
@@ -291,10 +303,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
         if (result.success) {
             return result.data;
-        }
-
-        if (result.error.code === SyncErrorCodeEnum.INVALID_RESPONSE) {
-            return [];
         }
 
         // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
@@ -463,10 +471,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         const result = await fetchSourceType();
         if (result.success) {
             return result.data;
-        }
-
-        if (result.error.code === SyncErrorCodeEnum.INVALID_RESPONSE) {
-            return [];
         }
 
         // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing

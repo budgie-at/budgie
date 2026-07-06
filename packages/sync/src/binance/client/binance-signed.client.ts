@@ -671,6 +671,29 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         startTimeMs: number,
         endTimeMs: number
     ): Promise<SyncResultInterface<BinanceConvertFlowApiInterface[]>> {
+        const result = await this.fetchConvertWindowChunk(startTimeMs, endTimeMs);
+        if (!result.success || !result.data.moreData || endTimeMs <= startTimeMs) {
+            return result.success ? this.success(result.data.list) : result;
+        }
+
+        const midpointMs = Math.floor((startTimeMs + endTimeMs) / 2);
+        const olderResult = await this.fetchConvertWindow(startTimeMs, midpointMs);
+        if (!olderResult.success) {
+            return olderResult;
+        }
+
+        const newerResult = await this.fetchConvertWindow(midpointMs + 1, endTimeMs);
+        if (!newerResult.success) {
+            return newerResult;
+        }
+
+        return this.success([...olderResult.data, ...newerResult.data]);
+    }
+
+    private async fetchConvertWindowChunk(
+        startTimeMs: number,
+        endTimeMs: number
+    ): Promise<SyncResultInterface<{ list: BinanceConvertFlowApiInterface[]; moreData: boolean }>> {
         const result = await this.signedRequest(CONVERT_TRADE_FLOW_ENDPOINT, 'GET', {
             startTime: startTimeMs,
             endTime: endTimeMs,
@@ -685,7 +708,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return this.failure(SyncError.invalidResponse(this.provider));
         }
 
-        return this.success(parsed.data.list);
+        return this.success({ list: parsed.data.list, moreData: parsed.data.moreData });
     }
 
     private async fetchTradeTransfers(
