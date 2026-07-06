@@ -22,7 +22,8 @@ import { updateDebtTargetBaseValuation } from '../util/update-debt-target-base-v
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 
-import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
+import type { BuildDebtTransferEntryParamsInterface } from '../interface/build-debt-transfer-entry-params.interface';
+import type { CreateOpeningDebtTransferParamsInterface } from '../interface/create-opening-debt-transfer-params.interface';
 import type {
     AccountEntityInterface,
     DB,
@@ -109,16 +110,7 @@ class AccountDebtOpeningService {
         operatedAt,
         title,
         tx
-    }: {
-        readonly fromAccountId: number;
-        readonly toAccountId: number;
-        readonly fromAmount: number;
-        readonly toAmount: number;
-        readonly exchangeRate: number;
-        readonly operatedAt: Date;
-        readonly title: string;
-        readonly tx: DB;
-    }): Promise<void> {
+    }: CreateOpeningDebtTransferParamsInterface): Promise<void> {
         const transaction = await transactionRepository.create(
             {
                 type: TransactionTypeEnum.DEBT,
@@ -178,13 +170,7 @@ class AccountDebtOpeningService {
         type,
         amount,
         valuation
-    }: {
-        readonly transactionId: number;
-        readonly accountId: number;
-        readonly type: TransactionEntryTypeEnum;
-        readonly amount: number;
-        readonly valuation: EntryBaseValuationInterface;
-    }): TransactionEntryCreateEntityInterface {
+    }: BuildDebtTransferEntryParamsInterface): TransactionEntryCreateEntityInterface {
         return {
             transactionId,
             accountId,

@@ -25,14 +25,13 @@ export const TransactionListAttachDebtMenuItem = () => {
     const { transaction, closeMenu } = useTransactionListContextMenu();
     const [openAccountSelector] = useAccountSelectorModal();
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
-    const isVisible =
-        !isDefined(transaction.consolidationType) &&
-        !isDefined(transaction.consolidationParentTransactionId) &&
-        (isExpenseTransaction(transaction) || isIncomeTransaction(transaction)) &&
-        categoryEntries.length === 1 &&
-        !isDefined(getTransactionDebtSettlementEntries(transaction.entries).at(0));
-
-    if (!isVisible) {
+    if (
+        isDefined(transaction.consolidationType) ||
+        isDefined(transaction.consolidationParentTransactionId) ||
+        (!isExpenseTransaction(transaction) && !isIncomeTransaction(transaction)) ||
+        categoryEntries.length !== 1 ||
+        isDefined(getTransactionDebtSettlementEntries(transaction.entries).at(0))
+    ) {
         return null;
     }
 
@@ -66,24 +65,26 @@ export const TransactionListAttachDebtMenuItem = () => {
           }
         : null;
 
-    const handleAttach = () => {
-        closeMenu(() => {
-            openAccountSelector({
+    const attachDebtToTransaction = async () => {
+        try {
+            const debtAccountId = await openAccountSelector({
                 includeAccountTypes: [AccountTypeEnum.DEBT],
                 excludeAccountId: categoryEntry.accountId,
                 emptyStateDescription: t`Create a debt account first.`,
                 showDebtTotal: true,
                 ...(isDefined(borrowedDebtCreateAction) && { createAction: borrowedDebtCreateAction })
-            })
-                .then(async debtAccountId => {
-                    if (isDefined(debtAccountId)) {
-                        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId });
-                    }
+            });
 
-                    return null;
-                })
-                .catch(() => void Toast.show({ type: 'error', text1: debtAttachmentErrorMessage }));
-        });
+            if (isDefined(debtAccountId)) {
+                await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId });
+            }
+        } catch {
+            Toast.show({ type: 'error', text1: debtAttachmentErrorMessage });
+        }
+    };
+
+    const handleAttach = () => {
+        closeMenu(() => void attachDebtToTransaction());
     };
 
     return (

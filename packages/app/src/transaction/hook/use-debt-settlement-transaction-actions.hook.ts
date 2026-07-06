@@ -27,13 +27,11 @@ export const useDebtSettlementTransactionActions = ({
     const entries = useWatch({ control, name: 'entries' });
     const transactionDebtSettlementEntry = getTransactionDebtSettlementEntries(transaction.entries).at(0);
     const transactionDebtSettlementAccountTitle = transactionDebtSettlementEntry?.account.title ?? null;
-    const [localDebtSettlementState, setLocalDebtSettlementState] = useState<{
-        readonly accountTitle: string | null;
-    } | null>(null);
+    const [localDebtSettlementAccountTitle, setLocalDebtSettlementAccountTitle] = useState<string | null>(null);
     const debtSettlementEntry = getTransactionDebtSettlementEntries(entries).at(0);
     const hasDebtSettlement = isDefined(debtSettlementEntry);
     const debtSettlementAccountTitle = hasDebtSettlement
-        ? (localDebtSettlementState?.accountTitle ?? transactionDebtSettlementAccountTitle)
+        ? (localDebtSettlementAccountTitle ?? transactionDebtSettlementAccountTitle)
         : null;
 
     const buildDebtSettlementEntry = (debtAccountId: number): TransactionEntryCreateInputInterface | null => {
@@ -68,7 +66,7 @@ export const useDebtSettlementTransactionActions = ({
         const entriesWithoutDebtSettlement = currentEntries.filter(item => item.kind !== TransactionEntryKindEnum.DEBT_SETTLEMENT);
 
         setValue('entries', [...entriesWithoutDebtSettlement, entry], { shouldDirty: true, shouldValidate: false });
-        setLocalDebtSettlementState({ accountTitle });
+        setLocalDebtSettlementAccountTitle(accountTitle);
     };
 
     const handleOpenDebtSettlement = () =>
@@ -98,7 +96,7 @@ export const useDebtSettlementTransactionActions = ({
         const entriesWithoutDebtSettlement = currentEntries.filter(item => item.kind !== TransactionEntryKindEnum.DEBT_SETTLEMENT);
 
         setValue('entries', entriesWithoutDebtSettlement, { shouldDirty: true, shouldValidate: false });
-        setLocalDebtSettlementState({ accountTitle: null });
+        setLocalDebtSettlementAccountTitle(null);
     };
 
     return {
