@@ -528,6 +528,7 @@ msgstr "Біометрична автентифікація"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "Borrowed"
 msgstr "Позичено"
 
@@ -781,7 +782,7 @@ msgid "Convert"
 msgstr "Конвертувати"
 
 #: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
+#: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Refund"
 msgstr "Перетворити на повернення"
@@ -793,7 +794,7 @@ msgstr "Перетворити на повернення?"
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 #: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
+#: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
@@ -814,8 +815,8 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account"
 msgstr "Не вдалося архівувати рахунок"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
-#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Could not attach debt"
 msgstr "Не вдалося прив’язати борг"
 
@@ -884,10 +885,6 @@ msgstr "Не вдалося видалити тег"
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
-
-#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
-msgid "Could not detach debt"
-msgstr "Не вдалося відв’язати борг"
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Could not export CSV"
@@ -1016,8 +1013,8 @@ msgstr "Враховувати цей рахунок у розрахунку ч�
 msgid "Create a backup of all your data"
 msgstr "Створити резервну копію всіх ваших даних"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
-#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Create a debt account first."
 msgstr "Спочатку створіть борговий рахунок."
 
@@ -1195,7 +1192,7 @@ msgid "Delete rule"
 msgstr "Видалити правило"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
 
@@ -1301,7 +1298,7 @@ msgstr "Редагувати тег"
 msgid "Edit transaction"
 msgstr "Редагувати транзакцію"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu-items.tsx
+#: src/transaction/components/transaction-list-edit-menu-item/transaction-list-edit-menu-item.tsx
 msgid "Edit Transaction"
 msgstr "Редагувати транзакцію"
 
@@ -1994,6 +1991,10 @@ msgstr "Перейдіть до Меню → Виписки"
 msgid "New Account"
 msgstr "Новий рахунок"
 
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+msgid "New borrowed debt"
+msgstr "Новий позичений борг"
+
 #: src/app/(main)/create-transaction/expense.tsx
 msgid "New Expense"
 msgstr "Нова витрата"
@@ -2293,7 +2294,7 @@ msgstr "Загальний місячний ліміт"
 msgid "Overview"
 msgstr "Огляд"
 
-#: src/account/constant/debt-section-kind-label.constant.ts
+#: src/account/component/debt-section-header/debt-section-header.tsx
 msgid "Owed to you"
 msgstr "Вам винні"
 
@@ -2569,7 +2570,7 @@ msgstr "Повернено"
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Revert"
 msgstr "Відновити"
@@ -3155,6 +3156,7 @@ msgid "Total Balance"
 msgstr "Загальний баланс"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "Total borrowed"
 msgstr "Усього позичено"
 
@@ -3424,7 +3426,7 @@ msgstr "XLSX-експорт"
 msgid "Yesterday"
 msgstr "Вчора"
 
-#: src/account/constant/account-debt-type-description.constant.ts
+#: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You gave money"
 msgstr "Ви дали гроші"
 
@@ -3441,11 +3443,11 @@ msgid "You have used {threshold}% of your budget for spending outside category l
 msgstr "Ви використали {threshold}% бюджету на витрати поза лімітами категорій."
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
-#: src/account/constant/debt-section-kind-label.constant.ts
+#: src/account/component/debt-section-header/debt-section-header.tsx
 msgid "You owe"
 msgstr "Ви винні"
 
-#: src/account/constant/account-debt-type-description.constant.ts
+#: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You received money"
 msgstr "Ви отримали гроші"
 

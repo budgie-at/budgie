@@ -1,4 +1,5 @@
 import { AccountTypeEnum, TransactionEntryKindEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
@@ -18,10 +19,9 @@ export const useDebtSettlementTransactionActions = ({
     form,
     transaction,
     transactionAccountId,
-    debtType,
-    emptyStateDescription,
-    attachErrorMessage
+    debtType
 }: DebtSettlementTransactionActionsParamsInterface) => {
+    const { t } = useLingui();
     const [openAccountSelector] = useAccountSelectorModal();
     const { control, getValues, setValue } = form;
     const entries = useWatch({ control, name: 'entries' });
@@ -76,7 +76,7 @@ export const useDebtSettlementTransactionActions = ({
             includeAccountTypes: [AccountTypeEnum.DEBT],
             excludeAccountId: transactionAccountId ?? 0,
             ...(isDefined(debtType) && { debtType }),
-            emptyStateDescription,
+            emptyStateDescription: t`Create a debt account first.`,
             showDebtTotal: true
         })
             .then(async debtAccountId => {
@@ -91,7 +91,7 @@ export const useDebtSettlementTransactionActions = ({
 
                 return null;
             })
-            .catch(() => void Toast.show({ type: 'error', text1: attachErrorMessage }));
+            .catch(() => void Toast.show({ type: 'error', text1: t`Could not attach debt` }));
 
     const handleDetachDebtSettlement = () => {
         const currentEntries = getValues('entries');

@@ -1,11 +1,13 @@
 import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 import { useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useUpdateIncomeTransactionActions } from '../../hook/use-update-income-transaction-actions.hook';
+import { useConvertToRefundModal } from '../../context/convert-to-refund-modal.context';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
+import { useUpdateTransactionSharedActions } from '../../hook/use-update-transaction-shared-actions.hook';
 import { buildIncomeEntry } from '../../utils/build-income-entry.util';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { UpdateSimpleTransactionPage } from '../update-simple-transaction-page/update-simple-transaction-page';
@@ -23,20 +25,33 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
 
     const toAccountId = useWatch({ control: simpleTransaction.form.control, name: 'toAccountId' });
     const mccCategoryId = simpleTransaction.categoryEntries.at(0)?.mccCategoryId ?? null;
+    const [openConvertToRefund] = useConvertToRefundModal();
     const {
         debtSettlementAccountTitle,
         handleDetachDebtSettlement,
         handleOpenConvert,
         handleOpenDebtSettlement,
-        handleOpenRefundConvert,
         handleRevert,
         hasDebtSettlement
-    } = useUpdateIncomeTransactionActions({
+    } = useUpdateTransactionSharedActions({
         form: simpleTransaction.form,
         transaction,
+        transactionAccountId: toAccountId,
         transactionId,
-        toAccountId
+        transactionType: TransactionTypeEnum.INCOME
     });
+    const handleOpenRefundConvert = () =>
+        void openConvertToRefund({
+            refundIncomeTransactionId: transactionId
+        }).then(canonicalId => {
+            if (isDefined(canonicalId)) {
+                const expenseRoute = `/transactions/${canonicalId}/expense` as const;
+
+                router.replace(expenseRoute);
+            }
+
+            return null;
+        });
     const canConvertToRefund = !simpleTransaction.isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const transferConvertProps = simpleTransaction.categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};

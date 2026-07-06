@@ -9,7 +9,4 @@ export interface DebtSettlementTransactionActionsParamsInterface {
     readonly transactionId: number;
     readonly transactionAccountId?: number | null;
     readonly debtType?: AccountDebtTypeEnum;
-    readonly emptyStateDescription: string;
-    readonly attachErrorMessage: string;
-    readonly detachErrorMessage: string;
 }

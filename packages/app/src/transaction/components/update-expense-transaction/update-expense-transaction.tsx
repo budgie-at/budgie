@@ -4,8 +4,9 @@ import { useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useUpdateExpenseTransactionActions } from '../../hook/use-update-expense-transaction-actions.hook';
+import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
+import { useUpdateTransactionSharedActions } from '../../hook/use-update-transaction-shared-actions.hook';
 import { buildExpenseEntry } from '../../utils/build-expense-entry.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
@@ -24,20 +25,22 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
     });
 
     const fromAccountId = useWatch({ control: simpleTransaction.form.control, name: 'fromAccountId' });
+    const [openConsolidationSourceModal] = useConsolidationSourceModal();
     const {
         debtSettlementAccountTitle,
         handleDetachDebtSettlement,
         handleOpenConvert,
         handleOpenDebtSettlement,
-        handleOpenRefundSources,
         handleRevert,
         hasDebtSettlement
-    } = useUpdateExpenseTransactionActions({
+    } = useUpdateTransactionSharedActions({
         form: simpleTransaction.form,
         transaction,
+        transactionAccountId: fromAccountId,
         transactionId,
-        fromAccountId
+        transactionType: TransactionTypeEnum.EXPENSE
     });
+    const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId });
     const mccCategoryId = simpleTransaction.categoryEntries.at(0)?.mccCategoryId ?? null;
     const canConvertToTransfer = simpleTransaction.categoryEntries.length === 1;
     const debtSettlementProps = hasDebtSettlement

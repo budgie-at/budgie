@@ -2,8 +2,8 @@ import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-u
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { useConvertToTransferModal } from '../context/convert-to-transfer-modal.context';
 
+import { useDebtSettlementTransactionActions } from './use-debt-settlement-transaction-actions.hook';
 import { useRevertConsolidation } from './use-revert-consolidation.hook';
-import { useUpdateTransactionDebtSettlementActions } from './use-update-transaction-debt-settlement-actions.hook';
 
 import type { UpdateTransactionSharedActionsParamsInterface } from '../interface/update-transaction-shared-actions-params.interface';
 
@@ -17,7 +17,7 @@ export const useUpdateTransactionSharedActions = ({
     const [openConvertToTransfer] = useConvertToTransferModal();
     const [sourceEntry] = transaction.entries;
     const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
-    const debtSettlementActions = useUpdateTransactionDebtSettlementActions({
+    const debtSettlementActions = useDebtSettlementTransactionActions({
         form,
         transaction,
         transactionId,

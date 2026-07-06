@@ -529,6 +529,7 @@ msgstr "Biometric Authentication"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "Borrowed"
 msgstr "Borrowed"
 
@@ -782,7 +783,7 @@ msgid "Convert"
 msgstr "Convert"
 
 #: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
+#: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Refund"
 msgstr "Convert to Refund"
@@ -794,7 +795,7 @@ msgstr "Convert to Refund?"
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 #: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
+#: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Transfer"
 msgstr "Convert to Transfer"
@@ -815,8 +816,8 @@ msgstr "Could not activate account."
 msgid "Could not archive account"
 msgstr "Could not archive account"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
-#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Could not attach debt"
 msgstr "Could not attach debt"
 
@@ -885,10 +886,6 @@ msgstr "Could not delete tag"
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
-
-#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
-msgid "Could not detach debt"
-msgstr "Could not detach debt"
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Could not export CSV"
@@ -1017,8 +1014,8 @@ msgstr "Count this account in your net worth calculation"
 msgid "Create a backup of all your data"
 msgstr "Create a backup of all your data"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
-#: src/transaction/hook/use-update-transaction-debt-settlement-actions.hook.ts
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 msgid "Create a debt account first."
 msgstr "Create a debt account first."
 
@@ -1196,7 +1193,7 @@ msgid "Delete rule"
 msgstr "Delete rule"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
 msgid "Delete Transaction"
 msgstr "Delete Transaction"
 
@@ -1302,7 +1299,7 @@ msgstr "Edit Tag"
 msgid "Edit transaction"
 msgstr "Edit transaction"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu-items.tsx
+#: src/transaction/components/transaction-list-edit-menu-item/transaction-list-edit-menu-item.tsx
 msgid "Edit Transaction"
 msgstr "Edit Transaction"
 
@@ -1995,6 +1992,10 @@ msgstr "Navigate to Menu → Statements"
 msgid "New Account"
 msgstr "New Account"
 
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+msgid "New borrowed debt"
+msgstr "New borrowed debt"
+
 #: src/app/(main)/create-transaction/expense.tsx
 msgid "New Expense"
 msgstr "New Expense"
@@ -2294,7 +2295,7 @@ msgstr "Overall monthly limit"
 msgid "Overview"
 msgstr "Overview"
 
-#: src/account/constant/debt-section-kind-label.constant.ts
+#: src/account/component/debt-section-header/debt-section-header.tsx
 msgid "Owed to you"
 msgstr "Owed to you"
 
@@ -2570,7 +2571,7 @@ msgstr "Returned"
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Revert"
 msgstr "Revert"
@@ -3156,6 +3157,7 @@ msgid "Total Balance"
 msgstr "Total Balance"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "Total borrowed"
 msgstr "Total borrowed"
 
@@ -3425,7 +3427,7 @@ msgstr "XLSX export"
 msgid "Yesterday"
 msgstr "Yesterday"
 
-#: src/account/constant/account-debt-type-description.constant.ts
+#: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You gave money"
 msgstr "You gave money"
 
@@ -3442,11 +3444,11 @@ msgid "You have used {threshold}% of your budget for spending outside category l
 msgstr "You have used {threshold}% of your budget for spending outside category limits."
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
-#: src/account/constant/debt-section-kind-label.constant.ts
+#: src/account/component/debt-section-header/debt-section-header.tsx
 msgid "You owe"
 msgstr "You owe"
 
-#: src/account/constant/account-debt-type-description.constant.ts
+#: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You received money"
 msgstr "You received money"
 
