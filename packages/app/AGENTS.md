@@ -298,6 +298,8 @@ Valid cases for `max-statements` disable:
 
 ## Component Patterns
 
+> Composition rules (prop budget, compound components, explicit variants, hook chains) live in [docs/component-composition.md](../../docs/component-composition.md). The `budgie/max-component-props` lint rule errors above 10 props; refactor with composition instead of growing the grandfather list.
+
 ### File Organization
 
 - **One component per file** - Each in own folder: `component-name/component-name.tsx`
