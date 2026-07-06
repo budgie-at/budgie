@@ -244,7 +244,7 @@ export default defineConfig(
             'budgie/max-component-props': [
                 'error',
                 {
-                    max: 10,
+                    max: 8,
                     allow: [
                         'packages/app/src/transaction/components/simple-quick-form-display/simple-quick-form-display.tsx',
                         'packages/app/src/transaction/components/quick-form-bottom-overlay/quick-form-bottom-overlay.tsx',
@@ -258,7 +258,28 @@ export default defineConfig(
                         'packages/app/src/@generic/component/searchable-page/searchable-page.tsx',
                         'packages/app/src/@generic/component/selector-card/selector-card.tsx',
                         'packages/app/src/transaction/components/simple-quick-form-controls/simple-quick-form-controls.tsx',
-                        'packages/landing/src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx'
+                        'packages/landing/src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx',
+                        'packages/app/src/@generic/component/ai-translation-fields/ai-translation-fields.tsx',
+                        'packages/app/src/@generic/component/card/card.tsx',
+                        'packages/app/src/@generic/component/circle-icon/circle-icon.tsx',
+                        'packages/app/src/@generic/component/empty-state/empty-state.tsx',
+                        'packages/app/src/@generic/component/form-amount-input/form-amount-input.tsx',
+                        'packages/app/src/@generic/component/form-page/form-page.tsx',
+                        'packages/app/src/@generic/component/selector-grid-content/selector-grid-content.tsx',
+                        'packages/app/src/account/component/account-action-card/account-action-card.tsx',
+                        'packages/app/src/account/component/account-card-base/account-card-base.tsx',
+                        'packages/app/src/ai/component/voice-review-footer/voice-review-footer.tsx',
+                        'packages/app/src/auth/components/pin-form/pin-form.tsx',
+                        'packages/app/src/budget/components/budget-progress-bar/budget-progress-bar.tsx',
+                        'packages/app/src/category/components/category-select-content/category-select-content.tsx',
+                        'packages/app/src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx',
+                        'packages/app/src/settings/components/budget-setting-card/budget-setting-card.tsx',
+                        'packages/app/src/tag/components/tags-select-content/tags-select-content.tsx',
+                        'packages/app/src/transaction/components/split-entry-row/split-entry-row.tsx',
+                        'packages/app/src/transaction/components/transaction-field-icon/transaction-field-icon.tsx',
+                        'packages/app/src/transaction/components/transaction-keypad-button/transaction-keypad-button.tsx',
+                        'packages/app/src/transaction/components/transaction-keypad/transaction-keypad.tsx',
+                        'packages/landing/src/generic/component/blog-card/blog-card.tsx'
                     ]
                 }
             ]

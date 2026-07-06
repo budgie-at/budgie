@@ -2,9 +2,9 @@
 
 Rules for building React components that stay small, declarative, and composable. Written after the transaction context-menu refactor, where a 270-line component with an 11-prop child bag, 4 free functions above the component, and a 4-level delegate-hook chain had to be decomposed. This guide exists so that shape never appears again.
 
-Enforced automatically where possible: the `budgie/max-component-props` ESLint rule (see `eslint-rules/max-component-props.mjs`) errors on any `Props` / `*PropsInterface` with more than 10 own members. The `allow` list in `eslint.config.mjs` is a grandfather register — it may only shrink. Never add a new file to it; refactor instead.
+Enforced automatically where possible: the `budgie/max-component-props` ESLint rule (see `eslint-rules/max-component-props.mjs`) errors on any `Props` / `*PropsInterface` with more than 8 own members. The `allow` list in `eslint.config.mjs` is a grandfather register — it may only shrink. Never add a new file to it; refactor instead.
 
-## 1. Prop budget: more than 10 props is a design failure
+## 1. Prop budget: more than 8 props is a design failure
 
 A component approaching the limit is almost always one of these, each with a known fix:
 
