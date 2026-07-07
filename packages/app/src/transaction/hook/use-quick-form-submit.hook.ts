@@ -7,7 +7,6 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { TransactionAccountRowRef } from '../components/transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplayRef } from '../components/transaction-amount-display/transaction-amount-display';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
-import { getTransactionDebtSettlementEntries } from '../utils/get-transaction-debt-settlement-entries.util';
 import { getTransactionFeeEntries } from '../utils/get-transaction-fee-entries.util';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 
@@ -59,7 +58,6 @@ export const useQuickFormSubmit = ({
         const accountId = getAccountId();
         const categoryEntry = getTransactionCategoryEntries(currentEntries).at(0);
         const feeEntries = getTransactionFeeEntries(currentEntries).map(entry => ({ ...entry, accountId }));
-        const debtSettlementEntries = getTransactionDebtSettlementEntries(currentEntries);
         const feeTotal = sumEntryAmounts(feeEntries);
         const formCategoryId = categoryEntry?.categoryId ?? 0;
         const categoryAmount = transactionType === TransactionTypeEnum.EXPENSE ? amount - feeTotal : amount;
@@ -77,7 +75,7 @@ export const useQuickFormSubmit = ({
 
         const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount: categoryAmount, mccCategoryId });
 
-        setValue('entries', [...builtEntries, ...feeEntries, ...debtSettlementEntries], { shouldValidate: false });
+        setValue('entries', [...builtEntries, ...feeEntries], { shouldValidate: false });
 
         onSubmit();
     };
@@ -87,7 +85,6 @@ export const useQuickFormSubmit = ({
         const currentEntries = getValues('entries');
         const categoryEntries = getTransactionCategoryEntries(currentEntries);
         const feeEntries = getTransactionFeeEntries(currentEntries).map(entry => ({ ...entry, accountId }));
-        const debtSettlementEntries = getTransactionDebtSettlementEntries(currentEntries);
         const allEntriesValid = categoryEntries.every(entry => isPositiveNumber(entry.amount) && isPositiveNumber(entry.categoryId));
         const categoryTotalAmount = sumEntryAmounts(categoryEntries);
         const totalAmount =
@@ -103,7 +100,7 @@ export const useQuickFormSubmit = ({
             return;
         }
 
-        setValue('entries', [...categoryEntries, ...feeEntries, ...debtSettlementEntries], { shouldValidate: false });
+        setValue('entries', [...categoryEntries, ...feeEntries], { shouldValidate: false });
         setValue('amount', totalAmount);
 
         onSubmit();

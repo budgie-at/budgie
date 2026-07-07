@@ -8,7 +8,6 @@ import { useRevertConsolidation } from './use-revert-consolidation.hook';
 import type { UpdateTransactionSharedActionsParamsInterface } from '../interface/update-transaction-shared-actions-params.interface';
 
 export const useUpdateTransactionSharedActions = ({
-    form,
     transaction,
     transactionAccountId,
     transactionId,
@@ -18,7 +17,6 @@ export const useUpdateTransactionSharedActions = ({
     const [sourceEntry] = transaction.entries;
     const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
     const debtSettlementActions = useDebtSettlementTransactionActions({
-        form,
         transaction,
         transactionId,
         transactionAccountId

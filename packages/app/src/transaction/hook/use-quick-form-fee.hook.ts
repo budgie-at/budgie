@@ -11,7 +11,6 @@ import { isDefined } from '@rnw-community/shared';
 import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
 import { useTransactionFeeModal } from '../context/transaction-fee-modal.context';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
-import { getTransactionDebtSettlementEntries } from '../utils/get-transaction-debt-settlement-entries.util';
 import { getTransactionFeeEntries } from '../utils/get-transaction-fee-entries.util';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 
@@ -53,12 +52,11 @@ export const useQuickFormFee = ({
         accountId: number
     ) => {
         const categoryEntries = getTransactionCategoryEntries(currentEntries);
-        const debtSettlementEntries = getTransactionDebtSettlementEntries(currentEntries);
         const nextFeeEntries = result.map(entry => ({ ...entry, accountId, type: TransactionEntryTypeEnum.FEE }));
         const previousFeeAmount = sumEntryAmounts(currentFeeEntries);
         const nextFeeAmount = sumEntryAmounts(nextFeeEntries);
 
-        setValue('entries', [...categoryEntries, ...nextFeeEntries, ...debtSettlementEntries], {
+        setValue('entries', [...categoryEntries, ...nextFeeEntries], {
             shouldDirty: true,
             shouldValidate: false
         });

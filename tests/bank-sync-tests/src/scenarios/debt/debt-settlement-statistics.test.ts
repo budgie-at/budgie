@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
     accountBalanceRepository,
+    debtEventRepository,
     exchangeRateRepository,
     historicalExchangeRateRepository,
     settingsRepository,
@@ -14,11 +15,15 @@ import { accountService } from '@app/account/service/account.service';
 import { buildDebtAccountProgressSummary } from '@app/account/utils/build-debt-account-progress-summary.util';
 import { transactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
 import {
+    AccountEntityTable,
     AccountDebtTypeEnum,
     AccountTypeEnum,
     CategoryEntityTable,
     CurrencyEnum,
     DEFAULT_TRANSACTION_FILTER,
+    DebtEventDirectionEnum,
+    DebtEventEntityTable,
+    DebtEventSourceEnum,
     ExternalSourceEnum,
     LanguageEnum,
     PRECISION,
@@ -36,7 +41,13 @@ import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
-import type { AccountEntityInterface, TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
+import type {
+    AccountEntityInterface,
+    DebtEventCreateEntityInterface,
+    TransactionCreateEntityInterface,
+    TransactionEntryCreateEntityInterface,
+    TransactionEntryEntityInterface
+} from '@budgie/contracts';
 
 const CURRENT_USD_TO_EUR_RATE = 0.7;
 const HISTORICAL_USD_TO_EUR_RATE = 0.8;
@@ -47,10 +58,10 @@ afterEach(() => {
 });
 
 describe('debt settlement statistics', () => {
-    it('counts debt returns once in income analytics while updating the lent debt balance', () => {
+    it('counts debt returns once in income analytics while updating lent debt progress', async () => {
         const { category, cashAccount, debtAccount } = createFundedLentDebtFixture(300 * PRECISION);
 
-        createDebtReturnIncome(cashAccount.id, debtAccount.id, category.id, 100 * PRECISION);
+        await createDebtReturnIncome(cashAccount.id, debtAccount.id, category.id, 100 * PRECISION);
 
         expectDebtSettlementAnalyticsState({
             categoryId: category.id,
@@ -59,8 +70,8 @@ describe('debt settlement statistics', () => {
             debtType: AccountDebtTypeEnum.LENT,
             expectedCategoryAmount: 100 * PRECISION,
             expectedCashBalance: -200 * PRECISION,
-            expectedDebtBalance: 200 * PRECISION,
-            expectedExpense: 300 * PRECISION,
+            expectedDebtBalance: 300 * PRECISION,
+            expectedExpense: 0,
             expectedIncome: 100 * PRECISION,
             expectedRemainingDebt: 200 * PRECISION,
             instrumentId: cashAccount.instrumentId,
@@ -69,27 +80,39 @@ describe('debt settlement statistics', () => {
     });
 
     it('attaches an income transaction to a lent debt and closes the lent balance', async () => {
-        const { cashBalance, debtBalance, settlementEntry } = await attachTransactionToFundedLentDebt({
-            transactionType: TransactionTypeEnum.INCOME,
-            debtTargetAmount: 300 * PRECISION
-        });
+        const { cashBalance, debtBalance, debtEvent } = await attachTransactionToFundedLentDebt(300 * PRECISION);
 
         expect(cashBalance?.balance).toBe(-200 * PRECISION);
-        expect(debtBalance?.balance).toBe(200 * PRECISION);
-        expect(settlementEntry?.type).toBe(TransactionEntryTypeEnum.CREDIT);
-        expect(settlementEntry?.amount).toBe(100 * PRECISION);
+        expect(debtBalance?.balance).toBe(300 * PRECISION);
+        expect(debtEvent?.direction).toBe(DebtEventDirectionEnum.CLOSE);
+        expect(debtEvent?.amount).toBe(100 * PRECISION);
     });
 
-    it('attaches an expense transaction to a lent debt and increases the lent balance', async () => {
-        const { cashBalance, debtBalance, settlementEntry } = await attachTransactionToFundedLentDebt({
-            transactionType: TransactionTypeEnum.EXPENSE,
-            debtTargetAmount: 500 * PRECISION
-        });
+    it('attaches an income transaction to a lent debt through an explicit debt event', async () => {
+        const { category, cashAccount, debtAccount } = createFundedLentDebtFixture(300 * PRECISION);
+        const transaction = createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
 
-        expect(cashBalance?.balance).toBe(-400 * PRECISION);
-        expect(debtBalance?.balance).toBe(400 * PRECISION);
-        expect(settlementEntry?.type).toBe(TransactionEntryTypeEnum.DEBIT);
-        expect(settlementEntry?.amount).toBe(100 * PRECISION);
+        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+
+        const debtEvent = await debtEventRepository.findByTransactionId(transaction.id);
+        const storedDebtEvent = testDb
+            .select()
+            .from(DebtEventEntityTable)
+            .all()
+            .find(event => event.transactionId === transaction.id);
+
+        expect(debtEvent).toBeDefined();
+        expect(storedDebtEvent).toBeDefined();
+
+        if (!isDefined(debtEvent) || !isDefined(storedDebtEvent)) {
+            return;
+        }
+
+        expect(debtEvent.id).toBe(storedDebtEvent.id);
+        expect(debtEvent.debtAccountId).toBe(debtAccount.id);
+        expect(debtEvent.transactionId).toBe(transaction.id);
+        expect(debtEvent.direction).toBe(DebtEventDirectionEnum.CLOSE);
+        expect(debtEvent.amount).toBe(100 * PRECISION);
     });
 
     it('creates lent debt accounts by treating current balance as an already returned amount', async () => {
@@ -230,7 +253,7 @@ describe('debt settlement statistics', () => {
         expectDebtProgressSummary(summary, 12_900 * PRECISION, 2_100 * PRECISION, 15_000 * PRECISION, 14);
     });
 
-    it('keeps target-backed lent debt partially outstanding when ledger entries exist without a returned snapshot', () => {
+    it('keeps target-backed lent debt partially outstanding when ledger entries exist without a returned snapshot', async () => {
         const [category] = testDb.select().from(CategoryEntityTable).all();
         const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
         const debtAccount = seed.account({
@@ -241,13 +264,22 @@ describe('debt settlement statistics', () => {
         });
 
         createDebtTransferTransaction(cashAccount.id, debtAccount.id, 500 * PRECISION, 'Lend extra money to Alex');
-        createDebtReturnIncome(cashAccount.id, debtAccount.id, category.id, 6_000 * PRECISION);
+        createDebtEvent({
+            debtAccountId: debtAccount.id,
+            transactionId: null,
+            transactionEntryId: null,
+            direction: DebtEventDirectionEnum.OPEN,
+            source: DebtEventSourceEnum.MANUAL,
+            amount: debtAccount.targetBalance,
+            operatedAt: debtAccount.createdAt
+        });
+        await createDebtReturnIncome(cashAccount.id, debtAccount.id, category.id, 6_000 * PRECISION);
 
         const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.LENT);
         const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
         const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
 
-        expectDebtProgressSummary(summary, 58_000 * PRECISION, 6_000 * PRECISION, 64_000 * PRECISION, 9.38);
+        expectDebtProgressSummary(summary, 58_500 * PRECISION, 6_000 * PRECISION, 64_500 * PRECISION, 9.3);
         expect(row).toBeDefined();
         expect(progress).toBeDefined();
 
@@ -255,14 +287,14 @@ describe('debt settlement statistics', () => {
             return;
         }
 
-        expect(progress.outstandingAmount).toBe(58_000 * PRECISION);
+        expect(progress.outstandingAmount).toBe(58_500 * PRECISION);
         expect(progress.paidAmount).toBe(6_000 * PRECISION);
-        expect(progress.totalAmount).toBe(64_000 * PRECISION);
-        expect(progress.percentage).toBe(9.38);
-        expect(row.debtOutstandingAmount).toBe(58_000 * PRECISION);
+        expect(progress.totalAmount).toBe(64_500 * PRECISION);
+        expect(progress.percentage).toBe(9.3);
+        expect(row.debtOutstandingAmount).toBe(58_500 * PRECISION);
         expect(row.debtPaidAmount).toBe(6_000 * PRECISION);
-        expect(row.debtTotalAmount).toBe(64_000 * PRECISION);
-        expect(row.debtProgressPercentage).toBe(9.38);
+        expect(row.debtTotalAmount).toBe(64_500 * PRECISION);
+        expect(row.debtProgressPercentage).toBe(9.3);
     });
 
     it('summarizes a lent debt target as outstanding before any ledger entries exist', () => {
@@ -399,6 +431,15 @@ describe('debt settlement statistics', () => {
             targetBalance: 64_000 * PRECISION
         });
 
+        createDebtEvent({
+            debtAccountId: debtAccount.id,
+            transactionId: null,
+            transactionEntryId: null,
+            direction: DebtEventDirectionEnum.OPEN,
+            source: DebtEventSourceEnum.MANUAL,
+            amount: debtAccount.targetBalance,
+            operatedAt: debtAccount.createdAt
+        });
         createDebtTransferTransaction(debtAccount.id, cashAccount.id, 500 * PRECISION, 'Borrow extra money from Alex');
         createDebtTransferTransaction(cashAccount.id, debtAccount.id, 6_000 * PRECISION, 'Return money to Alex');
 
@@ -406,7 +447,7 @@ describe('debt settlement statistics', () => {
         const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
         const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
 
-        expectDebtProgressSummary(summary, 58_000 * PRECISION, 6_000 * PRECISION, 64_000 * PRECISION, 9.38);
+        expectDebtProgressSummary(summary, 58_500 * PRECISION, 6_000 * PRECISION, 64_500 * PRECISION, 9.3);
         expect(row).toBeDefined();
         expect(progress).toBeDefined();
 
@@ -414,14 +455,14 @@ describe('debt settlement statistics', () => {
             return;
         }
 
-        expect(progress.outstandingAmount).toBe(58_000 * PRECISION);
+        expect(progress.outstandingAmount).toBe(58_500 * PRECISION);
         expect(progress.paidAmount).toBe(6_000 * PRECISION);
-        expect(progress.totalAmount).toBe(64_000 * PRECISION);
-        expect(progress.percentage).toBe(9.38);
-        expect(row.debtOutstandingAmount).toBe(58_000 * PRECISION);
+        expect(progress.totalAmount).toBe(64_500 * PRECISION);
+        expect(progress.percentage).toBe(9.3);
+        expect(row.debtOutstandingAmount).toBe(58_500 * PRECISION);
         expect(row.debtPaidAmount).toBe(6_000 * PRECISION);
-        expect(row.debtTotalAmount).toBe(64_000 * PRECISION);
-        expect(row.debtProgressPercentage).toBe(9.38);
+        expect(row.debtTotalAmount).toBe(64_500 * PRECISION);
+        expect(row.debtProgressPercentage).toBe(9.3);
     });
 
     it('summarizes a borrowed debt target as outstanding before any ledger entries exist', () => {
@@ -481,8 +522,7 @@ describe('debt settlement statistics', () => {
         expect(balance?.balance).toBe(-1_900 * PRECISION);
     });
 
-    it('counts debt repayments once in expense analytics while updating the borrowed debt balance', () => {
-        const [category] = testDb.select().from(CategoryEntityTable).all();
+    it('tracks borrowed repayments through transfers without expense analytics', () => {
         const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
         const debtAccount = seed.account({
             title: 'I owe Alex',
@@ -492,25 +532,23 @@ describe('debt settlement statistics', () => {
         });
 
         createDebtTransferTransaction(debtAccount.id, cashAccount.id, 300 * PRECISION, 'Borrow money from Alex');
-        createDebtRepaymentExpense(cashAccount.id, debtAccount.id, category.id, 100 * PRECISION);
+        createDebtTransferTransaction(cashAccount.id, debtAccount.id, 100 * PRECISION, 'Return money to Alex');
 
-        expectDebtSettlementAnalyticsState({
-            categoryId: category.id,
-            cashAccountId: cashAccount.id,
-            debtAccountId: debtAccount.id,
-            debtType: AccountDebtTypeEnum.BORROW,
-            expectedCategoryAmount: 100 * PRECISION,
-            expectedCashBalance: 200 * PRECISION,
-            expectedDebtBalance: -200 * PRECISION,
-            expectedExpense: 100 * PRECISION,
-            expectedIncome: 0,
-            expectedRemainingDebt: 200 * PRECISION,
-            instrumentId: cashAccount.instrumentId,
-            transactionType: TransactionTypeEnum.EXPENSE
-        });
+        const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, cashAccount.instrumentId).get();
+        const cashBalance = accountBalanceRepository.getByAccountId(cashAccount.id).get();
+        const debtBalance = accountBalanceRepository.getByAccountId(debtAccount.id).get();
+        const remainingDebt = accountBalanceRepository
+            .getTotalRemainingDebtByType(cashAccount.instrumentId, AccountDebtTypeEnum.BORROW)
+            .get();
+
+        expect(totals?.income).toBe(0);
+        expect(totals?.expense).toBe(0);
+        expect(cashBalance?.balance).toBe(200 * PRECISION);
+        expect(debtBalance?.balance).toBe(-200 * PRECISION);
+        expect(remainingDebt?.total).toBe(200 * PRECISION);
     });
 
-    it('summarizes borrowed debt after repayment expense and additional borrowed income', async () => {
+    it('summarizes borrowed debt after transfer repayment and additional borrowed income', async () => {
         const { summary } = await createBorrowedDebtSettlementScenario();
 
         expectDebtProgressSummary(summary, 13_109 * PRECISION, 2_000 * PRECISION, 15_109 * PRECISION, 13.24);
@@ -705,18 +743,9 @@ const createFundedLentDebtFixture = (targetBalance: number) => {
     return { category, cashAccount, debtAccount };
 };
 
-const attachTransactionToFundedLentDebt = async ({
-    transactionType,
-    debtTargetAmount
-}: {
-    readonly transactionType: TransactionTypeEnum;
-    readonly debtTargetAmount: number;
-}) => {
+const attachTransactionToFundedLentDebt = async (debtTargetAmount: number) => {
     const { category, cashAccount, debtAccount } = createFundedLentDebtFixture(debtTargetAmount);
-    const transaction =
-        transactionType === TransactionTypeEnum.INCOME
-            ? createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION)
-            : createExpenseTransaction(cashAccount.id, category.id, 100 * PRECISION);
+    const transaction = createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
 
     return await attachDebtSettlementAndReadState(transaction.id, cashAccount.id, debtAccount.id);
 };
@@ -726,13 +755,9 @@ const attachDebtSettlementAndReadState = async (transactionId: number, cashAccou
 
     const cashBalance = accountBalanceRepository.getByAccountId(cashAccountId).get();
     const debtBalance = accountBalanceRepository.getByAccountId(debtAccountId).get();
-    const settlementEntry = testDb
-        .select()
-        .from(TransactionEntryEntityTable)
-        .all()
-        .find(entry => entry.transactionId === transactionId && entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
+    const debtEvent = await debtEventRepository.findByTransactionId(transactionId);
 
-    return { cashBalance, debtBalance, settlementEntry };
+    return { cashBalance, debtBalance, debtEvent };
 };
 
 const expectDebtSettlementAnalyticsState = ({
@@ -855,10 +880,8 @@ const createBorrowedDebtSettlementScenario = async () => {
     const [category] = testDb.select().from(CategoryEntityTable).all();
     const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
     const debtAccount = await createDebtAccount(AccountDebtTypeEnum.BORROW, 15_000, 15_000, cashAccount.instrumentId);
-    const repayment = createExpenseTransaction(cashAccount.id, category.id, 2_000 * PRECISION);
 
-    await transactionDebtSettlementService.attach({ transactionId: repayment.id, debtAccountId: debtAccount.id });
-
+    createDebtTransferTransaction(cashAccount.id, debtAccount.id, 2_000 * PRECISION, 'Return money to Alex');
     const additionalBorrowing = createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
 
     await transactionDebtSettlementService.attach({ transactionId: additionalBorrowing.id, debtAccountId: debtAccount.id });
@@ -872,7 +895,6 @@ const createBorrowedDebtSettlementScenario = async () => {
 };
 
 const createBorrowedDebtCoveredOpeningScenario = () => {
-    const [category] = testDb.select().from(CategoryEntityTable).all();
     const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
     const debtAccount = seed.account({
         title: 'Covered borrowed account',
@@ -882,7 +904,7 @@ const createBorrowedDebtCoveredOpeningScenario = () => {
     });
 
     createDebtAdjustmentTransaction(debtAccount.id, 4_100 * PRECISION);
-    createDebtRepaymentExpense(cashAccount.id, debtAccount.id, category.id, 3_966 * PRECISION);
+    createDebtTransferTransaction(cashAccount.id, debtAccount.id, 3_966 * PRECISION, 'Return money to Alex');
 
     const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
 
@@ -890,55 +912,15 @@ const createBorrowedDebtCoveredOpeningScenario = () => {
 };
 
 const buildSummaryFromDebtAccount = (debtAccount: Pick<AccountEntityInterface, 'id' | 'targetBalance'>, debtType: AccountDebtTypeEnum) => {
-    const adjustmentDebitAmount = getDebtEntryAmount(
-        debtAccount.id,
-        TransactionEntryTypeEnum.DEBIT,
-        TransactionEntryKindEnum.PRIMARY,
-        TransactionTypeEnum.ADJUSTMENT
-    );
-    const adjustmentCreditAmount = getDebtEntryAmount(
-        debtAccount.id,
-        TransactionEntryTypeEnum.CREDIT,
-        TransactionEntryKindEnum.PRIMARY,
-        TransactionTypeEnum.ADJUSTMENT
-    );
-    const debitSettlementAmount = getDebtEntryAmount(
-        debtAccount.id,
-        TransactionEntryTypeEnum.DEBIT,
-        TransactionEntryKindEnum.DEBT_SETTLEMENT,
-        null
-    );
-    const creditSettlementAmount = getDebtEntryAmount(
-        debtAccount.id,
-        TransactionEntryTypeEnum.CREDIT,
-        TransactionEntryKindEnum.DEBT_SETTLEMENT,
-        null
-    );
-    const debtPrimaryDebitAmount = getDebtEntryAmount(
-        debtAccount.id,
-        TransactionEntryTypeEnum.DEBIT,
-        TransactionEntryKindEnum.PRIMARY,
-        TransactionTypeEnum.DEBT
-    );
-    const debtPrimaryCreditAmount = getDebtEntryAmount(
-        debtAccount.id,
-        TransactionEntryTypeEnum.CREDIT,
-        TransactionEntryKindEnum.PRIMARY,
-        TransactionTypeEnum.DEBT
-    );
-    const closedAmount =
-        debtType === AccountDebtTypeEnum.BORROW
-            ? debtPrimaryDebitAmount + debitSettlementAmount
-            : debtPrimaryCreditAmount + creditSettlementAmount;
-    const openedPrincipalAmount = debtType === AccountDebtTypeEnum.BORROW ? debtPrimaryCreditAmount : debtPrimaryDebitAmount;
-    const openedExtraAmount = debtType === AccountDebtTypeEnum.BORROW ? creditSettlementAmount : debitSettlementAmount;
+    const openedAmount = getDebtEventAmount(debtAccount.id, DebtEventDirectionEnum.OPEN);
+    const closedAmount = getDebtEventAmount(debtAccount.id, DebtEventDirectionEnum.CLOSE);
 
     return buildDebtAccountProgressSummary({
         debtType,
-        balance: adjustmentDebitAmount - adjustmentCreditAmount,
+        balance: 0,
         closedAmount,
-        openedExtraAmount,
-        openedPrincipalAmount,
+        openedExtraAmount: 0,
+        openedPrincipalAmount: openedAmount,
         targetAmount: debtAccount.targetBalance
     });
 };
@@ -980,26 +962,13 @@ const findAdjustmentEntry = (accountId: number) => {
         });
 };
 
-const getDebtEntryAmount = (
-    debtAccountId: number,
-    type: TransactionEntryTypeEnum,
-    kind: TransactionEntryKindEnum,
-    transactionType: TransactionTypeEnum | null
-): number => {
-    const transactions = testDb.select().from(TransactionEntityTable).all();
-
-    return testDb
+const getDebtEventAmount = (debtAccountId: number, direction: DebtEventDirectionEnum): number =>
+    testDb
         .select()
-        .from(TransactionEntryEntityTable)
+        .from(DebtEventEntityTable)
         .all()
-        .filter(entry => {
-            const transaction = transactions.find(item => item.id === entry.transactionId);
-            const isTransactionTypeMatch = !isDefined(transactionType) || transaction?.type === transactionType;
-
-            return entry.accountId === debtAccountId && entry.type === type && entry.kind === kind && isTransactionTypeMatch;
-        })
-        .reduce((total, entry) => total + entry.amount, 0);
-};
+        .filter(event => event.debtAccountId === debtAccountId && event.direction === direction && !isDefined(event.deletedAt))
+        .reduce((total, event) => total + event.amount, 0);
 
 const expectDebtProgressSummary = (
     summary: ReturnType<typeof buildDebtAccountProgressSummary>,
@@ -1023,7 +992,7 @@ const createDebtTransferTransaction = (fromAccountId: number, toAccountId: numbe
         toAccountId
     });
 
-    createTransactionEntry({
+    const fromEntry = createTransactionEntry({
         transactionId: transaction.id,
         accountId: fromAccountId,
         type: TransactionEntryTypeEnum.CREDIT,
@@ -1032,7 +1001,7 @@ const createDebtTransferTransaction = (fromAccountId: number, toAccountId: numbe
         categoryId: null
     });
 
-    createTransactionEntry({
+    const toEntry = createTransactionEntry({
         transactionId: transaction.id,
         accountId: toAccountId,
         type: TransactionEntryTypeEnum.DEBIT,
@@ -1040,47 +1009,19 @@ const createDebtTransferTransaction = (fromAccountId: number, toAccountId: numbe
         amount,
         categoryId: null
     });
+
+    const fromAccount = findAccountById(fromAccountId);
+    const toAccount = findAccountById(toAccountId);
+    const debtAccount = fromAccount.type === AccountTypeEnum.DEBT ? fromAccount : toAccount;
+    const debtEntry = fromAccount.type === AccountTypeEnum.DEBT ? fromEntry : toEntry;
+
+    createDebtEventFromTransferEntry(debtAccount, debtEntry, transaction.operatedAt);
 };
 
-const createDebtReturnIncome = (cashAccountId: number, debtAccountId: number, categoryId: number, amount: number): void => {
+const createDebtReturnIncome = async (cashAccountId: number, debtAccountId: number, categoryId: number, amount: number): Promise<void> => {
     const transaction = createIncomeTransaction(cashAccountId, categoryId, amount);
 
-    createTransactionEntry({
-        transactionId: transaction.id,
-        accountId: debtAccountId,
-        type: TransactionEntryTypeEnum.CREDIT,
-        kind: TransactionEntryKindEnum.DEBT_SETTLEMENT,
-        amount,
-        categoryId
-    });
-};
-
-const createDebtRepaymentExpense = (cashAccountId: number, debtAccountId: number, categoryId: number, amount: number): void => {
-    const transaction = createTransaction({
-        type: TransactionTypeEnum.EXPENSE,
-        title: 'Return money to Alex',
-        externalSource: ExternalSourceEnum.MONOBANK,
-        fromAccountId: cashAccountId,
-        toAccountId: null
-    });
-
-    createTransactionEntry({
-        transactionId: transaction.id,
-        accountId: cashAccountId,
-        type: TransactionEntryTypeEnum.CREDIT,
-        kind: TransactionEntryKindEnum.PRIMARY,
-        amount,
-        categoryId
-    });
-
-    createTransactionEntry({
-        transactionId: transaction.id,
-        accountId: debtAccountId,
-        type: TransactionEntryTypeEnum.DEBIT,
-        kind: TransactionEntryKindEnum.DEBT_SETTLEMENT,
-        amount,
-        categoryId
-    });
+    await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId });
 };
 
 const createDebtAdjustmentTransaction = (debtAccountId: number, amount: number): void => {
@@ -1092,13 +1033,23 @@ const createDebtAdjustmentTransaction = (debtAccountId: number, amount: number):
         toAccountId: debtAccountId
     });
 
-    createTransactionEntry({
+    const entry = createTransactionEntry({
         transactionId: transaction.id,
         accountId: debtAccountId,
         type: TransactionEntryTypeEnum.DEBIT,
         kind: TransactionEntryKindEnum.PRIMARY,
         amount,
         categoryId: null
+    });
+
+    createDebtEvent({
+        debtAccountId,
+        transactionId: transaction.id,
+        transactionEntryId: entry.id,
+        direction: DebtEventDirectionEnum.CLOSE,
+        source: DebtEventSourceEnum.MANUAL,
+        amount,
+        operatedAt: transaction.operatedAt
     });
 };
 
@@ -1123,27 +1074,6 @@ const createIncomeTransaction = (cashAccountId: number, categoryId: number, amou
     return transaction;
 };
 
-const createExpenseTransaction = (cashAccountId: number, categoryId: number, amount: number) => {
-    const transaction = createTransaction({
-        type: TransactionTypeEnum.EXPENSE,
-        title: 'Lend more money to Alex',
-        externalSource: ExternalSourceEnum.MONOBANK,
-        fromAccountId: cashAccountId,
-        toAccountId: null
-    });
-
-    createTransactionEntry({
-        transactionId: transaction.id,
-        accountId: cashAccountId,
-        type: TransactionEntryTypeEnum.CREDIT,
-        kind: TransactionEntryKindEnum.PRIMARY,
-        amount,
-        categoryId
-    });
-
-    return transaction;
-};
-
 const createTransaction = (
     transaction: Pick<TransactionCreateEntityInterface, 'type' | 'title' | 'externalSource' | 'fromAccountId' | 'toAccountId'>
 ) =>
@@ -1158,7 +1088,7 @@ const createTransaction = (
 
 const createTransactionEntry = (
     entry: Pick<TransactionEntryCreateEntityInterface, 'transactionId' | 'accountId' | 'type' | 'kind' | 'amount' | 'categoryId'>
-): void => {
+): TransactionEntryEntityInterface =>
     insertOne(TransactionEntryEntityTable, {
         ...entry,
         mccCategoryId: null,
@@ -1169,4 +1099,71 @@ const createTransactionEntry = (
         baseAmount: entry.amount,
         toIban: null
     } satisfies TransactionEntryCreateEntityInterface);
+
+const findAccountById = (accountId: number): AccountEntityInterface => {
+    const account = testDb
+        .select()
+        .from(AccountEntityTable)
+        .all()
+        .find(row => row.id === accountId);
+
+    if (!isDefined(account)) {
+        throw new Error(`Account ${accountId} not found`);
+    }
+
+    return account;
+};
+
+const createDebtEventFromTransferEntry = (
+    account: AccountEntityInterface,
+    entry: TransactionEntryEntityInterface,
+    operatedAt: Date
+): void => {
+    if (account.type !== AccountTypeEnum.DEBT) {
+        return;
+    }
+
+    createDebtEvent({
+        debtAccountId: account.id,
+        transactionId: entry.transactionId,
+        transactionEntryId: entry.id,
+        direction: getTransferDebtEventDirection(account.debtType, entry.type),
+        source: DebtEventSourceEnum.TRANSFER,
+        amount: entry.amount,
+        operatedAt
+    });
+};
+
+const getTransferDebtEventDirection = (debtType: AccountDebtTypeEnum, entryType: TransactionEntryTypeEnum): DebtEventDirectionEnum => {
+    if (debtType === AccountDebtTypeEnum.LENT) {
+        return entryType === TransactionEntryTypeEnum.DEBIT ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
+    }
+
+    return entryType === TransactionEntryTypeEnum.CREDIT ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
+};
+
+const createDebtEvent = ({
+    debtAccountId,
+    transactionId,
+    transactionEntryId,
+    direction,
+    source,
+    amount,
+    operatedAt
+}: Pick<
+    DebtEventCreateEntityInterface,
+    'debtAccountId' | 'transactionId' | 'transactionEntryId' | 'direction' | 'source' | 'amount' | 'operatedAt'
+>): void => {
+    insertOne(DebtEventEntityTable, {
+        debtAccountId,
+        transactionId,
+        transactionEntryId,
+        direction,
+        source,
+        amount,
+        baseInstrumentId: 1,
+        baseExchangeRate: 1,
+        baseAmount: amount,
+        operatedAt
+    } satisfies DebtEventCreateEntityInterface);
 };

@@ -1,7 +1,4 @@
 import {
-    AccountDebtTypeEnum,
-    AccountTypeEnum,
-    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
@@ -18,7 +15,6 @@ import { TransactionCardSelector } from '../transaction-card/transaction-card.se
 import { TransactionEntryAmount } from '../transaction-entry-amount/transaction-entry-amount';
 import { TransactionTransferAmount } from '../transaction-transfer-amount/transaction-transfer-amount';
 
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
 
 interface Props {
@@ -72,26 +68,9 @@ const resolveDisplayEntries = (transaction: TransactionWithRelationsEntityInterf
     return { contextualEntry, fromEntry, toEntry: contextualEntry };
 };
 
-const getDebtSettlementVariant = (entry: AggregatedTransactionEntryInterface | null): ColorPaletteVariant | null => {
-    if (!isDefined(entry) || entry.kind !== TransactionEntryKindEnum.DEBT_SETTLEMENT || entry.account.type !== AccountTypeEnum.DEBT) {
-        return null;
-    }
-
-    const isDebtReduction =
-        (entry.account.debtType === AccountDebtTypeEnum.LENT && entry.type === TransactionEntryTypeEnum.CREDIT) ||
-        (entry.account.debtType === AccountDebtTypeEnum.BORROW && entry.type === TransactionEntryTypeEnum.DEBIT);
-
-    return isDebtReduction ? 'positive' : 'warning';
-};
-
 export const TransactionAmount = ({ transaction, accountId = null }: Props) => {
-    const { contextualEntry, fromEntry, toEntry } = resolveDisplayEntries(transaction, accountId);
-    const debtSettlementVariant = getDebtSettlementVariant(contextualEntry);
+    const { fromEntry, toEntry } = resolveDisplayEntries(transaction, accountId);
     const amountTestID = TransactionCardSelector.Amount(transaction.id);
-
-    if (isDefined(contextualEntry) && isDefined(debtSettlementVariant)) {
-        return <TransactionEntryAmount entry={contextualEntry} variant={debtSettlementVariant} testID={amountTestID} />;
-    }
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return <TransactionTransferAmount fromEntry={fromEntry} toEntry={toEntry} testID={amountTestID} />;

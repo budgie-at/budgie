@@ -17,6 +17,8 @@ import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
+import { DebtEventAssociationEnum } from '../../debt-event/enum/debt-event-association.enum';
+import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionAssociationEnum } from '../../transaction/enum/transaction-association.enum';
 import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
@@ -52,6 +54,12 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 [TransactionAssociationEnum.TRANSACTION_TAGS]: {
                     with: {
                         [TransactionTagsAssociationEnum.TAG]: true
+                    }
+                },
+                [TransactionAssociationEnum.DEBT_EVENTS]: {
+                    where: isNull(DebtEventEntityTable.deletedAt),
+                    with: {
+                        [DebtEventAssociationEnum.DEBT_ACCOUNT]: true
                     }
                 },
                 [TransactionAssociationEnum.FROM_ACCOUNT]: true,
@@ -93,6 +101,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                         THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
                         WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
                              AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
+                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.DEBT}
                              AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
                         THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
                         ELSE 0

@@ -246,6 +246,13 @@
             "when": 1781868000000,
             "tag": "0034_add_debt_target_base_valuation",
             "breakpoints": true
+        },
+        {
+            "idx": 35,
+            "version": "6",
+            "when": 1783537200000,
+            "tag": "0035_add_debt_events",
+            "breakpoints": true
         }
     ]
 }

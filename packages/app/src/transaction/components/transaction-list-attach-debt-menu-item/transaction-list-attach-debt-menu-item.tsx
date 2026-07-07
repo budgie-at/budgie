@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum, isExpenseTransaction, isIncomeTransaction } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum, isIncomeTransaction } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Toast from 'react-native-toast-message';
 
@@ -13,7 +13,6 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useTransactionListContextMenu } from '../../context/transaction-list-context-menu.context';
 import { transactionDebtSettlementService } from '../../service/transaction-debt-settlement.service';
 import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
-import { getTransactionDebtSettlementEntries } from '../../utils/get-transaction-debt-settlement-entries.util';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
 import type { AccountSelectorCreateActionInterface } from '../../../account/interface/account-selector-create-action.interface';
@@ -28,9 +27,9 @@ export const TransactionListAttachDebtMenuItem = () => {
     if (
         isDefined(transaction.consolidationType) ||
         isDefined(transaction.consolidationParentTransactionId) ||
-        (!isExpenseTransaction(transaction) && !isIncomeTransaction(transaction)) ||
+        !isIncomeTransaction(transaction) ||
         categoryEntries.length !== 1 ||
-        isDefined(getTransactionDebtSettlementEntries(transaction.entries).at(0))
+        isDefined(transaction.debtEvents.at(0))
     ) {
         return null;
     }

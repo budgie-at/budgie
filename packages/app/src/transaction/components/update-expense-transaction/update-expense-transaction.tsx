@@ -34,7 +34,6 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
         handleRevert,
         hasDebtSettlement
     } = useUpdateTransactionSharedActions({
-        form: simpleTransaction.form,
         transaction,
         transactionAccountId: fromAccountId,
         transactionId,

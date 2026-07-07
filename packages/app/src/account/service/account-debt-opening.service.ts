@@ -1,6 +1,8 @@
 import {
     AccountDebtTypeEnum,
     AccountNatureEnum,
+    DebtEventDirectionEnum,
+    DebtEventSourceEnum,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -11,7 +13,13 @@ import { t } from '@lingui/core/macro';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository, db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import {
+    accountRepository,
+    db,
+    debtEventRepository,
+    transactionEntryRepository,
+    transactionRepository
+} from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
@@ -143,7 +151,7 @@ class AccountDebtOpeningService {
             })
         ]);
 
-        await transactionEntryRepository.bulkCreate(
+        const createdEntries = await transactionEntryRepository.bulkCreate(
             [
                 this.buildDebtTransferEntry({
                     transactionId: transaction.id,
@@ -162,6 +170,25 @@ class AccountDebtOpeningService {
             ],
             tx
         );
+        const debtEntry = createdEntries.find(entry => entry.accountId === toAccountId);
+
+        if (isDefined(debtEntry)) {
+            await debtEventRepository.create(
+                {
+                    debtAccountId: toAccountId,
+                    transactionId: transaction.id,
+                    transactionEntryId: debtEntry.id,
+                    direction: DebtEventDirectionEnum.OPEN,
+                    source: DebtEventSourceEnum.TRANSFER,
+                    amount: debtEntry.amount,
+                    baseInstrumentId: debtEntry.baseInstrumentId,
+                    baseExchangeRate: debtEntry.baseExchangeRate,
+                    baseAmount: debtEntry.baseAmount,
+                    operatedAt
+                },
+                tx
+            );
+        }
     }
 
     private buildDebtTransferEntry({

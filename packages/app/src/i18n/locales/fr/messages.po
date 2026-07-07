@@ -997,6 +997,7 @@ msgid "Could not update token"
 msgstr "Impossible de mettre à jour le jeton"
 
 #: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "Impossible de mettre à jour la transaction."
@@ -1151,9 +1152,10 @@ msgstr "Le compte de dette ne peut pas correspondre au compte de transaction"
 msgid "Debt account not found"
 msgstr "Compte de dette introuvable"
 
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 #: src/transaction/service/transaction-debt-settlement.service.ts
-msgid "Debt settlement is only available for income and expense transactions"
-msgstr "Le règlement de dette est disponible uniquement pour les revenus et les dépenses"
+msgid "Debt attachment is only available for income transactions"
+msgstr "Le rattachement de dette est disponible uniquement pour les transactions de revenu"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
@@ -3169,8 +3171,8 @@ msgid "Touch ID"
 msgstr "Touch ID"
 
 #: src/transaction/service/transaction-debt-settlement.service.ts
-msgid "Transaction already has a debt settlement"
-msgstr "La transaction a déjà un règlement de dette"
+msgid "Transaction already has a debt attachment"
+msgstr "La transaction a déjà un rattachement de dette"
 
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction must have a destination account"

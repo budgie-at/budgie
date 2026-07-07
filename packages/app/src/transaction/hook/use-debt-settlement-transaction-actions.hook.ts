@@ -1,75 +1,46 @@
-import { AccountTypeEnum, TransactionEntryKindEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, DebtEventAssociationEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { useWatch } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useAccountSelectorModal } from '../../account/context/account-selector-modal.context';
 import { accountService } from '../../account/service/account.service';
-import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
-import { getTransactionDebtSettlementEntries } from '../utils/get-transaction-debt-settlement-entries.util';
-import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
+import { transactionDebtSettlementService } from '../service/transaction-debt-settlement.service';
 
 import type { DebtSettlementTransactionActionsParamsInterface } from '../interface/debt-settlement-transaction-actions-params.interface';
-import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 export const useDebtSettlementTransactionActions = ({
-    form,
     transaction,
+    transactionId,
     transactionAccountId,
     debtType
 }: DebtSettlementTransactionActionsParamsInterface) => {
     const { t } = useLingui();
     const [openAccountSelector] = useAccountSelectorModal();
-    const { control, getValues, setValue } = form;
-    const entries = useWatch({ control, name: 'entries' });
-    const transactionDebtSettlementEntry = getTransactionDebtSettlementEntries(transaction.entries).at(0);
-    const transactionDebtSettlementAccountTitle = transactionDebtSettlementEntry?.account.title ?? null;
-    const [localDebtSettlementAccountTitle, setLocalDebtSettlementAccountTitle] = useState<string | null>(null);
-    const debtSettlementEntry = getTransactionDebtSettlementEntries(entries).at(0);
-    const hasDebtSettlement = isDefined(debtSettlementEntry);
-    const debtSettlementAccountTitle = hasDebtSettlement
-        ? (localDebtSettlementAccountTitle ?? transactionDebtSettlementAccountTitle)
-        : null;
+    const transactionDebtEvent = transaction.debtEvents.at(0);
+    const transactionDebtSettlementAccountTitle = transactionDebtEvent?.[DebtEventAssociationEnum.DEBT_ACCOUNT].title ?? null;
+    const [localDebtSettlementAccountTitle, setLocalDebtSettlementAccountTitle] = useState<string | null>(
+        transactionDebtSettlementAccountTitle
+    );
+    const hasDebtSettlement = isDefined(localDebtSettlementAccountTitle);
+    const debtSettlementAccountTitle = hasDebtSettlement ? localDebtSettlementAccountTitle : null;
 
-    const buildDebtSettlementEntry = (debtAccountId: number): TransactionEntryCreateInputInterface | null => {
-        const currentEntries = getValues('entries');
-        const categoryEntries = getTransactionCategoryEntries(currentEntries);
-        const categoryEntry = categoryEntries.at(0);
+    const attachDebtSettlement = async (debtAccountId: number) => {
+        const debtAccount = await accountService.findByIdOrFail(debtAccountId);
 
-        if (!isDefined(categoryEntry)) {
-            return null;
+        await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
+        setLocalDebtSettlementAccountTitle(debtAccount.title);
+    };
+
+    const handleOpenDebtSettlement = () => {
+        if (transaction.type !== TransactionTypeEnum.INCOME) {
+            Toast.show({ type: 'error', text1: t`Debt attachment is only available for income transactions` });
+
+            return;
         }
 
-        return {
-            accountId: debtAccountId,
-            categoryId: categoryEntry.categoryId,
-            categorySource: categoryEntry.categorySource,
-            mccCategoryId: categoryEntry.mccCategoryId,
-            type: transaction.type === TransactionTypeEnum.INCOME ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
-            kind: TransactionEntryKindEnum.DEBT_SETTLEMENT,
-            amount: sumEntryAmounts(categoryEntries),
-            externalId: null,
-            exchangeRate: 1,
-            baseInstrumentId: null,
-            baseExchangeRate: null,
-            baseAmount: null,
-            toIban: null,
-            originalTransactionId: null
-        };
-    };
-
-    const updateDebtSettlementEntry = (entry: TransactionEntryCreateInputInterface, accountTitle: string) => {
-        const currentEntries = getValues('entries');
-        const entriesWithoutDebtSettlement = currentEntries.filter(item => item.kind !== TransactionEntryKindEnum.DEBT_SETTLEMENT);
-
-        setValue('entries', [...entriesWithoutDebtSettlement, entry], { shouldDirty: true, shouldValidate: false });
-        setLocalDebtSettlementAccountTitle(accountTitle);
-    };
-
-    const handleOpenDebtSettlement = () =>
         void openAccountSelector({
             includeAccountTypes: [AccountTypeEnum.DEBT],
             excludeAccountId: transactionAccountId ?? 0,
@@ -79,25 +50,19 @@ export const useDebtSettlementTransactionActions = ({
         })
             .then(async debtAccountId => {
                 if (isDefined(debtAccountId)) {
-                    const debtAccount = await accountService.findByIdOrFail(debtAccountId);
-                    const debtSettlementEntry = buildDebtSettlementEntry(debtAccountId);
-
-                    if (isDefined(debtSettlementEntry)) {
-                        updateDebtSettlementEntry(debtSettlementEntry, debtAccount.title);
-                    }
+                    await attachDebtSettlement(debtAccountId);
                 }
 
                 return null;
             })
             .catch(() => void Toast.show({ type: 'error', text1: t`Could not attach debt` }));
-
-    const handleDetachDebtSettlement = () => {
-        const currentEntries = getValues('entries');
-        const entriesWithoutDebtSettlement = currentEntries.filter(item => item.kind !== TransactionEntryKindEnum.DEBT_SETTLEMENT);
-
-        setValue('entries', entriesWithoutDebtSettlement, { shouldDirty: true, shouldValidate: false });
-        setLocalDebtSettlementAccountTitle(null);
     };
+
+    const handleDetachDebtSettlement = () =>
+        void transactionDebtSettlementService
+            .detach(transactionId)
+            .then(() => void setLocalDebtSettlementAccountTitle(null))
+            .catch(() => void Toast.show({ type: 'error', text1: t`Could not update transaction.` }));
 
     return {
         handleOpenDebtSettlement,

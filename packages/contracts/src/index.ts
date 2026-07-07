@@ -64,6 +64,22 @@ export type { AccountBalanceUpdateEntityInterface } from './account-balance/enti
 
 export { AccountBalanceRepository } from './account-balance/repository/account-balance.repository';
 
+export { DebtEventDirectionEnum } from './debt-event/enum/debt-event-direction.enum';
+export { DebtEventSourceEnum } from './debt-event/enum/debt-event-source.enum';
+export { DebtEventAssociationEnum } from './debt-event/enum/debt-event-association.enum';
+
+export { DebtEventEntityTable } from './debt-event/table/debt-event-entity.table';
+export { DebtEventEntityRelations } from './debt-event/relations/debt-event-entity.relations';
+
+export { DebtEventEntitySchema } from './debt-event/schema/debt-event-entity.schema';
+export { DebtEventCreateEntitySchema } from './debt-event/schema/debt-event-create-entity.schema';
+
+export type { DebtEventEntityInterface } from './debt-event/entity/debt-event-entity.interface';
+export type { DebtEventCreateEntityInterface } from './debt-event/entity/debt-event-create-entity.interface';
+export type { DebtEventWithRelationsEntityInterface } from './debt-event/entity/debt-event-with-relations-entity.interface';
+
+export { DebtEventRepository } from './debt-event/repository/debt-event.repository';
+
 export { BankSyncModeEnum } from './bank-sync/enum/bank-sync-mode.enum';
 export { BankSyncStatusEnum } from './bank-sync/enum/bank-sync-status.enum';
 export { BankSyncAssociationEnum } from './bank-sync/enum/bank-sync-association.enum';

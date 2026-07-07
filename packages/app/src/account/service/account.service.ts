@@ -1,4 +1,12 @@
-import { AccountDebtTypeEnum, AccountNatureEnum, TransactionEntryTypeEnum, TransactionTypeEnum, transactionAsync } from '@budgie/contracts';
+import {
+    AccountDebtTypeEnum,
+    AccountNatureEnum,
+    DebtEventDirectionEnum,
+    DebtEventSourceEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum,
+    transactionAsync
+} from '@budgie/contracts';
 
 import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
@@ -6,11 +14,13 @@ import {
     accountBalanceRepository,
     accountRepository,
     db,
+    debtEventRepository,
     settingsRepository,
     transactionEntryRepository,
     transactionRepository
 } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
@@ -54,6 +64,7 @@ class AccountService {
             const debtBalance = this.getDebtBalanceInput(input.currentBalance, input.debtType);
 
             await this.adjustBalanceTo(createdAccount.id, debtBalance, tx, operatedAt);
+            await this.syncManualDebtEvents(valuedAccount, input.currentBalance, operatedAt, tx);
 
             return valuedAccount;
         });
@@ -74,25 +85,7 @@ class AccountService {
 
     @InvalidateDatabaseLiveQuery()
     async updateDebtById(id: number, input: Partial<DebtAccountCreateInputInterface>): Promise<AccountEntityInterface> {
-        return transactionAsync(db, async tx => {
-            const { currentBalance, targetBalance, ...accountInput } = input;
-            const accountUpdateInput = isNumber(targetBalance)
-                ? { ...accountInput, targetBalance: convertToMicroUnits(targetBalance) }
-                : accountInput;
-            const updatedAccount = await accountRepository.updateById(id, accountUpdateInput, tx);
-            const shouldUpdateTargetBaseValuation = isNumber(targetBalance) || isNumber(accountInput.instrumentId);
-            const valuedAccount = shouldUpdateTargetBaseValuation
-                ? await updateDebtTargetBaseValuation(updatedAccount, new Date(), tx)
-                : updatedAccount;
-
-            if (isNumber(currentBalance)) {
-                const debtBalance = this.getDebtBalanceInput(currentBalance, updatedAccount.debtType);
-
-                await this.adjustBalanceTo(updatedAccount.id, debtBalance, tx);
-            }
-
-            return valuedAccount;
-        });
+        return transactionAsync(db, async tx => this.updateDebtByIdInTransaction(id, input, tx));
     }
 
     @InvalidateDatabaseLiveQuery()
@@ -101,6 +94,7 @@ class AccountService {
             await this.unconsolidateActiveAutoByAccountId(id, tx);
 
             await accountRepository.archiveById(id, tx);
+            await debtEventRepository.archiveByAccountIds([id], tx);
             await transactionEntryRepository.archiveByAccountIds([id], tx);
             await transactionRepository.archiveByAccountIds([id], tx);
 
@@ -117,6 +111,7 @@ class AccountService {
 
         await transactionAsync(db, async tx => {
             await accountRepository.restoreById(id, tx);
+            await debtEventRepository.restoreByAccountIds([id], tx);
             await transactionEntryRepository.restoreByAccountIds([id], tx);
             await transactionRepository.restoreByAccountIds([id], tx);
         });
@@ -127,6 +122,7 @@ class AccountService {
         await transactionAsync(db, async tx => {
             await this.unconsolidateActiveAutoByAccountId(id, tx);
             await accountTransferConversionService.convertAccountTransfers(id, tx);
+            await debtEventRepository.deleteByAccountId(id, tx);
             await transactionEntryRepository.deleteByAccountId(id, tx);
             await transactionRepository.deleteByAccountId(id, tx);
 
@@ -176,6 +172,64 @@ class AccountService {
             // eslint-disable-next-line no-await-in-loop -- Sequential unconsolidation must happen before account mutation
             await unconsolidateByIdInTransaction(canonical.id, tx);
         }
+    }
+
+    private async updateDebtByIdInTransaction(
+        id: number,
+        input: Partial<DebtAccountCreateInputInterface>,
+        tx: DB
+    ): Promise<AccountEntityInterface> {
+        const { currentBalance } = input;
+        const operatedAt = new Date();
+        const valuedAccount = await this.updateDebtAccountFields(id, input, operatedAt, tx);
+
+        await this.adjustDebtBalanceIfNeeded(valuedAccount, currentBalance, operatedAt, tx);
+
+        if (this.shouldSyncManualDebtEvents(input)) {
+            const currentDebtBalance = isNumber(currentBalance)
+                ? currentBalance
+                : await this.getManualDebtCurrentBalanceInput(valuedAccount, tx);
+
+            await this.syncManualDebtEvents(valuedAccount, currentDebtBalance, operatedAt, tx);
+        }
+
+        return valuedAccount;
+    }
+
+    private async updateDebtAccountFields(
+        id: number,
+        input: Partial<DebtAccountCreateInputInterface>,
+        operatedAt: Date,
+        tx: DB
+    ): Promise<AccountEntityInterface> {
+        const { currentBalance: _currentBalance, targetBalance, ...accountInput } = input;
+        const accountUpdateInput = isNumber(targetBalance)
+            ? { ...accountInput, targetBalance: convertToMicroUnits(targetBalance) }
+            : accountInput;
+        const updatedAccount = await accountRepository.updateById(id, accountUpdateInput, tx);
+
+        if (isNumber(targetBalance) || isNumber(accountInput.instrumentId)) {
+            return updateDebtTargetBaseValuation(updatedAccount, operatedAt, tx);
+        }
+
+        return updatedAccount;
+    }
+
+    private async adjustDebtBalanceIfNeeded(
+        account: AccountEntityInterface,
+        currentBalance: number | undefined,
+        operatedAt: Date,
+        tx: DB
+    ): Promise<void> {
+        if (!isNumber(currentBalance)) {
+            return;
+        }
+
+        await this.adjustBalanceTo(account.id, this.getDebtBalanceInput(currentBalance, account.debtType), tx, operatedAt);
+    }
+
+    private shouldSyncManualDebtEvents(input: Partial<DebtAccountCreateInputInterface>): boolean {
+        return isNumber(input.currentBalance) || isNumber(input.targetBalance) || isNumber(input.instrumentId);
     }
 
     private async adjustBalanceTo(accountId: number, targetBalance: number, tx: DB, operatedAt = new Date()): Promise<void> {
@@ -230,6 +284,93 @@ class AccountService {
         const currentBalance = Math.abs(currentBalanceInput);
 
         return debtType === AccountDebtTypeEnum.LENT ? currentBalance : -currentBalance;
+    }
+
+    private async syncManualDebtEvents(
+        account: AccountEntityInterface,
+        currentBalanceInput: number,
+        operatedAt: Date,
+        tx: DB
+    ): Promise<void> {
+        await debtEventRepository.deleteByAccountIdAndSource(account.id, DebtEventSourceEnum.MANUAL, tx);
+
+        if (!isPositiveNumber(account.targetBalance)) {
+            return;
+        }
+
+        await debtEventRepository.bulkCreate(
+            [
+                {
+                    debtAccountId: account.id,
+                    transactionId: null,
+                    transactionEntryId: null,
+                    direction: DebtEventDirectionEnum.OPEN,
+                    source: DebtEventSourceEnum.MANUAL,
+                    amount: account.targetBalance,
+                    baseInstrumentId: account.targetBaseInstrumentId,
+                    baseExchangeRate: account.targetBaseExchangeRate,
+                    baseAmount: account.targetBaseAmount,
+                    operatedAt
+                },
+                ...this.getManualDebtCloseEvent(account, currentBalanceInput, operatedAt)
+            ],
+            tx
+        );
+    }
+
+    private getManualDebtCloseEvent(account: AccountEntityInterface, currentBalanceInput: number, operatedAt: Date) {
+        const amount = this.getManualDebtClosedAmount(account, currentBalanceInput);
+
+        if (!isPositiveNumber(amount)) {
+            return [];
+        }
+
+        return [
+            {
+                debtAccountId: account.id,
+                transactionId: null,
+                transactionEntryId: null,
+                direction: DebtEventDirectionEnum.CLOSE,
+                source: DebtEventSourceEnum.MANUAL,
+                amount,
+                baseInstrumentId: account.targetBaseInstrumentId,
+                baseExchangeRate: account.targetBaseExchangeRate,
+                baseAmount: this.getManualDebtBaseAmount(account, amount),
+                operatedAt
+            }
+        ];
+    }
+
+    private getManualDebtClosedAmount(account: AccountEntityInterface, currentBalanceInput: number): number {
+        const currentBalance = convertToMicroUnits(Math.abs(currentBalanceInput));
+
+        if (account.debtType === AccountDebtTypeEnum.LENT) {
+            return Math.min(currentBalance, account.targetBalance);
+        }
+
+        return Math.max(account.targetBalance - currentBalance, 0);
+    }
+
+    private getManualDebtBaseAmount(account: AccountEntityInterface, amount: number): number | null {
+        if (!isDefined(account.targetBaseExchangeRate)) {
+            return null;
+        }
+
+        return Math.round(amount * account.targetBaseExchangeRate);
+    }
+
+    private async getManualDebtCurrentBalanceInput(account: AccountEntityInterface, tx: DB): Promise<number> {
+        const manualDebtEvents = await debtEventRepository.findByAccountIdAndSource(account.id, DebtEventSourceEnum.MANUAL, tx);
+        const closedAmount = manualDebtEvents.reduce(
+            (sum, event) => (event.direction === DebtEventDirectionEnum.CLOSE ? sum + event.amount : sum),
+            0
+        );
+
+        if (account.debtType === AccountDebtTypeEnum.LENT) {
+            return convertFromMicroUnits(closedAmount);
+        }
+
+        return convertFromMicroUnits(Math.max(account.targetBalance - closedAmount, 0));
     }
 
     private async createLiabilityAccount(

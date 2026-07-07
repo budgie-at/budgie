@@ -33,7 +33,6 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
         handleRevert,
         hasDebtSettlement
     } = useUpdateTransactionSharedActions({
-        form: simpleTransaction.form,
         transaction,
         transactionAccountId: toAccountId,
         transactionId,

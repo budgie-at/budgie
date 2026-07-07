@@ -997,6 +997,7 @@ msgid "Could not update token"
 msgstr "Не вдалося оновити токен"
 
 #: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "Не вдалося оновити транзакцію."
@@ -1151,9 +1152,10 @@ msgstr "Борговий рахунок не може збігатися з ра
 msgid "Debt account not found"
 msgstr "Борговий рахунок не знайдено"
 
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 #: src/transaction/service/transaction-debt-settlement.service.ts
-msgid "Debt settlement is only available for income and expense transactions"
-msgstr "Прив’язка боргу доступна лише для доходів і витрат"
+msgid "Debt attachment is only available for income transactions"
+msgstr "Прив’язка боргу доступна лише для транзакцій доходу"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
@@ -3169,8 +3171,8 @@ msgid "Touch ID"
 msgstr "Touch ID"
 
 #: src/transaction/service/transaction-debt-settlement.service.ts
-msgid "Transaction already has a debt settlement"
-msgstr "Транзакція вже має погашення боргу"
+msgid "Transaction already has a debt attachment"
+msgstr "Транзакція вже має прив’язку боргу"
 
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction must have a destination account"

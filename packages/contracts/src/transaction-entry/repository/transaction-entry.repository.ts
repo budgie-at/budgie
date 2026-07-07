@@ -6,7 +6,6 @@ import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shar
 
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { TransactionEntryKindEnum } from '../enum/transaction-entry-kind.enum';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
 import type { DB } from '../../@generic/type/db.type';
@@ -234,17 +233,6 @@ export class TransactionEntryRepository {
             .delete(TransactionEntryEntityTable)
             .where(
                 and(eq(TransactionEntryEntityTable.transactionId, transactionId), isNull(TransactionEntryEntityTable.originalTransactionId))
-            );
-    }
-
-    async deleteDebtSettlementByTransactionId(transactionId: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .delete(TransactionEntryEntityTable)
-            .where(
-                and(
-                    eq(TransactionEntryEntityTable.transactionId, transactionId),
-                    eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.DEBT_SETTLEMENT)
-                )
             );
     }
 

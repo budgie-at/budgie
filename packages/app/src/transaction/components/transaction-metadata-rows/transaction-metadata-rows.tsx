@@ -1,4 +1,4 @@
-import { TransactionConsolidationTypeEnum, TransactionEntryKindEnum } from '@budgie/contracts';
+import { DebtEventAssociationEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { View } from 'react-native';
 
@@ -32,8 +32,7 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
     const feeCurrencySymbol = isDefined(feeEntry) ? feeEntry.account.instrument.symbol : '';
     const formattedFeeAmount = formatDigits(feeAmount, feeCurrencySymbol);
     const feeLabel = t`Fee · ${formattedFeeAmount}`;
-    const debtSettlementAccountTitle =
-        transaction.entries.find(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT)?.account.title ?? null;
+    const debtSettlementAccountTitle = transaction.debtEvents.at(0)?.[DebtEventAssociationEnum.DEBT_ACCOUNT].title ?? null;
     const hasDebtSettlement = isDefined(debtSettlementAccountTitle);
     const isRefundTransaction = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
 
