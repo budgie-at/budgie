@@ -72,7 +72,7 @@ class TransactionDebtSettlementService {
                 debtAccountId: debtAccount.id,
                 transactionId: transaction.id,
                 transactionEntryId: primaryEntry.id,
-                direction: this.getIncomeDebtEventDirection(debtAccount),
+                direction: this.getDebtEventDirection(transaction, debtAccount),
                 source: DebtEventSourceEnum.INCOME_ATTACHMENT,
                 amount: primaryEntry.amount,
                 baseInstrumentId: valuation.baseInstrumentId,
@@ -128,11 +128,11 @@ class TransactionDebtSettlementService {
     }
 
     private assertTransactionSupportsDebtSettlement(transaction: TransactionWithEntriesEntityInterface): void {
-        if (transaction.type === TransactionTypeEnum.INCOME) {
+        if (transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.INCOME) {
             return;
         }
 
-        throw new Error(t`Debt attachment is only available for income transactions`);
+        throw new Error(t`Could not attach debt`);
     }
 
     private assertDebtAccountIsNotPrimaryAccount(primaryEntry: TransactionEntryEntityInterface, debtAccount: AccountEntityInterface): void {
@@ -141,7 +141,14 @@ class TransactionDebtSettlementService {
         }
     }
 
-    private getIncomeDebtEventDirection(debtAccount: Pick<AccountEntityInterface, 'debtType'>): DebtEventDirectionEnum {
+    private getDebtEventDirection(
+        transaction: Pick<TransactionWithEntriesEntityInterface, 'type'>,
+        debtAccount: Pick<AccountEntityInterface, 'debtType'>
+    ): DebtEventDirectionEnum {
+        if (transaction.type === TransactionTypeEnum.EXPENSE) {
+            return DebtEventDirectionEnum.CLOSE;
+        }
+
         return debtAccount.debtType === AccountDebtTypeEnum.BORROW ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
     }
 }

@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum, isIncomeTransaction } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum, isExpenseTransaction, isIncomeTransaction } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Toast from 'react-native-toast-message';
 
@@ -27,7 +27,7 @@ export const TransactionListAttachDebtMenuItem = () => {
     if (
         isDefined(transaction.consolidationType) ||
         isDefined(transaction.consolidationParentTransactionId) ||
-        !isIncomeTransaction(transaction) ||
+        (!isExpenseTransaction(transaction) && !isIncomeTransaction(transaction)) ||
         categoryEntries.length !== 1 ||
         isDefined(transaction.debtEvents.at(0))
     ) {

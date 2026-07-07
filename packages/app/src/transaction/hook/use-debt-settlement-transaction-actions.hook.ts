@@ -35,8 +35,8 @@ export const useDebtSettlementTransactionActions = ({
     };
 
     const handleOpenDebtSettlement = () => {
-        if (transaction.type !== TransactionTypeEnum.INCOME) {
-            Toast.show({ type: 'error', text1: t`Debt attachment is only available for income transactions` });
+        if (transaction.type !== TransactionTypeEnum.EXPENSE && transaction.type !== TransactionTypeEnum.INCOME) {
+            Toast.show({ type: 'error', text1: t`Could not attach debt` });
 
             return;
         }

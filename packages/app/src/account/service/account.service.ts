@@ -61,10 +61,11 @@ class AccountService {
                 tx
             );
             const valuedAccount = await updateDebtTargetBaseValuation(createdAccount, operatedAt, tx);
-            const debtBalance = this.getDebtBalanceInput(input.currentBalance, input.debtType);
+            const initialCurrentBalance = this.getInitialDebtCurrentBalance(input);
+            const debtBalance = this.getDebtBalanceInput(initialCurrentBalance, input.debtType);
 
             await this.adjustBalanceTo(createdAccount.id, debtBalance, tx, operatedAt);
-            await this.syncManualDebtEvents(valuedAccount, input.currentBalance, operatedAt, tx);
+            await this.syncManualDebtEvents(valuedAccount, initialCurrentBalance, operatedAt, tx);
 
             return valuedAccount;
         });
@@ -284,6 +285,16 @@ class AccountService {
         const currentBalance = Math.abs(currentBalanceInput);
 
         return debtType === AccountDebtTypeEnum.LENT ? currentBalance : -currentBalance;
+    }
+
+    private getInitialDebtCurrentBalance(
+        input: Pick<DebtAccountCreateInputInterface, 'currentBalance' | 'debtType' | 'targetBalance'>
+    ): number {
+        if (input.debtType === AccountDebtTypeEnum.BORROW && !isPositiveNumber(input.currentBalance)) {
+            return input.targetBalance;
+        }
+
+        return input.currentBalance;
     }
 
     private async syncManualDebtEvents(
