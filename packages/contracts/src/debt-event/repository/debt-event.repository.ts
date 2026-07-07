@@ -67,28 +67,25 @@ export class DebtEventRepository {
     }
 
     async archiveByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
-        if (!isNotEmptyArray(accountIds)) {
-            return;
-        }
-
-        await (tx ?? this.db)
-            .update(DebtEventEntityTable)
-            .set({ deletedAt: new Date() })
-            .where(inArray(DebtEventEntityTable.debtAccountId, accountIds));
+        await this.updateDeletedAtByAccountIds(accountIds, new Date(), tx);
     }
 
     async restoreByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
-        if (!isNotEmptyArray(accountIds)) {
-            return;
-        }
-
-        await (tx ?? this.db)
-            .update(DebtEventEntityTable)
-            .set({ deletedAt: null })
-            .where(inArray(DebtEventEntityTable.debtAccountId, accountIds));
+        await this.updateDeletedAtByAccountIds(accountIds, null, tx);
     }
 
     async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(DebtEventEntityTable);
+    }
+
+    private async updateDeletedAtByAccountIds(accountIds: number[], deletedAt: Date | null, tx?: DB): Promise<void> {
+        if (!isNotEmptyArray(accountIds)) {
+            return;
+        }
+
+        await (tx ?? this.db)
+            .update(DebtEventEntityTable)
+            .set({ deletedAt })
+            .where(inArray(DebtEventEntityTable.debtAccountId, accountIds));
     }
 }

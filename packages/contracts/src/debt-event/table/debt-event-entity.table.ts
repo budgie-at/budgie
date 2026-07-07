@@ -29,13 +29,13 @@ export const DebtEventEntityTable = sqliteTable(
         source: text('source', { enum: convertEnumToDrizzleEnum(DebtEventSourceEnum) })
             .$type<DebtEventSourceEnum>()
             .notNull(),
+        operatedAt: int('operated_at', { mode: 'timestamp' }).notNull().default(CURRENT_TIMESTAMP),
         amount: int('amount', { mode: 'number' }).notNull(),
+        baseAmount: int('base_amount', { mode: 'number' }),
+        baseExchangeRate: real('base_exchange_rate'),
         baseInstrumentId: int('base_instrument_id', { mode: 'number' }).references(() => InstrumentEntityTable.id, {
             onDelete: 'set null'
-        }),
-        baseExchangeRate: real('base_exchange_rate'),
-        baseAmount: int('base_amount', { mode: 'number' }),
-        operatedAt: int('operated_at', { mode: 'timestamp' }).notNull().default(CURRENT_TIMESTAMP)
+        })
     }),
     table => [
         uniqueIndex('debt_events_live_transaction_unq')

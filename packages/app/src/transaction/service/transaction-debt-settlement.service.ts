@@ -50,13 +50,6 @@ class TransactionDebtSettlementService {
         });
     }
 
-    @Log(
-        params => `enter transactionId=${params.transactionId} debtAccountId=${params.debtAccountId}`,
-        (result, params) =>
-            `done debtAccountTitle="${result.title}" transactionId=${params.transactionId} debtAccountId=${params.debtAccountId}`,
-        (error, params) =>
-            `throw transactionId=${params.transactionId} debtAccountId=${params.debtAccountId} error=${getErrorMessage(error)}`
-    )
     async attachInTransaction(params: AttachDebtSettlementParamsInterface, tx: DB): Promise<AccountEntityInterface> {
         const transaction = await this.getTransactionOrFail(params.transactionId, tx);
         const debtAccount = await this.getDebtAccountOrFail(params.debtAccountId, tx);

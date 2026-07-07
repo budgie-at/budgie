@@ -82,10 +82,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                         WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
                              AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
                         THEN 0
-                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
-                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
-                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.DEBT}
-                             AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+                        WHEN ${this.buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.DEBIT)}
                         THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
                         ELSE 0
                     END), 0)
@@ -99,10 +96,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                         WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE}
                              AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
                         THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
-                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
-                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.DEBT}
-                             AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+                        WHEN ${this.buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.CREDIT)}
                         THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
                         ELSE 0
                     END), 0)
@@ -354,6 +348,15 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
             )
         );
+    }
+
+    private buildVisibleNonDebtEntryCondition(type: TransactionEntryTypeEnum) {
+        return sql`
+            ${TransactionEntryEntityTable.type} = ${type}
+            AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
+            AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.DEBT}
+            AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+        `;
     }
 
     private buildPrimaryEntryCondition() {
