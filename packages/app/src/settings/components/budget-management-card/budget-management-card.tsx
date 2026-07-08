@@ -14,7 +14,7 @@ export const BudgetManagementCard = () => {
 
     const handlePress = () => {
         if (isDefined(budget)) {
-            void router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
+            void router.push(`/budget/edit?id=${String(budget.id)}`);
 
             return;
         }
