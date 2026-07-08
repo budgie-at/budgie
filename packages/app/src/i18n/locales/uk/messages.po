@@ -817,6 +817,7 @@ msgstr "Не вдалося архівувати рахунок"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
+#: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Could not attach debt"
 msgstr "Не вдалося прив’язати борг"
 
@@ -1151,11 +1152,6 @@ msgstr "Борговий рахунок не може збігатися з ра
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account not found"
 msgstr "Борговий рахунок не знайдено"
-
-#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
-#: src/transaction/service/transaction-debt-settlement.service.ts
-msgid "Debt attachment is only available for income transactions"
-msgstr "Прив’язка боргу доступна лише для транзакцій доходу"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
