@@ -1,9 +1,9 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-    id: 'PageHeader.BackButton'
+      id: 'PageHeader.BackButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 3000
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 3000

@@ -1,791 +1,795 @@
 appId: ${APP_ID}
 env:
-  ACCOUNT_NAME: Rules Test Account
-  CATEGORY_NAME: Rules Test Category
-  TAG_NAME: Rules Test Tag
+    ACCOUNT_NAME: Rules Test Account
+    CATEGORY_NAME: Rules Test Category
+    TAG_NAME: Rules Test Tag
 ---
 - runFlow:
-    file: setup/setup-rules-test.flow.yaml
+      file: setup/setup-rules-test.flow.yaml
 
 - runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
+      file: subflows/navigate-to-rules.flow.yaml
 
 # --- Create Basic Rule (title contains "Netflix" → set category) ---
 
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: Netflix
 
 - tapOn: Done
 
 - tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
+      id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - runFlow:
-    file: subflows/rules/submit-rule-skip-existing.flow.yaml
+      file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
+      visible:
+          id: 'RulesPage.Page'
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCardConditions.0'
+      id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCardActions.0'
+      id: 'RulesPage.RuleCardActions.0'
 
 # --- Edit Rule (change condition value to "Netflix Updated") ---
 
 - tapOn:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 - extendedWaitUntil:
-    visible: 'Edit Rule'
+      visible: 'Edit Rule'
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'RuleForm.Condition.0.ValueInput'
-    timeout: 8000
+      visible:
+          id: 'RuleForm.StatusBlock'
+      timeout: 5000
+- extendedWaitUntil:
+      visible:
+          id: 'RuleForm.Condition.0.ValueInput'
+      timeout: 8000
 
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-    retryTapIfNoChange: true
+      id: 'RuleForm.Condition.0.ValueInput'
+      retryTapIfNoChange: true
 - eraseText
 - inputText: Netflix Updated
 
 - tapOn: Done
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-    retryTapIfNoChange: true
+      id: 'RuleForm.Footer.SubmitButton'
+      retryTapIfNoChange: true
 
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.RuleCard.0'
-    timeout: 5000
+      visible:
+          id: 'RulesPage.RuleCard.0'
+      timeout: 5000
 - assertVisible:
-    id: 'RulesPage.RuleCardConditions.0'
+      id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCardActions.0'
+      id: 'RulesPage.RuleCardActions.0'
 
 # --- Toggle Enabled/Disabled ---
 
 - tapOn:
-    id: 'RulesPage.RuleCardEnabledSwitch.0'
+      id: 'RulesPage.RuleCardEnabledSwitch.0'
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RulesPage.RuleCardEnabledSwitch.0'
+      id: 'RulesPage.RuleCardEnabledSwitch.0'
 - waitForAnimationToEnd
 
 - runFlow:
-    when:
-      visible: 'Edit Rule'
-    commands:
-      - tapOn: 'Cancel'
-      - waitForAnimationToEnd
+      when:
+          visible: 'Edit Rule'
+      commands:
+          - tapOn: 'Cancel'
+          - waitForAnimationToEnd
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 
 # --- Delete Rule (swipe-to-delete, verify empty state) ---
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
-    id: 'RulesPage.EmptyState'
+      id: 'RulesPage.EmptyState'
 - assertVisible:
-    text: 'No Rules Yet'
+      text: 'No Rules Yet'
 - assertVisible:
-    text: 'Create rules to automatically categorize and tag your bank transactions'
+      text: 'Create rules to automatically categorize and tag your bank transactions'
 
 # --- Create Rule with Multiple Conditions (title + comment) ---
 
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: Spotify
 
 - tapOn:
-    id: 'RuleForm.ConditionSection.AddButton'
+      id: 'RuleForm.ConditionSection.AddButton'
 
 - tapOn:
-    id: 'RuleForm.Condition.1.FieldSelector'
+      id: 'RuleForm.Condition.1.FieldSelector'
 
 - tapOn:
-    id: RuleForm.SelectorCard.COMMENT
+      id: RuleForm.SelectorCard.COMMENT
 
 - tapOn:
-    id: 'RuleForm.Condition.1.ValueInput'
+      id: 'RuleForm.Condition.1.ValueInput'
 - inputText: Premium
 
 - tapOn: Done
 
 - assertVisible:
-    text: 'Match All'
+      text: 'Match All'
 
 - scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'RuleForm.Action.0.CategorySelector'
+      direction: DOWN
+      centerElement: true
 
 - tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
+      id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - runFlow:
-    file: subflows/rules/submit-rule-skip-existing.flow.yaml
+      file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
+      visible:
+          id: 'RulesPage.Page'
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCardConditions.0'
+      id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCardActions.0'
+      id: 'RulesPage.RuleCardActions.0'
 
 # --- Delete Rule (clean up) ---
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
-    id: 'RulesPage.EmptyState'
+      id: 'RulesPage.EmptyState'
 
 # --- Create Rule with Multiple Actions (category + tag) ---
 
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: Amazon
 
 - tapOn: Done
 
 - tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
+      id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.ActionSection.AddButton'
+      id: 'RuleForm.ActionSection.AddButton'
 
 - tapOn:
-    id: 'RuleForm.Action.1.TypeSelector'
+      id: 'RuleForm.Action.1.TypeSelector'
 - tapOn:
-    id: 'RuleForm.SelectorCard.ADD_TAG'
+      id: 'RuleForm.SelectorCard.ADD_TAG'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.1.TagSelector'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'RuleForm.Action.1.TagSelector'
+      direction: DOWN
+      centerElement: true
 
 - tapOn:
-    id: 'RuleForm.Action.1.TagSelector'
+      id: 'RuleForm.Action.1.TagSelector'
 - waitForAnimationToEnd
 - tapOn:
-    text: ${TAG_NAME}
+      text: ${TAG_NAME}
 
 - runFlow:
-    file: subflows/rules/submit-rule-skip-existing.flow.yaml
+      file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - waitForAnimationToEnd
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCardConditions.0'
+      id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCardActions.0'
+      id: 'RulesPage.RuleCardActions.0'
 
 # --- Delete Rule (clean up) ---
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
-    id: 'RulesPage.EmptyState'
+      id: 'RulesPage.EmptyState'
 
 # --- Remove Condition and Action (add extras, remove them, then submit) ---
 
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.ConditionSection.AddButton'
+      id: 'RuleForm.ConditionSection.AddButton'
 - waitForAnimationToEnd
 
 - assertVisible:
-    id: 'RuleForm.Condition.1.FieldSelector'
+      id: 'RuleForm.Condition.1.FieldSelector'
 
 - tapOn:
-    id: 'RuleForm.Condition.1.RemoveButton'
+      id: 'RuleForm.Condition.1.RemoveButton'
 - waitForAnimationToEnd
 
 - assertNotVisible:
-    id: 'RuleForm.Condition.1.FieldSelector'
+      id: 'RuleForm.Condition.1.FieldSelector'
 
 - tapOn:
-    id: 'RuleForm.ActionSection.AddButton'
+      id: 'RuleForm.ActionSection.AddButton'
 - waitForAnimationToEnd
 
 - assertVisible:
-    id: 'RuleForm.Action.1.TypeSelector'
+      id: 'RuleForm.Action.1.TypeSelector'
 
 - tapOn:
-    id: 'RuleForm.Action.1.RemoveButton'
+      id: 'RuleForm.Action.1.RemoveButton'
 - waitForAnimationToEnd
 
 - assertNotVisible:
-    id: 'RuleForm.Action.1.TypeSelector'
+      id: 'RuleForm.Action.1.TypeSelector'
 
 - scrollUntilVisible:
-    element:
-      id: 'RuleForm.Condition.0.ValueInput'
-    direction: UP
+      element:
+          id: 'RuleForm.Condition.0.ValueInput'
+      direction: UP
 
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: TestRemove
 
 - tapOn: Done
 
 - tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
+      id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+      id: 'RuleForm.Footer.SubmitButton'
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
+      visible:
+          id: 'RulesPage.Page'
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCardConditions.0'
+      id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCardActions.0'
+      id: 'RulesPage.RuleCardActions.0'
 
 # --- Delete Rule (clean up) ---
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
-    id: 'RulesPage.EmptyState'
+      id: 'RulesPage.EmptyState'
 
 # --- All Field Types (amount GREATER_THAN + comment) ---
 
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
-    id: RuleForm.SelectorCard.AMOUNT
+      id: RuleForm.SelectorCard.AMOUNT
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Condition.0.OperatorSelector'
+      id: 'RuleForm.Condition.0.OperatorSelector'
 - tapOn:
-    id: RuleForm.SelectorCard.GREATER_THAN
+      id: RuleForm.SelectorCard.GREATER_THAN
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: '100'
 
 - tapOn:
-    id: 'RuleForm.ConditionSection.AddButton'
+      id: 'RuleForm.ConditionSection.AddButton'
 
 - tapOn:
-    id: 'RuleForm.Condition.1.FieldSelector'
+      id: 'RuleForm.Condition.1.FieldSelector'
 
 - tapOn:
-    id: RuleForm.SelectorCard.COMMENT
+      id: RuleForm.SelectorCard.COMMENT
 
 - tapOn:
-    id: 'RuleForm.Condition.1.ValueInput'
+      id: 'RuleForm.Condition.1.ValueInput'
 - inputText: 'Test08 Comment'
 
 - tapOn: Done
 
 - tapOn:
-    id: RuleForm.Action.0.TypeSelector
+      id: RuleForm.Action.0.TypeSelector
 - tapOn:
-    id: RuleForm.SelectorCard.SET_CATEGORY
+      id: RuleForm.SelectorCard.SET_CATEGORY
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
-    element:
+      element:
+          id: 'RuleForm.Action.0.CategorySelector'
+      direction: DOWN
+      centerElement: true
+
+- tapOn:
       id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+      id: 'RuleForm.Footer.SubmitButton'
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCardConditions.0'
+      id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCardActions.0'
+      id: 'RulesPage.RuleCardActions.0'
 
 # --- Delete Rule (clean up) ---
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
-    id: 'RulesPage.EmptyState'
+      id: 'RulesPage.EmptyState'
 
 # --- Account & Transaction Type Conditions ---
 
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
-    id: RuleForm.SelectorCard.ACCOUNT_ID
+      id: RuleForm.SelectorCard.ACCOUNT_ID
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'RuleForm.Condition.0.ValueInput'
+- tapOn:
       id: 'RuleForm.Condition.0.ValueInput'
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'AccountPickerBottomSheet.Input'
+      visible:
+          id: 'AccountPickerBottomSheet.Input'
 - tapOn:
-    id: 'AccountPickerBottomSheet.Input'
+      id: 'AccountPickerBottomSheet.Input'
 - inputText: ${ACCOUNT_NAME}
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+- tapOn:
       id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
-- tapOn:
-    id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
 - extendedWaitUntil:
-    notVisible:
-      id: 'AccountPickerBottomSheet.Input'
+      notVisible:
+          id: 'AccountPickerBottomSheet.Input'
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.ConditionSection.AddButton'
+      id: 'RuleForm.ConditionSection.AddButton'
 
 - tapOn:
-    id: 'RuleForm.Condition.1.FieldSelector'
+      id: 'RuleForm.Condition.1.FieldSelector'
 - tapOn:
-    id: RuleForm.SelectorCard.TRANSACTION_TYPE
+      id: RuleForm.SelectorCard.TRANSACTION_TYPE
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'RuleForm.Condition.1.ValueInput'
+- tapOn:
       id: 'RuleForm.Condition.1.ValueInput'
-- tapOn:
-    id: 'RuleForm.Condition.1.ValueInput'
 - tapOn: 'Expense'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'RuleForm.Action.0.CategorySelector'
+      direction: DOWN
+      centerElement: true
 
 - tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
+      id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - runFlow:
-    file: subflows/rules/submit-rule-skip-existing.flow.yaml
+      file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
+      visible:
+          id: 'RulesPage.Page'
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 
 # --- Delete Rule (clean up) ---
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
-    id: 'RulesPage.EmptyState'
+      id: 'RulesPage.EmptyState'
 
 # --- Condition Operators (EQUALS, NOT_CONTAINS, LESS_THAN) ---
 
 # Rule 1: Title EQUALS operator
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.OperatorSelector'
+      id: 'RuleForm.Condition.0.OperatorSelector'
 - tapOn:
-    id: RuleForm.SelectorCard.EQUALS
+      id: RuleForm.SelectorCard.EQUALS
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Exact Match'
 
 - tapOn: Done
 
 - scrollUntilVisible:
-    element:
+      element:
+          id: 'RuleForm.Action.0.CategorySelector'
+      direction: DOWN
+      centerElement: true
+
+- tapOn:
       id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+      id: 'RuleForm.Footer.SubmitButton'
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
+      visible:
+          id: 'RulesPage.Page'
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 
 # Rule 2: Comment NOT_CONTAINS operator
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
-    id: RuleForm.SelectorCard.COMMENT
+      id: RuleForm.SelectorCard.COMMENT
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Condition.0.OperatorSelector'
+      id: 'RuleForm.Condition.0.OperatorSelector'
 - tapOn:
-    id: RuleForm.SelectorCard.NOT_CONTAINS
+      id: RuleForm.SelectorCard.NOT_CONTAINS
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'exclude'
 
 - tapOn: Done
 
 - tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
+      id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - runFlow:
-    file: subflows/rules/submit-rule-skip-existing.flow.yaml
+      file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - waitForAnimationToEnd
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.1'
+      id: 'RulesPage.RuleCard.1'
 
 # Rule 3: Amount LESS_THAN operator
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
-    id: RuleForm.SelectorCard.AMOUNT
+      id: RuleForm.SelectorCard.AMOUNT
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Condition.0.OperatorSelector'
+      id: 'RuleForm.Condition.0.OperatorSelector'
 - tapOn:
-    id: RuleForm.SelectorCard.LESS_THAN
+      id: RuleForm.SelectorCard.LESS_THAN
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: '50'
 
 - tapOn:
-    id: 'RuleForm.ConditionSection.Header'
+      id: 'RuleForm.ConditionSection.Header'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'RuleForm.Action.0.CategorySelector'
+      direction: DOWN
+      centerElement: true
 
 - tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
+      id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - runFlow:
-    file: subflows/rules/submit-rule-skip-existing.flow.yaml
+      file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
+      visible:
+          id: 'RulesPage.Page'
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.2'
+      id: 'RulesPage.RuleCard.2'
 
 # --- Delete All 3 Rules (clean up) ---
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 - waitForAnimationToEnd
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 - waitForAnimationToEnd
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
-    id: 'RulesPage.EmptyState'
+      id: 'RulesPage.EmptyState'
 
 # --- BETWEEN Operator (amount 10–100) ---
 
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
-    id: RuleForm.SelectorCard.AMOUNT
+      id: RuleForm.SelectorCard.AMOUNT
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Condition.0.OperatorSelector'
+      id: 'RuleForm.Condition.0.OperatorSelector'
 - tapOn:
-    id: RuleForm.SelectorCard.BETWEEN
+      id: RuleForm.SelectorCard.BETWEEN
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: '10'
 
 - tapOn:
-    id: 'RuleForm.ConditionSection.Header'
+      id: 'RuleForm.ConditionSection.Header'
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RuleForm.Condition.0.SecondaryValueInput'
+      id: 'RuleForm.Condition.0.SecondaryValueInput'
 - inputText: '100'
 
 - tapOn:
-    id: 'RuleForm.ConditionSection.Header'
+      id: 'RuleForm.ConditionSection.Header'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'RuleForm.Action.0.CategorySelector'
+      direction: DOWN
+      centerElement: true
 
 - tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
+      id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - runFlow:
-    file: subflows/rules/submit-rule-skip-existing.flow.yaml
+      file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
+      visible:
+          id: 'RulesPage.Page'
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 
 # --- Delete Rule (clean up) ---
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
-    id: 'RulesPage.EmptyState'
+      id: 'RulesPage.EmptyState'
 
 # --- External Source & MCC Conditions ---
 
 # Rule 1: EXTERNAL_SOURCE condition
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
-    id: RuleForm.SelectorCard.EXTERNAL_SOURCE
+      id: RuleForm.SelectorCard.EXTERNAL_SOURCE
 - waitForAnimationToEnd
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - extendedWaitUntil:
-    visible:
-      id: 'RuleForm.SelectorCard.MONOBANK'
-    timeout: 3000
+      visible:
+          id: 'RuleForm.SelectorCard.MONOBANK'
+      timeout: 3000
 - tapOn:
-    id: 'RuleForm.SelectorCard.MONOBANK'
+      id: 'RuleForm.SelectorCard.MONOBANK'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
-    element:
+      element:
+          id: 'RuleForm.Action.0.CategorySelector'
+      direction: DOWN
+      centerElement: true
+
+- tapOn:
       id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+      id: 'RuleForm.Footer.SubmitButton'
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
+      visible:
+          id: 'RulesPage.Page'
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 
 # Rule 2: MCC_CODE condition
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
-    id: RuleForm.SelectorCard.MCC_CODE
+      id: RuleForm.SelectorCard.MCC_CODE
 - waitForAnimationToEnd
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - waitForAnimationToEnd
 - tapOn: 'Search by code or description...'
 - inputText: '0742'
 - tapOn: Done
 - extendedWaitUntil:
-    visible:
-      id: 'RuleMccSelector.Card.0742'
-    timeout: 10000
+      visible:
+          id: 'RuleMccSelector.Card.0742'
+      timeout: 10000
 - tapOn:
-    id: 'RuleMccSelector.Card.0742'
+      id: 'RuleMccSelector.Card.0742'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
-    element:
+      element:
+          id: 'RuleForm.Action.0.CategorySelector'
+      direction: DOWN
+      centerElement: true
+
+- tapOn:
       id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
+      id: 'RuleForm.Footer.SubmitButton'
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
+      visible:
+          id: 'RulesPage.Page'
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.1'
+      id: 'RulesPage.RuleCard.1'
 
 # --- Delete All 2 Rules (clean up) ---
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 - waitForAnimationToEnd
 
 - runFlow:
-    file: subflows/rules/delete-first-rule.flow.yaml
+      file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
-    id: 'RulesPage.EmptyState'
+      id: 'RulesPage.EmptyState'
 
 # --- Match Type Any (with transaction verification) ---
 
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Spotify'
 
 - tapOn: Done
 
 - tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
+      id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
 
 - runFlow:
-    file: subflows/rules/submit-rule-apply-existing.flow.yaml
+      file: subflows/rules/submit-rule-apply-existing.flow.yaml
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 
 - tapOn:
-    id: 'TabBar.Transactions'
+      id: 'TabBar.Transactions'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.Spotify_Premium'
+      visible:
+          id: 'TransactionCard.Label.Spotify_Premium'
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Category.Rules_Test_Category'
+      visible:
+          id: 'TransactionCard.Category.Rules_Test_Category'

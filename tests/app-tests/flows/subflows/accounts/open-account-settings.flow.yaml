@@ -1,9 +1,8 @@
 appId: ${APP_ID}
 ---
-
 - runFlow:
-    file: open-account-details.flow.yaml
-    env:
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      file: open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: ${ACCOUNT_NAME}
 
 - runFlow: open-visible-account-settings.flow.yaml

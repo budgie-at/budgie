@@ -1,18 +1,17 @@
 appId: ${APP_ID}
 ---
-
 - scrollUntilVisible:
-    element:
-      id: 'AccountForm.ReturnDate'
-    direction: DOWN
+      element:
+          id: 'AccountForm.ReturnDate'
+      direction: DOWN
 
 - tapOn:
-    id: 'AccountForm.ReturnDate'
+      id: 'AccountForm.ReturnDate'
 - extendedWaitUntil:
-    visible:
-      id: 'DatePicker.Day.${RETURN_DAY}'
-    timeout: 10000
+      visible:
+          id: 'DatePicker.Day.${RETURN_DAY}'
+      timeout: 10000
 - tapOn:
-    id: 'DatePicker.Day.${RETURN_DAY}'
+      id: 'DatePicker.Day.${RETURN_DAY}'
 
 - assertVisible: '${RETURN_DATE_LABEL}'

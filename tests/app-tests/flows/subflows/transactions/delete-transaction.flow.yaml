@@ -1,20 +1,20 @@
 appId: ${APP_ID}
 ---
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionInfo.Page'
-    timeout: 20000
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 20000
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionActionsMenu.TriggerButton'
-    timeout: 20000
+      visible:
+          id: 'TransactionActionsMenu.TriggerButton'
+      timeout: 20000
 - tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
+      id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionActionsMenu.DeleteButton'
+      visible:
+          id: 'TransactionActionsMenu.DeleteButton'
 
 - tapOn:
-    id: 'TransactionActionsMenu.DeleteButton'
+      id: 'TransactionActionsMenu.DeleteButton'
 - waitForAnimationToEnd
 - runFlow: confirm-delete-dialog.flow.yaml

@@ -1,30 +1,30 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-    id: 'TabBar.Home'
+      id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
+      visible: 'TOTAL BALANCE'
 - tapOn:
-    id: 'ActionButton'
+      id: 'ActionButton'
 - extendedWaitUntil:
-    visible:
-      id: 'ActionItem.AddAccount.Label'
+      visible:
+          id: 'ActionItem.AddAccount.Label'
 - waitForAnimationToEnd
 - tapOn:
-    text: 'Account'
+      text: 'Account'
 - extendedWaitUntil:
-    visible: 'New Account'
+      visible: 'New Account'
 - tapOn:
-    id: 'CreateAccount.CASH'
+      id: 'CreateAccount.CASH'
 - extendedWaitUntil:
-    visible: 'Account Name & Icon'
+      visible: 'Account Name & Icon'
 - tapOn:
-    text: 'e.g. Savings Account'
+      text: 'e.g. Savings Account'
 - inputText: ${ACCOUNT_NAME}
 - tapOn:
-    id: CreateAccount.Amount
+      id: CreateAccount.Amount
 - inputText: 100
 - tapOn:
-    text: 'Submit'
+      text: 'Submit'
 - assertVisible: ${ACCOUNT_NAME}, $100
 - assertVisible: 'TOTAL BALANCE'

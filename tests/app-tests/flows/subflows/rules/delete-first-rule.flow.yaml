@@ -1,13 +1,13 @@
 appId: ${APP_ID}
 ---
 - swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
+      from:
+          id: 'RulesPage.RuleCard.0'
+      direction: LEFT
+      duration: 300
 - waitForAnimationToEnd
 
 - tapOn:
-    id: DeletableRow.DeleteButton
+      id: DeletableRow.DeleteButton
 
 - tapOn: Delete

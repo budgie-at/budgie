@@ -1,192 +1,191 @@
 appId: ${APP_ID}
 ---
+- runFlow:
+      file: open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: ${ACCOUNT_NAME}
 
 - runFlow:
-    file: open-account-details.flow.yaml
-    env:
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      file: open-visible-account-settings.flow.yaml
+      env:
+          ACCOUNT_NAME: ${ACCOUNT_NAME}
 
 - runFlow:
-    file: open-visible-account-settings.flow.yaml
-    env:
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      file: set-debt-return-date.flow.yaml
+      env:
+          RETURN_DAY: ${RETURN_DAY}
+          RETURN_DATE_LABEL: ${RETURN_DATE_LABEL}
 
 - runFlow:
-    file: set-debt-return-date.flow.yaml
-    env:
-      RETURN_DAY: ${RETURN_DAY}
-      RETURN_DATE_LABEL: ${RETURN_DATE_LABEL}
+      file: rename-account.flow.yaml
+      env:
+          UPDATED_ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - runFlow:
-    file: rename-account.flow.yaml
-    env:
-      UPDATED_ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
-
-- runFlow:
-    file: open-account-settings.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+      file: open-account-settings.flow.yaml
+      env:
+          ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - assertVisible: '${RETURN_DATE_LABEL}'
 
 - runFlow:
-    file: update-account-balance.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
-      NEW_BALANCE: ${INCREASE_TO}
+      file: update-account-balance.flow.yaml
+      env:
+          ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+          NEW_BALANCE: ${INCREASE_TO}
 
 - runFlow:
-    file: open-account-details.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+      file: open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - assertVisible:
-    id: 'TransactionCard.Badge.Adjustment'
+      id: 'TransactionCard.Badge.Adjustment'
 - assertVisible:
-    id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
-
-- runFlow:
-    file: open-visible-account-settings.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+      id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
 
 - runFlow:
-    file: update-account-balance.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
-      NEW_BALANCE: ${DECREASE_TO}
+      file: open-visible-account-settings.flow.yaml
+      env:
+          ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - runFlow:
-    file: open-account-details.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+      file: update-account-balance.flow.yaml
+      env:
+          ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+          NEW_BALANCE: ${DECREASE_TO}
+
+- runFlow:
+      file: open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - assertVisible:
-    id: 'TransactionCard.Badge.Adjustment'
+      id: 'TransactionCard.Badge.Adjustment'
 - assertVisible:
-    id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
+      id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
 - assertVisible:
-    id: 'TransactionCard.AdjustmentAmount.${DECREASE_DELTA}'
+      id: 'TransactionCard.AdjustmentAmount.${DECREASE_DELTA}'
 
 - runFlow: exit-account-details-to-home.flow.yaml
 
 - runFlow:
-    file: set-main-currency.flow.yaml
-    env:
-      CURRENCY_CODE: ${CURRENCY_CODE}
+      file: set-main-currency.flow.yaml
+      env:
+          CURRENCY_CODE: ${CURRENCY_CODE}
 
 - assertVisible:
-    id: 'HomePage.NetWorthValue.0'
+      id: 'HomePage.NetWorthValue.0'
 - scrollUntilVisible:
-    element:
-      id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
-    direction: DOWN
-    timeout: 8000
+      element:
+          id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+      direction: DOWN
+      timeout: 8000
 
 - runFlow:
-    file: open-account-settings.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+      file: open-account-settings.flow.yaml
+      env:
+          ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - scrollUntilVisible:
-    element:
+      element:
+          id: 'AccountForm.ActiveTitle'
+      direction: DOWN
+      centerElement: true
+- tapOn:
       id: 'AccountForm.ActiveTitle'
-    direction: DOWN
-    centerElement: true
 - tapOn:
-    id: 'AccountForm.ActiveTitle'
-- tapOn:
-    id: 'AccountForm.SubmitButton'
+      id: 'AccountForm.SubmitButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.NetWorthValue.0'
-    timeout: 10000
+      visible:
+          id: 'HomePage.NetWorthValue.0'
+      timeout: 10000
 
 - assertNotVisible:
-    id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+      id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
 
 - runFlow:
-    file: open-inactive-accounts.flow.yaml
+      file: open-inactive-accounts.flow.yaml
 
 - assertVisible:
-    id: 'InactiveAccountCard.${UPDATED_ACCOUNT_NAME}'
+      id: 'InactiveAccountCard.${UPDATED_ACCOUNT_NAME}'
 - tapOn:
-    id: 'InactiveAccountCard.ActivateButton.${UPDATED_ACCOUNT_NAME}'
+      id: 'InactiveAccountCard.ActivateButton.${UPDATED_ACCOUNT_NAME}'
 - tapOn: 'Activate'
 - tapOn:
-    id: 'TabBar.Home'
+      id: 'TabBar.Home'
 
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.NetWorthValue.0'
-    timeout: 10000
+      visible:
+          id: 'HomePage.NetWorthValue.0'
+      timeout: 10000
 
 - scrollUntilVisible:
-    element:
-      id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
-    direction: DOWN
-    timeout: 8000
+      element:
+          id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+      direction: DOWN
+      timeout: 8000
 
 - runFlow:
-    file: open-account-settings.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+      file: open-account-settings.flow.yaml
+      env:
+          ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - scrollUntilVisible:
-    element:
+      element:
+          id: 'AccountForm.IncludeInNetWorthTitle'
+      direction: DOWN
+      centerElement: true
+- tapOn:
       id: 'AccountForm.IncludeInNetWorthTitle'
-    direction: DOWN
-    centerElement: true
 - tapOn:
-    id: 'AccountForm.IncludeInNetWorthTitle'
-- tapOn:
-    id: 'AccountForm.SubmitButton'
+      id: 'AccountForm.SubmitButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.NetWorthValue.${DECREASE_TO}'
-    timeout: 10000
+      visible:
+          id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+      timeout: 10000
 
 - runFlow:
-    file: open-account-settings.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+      file: open-account-settings.flow.yaml
+      env:
+          ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - scrollUntilVisible:
-    element:
+      element:
+          id: 'AccountForm.IncludeInNetWorthTitle'
+      direction: DOWN
+      centerElement: true
+- tapOn:
       id: 'AccountForm.IncludeInNetWorthTitle'
-    direction: DOWN
-    centerElement: true
 - tapOn:
-    id: 'AccountForm.IncludeInNetWorthTitle'
-- tapOn:
-    id: 'AccountForm.SubmitButton'
+      id: 'AccountForm.SubmitButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.NetWorthValue.0'
-    timeout: 10000
+      visible:
+          id: 'HomePage.NetWorthValue.0'
+      timeout: 10000
 
 - runFlow:
-    file: open-account-settings.flow.yaml
-    env:
-      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+      file: open-account-settings.flow.yaml
+      env:
+          ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - tapOn:
-    id: 'AccountDetails.ArchiveButton'
+      id: 'AccountDetails.ArchiveButton'
 - tapOn: 'Archive'
 
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.NetWorthValue.0'
-    timeout: 10000
+      visible:
+          id: 'HomePage.NetWorthValue.0'
+      timeout: 10000
 
 - assertNotVisible:
-    id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+      id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
 
 - runFlow:
-    file: open-archived-accounts.flow.yaml
+      file: open-archived-accounts.flow.yaml
 
 - assertVisible:
-    id: 'ArchivedAccountCard.${UPDATED_ACCOUNT_NAME}'
+      id: 'ArchivedAccountCard.${UPDATED_ACCOUNT_NAME}'

@@ -1,22 +1,21 @@
 appId: ${APP_ID}
 ---
-
 - runFlow:
-    file: navigation/open-deep-link.flow.yaml
-    env:
-      DEEP_LINK: 'budgie://settings?anchor=organization'
+      file: navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=organization'
 
 - extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.ManageRulesCard'
-    timeout: 15000
+      visible:
+          id: 'SettingsPage.ManageRulesCard'
+      timeout: 15000
 
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'SettingsPage.ManageRulesCard'
+      id: 'SettingsPage.ManageRulesCard'
 
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-    timeout: 15000
+      visible:
+          id: 'RulesPage.Page'
+      timeout: 15000

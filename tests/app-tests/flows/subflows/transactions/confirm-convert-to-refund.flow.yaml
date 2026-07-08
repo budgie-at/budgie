@@ -1,11 +1,11 @@
 appId: ${APP_ID}
 ---
 - extendedWaitUntil:
-    visible: 'Convert to Refund?'
-    timeout: 10000
+      visible: 'Convert to Refund?'
+      timeout: 10000
 - tapOn:
-    text: 'Convert'
-    index: 0
+      text: 'Convert'
+      index: 0
 - extendedWaitUntil:
-    notVisible: 'Convert to Refund?'
-    timeout: 15000
+      notVisible: 'Convert to Refund?'
+      timeout: 15000

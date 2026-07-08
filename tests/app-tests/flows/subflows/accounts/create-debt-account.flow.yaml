@@ -1,91 +1,90 @@
 appId: ${APP_ID}
 ---
-
 - runFlow: open-new-account.flow.yaml
 
 - tapOn:
-    id: 'CreateAccount.DEBT'
+      id: 'CreateAccount.DEBT'
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'AccountForm.NameInput'
-    timeout: 3000
+      visible:
+          id: 'AccountForm.NameInput'
+      timeout: 3000
 
 - tapOn:
-    id: 'AccountForm.NameInput'
+      id: 'AccountForm.NameInput'
 - inputText: ${ACCOUNT_NAME}
 - tapOn:
-    text: 'ACCOUNT NAME & ICON'
+      text: 'ACCOUNT NAME & ICON'
 
 - extendedWaitUntil:
-    visible:
-      id: 'AccountForm.CurrencySelector'
-    timeout: 3000
+      visible:
+          id: 'AccountForm.CurrencySelector'
+      timeout: 3000
 - tapOn:
-    id: 'AccountForm.CurrencySelector'
+      id: 'AccountForm.CurrencySelector'
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'CurrencySelector.SearchInput'
-    timeout: 3000
+      visible:
+          id: 'CurrencySelector.SearchInput'
+      timeout: 3000
 - tapOn:
-    id: 'CurrencySelector.SearchInput'
+      id: 'CurrencySelector.SearchInput'
 - eraseText: 100
 - inputText: ${CURRENCY_CODE}
 - extendedWaitUntil:
-    visible:
-      id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
-    timeout: 3000
+      visible:
+          id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+      timeout: 3000
 - tapOn:
-    id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+      id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    notVisible:
-      id: 'CurrencySelector.SearchInput'
-    timeout: 3000
+      notVisible:
+          id: 'CurrencySelector.SearchInput'
+      timeout: 3000
 - extendedWaitUntil:
-    visible:
-      id: 'AccountForm.SelectedCurrency.${CURRENCY_CODE}'
-    timeout: 3000
+      visible:
+          id: 'AccountForm.SelectedCurrency.${CURRENCY_CODE}'
+      timeout: 3000
 
 - scrollUntilVisible:
-    element:
+      element:
+          id: 'AccountForm.DebtType.${DEBT_TYPE}'
+      direction: DOWN
+- tapOn:
       id: 'AccountForm.DebtType.${DEBT_TYPE}'
-    direction: DOWN
-- tapOn:
-    id: 'AccountForm.DebtType.${DEBT_TYPE}'
 
 - scrollUntilVisible:
-    element:
-      id: 'AccountForm.TargetBalanceInput'
-    direction: UP
+      element:
+          id: 'AccountForm.TargetBalanceInput'
+      direction: UP
 - tapOn:
-    id: 'AccountForm.TargetBalanceInput'
+      id: 'AccountForm.TargetBalanceInput'
 - eraseText: 100
 - inputText: ${TARGET_BALANCE}
 - tapOn:
-    text: 'Debt Account'
+      text: 'Debt Account'
 - scrollUntilVisible:
-    element:
-      id: 'AccountForm.SubmitButton'
-      enabled: true
-    direction: DOWN
+      element:
+          id: 'AccountForm.SubmitButton'
+          enabled: true
+      direction: DOWN
 - extendedWaitUntil:
-    visible:
-      id: 'AccountForm.SubmitButton'
-      enabled: true
-    timeout: 3000
+      visible:
+          id: 'AccountForm.SubmitButton'
+          enabled: true
+      timeout: 3000
 - tapOn:
-    id: 'AccountForm.SubmitButton'
-    enabled: true
-    retryTapIfNoChange: true
+      id: 'AccountForm.SubmitButton'
+      enabled: true
+      retryTapIfNoChange: true
 
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 15000
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
 
 - scrollUntilVisible:
-    element:
-      id: 'AccountCard.${ACCOUNT_NAME}'
-    direction: DOWN
+      element:
+          id: 'AccountCard.${ACCOUNT_NAME}'
+      direction: DOWN

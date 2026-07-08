@@ -1,43 +1,42 @@
 appId: ${APP_ID}
 ---
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible: 'TOTAL BALANCE'
 
 - tapOn:
-    id: 'TabBar.Home'
+      id: 'TabBar.Settings'
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
-
-- tapOn:
-    id: 'TabBar.Settings'
-- extendedWaitUntil:
-    visible: 'Settings'
+      visible: 'Settings'
 
 - scrollUntilVisible:
-    element:
-      id: 'SettingsPage.ManageCategoriesCard'
-    direction: DOWN
-    speed: 20
+      element:
+          id: 'SettingsPage.ManageCategoriesCard'
+      direction: DOWN
+      speed: 20
 - tapOn:
-    id: 'SettingsPage.ManageCategoriesCard'
+      id: 'SettingsPage.ManageCategoriesCard'
 - extendedWaitUntil:
-    visible: 'Categories'
+      visible: 'Categories'
 
 - tapOn:
-    id: 'ActionButton'
+      id: 'ActionButton'
 
 - waitForAnimationToEnd
 
 - tapOn: Category
 
 - tapOn:
-    id: CategoryForm.Input
+      id: CategoryForm.Input
 - inputText: ${CATEGORY_NAME}
 
 - tapOn:
-    id: CategoryForm.Submit
+      id: CategoryForm.Submit
 
 - waitForAnimationToEnd
 
 - assertVisible: ${CATEGORY_NAME}, Swipe left
 
 - tapOn:
-    id: 'TabBar.Settings'
+      id: 'TabBar.Settings'

@@ -1,11 +1,11 @@
 appId: ${APP_ID}
 ---
 - extendedWaitUntil:
-    visible: 'Convert to Transfer?'
-    timeout: 10000
+      visible: 'Convert to Transfer?'
+      timeout: 10000
 - tapOn:
-    text: 'Convert'
-    index: 0
+      text: 'Convert'
+      index: 0
 - extendedWaitUntil:
-    notVisible: 'Convert to Transfer?'
-    timeout: 15000
+      notVisible: 'Convert to Transfer?'
+      timeout: 15000

@@ -1,19 +1,23 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-    id: 'RulesPage.RuleCardActions.0'
+      id: 'RulesPage.RuleCardActions.0'
 - extendedWaitUntil:
-    visible: 'Edit Rule'
-    timeout: 5000
+      visible: 'Edit Rule'
+      timeout: 5000
 - waitForAnimationToEnd
-- tapOn:
-    id: 'RuleForm.Footer.DeleteButton.Label'
-    retryTapIfNoChange: true
 - extendedWaitUntil:
-    visible: 'Delete'
-    timeout: 3000
+      visible:
+          id: 'RuleForm.StatusBlock'
+      timeout: 5000
+- tapOn:
+      id: 'RuleForm.Footer.DeleteButton.Label'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible: 'Delete'
+      timeout: 3000
 - tapOn: 'Delete'
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-    timeout: 5000
+      visible:
+          id: 'RulesPage.Page'
+      timeout: 5000

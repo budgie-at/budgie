@@ -1,23 +1,23 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-    when:
-      visible:
-        id: 'PageHeader.BackButton'
-    commands:
-      - tapOn:
-          id: 'PageHeader.BackButton'
-      - waitForAnimationToEnd
+      when:
+          visible:
+              id: 'PageHeader.BackButton'
+      commands:
+          - tapOn:
+                id: 'PageHeader.BackButton'
+          - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 15000
+- tapOn:
       id: 'TabBar.Home'
-    timeout: 15000
 - tapOn:
-    id: 'TabBar.Home'
-- tapOn:
-    id: 'TabBar.Settings'
+      id: 'TabBar.Settings'
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-    timeout: 15000
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 15000

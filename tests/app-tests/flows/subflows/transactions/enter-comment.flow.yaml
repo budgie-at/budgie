@@ -1,18 +1,18 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-    id: 'TransactionForm.CommentInput'
+      id: 'TransactionForm.CommentInput'
 - extendedWaitUntil:
-    visible:
-      id: 'NoteInput.Input'
-    timeout: 5000
+      visible:
+          id: 'NoteInput.Input'
+      timeout: 5000
 - tapOn:
-    id: 'NoteInput.Input'
+      id: 'NoteInput.Input'
 - inputText: ${COMMENT}
 - tapOn:
-    id: 'NoteInput.SubmitButton'
+      id: 'NoteInput.SubmitButton'
 - extendedWaitUntil:
-    notVisible:
-      id: 'NoteInput.Input'
-    timeout: 5000
+      notVisible:
+          id: 'NoteInput.Input'
+      timeout: 5000
 - waitForAnimationToEnd

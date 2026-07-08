@@ -1,18 +1,18 @@
 appId: ${APP_ID}
 env:
-  ACTION_ITEM_ID: ${ACTION_ITEM_ID}
-  FORM_TITLE: ${FORM_TITLE}
+    ACTION_ITEM_ID: ${ACTION_ITEM_ID}
+    FORM_TITLE: ${FORM_TITLE}
 ---
 - runFlow:
-    file: open-action-menu.flow.yaml
-    env:
-      ACTION_ITEM_ID: ${ACTION_ITEM_ID}
+      file: open-action-menu.flow.yaml
+      env:
+          ACTION_ITEM_ID: ${ACTION_ITEM_ID}
 
 - tapOn:
-    id: '${ACTION_ITEM_ID}.Label'
+      id: '${ACTION_ITEM_ID}.Label'
 - extendedWaitUntil:
-    visible: ${FORM_TITLE}
+      visible: ${FORM_TITLE}
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionKeypad.Digit.1'
+      visible:
+          id: 'TransactionKeypad.Digit.1'
 - waitForAnimationToEnd

@@ -1,28 +1,28 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-    file: setup/setup-rules-test.flow.yaml
+      file: setup/setup-rules-test.flow.yaml
 
 - runFlow:
-    file: subflows/rules/create-suggested-rule-from-transaction.flow.yaml
-    env:
-      CATEGORY_NAME: Groceries
-      CSV_DISPLAY_NAME: test15-suggested-rule
-      EXPECTED_CONDITION_COUNT: '2'
-      TRANSACTION_CARD_ID: 'TransactionCard.Label.Test15_Unique_Purchase'
+      file: subflows/rules/create-suggested-rule-from-transaction.flow.yaml
+      env:
+          CATEGORY_NAME: Groceries
+          CSV_DISPLAY_NAME: test15-suggested-rule
+          EXPECTED_CONDITION_COUNT: '2'
+          TRANSACTION_CARD_ID: 'TransactionCard.Label.Test15_Unique_Purchase'
 
 - runFlow:
-    file: subflows/rules/create-suggested-rule-from-transaction.flow.yaml
-    env:
-      CATEGORY_NAME: Shopping
-      CSV_DISPLAY_NAME: test17-suggested-rule
-      EXPECTED_CONDITION_COUNT: '3'
-      TRANSACTION_CARD_ID: 'TransactionCard.Label.Store_C_Kyiv'
+      file: subflows/rules/create-suggested-rule-from-transaction.flow.yaml
+      env:
+          CATEGORY_NAME: Shopping
+          CSV_DISPLAY_NAME: test17-suggested-rule
+          EXPECTED_CONDITION_COUNT: '3'
+          TRANSACTION_CARD_ID: 'TransactionCard.Label.Store_C_Kyiv'
 
 - runFlow:
-    file: subflows/rules/create-suggested-rule-from-transaction.flow.yaml
-    env:
-      CATEGORY_NAME: Groceries
-      CSV_DISPLAY_NAME: test25-duplicate-rule
-      EXPECTED_CONDITION_COUNT: '2'
-      TRANSACTION_CARD_ID: 'TransactionCard.Label.Test25_Duplicate_Check'
+      file: subflows/rules/create-suggested-rule-from-transaction.flow.yaml
+      env:
+          CATEGORY_NAME: Groceries
+          CSV_DISPLAY_NAME: test25-duplicate-rule
+          EXPECTED_CONDITION_COUNT: '2'
+          TRANSACTION_CARD_ID: 'TransactionCard.Label.Test25_Duplicate_Check'

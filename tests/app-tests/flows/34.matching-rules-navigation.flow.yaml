@@ -1,194 +1,202 @@
 appId: ${APP_ID}
 env:
-  ACCOUNT_NAME: Rules Test Account
-  FIRST_RULE_MATCH: E2E Pill Navigation
-  SECOND_RULE_MATCH: Pill Navigation
-  TAG_NAME: Rules Test Tag
-  TRANSACTION_CATEGORY_NAME: Rules Test Category
+    ACCOUNT_NAME: Rules Test Account
+    FIRST_RULE_MATCH: E2E Pill Navigation
+    SECOND_RULE_MATCH: Pill Navigation
+    TAG_NAME: Rules Test Tag
+    TRANSACTION_CATEGORY_NAME: Rules Test Category
 ---
 - runFlow:
-    file: setup/setup-rules-test.flow.yaml
+      file: setup/setup-rules-test.flow.yaml
 
 - runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
+      file: subflows/navigate-to-rules.flow.yaml
 
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
 - tapOn:
-    id: 'RuleForm.SelectorCard.COMMENT'
+      id: 'RuleForm.SelectorCard.COMMENT'
 - waitForAnimationToEnd
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: ${FIRST_RULE_MATCH}
 - tapOn: Done
 
 - tapOn:
-    id: 'RuleForm.Action.0.TypeSelector'
+      id: 'RuleForm.Action.0.TypeSelector'
 - tapOn:
-    id: 'RuleForm.SelectorCard.SET_CATEGORY'
+      id: 'RuleForm.SelectorCard.SET_CATEGORY'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'RuleForm.Action.0.CategorySelector'
+      direction: DOWN
+      centerElement: true
 
 - tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
+      id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: Groceries
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: Groceries
 
 - runFlow:
-    file: subflows/rules/submit-rule-skip-existing.flow.yaml
+      file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - waitForAnimationToEnd
 
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 
 - runFlow:
-    file: subflows/transactions/create-expense.flow.yaml
-    env:
-      AMOUNT: 25
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${TRANSACTION_CATEGORY_NAME}
-      COMMENT: ${FIRST_RULE_MATCH}
+      file: subflows/transactions/create-expense.flow.yaml
+      env:
+          AMOUNT: 25
+          ACCOUNT_NAME: ${ACCOUNT_NAME}
+          CATEGORY_NAME: ${TRANSACTION_CATEGORY_NAME}
+          COMMENT: ${FIRST_RULE_MATCH}
 
 - runFlow:
-    file: subflows/navigation/open-deep-link.flow.yaml
-    env:
-      DEEP_LINK: budgie://transactions/9/expense
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: budgie://transactions/9/expense
 
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionInfo.Page'
-    timeout: 10000
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 10000
 
 - extendedWaitUntil:
-    visible:
-      id: 'MatchingRules.Pill'
-    timeout: 10000
+      visible:
+          id: 'MatchingRules.Pill'
+      timeout: 10000
 - tapOn:
-    id: 'MatchingRules.Pill'
+      id: 'MatchingRules.Pill'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
-    visible: 'Edit Rule'
+      visible: 'Edit Rule'
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'RuleForm.Condition.0.ValueInput'
-    timeout: 8000
+      visible:
+          id: 'RuleForm.StatusBlock'
+      timeout: 5000
+- extendedWaitUntil:
+      visible:
+          id: 'RuleForm.Condition.0.ValueInput'
+      timeout: 8000
 - assertVisible: 'Edit Rule'
 
 - tapOn:
-    id: 'PageHeader.BackButton'
+      id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 - assertVisible:
-    id: 'TransactionInfo.Page'
+      id: 'TransactionInfo.Page'
 
 - tapOn:
-    id: 'PageHeader.BackButton'
+      id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 
 - runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
+      file: subflows/navigate-to-rules.flow.yaml
 
 - runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
+      file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
+      id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
 - tapOn:
-    id: 'RuleForm.SelectorCard.COMMENT'
+      id: 'RuleForm.SelectorCard.COMMENT'
 - waitForAnimationToEnd
 - tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
+      id: 'RuleForm.Condition.0.ValueInput'
 - inputText: ${SECOND_RULE_MATCH}
 - tapOn: Done
 
 - tapOn:
-    id: 'RuleForm.Action.0.TypeSelector'
+      id: 'RuleForm.Action.0.TypeSelector'
 - tapOn:
-    id: 'RuleForm.SelectorCard.ADD_TAG'
+      id: 'RuleForm.SelectorCard.ADD_TAG'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
-    element:
+      element:
+          id: 'RuleForm.Action.0.TagSelector'
+      direction: DOWN
+      centerElement: true
+
+- tapOn:
       id: 'RuleForm.Action.0.TagSelector'
-    direction: DOWN
-    centerElement: true
+- waitForAnimationToEnd
+- runFlow:
+      file: subflows/shared/select-tag-by-search.flow.yaml
+      env:
+          TAG_NAME: ${TAG_NAME}
 
+- runFlow:
+      file: subflows/rules/submit-rule-skip-existing.flow.yaml
+- waitForAnimationToEnd
+
+- assertVisible:
+      id: 'RulesPage.RuleCard.0'
+- assertVisible:
+      id: 'RulesPage.RuleCard.1'
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: budgie://transactions/9/expense
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 10000
+
+- extendedWaitUntil:
+      visible:
+          id: 'MatchingRules.Pill'
+      timeout: 10000
 - tapOn:
-    id: 'RuleForm.Action.0.TagSelector'
-- waitForAnimationToEnd
-- runFlow:
-    file: subflows/shared/select-tag-by-search.flow.yaml
-    env:
-      TAG_NAME: ${TAG_NAME}
-
-- runFlow:
-    file: subflows/rules/submit-rule-skip-existing.flow.yaml
-- waitForAnimationToEnd
-
-- assertVisible:
-    id: 'RulesPage.RuleCard.0'
-- assertVisible:
-    id: 'RulesPage.RuleCard.1'
-
-- runFlow:
-    file: subflows/navigation/open-deep-link.flow.yaml
-    env:
-      DEEP_LINK: budgie://transactions/9/expense
-
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionInfo.Page'
-    timeout: 10000
-
-- extendedWaitUntil:
-    visible:
       id: 'MatchingRules.Pill'
-    timeout: 10000
-- tapOn:
-    id: 'MatchingRules.Pill'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.MatchingRulesFilter'
-    timeout: 10000
+      visible:
+          id: 'RulesPage.MatchingRulesFilter'
+      timeout: 10000
 - assertVisible: '2 matching rules'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.1'
+      id: 'RulesPage.RuleCard.1'
 
 - tapOn:
-    id: 'RulesPage.RuleCard.0'
+      id: 'RulesPage.RuleCard.0'
 - extendedWaitUntil:
-    visible: 'Edit Rule'
+      visible: 'Edit Rule'
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'RuleForm.Condition.0.ValueInput'
-    timeout: 8000
+      visible:
+          id: 'RuleForm.StatusBlock'
+      timeout: 5000
+- extendedWaitUntil:
+      visible:
+          id: 'RuleForm.Condition.0.ValueInput'
+      timeout: 8000
 
 - tapOn:
-    id: 'PageHeader.BackButton'
+      id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 - assertVisible:
-    id: 'RulesPage.MatchingRulesFilter'
+      id: 'RulesPage.MatchingRulesFilter'
 
 - tapOn:
-    id: 'PageHeader.BackButton'
+      id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 - assertVisible:
-    id: 'TransactionInfo.Page'
+      id: 'TransactionInfo.Page'

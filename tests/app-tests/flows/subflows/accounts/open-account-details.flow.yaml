@@ -1,14 +1,13 @@
 appId: ${APP_ID}
 ---
-
 - scrollUntilVisible:
-    element:
-      id: 'AccountCard.${ACCOUNT_NAME}'
-    direction: DOWN
+      element:
+          id: 'AccountCard.${ACCOUNT_NAME}'
+      direction: DOWN
 
 - tapOn:
-    id: 'AccountCard.${ACCOUNT_NAME}'
+      id: 'AccountCard.${ACCOUNT_NAME}'
 - extendedWaitUntil:
-    visible:
-      id: 'AccountDetails.EditButton'
-    timeout: 10000
+      visible:
+          id: 'AccountDetails.EditButton'
+      timeout: 10000

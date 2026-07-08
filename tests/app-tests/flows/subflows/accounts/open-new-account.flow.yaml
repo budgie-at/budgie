@@ -1,52 +1,51 @@
 appId: ${APP_ID}
 ---
-
 - tapOn:
-    id: 'TabBar.Home'
+      id: 'TabBar.Home'
 - waitForAnimationToEnd
 
 - runFlow:
-    when:
-      visible: 'No accounts yet'
-    commands:
-      - tapOn: 'Add Account'
-      - extendedWaitUntil:
-          visible:
-            id: 'CreateAccount.BANK'
-          timeout: 10000
+      when:
+          visible: 'No accounts yet'
+      commands:
+          - tapOn: 'Add Account'
+          - extendedWaitUntil:
+                visible:
+                    id: 'CreateAccount.BANK'
+                timeout: 10000
 
 - runFlow:
-    when:
-      notVisible:
-        id: 'CreateAccount.BANK'
-    commands:
-      - runFlow:
-          when:
-            visible:
-              id: 'ActionButton'
-          commands:
-            - tapOn:
-                id: 'ActionButton'
-      - runFlow:
-          when:
-            notVisible:
-              id: 'ActionButton'
-          commands:
-            - extendedWaitUntil:
+      when:
+          notVisible:
+              id: 'CreateAccount.BANK'
+      commands:
+          - runFlow:
+                when:
+                    visible:
+                        id: 'ActionButton'
+                commands:
+                    - tapOn:
+                          id: 'ActionButton'
+          - runFlow:
+                when:
+                    notVisible:
+                        id: 'ActionButton'
+                commands:
+                    - extendedWaitUntil:
+                          visible:
+                              id: 'ActionButton'
+                          timeout: 10000
+                    - tapOn:
+                          id: 'ActionButton'
+          - waitForAnimationToEnd
+          - extendedWaitUntil:
                 visible:
-                  id: 'ActionButton'
+                    id: 'ActionItem.AddAccount.Label'
                 timeout: 10000
-            - tapOn:
-                id: 'ActionButton'
-      - waitForAnimationToEnd
-      - extendedWaitUntil:
-          visible:
-            id: 'ActionItem.AddAccount.Label'
-          timeout: 10000
-      - tapOn:
-          id: 'ActionItem.AddAccount.Label'
-      - waitForAnimationToEnd
+          - tapOn:
+                id: 'ActionItem.AddAccount.Label'
+          - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'CreateAccount.BANK'
-    timeout: 10000
+      visible:
+          id: 'CreateAccount.BANK'
+      timeout: 10000

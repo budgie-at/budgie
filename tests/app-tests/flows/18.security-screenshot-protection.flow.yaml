@@ -1,42 +1,42 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-    file: subflows/import/import-database-from-settings.flow.yaml
-    env:
-      FIXTURE_ROW_ID_MATCH: '18.db'
+      file: subflows/import/import-database-from-settings.flow.yaml
+      env:
+          FIXTURE_ROW_ID_MATCH: '18.db'
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
 - scrollUntilVisible:
-    element:
-      id: 'SettingsPage.ScreenshotProtectionCard'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'SettingsPage.ScreenshotProtectionCard'
+      direction: DOWN
+      centerElement: true
 - waitForAnimationToEnd
 - tapOn:
-    id: 'SettingsPage.ScreenshotProtectionSwitch'
+      id: 'SettingsPage.ScreenshotProtectionSwitch'
 
 - tapOn:
-    id: 'TabBar.Home'
+      id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 10000
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 10000
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
 - scrollUntilVisible:
-    element:
-      id: 'SettingsPage.ScreenshotProtectionSwitch'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'SettingsPage.ScreenshotProtectionSwitch'
+      direction: DOWN
+      centerElement: true
 - waitForAnimationToEnd
 - assertVisible:
-    id: 'SettingsPage.ScreenshotProtectionSwitch'
+      id: 'SettingsPage.ScreenshotProtectionSwitch'
 
 - tapOn:
-    id: 'TabBar.Home'
+      id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 10000
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 10000

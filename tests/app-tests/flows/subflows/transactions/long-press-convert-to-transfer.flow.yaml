@@ -1,16 +1,16 @@
 appId: ${APP_ID}
 env:
-  TRANSACTION_CARD_ID: ${TRANSACTION_CARD_ID}
+    TRANSACTION_CARD_ID: ${TRANSACTION_CARD_ID}
 ---
 - longPressOn:
-    id: ${TRANSACTION_CARD_ID}
+      id: ${TRANSACTION_CARD_ID}
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionContextMenu.ConvertToTransferButton'
+      visible:
+          id: 'TransactionContextMenu.ConvertToTransferButton'
 - tapOn:
-    id: 'TransactionContextMenu.ConvertToTransferButton'
+      id: 'TransactionContextMenu.ConvertToTransferButton'
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'ConvertToTransfer.Page'
-    timeout: 10000
+      visible:
+          id: 'ConvertToTransfer.Page'
+      timeout: 10000
