@@ -1051,6 +1051,7 @@ __metadata:
     "@babel/core": "npm:^7.29.7"
     "@budgie/ai": "workspace:^"
     "@budgie/bank-sync": "workspace:*"
+    "@budgie/budget": "workspace:*"
     "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
@@ -1128,7 +1129,7 @@ __metadata:
     react-native-audio-api: "npm:^0.12.2"
     react-native-css: "npm:^3.0.7"
     react-native-gesture-handler: "npm:~2.31.1"
-    react-native-keyboard-controller: "npm:1.21.6"
+    react-native-keyboard-controller: "npm:1.21.9"
     react-native-reanimated: "npm:4.3.1"
     react-native-safe-area-context: "npm:~5.7.0"
     react-native-screens: "npm:4.25.2"
@@ -1159,6 +1160,18 @@ __metadata:
     better-sqlite3: "npm:^12.10.0"
     drizzle-orm: "npm:^0.45.2"
     msw: "npm:^2.14.6"
+    typescript: "npm:^5.9.3"
+    vitest: "npm:^4.1.7"
+  languageName: unknown
+  linkType: soft
+
+"@budgie-at/budget-tests@workspace:tests/budget-tests":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/budget-tests@workspace:tests/budget-tests"
+  dependencies:
+    "@budgie/budget": "workspace:*"
+    "@rnw-community/shared": "npm:^2.2.0"
+    "@types/node": "npm:^24.5.2"
     typescript: "npm:^5.9.3"
     vitest: "npm:^4.1.7"
   languageName: unknown
@@ -1258,6 +1271,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie-at/test-kit@workspace:tests/test-kit"
   dependencies:
+    "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@rnw-community/shared": "npm:^2.2.0"
     "@types/better-sqlite3": "npm:^7.6.13"
@@ -1283,11 +1297,24 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie/bank-sync@workspace:packages/bank-sync"
   dependencies:
+    "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
     "@rnw-community/shared": "npm:^2.2.0"
     date-fns: "npm:^4.3.0"
     ky: "npm:^2.0.2"
     xlsx: "npm:^0.18.5"
+  languageName: unknown
+  linkType: soft
+
+"@budgie/budget@workspace:*, @budgie/budget@workspace:packages/budget":
+  version: 0.0.0-use.local
+  resolution: "@budgie/budget@workspace:packages/budget"
+  dependencies:
+    "@budgie/contracts": "workspace:*"
+    "@budgie/logger": "workspace:*"
+    "@rnw-community/shared": "npm:^2.2.0"
+    date-fns: "npm:^4.3.0"
+    drizzle-orm: "npm:^0.45.2"
   languageName: unknown
   linkType: soft
 
@@ -1301,7 +1328,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/contracts@workspace:^, @budgie/contracts@workspace:packages/contracts":
+"@budgie/contracts@workspace:*, @budgie/contracts@workspace:^, @budgie/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
@@ -17739,16 +17766,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-keyboard-controller@npm:1.21.6":
-  version: 1.21.6
-  resolution: "react-native-keyboard-controller@npm:1.21.6"
+"react-native-keyboard-controller@npm:1.21.9":
+  version: 1.21.9
+  resolution: "react-native-keyboard-controller@npm:1.21.9"
   dependencies:
     react-native-is-edge-to-edge: "npm:^1.2.1"
   peerDependencies:
     react: "*"
     react-native: "*"
     react-native-reanimated: ">=3.0.0"
-  checksum: 10/4d5831665ff5208067ef312e3673844d8738a648e6f211f7e69fbf4fbefa6cd94d47ace84bc5179cfa433a371bf38f5df222481493cb1621af37d2e62458a30e
+  checksum: 10/54c91528fa7730a41efe1688fad32dbbe6f32878b5bb1ef3fc78e4fba837704efe3a34cfa0c7c674608ad32f5e677bfcb6c7c237697b20252784fc51c2def4ff
   languageName: node
   linkType: hard
 

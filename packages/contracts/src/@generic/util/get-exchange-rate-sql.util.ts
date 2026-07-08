@@ -54,3 +54,11 @@ export const getInverseHistoricalExchangeRateSql = (defaultInstrumentId: number,
             LIMIT 1
         )
     `;
+
+export const getExchangeRateWithHistoricalFallbackSql = (defaultInstrumentId: number, instrumentIdRef: SQL | SQLWrapper | number): SQL =>
+    sql`COALESCE(
+        ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+        ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+        ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+        ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
+    )`;

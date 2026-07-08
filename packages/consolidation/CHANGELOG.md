@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.39.0](https://github.com/budgie-at/budgie/compare/v5.38.2...v5.39.0) (2026-06-29)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+# [5.38.0](https://github.com/budgie-at/budgie/compare/v5.37.1...v5.38.0) (2026-06-16)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+## [5.37.1](https://github.com/budgie-at/budgie/compare/v5.37.0...v5.37.1) (2026-06-12)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+## [5.36.2](https://github.com/budgie-at/budgie/compare/v5.36.1...v5.36.2) (2026-06-09)
+
+### Bug Fixes
+
+- address consolidation review feedback ([0c833ad](https://github.com/budgie-at/budgie/commit/0c833adf397ac05b22d7079b889f701ccb497e66))
+- batch consolidation candidate yields ([0365796](https://github.com/budgie-at/budgie/commit/036579686caa3fdb570261d466a091f5e60e6e14))
+- deduplicate two-source consolidation execution ([9519db4](https://github.com/budgie-at/budgie/commit/9519db4fe7888cae420d088d93e778508b55b63b))
+- optimize consolidation query plans ([6ca844c](https://github.com/budgie-at/budgie/commit/6ca844cf22985bc5ae35a3b06f0b9a7c7c26ac9c))
+- reduce consolidation log duplication ([b9deddc](https://github.com/budgie-at/budgie/commit/b9deddcbc74061d5eac7411d3e550bff4471624e))
+- remove consolidation executor duplication ([21b2116](https://github.com/budgie-at/budgie/commit/21b2116b9b5f0be5cb56b9d6e3f50b970b0b37b9))
+- yield during consolidation drains ([209e676](https://github.com/budgie-at/budgie/commit/209e6767211160ef00724461aa932730193f0025))
+
+## [5.36.1](https://github.com/budgie-at/budgie/compare/v5.36.0...v5.36.1) (2026-06-07)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+# [5.36.0](https://github.com/budgie-at/budgie/compare/v5.35.6...v5.36.0) (2026-06-07)
+
+**Note:** Version bump only for package @budgie/consolidation
+
 ## [5.35.5](https://github.com/budgie-at/budgie/compare/v5.35.4...v5.35.5) (2026-06-06)
 
 **Note:** Version bump only for package @budgie/consolidation

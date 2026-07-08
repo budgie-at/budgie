@@ -1,4 +1,4 @@
-import { Log, getLogger } from '@budgie/logger';
+import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -8,17 +8,14 @@ import { foregroundWorkloadService } from '../../@generic/service/foreground-wor
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-task.constant';
 
-import { transferConsolidationAutoCandidateService } from './transfer-consolidation-auto-candidate.service';
-import { transferConsolidationCandidateService } from './transfer-consolidation-candidate.service';
+import { consolidationCoordinatorService } from './consolidation-coordinator.service';
 
 import type {
-    ConsolidationCandidateGroupsInterface,
     ConsolidationPreviewInterface,
     ConsolidationProgressSnapshotInterface,
     ConsolidationResultInterface
 } from '@budgie/consolidation';
-
-const logger = getLogger('TransferConsolidationService');
+import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 class TransferConsolidationService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 30;
@@ -47,12 +44,15 @@ class TransferConsolidationService {
     }
 
     @Log(
-        'enter',
-        result => `done found=${result.found} consolidated=${result.consolidated}`,
-        error => `throw error=${getErrorMessage(error)}`
+        scope =>
+            `enter appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIdCount=${scope?.transactionIds.length ?? 0}`,
+        (result, scope) =>
+            `done appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIdCount=${scope?.transactionIds.length ?? 0} found=${result.found} consolidated=${result.consolidated}`,
+        (error, scope) =>
+            `throw appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIdCount=${scope?.transactionIds.length ?? 0} error=${getErrorMessage(error)}`
     )
-    async consolidate(): Promise<ConsolidationResultInterface> {
-        return this.runExclusive(() => this.runConsolidationIfIdle());
+    async consolidate(scope: ConsolidationScanScopeInterface | null = null): Promise<ConsolidationResultInterface> {
+        return this.runExclusive(() => this.runConsolidationIfIdle(scope));
     }
 
     @Log(
@@ -65,49 +65,15 @@ class TransferConsolidationService {
         return this.runExclusive(() => this.buildProgressSnapshot());
     }
 
-    @Log(
-        onProgress => `enter hasOnProgress=${String(isDefined(onProgress))}`,
-        (result, onProgress) =>
-            `done hasOnProgress=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
-        (error, onProgress) => `throw hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
-    )
-    private async runConsolidation(onProgress?: (processedCandidateGroupCount: number) => void): Promise<ConsolidationResultInterface> {
-        const startedAt = Date.now();
-        const candidates = await this.findCandidateGroupsWithProfiling();
-        const consolidated = await this.processCandidateGroupsWithProfiling(candidates, onProgress);
+    private async runConsolidation(
+        scope: ConsolidationScanScopeInterface | null,
+        onProgress?: (processedCandidateGroupCount: number) => void
+    ): Promise<ConsolidationResultInterface> {
+        const result = await consolidationCoordinatorService.consolidate(scope, onProgress);
 
-        await this.updateBalancesAfterConsolidation(consolidated);
-
-        const result = {
-            found: this.countAutoCandidates(candidates),
-            consolidated
-        };
-        logger.log('consolidate:duration', { durationMs: Date.now() - startedAt, found: result.found, consolidated });
+        await this.updateBalancesAfterConsolidation(result.consolidated);
 
         return result;
-    }
-
-    private async findCandidateGroupsWithProfiling(): Promise<ConsolidationCandidateGroupsInterface> {
-        const startedAt = Date.now();
-        const candidates = await transferConsolidationCandidateService.findGroups();
-        logger.log('findGroups:duration', {
-            autoCandidateCount: this.countAutoCandidates(candidates),
-            durationMs: Date.now() - startedAt,
-            manualReviewCandidateCount: this.countManualReviewCandidates(candidates)
-        });
-
-        return candidates;
-    }
-
-    private async processCandidateGroupsWithProfiling(
-        candidates: ConsolidationCandidateGroupsInterface,
-        onProgress?: (processedCandidateGroupCount: number) => void
-    ): Promise<number> {
-        const startedAt = Date.now();
-        const consolidated = await transferConsolidationAutoCandidateService.processGroups(candidates, onProgress);
-        logger.log('processGroups:duration', { consolidated, durationMs: Date.now() - startedAt });
-
-        return consolidated;
     }
 
     private async updateBalancesAfterConsolidation(consolidated: number): Promise<void> {
@@ -115,21 +81,12 @@ class TransferConsolidationService {
             return;
         }
 
-        const startedAt = Date.now();
         await accountBalanceIncrementalService.updateAllBalances(true);
-        logger.log('balanceUpdate:duration', { durationMs: Date.now() - startedAt });
     }
 
     private async buildPreview(): Promise<ConsolidationPreviewInterface> {
-        const startedAt = Date.now();
-        const candidates = await transferConsolidationCandidateService.findGroups();
-        const autoCandidateCount = this.countAutoCandidates(candidates);
-        const manualReviewCandidateCount = this.countManualReviewCandidates(candidates);
-        logger.log('preview:duration', {
-            autoCandidateCount,
-            durationMs: Date.now() - startedAt,
-            manualReviewCandidateCount
-        });
+        const autoCandidateCount = await consolidationCoordinatorService.countAutoCandidates();
+        const manualReviewCandidateCount = await consolidationCoordinatorService.countManualReviewCandidates();
 
         return {
             autoCandidateCount,
@@ -138,18 +95,9 @@ class TransferConsolidationService {
     }
 
     private async buildProgressSnapshot(): Promise<ConsolidationProgressSnapshotInterface> {
-        const startedAt = Date.now();
-        const candidates = await transferConsolidationCandidateService.findGroups();
-        const autoCandidateCount = this.countAutoCandidates(candidates);
-        const manualReviewCandidateCount = this.countManualReviewCandidates(candidates);
+        const autoCandidateCount = await consolidationCoordinatorService.countAutoCandidates();
+        const manualReviewCandidateCount = await consolidationCoordinatorService.countManualReviewCandidates();
         const remainingCandidateGroupCount = autoCandidateCount + manualReviewCandidateCount;
-        logger.log('progressSnapshot:duration', {
-            autoCandidateCount,
-            durationMs: Date.now() - startedAt,
-            isRunning: this.isRunning,
-            manualReviewCandidateCount,
-            remainingCandidateGroupCount
-        });
 
         return {
             autoCandidateCount,
@@ -160,6 +108,7 @@ class TransferConsolidationService {
     }
 
     private async runConsolidationIfIdle(
+        scope: ConsolidationScanScopeInterface | null,
         onProgress?: (processedCandidateGroupCount: number) => void
     ): Promise<ConsolidationResultInterface> {
         if (this.isRunning) {
@@ -169,7 +118,7 @@ class TransferConsolidationService {
         this.isRunning = true;
 
         try {
-            return await this.runConsolidation(onProgress);
+            return await this.runConsolidation(scope, onProgress);
         } finally {
             this.isRunning = false;
         }
@@ -197,27 +146,6 @@ class TransferConsolidationService {
                 this.activeOperation = null;
             }
         }
-    }
-
-    private countAutoCandidates(candidates: ConsolidationCandidateGroupsInterface): number {
-        return (
-            candidates.pairCandidates.length +
-            candidates.ibanBridgeChainTransferCandidates.length +
-            candidates.existingTransferBridgeCandidates.length +
-            candidates.ibanBridgeCanonicalDuplicateCandidates.length +
-            candidates.existingTransferIncomeDuplicateCandidates.length +
-            candidates.ibanBridgeTransferCandidates.length +
-            candidates.atmCashWithdrawalCandidates.length +
-            candidates.refundCandidates.length
-        );
-    }
-
-    private countManualReviewCandidates(candidates: ConsolidationCandidateGroupsInterface): number {
-        return (
-            candidates.manualReviewCandidates.length +
-            candidates.atmCashWithdrawalReviewCandidates.length +
-            candidates.refundReviewCandidates.length
-        );
     }
 }
 

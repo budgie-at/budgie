@@ -1,12 +1,10 @@
-import { BankAccountInterface } from '@budgie/bank-sync';
+import { BankAccountInterface, formatBankAccountTitle } from '@budgie/bank-sync';
 import { ExternalSourceEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
-
-import { generateBankAccountTitle } from './map-bank-account-to-create-input.util';
 
 export const mapBankAccountsToPreview = async (
     bankAccounts: BankAccountInterface[],
@@ -22,7 +20,7 @@ export const mapBankAccountsToPreview = async (
 
         return {
             externalId: bankAccount.id,
-            title: generateBankAccountTitle(bankAccount),
+            title: formatBankAccountTitle(bankAccount),
             type: bankAccount.type,
             currencyCode: bankAccount.currencyCode,
             iban: bankAccount.iban ?? null,

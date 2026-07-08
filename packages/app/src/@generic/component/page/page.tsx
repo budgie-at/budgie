@@ -1,10 +1,12 @@
 import { View } from 'react-native';
+import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { cn } from '../../utils/cn.util';
 import { BlurGradient } from '../blur-gradient/blur-gradient';
 
 import type { ComponentProps, ReactNode } from 'react';
+import type { ViewStyle } from 'react-native';
 import type { Edge } from 'react-native-safe-area-context';
 
 interface Props extends ComponentProps<typeof View> {
@@ -18,7 +20,17 @@ interface Props extends ComponentProps<typeof View> {
 const DEFAULT_SAFE_EDGES: Edge[] = ['top'];
 
 export const Page = (props: Props) => {
-    const { className, header, footer, children, safeEdges = DEFAULT_SAFE_EDGES, contentClassName, withBlur = false, ...rest } = props;
+    const {
+        className,
+        header,
+        footer,
+        children,
+        safeEdges = DEFAULT_SAFE_EDGES,
+        contentClassName,
+        withBlur = false,
+        collapsable = false,
+        ...rest
+    } = props;
 
     const { top, left, right, bottom } = useSafeAreaInsets();
 
@@ -30,10 +42,11 @@ export const Page = (props: Props) => {
     };
 
     const bottomStyle = { paddingBottom: bottom };
+    const footerStickyStyle = { position: 'absolute', right: 0, bottom: 0, left: 0 } satisfies ViewStyle;
 
     return (
         <>
-            <View {...rest} className={cn('relative flex-1', className)} style={style}>
+            <View {...rest} collapsable={collapsable} className={cn('relative flex-1', className)} style={style}>
                 {withBlur ? null : header}
 
                 <View className={cn('px-5xl flex-1', contentClassName)}>{children}</View>
@@ -50,11 +63,11 @@ export const Page = (props: Props) => {
             ) : null}
 
             {withBlur ? (
-                <BlurGradient position="bottom">
-                    <View className="absolute bottom-0 right-0 left-0" style={bottomStyle}>
-                        {footer}
-                    </View>
-                </BlurGradient>
+                <KeyboardStickyView style={footerStickyStyle}>
+                    <BlurGradient position="bottom" edgeOffset={bottom}>
+                        <View style={bottomStyle}>{footer}</View>
+                    </BlurGradient>
+                </KeyboardStickyView>
             ) : null}
         </>
     );

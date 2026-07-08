@@ -62,7 +62,7 @@ export const CreateDebtAccount = () => {
 
                 <CreateAccountCurrencyField control={control} />
 
-                <AccountTargetBalanceField control={control} />
+                <AccountTargetBalanceField control={control} instrumentSymbol={instrument.symbol} />
 
                 <DebtAccountTypeField control={control} />
 

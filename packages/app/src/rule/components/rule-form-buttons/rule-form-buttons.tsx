@@ -18,7 +18,12 @@ export const RuleFormButtons = ({ onCancel, onSubmit, isSubmitting, submitLabel,
         {children}
         <View className="flex-row gap-x-md">
             <ModalFormCancelButton onPress={onCancel} />
-            <ModalFormSaveButton testID={RuleFormSelector.SubmitButton} onPress={onSubmit} disabled={isSubmitting} content={submitLabel} />
+            <ModalFormSaveButton
+                testID={RuleFormSelector.SubmitButton}
+                onPress={onSubmit}
+                disabled={isSubmitting}
+                content={submitLabel}
+            />
         </View>
     </View>
 );

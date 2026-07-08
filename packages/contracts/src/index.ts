@@ -18,6 +18,7 @@ export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.re
 
 export type { DB, TX } from './@generic/type/db.type';
 
+export { convertAmountToBase } from './@generic/util/convert-amount-to-base.util';
 export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
 export { transactionAsync } from './@generic/util/transaction-async.util';
 
@@ -101,17 +102,30 @@ export { TagRepository } from './tag/repository/tag.repository';
 export { InstrumentTypeEnum } from './instrument/enum/instrument-type.enum';
 export { InstrumentPriceProviderEnum } from './instrument/enum/instrument-price-provider.enum';
 export { InstrumentAssociationEnum } from './instrument/enum/instrument-association.enum';
+export { InstrumentMarketDataJobStatusEnum } from './instrument-market-data-job/enum/instrument-market-data-job-status.enum';
 
 export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';
 export { InstrumentEntityRelations } from './instrument/relations/instrument-entity.relations';
+export { InstrumentDailyMarketPriceEntityTable } from './instrument-daily-market-price/table/instrument-daily-market-price-entity.table';
+export { InstrumentMarketDataJobEntityTable } from './instrument-market-data-job/table/instrument-market-data-job-entity.table';
 
 export { InstrumentEntitySchema } from './instrument/schema/instrument-entity.schema';
 export { InstrumentCreateEntitySchema } from './instrument/schema/instrument-create-entity.schema';
+export { InstrumentDailyMarketPriceEntitySchema } from './instrument-daily-market-price/schema/instrument-daily-market-price-entity.schema';
+export { InstrumentDailyMarketPriceCreateEntitySchema } from './instrument-daily-market-price/schema/instrument-daily-market-price-create-entity.schema';
+export { InstrumentMarketDataJobEntitySchema } from './instrument-market-data-job/schema/instrument-market-data-job-entity.schema';
+export { InstrumentMarketDataJobCreateEntitySchema } from './instrument-market-data-job/schema/instrument-market-data-job-create-entity.schema';
 
 export type { InstrumentEntityInterface } from './instrument/entity/instrument-entity.interface';
 export type { InstrumentCreateEntityInterface } from './instrument/entity/instrument-create-entity.interface';
+export type { InstrumentDailyMarketPriceEntityInterface } from './instrument-daily-market-price/entity/instrument-daily-market-price-entity.interface';
+export type { InstrumentDailyMarketPriceCreateEntityInterface } from './instrument-daily-market-price/entity/instrument-daily-market-price-create-entity.interface';
+export type { InstrumentMarketDataJobEntityInterface } from './instrument-market-data-job/entity/instrument-market-data-job-entity.interface';
+export type { InstrumentMarketDataJobCreateEntityInterface } from './instrument-market-data-job/entity/instrument-market-data-job-create-entity.interface';
 
 export { InstrumentRepository } from './instrument/repository/instrument.repository';
+export { InstrumentDailyMarketPriceRepository } from './instrument-daily-market-price/repository/instrument-daily-market-price.repository';
+export { InstrumentMarketDataJobRepository } from './instrument-market-data-job/repository/instrument-market-data-job.repository';
 
 export { BANK_FEE_CATEGORY_ID } from './category/constant/bank-fee-category-id.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
@@ -209,7 +223,11 @@ export type { TransactionCreateInputInterface } from './transaction/input/transa
 
 export type { TransactionUpdateInputInterface } from './transaction/input/transaction-update-input.interface';
 export type { TransactionUpdateServiceInputInterface } from './transaction/input/transaction-update-service-input.interface';
+export type { ConsolidationScanScopeInterface } from './transaction/interface/consolidation-scan-scope.interface';
 export type { ConsolidationSourceRowInterface } from './transaction/interface/consolidation-source-row.interface';
+export type { SimilarTransactionMonthRowInterface } from './transaction/interface/similar-transaction-month-row.interface';
+export type { SimilarTransactionStatsInterface } from './transaction/interface/similar-transaction-stats.interface';
+export type { SimilarTransactionStatsQueryInterface } from './transaction/interface/similar-transaction-stats-query.interface';
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 
@@ -251,23 +269,27 @@ export type { RepeatedTransactionPatternInterface } from './transaction/interfac
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
 export { TransactionRuleRepository } from './transaction/repository/transaction-rule.repository';
 
+export { TransferPairAutoConfidenceBucketEnum } from './transaction/enum/transfer-pair-auto-confidence-bucket.enum';
 export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
 export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
 export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
 export type { ExistingTransferBridgeCandidateInterface } from './transaction/interface/existing-transfer-bridge-candidate.interface';
+export type { ExistingTransferChainReclaimCandidateInterface } from './transaction/interface/existing-transfer-chain-reclaim-candidate.interface';
 export type { ExistingTransferIncomeDuplicateCandidateInterface } from './transaction/interface/existing-transfer-income-duplicate-candidate.interface';
 export type { IbanBridgeCanonicalDuplicateCandidateInterface } from './transaction/interface/iban-bridge-canonical-duplicate-candidate.interface';
 export type { IbanBridgeChainTransferCandidateInterface } from './transaction/interface/iban-bridge-chain-transfer-candidate.interface';
 export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
 export type { RefundAutoConfidenceBucket } from './transaction/interface/refund-auto-confidence-bucket.type';
+export type { RefundCandidateBaseInterface } from './transaction/interface/refund-candidate-base.interface';
+export type { RefundCandidateBaseRowInterface } from './transaction/interface/refund-candidate-base-row.interface';
 export type { RefundCandidateInterface } from './transaction/interface/refund-candidate.interface';
+export type { RefundCandidateRowInterface } from './transaction/interface/refund-candidate-row.interface';
 export type { RefundableExpenseCandidateInterface } from './transaction/interface/refundable-expense-candidate.interface';
+export type { RefundableExpenseCandidateRowInterface } from './transaction/interface/refundable-expense-candidate-row.interface';
 export type { RefundReviewConfidenceBucket } from './transaction/interface/refund-review-confidence-bucket.type';
 export type { RefundReviewCandidateInterface } from './transaction/interface/refund-review-candidate.interface';
-
-export { TransferPairRepository } from './transaction/repository/transfer-pair.repository';
-export { RefundPairRepository } from './transaction/repository/refund-pair.repository';
+export type { RefundReviewCandidateRowInterface } from './transaction/interface/refund-review-candidate-row.interface';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';
@@ -293,9 +315,11 @@ export type { TransactionEntryEntityInterface } from './transaction-entry/entity
 export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';
 export type { TransactionEntryWithMccCategoryEntityInterface } from './transaction-entry/entity/transaction-entry-with-mcc-category-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
+export type { CryptoPositionEntryRowInterface } from './transaction-entry/interface/crypto-position-entry-row.interface';
 export type { PendingBaseValuationBucketInterface } from './transaction-entry/interface/pending-base-valuation-bucket.interface';
 
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
+export { TransactionEntryPositionRepository } from './transaction-entry/repository/transaction-entry-position.repository';
 
 export { ExchangeRateAssociationEnum } from './exchange-rate/enum/exchange-rate-association.enum';
 
@@ -420,3 +444,23 @@ export type { RuleActionWithRelationsEntityInterface } from './rule-action/entit
 export type { RuleActionCreateEntityInterface } from './rule-action/entity/rule-action-create-entity.interface';
 export type { RuleActionCreateInputInterface } from './rule-action/input/rule-action-create-input.interface';
 export { RuleActionRepository } from './rule-action/repository/rule-action.repository';
+
+export { BudgetPeriodEnum } from './budget/enum/budget-period.enum';
+export { BudgetEntityTable } from './budget/table/budget-entity.table';
+export { BudgetEntityRelations } from './budget/relations/budget-entity.relations';
+export { BudgetEntitySchema } from './budget/schema/budget-entity.schema';
+export { BudgetCreateEntitySchema } from './budget/schema/budget-create-entity.schema';
+export { BudgetUpdateEntitySchema } from './budget/schema/budget-update-entity.schema';
+export type { BudgetEntityInterface } from './budget/entity/budget-entity.interface';
+export type { BudgetCreateEntityInterface } from './budget/entity/budget-create-entity.interface';
+export type { BudgetUpdateEntityInterface } from './budget/entity/budget-update-entity.interface';
+
+export { BudgetCategoryLimitEntityTable } from './budget-category-limit/table/budget-category-limit-entity.table';
+export { BudgetCategoryLimitEntityRelations } from './budget-category-limit/relations/budget-category-limit-entity.relations';
+export { BudgetCategoryLimitEntitySchema } from './budget-category-limit/schema/budget-category-limit-entity.schema';
+export { BudgetCategoryLimitCreateEntitySchema } from './budget-category-limit/schema/budget-category-limit-create-entity.schema';
+export { BudgetCategoryLimitUpdateEntitySchema } from './budget-category-limit/schema/budget-category-limit-update-entity.schema';
+export type { BudgetCategoryLimitEntityInterface } from './budget-category-limit/entity/budget-category-limit-entity.interface';
+export type { BudgetCategoryLimitCreateEntityInterface } from './budget-category-limit/entity/budget-category-limit-create-entity.interface';
+export type { BudgetCategoryLimitUpdateEntityInterface } from './budget-category-limit/entity/budget-category-limit-update-entity.interface';
+export type { BudgetCategoryLimitBulkUpdateInputInterface } from './budget-category-limit/input/budget-category-limit-bulk-update-input.interface';

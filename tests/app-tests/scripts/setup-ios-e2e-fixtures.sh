@@ -5,7 +5,7 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
 PROJECT_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 CONTACT_FIXTURE_PATH="$SCRIPT_DIR/../fixtures/maestro-e2e-contact.vcf"
 INSTALL_DB_FIXTURE_SCRIPT="$PROJECT_ROOT/scripts/install-ios-db-fixture.sh"
-PREPARE_DYNAMIC_FIXTURES_SCRIPT="$SCRIPT_DIR/prepare-date-sensitive-fixtures.mjs"
+PREPARE_DYNAMIC_FIXTURES_SCRIPT="$SCRIPT_DIR/prepare-date-sensitive-fixtures.js"
 STATEMENT_FIXTURE_PATHS="
 erste/erste-statement-008.pdf
 erste/erste-statement-009.pdf
@@ -52,6 +52,7 @@ install_statement_fixtures() {
 xcrun simctl spawn "$SIMULATOR_UDID" defaults write .GlobalPreferences AppleKeyboards -array 'en_US@sw=QWERTY;hw=Automatic' 'emoji@sw=Emoji' >/dev/null 2>&1 || true
 xcrun simctl spawn "$SIMULATOR_UDID" defaults write .GlobalPreferences AppleLanguages -array 'en-US' >/dev/null 2>&1 || true
 
+xcrun simctl terminate "$SIMULATOR_UDID" "$APP_ID" >/dev/null 2>&1 || true
 xcrun simctl addmedia "$SIMULATOR_UDID" "$CONTACT_FIXTURE_PATH" >/dev/null 2>&1 || true
 xcrun simctl privacy "$SIMULATOR_UDID" grant contacts "$APP_ID" >/dev/null 2>&1 || true
 xcrun simctl privacy "$SIMULATOR_UDID" grant microphone "$APP_ID" >/dev/null 2>&1 || true
@@ -95,6 +96,8 @@ install_database_fixture "$DYNAMIC_FIXTURES_DIR/20-recurring-calendar.db" "20.db
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/21.db" "21.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/22.db" "22.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/25.db" "25.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/budget-base.db" "budget-base.db"
+install_database_fixture "$DYNAMIC_FIXTURES_DIR/budget-multi-currency.db" "budget-multi-currency.db"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/e2e-budgie-import.csv" "e2e-budgie-import.csv" "$SIMULATOR_UDID" "$APP_ID"
 
 FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test-transactions.csv" "test-transactions.csv" "$SIMULATOR_UDID" "$APP_ID"

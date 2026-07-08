@@ -12,6 +12,7 @@ import { t } from '@lingui/core/macro';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
 import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
@@ -19,19 +20,21 @@ import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { TRANSFER_CONVERSION_ERROR_MESSAGE } from '../constant/transfer-conversion-error-message.constant';
 import { BuildTransferEntryCreateEntityInputInterface } from '../interface/build-transfer-entry-create-entity-input.interface';
-import { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
 import { TransferConversionResultInterface } from '../interface/transfer-conversion-result.interface';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 import { getTransactionFeeEntries } from '../utils/get-transaction-fee-entries.util';
 
 import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
+import type { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
 import type { DB, TransactionEntryEntityInterface } from '@budgie/contracts';
 
 class TransactionTransferService {
+    @InvalidateDatabaseLiveQuery()
     async convertExpenseToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
         return this.convertToTransfer(params, 'expense');
     }
 
+    @InvalidateDatabaseLiveQuery()
     async convertIncomeToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
         return this.convertToTransfer(params, 'income');
     }

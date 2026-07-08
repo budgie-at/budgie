@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- File owns the single multi-stage statistics SQL aggregation pipeline that must stay together */
-import { SQL, and, desc, eq, getTableColumns, inArray, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, desc, eq, getTableColumns, inArray, isNull, ne, notInArray, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -172,11 +172,27 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             this.buildVisibleTransactionCondition(),
             ...(isDefined(dateCondition) ? [dateCondition] : []),
             ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : []),
+            ...(isNotEmptyArray(filters.excludedCategoryIds) ? [this.buildExcludedCategoryCondition(filters.excludedCategoryIds)] : []),
             ...(isDefined(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : [])
         ].filter(isDefined);
 
         // eslint-disable-next-line no-undefined
         return isNotEmptyArray(conditions) ? and(...conditions) : undefined;
+    }
+
+    private buildExcludedCategoryCondition(categoryIds: number[]) {
+        return inArray(
+            TransactionEntityTable.id,
+            this.db
+                .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                .from(TransactionEntryEntityTable)
+                .where(
+                    and(
+                        or(isNull(TransactionEntryEntityTable.categoryId), notInArray(TransactionEntryEntityTable.categoryId, categoryIds)),
+                        this.buildLedgerEntryCondition()
+                    )
+                )
+        );
     }
 
     private buildTransactionIdsQuery(filters: TransactionFilterInterface, type: TransactionTypeEnum) {
@@ -321,8 +337,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            1.0
+            ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
         )`;
     }
 
@@ -330,6 +345,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         return sql<number>`CASE
             WHEN ${TransactionEntryEntityTable.baseInstrumentId} = ${defaultInstrumentId}
             THEN ${TransactionEntryEntityTable.baseAmount}
+            WHEN ${AccountEntityTable.instrumentId} = ${defaultInstrumentId}
+            THEN ${TransactionEntryEntityTable.amount}
             ELSE ROUND(${TransactionEntryEntityTable.amount} * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('accounts.instrument_id'))})
         END`;
     }
@@ -358,6 +375,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         return sql<number>`COALESCE((
             SELECT SUM(CASE
                 WHEN refund_entry.base_instrument_id = ${defaultInstrumentId} THEN refund_entry.base_amount
+                WHEN refund_account.instrument_id = ${defaultInstrumentId} THEN refund_entry.amount
                 ELSE ROUND(refund_entry.amount * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('refund_account.instrument_id'))})
             END)
             FROM transaction_entries refund_entry
@@ -373,6 +391,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         return sql<number>`COALESCE((
             SELECT SUM(CASE
                 WHEN ledger_credit.base_instrument_id = ${defaultInstrumentId} THEN ledger_credit.base_amount
+                WHEN ledger_account.instrument_id = ${defaultInstrumentId} THEN ledger_credit.amount
                 ELSE ROUND(ledger_credit.amount * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('ledger_account.instrument_id'))})
             END)
             FROM transaction_entries ledger_credit

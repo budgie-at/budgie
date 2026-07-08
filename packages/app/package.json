@@ -1,9 +1,10 @@
 {
     "name": "@budgie-at/app",
-    "version": "5.35.5",
+    "version": "5.39.0",
     "private": true,
     "scripts": {
         "android": "expo run:android",
+        "bench:budget-spent": "node --experimental-strip-types scripts/bench-budget-spent.ts",
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo .expo",
         "db:generate": "drizzle-kit generate",
         "eas-build-post-install": "cd ../.. && yarn build",
@@ -23,6 +24,7 @@
     "dependencies": {
         "@budgie/ai": "workspace:^",
         "@budgie/bank-sync": "workspace:*",
+        "@budgie/budget": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/logger": "workspace:*",
@@ -84,7 +86,7 @@
         "react-native-audio-api": "^0.12.2",
         "react-native-css": "^3.0.7",
         "react-native-gesture-handler": "~2.31.1",
-        "react-native-keyboard-controller": "1.21.6",
+        "react-native-keyboard-controller": "1.21.9",
         "react-native-reanimated": "4.3.1",
         "react-native-safe-area-context": "~5.7.0",
         "react-native-screens": "4.25.2",

@@ -1,4 +1,13 @@
 import * as SQLite from 'expo-sqlite';
+import { BudgetCategoryLimitRepository } from '@budgie/budget/query/budget-category-limit-repository';
+import { BudgetRepository } from '@budgie/budget/query/budget-repository';
+import {
+    AtmCashWithdrawalRepository,
+    ExistingTransferRepository,
+    IbanBridgeTransferRepository,
+    RefundPairRepository,
+    TransferPairRepository
+} from '@budgie/consolidation';
 import { getLogger } from '@budgie/logger';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import {
@@ -9,10 +18,11 @@ import {
     CommentEmbeddingRepository,
     ExchangeRateRepository,
     HistoricalExchangeRateRepository,
+    InstrumentDailyMarketPriceRepository,
+    InstrumentMarketDataJobRepository,
     InstrumentRepository,
     MccCategoryRepository,
     MerchantEmbeddingRepository,
-    RefundPairRepository,
     RuleActionRepository,
     RuleConditionRepository,
     RuleRepository,
@@ -20,12 +30,12 @@ import {
     StatisticsRepository,
     TagRepository,
     TransactionEmbeddingRepository,
+    TransactionEntryPositionRepository,
     TransactionEntryRepository,
     TransactionPatternRepository,
     TransactionRepository,
     TransactionRuleRepository,
-    TransactionTagsRepository,
-    TransferPairRepository
+    TransactionTagsRepository
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
@@ -112,12 +122,15 @@ export const categoryRepository = new CategoryRepository(db);
 export const instrumentRepository = new InstrumentRepository(db);
 export const exchangeRateRepository = new ExchangeRateRepository(db);
 export const historicalExchangeRateRepository = new HistoricalExchangeRateRepository(db);
+export const instrumentDailyMarketPriceRepository = new InstrumentDailyMarketPriceRepository(db);
+export const instrumentMarketDataJobRepository = new InstrumentMarketDataJobRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
 export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
 export const transactionEmbeddingRepository = new TransactionEmbeddingRepository(db);
 export const transactionEntryRepository = new TransactionEntryRepository(db);
+export const transactionEntryPositionRepository = new TransactionEntryPositionRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
 export const transactionRepository = new TransactionRepository(db);
 export const transactionTagsRepository = new TransactionTagsRepository(db);
@@ -128,4 +141,9 @@ export const ruleRepository = new RuleRepository(db);
 export const ruleConditionRepository = new RuleConditionRepository(db);
 export const ruleActionRepository = new RuleActionRepository(db);
 export const transferPairRepository = new TransferPairRepository(db);
+export const atmCashWithdrawalRepository = new AtmCashWithdrawalRepository(db);
+export const existingTransferRepository = new ExistingTransferRepository(db);
+export const ibanBridgeTransferRepository = new IbanBridgeTransferRepository(db);
 export const refundPairRepository = new RefundPairRepository(db);
+export const budgetRepository = new BudgetRepository(db);
+export const budgetCategoryLimitRepository = new BudgetCategoryLimitRepository(db);

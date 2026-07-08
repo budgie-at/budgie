@@ -22,6 +22,16 @@ import { toggleFilterSelection } from '../transaction/utils/toggle-filter-select
 
 const LIST_TOP_SPACE = 88;
 
+const ANALYTICS_ACCOUNT_FILTER_TYPES = [
+    AccountTypeEnum.BANK,
+    AccountTypeEnum.BANK_SYNC,
+    AccountTypeEnum.CASH,
+    AccountTypeEnum.CRYPTO,
+    AccountTypeEnum.STOCKS,
+    AccountTypeEnum.SAVINGS
+] satisfies Exclude<AccountTypeEnum, AccountTypeEnum.DEBT>[];
+
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks, handlers, and per-account-type group blocks
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
@@ -30,20 +40,23 @@ export default function TransactionAccountFilterModal() {
     const state = useSearchableFilterState(currentParams?.value ?? null);
     const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
-    const { accountsGrouped, accounts, total, isLoading } = useSearchAccountsGroupedQuery(search);
+    const { accountsGrouped, total, isLoading } = useSearchAccountsGroupedQuery(search);
 
     const showEmptySearch = isNotEmptyString(search) && isPositiveNumber(total) && !isLoading;
     const selectedIds = localValue ?? [];
+    const accountGroups = ANALYTICS_ACCOUNT_FILTER_TYPES.map(type => ({ type, accounts: accountsGrouped[type] ?? [] })).filter(group =>
+        isNotEmptyArray(group.accounts)
+    );
 
     const handleSelect = (...accountIds: number[]) => void setLocalValue(prev => toggleFilterSelection(prev, accountIds));
-    const handleSelectAll = () => void setLocalValue(() => accounts.map(account => account.id));
+    const handleSelectAll = () => void setLocalValue(() => accountGroups.flatMap(group => group.accounts).map(account => account.id));
     const handleApply = () => void resolveTransactionAccountFilter({ value: localValueRef.current });
     const handleClose = () => void resolveTransactionAccountFilter(null);
 
     const handleNavigateToCreate = () => {
         resolveTransactionAccountFilter(null, { skipBack: true });
         router.dismiss();
-        router.push('/create-account');
+        router.push('/(main)/create-account');
     };
 
     const applyLabel = t({
@@ -61,13 +74,22 @@ export default function TransactionAccountFilterModal() {
             <FilterSheetList alignToBottom topSpacing={LIST_TOP_SPACE}>
                 {isLoading ? <FilterSheetSkeleton alignToBottom /> : null}
 
-                {isNotEmptyArray(accounts) && !isLoading ? (
+                {isNotEmptyArray(accountGroups) && !isLoading ? (
                     <View className="gap-y-lg">
                         {isNotEmptyArray(accountsGrouped.BANK) ? (
                             <AccountsGroup
                                 onSelect={handleSelect}
                                 type={AccountTypeEnum.BANK}
                                 accounts={accountsGrouped.BANK}
+                                selectedAccountIds={selectedIds}
+                            />
+                        ) : null}
+
+                        {isNotEmptyArray(accountsGrouped.BANK_SYNC) ? (
+                            <AccountsGroup
+                                onSelect={handleSelect}
+                                type={AccountTypeEnum.BANK_SYNC}
+                                accounts={accountsGrouped.BANK_SYNC}
                                 selectedAccountIds={selectedIds}
                             />
                         ) : null}
@@ -80,16 +102,43 @@ export default function TransactionAccountFilterModal() {
                                 selectedAccountIds={selectedIds}
                             />
                         ) : null}
+
+                        {isNotEmptyArray(accountsGrouped.CRYPTO) ? (
+                            <AccountsGroup
+                                onSelect={handleSelect}
+                                type={AccountTypeEnum.CRYPTO}
+                                accounts={accountsGrouped.CRYPTO}
+                                selectedAccountIds={selectedIds}
+                            />
+                        ) : null}
+
+                        {isNotEmptyArray(accountsGrouped.STOCKS) ? (
+                            <AccountsGroup
+                                onSelect={handleSelect}
+                                type={AccountTypeEnum.STOCKS}
+                                accounts={accountsGrouped.STOCKS}
+                                selectedAccountIds={selectedIds}
+                            />
+                        ) : null}
+
+                        {isNotEmptyArray(accountsGrouped.SAVINGS) ? (
+                            <AccountsGroup
+                                onSelect={handleSelect}
+                                type={AccountTypeEnum.SAVINGS}
+                                accounts={accountsGrouped.SAVINGS}
+                                selectedAccountIds={selectedIds}
+                            />
+                        ) : null}
                     </View>
                 ) : null}
 
-                {isEmptyArray(accounts) && showEmptySearch ? (
+                {isEmptyArray(accountGroups) && showEmptySearch ? (
                     <SearchableFilterEmptyResult>
                         <Trans>No accounts found</Trans>
                     </SearchableFilterEmptyResult>
                 ) : null}
 
-                {isEmptyArray(accounts) && !showEmptySearch && !isLoading ? (
+                {isEmptyArray(accountGroups) && !showEmptySearch && !isLoading ? (
                     <TransactionFilterEmptyState
                         icon={UserIconNameEnum.Wallet}
                         title={t`No Accounts Yet`}

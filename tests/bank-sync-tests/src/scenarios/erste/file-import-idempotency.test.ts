@@ -1,22 +1,35 @@
 import { and, eq } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { BankAccountTypeEnum, BankProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
+import {
+    BankAccountTypeEnum,
+    BankProviderEnum,
+    BankTransactionTypeEnum,
+    ersteMapper,
+    mapBankTransactionToCreateInput
+} from '@budgie/bank-sync';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { StubFileBankSyncService, testDb } from '../../harness';
+import { expectFileImportConsolidationEnqueued, seed, StubFileBankSyncService, testDb } from '../../harness';
 
 import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
+import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { transactionImportService } from '@app/transaction/service/transaction-import.service';
 
-import type { FileBasedBankSyncClientInterface } from '@app/sync/interface/file-based-bank-sync-client.interface';
-import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
-import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';
-import type { MccCategoryLookupInterface } from '@budgie/contracts';
+import type {
+    BankAccountInterface,
+    BankTransactionInterface,
+    ErsteRowInterface,
+    FileBasedBankSyncClientInterface,
+    ParsedFileResultInterface
+} from '@budgie/bank-sync';
+import type { MccCategoryLookupInterface, TransactionCreateInputInterface, TransactionEntityInterface } from '@budgie/contracts';
 
 const ERSTE_ACCOUNT_ID = 'AT123';
 const ERSTE_EXTERNAL_ID = 'erste-transaction-1';
+const ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID = 'd7bc0c964d4e918ed257dacef404ce32';
 const ERSTE_STATEMENT_URI = 'erste-statement.pdf';
 
 const buildErsteBankAccount = (): BankAccountInterface => ({
@@ -51,13 +64,45 @@ const buildErsteTransaction = (): BankTransactionInterface => ({
     feeAmount: 0
 });
 
+const buildErsteRow = (): ErsteRowInterface => ({
+    date: new Date('2026-01-13T11:00:00.000Z'),
+    reference: 'ERSTE CARD PAYMENT',
+    description: 'ERSTE CARD PAYMENT',
+    details: 'Parsed card location',
+    amount: -42.5,
+    isCredit: false,
+    city: 'WIEN',
+    countryAlpha2: 'AT'
+});
+
+const buildMappedErsteTransaction = (): BankTransactionInterface => ersteMapper.mapTransaction(buildErsteRow(), ERSTE_ACCOUNT_ID);
+
+const buildLegacyErsteInput = (
+    bankTransaction: BankTransactionInterface,
+    accountId: number,
+    externalId: string
+): TransactionCreateInputInterface => {
+    const input = mapBankTransactionToCreateInput(bankTransaction, accountId, null);
+
+    return {
+        ...input,
+        externalId,
+        entries: input.entries.map(entry => ({
+            ...entry,
+            externalId: entry.externalId === bankTransaction.id ? externalId : entry.externalId
+        }))
+    };
+};
+
 class StubErsteFileClient implements FileBasedBankSyncClientInterface {
+    constructor(private readonly transactions: BankTransactionInterface[] = [buildErsteTransaction()]) {}
+
     getAccounts(): BankAccountInterface[] {
         return [buildErsteBankAccount()];
     }
 
     getTransactions(): BankTransactionInterface[] {
-        return [buildErsteTransaction()];
+        return this.transactions;
     }
 }
 
@@ -106,7 +151,7 @@ class BarrierErsteSyncService extends BaseFileBankSyncService {
         super(ExternalSourceEnum.ERSTE);
     }
 
-    protected override async parseFile(): Promise<ParsedFileResultInterface> {
+    protected override async parseFileContent(): Promise<ParsedFileResultInterface> {
         await this.parseBarrier.wait();
 
         return { client: this.client, bankAccounts: this.client.getAccounts() };
@@ -119,8 +164,8 @@ class BarrierErsteSyncService extends BaseFileBankSyncService {
     }
 }
 
-const buildErsteSyncService = (): StubFileBankSyncService =>
-    new StubFileBankSyncService(ExternalSourceEnum.ERSTE, new StubErsteFileClient());
+const buildErsteSyncService = (client: FileBasedBankSyncClientInterface = new StubErsteFileClient()): StubFileBankSyncService =>
+    new StubFileBankSyncService(ExternalSourceEnum.ERSTE, client);
 
 const buildBarrierErsteSyncService = (parseBarrier: TwoCallBarrier, resolveBarrier: TwoCallBarrier): BarrierErsteSyncService =>
     new BarrierErsteSyncService(parseBarrier, resolveBarrier, new StubErsteFileClient());
@@ -137,7 +182,33 @@ const fetchImportedErsteTransactionCount = (): number =>
         )
         .all().length;
 
+const fetchImportedErsteTransactions = (): TransactionEntityInterface[] =>
+    testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE)).all();
+
 describe('erste/file-import-idempotency', () => {
+    beforeEach(() => {
+        vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();
+    });
+
+    it('enqueues consolidation after an Erste file import introduces new transactions', async () => {
+        const syncService = buildErsteSyncService();
+
+        await syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
+
+        const transaction = testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE),
+                    eq(TransactionEntityTable.externalId, ERSTE_EXTERNAL_ID)
+                )
+            )
+            .get();
+
+        expectFileImportConsolidationEnqueued(transaction?.id);
+    });
+
     it('keeps one transaction when the same statement import starts twice', async () => {
         const parseBarrier = new TwoCallBarrier();
         const resolveBarrier = new TwoCallBarrier();
@@ -159,5 +230,26 @@ describe('erste/file-import-idempotency', () => {
         await syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
 
         expect(fetchImportedErsteTransactionCount()).toBe(1);
+    });
+
+    it('updates an older Erste PDF transaction instead of creating a duplicate', async () => {
+        const account = seed.account({ externalId: ERSTE_ACCOUNT_ID, externalSource: ExternalSourceEnum.ERSTE });
+        const bankTransaction = buildMappedErsteTransaction();
+        const [legacyTransaction] = await transactionImportService.bulkUpsertImported(
+            [buildLegacyErsteInput(bankTransaction, account.id, ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID)],
+            new Map()
+        );
+        if (!isDefined(legacyTransaction)) {
+            throw new Error('Expected legacy Erste transaction to be inserted');
+        }
+        const syncService = buildErsteSyncService(new StubErsteFileClient([bankTransaction]));
+
+        await syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
+
+        const transactions = fetchImportedErsteTransactions();
+
+        expect(transactions).toHaveLength(1);
+        expect(transactions[0].id).toBe(legacyTransaction.id);
+        expect(transactions[0].externalId).toBe(bankTransaction.id);
     });
 });

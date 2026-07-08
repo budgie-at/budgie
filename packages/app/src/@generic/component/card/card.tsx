@@ -12,6 +12,7 @@ import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
 import type { OnEventFn } from '@rnw-community/shared';
 import type { PropsWithChildren } from 'react';
+import type { AccessibilityRole } from 'react-native';
 
 interface Props {
     readonly className?: string;
@@ -20,6 +21,9 @@ interface Props {
     readonly onLongPress?: OnEventFn;
     readonly variant?: ColorPaletteVariant;
     readonly testID?: string;
+    readonly accessible?: boolean;
+    readonly accessibilityLabel?: string;
+    readonly accessibilityRole?: AccessibilityRole;
 }
 
 const cardVariants = cva<{ size: Record<CardSizeType, ClassValue>; variant: Record<ColorPaletteVariant, ClassValue> }>(
@@ -36,8 +40,17 @@ const cardVariants = cva<{ size: Record<CardSizeType, ClassValue>; variant: Reco
     }
 );
 
-export const Card = ({ className, onPress, onLongPress, variant = 'primary', size = 'lg', ...rest }: PropsWithChildren<Props>) => {
+export const Card = ({ className, onPress, onLongPress, variant = 'primary', size = 'lg', testID, ...rest }: PropsWithChildren<Props>) => {
     const Component = isDefined(onPress) || isDefined(onLongPress) ? HapticPressable : View;
 
-    return <Component className={cn(cardVariants({ size, variant }), className)} onPress={onPress} onLongPress={onLongPress} {...rest} />;
+    return (
+        <Component
+            className={cn(cardVariants({ size, variant }), className)}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            testID={testID}
+            {...(isDefined(testID) && { collapsable: false })}
+            {...rest}
+        />
+    );
 };

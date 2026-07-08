@@ -120,7 +120,7 @@ export const CollapsibleHeader = ({ scrollY, netWorth, fiatTotal, cryptoTotal, f
                         <Trans>Total Balance</Trans>
                     </Text>
 
-                    <View testID={netWorthValueTestID}>
+                    <View collapsable={false} testID={netWorthValueTestID}>
                         <ProtectedMoney
                             minFontSize={24}
                             maxFontSize={60}

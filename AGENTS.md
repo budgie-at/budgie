@@ -97,7 +97,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 2. **No type assertions** - Never use `as Type`, `@ts-ignore`, `@ts-expect-error` (`as const` is allowed — it's a const assertion, not a type assertion)
 3. **No comments** - Self-documenting code with clear names
 4. **Never disable ESLint without approval** - NEVER add `eslint-disable` comments without explicit user approval
-5. **Single const declarations** - Each variable gets its own `const` declaration
+5. **Single const declarations, no throwaway derived consts** - Each variable gets its own `const` declaration. Do not create a derived `const` that is used only once when inlining it is equally readable, such as `const queryDependencies = [...]` passed immediately into one call. Keep named locals when they are required for hook ordering, type narrowing, repeated use, JSX prop extraction, or genuinely clearer nontrivial logic.
 6. **Use `emptyFn` for no-op callbacks** - Use `emptyFn` from `@rnw-community/shared` instead of `() => void 0`
 7. **No IIFEs** - Use `.catch(handleError)` or `.then(onSuccess, onError)` instead of `void (async () => {})()`
 8. **Use `getErrorMessage`** - Use `getErrorMessage(e)` from `@rnw-community/shared` instead of `e instanceof Error ? e.message : String(e)`
@@ -156,6 +156,10 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 54. **After `await` inside `useEffect`, downstream reads come from the awaited result, not the captured closure.** Hook destructured state (`const { data } = useFoo()`) is captured at render time. By the time `await something()` resolves, `data` is stale. Thread fresh values through the resolved value, the callback parameter, or a fresh ref read — never `data.foo` from the original closure.
 55. **Snapshot Typed Array buffers from native callbacks.** When a native API hands you a `Float32Array`/`Int16Array`/etc. view (`AudioBuffer.getChannelData(0)`, JNI callbacks, FFI), the underlying memory is typically reused on the next callback. Always copy via `new Float32Array(samples)` before storing — otherwise all stored chunks alias the latest buffer.
 56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.
+57. **For `@Log` callbacks, preserve APIs and destructure callback rest args.** If logging callbacks trip `max-params`, use `(result, ...[argA, argB]) => ...`; never reshape the method signature or add a lint disable just for the decorator.
+58. **Do not decorate query-builder factory methods with `@Log`.** If a repository method returns a Drizzle builder for callers to finish with `.get()` / `.all()` / `.execute()`, keep it plain and log the executed service or repository boundary instead.
+59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the Maestro flow, fixture, or test harness.
+60. **Database live-query boundaries are explicit.** React reads that render app database state use `useDatabaseLiveQuery`, not raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. Class service methods that perform top-level app database writes use `@InvalidateDatabaseLiveQuery()` so subscribers refresh after successful writes without manual invalidation inside business logic. Use the predicate form only to preserve real transaction ownership, such as nested writes that receive an existing `tx`. Do not add event names, groups, or metadata until profiling proves broad invalidation is a real rerender problem. Free-function mutations may invalidate directly only when converting to a service would create a one-method class.
 
 ### Naming Conventions
 
@@ -442,10 +446,10 @@ Mix freely: any of the three hooks can independently be a string or a function.
 5. **Strings (short or business-identifying)** → output quoted values: `title="${transactionTitle}"`. Do not log `titleLen=${title.length}` because length is not useful for debugging identifiers.
 6. **Strings (long, sensitive, or prompt-sized)** → use a quoted preview plus a scalar only when the full value would be noisy or unsafe: `promptPreview="${prompt.slice(0, 120)}" promptLen=${prompt.length}`.
 7. **Numbers / IDs** → output directly: `id=${row.id}`.
-8. **Arrays of entities** → `.map(item => item.<scalarField>).join(',')`. Pick the most identifying scalar (`id`, `externalId`, `title`). Never `.length` — the join makes the failing entries debuggable.
-9. **Arrays of primitives** (`string[]`, `number[]`) → `.join(',')`. Same reason.
-10. **`Map<K, V>`** → `[...map.keys()].join(',')`. Keys are usually the debuggable handle; `.size` loses information.
-11. **`Set<T>`** → `[...set].join(',')`.
+8. **Arrays of entities** → default to counts, for example `transactionCount=${transactions.length}`. Include joined IDs only when the collection is small or the specific entries are the debugging handle.
+9. **Arrays of primitives** (`string[]`, `number[]`) → default to counts. Include `.join(',')` only when the values are small, non-sensitive, and identify the failure.
+10. **`Map<K, V>`** → default to `.size`. Include keys only when the key set is small and materially useful.
+11. **`Set<T>`** → default to `.size`. Include values only when the value set is small and materially useful.
 12. **Typed arrays** (`Uint8Array`, `Float32Array`, embedding buffers) → KEEP `.length` as `dimensions=${vec.length}`. Raw bytes are meaningless inline.
 13. **Objects** → destructure their identifying scalars; do not stringify the whole object.
 14. **Errors** → `getErrorMessage(error)` from `@rnw-community/shared`. Never `String(error)` or `error.message`.
@@ -470,7 +474,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 ### Build-time gate
 
-`EXPO_PUBLIC_LOGGING_DISABLE=true` (e2e profile in `eas.json`) suppresses all output. Build-time only — flipping requires a rebuild.
+`EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle output. Metro dev bundles still log through `__DEV__`; native development and profiling builds set logging at build time, so non-dev bundle changes require rebuilds. App-specific Metro commands and bundle-id traps live in `packages/app/AGENTS.md`.
 
 ### `bank-sync` exception
 
@@ -520,7 +524,8 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Maestro against that bundle id. Local build/run procedure and cache/stale-binary traps: `tests/app-tests/E2E-RUNBOOK.md`.
 7. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
 8. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the E2E app before rerunning the test.
-9. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
+9. When an app component derives a child or state-specific `testID` from a base id, use `testID` from `packages/app/src/@generic/utils/test-id.util.ts` and spread it in JSX, for example `<Text {...testID(parentTestID, 'Label')} />`. If the component already has a `testID` prop in scope, alias the import as `testIDProps`. Do not hand-build strings like `` `${testID}.Label` `` inside components. Selector factory files that intentionally create canonical ids are excluded.
+10. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
 
 ### Maestro Robustness
 
@@ -565,13 +570,13 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 Add `eslint-disable-next-line` with justification for these specific cases:
 
-| Rule                            | When to Disable                                                                                                                                           | Justification Pattern                                                          |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `max-statements`                | Form orchestration components with multiple hooks/handlers                                                                                                | `-- Form orchestration component with multiple hooks and handlers`             |
-| `max-lines-per-function`        | Layout files, complex form components                                                                                                                     | `-- Layout/form component requires many lines`                                 |
-| `max-lines`                     | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together`   |
-| `@typescript-eslint/max-params` | Existing public APIs or lifecycle log hooks must preserve positional argument shape                                                                       | `-- Existing public API and Log hooks intentionally keep positional arguments` |
-| `func-style`                    | Next.js `generateMetadata` requires `export async function`, not `const`                                                                                  | `-- Next.js generateMetadata must be a function declaration`                   |
+| Rule                            | When to Disable                                                                                                                                           | Justification Pattern                                                        |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `max-statements`                | Form orchestration components with multiple hooks/handlers                                                                                                | `-- Form orchestration component with multiple hooks and handlers`           |
+| `max-lines-per-function`        | Layout files, complex form components                                                                                                                     | `-- Layout/form component requires many lines`                               |
+| `max-lines`                     | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together` |
+| `@typescript-eslint/max-params` | Existing public APIs must preserve positional argument shape. For `@Log` callbacks, prefer rest-arg destructuring from rule 57 instead                    | `-- Existing public API intentionally keeps positional arguments`            |
+| `func-style`                    | Next.js `generateMetadata` requires `export async function`, not `const`                                                                                  | `-- Next.js generateMetadata must be a function declaration`                 |
 
 Example:
 

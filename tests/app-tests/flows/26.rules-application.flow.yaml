@@ -10,29 +10,22 @@ env:
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml
 
-# --- Rule Applies Category (comment contains "Netflix" → set category) ---
+# --- Rule Applies Category (comment contains "Netflix" -> set category) ---
+
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
 - tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
+    id: 'RuleForm.SelectorCard.COMMENT'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -41,20 +34,14 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- extendedWaitUntil:
-    visible: 'Apply to existing transactions?'
-    timeout: 10000
-- tapOn: 'Apply'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/submit-rule-apply-existing.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -63,46 +50,31 @@ env:
     visible:
       id: 'TransactionCard.Category.Rules_Test_Category'
 
-# Delete rule
-
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
-# --- Rule Applies Tag (comment contains "Starbucks" → add tag) ---
+# --- Rule Applies Tag (comment contains "Starbucks" -> add tag) ---
+
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
 - tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
+    id: 'RuleForm.SelectorCard.COMMENT'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Starbucks'
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Action.0.TypeSelector'
@@ -113,23 +85,19 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.TagSelector'
 - waitForAnimationToEnd
-- tapOn:
-    text: ${TAG_NAME}
+- runFlow:
+    file: subflows/shared/select-tag-by-search.flow.yaml
+    env:
+      TAG_NAME: ${TAG_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- extendedWaitUntil:
-    visible: 'Apply to existing transactions?'
-    timeout: 10000
-- tapOn: 'Apply'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/submit-rule-apply-existing.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -138,46 +106,31 @@ env:
     visible:
       id: 'TransactionCard.Label.Starbucks_Coffee'
 
-# Delete rule
-
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
-# --- Rule Applies Multiple Actions (comment contains "Amazon" → set category + add tag) ---
+# --- Rule Applies Multiple Actions (comment contains "Amazon" -> set category + add tag) ---
+
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
 - tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
+    id: 'RuleForm.SelectorCard.COMMENT'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Amazon'
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -204,18 +157,13 @@ env:
 - tapOn:
     id: 'RuleForm.Action.1.TagSelector'
 - waitForAnimationToEnd
+- runFlow:
+    file: subflows/shared/select-tag-by-search.flow.yaml
+    env:
+      TAG_NAME: ${TAG_NAME}
 
-- extendedWaitUntil:
-    visible: ${TAG_NAME}
-- tapOn: ${TAG_NAME}
-
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- extendedWaitUntil:
-    visible: 'Apply to existing transactions?'
-    timeout: 10000
-- tapOn: 'Apply'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/submit-rule-apply-existing.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
@@ -224,9 +172,8 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCardActions.0'
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -239,46 +186,31 @@ env:
     visible:
       id: 'TransactionCard.Label.Amazon_Purchase'
 
-# Delete rule
-
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
 # --- Apply to Existing Toggle (create rule, skip, re-save with apply) ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - waitForAnimationToEnd
-- tapOn: 'Comment'
+- tapOn:
+    id: 'RuleForm.SelectorCard.COMMENT'
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Spotify'
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -287,21 +219,15 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
+    file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - waitForAnimationToEnd
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - assertVisible:
     id: 'TransactionCard.Label.Spotify_Premium'
@@ -310,60 +236,38 @@ env:
     file: subflows/navigate-to-rules.flow.yaml
 
 - tapOn:
-    id: 'RulesPage.RuleCard.0'
+    id: 'RulesPage.RuleCardActions.0'
 - extendedWaitUntil:
     visible: 'Edit Rule'
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- extendedWaitUntil:
-    visible: 'Apply to existing transactions?'
-    timeout: 10000
-- tapOn: 'Apply'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/submit-rule-apply-existing.flow.yaml
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - assertVisible:
     id: 'TransactionCard.Category.Rules_Test_Category'
 
-# Delete rule
-
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
 # --- Disabled Rule Not Applied (create rule, disable, create expense) ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Uber'
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -388,49 +292,43 @@ env:
     env:
       AMOUNT: '25'
       ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      CATEGORY_NAME: Other
       COMMENT: 'Uber Ride'
 
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: budgie://transactions/9/expense
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 10000
 - assertVisible:
-    id: 'TransactionCard.Label.Uber_Ride'
-
-# Delete rule
+    id: 'TransactionInfo.Row.Note'
+- assertVisible: 'Uber Ride'
+- assertVisible:
+    id: 'TransactionInfo.Row.Category'
+- assertVisible: 'Other'
 
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
 # --- Rule Not Applied When Condition Doesn't Match ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-    timeout: 3000
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-    timeout: 5000
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -439,13 +337,8 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
+    file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - waitForAnimationToEnd
 
 - assertVisible:
@@ -456,695 +349,29 @@ env:
     env:
       AMOUNT: '10'
       ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
+      CATEGORY_NAME: Other
       COMMENT: 'Random Purchase'
 
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: budgie://transactions/10/expense
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 10000
 - assertVisible:
-    id: 'TransactionCard.Label.Random_Purchase'
-
-# Delete rule
+    id: 'TransactionInfo.Row.Note'
+- assertVisible: 'Random Purchase'
+- assertVisible:
+    id: 'TransactionInfo.Row.Category'
+- assertVisible: 'Other'
 
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule-via-form.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
-
-# --- Convert to Transfer Action (comment -> CONVERT_TO_TRANSFER, offered without a transaction-type condition) ---
-
-- runFlow:
-    file: subflows/transactions/create-expense.flow.yaml
-    env:
-      AMOUNT: '10'
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
-      COMMENT: 'Auto Transfer'
-
-- runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
-
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- tapOn: 'Comment'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-- inputText: 'Auto Transfer'
-
-- tapOn:
-    text: 'return'
-- waitForAnimationToEnd
-
-# Convert to Transfer is selectable even without a Transaction Type condition
-- tapOn:
-    id: 'RuleForm.Action.0.TypeSelector'
-- extendedWaitUntil:
-    visible:
-      id: 'RuleForm.SelectorCard.CONVERT_TO_TRANSFER'
-- tapOn:
-    id: 'RuleForm.SelectorCard.CONVERT_TO_TRANSFER'
-- waitForAnimationToEnd
-
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.AccountSelector'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'RuleForm.Action.0.AccountSelector'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'AccountPickerBottomSheet.Input'
-- tapOn:
-    id: 'AccountPickerBottomSheet.Input'
-- inputText: 'Test22 Destination'
-- extendedWaitUntil:
-    visible:
-      id: 'AccountPickerBottomSheet.Option.Test22 Destination'
-- tapOn:
-    id: 'AccountPickerBottomSheet.Option.Test22 Destination'
-- extendedWaitUntil:
-    notVisible:
-      id: 'AccountPickerBottomSheet.Input'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- extendedWaitUntil:
-    visible: 'Apply to existing transactions?'
-    timeout: 10000
-- tapOn: 'Apply'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-
-- assertVisible:
-    id: 'RulesPage.RuleCard.0'
-- assertVisible: 'Transfer → Test22 Destination'
-
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.Auto_Transfer'
-    timeout: 10000
-- assertVisible:
-    id: 'TransactionCard.FromAccount.Rules_Test_Account'
-- assertVisible:
-    id: 'TransactionCard.ToAccount.Test22_Destination'
-
-# Delete rule
-
-- runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
-
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
-
-- assertVisible:
-    id: 'RulesPage.EmptyState'
-
-# --- Conflict Warning (overlapping rules show warning) ---
-
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-- inputText: 'Test'
-
-- tapOn: return
-
-- tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
-
-- runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
-
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-
-- assertVisible:
-    id: 'RulesPage.RuleCard.0'
-
-# Create second rule to trigger conflict warning
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-- inputText: 'Other'
-
-- tapOn: return
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible:
-      text: 'Some transactions may match multiple rules\..*'
-
-# Dismiss form and delete rule
-
-- runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
-
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
-
-- assertVisible:
-    id: 'RulesPage.EmptyState'
-
-# --- Rules Apply During Import (2 rules + CSV import) ---
-
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-- inputText: 'Netflix'
-
-- tapOn: return
-
-- tapOn:
-    id: 'RuleForm.Action.0.TypeSelector'
-- tapOn:
-    id: 'RuleForm.SelectorCard.SET_CATEGORY'
-- waitForAnimationToEnd
-
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
-- runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: Groceries
-
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
-- waitForAnimationToEnd
-
-- assertVisible:
-    id: 'RulesPage.RuleCard.0'
-
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-- inputText: 'Starbucks'
-
-- tapOn: return
-
-- tapOn:
-    id: 'RuleForm.Action.0.TypeSelector'
-- tapOn:
-    id: 'RuleForm.SelectorCard.ADD_TAG'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RuleForm.Action.0.TagSelector'
-- waitForAnimationToEnd
-- tapOn:
-    text: Subscription
-
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
-- waitForAnimationToEnd
-
-- assertVisible:
-    id: 'RulesPage.RuleCard.1'
-
-- runFlow:
-    file: subflows/import/import-test-transactions.flow.yaml
-    env:
-      CSV_DISPLAY_NAME: test16-rules-import
-
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Tag.Subscription'
-    timeout: 10000
-
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Category.Groceries'
-    timeout: 10000
-
-# Delete 2 rules
-
-- runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
-
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
-- waitForAnimationToEnd
-
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
-
-- assertVisible:
-    id: 'RulesPage.EmptyState'
-
-# --- Suggested Rule Applies Category (import → categorize → suggest card) ---
-
-- runFlow:
-    file: subflows/import/import-test-transactions.flow.yaml
-    env:
-      CSV_DISPLAY_NAME: test15-suggested-rule
-
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.Test15_Unique_Purchase'
-    timeout: 10000
-- tapOn:
-    id: 'TransactionCard.Label.Test15_Unique_Purchase'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'TransactionForm.CategorySelector'
-- waitForAnimationToEnd
-- runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: Groceries
-
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'SuggestRule.Card'
-    timeout: 10000
-
-- tapOn:
-    id: 'SuggestRule.CreateRuleButton'
-
-- extendedWaitUntil:
-    notVisible:
-      id: 'SuggestRule.Card'
-    timeout: 10000
-
-- tapOn:
-    id: 'PageHeader.BackButton'
-- waitForAnimationToEnd
-
-- runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
-
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.RuleCard.0'
-    timeout: 10000
-
-- tapOn:
-    id: 'RulesPage.RuleCard.0'
-- extendedWaitUntil:
-    visible: 'Edit Rule'
-- assertVisible:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- assertVisible:
-    id: 'RuleForm.Condition.1.FieldSelector'
-- tapOn:
-    id: 'PageHeader.BackButton'
-- waitForAnimationToEnd
-
-# Delete rule
-
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
-
-- assertVisible:
-    id: 'RulesPage.EmptyState'
-
-# --- Suggested Rule Creates Directly (import → categorize → suggest card) ---
-
-- runFlow:
-    file: subflows/import/import-test-transactions.flow.yaml
-    env:
-      CSV_DISPLAY_NAME: test17-suggested-rule
-
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.Store_C_Kyiv'
-    timeout: 10000
-- tapOn:
-    id: 'TransactionCard.Label.Store_C_Kyiv'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'TransactionForm.CategorySelector'
-- waitForAnimationToEnd
-- runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: Shopping
-
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'SuggestRule.Card'
-    timeout: 10000
-
-- tapOn:
-    id: 'SuggestRule.CreateRuleButton'
-
-- extendedWaitUntil:
-    notVisible:
-      id: 'SuggestRule.Card'
-    timeout: 10000
-
-- tapOn:
-    id: 'PageHeader.BackButton'
-- waitForAnimationToEnd
-
-- runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
-
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.RuleCard.0'
-    timeout: 10000
-
-- tapOn:
-    id: 'RulesPage.RuleCard.0'
-- extendedWaitUntil:
-    visible: 'Edit Rule'
-- assertVisible:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- assertVisible:
-    id: 'RuleForm.Condition.1.FieldSelector'
-- assertVisible:
-    id: 'RuleForm.Condition.2.FieldSelector'
-- tapOn:
-    id: 'PageHeader.BackButton'
-- waitForAnimationToEnd
-
-# Delete rule
-
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
-
-- assertVisible:
-    id: 'RulesPage.EmptyState'
-
-# --- Duplicate Rule Alert (import → categorize → create rule from suggestion) ---
-
-- runFlow:
-    file: subflows/import/import-test-transactions.flow.yaml
-    env:
-      CSV_DISPLAY_NAME: test25-duplicate-rule
-
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.Test25_Duplicate_Check'
-    timeout: 10000
-- tapOn:
-    id: 'TransactionCard.Label.Test25_Duplicate_Check'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'TransactionForm.CategorySelector'
-- waitForAnimationToEnd
-- runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: Groceries
-
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'SuggestRule.Card'
-    timeout: 10000
-
-- tapOn:
-    id: 'SuggestRule.CreateRuleButton'
-
-- extendedWaitUntil:
-    notVisible:
-      id: 'SuggestRule.Card'
-    timeout: 10000
-
-- tapOn:
-    id: 'PageHeader.BackButton'
-- waitForAnimationToEnd
-
-- runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
-
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.RuleCard.0'
-    timeout: 10000
-
-- tapOn:
-    id: 'RulesPage.RuleCard.0'
-- extendedWaitUntil:
-    visible: 'Edit Rule'
-- assertVisible:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- assertVisible:
-    id: 'RuleForm.Condition.1.FieldSelector'
-- tapOn:
-    id: 'PageHeader.BackButton'
-- waitForAnimationToEnd
-
-# Delete rule
-
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
-
-- assertVisible:
-    id: 'RulesPage.EmptyState'
-
-# --- Matching Rules Pill (import → verify pill on transaction → open matching rule) ---
-
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- waitForAnimationToEnd
-- tapOn: 'Comment'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-- inputText: 'Netflix'
-
-- tapOn: return
-
-- tapOn:
-    id: 'RuleForm.Action.0.TypeSelector'
-- tapOn:
-    id: 'RuleForm.SelectorCard.SET_CATEGORY'
-- waitForAnimationToEnd
-
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
-- runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: Groceries
-
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
-- waitForAnimationToEnd
-
-- assertVisible:
-    id: 'RulesPage.RuleCard.0'
-
-- runFlow:
-    file: subflows/import/import-test-transactions.flow.yaml
-    env:
-      CSV_DISPLAY_NAME: test27-matching-rules-pill
-
-- tapOn:
-    id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.Netflix_Premium'
-    timeout: 10000
-- tapOn:
-    id: 'TransactionCard.Label.Netflix_Premium'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible:
-      id: 'MatchingRules.Pill'
-    timeout: 10000
-- assertVisible:
-    id: 'MatchingRules.Pill'
-
-- tapOn:
-    id: 'MatchingRules.Pill'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible: 'Edit Rule'
-- assertVisible: 'Edit Rule'

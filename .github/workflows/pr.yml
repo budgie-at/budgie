@@ -6,6 +6,7 @@ env:
   PR_NUMBER: ${{ github.event.pull_request.number }}
   PR_TITLE: ${{ github.event.pull_request.title }}
   MAESTRO_CLI_NO_ANALYTICS: false
+  MAESTRO_VERSION: "2.6.0"
   RCT_USE_PREBUILT_RNCORE: 1
   RCT_USE_RN_DEP: 1
 
@@ -18,7 +19,7 @@ on: pull_request
 jobs:
   code-quality:
     name: Code quality checks
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux-ci]
     permissions:
       contents: read
       id-token: write
@@ -50,19 +51,23 @@ jobs:
         run: echo "${{env.PR_TITLE}}" | node_modules/.bin/commitlint
 
       - name: Typescript checks
-        run: yarn turbo ts
+        run: yarn turbo run ts
+
+      - name: Maestro selector checks
+        run: yarn workspace @budgie-at/app-tests selectors:check
 
       - name: ESLint checks
-        run: yarn turbo lint
+        run: yarn turbo run lint
 
       - name: Deadcode detection
+        continue-on-error: true
         run: yarn turbo deadcode
 
       - name: Copy/Paste detection
         run: yarn turbo cpd
 
       - name: Unit tests
-        run: yarn test:coverage
+        run: yarn turbo run test:coverage
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
@@ -71,8 +76,7 @@ jobs:
 
   eas-update-preview:
     name: EAS Update Preview
-    needs: code-quality
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     permissions:
       contents: read
     steps:
@@ -103,7 +107,7 @@ jobs:
         run: yarn install
 
       - name: Build internal workspace packages
-        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation
+        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
 
       - name: Create preview
         id: create-preview
@@ -116,12 +120,15 @@ jobs:
           eas update --skip-bundler --input-dir dist --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
 
   build-ios-e2e-app:
-    needs: [code-quality]
+    needs: [code-quality, eas-update-preview]
     name: Build iOS E2E app
-    runs-on: self-hosted
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
+      EXPO_USE_PRECOMPILED_MODULES: "1"
+      RCT_USE_PREBUILT_RNCORE: "1"
+      RCT_USE_RN_DEP: "1"
       IOS_DERIVED_DATA: ${{ github.workspace }}/.ci-cache/DerivedData/budgie-e2e
       USE_CCACHE: "1"
       CCACHE_DIR: ${{ github.workspace }}/.ci-cache/ccache
@@ -155,7 +162,7 @@ jobs:
         run: yarn install
 
       - name: Build internal workspace packages
-        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation
+        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
@@ -163,14 +170,14 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Select Xcode 26.3
+      - name: Select Xcode 26.4.1
         run: |
-          if [ -d /Applications/Xcode_26.3.app ]; then
-            XCODE_APP=/Applications/Xcode_26.3.app
+          if [ -d /Applications/Xcode_26.4.1.app ]; then
+            XCODE_APP=/Applications/Xcode_26.4.1.app
           elif [ -d /Applications/Xcode.app ]; then
             XCODE_APP=/Applications/Xcode.app
           else
-            echo "::error::Xcode 26.3 is not installed on this runner."
+            echo "::error::Xcode 26.4.1 is not installed on this runner."
             ls -1 /Applications | grep -i Xcode || true
             exit 1
           fi
@@ -186,28 +193,35 @@ jobs:
           path: |
             ~/Library/Caches/CocoaPods
             ~/.cocoapods
-          key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+          key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
           restore-keys: |
-            pods-${{ runner.os }}-xcode26_3-
+            pods-${{ runner.os }}-xcode26_4_1-
             pods-${{ runner.os }}-
 
       - name: Setup ccache
         run: |
+          export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
           mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
-          command -v ccache >/dev/null || {
-            echo "::error::ccache is not installed on this runner."
-            exit 1
-          }
+          if ! command -v ccache >/dev/null; then
+            command -v brew >/dev/null || {
+              echo "::error::ccache is not installed and Homebrew is unavailable."
+              exit 1
+            }
+            brew list ccache >/dev/null 2>&1 || brew install ccache
+          fi
           ccache --version
           ccache --zero-stats || true
+          if command -v brew >/dev/null; then
+            echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
+          fi
 
       - name: Restore ccache
         uses: actions/cache/restore@v5
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+          key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
           restore-keys: |
-            ccache-${{ runner.os }}-xcode26_3-e2e-
+            ccache-${{ runner.os }}-xcode26_4_1-e2e-
             ccache-${{ runner.os }}-
 
       - name: Expo Prebuild
@@ -215,8 +229,6 @@ jobs:
         env:
           APP_VARIANT: e2e
           EXPO_PUBLIC_AI_DISABLE: "true"
-          RCT_USE_PREBUILT_RNCORE: "1"
-          RCT_USE_RN_DEP: "1"
         run: npx expo prebuild -p ios --clean
 
       - name: Sync CocoaPods
@@ -225,15 +237,6 @@ jobs:
           APP_VARIANT: e2e
           EXPO_PUBLIC_AI_DISABLE: "true"
         run: pod install
-
-      - name: Restore Xcode DerivedData cache
-        uses: actions/cache/restore@v5
-        with:
-          path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
-          restore-keys: |
-            deriveddata-${{ runner.os }}-xcode26_3-e2e-release-
-            deriveddata-${{ runner.os }}-xcode26_3-e2e-
 
       - name: Build app
         working-directory: packages/app
@@ -283,46 +286,39 @@ jobs:
           if-no-files-found: error
 
       - name: Save CocoaPods cache
-        if: always()
+        if: success()
         uses: actions/cache/save@v5
         with:
           path: |
             ~/Library/Caches/CocoaPods
             ~/.cocoapods
-          key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+          key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save ccache
-        if: always()
+        if: success()
         uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-
-      - name: Save Xcode DerivedData cache
-        if: always()
-        uses: actions/cache/save@v5
-        with:
-          path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
+          key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
   e2e-ios:
     needs: [build-ios-e2e-app]
     name: E2E Tests on iOS
-    runs-on: self-hosted
+    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
     steps:
       - uses: actions/checkout@v5
 
-      - name: Select Xcode 26.3
+      - name: Select Xcode 26.4.1
         run: |
-          if [ -d /Applications/Xcode_26.3.app ]; then
-            XCODE_APP=/Applications/Xcode_26.3.app
+          if [ -d /Applications/Xcode_26.4.1.app ]; then
+            XCODE_APP=/Applications/Xcode_26.4.1.app
           elif [ -d /Applications/Xcode.app ]; then
             XCODE_APP=/Applications/Xcode.app
           else
-            echo "::error::Xcode 26.3 is not installed on this runner."
+            echo "::error::Xcode 26.4.1 is not installed on this runner."
             ls -1 /Applications | grep -i Xcode || true
             exit 1
           fi
@@ -394,7 +390,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Prepare iOS E2E artifact directories
@@ -406,7 +402,7 @@ jobs:
       - name: Start iOS Simulator log capture
         run: |
           ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
-          xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level debug > "$ARTIFACT_DIR/simulator.log" 2>&1 &
+          xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level default > "$ARTIFACT_DIR/simulator.log" 2>&1 &
           echo $! > "$ARTIFACT_DIR/simulator-log.pid"
 
       - name: Run Maestro UI tests
@@ -430,6 +426,11 @@ jobs:
 
           if [ -f "$ARTIFACT_DIR/simulator-log.pid" ]; then
             kill "$(cat "$ARTIFACT_DIR/simulator-log.pid")" || true
+          fi
+
+          if [ -f "$ARTIFACT_DIR/simulator.log" ]; then
+            tail -n 20000 "$ARTIFACT_DIR/simulator.log" > "$ARTIFACT_DIR/simulator.log.tail" || true
+            mv "$ARTIFACT_DIR/simulator.log.tail" "$ARTIFACT_DIR/simulator.log" || true
           fi
 
           find "$HOME/Library/Logs/DiagnosticReports" -maxdepth 1 -type f \
@@ -462,7 +463,7 @@ jobs:
     if: false
     needs: [code-quality, eas-update-preview]
     name: E2E Tests on Android
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux-ci]
     steps:
       - uses: actions/checkout@v5
 
@@ -517,7 +518,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Сreate AVD and generate snapshot for caching

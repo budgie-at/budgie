@@ -1,0 +1,14 @@
+appId: ${APP_ID}
+---
+# Budget creation now opens a template chooser first. This subflow assumes the
+# chooser is being presented and selects "Empty canvas" to reach the setup form.
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetCreate.Template.Empty'
+      timeout: 5000
+- tapOn:
+      id: 'BudgetCreate.Template.Empty'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.OverallLimitInput'
+      timeout: 5000

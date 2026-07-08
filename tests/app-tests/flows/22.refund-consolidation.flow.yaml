@@ -4,11 +4,12 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-        FIXTURE_ROW_ID_MATCH: '.*22\.db, db.*'
-        FILE_PICKER_SEARCH_TEXT: '22.db'
-        FILE_PICKER_REPEAT_TAP: 'true'
+        FIXTURE_ROW_ID_MATCH: '22.db'
 
-- openLink: 'budgie://transactions/3/income'
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://transactions/3/income'
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.TriggerButton'
@@ -31,17 +32,17 @@ appId: ${APP_ID}
     id: 'ConvertToRefund.CandidateRow.2'
 - tapOn:
     id: 'ConvertToRefund.ConvertButton'
-- extendedWaitUntil:
-    visible: 'Convert to Refund?'
-    timeout: 10000
+- waitForAnimationToEnd
 - tapOn:
-    point: '68%,60%'
+    text: 'Convert'
+    index: 0
+- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.RefundedPill.2'
+      id: 'TransactionInfo.Row.Consolidation'
     timeout: 10000
 - tapOn:
-    id: 'TransactionCard.RefundedPill.2'
+    id: 'TransactionInfo.Row.Consolidation'
 - extendedWaitUntil:
     visible:
       id: 'ConsolidationSourceModal.Row.0'
@@ -51,14 +52,17 @@ appId: ${APP_ID}
 - tapOn:
     id: 'ConsolidationSourceModal.RevertButton'
 - runFlow: subflows/transactions/confirm-revert-consolidation.flow.yaml
-- openLink: 'budgie://transactions/3/income'
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://transactions/3/income'
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.TriggerButton'
     timeout: 10000
 - extendedWaitUntil:
     notVisible:
-      id: 'TransactionCard.RefundedPill.2'
+      id: 'TransactionInfo.RefundedPill'
     timeout: 10000
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
@@ -69,34 +73,46 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToRefundButton'
 - tapOn:
-    point: '10%,10%'
-- tapOn:
-    id: 'PageHeader.BackButton'
-
-- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+    text: 'Close menu'
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://transactions'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionsPage.Container'
+    timeout: 10000
 
 - scrollUntilVisible:
     element:
       id: 'TransactionCard.Label.E2E_Refund_Localized'
     direction: DOWN
+    visibilityPercentage: 30
+    centerElement: true
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Localized'
 - scrollUntilVisible:
     element:
       id: 'TransactionCard.Label.E2E_Refund_Partial'
     direction: DOWN
+    visibilityPercentage: 30
+    centerElement: true
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Partial'
 - scrollUntilVisible:
     element:
       id: 'TransactionCard.Label.E2E_Refund_Full'
     direction: DOWN
+    visibilityPercentage: 30
+    centerElement: true
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Full'
 - scrollUntilVisible:
     element:
       id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
     direction: DOWN
+    visibilityPercentage: 30
+    centerElement: true
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
 - longPressOn:
@@ -106,7 +122,7 @@ appId: ${APP_ID}
       id: 'TransactionContextMenu.ConvertToRefundButton'
     timeout: 3000
 - tapOn:
-    point: '10%,10%'
+    text: 'Close menu'
 
 - runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
 
@@ -118,6 +134,8 @@ appId: ${APP_ID}
     element:
       id: 'TransactionCard.Label.E2E_Refund_Localized'
     direction: UP
+    visibilityPercentage: 30
+    centerElement: true
 - assertVisible:
     text: 'E2E Refund Localized, Refunded.*'
 - assertNotVisible:
@@ -128,6 +146,8 @@ appId: ${APP_ID}
     element:
       id: 'TransactionCard.RefundedPill.4'
     direction: DOWN
+    visibilityPercentage: 30
+    centerElement: true
 - assertVisible:
     id: 'TransactionCard.RefundedPill.4'
 - assertNotVisible:
@@ -138,18 +158,23 @@ appId: ${APP_ID}
     element:
       id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
     direction: DOWN
+    visibilityPercentage: 30
+    centerElement: true
 - assertVisible:
     id: 'TransactionCard.Amount.8'
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
 
-- openLink: 'budgie://transactions/4/expense'
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://transactions/4/expense'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.RefundedPill.4'
+      id: 'TransactionInfo.Row.Consolidation'
     timeout: 10000
 - tapOn:
-    id: 'TransactionCard.RefundedPill.4'
+    id: 'TransactionInfo.Row.Consolidation'
 - extendedWaitUntil:
     visible:
       id: 'ConsolidationSourceModal.Row.0'
@@ -163,13 +188,16 @@ appId: ${APP_ID}
       id: 'ConsolidationSourceModal.Row.0'
     timeout: 5000
 
-- openLink: 'budgie://transactions/9/expense'
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: 'budgie://transactions/9/expense'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.RefundedPill.9'
+      id: 'TransactionInfo.Row.Consolidation'
     timeout: 10000
 - tapOn:
-    id: 'TransactionCard.RefundedPill.9'
+    id: 'TransactionInfo.Row.Consolidation'
 - extendedWaitUntil:
     visible:
       id: 'ConsolidationSourceModal.Row.0'
@@ -191,7 +219,7 @@ appId: ${APP_ID}
     id: 'TabBar.Analytics'
 - extendedWaitUntil:
     visible:
-      id: 'AnalyticsPage.Container'
+      id: 'AnalyticsPage.Tab.Categories'
     timeout: 10000
 - scrollUntilVisible:
     element:

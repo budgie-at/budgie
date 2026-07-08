@@ -25,6 +25,7 @@ import {
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
+import { getTransactionDisplayTitle } from '../../transaction/utils/get-transaction-display-title.util';
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
 
@@ -349,6 +350,7 @@ class RuleEngineService {
     private toRuleEvaluationInput(input: TransactionCreateInputInterface, mccCodeMap: Map<number, string>): RuleEvaluationInputInterface {
         return {
             ...input,
+            title: getTransactionDisplayTitle(input),
             entries: input.entries.map(entry => ({
                 ...entry,
                 mccCode: isDefined(entry.mccCategoryId) ? (mccCodeMap.get(entry.mccCategoryId) ?? null) : null

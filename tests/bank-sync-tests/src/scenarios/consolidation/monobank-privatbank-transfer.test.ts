@@ -15,9 +15,9 @@ import {
 } from '../../harness';
 
 import { transactionImportService } from '@app/transaction/service/transaction-import.service';
-import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
+import { mapBankTransactionToCreateInput } from '@budgie/bank-sync';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { privatbankCategoryMatcherMatch } from '@app/sync/service/privatbank-category-matcher.service';
+import { privatbankCategoryMatcherService } from '@app/sync/service/privatbank-category-matcher.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 const TRANSFER_AMOUNT = 250;
@@ -52,7 +52,7 @@ describe('consolidation/monobank-privatbank-transfer', () => {
         ]);
         await monobankSyncService.sync();
 
-        const categoryMap = await privatbankCategoryMatcherMatch([PRIVATBANK_TRANSFER_CATEGORY]);
+        const categoryMap = await privatbankCategoryMatcherService.match([PRIVATBANK_TRANSFER_CATEGORY]);
         const privatbankTransaction = privatbankTransactionMapper({
             rawDate: '20.05.2026 15:00:00',
             date: new Date(operatedAt.getTime() + SLOW_WINDOW_OFFSET_MS),
@@ -67,12 +67,7 @@ describe('consolidation/monobank-privatbank-transfer', () => {
             balanceCurrency: 'UAH'
         });
         const privatbankMccCategoryId = categoryMap.get(PRIVATBANK_TRANSFER_CATEGORY) ?? null;
-        const privatbankInput = mapBankTransactionToCreateInput(
-            privatbankTransaction,
-            privatbankAccount.id,
-            privatbankMccCategoryId,
-            ExternalSourceEnum.PRIVATBANK
-        );
+        const privatbankInput = mapBankTransactionToCreateInput(privatbankTransaction, privatbankAccount.id, privatbankMccCategoryId);
         const importedPrivatbankTransactions = await transactionImportService.bulkUpsertImported([privatbankInput], new Map());
         expect(importedPrivatbankTransactions).toHaveLength(1);
 

@@ -15,8 +15,9 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
+import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
-import { ruleApplicationDrainerService } from '../service/rule-application-drainer.service';
+import { ruleEngineService } from '../service/rule-engine.service';
 import { ruleMatcherService } from '../service/rule-matcher.service';
 import { ruleService } from '../service/rule.service';
 
@@ -135,10 +136,14 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
         });
     };
 
-    const enqueueApply = (targetRuleId: number, shouldApply: boolean): void => {
-        if (shouldApply) {
-            ruleApplicationDrainerService.enqueueRuleApplication(targetRuleId);
+    const applyToExisting = async (targetRuleId: number, shouldApply: boolean): Promise<void> => {
+        if (!shouldApply) {
+            return;
         }
+
+        await syncWorkloadService.runUser('rule-application-rule', () =>
+            ruleEngineService.applyRuleToMatchingTransactions(targetRuleId, null)
+        );
     };
 
     const handleSubmit = async (values: RuleCreateInputInterface) => {
@@ -147,10 +152,10 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
 
             if (isEditing && isDefined(ruleId)) {
                 await ruleService.updateById(ruleId, values);
-                enqueueApply(ruleId, shouldApply);
+                await applyToExisting(ruleId, shouldApply);
             } else {
                 const rule = await ruleService.create(values);
-                enqueueApply(rule.id, shouldApply);
+                await applyToExisting(rule.id, shouldApply);
             }
             onSuccess?.(isEditing ? 'updated' : 'created');
         } catch (error: unknown) {

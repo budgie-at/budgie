@@ -3,6 +3,8 @@ name: Claude Code Review
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]
+    paths-ignore:
+      - ".github/workflows/**"
     # Optional: Only run on specific file changes
     # paths:
     #   - "src/**/*.ts"
@@ -18,7 +20,7 @@ jobs:
     #   github.event.pull_request.user.login == 'new-developer' ||
     #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
 
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux-ci]
     permissions:
       contents: read
       pull-requests: write
