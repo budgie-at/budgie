@@ -41,7 +41,7 @@ export const IncomeTransactionInfoPage = ({ transaction }: UpdateTransactionForm
     const handleOpenRefundConvert = useOpenRefundConvert(transactionId);
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
-    const editHref = `/transactions/${transactionId}/income/edit` as const;
+    const editHref = { pathname: '/transactions/[id]/income/edit' as const, params: { id: String(transactionId) } };
 
     return (
         <TransactionInfoPage

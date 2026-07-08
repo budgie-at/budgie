@@ -12,9 +12,7 @@ export const useOpenRefundConvert = (transactionId: number) => {
             refundIncomeTransactionId: transactionId
         }).then(canonicalId => {
             if (isDefined(canonicalId)) {
-                const expenseRoute = `/transactions/${canonicalId}/expense` as const;
-
-                router.replace(expenseRoute);
+                router.replace({ pathname: '/transactions/[id]/expense', params: { id: String(canonicalId) } });
             }
 
             return null;

@@ -10,7 +10,7 @@ import { useBudgetTemplateDraft } from '../../hooks/use-budget-template-draft.ho
 import { BudgetTemplateOptionCard } from '../budget-template-option-card/budget-template-option-card';
 
 const navigateToTemplate = (template: BudgetTemplateKindEnum) => {
-    void router.replace(`/budget/edit?template=${template}`);
+    void router.replace({ pathname: '/budget/edit', params: { template } });
 };
 
 export const BudgetTemplateChooser = () => {

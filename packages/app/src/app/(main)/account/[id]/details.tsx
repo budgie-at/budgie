@@ -41,7 +41,7 @@ export default function AccountDetails() {
     const { t } = useLingui();
 
     const handleGoBack = () => void goBackOrReplace('/');
-    const handleOpenAccountSettings = () => void router.navigate(`/account/${id}/update`);
+    const handleOpenAccountSettings = () => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(id) } });
 
     if (isLoading) {
         return <LoadingScreen />;

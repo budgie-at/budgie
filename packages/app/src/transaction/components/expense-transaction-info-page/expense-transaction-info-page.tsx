@@ -39,7 +39,7 @@ export const ExpenseTransactionInfoPage = ({ transaction }: UpdateTransactionFor
         });
     };
     const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
-    const editHref = `/transactions/${transactionId}/expense/edit` as const;
+    const editHref = { pathname: '/transactions/[id]/expense/edit' as const, params: { id: String(transactionId) } };
 
     return (
         <TransactionInfoPage
