@@ -48,9 +48,15 @@ env:
     id: 'RulesPage.RuleCard.0'
 - extendedWaitUntil:
     visible: 'Edit Rule'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.Condition.0.ValueInput'
+    timeout: 8000
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
+    retryTapIfNoChange: true
 - eraseText
 - inputText: Netflix Updated
 
@@ -58,6 +64,7 @@ env:
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
+    retryTapIfNoChange: true
 
 - extendedWaitUntil:
     visible:

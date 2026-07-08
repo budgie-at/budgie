@@ -16,16 +16,10 @@ export const ModalFormSaveButton = ({ disabled, onPress, testID, content }: Prop
     const { t } = useLingui();
     const label = content ?? t`Save`;
     const hasTestID = isNotEmptyString(testID);
+    const buttonClassName = hasTestID ? 'w-full' : 'flex-1';
 
     const button = (
-        <Button
-            className={hasTestID ? 'w-full' : 'flex-1'}
-            variant="cta"
-            onPress={onPress}
-            disabled={disabled}
-            content={label}
-            testID={testID}
-        />
+        <Button className={buttonClassName} variant="cta" onPress={onPress} disabled={disabled} content={label} testID={testID} />
     );
 
     if (!hasTestID) {
@@ -35,13 +29,7 @@ export const ModalFormSaveButton = ({ disabled, onPress, testID, content }: Prop
     return (
         <View className="relative flex-1">
             {button}
-            <View
-                collapsable={false}
-                nativeID={testID}
-                pointerEvents="none"
-                style={StyleSheet.absoluteFill}
-                testID={testID}
-            />
+            <View collapsable={false} nativeID={testID} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testID} />
         </View>
     );
 };

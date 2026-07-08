@@ -80,6 +80,11 @@ env:
 
 - extendedWaitUntil:
     visible: 'Edit Rule'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.Condition.0.ValueInput'
+    timeout: 8000
 - assertVisible: 'Edit Rule'
 
 - tapOn:
@@ -170,6 +175,11 @@ env:
     id: 'RulesPage.RuleCard.0'
 - extendedWaitUntil:
     visible: 'Edit Rule'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.Condition.0.ValueInput'
+    timeout: 8000
 
 - tapOn:
     id: 'PageHeader.BackButton'

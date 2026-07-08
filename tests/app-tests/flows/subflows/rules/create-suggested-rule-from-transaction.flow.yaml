@@ -74,6 +74,11 @@ env:
     id: 'RulesPage.RuleCardActions.0'
 - extendedWaitUntil:
     visible: 'Edit Rule'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.Condition.0.FieldSelector.Value'
+    timeout: 8000
 - assertVisible:
     id: 'RuleForm.Condition.0.FieldSelector.Value'
 - assertVisible:

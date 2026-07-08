@@ -5,8 +5,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Edit Rule'
     timeout: 5000
+- waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Footer.DeleteButton.Label'
+    retryTapIfNoChange: true
 - extendedWaitUntil:
     visible: 'Delete'
     timeout: 3000

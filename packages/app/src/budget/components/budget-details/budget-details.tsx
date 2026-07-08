@@ -48,7 +48,7 @@ export const BudgetDetails = ({ budget }: Props) => {
     const hasCategoryLimitsContent = isNotEmptyArray(categoryLimits) || isPositiveNumber(budget.otherLimit);
 
     const handleEditPress = () => {
-        router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
+        router.push(`/budget/edit?id=${String(budget.id)}`);
     };
 
     const categoryLimitsContent = hasCategoryLimitsContent ? (

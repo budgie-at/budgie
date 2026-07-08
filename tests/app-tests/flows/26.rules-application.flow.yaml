@@ -239,6 +239,11 @@ env:
     id: 'RulesPage.RuleCardActions.0'
 - extendedWaitUntil:
     visible: 'Edit Rule'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.Condition.0.ValueInput'
+    timeout: 8000
 
 - runFlow:
     file: subflows/rules/submit-rule-apply-existing.flow.yaml
