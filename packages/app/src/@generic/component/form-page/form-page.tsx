@@ -1,12 +1,12 @@
 import { ReactNode, RefObject } from 'react';
+import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { Edge, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
 
 import { FORM_PAGE_FOOTER_PADDING, FORM_PAGE_TOP_PADDING } from '../../constant/form-page-spacing.constant';
-import { Footer } from '../footer/footer';
-import { Page } from '../page/page';
+import { ChromePage } from '../chrome-page/chrome-page';
 
 import type { ViewStyle } from 'react-native';
 import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controller';
@@ -44,10 +44,10 @@ export const FormPage = ({
     } satisfies ViewStyle;
     const scrollContentContainerStyle = [defaultContentContainerStyle, contentContainerStyle];
 
-    const footerContent = isDefined(footer) ? <Footer withBlur>{footer}</Footer> : null;
+    const footerContent = isDefined(footer) ? <View className="gap-md pt-xl px-7xl">{footer}</View> : null;
 
     return (
-        <Page testID={testID} header={header} footer={footerContent} safeEdges={safeEdges} withBlur>
+        <ChromePage testID={testID} header={header} footer={footerContent} safeEdges={safeEdges}>
             <KeyboardAwareScrollView
                 ref={scrollViewRef}
                 testID={scrollViewTestID}
@@ -59,6 +59,6 @@ export const FormPage = ({
             >
                 {children}
             </KeyboardAwareScrollView>
-        </Page>
+        </ChromePage>
     );
 };

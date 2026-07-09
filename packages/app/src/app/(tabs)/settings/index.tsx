@@ -9,9 +9,9 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
+import { ChromePage } from '../../../@generic/component/chrome-page/chrome-page';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
@@ -73,7 +73,7 @@ export default function SettingsPage() {
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
     return (
-        <Page testID={SettingsPageSelector.Container} header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
+        <ChromePage testID={SettingsPageSelector.Container} header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />}>
             <ScrollView
                 ref={scrollViewRef}
                 onLayout={onScrollViewLayout}
@@ -259,6 +259,6 @@ export default function SettingsPage() {
                 </SettingsGroup>
                 <MenuSpacer />
             </ScrollView>
-        </Page>
+        </ChromePage>
     );
 }
