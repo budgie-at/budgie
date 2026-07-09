@@ -363,7 +363,7 @@ export const MyComponent = ({ title, onPress }: MyComponentPropsInterface) => { 
 ```typescript
 // Good - Destructure in body for many props
 export const MyComponent = (props: Props) => {
-    const { className, header, footer, children, contentClassName, withBlur = false, ...rest } = props;
+    const { className, header, footer, children, contentClassName, collapsable = false, ...rest } = props;
 };
 
 // Good - Destructure in signature for few props
