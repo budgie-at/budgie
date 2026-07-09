@@ -1,0 +1,21 @@
+appId: ${APP_ID}
+---
+# iOS shows an "Open in app?" confirmation for the first custom-scheme link on a
+# fresh simulator. run-maestro-suite.sh runs this flow once per suite so business
+# flows can deep-link without per-call Open probes.
+
+- openLink: 'budgie://transactions'
+
+- runFlow:
+      when:
+          visible: 'Open'
+      commands:
+          - tapOn: 'Open'
+          - extendedWaitUntil:
+                notVisible: 'Open in .*'
+                timeout: 5000
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 15000

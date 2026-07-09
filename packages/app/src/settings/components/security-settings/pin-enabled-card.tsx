@@ -27,6 +27,9 @@ export const PinEnabledCard = () => {
 
     const isBiometricEnabled = settings?.isBiometricEnabled === true;
 
+    const changePinHref = { pathname: '/settings/pin', params: { mode: PinSetupModeEnum.CHANGE } } as const;
+    const disablePinHref = { pathname: '/settings/pin', params: { mode: PinSetupModeEnum.DISABLE } } as const;
+
     const handleToggleBiometric = async (value: boolean) => {
         await updateSettingsMutation({ isBiometricEnabled: value });
     };
@@ -77,7 +80,7 @@ export const PinEnabledCard = () => {
                     </View>
                 ) : null}
 
-                <Link href={`/settings/pin?mode=${PinSetupModeEnum.CHANGE}`} asChild>
+                <Link href={changePinHref} asChild>
                     <HapticPressable className="flex-row items-center gap-x-md " testID={SettingsPageSelector.AppLockChangePinButton}>
                         <Icon icon={UserIconNameEnum.KeyRound} size={16} className="text-secondary-foreground" />
 
@@ -89,7 +92,7 @@ export const PinEnabledCard = () => {
                     </HapticPressable>
                 </Link>
 
-                <Link href={`/settings/pin?mode=${PinSetupModeEnum.DISABLE}`} asChild>
+                <Link href={disablePinHref} asChild>
                     <HapticPressable className="py-md px-xl" testID={SettingsPageSelector.AppLockDisableButton}>
                         <Text className="text-destructive-foreground text-sm">
                             <Trans>Disable App Lock</Trans>
