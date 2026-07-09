@@ -1,3 +1,4 @@
+import { EdgeFade } from '@budgie/screen-chrome';
 import { ReactElement, ReactNode } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -6,7 +7,6 @@ import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
 import { IdInterface } from '../../interface/id.interface';
-import { BlurGradient } from '../blur-gradient/blur-gradient';
 import { KeyboardStickySearchInput } from '../keyboard-sticky-search-input/keyboard-sticky-search-input';
 import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
@@ -79,7 +79,7 @@ export const SearchablePage = <T extends IdInterface>({
             </Page>
 
             <View className="absolute inset-x-0 h-[150px]" style={searchBlurStyle}>
-                <BlurGradient position="bottom" />
+                <EdgeFade position="bottom" />
             </View>
             <KeyboardStickySearchInput
                 search={search}

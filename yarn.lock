@@ -1055,6 +1055,7 @@ __metadata:
     "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
+    "@budgie/screen-chrome": "workspace:*"
     "@expo/fingerprint": "npm:~0.19.3"
     "@expo/metro-config": "npm:~56.0.13"
     "@expo/ui": "npm:~56.0.15"
@@ -1351,7 +1352,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/screen-chrome@workspace:packages/screen-chrome":
+"@budgie/screen-chrome@workspace:*, @budgie/screen-chrome@workspace:packages/screen-chrome":
   version: 0.0.0-use.local
   resolution: "@budgie/screen-chrome@workspace:packages/screen-chrome"
   dependencies:
