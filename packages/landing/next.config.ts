@@ -19,6 +19,13 @@ const nextConfig: NextConfig = {
                     // eslint-disable-next-line lingui/no-unlocalized-strings
                     { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' }
                 ]
+            },
+            {
+                source: '/ota/manifest.plist',
+                headers: [
+                    // eslint-disable-next-line lingui/no-unlocalized-strings
+                    { key: 'Content-Type', value: 'text/xml' }
+                ]
             }
         ];
     }
