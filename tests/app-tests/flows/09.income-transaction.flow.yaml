@@ -111,6 +111,11 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Edited_Income'
     timeout: 5000
 
+- extendedWaitUntil:
+    visible:
+      id: 'TabBar.Home'
+    timeout: 10000
+
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
@@ -139,6 +144,11 @@ appId: ${APP_ID}
     notVisible:
       id: 'TransactionCard.Label.E2E_Edited_Income'
     timeout: 5000
+
+- extendedWaitUntil:
+    visible:
+      id: 'TabBar.Home'
+    timeout: 10000
 
 - tapOn:
     id: 'TabBar.Home'
