@@ -1,5 +1,4 @@
 import { Trans } from '@lingui/react/macro';
-import { format } from 'date-fns';
 import { Download } from 'lucide-react';
 
 import { Button } from '../../../ui/button';
@@ -7,6 +6,7 @@ import { Card } from '../../../ui/card/card';
 import { CardContent } from '../../../ui/card/card-content';
 
 interface Props {
+    readonly locale: string;
     readonly publishedAt: string;
     readonly releaseName: string;
     readonly releaseNotes: string;
@@ -14,8 +14,14 @@ interface Props {
 
 const IOS_OTA_MANIFEST_INSTALL_URL = 'itms-services://?action=download-manifest&url=https://budgie.at/ota/manifest.plist';
 
-export const BetaReleaseCard = ({ publishedAt, releaseName, releaseNotes }: Props) => {
-    const formattedPublishedAt = format(new Date(publishedAt), 'PPpp');
+export const BetaReleaseCard = ({ locale, publishedAt, releaseName, releaseNotes }: Props) => {
+    const formattedPublishedAt = new Date(publishedAt).toLocaleDateString(locale, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+    });
 
     return (
         <Card>
@@ -32,7 +38,7 @@ export const BetaReleaseCard = ({ publishedAt, releaseName, releaseNotes }: Prop
 
                 <Button asChild size="lg">
                     <a href={IOS_OTA_MANIFEST_INSTALL_URL}>
-                        <Download />
+                        <Download aria-hidden />
                         <Trans>Install on iPhone</Trans>
                     </a>
                 </Button>

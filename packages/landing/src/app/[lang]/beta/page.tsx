@@ -68,7 +68,12 @@ export default async function BetaPage(props: PageLangParam) {
                     {release === null ? (
                         <BetaEmptyState />
                     ) : (
-                        <BetaReleaseCard publishedAt={release.published_at} releaseName={release.name} releaseNotes={release.body} />
+                        <BetaReleaseCard
+                            locale={lang}
+                            publishedAt={release.published_at}
+                            releaseName={release.name}
+                            releaseNotes={release.body}
+                        />
                     )}
                 </div>
             </section>
