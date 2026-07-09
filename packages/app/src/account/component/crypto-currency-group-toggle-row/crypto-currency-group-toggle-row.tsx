@@ -32,6 +32,7 @@ export const CryptoCurrencyGroupToggleRow = ({
 }: Props) => {
     const { t } = useLingui();
     const chevronIcon = isOpen ? UserIconNameEnum.ChevronDown : UserIconNameEnum.ChevronRight;
+    const toggleAccessibilityState = { expanded: isOpen };
     const accountsCountLabel = t({
         message: plural(accountsCount, {
             one: '# account',
@@ -40,7 +41,14 @@ export const CryptoCurrencyGroupToggleRow = ({
     });
 
     return (
-        <HapticPressable onPress={onPress} className="flex-row items-end justify-between gap-x-md" testID={testID}>
+        <HapticPressable
+            accessible
+            accessibilityRole="button"
+            accessibilityState={toggleAccessibilityState}
+            onPress={onPress}
+            className="flex-row items-end justify-between gap-x-md"
+            testID={testID}
+        >
             <View className="flex-row items-center gap-x-xs">
                 <Text className="text-secondary-foreground text-xs" testID={CryptoCurrencyGroupCardSelector.AccountCount(instrumentCode)}>
                     {accountsCountLabel}

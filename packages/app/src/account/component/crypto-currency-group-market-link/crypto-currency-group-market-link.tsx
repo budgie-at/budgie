@@ -18,7 +18,13 @@ interface Props {
 }
 
 export const CryptoCurrencyGroupMarketLink = ({ instrumentCode, instrumentName, formattedBalance, formattedValue, onPress }: Props) => (
-    <HapticPressable onPress={onPress} className="gap-y-3" testID={CryptoCurrencyGroupCardSelector.Market(instrumentCode)}>
+    <HapticPressable
+        accessible
+        accessibilityRole="button"
+        onPress={onPress}
+        className="gap-y-3"
+        testID={CryptoCurrencyGroupCardSelector.Market(instrumentCode)}
+    >
         <View className="flex-row items-start justify-between gap-x-md">
             <View className="min-w-0 flex-1 flex-row items-center gap-x-md">
                 <CryptoCurrencyIcon code={instrumentCode} size={36} className="bg-warning-background/20" />
