@@ -5,8 +5,11 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { CryptoCurrencyGroupCardSelector } from '../crypto-currency-group-card/crypto-currency-group-card.selector';
+
+import type { EmptyFn } from '@rnw-community/shared';
 
 interface Props {
     readonly accountsCount: number;
@@ -14,11 +17,22 @@ interface Props {
     readonly formattedRate: string | null;
     readonly instrumentCode: string;
     readonly isOpen: boolean;
+    readonly onPress: EmptyFn;
+    readonly testID: string;
 }
 
-export const CryptoCurrencyGroupToggleRow = ({ accountsCount, defaultInstrumentSymbol, formattedRate, instrumentCode, isOpen }: Props) => {
+export const CryptoCurrencyGroupToggleRow = ({
+    accountsCount,
+    defaultInstrumentSymbol,
+    formattedRate,
+    instrumentCode,
+    isOpen,
+    onPress,
+    testID
+}: Props) => {
     const { t } = useLingui();
     const chevronIcon = isOpen ? UserIconNameEnum.ChevronDown : UserIconNameEnum.ChevronRight;
+    const toggleAccessibilityState = { expanded: isOpen };
     const accountsCountLabel = t({
         message: plural(accountsCount, {
             one: '# account',
@@ -27,12 +41,15 @@ export const CryptoCurrencyGroupToggleRow = ({ accountsCount, defaultInstrumentS
     });
 
     return (
-        <View
-            className="min-h-10 flex-row items-center justify-between gap-x-md"
-            collapsable={false}
-            testID={CryptoCurrencyGroupCardSelector.Toggle(instrumentCode)}
+        <HapticPressable
+            accessible
+            accessibilityRole="button"
+            accessibilityState={toggleAccessibilityState}
+            onPress={onPress}
+            className="flex-row items-end justify-between gap-x-md"
+            testID={testID}
         >
-            <View className="min-h-10 flex-row items-center gap-x-xs pr-lg">
+            <View className="flex-row items-center gap-x-xs">
                 <Text className="text-secondary-foreground text-xs" testID={CryptoCurrencyGroupCardSelector.AccountCount(instrumentCode)}>
                     {accountsCountLabel}
                 </Text>
@@ -52,6 +69,6 @@ export const CryptoCurrencyGroupToggleRow = ({ accountsCount, defaultInstrumentS
                     <Trans>Missing rate</Trans>
                 )}
             </Text>
-        </View>
+        </HapticPressable>
     );
 };
