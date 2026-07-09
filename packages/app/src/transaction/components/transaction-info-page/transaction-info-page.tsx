@@ -6,7 +6,7 @@ import { ScrollView, View } from 'react-native';
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { FullPage } from '../../../@generic/component/page/full-page';
+import { ChromePage } from '../../../@generic/component/chrome-page/chrome-page';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useTransactionInfoMatchingRules } from '../../hook/use-transaction-info-matching-rules.hook';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
@@ -25,6 +25,9 @@ import { TransactionInfoPageSelector } from './transaction-info-page.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { Href } from 'expo-router';
+import type { Edge } from 'react-native-safe-area-context';
+
+const safeEdges: Edge[] = ['bottom', 'top'];
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -111,8 +114,8 @@ export const TransactionInfoPage = (props: Props) => {
     const rowVisibility = getRowVisibility(transaction, onOpenRefundSources, onOpenConsolidationSources);
 
     return (
-        <FullPage
-            withBlur
+        <ChromePage
+            safeEdges={safeEdges}
             contentClassName="px-0"
             header={
                 <TransactionInfoPageHeader
@@ -167,6 +170,6 @@ export const TransactionInfoPage = (props: Props) => {
                     <TransactionInfoSimilarCard stats={stats} title={t`Similar transactions`} isLoading={isLoading} />
                 </View>
             </ScrollView>
-        </FullPage>
+        </ChromePage>
     );
 };

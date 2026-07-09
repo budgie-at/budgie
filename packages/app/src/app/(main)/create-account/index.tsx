@@ -2,8 +2,8 @@ import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, Text } from 'react-native';
 
+import { ChromePage } from '../../../@generic/component/chrome-page/chrome-page';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
@@ -20,8 +20,7 @@ export default function Index() {
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
-        <Page
-            withBlur
+        <ChromePage
             header={
                 <PageHeader title={t`New Account`} description={t`Choose the type of account you want to add`} onGoBack={handleGoBack} />
             }
@@ -77,6 +76,6 @@ export default function Index() {
 
                 <MenuSpacer />
             </ScrollView>
-        </Page>
+        </ChromePage>
     );
 }
