@@ -1351,6 +1351,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@budgie/screen-chrome@workspace:packages/screen-chrome":
+  version: 0.0.0-use.local
+  resolution: "@budgie/screen-chrome@workspace:packages/screen-chrome"
+  dependencies:
+    "@rnw-community/shared": "npm:^2.2.0"
+    react-native-easing-gradient: "npm:^1.1.1"
+  peerDependencies:
+    "@expo/ui": ~56.0.15
+    expo-blur: ~56.0.3
+    expo-linear-gradient: ~56.0.4
+    react: 19.2.3
+    react-native: 0.85.3
+    react-native-reanimated: 4.3.1
+    react-native-safe-area-context: ~5.7.0
+  languageName: unknown
+  linkType: soft
+
 "@colors/colors@npm:1.5.0":
   version: 1.5.0
   resolution: "@colors/colors@npm:1.5.0"
@@ -17738,6 +17755,16 @@ __metadata:
     react-native-gesture-handler: ">= 2.0.0"
     react-native-reanimated: ">= 2.0.0"
   checksum: 10/530343cc35664394b359177a4a706128ce0d366f33dc72089fb442b04c40eee1e269544fef8e35da5a4ac668d55b1317da3a2e2910bd5f92782525d403f65ba5
+  languageName: node
+  linkType: hard
+
+"react-native-easing-gradient@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "react-native-easing-gradient@npm:1.1.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/70a27503402a9a9e9103bc913ea34226e5a95b2000704c63d46dc6e6138ed9d6dbb19650846263dc3a3bb9e999ff1823f581956d6325faf9b0d9386102822600
   languageName: node
   linkType: hard
 

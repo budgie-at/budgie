@@ -30,7 +30,8 @@
         "packages/app/scripts/bench-queries.ts",
         "packages/app/scripts/seed-bench-db.ts",
         "packages/app/scripts/snapshot-monthly-patterns.ts",
-        "tests/bank-sync-tests/src/harness/shims/**"
+        "tests/bank-sync-tests/src/harness/shims/**",
+        "packages/screen-chrome/src/edge-fade/utils/edge-fade-get-backdrop-filter.util.ts"
     ],
     "ignoreDependencies": [
         "husky",
