@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import Animated, { scrollTo, useAnimatedRef, useAnimatedScrollHandler, useReducedMotion, useSharedValue } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
@@ -48,7 +48,7 @@ export const ScreenChromeProvider = ({ children, colorScheme = ColorSchemeEnum.L
     const scrollY = useSharedValue(0);
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
     const reducedMotion = useReducedMotion();
-    const mergedConfig = mergeConfig(config);
+    const mergedConfig = useMemo(() => mergeConfig(config), [config]);
     const { snapToCollapse, collapseStart, collapseEnd } = mergedConfig;
 
     const snapIfNeeded = (offsetY: number): void => {
@@ -90,7 +90,10 @@ export const ScreenChromeProvider = ({ children, colorScheme = ColorSchemeEnum.L
         }
     });
 
-    const contextValue = { colorScheme, config: mergedConfig, scrollY, scrollHandler, scrollRef };
+    const contextValue = useMemo(
+        () => ({ colorScheme, config: mergedConfig, scrollY, scrollHandler, scrollRef }),
+        [colorScheme, mergedConfig, scrollY, scrollHandler, scrollRef]
+    );
 
     return <ScreenChromeContext value={contextValue}>{children}</ScreenChromeContext>;
 };
