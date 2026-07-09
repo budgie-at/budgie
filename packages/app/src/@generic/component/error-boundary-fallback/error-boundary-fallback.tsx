@@ -23,7 +23,7 @@ export const ErrorBoundaryFallback = ({ error, onReportBug, onRestart }: Props) 
     const safeEdges: Edge[] = ['top', 'bottom'];
 
     return (
-        <Page safeEdges={safeEdges} contentClassName="justify-center">
+        <Page safeEdges={safeEdges} className="bg-primary-reverse" contentClassName="justify-center">
             <View className="gap-y-5xl">
                 <View className="items-center gap-y-3xl">
                     <CircleIcon icon={UserIconNameEnum.TriangleAlert} variant="destructive" border={false} size={64} iconSize={30} />

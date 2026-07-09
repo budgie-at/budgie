@@ -61,6 +61,7 @@ class RefreshedImportedEntriesService {
             categorySource: existingEntry.categorySource,
             mccCategoryId: existingEntry.mccCategoryId,
             type: existingEntry.type,
+            kind: existingEntry.kind,
             amount: existingEntry.amount,
             externalId: matchingInput.externalId ?? existingEntry.externalId,
             exchangeRate: matchingInput.exchangeRate ?? existingEntry.exchangeRate,

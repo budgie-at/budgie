@@ -61,7 +61,7 @@ export const SimpleQuickFormControls = ({
             commentTestID={SimpleQuickFormSelector.CommentInput}
         />
 
-        <View className="mb-xl">
+        <View className="mb-xl gap-sm">
             <TransactionAccountRow
                 ref={accountRowRef}
                 variant={variant}

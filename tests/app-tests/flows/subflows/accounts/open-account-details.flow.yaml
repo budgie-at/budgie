@@ -5,10 +5,13 @@ appId: ${APP_ID}
     element:
       id: 'AccountCard.${ACCOUNT_NAME}'
     direction: DOWN
+    visibilityPercentage: 40
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'AccountCard.${ACCOUNT_NAME}'
+    retryTapIfNoChange: true
 - extendedWaitUntil:
     visible:
-      id: 'AccountDetails.EditButton'
+      id: 'AccountDetails.Page'
     timeout: 10000

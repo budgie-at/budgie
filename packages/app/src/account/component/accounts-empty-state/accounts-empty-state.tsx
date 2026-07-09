@@ -11,7 +11,7 @@ import { AccountsEmptyStateSelector } from './accounts-empty-state.selector';
 export const AccountsEmptyState = () => {
     const router = useRouter();
 
-    const handleAddAccount = () => void router.push('/(main)/create-account');
+    const handleAddAccount = () => void router.push('/create-account');
 
     return (
         <View className="flex-1 items-center justify-center pb-20">
