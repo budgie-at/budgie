@@ -57,6 +57,8 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
 
     const menuContainerStyle: ViewStyle = { position: 'absolute', top: menuTop, right: menuRight };
     const animatedMenuStyle = [menuStyle, measuringStyle];
+    const measuringPointerEvents = isMeasuring ? 'none' : 'auto';
+    const measuringImportantForAccessibility = isMeasuring ? 'no-hide-descendants' : 'auto';
 
     const shouldRender = isOpen || isAnimatingOut;
 
@@ -78,6 +80,9 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
                         className="min-w-[220px] overflow-hidden rounded-2xl border border-secondary-corner bg-primary-reverse shadow-lg"
                         style={animatedMenuStyle}
                         onLayout={handleLayout}
+                        pointerEvents={measuringPointerEvents}
+                        accessibilityElementsHidden={isMeasuring}
+                        importantForAccessibility={measuringImportantForAccessibility}
                     >
                         {children}
                     </Animated.View>
