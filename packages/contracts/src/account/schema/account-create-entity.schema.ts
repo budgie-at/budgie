@@ -14,6 +14,9 @@ export const AccountCreateEntitySchema = convertToCreateEntitySchema(AccountEnti
         contactId: true,
         externalId: true,
         targetBalance: true,
+        targetBaseInstrumentId: true,
+        targetBaseExchangeRate: true,
+        targetBaseAmount: true,
         externalSource: true,
         includeInNetWorth: true,
         isActive: true

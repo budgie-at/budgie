@@ -23,7 +23,7 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
         void openConsolidationSource({ transactionId });
     };
     const consolidationProps = isConsolidated ? { onOpenConsolidationSources: handleConsolidationPress } : {};
-    const editHref = `/transactions/${transactionId}/transfer/edit` as const;
+    const editHref = { pathname: '/transactions/[id]/transfer/edit' as const, params: { id: String(transactionId) } };
 
     return (
         <TransactionInfoPage

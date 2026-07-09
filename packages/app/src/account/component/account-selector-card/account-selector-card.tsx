@@ -1,4 +1,4 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountTypeEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
@@ -14,14 +14,16 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { AccountInactiveIcon } from '../account-inactive-icon/account-inactive-icon';
+import { AccountSelectorCardDebtTotalSubtitle } from '../account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle';
 
 interface Props extends Pick<
     AccountWithInstrumentEntityInterface,
-    'id' | 'icon' | 'type' | 'title' | 'isActive' | AccountAssociationEnum.INSTRUMENT
+    'id' | 'icon' | 'type' | 'title' | 'isActive' | 'debtType' | 'targetBalance' | AccountAssociationEnum.INSTRUMENT
 > {
     readonly onSelect: (id: number) => void;
     readonly isSelected: boolean;
     readonly className?: string;
+    readonly showDebtTotal: boolean;
 }
 
 const cardVariants = cva('rounded-3xl p-3xl border-2 gap-x-xl flex-row items-center', {
@@ -34,7 +36,7 @@ const cardVariants = cva('rounded-3xl p-3xl border-2 gap-x-xl flex-row items-cen
 });
 
 export const AccountSelectorCard = (props: Props) => {
-    const { className, isSelected, title, onSelect, id, icon, type, instrument, isActive } = props;
+    const { className, isSelected, title, onSelect, id, icon, type, instrument, isActive, debtType, targetBalance, showDebtTotal } = props;
 
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
@@ -43,11 +45,31 @@ export const AccountSelectorCard = (props: Props) => {
     const optionTestID = AccountSelectorModalSelector.Option(title);
     const handleSelect = () => void onSelect(id);
     const cardClassName = cn(cardVariants({ isSelected }), className);
+    const shouldShowDebtTotal = showDebtTotal && type === AccountTypeEnum.DEBT;
     const right = isSelected ? (
         <View className="bg-primary rounded-full p-xs">
             <Icon className="text-primary-reverse" icon={UserIconNameEnum.Check} size={16} />
         </View>
     ) : null;
+    const subtitle = shouldShowDebtTotal ? (
+        <AccountSelectorCardDebtTotalSubtitle
+            accountId={id}
+            debtType={debtType}
+            instrumentSymbol={instrument.symbol}
+            targetBalance={targetBalance}
+            title={title}
+        />
+    ) : (
+        <View className="flex-row items-center">
+            <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
+                {t(ACCOUNT_TYPE[type])}
+            </Text>
+            <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
+            <ProtectedText className="text-sm font-medium text-primary" numberOfLines={1}>
+                {formatDigits(balance, instrument.symbol)}
+            </ProtectedText>
+        </View>
+    );
 
     return (
         <HapticPressable
@@ -67,15 +89,7 @@ export const AccountSelectorCard = (props: Props) => {
                     <Text className="text-md font-semibold text-primary" testID={optionTestID}>
                         {title}
                     </Text>
-                    <View className="flex-row items-center">
-                        <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
-                            {t(ACCOUNT_TYPE[type])}
-                        </Text>
-                        <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
-                        <ProtectedText className="text-sm font-medium text-primary" numberOfLines={1}>
-                            {formatDigits(balance, instrument.symbol)}
-                        </ProtectedText>
-                    </View>
+                    {subtitle}
                 </View>
 
                 {right}

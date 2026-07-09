@@ -7,7 +7,6 @@ export const RecurringCalendarSelector = {
     MonthLabel: 'RecurringCalendar.MonthLabel',
     Today: 'RecurringCalendar.Day.Today',
     CurrentMonthDay: (day: number) => `RecurringCalendar.Day.CurrentMonth.${day}` as const,
-    SelectedTodayHeader: 'RecurringCalendar.SelectedDayHeader.Today',
     SelectedDayHeader: (day: number) => `RecurringCalendar.SelectedDayHeader.${normalizePart(day)}` as const,
     SelectedDayEmptyState: 'RecurringCalendar.SelectedDayEmptyState',
     UpcomingHeader: 'RecurringCalendar.UpcomingHeader',
