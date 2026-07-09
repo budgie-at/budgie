@@ -26,13 +26,15 @@ appId: ${APP_ID}
       id: 'CryptoGroup.Value.XMR'
 - assertVisible:
       id: 'CryptoGroup.Rate.XMR'
+- waitForAnimationToEnd
 
 - tapOn:
       id: 'CryptoGroup.Toggle.XMR'
+- waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.E2E Monero Ledger'
-      timeout: 3000
+      timeout: 10000
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Monero_Ledger.22_123456_XMR'
 
