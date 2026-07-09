@@ -24,7 +24,9 @@ const nextConfig: NextConfig = {
                 source: '/ota/manifest.plist',
                 headers: [
                     // eslint-disable-next-line lingui/no-unlocalized-strings
-                    { key: 'Content-Type', value: 'text/xml' }
+                    { key: 'Content-Type', value: 'text/xml' },
+                    // eslint-disable-next-line lingui/no-unlocalized-strings
+                    { key: 'Cache-Control', value: 'no-store' }
                 ]
             }
         ];
