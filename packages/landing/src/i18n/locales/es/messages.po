@@ -3304,6 +3304,10 @@ msgstr "Antes de adentrarnos en las alternativas, comprendamos las razones princ
 msgid "Before fully committing:"
 msgstr "Antes de comprometerte completamente:"
 
+#: src/beta/component/beta-release-card/beta-release-card.tsx
+msgid "Before you install"
+msgstr "Antes de instalar"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Begin with a single-device application and add sync later. Get your data model right for local storage first. Understand what state your application needs and how it changes."
 msgstr "Comienza con una aplicación de un solo dispositivo y añade la sincronización después. Primero ajusta correctamente tu modelo de datos para el almacenamiento local. Comprende qué estado necesita tu aplicación y cómo cambia."
@@ -3652,6 +3656,14 @@ msgstr ""
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie integrates investment holdings into the same net-worth view as your bank accounts and debt. Most portfolio trackers don't model fiat side-by-side."
 msgstr "Budgie integra posiciones de inversión en la misma vista de patrimonio neto que tus cuentas bancarias y deudas. La mayoría de rastreadores de cartera no hacen eso."
+
+#: src/app/[lang]/beta/page.tsx
+msgid "Budgie iOS Beta"
+msgstr "Budgie iOS Beta"
+
+#: src/app/[lang]/beta/page.tsx
+msgid "Budgie iOS Beta Install"
+msgstr "Instalación beta de Budgie para iOS"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/metadata.ts
 msgid "Budgie is a 100% offline-first expense tracker. Your financial data never leaves your phone — encrypted SQLite, no cloud servers, no account required to start."
@@ -4041,6 +4053,10 @@ msgstr "Construye, fusiona y reasigna tus propias categorías de gasto con migra
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Building local-first software requires solving hard distributed systems problems. When multiple devices can modify data independently without coordination, how do you merge those changes without conflicts? How do you ensure everyone eventually sees the same state?"
 msgstr "Construir software local-first requiere resolver problemas complejos de sistemas distribuidos. Cuando múltiples dispositivos pueden modificar datos de forma independiente y sin coordinación, ¿cómo se fusionan esos cambios sin conflictos? ¿Cómo se asegura que todos acaben viendo el mismo estado?"
+
+#: src/beta/component/beta-release-card/beta-release-card.tsx
+msgid "Built {formattedPublishedAt}"
+msgstr "Compilado el {formattedPublishedAt}"
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx
 msgid "Built Different. Built Better."
@@ -7782,6 +7798,14 @@ msgstr "Instalar + abrir"
 msgid "Install Budgie on the new phone. On the welcome screen, tap Restore. Pick the backup file from Files / iCloud / Drive. Enter your original PIN. Done."
 msgstr "Instala Budgie en el nuevo teléfono. En la pantalla de bienvenida, toca Restaurar. Elige el archivo de backup desde Archivos / iCloud / Drive. Introduce tu PIN y listo."
 
+#: src/beta/component/beta-release-card/beta-release-card.tsx
+msgid "Install on iPhone"
+msgstr "Instalar en iPhone"
+
+#: src/app/[lang]/beta/page.tsx
+msgid "Install the latest development build over-the-air on a registered iPhone."
+msgstr "Instale la última compilación de desarrollo por aire (OTA) en un iPhone registrado."
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Instant Performance"
 msgstr "Rendimiento instantáneo"
@@ -8014,6 +8038,10 @@ msgstr "Últimos 7 días. Las ventanas más grandes (30, 90, personalizado) tamb
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Last Updated: {updatedAtText}"
 msgstr ""
+
+#: src/beta/component/beta-release-card/beta-release-card.tsx
+msgid "Latest build"
+msgstr "Última compilación"
 
 #: src/generic/component/blog-section/blog-section.tsx
 msgid "Latest from Our Blog"
@@ -9141,6 +9169,10 @@ msgstr "Sin sincronización bancaria automática"
 msgid "No backend means no breach surface — there is nothing to leak"
 msgstr "Sin backend no hay superficie de brecha: no hay nada que filtrar"
 
+#: src/beta/component/beta-empty-state/beta-empty-state.tsx
+msgid "No build is available yet"
+msgstr "Aún no hay ninguna compilación disponible"
+
 #: src/app/[lang]/privacy/metadata.ts
 msgid "no cloud budget app"
 msgstr ""
@@ -9643,6 +9675,10 @@ msgstr "En la primera ejecución, Budgie descarga Qwen3 1.7B Q4 y un modelo de e
 msgid "on GitHub"
 msgstr "en GitHub"
 
+#: src/beta/component/beta-release-card/beta-release-card.tsx
+msgid "On iOS 18 and later, restart your iPhone once after installing if the app fails to open."
+msgstr "En iOS 18 y versiones posteriores, reinicie su iPhone una vez después de instalar si la aplicación no se abre."
+
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "On your phone"
@@ -9929,6 +9965,10 @@ msgstr "Abre el formulario de gasto y Budgie ofrece sugerencias en forma de píl
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Open the sheet, type the amount, tap save — that's the typical flow once defaults are tuned to your habits. The form picks your default account, the most-likely category, and today's date automatically."
 msgstr "Abre la hoja, escribe el importe, toca guardar: ese es el flujo típico una vez ajustados los valores predeterminados a tus hábitos. El formulario selecciona la cuenta más reciente y la categoría más probable."
+
+#: src/beta/component/beta-release-card/beta-release-card.tsx
+msgid "Open this page in Safari — other browsers cannot trigger an OTA install."
+msgstr "Abra esta página en Safari; otros navegadores no pueden iniciar una instalación OTA."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Open Transactions or an account's transaction list. Apply any filters you need. If Budgie finds matching transactions without categories, the missing-category pill appears above the list. Tap it to open a focused cleanup page that preserves those filters."
@@ -10876,6 +10916,10 @@ msgstr "Funciones relacionadas"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Relatively expensive for what you get"
 msgstr "Relativamente cara para lo que ofrece"
+
+#: src/beta/component/beta-release-card/beta-release-card.tsx
+msgid "Release notes"
+msgstr "Notas de la versión"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Reliable data integrity"
@@ -12300,6 +12344,10 @@ msgstr "El manifiesto de Ink & Switch y su impacto"
 msgid "The Ink & Switch paper did not invent these ideas. Distributed systems researchers had been working on the underlying problems for decades. But the paper brought academic concepts into the practical software development conversation and gave the movement a coherent identity."
 msgstr "El artículo de Ink & Switch no inventó estas ideas. Los investigadores de sistemas distribuidos llevaban décadas trabajando en los problemas subyacentes. Pero el artículo trasladó conceptos académicos a la conversación práctica del desarrollo de software y dio al movimiento una identidad coherente."
 
+#: src/beta/component/beta-empty-state/beta-empty-state.tsx
+msgid "The iOS development build hasn't been published yet. Check back after the next build run."
+msgstr "La compilación de desarrollo para iOS aún no se ha publicado. Vuelva a comprobarlo después de la próxima ejecución de compilación."
+
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "The language model and the embedding model together require approximately 900 MB to 1.2 GB of storage depending on the quantization level selected during installation. This is a one-time download. Once installed, no additional model downloads are required for normal use."
 msgstr "El modelo de lenguaje y el modelo de embedding juntos requieren aproximadamente 900 MB a 1,2 GB de almacenamiento según el nivel de cuantización seleccionado durante la instalación. Esta es una descarga de una sola vez. Una vez instalados, no se requieren descargas adicionales de modelos para el uso normal."
@@ -12763,6 +12811,10 @@ msgstr "Esta guía está escrita por desarrolladores, para desarrolladores. Hemo
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "This is a common concern, but security research consistently shows that obscurity provides weak protection. Determined attackers can reverse-engineer closed-source applications, find vulnerabilities through fuzzing and probing, or exploit the same bugs that internal developers missed. Meanwhile, legitimate security researchers are blocked from helping. Open source assumes adversaries will study the code and designs security that works anyway. This produces more robust systems than hoping attackers won’t look too closely."
 msgstr "Es una preocupación razonable, pero la investigación en seguridad sigue mostrando que la oscuridad ofrece una protección débil. Los atacantes decididos pueden aplicar ingeniería inversa a apps cerradas, hacer fuzzing, probarlas o explotar los mismos fallos que los equipos internos pasaron por alto. Mientras tanto, los investigadores legítimos quedan bloqueados. El open source asume que los atacantes estudiarán el código y diseña seguridad que aun así resiste."
+
+#: src/beta/component/beta-release-card/beta-release-card.tsx
+msgid "This is a development build — it expects a running Metro bundler or the development EAS Update channel."
+msgstr "Esta es una compilación de desarrollo: requiere un Metro bundler en ejecución o el canal de actualización de desarrollo de EAS."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "This is a valid concern known as “build verification.” Budgie uses reproducible builds where possible, allowing anyone to verify that the published app matches the source code. For mobile apps, additional trust is required in the app store distribution, but the public source code ensures you can build the app yourself if you want maximum verification. We also provide checksums for releases so you can verify download integrity."
@@ -15422,6 +15474,10 @@ msgstr "Tu dispositivo es la base de datos"
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Your device only"
 msgstr "Solo tu dispositivo"
+
+#: src/beta/component/beta-release-card/beta-release-card.tsx
+msgid "Your device UDID must already be registered in the ad-hoc provisioning profile."
+msgstr "El UDID de su dispositivo ya debe estar registrado en el perfil de aprovisionamiento ad hoc."
 
 #: src/generic/component/hero-section/hero-section-header.tsx
 msgid "Your Device."
