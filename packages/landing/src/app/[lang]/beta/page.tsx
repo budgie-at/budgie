@@ -1,6 +1,8 @@
 import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { BetaEmptyState } from '../../../beta/component/beta-empty-state/beta-empty-state';
 import { BetaReleaseCard } from '../../../beta/component/beta-release-card/beta-release-card';
 import { IosDevReleaseSchema } from '../../../beta/constant/ios-dev-release-schema.constant';
@@ -65,15 +67,15 @@ export default async function BetaPage(props: PageLangParam) {
                     <p className="text-muted-foreground mb-8">
                         <Trans>Install the latest development build over-the-air on a registered iPhone.</Trans>
                     </p>
-                    {release === null ? (
-                        <BetaEmptyState />
-                    ) : (
+                    {isDefined(release) ? (
                         <BetaReleaseCard
                             locale={lang}
                             publishedAt={release.published_at}
                             releaseName={release.name}
                             releaseNotes={release.body}
                         />
+                    ) : (
+                        <BetaEmptyState />
                     )}
                 </div>
             </section>

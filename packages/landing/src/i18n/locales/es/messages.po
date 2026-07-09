@@ -7804,7 +7804,7 @@ msgstr "Instalar en iPhone"
 
 #: src/app/[lang]/beta/page.tsx
 msgid "Install the latest development build over-the-air on a registered iPhone."
-msgstr "Instale la última compilación de desarrollo por aire (OTA) en un iPhone registrado."
+msgstr "Instala la última compilación de desarrollo vía OTA en un iPhone registrado."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Instant Performance"
@@ -9677,7 +9677,7 @@ msgstr "en GitHub"
 
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "On iOS 18 and later, restart your iPhone once after installing if the app fails to open."
-msgstr "En iOS 18 y versiones posteriores, reinicie su iPhone una vez después de instalar si la aplicación no se abre."
+msgstr "En iOS 18 y versiones posteriores, reinicia tu iPhone una vez después de instalar si la aplicación no se abre."
 
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
@@ -9968,7 +9968,7 @@ msgstr "Abre la hoja, escribe el importe, toca guardar: ese es el flujo típico 
 
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Open this page in Safari — other browsers cannot trigger an OTA install."
-msgstr "Abra esta página en Safari; otros navegadores no pueden iniciar una instalación OTA."
+msgstr "Abre esta página en Safari; otros navegadores no pueden iniciar una instalación OTA."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Open Transactions or an account's transaction list. Apply any filters you need. If Budgie finds matching transactions without categories, the missing-category pill appears above the list. Tap it to open a focused cleanup page that preserves those filters."
@@ -12346,7 +12346,7 @@ msgstr "El artículo de Ink & Switch no inventó estas ideas. Los investigadores
 
 #: src/beta/component/beta-empty-state/beta-empty-state.tsx
 msgid "The iOS development build hasn't been published yet. Check back after the next build run."
-msgstr "La compilación de desarrollo para iOS aún no se ha publicado. Vuelva a comprobarlo después de la próxima ejecución de compilación."
+msgstr "La compilación de desarrollo para iOS aún no se ha publicado. Vuelve a comprobarlo después de la próxima ejecución de compilación."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "The language model and the embedding model together require approximately 900 MB to 1.2 GB of storage depending on the quantization level selected during installation. This is a one-time download. Once installed, no additional model downloads are required for normal use."
@@ -15477,7 +15477,7 @@ msgstr "Solo tu dispositivo"
 
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Your device UDID must already be registered in the ad-hoc provisioning profile."
-msgstr "El UDID de su dispositivo ya debe estar registrado en el perfil de aprovisionamiento ad hoc."
+msgstr "El UDID de tu dispositivo ya debe estar registrado en el perfil de aprovisionamiento ad hoc."
 
 #: src/generic/component/hero-section/hero-section-header.tsx
 msgid "Your Device."
