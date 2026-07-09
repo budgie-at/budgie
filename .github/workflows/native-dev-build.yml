@@ -82,7 +82,7 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
           SHORT_SHA=$(git rev-parse --short HEAD)
-          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          BRANCH_NAME="${GITHUB_REF_NAME}"
           BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
@@ -102,3 +102,5 @@ jobs:
           } > "$NOTES_FILE"
 
           gh release edit ios-dev --repo "${GITHUB_REPOSITORY}" --title "Budgie iOS Dev Build v${VERSION} (${SHORT_SHA})" --notes-file "$NOTES_FILE"
+
+          rm -f "$NOTES_FILE"
