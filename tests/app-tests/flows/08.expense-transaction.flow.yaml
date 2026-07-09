@@ -194,6 +194,11 @@ appId: ${APP_ID}
           id: 'TransactionCard.Label.E2E_Edited_Expense'
       timeout: 5000
 
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 10000
+
 - tapOn:
       id: 'TabBar.Home'
 - extendedWaitUntil:

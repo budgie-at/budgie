@@ -173,6 +173,11 @@ appId: ${APP_ID}
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Edited_Transfer'
 
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 10000
+
 - tapOn:
       id: 'TabBar.Home'
 - extendedWaitUntil:
