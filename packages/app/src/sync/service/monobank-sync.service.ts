@@ -10,7 +10,6 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositi
 
 import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '../../rule/service/rule-engine.service';
@@ -37,7 +36,7 @@ import type {
 
 class AppMonobankSyncService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 15;
-    private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
+    private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = 120000;
 
     private readonly provider = ExternalSourceEnum.MONOBANK;
     private isRunning = false;

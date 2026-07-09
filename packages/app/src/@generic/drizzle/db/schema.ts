@@ -12,6 +12,8 @@ export {
     CategoryEntityRelations,
     DefaultCategoryTranslationEntityTable,
     DefaultCategoryTranslationEntityRelations,
+    DebtEventEntityTable,
+    DebtEventEntityRelations,
     TransactionTagsEntityRelations,
     AccountBalanceEntityTable,
     AccountBalanceEntityRelations,

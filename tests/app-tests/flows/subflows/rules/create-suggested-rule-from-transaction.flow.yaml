@@ -43,7 +43,7 @@ env:
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      id: 'SuggestRule.Card'
+      id: 'SuggestRule.CreateRuleButton'
     timeout: 10000
 
 - tapOn:
@@ -51,7 +51,7 @@ env:
 
 - extendedWaitUntil:
     notVisible:
-      id: 'SuggestRule.Card'
+      id: 'SuggestRule.CreateRuleButton'
     timeout: 10000
 
 - tapOn:

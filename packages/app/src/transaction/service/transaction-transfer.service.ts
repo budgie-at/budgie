@@ -2,6 +2,7 @@ import {
     AccountTypeEnum,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
+    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     transactionAsync
@@ -184,6 +185,7 @@ class TransactionTransferService {
             transactionId,
             accountId: entry.accountId,
             type: TransactionEntryTypeEnum.FEE,
+            kind: TransactionEntryKindEnum.PRIMARY,
             amount: entry.amount,
             categoryId: entry.categoryId,
             categorySource: entry.categorySource,
@@ -208,6 +210,7 @@ class TransactionTransferService {
             transactionId,
             accountId,
             type,
+            kind: TransactionEntryKindEnum.PRIMARY,
             amount,
             categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
             mccCategoryId: null,

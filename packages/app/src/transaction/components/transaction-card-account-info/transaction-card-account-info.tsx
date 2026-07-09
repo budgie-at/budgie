@@ -1,3 +1,4 @@
+import { TransactionEntryTypeEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -9,10 +10,29 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly accountId?: number | null;
 }
 
-export const TransactionCardAccountInfo = ({ transaction }: Props) => {
+export const TransactionCardAccountInfo = ({ transaction, accountId = null }: Props) => {
     const { toAccount, fromAccount } = transaction;
+    const selectedAccountEntry = transaction.entries.find(entry => entry.accountId === accountId);
+
+    if (
+        isDefined(selectedAccountEntry) &&
+        selectedAccountEntry.accountId !== transaction.fromAccountId &&
+        selectedAccountEntry.accountId !== transaction.toAccountId
+    ) {
+        const selectedAccountDirection = selectedAccountEntry.type === TransactionEntryTypeEnum.CREDIT ? 'from' : 'to';
+
+        return (
+            <TransactionAccountLine
+                direction={selectedAccountDirection}
+                icon={selectedAccountEntry.account.icon}
+                title={selectedAccountEntry.account.title}
+                testID={TransactionCardSelector.Account(selectedAccountEntry.account.title)}
+            />
+        );
+    }
 
     if (isDefined(fromAccount) && isDefined(toAccount)) {
         return (

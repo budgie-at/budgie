@@ -8,12 +8,15 @@ import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-quer
 export const useSearchAccountsSortedQuery = (search = '', filter?: AccountFilterInterface) => {
     const excludeAccountId = filter?.excludeAccountId;
     const excludeTypes = filter?.excludeTypes;
+    const includeTypes = filter?.includeTypes;
     const excludeTypesKey = excludeTypes?.join(',');
+    const includeTypesKey = includeTypes?.join(',');
     const onlyActive = filter?.onlyActive;
+    const debtType = filter?.debtType;
 
     const { data, updatedAt, error } = useDatabaseLiveQuery(
-        accountRepository.findBySearchQuerySortedByBalance(search, { excludeAccountId, excludeTypes, onlyActive }),
-        [search, excludeAccountId, excludeTypesKey, onlyActive]
+        accountRepository.findBySearchQuerySortedByBalance(search, { debtType, excludeAccountId, excludeTypes, includeTypes, onlyActive }),
+        [search, debtType, excludeAccountId, excludeTypesKey, includeTypesKey, onlyActive]
     );
 
     if (!isDefined(updatedAt)) {

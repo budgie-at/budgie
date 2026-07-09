@@ -4,6 +4,7 @@ import { TransactionEntryEntitySchema } from './transaction-entry-entity.schema'
 
 export const TransactionEntryCreateEntitySchema = convertToCreateEntitySchema(TransactionEntryEntitySchema).partial({
     categorySource: true,
+    kind: true,
     externalId: true,
     exchangeRate: true,
     baseInstrumentId: true,
