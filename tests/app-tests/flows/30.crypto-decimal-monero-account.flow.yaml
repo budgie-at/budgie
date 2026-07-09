@@ -29,7 +29,7 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 
 - tapOn:
-      id: 'CryptoGroup.Toggle.XMR'
+      id: 'CryptoGroup.AccountCount.XMR'
 - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
