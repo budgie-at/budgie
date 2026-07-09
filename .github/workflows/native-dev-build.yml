@@ -6,6 +6,10 @@ env:
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ios-dev-prerelease
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
