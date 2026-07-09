@@ -9,6 +9,7 @@ import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.
 import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { CategorySourceEnum } from '../enum/category-source.enum';
+import { TransactionEntryKindEnum } from '../enum/transaction-entry-kind.enum';
 import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
 
 export const TransactionEntryEntityTable = sqliteTable(
@@ -17,6 +18,10 @@ export const TransactionEntryEntityTable = sqliteTable(
         type: text('type', { enum: convertEnumToDrizzleEnum(TransactionEntryTypeEnum) })
             .$type<TransactionEntryTypeEnum>()
             .notNull(),
+        kind: text('kind', { enum: convertEnumToDrizzleEnum(TransactionEntryKindEnum) })
+            .$type<TransactionEntryKindEnum>()
+            .notNull()
+            .default(TransactionEntryKindEnum.PRIMARY),
         accountId: int('account_id', { mode: 'number' })
             .notNull()
             .references(() => AccountEntityTable.id, { onDelete: 'cascade' }),

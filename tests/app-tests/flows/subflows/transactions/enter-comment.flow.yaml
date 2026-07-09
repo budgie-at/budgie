@@ -1,5 +1,9 @@
 appId: ${APP_ID}
 ---
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.CommentInput'
+    timeout: 10000
 - tapOn:
     id: 'TransactionForm.CommentInput'
 - extendedWaitUntil:

@@ -40,14 +40,7 @@ export const RecurringCalendarContent = () => {
 
     const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
     const hasSelectedDay = isDefined(selectedDay);
-    const isSelectedToday = isCurrentMonth && selectedDay === now.getDate();
-    let selectedDayHeaderTestID = null;
-
-    if (isSelectedToday) {
-        selectedDayHeaderTestID = RecurringCalendarSelector.SelectedTodayHeader;
-    } else if (hasSelectedDay) {
-        selectedDayHeaderTestID = RecurringCalendarSelector.SelectedDayHeader(selectedDay);
-    }
+    const selectedDayHeaderTestID = hasSelectedDay ? RecurringCalendarSelector.SelectedDayHeader(selectedDay) : null;
 
     const selectedEntries = isDefined(selectedDay)
         ? [...(entriesByDay.get(selectedDay) ?? []), ...(forecastedEntriesByDay.get(selectedDay) ?? [])]

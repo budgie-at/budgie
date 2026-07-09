@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { index, int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, int, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
 import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
@@ -40,6 +40,11 @@ export const AccountEntityTable = sqliteTable(
         contactId: text('contact_id'),
         deadline: int('deadline', { mode: 'timestamp' }),
         targetBalance: int('target_balance', { mode: 'number' }).default(0).notNull(),
+        targetBaseInstrumentId: int('target_base_instrument_id', { mode: 'number' }).references(() => InstrumentEntityTable.id, {
+            onDelete: 'set null'
+        }),
+        targetBaseExchangeRate: real('target_base_exchange_rate'),
+        targetBaseAmount: int('target_base_amount', { mode: 'number' }),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         iban: text('iban'),
         includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull(),
