@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.40.0](https://github.com/budgie-at/budgie/compare/v5.39.0...v5.40.0) (2026-07-09)
+
+### Features
+
+- **app:** add debt settlement attachments ([#567](https://github.com/budgie-at/budgie/issues/567)) ([7db043c](https://github.com/budgie-at/budgie/commit/7db043c2a2caac7ce770f78472121070a832dc8d))
+
 # [5.39.0](https://github.com/budgie-at/budgie/compare/v5.38.2...v5.39.0) (2026-06-29)
 
 ### Features
