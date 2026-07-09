@@ -8,6 +8,8 @@ export { CategoryEntityTable } from './category/table/category-entity.table';
 export { CategoryEntityRelations } from './category/relations/category-entity.relations';
 export { DefaultCategoryTranslationEntityTable } from './category-translation/table/default-category-translation-entity.table';
 export { DefaultCategoryTranslationEntityRelations } from './category-translation/relations/default-category-translation-entity.relations';
+export { DebtEventEntityTable } from './debt-event/table/debt-event-entity.table';
+export { DebtEventEntityRelations } from './debt-event/relations/debt-event-entity.relations';
 export { MccGroupEntityTable } from './mcc-group/table/mcc-group-entity.table';
 export { MccGroupEntityRelations } from './mcc-group/relations/mcc-group-entity.relations';
 export { MccCategoryEntityTable } from './mcc-category/table/mcc-category-entity.table';

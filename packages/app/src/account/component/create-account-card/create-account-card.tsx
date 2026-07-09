@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const CreateAccountCard = ({ title, description, type, icon }: Props) => {
-    const handleNavigate = () => void router.push(`/create-account/${type}`);
+    const handleNavigate = () => void router.push({ pathname: '/create-account/[type]', params: { type } });
 
     return (
         <SimpleHorizontalCell

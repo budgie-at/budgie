@@ -57,11 +57,11 @@ export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void })
                 const hasSingleSavedTransaction = result.transactionIds.length === 1;
                 onClose();
                 if (hasSingleSavedTransaction) {
-                    router.push(`/transactions/${result.transactionIds[0]}/expense`);
+                    router.push({ pathname: '/transactions/[id]/expense', params: { id: String(result.transactionIds[0]) } });
 
                     return;
                 }
-                router.push(`/account/${result.accountId}/details`);
+                router.push({ pathname: '/account/[id]/details', params: { id: String(result.accountId) } });
 
                 return;
             }

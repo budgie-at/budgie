@@ -1,13 +1,6 @@
 appId: ${APP_ID}
 ---
-
 - openLink: 'budgie://settings/inactive'
-
-- runFlow:
-      when:
-          visible: 'Open'
-      commands:
-          - tapOn: 'Open'
 
 - extendedWaitUntil:
       visible:

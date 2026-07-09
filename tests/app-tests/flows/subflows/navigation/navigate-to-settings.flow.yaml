@@ -1,23 +1,11 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-    when:
+      file: open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings'
+
+- extendedWaitUntil:
       visible:
-        id: 'PageHeader.BackButton'
-    commands:
-      - tapOn:
-          id: 'PageHeader.BackButton'
-      - waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'TabBar.Home'
-    timeout: 15000
-- tapOn:
-    id: 'TabBar.Home'
-- tapOn:
-    id: 'TabBar.Settings'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-    timeout: 15000
+          id: 'SettingsPage.Container'
+      timeout: 15000

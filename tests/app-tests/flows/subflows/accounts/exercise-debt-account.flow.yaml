@@ -145,7 +145,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+      id: 'HomePage.NetWorthValue.${NET_WORTH_WHEN_INCLUDED}'
     timeout: 10000
 
 - runFlow:

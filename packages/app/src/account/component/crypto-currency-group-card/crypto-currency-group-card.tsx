@@ -33,7 +33,7 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
     const { latestPrice } = useInstrumentMarketDataQuery(group.instrument.id, defaultInstrument.id);
 
     const toggleOpen = () => void setIsOpen(value => !value);
-    const navigateToMarket = () => void router.push(`/currency/${group.instrument.id}`);
+    const navigateToMarket = () => void router.push({ pathname: '/currency/[id]', params: { id: String(group.instrument.id) } });
     const valuationRate = rate?.rate ?? latestPrice?.price;
     const formattedBalance = `${formatCryptoDigits(balance)} ${group.instrument.code}`;
     const formattedValue = isDefined(valuationRate) ? formatDigits(balance * valuationRate, defaultInstrument.symbol) : null;

@@ -17,6 +17,8 @@ import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
+import { DebtEventAssociationEnum } from '../../debt-event/enum/debt-event-association.enum';
+import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionAssociationEnum } from '../../transaction/enum/transaction-association.enum';
 import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
@@ -24,6 +26,7 @@ import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enu
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
+import { TransactionEntryKindEnum } from '../../transaction-entry/enum/transaction-entry-kind.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
@@ -53,6 +56,12 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                         [TransactionTagsAssociationEnum.TAG]: true
                     }
                 },
+                [TransactionAssociationEnum.DEBT_EVENTS]: {
+                    where: isNull(DebtEventEntityTable.deletedAt),
+                    with: {
+                        [DebtEventAssociationEnum.DEBT_ACCOUNT]: true
+                    }
+                },
                 [TransactionAssociationEnum.FROM_ACCOUNT]: true,
                 [TransactionAssociationEnum.TO_ACCOUNT]: true
             },
@@ -73,9 +82,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                         WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
                              AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
                         THEN 0
-                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
-                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
-                             AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+                        WHEN ${this.buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.DEBIT)}
                         THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
                         ELSE 0
                     END), 0)
@@ -89,9 +96,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                         WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE}
                              AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
                         THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
-                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
-                             AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+                        WHEN ${this.buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.CREDIT)}
                         THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
                         ELSE 0
                     END), 0)
@@ -100,7 +105,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(and(baseWhere, this.buildLedgerEntryCondition()));
+            .where(and(baseWhere, this.buildLedgerEntryCondition(), this.buildPrimaryEntryCondition()));
     }
 
     getIncomeByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
@@ -144,6 +149,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 and(
                     baseWhere,
                     this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
                     eq(TransactionEntityTable.type, type)
                 )
@@ -159,7 +165,15 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .from(TransactionEntityTable)
             .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(and(baseWhere, this.buildLedgerEntryCondition(), ne(AccountEntityTable.type, AccountTypeEnum.DEBT), ...typeConditions));
+            .where(
+                and(
+                    baseWhere,
+                    this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
+                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
+                    ...typeConditions
+                )
+            );
     }
     /* jscpd:ignore-end */
 
@@ -233,6 +247,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 and(
                     inArray(TransactionEntityTable.id, transactionIdsSubquery),
                     this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
                 )
             )
@@ -257,6 +272,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 and(
                     inArray(TransactionEntityTable.id, transactionIdsSubquery),
                     this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
                 )
             )
@@ -289,6 +305,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                     this.buildStatisticsWhere(filters),
                     this.buildExpenseAnalyticsEntryCondition(),
                     this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
                 )
             )
@@ -314,6 +331,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                     this.buildStatisticsWhere(filters),
                     this.buildExpenseAnalyticsEntryCondition(),
                     this.buildLedgerEntryCondition(),
+                    this.buildPrimaryEntryCondition(),
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
                 )
             )
@@ -330,6 +348,19 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
             )
         );
+    }
+
+    private buildVisibleNonDebtEntryCondition(type: TransactionEntryTypeEnum) {
+        return sql`
+            ${TransactionEntryEntityTable.type} = ${type}
+            AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
+            AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.DEBT}
+            AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+        `;
+    }
+
+    private buildPrimaryEntryCondition() {
+        return eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY);
     }
 
     private buildConversionRateSql(defaultInstrumentId: number, instrumentIdRef: SQL) {

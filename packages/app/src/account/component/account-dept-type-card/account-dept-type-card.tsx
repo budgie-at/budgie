@@ -1,13 +1,15 @@
 import { AccountDebtTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { ACCOUNT_DEBT_TYPE_DESCRIPTION } from '../../constant/account-debt-type-description.constant';
-import { ACCOUNT_DEBT_TYPE_ICON } from '../../constant/account-debt-type-icon.constant';
 import { ACCOUNT_DEBT_TYPE } from '../../constant/account-debt-type.constant';
 
 interface Props {
@@ -26,13 +28,24 @@ const cardVariants = cva('flex-1 items-center gap-y-lg border-2', {
     }
 });
 
+const ACCOUNT_DEBT_TYPE_ICON: Record<AccountDebtTypeEnum, UserIconNameEnum> = {
+    [AccountDebtTypeEnum.LENT]: UserIconNameEnum.TrendingDown,
+    [AccountDebtTypeEnum.BORROW]: UserIconNameEnum.TrendingUp
+};
+
+const ACCOUNT_DEBT_TYPE_DESCRIPTION: Record<AccountDebtTypeEnum, MessageDescriptor> = {
+    [AccountDebtTypeEnum.LENT]: msg`You gave money`,
+    [AccountDebtTypeEnum.BORROW]: msg`You received money`
+};
+
 export const AccountDeptTypeCard = ({ type, onSelect, isSelected, testID }: Props) => {
     const { t } = useLingui();
 
     const handleSelect = () => void onSelect(type);
+    const selectedTestIDProps = isSelected && isDefined(testID) ? { testID: `${testID}.Selected` } : {};
 
     const selectedIndicator = isSelected ? (
-        <View className="bg-primary rounded-full p-xs">
+        <View {...selectedTestIDProps} className="bg-primary rounded-full p-xs">
             <Icon className="text-primary-reverse" icon={UserIconNameEnum.Check} size={16} />
         </View>
     ) : (

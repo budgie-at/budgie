@@ -10,6 +10,9 @@ export const LiabilityAccountCreateInputSchema = convertToCreateEntitySchema(Acc
     })
     .omit({
         targetBalance: true,
+        targetBaseInstrumentId: true,
+        targetBaseExchangeRate: true,
+        targetBaseAmount: true,
         contactId: true,
         deadline: true,
         debtType: true,

@@ -1,5 +1,5 @@
 import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { ReactNode, useRef } from 'react';
+import { ReactNode, RefObject, useImperativeHandle, useRef } from 'react';
 import { View } from 'react-native';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -9,17 +9,20 @@ import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormSplit } from '../../hook/use-quick-form-split.hook';
 import { useQuickFormSubmit } from '../../hook/use-quick-form-submit.hook';
 import { useSimpleQuickFormState } from '../../hook/use-simple-quick-form-state.hook';
+import { SimpleQuickFormAmountBottomContent } from '../simple-quick-form-amount-bottom-content/simple-quick-form-amount-bottom-content';
 import { SimpleQuickFormControls } from '../simple-quick-form-controls/simple-quick-form-controls';
 import { SimpleQuickFormDisplay } from '../simple-quick-form-display/simple-quick-form-display';
 
 import type { QuickFormAccountFieldName } from '../../interface/quick-form-account-field-name.type';
 import type { QuickFormBuildEntryParamsInterface } from '../../interface/quick-form-build-entry-params.interface';
 import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
+import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
 import type { TransactionFieldIconsRefInterface } from '../../interface/transaction-field-icons-ref.interface';
 import type { TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import type { TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 
 interface Props {
+    readonly ref?: RefObject<SimpleQuickFormRefInterface | null>;
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
     readonly accountFieldName: QuickFormAccountFieldName;
@@ -27,7 +30,9 @@ interface Props {
     readonly mccCategoryId: number | null;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
+    readonly debtSettlementAccountTitle?: string | null;
     readonly amountTopContent?: ReactNode;
+    readonly showInlineFeeAction?: boolean;
     readonly buildEntries: (params: QuickFormBuildEntryParamsInterface) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
@@ -41,16 +46,15 @@ const getEntryTypeForTransaction = (transactionType: TransactionTypeEnum): Trans
     transactionType === TransactionTypeEnum.EXPENSE ? EXPENSE_ENTRY_TYPE : INCOME_ENTRY_TYPE;
 
 export const SimpleQuickForm = (props: Props) => {
-    const { rulePillSlotProps, ...formProps } = props;
+    const { debtSettlementAccountTitle = null, ref, rulePillSlotProps, showInlineFeeAction = true, ...formProps } = props;
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { displayValue, currencySymbol, keypadHandlers, setFromNumeric } = useQuickFormAmount({
         accountFieldName: props.accountFieldName
     });
     const formState = useSimpleQuickFormState({ accountFieldName: props.accountFieldName, setFromNumeric });
-
     const entryType = getEntryTypeForTransaction(props.transactionType);
     const isSplitActive = formState.splitEntryCount > 1;
-    const { feeAmount, handleFeePillPress } = useQuickFormFee({
+    const { feeAmount, handleFeePress } = useQuickFormFee({
         accountFieldName: props.accountFieldName,
         currencySymbol,
         entries: formState.entries,
@@ -58,6 +62,7 @@ export const SimpleQuickForm = (props: Props) => {
         variant: props.variant,
         setFromNumeric
     });
+    useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
     const { handleSplitIconPress } = useQuickFormSplit({
         accountFieldName: props.accountFieldName,
         currencySymbol,
@@ -89,9 +94,17 @@ export const SimpleQuickForm = (props: Props) => {
                 {...formProps}
                 {...rulePillSlotProps}
                 amountDisplayRef={amountDisplayRef}
+                amountBottomContent={
+                    <SimpleQuickFormAmountBottomContent
+                        debtSettlementAccountTitle={debtSettlementAccountTitle}
+                        feeAmount={feeAmount}
+                        feeCurrencySymbol={currencySymbol}
+                        showInlineFeeAction={showInlineFeeAction}
+                        onFeePress={handleFeePress}
+                    />
+                }
                 currencySymbol={currencySymbol}
                 displayValue={displayValue}
-                feeAmount={feeAmount}
                 categoryId={formState.categoryId}
                 isCategoryUserConfirmed={formState.isCategoryUserConfirmed}
                 comment={formState.comment}
@@ -103,7 +116,6 @@ export const SimpleQuickForm = (props: Props) => {
                 onSelectTag={formState.handleSelectTag}
                 onSelectComment={formState.handleSelectComment}
                 onFillPatternAmount={formState.handleFillPatternAmount}
-                onFeePress={handleFeePillPress}
             />
 
             <SimpleQuickFormControls

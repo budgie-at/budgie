@@ -743,7 +743,39 @@ const generateRefundConsolidationFixture = () => {
     );
 };
 
+const shiftTransactionInfoFixtureToNow = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '31-transaction-info.db');
+    const targetPath = path.join(outputDirectoryPath, '31-transaction-info.db');
+
+    backupFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+        CREATE TEMP TABLE fixture_offset AS
+        SELECT CAST(strftime('%s', 'now') AS INTEGER) - 86400 - MAX(operated_at) AS seconds
+        FROM transactions;
+
+        UPDATE transactions
+        SET operated_at = operated_at + (SELECT seconds FROM fixture_offset),
+            created_at = created_at + (SELECT seconds FROM fixture_offset),
+            updated_at = updated_at + (SELECT seconds FROM fixture_offset);
+
+        UPDATE transaction_entries
+        SET created_at = created_at + (SELECT seconds FROM fixture_offset),
+            updated_at = updated_at + (SELECT seconds FROM fixture_offset);
+
+        UPDATE account_balances
+        SET created_at = created_at + (SELECT seconds FROM fixture_offset),
+            updated_at = updated_at + (SELECT seconds FROM fixture_offset);
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 shiftTransactionsFixtureToNow();
+shiftTransactionInfoFixtureToNow();
 generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
 generateConsolidationFixture();

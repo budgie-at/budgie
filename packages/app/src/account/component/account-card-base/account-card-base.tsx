@@ -61,8 +61,8 @@ export const AccountCardBase = (props: Props) => {
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
 
-    const navigateToAccount = () => void router.push(`/account/${id}/details`);
-    const navigateToEditAccount = () => void router.push(`/account/${id}/update`);
+    const navigateToAccount = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
+    const navigateToEditAccount = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(id) } });
 
     const accountCardTestID = AccountCardBaseSelector.Card(title);
     const accountBalance = formatDigits(balance, instrumentSymbol);
@@ -71,6 +71,7 @@ export const AccountCardBase = (props: Props) => {
     return (
         <Card
             accessible
+            testID={accountCardTestID}
             accessibilityLabel={`${title}, ${accountBalance}`}
             onPress={navigateToAccount}
             onLongPress={onLongPress}
@@ -94,7 +95,7 @@ export const AccountCardBase = (props: Props) => {
                 </View>
 
                 <View className="gap-1">
-                    <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1} testID={accountCardTestID}>
+                    <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1}>
                         {title}
                     </Text>
 

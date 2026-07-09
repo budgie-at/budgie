@@ -22,6 +22,7 @@ interface Props {
     readonly label?: string | null;
     readonly isLabelFlipped?: boolean;
     readonly secondaryAmount?: string | null;
+    readonly bottomContent?: ReactNode;
     readonly topContent?: ReactNode;
     readonly onLabelPress?: () => void;
     readonly onSecondaryAmountPress?: () => void;
@@ -51,6 +52,7 @@ export const TransactionAmountDisplay = ({
     variant,
     label,
     isLabelFlipped = false,
+    bottomContent,
     onLabelPress,
     secondaryAmount,
     topContent,
@@ -112,6 +114,7 @@ export const TransactionAmountDisplay = ({
                         </Animated.Text>
                     </Pressable>
                 ) : null}
+                {isDefined(bottomContent) ? <View className="mt-lg items-center">{bottomContent}</View> : null}
             </View>
         </Animated.View>
     );

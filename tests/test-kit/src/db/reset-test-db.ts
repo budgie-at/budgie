@@ -5,6 +5,7 @@ import type { SQLWrapper } from 'drizzle-orm';
 const MUTABLE_TABLES = [
     'accounts',
     'account_balances',
+    'debt_events',
     'transactions',
     'transaction_entries',
     'transaction_tags',

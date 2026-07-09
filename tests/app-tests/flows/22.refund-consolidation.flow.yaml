@@ -219,7 +219,7 @@ appId: ${APP_ID}
     id: 'TabBar.Analytics'
 - extendedWaitUntil:
     visible:
-      id: 'AnalyticsPage.Tab.Categories'
+      id: 'AnalyticsPage.Container'
     timeout: 10000
 - scrollUntilVisible:
     element:

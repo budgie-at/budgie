@@ -73,7 +73,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
 
     const handleCreateAccount = () => {
         onClose();
-        router.push('/(main)/create-account');
+        router.push('/create-account');
     };
 
     const handleAiPress = () => {

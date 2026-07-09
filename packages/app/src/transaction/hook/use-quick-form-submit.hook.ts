@@ -59,8 +59,7 @@ export const useQuickFormSubmit = ({
         const categoryEntry = getTransactionCategoryEntries(currentEntries).at(0);
         const feeEntries = getTransactionFeeEntries(currentEntries).map(entry => ({ ...entry, accountId }));
         const feeTotal = sumEntryAmounts(feeEntries);
-        const categoryEntryCategoryId = isDefined(categoryEntry) ? categoryEntry.categoryId : null;
-        const formCategoryId = isDefined(categoryEntryCategoryId) ? categoryEntryCategoryId : 0;
+        const formCategoryId = categoryEntry?.categoryId ?? 0;
         const categoryAmount = transactionType === TransactionTypeEnum.EXPENSE ? amount - feeTotal : amount;
 
         const isValid = validateAndShake([

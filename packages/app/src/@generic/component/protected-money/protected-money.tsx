@@ -1,8 +1,8 @@
 import { ComponentProps } from 'react';
 
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useAppState } from '../../hook/use-app-state.hook';
-import { useScreenshotProtection } from '../../hook/use-screenshot-protection.hook';
 import { cn } from '../../utils/cn.util';
 import { Ticker } from '../ticker/ticker';
 
@@ -16,7 +16,7 @@ interface Props extends Omit<ComponentProps<typeof Ticker>, 'number'> {
 export const ProtectedMoney = (props: Props) => {
     const { children, className, instrumentSymbol, protectedText = '$999.99', ...rest } = props;
 
-    const isScreenshotProtectionEnabled = useScreenshotProtection();
+    const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const { isActive } = useAppState();
 
     const formatDigits = useDisplayFormatDigits();

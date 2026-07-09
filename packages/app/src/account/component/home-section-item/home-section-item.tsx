@@ -3,10 +3,10 @@ import { AccountTypeEnum } from '@budgie/contracts';
 import { AccountRowInterface } from '../../interface/account-row.interface';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
+import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { isBankProviderSection } from '../../type-guard/is-bank-provider-section.type-guard';
 import { isCryptoCurrencyGroup } from '../../type-guard/is-crypto-currency-group.type-guard';
 import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
-import { HomeSectionInterface } from '../../utils/build-home-page-sections.util';
 import { AccountGridRow } from '../account-grid-row/account-grid-row';
 import { CryptoCurrencyGroupCard } from '../crypto-currency-group-card/crypto-currency-group-card';
 

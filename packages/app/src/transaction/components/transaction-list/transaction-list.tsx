@@ -134,6 +134,7 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
                 listEmptyState={listEmptyState}
                 balanceAdjustmentLabel={balanceAdjustmentLabel}
                 categoriesLabel={categoriesLabel}
+                accountId={accountId}
                 footerSpacerMultiplier={footerSpacerMultiplier}
             />
         </View>

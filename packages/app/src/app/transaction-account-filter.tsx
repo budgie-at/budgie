@@ -56,7 +56,7 @@ export default function TransactionAccountFilterModal() {
     const handleNavigateToCreate = () => {
         resolveTransactionAccountFilter(null, { skipBack: true });
         router.dismiss();
-        router.push('/(main)/create-account');
+        router.push('/create-account');
     };
 
     const applyLabel = t({

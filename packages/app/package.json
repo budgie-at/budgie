@@ -19,6 +19,7 @@
         "prebuild:dev": "EXPO_PUBLIC_AI_DISABLE=true APP_VARIANT=development expo prebuild --clean",
         "start": "expo start --dev-client -c",
         "ts": "run -T tsc -p .",
+        "generate:typed-routes": "npx expo export --platform web --output-dir /tmp/expo-typed --dump-assetmap 2>/dev/null || true",
         "web": "expo start --web"
     },
     "dependencies": {

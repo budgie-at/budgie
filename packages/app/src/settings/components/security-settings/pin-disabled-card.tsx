@@ -10,7 +10,7 @@ import { SettingsCard } from '../settings-card/settings-card';
 export const PinDisabledCard = () => {
     const { t } = useLingui();
 
-    const handleCreatePin = () => void router.push(`/settings/pin?mode=${PinSetupModeEnum.CREATE}`);
+    const handleCreatePin = () => void router.push({ pathname: '/settings/pin', params: { mode: PinSetupModeEnum.CREATE } });
 
     return (
         <SettingsCard

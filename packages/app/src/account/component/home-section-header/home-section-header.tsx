@@ -2,9 +2,9 @@ import { AccountDebtTypeEnum } from '@budgie/contracts';
 
 import { HomeSectionKindEnum } from '../../enum/home-section-kind.enum';
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
+import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { isBankProviderSection } from '../../type-guard/is-bank-provider-section.type-guard';
 import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
-import { HomeSectionInterface } from '../../utils/build-home-page-sections.util';
 import { AccountSectionHeader } from '../account-section-header/account-section-header';
 import { BankProviderSectionHeader } from '../bank-provider-section-header/bank-provider-section-header';
 import { DebtSectionHeader } from '../debt-section-header/debt-section-header';

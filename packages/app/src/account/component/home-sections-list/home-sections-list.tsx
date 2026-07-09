@@ -9,8 +9,8 @@ import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '..
 import { AccountRowInterface } from '../../interface/account-row.interface';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
+import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { isCryptoCurrencyGroup } from '../../type-guard/is-crypto-currency-group.type-guard';
-import { HomeSectionInterface } from '../../utils/build-home-page-sections.util';
 import { AccountsEmptyState } from '../accounts-empty-state/accounts-empty-state';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
 import { HomeSectionHeader } from '../home-section-header/home-section-header';

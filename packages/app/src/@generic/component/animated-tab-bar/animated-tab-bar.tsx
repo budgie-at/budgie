@@ -71,16 +71,24 @@ export const AnimatedTabBar = <T extends string>({ tabs, activeTab, onChangeTab 
     return (
         <View className="px-5xl pb-md gap-y-sm">
             <View className="flex-row items-center gap-x-xl">
-                {tabs.map(tab => (
-                    <HapticPressable
-                        key={tab.key}
-                        onPress={handleTabPress(tab.key)}
-                        onLayout={handleTabLayout(tab.key)}
-                        testID={tab.testID}
-                    >
-                        <Text className={titleVariants({ isActive: activeTab === tab.key })}>{tab.label}</Text>
-                    </HapticPressable>
-                ))}
+                {tabs.map(tab => {
+                    const isActive = activeTab === tab.key;
+                    const accessibilityState = { selected: isActive };
+
+                    return (
+                        <HapticPressable
+                            accessibilityRole="tab"
+                            accessibilityState={accessibilityState}
+                            accessible
+                            key={tab.key}
+                            onPress={handleTabPress(tab.key)}
+                            onLayout={handleTabLayout(tab.key)}
+                            testID={tab.testID}
+                        >
+                            <Text className={titleVariants({ isActive })}>{tab.label}</Text>
+                        </HapticPressable>
+                    );
+                })}
             </View>
 
             <Animated.View className="h-0.5 bg-primary rounded-full" style={indicatorStyle} />

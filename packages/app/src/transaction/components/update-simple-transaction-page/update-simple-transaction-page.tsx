@@ -14,6 +14,9 @@ export const UpdateSimpleTransactionPage = ({
     onGoBack,
     onDelete,
     onRevert,
+    onAttachDebtSettlement,
+    attachDebtSettlementLabel,
+    onDetachDebtSettlement,
     onConvertToRefund,
     onConvertToTransfer
 }: UpdateSimpleTransactionPagePropsInterface) => (
@@ -28,6 +31,9 @@ export const UpdateSimpleTransactionPage = ({
                             onDelete={onDelete}
                             isConsolidated={isConsolidated}
                             onRevert={onRevert}
+                            onAttachDebtSettlement={onAttachDebtSettlement}
+                            attachDebtSettlementLabel={attachDebtSettlementLabel}
+                            onDetachDebtSettlement={onDetachDebtSettlement}
                             onConvertToRefund={onConvertToRefund}
                             onConvertToTransfer={onConvertToTransfer}
                         />

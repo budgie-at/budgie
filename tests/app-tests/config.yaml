@@ -39,6 +39,7 @@ executionOrder:
         - 28.matching-rules-navigation.flow
         - 29.crypto-account-and-market.flow
         - 30.crypto-decimal-monero-account.flow
+        - 31.debt-settlement-attachments.flow
         - 31.transaction-info.flow
         - 31.budget.flow
         - 32.budget-multi-currency.flow

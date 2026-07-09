@@ -9,6 +9,7 @@ export type TransactionEntryUpdateInputInterface = Partial<
         | 'categorySource'
         | 'mccCategoryId'
         | 'type'
+        | 'kind'
         | 'amount'
         | 'externalId'
         | 'exchangeRate'

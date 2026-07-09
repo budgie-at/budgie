@@ -28,7 +28,7 @@ interface UseQuickFormFeeConfig {
 
 interface UseQuickFormFeeResult {
     readonly feeAmount: number;
-    readonly handleFeePillPress: () => void;
+    readonly handleFeePress: () => void;
 }
 
 export const useQuickFormFee = ({
@@ -56,17 +56,20 @@ export const useQuickFormFee = ({
         const previousFeeAmount = sumEntryAmounts(currentFeeEntries);
         const nextFeeAmount = sumEntryAmounts(nextFeeEntries);
 
-        setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldValidate: false });
+        setValue('entries', [...categoryEntries, ...nextFeeEntries], {
+            shouldDirty: true,
+            shouldValidate: false
+        });
 
         if (transactionType === TransactionTypeEnum.EXPENSE) {
             const nextAmount = Math.max(getValues('amount') - previousFeeAmount + nextFeeAmount, 0);
 
-            setValue('amount', nextAmount);
+            setValue('amount', nextAmount, { shouldDirty: true });
             setFromNumeric(nextAmount);
         }
     };
 
-    const handleFeePress = async () => {
+    const openFeeModal = async () => {
         const currentEntries = getValues('entries');
         const currentFeeEntries = getTransactionFeeEntries(currentEntries);
         const selectedAccountId = getValues(accountFieldName);
@@ -85,7 +88,7 @@ export const useQuickFormFee = ({
         }
     };
 
-    const handleFeePillPress = () => void handleFeePress();
+    const handleFeePress = () => void openFeeModal();
 
-    return { feeAmount, handleFeePillPress };
+    return { feeAmount, handleFeePress };
 };
