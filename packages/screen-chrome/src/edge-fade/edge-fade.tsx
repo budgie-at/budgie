@@ -64,7 +64,13 @@ export const EdgeFade = ({
     const blurIntensityProps = isDefined(scrollAnimation) ? { animatedProps: animatedBlurProps } : { intensity: resolvedIntensity };
 
     return (
-        <Animated.View pointerEvents="none" style={bandStyle}>
+        <Animated.View
+            pointerEvents="none"
+            accessible={false}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+            style={bandStyle}
+        >
             <MaskedView
                 style={edgeFadeStyles.fill}
                 maskElement={

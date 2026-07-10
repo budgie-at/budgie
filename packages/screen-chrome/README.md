@@ -116,6 +116,8 @@ The fade + blur primitive, rendered at either screen edge.
 
 When `scrollAnimation` is supplied, container opacity interpolates over `opacityInputRange` into `[0, 1]` and blur intensity interpolates over `intensityInputRange` into `[0, maxIntensity ?? config.maxBlurIntensity]`, both clamped. Without it, the band renders as a static fade.
 
+The band is purely decorative and is excluded from the accessibility tree (native: `accessible={false}`, `accessibilityElementsHidden`, `importantForAccessibility="no-hide-descendants"`; web: `aria-hidden`), so it never occludes or displaces the accessibility elements of content or chrome it visually overlaps (e.g. a tab bar or header sitting under it).
+
 ### `CollapsibleHeader` (compound)
 
 - **`CollapsibleHeader`** — the header container, positioned above the edge fades, sized to `insets.top + config.headerHeight`.
