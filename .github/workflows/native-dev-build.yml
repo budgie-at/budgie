@@ -6,8 +6,12 @@ env:
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ios-dev-prerelease
+  cancel-in-progress: false
+
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -72,3 +76,35 @@ jobs:
           path: artifacts/budgie-development.ipa
           if-no-files-found: error
           retention-days: 14
+
+      - name: Ensure GitHub CLI is available
+        run: command -v gh >/dev/null 2>&1 || brew install gh
+
+      - name: Publish rolling iOS dev prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          BRANCH_NAME="${GITHUB_REF_NAME}"
+          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+          gh release create ios-dev --repo "${GITHUB_REPOSITORY}" --prerelease --title "Budgie iOS Dev Build" --notes "Bootstrap release. Waiting for the first build upload." || true
+
+          gh release upload ios-dev artifacts/budgie-development.ipa --repo "${GITHUB_REPOSITORY}" --clobber
+
+          NOTES_FILE=$(mktemp)
+          {
+            echo "Budgie iOS development build"
+            echo ""
+            echo "Version: ${VERSION}"
+            echo "Commit: ${SHORT_SHA}"
+            echo "Branch: ${BRANCH_NAME}"
+            echo "Built: ${BUILD_DATE}"
+            echo "Workflow run: ${RUN_URL}"
+          } > "$NOTES_FILE"
+
+          gh release edit ios-dev --repo "${GITHUB_REPOSITORY}" --title "Budgie iOS Dev Build v${VERSION} (${SHORT_SHA})" --notes-file "$NOTES_FILE"
+
+          rm -f "$NOTES_FILE"
