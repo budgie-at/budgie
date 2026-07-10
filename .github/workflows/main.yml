@@ -4,6 +4,10 @@ env:
   EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
   GH_TOKEN: ${{ secrets.PUSH_TO_PROTECTED_TOKEN }}
 
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 on:
   workflow_dispatch:
   push:
