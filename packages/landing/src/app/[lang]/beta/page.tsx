@@ -5,15 +5,11 @@ import { isDefined } from '@rnw-community/shared';
 
 import { BetaEmptyState } from '../../../beta/component/beta-empty-state/beta-empty-state';
 import { BetaReleaseCard } from '../../../beta/component/beta-release-card/beta-release-card';
-import { IosDevReleaseSchema } from '../../../beta/constant/ios-dev-release-schema.constant';
+import { iosDevReleaseFetchApi } from '../../../beta/util/ios-dev-release-fetch.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
-import type { IosDevRelease } from '../../../beta/constant/ios-dev-release-schema.constant';
 import type { Metadata } from 'next';
-
-const IOS_DEV_RELEASE_URL = 'https://api.github.com/repos/budgie-at/budgie/releases/tags/ios-dev';
-const IOS_DEV_IPA_ASSET_NAME = 'budgie-development.ipa';
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
@@ -27,35 +23,10 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     };
 }
 
-const iosDevReleaseFetchApi = async (): Promise<IosDevRelease | null> => {
-    try {
-        const response = await fetch(IOS_DEV_RELEASE_URL, { next: { revalidate: 60 } });
-
-        if (!response.ok) {
-            return null;
-        }
-
-        const releaseJson: unknown = await response.json();
-        const parseResult = IosDevReleaseSchema.safeParse(releaseJson);
-
-        if (!parseResult.success) {
-            return null;
-        }
-
-        if (!parseResult.data.assets.some(asset => asset.name === IOS_DEV_IPA_ASSET_NAME)) {
-            return null;
-        }
-
-        return parseResult.data;
-    } catch {
-        return null;
-    }
-};
-
 export default async function BetaPage(props: PageLangParam) {
     const { lang } = await props.params;
     initLingui(lang);
-    const release = await iosDevReleaseFetchApi();
+    const release = await iosDevReleaseFetchApi({ next: { revalidate: 60 } });
 
     return (
         <main className="flex-1">

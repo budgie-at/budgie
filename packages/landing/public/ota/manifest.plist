@@ -11,7 +11,7 @@
                     <key>kind</key>
                     <string>software-package</string>
                     <key>url</key>
-                    <string>https://github.com/budgie-at/budgie/releases/download/ios-dev/budgie-development.ipa</string>
+                    <string>https://budgie.at/api/beta/ipa</string>
                 </dict>
             </array>
             <key>metadata</key>
