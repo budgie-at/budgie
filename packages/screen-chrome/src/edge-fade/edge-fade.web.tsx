@@ -74,5 +74,5 @@ export const EdgeFade = ({ position, height, intensity, scrollAnimation, style }
 
     const combinedStyle = [webStyle, animatedStyle, style];
 
-    return <Animated.View pointerEvents="none" style={combinedStyle} />;
+    return <Animated.View pointerEvents="none" aria-hidden style={combinedStyle} />;
 };
