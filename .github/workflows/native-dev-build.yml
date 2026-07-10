@@ -17,6 +17,7 @@ jobs:
   build:
     name: Local iOS Development Build
     runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+    timeout-minutes: 120
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -27,7 +28,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: yarn
 
       - name: Select Xcode
         run: |
@@ -80,33 +80,32 @@ jobs:
       - name: Ensure GitHub CLI is available
         run: command -v gh >/dev/null 2>&1 || brew install gh
 
-      - name: Publish rolling iOS dev prerelease
+      - name: Publish immutable iOS dev prerelease
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          BRANCH_NAME="${GITHUB_REF_NAME}"
-          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          full_sha="$(git rev-parse HEAD)"
+          short_sha="$(git rev-parse --short HEAD)"
+          release_tag="ios-dev-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          notes_file="$(mktemp)"
+          trap 'rm -f "$notes_file"' EXIT
 
-          NOTES_FILE=$(mktemp)
           {
             echo "Budgie iOS development build"
-            echo ""
-            echo "Version: ${VERSION}"
-            echo "Commit: ${SHORT_SHA}"
-            echo "Branch: ${BRANCH_NAME}"
-            echo "Built: ${BUILD_DATE}"
-            echo "Workflow run: ${RUN_URL}"
-          } > "$NOTES_FILE"
+            echo
+            echo "Version: ${version}"
+            echo "Commit: ${short_sha}"
+            echo "Branch: ${GITHUB_REF_NAME}"
+            echo "Built: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "Workflow run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } > "$notes_file"
 
-          gh release delete ios-dev --repo "${GITHUB_REPOSITORY}" --yes --cleanup-tag || true
-
-          gh release create ios-dev artifacts/budgie-development.ipa --repo "${GITHUB_REPOSITORY}" --draft --prerelease --target "${GITHUB_SHA}" --title "Budgie iOS Dev Build v${VERSION} (${SHORT_SHA})" --notes-file "$NOTES_FILE"
-
-          RELEASE_ID=$(gh api "repos/${GITHUB_REPOSITORY}/releases" --jq '[.[] | select(.draft and .tag_name == "ios-dev")][0].id')
-
-          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}" -F draft=false > /dev/null
-
-          rm -f "$NOTES_FILE"
+          gh release create "$release_tag" artifacts/budgie-development.ipa \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$full_sha" \
+            --prerelease \
+            --latest=false \
+            --title "Budgie iOS Dev Build v${version} (${short_sha})" \
+            --notes-file "$notes_file"
