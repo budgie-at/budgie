@@ -8,6 +8,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { AccountBankSyncCard } from '../../../sync/component/account-bank-sync-card/account-bank-sync-card';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
@@ -60,13 +61,15 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             <CreateAccountCurrencyField control={control} instrumentType={InstrumentTypeEnum.CRYPTO} />
         ) : null;
 
-    if (!isDefined(instrument)) {
+    const stickyInstrument = useStickyDefinedValue(instrument);
+
+    if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
     }
 
     return (
         <UpdateAccountScreen
-            instrumentSymbol={instrument.symbol}
+            instrumentSymbol={stickyInstrument.symbol}
             onSubmit={handleSubmit}
             account={account}
             control={control}
