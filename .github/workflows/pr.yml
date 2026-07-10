@@ -17,6 +17,73 @@ concurrency:
 on: pull_request
 
 jobs:
+    detect-mobile-impact:
+        name: Detect mobile impact
+        runs-on: [self-hosted, linux-ci]
+        permissions:
+            contents: read
+        outputs:
+            mobile: ${{ steps.gate.outputs.mobile }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+              with:
+                  fetch-depth: 0
+
+            - name: Setup Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22.x
+                  cache: yarn
+
+            - name: Install dependencies
+              run: yarn install
+
+            - name: Compute mobile-impact gate
+              id: gate
+              run: |
+                  MOBILE=true
+
+                  if ! command -v jq >/dev/null 2>&1; then
+                    echo "::warning::jq is not available on this runner; defaulting to mobile=true"
+                    echo "mobile=$MOBILE" >> "$GITHUB_OUTPUT"
+                    exit 0
+                  fi
+
+                  git fetch --no-tags origin main:refs/remotes/origin/main || true
+
+                  MERGE_BASE="$(git merge-base origin/main HEAD 2>/dev/null || true)"
+
+                  if [ -z "$MERGE_BASE" ]; then
+                    echo "::warning::Could not determine merge-base with origin/main; defaulting to mobile=true"
+                    echo "mobile=$MOBILE" >> "$GITHUB_OUTPUT"
+                    exit 0
+                  fi
+
+                  echo "Merge base: $MERGE_BASE"
+
+                  TURBO_EXIT=0
+                  TURBO_OUTPUT="$(yarn turbo query affected --packages --base "$MERGE_BASE" --no-update-notifier 2>turbo-query.log)" || TURBO_EXIT=$?
+
+                  if [ "$TURBO_EXIT" -ne 0 ]; then
+                    echo "::warning::yarn turbo query affected failed; defaulting to mobile=true"
+                    cat turbo-query.log || true
+                    MOBILE=true
+                  elif echo "$TURBO_OUTPUT" | jq -e '.data.affectedPackages.items[] | select(.name == "@budgie-at/app")' >/dev/null 2>&1; then
+                    MOBILE=true
+                  else
+                    MOBILE=false
+                  fi
+
+                  if [ "$MOBILE" = "false" ]; then
+                    if git diff --name-only "$MERGE_BASE" HEAD | grep -qE '^(tests/app-tests/|\.github/workflows/pr\.yml$)'; then
+                      MOBILE=true
+                    fi
+                  fi
+
+                  echo "Mobile affected: $MOBILE"
+                  echo "mobile=$MOBILE" >> "$GITHUB_OUTPUT"
+
     code-quality:
         name: Code quality checks
         runs-on: [self-hosted, linux-ci]
@@ -75,6 +142,8 @@ jobs:
                   use_oidc: true
 
     eas-update-preview:
+        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        needs: [detect-mobile-impact]
         name: EAS Update Preview
         runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
         permissions:
@@ -120,7 +189,8 @@ jobs:
                   eas update --skip-bundler --input-dir dist --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
 
     build-ios-e2e-app:
-        needs: [code-quality, eas-update-preview]
+        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        needs: [detect-mobile-impact, code-quality, eas-update-preview]
         name: Build iOS E2E app
         runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
         permissions:
@@ -304,7 +374,8 @@ jobs:
                   key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
     e2e-ios:
-        needs: [build-ios-e2e-app]
+        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        needs: [detect-mobile-impact, build-ios-e2e-app]
         name: E2E Tests on iOS (shard ${{ matrix.shard }})
         runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
         permissions:
@@ -475,8 +546,8 @@ jobs:
                   if-no-files-found: warn
 
     e2e-android:
-        if: false
-        needs: [code-quality, eas-update-preview]
+        if: false && needs.detect-mobile-impact.outputs.mobile == 'true'
+        needs: [detect-mobile-impact, code-quality, eas-update-preview]
         name: E2E Tests on Android
         runs-on: [self-hosted, linux-ci]
         permissions:
