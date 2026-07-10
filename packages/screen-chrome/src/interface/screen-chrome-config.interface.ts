@@ -7,10 +7,6 @@ export interface ScreenChromeColorSetInterface {
     readonly wash: string;
 }
 
-export interface ScreenChromeMaskStopInterface {
-    readonly color: string;
-}
-
 export interface ScreenChromeConfigInterface {
     readonly headerHeight: number;
     readonly topFadeHeight: number;
@@ -25,10 +21,10 @@ export interface ScreenChromeConfigInterface {
     readonly scrollEventThrottle: number;
     readonly snapToCollapse: boolean;
     readonly colors: Record<ColorSchemeEnum, ScreenChromeColorSetInterface>;
-    readonly maskStops: Record<EdgeFadePosition, Record<number, ScreenChromeMaskStopInterface>>;
+    readonly maskStops: Record<EdgeFadePosition, Record<number, { readonly color: string }>>;
 }
 
 export interface ScreenChromeConfigOverridesInterface extends Partial<Omit<ScreenChromeConfigInterface, 'colors' | 'maskStops'>> {
     readonly colors?: Partial<Record<ColorSchemeEnum, Partial<ScreenChromeColorSetInterface>>>;
-    readonly maskStops?: Partial<Record<EdgeFadePosition, Record<number, ScreenChromeMaskStopInterface>>>;
+    readonly maskStops?: Partial<Record<EdgeFadePosition, Record<number, { readonly color: string }>>>;
 }

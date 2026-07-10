@@ -19,6 +19,5 @@ export type {
     EdgeFadePosition,
     ScreenChromeColorSetInterface,
     ScreenChromeConfigInterface,
-    ScreenChromeConfigOverridesInterface,
-    ScreenChromeMaskStopInterface
+    ScreenChromeConfigOverridesInterface
 } from './interface/screen-chrome-config.interface';

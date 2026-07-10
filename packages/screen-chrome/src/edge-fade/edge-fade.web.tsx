@@ -4,11 +4,7 @@ import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useScreenChrome } from '../hook/use-screen-chrome.hook';
-import {
-    EdgeFadePosition,
-    ScreenChromeColorSetInterface,
-    ScreenChromeMaskStopInterface
-} from '../interface/screen-chrome-config.interface';
+import { EdgeFadePosition, ScreenChromeColorSetInterface } from '../interface/screen-chrome-config.interface';
 
 import { useEdgeFadeOpacityStyle } from './hook/use-edge-fade-opacity-style.hook';
 import { EdgeFadePropsInterface } from './interface/edge-fade-props.interface';
@@ -26,7 +22,7 @@ interface WebEdgeFadeStyleInterface extends ViewStyle {
 const PERCENT_MULTIPLIER = 100;
 const WASH_STOP_PERCENT = 72;
 
-const buildMaskImage = (maskStops: Record<number, ScreenChromeMaskStopInterface>): string => {
+const buildMaskImage = (maskStops: Record<number, { readonly color: string }>): string => {
     const sortedStops = Object.entries(maskStops)
         .map(([offset, { color }]): readonly [number, string] => [Number(offset), color])
         .sort(([firstOffset], [secondOffset]) => firstOffset - secondOffset);
