@@ -125,7 +125,7 @@ jobs:
               run: yarn workspace @budgie-at/app-tests selectors:check
 
             - name: ESLint checks
-              run: yarn turbo run lint
+              run: yarn turbo run lint --concurrency=2
 
             - name: Deadcode detection
               continue-on-error: true
