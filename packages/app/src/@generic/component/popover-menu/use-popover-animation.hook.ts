@@ -3,6 +3,8 @@ import { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-nati
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
 
+import { usePopoverCloseCompleteEffect } from './use-popover-close-complete-effect.hook';
+
 const BACKDROP_OPACITY = 0.3;
 const MENU_SCALE_CLOSED = 0.95;
 const ANIMATION_DURATION = 150;
@@ -14,7 +16,6 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
     const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const [previousIsOpen, setPreviousIsOpen] = useState(isOpen);
     const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const onCloseCompleteRef = useRef(onCloseComplete);
 
     const backdropOpacity = useSharedValue(isOpen ? BACKDROP_OPACITY : 0);
     const menuScale = useSharedValue(isOpen ? 1 : MENU_SCALE_CLOSED);
@@ -24,10 +25,6 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
         setPreviousIsOpen(isOpen);
         setIsAnimatingOut(!isOpen);
     }
-
-    useEffect(() => {
-        onCloseCompleteRef.current = onCloseComplete;
-    });
 
     useEffect(() => {
         if (isOpen) {
@@ -42,7 +39,6 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
             closeTimerRef.current = setTimeout(() => {
                 closeTimerRef.current = null;
                 setIsAnimatingOut(false);
-                onCloseCompleteRef.current?.();
             }, ANIMATION_DURATION + CLOSE_COMPLETION_BUFFER);
         }
 
@@ -53,6 +49,8 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
             }
         };
     }, [isOpen, isAnimatingOut, backdropOpacity, menuScale, menuOpacity]);
+
+    usePopoverCloseCompleteEffect(isOpen || isAnimatingOut, onCloseComplete);
 
     const backdropStyle = useAnimatedStyle(() => ({ opacity: backdropOpacity.value }));
     const menuStyle = useAnimatedStyle(() => ({ opacity: menuOpacity.value, transform: [{ scale: menuScale.value }] }));
