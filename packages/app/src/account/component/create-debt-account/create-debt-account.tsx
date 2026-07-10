@@ -45,18 +45,21 @@ export const CreateDebtAccount = () => {
         instrumentId: defaultInstrument.id
     };
 
-    const { control, handleSubmit, instrument, debtType, setValue, getValues } = useDebtAccountForm(initialValues, async values => {
-        const effectiveOpeningAccountId = values.debtType === AccountDebtTypeEnum.LENT ? openingAccountId : null;
+    const { control, handleSubmit, instrument, debtType, setValue, getValues, isSubmitting } = useDebtAccountForm(
+        initialValues,
+        async values => {
+            const effectiveOpeningAccountId = values.debtType === AccountDebtTypeEnum.LENT ? openingAccountId : null;
 
-        if (isDefined(effectiveOpeningAccountId)) {
-            return accountDebtOpeningService.createLentDebtFromTransfer(
-                { ...values, targetBalance: values.currentBalance },
-                effectiveOpeningAccountId
-            );
+            if (isDefined(effectiveOpeningAccountId)) {
+                return accountDebtOpeningService.createLentDebtFromTransfer(
+                    { ...values, targetBalance: values.currentBalance },
+                    effectiveOpeningAccountId
+                );
+            }
+
+            return accountService.createDebt(values);
         }
-
-        return accountService.createDebt(values);
-    });
+    );
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
     const isOpeningFromAccount = isLentDebt && isDefined(openingAccountId);
     const variant = ACCOUNT_DEBT_TYPE_COLOR[debtType];
@@ -74,7 +77,7 @@ export const CreateDebtAccount = () => {
     }
 
     return (
-        <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleCreateDebtAccountSubmit}>
+        <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleCreateDebtAccountSubmit} isSubmitting={isSubmitting}>
             <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
             <FormLayoutGroup>

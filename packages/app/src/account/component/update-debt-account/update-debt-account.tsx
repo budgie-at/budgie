@@ -55,7 +55,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
         ]
     );
 
-    const { control, handleSubmit, instrument } = useDebtAccountForm(
+    const { control, handleSubmit, instrument, isSubmitting } = useDebtAccountForm(
         initialValues,
         values => accountService.updateDebtById(account.id, values),
         true
@@ -66,7 +66,13 @@ export const UpdateDebtAccount = ({ account }: Props) => {
     }
 
     return (
-        <UpdateAccountScreen instrumentSymbol={instrument.symbol} onSubmit={handleSubmit} account={account} control={control}>
+        <UpdateAccountScreen
+            instrumentSymbol={instrument.symbol}
+            onSubmit={handleSubmit}
+            account={account}
+            control={control}
+            isSubmitting={isSubmitting}
+        >
             <AccountTargetBalanceField control={control} instrumentSymbol={instrument.symbol} />
             <DebtAccountContactField control={control} />
             <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />

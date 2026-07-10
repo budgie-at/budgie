@@ -17,11 +17,12 @@ interface Props {
     readonly descriptionClassName?: string;
     readonly variant: ColorPaletteVariant;
     readonly onSubmit: EmptyFn;
+    readonly isSubmitting?: boolean;
     readonly children: ReactNode;
 }
 
 export const CreateAccountScreen = (props: Props) => {
-    const { title, description, descriptionClassName, variant, children, onSubmit } = props;
+    const { title, description, descriptionClassName, variant, children, onSubmit, isSubmitting } = props;
     const { t } = useLingui();
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -37,7 +38,15 @@ export const CreateAccountScreen = (props: Props) => {
                     description={description ?? t`Fill in the account details`}
                 />
             }
-            footer={<Button variant={variant} onPress={onSubmit} content={t`Submit`} testID={CreateAccountScreenSelector.SubmitButton} />}
+            footer={
+                <Button
+                    variant={variant}
+                    onPress={onSubmit}
+                    isLoading={isSubmitting}
+                    content={t`Submit`}
+                    testID={CreateAccountScreenSelector.SubmitButton}
+                />
+            }
         >
             {children}
         </FormPage>
