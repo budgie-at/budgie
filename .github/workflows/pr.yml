@@ -146,7 +146,10 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: EAS Update Preview
-        runs-on: [self-hosted, linux-ci]
+        # Expo's Hermes compiler package ships an x86-64 Linux host binary.
+        # Keep this export off ARM64 self-hosted runners and reserve the Mac
+        # mini for the native iOS build and simulator stages below.
+        runs-on: ubuntu-latest
         timeout-minutes: 30
         permissions:
             contents: read
