@@ -80,7 +80,7 @@ jobs:
       - name: Ensure GitHub CLI is available
         run: command -v gh >/dev/null 2>&1 || brew install gh
 
-      - name: Publish rolling iOS dev prerelease
+      - name: Publish iOS dev prerelease
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
