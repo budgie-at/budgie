@@ -1,5 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
-import { ReactNode, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { ReactNode, useCallback, useState } from 'react';
 import { LayoutChangeEvent, Modal, Pressable, StyleSheet, View, ViewStyle, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -33,8 +34,18 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
     const { t } = useLingui();
     const { width: screenWidth, height: screenHeight } = useWindowDimensions();
     const { bottom: safeBottom } = useSafeAreaInsets();
-    const { isAnimatingOut, backdropStyle, menuStyle } = usePopoverAnimation(isOpen, onCloseComplete);
+    const { isAnimatingOut, backdropStyle, menuStyle, forceClose } = usePopoverAnimation(isOpen, onCloseComplete);
     const [menuHeight, setMenuHeight] = useState(0);
+
+    useFocusEffect(
+        useCallback(
+            () => () => {
+                forceClose();
+                onClose();
+            },
+            [forceClose, onClose]
+        )
+    );
 
     const handleLayout = (event: LayoutChangeEvent) => {
         setMenuHeight(event.nativeEvent.layout.height);
