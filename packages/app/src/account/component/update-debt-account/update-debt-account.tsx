@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
+import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
@@ -61,19 +62,21 @@ export const UpdateDebtAccount = ({ account }: Props) => {
         true
     );
 
-    if (!isDefined(instrument)) {
+    const stickyInstrument = useStickyDefinedValue(instrument);
+
+    if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
     }
 
     return (
         <UpdateAccountScreen
-            instrumentSymbol={instrument.symbol}
+            instrumentSymbol={stickyInstrument.symbol}
             onSubmit={handleSubmit}
             account={account}
             control={control}
             isSubmitting={isSubmitting}
         >
-            <AccountTargetBalanceField control={control} instrumentSymbol={instrument.symbol} />
+            <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} />
             <DebtAccountContactField control={control} />
             <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
             <IncludeInNetWorthField control={control} />
