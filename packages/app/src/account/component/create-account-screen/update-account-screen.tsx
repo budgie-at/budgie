@@ -33,10 +33,11 @@ interface Props<T extends FieldValues> {
     readonly children?: ReactNode;
     readonly control: Control<T>;
     readonly onSubmit: EmptyFn;
+    readonly isSubmitting?: boolean;
 }
 
 export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterface | DebtAccountCreateInputInterface>(props: Props<T>) => {
-    const { children, account, onSubmit, control, instrumentSymbol, allowNegativeBalance } = props;
+    const { children, account, onSubmit, control, instrumentSymbol, allowNegativeBalance, isSubmitting } = props;
     const { t } = useLingui();
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -56,6 +57,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                         onPress={onSubmit}
                         size="sm"
                         variant={variant}
+                        isLoading={isSubmitting}
                         content={t`Update Account`}
                         className="flex-1"
                         testID={CreateAccountScreenSelector.SubmitButton}

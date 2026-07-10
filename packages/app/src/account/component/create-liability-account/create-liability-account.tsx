@@ -52,7 +52,7 @@ export const CreateLiabilityAccount = ({
         instrumentId
     };
 
-    const { control, handleSubmit, instrument } = useAccountForm(formValues, async values => {
+    const { control, handleSubmit, instrument, isSubmitting } = useAccountForm(formValues, async values => {
         const account = await accountService.create(values);
 
         void historicalMarketDataLoaderService.enqueueAccounts([account]).catch(emptyFn);
@@ -69,7 +69,7 @@ export const CreateLiabilityAccount = ({
     const minimumDecimalPlaces = type === AccountTypeEnum.CRYPTO ? MICRO_UNIT_DECIMAL_PLACES : 0;
 
     return (
-        <CreateAccountScreen title={title} variant={variant} onSubmit={handleSubmit}>
+        <CreateAccountScreen title={title} variant={variant} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
             <AccountBalanceField
                 variant={variant}
                 instrumentSymbol={instrument.symbol}

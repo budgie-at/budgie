@@ -38,7 +38,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         isActive: account.isActive
     };
 
-    const { control, handleSubmit, instrument } = useAccountForm(
+    const { control, handleSubmit, instrument, isSubmitting } = useAccountForm(
         formValues,
         async values =>
             await accountService.updateById(account.id, {
@@ -71,6 +71,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             account={account}
             control={control}
             allowNegativeBalance
+            isSubmitting={isSubmitting}
         >
             {currencyField}
             <FormItem label={t`Account Type`}>
