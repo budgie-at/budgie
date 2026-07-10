@@ -90,10 +90,6 @@ jobs:
           BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
-          gh release create ios-dev --repo "${GITHUB_REPOSITORY}" --prerelease --title "Budgie iOS Dev Build" --notes "Bootstrap release. Waiting for the first build upload." || true
-
-          gh release upload ios-dev artifacts/budgie-development.ipa --repo "${GITHUB_REPOSITORY}" --clobber
-
           NOTES_FILE=$(mktemp)
           {
             echo "Budgie iOS development build"
@@ -105,6 +101,12 @@ jobs:
             echo "Workflow run: ${RUN_URL}"
           } > "$NOTES_FILE"
 
-          gh release edit ios-dev --repo "${GITHUB_REPOSITORY}" --title "Budgie iOS Dev Build v${VERSION} (${SHORT_SHA})" --notes-file "$NOTES_FILE"
+          gh release delete ios-dev --repo "${GITHUB_REPOSITORY}" --yes --cleanup-tag || true
+
+          gh release create ios-dev artifacts/budgie-development.ipa --repo "${GITHUB_REPOSITORY}" --draft --prerelease --target "${GITHUB_SHA}" --title "Budgie iOS Dev Build v${VERSION} (${SHORT_SHA})" --notes-file "$NOTES_FILE"
+
+          RELEASE_ID=$(gh api "repos/${GITHUB_REPOSITORY}/releases" --jq '[.[] | select(.draft and .tag_name == "ios-dev")][0].id')
+
+          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}" -F draft=false > /dev/null
 
           rm -f "$NOTES_FILE"
