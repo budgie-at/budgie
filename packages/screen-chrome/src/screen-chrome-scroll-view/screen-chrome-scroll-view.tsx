@@ -24,6 +24,10 @@ export const ScreenChromeScrollView = ({
     const onScroll = useScreenChromeScrollHandler();
 
     const flattenedContentContainerStyle = StyleSheet.flatten(contentContainerStyle);
+    const consumerPaddingTop =
+        isDefined(flattenedContentContainerStyle) && isNumber(flattenedContentContainerStyle.paddingTop)
+            ? flattenedContentContainerStyle.paddingTop
+            : 0;
     const consumerPaddingBottom =
         isDefined(flattenedContentContainerStyle) && isNumber(flattenedContentContainerStyle.paddingBottom)
             ? flattenedContentContainerStyle.paddingBottom
@@ -31,7 +35,7 @@ export const ScreenChromeScrollView = ({
 
     const mergedContentContainerStyle = {
         ...flattenedContentContainerStyle,
-        paddingTop: insets.top + contentInsetTop,
+        paddingTop: insets.top + contentInsetTop + consumerPaddingTop,
         paddingBottom: insets.bottom + contentInsetBottom + consumerPaddingBottom
     };
 
