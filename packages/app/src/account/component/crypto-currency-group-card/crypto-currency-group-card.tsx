@@ -43,11 +43,7 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
 
     return (
         <View className="mb-3 gap-y-3">
-            <Card
-                className="border-warning-corner bg-secondary-background"
-                size="md"
-                testID={CryptoCurrencyGroupCardSelector.Card(group.instrument.code)}
-            >
+            <Card size="md" testID={CryptoCurrencyGroupCardSelector.Card(group.instrument.code)}>
                 <View className="gap-y-3">
                     <CryptoCurrencyGroupMarketLink
                         instrumentCode={group.instrument.code}
