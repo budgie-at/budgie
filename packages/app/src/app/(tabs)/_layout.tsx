@@ -45,7 +45,7 @@ export default function TabsLayout() {
                     <TabTrigger name="settings" href="/settings" />
                 </TabList>
 
-                <EdgeFade position="bottom" />
+                {isBackdropVisible ? null : <EdgeFade position="bottom" />}
                 <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none" style={tabBarWrapperStyle}>
                     <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
                         <TabButtons />

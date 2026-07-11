@@ -8,7 +8,7 @@ interface Props {
     readonly children: ReactNode;
 }
 
-const SCREEN_CHROME_CONFIG = { topFadeHeight: 112, bottomFadeHeight: 112 };
+const SCREEN_CHROME_CONFIG = { topFadeHeight: 128, bottomFadeHeight: 128 };
 
 export const ScreenChromeThemeProvider = ({ children }: Props) => {
     const { isDarkColorSchema } = useThemeContext();
