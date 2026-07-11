@@ -8,11 +8,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { FormPage } from '../../../@generic/component/form-page/form-page';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
@@ -29,10 +28,6 @@ import type { BudgetEntityInterface } from '@budgie/contracts';
 interface Props {
     readonly budget: BudgetEntityInterface;
 }
-
-const CONTENT_STYLE = { rowGap: 24 } as const;
-
-const handleGoBack = () => void goBackOrReplace('/');
 
 export const BudgetDetails = ({ budget }: Props) => {
     const { spent } = useGetBudgetSpentQuery(budget);
@@ -72,7 +67,7 @@ export const BudgetDetails = ({ budget }: Props) => {
             accessible
             accessibilityLabel={t`Manage budget`}
             accessibilityRole="button"
-            className="relative ml-auto h-[40px] w-[40px]"
+            className="relative h-[40px] w-[40px]"
             collapsable={false}
             nativeID={BudgetSelector.DetailsEditButton}
             testID={BudgetSelector.DetailsEditButton}
@@ -90,9 +85,11 @@ export const BudgetDetails = ({ budget }: Props) => {
     );
 
     return (
-        <FormPage
-            header={<PageHeader title={t`Budget details`} onGoBack={handleGoBack} right={headerAction} description={dateLabel} />}
-            contentContainerStyle={CONTENT_STYLE}
+        <CollapsibleChromePage
+            title={t`Budget details`}
+            leading={<HeaderBackButton />}
+            trailing={headerAction}
+            contentClassName="gap-y-7xl"
         >
             <View className="gap-y-md">
                 <View className="flex-row items-center justify-between">
@@ -101,6 +98,8 @@ export const BudgetDetails = ({ budget }: Props) => {
                     </Text>
                     <Text className="text-secondary-foreground text-sm">{formatDigits(displaySpent, currencySymbol)}</Text>
                 </View>
+
+                <Text className="text-secondary-foreground text-xs">{dateLabel}</Text>
 
                 <BudgetProgressBar
                     spent={spent.spentOverall}
@@ -118,6 +117,6 @@ export const BudgetDetails = ({ budget }: Props) => {
 
                 {categoryLimitsContent}
             </View>
-        </FormPage>
+        </CollapsibleChromePage>
     );
 };
