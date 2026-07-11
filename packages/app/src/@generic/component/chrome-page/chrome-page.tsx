@@ -8,19 +8,11 @@ import { cn } from '../../utils/cn.util';
 import { PAGE_DEFAULT_SAFE_EDGES, pageGetSafeEdgeStyle } from '../page/utils/page-get-safe-edge-style.util';
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 
-import type { ComponentProps, ReactNode } from 'react';
-import type { Edge } from 'react-native-safe-area-context';
-
-interface Props extends ComponentProps<typeof View> {
-    readonly safeEdges?: Edge[];
-    readonly header?: ReactNode;
-    readonly footer?: ReactNode;
-    readonly contentClassName?: string;
-}
+import type { PageChromePropsInterface } from '../page/interface/page-chrome-props.interface';
 
 const CHROME_PAGE_Z_INDEX = 3;
 
-export const ChromePage = (props: Props) => {
+export const ChromePage = (props: PageChromePropsInterface) => {
     const {
         className,
         header,
