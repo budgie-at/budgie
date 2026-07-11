@@ -87,6 +87,7 @@ export const BudgetDetails = ({ budget }: Props) => {
     return (
         <CollapsibleChromePage
             title={t`Budget details`}
+            subtitle={dateLabel}
             leading={<HeaderBackButton />}
             trailing={headerAction}
             contentClassName="gap-y-7xl"
@@ -98,8 +99,6 @@ export const BudgetDetails = ({ budget }: Props) => {
                     </Text>
                     <Text className="text-secondary-foreground text-sm">{formatDigits(displaySpent, currencySymbol)}</Text>
                 </View>
-
-                <Text className="text-secondary-foreground text-xs">{dateLabel}</Text>
 
                 <BudgetProgressBar
                     spent={spent.spentOverall}
