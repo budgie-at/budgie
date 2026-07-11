@@ -73,14 +73,10 @@ export default function SettingsPage() {
             Toast.show({ type: 'error', text1: t`Could not update settings`, text2: getErrorMessage(error) });
         });
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
+    const scrollViewProps = { ref: scrollViewRef, onLayout: onScrollViewLayout };
 
     return (
-        <CollapsibleChromePage
-            title={t`Settings`}
-            testID={SettingsPageSelector.Container}
-            scrollRef={scrollViewRef}
-            onScrollViewLayout={onScrollViewLayout}
-        >
+        <CollapsibleChromePage title={t`Settings`} testID={SettingsPageSelector.Container} scrollViewProps={scrollViewProps}>
             <View className="gap-y-7xl pb-5xl">
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
