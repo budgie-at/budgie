@@ -6,7 +6,7 @@ export const SCREEN_CHROME_SHARED_DEFAULT_CONFIG: Omit<
     'topFadeHeight' | 'bottomFadeHeight' | 'headerBackdropHeight' | 'maxBlurIntensity'
 > = {
     headerHeight: 64,
-    intensity: 50,
+    intensity: 20,
     collapseStart: 0,
     smallTitleStart: 40,
     largeTitleEnd: 60,
@@ -14,8 +14,8 @@ export const SCREEN_CHROME_SHARED_DEFAULT_CONFIG: Omit<
     scrollEventThrottle: 16,
     snapToCollapse: false,
     colors: {
-        [ColorSchemeEnum.Light]: { solid: 'rgba(255,255,255,0.42)', wash: 'rgba(255,255,255,0.08)' },
-        [ColorSchemeEnum.Dark]: { solid: 'rgba(0,0,0,0.48)', wash: 'rgba(0,0,0,0.12)' }
+        [ColorSchemeEnum.Light]: { solid: '#ffffff', wash: 'rgba(255,255,255,0.2)' },
+        [ColorSchemeEnum.Dark]: { solid: '#000000', wash: 'rgba(0,0,0,0.2)' }
     },
     maskStops: {
         top: {
@@ -25,8 +25,7 @@ export const SCREEN_CHROME_SHARED_DEFAULT_CONFIG: Omit<
         },
         bottom: {
             0: { color: 'transparent' },
-            0.16: { color: 'transparent' },
-            0.7: { color: '#000000' },
+            0.5: { color: '#000000' },
             1: { color: 'rgba(0,0,0,0.99)' }
         }
     }

@@ -25,7 +25,7 @@
         "react-native-easing-gradient": "^1.1.1"
     },
     "peerDependencies": {
-        "@expo/ui": "~56.0.15",
+        "@react-native-masked-view/masked-view": "^0.3.2",
         "expo-blur": "~56.0.3",
         "expo-linear-gradient": "~56.0.4",
         "react": "19.2.3",
