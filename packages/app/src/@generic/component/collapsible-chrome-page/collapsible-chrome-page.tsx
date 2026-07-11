@@ -14,6 +14,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
 import { cn } from '../../utils/cn.util';
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
@@ -29,7 +30,6 @@ interface Props {
     readonly testID?: string;
 }
 
-const CONTENT_TOP_INSET = 76;
 const FOOTER_CONTENT_BOTTOM_INSET = 96;
 
 export const CollapsibleChromePage = ({
@@ -49,7 +49,7 @@ export const CollapsibleChromePage = ({
             <ScreenChromeFrame>
                 <ScreenChromeScrollView
                     {...scrollViewProps}
-                    contentInsetTop={CONTENT_TOP_INSET}
+                    contentInsetTop={SCREEN_CHROME_CONTENT_INSET_TOP}
                     contentInsetBottom={contentInsetBottom}
                     showsVerticalScrollIndicator={false}
                     testID={testID}
