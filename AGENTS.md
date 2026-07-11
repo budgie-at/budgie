@@ -499,7 +499,8 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 2. **After contracts changes:** `yarn build`
 3. **Before commit:** Husky runs `yarn ts`, `yarn lint-staged`, commitlint
 4. **Before PR:** Run all validation commands
-5. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
+5. **Commit after every accepted change.** During interactive/live-tweak sessions, each user-approved fix or feature increment gets its own focused conventional commit immediately (validated via ts + lint first) — do not batch unrelated accepted changes into one commit or leave approved work uncommitted.
+6. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 
 ## Simulator Dev Testing
 
