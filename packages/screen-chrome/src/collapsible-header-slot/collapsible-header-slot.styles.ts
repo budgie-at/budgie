@@ -5,6 +5,7 @@ export const collapsibleHeaderSlotStyles = StyleSheet.create({
         minWidth: 44,
         minHeight: 44,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        zIndex: 1
     }
 });

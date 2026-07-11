@@ -8,11 +8,10 @@ import { collapsibleHeaderStyles } from './collapsible-header.styles';
 
 interface Props {
     readonly children: ReactNode;
-    readonly bottom?: ReactNode;
     readonly style?: StyleProp<ViewStyle>;
 }
 
-export const CollapsibleHeader = ({ children, bottom, style }: Props): ReactNode => {
+export const CollapsibleHeader = ({ children, style }: Props): ReactNode => {
     const { config } = useScreenChrome();
     const insets = useSafeAreaInsets();
 
@@ -22,7 +21,6 @@ export const CollapsibleHeader = ({ children, bottom, style }: Props): ReactNode
     return (
         <View style={combinedContainerStyle}>
             <View style={collapsibleHeaderStyles.row}>{children}</View>
-            {bottom}
         </View>
     );
 };
