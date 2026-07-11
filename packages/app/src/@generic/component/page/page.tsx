@@ -5,17 +5,9 @@ import { cn } from '../../utils/cn.util';
 
 import { PAGE_DEFAULT_SAFE_EDGES, pageGetSafeEdgeStyle } from './utils/page-get-safe-edge-style.util';
 
-import type { ComponentProps, ReactNode } from 'react';
-import type { Edge } from 'react-native-safe-area-context';
+import type { PageChromePropsInterface } from './interface/page-chrome-props.interface';
 
-interface Props extends ComponentProps<typeof View> {
-    readonly safeEdges?: Edge[];
-    readonly header?: ReactNode;
-    readonly footer?: ReactNode;
-    readonly contentClassName?: string;
-}
-
-export const Page = (props: Props) => {
+export const Page = (props: PageChromePropsInterface) => {
     const {
         className,
         header,
