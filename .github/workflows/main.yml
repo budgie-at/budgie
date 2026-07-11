@@ -22,6 +22,7 @@ jobs:
   release:
     name: Publish a release
     runs-on: [self-hosted, linux-ci]
+    timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -35,7 +36,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: yarn
 
       - name: Setup Git user
         run: |
@@ -85,7 +85,8 @@ jobs:
   eas-update:
     name: EAS Update
     needs: release
-    runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+    runs-on: [self-hosted, linux-ci]
+    timeout-minutes: 30
     steps:
       - name: Check for EXPO_TOKEN
         run: |
@@ -104,7 +105,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: yarn
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8

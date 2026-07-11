@@ -2,7 +2,7 @@ flows:
     - flows/*.flow.yaml
 
 executionOrder:
-    continueOnFailure: false
+    continueOnFailure: true
     flowsOrder:
         - 01.account-bank.flow
         - 02.account-cash.flow
