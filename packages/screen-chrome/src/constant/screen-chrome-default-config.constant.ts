@@ -7,5 +7,5 @@ export const SCREEN_CHROME_DEFAULT_CONFIG: ScreenChromeConfigInterface = {
     topFadeHeight: 146,
     bottomFadeHeight: 146,
     headerBackdropHeight: 220,
-    maxBlurIntensity: 52
+    maxBlurIntensity: 45
 };

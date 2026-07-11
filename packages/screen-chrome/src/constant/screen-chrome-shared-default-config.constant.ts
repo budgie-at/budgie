@@ -14,8 +14,8 @@ export const SCREEN_CHROME_SHARED_DEFAULT_CONFIG: Omit<
     scrollEventThrottle: 16,
     snapToCollapse: false,
     colors: {
-        [ColorSchemeEnum.Light]: { solid: '#ffffff', wash: 'rgba(255,255,255,0.2)' },
-        [ColorSchemeEnum.Dark]: { solid: '#000000', wash: 'rgba(0,0,0,0.2)' }
+        [ColorSchemeEnum.Light]: { solid: 'rgba(255,255,255,0.7)', wash: 'rgba(255,255,255,0.15)' },
+        [ColorSchemeEnum.Dark]: { solid: 'rgba(0,0,0,0.7)', wash: 'rgba(0,0,0,0.15)' }
     },
     maskStops: {
         top: {
