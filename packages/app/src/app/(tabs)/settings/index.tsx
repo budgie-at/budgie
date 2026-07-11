@@ -21,6 +21,8 @@ import { openGithubIssueCreation } from '../../../@generic/utils/open-github-iss
 import { AiEmbeddingStatusCard } from '../../../ai/component/ai-embedding-status-card/ai-embedding-status-card';
 import { AiSystemStatusBanner } from '../../../ai/component/ai-system-status-banner/ai-system-status-banner';
 import { AiTranslationStatusCard } from '../../../ai/component/ai-translation-status-card/ai-translation-status-card';
+import { AiSystemUmbrellaStateEnum } from '../../../ai/enum/ai-system-umbrella-state.enum';
+import { useAiSystemUmbrella } from '../../../ai/hook/use-ai-system-umbrella.hook';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
@@ -54,6 +56,7 @@ export default function SettingsPage() {
     const { top } = useSafeAreaInsets();
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
+    const isAiDisabled = useAiSystemUmbrella().state === AiSystemUmbrellaStateEnum.DISABLED;
     const scrollTopSpacerStyle = { height: top + SETTINGS_SCROLL_TOP_PADDING };
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
@@ -128,15 +131,17 @@ export default function SettingsPage() {
                     </SettingsGroup>
                 </View>
 
-                <View {...anchorLayout('ai')}>
-                    <SettingsGroup title={t`AI`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                            <AiSystemStatusBanner />
-                            <AiTranslationStatusCard />
-                            <AiEmbeddingStatusCard />
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
+                {isAiDisabled ? null : (
+                    <View {...anchorLayout('ai')}>
+                        <SettingsGroup title={t`AI`}>
+                            <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
+                                <AiSystemStatusBanner />
+                                <AiTranslationStatusCard />
+                                <AiEmbeddingStatusCard />
+                            </Animated.View>
+                        </SettingsGroup>
+                    </View>
+                )}
 
                 <View {...anchorLayout('organization')}>
                     <SettingsGroup title={t`Organization`}>
