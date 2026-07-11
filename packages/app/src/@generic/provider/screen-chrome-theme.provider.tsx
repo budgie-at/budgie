@@ -8,16 +8,10 @@ interface Props {
     readonly children: ReactNode;
 }
 
-const SCREEN_CHROME_CONFIG = { topFadeHeight: 128, bottomFadeHeight: 128 };
-
 export const ScreenChromeThemeProvider = ({ children }: Props) => {
     const { isDarkColorSchema } = useThemeContext();
 
     const colorScheme = isDarkColorSchema ? ColorSchemeEnum.Dark : ColorSchemeEnum.Light;
 
-    return (
-        <ScreenChromeProvider colorScheme={colorScheme} config={SCREEN_CHROME_CONFIG}>
-            {children}
-        </ScreenChromeProvider>
-    );
+    return <ScreenChromeProvider colorScheme={colorScheme}>{children}</ScreenChromeProvider>;
 };

@@ -54,7 +54,7 @@ export default function SettingsPage() {
     const { top } = useSafeAreaInsets();
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
-    const scrollContentStyle = { paddingTop: top + SETTINGS_SCROLL_TOP_PADDING };
+    const scrollTopSpacerStyle = { height: top + SETTINGS_SCROLL_TOP_PADDING };
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -83,9 +83,9 @@ export default function SettingsPage() {
                 ref={scrollViewRef}
                 onLayout={onScrollViewLayout}
                 contentContainerClassName="gap-y-7xl pb-5xl"
-                contentContainerStyle={scrollContentStyle}
                 showsVerticalScrollIndicator={false}
             >
+                <View style={scrollTopSpacerStyle} />
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
                         left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
