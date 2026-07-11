@@ -1,54 +1,45 @@
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
+import { View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { FormPage } from '../../../@generic/component/form-page/form-page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 
 import { CreateAccountScreenSelector } from './create-account-screen.selector';
 
 interface Props {
     readonly title: string;
-    readonly description?: string;
-    readonly descriptionClassName?: string;
     readonly variant: ColorPaletteVariant;
     readonly onSubmit: EmptyFn;
     readonly isSubmitting?: boolean;
     readonly children: ReactNode;
 }
 
-export const CreateAccountScreen = (props: Props) => {
-    const { title, description, descriptionClassName, variant, children, onSubmit, isSubmitting } = props;
+export const CreateAccountScreen = ({ title, variant, children, onSubmit, isSubmitting }: Props) => {
     const { t } = useLingui();
 
-    const handleGoBack = () => void goBackOrReplace('/');
-
     return (
-        <FormPage
-            scrollViewTestID={CreateAccountScreenSelector.ScrollView}
-            header={
-                <PageHeader
-                    title={title}
-                    onGoBack={handleGoBack}
-                    descriptionClassName={descriptionClassName}
-                    description={description ?? t`Fill in the account details`}
-                />
-            }
+        <CollapsibleChromePage
+            title={title}
+            leading={<HeaderBackButton />}
+            testID={CreateAccountScreenSelector.ScrollView}
             footer={
-                <Button
-                    variant={variant}
-                    onPress={onSubmit}
-                    isLoading={isSubmitting}
-                    content={t`Submit`}
-                    testID={CreateAccountScreenSelector.SubmitButton}
-                />
+                <View className="gap-md pt-xl px-7xl">
+                    <Button
+                        variant={variant}
+                        onPress={onSubmit}
+                        isLoading={isSubmitting}
+                        content={t`Submit`}
+                        testID={CreateAccountScreenSelector.SubmitButton}
+                    />
+                </View>
             }
         >
             {children}
-        </FormPage>
+        </CollapsibleChromePage>
     );
 };

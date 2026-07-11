@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
@@ -7,22 +6,19 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { FormPage } from '../../../@generic/component/form-page/form-page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { useAccountSelection } from '../../hook/use-account-selection.hook';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
+import { CreateFileBankAccountFooter } from '../create-file-bank-account-footer/create-file-bank-account-footer';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
 import { CreateFileBankAccountSelector } from './create-file-bank-account.selector';
 
 import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
-import type { Edge } from 'react-native-safe-area-context';
 
 type SetupStep = 'file' | 'accounts';
-const FORM_PAGE_SAFE_EDGES: Edge[] = ['bottom', 'top'];
 
 interface CreateFileBankAccountProps {
     readonly config: CreateFileBankAccountConfigInterface;
@@ -34,7 +30,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
     const [isLoading, setIsLoading] = useState(false);
     const { accountPreviews, selectedAccounts, setPreviews, toggleAccount, selectAllAccounts, deselectAllAccounts } = useAccountSelection();
     const [fileUri, setFileUri] = useState<string | null>(null);
-    const handleGoBack = () => void goBackOrReplace('/');
+
     const handleSelectFile = async () => {
         setIsLoading(true);
         try {
@@ -57,6 +53,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             setIsLoading(false);
         }
     };
+
     const handleSetupSync = async () => {
         if (!isDefined(fileUri)) {
             return;
@@ -72,21 +69,9 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             setIsLoading(false);
         }
     };
+
     const isFileStep = step === 'file';
-    const footerProps = isFileStep
-        ? {
-              onPress: handleSelectFile,
-              disabled: isLoading,
-              content: t`Select File`,
-              leftIcon: UserIconNameEnum.Upload,
-              testID: CreateFileBankAccountSelector.SelectFileButton
-          }
-        : {
-              onPress: handleSetupSync,
-              disabled: isLoading || selectedAccounts.size === 0,
-              content: t`Start Sync`,
-              testID: CreateFileBankAccountSelector.StartSyncButton
-          };
+    const hasSelectedAccounts = selectedAccounts.size > 0;
     const formStep = isFileStep ? (
         <FileUploadStep
             steps={config.steps}
@@ -105,15 +90,24 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             onDeselectAll={deselectAllAccounts}
         />
     );
+    const footer = (
+        <CreateFileBankAccountFooter
+            isFileStep={isFileStep}
+            isLoading={isLoading}
+            hasSelectedAccounts={hasSelectedAccounts}
+            onSelectFile={handleSelectFile}
+            onSetupSync={handleSetupSync}
+        />
+    );
 
     return (
-        <FormPage
-            header={<PageHeader onGoBack={handleGoBack} title={config.title} description={config.description} />}
-            footer={<Button {...footerProps} />}
-            safeEdges={FORM_PAGE_SAFE_EDGES}
-            scrollViewTestID={CreateFileBankAccountSelector.ScrollView}
+        <CollapsibleChromePage
+            title={config.title}
+            leading={<HeaderBackButton />}
+            testID={CreateFileBankAccountSelector.ScrollView}
+            footer={footer}
         >
             <FormLayoutGroup>{formStep}</FormLayoutGroup>
-        </FormPage>
+        </CollapsibleChromePage>
     );
 };
