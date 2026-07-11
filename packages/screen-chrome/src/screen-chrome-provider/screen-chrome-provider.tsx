@@ -1,5 +1,11 @@
 import { ReactNode, useMemo } from 'react';
-import Animated, { scrollTo, useAnimatedRef, useAnimatedScrollHandler, useReducedMotion, useSharedValue } from 'react-native-reanimated';
+import Animated, {
+    scrollTo,
+    useAnimatedRef,
+    useAnimatedScrollHandler,
+    useReducedMotion,
+    useScrollViewOffset
+} from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -45,8 +51,8 @@ const mergeConfig = (overrides: ScreenChromeConfigOverridesInterface | undefined
 const MOMENTUM_VELOCITY_EPSILON = 0.05;
 
 export const ScreenChromeProvider = ({ children, colorScheme = ColorSchemeEnum.Light, config }: Props): ReactNode => {
-    const scrollY = useSharedValue(0);
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
+    const scrollY = useScrollViewOffset(scrollRef);
     const reducedMotion = useReducedMotion();
     const mergedConfig = useMemo(() => mergeConfig(config), [config]);
     const { snapToCollapse, collapseStart, collapseEnd } = mergedConfig;
@@ -65,9 +71,6 @@ export const ScreenChromeProvider = ({ children, colorScheme = ColorSchemeEnum.L
     };
 
     const scrollHandler = useAnimatedScrollHandler({
-        onScroll: event => {
-            scrollY.value = Math.max(event.contentOffset.y, 0);
-        },
         onEndDrag: event => {
             if (!snapToCollapse) {
                 return;
