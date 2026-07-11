@@ -5,8 +5,11 @@ env:
     TURBO_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     PR_NUMBER: ${{ github.event.pull_request.number }}
     PR_TITLE: ${{ github.event.pull_request.title }}
-    MAESTRO_CLI_NO_ANALYTICS: false
-    MAESTRO_VERSION: '2.6.0'
+    MAESTRO_CLI_NO_ANALYTICS: 'true'
+    MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: 'true'
+    MAESTRO_VERSION: '2.6.1'
+    EAS_CLI_VERSION: '20.5.1'
+    EXPO_REPACK_VERSION: '0.7.2'
     RCT_USE_PREBUILT_RNCORE: 1
     RCT_USE_RN_DEP: 1
 
@@ -20,6 +23,7 @@ jobs:
     detect-mobile-impact:
         name: Detect mobile impact
         runs-on: [self-hosted, linux-ci]
+        timeout-minutes: 15
         permissions:
             contents: read
         outputs:
@@ -27,14 +31,11 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v5
-              with:
-                  fetch-depth: 0
 
             - name: Setup Node
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
-                  cache: yarn
 
             - name: Install dependencies
               run: yarn install
@@ -50,20 +51,22 @@ jobs:
                     exit 0
                   fi
 
-                  git fetch --no-tags origin main:refs/remotes/origin/main || true
+                  BASE_SHA="${{ github.event.pull_request.base.sha }}"
 
-                  MERGE_BASE="$(git merge-base origin/main HEAD 2>/dev/null || true)"
+                  if ! git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null; then
+                    git fetch --no-tags --depth=1 origin "$BASE_SHA" || true
+                  fi
 
-                  if [ -z "$MERGE_BASE" ]; then
-                    echo "::warning::Could not determine merge-base with origin/main; defaulting to mobile=true"
+                  if ! git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null; then
+                    echo "::warning::Could not fetch PR base $BASE_SHA; defaulting to mobile=true"
                     echo "mobile=$MOBILE" >> "$GITHUB_OUTPUT"
                     exit 0
                   fi
 
-                  echo "Merge base: $MERGE_BASE"
+                  echo "PR base: $BASE_SHA"
 
                   TURBO_EXIT=0
-                  TURBO_OUTPUT="$(yarn turbo query affected --packages --base "$MERGE_BASE" --no-update-notifier 2>turbo-query.log)" || TURBO_EXIT=$?
+                  TURBO_OUTPUT="$(yarn turbo query affected --packages --base "$BASE_SHA" --no-update-notifier 2>turbo-query.log)" || TURBO_EXIT=$?
 
                   if [ "$TURBO_EXIT" -ne 0 ]; then
                     echo "::warning::yarn turbo query affected failed; defaulting to mobile=true"
@@ -76,7 +79,7 @@ jobs:
                   fi
 
                   if [ "$MOBILE" = "false" ]; then
-                    if git diff --name-only "$MERGE_BASE" HEAD | grep -qE '^(tests/app-tests/|\.github/workflows/pr\.yml$)'; then
+                    if git diff --name-only "$BASE_SHA" HEAD | grep -qE '^(tests/app-tests/|\.github/workflows/pr\.yml$)'; then
                       MOBILE=true
                     fi
                   fi
@@ -87,6 +90,7 @@ jobs:
     code-quality:
         name: Code quality checks
         runs-on: [self-hosted, linux-ci]
+        timeout-minutes: 30
         permissions:
             contents: read
             id-token: write
@@ -99,7 +103,6 @@ jobs:
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
-                  cache: yarn
 
             - name: Install dependencies
               run: yarn install
@@ -115,7 +118,7 @@ jobs:
                   fi
 
             - name: Lint the PR Title
-              run: echo "${{env.PR_TITLE}}" | node_modules/.bin/commitlint
+              run: printf '%s\n' "$PR_TITLE" | node_modules/.bin/commitlint
 
             - name: Typescript checks
               run: yarn turbo run ts
@@ -124,7 +127,7 @@ jobs:
               run: yarn workspace @budgie-at/app-tests selectors:check
 
             - name: ESLint checks
-              run: yarn turbo run lint
+              run: yarn turbo run lint --concurrency=2
 
             - name: Deadcode detection
               continue-on-error: true
@@ -145,7 +148,11 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: EAS Update Preview
-        runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+        # Expo's Hermes compiler package ships an x86-64 Linux host binary.
+        # Keep this export off ARM64 self-hosted runners and reserve the Mac
+        # mini for the native iOS build and simulator stages below.
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
         permissions:
             contents: read
         steps:
@@ -164,12 +171,11 @@ jobs:
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
-                  cache: yarn
 
             - name: Setup EAS
               uses: expo/expo-github-action@v8
               with:
-                  eas-version: latest
+                  eas-version: ${{ env.EAS_CLI_VERSION }}
                   token: ${{ secrets.EXPO_TOKEN }}
 
             - name: Install dependencies
@@ -186,18 +192,20 @@ jobs:
                   USE_CCACHE: '1'
               run: |
                   yarn expo export --output-dir dist --dump-assetmap --platform ios --platform android
-                  eas update --skip-bundler --input-dir dist --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
+                  eas update --skip-bundler --input-dir dist --channel development --message "PR #$PR_NUMBER - $PR_TITLE"
 
     build-ios-e2e-app:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
-        needs: [detect-mobile-impact, code-quality, eas-update-preview]
+        needs: [detect-mobile-impact, code-quality]
         name: Build iOS E2E app
         runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+        timeout-minutes: 120
         permissions:
             contents: read
         env:
             APP_VARIANT: e2e
             EXPO_PUBLIC_AI_DISABLE: 'true'
+            EXPO_PUBLIC_LOGGING_DISABLE: 'true'
             EXPO_USE_PRECOMPILED_MODULES: '1'
             RCT_USE_PREBUILT_RNCORE: '1'
             RCT_USE_RN_DEP: '1'
@@ -228,7 +236,6 @@ jobs:
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
-                  cache: yarn
 
             - name: Install dependencies
               run: yarn install
@@ -239,27 +246,84 @@ jobs:
             - name: Setup EAS
               uses: expo/expo-github-action@v8
               with:
-                  eas-version: latest
+                  eas-version: ${{ env.EAS_CLI_VERSION }}
                   token: ${{ secrets.EXPO_TOKEN }}
 
-            - name: Select Xcode 26.4.1
+            - name: Generate native fingerprint
+              id: fingerprint
+              working-directory: packages/app
+              shell: bash
               run: |
-                  if [ -d /Applications/Xcode_26.4.1.app ]; then
-                    XCODE_APP=/Applications/Xcode_26.4.1.app
-                  elif [ -d /Applications/Xcode.app ]; then
-                    XCODE_APP=/Applications/Xcode.app
+                  set -euo pipefail
+                  eas fingerprint:generate \
+                    --build-profile e2e \
+                    --platform ios \
+                    --json \
+                    --non-interactive > "$RUNNER_TEMP/ios-fingerprint.json"
+                  hash=$(jq -er '.hash' "$RUNNER_TEMP/ios-fingerprint.json")
+                  echo "hash=$hash" >> "$GITHUB_OUTPUT"
+                  echo "Native fingerprint: $hash"
+
+            - name: Restore fingerprinted native app
+              id: native-app-cache
+              uses: actions/cache/restore@v5
+              with:
+                  path: .ci-cache/ios-native-app
+                  key: ios-native-v1-budgie-e2e-${{ runner.os }}-arm64-xcode26_4_1-17E202-${{ steps.fingerprint.outputs.hash }}
+
+            - name: Repack cached native app
+              id: repack
+              if: steps.native-app-cache.outputs.cache-hit == 'true'
+              continue-on-error: true
+              working-directory: packages/app
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  output_app="$GITHUB_WORKSPACE/.ci-artifacts/repacked/Budgie.app"
+                  mkdir -p "$(dirname "$output_app")"
+                  source_app=$(find "$GITHUB_WORKSPACE/.ci-cache/ios-native-app" -maxdepth 1 -name '*.app' -print -quit)
+                  test -n "$source_app"
+                  npx --yes "@expo/repack-app@$EXPO_REPACK_VERSION" . \
+                    --platform ios \
+                    --source-app "$source_app" \
+                    --output "$output_app" \
+                    --embed-bundle-assets
+                  test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$output_app/Info.plist")" = 'com.vitalyiegorov.budgie.e2e'
+                  ! /usr/libexec/PlistBuddy -c 'Print :DEV_CLIENT_DEFAULT_LAUNCHER_URL' "$output_app/Info.plist" >/dev/null 2>&1
+                  find "$output_app" -name 'main.jsbundle' -type f -print -quit | grep -q .
+
+            - name: Plan native build
+              id: native-plan
+              shell: bash
+              run: |
+                  if [ "${{ steps.native-app-cache.outputs.cache-hit }}" != 'true' ] || \
+                     [ "${{ steps.repack.outcome }}" != 'success' ]; then
+                    echo 'required=true' >> "$GITHUB_OUTPUT"
+                    if [ "${{ steps.native-app-cache.outputs.cache-hit }}" = 'true' ]; then
+                      echo '::warning::Repack failed validation; falling back to a full native build.'
+                    fi
                   else
+                    echo 'required=false' >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Select Xcode 26.4.1
+              if: steps.native-plan.outputs.required == 'true'
+              run: |
+                  XCODE_APP=/Applications/Xcode_26.4.1.app
+                  if [ ! -d "$XCODE_APP" ]; then
                     echo "::error::Xcode 26.4.1 is not installed on this runner."
-                    ls -1 /Applications | grep -i Xcode || true
                     exit 1
                   fi
 
                   echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
                   echo "Using Xcode at $XCODE_APP"
-                  xcode-select -p || true
-                  xcodebuild -version
+                  xcode_version=$("$XCODE_APP/Contents/Developer/usr/bin/xcodebuild" -version)
+                  printf '%s\n' "$xcode_version"
+                  grep -qx 'Xcode 26.4.1' <<< "$xcode_version"
+                  grep -qx 'Build version 17E202' <<< "$xcode_version"
 
             - name: Restore CocoaPods cache
+              if: steps.native-plan.outputs.required == 'true'
               uses: actions/cache/restore@v5
               with:
                   path: |
@@ -271,6 +335,7 @@ jobs:
                       pods-${{ runner.os }}-
 
             - name: Setup ccache
+              if: steps.native-plan.outputs.required == 'true'
               run: |
                   export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
                   mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
@@ -288,6 +353,7 @@ jobs:
                   fi
 
             - name: Restore ccache
+              if: steps.native-plan.outputs.required == 'true'
               uses: actions/cache/restore@v5
               with:
                   path: ${{ env.CCACHE_DIR }}
@@ -297,6 +363,7 @@ jobs:
                       ccache-${{ runner.os }}-
 
             - name: Expo Prebuild
+              if: steps.native-plan.outputs.required == 'true'
               working-directory: packages/app
               env:
                   APP_VARIANT: e2e
@@ -304,13 +371,15 @@ jobs:
               run: npx expo prebuild -p ios --clean
 
             - name: Sync CocoaPods
+              if: steps.native-plan.outputs.required == 'true'
               working-directory: packages/app/ios
               env:
                   APP_VARIANT: e2e
                   EXPO_PUBLIC_AI_DISABLE: 'true'
               run: pod install
 
-            - name: Build app
+            - name: Build native Release base
+              if: steps.native-plan.outputs.required == 'true'
               working-directory: packages/app
               env:
                   APP_VARIANT: e2e
@@ -327,7 +396,7 @@ jobs:
                     -configuration Release \
                     -derivedDataPath "$IOS_DERIVED_DATA" \
                     -destination "generic/platform=iOS Simulator" \
-                    -jobs $(sysctl -n hw.ncpu) \
+                    -jobs 5 \
                     CODE_SIGN_IDENTITY="-" \
                     AD_HOC_CODE_SIGNING_ALLOWED=YES \
                     PROVISIONING_PROFILE_SPECIFIER="" \
@@ -336,15 +405,50 @@ jobs:
                     ARCHS=arm64 \
                     EXCLUDED_ARCHS=x86_64
 
-            - name: Package iOS E2E app
+            - name: Package native base
+              if: steps.native-plan.outputs.required == 'true'
               run: |
+                  set -euo pipefail
                   APP_PATH=$(find "$IOS_DERIVED_DATA" -name "*.app" -path "*Release-iphonesimulator*" | head -1)
                   if [ -z "$APP_PATH" ]; then
                     echo "::error::Built iOS app bundle was not found in $IOS_DERIVED_DATA."
                     find "$IOS_DERIVED_DATA" -maxdepth 6 -name "*.app" || true
                     exit 1
                   fi
+                  test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP_PATH/Info.plist")" = 'com.vitalyiegorov.budgie.e2e'
+                  if /usr/libexec/PlistBuddy -c 'Print :DEV_CLIENT_DEFAULT_LAUNCHER_URL' "$APP_PATH/Info.plist" >/dev/null 2>&1; then
+                    echo '::error::Native E2E base unexpectedly contains a development-client launch URL.'
+                    exit 1
+                  fi
+                  find "$APP_PATH" -name 'main.jsbundle' -type f -print -quit | grep -q .
 
+                  ARTIFACT_DIR="$GITHUB_WORKSPACE/.ci-cache/ios-native-app"
+                  mkdir -p "$ARTIFACT_DIR"
+                  ditto "$APP_PATH" "$ARTIFACT_DIR/Base.app"
+
+            - name: Save fingerprinted native app
+              if: steps.native-app-cache.outputs.cache-hit != 'true'
+              uses: actions/cache/save@v5
+              with:
+                  path: .ci-cache/ios-native-app
+                  key: ios-native-v1-budgie-e2e-${{ runner.os }}-arm64-xcode26_4_1-17E202-${{ steps.fingerprint.outputs.hash }}
+
+            - name: Validate and package current app
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  if [ "${{ steps.repack.outcome }}" = 'success' ]; then
+                    APP_PATH="$GITHUB_WORKSPACE/.ci-artifacts/repacked/Budgie.app"
+                  else
+                    APP_PATH=$(find "$IOS_DERIVED_DATA" -name '*.app' -path '*Release-iphonesimulator*' -print -quit)
+                  fi
+                  test -d "$APP_PATH"
+                  test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP_PATH/Info.plist")" = 'com.vitalyiegorov.budgie.e2e'
+                  if /usr/libexec/PlistBuddy -c 'Print :DEV_CLIENT_DEFAULT_LAUNCHER_URL' "$APP_PATH/Info.plist" >/dev/null 2>&1; then
+                    echo '::error::E2E app unexpectedly contains a development-client launch URL.'
+                    exit 1
+                  fi
+                  find "$APP_PATH" -name 'main.jsbundle' -type f -print -quit | grep -q .
                   ARTIFACT_DIR="$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app"
                   APP_BUNDLE_NAME=$(basename "$APP_PATH")
                   mkdir -p "$ARTIFACT_DIR"
@@ -356,34 +460,25 @@ jobs:
                   name: ios-e2e-app
                   path: .ci-artifacts/ios-e2e-app/*.tar.gz
                   if-no-files-found: error
-
-            - name: Save CocoaPods cache
-              if: success()
-              uses: actions/cache/save@v5
-              with:
-                  path: |
-                      ~/Library/Caches/CocoaPods
-                      ~/.cocoapods
-                  key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-
-            - name: Save ccache
-              if: success()
-              uses: actions/cache/save@v5
-              with:
-                  path: ${{ env.CCACHE_DIR }}
-                  key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+                  compression-level: 0
+                  retention-days: 3
 
     e2e-ios:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, build-ios-e2e-app]
-        name: E2E Tests on iOS (shard ${{ matrix.shard }})
+        name: E2E Tests on iOS (shard ${{ matrix.shard-number }}/2)
         runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
-        permissions:
-            contents: read
+        timeout-minutes: 90
         strategy:
             fail-fast: false
             matrix:
-                shard: [1, 2, 3, 4]
+                include:
+                    - shard-index: 0
+                      shard-number: 1
+                    - shard-index: 1
+                      shard-number: 2
+        permissions:
+            contents: read
         env:
             APP_VARIANT: e2e
             EXPO_PUBLIC_AI_DISABLE: 'true'
@@ -392,13 +487,9 @@ jobs:
 
             - name: Select Xcode 26.4.1
               run: |
-                  if [ -d /Applications/Xcode_26.4.1.app ]; then
-                    XCODE_APP=/Applications/Xcode_26.4.1.app
-                  elif [ -d /Applications/Xcode.app ]; then
-                    XCODE_APP=/Applications/Xcode.app
-                  else
+                  XCODE_APP=/Applications/Xcode_26.4.1.app
+                  if [ ! -d "$XCODE_APP" ]; then
                     echo "::error::Xcode 26.4.1 is not installed on this runner."
-                    ls -1 /Applications | grep -i Xcode || true
                     exit 1
                   fi
 
@@ -411,25 +502,36 @@ jobs:
               run: xcrun simctl shutdown all || true
 
             - name: Start iOS Simulator
-              uses: futureware-tech/simulator-action@v4
-              with:
-                  model: 'iPhone 17 Pro'
-
-            - name: Capture simulator UDID
+              shell: bash
               run: |
-                  BOOTED_UDIDS="$(
-                    xcrun simctl list devices booted |
-                      sed -n 's/.*(\([A-F0-9-]\{36\}\)) (Booted).*/\1/p'
+                  set -euo pipefail
+                  SIMULATOR_UDID="$(
+                    xcrun simctl list devices available |
+                      sed -n '/iPhone 17 Pro (/ { s/.*(\([A-F0-9-]\{36\}\)).*/\1/; p; q; }'
                   )"
 
-                  BOOTED_COUNT="$(printf '%s\n' "$BOOTED_UDIDS" | sed '/^$/d' | wc -l | tr -d ' ')"
-                  if [ "$BOOTED_COUNT" -ne 1 ]; then
-                    echo "::error::Expected exactly 1 booted simulator, found $BOOTED_COUNT."
-                    xcrun simctl list devices booted
+                  if [ -z "$SIMULATOR_UDID" ]; then
+                    echo "::error::No available iPhone 17 Pro simulator was found."
+                    xcrun simctl list devices available
                     exit 1
                   fi
 
-                  SIMULATOR_UDID="$(printf '%s\n' "$BOOTED_UDIDS" | sed -n '1p')"
+                  booted=false
+                  for attempt in 1 2 3; do
+                    echo "Booting simulator $SIMULATOR_UDID (attempt $attempt/3)"
+                    xcrun simctl boot "$SIMULATOR_UDID" 2>/dev/null || true
+                    if xcrun simctl bootstatus "$SIMULATOR_UDID" -b; then
+                      booted=true
+                      break
+                    fi
+                    xcrun simctl shutdown "$SIMULATOR_UDID" 2>/dev/null || true
+                  done
+
+                  if [ "$booted" != true ]; then
+                    echo "::error::Simulator did not finish booting after 3 attempts."
+                    exit 1
+                  fi
+
                   echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
                   echo "Using simulator UDID: $SIMULATOR_UDID"
                   xcrun simctl list devices booted
@@ -469,8 +571,17 @@ jobs:
 
             - name: Install Maestro
               run: |
-                  export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
-                  echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+                  maestro_bin="$HOME/.maestro/bin/maestro"
+                  installed_version="$(
+                    MAESTRO_CLI_NO_ANALYTICS=true \
+                      MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true \
+                      "$maestro_bin" --version 2>/dev/null | tail -n 1 | tr -d '\r' || true
+                  )"
+                  if [ ! -x "$maestro_bin" ] || [ "$installed_version" != "$MAESTRO_VERSION" ]; then
+                    curl -fsSL "https://get.maestro.mobile.dev" | env MAESTRO_VERSION="$MAESTRO_VERSION" bash
+                  fi
+                  echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+                  test "$(MAESTRO_CLI_NO_ANALYTICS=true MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true "$maestro_bin" --version 2>&1 | tail -n 1 | tr -d '\r')" = "$MAESTRO_VERSION"
 
             - name: Prepare iOS E2E artifact directories
               run: |
@@ -485,22 +596,31 @@ jobs:
                   echo $! > "$ARTIFACT_DIR/simulator-log.pid"
 
             - name: Run Maestro UI tests
+              timeout-minutes: 75
               working-directory: tests/app-tests
               shell: bash
+              env:
+                  SHARD_INDEX: ${{ matrix.shard-index }}
               run: |
                   set -euo pipefail
-                  SHARD_FLOWS=()
-                  while IFS= read -r FLOW_NAME; do
-                    if [ -n "$FLOW_NAME" ]; then
-                      SHARD_FLOWS+=("flows/$FLOW_NAME")
+                  all_flows=()
+                  while IFS= read -r flow; do
+                    all_flows+=("$flow")
+                  done < <(find flows -maxdepth 1 -type f -name '*.flow.yaml' | sort)
+                  selected=()
+                  for index in "${!all_flows[@]}"; do
+                    if (( index % 2 == SHARD_INDEX )); then
+                      selected+=("${all_flows[$index]}")
                     fi
-                  done < "shards/shard-${{ matrix.shard }}.txt"
+                  done
+                  test "${#selected[@]}" -gt 0
+                  printf 'Shard %s flows:\n%s\n' "$SHARD_INDEX" "${selected[*]}"
                   sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e \
-                    "${SHARD_FLOWS[@]}" \
                     --format junit \
                     --output ./artifacts/maestro/report.xml \
                     --debug-output ./artifacts/maestro \
                     --test-output-dir ./artifacts/maestro \
+                    "${selected[@]}" \
                     2>&1 | tee ./artifacts/maestro/maestro-console.log
 
             - name: Stop iOS Simulator captures
@@ -527,7 +647,7 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v6
               with:
-                  name: maestro-ios-artifacts-shard-${{ matrix.shard }}
+                  name: maestro-ios-artifacts-shard-${{ matrix.shard-number }}
                   include-hidden-files: true
                   path: |
                       tests/app-tests/artifacts/maestro/**
@@ -538,18 +658,26 @@ jobs:
               if: failure()
               uses: actions/upload-artifact@v6
               with:
-                  name: maestro-ios-simulator-failure-artifacts-shard-${{ matrix.shard }}
+                  name: maestro-ios-simulator-failure-artifacts-shard-${{ matrix.shard-number }}
                   include-hidden-files: true
                   path: |
                       tests/app-tests/artifacts/simulator/**
                       tests/app-tests/artifacts/diagnostics/**
                   if-no-files-found: warn
 
+            - name: Shutdown iOS Simulator
+              if: always()
+              run: |
+                  if [ -n "${SIMULATOR_UDID:-}" ]; then
+                    xcrun simctl shutdown "$SIMULATOR_UDID" || true
+                  fi
+
     e2e-android:
         if: false && needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, code-quality, eas-update-preview]
         name: E2E Tests on Android
         runs-on: [self-hosted, linux-ci]
+        timeout-minutes: 60
         permissions:
             contents: read
         steps:
@@ -565,7 +693,6 @@ jobs:
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
-                  cache: yarn
 
             - name: Setup EAS
               uses: expo/expo-github-action@v8
@@ -606,8 +733,17 @@ jobs:
 
             - name: Install Maestro
               run: |
-                  export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
-                  echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+                  maestro_bin="$HOME/.maestro/bin/maestro"
+                  installed_version="$(
+                    MAESTRO_CLI_NO_ANALYTICS=true \
+                      MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true \
+                      "$maestro_bin" --version 2>/dev/null | tail -n 1 | tr -d '\r' || true
+                  )"
+                  if [ ! -x "$maestro_bin" ] || [ "$installed_version" != "$MAESTRO_VERSION" ]; then
+                    curl -fsSL "https://get.maestro.mobile.dev" | env MAESTRO_VERSION="$MAESTRO_VERSION" bash
+                  fi
+                  echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+                  test "$(MAESTRO_CLI_NO_ANALYTICS=true MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true "$maestro_bin" --version 2>&1 | tail -n 1 | tr -d '\r')" = "$MAESTRO_VERSION"
 
             - name: Сreate AVD and generate snapshot for caching
               if: steps.avd-cache.outputs.cache-hit != 'true'
