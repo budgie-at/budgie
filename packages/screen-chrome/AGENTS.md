@@ -20,30 +20,35 @@ Generic, composable **scroll edge fade + blur chrome** and **collapsible header*
 
 ```tsx
 <ScreenChromeProvider colorScheme={ColorSchemeEnum.Light} config={{ topFadeHeight: 112, bottomFadeHeight: 112 }}>
-  <ScreenChromeFrame>
-    <ScreenChromeContent>
-      <ScreenChromeScrollView>{content}</ScreenChromeScrollView>
-    </ScreenChromeContent>
-    <EdgeFade position="top" scrollAnimation={{ opacityInputRange: [0, 40] }} />
-    <EdgeFade position="bottom" />
-    <CollapsibleHeader>
-      <CollapsibleHeaderLeading>{back}</CollapsibleHeaderLeading>
-      <CollapsibleHeaderTitleSlot>
-        <CollapsibleHeaderLargeTitle><Title big /></CollapsibleHeaderLargeTitle>
-      </CollapsibleHeaderTitleSlot>
-      <CollapsibleHeaderTrailing>{actions}</CollapsibleHeaderTrailing>
-      <CollapsibleHeaderSmallTitle><Title small /></CollapsibleHeaderSmallTitle>
-    </CollapsibleHeader>
-    <CollapsibleHeaderBackdrop />
-  </ScreenChromeFrame>
+    <ScreenChromeFrame>
+        <ScreenChromeContent>
+            <ScreenChromeScrollView>{content}</ScreenChromeScrollView>
+        </ScreenChromeContent>
+        <EdgeFade position="top" scrollAnimation={{ opacityInputRange: [0, 40] }} />
+        <EdgeFade position="bottom" />
+        <CollapsibleHeader>
+            <CollapsibleHeaderLeading>{back}</CollapsibleHeaderLeading>
+            <CollapsibleHeaderTitleSlot>
+                <CollapsibleHeaderLargeTitle>
+                    <Title big />
+                </CollapsibleHeaderLargeTitle>
+            </CollapsibleHeaderTitleSlot>
+            <CollapsibleHeaderTrailing>{actions}</CollapsibleHeaderTrailing>
+            <CollapsibleHeaderSmallTitle>
+                <Title small />
+            </CollapsibleHeaderSmallTitle>
+        </CollapsibleHeader>
+        <CollapsibleHeaderBackdrop />
+    </ScreenChromeFrame>
 </ScreenChromeProvider>
 ```
 
-- **`ScreenChromeProvider`** — owns a `scrollY` SharedValue + merged config. `colorScheme` is injected (no theme-lib dependency). **Each screen that wants an independent collapse needs its own provider instance** — a single app-root provider makes all screens share one `scrollY`, which is wrong for per-screen collapse. Mount one provider per collapsible screen (bridge `colorScheme` from the app theme).
+- **`ScreenChromeProvider`** — owns a `scrollY` SharedValue (via `useScrollViewOffset(scrollRef)`, so it always mirrors the scrollable's true native offset) + merged config. `colorScheme` is injected (no theme-lib dependency). **Each screen that wants an independent collapse needs its own provider instance** — a single app-root provider makes all screens share one `scrollY`, which is wrong for per-screen collapse. Mount one provider per collapsible screen (bridge `colorScheme` from the app theme).
 - **`EdgeFade`** — props: `position` (`'top' | 'bottom'`), `height?`, `intensity?`, `scrollAnimation?`, `blurMethod?` (Android only), `style?`. Height defaults to `config.{top,bottom}FadeHeight` and the safe-area inset is added **once** inside the component — do NOT pre-add the inset in the caller (that double-counts and the band spills into content).
 - **`CollapsibleHeader*`** — compound parts; title components are consumer-provided children (package animates opacity only, no fonts/i18n). The row is single-tier: `CollapsibleHeaderLeading`/`CollapsibleHeaderTrailing` render only when supplied (no phantom 44px box when absent) and sit in normal flex flow. `CollapsibleHeaderLargeTitle` is an **inline flex child** inside `CollapsibleHeaderTitleSlot` — it flows immediately after `CollapsibleHeaderLeading` (so a back chevron and the large title always share one line, `‹ Title`) and only its opacity fades on scroll, never its position. `CollapsibleHeaderSmallTitle` is the opposite: an **absolutely-positioned layer spanning the full row** (ignoring where Leading/Trailing sit), content centered with generous horizontal padding so it never underlaps the slots — this is what makes the collapsed title sit at true screen-center regardless of whether a leading/trailing slot is present. It is `pointerEvents="none"` and painted at a lower `zIndex` than the slots, which stay tappable on top.
-- **`ScreenChromeScrollView`** — `Animated.ScrollView` prewired to the provider's scroll handler; feeds `scrollY`. Preserves consumer `contentContainerStyle` padding (top and bottom both merged additively with safe-area insets).
-- **Hooks** — `useScreenChrome`, `useScreenChromeScrollHandler`, `useScrollFadeStyle`.
+- **`ScreenChromeScrollView`** — `Animated.ScrollView` prewired to the provider's `scrollRef` (which is what actually drives `scrollY`) and scroll handler (snap-to-collapse only). Preserves consumer `contentContainerStyle` padding (top and bottom both merged additively with safe-area insets).
+- **Custom scrollables** (a virtualized list instead of `ScreenChromeScrollView`, e.g. `AnimatedLegendList`/`Animated.FlatList`): `scrollY` is only live if something feeds it. Either attach the provider's `scrollRef` (via `useScreenChrome().scrollRef`) as the list's animated scroll-view ref so `useScrollViewOffset` can track it directly, or — when the list manages its own native scroll view and can't share `scrollRef` (e.g. `@legendapp/list`'s `sharedValues.scrollOffset`) — bind `useScreenChrome().scrollY` as that external shared value so the list writes into the same SharedValue instance. Do not also attach `scrollRef` in that second case — nothing would ever feed it, and it's harmless to leave unattached, but there is no snap-to-collapse without a real `scrollRef`.
+- **Hooks** — `useScreenChrome`, `useScreenChromeScrollHandler` (returns the snap-to-collapse `onEndDrag`/`onMomentumEnd` handler only — it no longer writes `scrollY`), `useScrollFadeStyle`.
 - **Config** — every threshold/height/intensity/color/mask curve is overridable via `ScreenChromeProvider config`. Defaults in `src/constant/`.
 
 ## Theming
@@ -62,6 +67,7 @@ Generic, composable **scroll edge fade + blur chrome** and **collapsible header*
 - **Metro + workspace source**: after changing this package, reload with cache clear — do not assume Fast Refresh picked it up.
 - **Mask curve controls how much blur is visible**: the outer portion of the band at full mask opacity is where the blur reads; if that region is too small (or occluded by a tab bar/footer) the effect looks like a plain fade with no blur. Defaults: top `{0: 0.99, 0.5: #000, 1: transparent}`, bottom mirrored, eased.
 - **react-compiler is NOT applied to this package** in some monorepos (Metro resolves the symlink via a `node_modules` real path that the compiler skips). Memoize provider context value/config manually here rather than relying on the compiler.
+- **`scrollY` must reflect the native offset, not accumulate from `onScroll` events.** Writing `scrollY.value` only inside `useAnimatedScrollHandler`'s `onScroll` desyncs it whenever the scroll view's real position changes without an `onScroll` event firing — the classic repro: scroll a screen so the header collapses, push a sub-screen, pop back. `ScrollView` natively restores its previous offset (no scroll event fires for that), but the handler-driven `scrollY` stayed wherever it last was (often 0), so the header renders expanded over already-scrolled content. Fixed by deriving `scrollY` from `useScrollViewOffset(scrollRef)`, which mirrors the scrollable's true offset (including after remount/focus-restore) instead of accumulating deltas. `useAnimatedScrollHandler` is now used only for the `snapToCollapse` logic (`onEndDrag`/`onMomentumEnd`); it must not regain an `onScroll` writer for `scrollY`.
 
 ## Repo rules
 
