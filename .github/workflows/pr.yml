@@ -198,7 +198,7 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, code-quality]
         name: Build iOS E2E app
-        runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+        runs-on: [self-hosted, macOS, ARM64, macos-builder]
         timeout-minutes: 120
         permissions:
             contents: read
@@ -467,10 +467,11 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, build-ios-e2e-app]
         name: E2E Tests on iOS (shard ${{ matrix.shard-number }}/2)
-        runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+        runs-on: [self-hosted, macOS, ARM64, macos-maestro]
         timeout-minutes: 90
         strategy:
             fail-fast: false
+            max-parallel: 2
             matrix:
                 include:
                     - shard-index: 0
