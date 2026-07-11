@@ -21,3 +21,5 @@ export type {
     ScreenChromeConfigInterface,
     ScreenChromeConfigOverridesInterface
 } from './interface/screen-chrome-config.interface';
+export { mergeRefs } from './utils/merge-refs.util';
+export { mergeScrollContentInset } from './utils/merge-scroll-content-inset.util';
