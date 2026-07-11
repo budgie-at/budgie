@@ -20,8 +20,8 @@ import { ChromeKeyboardScrollView } from '../chrome-keyboard-scroll-view/chrome-
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 
 type TitleProps =
-    | { readonly title: string; readonly largeTitle?: never; readonly smallTitle?: never }
-    | { readonly title?: never; readonly largeTitle: ReactNode; readonly smallTitle: ReactNode };
+    | { readonly title: string; readonly subtitle?: string; readonly largeTitle?: never; readonly smallTitle?: never }
+    | { readonly title?: never; readonly subtitle?: never; readonly largeTitle: ReactNode; readonly smallTitle: ReactNode };
 
 type Props = TitleProps & {
     readonly children: ReactNode;
@@ -37,6 +37,7 @@ const FOOTER_CONTENT_BOTTOM_INSET = 96;
 
 export const CollapsibleChromePage = ({
     title,
+    subtitle,
     largeTitle,
     smallTitle,
     children,
@@ -49,14 +50,28 @@ export const CollapsibleChromePage = ({
 }: Props): ReactNode => {
     const contentInsetBottom = isDefined(footer) ? FOOTER_CONTENT_BOTTOM_INSET : 0;
     const resolvedLargeTitle = largeTitle ?? (
-        <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
-            {title}
-        </Text>
+        <View className="gap-y-xs">
+            <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
+                {title}
+            </Text>
+            {isDefined(subtitle) ? (
+                <Text className="text-secondary-foreground text-xs" numberOfLines={1}>
+                    {subtitle}
+                </Text>
+            ) : null}
+        </View>
     );
     const resolvedSmallTitle = smallTitle ?? (
-        <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>
-            {title}
-        </Text>
+        <View className="items-center">
+            <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>
+                {title}
+            </Text>
+            {isDefined(subtitle) ? (
+                <Text className="text-secondary-foreground text-xs text-center" numberOfLines={1}>
+                    {subtitle}
+                </Text>
+            ) : null}
+        </View>
     );
 
     return (
