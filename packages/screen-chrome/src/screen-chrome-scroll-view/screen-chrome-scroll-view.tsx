@@ -1,13 +1,12 @@
 import { ComponentProps, ReactNode, Ref, useMemo } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { isDefined, isNumber } from '@rnw-community/shared';
 
 import { useScreenChromeScrollHandler } from '../hook/use-screen-chrome-scroll-handler.hook';
 import { useScreenChrome } from '../hook/use-screen-chrome.hook';
 import { mergeRefs } from '../utils/merge-refs.util';
+import { mergeScrollContentInset } from '../utils/merge-scroll-content-inset.util';
 
 interface Props extends ComponentProps<typeof ScrollView> {
     readonly contentInsetTop?: number;
@@ -26,22 +25,7 @@ export const ScreenChromeScrollView = ({
     const insets = useSafeAreaInsets();
     const onScroll = useScreenChromeScrollHandler();
     const mergedRef = useMemo(() => mergeRefs(scrollRef, ref), [scrollRef, ref]);
-
-    const flattenedContentContainerStyle = StyleSheet.flatten(contentContainerStyle);
-    const consumerPaddingTop =
-        isDefined(flattenedContentContainerStyle) && isNumber(flattenedContentContainerStyle.paddingTop)
-            ? flattenedContentContainerStyle.paddingTop
-            : 0;
-    const consumerPaddingBottom =
-        isDefined(flattenedContentContainerStyle) && isNumber(flattenedContentContainerStyle.paddingBottom)
-            ? flattenedContentContainerStyle.paddingBottom
-            : 0;
-
-    const mergedContentContainerStyle = {
-        ...flattenedContentContainerStyle,
-        paddingTop: insets.top + contentInsetTop + consumerPaddingTop,
-        paddingBottom: insets.bottom + contentInsetBottom + consumerPaddingBottom
-    };
+    const mergedContentContainerStyle = mergeScrollContentInset(insets, contentInsetTop, contentInsetBottom, contentContainerStyle);
 
     return (
         <Animated.ScrollView
