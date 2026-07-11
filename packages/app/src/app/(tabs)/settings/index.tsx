@@ -4,6 +4,7 @@ import Constants from 'expo-constants';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
@@ -45,11 +46,15 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 
 import { SettingsPageSelector } from './settings-page.selector';
 
-// eslint-disable-next-line max-lines-per-function
+const SETTINGS_SCROLL_TOP_PADDING = 64;
+
+// eslint-disable-next-line max-lines-per-function, max-statements
 export default function SettingsPage() {
     const { t } = useLingui();
+    const { top } = useSafeAreaInsets();
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
+    const scrollContentStyle = { paddingTop: top + SETTINGS_SCROLL_TOP_PADDING };
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -77,7 +82,8 @@ export default function SettingsPage() {
             <ScrollView
                 ref={scrollViewRef}
                 onLayout={onScrollViewLayout}
-                contentContainerClassName="gap-y-7xl pt-16 pb-5xl"
+                contentContainerClassName="gap-y-7xl pb-5xl"
+                contentContainerStyle={scrollContentStyle}
                 showsVerticalScrollIndicator={false}
             >
                 <SettingsGroup title={t`Privacy`}>
