@@ -5,8 +5,9 @@ env:
     TURBO_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     PR_NUMBER: ${{ github.event.pull_request.number }}
     PR_TITLE: ${{ github.event.pull_request.title }}
-    MAESTRO_CLI_NO_ANALYTICS: false
-    MAESTRO_VERSION: '2.6.0'
+    MAESTRO_CLI_NO_ANALYTICS: 'true'
+    MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: 'true'
+    MAESTRO_VERSION: '2.6.1'
     RCT_USE_PREBUILT_RNCORE: 1
     RCT_USE_RN_DEP: 1
 
@@ -20,6 +21,7 @@ jobs:
     detect-mobile-impact:
         name: Detect mobile impact
         runs-on: [self-hosted, linux-ci]
+        timeout-minutes: 15
         permissions:
             contents: read
         outputs:
@@ -27,14 +29,11 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v5
-              with:
-                  fetch-depth: 0
 
             - name: Setup Node
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
-                  cache: yarn
 
             - name: Install dependencies
               run: yarn install
@@ -50,20 +49,22 @@ jobs:
                     exit 0
                   fi
 
-                  git fetch --no-tags origin main:refs/remotes/origin/main || true
+                  BASE_SHA="${{ github.event.pull_request.base.sha }}"
 
-                  MERGE_BASE="$(git merge-base origin/main HEAD 2>/dev/null || true)"
+                  if ! git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null; then
+                    git fetch --no-tags --depth=1 origin "$BASE_SHA" || true
+                  fi
 
-                  if [ -z "$MERGE_BASE" ]; then
-                    echo "::warning::Could not determine merge-base with origin/main; defaulting to mobile=true"
+                  if ! git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null; then
+                    echo "::warning::Could not fetch PR base $BASE_SHA; defaulting to mobile=true"
                     echo "mobile=$MOBILE" >> "$GITHUB_OUTPUT"
                     exit 0
                   fi
 
-                  echo "Merge base: $MERGE_BASE"
+                  echo "PR base: $BASE_SHA"
 
                   TURBO_EXIT=0
-                  TURBO_OUTPUT="$(yarn turbo query affected --packages --base "$MERGE_BASE" --no-update-notifier 2>turbo-query.log)" || TURBO_EXIT=$?
+                  TURBO_OUTPUT="$(yarn turbo query affected --packages --base "$BASE_SHA" --no-update-notifier 2>turbo-query.log)" || TURBO_EXIT=$?
 
                   if [ "$TURBO_EXIT" -ne 0 ]; then
                     echo "::warning::yarn turbo query affected failed; defaulting to mobile=true"
@@ -76,7 +77,7 @@ jobs:
                   fi
 
                   if [ "$MOBILE" = "false" ]; then
-                    if git diff --name-only "$MERGE_BASE" HEAD | grep -qE '^(tests/app-tests/|\.github/workflows/pr\.yml$)'; then
+                    if git diff --name-only "$BASE_SHA" HEAD | grep -qE '^(tests/app-tests/|\.github/workflows/pr\.yml$)'; then
                       MOBILE=true
                     fi
                   fi
@@ -87,6 +88,7 @@ jobs:
     code-quality:
         name: Code quality checks
         runs-on: [self-hosted, linux-ci]
+        timeout-minutes: 30
         permissions:
             contents: read
             id-token: write
@@ -99,7 +101,6 @@ jobs:
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
-                  cache: yarn
 
             - name: Install dependencies
               run: yarn install
@@ -124,7 +125,7 @@ jobs:
               run: yarn workspace @budgie-at/app-tests selectors:check
 
             - name: ESLint checks
-              run: yarn turbo run lint
+              run: yarn turbo run lint --concurrency=2
 
             - name: Deadcode detection
               continue-on-error: true
@@ -145,7 +146,11 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: EAS Update Preview
-        runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+        # Expo's Hermes compiler package ships an x86-64 Linux host binary.
+        # Keep this export off ARM64 self-hosted runners and reserve the Mac
+        # mini for the native iOS build and simulator stages below.
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
         permissions:
             contents: read
         steps:
@@ -164,7 +169,6 @@ jobs:
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
-                  cache: yarn
 
             - name: Setup EAS
               uses: expo/expo-github-action@v8
@@ -193,6 +197,7 @@ jobs:
         needs: [detect-mobile-impact, code-quality, eas-update-preview]
         name: Build iOS E2E app
         runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+        timeout-minutes: 120
         permissions:
             contents: read
         env:
@@ -228,7 +233,6 @@ jobs:
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
-                  cache: yarn
 
             - name: Install dependencies
               run: yarn install
@@ -357,33 +361,14 @@ jobs:
                   path: .ci-artifacts/ios-e2e-app/*.tar.gz
                   if-no-files-found: error
 
-            - name: Save CocoaPods cache
-              if: success()
-              uses: actions/cache/save@v5
-              with:
-                  path: |
-                      ~/Library/Caches/CocoaPods
-                      ~/.cocoapods
-                  key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-
-            - name: Save ccache
-              if: success()
-              uses: actions/cache/save@v5
-              with:
-                  path: ${{ env.CCACHE_DIR }}
-                  key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-
     e2e-ios:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, build-ios-e2e-app]
-        name: E2E Tests on iOS (shard ${{ matrix.shard }})
+        name: E2E Tests on iOS
         runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+        timeout-minutes: 150
         permissions:
             contents: read
-        strategy:
-            fail-fast: false
-            matrix:
-                shard: [1, 2, 3, 4]
         env:
             APP_VARIANT: e2e
             EXPO_PUBLIC_AI_DISABLE: 'true'
@@ -411,25 +396,36 @@ jobs:
               run: xcrun simctl shutdown all || true
 
             - name: Start iOS Simulator
-              uses: futureware-tech/simulator-action@v4
-              with:
-                  model: 'iPhone 17 Pro'
-
-            - name: Capture simulator UDID
+              shell: bash
               run: |
-                  BOOTED_UDIDS="$(
-                    xcrun simctl list devices booted |
-                      sed -n 's/.*(\([A-F0-9-]\{36\}\)) (Booted).*/\1/p'
+                  set -euo pipefail
+                  SIMULATOR_UDID="$(
+                    xcrun simctl list devices available |
+                      sed -n '/iPhone 17 Pro (/ { s/.*(\([A-F0-9-]\{36\}\)).*/\1/; p; q; }'
                   )"
 
-                  BOOTED_COUNT="$(printf '%s\n' "$BOOTED_UDIDS" | sed '/^$/d' | wc -l | tr -d ' ')"
-                  if [ "$BOOTED_COUNT" -ne 1 ]; then
-                    echo "::error::Expected exactly 1 booted simulator, found $BOOTED_COUNT."
-                    xcrun simctl list devices booted
+                  if [ -z "$SIMULATOR_UDID" ]; then
+                    echo "::error::No available iPhone 17 Pro simulator was found."
+                    xcrun simctl list devices available
                     exit 1
                   fi
 
-                  SIMULATOR_UDID="$(printf '%s\n' "$BOOTED_UDIDS" | sed -n '1p')"
+                  booted=false
+                  for attempt in 1 2 3; do
+                    echo "Booting simulator $SIMULATOR_UDID (attempt $attempt/3)"
+                    xcrun simctl boot "$SIMULATOR_UDID" 2>/dev/null || true
+                    if xcrun simctl bootstatus "$SIMULATOR_UDID" -b; then
+                      booted=true
+                      break
+                    fi
+                    xcrun simctl shutdown "$SIMULATOR_UDID" 2>/dev/null || true
+                  done
+
+                  if [ "$booted" != true ]; then
+                    echo "::error::Simulator did not finish booting after 3 attempts."
+                    exit 1
+                  fi
+
                   echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
                   echo "Using simulator UDID: $SIMULATOR_UDID"
                   xcrun simctl list devices booted
@@ -469,8 +465,17 @@ jobs:
 
             - name: Install Maestro
               run: |
-                  export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
-                  echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+                  maestro_bin="$HOME/.maestro/bin/maestro"
+                  installed_version="$(
+                    MAESTRO_CLI_NO_ANALYTICS=true \
+                      MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true \
+                      "$maestro_bin" --version 2>/dev/null | tail -n 1 | tr -d '\r' || true
+                  )"
+                  if [ ! -x "$maestro_bin" ] || [ "$installed_version" != "$MAESTRO_VERSION" ]; then
+                    curl -fsSL "https://get.maestro.mobile.dev" | env MAESTRO_VERSION="$MAESTRO_VERSION" bash
+                  fi
+                  echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+                  test "$(MAESTRO_CLI_NO_ANALYTICS=true MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true "$maestro_bin" --version 2>&1 | tail -n 1 | tr -d '\r')" = "$MAESTRO_VERSION"
 
             - name: Prepare iOS E2E artifact directories
               run: |
@@ -485,18 +490,12 @@ jobs:
                   echo $! > "$ARTIFACT_DIR/simulator-log.pid"
 
             - name: Run Maestro UI tests
+              timeout-minutes: 135
               working-directory: tests/app-tests
               shell: bash
               run: |
                   set -euo pipefail
-                  SHARD_FLOWS=()
-                  while IFS= read -r FLOW_NAME; do
-                    if [ -n "$FLOW_NAME" ]; then
-                      SHARD_FLOWS+=("flows/$FLOW_NAME")
-                    fi
-                  done < "shards/shard-${{ matrix.shard }}.txt"
                   sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e \
-                    "${SHARD_FLOWS[@]}" \
                     --format junit \
                     --output ./artifacts/maestro/report.xml \
                     --debug-output ./artifacts/maestro \
@@ -527,7 +526,7 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v6
               with:
-                  name: maestro-ios-artifacts-shard-${{ matrix.shard }}
+                  name: maestro-ios-artifacts
                   include-hidden-files: true
                   path: |
                       tests/app-tests/artifacts/maestro/**
@@ -538,18 +537,26 @@ jobs:
               if: failure()
               uses: actions/upload-artifact@v6
               with:
-                  name: maestro-ios-simulator-failure-artifacts-shard-${{ matrix.shard }}
+                  name: maestro-ios-simulator-failure-artifacts
                   include-hidden-files: true
                   path: |
                       tests/app-tests/artifacts/simulator/**
                       tests/app-tests/artifacts/diagnostics/**
                   if-no-files-found: warn
 
+            - name: Shutdown iOS Simulator
+              if: always()
+              run: |
+                  if [ -n "${SIMULATOR_UDID:-}" ]; then
+                    xcrun simctl shutdown "$SIMULATOR_UDID" || true
+                  fi
+
     e2e-android:
         if: false && needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, code-quality, eas-update-preview]
         name: E2E Tests on Android
         runs-on: [self-hosted, linux-ci]
+        timeout-minutes: 60
         permissions:
             contents: read
         steps:
@@ -565,7 +572,6 @@ jobs:
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
-                  cache: yarn
 
             - name: Setup EAS
               uses: expo/expo-github-action@v8
@@ -606,8 +612,17 @@ jobs:
 
             - name: Install Maestro
               run: |
-                  export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
-                  echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+                  maestro_bin="$HOME/.maestro/bin/maestro"
+                  installed_version="$(
+                    MAESTRO_CLI_NO_ANALYTICS=true \
+                      MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true \
+                      "$maestro_bin" --version 2>/dev/null | tail -n 1 | tr -d '\r' || true
+                  )"
+                  if [ ! -x "$maestro_bin" ] || [ "$installed_version" != "$MAESTRO_VERSION" ]; then
+                    curl -fsSL "https://get.maestro.mobile.dev" | env MAESTRO_VERSION="$MAESTRO_VERSION" bash
+                  fi
+                  echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+                  test "$(MAESTRO_CLI_NO_ANALYTICS=true MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true "$maestro_bin" --version 2>&1 | tail -n 1 | tr -d '\r')" = "$MAESTRO_VERSION"
 
             - name: Сreate AVD and generate snapshot for caching
               if: steps.avd-cache.outputs.cache-hit != 'true'

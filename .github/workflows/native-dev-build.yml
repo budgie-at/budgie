@@ -17,6 +17,7 @@ jobs:
   build:
     name: Local iOS Development Build
     runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+    timeout-minutes: 120
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -27,7 +28,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: yarn
 
       - name: Select Xcode
         run: |
