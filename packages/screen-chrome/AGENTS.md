@@ -30,9 +30,9 @@ Generic, composable **scroll edge fade + blur chrome** and **collapsible header*
       <CollapsibleHeaderLeading>{back}</CollapsibleHeaderLeading>
       <CollapsibleHeaderTitleSlot>
         <CollapsibleHeaderLargeTitle><Title big /></CollapsibleHeaderLargeTitle>
-        <CollapsibleHeaderSmallTitle><Title small /></CollapsibleHeaderSmallTitle>
       </CollapsibleHeaderTitleSlot>
       <CollapsibleHeaderTrailing>{actions}</CollapsibleHeaderTrailing>
+      <CollapsibleHeaderSmallTitle><Title small /></CollapsibleHeaderSmallTitle>
     </CollapsibleHeader>
     <CollapsibleHeaderBackdrop />
   </ScreenChromeFrame>
@@ -41,7 +41,7 @@ Generic, composable **scroll edge fade + blur chrome** and **collapsible header*
 
 - **`ScreenChromeProvider`** — owns a `scrollY` SharedValue + merged config. `colorScheme` is injected (no theme-lib dependency). **Each screen that wants an independent collapse needs its own provider instance** — a single app-root provider makes all screens share one `scrollY`, which is wrong for per-screen collapse. Mount one provider per collapsible screen (bridge `colorScheme` from the app theme).
 - **`EdgeFade`** — props: `position` (`'top' | 'bottom'`), `height?`, `intensity?`, `scrollAnimation?`, `blurMethod?` (Android only), `style?`. Height defaults to `config.{top,bottom}FadeHeight` and the safe-area inset is added **once** inside the component — do NOT pre-add the inset in the caller (that double-counts and the band spills into content).
-- **`CollapsibleHeader*`** — compound parts; title components are consumer-provided children (package animates opacity only, no fonts/i18n).
+- **`CollapsibleHeader*`** — compound parts; title components are consumer-provided children (package animates opacity only, no fonts/i18n). The row is single-tier: `CollapsibleHeaderLeading`/`CollapsibleHeaderTrailing` render only when supplied (no phantom 44px box when absent) and sit in normal flex flow. `CollapsibleHeaderLargeTitle` is an **inline flex child** inside `CollapsibleHeaderTitleSlot` — it flows immediately after `CollapsibleHeaderLeading` (so a back chevron and the large title always share one line, `‹ Title`) and only its opacity fades on scroll, never its position. `CollapsibleHeaderSmallTitle` is the opposite: an **absolutely-positioned layer spanning the full row** (ignoring where Leading/Trailing sit), content centered with generous horizontal padding so it never underlaps the slots — this is what makes the collapsed title sit at true screen-center regardless of whether a leading/trailing slot is present. It is `pointerEvents="none"` and painted at a lower `zIndex` than the slots, which stay tappable on top.
 - **`ScreenChromeScrollView`** — `Animated.ScrollView` prewired to the provider's scroll handler; feeds `scrollY`. Preserves consumer `contentContainerStyle` padding (top and bottom both merged additively with safe-area insets).
 - **Hooks** — `useScreenChrome`, `useScreenChromeScrollHandler`, `useScrollFadeStyle`.
 - **Config** — every threshold/height/intensity/color/mask curve is overridable via `ScreenChromeProvider config`. Defaults in `src/constant/`.

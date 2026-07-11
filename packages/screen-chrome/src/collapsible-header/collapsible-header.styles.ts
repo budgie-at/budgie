@@ -10,7 +10,7 @@ export const collapsibleHeaderStyles = StyleSheet.create({
     },
     row: {
         flexDirection: 'row',
-        alignItems: 'stretch',
+        alignItems: 'center',
         height: 56,
         paddingHorizontal: 16,
         width: '100%'
