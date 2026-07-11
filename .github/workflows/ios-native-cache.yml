@@ -72,7 +72,7 @@ jobs:
               uses: actions/cache/restore@v5
               with:
                   path: .ci-cache/ios-native-app
-                  key: ios-native-app-${{ runner.os }}-arm64-xcode26_4_1-${{ steps.fingerprint.outputs.hash }}
+                  key: ios-native-v1-budgie-e2e-${{ runner.os }}-arm64-xcode26_4_1-17E202-${{ steps.fingerprint.outputs.hash }}
 
             - name: Report cache hit
               if: steps.native-app-cache.outputs.cache-hit == 'true'
@@ -81,16 +81,16 @@ jobs:
             - name: Select Xcode 26.4.1
               if: steps.native-app-cache.outputs.cache-hit != 'true'
               run: |
-                  if [ -d /Applications/Xcode_26.4.1.app ]; then
-                    XCODE_APP=/Applications/Xcode_26.4.1.app
-                  elif [ -d /Applications/Xcode.app ]; then
-                    XCODE_APP=/Applications/Xcode.app
-                  else
-                    echo '::error::A supported Xcode installation was not found.'
+                  XCODE_APP=/Applications/Xcode_26.4.1.app
+                  if [ ! -d "$XCODE_APP" ]; then
+                    echo '::error::Xcode 26.4.1 is not installed on this runner.'
                     exit 1
                   fi
                   echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
-                  "$XCODE_APP/Contents/Developer/usr/bin/xcodebuild" -version
+                  xcode_version=$("$XCODE_APP/Contents/Developer/usr/bin/xcodebuild" -version)
+                  printf '%s\n' "$xcode_version"
+                  grep -qx 'Xcode 26.4.1' <<< "$xcode_version"
+                  grep -qx 'Build version 17E202' <<< "$xcode_version"
 
             - name: Restore CocoaPods cache
               if: steps.native-app-cache.outputs.cache-hit != 'true'
@@ -178,12 +178,13 @@ jobs:
                     echo '::error::Native E2E base unexpectedly contains a development-client launch URL.'
                     exit 1
                   fi
+                  find "$app_path" -name 'main.jsbundle' -type f -print -quit | grep -q .
                   mkdir -p .ci-cache/ios-native-app
-                  tar -C "$(dirname "$app_path")" -czf .ci-cache/ios-native-app/base.app.tar.gz "$(basename "$app_path")"
+                  ditto "$app_path" .ci-cache/ios-native-app/Base.app
 
             - name: Save canonical native app
               if: steps.native-app-cache.outputs.cache-hit != 'true'
               uses: actions/cache/save@v5
               with:
                   path: .ci-cache/ios-native-app
-                  key: ios-native-app-${{ runner.os }}-arm64-xcode26_4_1-${{ steps.fingerprint.outputs.hash }}
+                  key: ios-native-v1-budgie-e2e-${{ runner.os }}-arm64-xcode26_4_1-17E202-${{ steps.fingerprint.outputs.hash }}
