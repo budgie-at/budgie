@@ -205,6 +205,7 @@ jobs:
         env:
             APP_VARIANT: e2e
             EXPO_PUBLIC_AI_DISABLE: 'true'
+            EXPO_PUBLIC_LOGGING_DISABLE: 'true'
             EXPO_USE_PRECOMPILED_MODULES: '1'
             RCT_USE_PREBUILT_RNCORE: '1'
             RCT_USE_RN_DEP: '1'

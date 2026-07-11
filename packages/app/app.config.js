@@ -290,7 +290,7 @@ export default ({ config }) => ({
     ],
     experiments: {
         typedRoutes: true,
-        reactCompiler: true,
+        reactCompiler: !IS_E2E,
         buildCacheProvider: 'eas'
     },
     runtimeVersion: {
