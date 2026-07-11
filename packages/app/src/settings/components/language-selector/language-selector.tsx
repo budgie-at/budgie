@@ -35,7 +35,7 @@ export const LanguageSelector = () => {
             variant="default"
             title={t`Language`}
             onPress={handleOpen}
-            description={`${selectedLanguage.emoji} ${t(selectedLanguage.name)}`}
+            description={t(selectedLanguage.name)}
             testID={SettingsPageSelector.LanguageCard}
             descriptionTestID={SettingsPageSelector.LanguageValue(selectedLanguage.code)}
         />
