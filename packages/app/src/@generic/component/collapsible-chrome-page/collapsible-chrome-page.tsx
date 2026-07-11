@@ -2,7 +2,6 @@ import {
     CollapsibleHeader,
     CollapsibleHeaderBackdrop,
     CollapsibleHeaderLargeTitle,
-    CollapsibleHeaderLargeTitleLine,
     CollapsibleHeaderLeading,
     CollapsibleHeaderSmallTitle,
     CollapsibleHeaderTitleSlot,
@@ -29,10 +28,6 @@ interface Props {
 }
 
 const CONTENT_TOP_INSET = 76;
-const NAV_ROW_HEIGHT = 56;
-const LARGE_TITLE_LINE_HEIGHT = 44;
-const LEADING_HEADER_HEIGHT = NAV_ROW_HEIGHT + LARGE_TITLE_LINE_HEIGHT;
-const LEADING_CONTENT_TOP_INSET = LEADING_HEADER_HEIGHT + 12;
 
 export const CollapsibleChromePage = ({
     title,
@@ -42,61 +37,36 @@ export const CollapsibleChromePage = ({
     scrollViewProps,
     contentClassName,
     testID
-}: Props): ReactNode => {
-    const hasLeading = isDefined(leading);
-    const themeProviderProps = hasLeading ? { config: { headerHeight: LEADING_HEADER_HEIGHT } } : {};
-    const contentInsetTop = hasLeading ? LEADING_CONTENT_TOP_INSET : CONTENT_TOP_INSET;
-    const trailingSlot = isDefined(trailing) ? <CollapsibleHeaderTrailing>{trailing}</CollapsibleHeaderTrailing> : null;
-    const smallTitleText = (
-        <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>
-            {title}
-        </Text>
-    );
+}: Props): ReactNode => (
+    <ScreenChromeThemeProvider>
+        <ScreenChromeFrame>
+            <ScreenChromeScrollView
+                {...scrollViewProps}
+                contentInsetTop={CONTENT_TOP_INSET}
+                showsVerticalScrollIndicator={false}
+                testID={testID}
+            >
+                <View className={cn('px-5xl', contentClassName)}>{children}</View>
+            </ScreenChromeScrollView>
 
-    return (
-        <ScreenChromeThemeProvider {...themeProviderProps}>
-            <ScreenChromeFrame>
-                <ScreenChromeScrollView
-                    {...scrollViewProps}
-                    contentInsetTop={contentInsetTop}
-                    showsVerticalScrollIndicator={false}
-                    testID={testID}
-                >
-                    <View className={cn('px-5xl', contentClassName)}>{children}</View>
-                </ScreenChromeScrollView>
+            <CollapsibleHeaderBackdrop />
 
-                <CollapsibleHeaderBackdrop />
-
-                {hasLeading ? (
-                    <CollapsibleHeader
-                        bottom={
-                            <CollapsibleHeaderLargeTitleLine>
-                                <Text className="text-primary font-medium text-3xl px-5xl" numberOfLines={1}>
-                                    {title}
-                                </Text>
-                            </CollapsibleHeaderLargeTitleLine>
-                        }
-                    >
-                        <CollapsibleHeaderLeading>{leading}</CollapsibleHeaderLeading>
-                        <CollapsibleHeaderTitleSlot>
-                            <CollapsibleHeaderSmallTitle>{smallTitleText}</CollapsibleHeaderSmallTitle>
-                        </CollapsibleHeaderTitleSlot>
-                        {trailingSlot}
-                    </CollapsibleHeader>
-                ) : (
-                    <CollapsibleHeader>
-                        <CollapsibleHeaderTitleSlot>
-                            <CollapsibleHeaderLargeTitle>
-                                <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
-                                    {title}
-                                </Text>
-                            </CollapsibleHeaderLargeTitle>
-                            <CollapsibleHeaderSmallTitle>{smallTitleText}</CollapsibleHeaderSmallTitle>
-                        </CollapsibleHeaderTitleSlot>
-                        {trailingSlot}
-                    </CollapsibleHeader>
-                )}
-            </ScreenChromeFrame>
-        </ScreenChromeThemeProvider>
-    );
-};
+            <CollapsibleHeader>
+                {isDefined(leading) ? <CollapsibleHeaderLeading>{leading}</CollapsibleHeaderLeading> : null}
+                <CollapsibleHeaderTitleSlot>
+                    <CollapsibleHeaderLargeTitle>
+                        <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
+                            {title}
+                        </Text>
+                    </CollapsibleHeaderLargeTitle>
+                </CollapsibleHeaderTitleSlot>
+                {isDefined(trailing) ? <CollapsibleHeaderTrailing>{trailing}</CollapsibleHeaderTrailing> : null}
+                <CollapsibleHeaderSmallTitle>
+                    <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>
+                        {title}
+                    </Text>
+                </CollapsibleHeaderSmallTitle>
+            </CollapsibleHeader>
+        </ScreenChromeFrame>
+    </ScreenChromeThemeProvider>
+);
