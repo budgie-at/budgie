@@ -1,15 +1,14 @@
 import { EdgeFade } from '@budgie/screen-chrome';
 import { View } from 'react-native';
-import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { cn } from '../../utils/cn.util';
 import { PAGE_DEFAULT_SAFE_EDGES, pageGetSafeEdgeStyle } from '../page/utils/page-get-safe-edge-style.util';
+import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 
 import type { ComponentProps, ReactNode } from 'react';
-import type { ViewStyle } from 'react-native';
 import type { Edge } from 'react-native-safe-area-context';
 
 interface Props extends ComponentProps<typeof View> {
@@ -20,7 +19,6 @@ interface Props extends ComponentProps<typeof View> {
 }
 
 const CHROME_PAGE_Z_INDEX = 3;
-const CHROME_PAGE_FOOTER_STICKY_STYLE = { position: 'absolute', right: 0, bottom: 0, left: 0 } satisfies ViewStyle;
 
 export const ChromePage = (props: Props) => {
     const {
@@ -35,12 +33,9 @@ export const ChromePage = (props: Props) => {
     } = props;
 
     const insets = useSafeAreaInsets();
-    const { bottom } = insets;
     const contentSafeEdges = safeEdges.filter(edge => edge !== 'top');
     const contentStyle = pageGetSafeEdgeStyle(contentSafeEdges, insets);
     const headerStyle = { ...pageGetSafeEdgeStyle(safeEdges, insets), zIndex: CHROME_PAGE_Z_INDEX };
-    const footerStyle = { paddingBottom: bottom, zIndex: CHROME_PAGE_Z_INDEX };
-    const hasFooter = isDefined(footer);
 
     return (
         <>
@@ -53,12 +48,7 @@ export const ChromePage = (props: Props) => {
                 {header}
             </View>
 
-            {hasFooter ? (
-                <KeyboardStickyView style={CHROME_PAGE_FOOTER_STICKY_STYLE}>
-                    <EdgeFade position="bottom" />
-                    <View style={footerStyle}>{footer}</View>
-                </KeyboardStickyView>
-            ) : null}
+            {isDefined(footer) ? <StickyFooterBand>{footer}</StickyFooterBand> : null}
         </>
     );
 };
