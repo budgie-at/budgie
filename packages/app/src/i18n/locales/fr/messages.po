@@ -2237,10 +2237,6 @@ msgstr "Ouvrez l'application Privatbank24"
 msgid "Operator"
 msgstr "Opérateur"
 
-#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
-msgid "Optional per-category caps within this budget"
-msgstr "Plafonds optionnels par catégorie au sein de ce budget"
-
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "ou"

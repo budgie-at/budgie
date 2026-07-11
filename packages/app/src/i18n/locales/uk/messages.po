@@ -2237,10 +2237,6 @@ msgstr "Відкрийте додаток Приват24"
 msgid "Operator"
 msgstr "Оператор"
 
-#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
-msgid "Optional per-category caps within this budget"
-msgstr "Опційні обмеження за категоріями у межах цього бюджету"
-
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "або"
