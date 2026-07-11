@@ -1,12 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { Page } from '../../../@generic/component/page/page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BankSyncRepairSourceRow } from '../../../settings/components/bank-sync-repair-source-row/bank-sync-repair-source-row';
 import { BankSyncRepairsConfirmationCard } from '../../../settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card';
@@ -40,40 +40,43 @@ export default function BankSyncRepairsPage() {
     const handleRefresh = () => void refresh();
 
     return (
-        <Page testID={BankSyncRepairsPageSelector.Container} header={<PageHeader title={t`Bank Sync`} onGoBack={handleGoBack} />}>
-            <ScrollView className="flex-1" contentContainerClassName="gap-y-xl pb-5xl pt-3xl" showsVerticalScrollIndicator={false}>
-                <BankSyncRepairsIntroCard />
+        <CollapsibleChromePage
+            title={t`Bank Sync`}
+            leading={<GoBackButton onPress={handleGoBack} />}
+            contentClassName="gap-y-xl"
+            testID={BankSyncRepairsPageSelector.Container}
+        >
+            <BankSyncRepairsIntroCard />
 
-                {hasError ? <BankSyncRepairsErrorCard errorMessage={errorMessage} isLoading={isLoading} onRefresh={handleRefresh} /> : null}
+            {hasError ? <BankSyncRepairsErrorCard errorMessage={errorMessage} isLoading={isLoading} onRefresh={handleRefresh} /> : null}
 
-                {shouldShowEmptyState ? <BankSyncRepairsEmptyStateCard /> : null}
+            {shouldShowEmptyState ? <BankSyncRepairsEmptyStateCard /> : null}
 
-                {shouldShowSources ? (
-                    <View className="gap-y-lg">
-                        {sources.map(source => (
-                            <BankSyncRepairSourceRow key={source.externalSource} {...source} />
-                        ))}
-                    </View>
-                ) : null}
+            {shouldShowSources ? (
+                <View className="gap-y-lg">
+                    {sources.map(source => (
+                        <BankSyncRepairSourceRow key={source.externalSource} {...source} />
+                    ))}
+                </View>
+            ) : null}
 
-                {shouldShowConfirmation ? (
-                    <BankSyncRepairsConfirmationCard
-                        countText={confirmationCountText}
-                        isRepairing={repairAction.isRepairing}
-                        onCancel={repairAction.handleCancelConfirmation}
-                        onConfirm={repairAction.handleConfirmRepair}
-                    />
-                ) : (
-                    <Button
-                        testID={BankSyncRepairsPageSelector.RepairButton}
-                        onPress={repairAction.handleShowConfirmation}
-                        disabled={isRepairButtonDisabled}
-                        content={buttonContent}
-                        leftIcon={UserIconNameEnum.Wrench}
-                        variant="destructive"
-                    />
-                )}
-            </ScrollView>
-        </Page>
+            {shouldShowConfirmation ? (
+                <BankSyncRepairsConfirmationCard
+                    countText={confirmationCountText}
+                    isRepairing={repairAction.isRepairing}
+                    onCancel={repairAction.handleCancelConfirmation}
+                    onConfirm={repairAction.handleConfirmRepair}
+                />
+            ) : (
+                <Button
+                    testID={BankSyncRepairsPageSelector.RepairButton}
+                    onPress={repairAction.handleShowConfirmation}
+                    disabled={isRepairButtonDisabled}
+                    content={buttonContent}
+                    leftIcon={UserIconNameEnum.Wrench}
+                    variant="destructive"
+                />
+            )}
+        </CollapsibleChromePage>
     );
 }
