@@ -1517,10 +1517,6 @@ msgstr "Завантаження нових..."
 msgid "Field"
 msgstr "Поле"
 
-#: src/account/component/create-account-screen/create-account-screen.tsx
-msgid "Fill in the account details"
-msgstr "Заповніть деталі рахунку"
-
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
 msgstr "Фільтрувати рахунки"
@@ -2760,7 +2756,7 @@ msgstr "Вибрати зовнішнє джерело"
 msgid "Select Field"
 msgstr "Вибрати поле"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 msgid "Select File"
 msgstr "Обрати файл"
 
@@ -2931,7 +2927,7 @@ msgstr "Почніть з нуля та задайте кожен ліміт с�
 msgid "Start Import"
 msgstr "Почати імпорт"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
@@ -2980,10 +2976,6 @@ msgstr "Перемикайтеся між світлою та темною те�
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Sync Failed"
 msgstr "Синхронізація не вдалась"
-
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
-msgid "Sync your Monobank accounts and transactions"
-msgstr "Синхронізуйте свої рахунки та транзакції Монобанку"
 
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Syncing history..."

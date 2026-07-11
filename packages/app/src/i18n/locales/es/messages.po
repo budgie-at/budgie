@@ -1517,10 +1517,6 @@ msgstr "Obteniendo nuevos..."
 msgid "Field"
 msgstr "Campo"
 
-#: src/account/component/create-account-screen/create-account-screen.tsx
-msgid "Fill in the account details"
-msgstr "Completa los detalles de la cuenta"
-
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
 msgstr "Filtrar cuentas"
@@ -2760,7 +2756,7 @@ msgstr "Seleccionar fuente externa"
 msgid "Select Field"
 msgstr "Seleccionar campo"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 msgid "Select File"
 msgstr "Seleccionar archivo"
 
@@ -2931,7 +2927,7 @@ msgstr "Empieza desde cero y define cada límite tú mismo"
 msgid "Start Import"
 msgstr "Iniciar importación"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Iniciar sincronización"
@@ -2980,10 +2976,6 @@ msgstr "Cambiar entre temas claro y oscuro"
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Sync Failed"
 msgstr "Sincronización fallida"
-
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
-msgid "Sync your Monobank accounts and transactions"
-msgstr "Sincronice sus cuentas y transacciones de Monobank"
 
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Syncing history..."
