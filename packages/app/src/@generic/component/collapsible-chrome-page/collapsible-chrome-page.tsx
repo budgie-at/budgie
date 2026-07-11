@@ -6,8 +6,7 @@ import {
     CollapsibleHeaderSmallTitle,
     CollapsibleHeaderTitleSlot,
     CollapsibleHeaderTrailing,
-    ScreenChromeFrame,
-    ScreenChromeScrollView
+    ScreenChromeFrame
 } from '@budgie/screen-chrome';
 import { ComponentProps, ReactNode } from 'react';
 import { Text, View } from 'react-native';
@@ -17,6 +16,7 @@ import { isDefined } from '@rnw-community/shared';
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
 import { cn } from '../../utils/cn.util';
+import { ChromeKeyboardScrollView } from '../chrome-keyboard-scroll-view/chrome-keyboard-scroll-view';
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 
 type TitleProps =
@@ -28,7 +28,7 @@ type Props = TitleProps & {
     readonly leading?: ReactNode;
     readonly trailing?: ReactNode;
     readonly footer?: ReactNode;
-    readonly scrollViewProps?: Pick<ComponentProps<typeof ScreenChromeScrollView>, 'ref' | 'onLayout'>;
+    readonly scrollViewProps?: Pick<ComponentProps<typeof ChromeKeyboardScrollView>, 'ref' | 'onLayout'>;
     readonly contentClassName?: string;
     readonly testID?: string;
 };
@@ -62,15 +62,16 @@ export const CollapsibleChromePage = ({
     return (
         <ScreenChromeThemeProvider>
             <ScreenChromeFrame>
-                <ScreenChromeScrollView
+                <ChromeKeyboardScrollView
                     {...scrollViewProps}
                     contentInsetTop={SCREEN_CHROME_CONTENT_INSET_TOP}
                     contentInsetBottom={contentInsetBottom}
+                    bottomOffset={contentInsetBottom}
                     showsVerticalScrollIndicator={false}
                     testID={testID}
                 >
                     <View className={cn('px-5xl', contentClassName)}>{children}</View>
-                </ScreenChromeScrollView>
+                </ChromeKeyboardScrollView>
 
                 <CollapsibleHeaderBackdrop />
 
