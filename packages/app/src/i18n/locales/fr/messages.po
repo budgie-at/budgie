@@ -294,6 +294,10 @@ msgstr "Ajouter un élément"
 msgid "Add Tag"
 msgstr "Ajouter un tag"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "Add transactions to see how your spending breaks down by category."
+msgstr ""
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Ajoutez votre premier compte pour commencer à suivre vos finances"
@@ -2026,6 +2030,10 @@ msgstr "Aucune réparation de synchronisation bancaire trouvée."
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
 msgstr "Aucune catégorie trouvée"
+
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "No categories in this period"
+msgstr ""
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
