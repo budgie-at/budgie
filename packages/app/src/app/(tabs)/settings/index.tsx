@@ -2,18 +2,16 @@ import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
-import { ChromePage } from '../../../@generic/component/chrome-page/chrome-page';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useScrollToAnchor } from '../../../@generic/hook/use-scroll-to-anchor.hook';
@@ -48,16 +46,12 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 
 import { SettingsPageSelector } from './settings-page.selector';
 
-const SETTINGS_SCROLL_TOP_PADDING = 64;
-
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function SettingsPage() {
     const { t } = useLingui();
-    const { top } = useSafeAreaInsets();
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
     const isAiDisabled = useAiSystemUmbrella().state === AiSystemUmbrellaStateEnum.DISABLED;
-    const scrollTopSpacerStyle = { height: top + SETTINGS_SCROLL_TOP_PADDING };
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -81,14 +75,13 @@ export default function SettingsPage() {
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
     return (
-        <ChromePage testID={SettingsPageSelector.Container} header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />}>
-            <ScrollView
-                ref={scrollViewRef}
-                onLayout={onScrollViewLayout}
-                contentContainerClassName="gap-y-7xl pb-5xl"
-                showsVerticalScrollIndicator={false}
-            >
-                <View style={scrollTopSpacerStyle} />
+        <CollapsibleChromePage
+            title={t`Settings`}
+            testID={SettingsPageSelector.Container}
+            scrollRef={scrollViewRef}
+            onScrollViewLayout={onScrollViewLayout}
+        >
+            <View className="gap-y-7xl pb-5xl">
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
                         left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
@@ -269,7 +262,7 @@ export default function SettingsPage() {
                     </Animated.View>
                 </SettingsGroup>
                 <MenuSpacer />
-            </ScrollView>
-        </ChromePage>
+            </View>
+        </CollapsibleChromePage>
     );
 }
