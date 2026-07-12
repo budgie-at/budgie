@@ -27,17 +27,17 @@ This package is consumed as raw TypeScript source (no build step) via Yarn works
 
 The package does not bundle these — the consuming app must install and configure them:
 
-| Package                          | Required version |
-| --------------------------------- | ----------------- |
-| `react`                           | 19.2.3             |
-| `react-native`                    | 0.85.3             |
-| `react-native-reanimated`         | 4.3.1               |
-| `react-native-safe-area-context`  | ~5.7.0              |
-| `expo-blur`                       | ~56.0.3              |
-| `expo-linear-gradient`            | ~56.0.4              |
-| `@expo/ui`                        | ~56.0.15             |
+| Package                                 | Required version |
+| --------------------------------------- | ---------------- |
+| `react`                                 | 19.2.3           |
+| `react-native`                          | 0.85.3           |
+| `react-native-reanimated`               | 4.3.1            |
+| `react-native-safe-area-context`        | ~5.7.0           |
+| `expo-blur`                             | ~56.0.3          |
+| `expo-linear-gradient`                  | ~56.0.4          |
+| `@react-native-masked-view/masked-view` | ^0.3.2           |
 
-`EdgeFade` renders its native mask via `MaskedView` from `@expo/ui/community/masked-view` (not `@react-native-masked-view/masked-view`) so it composes with the rest of the app's `@expo/ui`-based chrome (see `@generic/component/blur-gradient`).
+`EdgeFade` renders its native mask via `MaskedView` from `@react-native-masked-view/masked-view` (not `@expo/ui/community/masked-view`, which can composite against the window and make the app surface transparent when a full-screen overlay/menu opens — see `@generic/component/blur-gradient`).
 
 ## Quick start
 
@@ -106,7 +106,7 @@ When `snapToCollapse` is `true`, ending a drag or momentum scroll with the offse
 The fade + blur primitive, rendered at either screen edge.
 
 | Prop              | Type                                                                                  | Default                           |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| ----------------- | ------------------------------------------------------------------------------------- | --------------------------------- |
 | `position`        | `'top' \| 'bottom'`                                                                   | required                          |
 | `height`          | `number`                                                                              | from config, by position          |
 | `intensity`       | `number`                                                                              | `config.intensity`                |
@@ -141,7 +141,7 @@ There is no built-in theme system — pass `colorScheme="light"` or `colorScheme
 
 ## Platform behavior
 
-- **Native** — `EdgeFade` layers a `MaskedView` (from `@expo/ui/community/masked-view`, alpha gradient mask) over a wash gradient and a real `BlurView`, so the edge both blurs and tints the content beneath it. Blur tint follows `colorScheme` (`systemChromeMaterial*` / `systemMaterial*`).
+- **Native** — `EdgeFade` layers a `MaskedView` (from `@react-native-masked-view/masked-view`, alpha gradient mask) over a wash gradient and a real `BlurView`, so the edge both blurs and tints the content beneath it. Blur tint follows `colorScheme` (`systemChromeMaterial*` / `systemMaterial*`).
 - **Web** — `EdgeFade` uses a CSS `backdrop-filter`/`mask-image` approach instead of a native blur view. Scroll-driven animation on web affects **opacity only** — the blur radius stays static; only the opacity interpolates with scroll. The bottom edge renders on web the same as the top edge.
 
 ## Not included by design

@@ -16,11 +16,12 @@ export const Page = (props: PageChromePropsInterface) => {
         safeEdges = PAGE_DEFAULT_SAFE_EDGES,
         contentClassName,
         collapsable = false,
+        style: styleProp,
         ...rest
     } = props;
 
     const insets = useSafeAreaInsets();
-    const style = pageGetSafeEdgeStyle(safeEdges, insets);
+    const style = [pageGetSafeEdgeStyle(safeEdges, insets), styleProp];
 
     return (
         <View {...rest} collapsable={collapsable} className={cn('relative flex-1', className)} style={style}>

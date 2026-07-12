@@ -291,7 +291,7 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'TabBar.Home'
-      timeout: 10000
+      timeout: 3000
 
 - tapOn:
       id: 'TabBar.Home'

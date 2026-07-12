@@ -296,7 +296,7 @@ msgstr "Añadir etiqueta"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Add transactions to see how your spending breaks down by category."
-msgstr ""
+msgstr "Agrega transacciones para ver cómo se distribuyen tus gastos por categoría."
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
@@ -2033,7 +2033,7 @@ msgstr "No se encontraron categorías"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "No categories in this period"
-msgstr ""
+msgstr "No hay categorías en este período"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"

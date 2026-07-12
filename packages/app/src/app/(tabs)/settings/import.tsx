@@ -162,7 +162,7 @@ export default function ImportScreen() {
                     <View className="flex-1">
                         <Button content={t`Cancel`} variant="ghost" onPress={handleCancel} />
                     </View>
-                    <View className="flex-2 align-middle justify-center ">
+                    <View className="flex-[2] align-middle justify-center ">
                         {isLoading ? (
                             <ActivityIndicator size="small" />
                         ) : (
@@ -256,7 +256,6 @@ export default function ImportScreen() {
                 headers={headers}
                 selectedHeaders={selectedHeaders}
             />
-            <ImportColumnMapField control={control} name="mcc" label={t`MCC`} headers={headers} selectedHeaders={selectedHeaders} />
         </CollapsibleChromePage>
     );
 }

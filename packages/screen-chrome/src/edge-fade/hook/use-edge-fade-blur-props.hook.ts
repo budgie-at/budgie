@@ -13,7 +13,7 @@ export const useEdgeFadeBlurProps = (
 ) => {
     const { scrollY } = useScreenChrome();
     const hasIntensityRange = isDefined(intensityInputRange);
-    const resolvedIntensityRange = intensityInputRange ?? INTENSITY_INPUT_RANGE_FALLBACK;
+    const resolvedIntensityRange = hasIntensityRange ? intensityInputRange : INTENSITY_INPUT_RANGE_FALLBACK;
 
     return useAnimatedProps<{ intensity: number | undefined }>(() => ({
         intensity: hasIntensityRange
