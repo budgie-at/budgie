@@ -134,7 +134,7 @@ jobs:
             - name: Generate native project
               if: steps.native-app-cache.outputs.cache-hit != 'true'
               working-directory: packages/app
-              run: npx expo prebuild -p ios --clean
+              run: npx expo prebuild -p ios --clean --no-install
 
             - name: Install pods
               if: steps.native-app-cache.outputs.cache-hit != 'true'

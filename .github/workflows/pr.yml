@@ -368,7 +368,7 @@ jobs:
               env:
                   APP_VARIANT: e2e
                   EXPO_PUBLIC_AI_DISABLE: 'true'
-              run: npx expo prebuild -p ios --clean
+              run: npx expo prebuild -p ios --clean --no-install
 
             - name: Sync CocoaPods
               if: steps.native-plan.outputs.required == 'true'
