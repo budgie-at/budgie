@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
-import { OnEventFn } from '@rnw-community/shared';
+import { OnEventFn, isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -112,7 +112,7 @@ export const AccountCardBase = (props: Props) => {
                         )}
                     </View>
 
-                    {bottomRight}
+                    {isDefined(bottomRight) && <View className="w-[14px] items-center">{bottomRight}</View>}
                 </View>
 
                 {children}

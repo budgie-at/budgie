@@ -39,8 +39,7 @@ export const CryptoAccountCard = (props: Props) => {
             className={className}
             instrumentSymbol={instrumentSymbol}
             balanceContent={balanceContent}
-        >
-            <SyncStatusDot sync={sync} />
-        </AccountCardBase>
+            bottomRight={<SyncStatusDot sync={sync} />}
+        />
     );
 };

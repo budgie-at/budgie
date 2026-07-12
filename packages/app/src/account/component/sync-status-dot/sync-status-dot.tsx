@@ -8,7 +8,7 @@ interface Props {
     readonly sync: SyncEntityInterface | null;
 }
 
-const syncStatusVariants = cva('absolute bottom-3 right-3 z-10 h-2 w-2 rounded-full will-change-animation', {
+const syncStatusVariants = cva('h-2 w-2 rounded-full will-change-animation', {
     variants: {
         status: {
             [SyncStatusEnum.SYNCING]: 'bg-warning-foreground animate-pulse',
