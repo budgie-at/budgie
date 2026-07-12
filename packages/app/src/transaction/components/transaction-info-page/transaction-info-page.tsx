@@ -42,8 +42,11 @@ interface Props {
     readonly onOpenConsolidationSources?: () => void;
 }
 
-const getCategoryLabel = (transaction: TransactionWithRelationsEntityInterface): string | null =>
-    getTransactionCategoryEntries(transaction.entries).at(0)?.category?.title ?? null;
+const getCategoryLabel = (transaction: TransactionWithRelationsEntityInterface): string | null => {
+    const categoryTitle = getTransactionCategoryEntries(transaction.entries).at(0)?.category?.title;
+
+    return isDefined(categoryTitle) ? categoryTitle : null;
+};
 
 const hasTransferConversionRow = (transaction: TransactionWithRelationsEntityInterface): boolean => {
     const sourceEntry = transaction.entries.find(entry => entry.accountId === transaction.fromAccountId);

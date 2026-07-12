@@ -26,10 +26,10 @@ export default function BankSyncRepairsPage() {
     const { errorMessage, isLoading, preview, refresh } = useBankSyncDuplicateRepairPreviewQuery();
     const repairAction = useBankSyncRepairsAction(refresh);
 
-    const duplicateTransactionCount = preview?.duplicateTransactionCount ?? 0;
+    const duplicateTransactionCount = isDefined(preview?.duplicateTransactionCount) ? preview.duplicateTransactionCount : 0;
     const hasDuplicates = isPositiveNumber(duplicateTransactionCount);
     const hasError = isDefined(errorMessage);
-    const sources = preview?.sources ?? [];
+    const sources = isDefined(preview?.sources) ? preview.sources : [];
     const shouldShowEmptyState = !isLoading && !hasError && !hasDuplicates;
     const shouldShowSources = !isLoading && !isEmptyArray(sources);
     const isRepairButtonDisabled = !hasDuplicates || isLoading || repairAction.isRepairing;

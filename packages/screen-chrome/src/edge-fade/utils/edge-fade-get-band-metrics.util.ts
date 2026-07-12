@@ -1,5 +1,7 @@
 import { EdgeInsets } from 'react-native-safe-area-context';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { EdgeFadePosition, ScreenChromeConfigInterface } from '../../interface/screen-chrome-config.interface';
 
 interface EdgeFadeBandMetricsInterface {
@@ -14,7 +16,8 @@ export const getEdgeFadeBandMetrics = (
     config: ScreenChromeConfigInterface,
     insets: EdgeInsets
 ): EdgeFadeBandMetricsInterface => {
-    const resolvedHeight = height ?? (position === 'top' ? config.topFadeHeight : config.bottomFadeHeight);
+    const defaultHeight = position === 'top' ? config.topFadeHeight : config.bottomFadeHeight;
+    const resolvedHeight = isDefined(height) ? height : defaultHeight;
     const inset = position === 'top' ? insets.top : insets.bottom;
 
     return {
