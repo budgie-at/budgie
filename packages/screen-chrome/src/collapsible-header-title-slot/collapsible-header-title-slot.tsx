@@ -8,5 +8,7 @@ interface Props {
 }
 
 export const CollapsibleHeaderTitleSlot = ({ children }: Props): ReactNode => (
-    <View style={collapsibleHeaderTitleSlotStyles.slot}>{children}</View>
+    <View style={collapsibleHeaderTitleSlotStyles.slot} pointerEvents="box-none">
+        {children}
+    </View>
 );

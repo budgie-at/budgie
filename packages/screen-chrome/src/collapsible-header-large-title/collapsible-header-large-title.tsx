@@ -15,5 +15,9 @@ export const CollapsibleHeaderLargeTitle = ({ children }: Props): ReactNode => {
     const inputRange: readonly [number, number] = [config.collapseStart, config.largeTitleEnd];
     const fadeStyle = useScrollFadeStyle(inputRange, OUTPUT_RANGE);
 
-    return <Animated.View style={fadeStyle}>{children}</Animated.View>;
+    return (
+        <Animated.View pointerEvents="none" style={fadeStyle}>
+            {children}
+        </Animated.View>
+    );
 };
