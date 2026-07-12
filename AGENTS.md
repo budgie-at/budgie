@@ -29,6 +29,17 @@ yarn deps:check                           # Check dependency versions
 yarn deps:dedupe                          # Deduplicate dependencies
 ```
 
+## Agent Orchestration And Token Economy
+
+These rules are vital and apply to every AI agent and orchestrator working in this repo:
+
+- The main/orchestrating agent is the brains: it plans, analyzes, decides, and reviews. It must NOT burn its own context on mechanical execution.
+- All execution work (file edits, migrations, repetitive refactors, running validation, log digging, CI forensics) is delegated to subagents.
+- Pick the CHEAPEST capable model per subagent task: haiku-tier for mechanical/repetitive edits and searches, sonnet-tier for routine implementation, opus-tier ONLY for design-sensitive or architecturally hard work. Never default everything to the top model.
+- Set the LOWEST effort level that fits the task; raise effort only for verification/judging stages where correctness is critical.
+- Subagent prompts must be self-contained (paths, rules, constraints, validation steps) so no round-trips are wasted.
+- Do not spawn a top-tier agent for work a cheaper one can verify; prefer cheap execution + targeted verification over expensive single-shot runs.
+
 ## Git Commits And Pull Requests
 
 ### Commit Message And PR Title Format
