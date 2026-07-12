@@ -6,7 +6,8 @@ export { CollapsibleHeaderSmallTitle } from './collapsible-header-small-title/co
 export { CollapsibleHeaderTitleSlot } from './collapsible-header-title-slot/collapsible-header-title-slot';
 export { CollapsibleHeaderTrailing } from './collapsible-header-trailing/collapsible-header-trailing';
 export { EdgeFade } from './edge-fade/edge-fade';
-export type { EdgeFadePropsInterface, EdgeFadeScrollAnimationInterface } from './edge-fade/interface/edge-fade-props.interface';
+export type { EdgeFadePropsInterface } from './edge-fade/interface/edge-fade-props.interface';
+export type { EdgeFadeScrollAnimationInterface } from './edge-fade/interface/edge-fade-scroll-animation.interface';
 export { ColorSchemeEnum } from './enum/color-scheme.enum';
 export { useScreenChromeScrollHandler } from './hook/use-screen-chrome-scroll-handler.hook';
 export { useScreenChrome } from './hook/use-screen-chrome.hook';

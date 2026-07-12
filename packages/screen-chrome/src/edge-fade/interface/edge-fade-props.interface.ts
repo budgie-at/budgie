@@ -3,11 +3,7 @@ import { StyleProp, ViewStyle } from 'react-native';
 
 import { EdgeFadePosition } from '../../interface/screen-chrome-config.interface';
 
-export interface EdgeFadeScrollAnimationInterface {
-    readonly opacityInputRange?: readonly [number, number];
-    readonly intensityInputRange?: readonly [number, number];
-    readonly maxIntensity?: number;
-}
+import { EdgeFadeScrollAnimationInterface } from './edge-fade-scroll-animation.interface';
 
 export interface EdgeFadePropsInterface {
     readonly position: EdgeFadePosition;

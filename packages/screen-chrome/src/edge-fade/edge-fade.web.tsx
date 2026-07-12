@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import { ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -8,16 +7,9 @@ import { EdgeFadePosition, ScreenChromeColorSetInterface } from '../interface/sc
 
 import { useEdgeFadeOpacityStyle } from './hook/use-edge-fade-opacity-style.hook';
 import { EdgeFadePropsInterface } from './interface/edge-fade-props.interface';
+import { WebEdgeFadeStyleInterface } from './interface/web-edge-fade-style.interface';
 import { getEdgeFadeBackdropFilter } from './utils/edge-fade-get-backdrop-filter.util';
 import { getEdgeFadeBandMetrics } from './utils/edge-fade-get-band-metrics.util';
-
-interface WebEdgeFadeStyleInterface extends ViewStyle {
-    readonly backdropFilter?: string;
-    readonly WebkitBackdropFilter?: string;
-    readonly maskImage?: string;
-    readonly WebkitMaskImage?: string;
-    readonly backgroundImage?: string;
-}
 
 const PERCENT_MULTIPLIER = 100;
 const WASH_STOP_PERCENT = 72;
