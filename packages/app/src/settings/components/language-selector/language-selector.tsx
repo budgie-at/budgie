@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { EmojiText } from '../../../@generic/component/emoji-text/emoji-text';
+import { CountryFlag } from '../../../@generic/component/country-flag/country-flag';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { LANGUAGES } from '../../../i18n/constant/languages.constant';
 import { useLanguageSelectorModal } from '../../../i18n/context/language-selector-modal.context';
@@ -39,7 +39,7 @@ export const LanguageSelector = () => {
             descriptionTestID={SettingsPageSelector.LanguageValue(selectedLanguage.code)}
             left={
                 <View className="w-9 h-9 rounded-full bg-secondary-foreground/10 justify-center items-center">
-                    <EmojiText className="text-lg">{selectedLanguage.emoji}</EmojiText>
+                    <CountryFlag language={selectedLanguage.code} size={20} />
                 </View>
             }
         />
