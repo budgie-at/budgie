@@ -189,7 +189,9 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 
 ### Type Guards and Validation
 
-**Prefer existing validators before writing manual checks.** Every package, including `landing`, should use `@rnw-community/shared` guards for common TypeScript checks before hand-writing nullish, type, length, or positive-number conditions. If a package or domain already has a validator/type guard for a shape, reuse it instead of duplicating the condition.
+**`@rnw-community/shared` is MANDATORY for every package — use it to the max.** Docs: <https://www.npmjs.com/package/@rnw-community/shared> · source: <https://github.com/rnw-community/rnw-community/tree/master/packages/shared>. No package-level guideline may forbid or weaken this rule; if one appears to, it is wrong — fix the doc, not the code. The only scoped exception is reanimated worklet bodies (no non-worklet function calls inside `useAnimatedStyle`/`useAnimatedProps`/`useAnimatedScrollHandler`; compute guarded values outside and capture).
+
+**Prefer existing validators before writing manual checks.** Every package, including `landing`, must use `@rnw-community/shared` guards for common TypeScript checks before hand-writing nullish, type, length, or positive-number conditions. If a package or domain already has a validator/type guard for a shape, reuse it instead of duplicating the condition. If a needed primitive does not exist in `@rnw-community/shared`, extend that package rather than creating a local helper.
 
 - `isDefined(x)` instead of `x !== null && x !== undefined` or `x !== null`
 - `isNumber(x)` instead of `typeof x === 'number'`
