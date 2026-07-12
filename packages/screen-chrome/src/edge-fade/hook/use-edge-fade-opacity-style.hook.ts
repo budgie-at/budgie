@@ -10,7 +10,7 @@ const OPACITY_INPUT_RANGE_FALLBACK: readonly [number, number] = [0, 1];
 export const useEdgeFadeOpacityStyle = (opacityInputRange: readonly [number, number] | undefined) => {
     const { scrollY } = useScreenChrome();
     const hasOpacityRange = isDefined(opacityInputRange);
-    const resolvedOpacityRange = opacityInputRange ?? OPACITY_INPUT_RANGE_FALLBACK;
+    const resolvedOpacityRange = hasOpacityRange ? opacityInputRange : OPACITY_INPUT_RANGE_FALLBACK;
 
     return useAnimatedStyle(() => {
         if (!hasOpacityRange) {

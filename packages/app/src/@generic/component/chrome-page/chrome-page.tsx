@@ -21,12 +21,13 @@ export const ChromePage = (props: PageChromePropsInterface) => {
         safeEdges = PAGE_DEFAULT_SAFE_EDGES,
         contentClassName,
         collapsable = false,
+        style: styleProp,
         ...rest
     } = props;
 
     const insets = useSafeAreaInsets();
     const contentSafeEdges = safeEdges.filter(edge => edge !== 'top');
-    const contentStyle = pageGetSafeEdgeStyle(contentSafeEdges, insets);
+    const contentStyle = [pageGetSafeEdgeStyle(contentSafeEdges, insets), styleProp];
     const headerStyle = { ...pageGetSafeEdgeStyle(safeEdges, insets), zIndex: CHROME_PAGE_Z_INDEX };
 
     return (

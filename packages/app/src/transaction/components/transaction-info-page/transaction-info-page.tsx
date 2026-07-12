@@ -11,8 +11,8 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { useTransactionInfoMatchingRules } from '../../hook/use-transaction-info-matching-rules.hook';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
 import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
-import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionFeeEntries } from '../../utils/get-transaction-fee-entries.util';
+import { isTransactionNoteDuplicated } from '../../utils/is-transaction-note-duplicated.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { TransactionInfoAccountRows } from '../transaction-info-account-rows/transaction-info-account-rows';
 import { TransactionInfoCategoryRows } from '../transaction-info-category-rows/transaction-info-category-rows';
@@ -72,7 +72,7 @@ const getRowVisibility = (
     const categoryLabel = getCategoryLabel(transaction);
     const showCategoryRow = isNotEmptyString(categoryLabel) && transaction.type !== TransactionTypeEnum.TRANSFER;
     const showMccRow = isDefined(getTransactionCategoryEntries(transaction.entries).at(0)?.mccCategory);
-    const showNoteRow = isNotEmptyString(transaction.comment) && transaction.comment !== getTransactionDisplayTitle(transaction);
+    const showNoteRow = isNotEmptyString(transaction.comment) && !isTransactionNoteDuplicated(transaction);
     const isConsolidated = isDefined(transaction.consolidationType);
     const hasCategoryRows = showCategoryRow || showMccRow || showNoteRow;
     const hasMoneyRows = hasTransferConversionRow(transaction) || hasFeeRow(transaction);

@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
-import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
+import { isTransactionNoteDuplicated } from '../../utils/is-transaction-note-duplicated.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 
@@ -33,14 +33,15 @@ const getCategoryIcon = (transaction: TransactionWithRelationsEntityInterface): 
         return UserIconNameEnum.Split;
     }
 
-    return categoryEntries.at(0)?.category?.icon ?? UserIconNameEnum.Shapes;
+    const icon = categoryEntries.at(0)?.category?.icon;
+
+    return isDefined(icon) ? icon : UserIconNameEnum.Shapes;
 };
 
 export const TransactionInfoCategoryRows = ({ transaction, categoryLabel, hasFollowingRows }: Props) => {
     const { t } = useLingui();
     const mccLabel = getMccLabel(transaction);
-    const displayedTitle = getTransactionDisplayTitle(transaction);
-    const isNoteDuplicated = isNotEmptyString(transaction.comment) && transaction.comment === displayedTitle;
+    const isNoteDuplicated = isTransactionNoteDuplicated(transaction);
     const showCategory = isNotEmptyString(categoryLabel) && transaction.type !== TransactionTypeEnum.TRANSFER;
     const showMcc = isNotEmptyString(mccLabel);
     const showNote = isNotEmptyString(transaction.comment) && !isNoteDuplicated;

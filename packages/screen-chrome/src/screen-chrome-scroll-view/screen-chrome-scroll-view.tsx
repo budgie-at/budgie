@@ -25,7 +25,10 @@ export const ScreenChromeScrollView = ({
     const insets = useSafeAreaInsets();
     const onScroll = useScreenChromeScrollHandler();
     const mergedRef = useMemo(() => mergeRefs(scrollRef, ref), [scrollRef, ref]);
-    const mergedContentContainerStyle = mergeScrollContentInset(insets, contentInsetTop, contentInsetBottom, contentContainerStyle);
+    const mergedContentContainerStyle = useMemo(
+        () => mergeScrollContentInset(insets, contentInsetTop, contentInsetBottom, contentContainerStyle),
+        [insets, contentInsetTop, contentInsetBottom, contentContainerStyle]
+    );
 
     return (
         <Animated.ScrollView

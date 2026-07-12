@@ -49,9 +49,11 @@ export const CollapsibleChromePage = ({
     testID
 }: Props): ReactNode => {
     const contentInsetBottom = isDefined(footer) ? FOOTER_CONTENT_BOTTOM_INSET : 0;
-    const { bottomOffset: bottomOffsetOverride, ...restScrollViewProps } = scrollViewProps ?? {};
-    const resolvedBottomOffset = bottomOffsetOverride ?? contentInsetBottom;
-    const resolvedLargeTitle = largeTitle ?? (
+    const { bottomOffset: bottomOffsetOverride, ...restScrollViewProps } = isDefined(scrollViewProps) ? scrollViewProps : {};
+    const resolvedBottomOffset = isDefined(bottomOffsetOverride) ? bottomOffsetOverride : contentInsetBottom;
+    const resolvedLargeTitle = isDefined(largeTitle) ? (
+        largeTitle
+    ) : (
         <View className="gap-y-xs">
             <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
                 {title}
@@ -63,7 +65,9 @@ export const CollapsibleChromePage = ({
             ) : null}
         </View>
     );
-    const resolvedSmallTitle = smallTitle ?? (
+    const resolvedSmallTitle = isDefined(smallTitle) ? (
+        smallTitle
+    ) : (
         <View className="items-center">
             <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>
                 {title}
