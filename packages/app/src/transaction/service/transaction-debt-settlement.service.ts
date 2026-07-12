@@ -4,6 +4,7 @@ import {
     DebtEventDirectionEnum,
     DebtEventSourceEnum,
     TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
     TransactionTypeEnum,
     transactionAsync
 } from '@budgie/contracts';
@@ -17,7 +18,13 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 
 import type { AttachDebtSettlementParamsInterface } from '../interface/attach-debt-settlement-params.interface';
-import type { AccountEntityInterface, DB, TransactionEntryEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
+import type {
+    AccountEntityInterface,
+    DB,
+    TransactionEntityInterface,
+    TransactionEntryEntityInterface,
+    TransactionWithEntriesEntityInterface
+} from '@budgie/contracts';
 
 class TransactionDebtSettlementService {
     @Log(
@@ -48,6 +55,44 @@ class TransactionDebtSettlementService {
                 tx
             );
         });
+    }
+
+    @Log(
+        transaction => `enter transactionId=${transaction.id}`,
+        'done',
+        (error, transaction) => `throw transactionId=${transaction.id} error=${getErrorMessage(error)}`
+    )
+    async createFromTransfer(
+        transaction: TransactionEntityInterface,
+        entries: TransactionEntryEntityInterface[],
+        accounts: readonly AccountEntityInterface[],
+        tx: DB
+    ): Promise<void> {
+        const debtAccount = accounts.find(account => account.type === AccountTypeEnum.DEBT);
+        if (!isDefined(debtAccount)) {
+            return;
+        }
+
+        const debtEntry = entries.find(entry => entry.accountId === debtAccount.id);
+        if (!isDefined(debtEntry)) {
+            return;
+        }
+
+        await debtEventRepository.create(
+            {
+                debtAccountId: debtAccount.id,
+                transactionId: transaction.id,
+                transactionEntryId: debtEntry.id,
+                direction: this.getTransferDebtEventDirection(debtAccount.debtType, debtEntry.type),
+                source: DebtEventSourceEnum.TRANSFER,
+                amount: debtEntry.amount,
+                baseInstrumentId: debtEntry.baseInstrumentId,
+                baseExchangeRate: debtEntry.baseExchangeRate,
+                baseAmount: debtEntry.baseAmount,
+                operatedAt: transaction.operatedAt
+            },
+            tx
+        );
     }
 
     async attachInTransaction(params: AttachDebtSettlementParamsInterface, tx: DB): Promise<AccountEntityInterface> {
@@ -150,6 +195,14 @@ class TransactionDebtSettlementService {
         }
 
         return debtAccount.debtType === AccountDebtTypeEnum.BORROW ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
+    }
+
+    private getTransferDebtEventDirection(debtType: AccountDebtTypeEnum, entryType: TransactionEntryTypeEnum): DebtEventDirectionEnum {
+        if (debtType === AccountDebtTypeEnum.LENT) {
+            return entryType === TransactionEntryTypeEnum.DEBIT ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
+        }
+
+        return entryType === TransactionEntryTypeEnum.CREDIT ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
     }
 }
 

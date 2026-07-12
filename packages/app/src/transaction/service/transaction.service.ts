@@ -1,10 +1,7 @@
 import {
-    AccountDebtTypeEnum,
     type AccountEntityInterface,
     AccountTypeEnum,
     type DB,
-    DebtEventDirectionEnum,
-    DebtEventSourceEnum,
     ExternalSourceEnum,
     type TransactionCreateInputInterface,
     type TransactionEntityInterface,
@@ -16,19 +13,14 @@ import {
     TransactionTypeEnum,
     type TransactionUpdateServiceInputInterface,
     TransactionUpdatedByEnum,
-    type TransactionWithEntriesEntityInterface
-, transactionAsync } from '@budgie/contracts';
+    type TransactionWithEntriesEntityInterface,
+    transactionAsync
+} from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import {
-    db,
-    debtEventRepository,
-    transactionEntryRepository,
-    transactionRepository,
-    transactionTagsRepository
-} from '../../@generic/drizzle/db/db';
+import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -44,6 +36,7 @@ import { upsertTransactionEntriesAndTags } from '../utils/upsert-transaction-ent
 
 import { importedTransactionEntryUpdateService } from './imported-transaction-entry-update.service';
 import { transactionBatchCreateService } from './transaction-batch-create.service';
+import { transactionDebtSettlementService } from './transaction-debt-settlement.service';
 
 import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
 
@@ -407,7 +400,7 @@ class TransactionService {
         );
 
         if (isDebtTransaction) {
-            await this.createDebtEventFromTransfer(transaction, createdEntries, [fromAccount, toAccount], tx);
+            await transactionDebtSettlementService.createFromTransfer(transaction, createdEntries, [fromAccount, toAccount], tx);
         }
 
         await this.finalizeInternalTransfer(input, transaction.id, tx);
@@ -535,48 +528,6 @@ class TransactionService {
         }
 
         return { fromEntry, toEntry };
-    }
-
-    private async createDebtEventFromTransfer(
-        transaction: TransactionEntityInterface,
-        entries: TransactionEntryEntityInterface[],
-        accounts: readonly AccountEntityInterface[],
-        tx: DB
-    ): Promise<void> {
-        const debtAccount = accounts.find(account => account.type === AccountTypeEnum.DEBT);
-        if (!isDefined(debtAccount)) {
-            return;
-        }
-
-        const debtEntry = entries.find(entry => entry.accountId === debtAccount.id);
-
-        if (!isDefined(debtEntry)) {
-            return;
-        }
-
-        await debtEventRepository.create(
-            {
-                debtAccountId: debtAccount.id,
-                transactionId: transaction.id,
-                transactionEntryId: debtEntry.id,
-                direction: this.getTransferDebtEventDirection(debtAccount.debtType, debtEntry.type),
-                source: DebtEventSourceEnum.TRANSFER,
-                amount: debtEntry.amount,
-                baseInstrumentId: debtEntry.baseInstrumentId,
-                baseExchangeRate: debtEntry.baseExchangeRate,
-                baseAmount: debtEntry.baseAmount,
-                operatedAt: transaction.operatedAt
-            },
-            tx
-        );
-    }
-
-    private getTransferDebtEventDirection(debtType: AccountDebtTypeEnum, entryType: TransactionEntryTypeEnum): DebtEventDirectionEnum {
-        if (debtType === AccountDebtTypeEnum.LENT) {
-            return entryType === TransactionEntryTypeEnum.DEBIT ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
-        }
-
-        return entryType === TransactionEntryTypeEnum.CREDIT ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
     }
 }
 export const transactionService = new TransactionService();

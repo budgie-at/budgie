@@ -118,7 +118,7 @@ jobs:
                   fi
 
             - name: Build internal workspace packages
-              run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
+              run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
 
             - name: Lint the PR Title
               run: printf '%s\n' "$PR_TITLE" | node_modules/.bin/commitlint
@@ -188,7 +188,7 @@ jobs:
               run: yarn install
 
             - name: Build internal workspace packages
-              run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
+              run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
 
             - name: Create preview
               id: create-preview
@@ -254,7 +254,7 @@ jobs:
               run: yarn install
 
             - name: Build internal workspace packages
-              run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
+              run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
 
             - name: Setup EAS
               uses: expo/expo-github-action@v8

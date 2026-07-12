@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
+import { Button } from '../../../@generic/component/button/button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
@@ -66,20 +67,21 @@ export const CreateMonobankAccount = () => {
             onDeselectAll={deselectAllAccounts}
         />
     );
+    const footer = isInputStep ? (
+        <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />
+    ) : (
+        <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />
+    );
 
     return (
         <SyncAccountSetupPage
-            onGoBack={handleGoBack}
             title={t`Connect Monobank`}
             description={t`Sync your Monobank accounts and transactions`}
+            onGoBack={handleGoBack}
+            footer={footer}
             scrollViewTestID={CreateMonobankAccountSelector.ScrollView}
-            isInputStep={isInputStep}
-            isLoading={isLoading}
-            isStartSyncDisabled={isStartSyncDisabled}
-            onFetchAccounts={handleFetchAccounts}
-            onSetupSync={handleSetupSync}
-            inputStepContent={inputStepContent}
-            accountsStepContent={accountsStepContent}
-        />
+        >
+            {isInputStep ? inputStepContent : accountsStepContent}
+        </SyncAccountSetupPage>
     );
 };
