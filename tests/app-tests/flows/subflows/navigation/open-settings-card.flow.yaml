@@ -33,7 +33,6 @@ env:
 
 - tapOn:
       id: '${CARD_ID}'
-      retryTapIfNoChange: true
 
 - extendedWaitUntil:
       visible:
