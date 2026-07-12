@@ -86,8 +86,8 @@ jobs:
     name: EAS Update
     needs: release
     # Expo's Hermes compiler package ships an x86-64 Linux host binary.
-    # Keep the export off the ARM64 self-hosted fleet.
-    runs-on: ubuntu-latest
+    # Keep the export on the hosted x86-64 image and off the ARM64 fleet.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - name: Check for EXPO_TOKEN
@@ -96,6 +96,9 @@ jobs:
             echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
             exit 1
           fi
+
+      - name: Verify x86-64 Hermes host
+        run: test "$(uname -m)" = 'x86_64'
 
       - name: Checkout repository
         uses: actions/checkout@v5

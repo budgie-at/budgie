@@ -149,9 +149,9 @@ jobs:
         needs: [detect-mobile-impact]
         name: EAS Update Preview
         # Expo's Hermes compiler package ships an x86-64 Linux host binary.
-        # Keep this export off ARM64 self-hosted runners and reserve the Mac
-        # mini for the native iOS build and simulator stages below.
-        runs-on: ubuntu-latest
+        # Keep this export on the hosted x86-64 image and reserve the Mac mini
+        # for the native iOS build and simulator stages below.
+        runs-on: ubuntu-24.04
         timeout-minutes: 30
         permissions:
             contents: read
@@ -163,6 +163,9 @@ jobs:
                     echo "Learn more: https://docs.expo.dev/eas/github-actions"
                     exit 1
                   fi
+
+            - name: Verify x86-64 Hermes host
+              run: test "$(uname -m)" = 'x86_64'
 
             - name: Checkout repository
               uses: actions/checkout@v5
