@@ -40,8 +40,7 @@ export const SyncAccountCard = (props: Props) => {
             instrumentSymbol={instrumentSymbol}
             className={className}
             onLongPress={longPressHandler}
-        >
-            <SyncStatusDot sync={sync} />
-        </AccountCardBase>
+            bottomRight={<SyncStatusDot sync={sync} />}
+        />
     );
 };
