@@ -11,7 +11,7 @@ interface Props {
 export const ScreenChromeThemeProvider = ({ children }: Props) => {
     const { isDarkColorSchema } = useThemeContext();
 
-    const colorScheme = isDarkColorSchema ? ColorSchemeEnum.Dark : ColorSchemeEnum.Light;
+    const colorScheme = isDarkColorSchema ? ColorSchemeEnum.DARK : ColorSchemeEnum.LIGHT;
 
     return <ScreenChromeProvider colorScheme={colorScheme}>{children}</ScreenChromeProvider>;
 };

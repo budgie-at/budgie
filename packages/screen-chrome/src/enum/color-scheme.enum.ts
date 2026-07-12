@@ -1,4 +1,4 @@
 export enum ColorSchemeEnum {
-    Light = 'light',
-    Dark = 'dark'
+    LIGHT = 'LIGHT',
+    DARK = 'DARK'
 }

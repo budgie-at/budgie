@@ -32,13 +32,13 @@ const mergeConfig = (overrides: ScreenChromeConfigOverridesInterface | undefined
         ...SCREEN_CHROME_DEFAULT_CONFIG,
         ...overrides,
         colors: {
-            [ColorSchemeEnum.Light]: {
-                ...SCREEN_CHROME_DEFAULT_CONFIG.colors[ColorSchemeEnum.Light],
-                ...colorsOverrides?.[ColorSchemeEnum.Light]
+            [ColorSchemeEnum.LIGHT]: {
+                ...SCREEN_CHROME_DEFAULT_CONFIG.colors[ColorSchemeEnum.LIGHT],
+                ...colorsOverrides?.[ColorSchemeEnum.LIGHT]
             },
-            [ColorSchemeEnum.Dark]: {
-                ...SCREEN_CHROME_DEFAULT_CONFIG.colors[ColorSchemeEnum.Dark],
-                ...colorsOverrides?.[ColorSchemeEnum.Dark]
+            [ColorSchemeEnum.DARK]: {
+                ...SCREEN_CHROME_DEFAULT_CONFIG.colors[ColorSchemeEnum.DARK],
+                ...colorsOverrides?.[ColorSchemeEnum.DARK]
             }
         },
         maskStops: {
@@ -50,7 +50,7 @@ const mergeConfig = (overrides: ScreenChromeConfigOverridesInterface | undefined
 
 const MOMENTUM_VELOCITY_EPSILON = 0.05;
 
-export const ScreenChromeProvider = ({ children, colorScheme = ColorSchemeEnum.Light, config }: Props): ReactNode => {
+export const ScreenChromeProvider = ({ children, colorScheme = ColorSchemeEnum.LIGHT, config }: Props): ReactNode => {
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
     const scrollY = useScrollViewOffset(scrollRef);
     const reducedMotion = useReducedMotion();
