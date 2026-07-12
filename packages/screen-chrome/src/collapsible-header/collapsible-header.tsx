@@ -19,8 +19,10 @@ export const CollapsibleHeader = ({ children, style }: Props): ReactNode => {
     const combinedContainerStyle = [collapsibleHeaderStyles.container, containerStyle, style];
 
     return (
-        <View style={combinedContainerStyle}>
-            <View style={collapsibleHeaderStyles.row}>{children}</View>
+        <View style={combinedContainerStyle} pointerEvents="box-none">
+            <View style={collapsibleHeaderStyles.row} pointerEvents="box-none">
+                {children}
+            </View>
         </View>
     );
 };
