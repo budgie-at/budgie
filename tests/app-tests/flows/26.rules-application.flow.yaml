@@ -303,7 +303,7 @@ env:
     visible:
       id: 'TransactionInfo.Page'
     timeout: 10000
-- assertVisible:
+- assertNotVisible:
     id: 'TransactionInfo.Row.Note'
 - assertVisible: 'Uber Ride'
 - assertVisible:
@@ -360,7 +360,7 @@ env:
     visible:
       id: 'TransactionInfo.Page'
     timeout: 10000
-- assertVisible:
+- assertNotVisible:
     id: 'TransactionInfo.Row.Note'
 - assertVisible: 'Random Purchase'
 - assertVisible:
