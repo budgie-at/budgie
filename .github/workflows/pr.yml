@@ -22,7 +22,7 @@ on: pull_request
 jobs:
     detect-mobile-impact:
         name: Detect mobile impact
-        runs-on: [self-hosted, linux-ci]
+        runs-on: [self-hosted, linux-tiered, linux-medium]
         timeout-minutes: 15
         permissions:
             contents: read
@@ -89,7 +89,7 @@ jobs:
 
     code-quality:
         name: Code quality checks
-        runs-on: [self-hosted, linux-ci]
+        runs-on: [self-hosted, linux-tiered, linux-large]
         timeout-minutes: 30
         permissions:
             contents: read
@@ -149,9 +149,9 @@ jobs:
         needs: [detect-mobile-impact]
         name: EAS Update Preview
         # Expo's Hermes compiler package ships an x86-64 Linux host binary.
-        # Keep this export off ARM64 self-hosted runners and reserve the Mac
-        # mini for the native iOS build and simulator stages below.
-        runs-on: ubuntu-latest
+        # Keep this export on the hosted x86-64 image and reserve the Mac mini
+        # for the native iOS build and simulator stages below.
+        runs-on: ubuntu-24.04
         timeout-minutes: 30
         permissions:
             contents: read
@@ -163,6 +163,9 @@ jobs:
                     echo "Learn more: https://docs.expo.dev/eas/github-actions"
                     exit 1
                   fi
+
+            - name: Verify x86-64 Hermes host
+              run: test "$(uname -m)" = 'x86_64'
 
             - name: Checkout repository
               uses: actions/checkout@v5
@@ -218,6 +221,13 @@ jobs:
             CCACHE_NOHASHDIR: 'true'
         steps:
             - uses: actions/checkout@v5
+
+            - name: Setup macOS toolchain PATH
+              shell: bash
+              run: |
+                  echo "$HOME/.rbenv/shims" >> "$GITHUB_PATH"
+                  echo '/opt/homebrew/bin' >> "$GITHUB_PATH"
+                  echo '/opt/homebrew/sbin' >> "$GITHUB_PATH"
 
             - name: Runner diagnostics
               run: |
@@ -337,7 +347,6 @@ jobs:
             - name: Setup ccache
               if: steps.native-plan.outputs.required == 'true'
               run: |
-                  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
                   mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
                   if ! command -v ccache >/dev/null; then
                     command -v brew >/dev/null || {
@@ -346,6 +355,7 @@ jobs:
                     }
                     brew list ccache >/dev/null 2>&1 || brew install ccache
                   fi
+                  command -v ccache
                   ccache --version
                   ccache --zero-stats || true
                   if command -v brew >/dev/null; then
@@ -368,7 +378,7 @@ jobs:
               env:
                   APP_VARIANT: e2e
                   EXPO_PUBLIC_AI_DISABLE: 'true'
-              run: npx expo prebuild -p ios --clean
+              run: npx expo prebuild -p ios --clean --no-install
 
             - name: Sync CocoaPods
               if: steps.native-plan.outputs.required == 'true'
@@ -376,7 +386,10 @@ jobs:
               env:
                   APP_VARIANT: e2e
                   EXPO_PUBLIC_AI_DISABLE: 'true'
-              run: pod install
+              run: |
+                  command -v pod
+                  pod --version
+                  pod install
 
             - name: Build native Release base
               if: steps.native-plan.outputs.required == 'true'
@@ -672,114 +685,3 @@ jobs:
                   if [ -n "${SIMULATOR_UDID:-}" ]; then
                     xcrun simctl shutdown "$SIMULATOR_UDID" || true
                   fi
-
-    e2e-android:
-        if: false && needs.detect-mobile-impact.outputs.mobile == 'true'
-        needs: [detect-mobile-impact, code-quality, eas-update-preview]
-        name: E2E Tests on Android
-        runs-on: [self-hosted, linux-ci]
-        timeout-minutes: 60
-        permissions:
-            contents: read
-        steps:
-            - uses: actions/checkout@v5
-
-            - name: Enable KVM group perms
-              run: |
-                  echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-                  sudo udevadm control --reload-rules
-                  sudo udevadm trigger --name-match=kvm
-
-            - name: Setup Node
-              uses: actions/setup-node@v6
-              with:
-                  node-version: 22.x
-
-            - name: Setup EAS
-              uses: expo/expo-github-action@v8
-              with:
-                  eas-version: latest
-                  token: ${{ secrets.EXPO_TOKEN }}
-
-            - name: Install dependencies
-              run: |
-                  yarn install
-
-            - name: Expo Prebuild
-              working-directory: packages/app
-              run: npx expo prebuild -p android --clean
-
-            - name: Cache Gradle
-              uses: actions/cache@v5
-              with:
-                  path: |
-                      ~/.gradle/caches
-                      ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-${{ hashFiles('packages/app/android/**/*.gradle*', 'packages/app/android/gradle/wrapper/gradle-wrapper.properties') }}
-                  restore-keys: ${{ runner.os }}-gradle-
-
-            - name: AVD cache
-              uses: actions/cache@v5
-              id: avd-cache
-              with:
-                  path: |
-                      ~/.android/avd/*
-                      ~/.android/adb*
-                  key: avd-34
-
-            - name: Build app
-              working-directory: packages/app
-              run: |
-                  eas build --profile=e2e --platform android --non-interactive --local --output app.android.apk
-
-            - name: Install Maestro
-              run: |
-                  maestro_bin="$HOME/.maestro/bin/maestro"
-                  installed_version="$(
-                    MAESTRO_CLI_NO_ANALYTICS=true \
-                      MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true \
-                      "$maestro_bin" --version 2>/dev/null | tail -n 1 | tr -d '\r' || true
-                  )"
-                  if [ ! -x "$maestro_bin" ] || [ "$installed_version" != "$MAESTRO_VERSION" ]; then
-                    curl -fsSL "https://get.maestro.mobile.dev" | env MAESTRO_VERSION="$MAESTRO_VERSION" bash
-                  fi
-                  echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
-                  test "$(MAESTRO_CLI_NO_ANALYTICS=true MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true "$maestro_bin" --version 2>&1 | tail -n 1 | tr -d '\r')" = "$MAESTRO_VERSION"
-
-            - name: Сreate AVD and generate snapshot for caching
-              if: steps.avd-cache.outputs.cache-hit != 'true'
-              uses: reactivecircus/android-emulator-runner@v2
-              with:
-                  api-level: 34
-                  target: aosp_atd
-                  channel: canary
-                  arch: x86_64
-                  force-avd-creation: false
-                  emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-                  disable-animations: false
-                  script: echo "Generated AVD snapshot for caching."
-
-            - name: Start emulator and run Maestro tests
-              uses: reactivecircus/android-emulator-runner@v2
-              with:
-                  api-level: 34
-                  target: aosp_atd
-                  channel: canary
-                  arch: x86_64
-                  force-avd-creation: false
-                  emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-                  disable-animations: true
-                  working-directory: tests/app-tests
-                  script: |
-                      cd ../../packages/app && eas build:run --platform android --path app.android.apk
-                      sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
-
-            - name: Upload Maestro artifacts (report, logs, videos, screenshots)
-              if: always()
-              uses: actions/upload-artifact@v6
-              with:
-                  name: maestro-android-artifacts
-                  include-hidden-files: true
-                  path: |
-                      tests/app-tests/.maestro/**
-                      tests/app-tests/*.mp4

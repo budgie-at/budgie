@@ -36,6 +36,13 @@ jobs:
         steps:
             - uses: actions/checkout@v5
 
+            - name: Setup macOS toolchain PATH
+              shell: bash
+              run: |
+                  echo "$HOME/.rbenv/shims" >> "$GITHUB_PATH"
+                  echo '/opt/homebrew/bin' >> "$GITHUB_PATH"
+                  echo '/opt/homebrew/sbin' >> "$GITHUB_PATH"
+
             - uses: actions/setup-node@v6
               with:
                   node-version: 22.x
@@ -107,7 +114,6 @@ jobs:
             - name: Setup ccache
               if: steps.native-app-cache.outputs.cache-hit != 'true'
               run: |
-                  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
                   mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
                   if ! command -v ccache >/dev/null; then
                     command -v brew >/dev/null || {
@@ -116,6 +122,8 @@ jobs:
                     }
                     brew list ccache >/dev/null 2>&1 || brew install ccache
                   fi
+                  command -v ccache
+                  ccache --version
                   ccache --zero-stats || true
                   if command -v brew >/dev/null; then
                     echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
@@ -134,12 +142,15 @@ jobs:
             - name: Generate native project
               if: steps.native-app-cache.outputs.cache-hit != 'true'
               working-directory: packages/app
-              run: npx expo prebuild -p ios --clean
+              run: npx expo prebuild -p ios --clean --no-install
 
             - name: Install pods
               if: steps.native-app-cache.outputs.cache-hit != 'true'
               working-directory: packages/app/ios
-              run: pod install
+              run: |
+                  command -v pod
+                  pod --version
+                  pod install
 
             - name: Build native Release base
               if: steps.native-app-cache.outputs.cache-hit != 'true'
