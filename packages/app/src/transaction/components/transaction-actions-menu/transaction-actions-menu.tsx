@@ -32,6 +32,10 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
     };
 
     const closeMenu = (afterClose?: EmptyFn) => {
+        if (!isMenuOpen) {
+            return;
+        }
+
         pendingActionRef.current = afterClose ?? null;
         setIsMenuOpen(false);
     };

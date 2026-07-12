@@ -3,9 +3,7 @@ import { ExternalSourceEnum } from '@budgie/contracts';
 import { SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
 import { describe, expect, it } from 'vitest';
 
-
 import { StubFileBankSyncService, seed } from '../../harness';
-
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';

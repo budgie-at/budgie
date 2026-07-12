@@ -14,6 +14,7 @@ export const transactionMapEntryInputToCreateEntity = (
     categorySource: entry.categorySource,
     mccCategoryId: entry.mccCategoryId,
     type: entry.type,
+    kind: entry.kind,
     amount: convertToMicroUnits(entry.amount),
     externalId: entry.externalId ?? null,
     exchangeRate: entry.exchangeRate ?? 1,

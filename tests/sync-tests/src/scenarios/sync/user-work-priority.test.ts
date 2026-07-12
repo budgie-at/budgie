@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
 
-
 const nextTaskDelayMs = 0;
 
 describe('sync/user-work-priority', () => {

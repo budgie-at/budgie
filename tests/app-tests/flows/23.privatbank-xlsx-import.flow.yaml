@@ -72,7 +72,7 @@ appId: ${APP_ID}
       visibilityPercentage: 30
 
 - assertVisible:
-      id: 'TransactionCard.FeePill.3'
+      id: 'TransactionCard.FeeMetadata.3'
 
 - tapOn:
       id: 'PageHeader.BackButton'

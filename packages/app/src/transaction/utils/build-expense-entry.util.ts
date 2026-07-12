@@ -1,4 +1,4 @@
-import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { TransactionEntryCreateInputInterface, TransactionEntryKindEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 
 interface BuildExpenseEntryParams {
     readonly accountId: number;
@@ -18,6 +18,7 @@ export const buildExpenseEntry = ({
         categoryId,
         amount,
         type: TransactionEntryTypeEnum.CREDIT,
+        kind: TransactionEntryKindEnum.PRIMARY,
         mccCategoryId,
         externalId: null
     }

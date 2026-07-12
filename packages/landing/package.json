@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/landing",
-    "version": "5.34.0",
+    "version": "5.42.0",
     "private": true,
     "scripts": {
         "build": "next build",
@@ -34,7 +34,8 @@
         "redis": "^5.11.0",
         "server-only": "^0.0.1",
         "tailwind-merge": "^3.6.0",
-        "tailwindcss-animate": "^1.0.7"
+        "tailwindcss-animate": "^1.0.7",
+        "zod": "4.1.12"
     },
     "devDependencies": {
         "@lingui/format-po": "6.1.0",

@@ -112,7 +112,7 @@ msgstr "{months, plural, one {# Monat} other {# Monate}}"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
-msgstr ""
+msgstr "{newTransactionCount} neu, {existingTransactionCount} bereits importiert, {parsedTransactionCount} geprüft"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
@@ -138,7 +138,7 @@ msgstr "{selectedCount, plural, =0 {Alle Tags anzeigen} one {# Tag anzeigen} oth
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
-msgstr ""
+msgstr "{similarCount, plural, one {# ähnliche Transaktion} other {# ähnliche Transaktionen}}"
 
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "{source} error · {message}"
@@ -208,6 +208,10 @@ msgstr "Konto"
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Account {accountId} not found"
 msgstr "Konto {accountId} nicht gefunden"
+
+#: src/account/service/account-debt-opening.service.ts
+msgid "Account {id} not found"
+msgstr "Konto {id} nicht gefunden"
 
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
@@ -428,6 +432,11 @@ msgstr "Möchten Sie diese Regel wirklich löschen?"
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Attach debt"
+msgstr "Schuld verknüpfen"
+
 #: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx
 msgid "Auto-assign categories from MCC"
 msgstr "Kategorien automatisch per MCC zuweisen"
@@ -446,7 +455,7 @@ msgstr "Verfügbare Spalten"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
-msgstr ""
+msgstr "Durchschnitt"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -508,9 +517,15 @@ msgstr "Binance"
 msgid "Biometric Authentication"
 msgstr "Biometrische Authentifizierung"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "Borrowed"
 msgstr "Geliehen"
+
+#: src/account/service/account-debt-opening.service.ts
+msgid "Borrowed debt account expected"
+msgstr "Geliehenes Schuldkonto erwartet"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Budget"
@@ -550,7 +565,7 @@ msgstr "Budgie führt sichere Überweisungs- und Rückerstattungs-Treffer zusamm
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "Budgie will notify you when it finishes"
-msgstr ""
+msgstr "Budgie benachrichtigt dich, wenn der Import fertig ist"
 
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
@@ -733,7 +748,7 @@ msgstr "Treffer konsolidieren"
 
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "Consolidation"
-msgstr ""
+msgstr "Konsolidierung"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Contact (optional)"
@@ -762,7 +777,7 @@ msgid "Convert"
 msgstr "Umwandeln"
 
 #: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
+#: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Refund"
 msgstr "In Rückerstattung umwandeln"
@@ -774,7 +789,7 @@ msgstr "In Rückerstattung umwandeln?"
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 #: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
+#: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Transfer"
 msgstr "In Überweisung umwandeln"
@@ -798,6 +813,12 @@ msgstr "Konto konnte nicht aktiviert werden."
 #: src/account/component/archive-account/archive-account.tsx
 msgid "Could not archive account"
 msgstr "Konto konnte nicht archiviert werden"
+
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Could not attach debt"
+msgstr "Schuld konnte nicht verknüpft werden"
 
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Could not check sync data"
@@ -970,13 +991,14 @@ msgstr "Regel konnte nicht aktualisiert werden"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Could not update settings"
-msgstr ""
+msgstr "Einstellungen konnten nicht aktualisiert werden"
 
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Could not update token"
 msgstr "Token konnte nicht aktualisiert werden"
 
 #: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "Transaktion konnte nicht aktualisiert werden."
@@ -992,6 +1014,11 @@ msgstr "Dieses Konto in die Berechnung des Nettovermögens einbeziehen"
 #: src/export/components/export-database/export-database.tsx
 msgid "Create a backup of all your data"
 msgstr "Erstellen Sie eine Sicherung aller Ihrer Daten"
+
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
+msgid "Create a debt account first."
+msgstr "Erstellen Sie zuerst ein Schuldenkonto."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a new System-generated API key"
@@ -1093,7 +1120,6 @@ msgid "Currency"
 msgstr "Währung"
 
 #: src/account/component/account-balance/account-balance.tsx
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Current Balance"
 msgstr "Aktueller Saldo"
 
@@ -1124,15 +1150,28 @@ msgstr "Datum"
 msgid "Day {selectedDay}"
 msgstr "Tag {selectedDay}"
 
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Debt"
 msgstr "Schulden"
 
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
+msgid "Debt · {accountTitle}"
+msgstr "Schulden · {accountTitle}"
+
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/app/(main)/create-account/index.tsx
 msgid "Debt Account"
 msgstr "Schuldenkonto"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt account cannot match transaction account"
+msgstr "Schuldenkonto darf nicht dem Transaktionskonto entsprechen"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt account not found"
+msgstr "Schuldenkonto nicht gefunden"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
@@ -1171,13 +1210,17 @@ msgid "Delete rule"
 msgstr "Regel löschen"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
 msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
 msgstr "Alle abwählen"
+
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Detach debt"
+msgstr "Schuld trennen"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
@@ -1239,7 +1282,7 @@ msgstr "z. B. Sparkonto"
 
 #: src/account/component/account-card-base/account-card-base.tsx
 msgid "Edit account"
-msgstr ""
+msgstr "Konto bearbeiten"
 
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Edit budget"
@@ -1271,9 +1314,9 @@ msgstr "Tag bearbeiten"
 
 #: src/transaction/components/transaction-info-page/transaction-info-page.tsx
 msgid "Edit transaction"
-msgstr ""
+msgstr "Transaktion bearbeiten"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-list-edit-menu-item/transaction-list-edit-menu-item.tsx
 msgid "Edit Transaction"
 msgstr "Transaktion bearbeiten"
 
@@ -1330,6 +1373,7 @@ msgstr "Englische Übersetzung"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Geben Sie eine {PIN_LENGTH}-stellige PIN ein"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Enter all amounts"
 msgstr "Alle Beträge eingeben"
@@ -1413,7 +1457,7 @@ msgstr "Alltägliche Transaktionen und Ausgaben"
 
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Exchange rate"
-msgstr ""
+msgstr "Wechselkurs"
 
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
@@ -1483,7 +1527,11 @@ msgstr "Schnellindexierung {done} von {total} • zum Pausieren tippen"
 
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
-msgstr ""
+msgstr "Gebühr"
+
+#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+msgid "Fee · {formattedFeeAmount}"
+msgstr "Gebühr · {formattedFeeAmount}"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Fee {formattedAmount}"
@@ -1541,9 +1589,10 @@ msgstr "von"
 msgid "From"
 msgstr "Von"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
-msgstr ""
+msgstr "Von Konto"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Account"
@@ -1587,7 +1636,7 @@ msgstr "Benachrichtigung bei Überschreiten eines Budget-Schwellenwerts"
 
 #: src/@generic/component/go-back-button/go-back-button.tsx
 msgid "Go back"
-msgstr ""
+msgstr "Zurück"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Greater Than"
@@ -1650,7 +1699,7 @@ msgstr "Privatbank importieren"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "Import started"
-msgstr ""
+msgstr "Import gestartet"
 
 #: src/import/components/import-csv/import-csv.tsx
 msgid "Import transactions from a CSV file"
@@ -1782,9 +1831,22 @@ msgstr "Lernen aktuell"
 msgid "Left"
 msgstr "Übrig"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Left to receive"
+msgstr "Noch zu erhalten"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Left to repay"
+msgstr "Noch zurückzuzahlen"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Verliehen"
+
+#: src/account/service/account-debt-opening.service.ts
+msgid "Lent debt account expected"
+msgstr "Verliehenes Schuldkonto erwartet"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Less Than"
@@ -1967,6 +2029,10 @@ msgstr "Zu Menü → Kontoauszüge navigieren"
 msgid "New Account"
 msgstr "Neues Konto"
 
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+msgid "New borrowed debt"
+msgstr "Neue geliehene Schuld"
+
 #: src/app/(main)/create-transaction/expense.tsx
 msgid "New Expense"
 msgstr "Neue Ausgabe"
@@ -2040,7 +2106,7 @@ msgstr "Keine benutzerdefinierten Kategorien"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No enabled accounts were found in this file"
-msgstr ""
+msgstr "In dieser Datei wurden keine aktivierten Konten gefunden"
 
 #: src/app/icon-selector.tsx
 msgid "No icons found"
@@ -2064,7 +2130,7 @@ msgstr "Keine Sprachen gefunden"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
-msgstr ""
+msgstr "Keine passenden Konten"
 
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "No matching expenses"
@@ -2085,7 +2151,7 @@ msgstr "Keine MCC-Codes gefunden"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No new transactions"
-msgstr ""
+msgstr "Keine neuen Transaktionen"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
@@ -2177,6 +2243,7 @@ msgstr "Nur Ausgaben- und Einnahmentransaktionen werden umgewandelt: Ausgaben we
 msgid "Only expense transactions can be converted"
 msgstr "Nur Ausgaben können umgewandelt werden"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only income transactions can be converted"
 msgstr "Nur Einnahmen können umgewandelt werden"
@@ -2185,6 +2252,7 @@ msgstr "Nur Einnahmen können umgewandelt werden"
 msgid "Only single-entry expenses can be converted"
 msgstr "Nur Ausgaben mit einem Eintrag können umgewandelt werden"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Nur Einnahmen mit einem Eintrag können umgewandelt werden"
@@ -2268,17 +2336,13 @@ msgstr "Monatliches Gesamtlimit"
 msgid "Overview"
 msgstr "Übersicht"
 
-#: src/account/constant/debt-section-kind-label.constant.ts
+#: src/account/component/debt-section-header/debt-section-header.tsx
 msgid "Owed to you"
 msgstr "Ihnen geschuldet"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Owes you"
 msgstr "Schuldet Ihnen"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Paid: {formattedBalance}"
-msgstr "Bezahlt: {formattedBalance}"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Paste the token into the field below"
@@ -2295,10 +2359,6 @@ msgstr "Fügen Sie Ihren Binance-API-Schlüssel ein:"
 #: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
 msgid "Paste your Binance API secret:"
 msgstr "Fügen Sie Ihr Binance-API-Secret ein:"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Payment Progress"
-msgstr "Zahlungsfortschritt"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
@@ -2481,6 +2541,7 @@ msgstr "Erstattet {formattedRefundedAmount}"
 msgid "Remaining"
 msgstr "Verbleibend"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
 msgid "Remove"
 msgstr "Entfernen"
@@ -2509,6 +2570,10 @@ msgstr "Aufteilung entfernen"
 msgid "Remove split?"
 msgstr "Aufteilung entfernen?"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Repaid"
+msgstr "Zurückgezahlt"
+
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Repair"
 msgstr "Reparieren"
@@ -2517,6 +2582,10 @@ msgstr "Reparieren"
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Repair Sync Data"
 msgstr "Synchronisationsdaten reparieren"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Repayment Progress"
+msgstr "Rückzahlungsfortschritt"
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -2548,10 +2617,18 @@ msgstr "Aus einer Sicherungsdatei wiederherstellen"
 msgid "Resuming AI…"
 msgstr "KI wird fortgesetzt…"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Return Progress"
+msgstr "Rückgabefortschritt"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Returned"
+msgstr "Erhalten"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Revert"
 msgstr "Rückgängig machen"
@@ -2700,6 +2777,7 @@ msgstr "Wählen Sie einen Tag zum Zusammenführen"
 msgid "Select a valid column"
 msgstr "Wählen Sie eine gültige Spalte"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Select account"
@@ -2815,6 +2893,7 @@ msgid "Set Category"
 msgstr "Kategorie festlegen"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Set fee"
 msgstr "Gebühr festlegen"
 
@@ -2852,7 +2931,7 @@ msgstr "Dieses Konto auf der Hauptseite anzeigen"
 
 #: src/transaction/components/transaction-info-page/transaction-info-page.tsx
 msgid "Similar transactions"
-msgstr ""
+msgstr "Ähnliche Transaktionen"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
@@ -3135,7 +3214,7 @@ msgstr "Nach"
 
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
-msgstr ""
+msgstr "Auf Konto"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "To Account"
@@ -3163,13 +3242,22 @@ msgstr "Gesamt"
 msgid "Total Balance"
 msgstr "Gesamtsaldo"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Total: {formattedAmountToReturn}"
-msgstr "Gesamt: {formattedAmountToReturn}"
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+msgid "Total borrowed"
+msgstr "Gesamt geliehen"
+
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+msgid "Total lent"
+msgstr "Gesamt verliehen"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Touch ID"
 msgstr "Touch ID"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Transaction already has a debt attachment"
+msgstr "Transaktion hat bereits eine Schuldenverknüpfung"
 
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction must have a destination account"
@@ -3179,6 +3267,12 @@ msgstr "Transaktion muss ein Zielkonto haben"
 msgid "Transaction must have a source account"
 msgstr "Transaktion muss ein Quellkonto haben"
 
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Transaction must have exactly one primary entry"
+msgstr "Transaktion muss genau einen primären Eintrag haben"
+
+#: src/account/service/account-debt-opening.service.ts
+#: src/transaction/service/transaction-debt-settlement.service.ts
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction not found"
 msgstr "Transaktion nicht gefunden"
@@ -3190,7 +3284,7 @@ msgstr "Transaktionen"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "Transactions imported"
-msgstr ""
+msgstr "Transaktionen importiert"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Transactions synced"
@@ -3381,7 +3475,7 @@ msgstr "Archivierte Konten anzeigen und wiederherstellen"
 
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"
-msgstr ""
+msgstr "Quelltransaktionen anzeigen"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"
@@ -3423,7 +3517,7 @@ msgstr "XLSX-Export"
 msgid "Yesterday"
 msgstr "Gestern"
 
-#: src/account/constant/account-debt-type-description.constant.ts
+#: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You gave money"
 msgstr "Sie haben Geld gegeben"
 
@@ -3440,11 +3534,11 @@ msgid "You have used {threshold}% of your budget for spending outside category l
 msgstr "Du hast {threshold}% deines Budgets für Ausgaben außerhalb der Kategorielimits verwendet."
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
-#: src/account/constant/debt-section-kind-label.constant.ts
+#: src/account/component/debt-section-header/debt-section-header.tsx
 msgid "You owe"
 msgstr "Sie schulden"
 
-#: src/account/constant/account-debt-type-description.constant.ts
+#: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You received money"
 msgstr "Sie haben Geld erhalten"
 

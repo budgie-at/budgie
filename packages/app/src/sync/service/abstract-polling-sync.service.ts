@@ -7,7 +7,6 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@
 
 import { syncRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
@@ -20,7 +19,7 @@ import type { SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/con
 import type { SyncBatchResultInterface } from '@budgie/sync';
 
 export abstract class AbstractPollingSyncService extends AbstractSyncService {
-    private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
+    private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = 2 * 60 * 1000;
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 15;
 
     override readonly supportsTokenAuth: boolean = true;

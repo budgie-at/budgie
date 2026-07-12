@@ -11,6 +11,8 @@ import { buildTranslatedCategoryRelation } from '../../@generic/util/build-trans
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
+import { DebtEventAssociationEnum } from '../../debt-event/enum/debt-event-association.enum';
+import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -635,7 +637,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
         return await this.db.query.TransactionEntityTable.findMany({
-            where: or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
+            where: this.buildSingleAccountCondition(accountId),
             orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
         });
     }
@@ -649,12 +651,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         const result = await this.db
             .select({ operatedAt: aggregateSql })
             .from(TransactionEntityTable)
-            .where(
-                and(
-                    or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
-                    ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)
-                )
-            );
+            .where(and(this.buildSingleAccountCondition(accountId), ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)));
 
         const time = result[0]?.operatedAt;
         if (isPositiveNumber(time)) {
@@ -751,7 +748,9 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         if (isNotEmptyArray(accountIds)) {
             const condition = or(
                 inArray(TransactionEntityTable.fromAccountId, accountIds),
-                inArray(TransactionEntityTable.toAccountId, accountIds)
+                inArray(TransactionEntityTable.toAccountId, accountIds),
+                inArray(TransactionEntityTable.id, this.buildTransactionIdsByEntryAccountIdsQuery(accountIds)),
+                inArray(TransactionEntityTable.id, this.buildTransactionIdsByDebtEventAccountIdsQuery(accountIds))
             );
 
             return isDefined(condition) ? [condition] : [];
@@ -760,11 +759,40 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return [];
     }
 
+    private buildSingleAccountCondition(accountId: number) {
+        return or(
+            eq(TransactionEntityTable.fromAccountId, accountId),
+            eq(TransactionEntityTable.toAccountId, accountId),
+            inArray(TransactionEntityTable.id, this.buildTransactionIdsByEntryAccountIdsQuery([accountId])),
+            inArray(TransactionEntityTable.id, this.buildTransactionIdsByDebtEventAccountIdsQuery([accountId]))
+        );
+    }
+
     private buildTransfersByAccountIdWhere(accountId: number) {
         return and(
             eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
             or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
         );
+    }
+
+    private buildTransactionIdsByEntryAccountIdsQuery(accountIds: number[]) {
+        return this.db
+            .select({ transactionId: TransactionEntryEntityTable.transactionId })
+            .from(TransactionEntryEntityTable)
+            .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), this.buildLedgerEntryCondition()));
+    }
+
+    private buildTransactionIdsByDebtEventAccountIdsQuery(accountIds: number[]) {
+        return this.db
+            .select({ transactionId: DebtEventEntityTable.transactionId })
+            .from(DebtEventEntityTable)
+            .where(
+                and(
+                    inArray(DebtEventEntityTable.debtAccountId, accountIds),
+                    isNotNull(DebtEventEntityTable.transactionId),
+                    isNull(DebtEventEntityTable.deletedAt)
+                )
+            );
     }
 
     private buildSimilarStatsSql(query: SimilarTransactionStatsQueryInterface): string {
@@ -936,6 +964,12 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             [TransactionAssociationEnum.TRANSACTION_TAGS]: {
                 with: {
                     [TransactionTagsAssociationEnum.TAG]: true
+                }
+            },
+            [TransactionAssociationEnum.DEBT_EVENTS]: {
+                where: isNull(DebtEventEntityTable.deletedAt),
+                with: {
+                    [DebtEventAssociationEnum.DEBT_ACCOUNT]: true
                 }
             },
             [TransactionAssociationEnum.FROM_ACCOUNT]: true,

@@ -4,5 +4,6 @@ export enum AccountAssociationEnum {
     INSTRUMENT = 'instrument',
     BALANCES = 'balances',
     PARENT = 'parent',
-    SYNC = 'sync'
+    SYNC = 'sync',
+    DEBT_EVENTS = 'debtEvents'
 }

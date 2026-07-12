@@ -5,6 +5,8 @@ import { CryptoAccountCard } from '../crypto-account-card/crypto-account-card';
 import { DebtAccountCard } from '../debt-account-card/debt-account-card';
 import { SyncAccountCard } from '../sync-account-card/sync-account-card';
 
+import type { DebtAccountProgressSummaryInterface } from '../../interface/debt-account-progress-summary.interface';
+
 interface Props extends Pick<
     AccountWithSyncEntityInterface,
     'id' | 'createdAt' | 'title' | 'type' | 'icon' | 'externalId' | 'debtType' | 'targetBalance' | 'deadline'
@@ -12,6 +14,7 @@ interface Props extends Pick<
     readonly balance: number;
     readonly sync: SyncEntityInterface | null;
     readonly className?: string;
+    readonly debtProgressSummary?: DebtAccountProgressSummaryInterface;
     readonly instrumentId: number;
     readonly instrumentCode: string;
     readonly instrumentSymbol: string;

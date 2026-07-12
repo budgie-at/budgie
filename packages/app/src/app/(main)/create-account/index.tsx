@@ -13,6 +13,10 @@ import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 export default function Index() {
     const { t } = useLingui();
 
+    const monobankRoute = { pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.MONOBANK } } as const;
+    const privatbankRoute = { pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.PRIVATBANK } } as const;
+    const ersteRoute = { pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.ERSTE } } as const;
+
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
@@ -55,19 +59,19 @@ export default function Index() {
                 <CreateSyncCard
                     description={t`Auto-sync accounts and transactions from Monobank`}
                     title={t`Monobank`}
-                    route={`/create-account/${ExternalSourceEnum.MONOBANK}`}
+                    route={monobankRoute}
                     bankProvider={ExternalSourceEnum.MONOBANK}
                 />
                 <CreateSyncCard
                     description={t`Import accounts and transactions from Privatbank XLSX export`}
                     title={t`Privatbank`}
-                    route={`/create-account/${ExternalSourceEnum.PRIVATBANK}`}
+                    route={privatbankRoute}
                     bankProvider={ExternalSourceEnum.PRIVATBANK}
                 />
                 <CreateSyncCard
                     description={t`Import accounts and transactions from Erste Bank PDF statement`}
                     title={t`Erste Bank`}
-                    route={`/create-account/${ExternalSourceEnum.ERSTE}`}
+                    route={ersteRoute}
                     bankProvider={ExternalSourceEnum.ERSTE}
                 />
                 <CreateSyncCard

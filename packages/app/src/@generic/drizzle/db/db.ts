@@ -16,6 +16,7 @@ import {
     SyncRepository,
     CategoryRepository,
     CommentEmbeddingRepository,
+    DebtEventRepository,
     ExchangeRateRepository,
     HistoricalExchangeRateRepository,
     InstrumentDailyMarketPriceRepository,
@@ -126,6 +127,7 @@ export const instrumentDailyMarketPriceRepository = new InstrumentDailyMarketPri
 export const instrumentMarketDataJobRepository = new InstrumentMarketDataJobRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
 export const syncRepository = new SyncRepository(db);
+export const debtEventRepository = new DebtEventRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
 export const transactionEmbeddingRepository = new TransactionEmbeddingRepository(db);

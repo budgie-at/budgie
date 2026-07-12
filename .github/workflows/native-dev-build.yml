@@ -6,13 +6,18 @@ env:
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ios-dev-prerelease
+  cancel-in-progress: false
+
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
     name: Local iOS Development Build
     runs-on: [self-hosted, macOS, ARM64, macos-tartelet]
+    timeout-minutes: 120
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -23,7 +28,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: yarn
 
       - name: Select Xcode
         run: |
@@ -72,3 +76,71 @@ jobs:
           path: artifacts/budgie-development.ipa
           if-no-files-found: error
           retention-days: 14
+
+      - name: Ensure GitHub CLI is available
+        run: command -v gh >/dev/null 2>&1 || brew install gh
+
+      - name: Publish iOS dev prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          BRANCH_NAME="${GITHUB_REF_NAME}"
+          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          TAG="ios-dev-${GITHUB_RUN_NUMBER}"
+
+          NOTES_FILE=$(mktemp)
+          {
+            echo "Budgie iOS development build"
+            echo ""
+            echo "Version: ${VERSION}"
+            echo "Commit: ${SHORT_SHA}"
+            echo "Branch: ${BRANCH_NAME}"
+            echo "Built: ${BUILD_DATE}"
+            echo "Workflow run: ${RUN_URL}"
+          } > "$NOTES_FILE"
+
+          gh release create "$TAG" artifacts/budgie-development.ipa --repo "${GITHUB_REPOSITORY}" --draft --prerelease --target "${GITHUB_SHA}" --title "Budgie iOS Dev Build v${VERSION} (${SHORT_SHA})" --notes-file "$NOTES_FILE"
+
+          RELEASE_ID=$(gh api "repos/${GITHUB_REPOSITORY}/releases" | jq -r --arg tag "$TAG" '[.[] | select(.draft and .tag_name == $tag)][0].id')
+
+          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}" -F draft=false > /dev/null
+
+          rm -f "$NOTES_FILE"
+
+      - name: Prune old iOS dev releases
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+          KEEP_COUNT=5
+
+          RELEASES_JSON=$(gh api "repos/${GITHUB_REPOSITORY}/releases" --paginate --jq '.')
+
+          PRUNE_PUBLISHED_TAGS=$(echo "$RELEASES_JSON" | jq -r --argjson keep "$KEEP_COUNT" '
+            [.[] | select(.draft == false) | select(.tag_name | test("^ios-dev-[0-9]+$"))]
+            | sort_by(.tag_name | capture("^ios-dev-(?<run>[0-9]+)$").run | tonumber)
+            | reverse
+            | .[$keep:]
+            | .[].tag_name
+          ')
+
+          for tag in $PRUNE_PUBLISHED_TAGS; do
+            echo "Pruning old published release: $tag"
+            gh release delete "$tag" --repo "${GITHUB_REPOSITORY}" --yes --cleanup-tag || echo "Failed to delete $tag"
+          done
+
+          STALE_DRAFT_TAGS=$(echo "$RELEASES_JSON" | jq -r --arg currentRun "${GITHUB_RUN_NUMBER}" '
+            [.[] | select(.draft == true) | select(.tag_name | test("^ios-dev-[0-9]+$"))]
+            | .[]
+            | select((.tag_name | capture("^ios-dev-(?<run>[0-9]+)$").run | tonumber) < ($currentRun | tonumber))
+            | .tag_name
+          ')
+
+          for tag in $STALE_DRAFT_TAGS; do
+            echo "Pruning stale draft release: $tag"
+            gh release delete "$tag" --repo "${GITHUB_REPOSITORY}" --yes --cleanup-tag || echo "Failed to delete draft $tag"
+          done

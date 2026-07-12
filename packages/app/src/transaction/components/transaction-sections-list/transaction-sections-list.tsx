@@ -27,6 +27,7 @@ interface Props {
     readonly listEmptyState: ReactElement;
     readonly balanceAdjustmentLabel: string;
     readonly categoriesLabel: string;
+    readonly accountId?: number | null;
     readonly footerSpacerMultiplier?: number;
 }
 
@@ -44,6 +45,7 @@ export const TransactionSectionsList = ({
     listEmptyState,
     balanceAdjustmentLabel,
     categoriesLabel,
+    accountId = null,
     footerSpacerMultiplier = 1
 }: Props) => {
     const router = useRouter();
@@ -84,6 +86,7 @@ export const TransactionSectionsList = ({
                 transaction={item.data.transaction}
                 formattedDate={item.data.formattedDate}
                 categoryLabel={item.data.categoryLabel}
+                accountId={item.data.accountId}
                 onPress={handlePress}
                 onLongPress={handleLongPress}
             />
@@ -97,6 +100,7 @@ export const TransactionSectionsList = ({
             data: {
                 transaction,
                 formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
+                accountId,
                 categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel)
             }
         }))

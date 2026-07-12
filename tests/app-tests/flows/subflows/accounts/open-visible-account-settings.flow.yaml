@@ -3,6 +3,10 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
+      id: 'AccountDetails.Page'
+    timeout: 10000
+- extendedWaitUntil:
+    visible:
       id: 'AccountDetails.EditButton'
     timeout: 10000
 - tapOn:

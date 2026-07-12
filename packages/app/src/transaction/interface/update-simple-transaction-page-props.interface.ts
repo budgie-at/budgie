@@ -11,6 +11,9 @@ export interface UpdateSimpleTransactionPagePropsInterface {
     readonly onGoBack: () => void;
     readonly onDelete: () => void;
     readonly onRevert: () => void;
+    readonly onAttachDebtSettlement?: () => void;
+    readonly attachDebtSettlementLabel?: string;
+    readonly onDetachDebtSettlement?: () => void;
     readonly onConvertToRefund?: () => void;
     readonly onConvertToTransfer?: () => void;
 }

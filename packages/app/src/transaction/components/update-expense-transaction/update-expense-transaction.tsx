@@ -2,8 +2,11 @@ import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgi
 import { useLingui } from '@lingui/react/macro';
 import { useWatch } from 'react-hook-form';
 
-import { useUpdateExpenseTransactionActions } from '../../hook/use-update-expense-transaction-actions.hook';
+import { isDefined } from '@rnw-community/shared';
+
+import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
+import { useUpdateTransactionSharedActions } from '../../hook/use-update-transaction-shared-actions.hook';
 import { buildExpenseEntry } from '../../utils/build-expense-entry.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
@@ -22,13 +25,29 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
     });
 
     const fromAccountId = useWatch({ control: simpleTransaction.form.control, name: 'fromAccountId' });
-    const { handleOpenConvert, handleOpenRefundSources, handleRevert } = useUpdateExpenseTransactionActions({
+    const [openConsolidationSourceModal] = useConsolidationSourceModal();
+    const {
+        debtSettlementAccountTitle,
+        handleDetachDebtSettlement,
+        handleOpenConvert,
+        handleOpenDebtSettlement,
+        handleRevert,
+        hasDebtSettlement
+    } = useUpdateTransactionSharedActions({
         transaction,
+        transactionAccountId: fromAccountId,
         transactionId,
-        fromAccountId
+        transactionType: TransactionTypeEnum.EXPENSE
     });
+    const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId });
     const mccCategoryId = simpleTransaction.categoryEntries.at(0)?.mccCategoryId ?? null;
     const canConvertToTransfer = simpleTransaction.categoryEntries.length === 1;
+    const debtSettlementProps = hasDebtSettlement
+        ? { onDetachDebtSettlement: handleDetachDebtSettlement }
+        : {
+              onAttachDebtSettlement: handleOpenDebtSettlement,
+              ...(isDefined(debtSettlementAccountTitle) && { attachDebtSettlementLabel: debtSettlementAccountTitle })
+          };
 
     return (
         <UpdateSimpleTransactionPage
@@ -39,6 +58,7 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
             onDelete={simpleTransaction.handleDelete}
             onRevert={handleRevert}
             {...(canConvertToTransfer && { onConvertToTransfer: handleOpenConvert })}
+            {...debtSettlementProps}
         >
             <SimpleQuickForm
                 variant="destructive"
@@ -46,6 +66,7 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
                 accountFieldName="fromAccountId"
                 transactionTitle={transaction.title}
                 mccCategoryId={mccCategoryId}
+                debtSettlementAccountTitle={debtSettlementAccountTitle}
                 amountTopContent={
                     <RefundedPill
                         transaction={transaction}

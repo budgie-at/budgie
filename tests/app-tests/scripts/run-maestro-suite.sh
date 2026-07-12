@@ -207,6 +207,8 @@ seed_ios_database_fixture_if_needed() {
     mkdir -p "$sqlite_dir"
     rm -f "$sqlite_dir"/budgie.db*
     cp "$fixture_path" "$sqlite_dir/budgie.db"
+    xcrun simctl launch "$DETECTED_SIMULATOR_UDID" "$APP_ID" >/dev/null
+    sleep 3
 
     DATABASE_FIXTURE_SEEDED="true"
     echo "Seeded active iOS database fixture $fixture_name"
@@ -431,14 +433,32 @@ if [ -z "$E2E_DB_FIXTURES_URI" ]; then
     echo "Could not resolve E2E_DB_FIXTURES_URI for $APP_ID; database-import flows will fail." >&2
 fi
 
+prime_deep_links() {
+    local prime_flow_path="$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml"
+
+    if [ ! -f "$prime_flow_path" ]; then
+        return 0
+    fi
+
+    echo "Priming deep-link scheme confirmation"
+
+    if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
+        maestro --udid "$DETECTED_SIMULATOR_UDID" test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID" || true
+    else
+        maestro test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID" || true
+    fi
+}
+
 collect_flow_paths
 capture_output_path
+prime_deep_links
 
 echo "Running Maestro suite from $WORKSPACE_DIR"
 
 REPORT_DIR=""
 REPORTS=()
 FLOW_INDEX=0
+FLOW_TOTAL="${#FLOW_PATHS[@]}"
 
 if [ -n "$OUTPUT_PATH" ]; then
     REPORT_DIR="$(dirname "$OUTPUT_PATH")/.maestro-flow-reports"
@@ -457,7 +477,11 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
 
     reboot_ios_simulator_if_needed "$FLOW_INDEX"
 
+    echo "Running Maestro flow $FLOW_INDEX/$FLOW_TOTAL: $FLOW_NAME"
+
     if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH"; then
+        echo "Completed Maestro flow $FLOW_INDEX/$FLOW_TOTAL: $FLOW_NAME"
+
         if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
             REPORTS+=("$FLOW_OUTPUT_PATH")
             merge_reports "$OUTPUT_PATH" "${REPORTS[@]}"

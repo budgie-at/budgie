@@ -1,3 +1,5 @@
+import { TransactionEntryKindEnum } from '@budgie/contracts';
+
 import { generateLocalId } from './generate-local-id.util';
 
 import type { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
@@ -16,6 +18,7 @@ export const createEmptyEntry = (entryType: TransactionEntryTypeEnum, accountId:
     categoryId: 0,
     amount: initialAmount,
     type: entryType,
+    kind: TransactionEntryKindEnum.PRIMARY,
     mccCategoryId: null,
     externalId: null,
     localId: generateLocalId()
@@ -26,6 +29,7 @@ export const stripLocalId = (entry: EntryWithLocalIdInterface): TransactionEntry
     categoryId: entry.categoryId,
     amount: entry.amount,
     type: entry.type,
+    kind: entry.kind,
     mccCategoryId: entry.mccCategoryId,
     externalId: entry.externalId,
     exchangeRate: entry.exchangeRate,

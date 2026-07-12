@@ -1205,6 +1205,7 @@ __metadata:
     tailwind-merge: "npm:^3.6.0"
     tailwindcss: "npm:^4.3.0"
     tailwindcss-animate: "npm:^1.0.7"
+    zod: "npm:4.1.12"
   languageName: unknown
   linkType: soft
 

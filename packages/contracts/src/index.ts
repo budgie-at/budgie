@@ -69,6 +69,22 @@ export { SyncModeEnum } from './sync/enum/sync-mode.enum';
 export { SyncStatusEnum } from './sync/enum/sync-status.enum';
 export { SyncAssociationEnum } from './sync/enum/sync-association.enum';
 
+export { DebtEventDirectionEnum } from './debt-event/enum/debt-event-direction.enum';
+export { DebtEventSourceEnum } from './debt-event/enum/debt-event-source.enum';
+export { DebtEventAssociationEnum } from './debt-event/enum/debt-event-association.enum';
+
+export { DebtEventEntityTable } from './debt-event/table/debt-event-entity.table';
+export { DebtEventEntityRelations } from './debt-event/relations/debt-event-entity.relations';
+
+export { DebtEventEntitySchema } from './debt-event/schema/debt-event-entity.schema';
+export { DebtEventCreateEntitySchema } from './debt-event/schema/debt-event-create-entity.schema';
+
+export type { DebtEventEntityInterface } from './debt-event/entity/debt-event-entity.interface';
+export type { DebtEventCreateEntityInterface } from './debt-event/entity/debt-event-create-entity.interface';
+export type { DebtEventWithRelationsEntityInterface } from './debt-event/entity/debt-event-with-relations-entity.interface';
+
+export { DebtEventRepository } from './debt-event/repository/debt-event.repository';
+
 export { SyncEntityTable } from './sync/table/sync-entity.table';
 export { SyncEntityRelations } from './sync/relations/sync-entity.relations';
 
@@ -299,6 +315,7 @@ export { isNegativeAdjustmentTransaction } from './transaction/type-guard/is-neg
 export { isPositiveAdjustmentTransaction } from './transaction/type-guard/is-positive-adjustment-transaction.type-guard';
 
 export { CategorySourceEnum } from './transaction-entry/enum/category-source.enum';
+export { TransactionEntryKindEnum } from './transaction-entry/enum/transaction-entry-kind.enum';
 export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 

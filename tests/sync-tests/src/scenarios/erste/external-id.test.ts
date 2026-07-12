@@ -1,7 +1,6 @@
 import { ersteMapper } from '@budgie/sync';
 import { describe, expect, it } from 'vitest';
 
-
 import type { ErsteRowInterface } from '@budgie/sync';
 
 const buildErsteRow = (date: Date, description = 'ERSTE CARD PAYMENT WIEN 1010 040'): ErsteRowInterface => ({

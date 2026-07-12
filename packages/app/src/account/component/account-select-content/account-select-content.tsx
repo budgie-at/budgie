@@ -8,6 +8,9 @@ import { EmptyState } from '../../../@generic/component/empty-state/empty-state'
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
 import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
+import { AccountSelectorCreateActionCard } from '../account-selector-create-action-card/account-selector-create-action-card';
+
+import type { AccountSelectorCreateActionInterface } from '../../interface/account-selector-create-action.interface';
 
 interface Props {
     readonly data: AccountWithInstrumentEntityInterface[];
@@ -15,12 +18,16 @@ interface Props {
     readonly search: string;
     readonly onSelect: (accountId: number) => void;
     readonly emptyStateDescription?: string;
+    readonly showDebtTotal: boolean;
+    readonly createAction?: Pick<AccountSelectorCreateActionInterface, 'title' | 'subtitle'> & {
+        readonly onCreate: () => void;
+    };
 }
 
 const keyExtractor = (item: AccountWithInstrumentEntityInterface) => item.id.toString();
 
 export const AccountSelectContent = (props: Props) => {
-    const { data, initialAccountId, search, onSelect, emptyStateDescription } = props;
+    const { data, initialAccountId, search, onSelect, emptyStateDescription, showDebtTotal, createAction } = props;
     const { t } = useLingui();
     const { flatListStyle, contentContainerStyle } = useFormsheetListStyles();
 
@@ -34,6 +41,9 @@ export const AccountSelectContent = (props: Props) => {
             icon={item.icon}
             type={item.type}
             id={item.id}
+            debtType={item.debtType}
+            showDebtTotal={showDebtTotal}
+            targetBalance={item.targetBalance}
         />
     );
 
@@ -48,6 +58,10 @@ export const AccountSelectContent = (props: Props) => {
             <EmptyState icon={emptyIcon} title={emptyTitle} description={emptyDescription} />
         </View>
     );
+    const listHeaderComponent =
+        isNotEmptyString(search) || !createAction ? null : (
+            <AccountSelectorCreateActionCard title={createAction.title} subtitle={createAction.subtitle} onCreate={createAction.onCreate} />
+        );
 
     return (
         <FlatList
@@ -58,6 +72,7 @@ export const AccountSelectContent = (props: Props) => {
             keyboardShouldPersistTaps="always"
             showsVerticalScrollIndicator={false}
             contentContainerStyle={contentContainerStyle}
+            ListHeaderComponent={listHeaderComponent}
             ListEmptyComponent={listEmptyComponent}
             ItemSeparatorComponent={ListItemSeparator}
         />

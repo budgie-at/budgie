@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.42.0](https://github.com/budgie-at/budgie/compare/v5.41.0...v5.42.0) (2026-07-10)
+
+### Features
+
+- **landing:** per-build ios-dev releases with IPA redirect route ([#588](https://github.com/budgie-at/budgie/issues/588)) ([fac29c6](https://github.com/budgie-at/budgie/commit/fac29c69186386814bf1e341253d4f1e13ceba9f))
+
+# [5.41.0](https://github.com/budgie-at/budgie/compare/v5.40.0...v5.41.0) (2026-07-10)
+
+### Features
+
+- **landing:** add iOS OTA beta install page ([#584](https://github.com/budgie-at/budgie/issues/584)) ([da65cbe](https://github.com/budgie-at/budgie/commit/da65cbe75c38301df4968f3441bef8ef96b007cf))
+
 # [5.34.0](https://github.com/budgie-at/budgie/compare/v5.33.1...v5.34.0) (2026-06-04)
 
 ### Features

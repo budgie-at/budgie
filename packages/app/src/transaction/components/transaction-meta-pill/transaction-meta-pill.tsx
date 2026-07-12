@@ -13,19 +13,26 @@ interface Props {
     readonly icon?: UserIconNameEnum;
     readonly onPress?: () => void;
     readonly testID?: string;
+    readonly variant?: 'default' | 'warning';
 }
 
 const PILL_ICON_SIZE = 12;
 const ENTER_DURATION_MS = 200;
-const baseClassName = 'flex-row items-center gap-x-xs rounded-full px-sm py-[2px] border border-secondary-corner bg-secondary-background';
-const labelClassName = 'text-xs text-secondary-foreground';
+const baseClassName = 'flex-row max-w-full items-center gap-x-xs rounded-full border px-sm py-[2px]';
+const defaultContainerClassName = 'border-secondary-corner bg-secondary-background';
+const defaultLabelClassName = 'text-secondary-foreground';
+const warningContainerClassName = 'border-warning-corner bg-warning-background';
+const warningLabelClassName = 'text-warning-foreground font-semibold';
 const continuousBorder = { borderCurve: 'continuous' as const };
 
-export const TransactionMetaPill = ({ label, icon, onPress, testID }: Props) => {
+export const TransactionMetaPill = ({ label, icon, onPress, testID, variant = 'default' }: Props) => {
+    const containerClassName = variant === 'warning' ? warningContainerClassName : defaultContainerClassName;
+    const labelVariantClassName = variant === 'warning' ? warningLabelClassName : defaultLabelClassName;
+    const labelClassName = `text-xs ${labelVariantClassName}`;
     const body = (
-        <View className={baseClassName} style={continuousBorder}>
+        <View className={`${baseClassName} ${containerClassName}`} style={continuousBorder}>
             {isDefined(icon) && <Icon icon={icon} size={PILL_ICON_SIZE} className={labelClassName} />}
-            <Text className={labelClassName} numberOfLines={1} ellipsizeMode="tail">
+            <Text className={`${labelClassName} shrink`} numberOfLines={1} ellipsizeMode="tail">
                 {label}
             </Text>
         </View>

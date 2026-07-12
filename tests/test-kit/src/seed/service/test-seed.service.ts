@@ -1,5 +1,6 @@
 import {
     AccountEntityTable,
+    AccountDebtTypeEnum,
     AccountNatureEnum,
     AccountTypeEnum,
     SyncEntityTable,
@@ -73,7 +74,17 @@ export class TestSeedService {
                 instrumentId: input.instrumentId ?? 1,
                 externalId: input.externalId ?? null,
                 externalSource: input.externalSource ?? null,
-                iban: input.iban ?? null
+                iban: input.iban ?? null,
+                debtType: input.debtType ?? AccountDebtTypeEnum.LENT,
+                deadline: input.deadline ?? null,
+                parentId: input.parentId ?? null,
+                contactId: input.contactId ?? null,
+                targetBalance: input.targetBalance ?? 0,
+                targetBaseInstrumentId: input.targetBaseInstrumentId ?? null,
+                targetBaseExchangeRate: input.targetBaseExchangeRate ?? null,
+                targetBaseAmount: input.targetBaseAmount ?? null,
+                includeInNetWorth: input.includeInNetWorth ?? true,
+                isActive: input.isActive ?? true
             } satisfies AccountCreateEntityInterface)
             .returning()
             .all();

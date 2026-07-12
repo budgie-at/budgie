@@ -2,7 +2,6 @@ import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
 
 import { emptyFn } from '@rnw-community/shared';
 
-
 export class PausedUserWork {
     readonly started: Promise<void>;
     readonly work: Promise<void>;
