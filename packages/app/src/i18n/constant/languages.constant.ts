@@ -5,30 +5,25 @@ import { LanguageInterface } from '../interface/language.interface';
 
 const DEFAULT_LANGUAGE: LanguageInterface = {
     code: LanguageEnum.EN,
-    name: msg`English`,
-    emoji: '🇺🇸'
+    name: msg`English`
 };
 
 export const LANGUAGES: LanguageInterface[] = [
     DEFAULT_LANGUAGE,
     {
         code: LanguageEnum.FR,
-        name: msg`French`,
-        emoji: '🇫🇷'
+        name: msg`French`
     },
     {
         code: LanguageEnum.UK,
-        name: msg`Ukrainian`,
-        emoji: '🇺🇦'
+        name: msg`Ukrainian`
     },
     {
         code: LanguageEnum.DE,
-        name: msg`German`,
-        emoji: '🇩🇪'
+        name: msg`German`
     },
     {
         code: LanguageEnum.ES,
-        name: msg`Spanish`,
-        emoji: '🇪🇸'
+        name: msg`Spanish`
     }
 ];
