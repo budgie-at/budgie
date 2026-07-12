@@ -17,7 +17,7 @@ jobs:
   submit:
     name: Submit IndexNow
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
-    runs-on: [self-hosted, linux-ci, linux-burst, linux-small]
+    runs-on: [self-hosted, linux-tiered, linux-small]
     timeout-minutes: 5
     steps:
       - name: Wait for Vercel deploy to propagate
