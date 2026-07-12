@@ -35,7 +35,8 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
         setIsLoading(true);
         try {
             const result = await DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true });
-            const { uri } = result.assets?.at(0) ?? {};
+            const assetPreview = result.assets?.at(0);
+            const { uri } = isDefined(assetPreview) ? assetPreview : {};
 
             if (result.canceled || !isNotEmptyString(uri)) {
                 setIsLoading(false);

@@ -49,12 +49,13 @@ export const EdgeFade = ({
     const { config, colorScheme } = useScreenChrome();
     const insets = useSafeAreaInsets();
 
-    const resolvedIntensity = intensity ?? config.intensity;
+    const resolvedIntensity = isDefined(intensity) ? intensity : config.intensity;
     const { washColors, maskGradient, tint } = getEdgeFadeVisuals(position, colorScheme, config);
 
     const opacityInputRange = scrollAnimation?.opacityInputRange;
     const intensityInputRange = scrollAnimation?.intensityInputRange;
-    const resolvedMaxIntensity = scrollAnimation?.maxIntensity ?? config.maxBlurIntensity;
+    const scrollMaxIntensity = scrollAnimation?.maxIntensity;
+    const resolvedMaxIntensity = isDefined(scrollMaxIntensity) ? scrollMaxIntensity : config.maxBlurIntensity;
 
     const containerAnimatedStyle = useEdgeFadeOpacityStyle(opacityInputRange);
     const animatedBlurProps = useEdgeFadeBlurProps(intensityInputRange, resolvedMaxIntensity, resolvedIntensity);

@@ -2,6 +2,8 @@ import { ReactNode } from 'react';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useScreenChrome } from '../hook/use-screen-chrome.hook';
 import { EdgeFadePosition, ScreenChromeColorSetInterface } from '../interface/screen-chrome-config.interface';
 
@@ -35,7 +37,7 @@ export const EdgeFade = ({ position, height, intensity, scrollAnimation, style }
     const { config, colorScheme } = useScreenChrome();
     const insets = useSafeAreaInsets();
 
-    const resolvedIntensity = intensity ?? config.intensity;
+    const resolvedIntensity = isDefined(intensity) ? intensity : config.intensity;
     const colorSet = config.colors[colorScheme];
     const backdropFilter = getEdgeFadeBackdropFilter(resolvedIntensity);
     const opacityInputRange = scrollAnimation?.opacityInputRange;
