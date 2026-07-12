@@ -19,7 +19,7 @@ Generic, composable **scroll edge fade + blur chrome** and **collapsible header*
 ## Public API
 
 ```tsx
-<ScreenChromeProvider colorScheme={ColorSchemeEnum.Light} config={{ topFadeHeight: 112, bottomFadeHeight: 112 }}>
+<ScreenChromeProvider colorScheme={ColorSchemeEnum.LIGHT} config={{ topFadeHeight: 112, bottomFadeHeight: 112 }}>
     <ScreenChromeFrame>
         <ScreenChromeContent>
             <ScreenChromeScrollView>{content}</ScreenChromeScrollView>
@@ -53,7 +53,7 @@ Generic, composable **scroll edge fade + blur chrome** and **collapsible header*
 
 ## Theming
 
-`colorScheme` is a prop (`ColorSchemeEnum.Light | Dark`), not read from any theme lib. In budgie, bridge it from `useThemeContext().isDarkColorSchema` in a thin app-side provider. Light wash colors are near-white and read subtly on white backgrounds — the blur (not the wash) carries the visual separation on iOS.
+`colorScheme` is a prop (`ColorSchemeEnum.LIGHT | DARK`), not read from any theme lib. In budgie, bridge it from `useThemeContext().isDarkColorSchema` in a thin app-side provider. Light wash colors are near-white and read subtly on white backgrounds — the blur (not the wash) carries the visual separation on iOS.
 
 ## Hard-won gotchas (do not regress)
 
