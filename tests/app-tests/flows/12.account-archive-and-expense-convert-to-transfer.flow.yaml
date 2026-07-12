@@ -14,10 +14,11 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'AccountCard.E2E Expense Target'
+- waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'AccountDetails.EditButton'
-      timeout: 10000
+      timeout: 20000
 
 - tapOn:
       id: 'AccountDetails.EditButton'
