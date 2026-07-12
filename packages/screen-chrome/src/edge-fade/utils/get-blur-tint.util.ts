@@ -4,7 +4,7 @@ import { ColorSchemeEnum } from '../../enum/color-scheme.enum';
 
 export const getBlurTint = (colorScheme: ColorSchemeEnum, isIos: boolean): BlurTint => {
     if (colorScheme === ColorSchemeEnum.DARK) {
-        return isIos ? 'systemChromeMaterialDark' : 'systemMaterialDark';
+        return 'systemThinMaterialDark';
     }
 
     return isIos ? 'systemChromeMaterialLight' : 'systemMaterialLight';

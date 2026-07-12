@@ -15,7 +15,7 @@ export const SCREEN_CHROME_SHARED_DEFAULT_CONFIG: Omit<
     snapToCollapse: false,
     colors: {
         [ColorSchemeEnum.LIGHT]: { solid: 'rgba(255,255,255,0.7)', wash: 'rgba(255,255,255,0.15)' },
-        [ColorSchemeEnum.DARK]: { solid: 'rgba(0,0,0,0.7)', wash: 'rgba(0,0,0,0.15)' }
+        [ColorSchemeEnum.DARK]: { solid: 'rgba(0,0,0,0.4)', wash: 'rgba(0,0,0,0.08)' }
     },
     maskStops: {
         top: {
