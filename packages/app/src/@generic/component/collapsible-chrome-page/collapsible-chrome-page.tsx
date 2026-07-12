@@ -28,7 +28,7 @@ type Props = TitleProps & {
     readonly leading?: ReactNode;
     readonly trailing?: ReactNode;
     readonly footer?: ReactNode;
-    readonly scrollViewProps?: Pick<ComponentProps<typeof ChromeKeyboardScrollView>, 'ref' | 'onLayout'>;
+    readonly scrollViewProps?: Pick<ComponentProps<typeof ChromeKeyboardScrollView>, 'ref' | 'onLayout' | 'bottomOffset'>;
     readonly contentClassName?: string;
     readonly testID?: string;
 };
@@ -49,6 +49,8 @@ export const CollapsibleChromePage = ({
     testID
 }: Props): ReactNode => {
     const contentInsetBottom = isDefined(footer) ? FOOTER_CONTENT_BOTTOM_INSET : 0;
+    const { bottomOffset: bottomOffsetOverride, ...restScrollViewProps } = scrollViewProps ?? {};
+    const resolvedBottomOffset = bottomOffsetOverride ?? contentInsetBottom;
     const resolvedLargeTitle = largeTitle ?? (
         <View className="gap-y-xs">
             <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
@@ -78,10 +80,10 @@ export const CollapsibleChromePage = ({
         <ScreenChromeThemeProvider>
             <ScreenChromeFrame>
                 <ChromeKeyboardScrollView
-                    {...scrollViewProps}
+                    {...restScrollViewProps}
                     contentInsetTop={SCREEN_CHROME_CONTENT_INSET_TOP}
                     contentInsetBottom={contentInsetBottom}
-                    bottomOffset={contentInsetBottom}
+                    bottomOffset={resolvedBottomOffset}
                     showsVerticalScrollIndicator={false}
                     testID={testID}
                 >
