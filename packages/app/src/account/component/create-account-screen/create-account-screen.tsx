@@ -19,6 +19,9 @@ interface Props {
     readonly children: ReactNode;
 }
 
+const CURRENCY_ROW_KEYBOARD_BOTTOM_OFFSET = 250;
+const SCROLL_VIEW_PROPS = { bottomOffset: CURRENCY_ROW_KEYBOARD_BOTTOM_OFFSET };
+
 export const CreateAccountScreen = ({ title, variant, children, onSubmit, isSubmitting }: Props) => {
     const { t } = useLingui();
 
@@ -27,6 +30,7 @@ export const CreateAccountScreen = ({ title, variant, children, onSubmit, isSubm
             title={title}
             leading={<HeaderBackButton />}
             testID={CreateAccountScreenSelector.ScrollView}
+            scrollViewProps={SCROLL_VIEW_PROPS}
             footer={
                 <View className="gap-md pt-xl px-7xl">
                     <Button
