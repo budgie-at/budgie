@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { View } from 'react-native';
+import { ReactNode, useState } from 'react';
+import { LayoutChangeEvent, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { ModalPage } from '../../../@generic/component/page/modal-page';
@@ -12,19 +12,30 @@ interface Props {
     readonly ruleId?: number;
 }
 
-export const RuleFormLayout = ({ header, footer, ruleId }: Props) => (
-    <ModalPage header={header}>
-        <KeyboardAwareScrollView
-            contentContainerClassName="pb-5xl"
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-        >
-            <View className="px-3xl gap-y-3xl">
-                <RuleConditionsSection />
-                <RuleActionsSection ruleId={ruleId} />
-            </View>
-        </KeyboardAwareScrollView>
+export const RuleFormLayout = ({ header, footer, ruleId }: Props) => {
+    const [footerHeight, setFooterHeight] = useState(0);
 
-        {footer}
-    </ModalPage>
-);
+    const handleFooterLayout = (event: LayoutChangeEvent) => {
+        setFooterHeight(event.nativeEvent.layout.height);
+    };
+
+    const contentContainerStyle = { paddingBottom: footerHeight };
+
+    return (
+        <ModalPage header={header}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={contentContainerStyle}
+                contentContainerClassName="pb-5xl"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                <View className="px-3xl gap-y-3xl">
+                    <RuleConditionsSection />
+                    <RuleActionsSection ruleId={ruleId} />
+                </View>
+            </KeyboardAwareScrollView>
+
+            <View onLayout={handleFooterLayout}>{footer}</View>
+        </ModalPage>
+    );
+};
