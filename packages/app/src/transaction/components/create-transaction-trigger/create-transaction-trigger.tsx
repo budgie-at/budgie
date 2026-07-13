@@ -28,8 +28,9 @@ export const CreateTransactionTrigger = ({ isOpen, onPress }: Props) => {
             accessibilityRole="button"
             accessible
             collapsable={false}
+            disabled={isOpen}
             className="bg-primary rounded-full items-center justify-center w-18 h-18"
-            {...(!isOpen && { onPress: handlePress })}
+            onPress={handlePress}
         >
             <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={TRIGGER_ICON_SIZE} />
         </HapticPressable>
