@@ -10,13 +10,14 @@ interface IconProps extends LucideProps {
     readonly icon: UserIconNameEnum;
 }
 
-const StyledFallbackIcon: LucideIcon = styled(CircleQuestionMark, { className: { target: 'style' } });
-const STYLED_ICONS: Partial<Record<UserIconNameEnum, LucideIcon>> = Object.fromEntries(
-    Object.entries(ICONS).map(([icon, IconComponent]) => [icon, styled(IconComponent, { className: { target: 'style' } })])
+const createStyledIcon = (baseIcon: LucideIcon) => styled(baseIcon, { className: { target: 'style' } });
+const STYLED_ICONS: Partial<Record<UserIconNameEnum, ReturnType<typeof createStyledIcon>>> = Object.fromEntries(
+    Object.entries(ICONS).map(([icon, baseIcon]) => [icon, createStyledIcon(baseIcon)])
 );
+const STYLED_FALLBACK_ICON = createStyledIcon(CircleQuestionMark);
 
 export const Icon = ({ icon, ...rest }: IconProps) => {
-    const IconToRender = STYLED_ICONS[icon] ?? StyledFallbackIcon;
+    const IconToRender = STYLED_ICONS[icon] ?? STYLED_FALLBACK_ICON;
 
     return <IconToRender {...rest} />;
 };
