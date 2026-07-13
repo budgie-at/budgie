@@ -1,6 +1,6 @@
 # Landing Package (Next.js)
 
-Marketing website built with Next.js 16, React 19, Tailwind CSS 4, and Lingui 6.1. Supports 5 locales with SSG-first rendering and small client islands for runtime interactions.
+Marketing website built with Next.js 16, React 19, Tailwind CSS 4, and Lingui 6.5. Supports 5 locales with SSG-first rendering and small client islands for runtime interactions.
 
 ## Commands
 
@@ -8,8 +8,8 @@ Marketing website built with Next.js 16, React 19, Tailwind CSS 4, and Lingui 6.
 yarn start                    # Development server (next dev)
 yarn build                    # Production build
 yarn i18n:sync                # Extract & compile i18n translations
-yarn ts                       # TypeScript check
-yarn lint                     # ESLint check
+yarn ts                       # Native TypeScript 7 check
+yarn lint                     # Oxlint + 62-rule ESLint fallback
 ```
 
 ## Structure

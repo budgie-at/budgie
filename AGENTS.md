@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Budgie is an offline-first mobile expenses tracker. Monorepo with 5 packages: app (React Native), contracts (shared types), ai (AI/LLM services), landing (Next.js), and bank-sync (bank integrations).
+Budgie is an offline-first mobile expenses tracker. The production monorepo contains app, contracts, ai, landing, bank-sync, budget, consolidation, and logger packages.
 
 ## Commands
 
@@ -15,7 +15,7 @@ yarn build:force                          # Build without cache
 # Validation (run in this order before committing)
 yarn format                               # Oxfmt (run first - may modify files)
 yarn ts                                   # TypeScript check
-yarn lint                                 # ESLint (skip during debug sessions)
+yarn lint                                 # Oxlint + 62-rule ESLint fallback (skip during debug sessions)
 yarn deadcode                             # Knip dead code detection
 yarn cpd                                  # Code duplication check
 
@@ -61,6 +61,9 @@ Use the repo package scopes without the npm namespace prefix:
 - `ai`
 - `landing`
 - `bank-sync`
+- `budget`
+- `consolidation`
+- `logger`
 
 ### Scope Selection Rules
 
@@ -73,11 +76,14 @@ Use the repo package scopes without the npm namespace prefix:
 
 ```
 packages/
-├── app/                # React Native (Expo 54) - main mobile app
+├── app/                # React Native (Expo 56) - main mobile app
 ├── ai/                 # Pure TypeScript AI/LLM services
+├── budget/             # Budget domain logic
+├── consolidation/      # Transaction consolidation
 ├── contracts/          # Shared TypeScript schemas, types, repositories
-├── landing/            # Next.js 15 marketing site
-└── bank-sync/          # Bank integration package
+├── landing/            # Next.js 16 marketing site
+├── bank-sync/          # Bank integration package
+└── logger/             # Shared logging package
 ```
 
 ## Package-Specific Instructions
@@ -119,7 +125,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
-27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `bank-sync`, `consolidation`) do not host Jest/Vitest/etc. Verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/bank-sync-tests/` for bank import/sync behavior and `tests/consolidation-tests/` for consolidation matching/execution behavior. Shared integration harness code belongs in `tests/test-kit/`, not in either scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
+27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `bank-sync`, `budget`, `consolidation`, `logger`) do not host Jest/Vitest/etc. Verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/bank-sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
 28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `yarn cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
@@ -484,20 +490,20 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 ## Tech Stack
 
-| Package       | Stack                                                                              |
-| ------------- | ---------------------------------------------------------------------------------- |
-| **app**       | Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, Lingui 6.1 |
-| **ai**        | Pure TypeScript, Zod                                                               |
-| **contracts** | Drizzle ORM, Zod, drizzle-zod                                                      |
-| **landing**   | Next.js 15, React 19, Tailwind CSS 4, Lingui 6.1                                   |
-| **bank-sync** | ky HTTP client, date-fns                                                           |
-| **Build**     | Yarn 4.12 (PnP), Node >= 22, Lerna 8, TurboRepo 2, TypeScript 5.9, ESLint 9        |
+| Package       | Stack                                                                                                                                                         |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **app**       | Expo 56, React 19 + Compiler, Expo Router 56, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                           |
+| **ai**        | Pure TypeScript, Zod                                                                                                                                          |
+| **contracts** | Drizzle ORM, Zod, drizzle-zod                                                                                                                                 |
+| **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                              |
+| **bank-sync** | ky HTTP client, date-fns                                                                                                                                      |
+| **Build**     | Yarn 4.17.1 (`node-modules` linker), Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.73 + ESLint 10 fallback |
 
 ## Workflow
 
 1. **Fresh clone:** `yarn install`
 2. **After contracts changes:** `yarn build`
-3. **Before commit:** Husky runs `yarn ts`, `yarn lint-staged`, commitlint
+3. **Before commit:** Husky runs `yarn ts`, then lint-staged applies Oxlint, the 62-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
 4. **Before PR:** Run all validation commands
 5. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 

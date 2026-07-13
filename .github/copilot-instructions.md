@@ -4,17 +4,18 @@
 
 **Project**: Budgie - Mobile Expenses, Banking & Wealth Tracker (Offline-First)
 **Type**: Monorepo with React Native (Expo) mobile app, Next.js landing page, and shared contracts
-**Size**: ~176 TypeScript/TSX files across multiple packages
+**Size**: Large TypeScript monorepo spanning production, integration-test, and E2E workspaces
 **Languages**: TypeScript, React/React Native
-**Key Technologies**: Expo 54, React 19, Next.js 15, TurboRepo, Lerna, WatermelonDB, Drizzle ORM
+**Key Technologies**: Expo 56, React 19, Next.js 16, TurboRepo, Lerna, SQLite, Drizzle ORM
 
 ## Build & Development Requirements
 
 **Required Versions**:
 
-- Node.js: >= 22.0.0 (configured in package.json engines)
-- Yarn: 4.10.3 (packageManager specified)
-- All dependencies use Yarn Berry (v4) with PnP
+- Node.js: >= 22.22.1 (configured in package.json engines)
+- Yarn: 4.17.1 (packageManager specified)
+- Yarn uses the `node-modules` linker configured in `.yarnrc.yml`; this repository does not use PnP
+- The root intentionally has 38 development dependencies after removing Prettier and the orphan root Babel tooling; do not add a dependency to satisfy the migration plan's stale count
 
 **IMPORTANT**: Always use `yarn` commands, not `npm`. This repository uses Yarn 4 workspaces.
 
@@ -23,43 +24,44 @@
 ### Bootstrap & Setup
 
 1. **Install dependencies** (ALWAYS run first): `yarn install`
-    - Takes ~40s on first run (downloads packages, builds native modules)
-    - Automatically runs post-install hook that builds packages
-    - May show peer dependency warnings - these are expected and safe to ignore
+    - Downloads and links dependencies into `node_modules`
+    - Runs the configured `afterInstall` workspace build
+    - Known peer warnings include ESLint 10 compatibility ranges and the contracts package's `expo-sqlite` peers; investigate new warnings
 
 ### Build Commands
 
-2. **Build all packages**: `yarn build` (uses Turbo cache, ~15s clean build)
-    - Builds in dependency order: contracts → app & landing
-    - Use `yarn build:force` to bypass Turbo cache (~15s)
-    - Landing package builds Next.js app (~3-4s for production build)
-    - Contracts package compiles TypeScript to dist/esm (~2s)
+2. **Build all configured packages**: `yarn build`
+    - Turbo resolves workspace dependencies and caches the seven package build tasks currently in scope
+    - Use `yarn build:force` to bypass Turbo cache
+    - The landing task performs the Next.js production build; library packages emit their configured distributions
 
 ### Validation Commands (Run in this order)
 
-3. **TypeScript check**: `yarn turbo ts` (~10s)
-    - Validates TypeScript across all packages
-    - No output files generated (cache warning is expected)
+3. **TypeScript check**: `yarn ts`
+    - Uses the native TypeScript 7 compiler across all packages; TypeScript 6 remains available for tool API consumers
+    - Incremental workspaces write `node_modules/.cache/tsbuildinfo.json`, which Turbo caches; non-incremental workspaces can legitimately report that no configured output was produced
 
-4. **Linting**: `yarn turbo lint` (~18s)
-    - ESLint with strict configuration
-    - Current codebase has ~55 warnings (empty interfaces, magic numbers) - these are acceptable
+4. **Linting**: `yarn lint`
+    - Runs type-aware Oxlint first, then the Turbo-cached 62-rule ESLint fallback
+    - `eslint-plugin-oxlint` builds its disabling layer from `.oxlintrc.json`, leaving ESLint responsible only for unsupported and project-specific rules
 
-5. **Deadcode detection**: `yarn turbo deadcode` (~5s)
+5. **Deadcode detection**: `yarn deadcode`
     - Uses Knip to find unused code and dependencies
     - Clean codebase should show "no issues found"
 
-6. **Copy/paste detection**: `yarn turbo cpd` (~2s)
+6. **Copy/paste detection**: `yarn cpd`
     - Uses jscpd to detect code duplication
-    - Reports saved to report/jscpd/html/
+    - Report saved to `report/jscpd/jscpd-report.html`
 
-7. **Unit tests**: `yarn test` (~4s)
-    - Runs Jest tests in packages/contracts (12 test suites, 57 tests)
-    - Uses `yarn test:coverage` for coverage reports
+7. **Tests**: `yarn test`
+    - Production package Jest tasks are configured with `--passWithNoTests`
+    - The real integration coverage is in three Vitest workspaces under `tests/`, currently 73 test files total
+    - `yarn test:coverage` runs the integration coverage task used by CI
+    - Task 9 measured both root test commands at approximately 28 seconds on the migration workstation; timings are machine- and cache-dependent
 
 ### Package-Specific Commands
 
-- **Contracts package**: `cd packages/contracts && yarn test` (schema validation tests)
+- **Integration suites**: `yarn workspace @budgie-at/bank-sync-tests test`, `yarn workspace @budgie-at/budget-tests test`, and `yarn workspace @budgie-at/consolidation-tests test`
 - **App package**:
     - `cd packages/app && yarn start` (starts Expo dev server with dev client)
     - `yarn ios` (runs iOS app) / `yarn android` (runs Android app)
@@ -86,24 +88,30 @@
 **Triggered on**: Every pull request
 **Jobs**:
 
-1. **code-quality** (runs on ubuntu-latest, ~2-3 min):
+1. **detect-mobile-impact** (self-hosted `linux-tiered` / `linux-medium`):
+    - Uses Turbo's affected-package query and relevant path changes to decide whether mobile preview and iOS E2E jobs are required
+
+2. **code-quality** (self-hosted `linux-tiered` / `linux-large`, 30-minute timeout):
     - Validates PR title with commitlint (conventional commits required)
-    - Runs `yarn turbo ts` (TypeScript checks)
-    - Runs `yarn turbo lint` (ESLint)
-    - Runs `yarn turbo deadcode` (Knip)
-    - Runs `yarn turbo cpd` (jscpd)
-    - Runs `yarn test:coverage` (Jest with coverage)
+    - Verifies Lingui catalogs and Maestro selector assignments
+    - Runs `yarn format:check` (Oxfmt)
+    - Runs `yarn ts` (native TypeScript 7 checks)
+    - Runs `yarn lint` (type-aware Oxlint plus the 62-rule ESLint fallback)
+    - Runs `yarn deadcode` (Knip)
+    - Runs `yarn cpd` (jscpd)
+    - Builds and runs the Vitest integration coverage workspaces
+    - Benchmarks the baseline and migrated toolchains, records elapsed time and maximum RSS, and uploads the `oxc-toolchain-benchmark` artifact
     - Uploads coverage to Codecov
 
-2. **eas-deploy** (requires code-quality to pass):
-    - Creates Expo EAS update for development channel
-    - Builds and deploys web app to Vercel
-    - Posts deployment URL as PR comment
-    - Creates GitHub deployment environment
+3. **eas-update-preview** (hosted `ubuntu-24.04`, mobile-impact changes only):
+    - Exports iOS and Android bundles and publishes an EAS Update to the development channel
 
-3. **e2e-ios** & **e2e-android** (currently disabled with `if: false`):
-    - Would run Maestro E2E tests on iOS and Android
-    - Uses EAS local builds with e2e profile
+4. **build-ios-e2e-app** (self-hosted Apple Silicon `macos-builder`, mobile-impact changes after code quality):
+    - Reuses a fingerprinted native app when possible, repacks the current bundle, and falls back to a full native build when required
+
+5. **e2e-ios** (two self-hosted Apple Silicon `macos-maestro` shards, mobile-impact changes only):
+    - Downloads the current E2E app artifact and runs the 40 assigned Maestro entry flows across two shards
+    - There is no Android E2E job in the current PR workflow
 
 ### Main Branch Workflow (.github/workflows/main.yml)
 
@@ -111,12 +119,12 @@
 **Jobs**:
 
 1. **release**:
-    - Publishes releases using Lerna with conventional commits
+    - Runs on self-hosted `linux-tiered` / `linux-medium` and publishes releases using Lerna with conventional commits
     - Requires `PUSH_TO_PROTECTED_TOKEN` secret
     - Creates GitHub releases automatically
 
 2. **eas-update**:
-    - Publishes EAS update to production channel
+    - Runs on hosted `ubuntu-24.04` after release and publishes an EAS Update to the production channel
 
 ## Project Structure
 
@@ -126,16 +134,25 @@
 /
 ├── packages/
 │   ├── app/              # React Native (Expo) mobile app
-│   ├── contracts/        # Shared TypeScript schemas and types
+│   ├── ai/               # AI and LLM services
+│   ├── bank-sync/        # Bank integrations
+│   ├── budget/           # Budget domain logic
+│   ├── consolidation/    # Transaction consolidation
+│   ├── contracts/        # Shared TypeScript schemas and repositories
+│   ├── logger/           # Shared logging package
 │   └── landing/          # Next.js marketing website
 ├── tests/
-│   └── app-tests/        # Maestro E2E tests
+│   ├── app-tests/        # Maestro E2E tests
+│   ├── bank-sync-tests/  # Bank-sync integration tests
+│   ├── budget-tests/     # Budget integration tests
+│   └── consolidation-tests/ # Consolidation integration tests
 ├── .github/workflows/    # CI/CD pipelines
 ├── .husky/              # Git hooks (pre-commit, commit-msg)
 ├── turbo.json           # TurboRepo configuration
 ├── lerna.json           # Lerna monorepo settings
 ├── package.json         # Root package with workspace config
-└── eslint.config.mjs    # Shared ESLint configuration
+├── .oxlintrc.json       # Primary type-aware Oxlint configuration
+└── eslint.config.mjs    # Residual ESLint configuration
 ```
 
 ### packages/app/ (React Native App)
@@ -161,29 +178,29 @@
 
 ### packages/contracts/
 
-**Purpose**: Shared TypeScript schemas using Zod and Drizzle
+**Purpose**: Shared TypeScript schemas and repositories using Zod and Drizzle
 **Structure**:
 
 - Each entity has: schema, entity interface, create interface
 - Entities: account, account-balance, category, exchange-rate, instrument, settings, tag, transaction, transaction-entry
-- All schemas have comprehensive Jest test suites
+- Production packages do not host unit tests; integration behavior is exercised from the dedicated `tests/` workspaces
 
 ### packages/landing/
 
-**Purpose**: Next.js 15 marketing website with App Router
+**Purpose**: Next.js 16 marketing website with App Router
 **Key features**: Internationalization (en, fr, es, uk, de), MDX blog, Tailwind CSS
 
 ## Configuration Files
 
 ### Linting & Formatting
 
-- **eslint.config.mjs**: Strict ESLint with TypeScript, React, React Hooks, Lingui
-    - Ignores: .next, .turbo, .expo, dist, node_modules, drizzle
-    - Complexity limit: 25
-    - Warns on empty interfaces (common in contracts package)
+- **.oxlintrc.json**: Primary type-aware Oxlint configuration for TypeScript, React, React Hooks, and import rules
+- **eslint.config.mjs**: 62-rule fallback for unsupported, semantically different, template-like Lingui, and project-local rules
+    - Uses the official `eslint-plugin-oxlint` companion generated from `.oxlintrc.json` to disable overlapping rules
+    - Runs through Turbo at the package level so repeat fallback checks are cached
 
 - **.oxfmtrc.json**: Oxfmt configuration (applied via lint-staged)
-- **.lintstagedrc.js**: Pre-commit hooks run `eslint --fix`, `oxfmt --write`, `sort-package-json`
+- **.lintstagedrc.js**: Pre-commit hooks run `oxlint --type-aware --fix`, the ESLint fallback, `oxfmt --write`, and `sort-package-json`
 
 ### TypeScript
 
@@ -200,8 +217,9 @@
 ### Turbo
 
 - **turbo.json**: Defines task dependencies and caching
-    - Tasks: build, ts, lint, test, test:coverage, cpd, deadcode
-    - Remote caching disabled in CI (TURBO_TOKEN configured for user's Vercel account)
+    - Tasks: `release`, `ts`, `lint:eslint`, `clear`, `build`, `test`, `test:coverage`, plus root `cpd` and `deadcode`
+    - Root `yarn lint` runs Oxlint directly first and then delegates only the residual `lint:eslint` topology to Turbo
+    - PR CI enables remote caching through `TURBO_TEAM` and `TURBO_TOKEN`; the isolated benchmark worktrees explicitly unset both variables
 
 ## Development Workflow
 
@@ -210,9 +228,9 @@
 1. **ALWAYS start with**: `yarn install` (if fresh clone or after pulling)
 2. **Before committing**: Changes are automatically validated by Husky hooks
     - TypeScript check runs automatically
-    - ESLint fixes applied via lint-staged
+    - Oxlint, the ESLint fallback, and Oxfmt fixes are applied via lint-staged
     - Commit message validated (must follow conventional commits)
-3. **After changes**: Run `yarn turbo ts && yarn turbo lint && yarn test`
+3. **After changes**: Run `yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd`
 4. **For package changes**: Run `yarn build` to ensure downstream packages work
 
 ### Commit Message Format
@@ -229,10 +247,10 @@
 ### Common Issues & Solutions
 
 **Issue**: Peer dependency warnings during `yarn install`
-**Solution**: These are expected. The monorepo structure causes some packages to not directly depend on React, Expo, etc. Safe to ignore.
+**Solution**: The known migration warnings are ESLint 10 peer ranges and `expo-sqlite` peers exposed through contracts. Compare new warnings with the current baseline instead of treating every warning as safe.
 
-**Issue**: Turbo cache warnings about missing outputs for ts task
-**Solution**: Expected. TypeScript check doesn't produce artifacts, only validates types.
+**Issue**: Turbo cache warnings about missing outputs for a TypeScript task
+**Solution**: Composite and app workspaces emit `node_modules/.cache/tsbuildinfo.json`; some non-incremental test or landing tasks do not. Confirm the warning belongs to one of those tasks before accepting it.
 
 **Issue**: Build fails after dependency update
 **Solution**:
@@ -241,8 +259,8 @@
 2. Run `yarn build:force` to bypass stale Turbo cache
 3. Clear node_modules: `rm -rf node_modules && yarn install`
 
-**Issue**: ESLint warnings about empty interfaces
-**Solution**: These are in contracts package for future extensibility. Not errors, safe to leave.
+**Issue**: A lint rule is not supported by Oxlint
+**Solution**: Keep the rule in the 62-rule ESLint fallback. The official companion disables only rules covered by `.oxlintrc.json`; do not duplicate rule ownership between the linters.
 
 **Issue**: Cannot run Expo app builds locally
 **Solution**: EAS builds require EXPO_TOKEN secret. Use `yarn start` in packages/app for local development with Expo Go or dev client.
@@ -253,11 +271,11 @@
 
 - Uses Yarn workspaces + Lerna for versioning
 - TurboRepo for build orchestration and caching
-- Packages share common tooling (ESLint, TypeScript, Oxfmt)
+- Packages share common tooling (Oxlint, residual ESLint 10, native TypeScript 7, TypeScript 6 API, and Oxfmt)
 
 ### Mobile App (packages/app)
 
-- **Framework**: Expo 54 with SDK features (Router, SQLite, Updates)
+- **Framework**: Expo 56 with SDK features (Router, SQLite, Updates)
 - **Navigation**: Expo Router (file-based routing in src/app/)
 - **State**: React Context + hooks (no Redux/MobX)
 - **Database**: SQLite via Drizzle ORM + expo-sqlite
@@ -270,11 +288,11 @@
 - **Schema validation**: Zod schemas exported alongside TypeScript types
 - **Database**: Drizzle ORM schemas for SQLite
 - **Pattern**: Each entity has base interface, create interface, and schema
-- **Testing**: Comprehensive Jest tests for valid/invalid schema cases
+- **Testing**: Exercised through the dedicated integration workspaces rather than package-local unit tests
 
 ### Landing Site (packages/landing)
 
-- **Framework**: Next.js 15 with App Router
+- **Framework**: Next.js 16 with App Router
 - **Rendering**: Static generation for all pages
 - **i18n**: Custom implementation with locale prefixes (/en/, /fr/, etc.)
 - **Content**: MDX for blog posts
@@ -282,25 +300,25 @@
 
 ## Testing Strategy
 
-### Unit Tests
+### Production Package Test Tasks
 
-- Located in packages/contracts/src/
-- Test schema validation (valid/invalid cases)
-- Run with `yarn test` (Jest)
-- Should maintain 100% coverage on schema validation logic
+- `packages/ai`, `packages/contracts`, and `packages/logger` expose Jest commands with `--passWithNoTests`
+- Production packages do not contain unit-test suites
 
 ### E2E Tests
 
 - Located in tests/app-tests/
 - Use Maestro for React Native testing
-- Currently disabled in CI (e2e-ios, e2e-android jobs have `if: false`)
+- CI builds the iOS E2E app and runs two Maestro shards only when the mobile-impact gate is true
+- There is no Android E2E job in the current PR workflow
 - Config: tests/app-tests/config.yaml
-- Flows: tests/app-tests/flows/
+- Four checked `tests/app-tests/shards/shard-*.txt` manifest files assign the 40 entry flows exactly once for selector validation
+- The current PR workflow does not consume those four manifest partitions; it dynamically splits the sorted flow list across two jobs by index modulo 2
 
 ### Integration Tests
 
-- No dedicated integration test suite currently
-- Consider adding for database migrations and API integration
+- `tests/bank-sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/` are dedicated Vitest integration workspaces
+- They currently contain 73 test files and are the suites executed by root `yarn test` and `yarn test:coverage`
 
 ## Coding Standards and Best Practices
 
@@ -390,17 +408,12 @@
 
 5. **Use conventional commits**: The commit-msg hook will reject non-conforming messages. Format: `type(scope): description`
 
-6. **Check CI before merging**: All PR checks must pass (TypeScript, ESLint, tests, deadcode, cpd).
+6. **Check CI before merging**: All PR checks must pass (Oxfmt, TypeScript, Oxlint, residual ESLint, tests, deadcode, cpd).
 
 7. **Expo app requires secrets**: Cannot build native apps locally without EXPO_TOKEN. Use `yarn start` for local dev.
 
-8. **Build times**:
-    - Clean build: ~15s
-    - TypeScript check: ~10s
-    - Lint: ~18s
-    - Tests: ~4s
-    - Full CI run: ~2-3 minutes
+8. **Measured migration timings**: On the Task 9 workstation, native TypeScript took 8.98 seconds for the fresh forced run and 5.62 seconds at the five-run warm median; every TypeScript sample forced Turbo execution, so "warm" means repeated process and filesystem conditions rather than cache hits. The sequential validation workflow took 60.39 seconds fresh and 10.015 seconds at the warm median; its warm samples used Turbo cache hits. CI duration is runner- and queue-dependent.
 
-9. **Node version**: Requires Node.js >= 22.0.0. Check with `node --version` if encountering unexpected errors.
+9. **Node version**: Requires Node.js >= 22.22.1. Check with `node --version` if encountering unexpected errors.
 
-10. **Yarn version**: Must use Yarn 4.10.3. The repository uses Yarn Berry with PnP, not classic Yarn or npm.
+10. **Yarn version**: Must use Yarn 4.17.1 with the repository's `node-modules` linker, not PnP, classic Yarn, or npm.
