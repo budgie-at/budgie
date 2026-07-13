@@ -1,8 +1,12 @@
+import { fileURLToPath } from 'node:url';
+
 import js from '@eslint/js';
+import { fixupPluginRules } from '@eslint/compat';
 import stylistic from '@stylistic/eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import jestPlugin from 'eslint-plugin-jest';
 import nodePlugin from 'eslint-plugin-n';
+import eslintPluginOxlint from 'eslint-plugin-oxlint';
 import promisePlugin from 'eslint-plugin-promise';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
@@ -12,6 +16,27 @@ import pluginLingui from 'eslint-plugin-lingui';
 import rnwcPlugin from '@rnw-community/eslint-plugin';
 
 import { maxComponentPropsRule } from './eslint-rules/max-component-props.mjs';
+
+const compatibleImportPlugin = fixupPluginRules(importPlugin);
+const compatibleReactPlugin = fixupPluginRules(reactPlugin);
+const compatibleRnwCommunityPlugin = fixupPluginRules(rnwcPlugin);
+const compatibleImportRecommendedConfig = {
+    ...importPlugin.flatConfigs.recommended,
+    plugins: { import: compatibleImportPlugin }
+};
+const compatibleImportTypescriptConfig = {
+    ...importPlugin.flatConfigs.typescript,
+    plugins: { import: compatibleImportPlugin }
+};
+const compatibleReactRecommendedConfig = {
+    ...reactPlugin.configs.flat.recommended,
+    plugins: { react: compatibleReactPlugin }
+};
+const residualRuleIds = `no-restricted-exports no-unreachable-loop no-useless-assignment @typescript-eslint/no-unnecessary-condition import/export promise/no-return-in-finally react/require-render-return @stylistic/lines-between-class-members budgie/max-component-props lingui/t-call-in-function lingui/no-single-tag-to-translate lingui/no-single-variables-to-translate lingui/no-trans-inside-trans lingui/no-expression-in-message lingui/no-unlocalized-strings @rnw-community/no-complex-jsx-logic consistent-this id-denylist id-length no-restricted-syntax require-atomic-updates @typescript-eslint/naming-convention @typescript-eslint/member-ordering n/hashbang n/no-deprecated-api n/no-extraneous-import n/no-extraneous-require n/no-missing-require n/no-process-exit n/no-unpublished-bin n/no-unpublished-import n/no-unpublished-require n/no-unsupported-features/es-builtins n/no-unsupported-features/node-builtins n/process-exit-as-throw camelcase no-invalid-this no-octal no-octal-escape no-undef-init nonblock-statement-body-position newline-before-return import/order react/jsx-uses-react react/jsx-uses-vars react/no-deprecated react-hooks/static-components react-hooks/use-memo react-hooks/component-hook-factories react-hooks/preserve-manual-memoization react-hooks/incompatible-library react-hooks/immutability react-hooks/globals react-hooks/refs react-hooks/set-state-in-effect react-hooks/error-boundaries react-hooks/purity react-hooks/set-state-in-render react-hooks/unsupported-syntax react-hooks/config react-hooks/gating sort-imports`.split(' ');
+const oxlintFallbackConfigs = eslintPluginOxlint.buildFromOxlintConfigFile(fileURLToPath(new URL('./.oxlintrc.json', import.meta.url))).map(config => ({
+    ...config,
+    rules: Object.fromEntries(Object.entries(config.rules ?? {}).filter(([ruleId]) => !residualRuleIds.includes(ruleId)))
+}));
 
 export default defineConfig(
     {
@@ -49,6 +74,8 @@ export default defineConfig(
         rules: {
             camelcase: ['error', { properties: 'never' }],
             complexity: ['error', 25],
+            'consistent-return': 'off',
+            'dot-notation': 'off',
             indent: 'off',
             strict: 'off',
             'init-declarations': 'off',
@@ -300,7 +327,7 @@ export default defineConfig(
     },
     {
         files: ['**/*.{ts,tsx}'],
-        extends: [importPlugin.flatConfigs.recommended, importPlugin.flatConfigs.typescript],
+        extends: [compatibleImportRecommendedConfig, compatibleImportTypescriptConfig],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module'
@@ -351,7 +378,8 @@ export default defineConfig(
                 {
                     allowModules: ['@jest/globals']
                 }
-            ]
+            ],
+            'n/no-unpublished-bin': 'error'
         }
     },
     {
@@ -410,14 +438,15 @@ export default defineConfig(
     },
     {
         files: ['**/*.tsx', '**/*.hook.ts'],
-        extends: [reactPlugin.configs.flat.recommended, reactHooksPlugin.configs.flat.recommended],
-        plugins: { '@rnw-community': rnwcPlugin },
+        extends: [compatibleReactRecommendedConfig, reactHooksPlugin.configs.flat.recommended],
+        plugins: { '@rnw-community': compatibleRnwCommunityPlugin },
         settings: {
             react: { version: 'detect' }
         },
         rules: {
             'max-statements': ['error', 15],
             '@rnw-community/no-complex-jsx-logic': 'error',
+            'react-hooks/component-hook-factories': 'error',
             'react/jsx-curly-brace-presence': [
                 'error',
                 {
@@ -447,29 +476,6 @@ export default defineConfig(
             'react/jsx-child-element-spacing': 'off',
             'react/destructuring-assignment': 'off',
             'react/no-unknown-property': ['error', { ignore: ['popover', 'popoverTarget', 'popoverTargetAction'] }]
-        }
-    },
-    {
-        files: ['**/*.spec.ts'],
-        extends: [jestPlugin.configs['flat/recommended']],
-        rules: {
-            'no-await-in-loop': 'off',
-
-            'jest/require-hook': 'off',
-            'jest/max-expects': 'off',
-            'jest/unbound-method': 'off',
-            'jest/expect-expect': 'off',
-            'jest/no-done-callback': 'off',
-
-            'no-undef': 'off',
-            'no-undefined': 'off',
-            'max-classes-per-file': 'off',
-            'max-lines-per-function': 'off',
-            'max-lines': 'off',
-            'max-statements': 'off',
-            'func-names': 'off',
-            'promise/no-nesting': 'off',
-            '@typescript-eslint/no-magic-numbers': 'warn'
         }
     },
     {
@@ -511,6 +517,35 @@ export default defineConfig(
                     message: 'Use isEmptyString(x) from @rnw-community/shared.'
                 }
             ]
+        }
+    },
+    ...oxlintFallbackConfigs,
+    {
+        linterOptions: {
+            reportUnusedDisableDirectives: 'off'
+        }
+    },
+    {
+        files: ['**/*.spec.ts'],
+        extends: [jestPlugin.configs['flat/recommended']],
+        rules: {
+            'no-await-in-loop': 'off',
+
+            'jest/require-hook': 'off',
+            'jest/max-expects': 'off',
+            'jest/unbound-method': 'off',
+            'jest/expect-expect': 'off',
+            'jest/no-done-callback': 'off',
+
+            'no-undef': 'off',
+            'no-undefined': 'off',
+            'max-classes-per-file': 'off',
+            'max-lines-per-function': 'off',
+            'max-lines': 'off',
+            'max-statements': 'off',
+            'func-names': 'off',
+            'promise/no-nesting': 'off',
+            '@typescript-eslint/no-magic-numbers': 'warn'
         }
     }
 );
