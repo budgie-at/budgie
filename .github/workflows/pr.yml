@@ -98,46 +98,121 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v5
+              with:
+                  fetch-depth: 0
 
             - name: Setup Node
               uses: actions/setup-node@v6
               with:
-                  node-version: 22.x
+                  node-version: 22.22.1
 
             - name: Install dependencies
-              run: yarn install
+              run: yarn install --immutable
 
             - name: Lingui catalogs are up to date
-              run: |
-                  yarn i18n:sync
-
-                  if ! git diff --quiet HEAD -- packages/app/src/i18n/locales packages/landing/src/i18n/locales; then
-                    echo "::error::Lingui catalogs are stale. Run yarn i18n:sync and commit .po plus messages.ts files."
-                    git diff --name-only HEAD -- packages/app/src/i18n/locales packages/landing/src/i18n/locales
-                    exit 1
-                  fi
+              run: yarn i18n:check
 
             - name: Lint the PR Title
               run: printf '%s\n' "$PR_TITLE" | node_modules/.bin/commitlint
 
+            - name: Formatting checks
+              run: yarn format:check
+
             - name: Typescript checks
-              run: yarn turbo run ts
+              run: yarn ts
 
             - name: Maestro selector checks
               run: yarn workspace @budgie-at/app-tests selectors:check
 
-            - name: ESLint checks
-              run: yarn turbo run lint --concurrency=2
+            - name: Lint checks
+              run: yarn lint
 
             - name: Deadcode detection
-              continue-on-error: true
-              run: yarn turbo deadcode
+              run: yarn deadcode
 
             - name: Copy/Paste detection
-              run: yarn turbo cpd
+              run: yarn cpd
+
+            - name: Build
+              run: yarn build
 
             - name: Unit tests
-              run: yarn turbo run test:coverage
+              run: yarn test:coverage
+
+            - name: Verify generated files are committed
+              run: git diff --exit-code
+
+            - name: Benchmark baseline and migrated toolchains
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  BASELINE_SHA=0f723a59323ce32a4337455c1922b92bb902ae37
+                  MIGRATED_SHA=$(git rev-parse HEAD)
+                  root="$RUNNER_TEMP/oxc-bench"
+                  baseline="$root/baseline"
+                  migrated="$root/migrated"
+                  cleanup() { git worktree remove --force "$baseline" 2>/dev/null || true; git worktree remove --force "$migrated" 2>/dev/null || true; rm -rf "$root"; }
+                  trap cleanup EXIT
+                  git cat-file -e "$BASELINE_SHA^{commit}"
+                  git worktree add --detach "$baseline" "$BASELINE_SHA"
+                  git worktree add --detach "$migrated" "$MIGRATED_SHA"
+                  mkdir -p "$GITHUB_WORKSPACE/.ci-artifacts/oxc-toolchain"
+                  set +e
+                  /usr/bin/time -v -o "$GITHUB_WORKSPACE/.ci-artifacts/oxc-toolchain/oxlint.time.txt" sh -c 'yarn oxlint --type-aware packages/app/src packages/landing packages/ai/src packages/budget/src packages/logger/src packages/bank-sync/src packages/consolidation/src packages/contracts/src --format json > .ci-artifacts/oxc-toolchain/oxlint.json'; oxlint_status=$?
+                  /usr/bin/time -v -o "$GITHUB_WORKSPACE/.ci-artifacts/oxc-toolchain/eslint-fallback.time.txt" yarn eslint packages/app/src packages/landing packages/ai/src packages/budget/src packages/logger/src packages/bank-sync/src packages/consolidation/src packages/contracts/src --format json --output-file .ci-artifacts/oxc-toolchain/eslint-fallback.json; eslint_status=$?
+                  /usr/bin/time -v -o "$GITHUB_WORKSPACE/.ci-artifacts/oxc-toolchain/tandem.time.txt" env TURBO_FORCE=true yarn lint; lint_status=$?
+                  /usr/bin/time -v -o "$GITHUB_WORKSPACE/.ci-artifacts/oxc-toolchain/oxfmt.time.txt" yarn oxfmt --check "**/*.{ts,tsx}" packages/app/expo-env.d.ts packages/app/nativewind-env.d.ts; oxfmt_status=$?
+                  set -e
+                  printf 'oxlint=%s\neslint=%s\nlint=%s\noxfmt=%s\n' "$oxlint_status" "$eslint_status" "$lint_status" "$oxfmt_status" | tee "$GITHUB_WORKSPACE/.ci-artifacts/oxc-toolchain/exit-status.txt"
+                  test "$oxlint_status" -eq 0 && test "$eslint_status" -eq 0 && test "$lint_status" -eq 0 && test "$oxfmt_status" -eq 0
+                  node -e "const reports = require('./.ci-artifacts/oxc-toolchain/eslint-fallback.json'); if (reports.some(report => report.messages.length > 0)) process.exit(1)"
+                  measure() {
+                      label=$1 checkout=$2 expected_yarn=$3
+                      cd "$checkout"
+                      unset TURBO_TEAM TURBO_TOKEN
+                      corepack enable
+                      test "$(yarn --version)" = "$expected_yarn"
+                      yarn install --immutable
+                      mkdir -p .ci-artifacts/oxc-toolchain
+                      rm -rf .turbo
+                      /usr/bin/time -v -o ".ci-artifacts/oxc-toolchain/benchmark-${label}-ts-ci-fresh.txt" env TURBO_FORCE=true yarn ts > ".ci-artifacts/oxc-toolchain/benchmark-${label}-ts-ci-fresh.stdout" 2>&1
+                      grep -q 'cache bypass, force executing' ".ci-artifacts/oxc-toolchain/benchmark-${label}-ts-ci-fresh.stdout"
+                      for run in warm-1 warm-2 warm-3 warm-4 warm-5; do
+                          /usr/bin/time -v -o ".ci-artifacts/oxc-toolchain/benchmark-${label}-ts-ci-${run}.txt" env TURBO_FORCE=true yarn ts > ".ci-artifacts/oxc-toolchain/benchmark-${label}-ts-ci-${run}.stdout" 2>&1
+                          test "$(grep -c 'cache bypass, force executing' ".ci-artifacts/oxc-toolchain/benchmark-${label}-ts-ci-${run}.stdout")" -eq 12
+                      done
+                      rm -rf .turbo
+                      /usr/bin/time -v -o ".ci-artifacts/oxc-toolchain/benchmark-${label}-validation-ci-fresh.txt" env TURBO_FORCE=true sh -c 'yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd' > ".ci-artifacts/oxc-toolchain/benchmark-${label}-validation-ci-fresh.stdout" 2>&1
+                      grep -q 'cache bypass, force executing' ".ci-artifacts/oxc-toolchain/benchmark-${label}-validation-ci-fresh.stdout"
+                      for run in warm-1 warm-2 warm-3 warm-4 warm-5; do
+                          /usr/bin/time -v -o ".ci-artifacts/oxc-toolchain/benchmark-${label}-validation-ci-${run}.txt" sh -c 'yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd' > ".ci-artifacts/oxc-toolchain/benchmark-${label}-validation-ci-${run}.stdout" 2>&1
+                          grep -q 'cache hit' ".ci-artifacts/oxc-toolchain/benchmark-${label}-validation-ci-${run}.stdout"
+                      done
+                      cp .ci-artifacts/oxc-toolchain/benchmark-*-ci-* "$GITHUB_WORKSPACE/.ci-artifacts/oxc-toolchain/"
+                  }
+                  measure baseline "$baseline" 4.12.0
+                  measure migrated "$migrated" 4.17.1
+                  test "$(find "$GITHUB_WORKSPACE/.ci-artifacts/oxc-toolchain" -name 'benchmark-*-ci-*.txt' | wc -l | tr -d ' ')" = 24
+                  {
+                      node --version
+                      yarn --version
+                      uname -a
+                      lscpu
+                      cat "$GITHUB_WORKSPACE/.ci-artifacts/oxc-toolchain/exit-status.txt"
+                      for metrics in "$GITHUB_WORKSPACE"/.ci-artifacts/oxc-toolchain/*.time.txt "$GITHUB_WORKSPACE"/.ci-artifacts/oxc-toolchain/benchmark-*-ci-*.txt; do
+                          printf '%s\n' "$(basename "$metrics")"
+                          grep -E 'Elapsed|Maximum resident set size' "$metrics"
+                      done
+                  } >> "$GITHUB_STEP_SUMMARY"
+
+            - name: Upload Oxc benchmark
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: oxc-toolchain-benchmark
+                  path: .ci-artifacts/oxc-toolchain/
+                  if-no-files-found: warn
+                  include-hidden-files: true
 
             - name: Upload coverage reports to Codecov
               uses: codecov/codecov-action@v5
