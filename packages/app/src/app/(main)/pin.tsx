@@ -4,7 +4,6 @@ import React, { useEffect, useEffectEvent, useState } from 'react';
 import { View } from 'react-native';
 
 import { LoadingOverlay } from '../../@generic/component/loading-overlay/loading-overlay';
-import { useAppState } from '../../@generic/hook/use-app-state.hook';
 import { PinForm } from '../../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../../auth/constant/pin-length.constant';
 import { useAuthContext } from '../../auth/context/auth.context';
@@ -16,9 +15,10 @@ interface AuthFormStateInterface {
     isLoading: boolean;
     error: string | null;
     hasAttemptedBiometric: boolean;
+    isAutomaticBiometricPending: boolean;
 }
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- PIN screen orchestrates unlock, biometric retry, and foreground handling
+// eslint-disable-next-line max-statements -- PIN screen orchestrates unlock and biometric retry
 export default function PinScreen() {
     const { t } = useLingui();
 
@@ -32,7 +32,8 @@ export default function PinScreen() {
         input: '',
         error: null,
         isLoading: false,
-        hasAttemptedBiometric: false
+        hasAttemptedBiometric: false,
+        isAutomaticBiometricPending: false
     });
 
     const updateForm = (updates: Partial<AuthFormStateInterface>) => {
@@ -70,16 +71,8 @@ export default function PinScreen() {
         }
     };
 
-    const handleBiometricAuth = async () => {
-        if (!canUseBiometric) {
-            return;
-        }
-
-        updateForm({ isLoading: true });
-
-        const success = await authService.authenticateWithBiometrics();
-
-        updateForm({ isLoading: false });
+    const completeBiometricAuth = (success: boolean) => {
+        updateForm({ isAutomaticBiometricPending: false, isLoading: false });
 
         if (success) {
             setIsUnlocked(true);
@@ -87,27 +80,32 @@ export default function PinScreen() {
         }
     };
 
-    const runAutomaticBiometricAuth = useEffectEvent(() => {
-        updateForm({ hasAttemptedBiometric: true });
-        void handleBiometricAuth();
-    });
+    const handleBiometricAuth = async () => {
+        if (!canUseBiometric) {
+            return;
+        }
+
+        updateForm({ isLoading: true });
+        completeBiometricAuth(await authService.authenticateWithBiometrics());
+    };
+
+    const shouldAttemptBiometric = canUseBiometric && !formState.hasAttemptedBiometric;
+
+    if (shouldAttemptBiometric) {
+        updateForm({ hasAttemptedBiometric: true, isAutomaticBiometricPending: true, isLoading: true });
+    }
+
+    const handleAutomaticBiometricResult = useEffectEvent(completeBiometricAuth);
 
     if (formState.input.length === PIN_LENGTH && !formState.isLoading) {
         void handlePinSubmit();
     }
 
     useEffect(() => {
-        if (canUseBiometric && !formState.hasAttemptedBiometric) {
-            runAutomaticBiometricAuth();
+        if (formState.isAutomaticBiometricPending) {
+            void authService.authenticateWithBiometrics().then(handleAutomaticBiometricResult);
         }
-    }, [canUseBiometric, formState.hasAttemptedBiometric]);
-
-    useAppState(isActive => {
-        if (isActive && canUseBiometric && !formState.hasAttemptedBiometric) {
-            updateForm({ hasAttemptedBiometric: true });
-            void handleBiometricAuth();
-        }
-    });
+    }, [formState.isAutomaticBiometricPending]);
 
     return (
         <View className="flex-1 bg-primary-reverse">

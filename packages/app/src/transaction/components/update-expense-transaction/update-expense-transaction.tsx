@@ -69,6 +69,7 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
                 debtSettlementAccountTitle={debtSettlementAccountTitle}
                 amountTopContent={
                     <RefundedPill
+                        key={`${transaction.id}-${transaction.consolidationType}`}
                         transaction={transaction}
                         onPress={handleOpenRefundSources}
                         testID={TransactionCardSelector.RefundedPill(transaction.id)}

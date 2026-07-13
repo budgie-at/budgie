@@ -14,8 +14,8 @@
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {
-        "@lingui/core": "6.1.0",
-        "@lingui/react": "6.1.0",
+        "@lingui/core": "6.5.0",
+        "@lingui/react": "6.5.0",
         "@radix-ui/react-accordion": "^1.2.12",
         "@radix-ui/react-dropdown-menu": "^2.1.16",
         "@radix-ui/react-slot": "^1.2.4",
@@ -38,9 +38,9 @@
         "zod": "4.1.12"
     },
     "devDependencies": {
-        "@lingui/format-po": "6.1.0",
-        "@lingui/loader": "6.1.0",
-        "@lingui/swc-plugin": "6.3.0",
+        "@lingui/format-po": "6.5.0",
+        "@lingui/loader": "6.5.0",
+        "@lingui/swc-plugin": "6.5.0",
         "@tailwindcss/postcss": "^4.3.0",
         "@types/negotiator": "^0.6.4",
         "babel-plugin-react-compiler": "^1.0.0",
