@@ -2,9 +2,11 @@ appId: ${APP_ID}
 env:
   ACTION_ITEM_ID: ${ACTION_ITEM_ID || 'ActionItem.Expense'}
 ---
+- waitForAnimationToEnd
 - tapOn:
     id: 'ActionButton'
 - extendedWaitUntil:
     visible:
       id: '${ACTION_ITEM_ID}.Label'
+    timeout: 3000
 - waitForAnimationToEnd
