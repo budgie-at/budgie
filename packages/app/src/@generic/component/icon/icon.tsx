@@ -10,10 +10,13 @@ interface IconProps extends LucideProps {
     readonly icon: UserIconNameEnum;
 }
 
-export const Icon = ({ icon, ...rest }: IconProps) => {
-    const IconComponent: LucideIcon = ICONS[icon] ?? CircleQuestionMark;
-    const IconToRender = styled(IconComponent, { className: { target: 'style' } });
+const StyledFallbackIcon: LucideIcon = styled(CircleQuestionMark, { className: { target: 'style' } });
+const STYLED_ICONS: Partial<Record<UserIconNameEnum, LucideIcon>> = Object.fromEntries(
+    Object.entries(ICONS).map(([icon, IconComponent]) => [icon, styled(IconComponent, { className: { target: 'style' } })])
+);
 
-    // eslint-disable-next-line react-hooks/static-components
+export const Icon = ({ icon, ...rest }: IconProps) => {
+    const IconToRender = STYLED_ICONS[icon] ?? StyledFallbackIcon;
+
     return <IconToRender {...rest} />;
 };
