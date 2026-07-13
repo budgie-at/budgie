@@ -326,6 +326,8 @@ env:
 - tapOn:
     id: 'RuleForm.Condition.1.ValueInput'
 - inputText: 'Test08 Comment'
+- pressKey: enter
+- waitForAnimationToEnd
 
 - tapOn:
     id: RuleForm.Action.0.TypeSelector
