@@ -11,7 +11,7 @@
         "lint": "run -T eslint --fix .",
         "release:start": "next start",
         "start": "next dev",
-        "ts": "run -T tsc -p ."
+        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {
         "@lingui/core": "6.1.0",

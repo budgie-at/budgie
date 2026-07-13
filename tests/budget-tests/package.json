@@ -7,7 +7,7 @@
         "test": "vitest run",
         "test:coverage": "vitest run",
         "test:watch": "vitest",
-        "ts": "tsc --noEmit"
+        "ts": "node ../../node_modules/@typescript/native/bin/tsc --noEmit"
     },
     "dependencies": {
         "@budgie/budget": "workspace:*",
@@ -16,6 +16,6 @@
     },
     "devDependencies": {
         "@types/node": "22.20.1",
-        "typescript": "^5.9.3"
+        "typescript": "npm:@typescript/typescript6@6.0.2"
     }
 }

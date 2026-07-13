@@ -18,7 +18,7 @@
         "prebuild": "expo prebuild --clean",
         "prebuild:dev": "EXPO_PUBLIC_AI_DISABLE=true APP_VARIANT=development expo prebuild --clean",
         "start": "expo start --dev-client -c",
-        "ts": "run -T tsc -p .",
+        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p .",
         "generate:typed-routes": "npx expo export --platform web --output-dir /tmp/expo-typed --dump-assetmap 2>/dev/null || true",
         "web": "expo start --web"
     },
