@@ -1,0 +1,11 @@
+{
+    "singleQuote": true,
+    "printWidth": 140,
+    "tabWidth": 4,
+    "semi": true,
+    "trailingComma": "none",
+    "arrowParens": "avoid",
+    "sortImports": false,
+    "sortPackageJson": false,
+    "ignorePatterns": [".agents/**", "packages/app/src/i18n/locales/*/messages.ts", "packages/landing/src/i18n/locales/*/messages.ts"]
+}

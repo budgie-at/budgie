@@ -13,7 +13,7 @@ yarn build                                # Build all packages
 yarn build:force                          # Build without cache
 
 # Validation (run in this order before committing)
-yarn format                               # Prettier (run first - may modify files)
+yarn format                               # Oxfmt (run first - may modify files)
 yarn ts                                   # TypeScript check
 yarn lint                                 # ESLint (skip during debug sessions)
 yarn deadcode                             # Knip dead code detection
@@ -563,7 +563,6 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 **CRITICAL: Minimize token usage. Avoid looping on lint fixes.**
 
 - If a lint rule (like `max-lines-per-function`) requires multiple refactoring attempts, add `eslint-disable` comment instead
-- If Prettier keeps reformatting your changes back, stop and use `eslint-disable`
 - Ask for confirmation before attempting complex refactors - do not go back and forth
 - Layout files (`_layout.tsx`) inherently need many lines - disable `max-lines-per-function` there
 - **NEVER use `jscpd:ignore-start/end` in code files** - only allowed in JSX route files (e.g., `expense.tsx`, `income.tsx`, `transfer.tsx`). Fix duplication in source code by extracting shared logic instead
