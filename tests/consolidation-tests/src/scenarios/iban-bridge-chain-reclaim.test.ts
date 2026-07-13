@@ -102,16 +102,11 @@ const parentSourceTransaction = async (sourceTransactionId: number, canonicalTra
     ]);
 };
 
-const seedGeneratedTransferReclaimFixture = () => {
+const seedTransferReclaimFixture = (consolidationType: TransactionConsolidationTypeEnum | null) => {
     const operatedAt = new Date(2026, 4, 20, 18, 38, 0);
     const transferMcc = testQueryService.findMccByCode('4829');
     const { sourceAccount, bridgeAccount, targetAccount } = seedAccounts();
-    const directTransfer = seedDirectTransfer(
-        operatedAt,
-        sourceAccount.id,
-        targetAccount.id,
-        TransactionConsolidationTypeEnum.TRANSFER_PAIR
-    );
+    const directTransfer = seedDirectTransfer(operatedAt, sourceAccount.id, targetAccount.id, consolidationType);
     const bridgeLegs = seedBridgeLegs(operatedAt, bridgeAccount.id, transferMcc.id);
 
     return {
@@ -135,7 +130,7 @@ const fetchMovedSourceIds = (canonicalTransactionId: number): number[] =>
 
 describe('consolidation/iban-bridge-chain-reclaim', () => {
     it('reclaims late bridge legs into an existing generated transfer pair', async () => {
-        const { bridgeExpense, bridgeIncome, directTransfer } = seedGeneratedTransferReclaimFixture();
+        const { bridgeExpense, bridgeIncome, directTransfer } = seedTransferReclaimFixture(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
         const result = await runConsolidation();
 
@@ -154,7 +149,7 @@ describe('consolidation/iban-bridge-chain-reclaim', () => {
 
     it('preserves original moved source rows when reclaiming bridge legs into an existing generated transfer pair', async () => {
         const { bridgeExpense, bridgeIncome, directTransfer, operatedAt, sourceAccount, targetAccount, transferMcc } =
-            seedGeneratedTransferReclaimFixture();
+            seedTransferReclaimFixture(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
         const { sourceExpense, targetIncome } = seedDirectSourceRows(operatedAt, sourceAccount.id, targetAccount.id, transferMcc.id);
 
         await parentSourceTransaction(sourceExpense.id, directTransfer.id);
@@ -177,11 +172,7 @@ describe('consolidation/iban-bridge-chain-reclaim', () => {
     });
 
     it('does not reclaim or duplicate bridge legs when the direct transfer is source-less', async () => {
-        const operatedAt = new Date(2026, 4, 20, 18, 38, 0);
-        const transferMcc = testQueryService.findMccByCode('4829');
-        const { sourceAccount, bridgeAccount, targetAccount } = seedAccounts();
-        const directTransfer = seedDirectTransfer(operatedAt, sourceAccount.id, targetAccount.id, null);
-        const { bridgeIncome, bridgeExpense } = seedBridgeLegs(operatedAt, bridgeAccount.id, transferMcc.id);
+        const { bridgeIncome, bridgeExpense, directTransfer } = seedTransferReclaimFixture(null);
 
         const result = await runConsolidation();
 
