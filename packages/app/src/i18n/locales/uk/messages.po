@@ -1537,7 +1537,8 @@ msgstr "Комісія · {formattedFeeAmount}"
 msgid "Fee {formattedAmount}"
 msgstr "Комісія {formattedAmount}"
 
-#: src/sync/component/sync-account-setup-page/sync-account-setup-page.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
 msgstr "Отримати рахунки"
 
@@ -2995,8 +2996,9 @@ msgstr "Почніть з нуля та задайте кожен ліміт с�
 msgid "Start Import"
 msgstr "Почати імпорт"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
-#: src/sync/component/sync-account-setup-page/sync-account-setup-page.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
 

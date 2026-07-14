@@ -1538,7 +1538,8 @@ msgstr "Fee · {formattedFeeAmount}"
 msgid "Fee {formattedAmount}"
 msgstr "Fee {formattedAmount}"
 
-#: src/sync/component/sync-account-setup-page/sync-account-setup-page.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
 msgstr "Fetch Accounts"
 
@@ -2996,8 +2997,9 @@ msgstr "Start from scratch and set every limit yourself"
 msgid "Start Import"
 msgstr "Start Import"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
-#: src/sync/component/sync-account-setup-page/sync-account-setup-page.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Start Sync"
 
