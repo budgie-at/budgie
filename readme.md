@@ -318,6 +318,7 @@
 - **Data integrity**: Import audit log; idempotent merges; user-visible review queue
 
 ## Backlog / Nice-to-Have
+- [ ] Restore automated `UPPER_CASE` enum-member enforcement with Oxlint when it supports an equivalent naming-convention rule.
 - Receipt OCR; bank SMS/email parsers
 - Widgets & lock-screen complications
 - Shared spaces (household) with roles

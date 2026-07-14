@@ -42,7 +42,8 @@
     - Incremental workspaces write `node_modules/.cache/tsbuildinfo.json`, which Turbo caches; non-incremental workspaces can legitimately report that no configured output was produced
 
 4. **Linting**: `yarn lint`
-    - Runs type-aware Oxlint first, then the Turbo-cached 62-rule ESLint fallback
+    - Runs type-aware Oxlint first, then the Turbo-cached 60-rule syntax-only ESLint fallback
+    - Oxlint owns the `typescript/no-unnecessary-condition` diagnostic; ESLint does not build a TypeScript program
     - `eslint-plugin-oxlint` builds its disabling layer from `.oxlintrc.json`, leaving ESLint responsible only for unsupported and project-specific rules
 
 5. **Deadcode detection**: `yarn deadcode`
@@ -96,7 +97,7 @@
     - Verifies Lingui catalogs and Maestro selector assignments
     - Runs `yarn format:check` (Oxfmt)
     - Runs `yarn ts` (native TypeScript 7 checks)
-    - Runs `yarn lint` (type-aware Oxlint plus the 62-rule ESLint fallback)
+    - Runs `yarn lint` (type-aware Oxlint plus the 60-rule syntax-only ESLint fallback)
     - Runs `yarn deadcode` (Knip)
     - Runs `yarn cpd` (jscpd)
     - Builds and runs the Vitest integration coverage workspaces
@@ -194,8 +195,8 @@
 
 ### Linting & Formatting
 
-- **.oxlintrc.json**: Primary type-aware Oxlint configuration for TypeScript, React, React Hooks, and import rules
-- **eslint.config.mjs**: 62-rule fallback for unsupported, semantically different, template-like Lingui, and project-local rules
+- **.oxlintrc.json**: Primary type-aware Oxlint configuration for TypeScript, React, React Hooks, import rules, and `typescript/no-unnecessary-condition`
+- **eslint.config.mjs**: 60-rule syntax-only fallback for unsupported, semantically different, template-like Lingui, and project-local rules
     - Uses the official `eslint-plugin-oxlint` companion generated from `.oxlintrc.json` to disable overlapping rules
     - Runs through Turbo at the package level so repeat fallback checks are cached
 
@@ -260,7 +261,9 @@
 3. Clear node_modules: `rm -rf node_modules && yarn install`
 
 **Issue**: A lint rule is not supported by Oxlint
-**Solution**: Keep the rule in the 62-rule ESLint fallback. The official companion disables only rules covered by `.oxlintrc.json`; do not duplicate rule ownership between the linters.
+**Solution**: Keep syntax-only rules in the 60-rule ESLint fallback. The official companion disables rules covered by `.oxlintrc.json`; do not duplicate rule ownership between the linters. Keep `typescript/no-unnecessary-condition` in Oxlint.
+
+The root `readme.md` backlog tracks restoring automated `UPPER_CASE` enum-member enforcement when Oxlint supports an equivalent naming-convention rule.
 
 **Issue**: Cannot run Expo app builds locally
 **Solution**: EAS builds require EXPO_TOKEN secret. Use `yarn start` in packages/app for local development with Expo Go or dev client.
@@ -412,8 +415,6 @@
 
 7. **Expo app requires secrets**: Cannot build native apps locally without EXPO_TOKEN. Use `yarn start` for local dev.
 
-8. **Measured migration timings**: On the Task 9 workstation, native TypeScript took 8.98 seconds for the fresh forced run and 5.62 seconds at the five-run warm median; every TypeScript sample forced Turbo execution, so "warm" means repeated process and filesystem conditions rather than cache hits. The sequential validation workflow took 60.39 seconds fresh and 10.015 seconds at the warm median; its warm samples used Turbo cache hits. CI duration is runner- and queue-dependent.
+8. **Node version**: Requires Node.js >= 22.22.1. Check with `node --version` if encountering unexpected errors.
 
-9. **Node version**: Requires Node.js >= 22.22.1. Check with `node --version` if encountering unexpected errors.
-
-10. **Yarn version**: Must use Yarn 4.17.1 with the repository's `node-modules` linker, not PnP, classic Yarn, or npm.
+9. **Yarn version**: Must use Yarn 4.17.1 with the repository's `node-modules` linker, not PnP, classic Yarn, or npm.

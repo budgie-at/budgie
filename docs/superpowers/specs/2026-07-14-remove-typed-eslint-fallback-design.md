@@ -13,7 +13,7 @@ Remove ESLint's TypeScript program construction without losing the useful `no-un
 - Remove `@typescript-eslint/no-unnecessary-condition` and `@typescript-eslint/naming-convention` from the literal ESLint residual list and from explicit ESLint rule configuration.
 - Reduce the documented and asserted fallback count from 62 to exactly 60.
 - Replace `tseslint.configs.strictTypeChecked` with `tseslint.configs.strict` and remove `languageOptions.parserOptions.projectService`. No ESLint rule may require parser services after the change.
-- Keep the official `eslint-plugin-oxlint` disabling layer last. Its generated coverage must continue to disable JavaScript and TypeScript rules already owned by `.oxlintrc.json`.
+- Keep the official `eslint-plugin-oxlint` disabling layer as the final production layer, followed only by the intentional dormant `**/*.spec.ts` override. Its generated coverage must continue to disable JavaScript and TypeScript rules already owned by `.oxlintrc.json`.
 
 Before editing, capture effective ESLint configurations for representative `.ts`, `.tsx`, test, and service files. After editing, repeat the audit and enumerate all enabled fallback rules. The audit must prove that the only intended ownership changes are the two removed residual IDs, that the final set contains exactly 60 IDs, and that no enabled ESLint rule requires type information. If switching to `strict` changes any unrelated effective rule, configure that rule explicitly to preserve the current behavior or stop the migration for review.
 

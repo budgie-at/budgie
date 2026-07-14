@@ -32,7 +32,7 @@ const compatibleReactRecommendedConfig = {
     ...reactPlugin.configs.flat.recommended,
     plugins: { react: compatibleReactPlugin }
 };
-const residualRuleIds = `no-restricted-exports no-unreachable-loop no-useless-assignment @typescript-eslint/no-unnecessary-condition import/export promise/no-return-in-finally react/require-render-return @stylistic/lines-between-class-members budgie/max-component-props lingui/t-call-in-function lingui/no-single-tag-to-translate lingui/no-single-variables-to-translate lingui/no-trans-inside-trans lingui/no-expression-in-message lingui/no-unlocalized-strings @rnw-community/no-complex-jsx-logic consistent-this id-denylist id-length no-restricted-syntax require-atomic-updates @typescript-eslint/naming-convention @typescript-eslint/member-ordering n/hashbang n/no-deprecated-api n/no-extraneous-import n/no-extraneous-require n/no-missing-require n/no-process-exit n/no-unpublished-bin n/no-unpublished-import n/no-unpublished-require n/no-unsupported-features/es-builtins n/no-unsupported-features/node-builtins n/process-exit-as-throw camelcase no-invalid-this no-octal no-octal-escape no-undef-init nonblock-statement-body-position newline-before-return import/order react/jsx-uses-react react/jsx-uses-vars react/no-deprecated react-hooks/static-components react-hooks/use-memo react-hooks/component-hook-factories react-hooks/preserve-manual-memoization react-hooks/incompatible-library react-hooks/immutability react-hooks/globals react-hooks/refs react-hooks/set-state-in-effect react-hooks/error-boundaries react-hooks/purity react-hooks/set-state-in-render react-hooks/unsupported-syntax react-hooks/config react-hooks/gating sort-imports`.split(' ');
+const residualRuleIds = `no-restricted-exports no-unreachable-loop no-useless-assignment import/export promise/no-return-in-finally react/require-render-return @stylistic/lines-between-class-members budgie/max-component-props lingui/t-call-in-function lingui/no-single-tag-to-translate lingui/no-single-variables-to-translate lingui/no-trans-inside-trans lingui/no-expression-in-message lingui/no-unlocalized-strings @rnw-community/no-complex-jsx-logic consistent-this id-denylist id-length no-restricted-syntax require-atomic-updates @typescript-eslint/member-ordering n/hashbang n/no-deprecated-api n/no-extraneous-import n/no-extraneous-require n/no-missing-require n/no-process-exit n/no-unpublished-bin n/no-unpublished-import n/no-unpublished-require n/no-unsupported-features/es-builtins n/no-unsupported-features/node-builtins n/process-exit-as-throw camelcase no-invalid-this no-octal no-octal-escape no-undef-init nonblock-statement-body-position newline-before-return import/order react/jsx-uses-react react/jsx-uses-vars react/no-deprecated react-hooks/static-components react-hooks/use-memo react-hooks/component-hook-factories react-hooks/preserve-manual-memoization react-hooks/incompatible-library react-hooks/immutability react-hooks/globals react-hooks/refs react-hooks/set-state-in-effect react-hooks/error-boundaries react-hooks/purity react-hooks/set-state-in-render react-hooks/unsupported-syntax react-hooks/config react-hooks/gating sort-imports`.split(' ');
 const oxlintFallbackConfigs = eslintPluginOxlint.buildFromOxlintConfigFile(fileURLToPath(new URL('./.oxlintrc.json', import.meta.url))).map(config => ({
     ...config,
     rules: Object.fromEntries(Object.entries(config.rules ?? {}).filter(([ruleId]) => !residualRuleIds.includes(ruleId)))
@@ -124,8 +124,11 @@ export default defineConfig(
     },
     {
         files: ['**/*.{ts,tsx}'],
-        extends: [tseslint.configs.strictTypeChecked],
+        extends: [tseslint.configs.strict],
         rules: {
+            'no-implied-eval': 'off',
+            'no-throw-literal': 'off',
+            'prefer-promise-reject-errors': 'off',
             '@typescript-eslint/class-methods-use-this': 'off',
             '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
             '@typescript-eslint/no-magic-numbers': [
@@ -173,7 +176,6 @@ export default defineConfig(
             ],
             '@typescript-eslint/no-empty-object-type': 1,
             '@typescript-eslint/no-extraneous-class': [2, { allowWithDecorator: true }],
-            '@typescript-eslint/naming-convention': ['error', { selector: 'enumMember', format: ['UPPER_CASE', 'PascalCase'] }],
             '@typescript-eslint/member-ordering': [
                 'error',
                 {
@@ -310,13 +312,6 @@ export default defineConfig(
                     ]
                 }
             ]
-        }
-    },
-    {
-        languageOptions: {
-            parserOptions: {
-                projectService: true
-            }
         }
     },
     {
@@ -519,12 +514,12 @@ export default defineConfig(
             ]
         }
     },
-    ...oxlintFallbackConfigs,
     {
         linterOptions: {
             reportUnusedDisableDirectives: 'off'
         }
     },
+    ...oxlintFallbackConfigs,
     {
         files: ['**/*.spec.ts'],
         extends: [jestPlugin.configs['flat/recommended']],

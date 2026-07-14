@@ -15,7 +15,7 @@ yarn build:force                          # Build without cache
 # Validation (run in this order before committing)
 yarn format                               # Oxfmt (run first - may modify files)
 yarn ts                                   # TypeScript check
-yarn lint                                 # Oxlint + 62-rule ESLint fallback (skip during debug sessions)
+yarn lint                                 # Oxlint + 60-rule ESLint fallback (skip during debug sessions)
 yarn deadcode                             # Knip dead code detection
 yarn cpd                                  # Code duplication check
 
@@ -503,7 +503,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 1. **Fresh clone:** `yarn install`
 2. **After contracts changes:** `yarn build`
-3. **Before commit:** Husky runs `yarn ts`, then lint-staged applies Oxlint, the 62-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
+3. **Before commit:** Husky runs `yarn ts`, then lint-staged applies Oxlint, the 60-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
 4. **Before PR:** Run all validation commands
 5. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 

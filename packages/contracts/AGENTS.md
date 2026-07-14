@@ -8,7 +8,7 @@ Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Zod
 yarn build                    # Build package (required after changes)
 yarn test                     # Run Jest task (passes when no package tests exist)
 yarn ts                       # Native TypeScript 7 check
-yarn lint                     # Oxlint + 62-rule ESLint fallback
+yarn lint                     # Oxlint + 60-rule ESLint fallback
 ```
 
 ## Structure
