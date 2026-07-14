@@ -105,6 +105,9 @@
     "dependenciesMeta": {
         "better-sqlite3@12.10.0": {
             "built": true
+        },
+        "llama.rn@0.12.4": {
+            "built": true
         }
     },
     "packageManager": "yarn@4.17.1",
