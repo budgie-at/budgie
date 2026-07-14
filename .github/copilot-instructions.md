@@ -203,6 +203,18 @@
 - **.oxfmtrc.json**: Oxfmt configuration (applied via lint-staged)
 - **.lintstagedrc.js**: Pre-commit hooks run `oxlint --type-aware --fix`, the ESLint fallback, `oxfmt --write`, and `sort-package-json`
 
+### Equal-Topology Local Benchmark
+
+Baseline `1f07afc` and measured revision `044badce` were benchmarked on 2026-07-14 using Node.js v22.23.0, Yarn 4.17.1, and macOS arm64. Each workload used five interleaved samples, remote caching disabled, and isolated local-only caches. Medians are sorted sample index 2. Sequential validation is `yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd`.
+
+| Workload                             | Baseline elapsed | `044badce` elapsed |                     Elapsed change | Baseline RSS | `044badce` RSS |                         RSS change |
+| ------------------------------------ | ---------------: | -----------------: | ---------------------------------: | -----------: | -------------: | ---------------------------------: |
+| Uncached lint                        |           49.10s |             31.96s |                             -34.9% |    2764.2MiB |      1480.3MiB |                             -46.4% |
+| Uncached sequential validation       |           59.78s |             41.56s |                             -30.5% |    2761.0MiB |      1315.8MiB |                             -52.3% |
+| Cache-assisted sequential validation |           10.96s |             10.69s | Effectively unchanged; noise-sized |    1349.2MiB |      1359.9MiB | Effectively unchanged; noise-sized |
+
+RSS is the macOS `/usr/bin/time -l` maximum observed child-process RSS, not aggregate process-tree RSS. The cache-assisted result is not claimed as an improvement.
+
 ### TypeScript
 
 - **tsconfig.json** (root): Base TypeScript config
