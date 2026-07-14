@@ -18,12 +18,12 @@ export default function TabsLayout() {
     const { isOpen: isVoiceInputOpen, close: closeVoiceInput } = useVoiceInputContext();
 
     const containerStyle = { paddingBottom: bottom };
-    const tabBarWrapperStyle = { zIndex: TAB_BAR_Z_INDEX };
 
     const handleCloseMenu = () => void setIsMenuOpen(false);
 
     const isTransactionMenuOpen = isMenuOpen && !isVoiceInputOpen;
     const isBackdropVisible = isMenuOpen || isVoiceInputOpen;
+    const tabBarWrapperStyle = { zIndex: isBackdropVisible ? 0 : TAB_BAR_Z_INDEX };
 
     const handleBackdropClose = () => {
         if (isVoiceInputOpen) {
