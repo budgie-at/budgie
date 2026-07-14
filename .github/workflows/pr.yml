@@ -198,6 +198,7 @@ jobs:
                           corepack enable
                           test "$(yarn --version)" = 4.17.1
                           yarn install --immutable
+                          yarn build
                       )
                   }
                   run_sample() {
