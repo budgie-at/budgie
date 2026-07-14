@@ -3,6 +3,7 @@ import {
     BANK_FEE_CATEGORY_ID,
     CategorySourceEnum,
     ExternalSourceEnum,
+    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum
@@ -406,6 +407,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         return {
             accountId,
             type,
+            kind: TransactionEntryKindEnum.PRIMARY,
             amount,
             categoryId: null,
             categorySource: CategorySourceEnum.USER,
