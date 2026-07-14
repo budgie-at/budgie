@@ -443,9 +443,9 @@ prime_deep_links() {
     echo "Priming deep-link scheme confirmation"
 
     if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
-        maestro --udid "$DETECTED_SIMULATOR_UDID" test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID" || true
+        maestro --udid "$DETECTED_SIMULATOR_UDID" test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID"
     else
-        maestro test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID" || true
+        maestro test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID"
     fi
 }
 

@@ -10,7 +10,9 @@ appId: ${APP_ID}
       when:
           visible: 'Open'
       commands:
-          - tapOn: 'Open'
+          - tapOn:
+                text: 'Open'
+                retryTapIfNoChange: true
           - extendedWaitUntil:
                 notVisible: 'Open in .*'
                 timeout: 5000
