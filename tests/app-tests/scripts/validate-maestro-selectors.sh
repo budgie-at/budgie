@@ -69,3 +69,16 @@ if [ -n "$LONG_OPTIONAL_WAITS" ]; then
     echo "extendedWaitUntil with optional: true and timeout > 5000 silently burns the full timeout when the element is absent. Use a required wait or keep the optional grace wait at 5000 or less."
     exit 1
 fi
+
+PRIME_FLOW="$FLOW_DIR/setup/prime-deep-links.flow.yaml"
+SUITE_RUNNER="scripts/run-maestro-suite.sh"
+
+if ! grep -E -q 'retryTapIfNoChange:[[:space:]]*true' "$PRIME_FLOW"; then
+    echo "The native deep-link confirmation must retry only when the Open tap leaves the dialog unchanged."
+    exit 1
+fi
+
+if grep -E -n 'maestro .*prime_flow_path.*\|\| true' "$SUITE_RUNNER"; then
+    echo "Deep-link priming must fail the suite before business flows run behind an unresolved native dialog."
+    exit 1
+fi
