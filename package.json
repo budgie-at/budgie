@@ -15,7 +15,7 @@
         "build:force": "turbo run build --force",
         "clear": "turbo run clear",
         "cpd": "jscpd . --pattern \"**/*.{ts,tsx}\"",
-        "deadcode": "knip",
+        "deadcode": "KNIP_DISABLE_RAW_TRANSFER=1 knip",
         "deps:check": "yarn dlx check-dependency-version-consistency .",
         "deps:dedupe": "yarn dedupe",
         "deps:update": "yarn dlx npm-check-updates",
