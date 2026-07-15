@@ -26,6 +26,10 @@ local emailsType = redis.call('TYPE', KEYS[1]).ok
 if emailsType ~= 'none' and emailsType ~= 'zset' then
     return redis.error_reply('WAITLIST_EMAILS_TYPE')
 end
+local existingPosition = redis.call('ZSCORE', KEYS[1], ARGV[1])
+if existingPosition then
+    return {'${WaitlistMessageKeyEnum.ALREADY_REGISTERED}', tonumber(existingPosition)}
+end
 local userType = redis.call('TYPE', KEYS[3]).ok
 if userType ~= 'none' and userType ~= 'hash' then
     return redis.error_reply('WAITLIST_USER_TYPE')
@@ -44,10 +48,6 @@ if totalType == 'string' then
         (string.len(total) == string.len(maximumIncrementableTotal) and total > maximumIncrementableTotal) then
         return redis.error_reply('WAITLIST_TOTAL_OVERFLOW')
     end
-end
-local existingPosition = redis.call('ZSCORE', KEYS[1], ARGV[1])
-if existingPosition then
-    return {'${WaitlistMessageKeyEnum.ALREADY_REGISTERED}', tonumber(existingPosition)}
 end
 local position = redis.call('ZCARD', KEYS[1]) + 1
 redis.call('ZADD', KEYS[1], position, ARGV[1])
