@@ -5,3 +5,4 @@
 26.rules-import-application.flow.yaml
 28.rules-search.flow.yaml
 33.budget-transactions.flow.yaml
+35.debt-migration-repair.flow.yaml
