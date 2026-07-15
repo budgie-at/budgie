@@ -331,10 +331,11 @@ env:
 
 - tapOn:
     id: RuleForm.Action.0.TypeSelector
+    retryTapIfNoChange: true
 - extendedWaitUntil:
     visible:
       id: RuleForm.SelectorCard.SET_CATEGORY
-    timeout: 3000
+    timeout: 10000
 - tapOn:
     id: RuleForm.SelectorCard.SET_CATEGORY
 - waitForAnimationToEnd
