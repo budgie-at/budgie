@@ -1,9 +1,9 @@
 import { TRANSACTION_COMMENT_MAX_LENGTH, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { Button } from '../@generic/component/button/button';
+import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../@generic/component/icon/icon';
 import { TextArea } from '../@generic/component/textarea/text-area';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -49,21 +49,15 @@ export default function NoteInputModal() {
                     />
                 </View>
 
-                <View collapsable={false} className="relative">
-                    <Button
-                        onPress={handleSubmit}
-                        accessible
-                        accessibilityLabel={t`Apply`}
-                        className="min-h-[48px] px-4xl"
-                        content={<Text className="opacity-0">{t`Apply`}</Text>}
-                        size="sm"
-                        testID={NoteInputModalSelector.SubmitButton}
-                        variant="default"
-                    />
-                    <View pointerEvents="none" className="absolute inset-0 items-center justify-center">
-                        <Icon icon={UserIconNameEnum.Check} size={22} className="text-default-foreground" />
-                    </View>
-                </View>
+                <HapticPressable
+                    onPress={handleSubmit}
+                    accessibilityLabel={t`Apply`}
+                    accessibilityRole="button"
+                    className="h-[48px] w-[48px] items-center justify-center rounded-full bg-white"
+                    testID={NoteInputModalSelector.SubmitButton}
+                >
+                    <Icon icon={UserIconNameEnum.Check} size={22} className="text-black" />
+                </HapticPressable>
             </View>
         </View>
     );
