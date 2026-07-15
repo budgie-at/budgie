@@ -1387,7 +1387,7 @@ msgstr "Enter value..."
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Enter your {PIN_LENGTH}-digit PIN"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Enter your {PIN_LENGTH}-digit PIN to unlock"
 
@@ -1395,7 +1395,7 @@ msgstr "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgid "Enter your Monobank API token"
 msgstr "Enter your Monobank API token"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your PIN"
 msgstr "Enter your PIN"
 
@@ -1714,7 +1714,7 @@ msgstr "Income by category"
 msgid "Income by Tag"
 msgstr "Income by Tag"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
