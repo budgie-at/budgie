@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import { ImageResponse } from 'next/og';
 
 const size = { width: 1200, height: 630 };

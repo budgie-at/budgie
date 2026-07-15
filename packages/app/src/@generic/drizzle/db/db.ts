@@ -65,17 +65,17 @@ const dbInit = () => {
         global.__expoSqliteDb__.execSync(`PRAGMA key = '${pin}';`);
     }
 
-    global.__expoSqliteDb__.execSync('PRAGMA journal_mode = WAL;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA busy_timeout = 5000;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA foreign_keys = ON;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA synchronous = NORMAL;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA cache_size = -20000;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA mmap_size = 268435456;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA temp_store = MEMORY;'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA journal_mode = WAL;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA busy_timeout = 5000;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA foreign_keys = ON;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA synchronous = NORMAL;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA cache_size = -20000;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA mmap_size = 268435456;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA temp_store = MEMORY;'); // oxlint-disable-line lingui/no-unlocalized-strings
 
     try {
         logger.log('sqlite:bundled-extensions', { extensionNames: Object.keys(SQLite.bundledExtensions).join(',') });
-        const extension = SQLite.bundledExtensions['sqlite-vec']; // eslint-disable-line lingui/no-unlocalized-strings
+        const extension = SQLite.bundledExtensions['sqlite-vec']; // oxlint-disable-line lingui/no-unlocalized-strings
 
         if (isDefined(extension)) {
             logger.log('sqlite:vec-extension', {
@@ -88,9 +88,9 @@ const dbInit = () => {
             } else {
                 logger.log('sqlite:vec-load-skip');
             }
-            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
-            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
-            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
+            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
+            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
+            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
             logger.log('sqlite:vec-tables-ready');
         } else {
             logger.log('sqlite:vec-extension-missing');

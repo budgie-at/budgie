@@ -9,7 +9,7 @@ yarn start                    # Development server (next dev)
 yarn build                    # Production build
 yarn i18n:sync                # Extract & compile i18n translations
 yarn ts                       # Native TypeScript 7 check
-yarn lint                     # Oxlint + 60-rule ESLint fallback
+yarn lint                     # Oxlint + 14-rule ESLint fallback
 ```
 
 ## Structure

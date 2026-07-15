@@ -15,7 +15,7 @@ yarn build:force                          # Build without cache
 # Validation (run in this order before committing)
 yarn format                               # Oxfmt (run first - may modify files)
 yarn ts                                   # TypeScript check
-yarn lint                                 # Oxlint + 60-rule ESLint fallback (skip during debug sessions)
+yarn lint                                 # Oxlint + 14-rule ESLint fallback (skip during debug sessions)
 yarn deadcode                             # Knip dead code detection
 yarn cpd                                  # Code duplication check
 
@@ -166,7 +166,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 58. **Do not decorate query-builder factory methods with `@Log`.** If a repository method returns a Drizzle builder for callers to finish with `.get()` / `.all()` / `.execute()`, keep it plain and log the executed service or repository boundary instead.
 59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the Maestro flow, fixture, or test harness.
 60. **Database live-query boundaries are explicit.** React reads that render app database state use `useDatabaseLiveQuery`, not raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. Class service methods that perform top-level app database writes use `@InvalidateDatabaseLiveQuery()` so subscribers refresh after successful writes without manual invalidation inside business logic. Use the predicate form only to preserve real transaction ownership, such as nested writes that receive an existing `tx`. Do not add event names, groups, or metadata until profiling proves broad invalidation is a real rerender problem. Free-function mutations may invalidate directly only when converting to a service would create a one-method class.
-61. **Component prop budget: more than 8 props is a lint error.** Enforced repo-wide by the local `budgie/max-component-props` ESLint rule (`eslint-rules/max-component-props.mjs`). The `allow` list in `eslint.config.mjs` is a grandfather register that may only shrink — never add a file to it. Prop-relay components, `isVisible` props, and boolean mode props (`isRefund`) are prohibited; use children composition, compound components sharing a context, and explicit variant components instead. Full guide with the reference implementation: [docs/component-composition.md](docs/component-composition.md).
+61. **Component prop budget: more than 8 props is a lint error.** Enforced repo-wide by the local `budgie/max-component-props` rule loaded through Oxlint's JavaScript-plugin bridge (`eslint-rules/max-component-props.mjs`). The `allow` list in `.oxlintrc.json` is a grandfather register that may only shrink — never add a file to it. Prop-relay components, `isVisible` props, and boolean mode props (`isRefund`) are prohibited; use children composition, compound components sharing a context, and explicit variant components instead. Full guide with the reference implementation: [docs/component-composition.md](docs/component-composition.md).
 62. **No delegate-only hooks, no logic above components.** A hook whose body is one call to another hook plus constants (strings, an enum literal, a settings key) gets inlined into its consumers and deleted. Every layer of a hook chain must add real composition (state, refs, effects, 2+ composed sources with branching); single-consumer wrapper hooks are inlined into their component unless that forces a new lint disable. Component files contain imports, the inline `Props`, and the component — free functions with branching, hooks, and inline anonymous object types above a component belong in their proper module folders or in the child component that consumes them. See [docs/component-composition.md](docs/component-composition.md).
 
 ### Naming Conventions
@@ -497,13 +497,13 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 | **contracts** | Drizzle ORM, Zod, drizzle-zod                                                                                                                                 |
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                              |
 | **bank-sync** | ky HTTP client, date-fns                                                                                                                                      |
-| **Build**     | Yarn 4.17.1 (`node-modules` linker), Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.73 + ESLint 10 fallback |
+| **Build**     | Yarn 4.17.1 (`node-modules` linker), Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.73 JS bridge + 14-rule ESLint 10 fallback |
 
 ## Workflow
 
 1. **Fresh clone:** `yarn install`
 2. **After contracts changes:** `yarn build`
-3. **Before commit:** Husky runs `yarn ts`, then lint-staged applies Oxlint, the 60-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
+3. **Before commit:** Husky runs `yarn ts`, then lint-staged applies Oxlint, the 14-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
 4. **Before PR:** Run all validation commands
 5. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 

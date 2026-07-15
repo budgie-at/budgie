@@ -2,7 +2,7 @@ import { msg } from '@lingui/core/macro';
 
 import type { ArticleRegistryEntryInterface } from '../../../../blog/interface/article-registry-entry.interface';
 
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 
 export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'mint-shutdown-private-alternative',
@@ -25,4 +25,4 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     ]
 };
 
-/* eslint-enable lingui/no-unlocalized-strings */
+/* oxlint-enable lingui/no-unlocalized-strings */

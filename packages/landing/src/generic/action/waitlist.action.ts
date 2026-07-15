@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings -- Server action with error codes, not user-facing text */
+/* oxlint-disable lingui/no-unlocalized-strings -- Server action with error codes, not user-facing text */
 'use server';
 
 import { createClient } from 'redis';

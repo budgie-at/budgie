@@ -1,6 +1,32 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": [],
+  "jsPlugins": [
+    {
+      "name": "lingui",
+      "specifier": "eslint-plugin-lingui"
+    },
+    {
+      "name": "react-hooks-js",
+      "specifier": "eslint-plugin-react-hooks"
+    },
+    {
+      "name": "n",
+      "specifier": "eslint-plugin-n"
+    },
+    {
+      "name": "@rnw-community",
+      "specifier": "@rnw-community/eslint-plugin"
+    },
+    {
+      "name": "@stylistic",
+      "specifier": "@stylistic/eslint-plugin"
+    },
+    {
+      "name": "budgie",
+      "specifier": "./eslint-rules/max-component-props.mjs"
+    }
+  ],
   "categories": {
     "correctness": "off"
   },
@@ -9,6 +35,11 @@
   },
   "env": {
     "builtin": true
+  },
+  "settings": {
+    "node": {
+      "version": ">=22.0.0"
+    }
   },
   "ignorePatterns": [
     "**/.next/**",
@@ -568,6 +599,139 @@
     },
     {
       "files": [
+        "**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "@stylistic/lines-between-class-members": [
+          "error",
+          "always",
+          {
+            "exceptAfterSingleLine": true
+          }
+        ],
+        "budgie/max-component-props": [
+          "error",
+          {
+            "max": 8,
+            "allow": [
+              "packages/app/src/transaction/components/simple-quick-form-display/simple-quick-form-display.tsx",
+              "packages/app/src/transaction/components/quick-form-bottom-overlay/quick-form-bottom-overlay.tsx",
+              "packages/app/src/transaction/components/simple-quick-form/simple-quick-form.tsx",
+              "packages/app/src/transaction/components/transaction-picker/transaction-picker.tsx",
+              "packages/app/src/transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer.tsx",
+              "packages/app/src/transaction/components/transaction-amount-display/transaction-amount-display.tsx",
+              "packages/app/src/transaction/components/transaction-field-icons/transaction-field-icons.tsx",
+              "packages/app/src/transaction/interface/update-simple-transaction-page-props.interface.ts",
+              "packages/app/src/@generic/component/page-header/page-header.tsx",
+              "packages/app/src/@generic/component/searchable-page/searchable-page.tsx",
+              "packages/app/src/@generic/component/selector-card/selector-card.tsx",
+              "packages/app/src/transaction/components/simple-quick-form-controls/simple-quick-form-controls.tsx",
+              "packages/landing/src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx",
+              "packages/app/src/@generic/component/ai-translation-fields/ai-translation-fields.tsx",
+              "packages/app/src/@generic/component/card/card.tsx",
+              "packages/app/src/@generic/component/circle-icon/circle-icon.tsx",
+              "packages/app/src/@generic/component/empty-state/empty-state.tsx",
+              "packages/app/src/@generic/component/form-amount-input/form-amount-input.tsx",
+              "packages/app/src/@generic/component/form-page/form-page.tsx",
+              "packages/app/src/@generic/component/selector-grid-content/selector-grid-content.tsx",
+              "packages/app/src/account/component/account-action-card/account-action-card.tsx",
+              "packages/app/src/account/component/account-card-base/account-card-base.tsx",
+              "packages/app/src/ai/component/voice-review-footer/voice-review-footer.tsx",
+              "packages/app/src/auth/components/pin-form/pin-form.tsx",
+              "packages/app/src/budget/components/budget-progress-bar/budget-progress-bar.tsx",
+              "packages/app/src/category/components/category-select-content/category-select-content.tsx",
+              "packages/app/src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx",
+              "packages/app/src/settings/components/budget-setting-card/budget-setting-card.tsx",
+              "packages/app/src/tag/components/tags-select-content/tags-select-content.tsx",
+              "packages/app/src/transaction/components/split-entry-row/split-entry-row.tsx",
+              "packages/app/src/transaction/components/transaction-field-icon/transaction-field-icon.tsx",
+              "packages/app/src/transaction/components/transaction-keypad-button/transaction-keypad-button.tsx",
+              "packages/app/src/transaction/components/transaction-keypad/transaction-keypad.tsx",
+              "packages/landing/src/generic/component/blog-card/blog-card.tsx"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "packages/app/**/*.{ts,tsx}",
+        "packages/landing/**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "lingui/t-call-in-function": "error",
+        "lingui/no-single-variables-to-translate": "error",
+        "lingui/no-expression-in-message": "error",
+        "lingui/no-single-tag-to-translate": "error",
+        "lingui/no-trans-inside-trans": "error"
+      }
+    },
+    {
+      "files": [
+        "packages/app/**/*.{ts,tsx}",
+        "packages/landing/**/*.{ts,tsx}"
+      ],
+      "excludeFiles": [
+        "packages/app/**/*.selector.ts"
+      ],
+      "rules": {
+        "lingui/no-unlocalized-strings": [
+          "error",
+          {
+            "ignore": [
+              "^(?![A-Z])\\S+$",
+              "^[A-Z0-9_-]+$",
+              "rgba",
+              "rgb",
+              "^Inter_[0-9A-Z]+",
+              "^Arrow[A-Z]+",
+              "Tab",
+              "Enter",
+              "use client"
+            ],
+            "ignoreNames": [
+              {
+                "regex": {
+                  "pattern": "className",
+                  "flags": "i"
+                }
+              },
+              {
+                "regex": {
+                  "pattern": "icon",
+                  "flags": "i"
+                }
+              },
+              {
+                "regex": {
+                  "pattern": "sizes",
+                  "flags": "i"
+                }
+              },
+              {
+                "regex": {
+                  "pattern": "^d$",
+                  "flags": ""
+                }
+              }
+            ],
+            "ignoreFunctions": [
+              "format",
+              "cva",
+              "Log",
+              "getLogger",
+              "logger.log",
+              "logger.error",
+              "logger.debug",
+              "syncLogger.log",
+              "syncLogger.error"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
         "**/*.service.ts"
       ],
       "rules": {
@@ -608,7 +772,26 @@
         "**/*.ts"
       ],
       "rules": {
-        "node/no-exports-assign": "error"
+        "node/no-exports-assign": "error",
+        "n/hashbang": "error",
+        "n/no-deprecated-api": "error",
+        "n/no-extraneous-import": [
+          "error",
+          {
+            "allowModules": [
+              "@jest/globals"
+            ]
+          }
+        ],
+        "n/no-extraneous-require": "error",
+        "n/no-missing-require": "error",
+        "n/no-process-exit": "error",
+        "n/no-unpublished-bin": "error",
+        "n/no-unpublished-import": "error",
+        "n/no-unpublished-require": "error",
+        "n/no-unsupported-features/es-builtins": "error",
+        "n/no-unsupported-features/node-builtins": "error",
+        "n/process-exit-as-throw": "error"
       },
       "globals": {
         "__dirname": "readonly",
@@ -750,6 +933,21 @@
           "error",
           15
         ],
+        "@rnw-community/no-complex-jsx-logic": "error",
+        "react-hooks-js/static-components": "error",
+        "react-hooks-js/use-memo": "error",
+        "react-hooks-js/preserve-manual-memoization": "error",
+        "react-hooks-js/incompatible-library": "warn",
+        "react-hooks-js/immutability": "error",
+        "react-hooks-js/globals": "error",
+        "react-hooks-js/refs": "error",
+        "react-hooks-js/set-state-in-effect": "error",
+        "react-hooks-js/error-boundaries": "error",
+        "react-hooks-js/purity": "error",
+        "react-hooks-js/set-state-in-render": "error",
+        "react-hooks-js/unsupported-syntax": "warn",
+        "react-hooks-js/config": "error",
+        "react-hooks-js/gating": "error",
         "react/jsx-curly-brace-presence": [
           "error",
           {

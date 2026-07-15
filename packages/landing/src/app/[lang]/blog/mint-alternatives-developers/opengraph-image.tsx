@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import { t } from '@lingui/core/macro';
 
 import { createBlogOgImage } from '../../../../blog/component/blog-og-image/blog-og-image';

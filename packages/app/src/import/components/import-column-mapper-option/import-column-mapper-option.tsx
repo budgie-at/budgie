@@ -10,13 +10,13 @@ interface Props {
     readonly onSelect: () => void;
 }
 
-const baseClass = 'p-3xl rounded-xl flex-row items-center justify-between border'; // eslint-disable-line lingui/no-unlocalized-strings
-const selectedClass = 'bg-positive-background/10 border-positive-corner'; // eslint-disable-line lingui/no-unlocalized-strings
-const unselectedClass = 'border-secondary-corner bg-secondary-background/50'; // eslint-disable-line lingui/no-unlocalized-strings
+const baseClass = 'p-3xl rounded-xl flex-row items-center justify-between border'; // oxlint-disable-line lingui/no-unlocalized-strings
+const selectedClass = 'bg-positive-background/10 border-positive-corner'; // oxlint-disable-line lingui/no-unlocalized-strings
+const unselectedClass = 'border-secondary-corner bg-secondary-background/50'; // oxlint-disable-line lingui/no-unlocalized-strings
 
 export const ImportColumnMapperOption = ({ header, isSelected, onSelect }: Props) => {
     const pressableClassName = cn(baseClass, isSelected ? selectedClass : unselectedClass);
-    const textClassName = cn('text-primary text-sm', isSelected && 'font-semibold'); // eslint-disable-line lingui/no-unlocalized-strings
+    const textClassName = cn('text-primary text-sm', isSelected && 'font-semibold'); // oxlint-disable-line lingui/no-unlocalized-strings
 
     return (
         <Pressable onPress={onSelect} className={pressableClassName}>

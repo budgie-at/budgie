@@ -14,6 +14,6 @@ export const Icon = ({ icon, ...rest }: IconProps) => {
     const IconComponent: LucideIcon = ICONS[icon] ?? CircleQuestionMark;
     const IconToRender = styled(IconComponent, { className: { target: 'style' } });
 
-    // eslint-disable-next-line react-hooks/static-components
+    // oxlint-disable-next-line react-hooks-js/static-components
     return <IconToRender {...rest} />;
 };

@@ -311,6 +311,12 @@
 - **Builds**: nightly internal; weekly beta; EAS submit
 - **Observability**: symbolication, crash triage, auto-changelog (semantic-release)
 
+### Lint tooling performance
+
+Five equal-topology macOS arm64 runs using fresh processes, warm filesystem/dependency caches, and sequential Oxlint-first plus direct-root ESLint measured the parent at a 21.67 s / 1423.0 MiB median and the JavaScript-bridge configuration at 21.97 s / 1311.1 MiB. The bridge reduces ESLint ownership from 50 to 14 rules and median peak memory by 111.9 MiB, but Oxlint JavaScript plugins remain alpha and are not a native-speed substitute.
+
+- [ ] Replace bridged ESLint-plugin rules with native Oxlint rules as coverage lands.
+
 ## Risks & Mitigations
 - **Aggregator variance**: Abstract provider; CSV fallback; robust normalizer
 - **Price feeds**: Cache & batch; show timestamps; allow manual overrides offline

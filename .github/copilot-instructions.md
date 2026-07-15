@@ -42,7 +42,7 @@
     - Incremental workspaces write `node_modules/.cache/tsbuildinfo.json`, which Turbo caches; non-incremental workspaces can legitimately report that no configured output was produced
 
 4. **Linting**: `yarn lint`
-    - Runs type-aware Oxlint first, then the Turbo-cached 60-rule syntax-only ESLint fallback
+    - Runs type-aware Oxlint first, including its JavaScript-plugin bridge, then a direct single-process 14-rule syntax-only ESLint fallback
     - Oxlint owns the `typescript/no-unnecessary-condition` diagnostic; ESLint does not build a TypeScript program
     - `eslint-plugin-oxlint` builds its disabling layer from `.oxlintrc.json`, leaving ESLint responsible only for unsupported and project-specific rules
 
@@ -97,7 +97,7 @@
     - Verifies Lingui catalogs and Maestro selector assignments
     - Runs `yarn format:check` (Oxfmt)
     - Runs `yarn ts` (native TypeScript 7 checks)
-    - Runs `yarn lint` (type-aware Oxlint plus the 60-rule syntax-only ESLint fallback)
+    - Runs `yarn lint` (type-aware Oxlint plus the direct-root 14-rule syntax-only ESLint fallback)
     - Runs `yarn deadcode` (Knip)
     - Runs `yarn cpd` (jscpd)
     - Builds and runs the Vitest integration coverage workspaces
@@ -194,10 +194,11 @@
 
 ### Linting & Formatting
 
-- **.oxlintrc.json**: Primary type-aware Oxlint configuration for TypeScript, React, React Hooks, import rules, and `typescript/no-unnecessary-condition`
-- **eslint.config.mjs**: 60-rule syntax-only fallback for unsupported, semantically different, template-like Lingui, and project-local rules
+- **.oxlintrc.json**: Primary type-aware Oxlint configuration for native rules and JavaScript-bridge rules from Lingui, React Compiler, Node, React Native Web, Stylistic, and the local Budgie plugin
+    - Owns `typescript/no-unnecessary-condition` and the `budgie/max-component-props` grandfather `allow` list
+- **eslint.config.mjs**: 14-rule syntax-only fallback for rules that remain unsupported by native Oxlint and its JavaScript-plugin bridge
     - Uses the official `eslint-plugin-oxlint` companion generated from `.oxlintrc.json` to disable overlapping rules
-    - Runs through Turbo at the package level so repeat fallback checks are cached
+    - Runs once from the repository root after Oxlint; the root lint pipeline does not delegate the fallback to Turbo
 
 - **.oxfmtrc.json**: Oxfmt configuration (applied via lint-staged)
 - **.lintstagedrc.js**: Pre-commit hooks run `oxlint --type-aware --fix`, the ESLint fallback, `oxfmt --write`, and `sort-package-json`
@@ -230,7 +231,7 @@ RSS is the macOS `/usr/bin/time -l` maximum observed child-process RSS, not aggr
 
 - **turbo.json**: Defines task dependencies and caching
     - Tasks: `release`, `ts`, `lint:eslint`, `clear`, `build`, `test`, `test:coverage`, plus root `cpd` and `deadcode`
-    - Root `yarn lint` runs Oxlint directly first and then delegates only the residual `lint:eslint` topology to Turbo
+    - Package-level `lint:eslint` tasks remain available, while root `yarn lint` runs Oxlint and then one direct-root ESLint fallback process
     - PR CI enables remote caching through `TURBO_TEAM` and `TURBO_TOKEN`
 
 ## Development Workflow
@@ -272,7 +273,7 @@ RSS is the macOS `/usr/bin/time -l` maximum observed child-process RSS, not aggr
 3. Clear node_modules: `rm -rf node_modules && yarn install`
 
 **Issue**: A lint rule is not supported by Oxlint
-**Solution**: Keep syntax-only rules in the 60-rule ESLint fallback. The official companion disables rules covered by `.oxlintrc.json`; do not duplicate rule ownership between the linters. Keep `typescript/no-unnecessary-condition` in Oxlint.
+**Solution**: Keep only the 14 residual syntax-only rules in the ESLint fallback. Put supported plugin families in Oxlint's JavaScript-plugin bridge, and use the official companion to disable overlapping ESLint rules. Keep `typescript/no-unnecessary-condition` in Oxlint.
 
 The root `readme.md` backlog tracks restoring automated `UPPER_CASE` enum-member enforcement when Oxlint supports an equivalent naming-convention rule.
 

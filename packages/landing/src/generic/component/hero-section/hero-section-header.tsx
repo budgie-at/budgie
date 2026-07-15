@@ -69,7 +69,7 @@ export const HeroSectionHeader = () => (
             <WaitlistForm initialCount={2847} variant="hero" />
 
             <Button asChild className="rounded-full h-12 px-8 text-base bg-transparent hidden md:flex" size="lg" variant="outline">
-                {/* eslint-disable-next-line lingui/no-unlocalized-strings */}
+                {/* oxlint-disable-next-line lingui/no-unlocalized-strings */}
                 <Link href="https://github.com/budgie-at/budgie" rel="noopener noreferrer" target="_blank">
                     <GitBranch className="mr-2 size-4" />
                     <Trans>View Source Code</Trans>

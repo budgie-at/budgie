@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings -- Model URLs and filenames are not user-facing strings */
+/* oxlint-disable lingui/no-unlocalized-strings -- Model URLs and filenames are not user-facing strings */
 export const CHAT_MODEL_URL = 'https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf';
 export const CHAT_MODEL_FILENAME = 'Qwen3-1.7B-Q4_K_M.gguf';
 export const CHAT_CONTEXT_SIZE = 2048;
