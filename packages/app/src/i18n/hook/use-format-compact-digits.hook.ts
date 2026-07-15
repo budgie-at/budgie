@@ -1,4 +1,4 @@
-import { isNumber } from '@rnw-community/shared';
+import { isDefined, isNumber } from '@rnw-community/shared';
 
 import { BILLION, HUNDRED_THOUSAND, MILLION, THOUSAND } from '../constant/compact-thresholds.constant';
 import { useI18nContext } from '../context/i18n.context';
@@ -10,8 +10,9 @@ const COMPACT_SUFFIX_BY_DIVISOR = new Map<number, string>([
     [BILLION, 'B']
 ]);
 
-export const useFormatCompactDigits = (minimumCompactThreshold = HUNDRED_THOUSAND) => {
+export const useFormatCompactDigits = (minimumCompactThreshold?: number) => {
     const { intl } = useI18nContext();
+    const isConfigurableFormatting = isDefined(minimumCompactThreshold);
 
     return (value: number, symbol = '') => {
         if (!isNumber(value)) {
@@ -20,7 +21,7 @@ export const useFormatCompactDigits = (minimumCompactThreshold = HUNDRED_THOUSAN
 
         const absoluteValue = Math.abs(value);
 
-        if (absoluteValue < minimumCompactThreshold) {
+        if (absoluteValue < (minimumCompactThreshold ?? HUNDRED_THOUSAND)) {
             const formatted = intl.formatNumber(value, { maximumFractionDigits: 0 });
 
             return `${symbol}${formatted}`;
@@ -30,10 +31,16 @@ export const useFormatCompactDigits = (minimumCompactThreshold = HUNDRED_THOUSAN
         const initialCompactDivisor = COMPACT_DIVISORS.find(compactDivisor => absoluteValue >= compactDivisor) ?? THOUSAND;
         const roundedCompactValue = Math.round((absoluteValue / initialCompactDivisor) * 10) / 10;
         const compactDivisor =
-            roundedCompactValue >= THOUSAND && initialCompactDivisor < BILLION ? initialCompactDivisor * THOUSAND : initialCompactDivisor;
+            isConfigurableFormatting && roundedCompactValue >= THOUSAND && initialCompactDivisor < BILLION
+                ? initialCompactDivisor * THOUSAND
+                : initialCompactDivisor;
         const compactSuffix = COMPACT_SUFFIX_BY_DIVISOR.get(compactDivisor) ?? 'K';
-        const promotedRoundedCompactValue = Math.round((absoluteValue / compactDivisor) * 10) / 10;
-        const formatted = intl.formatNumber(promotedRoundedCompactValue, { maximumFractionDigits: 1 });
+        const compactValue = isConfigurableFormatting
+            ? Math.round((absoluteValue / compactDivisor) * 10) / 10
+            : absoluteValue / compactDivisor;
+        const formatted = intl.formatNumber(compactValue, {
+            maximumFractionDigits: isConfigurableFormatting || compactDivisor !== THOUSAND ? 1 : 0
+        });
 
         return `${sign}${symbol}${formatted}${compactSuffix}`;
     };
