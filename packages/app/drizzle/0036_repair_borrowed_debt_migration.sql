@@ -196,6 +196,7 @@ INNER JOIN transactions
     AND transactions.from_account_id = eligible_accounts.account_id
     AND transactions.to_account_id IS NOT NULL
     AND transactions.exchange_rate = 1
+    AND transactions.created_at < 1781257200
     AND transactions.deleted_at IS NULL
 INNER JOIN accounts cash_accounts
     ON cash_accounts.id = transactions.to_account_id
@@ -208,6 +209,7 @@ INNER JOIN transaction_entries cash_entries
     AND cash_entries.kind = 'PRIMARY'
     AND cash_entries.category_id IS NOT NULL
     AND cash_entries.category_source IS NOT NULL
+    AND cash_entries.created_at < 1781257200
     AND cash_entries.deleted_at IS NULL
     AND cash_entries.original_transaction_id IS NULL
 INNER JOIN transaction_entries debt_entries
@@ -216,6 +218,7 @@ INNER JOIN transaction_entries debt_entries
     AND debt_entries.type = 'CREDIT'
     AND debt_entries.kind = 'PRIMARY'
     AND debt_entries.category_id IS NULL
+    AND debt_entries.created_at < 1781257200
     AND debt_entries.deleted_at IS NULL
     AND debt_entries.original_transaction_id IS NULL
 LEFT JOIN debt_events existing_events
@@ -229,6 +232,7 @@ LEFT JOIN debt_events existing_events
     AND existing_events.base_exchange_rate IS debt_entries.base_exchange_rate
     AND existing_events.base_amount IS debt_entries.base_amount
     AND existing_events.created_at = debt_entries.created_at
+    AND existing_events.created_at < 1781257200
     AND existing_events.updated_at = debt_entries.updated_at
     AND existing_events.operated_at = transactions.operated_at
     AND existing_events.deleted_at IS NULL
