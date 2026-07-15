@@ -10338,6 +10338,10 @@ msgstr "La politica de privacidad de Plaid establece explicitamente que retienen
 msgid "Planned API for power users to build custom integrations"
 msgstr "API planificada para usuarios avanzados que quieran crear integraciones personalizadas"
 
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "Please enter a valid email address."
+msgstr "Introduzca una dirección de correo electrónico válida."
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Please report it responsibly by emailing security@budgie.at"
 msgstr ""
@@ -11505,10 +11509,6 @@ msgstr "Algunas funciones avanzadas aún en desarrollo"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Some applications genuinely need server capabilities, like sending emails or processing payments. Local-first is about where data lives and who owns it, not about eliminating servers entirely. A local-first application can use servers for specific capabilities while keeping user data local. The key is that the server handles actions, not storage of personal data."
 msgstr "Algunas aplicaciones genuinamente necesitan capacidades de servidor, como enviar correos electrónicos o procesar pagos. Local-first trata sobre dónde viven los datos y quién los posee, no sobre eliminar servidores por completo. Una aplicación local-first puede usar servidores para capacidades específicas mientras mantiene los datos del usuario localmente. La clave es que el servidor gestiona acciones, no almacenamiento de datos personales."
-
-#: src/generic/component/waitlist-form/waitlist-form.tsx
-msgid "Something went wrong. Please try again."
-msgstr "Algo salió mal. Por favor, inténtalo de nuevo."
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Sometimes a sync drifts — a transaction reconciles late, a refund posts wrong. The naive fix is a full re-sync, which wipes your edits. Budgie's window picker re-pulls only the slice you ask for."
@@ -13550,6 +13550,14 @@ msgstr "Recopilamos informes de fallos anonimizados a traves de los mecanismos d
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "We could have integrated Plaid. It would have been easier for us to implement and more convenient for users. One button click and your transactions appear automatically."
 msgstr "Podriamos haber integrado Plaid. Habria sido mas facil de implementar para nosotros y mas comodo para los usuarios. Un clic y tus transacciones aparecen automaticamente."
+
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "We couldn't confirm your signup. Please try again."
+msgstr "No pudimos confirmar su inscripción. Inténtelo de nuevo."
+
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "We couldn't save your email. Please try again."
+msgstr "No pudimos guardar su dirección de correo electrónico. Inténtelo de nuevo."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "We do not sell, trade, or rent your personal information to third parties. We may share limited information only in the following circumstances:"
