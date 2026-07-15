@@ -67,7 +67,25 @@
         "getter-return": "error",
         "grouped-accessor-pairs": "error",
         "guard-for-in": "error",
-        "id-length": "off",
+        "id-length": [
+          "error",
+          {
+            "exceptions": [
+              "x",
+              "y",
+              "z",
+              "i",
+              "j",
+              "e",
+              "_",
+              "w",
+              "h",
+              "t",
+              "X"
+            ],
+            "checkGeneric": false
+          }
+        ],
         "id-match": "error",
         "init-declarations": "off",
         "logical-assignment-operators": "error",
@@ -326,6 +344,10 @@
         "no-prototype-builtins": "error",
         "no-redeclare": "error",
         "no-regex-spaces": "error",
+        "no-restricted-exports": [
+          "error",
+          {}
+        ],
         "no-restricted-globals": "error",
         "no-restricted-imports": "error",
         "no-restricted-properties": "error",
@@ -349,6 +371,12 @@
         "no-unmodified-loop-condition": "error",
         "no-unneeded-ternary": "error",
         "no-unreachable": "error",
+        "no-unreachable-loop": [
+          "error",
+          {
+            "ignore": []
+          }
+        ],
         "no-unsafe-finally": "error",
         "no-unsafe-negation": "error",
         "no-unsafe-optional-chaining": "error",
@@ -368,6 +396,7 @@
           }
         ],
         "no-use-before-define": "error",
+        "no-useless-assignment": "error",
         "no-useless-backreference": "error",
         "no-useless-call": "error",
         "no-useless-catch": "error",
@@ -557,6 +586,7 @@
         "**/*.{ts,tsx}"
       ],
       "rules": {
+        "import/export": "error",
         "import/namespace": "off",
         "import/default": "off",
         "import/no-named-as-default": "off",
@@ -667,6 +697,7 @@
       "rules": {
         "promise/always-return": "error",
         "promise/no-return-wrap": "error",
+        "promise/no-return-in-finally": "warn",
         "promise/param-names": "error",
         "promise/catch-or-return": "error",
         "promise/no-nesting": "warn",
@@ -712,6 +743,7 @@
         ],
         "react/no-unsafe": "off",
         "react/react-in-jsx-scope": "off",
+        "react/require-render-return": "error",
         "react/rules-of-hooks": "error",
         "react/exhaustive-deps": "warn",
         "max-statements": [

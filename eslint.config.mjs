@@ -32,11 +32,16 @@ const compatibleReactRecommendedConfig = {
     ...reactPlugin.configs.flat.recommended,
     plugins: { react: compatibleReactPlugin }
 };
-const residualRuleIds = `no-restricted-exports no-unreachable-loop no-useless-assignment import/export promise/no-return-in-finally react/require-render-return @stylistic/lines-between-class-members budgie/max-component-props lingui/t-call-in-function lingui/no-single-tag-to-translate lingui/no-single-variables-to-translate lingui/no-trans-inside-trans lingui/no-expression-in-message lingui/no-unlocalized-strings @rnw-community/no-complex-jsx-logic consistent-this id-denylist id-length no-restricted-syntax require-atomic-updates @typescript-eslint/member-ordering n/hashbang n/no-deprecated-api n/no-extraneous-import n/no-extraneous-require n/no-missing-require n/no-process-exit n/no-unpublished-bin n/no-unpublished-import n/no-unpublished-require n/no-unsupported-features/es-builtins n/no-unsupported-features/node-builtins n/process-exit-as-throw camelcase no-invalid-this no-octal no-octal-escape no-undef-init nonblock-statement-body-position newline-before-return import/order react/jsx-uses-react react/jsx-uses-vars react/no-deprecated react-hooks/static-components react-hooks/use-memo react-hooks/component-hook-factories react-hooks/preserve-manual-memoization react-hooks/incompatible-library react-hooks/immutability react-hooks/globals react-hooks/refs react-hooks/set-state-in-effect react-hooks/error-boundaries react-hooks/purity react-hooks/set-state-in-render react-hooks/unsupported-syntax react-hooks/config react-hooks/gating sort-imports`.split(' ');
-const oxlintFallbackConfigs = eslintPluginOxlint.buildFromOxlintConfigFile(fileURLToPath(new URL('./.oxlintrc.json', import.meta.url))).map(config => ({
-    ...config,
-    rules: Object.fromEntries(Object.entries(config.rules ?? {}).filter(([ruleId]) => !residualRuleIds.includes(ruleId)))
-}));
+const residualRuleIds =
+    `@stylistic/lines-between-class-members budgie/max-component-props lingui/t-call-in-function lingui/no-single-tag-to-translate lingui/no-single-variables-to-translate lingui/no-trans-inside-trans lingui/no-expression-in-message lingui/no-unlocalized-strings @rnw-community/no-complex-jsx-logic consistent-this id-denylist no-restricted-syntax require-atomic-updates @typescript-eslint/member-ordering n/hashbang n/no-deprecated-api n/no-extraneous-import n/no-extraneous-require n/no-missing-require n/no-process-exit n/no-unpublished-bin n/no-unpublished-import n/no-unpublished-require n/no-unsupported-features/es-builtins n/no-unsupported-features/node-builtins n/process-exit-as-throw camelcase no-invalid-this no-octal no-octal-escape no-undef-init newline-before-return import/order react/jsx-uses-react react/jsx-uses-vars react/no-deprecated react-hooks/static-components react-hooks/use-memo react-hooks/component-hook-factories react-hooks/preserve-manual-memoization react-hooks/incompatible-library react-hooks/immutability react-hooks/globals react-hooks/refs react-hooks/set-state-in-effect react-hooks/error-boundaries react-hooks/purity react-hooks/set-state-in-render react-hooks/unsupported-syntax react-hooks/config react-hooks/gating sort-imports`.split(
+        ' '
+    );
+const oxlintFallbackConfigs = eslintPluginOxlint
+    .buildFromOxlintConfigFile(fileURLToPath(new URL('./.oxlintrc.json', import.meta.url)))
+    .map(config => ({
+        ...config,
+        rules: Object.fromEntries(Object.entries(config.rules ?? {}).filter(([ruleId]) => !residualRuleIds.includes(ruleId)))
+    }));
 
 export default defineConfig(
     {
@@ -109,11 +114,9 @@ export default defineConfig(
             'capitalized-comments': 'off',
             'arrow-body-style': ['error', 'as-needed'],
             curly: ['error', 'all'],
-            'nonblock-statement-body-position': ['error', 'below'],
             'multiline-ternary': 'off',
             'max-lines-per-function': ['error', { max: 85, skipBlankLines: true, skipComments: true }],
             'max-statements': ['error', { max: 12 }, { ignoreTopLevelFunctions: true }],
-            'id-length': ['error', { exceptions: ['x', 'y', 'z', 'i', 'j', 'e', '_', 'w', 'h', 't'] }],
             'max-params': 'off',
             'operator-linebreak': 'off',
             'newline-before-return': 'error',
@@ -541,6 +544,18 @@ export default defineConfig(
             'func-names': 'off',
             'promise/no-nesting': 'off',
             '@typescript-eslint/no-magic-numbers': 'warn'
+        }
+    },
+    {
+        files: ['**/*.{ts,tsx}'],
+        rules: {
+            'id-length': 'off',
+            'import/export': 'off',
+            'no-restricted-exports': 'off',
+            'no-unreachable-loop': 'off',
+            'no-useless-assignment': 'off',
+            'promise/no-return-in-finally': 'off',
+            'react/require-render-return': 'off'
         }
     }
 );
