@@ -31,6 +31,8 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
 
             - name: Setup Node
               uses: actions/setup-node@v6
@@ -90,7 +92,7 @@ jobs:
     code-quality:
         name: Code quality checks
         runs-on: [self-hosted, linux-tiered, linux-large]
-        timeout-minutes: 90
+        timeout-minutes: 30
         permissions:
             contents: read
             id-token: write
@@ -99,7 +101,7 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v5
               with:
-                  fetch-depth: 0
+                  persist-credentials: false
 
             - name: Setup Node
               uses: actions/setup-node@v6
@@ -142,198 +144,6 @@ jobs:
             - name: Verify generated files are committed
               run: git diff --exit-code
 
-            - name: Benchmark baseline and current toolchains
-              shell: bash
-              env:
-                  CURRENT_SHA: ${{ github.event.pull_request.head.sha }}
-              run: |
-                  set -euo pipefail
-                  BASELINE_SHA=1f07afc9205b25bfcbc4d2d03e12311e5896cedf
-                  [[ "$CURRENT_SHA" =~ ^[0-9a-f]{40}$ ]]
-                  BENCH_ROOT=$(mktemp -d "$RUNNER_TEMP/oxc-bench.XXXXXX")
-                  baseline="$BENCH_ROOT/baseline"
-                  current="$BENCH_ROOT/current"
-                  artifacts="$GITHUB_WORKSPACE/.ci-artifacts/oxc-toolchain"
-                  cleanup() {
-                      original_status=$?
-                      set +e
-                      git worktree remove --force "$baseline" >/dev/null 2>&1 || true
-                      git worktree remove --force "$current" >/dev/null 2>&1 || true
-                      git worktree prune >/dev/null 2>&1 || true
-                      rm -rf "$BENCH_ROOT"
-                      return "$original_status"
-                  }
-                  trap cleanup EXIT
-                  trap 'exit 130' INT
-                  trap 'exit 143' TERM
-                  git worktree prune
-                  git cat-file -e "$BASELINE_SHA^{commit}"
-                  if ! git cat-file -e "$CURRENT_SHA^{commit}" 2>/dev/null; then
-                      git fetch --no-tags origin "$CURRENT_SHA"
-                  fi
-                  git cat-file -e "$CURRENT_SHA^{commit}"
-                  git worktree add --detach "$baseline" "$BASELINE_SHA"
-                  git worktree add --detach "$current" "$CURRENT_SHA"
-                  rm -rf "$artifacts"
-                  mkdir -p "$artifacts"
-                  assert_turbo_summaries() {
-                      output=$1 expected=$2
-                      node - "$output" "$expected" <<'NODE'
-                  const fs = require('node:fs');
-                  const output = fs.readFileSync(process.argv[2], 'utf8');
-                  const expected = process.argv[3].split(',').map(pair => pair.split(':').map(Number));
-                  const tasks = [...output.matchAll(/Tasks:\s+(\d+) successful,\s+(\d+) total/g)].map(match => [Number(match[1]), Number(match[2])]);
-                  const cached = [...output.matchAll(/Cached:\s+(\d+) cached,\s+(\d+) total/g)].map(match => [Number(match[1]), Number(match[2])]);
-                  if (tasks.length !== expected.length || cached.length !== expected.length) process.exit(1);
-                  expected.forEach(([total, cachedCount], index) => {
-                      if (tasks[index][0] !== total || tasks[index][1] !== total || cached[index][0] !== cachedCount || cached[index][1] !== total) process.exit(1);
-                  });
-                  NODE
-                  }
-                  prepare_checkout() {
-                      checkout=$1
-                      (
-                          cd "$checkout"
-                          unset TURBO_API TURBO_TEAM TURBO_TOKEN TURBO_REMOTE_CACHE_SIGNATURE_KEY
-                          corepack enable
-                          test "$(yarn --version)" = 4.17.1
-                          yarn install --immutable
-                          yarn build
-                      )
-                  }
-                  run_sample() {
-                      revision=$1 checkout=$2 workload=$3 sample=$4 cache_policy=$5 command=$6 expected=$7
-                      cache_dir="$BENCH_ROOT/cache/$revision/$workload"
-                      sample_id="benchmark-${revision}-${workload}-${sample}"
-                      stdout="$artifacts/${sample_id}.stdout"
-                      time_output="$artifacts/${sample_id}.time.txt"
-                      status_output="$artifacts/${sample_id}.status"
-                      if [ "$cache_policy" = uncached ]; then
-                          rm -rf "$cache_dir"
-                          force=true
-                      else
-                          force=false
-                      fi
-                      set +e
-                      (
-                          cd "$checkout"
-                          unset TURBO_API TURBO_TEAM TURBO_TOKEN TURBO_REMOTE_CACHE_SIGNATURE_KEY
-                          if [ "$force" = true ]; then
-                              /usr/bin/time -v -o "$time_output" env FORCE_COLOR=0 TURBO_UI=stream TURBO_CACHE=local:rw TURBO_CACHE_DIR="$cache_dir" TURBO_FORCE=true bash -o pipefail -c "$command"
-                          else
-                              /usr/bin/time -v -o "$time_output" env FORCE_COLOR=0 TURBO_UI=stream TURBO_CACHE=local:rw TURBO_CACHE_DIR="$cache_dir" bash -o pipefail -c "$command"
-                          fi
-                      ) > "$stdout" 2>&1
-                      status=$?
-                      set -e
-                      printf '%s\n' "$status" > "$status_output"
-                      test "$status" -eq 0
-                      assert_turbo_summaries "$stdout" "$expected"
-                  }
-                  prime_cache() {
-                      revision=$1 checkout=$2
-                      cache_dir="$BENCH_ROOT/cache/$revision/cache-assisted-validation"
-                      prime_output="$artifacts/prime-${revision}-cache-assisted-validation.stdout"
-                      prime_status_output="$artifacts/prime-${revision}-cache-assisted-validation.status"
-                      rm -rf "$cache_dir"
-                      set +e
-                      (
-                          cd "$checkout"
-                          unset TURBO_API TURBO_TEAM TURBO_TOKEN TURBO_REMOTE_CACHE_SIGNATURE_KEY TURBO_FORCE
-                          env FORCE_COLOR=0 TURBO_UI=stream TURBO_CACHE=local:rw TURBO_CACHE_DIR="$cache_dir" bash -o pipefail -c 'yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd'
-                      ) > "$prime_output" 2>&1
-                      prime_status=$?
-                      set -e
-                      printf '%s\n' "$prime_status" > "$prime_status_output"
-                      test "$prime_status" -eq 0
-                      assert_turbo_summaries "$prime_output" '12:0,8:0'
-                  }
-                  measure_revision() {
-                      revision=$1 checkout=$2
-                      for sample in 1 2 3 4 5; do
-                          run_sample "$revision" "$checkout" uncached-lint "$sample" uncached 'yarn lint' '8:0'
-                          run_sample "$revision" "$checkout" uncached-validation "$sample" uncached 'yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd' '12:0,8:0'
-                      done
-                      prime_cache "$revision" "$checkout"
-                      for sample in 1 2 3 4 5; do
-                          run_sample "$revision" "$checkout" cache-assisted-validation "$sample" cache-assisted 'yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd' '12:12,8:8'
-                      done
-                  }
-                  prepare_checkout "$baseline"
-                  prepare_checkout "$current"
-                  measure_revision baseline "$baseline"
-                  measure_revision current "$current"
-                  test "$(find "$artifacts" -type f -name 'benchmark-*.stdout' | wc -l | tr -d ' ')" = 30
-                  test "$(find "$artifacts" -type f -name 'benchmark-*.time.txt' | wc -l | tr -d ' ')" = 30
-                  test "$(find "$artifacts" -type f -name 'benchmark-*.status' | wc -l | tr -d ' ')" = 30
-                  test "$(find "$artifacts" -type f -name 'prime-*.stdout' | wc -l | tr -d ' ')" = 2
-                  test "$(find "$artifacts" -type f -name 'prime-*.status' | wc -l | tr -d ' ')" = 2
-                  for stdout in "$artifacts"/benchmark-*.stdout; do
-                      test -f "${stdout%.stdout}.time.txt"
-                      test -f "${stdout%.stdout}.status"
-                  done
-                  for prime_stdout in "$artifacts"/prime-*.stdout; do
-                      test -f "${prime_stdout%.stdout}.status"
-                  done
-                  BASELINE_SHA="$BASELINE_SHA" CURRENT_SHA="$CURRENT_SHA" ARTIFACTS="$artifacts" node <<'NODE' >> "$GITHUB_STEP_SUMMARY"
-                  const fs = require('node:fs');
-                  const path = require('node:path');
-                  const revisions = [['baseline', process.env.BASELINE_SHA], ['current', process.env.CURRENT_SHA]];
-                  const workloads = [
-                      ['uncached-lint', '`yarn lint`', 'remote disabled; unique local cache cleared before every sample; `TURBO_FORCE=true`'],
-                      ['uncached-validation', '`yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd`', 'remote disabled; unique local cache cleared before every sample; `TURBO_FORCE=true`'],
-                      ['cache-assisted-validation', '`yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd`', 'remote disabled; unique local cache primed once; measured local-cache hits']
-                  ];
-                  const parseElapsedSeconds = content => {
-                      const match = content.match(/Elapsed \(wall clock\) time.*\):\s*([0-9:.]+)\s*$/m);
-                      if (!match) throw new Error('Missing elapsed time');
-                      return match[1].split(':').reduce((seconds, part) => seconds * 60 + Number(part), 0);
-                  };
-                  const parseMaximumRss = content => {
-                      const match = content.match(/Maximum resident set size \(kbytes\):\s*(\d+)/);
-                      if (!match) throw new Error('Missing maximum RSS');
-                      return Number(match[1]);
-                  };
-                  const rows = [];
-                  for (const [revision, sha] of revisions) {
-                      for (const [workload, command, cachePolicy] of workloads) {
-                          const elapsed = [];
-                          const rss = [];
-                          let successful = 0;
-                          for (let sample = 1; sample <= 5; sample += 1) {
-                              const prefix = path.join(process.env.ARTIFACTS, `benchmark-${revision}-${workload}-${sample}`);
-                              const status = Number(fs.readFileSync(`${prefix}.status`, 'utf8').trim());
-                              if (status === 0) successful += 1;
-                              const metrics = fs.readFileSync(`${prefix}.time.txt`, 'utf8');
-                              elapsed.push(parseElapsedSeconds(metrics));
-                              rss.push(parseMaximumRss(metrics));
-                          }
-                          if (successful !== 5 || elapsed.length !== 5 || rss.length !== 5) throw new Error(`Incomplete samples for ${revision}/${workload}`);
-                          const medianElapsed = elapsed.sort((left, right) => left - right)[2];
-                          const medianRss = rss.sort((left, right) => left - right)[2];
-                          rows.push(`| ${revision} (${sha}) | ${workload} | ${command} | ${cachePolicy} | ${successful}/5 successful | ${medianElapsed.toFixed(2)} s | ${(medianRss / 1024).toFixed(1)} MiB |`);
-                      }
-                  }
-                  console.log('### Baseline/current toolchain benchmark');
-                  console.log('');
-                  console.log(`Node ${process.version}; Yarn 4.17.1; ${process.platform} ${process.arch}`);
-                  console.log('');
-                  console.log('| Revision | Workload | Command | Cache policy | Status | Median wall time | Median maximum observed child-process RSS |');
-                  console.log('| --- | --- | --- | --- | --- | ---: | ---: |');
-                  console.log(rows.join('\n'));
-                  console.log('');
-                  console.log('Memory values are GNU time maximum observed child-process RSS for the measured command, not aggregate process-tree RSS. Each median is sorted sample index 2 from exactly five successful samples. Lint runs global type-aware Oxlint followed by the eight-package ESLint fallback.');
-                  NODE
-
-            - name: Upload Oxc benchmark
-              if: always()
-              uses: actions/upload-artifact@v4
-              with:
-                  name: oxc-toolchain-benchmark
-                  path: .ci-artifacts/oxc-toolchain/
-                  if-no-files-found: warn
-                  include-hidden-files: true
-
             - name: Upload coverage reports to Codecov
               uses: codecov/codecov-action@v5
               with:
@@ -364,6 +174,8 @@ jobs:
 
             - name: Checkout repository
               uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
 
             - name: Setup Node
               uses: actions/setup-node@v6
@@ -371,7 +183,7 @@ jobs:
                   node-version: 22.x
 
             - name: Setup EAS
-              uses: expo/expo-github-action@v8
+              uses: expo/expo-github-action@v9
               with:
                   eas-version: ${{ env.EAS_CLI_VERSION }}
                   token: ${{ secrets.EXPO_TOKEN }}
@@ -416,6 +228,8 @@ jobs:
             CCACHE_NOHASHDIR: 'true'
         steps:
             - uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
 
             - name: Setup macOS toolchain PATH
               shell: bash
@@ -449,7 +263,7 @@ jobs:
               run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
 
             - name: Setup EAS
-              uses: expo/expo-github-action@v8
+              uses: expo/expo-github-action@v9
               with:
                   eas-version: ${{ env.EAS_CLI_VERSION }}
                   token: ${{ secrets.EXPO_TOKEN }}
@@ -693,6 +507,8 @@ jobs:
             EXPO_PUBLIC_AI_DISABLE: 'true'
         steps:
             - uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
 
             - name: Select Xcode 26.4.1
               run: |

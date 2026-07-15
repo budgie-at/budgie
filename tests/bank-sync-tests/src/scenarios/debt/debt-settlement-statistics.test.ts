@@ -10,6 +10,7 @@ import {
     transactionRepository
 } from '@app/@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
+import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { accountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import { accountService } from '@app/account/service/account.service';
 import { buildDebtAccountProgressSummary } from '@app/account/utils/build-debt-account-progress-summary.util';
@@ -530,15 +531,8 @@ describe('debt settlement statistics', () => {
 
     it('returns canonical borrowed progress in debt account details', async () => {
         const { debtAccount } = await createBorrowedDebtSettlementScenario();
-        const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
 
-        expect(progress).toBeDefined();
-
-        if (!isDefined(progress)) {
-            return;
-        }
-
-        expectDebtProgressSummary(progress, 13_109 * PRECISION, 2_000 * PRECISION, 15_109 * PRECISION, 13.24);
+        expectBorrowedDebtSettlementProgress(debtAccount.id);
     });
 
     it('summarizes borrowed debt after transfer repayment and additional borrowed income', async () => {
@@ -558,17 +552,10 @@ describe('debt settlement statistics', () => {
         await transactionDebtSettlementService.attach({ transactionId: additionalBorrowing.id, debtAccountId: debtAccount.id });
 
         const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.BORROW);
-        const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
 
         expectDebtProgressSummary(summary, 13_109 * PRECISION, 2_000 * PRECISION, 15_109 * PRECISION, 13.24);
         expectBorrowedDebtSettlementHomeRow(debtAccount.id, cashAccount.instrumentId);
-        expect(progress).toBeDefined();
-
-        if (!isDefined(progress)) {
-            return;
-        }
-
-        expectDebtProgressSummary(progress, 13_109 * PRECISION, 2_000 * PRECISION, 15_109 * PRECISION, 13.24);
+        expectBorrowedDebtSettlementProgress(debtAccount.id);
     });
 
     it('returns canonical borrowed progress when the opening adjustment is already covered', () => {
@@ -881,7 +868,7 @@ const expectTargetBackedDebtProgress = (
     const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
     const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
 
-    expectDebtProgressSummary(summary, 58_500 * PRECISION, 6_000 * PRECISION, 64_500 * PRECISION, 9.3);
+    expectDebtProgressSummary(summary, convertToMicroUnits(58_500), convertToMicroUnits(6_000), convertToMicroUnits(64_500), 9.3);
     expect(row).toBeDefined();
     expect(progress).toBeDefined();
 
@@ -889,10 +876,10 @@ const expectTargetBackedDebtProgress = (
         return;
     }
 
-    expectDebtProgressSummary(progress, 58_500 * PRECISION, 6_000 * PRECISION, 64_500 * PRECISION, 9.3);
-    expect(row.debtOutstandingAmount).toBe(58_500 * PRECISION);
-    expect(row.debtPaidAmount).toBe(6_000 * PRECISION);
-    expect(row.debtTotalAmount).toBe(64_500 * PRECISION);
+    expectDebtProgressSummary(progress, convertToMicroUnits(58_500), convertToMicroUnits(6_000), convertToMicroUnits(64_500), 9.3);
+    expect(row.debtOutstandingAmount).toBe(convertToMicroUnits(58_500));
+    expect(row.debtPaidAmount).toBe(convertToMicroUnits(6_000));
+    expect(row.debtTotalAmount).toBe(convertToMicroUnits(64_500));
     expect(row.debtProgressPercentage).toBe(9.3);
 };
 
@@ -905,10 +892,22 @@ const expectBorrowedDebtSettlementHomeRow = (accountId: number, instrumentId: nu
         return;
     }
 
-    expect(row.debtOutstandingAmount).toBe(13_109 * PRECISION);
-    expect(row.debtPaidAmount).toBe(2_000 * PRECISION);
-    expect(row.debtTotalAmount).toBe(15_109 * PRECISION);
+    expect(row.debtOutstandingAmount).toBe(convertToMicroUnits(13_109));
+    expect(row.debtPaidAmount).toBe(convertToMicroUnits(2_000));
+    expect(row.debtTotalAmount).toBe(convertToMicroUnits(15_109));
     expect(row.debtProgressPercentage).toBe(13.24);
+};
+
+const expectBorrowedDebtSettlementProgress = (accountId: number): void => {
+    const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(accountId).get();
+
+    expect(progress).toBeDefined();
+
+    if (!isDefined(progress)) {
+        return;
+    }
+
+    expectDebtProgressSummary(progress, convertToMicroUnits(13_109), convertToMicroUnits(2_000), convertToMicroUnits(15_109), 13.24);
 };
 
 const setupUsdDebtExchangeRateScenario = async () => {

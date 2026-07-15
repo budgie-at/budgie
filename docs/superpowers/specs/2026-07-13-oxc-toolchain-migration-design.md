@@ -1,7 +1,9 @@
 # Oxc Toolchain Migration Design
 
 Date: 2026-07-13  
-Status: Approved — reviewer corrections integrated
+Status: Superseded on 2026-07-14 by the [Untyped ESLint Fallback Design](2026-07-14-remove-typed-eslint-fallback-design.md)
+
+The final implementation has 38 root development dependencies and a 60-rule syntax-only ESLint fallback. Oxlint owns `typescript/no-unnecessary-condition`. The remaining content is preserved as the historical approved migration design.
 
 ## Decision
 
@@ -36,7 +38,7 @@ The migration is tandem-first. The current ESLint and Prettier baseline remains 
 | Prettier replacement; rimraf; rnsec; sort-package-json; Turbo | Oxfmt `0.58.0`; `6.1.3`; `1.3.0`; `4.0.0`; `2.10.4` |
 | canonical `typescript`; `typescript-eslint` | `npm:@typescript/typescript6@6.0.2`; `8.63.0` |
 
-Add `@eslint/compat@2.1.0`, `oxlint@1.73.0`, `@oxlint/migrate@1.73.0`, `eslint-plugin-oxlint@1.73.0`, `oxlint-tsgolint@0.24.0`, and `@typescript/native@npm:typescript@7.0.2`. The final normal root development-dependency count is 39. Nx stays transitive at `22.7.5`; do not add it directly.
+Add `@eslint/compat@2.1.0`, `oxlint@1.73.0`, `@oxlint/migrate@1.73.0`, `eslint-plugin-oxlint@1.73.0`, `oxlint-tsgolint@0.24.0`, and `@typescript/native@npm:typescript@7.0.2`. The final normal root development-dependency count is 38. Nx stays transitive at `22.7.5`; do not add it directly.
 
 After install, run `yarn explain peer-requirements`. If direct root `babel-jest@30.4.1` leaves `@babel/core` unsatisfied, add root `@babel/core@7.29.7`. Do not select Babel 8 or modify Expo Babel configuration.
 

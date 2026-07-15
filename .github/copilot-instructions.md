@@ -101,7 +101,6 @@
     - Runs `yarn deadcode` (Knip)
     - Runs `yarn cpd` (jscpd)
     - Builds and runs the Vitest integration coverage workspaces
-    - Benchmarks the baseline and migrated toolchains, records elapsed time and maximum RSS, and uploads the `oxc-toolchain-benchmark` artifact
     - Uploads coverage to Codecov
 
 3. **eas-update-preview** (hosted `ubuntu-24.04`, mobile-impact changes only):
@@ -131,7 +130,7 @@
 
 ### Root Directory
 
-```
+```text
 /
 ├── packages/
 │   ├── app/              # React Native (Expo) mobile app
@@ -232,7 +231,7 @@ RSS is the macOS `/usr/bin/time -l` maximum observed child-process RSS, not aggr
 - **turbo.json**: Defines task dependencies and caching
     - Tasks: `release`, `ts`, `lint:eslint`, `clear`, `build`, `test`, `test:coverage`, plus root `cpd` and `deadcode`
     - Root `yarn lint` runs Oxlint directly first and then delegates only the residual `lint:eslint` topology to Turbo
-    - PR CI enables remote caching through `TURBO_TEAM` and `TURBO_TOKEN`; the isolated benchmark worktrees explicitly unset both variables
+    - PR CI enables remote caching through `TURBO_TEAM` and `TURBO_TOKEN`
 
 ## Development Workflow
 

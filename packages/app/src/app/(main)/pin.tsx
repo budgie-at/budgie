@@ -1,7 +1,9 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import React, { useEffect, useEffectEvent, useState } from 'react';
+import React, { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { View } from 'react-native';
+
+import { emptyFn } from '@rnw-community/shared';
 
 import { LoadingOverlay } from '../../@generic/component/loading-overlay/loading-overlay';
 import { PinForm } from '../../auth/components/pin-form/pin-form';
@@ -18,60 +20,56 @@ interface AuthFormStateInterface {
     isAutomaticBiometricPending: boolean;
 }
 
+const INITIAL_AUTH_FORM_STATE: AuthFormStateInterface = {
+    input: '',
+    error: null,
+    isLoading: false,
+    hasAttemptedBiometric: false,
+    isAutomaticBiometricPending: false
+};
+
 // eslint-disable-next-line max-statements -- PIN screen orchestrates unlock and biometric retry
 export default function PinScreen() {
     const { t } = useLingui();
 
-    const { setIsUnlocked } = useAuthContext();
-    const { isFaceIdAvailable } = useAuthContext();
-    const isBiometricEnabled = useSetting('isBiometricEnabled');
+    const { isFaceIdAvailable, setIsUnlocked } = useAuthContext();
+    const canUseBiometric = useSetting('isBiometricEnabled') && isFaceIdAvailable;
 
-    const canUseBiometric = isFaceIdAvailable && isBiometricEnabled;
+    const [formState, setFormState] = useState(INITIAL_AUTH_FORM_STATE);
+    const isPinScreenActiveRef = useRef(false);
 
-    const [formState, setFormState] = useState<AuthFormStateInterface>({
-        input: '',
-        error: null,
-        isLoading: false,
-        hasAttemptedBiometric: false,
-        isAutomaticBiometricPending: false
-    });
+    const updateForm = (updates: Partial<AuthFormStateInterface>) => void setFormState(previousState => ({ ...previousState, ...updates }));
 
-    const updateForm = (updates: Partial<AuthFormStateInterface>) => {
-        setFormState(prev => ({ ...prev, ...updates }));
-    };
-
-    const addDigit = (digit: string) => {
-        if (formState.input.length < PIN_LENGTH) {
-            updateForm({ input: formState.input + digit, error: null });
-        }
-    };
-
-    const deleteDigit = () => {
-        updateForm({ input: formState.input.slice(0, -1), error: null });
-    };
-
-    const handlePinSubmit = async () => {
-        if (formState.input.length < PIN_LENGTH) {
-            updateForm({ error: t`PIN must be ${PIN_LENGTH} digits` });
-
-            return;
-        }
-
+    const handlePinSubmit = async (pin: string) => {
         updateForm({ isLoading: true });
 
-        const isCorrect = await authService.verifyPin(formState.input);
-
-        updateForm({ isLoading: false });
+        const isCorrect = await authService.verifyPin(pin);
 
         if (isCorrect) {
             setIsUnlocked(true);
             router.replace('/');
         } else {
-            updateForm({ error: t`Incorrect PIN`, input: '' });
+            updateForm({ error: t`Incorrect PIN`, input: '', isLoading: false });
         }
     };
 
+    const addDigit = (digit: string) => {
+        const nextInput = (formState.input + digit).slice(0, PIN_LENGTH);
+
+        updateForm({ input: nextInput, error: null });
+
+        if (formState.input.length === PIN_LENGTH - 1) {
+            void handlePinSubmit(nextInput);
+        }
+    };
+
+    const deleteDigit = () => void updateForm({ input: formState.input.slice(0, -1), error: null });
+
     const completeBiometricAuth = (success: boolean) => {
+        if (!isPinScreenActiveRef.current) {
+            return;
+        }
+
         updateForm({ isAutomaticBiometricPending: false, isLoading: false });
 
         if (success) {
@@ -89,22 +87,37 @@ export default function PinScreen() {
         completeBiometricAuth(await authService.authenticateWithBiometrics());
     };
 
-    const shouldAttemptBiometric = canUseBiometric && !formState.hasAttemptedBiometric;
-
-    if (shouldAttemptBiometric) {
-        updateForm({ hasAttemptedBiometric: true, isAutomaticBiometricPending: true, isLoading: true });
-    }
-
     const handleAutomaticBiometricResult = useEffectEvent(completeBiometricAuth);
-
-    if (formState.input.length === PIN_LENGTH && !formState.isLoading) {
-        void handlePinSubmit();
-    }
+    const handleAutomaticBiometricStart = useEffectEvent(() => {
+        updateForm({ hasAttemptedBiometric: true, isAutomaticBiometricPending: true, isLoading: true });
+    });
 
     useEffect(() => {
-        if (formState.isAutomaticBiometricPending) {
-            void authService.authenticateWithBiometrics().then(handleAutomaticBiometricResult);
+        isPinScreenActiveRef.current = true;
+
+        return () => void (isPinScreenActiveRef.current = false);
+    }, []);
+
+    useEffect(() => {
+        if (!canUseBiometric || formState.hasAttemptedBiometric) {
+            return emptyFn;
         }
+
+        const automaticBiometricTimeout = setTimeout(handleAutomaticBiometricStart);
+
+        return () => void clearTimeout(automaticBiometricTimeout);
+    }, [canUseBiometric, formState.hasAttemptedBiometric]);
+
+    useEffect(() => {
+        let isActive = true;
+
+        if (formState.isAutomaticBiometricPending) {
+            void authService
+                .authenticateWithBiometrics()
+                .then(success => void (isActive ? handleAutomaticBiometricResult(success) : emptyFn()));
+        }
+
+        return () => void (isActive = false);
     }, [formState.isAutomaticBiometricPending]);
 
     return (
