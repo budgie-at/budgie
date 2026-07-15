@@ -41,8 +41,14 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         TransactionTypeEnum.ADJUSTMENT
     ];
 
-    private entriesWithMccCategoryRelations = {
+    private static readonly LIVE_ENTRY_RELATION_WHERE = and(
+        isNull(TransactionEntryEntityTable.originalTransactionId),
+        isNull(TransactionEntryEntityTable.deletedAt)
+    );
+
+    private static readonly ENTRIES_WITH_MCC_CATEGORY_RELATIONS = {
         [TransactionAssociationEnum.ENTRIES]: {
+            where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE,
             with: { [TransactionEntryAssociationEnum.MCC_CATEGORY]: true }
         }
     } as const;
@@ -461,7 +467,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
         return await this.db.query.TransactionEntityTable.findMany({
             where: inArray(TransactionEntityTable.id, ids),
-            with: this.entriesWithMccCategoryRelations
+            with: TransactionRepository.ENTRIES_WITH_MCC_CATEGORY_RELATIONS
         });
     }
 
@@ -472,7 +478,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return this.db.query.TransactionEntityTable.findMany({
             with: {
                 [TransactionAssociationEnum.ENTRIES]: {
-                    where: isNull(TransactionEntryEntityTable.originalTransactionId)
+                    where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
                 }
             },
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
@@ -483,7 +489,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     async findAllWithMccCategoryOffset(limit: number, offset: number): Promise<TransactionWithEntriesMccCategoryEntityInterface[]> {
         return await this.db.query.TransactionEntityTable.findMany({
-            with: this.entriesWithMccCategoryRelations,
+            with: TransactionRepository.ENTRIES_WITH_MCC_CATEGORY_RELATIONS,
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
             limit,
             offset,
@@ -509,7 +515,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             where: eq(TransactionEntityTable.id, id),
             with: {
                 [TransactionAssociationEnum.ENTRIES]: {
-                    where: isNull(TransactionEntryEntityTable.originalTransactionId)
+                    where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
                 }
             }
         });
@@ -519,7 +525,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         if (isNotEmptyArray(ids)) {
             return await (tx ?? this.db).query.TransactionEntityTable.findMany({
                 where: inArray(TransactionEntityTable.id, ids),
-                with: { [TransactionAssociationEnum.ENTRIES]: true }
+                with: {
+                    [TransactionAssociationEnum.ENTRIES]: {
+                        where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
+                    }
+                }
             });
         }
 
@@ -690,7 +700,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     async findTransfersForConversion(accountId: number, tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
         return await (tx ?? this.db).query.TransactionEntityTable.findMany({
             where: this.buildTransfersByAccountIdWhere(accountId),
-            with: { [TransactionAssociationEnum.ENTRIES]: true }
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
+                }
+            }
         });
     }
 
@@ -931,7 +945,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     private buildFullRelations(language: LanguageEnum) {
         return {
             [TransactionAssociationEnum.ENTRIES]: {
-                where: isNull(TransactionEntryEntityTable.originalTransactionId),
+                where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE,
                 with: {
                     [TransactionEntryAssociationEnum.ACCOUNT]: {
                         with: {
@@ -950,7 +964,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             [TransactionAssociationEnum.DEBT_EVENTS]: {
                 where: isNull(DebtEventEntityTable.deletedAt),
                 with: {
-                    [DebtEventAssociationEnum.DEBT_ACCOUNT]: true
+                    [DebtEventAssociationEnum.DEBT_ACCOUNT]: {
+                        with: {
+                            [AccountAssociationEnum.INSTRUMENT]: true
+                        }
+                    }
                 }
             },
             [TransactionAssociationEnum.FROM_ACCOUNT]: true,
