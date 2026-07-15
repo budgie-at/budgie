@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
-import { router, useFocusEffect, useIsFocused } from 'expo-router';
-import { useCallback, useEffect, useEffectEvent, useRef, useState } from 'react';
+import { router, useIsFocused, useNavigation } from 'expo-router';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
@@ -23,29 +23,47 @@ const usePinFormState = () => {
 };
 
 const useAuthAttemptFocus = (invalidateAuthAttempts: () => void) => {
+    const navigation = useNavigation();
     const isPinScreenFocused = useIsFocused();
     const isPinScreenFocusedRef = useRef(false);
     const isPinScreenMountedRef = useRef(false);
-    const canStartAuthAttempt = useCallback(
-        () => isPinScreenMountedRef.current && isPinScreenFocusedRef.current && AppState.currentState === 'active',
-        []
-    );
+    const handlePinScreenFocus = useEffectEvent(() => {
+        if (isPinScreenFocusedRef.current) {
+            return;
+        }
+
+        isPinScreenFocusedRef.current = true;
+        invalidateAuthAttempts();
+    });
+    const handlePinScreenBlur = useEffectEvent(() => {
+        if (!isPinScreenFocusedRef.current) {
+            return;
+        }
+
+        isPinScreenFocusedRef.current = false;
+        invalidateAuthAttempts();
+    });
+    const canStartAuthAttempt = () => isPinScreenMountedRef.current && isPinScreenFocusedRef.current && AppState.currentState === 'active';
+
     useEffect(() => {
         isPinScreenMountedRef.current = true;
 
-        return () => void (isPinScreenMountedRef.current = false);
-    }, []);
-    useFocusEffect(
-        useCallback(() => {
-            isPinScreenFocusedRef.current = true;
-            invalidateAuthAttempts();
+        if (navigation.isFocused()) {
+            handlePinScreenFocus();
+        } else {
+            handlePinScreenBlur();
+        }
 
-            return () => {
-                isPinScreenFocusedRef.current = false;
-                invalidateAuthAttempts();
-            };
-        }, [invalidateAuthAttempts])
-    );
+        const unsubscribeFocus = navigation.addListener('focus', handlePinScreenFocus);
+        const unsubscribeBlur = navigation.addListener('blur', handlePinScreenBlur);
+
+        return () => {
+            unsubscribeFocus();
+            unsubscribeBlur();
+            isPinScreenMountedRef.current = false;
+            handlePinScreenBlur();
+        };
+    }, [navigation]);
 
     return { canStartAuthAttempt, isPinScreenFocused, isPinScreenFocusedRef, isPinScreenMountedRef };
 };
@@ -65,7 +83,7 @@ const useAuthAttemptLifecycle = (
         settleAuthAttempt,
         storeDeferredAuthAttempt
     } = authAttemptTracker;
-    const invalidateAuthAttempts = useCallback(() => {
+    const invalidateAuthAttempts = () => {
         const shouldClearPinInput = invalidateAuthAttempt();
 
         resetAuthLoading();
@@ -73,40 +91,29 @@ const useAuthAttemptLifecycle = (
         if (shouldClearPinInput) {
             setPinInput('');
         }
-    }, [invalidateAuthAttempt, resetAuthLoading, setPinInput]);
+    };
     const { canStartAuthAttempt, isPinScreenFocused, isPinScreenFocusedRef, isPinScreenMountedRef } =
         useAuthAttemptFocus(invalidateAuthAttempts);
-    const completeAuthAttempt = useCallback(
-        (authAttemptGeneration: number, success: boolean, isPinAttempt: boolean) => {
-            const isCurrentAttempt =
-                isCurrentAuthAttempt(authAttemptGeneration) && isPinScreenMountedRef.current && isPinScreenFocusedRef.current;
+    const completeAuthAttempt = (authAttemptGeneration: number, success: boolean, isPinAttempt: boolean) => {
+        const isCurrentAttempt =
+            isCurrentAuthAttempt(authAttemptGeneration) && isPinScreenMountedRef.current && isPinScreenFocusedRef.current;
 
-            if (!isCurrentAttempt) {
-                return;
-            }
+        if (!isCurrentAttempt) {
+            return;
+        }
 
-            if (AppState.currentState === 'inactive') {
-                storeDeferredAuthAttempt(authAttemptGeneration, success, isPinAttempt);
+        if (AppState.currentState === 'inactive') {
+            storeDeferredAuthAttempt(authAttemptGeneration, success, isPinAttempt);
 
-                return;
-            }
+            return;
+        }
 
-            if (AppState.currentState === 'active') {
-                settleAuthAttempt();
-                clearDeferredAuthAttempt();
-                acceptAuthAttempt(success, isPinAttempt);
-            }
-        },
-        [
-            acceptAuthAttempt,
-            clearDeferredAuthAttempt,
-            isCurrentAuthAttempt,
-            isPinScreenFocusedRef,
-            isPinScreenMountedRef,
-            settleAuthAttempt,
-            storeDeferredAuthAttempt
-        ]
-    );
+        if (AppState.currentState === 'active') {
+            settleAuthAttempt();
+            clearDeferredAuthAttempt();
+            acceptAuthAttempt(success, isPinAttempt);
+        }
+    };
     const handleAppStateChange = useEffectEvent((nextAppState: AppStateStatus) => {
         const deferredAuthAttempt = readDeferredAuthAttempt();
 
@@ -183,28 +190,25 @@ export const usePinAuthentication = () => {
     const { error, input, isLoading, setError, setInput, setIsLoading } = usePinFormState();
     const authAttemptTracker = useAuthAttemptTracker();
 
-    const resetAuthLoading = useCallback(() => {
+    const resetAuthLoading = () => {
         setIsLoading(false);
-    }, [setIsLoading]);
-    const acceptAuthAttempt = useCallback(
-        (success: boolean, isPinAttempt: boolean) => {
-            if (!success && isPinAttempt) {
-                setInput('');
-                setError(t`Incorrect PIN`);
-                resetAuthLoading();
-
-                return;
-            }
-
+    };
+    const acceptAuthAttempt = (success: boolean, isPinAttempt: boolean) => {
+        if (!success && isPinAttempt) {
+            setInput('');
+            setError(t`Incorrect PIN`);
             resetAuthLoading();
 
-            if (success) {
-                setIsUnlocked(true);
-                router.replace('/');
-            }
-        },
-        [resetAuthLoading, setError, setInput, setIsUnlocked, t]
-    );
+            return;
+        }
+
+        resetAuthLoading();
+
+        if (success) {
+            setIsUnlocked(true);
+            router.replace('/');
+        }
+    };
     const authAttemptLifecycle = useAuthAttemptLifecycle(resetAuthLoading, setInput, acceptAuthAttempt, authAttemptTracker);
     const { canStartAuthAttempt, completeAuthAttempt, isAppActive, isPinScreenFocused } = authAttemptLifecycle;
 
