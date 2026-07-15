@@ -1,11 +1,11 @@
 # Durable Waitlist Subscription Repair
 
 **Date:** 2026-07-15  
-**Status:** Approved for implementation
+**Status:** Implemented and locally verified
 
 ## Summary
 
-Repair the landing-site waitlist so every submission reaches a terminal client state and a reported success always represents a durable Redis record. Redis connection, retry, socket, and command waits will be bounded; signup writes will be atomic and idempotent; and the form will recover from both server-declared failures and rejected or excessively slow server-action calls.
+The landing-site waitlist now gives every submission a terminal client state, and a reported success always represents a durable Redis record. Redis connection, retry, and command waits are bounded; signup writes are atomic and idempotent; and the form recovers from both server-declared failures and rejected or excessively slow server-action calls.
 
 ## Confirmed failure
 
@@ -52,31 +52,34 @@ The migration also retained a read-before-write sequence whose `zScore`, `zCard`
 
 ### Bounded Redis lifecycle
 
-Redis configuration will make every wait finite:
+Redis configuration and explicit operation deadlines make every wait finite:
 
-- Connection timeout: 2 seconds per attempt.
-- Socket inactivity timeout: 3 seconds.
-- Default command timeout: 2 seconds.
+- Socket connect timeout: 2 seconds per connection attempt.
+- Whole-connect deadline: 4.5 seconds around the complete `connect()` operation, including the retry.
+- Command deadline: 2 seconds around each `eval` or `get` operation.
+- Client command timeout: 2 seconds as a second layer of command-timeout defense.
 - Offline command queue: disabled so commands fail while the connection is unavailable instead of waiting for a later reconnect.
 - Reconnect strategy: one retry after 250 milliseconds, then return an error.
 
-These values keep the complete server attempt below the client's 8-second confirmation deadline under normal failure conditions. The implementation will use the installed `redis` client's supported `socket.connectTimeout`, `socket.socketTimeout`, `socket.reconnectStrategy`, `disableOfflineQueue`, and `commandOptions.timeout` options.
+No socket inactivity timeout is configured. A `socket.socketTimeout` would measure idle time on a reusable ready connection and destroy healthy cached clients between requests; it is not an operation deadline. The explicit whole-connect and per-command deadline wrappers keep the complete server attempt below the client's 8-second confirmation deadline, while `socket.connectTimeout`, `socket.reconnectStrategy`, `disableOfflineQueue`, and `commandOptions.timeout` provide client-level defense.
 
-The connection cache must never preserve a failed or unresolved initialization forever. It may reuse a ready client, but a failed, closed, or timed-out client is destroyed and removed from the cache so a later user retry can create a fresh bounded connection. Missing `REDIS_URL`, connection exhaustion, command timeout, and script failure all produce `{ success: false, messageKey: 'error' }`; none may fall back to process memory.
+The connection cache never preserves a failed or unresolved initialization forever. It reuses only a ready client. A failed, closed, or timed-out operation destroys the exact client that performed it and clears cached client or initialization-promise state only when that cache still refers to the same client. A later user retry therefore creates a fresh bounded connection without an older failure clearing a newer client. Missing `REDIS_URL`, connection exhaustion, command timeout, and script failure all produce `{ success: false, messageKey: WaitlistMessageKeyEnum.ERROR }`; none falls back to process memory.
 
 Redis errors will be recorded through the landing package's server-side logging pattern with operation and failure category only. Logs must not contain the Redis URL, credentials, submitted email, or other secret values.
 
 ### Atomic and idempotent signup
 
-One Redis-side script will own the signup decision and write. Its inputs are the existing key names, the normalized email, timestamp, and source. Redis executes the following logic atomically:
+One Redis-side script owns the signup decision and write. Its inputs are the existing key names, the normalized email, timestamp, and source. Before invoking it, the action trims and lowercases the email, enforces the standard email shape and a 254-character maximum, and returns `WaitlistMessageKeyEnum.INVALID_EMAIL` for invalid input. Redis executes the following logic atomically:
 
-1. Read the email's score from `waitlist:emails`.
-2. If a score exists, return an `already_registered` outcome and the existing position without changing any key.
-3. Otherwise calculate the position from the sorted-set cardinality plus one.
-4. Add the normalized email and position to `waitlist:emails`.
-5. Write the corresponding `waitlist:user:<normalized-email>` hash with email, position, joined timestamp, and `landing` source.
-6. Increment `waitlist:total` exactly once.
-7. Return a `success` outcome and the assigned position.
+1. Verify that `waitlist:emails` is absent or a sorted set, then read the normalized email's score.
+2. If a score exists, return `WaitlistMessageKeyEnum.ALREADY_REGISTERED` and the existing position without inspecting increment-only state or changing any key.
+3. For a new signup, verify that `waitlist:user:<normalized-email>` is absent or a hash and `waitlist:total` is absent or a string.
+4. When the total exists, require its value to be the canonical decimal representation of a nonnegative signed 64-bit integer that can still be incremented: `0` or digits beginning with `1` through `9`, no sign or leading zeroes, and at most `9223372036854775806`.
+5. Only after every preflight check succeeds, calculate the position from the sorted-set cardinality plus one.
+6. Add the normalized email and position to `waitlist:emails`.
+7. Write the corresponding user hash with email, position, joined timestamp, and `landing` source.
+8. Increment `waitlist:total` exactly once.
+9. Return `WaitlistMessageKeyEnum.SUCCESS` and the assigned position.
 
 This operation makes a retry safe even when the browser timed out before receiving the first response: the retry either creates the record once or observes the position already created. It also prevents two concurrent new emails from being assigned through interleaved read/write sequences.
 
@@ -84,7 +87,7 @@ The script preserves the current keys and count semantics. It does not repair hi
 
 ### Server result contract
 
-The action keeps the existing message keys and gives each one a single meaning:
+The shared `WaitlistMessageKeyEnum` defines the existing message keys and gives each one a single meaning:
 
 | `messageKey` | `success` | Position | Meaning |
 | --- | --- | --- | --- |
@@ -101,7 +104,7 @@ The server must not emit a success result without a valid position. Unknown Redi
 
 Submission remains a client-side call to the server action, with an explicit 8-second confirmation deadline around the call. The deadline is a client-visible recovery boundary; the server's shorter limits remain the primary resource boundary.
 
-The submit handler will:
+The submit handler uses an inline `new Promise` deadline compatible with Safari rather than `Promise.withResolvers`. It will:
 
 1. Clear the previous error and enter loading state.
 2. Await the server action within the 8-second deadline.
@@ -109,6 +112,7 @@ The submit handler will:
 4. Map `invalid_email` to a localized validation error.
 5. Map `error`, an unknown result, a rejected action, or the client deadline to a localized retryable error that does not claim the email was saved.
 6. Clear the deadline and leave loading state in `finally`, regardless of outcome.
+7. Render localized error feedback in an element with `role="alert"` so assistive technology announces the terminal failure.
 
 After a failure, the email input and submit button are enabled again; resubmitting is the retry mechanism. The timeout error should explain that the signup could not be confirmed and invite retry. Because server writes are idempotent, a retry is safe even if a delayed first action reached Redis.
 
@@ -131,12 +135,13 @@ The project prohibits unit-test frameworks inside production packages, including
 
 ### Disposable reproduction probe
 
-Use an untracked, disposable probe outside production source to exercise the same `redis` connection settings against an intentionally unreachable endpoint:
+An untracked, disposable probe outside production source exercised the same `redis` connection settings against intentionally unreachable synthetic endpoints:
 
-- Record that the current/default configuration remains pending beyond the expected UI wait, reproducing the root failure.
-- Record that the repaired configuration rejects within the configured bounded interval.
-- Confirm a failed attempt reports error and never reports success through memory.
-- Delete the probe after use and verify it is absent from the commit.
+- The default handshake remained pending at the probe boundary after 5,516 milliseconds, reproducing the non-terminal path.
+- The repaired whole-connect wrapper rejected after 4,506 milliseconds, matching the 4.5-second deadline within timer precision.
+- A stalled command rejected after 2,003 milliseconds, matching the 2-second command deadline within timer precision.
+- Failed attempts reported rejection and had no process-memory success path.
+- The probe was deleted and is absent from the commit.
 
 The probe must use synthetic addresses and emails. If a real deployment variable is injected for a positive connectivity check, the probe must not echo it.
 
