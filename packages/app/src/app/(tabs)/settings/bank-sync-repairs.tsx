@@ -5,8 +5,8 @@ import { ScrollView, View } from 'react-native';
 import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { Page } from '../../../@generic/component/page/page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BankSyncRepairSourceRow } from '../../../settings/components/bank-sync-repair-source-row/bank-sync-repair-source-row';
 import { BankSyncRepairsConfirmationCard } from '../../../settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card';

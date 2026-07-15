@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
+import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
+import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { BankAccountTypeEnum, BankProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -14,10 +16,6 @@ import {
     seedBankPair,
     StubFileBankSyncService
 } from '../../harness';
-
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
-import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 import type { FileBasedBankSyncClientInterface } from '@budgie/bank-sync';
 import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';

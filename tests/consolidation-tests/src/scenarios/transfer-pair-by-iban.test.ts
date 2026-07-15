@@ -1,6 +1,6 @@
+import { PRECISION, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { PRECISION, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { isDefined } from '@rnw-community/shared';
 
 import { runConsolidation } from '../harness/run-consolidation';

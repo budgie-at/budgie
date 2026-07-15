@@ -33,7 +33,7 @@ const compatibleReactRecommendedConfig = {
     plugins: { react: compatibleReactPlugin }
 };
 const residualRuleIds =
-    `@stylistic/lines-between-class-members budgie/max-component-props lingui/t-call-in-function lingui/no-single-tag-to-translate lingui/no-single-variables-to-translate lingui/no-trans-inside-trans lingui/no-expression-in-message lingui/no-unlocalized-strings @rnw-community/no-complex-jsx-logic consistent-this id-denylist no-restricted-syntax require-atomic-updates @typescript-eslint/member-ordering n/hashbang n/no-deprecated-api n/no-extraneous-import n/no-extraneous-require n/no-missing-require n/no-process-exit n/no-unpublished-bin n/no-unpublished-import n/no-unpublished-require n/no-unsupported-features/es-builtins n/no-unsupported-features/node-builtins n/process-exit-as-throw camelcase no-invalid-this no-octal no-octal-escape no-undef-init newline-before-return import/order react/jsx-uses-react react/jsx-uses-vars react/no-deprecated react-hooks/static-components react-hooks/use-memo react-hooks/component-hook-factories react-hooks/preserve-manual-memoization react-hooks/incompatible-library react-hooks/immutability react-hooks/globals react-hooks/refs react-hooks/set-state-in-effect react-hooks/error-boundaries react-hooks/purity react-hooks/set-state-in-render react-hooks/unsupported-syntax react-hooks/config react-hooks/gating sort-imports`.split(
+    `@stylistic/lines-between-class-members budgie/max-component-props lingui/t-call-in-function lingui/no-single-tag-to-translate lingui/no-single-variables-to-translate lingui/no-trans-inside-trans lingui/no-expression-in-message lingui/no-unlocalized-strings @rnw-community/no-complex-jsx-logic consistent-this id-denylist no-restricted-syntax require-atomic-updates @typescript-eslint/member-ordering n/hashbang n/no-deprecated-api n/no-extraneous-import n/no-extraneous-require n/no-missing-require n/no-process-exit n/no-unpublished-bin n/no-unpublished-import n/no-unpublished-require n/no-unsupported-features/es-builtins n/no-unsupported-features/node-builtins n/process-exit-as-throw camelcase no-invalid-this no-octal no-octal-escape no-undef-init newline-before-return react/jsx-uses-react react/jsx-uses-vars react/no-deprecated react-hooks/static-components react-hooks/use-memo react-hooks/component-hook-factories react-hooks/preserve-manual-memoization react-hooks/incompatible-library react-hooks/immutability react-hooks/globals react-hooks/refs react-hooks/set-state-in-effect react-hooks/error-boundaries react-hooks/purity react-hooks/set-state-in-render react-hooks/unsupported-syntax react-hooks/config react-hooks/gating`.split(
         ' '
     );
 const oxlintFallbackConfigs = eslintPluginOxlint
@@ -96,16 +96,7 @@ export default defineConfig(
             'no-undef': 'off',
             'no-magic-numbers': 'off',
             'no-unused-vars': 'off',
-            'sort-imports': [
-                'error',
-                {
-                    allowSeparatedGroups: false,
-                    ignoreCase: false,
-                    ignoreDeclarationSort: true,
-                    ignoreMemberSort: false,
-                    memberSyntaxSortOrder: ['all', 'multiple', 'none', 'single']
-                }
-            ],
+            'sort-imports': 'off',
             'no-warning-comments': ['error', { terms: ['fixme', 'xxx'], location: 'start' }],
             'sort-keys': 'off',
             'no-shadow': 'off',
@@ -341,25 +332,7 @@ export default defineConfig(
             'import/no-unused-modules': 'off',
             'import/no-deprecated': 'off',
             'import/extensions': 'off',
-            'import/order': [
-                'error',
-                {
-                    alphabetize: {
-                        caseInsensitive: true,
-                        order: 'asc'
-                    },
-                    groups: ['builtin', 'external', 'object', 'parent', 'sibling', 'index', 'type'],
-                    'newlines-between': 'always',
-                    pathGroups: [
-                        {
-                            group: 'object',
-                            pattern: '@rnw-community/*',
-                            position: 'after'
-                        }
-                    ],
-                    pathGroupsExcludedImportTypes: ['builtin', 'type']
-                }
-            ]
+            'import/order': 'off'
         }
     },
     {

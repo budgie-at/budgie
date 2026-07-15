@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import { privatbankTransactionMapper } from '@budgie/bank-sync';
+import { describe, expect, it } from 'vitest';
 
 const buildPrivatbankRow = (date: Date, endBalance = 12_345.67) => ({
     rawDate: '13.01.2026 11:42:53',

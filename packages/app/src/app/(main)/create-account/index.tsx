@@ -3,8 +3,8 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, Text } from 'react-native';
 
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { Page } from '../../../@generic/component/page/page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
 import { CreateBankSyncCard } from '../../../account/component/create-bank-sync-card/create-bank-sync-card';

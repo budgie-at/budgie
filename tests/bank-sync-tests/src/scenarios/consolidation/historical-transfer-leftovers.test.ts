@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { and, eq, isNull } from 'drizzle-orm';
-
+import { bankSyncRepairService } from '@app/sync/service/bank-sync-repair.service';
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import {
     AccountEntityTable,
     AccountTypeEnum,
@@ -16,11 +15,10 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { and, eq, isNull } from 'drizzle-orm';
+import { describe, expect, it } from 'vitest';
 
 import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair, testDb } from '../../harness';
-
-import { bankSyncRepairService } from '@app/sync/service/bank-sync-repair.service';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 const SOURCE_IBAN = 'UA-FOP-EUR';
 const BRIDGE_IBAN = 'UA-FOP-UAH';

@@ -1,7 +1,7 @@
-import { CurrencyEnum } from '@budgie/contracts';
-import { isDefined } from '@rnw-community/shared';
-
 import { instrumentRepository } from '@app/@generic/drizzle/db/db';
+import { CurrencyEnum } from '@budgie/contracts';
+
+import { isDefined } from '@rnw-community/shared';
 
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 

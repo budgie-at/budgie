@@ -10,8 +10,8 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { Page } from '../../../@generic/component/page/page';
 import {
     accountBalanceRepository,
     accountRepository,

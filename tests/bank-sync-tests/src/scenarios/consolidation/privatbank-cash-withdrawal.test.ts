@@ -1,12 +1,10 @@
-import { describe, it } from 'vitest';
-
-import { mapBankTransactionToCreateInput, privatbankTransactionMapper } from '@budgie/bank-sync';
-import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
-
-import { expectAtmCashWithdrawalConsolidation, seed } from '../../harness';
-
 import { privatbankCategoryMatcherService } from '@app/sync/service/privatbank-category-matcher.service';
 import { transactionImportService } from '@app/transaction/service/transaction-import.service';
+import { mapBankTransactionToCreateInput, privatbankTransactionMapper } from '@budgie/bank-sync';
+import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { describe, it } from 'vitest';
+
+import { expectAtmCashWithdrawalConsolidation, seed } from '../../harness';
 
 const PRIVATBANK_CARD_ID = 'privat-card';
 const PRIVATBANK_CASH_WITHDRAWAL_CATEGORY = 'Зняття готівки';

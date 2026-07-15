@@ -1,8 +1,7 @@
+import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
 import { runConsolidation } from '../harness/run-consolidation';
 import { testDb, testQueryService, testSeedService } from '../harness/test-context';

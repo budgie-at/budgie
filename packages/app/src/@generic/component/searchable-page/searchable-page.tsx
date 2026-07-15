@@ -8,8 +8,8 @@ import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant
 import { IdInterface } from '../../interface/id.interface';
 import { BlurGradient } from '../blur-gradient/blur-gradient';
 import { KeyboardStickySearchInput } from '../keyboard-sticky-search-input/keyboard-sticky-search-input';
-import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
+import { Page } from '../page/page';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
 
 import { SEARCH_BLUR_OFFSET, SEARCH_BLUR_Z_INDEX, SEARCH_INPUT_VERTICAL_OFFSET, SEARCH_KEYBOARD_GAP } from './searchable-page.constant';

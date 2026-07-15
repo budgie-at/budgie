@@ -1,14 +1,15 @@
-import { describe, expect, it } from 'vitest';
-import { eq } from 'drizzle-orm';
-
-import { isDefined } from '@rnw-community/shared';
-
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { consolidationScopeService } from '@budgie/consolidation';
 import {
     TransactionConsolidationTypeEnum,
     TransactionEntityInterface,
     TransactionEntryEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
+import { describe, expect, it } from 'vitest';
+
+import { isDefined } from '@rnw-community/shared';
 
 import {
     expectSingleConsolidation,
@@ -20,9 +21,6 @@ import {
     seedBankSyncAccount,
     testDb
 } from '../../harness';
-
-import { consolidationScopeService } from '@budgie/consolidation';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 const SOURCE_IBAN = 'UA-SOURCE-EUR';
 const BRIDGE_IBAN = 'UA-BRIDGE-UAH';

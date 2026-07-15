@@ -1,8 +1,9 @@
-/* eslint-disable no-console */
-import Database from 'better-sqlite3';
 import { randomInt as cryptoRandomInt } from 'node:crypto';
 import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
+
+/* eslint-disable no-console */
+import Database from 'better-sqlite3';
 
 const OUT = resolve(__dirname, '../.bench/fixture.db');
 const TX_COUNT = 200_000;

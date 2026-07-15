@@ -1,5 +1,3 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
 import {
     accountBalanceRepository,
     debtEventRepository,
@@ -35,6 +33,8 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
 import { isDefined } from '@rnw-community/shared';
 
 import { requireInstrument } from '../../harness';

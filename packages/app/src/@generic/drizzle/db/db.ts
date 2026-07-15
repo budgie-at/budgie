@@ -1,4 +1,3 @@
-import * as SQLite from 'expo-sqlite';
 import { BudgetCategoryLimitRepository } from '@budgie/budget/query/budget-category-limit-repository';
 import { BudgetRepository } from '@budgie/budget/query/budget-repository';
 import {
@@ -8,8 +7,6 @@ import {
     RefundPairRepository,
     TransferPairRepository
 } from '@budgie/consolidation';
-import { getLogger } from '@budgie/logger';
-import { drizzle } from 'drizzle-orm/expo-sqlite';
 import {
     AccountBalanceRepository,
     AccountRepository,
@@ -38,12 +35,18 @@ import {
     TransactionRuleRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
-import { DB_NAME } from '../constant/db-name.constant';
-import * as schema from './schema';
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getLogger } from '@budgie/logger';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
 import * as SecureStore from 'expo-secure-store';
+import * as SQLite from 'expo-sqlite';
+
+import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+
 import { PIN_KEY } from '../../../auth/constant/pin-key.constant';
 import { PIN_SECURE_STORE_OPTIONS } from '../../../auth/constant/pin-secure-store-options.constant';
+import { DB_NAME } from '../constant/db-name.constant';
+
+import * as schema from './schema';
 
 import type { DB } from '@budgie/contracts';
 

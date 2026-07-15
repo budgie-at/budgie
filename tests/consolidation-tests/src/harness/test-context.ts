@@ -1,3 +1,4 @@
+import { buildTestDb, createTestRepositories, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
 import {
     ConsolidationAutoCandidateService,
     ConsolidationExecutorService,
@@ -6,8 +7,6 @@ import {
     RefundConsolidationService,
     UnconsolidationService
 } from '@budgie/consolidation';
-
-import { buildTestDb, createTestRepositories, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
 
 import type { DB } from '@budgie/contracts';
 

@@ -1,11 +1,9 @@
-import { describe, expect, it } from 'vitest';
-
+import { databaseRefreshService } from '@app/@generic/service/database-refresh.service';
 import { BankAccountTypeEnum, BankProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
 import { ExternalSourceEnum } from '@budgie/contracts';
+import { describe, expect, it } from 'vitest';
 
 import { seed, StubFileBankSyncService } from '../../harness';
-
-import { databaseRefreshService } from '@app/@generic/service/database-refresh.service';
 
 import type { FileBasedBankSyncClientInterface } from '@budgie/bank-sync';
 import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';

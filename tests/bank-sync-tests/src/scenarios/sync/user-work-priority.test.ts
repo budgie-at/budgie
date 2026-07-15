@@ -1,8 +1,7 @@
+import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
 import { describe, expect, it } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
-
-import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
 
 const nextTaskDelayMs = 0;
 

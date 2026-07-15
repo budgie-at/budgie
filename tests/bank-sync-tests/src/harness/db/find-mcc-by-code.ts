@@ -1,6 +1,5 @@
-import { eq } from 'drizzle-orm';
-
 import { MccCategoryEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 
 import { testDb } from '../scenario/setup';
 

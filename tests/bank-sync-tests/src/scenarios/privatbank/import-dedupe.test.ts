@@ -1,8 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { and, eq, isNull } from 'drizzle-orm';
-
 import { BankAccountTypeEnum, BankProviderEnum, privatbankTransactionMapper } from '@budgie/bank-sync';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { and, eq, isNull } from 'drizzle-orm';
+import { describe, expect, it } from 'vitest';
 
 import { seed, StubFileBankSyncService, testDb } from '../../harness';
 
