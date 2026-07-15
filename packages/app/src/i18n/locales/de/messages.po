@@ -2320,7 +2320,6 @@ msgstr "Wähle eine Kategorie für ein Limit"
 msgid "Pick a window. Existing data is preserved."
 msgstr "Zeitraum wählen. Bestehende Daten bleiben erhalten."
 
-#: src/app/(main)/pin.tsx
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PIN must be {PIN_LENGTH} digits"
 msgstr "PIN muss {PIN_LENGTH} Ziffern haben"
