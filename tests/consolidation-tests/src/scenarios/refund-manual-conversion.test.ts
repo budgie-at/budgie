@@ -1,5 +1,6 @@
-import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
+
+import { PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 
 import { refundConsolidationService, testQueryService, testSeedService } from '../harness/test-context';
 
@@ -40,5 +41,34 @@ describe('consolidation/refund-manual-conversion', () => {
 
         expect(incomeCandidates).toMatchObject([{ id: expense.id }]);
         expect(expenseCandidates).toEqual([]);
+    });
+
+    it('rejects a sequential refund that exceeds the remaining expense amount', async () => {
+        const { expense, refunds } = testSeedService.refundedExpense({
+            accountId: testSeedService.account({ externalId: 'mono-card' }).id,
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [80 * PRECISION, 50 * PRECISION]
+        });
+
+        await refundConsolidationService.convertToRefund({
+            refundIncomeTransactionId: refunds[0].id,
+            expenseTransactionId: expense.id
+        });
+
+        await expect(
+            refundConsolidationService.convertToRefund({
+                refundIncomeTransactionId: refunds[1].id,
+                expenseTransactionId: expense.id
+            })
+        ).rejects.toThrowError('Refund amount cannot exceed the expense');
+
+        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+        expect(testQueryService.fetchTransactionById(refunds[1].id).consolidationParentTransactionId).toBeNull();
+        expect(
+            testQueryService
+                .fetchEntriesByTransactionId(expense.id)
+                .filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT)
+                .map(entry => entry.amount)
+        ).toEqual([80 * PRECISION]);
     });
 });

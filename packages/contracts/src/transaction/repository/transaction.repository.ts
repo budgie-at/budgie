@@ -536,6 +536,21 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return [];
     }
 
+    async findByIdsWithRefundConsolidationHistory(ids: number[], tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
+        if (isNotEmptyArray(ids)) {
+            return await (tx ?? this.db).query.TransactionEntityTable.findMany({
+                where: inArray(TransactionEntityTable.id, ids),
+                with: {
+                    [TransactionAssociationEnum.ENTRIES]: {
+                        where: isNull(TransactionEntryEntityTable.deletedAt)
+                    }
+                }
+            });
+        }
+
+        return [];
+    }
+
     async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntityTable);
     }
