@@ -26,12 +26,15 @@ export class DebtMigrationPersistenceAssertions {
     private static readonly AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID = Number('1010');
     private static readonly AMBIGUOUS_OPENING_AMOUNT = Number('10000000000');
     private static readonly CANONICAL_ACCOUNT_ID = Number('101');
+    private static readonly CANONICAL_ADJUSTMENT_ENTRY_ID = Number('2000');
+    private static readonly CANONICAL_ADJUSTMENT_TRANSACTION_ID = Number('1000');
     private static readonly CANONICAL_CASH_ENTRY_ID = Number('2014');
     private static readonly CANONICAL_MANUAL_CLOSE_AMOUNT = Number('4100000000');
     private static readonly CANONICAL_OPEN_AMOUNT = Number('45000000000');
     private static readonly CANONICAL_TRANSACTION_CLOSE_AMOUNT = Number('3966000000');
     private static readonly CANONICAL_TRANSACTION_ENTRY_ID = Number('2015');
     private static readonly CANONICAL_TRANSACTION_ID = Number('1007');
+    private static readonly REPAIR_MIGRATION_TIMESTAMP = 1_784_131_200;
 
     constructor(private readonly db: DB) {}
 
@@ -54,7 +57,33 @@ export class DebtMigrationPersistenceAssertions {
         expect(snapshot.accounts).toHaveLength(1);
         expect(snapshot.balances).toHaveLength(0);
         this.assertCanonicalEventTotals(liveEvents, closingEvents, transactionClosingEvents);
+        this.assertCanonicalAdjustmentRetired(snapshot);
         this.assertCanonicalTransactionRows(snapshot, transactionClosingEvents);
+    }
+
+    private assertCanonicalAdjustmentRetired(snapshot: DebtMigrationPersistedSnapshotInterface): void {
+        expect(
+            snapshot.transactions.find(
+                transaction => transaction.id === DebtMigrationPersistenceAssertions.CANONICAL_ADJUSTMENT_TRANSACTION_ID
+            )
+        ).toEqual(
+            expect.objectContaining({
+                deletedAt: DebtMigrationPersistenceAssertions.REPAIR_MIGRATION_TIMESTAMP,
+                id: DebtMigrationPersistenceAssertions.CANONICAL_ADJUSTMENT_TRANSACTION_ID,
+                updatedAt: DebtMigrationPersistenceAssertions.REPAIR_MIGRATION_TIMESTAMP
+            })
+        );
+        expect(
+            snapshot.transactionEntries.find(
+                transactionEntry => transactionEntry.id === DebtMigrationPersistenceAssertions.CANONICAL_ADJUSTMENT_ENTRY_ID
+            )
+        ).toEqual(
+            expect.objectContaining({
+                deletedAt: DebtMigrationPersistenceAssertions.REPAIR_MIGRATION_TIMESTAMP,
+                id: DebtMigrationPersistenceAssertions.CANONICAL_ADJUSTMENT_ENTRY_ID,
+                updatedAt: DebtMigrationPersistenceAssertions.REPAIR_MIGRATION_TIMESTAMP
+            })
+        );
     }
 
     private assertCanonicalEventTotals(

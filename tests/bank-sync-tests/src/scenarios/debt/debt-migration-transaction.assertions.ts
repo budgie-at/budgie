@@ -17,11 +17,10 @@ export class DebtMigrationTransactionAssertions {
 
     async assert(): Promise<void> {
         const transactions = await this.repository.getAll(
-            DebtMigrationTransactionAssertions.EXPECTED_TRANSACTION_IDS.length,
+            DebtMigrationTransactionAssertions.EXPECTED_TRANSACTION_IDS.length + 1,
             {
                 ...DEFAULT_TRANSACTION_FILTER,
-                accountIds: [DebtMigrationTransactionAssertions.DEBT_ACCOUNT_ID],
-                date: { from: new Date('2026-06-03T00:00:00.000Z'), to: null }
+                accountIds: [DebtMigrationTransactionAssertions.DEBT_ACCOUNT_ID]
             },
             LanguageEnum.EN
         );

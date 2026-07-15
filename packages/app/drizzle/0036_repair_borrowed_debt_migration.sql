@@ -3,13 +3,17 @@ DROP TABLE IF EXISTS eligible_borrowed_debt_accounts_migration;
 CREATE TEMP TABLE eligible_borrowed_debt_accounts_migration (
     account_id integer PRIMARY KEY NOT NULL,
     signed_adjustment_amount integer NOT NULL,
-    manual_event_id integer NOT NULL
+    manual_event_id integer NOT NULL,
+    adjustment_transaction_id integer UNIQUE NOT NULL,
+    adjustment_entry_id integer UNIQUE NOT NULL
 );
 --> statement-breakpoint
 INSERT INTO eligible_borrowed_debt_accounts_migration (
     account_id,
     signed_adjustment_amount,
-    manual_event_id
+    manual_event_id,
+    adjustment_transaction_id,
+    adjustment_entry_id
 )
 SELECT
     accounts.id,
@@ -18,7 +22,9 @@ SELECT
         WHEN adjustment_entries.type = 'CREDIT' THEN 0 - adjustment_entries.amount
         ELSE 0
     END),
-    manual_events.id
+    manual_events.id,
+    MIN(adjustment_transactions.id),
+    MIN(adjustment_entries.id)
 FROM accounts
 INNER JOIN transaction_entries adjustment_entries
     ON adjustment_entries.account_id = accounts.id
@@ -29,6 +35,13 @@ INNER JOIN transactions adjustment_transactions
     ON adjustment_transactions.id = adjustment_entries.transaction_id
     AND adjustment_transactions.type = 'ADJUSTMENT'
     AND adjustment_transactions.deleted_at IS NULL
+    AND (
+        SELECT COUNT(*)
+        FROM transaction_entries live_non_original_entries
+        WHERE live_non_original_entries.transaction_id = adjustment_transactions.id
+          AND live_non_original_entries.deleted_at IS NULL
+          AND live_non_original_entries.original_transaction_id IS NULL
+    ) = 1
 INNER JOIN debt_events manual_events
     ON manual_events.debt_account_id = accounts.id
     AND manual_events.transaction_id IS NULL
@@ -108,7 +121,7 @@ WHERE accounts.type = 'DEBT'
         AND transaction_backed_events.deleted_at IS NULL
   )
 GROUP BY accounts.id, manual_events.id
-HAVING COUNT(*) > 0
+HAVING COUNT(*) = 1
    AND SUM(CASE
        WHEN adjustment_entries.type = 'DEBIT' THEN adjustment_entries.amount
        WHEN adjustment_entries.type = 'CREDIT' THEN 0 - adjustment_entries.amount
@@ -322,6 +335,22 @@ SET amount = 0 - (
     END
 WHERE debt_events.id IN (
     SELECT eligible_accounts.manual_event_id
+    FROM eligible_borrowed_debt_accounts_migration eligible_accounts
+);
+--> statement-breakpoint
+UPDATE transactions
+SET deleted_at = 1784131200,
+    updated_at = 1784131200
+WHERE transactions.id IN (
+    SELECT eligible_accounts.adjustment_transaction_id
+    FROM eligible_borrowed_debt_accounts_migration eligible_accounts
+);
+--> statement-breakpoint
+UPDATE transaction_entries
+SET deleted_at = 1784131200,
+    updated_at = 1784131200
+WHERE transaction_entries.id IN (
+    SELECT eligible_accounts.adjustment_entry_id
     FROM eligible_borrowed_debt_accounts_migration eligible_accounts
 );
 --> statement-breakpoint
