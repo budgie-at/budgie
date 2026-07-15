@@ -19,7 +19,8 @@ interface Props {
     readonly testID: string;
 }
 
-export const TransactionInfoSimilarMonthBar = ({ month, maxAmount, currencySymbol, formatCompactDigits, formatDigits, testID }: Props) => {
+export const TransactionInfoSimilarMonthBar = (props: Props) => {
+    const { month, maxAmount, currencySymbol, formatCompactDigits, formatDigits, testID } = props;
     const [yearText = '0', monthText = '1'] = month.monthKey.split('-');
     const monthLabelDate = new Date(Number(yearText), Number(monthText) - 1, 1);
     const hasAmount = isPositiveNumber(month.totalAmount);
