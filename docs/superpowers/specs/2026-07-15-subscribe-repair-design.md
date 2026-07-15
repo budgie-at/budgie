@@ -1,6 +1,7 @@
 # Durable Waitlist Subscription Repair
 
-**Date:** 2026-07-15  
+**Date:** 2026-07-15
+
 **Status:** Implemented and locally verified
 
 ## Summary
@@ -147,13 +148,21 @@ The probe must use synthetic addresses and emails. If a real deployment variable
 
 ### Durable Redis behavior
 
-Against a disposable Redis namespace or isolated development Redis instance, verify:
+A disposable Redis 7.4 instance passed all 11 isolated scenarios:
 
-- One new normalized email returns `success` with a position and creates the sorted-set member, user hash, and one total increment.
-- Repeating the same email with different casing or surrounding whitespace returns `already_registered` with the same position and does not increment the total.
-- Concurrent submissions of the same email create one record and one total increment.
-- Concurrent submissions of different emails receive distinct positions and complete all three writes.
-- An unavailable Redis endpoint returns `error` within the bound and leaves no in-memory success path.
+1. A new normalized email returned `success`, created the sorted-set member and user hash, and incremented the total once.
+2. A whitespace and case variant returned `already_registered` with the same position and did not increment the total.
+3. Concurrent submissions of the same email created one record and one total increment.
+4. Concurrent submissions of different emails received distinct positions and completed all three writes.
+5. An invalid `waitlist:emails` key type failed before mutation.
+6. An invalid `waitlist:user:<normalized-email>` key type failed before mutation.
+7. An invalid `waitlist:total` key type failed before mutation.
+8. A noncanonical counter value failed before mutation.
+9. A counter above the maximum incrementable value failed before mutation.
+10. The maximum incrementable counter advanced exactly once to the signed 64-bit maximum.
+11. An existing email at the signed 64-bit maximum still returned `already_registered` without incrementing or mutating data.
+
+The disposable instance and verification data were removed after the run. The unavailable-endpoint probe separately confirmed that the action returns `error` within the bound and has no in-memory success path.
 
 ### Repository and build checks
 
@@ -170,6 +179,11 @@ yarn cpd
 Then run a production landing build through the repository build command and start the built landing site with production-style environment injection. Submit a fresh synthetic email and a repeat of that email, verify both terminal UI states, and verify the Redis records directly without printing credentials or the email in shared logs.
 
 Finally, repeat the production-style probe with Redis deliberately unavailable and confirm that the spinner stops within 8 seconds, the retryable error appears, and retry becomes available. After deployment, perform one smoke submission on `budgie.at` and confirm the action settles and the durable record exists.
+
+### Pending external verification
+
+- [ ] Vercel production and preview environment audit: pending; not run.
+- [ ] Post-deployment `budgie.at` smoke submission and durable-record confirmation: pending; not run.
 
 ## Acceptance criteria
 

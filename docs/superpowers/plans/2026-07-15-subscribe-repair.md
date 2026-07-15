@@ -200,17 +200,20 @@ rtk git commit -m "fix(landing): recover stalled waitlist submissions"
 **Files:**
 - No repository files should change except formatter/catalog output already committed above.
 
-- [ ] **Step 1: Verify atomic behavior against an isolated Redis namespace**
+- [x] **Step 1: Verify atomic behavior against an isolated Redis namespace**
 
-Using synthetic emails and an isolated development Redis instance, verify directly without logging values:
+Using synthetic emails, a disposable Redis 7.4 instance passed all 11 scenarios without logging values:
 
-- One new email returns `success`, creates the sorted-set member and user hash, and increments the total once.
-- The same normalized email with whitespace/case changes returns `already_registered` with the same position and does not increment again.
-- Concurrent same-email requests create one record and one increment.
-- Concurrent different-email requests receive distinct positions and all three writes complete.
-- An unavailable endpoint returns `error` within the server bound and never reports process-memory success.
+- A new email returned `success`, created the sorted-set member and user hash, and incremented the total once.
+- The same normalized email with whitespace/case changes returned `already_registered` with the same position and did not increment again.
+- Concurrent same-email requests created one record and one increment.
+- Concurrent different-email requests received distinct positions and completed all three writes.
+- Invalid types for the emails sorted set, user hash, and total counter each failed before mutation.
+- A noncanonical counter and a counter above the maximum incrementable value each failed before mutation.
+- The maximum incrementable counter advanced exactly once to the signed 64-bit maximum.
+- An existing email at the signed 64-bit maximum returned `already_registered` without incrementing or mutating data.
 
-Expected: all five checks pass. Delete any local verification data and scripts afterward; do not add a landing unit-test framework or commit a probe.
+Observed: all 11 scenarios passed. The disposable instance, local verification data, and scripts were removed afterward; no landing unit-test framework or probe was added. The unavailable-endpoint probe separately confirmed bounded failure without process-memory success.
 
 - [x] **Step 2: Run the required repository validation in order**
 
@@ -242,6 +245,8 @@ Start the built landing site with production-style environment injection, submit
 
 - [ ] **Step 5: Audit deployment configuration by variable name only**
 
+**Status:** Pending; not run.
+
 For both production and preview scopes, confirm that `REDIS_URL` is present, attached to the current Redis provider, uses the provider-expected TLS/non-TLS scheme, and is reachable from the deployment. Confirm no obsolete Vercel KV variable is relied upon. Record only variable names, scope, provider attachment, and pass/fail connectivity; never print or persist the URL, hostname, username, password, token, or email.
 
 - [x] **Step 6: Review scope and commit state**
@@ -256,5 +261,7 @@ rtk git log -2 --oneline
 Observed: the implementation scope contains the bounded durable server repair, shared enum, client recovery and accessibility behavior, dependency/catalog updates, and no probe, unit-test infrastructure, count cleanup, provider integration, environment value, or unrelated landing change.
 
 - [ ] **Step 7: Perform the deployed smoke check**
+
+**Status:** Pending; not run.
 
 After deployment, submit one fresh synthetic address on `budgie.at`. Confirm the action settles, the UI reaches a terminal state, and a durable record exists without exposing the address or Redis credentials in shared logs.
