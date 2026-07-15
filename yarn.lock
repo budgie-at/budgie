@@ -1195,6 +1195,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie-at/landing@workspace:packages/landing"
   dependencies:
+    "@budgie/logger": "workspace:*"
     "@lingui/core": "npm:6.1.0"
     "@lingui/format-po": "npm:6.1.0"
     "@lingui/loader": "npm:6.1.0"
