@@ -94,12 +94,52 @@ while [ "$migration_index" -le 32 ]; do
 done
 
 sqlite3 "$pre_fixture_path" < "$fixture_directory/legacy-borrowed-debt.sql"
+pre_transaction_count=$(sqlite3 "$pre_fixture_path" "SELECT COUNT(*) FROM transactions WHERE id = 1007 AND deleted_at IS NULL AND type = 'DEBT' AND to_account_id = 101 AND from_account_id = 100;")
+if [ "$pre_transaction_count" -ne 1 ]; then
+    echo "Expected one canonical pre-0033 transaction 1007, found $pre_transaction_count" >&2
+    exit 1
+fi
+pre_entry_count=$(sqlite3 "$pre_fixture_path" "SELECT COUNT(*) FROM transaction_entries WHERE transaction_id = 1007 AND deleted_at IS NULL AND original_transaction_id IS NULL;")
+if [ "$pre_entry_count" -ne 2 ]; then
+    echo "Expected two live original pre-0033 entries for transaction 1007, found $pre_entry_count" >&2
+    exit 1
+fi
+pre_cash_entry_count=$(sqlite3 "$pre_fixture_path" "SELECT COUNT(*) FROM transaction_entries WHERE id = 2014 AND transaction_id = 1007 AND deleted_at IS NULL AND original_transaction_id IS NULL AND account_id = 100 AND type = 'CREDIT' AND category_id = 10;")
+if [ "$pre_cash_entry_count" -ne 1 ]; then
+    echo "Expected one canonical pre-0033 cash entry 2014, found $pre_cash_entry_count" >&2
+    exit 1
+fi
+pre_debt_entry_count=$(sqlite3 "$pre_fixture_path" "SELECT COUNT(*) FROM transaction_entries WHERE id = 2015 AND transaction_id = 1007 AND deleted_at IS NULL AND original_transaction_id IS NULL AND account_id = 101 AND type = 'DEBIT' AND category_id IS NULL;")
+if [ "$pre_debt_entry_count" -ne 1 ]; then
+    echo "Expected one canonical pre-0033 debt entry 2015, found $pre_debt_entry_count" >&2
+    exit 1
+fi
 sqlite3 "$pre_fixture_path" "VACUUM;"
 
 cp "$pre_fixture_path" "$early_fixture_path"
 apply_migration "$early_fixture_path" 0033
 sqlite3 "$early_fixture_path" "UPDATE __drizzle_migrations SET hash = '$deployed_early_0033_hash' WHERE created_at = $apply_migration_timestamp;"
 sqlite3 "$early_fixture_path" < "$fixture_directory/emulate-early-0033.sql"
+early_transaction_count=$(sqlite3 "$early_fixture_path" "SELECT COUNT(*) FROM transactions WHERE id = 1007 AND deleted_at IS NULL AND type = 'DEBT' AND to_account_id = 100 AND from_account_id = 101;")
+if [ "$early_transaction_count" -ne 1 ]; then
+    echo "Expected one deployed broken early-0033 transaction 1007, found $early_transaction_count" >&2
+    exit 1
+fi
+early_entry_count=$(sqlite3 "$early_fixture_path" "SELECT COUNT(*) FROM transaction_entries WHERE transaction_id = 1007 AND deleted_at IS NULL AND original_transaction_id IS NULL;")
+if [ "$early_entry_count" -ne 2 ]; then
+    echo "Expected two live original early-0033 entries for transaction 1007, found $early_entry_count" >&2
+    exit 1
+fi
+early_cash_entry_count=$(sqlite3 "$early_fixture_path" "SELECT COUNT(*) FROM transaction_entries WHERE id = 2014 AND transaction_id = 1007 AND deleted_at IS NULL AND original_transaction_id IS NULL AND account_id = 100 AND type = 'DEBIT' AND kind = 'PRIMARY' AND category_id = 10;")
+if [ "$early_cash_entry_count" -ne 1 ]; then
+    echo "Expected one deployed broken early-0033 cash entry 2014, found $early_cash_entry_count" >&2
+    exit 1
+fi
+early_debt_entry_count=$(sqlite3 "$early_fixture_path" "SELECT COUNT(*) FROM transaction_entries WHERE id = 2015 AND transaction_id = 1007 AND deleted_at IS NULL AND original_transaction_id IS NULL AND account_id = 101 AND type = 'CREDIT' AND kind = 'PRIMARY' AND category_id IS NULL;")
+if [ "$early_debt_entry_count" -ne 1 ]; then
+    echo "Expected one deployed broken early-0033 debt entry 2015, found $early_debt_entry_count" >&2
+    exit 1
+fi
 apply_migration "$early_fixture_path" 0034
 sqlite3 "$early_fixture_path" "VACUUM;"
 cp "$early_fixture_path" "$app_fixture_path"
