@@ -3,10 +3,18 @@ env:
   ACTION_ITEM_ID: ${ACTION_ITEM_ID || 'ActionItem.Expense'}
 ---
 - waitForAnimationToEnd
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: '${ACTION_ITEM_ID}.Label'
-    timeout: 3000
+- retry:
+    maxRetries: 1
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              id: '${ACTION_ITEM_ID}.Label'
+          commands:
+            - tapOn:
+                id: 'ActionButton'
+      - extendedWaitUntil:
+          visible:
+            id: '${ACTION_ITEM_ID}.Label'
+          timeout: 3000
 - waitForAnimationToEnd
