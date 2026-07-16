@@ -7,7 +7,7 @@ appId: ${APP_ID}
 - runFlow:
     file: ../navigation/open-settings-card.flow.yaml
     env:
-      CARD_ID: 'SettingsPage.MainCurrencyCard'
+      CARD_ID: '^SettingsPage[.]MainCurrencyCard[.].+$'
       DESTINATION_ID: 'CurrencySelector.SearchInput'
 - runFlow:
     when:
@@ -29,7 +29,7 @@ appId: ${APP_ID}
     timeout: 3000
 - extendedWaitUntil:
     visible:
-      id: 'SettingsPage.MainCurrencyValue.${CURRENCY_CODE}'
+      id: 'SettingsPage.MainCurrencyCard.${CURRENCY_CODE}'
     timeout: 10000
 - waitForAnimationToEnd
 - tapOn:
