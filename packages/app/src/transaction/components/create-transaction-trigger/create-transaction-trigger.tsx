@@ -27,7 +27,6 @@ export const CreateTransactionTrigger = ({ isOpen, onPress }: Props) => {
             accessibilityLabel={CreateTransactionMenuSelector.Trigger}
             accessibilityRole="button"
             accessible
-            cancelable={false}
             collapsable={false}
             disabled={isOpen}
             className="bg-primary rounded-full items-center justify-center w-18 h-18"
