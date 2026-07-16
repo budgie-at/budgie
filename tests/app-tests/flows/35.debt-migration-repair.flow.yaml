@@ -68,7 +68,9 @@ appId: ${APP_ID}
       text: '(?s).*₴29,000.*→.*[$]684.*'
 - assertVisible:
       id: 'TransactionCard.EntryCategoryAmount.Housing_Utilities.29000'
-      text: 'Housing & Utilities ₴29,000'
+- assertVisible:
+      id: 'TransactionCard.Label.USD_debt_repayment_1'
+      text: '(?s).*Housing & Utilities.*₴29,000.*₴29,000.*→.*[$]684.*'
 - assertNotVisible:
       id: 'TransactionCard.EntryCategoryAmount.Housing_Utilities.29000'
       index: 1
