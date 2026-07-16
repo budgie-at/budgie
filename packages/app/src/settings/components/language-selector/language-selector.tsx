@@ -35,8 +35,7 @@ export const LanguageSelector = () => {
             title={t`Language`}
             onPress={handleOpen}
             description={t(selectedLanguage.name)}
-            testID={SettingsPageSelector.LanguageCard}
-            descriptionTestID={SettingsPageSelector.LanguageValue(selectedLanguage.code)}
+            testID={SettingsPageSelector.LanguageCard(selectedLanguage.code)}
             left={
                 <View className="w-9 h-9 rounded-full bg-secondary-foreground/10 justify-center items-center">
                     <CountryFlag language={selectedLanguage.code} size={20} />
