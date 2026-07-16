@@ -329,6 +329,13 @@ env:
 - pressKey: enter
 - waitForAnimationToEnd
 
+- scrollUntilVisible:
+    element:
+      id: RuleForm.Action.0.TypeSelector
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
+
 - tapOn:
     id: RuleForm.Action.0.TypeSelector
 - extendedWaitUntil:
