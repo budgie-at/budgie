@@ -5,8 +5,9 @@ env:
 - waitForAnimationToEnd
 - tapOn:
     id: 'ActionButton'
+    retryTapIfNoChange: true
 - extendedWaitUntil:
     visible:
       id: '${ACTION_ITEM_ID}.Label'
-    timeout: 3000
+    timeout: 10000
 - waitForAnimationToEnd
