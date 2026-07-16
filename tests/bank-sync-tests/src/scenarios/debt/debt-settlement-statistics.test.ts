@@ -59,6 +59,72 @@ afterEach(() => {
 });
 
 describe('debt settlement statistics', () => {
+    it('hydrates only live entries for statistics transaction cards', async () => {
+        const [category] = testDb.select().from(CategoryEntityTable).all();
+        const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+        const debtAccount = seed.account({ title: 'Debt account', type: AccountTypeEnum.DEBT });
+        const transaction = createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
+        const originalTransaction = createTransaction({
+            type: TransactionTypeEnum.INCOME,
+            title: 'Moved source',
+            externalSource: ExternalSourceEnum.MONOBANK,
+            fromAccountId: null,
+            toAccountId: cashAccount.id
+        });
+
+        insertOne(TransactionEntryEntityTable, {
+            transactionId: transaction.id,
+            accountId: debtAccount.id,
+            type: TransactionEntryTypeEnum.CREDIT,
+            kind: TransactionEntryKindEnum.DEBT_SETTLEMENT,
+            amount: 200 * PRECISION,
+            categoryId: null,
+            mccCategoryId: null,
+            externalId: null,
+            exchangeRate: 1,
+            baseInstrumentId: 1,
+            baseExchangeRate: 1,
+            baseAmount: 200 * PRECISION,
+            toIban: null,
+            originalTransactionId: null,
+            deletedAt: new Date('2026-06-03T12:00:00.000Z')
+        });
+        insertOne(TransactionEntryEntityTable, {
+            transactionId: transaction.id,
+            accountId: cashAccount.id,
+            type: TransactionEntryTypeEnum.DEBIT,
+            kind: TransactionEntryKindEnum.PRIMARY,
+            amount: 300 * PRECISION,
+            categoryId: category.id,
+            mccCategoryId: null,
+            externalId: null,
+            exchangeRate: 1,
+            baseInstrumentId: 1,
+            baseExchangeRate: 1,
+            baseAmount: 300 * PRECISION,
+            toIban: null,
+            originalTransactionId: originalTransaction.id
+        });
+
+        const transactions = await statisticsRepository.getTransactions(
+            {
+                type: TransactionTypeEnum.INCOME,
+                date: null,
+                categoryIds: null,
+                excludedCategoryIds: null,
+                tagIds: null
+            },
+            10,
+            LanguageEnum.EN
+        );
+
+        expect(transactions).toHaveLength(1);
+        expect(transactions[0]?.entries).toHaveLength(1);
+        expect(transactions[0]?.entries[0]?.amount).toBe(100 * PRECISION);
+        expect(transactions[0]?.entries[0]?.deletedAt).toBeNull();
+        expect(transactions[0]?.entries[0]?.originalTransactionId).toBeNull();
+    });
+
     it('counts debt returns once in income analytics while updating lent debt progress', async () => {
         const { category, cashAccount, debtAccount } = createFundedLentDebtFixture(300 * PRECISION);
 
