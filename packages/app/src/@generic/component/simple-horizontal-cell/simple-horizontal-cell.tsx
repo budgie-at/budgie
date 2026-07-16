@@ -52,6 +52,7 @@ export const SimpleHorizontalCell = (props: Props) => {
             {isNotEmptyString(description) ? (
                 <Text
                     className="text-sm font-medium text-secondary-foreground"
+                    pointerEvents="none"
                     testID={descriptionTestID}
                     {...(singleLine && { numberOfLines: 1 })}
                 >

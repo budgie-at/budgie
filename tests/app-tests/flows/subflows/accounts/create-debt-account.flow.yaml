@@ -30,12 +30,11 @@ appId: ${APP_ID}
       timeout: 3000
 - tapOn:
       id: 'AccountForm.CurrencySelector'
-      retryTapIfNoChange: true
 - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'CurrencySelector.SearchInput'
-      timeout: 10000
+      timeout: 3000
 - tapOn:
       id: 'CurrencySelector.SearchInput'
 - eraseText: 100
