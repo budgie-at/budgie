@@ -15,7 +15,7 @@ yarn build:force                          # Build without cache
 # Validation (run in this order before committing)
 yarn format                               # Oxfmt (run first - may modify files)
 yarn ts                                   # TypeScript check
-yarn lint                                 # Oxlint + 14-rule ESLint fallback (skip during debug sessions)
+yarn lint                                 # Oxlint + 13-rule ESLint fallback (skip during debug sessions)
 yarn deadcode                             # Knip dead code detection
 yarn cpd                                  # Code duplication check
 
@@ -510,13 +510,13 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 | **contracts** | Drizzle ORM, Zod, drizzle-zod                                                                                                                                 |
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                              |
 | **bank-sync** | ky HTTP client, date-fns                                                                                                                                      |
-| **Build**     | Yarn 4.17.1 (`node-modules` linker), Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.73 JS bridge + 14-rule ESLint 10 fallback |
+| **Build**     | Yarn 4.17.1 (`node-modules` linker), Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.74 JS bridge + 13-rule ESLint 10 fallback |
 
 ## Workflow
 
 1. **Fresh clone:** `yarn install`
 2. **After contracts changes:** `yarn build`
-3. **Before commit:** Husky runs `yarn ts`, then lint-staged applies Oxlint, the 14-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
+3. **Before commit:** Husky runs `yarn ts`, then lint-staged applies Oxlint, the 13-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
 4. **Before PR:** Run all validation commands
 5. **Commit after every accepted change.** During interactive/live-tweak sessions, each user-approved fix or feature increment gets its own focused conventional commit immediately (validated via ts + lint first) — do not batch unrelated accepted changes into one commit or leave approved work uncommitted.
 6. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.

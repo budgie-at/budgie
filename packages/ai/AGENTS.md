@@ -23,7 +23,7 @@ Dual model setup:
 yarn build    # Native TypeScript 7 compilation
 yarn clear    # Remove dist/ (needed after deleting source files)
 yarn ts       # Native TypeScript 7 check without emit
-yarn lint     # Oxlint + 14-rule ESLint fallback
+yarn lint     # Oxlint + 13-rule ESLint fallback
 ```
 
 ## File Organization

@@ -25,7 +25,7 @@ const compatibleReactRecommendedConfig = {
     plugins: { react: compatibleReactPlugin }
 };
 const residualRuleIds =
-    `consistent-this id-denylist no-restricted-syntax require-atomic-updates @typescript-eslint/member-ordering camelcase no-invalid-this no-octal no-octal-escape no-undef-init newline-before-return react/jsx-uses-react react/jsx-uses-vars react/no-deprecated`.split(
+    `consistent-this id-denylist no-restricted-syntax require-atomic-updates @typescript-eslint/member-ordering camelcase no-invalid-this no-octal no-undef-init newline-before-return react/jsx-uses-react react/jsx-uses-vars react/no-deprecated`.split(
         ' '
     );
 const oxlintFallbackConfigs = eslintPluginOxlint
