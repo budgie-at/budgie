@@ -490,18 +490,18 @@ jobs:
     e2e-ios:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, build-ios-e2e-app]
-        name: E2E Tests on iOS (shard ${{ matrix.shard-number }}/2)
+        name: E2E Tests on iOS (shard ${{ matrix.shard-number }}/4)
         runs-on: [self-hosted, macOS, ARM64, macos-maestro]
         timeout-minutes: 90
         strategy:
             fail-fast: false
-            max-parallel: 2
+            max-parallel: 4
             matrix:
                 include:
-                    - shard-index: 0
-                      shard-number: 1
-                    - shard-index: 1
-                      shard-number: 2
+                    - shard-number: 1
+                    - shard-number: 2
+                    - shard-number: 3
+                    - shard-number: 4
         permissions:
             contents: read
         env:
@@ -626,22 +626,17 @@ jobs:
               timeout-minutes: 75
               working-directory: tests/app-tests
               shell: bash
-              env:
-                  SHARD_INDEX: ${{ matrix.shard-index }}
               run: |
                   set -euo pipefail
-                  all_flows=()
-                  while IFS= read -r flow; do
-                    all_flows+=("$flow")
-                  done < <(find flows -maxdepth 1 -type f -name '*.flow.yaml' | sort)
+                  shard_file="shards/shard-${{ matrix.shard-number }}.txt"
+                  test -f "$shard_file"
                   selected=()
-                  for index in "${!all_flows[@]}"; do
-                    if (( index % 2 == SHARD_INDEX )); then
-                      selected+=("${all_flows[$index]}")
-                    fi
-                  done
+                  while IFS= read -r flow || [ -n "$flow" ]; do
+                    [ -n "$flow" ] || continue
+                    selected+=("flows/$flow")
+                  done < "$shard_file"
                   test "${#selected[@]}" -gt 0
-                  printf 'Shard %s flows:\n%s\n' "$SHARD_INDEX" "${selected[*]}"
+                  printf 'Shard %s flows:\n%s\n' "${{ matrix.shard-number }}" "${selected[*]}"
                   sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e \
                     --format junit \
                     --output ./artifacts/maestro/report.xml \
