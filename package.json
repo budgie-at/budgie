@@ -60,7 +60,8 @@
         "react": "19.2.3",
         "react-dom": "19.2.3",
         "typescript": "npm:@typescript/typescript6@6.0.2",
-        "ws@npm:^8.12.1": "8.21.0"
+        "ws@npm:^8.12.1": "8.21.0",
+        "react-native-screens@npm:^4.25.2": "patch:react-native-screens@npm%3A4.26.0#~/.yarn/patches/react-native-screens-npm-4.26.0-54f969441f.patch"
     },
     "devDependencies": {
         "@commitlint/cli": "21.2.1",

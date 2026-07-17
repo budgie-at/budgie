@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
+import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
@@ -55,19 +56,29 @@ export const UpdateDebtAccount = ({ account }: Props) => {
         ]
     );
 
-    const { control, handleSubmit, instrument } = useDebtAccountForm(
+    const { control, handleSubmit, instrument, isSubmitting } = useDebtAccountForm(
         initialValues,
         values => accountService.updateDebtById(account.id, values),
         true
     );
 
-    if (!isDefined(instrument)) {
+    const stickyInstrument = useStickyDefinedValue(instrument);
+
+    if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
     }
 
+    const instrumentSymbol = stickyInstrument.symbol;
+
     return (
-        <UpdateAccountScreen instrumentSymbol={instrument.symbol} onSubmit={handleSubmit} account={account} control={control}>
-            <AccountTargetBalanceField control={control} instrumentSymbol={instrument.symbol} />
+        <UpdateAccountScreen
+            instrumentSymbol={instrumentSymbol}
+            onSubmit={handleSubmit}
+            account={account}
+            control={control}
+            isSubmitting={isSubmitting}
+        >
+            <AccountTargetBalanceField control={control} instrumentSymbol={instrumentSymbol} />
             <DebtAccountContactField control={control} />
             <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
             <IncludeInNetWorthField control={control} />

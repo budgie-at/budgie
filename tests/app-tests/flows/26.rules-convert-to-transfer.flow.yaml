@@ -89,7 +89,7 @@ env:
     visible:
       id: 'TransactionInfo.Page'
     timeout: 10000
-- assertVisible:
+- assertNotVisible:
     id: 'TransactionInfo.Row.Note'
 - assertVisible:
     id: 'TransactionInfo.Row.FromAccount'

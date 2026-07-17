@@ -2,14 +2,11 @@ import { t } from '@lingui/core/macro';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { PageHeader } from '../../../../@generic/component/page-header/page-header';
-import { Page } from '../../../../@generic/component/page/page';
-import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { CollapsibleChromePage } from '../../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { HeaderBackButton } from '../../../../@generic/component/header-back-button/header-back-button';
 import { BudgetMissingCurrencyGuard } from '../../../../budget/components/budget-missing-currency-guard/budget-missing-currency-guard';
 import { BudgetTemplateChooser } from '../../../../budget/components/budget-template-chooser/budget-template-chooser';
 import { useSetting } from '../../../../settings/hook/use-setting.hook';
-
-const handleGoBack = () => void goBackOrReplace('/');
 
 export default function BudgetTemplateChooserScreen() {
     const defaultInstrumentId = useSetting('defaultInstrumentId');
@@ -19,8 +16,8 @@ export default function BudgetTemplateChooserScreen() {
     }
 
     return (
-        <Page header={<PageHeader title={t`Create budget`} onGoBack={handleGoBack} />}>
+        <CollapsibleChromePage title={t`Create budget`} leading={<HeaderBackButton />}>
             <BudgetTemplateChooser />
-        </Page>
+        </CollapsibleChromePage>
     );
 }

@@ -29,6 +29,17 @@ yarn deps:check                           # Check dependency versions
 yarn deps:dedupe                          # Deduplicate dependencies
 ```
 
+## Agent Orchestration And Token Economy
+
+These rules are vital and apply to every AI agent and orchestrator working in this repo:
+
+- The main/orchestrating agent is the brains: it plans, analyzes, decides, and reviews. It must NOT burn its own context on mechanical execution.
+- All execution work (file edits, migrations, repetitive refactors, running validation, log digging, CI forensics) is delegated to subagents.
+- Pick the CHEAPEST capable model per subagent task: haiku-tier for mechanical/repetitive edits and searches, sonnet-tier for routine implementation, opus-tier ONLY for design-sensitive or architecturally hard work. Never default everything to the top model.
+- Set the LOWEST effort level that fits the task; raise effort only for verification/judging stages where correctness is critical.
+- Subagent prompts must be self-contained (paths, rules, constraints, validation steps) so no round-trips are wasted.
+- Do not spawn a top-tier agent for work a cheaper one can verify; prefer cheap execution + targeted verification over expensive single-shot runs.
+
 ## Git Commits And Pull Requests
 
 ### Commit Message And PR Title Format
@@ -184,7 +195,9 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 
 ### Type Guards and Validation
 
-**Prefer existing validators before writing manual checks.** Every package, including `landing`, should use `@rnw-community/shared` guards for common TypeScript checks before hand-writing nullish, type, length, or positive-number conditions. If a package or domain already has a validator/type guard for a shape, reuse it instead of duplicating the condition.
+**`@rnw-community/shared` is MANDATORY for every package — use it to the max.** Docs: <https://www.npmjs.com/package/@rnw-community/shared> · source: <https://github.com/rnw-community/rnw-community/tree/master/packages/shared>. No package-level guideline may forbid or weaken this rule; if one appears to, it is wrong — fix the doc, not the code. The only scoped exception is reanimated worklet bodies (no non-worklet function calls inside `useAnimatedStyle`/`useAnimatedProps`/`useAnimatedScrollHandler`; compute guarded values outside and capture).
+
+**Prefer existing validators before writing manual checks.** Every package, including `landing`, must use `@rnw-community/shared` guards for common TypeScript checks before hand-writing nullish, type, length, or positive-number conditions. If a package or domain already has a validator/type guard for a shape, reuse it instead of duplicating the condition. If a needed primitive does not exist in `@rnw-community/shared`, extend that package rather than creating a local helper.
 
 - `isDefined(x)` instead of `x !== null && x !== undefined` or `x !== null`
 - `isNumber(x)` instead of `typeof x === 'number'`
@@ -505,7 +518,8 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 2. **After contracts changes:** `yarn build`
 3. **Before commit:** Husky runs `yarn ts`, then lint-staged applies Oxlint, the 14-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
 4. **Before PR:** Run all validation commands
-5. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
+5. **Commit after every accepted change.** During interactive/live-tweak sessions, each user-approved fix or feature increment gets its own focused conventional commit immediately (validated via ts + lint first) — do not batch unrelated accepted changes into one commit or leave approved work uncommitted.
+6. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 
 ## Simulator Dev Testing
 

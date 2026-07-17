@@ -1,6 +1,6 @@
 import { AccountTypeEnum, TransactionEntryTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
@@ -17,18 +17,21 @@ import { useConsolidationSourceModal } from '../../context/consolidation-source-
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
-import { TransactionActionsMenu } from '../transaction-actions-menu/transaction-actions-menu';
 import { TransferQuickForm } from '../transfer-quick-form/transfer-quick-form';
+import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
+import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
 export const UpdateTransferTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
+    const simpleQuickFormRef = useRef<SimpleQuickFormRefInterface>(null);
     const { markForEmbedding } = useEmbeddingGenerator();
     const [openConsolidationSource] = useConsolidationSourceModal();
 
-    const debitEntry = transaction.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
-    const initialDestinationAmount = isDefined(debitEntry) ? convertFromMicroUnits(debitEntry.amount) : 0;
+    const initialDestinationAmount = convertFromMicroUnits(
+        transaction.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT)?.amount ?? 0
+    );
     const isConsolidated = isDefined(transaction.consolidationType);
     const handleRevert = useRevertConsolidation(transaction.id, () => void dismissAllOrReplace('/'));
 
@@ -46,17 +49,16 @@ export const UpdateTransferTransaction = ({ transaction }: UpdateTransactionForm
     const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
     const { balance } = useAccountBalanceQuery(fromAccountId ?? 0);
 
-    const exceedsDebtBalance = account?.type === AccountTypeEnum.DEBT && amount > balance;
-
     const handleGoBack = () => void goBackOrReplace('/');
+    const handleFeePress = () => simpleQuickFormRef.current?.openFee();
 
     useEffect(() => {
-        if (exceedsDebtBalance) {
+        if (account?.type === AccountTypeEnum.DEBT && amount > balance) {
             form.setError('amount', { type: 'custom', message: t`Amount exceeds debt account balance` });
         } else {
             form.clearErrors('amount');
         }
-    }, [exceedsDebtBalance, form, t]);
+    }, [account?.type, amount, balance, form, t]);
 
     return (
         <FormProvider {...form}>
@@ -66,20 +68,23 @@ export const UpdateTransferTransaction = ({ transaction }: UpdateTransactionForm
                         title={t`Edit Transfer`}
                         onGoBack={handleGoBack}
                         right={
-                            <TransactionActionsMenu
+                            <UpdateTransactionActionsMenu
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
-                                {...(isConsolidated && { onRevert: handleRevert })}
+                                onRevert={handleRevert}
+                                onFeePress={handleFeePress}
                             />
                         }
                     />
                 }
             >
                 <TransferQuickForm
+                    ref={simpleQuickFormRef}
                     variant="default"
                     initialDestinationAmount={initialDestinationAmount}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
+                    showInlineFeeAction={false}
                     {...(isConsolidated && { onConsolidationPress: () => void openConsolidationSource({ transactionId: transaction.id }) })}
                 />
             </FullPage>

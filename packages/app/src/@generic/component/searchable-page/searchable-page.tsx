@@ -1,15 +1,24 @@
+import {
+    CollapsibleHeader,
+    CollapsibleHeaderBackdrop,
+    CollapsibleHeaderLargeTitle,
+    CollapsibleHeaderLeading,
+    CollapsibleHeaderSmallTitle,
+    CollapsibleHeaderTitleSlot,
+    EdgeFade,
+    ScreenChromeFrame
+} from '@budgie/screen-chrome';
 import { ReactElement, ReactNode } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
 import { IdInterface } from '../../interface/id.interface';
-import { BlurGradient } from '../blur-gradient/blur-gradient';
+import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
+import { GoBackButton } from '../go-back-button/go-back-button';
 import { KeyboardStickySearchInput } from '../keyboard-sticky-search-input/keyboard-sticky-search-input';
-import { PageHeader } from '../page-header/page-header';
-import { Page } from '../page/page';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
 
 import { SEARCH_BLUR_OFFSET, SEARCH_BLUR_Z_INDEX, SEARCH_INPUT_VERTICAL_OFFSET, SEARCH_KEYBOARD_GAP } from './searchable-page.constant';
@@ -60,26 +69,50 @@ export const SearchablePage = <T extends IdInterface>({
 
     return (
         <View className="flex-1">
-            <Page testID={testID} withBlur header={<PageHeader onGoBack={onGoBack} title={title} />}>
-                {isNotEmptyArray(data) ? (
-                    <SearchablePageList
-                        onDelete={onDelete}
-                        data={data}
-                        renderCard={renderCard}
-                        getDeleteConfirmation={getDeleteConfirmation}
-                        listHeader={listHeader}
-                        estimatedHeaderSize={estimatedHeaderSize}
-                        sizing={sizing}
-                    >
-                        {children}
-                    </SearchablePageList>
-                ) : (
-                    emptyState
-                )}
-            </Page>
+            <ScreenChromeThemeProvider>
+                <ScreenChromeFrame>
+                    <View className="flex-1 px-5xl" testID={testID}>
+                        {isNotEmptyArray(data) ? (
+                            <SearchablePageList
+                                onDelete={onDelete}
+                                data={data}
+                                renderCard={renderCard}
+                                getDeleteConfirmation={getDeleteConfirmation}
+                                listHeader={listHeader}
+                                estimatedHeaderSize={estimatedHeaderSize}
+                                sizing={sizing}
+                            >
+                                {children}
+                            </SearchablePageList>
+                        ) : (
+                            emptyState
+                        )}
+                    </View>
+
+                    <CollapsibleHeaderBackdrop />
+
+                    <CollapsibleHeader>
+                        <CollapsibleHeaderLeading>
+                            <GoBackButton onPress={onGoBack} />
+                        </CollapsibleHeaderLeading>
+                        <CollapsibleHeaderTitleSlot>
+                            <CollapsibleHeaderLargeTitle>
+                                <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
+                                    {title}
+                                </Text>
+                            </CollapsibleHeaderLargeTitle>
+                        </CollapsibleHeaderTitleSlot>
+                        <CollapsibleHeaderSmallTitle>
+                            <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>
+                                {title}
+                            </Text>
+                        </CollapsibleHeaderSmallTitle>
+                    </CollapsibleHeader>
+                </ScreenChromeFrame>
+            </ScreenChromeThemeProvider>
 
             <View className="absolute inset-x-0 h-[150px]" style={searchBlurStyle}>
-                <BlurGradient position="bottom" />
+                <EdgeFade position="bottom" />
             </View>
             <KeyboardStickySearchInput
                 search={search}

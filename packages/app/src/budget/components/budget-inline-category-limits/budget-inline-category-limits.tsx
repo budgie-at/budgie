@@ -86,9 +86,6 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
                     />
                 </View>
             </View>
-            <Text className="text-secondary-foreground text-sm">
-                <Trans>Optional per-category caps within this budget</Trans>
-            </Text>
             <BudgetCategoryLimitCompactRowLayout
                 amountInput={
                     <BudgetLimitAmountInput

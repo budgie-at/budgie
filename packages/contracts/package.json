@@ -35,7 +35,7 @@
         "date-fns": "^4.3.0",
         "drizzle-orm": "^0.45.2",
         "drizzle-zod": "^0.8.3",
-        "expo-sqlite": "~56.0.4",
+        "expo-sqlite": "~57.0.0",
         "zod": "4.1.12"
     }
 }
