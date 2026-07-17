@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { buildTestDb, createTestRepositories } from '@budgie-at/test-kit';
 import {
     DebtEventDirectionEnum,
     DebtEventSourceEnum,
@@ -9,7 +10,6 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { buildTestDb, createTestRepositories } from '@budgie-at/test-kit';
 import { expect } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';

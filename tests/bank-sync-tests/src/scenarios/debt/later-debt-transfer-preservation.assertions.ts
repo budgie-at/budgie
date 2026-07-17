@@ -36,10 +36,9 @@ export class LaterDebtTransferPreservationAssertions {
             .prepare<[], LaterDebtTransferSnapshotInterface['transaction']>(LaterDebtTransferPreservationAssertions.TRANSACTION_SQL)
             .get();
         const transactionEntries = sqlite
-            .prepare<
-                [],
-                LaterDebtTransferSnapshotInterface['transactionEntries'][number]
-            >(LaterDebtTransferPreservationAssertions.TRANSACTION_ENTRIES_SQL)
+            .prepare<[], LaterDebtTransferSnapshotInterface['transactionEntries'][number]>(
+                LaterDebtTransferPreservationAssertions.TRANSACTION_ENTRIES_SQL
+            )
             .all();
         const debtEvent = sqlite
             .prepare<[], LaterDebtTransferSnapshotInterface['debtEvent']>(LaterDebtTransferPreservationAssertions.DEBT_EVENT_SQL)
