@@ -39,6 +39,14 @@ export class DebtMigrationIdempotencyAssertions {
     private static readonly MULTI_ENTRY_OPEN_EVENT_ID = Number('900301');
     private static readonly MULTI_ENTRY_SETTLEMENT_EVENT_ID = Number('900303');
     private static readonly MULTI_ENTRY_TRANSACTION_ID = Number('900301');
+    private static readonly POST_CUTOFF_ACCOUNT_ID = Number('900501');
+    private static readonly POST_CUTOFF_ADJUSTMENT_ENTRY_ID = Number('900501');
+    private static readonly POST_CUTOFF_ADJUSTMENT_TRANSACTION_ID = Number('900501');
+    private static readonly POST_CUTOFF_CLOSE_EVENT_ID = Number('900503');
+    private static readonly POST_CUTOFF_EVENT_ID = Number('900504');
+    private static readonly POST_CUTOFF_OPEN_EVENT_ID = Number('900502');
+    private static readonly POST_CUTOFF_TRANSACTION_ENTRY_ID = Number('900502');
+    private static readonly POST_CUTOFF_TRANSACTION_ID = Number('900502');
 
     constructor(private readonly db: DB) {}
 
@@ -47,12 +55,14 @@ export class DebtMigrationIdempotencyAssertions {
         const fresh = await getDebtMigrationPersistedSnapshot(this.db, DebtMigrationIdempotencyAssertions.FRESH_ACCOUNT_ID);
         const lookalike = await getDebtMigrationPersistedSnapshot(this.db, DebtMigrationIdempotencyAssertions.LOOKALIKE_ACCOUNT_ID);
         const multiEntry = await getDebtMigrationPersistedSnapshot(this.db, DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID);
+        const postCutoff = await getDebtMigrationPersistedSnapshot(this.db, DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID);
 
         this.assertFreshPersistedRows(fresh);
         this.assertLookalikePersistedRows(lookalike);
         this.assertMultiEntryPersistedRows(multiEntry);
+        this.assertPostCutoffPersistedRows(postCutoff);
         await this.db.$client.execAsync(repairMigrationSql);
-        await this.assertSnapshotsUnchanged(firstExecution, fresh, lookalike);
+        await this.assertSnapshotsUnchanged(firstExecution, fresh, lookalike, postCutoff);
         expect(await getDebtMigrationPersistedSnapshot(this.db, DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID)).toEqual(
             multiEntry
         );
@@ -62,7 +72,8 @@ export class DebtMigrationIdempotencyAssertions {
     private async assertSnapshotsUnchanged(
         firstExecution: DebtMigrationFirstExecutionSnapshotInterface,
         fresh: DebtMigrationPersistedSnapshotInterface,
-        lookalike: DebtMigrationPersistedSnapshotInterface
+        lookalike: DebtMigrationPersistedSnapshotInterface,
+        postCutoff: DebtMigrationPersistedSnapshotInterface
     ): Promise<void> {
         expect(await getDebtMigrationPersistedSnapshot(this.db, DebtMigrationIdempotencyAssertions.CANONICAL_ACCOUNT_ID)).toEqual(
             firstExecution.canonical
@@ -73,6 +84,9 @@ export class DebtMigrationIdempotencyAssertions {
         expect(await getDebtMigrationPersistedSnapshot(this.db, DebtMigrationIdempotencyAssertions.FRESH_ACCOUNT_ID)).toEqual(fresh);
         expect(await getDebtMigrationPersistedSnapshot(this.db, DebtMigrationIdempotencyAssertions.LOOKALIKE_ACCOUNT_ID)).toEqual(
             lookalike
+        );
+        expect(await getDebtMigrationPersistedSnapshot(this.db, DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID)).toEqual(
+            postCutoff
         );
     }
 
@@ -213,6 +227,63 @@ export class DebtMigrationIdempotencyAssertions {
         ]);
     }
 
+    private assertPostCutoffPersistedRows(snapshot: DebtMigrationPersistedSnapshotInterface): void {
+        expect(snapshot.accounts).toHaveLength(1);
+        expect(snapshot.transactions).toEqual([
+            expect.objectContaining({
+                deletedAt: null,
+                fromAccountId: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID,
+                id: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_TRANSACTION_ID,
+                toAccountId: null,
+                type: TransactionTypeEnum.ADJUSTMENT
+            }),
+            expect.objectContaining({
+                deletedAt: null,
+                fromAccountId: 100,
+                id: DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ID,
+                toAccountId: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID,
+                type: TransactionTypeEnum.DEBT
+            })
+        ]);
+        expect(snapshot.transactionEntries).toEqual([
+            expect.objectContaining({
+                accountId: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID,
+                amount: 250_000_000,
+                deletedAt: null,
+                id: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_ENTRY_ID,
+                type: TransactionEntryTypeEnum.CREDIT
+            }),
+            expect.objectContaining({
+                accountId: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID,
+                amount: 250_000_000,
+                deletedAt: null,
+                id: DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ENTRY_ID,
+                type: TransactionEntryTypeEnum.DEBIT
+            })
+        ]);
+        expect(snapshot.debtEvents).toEqual([
+            expect.objectContaining({
+                amount: 2_000_000_000,
+                direction: DebtEventDirectionEnum.OPEN,
+                id: DebtMigrationIdempotencyAssertions.POST_CUTOFF_OPEN_EVENT_ID,
+                source: DebtEventSourceEnum.MANUAL
+            }),
+            expect.objectContaining({
+                amount: 1_750_000_000,
+                direction: DebtEventDirectionEnum.CLOSE,
+                id: DebtMigrationIdempotencyAssertions.POST_CUTOFF_CLOSE_EVENT_ID,
+                source: DebtEventSourceEnum.MANUAL
+            }),
+            expect.objectContaining({
+                direction: DebtEventDirectionEnum.CLOSE,
+                id: DebtMigrationIdempotencyAssertions.POST_CUTOFF_EVENT_ID,
+                source: DebtEventSourceEnum.TRANSFER,
+                transactionEntryId: DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ENTRY_ID,
+                transactionId: DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ID
+            })
+        ]);
+    }
+
     private assertAdjustmentTransactionRows(
         snapshot: DebtMigrationPersistedSnapshotInterface,
         accountId: number,
@@ -247,7 +318,8 @@ export class DebtMigrationIdempotencyAssertions {
             VALUES
                 (${DebtMigrationIdempotencyAssertions.FRESH_ACCOUNT_ID}, 1781049600, 1781049600, 'Fresh borrowed debt', 'DEBT', 'LIABILITY', 'BORROW', 1, 2000000000, 2, 0.92, 1840000000, 0),
                 (${DebtMigrationIdempotencyAssertions.LOOKALIKE_ACCOUNT_ID}, 1781136000, 1781136000, 'Contradictory borrowed lookalike', 'DEBT', 'LIABILITY', 'BORROW', 1, 3000000000, 2, 0.92, 2760000000, 0),
-                (${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID}, 1780358400, 1780358400, 'Multi-entry borrowed lookalike', 'DEBT', 'LIABILITY', 'BORROW', 1, 2000000000, 2, 0.92, 1840000000, 0);
+                (${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID}, 1780358400, 1780358400, 'Multi-entry borrowed lookalike', 'DEBT', 'LIABILITY', 'BORROW', 1, 2000000000, 2, 0.92, 1840000000, 0),
+                (${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, 1780358400, 1780358400, 'Post-cutoff borrowed debt', 'DEBT', 'LIABILITY', 'BORROW', 1, 2000000000, 2, 0.92, 1840000000, 0);
 
             INSERT INTO account_balances (id, created_at, updated_at, account_id, amount)
             VALUES (${DebtMigrationIdempotencyAssertions.LOOKALIKE_BALANCE_ID}, 1781136000, 1781136000, ${DebtMigrationIdempotencyAssertions.LOOKALIKE_ACCOUNT_ID}, 300000000);
@@ -264,6 +336,12 @@ export class DebtMigrationIdempotencyAssertions {
             ), (
                 ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_TRANSACTION_ID}, 1780358400, 1780358400, 'ADJUSTMENT',
                 'Multi-entry borrowed adjustment', 1780358400, '', ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID}, NULL, 1
+            ), (
+                ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_TRANSACTION_ID}, 1780358400, 1780358400, 'ADJUSTMENT',
+                'Post-cutoff borrowed adjustment', 1780358400, '', ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, NULL, 1
+            ), (
+                ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ID}, 1784131200, 1784131200, 'DEBT',
+                'Post-cutoff borrowed transfer', 1784131200, '', 100, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, 1
             );
 
             INSERT INTO transaction_entries (
@@ -286,6 +364,14 @@ export class DebtMigrationIdempotencyAssertions {
                 ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_CASH_ENTRY_ID}, 1780358400, 1780358400, 'DEBIT',
                 100, NULL, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_TRANSACTION_ID},
                 ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ADJUSTMENT_AMOUNT}, 'PRIMARY', 'USER', 1, NULL, 2, 0.025, 6250000
+            ), (
+                ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_ENTRY_ID}, 1780358400, 1780358400, 'CREDIT',
+                ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, NULL, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_TRANSACTION_ID},
+                250000000, 'PRIMARY', 'USER', 1, NULL, 2, 0.92, 230000000
+            ), (
+                ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ENTRY_ID}, 1784131200, 1784131200, 'DEBIT',
+                ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, NULL, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ID},
+                250000000, 'PRIMARY', 'USER', 1, NULL, 2, 0.92, 230000000
             );
 
             INSERT INTO debt_events (
@@ -300,7 +386,10 @@ export class DebtMigrationIdempotencyAssertions {
                 (${DebtMigrationIdempotencyAssertions.LOOKALIKE_SETTLEMENT_EVENT_ID}, 1781136000, 1781136000, ${DebtMigrationIdempotencyAssertions.LOOKALIKE_ACCOUNT_ID}, ${DebtMigrationIdempotencyAssertions.LOOKALIKE_TRANSACTION_ID}, ${DebtMigrationIdempotencyAssertions.LOOKALIKE_TRANSACTION_ENTRY_ID}, 'OPEN', 'MIGRATION', 300000000, 2, 0.92, 276000000, 1781136000),
                 (${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_OPEN_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID}, NULL, NULL, 'OPEN', 'MANUAL', 2000000000, 2, 0.92, 1840000000, 1780358400),
                 (${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_CLOSE_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID}, NULL, NULL, 'CLOSE', 'MANUAL', 1750000000, 2, 0.92, 1610000000, 1780358400),
-                (${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_SETTLEMENT_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID}, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_TRANSACTION_ID}, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_DEBT_ENTRY_ID}, 'OPEN', 'MIGRATION', 250000000, 2, 0.92, 230000000, 1780358400);
+                (${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_SETTLEMENT_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID}, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_TRANSACTION_ID}, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_DEBT_ENTRY_ID}, 'OPEN', 'MIGRATION', 250000000, 2, 0.92, 230000000, 1780358400),
+                (${DebtMigrationIdempotencyAssertions.POST_CUTOFF_OPEN_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, NULL, NULL, 'OPEN', 'MANUAL', 2000000000, 2, 0.92, 1840000000, 1780358400),
+                (${DebtMigrationIdempotencyAssertions.POST_CUTOFF_CLOSE_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, NULL, NULL, 'CLOSE', 'MANUAL', 1750000000, 2, 0.92, 1610000000, 1780358400),
+                (${DebtMigrationIdempotencyAssertions.POST_CUTOFF_EVENT_ID}, 1784131200, 1784131200, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ID}, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ENTRY_ID}, 'CLOSE', 'TRANSFER', 250000000, 2, 0.92, 230000000, 1784131200);
         `);
     }
 }

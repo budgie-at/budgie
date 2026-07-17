@@ -85,7 +85,6 @@ export const TransactionAmount = ({ transaction, accountId = null }: Props) => {
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
     const sideVariant = TRANSACTION_COLOR[getTransactionType(transaction)];
     const sideTestID = isAdjustment ? TransactionCardSelector.AdjustmentAmount(convertFromMicroUnits(sideEntry.amount)) : amountTestID;
-    const debtEvent = transaction.debtEvents.at(0) ?? null;
 
-    return <TransactionEntryAmount debtEvent={debtEvent} entry={sideEntry} variant={sideVariant} testID={sideTestID} />;
+    return <TransactionEntryAmount debtEvent={transaction.debtEvents.at(0)} entry={sideEntry} variant={sideVariant} testID={sideTestID} />;
 };

@@ -16,7 +16,7 @@ import type { AggregatedTransactionEntryInterface } from '../../interface/aggreg
 import type { DebtEventWithRelationsEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly debtEvent: DebtEventWithRelationsEntityInterface | null;
+    readonly debtEvent?: DebtEventWithRelationsEntityInterface | null;
     readonly entry: AggregatedTransactionEntryInterface;
     readonly variant: ColorPaletteVariant;
     readonly testID: string;
@@ -44,9 +44,6 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, testID }: Pr
               debtConversionEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument.symbol
           )}`
         : null;
-    const debtConversionAccessibilityProps = isDefined(debtConversionAccessibilityLabel)
-        ? { accessibilityLabel: debtConversionAccessibilityLabel, accessible: true }
-        : {};
     const convertedAmountLabel = isCrossCurrency ? (
         <ConvertedAmountLabel
             instrumentId={entry.account.instrument.id}
@@ -63,7 +60,14 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, testID }: Pr
     );
 
     return (
-        <View className="items-end" testID={testID} {...debtConversionAccessibilityProps}>
+        <View
+            className="items-end"
+            testID={testID}
+            {...(isDefined(debtConversionAccessibilityLabel) && {
+                accessibilityLabel: debtConversionAccessibilityLabel,
+                accessible: true
+            })}
+        >
             <Text className={amountVariants({ variant })}>{formattedAmount}</Text>
             {secondaryAmountLabel}
         </View>

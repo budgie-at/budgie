@@ -114,11 +114,29 @@ WHERE accounts.type = 'DEBT'
       FROM debt_events transaction_backed_events
       INNER JOIN transactions transaction_backed_transactions
           ON transaction_backed_transactions.id = transaction_backed_events.transaction_id
+          AND transaction_backed_transactions.created_at < 1781257200
           AND transaction_backed_transactions.deleted_at IS NULL
+      INNER JOIN transaction_entries transaction_backed_entries
+          ON transaction_backed_entries.id = transaction_backed_events.transaction_entry_id
+          AND transaction_backed_entries.transaction_id = transaction_backed_transactions.id
+          AND transaction_backed_entries.created_at < 1781257200
+          AND transaction_backed_entries.original_transaction_id IS NULL
       WHERE transaction_backed_events.debt_account_id = accounts.id
         AND transaction_backed_events.transaction_id IS NOT NULL
-        AND transaction_backed_events.source IN ('MIGRATION', 'TRANSFER')
+        AND transaction_backed_events.transaction_entry_id IS NOT NULL
+        AND transaction_backed_events.created_at < 1781257200
         AND transaction_backed_events.deleted_at IS NULL
+        AND (
+            (
+                transaction_backed_events.source = 'MIGRATION'
+                AND transaction_backed_entries.kind IN ('PRIMARY', 'DEBT_SETTLEMENT')
+            )
+            OR (
+                transaction_backed_events.source = 'TRANSFER'
+                AND transaction_backed_transactions.type = 'DEBT'
+                AND transaction_backed_entries.kind = 'PRIMARY'
+            )
+        )
   )
 GROUP BY accounts.id, manual_events.id
 HAVING COUNT(*) = 1
@@ -234,21 +252,60 @@ INNER JOIN transaction_entries debt_entries
     AND debt_entries.created_at < 1781257200
     AND debt_entries.deleted_at IS NULL
     AND debt_entries.original_transaction_id IS NULL
-LEFT JOIN debt_events existing_events
+LEFT JOIN (
+    SELECT ranked_events.id,
+           ranked_events.transaction_id,
+           ranked_events.debt_account_id,
+           ranked_events.transaction_entry_id,
+           ranked_events.amount,
+           ranked_events.base_instrument_id,
+           ranked_events.base_exchange_rate,
+           ranked_events.base_amount,
+           ranked_events.created_at,
+           ranked_events.updated_at,
+           ranked_events.operated_at
+    FROM (
+        SELECT matching_events.id,
+               matching_events.transaction_id,
+               matching_events.debt_account_id,
+               matching_events.transaction_entry_id,
+               matching_events.amount,
+               matching_events.base_instrument_id,
+               matching_events.base_exchange_rate,
+               matching_events.base_amount,
+               matching_events.created_at,
+               matching_events.updated_at,
+               matching_events.operated_at,
+               ROW_NUMBER() OVER (
+                   PARTITION BY matching_events.debt_account_id,
+                                matching_events.transaction_id,
+                                matching_events.transaction_entry_id
+                   ORDER BY CASE
+                       WHEN matching_events.source = 'MIGRATION' THEN 0
+                       ELSE 1
+                   END,
+                   matching_events.id
+               ) AS event_rank
+        FROM debt_events matching_events
+        WHERE matching_events.deleted_at IS NULL
+          AND matching_events.created_at < 1781257200
+          AND (
+              (matching_events.direction = 'OPEN' AND matching_events.source = 'TRANSFER')
+              OR (matching_events.direction = 'CLOSE' AND matching_events.source = 'MIGRATION')
+          )
+    ) ranked_events
+    WHERE ranked_events.event_rank = 1
+) existing_events
     ON existing_events.transaction_id = transactions.id
     AND existing_events.debt_account_id = eligible_accounts.account_id
     AND existing_events.transaction_entry_id = debt_entries.id
-    AND existing_events.direction = 'OPEN'
-    AND existing_events.source = 'TRANSFER'
     AND existing_events.amount = debt_entries.amount
     AND existing_events.base_instrument_id IS debt_entries.base_instrument_id
     AND existing_events.base_exchange_rate IS debt_entries.base_exchange_rate
     AND existing_events.base_amount IS debt_entries.base_amount
     AND existing_events.created_at = debt_entries.created_at
-    AND existing_events.created_at < 1781257200
     AND existing_events.updated_at = debt_entries.updated_at
     AND existing_events.operated_at = transactions.operated_at
-    AND existing_events.deleted_at IS NULL
 WHERE (
       SELECT COUNT(*)
       FROM transaction_entries counted_entries
@@ -265,6 +322,32 @@ WHERE (
       )
       OR existing_events.id IS NOT NULL
   );
+--> statement-breakpoint
+UPDATE debt_events
+SET deleted_at = 1784131200,
+    updated_at = 1784131200
+WHERE debt_events.id IN (
+    SELECT duplicate_events.id
+    FROM borrowed_debt_transaction_candidates_migration candidates
+    INNER JOIN debt_events canonical_events
+        ON canonical_events.id = candidates.existing_event_id
+    INNER JOIN debt_events duplicate_events
+        ON duplicate_events.id != canonical_events.id
+        AND duplicate_events.transaction_id = candidates.transaction_id
+        AND duplicate_events.debt_account_id = candidates.debt_account_id
+        AND duplicate_events.transaction_entry_id = candidates.debt_entry_id
+        AND duplicate_events.amount = candidates.debt_entry_amount
+        AND duplicate_events.base_instrument_id IS candidates.debt_entry_base_instrument_id
+        AND duplicate_events.base_exchange_rate IS candidates.debt_entry_base_exchange_rate
+        AND duplicate_events.base_amount IS candidates.debt_entry_base_amount
+        AND duplicate_events.created_at < 1781257200
+        AND duplicate_events.deleted_at IS NULL
+        AND (
+            (duplicate_events.direction = 'OPEN' AND duplicate_events.source = 'TRANSFER')
+            OR (duplicate_events.direction = 'CLOSE' AND duplicate_events.source = 'MIGRATION')
+        )
+    WHERE candidates.existing_event_id IS NOT NULL
+);
 --> statement-breakpoint
 DROP TABLE IF EXISTS borrowed_debt_manual_open_candidates_migration;
 --> statement-breakpoint

@@ -753,7 +753,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         tx?: DB
     ): Promise<TransactionWithEntriesEntityInterface[]> {
         if (isNotEmptyArray(ids)) {
-            return await (tx ?? this.db).query.TransactionEntityTable.findMany({
+            return await (isDefined(tx) ? tx : this.db).query.TransactionEntityTable.findMany({
                 where: inArray(TransactionEntityTable.id, ids),
                 with: {
                     [TransactionAssociationEnum.ENTRIES]: {
