@@ -25,7 +25,7 @@ export const CurrencyModePill = ({ label, isFlipped, onPress }: Props) => {
 
     useEffect(() => {
         rotation.set(withSpring(isFlipped ? ROTATION_DEGREES : 0, SPRING_CONFIG));
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- rotation is a stable shared value reference
+        // oxlint-disable-next-line react/exhaustive-deps -- rotation is a stable shared value reference
     }, [isFlipped]);
 
     const iconStyle = useAnimatedStyle(() => ({

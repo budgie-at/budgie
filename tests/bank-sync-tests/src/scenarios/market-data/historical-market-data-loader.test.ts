@@ -1,11 +1,9 @@
+import { instrumentMarketDataJobRepository, instrumentRepository } from '@app/@generic/drizzle/db/db';
+import { historicalMarketDataLoaderService } from '@app/market-data/service/historical-market-data-loader.service';
+import { InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getDefined } from '@rnw-community/shared';
-
-import { InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
-
-import { instrumentMarketDataJobRepository, instrumentRepository } from '@app/@generic/drizzle/db/db';
-import { historicalMarketDataLoaderService } from '@app/market-data/service/historical-market-data-loader.service';
 
 import { flushScheduledDrain } from '../../harness/scheduler/flush-scheduled-drain';
 import { PausedUserWork } from '../../harness/sync-workload/paused-user-work';

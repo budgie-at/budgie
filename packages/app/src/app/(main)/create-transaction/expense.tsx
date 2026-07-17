@@ -6,8 +6,8 @@ import { FormProvider } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { FullPage } from '../../../@generic/component/page/full-page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';

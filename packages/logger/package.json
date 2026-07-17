@@ -17,13 +17,15 @@
     "react-native": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
     "scripts": {
-        "build": "run -T tsc -p tsconfig.json",
+        "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json",
         "build:watch": "yarn build --watch",
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo",
-        "format": "run -T prettier --write src",
-        "lint": "run -T eslint --fix src",
+        "format": "run -T oxfmt --write src",
+        "lint": "run -T oxlint --type-aware src && run -T eslint src",
+        "lint:eslint": "run -T eslint src",
+        "lint:fix": "run -T oxlint --type-aware --fix src && run -T eslint --fix src",
         "test": "run -T jest --passWithNoTests",
-        "ts": "run -T tsc -p ."
+        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {
         "@rnw-community/log-decorator": "^2.2.0",

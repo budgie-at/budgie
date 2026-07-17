@@ -9,9 +9,9 @@ import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { TransactionAmount } from '../transaction-amount/transaction-amount';
-import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionCardAccountInfo } from '../transaction-card-account-info/transaction-card-account-info';
 import { TransactionCardTags } from '../transaction-card-tags/transaction-card-tags';
+import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
 import { TransactionMetadataRows } from '../transaction-metadata-rows/transaction-metadata-rows';
 

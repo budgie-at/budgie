@@ -2,9 +2,9 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type { ConsolidationAutoCandidateService } from './consolidation-auto-candidate.service';
 import type { ConsolidationCandidateService } from './consolidation-candidate.service';
-import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 export class ConsolidationCoordinatorService {

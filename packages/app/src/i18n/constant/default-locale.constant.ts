@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 
 import { LocaleInfoInterface } from '../interface/locale-info.interface';
 

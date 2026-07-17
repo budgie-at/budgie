@@ -36,6 +36,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
+          persist-credentials: false
           fetch-depth: 1
 
       - name: Run Claude Code Review

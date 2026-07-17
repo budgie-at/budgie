@@ -51,10 +51,7 @@ export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
         };
 
         if (isRefund) {
-            setRefundsTotal(null);
             void fetchRefundsTotal().catch(handleError);
-        } else {
-            setRefundsTotal(null);
         }
 
         return () => {

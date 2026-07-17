@@ -23,7 +23,7 @@ export const getOrCreateBankAccount = async (bankAccount: BankAccountInterface, 
     const instruments = await instrumentRepository.getAll();
     const instrument = instruments.find(item => item.code === bankAccount.currencyCode);
     if (!isDefined(instrument)) {
-        // eslint-disable-next-line lingui/no-unlocalized-strings
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
         throw new Error(`Instrument not found for currency: ${bankAccount.currencyCode}`);
     }
 
@@ -31,7 +31,7 @@ export const getOrCreateBankAccount = async (bankAccount: BankAccountInterface, 
 
     const [createdAccount] = Object.values(await accountService.bulkCreate([input], tx));
     if (!isDefined(createdAccount)) {
-        // eslint-disable-next-line lingui/no-unlocalized-strings
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
         throw new Error('Failed to create bank account');
     }
 

@@ -4,8 +4,8 @@ import { View } from 'react-native';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { QuickFormBottomOverlay } from '../quick-form-bottom-overlay/quick-form-bottom-overlay';
-import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { SimpleQuickFormAmountHeader } from '../simple-quick-form-amount-header/simple-quick-form-amount-header';
+import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 
 import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';

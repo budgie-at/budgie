@@ -41,7 +41,7 @@ export default async function FeaturesHubPage(props: PageLangParam) {
     const i18n = getI18nInstance(lang);
     initLingui(lang);
 
-    /* eslint-disable lingui/no-unlocalized-strings */
+    /* oxlint-disable lingui/no-unlocalized-strings */
     const breadcrumb = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
@@ -50,7 +50,7 @@ export default async function FeaturesHubPage(props: PageLangParam) {
             { '@type': 'ListItem', position: 2, name: t(i18n)`Features`, item: `${BASE_URL}/${lang}${PATH}` }
         ]
     };
-    /* eslint-enable lingui/no-unlocalized-strings */
+    /* oxlint-enable lingui/no-unlocalized-strings */
 
     const itemList = buildFeaturesItemListJsonLd(i18n, lang);
 

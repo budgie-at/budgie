@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 

@@ -1386,7 +1386,7 @@ msgstr "Introduce valor..."
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos para desbloquear"
 
@@ -1394,7 +1394,7 @@ msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos para desbloquear"
 msgid "Enter your Monobank API token"
 msgstr "Ingrese su token API de Monobank"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your PIN"
 msgstr "Ingresa tu PIN"
 
@@ -1709,7 +1709,7 @@ msgstr "Ingresos por categoría"
 msgid "Income by Tag"
 msgstr "Ingresos por etiqueta"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
@@ -2316,7 +2316,6 @@ msgstr "Elige una categoría para definir un límite"
 msgid "Pick a window. Existing data is preserved."
 msgstr "Elige un periodo. Los datos existentes se conservan."
 
-#: src/app/(main)/pin.tsx
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PIN must be {PIN_LENGTH} digits"
 msgstr "El PIN debe tener {PIN_LENGTH} dígitos"

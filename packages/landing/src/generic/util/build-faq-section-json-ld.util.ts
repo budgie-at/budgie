@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import type { FaqSectionJsonLdParamsInterface } from '../interface/faq-section-json-ld-params.interface';
 
 export const buildFaqSectionJsonLd = ({

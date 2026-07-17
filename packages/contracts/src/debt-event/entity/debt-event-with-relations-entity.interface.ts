@@ -1,6 +1,6 @@
 import { AccountEntityInterface } from '../../account/entity/account-entity.interface';
-import { TransactionEntityInterface } from '../../transaction/entity/transaction-entity.interface';
 import { TransactionEntryEntityInterface } from '../../transaction-entry/entity/transaction-entry-entity.interface';
+import { TransactionEntityInterface } from '../../transaction/entity/transaction-entity.interface';
 import { DebtEventAssociationEnum } from '../enum/debt-event-association.enum';
 
 import { DebtEventEntityInterface } from './debt-event-entity.interface';

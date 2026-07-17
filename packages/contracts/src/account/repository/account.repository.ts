@@ -3,10 +3,10 @@ import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInA
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
-import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';

@@ -2,8 +2,8 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import type { ConsolidationFamilyRegistryService } from './consolidation-family-registry.service';
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
+import type { ConsolidationFamilyRegistryService } from './consolidation-family-registry.service';
 import type { ConsolidationScanScopeInterface, ExistingTransferIncomeDuplicateCandidateInterface } from '@budgie/contracts';
 
 export class ConsolidationAutoCandidateService {

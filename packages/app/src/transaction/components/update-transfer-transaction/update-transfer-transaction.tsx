@@ -5,8 +5,8 @@ import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { FullPage } from '../../../@generic/component/page/full-page';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';

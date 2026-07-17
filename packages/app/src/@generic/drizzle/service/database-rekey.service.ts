@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import { SettingsRepository } from '@budgie/contracts';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { File, Paths } from 'expo-file-system';

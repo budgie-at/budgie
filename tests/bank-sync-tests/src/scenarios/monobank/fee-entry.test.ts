@@ -1,5 +1,5 @@
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { accountBalanceRepository, categoryRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import {
     BANK_FEE_CATEGORY_ID,
     CategoryEntityTable,

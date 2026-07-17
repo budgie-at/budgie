@@ -80,7 +80,7 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     const mergedComponents = { ...defaultComponents, ...props.components };
     const themedStyles = buildStyles(isDarkColorSchema, shouldShowTodayIndicator);
 
-    /* eslint-disable lingui/no-unlocalized-strings */
+    /* oxlint-disable lingui/no-unlocalized-strings */
     const classNames = {
         ...defaultClassNames,
         header: 'py-md px-xl',
@@ -103,7 +103,7 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
         month_selector_label: 'text-primary text-lg font-semibold',
         disabled_label: 'text-secondary-foreground/30'
     };
-    /* eslint-enable lingui/no-unlocalized-strings */
+    /* oxlint-enable lingui/no-unlocalized-strings */
 
     return <DateTimePicker {...props} classNames={classNames} styles={themedStyles} locale={languageTag} components={mergedComponents} />;
 };

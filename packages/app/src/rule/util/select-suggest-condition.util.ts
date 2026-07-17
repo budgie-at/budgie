@@ -50,7 +50,7 @@ const cleanMerchantTitle = (title: string): string => {
     return cleaned;
 };
 
-// eslint-disable-next-line lingui/no-unlocalized-strings
+// oxlint-disable-next-line lingui/no-unlocalized-strings
 const GENERIC_TITLE_PATTERNS = ['POS PURCHASE', 'POS', 'PURCHASE', 'PAYMENT', 'WITHDRAWAL', 'TRANSFER', 'DEBIT', 'CREDIT', 'ATM'];
 
 const MINIMUM_UNIQUE_WORDS = 3;

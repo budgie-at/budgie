@@ -160,7 +160,7 @@ class AccountService {
         const account = await accountRepository.findById(id);
 
         if (!isDefined(account)) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
             throw new Error(`Account with id ${id} not found`);
         }
 

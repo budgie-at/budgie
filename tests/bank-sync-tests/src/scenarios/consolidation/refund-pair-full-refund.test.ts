@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
+import { accountBalanceRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import {
     DEFAULT_TRANSACTION_FILTER,
     LanguageEnum,
@@ -7,11 +7,9 @@ import {
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it } from 'vitest';
 
 import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario } from '../../harness';
-
-import { accountBalanceRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 describe('consolidation/refund-pair-full-refund', () => {
     it('promotes the expense and reparents the matching-amount refund (full refund)', async () => {

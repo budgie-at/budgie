@@ -1,15 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { eq } from 'drizzle-orm';
-
+import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
+import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
-
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 
 describe('monobank/consolidation-scope-enqueue', () => {
     beforeEach(() => {

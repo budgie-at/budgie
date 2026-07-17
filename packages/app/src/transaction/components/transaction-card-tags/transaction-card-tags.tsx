@@ -4,8 +4,8 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { derivePrimaryTagView } from '../../utils/derive-primary-tag-view.util';
-import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionCardTagChip } from '../transaction-card-tag-chip/transaction-card-tag-chip';
+import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;

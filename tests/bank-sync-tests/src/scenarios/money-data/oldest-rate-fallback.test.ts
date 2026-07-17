@@ -1,8 +1,6 @@
-import { describe, expect, it } from 'vitest';
-
-import { CurrencyEnum, PRECISION, SettingsEntityTable } from '@budgie/contracts';
-
 import { entryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
+import { CurrencyEnum, PRECISION, SettingsEntityTable } from '@budgie/contracts';
+import { describe, expect, it } from 'vitest';
 
 import { requireInstrument } from '../../harness';
 import { testDb } from '../../harness/scenario/setup';

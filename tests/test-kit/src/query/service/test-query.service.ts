@@ -1,6 +1,5 @@
-import { eq } from 'drizzle-orm';
-
 import { MccCategoryEntityTable, TransactionEntityTable, TransactionEntryEntityTable, TransactionTagsEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 

@@ -8,7 +8,7 @@ import {
     calculateRMS
 } from '@budgie/ai';
 import { getLogger } from '@budgie/logger';
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { AudioRecorder } from 'react-native-audio-api';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -53,7 +53,10 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
     const invalidBufferCountRef = useRef(0);
     const lastAudioLogAtRef = useRef(0);
     const wasAboveThresholdRef = useRef(false);
-    callbacksRef.current = callbacks;
+
+    useLayoutEffect(() => {
+        callbacksRef.current = callbacks;
+    }, [callbacks]);
 
     const clearTimeouts = () => {
         if (isDefined(silenceTimeoutRef.current)) {

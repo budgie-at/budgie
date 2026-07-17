@@ -18,7 +18,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 
     return {
         title: i18n._(msg`Budgie iOS Beta Install`),
-        // eslint-disable-next-line lingui/no-unlocalized-strings
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
         robots: 'noindex, follow'
     };
 }

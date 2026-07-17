@@ -1,8 +1,8 @@
 import { SuggestionStatus } from '@budgie/ai';
 import { UserIconNameEnum } from '@budgie/contracts';
 
-import { SuggestionPill } from '../suggestion-pill/suggestion-pill';
 import { SuggestionPillContent } from '../suggestion-pill-content/suggestion-pill-content';
+import { SuggestionPill } from '../suggestion-pill/suggestion-pill';
 import { SuggestionRow } from '../suggestion-row/suggestion-row';
 
 interface Props<T> {

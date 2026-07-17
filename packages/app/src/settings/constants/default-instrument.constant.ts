@@ -4,7 +4,7 @@ export const DEFAULT_INSTRUMENT = {
     id: 1,
     symbol: '$',
     deletedAt: null,
-    // eslint-disable-next-line lingui/no-unlocalized-strings
+    // oxlint-disable-next-line lingui/no-unlocalized-strings
     name: 'US Dollar',
     createdAt: new Date(),
     updatedAt: new Date(),

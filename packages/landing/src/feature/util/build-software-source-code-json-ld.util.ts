@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import { BASE_URL } from '../../generic/constant/seo.constant';
 
 export const buildSoftwareSourceCodeJsonLd = (locale: string): Record<string, unknown> => ({

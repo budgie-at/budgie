@@ -1,15 +1,16 @@
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import * as schema from '@app/@generic/drizzle/db/schema';
 import Database from 'better-sqlite3';
 import { drizzle as drizzleBetterSqlite } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { drizzle as drizzleExpoSqlite } from 'drizzle-orm/expo-sqlite';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
-import * as schema from '@app/@generic/drizzle/db/schema';
-import type { DB } from '@budgie/contracts';
 import type { ExpoLikeApiInterface } from './expo-like-api.interface';
+import type { DB } from '@budgie/contracts';
 
 const here = resolve(fileURLToPath(import.meta.url), '..');
 const migrationsFolder = resolve(here, '../../../../packages/app/drizzle');

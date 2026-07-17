@@ -12,20 +12,20 @@ const nextConfig: NextConfig = {
             {
                 source: '/(.*)',
                 headers: [
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
+                    // oxlint-disable-next-line lingui/no-unlocalized-strings
                     { key: 'X-Content-Type-Options', value: 'nosniff' },
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
+                    // oxlint-disable-next-line lingui/no-unlocalized-strings
                     { key: 'X-Frame-Options', value: 'DENY' },
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
+                    // oxlint-disable-next-line lingui/no-unlocalized-strings
                     { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' }
                 ]
             },
             {
                 source: '/ota/manifest.plist',
                 headers: [
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
+                    // oxlint-disable-next-line lingui/no-unlocalized-strings
                     { key: 'Content-Type', value: 'text/xml' },
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
+                    // oxlint-disable-next-line lingui/no-unlocalized-strings
                     { key: 'Cache-Control', value: 'no-store' }
                 ]
             }

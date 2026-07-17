@@ -1,10 +1,8 @@
+import { transactionImportService } from '@app/transaction/service/transaction-import.service';
+import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-
 import { fetchTransactionById, seed } from '../../harness';
-
-import { transactionImportService } from '@app/transaction/service/transaction-import.service';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 

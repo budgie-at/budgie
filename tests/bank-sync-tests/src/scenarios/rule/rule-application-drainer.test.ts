@@ -1,9 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-
 import { ruleApplicationDrainerService } from '@app/rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '@app/rule/service/rule-engine.service';
+import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { flushScheduledDrain } from '../../harness/scheduler/flush-scheduled-drain';
 import { PausedUserWork } from '../../harness/sync-workload/paused-user-work';

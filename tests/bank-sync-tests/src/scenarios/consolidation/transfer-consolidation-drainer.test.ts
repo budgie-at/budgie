@@ -1,10 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { emptyFn } from '@rnw-community/shared';
-
 import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { emptyFn } from '@rnw-community/shared';
 
 import { flushScheduledDrain } from '../../harness/scheduler/flush-scheduled-drain';
 

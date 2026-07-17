@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings -- schema.org keys, not user-facing copy */
+/* oxlint-disable lingui/no-unlocalized-strings -- schema.org keys, not user-facing copy */
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { BASE_URL, OG_LOCALE_MAP } from '../../../generic/constant/seo.constant';
 

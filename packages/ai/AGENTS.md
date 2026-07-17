@@ -20,10 +20,10 @@ Dual model setup:
 ## Commands
 
 ```bash
-yarn build    # TypeScript compilation (tsc)
+yarn build    # Native TypeScript 7 compilation
 yarn clear    # Remove dist/ (needed after deleting source files)
-yarn ts       # Type check without emit
-yarn lint     # ESLint
+yarn ts       # Native TypeScript 7 check without emit
+yarn lint     # Oxlint + 13-rule ESLint fallback
 ```
 
 ## File Organization

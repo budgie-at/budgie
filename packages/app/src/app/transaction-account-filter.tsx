@@ -6,9 +6,9 @@ import { View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
 import { FilterSheetSkeleton } from '../@generic/component/filter-sheet/filter-sheet-skeleton/filter-sheet-skeleton';
+import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { AccountsGroup } from '../account/component/accounts-group/accounts-group';
 import { useSearchAccountsGroupedQuery } from '../account/query/use-search-accounts-grouped.query';

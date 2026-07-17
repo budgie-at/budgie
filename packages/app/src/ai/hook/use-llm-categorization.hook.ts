@@ -69,7 +69,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
             const extracted = await voiceService.extractTransactions(text);
 
             if (!isNotEmptyArray(extracted)) {
-                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
+                // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
                 throw new Error('Failed to extract transactions from text');
             }
 

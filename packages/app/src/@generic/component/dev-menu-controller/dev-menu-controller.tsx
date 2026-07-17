@@ -11,7 +11,7 @@ interface DevMenuPreferencesModule {
 
 export const DevMenuController = () => {
     useEffect(() => {
-        // eslint-disable-next-line lingui/no-unlocalized-strings -- Native Expo module name.
+        // oxlint-disable-next-line lingui/no-unlocalized-strings -- Native Expo module name.
         const devMenuPreferences = requireOptionalNativeModule<DevMenuPreferencesModule>('DevMenuPreferences');
 
         if (!devMenuPreferences) {

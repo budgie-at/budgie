@@ -9,14 +9,14 @@ import { Button } from '../../../ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../ui/dropdown-menu/dropdown-menu';
 
 const LANGUAGE_NAMES: Record<string, string> = {
-    // eslint-disable-next-line lingui/no-unlocalized-strings
+    // oxlint-disable-next-line lingui/no-unlocalized-strings
     en: 'English',
     uk: 'Українська',
-    // eslint-disable-next-line lingui/no-unlocalized-strings
+    // oxlint-disable-next-line lingui/no-unlocalized-strings
     fr: 'Français',
-    // eslint-disable-next-line lingui/no-unlocalized-strings
+    // oxlint-disable-next-line lingui/no-unlocalized-strings
     de: 'Deutsch',
-    // eslint-disable-next-line lingui/no-unlocalized-strings
+    // oxlint-disable-next-line lingui/no-unlocalized-strings
     es: 'Español'
 };
 

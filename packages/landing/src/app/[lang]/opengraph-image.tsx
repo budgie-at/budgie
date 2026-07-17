@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings, @rnw-community/no-complex-jsx-logic */
+/* oxlint-disable lingui/no-unlocalized-strings, @rnw-community/no-complex-jsx-logic */
 import { msg } from '@lingui/core/macro';
 import { ImageResponse } from 'next/og';
 

@@ -260,16 +260,22 @@ reboot_ios_simulator_if_needed() {
 
 build_maestro_args() {
     local flow_output_path="$1"
+    local attempt_output_path="$2"
     local args=("${MAESTRO_ARGS[@]}")
     local index
 
-    if [ -n "$flow_output_path" ]; then
-        for index in "${!args[@]}"; do
-            if [ "${args[$index]}" = "--output" ] && [ "$((index + 1))" -lt "${#args[@]}" ]; then
+    for index in "${!args[@]}"; do
+        if [ "${args[$index]}" = "--output" ] && [ "$((index + 1))" -lt "${#args[@]}" ] && [ -n "$flow_output_path" ]; then
                 args[$((index + 1))]="$flow_output_path"
+        fi
+
+        if [ "${args[$index]}" = "--debug-output" ] || [ "${args[$index]}" = "--test-output-dir" ]; then
+            if [ "$((index + 1))" -lt "${#args[@]}" ] && [ -n "$attempt_output_path" ]; then
+                args[$((index + 1))]="$attempt_output_path/${args[$index]#--}/$(basename "${args[$((index + 1))]}")"
+                mkdir -p "${args[$((index + 1))]}"
             fi
-        done
-    fi
+        fi
+    done
 
     printf '%s\0' "${args[@]}"
 }
@@ -326,13 +332,14 @@ collect_flow_paths() {
 run_maestro_flow() {
     local flow_path="$1"
     local flow_output_path="$2"
+    local attempt_output_path="$3"
     local args=()
 
     seed_ios_database_fixture_if_needed "$flow_path"
 
     while IFS= read -r -d '' arg; do
         args+=("$arg")
-    done < <(build_maestro_args "$flow_output_path")
+    done < <(build_maestro_args "$flow_output_path" "$attempt_output_path")
 
     if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
         maestro test "$flow_path" \
@@ -356,6 +363,23 @@ run_maestro_flow() {
             -e DATABASE_FIXTURE_SEEDED="$DATABASE_FIXTURE_SEEDED" \
             "${args[@]}"
     fi
+}
+
+is_ax_driver_failure() {
+    local output_path="$1"
+
+    grep -Eiq 'kAXErrorInvalidUIElement' "$output_path"
+}
+
+reset_ios_simulator_after_ax_driver_failure() {
+    if [ -z "$DETECTED_SIMULATOR_UDID" ]; then
+        return 0
+    fi
+
+    echo "Restarting iOS simulator after kAXErrorInvalidUIElement"
+    xcrun simctl shutdown "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
+    xcrun simctl boot "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
+    xcrun simctl bootstatus "$DETECTED_SIMULATOR_UDID" -b >/dev/null
 }
 
 merge_reports() {
@@ -470,16 +494,27 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
     FLOW_INDEX=$((FLOW_INDEX + 1))
     FLOW_NAME="$(basename "$FLOW_PATH")"
     FLOW_OUTPUT_PATH=""
+    FLOW_ARTIFACT_PATH=""
+    FLOW_STATUS=0
 
     if [ -n "$OUTPUT_PATH" ]; then
         FLOW_OUTPUT_PATH="$REPORT_DIR/$FLOW_INDEX-$FLOW_NAME.xml"
     fi
 
+    if [ -n "$OUTPUT_PATH" ]; then
+        FLOW_ARTIFACT_PATH="$(dirname "$OUTPUT_PATH")/.maestro-flow-attempts/$FLOW_INDEX-$FLOW_NAME"
+    else
+        FLOW_ARTIFACT_PATH="$WORKSPACE_DIR/.maestro-flow-attempts/$FLOW_INDEX-$FLOW_NAME"
+    fi
+
+    mkdir -p "$FLOW_ARTIFACT_PATH/attempt-1"
+
     reboot_ios_simulator_if_needed "$FLOW_INDEX"
 
     echo "Running Maestro flow $FLOW_INDEX/$FLOW_TOTAL: $FLOW_NAME"
 
-    if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH"; then
+    if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$FLOW_ARTIFACT_PATH/attempt-1" > "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log" 2>&1; then
+        cat "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log"
         echo "Completed Maestro flow $FLOW_INDEX/$FLOW_TOTAL: $FLOW_NAME"
 
         if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
@@ -488,6 +523,27 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
         fi
     else
         FLOW_STATUS=$?
+        cat "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log"
+
+        if is_ax_driver_failure "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log"; then
+            reset_ios_simulator_after_ax_driver_failure
+            mkdir -p "$FLOW_ARTIFACT_PATH/attempt-2"
+
+            if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$FLOW_ARTIFACT_PATH/attempt-2" > "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log" 2>&1; then
+                cat "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log"
+                echo "Completed Maestro flow $FLOW_INDEX/$FLOW_TOTAL after AX driver retry: $FLOW_NAME"
+
+                if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
+                    REPORTS+=("$FLOW_OUTPUT_PATH")
+                    merge_reports "$OUTPUT_PATH" "${REPORTS[@]}"
+                fi
+
+                continue
+            fi
+
+            FLOW_STATUS=$?
+            cat "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log"
+        fi
 
         if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
             REPORTS+=("$FLOW_OUTPUT_PATH")

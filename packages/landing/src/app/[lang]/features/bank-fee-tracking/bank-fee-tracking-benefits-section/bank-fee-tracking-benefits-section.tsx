@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro';
 
-import { FeaturePageBenefitGrid } from '../../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
 import { FeaturePageBenefitGridItem } from '../../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
+import { FeaturePageBenefitGrid } from '../../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
 import { FeaturePageHeading } from '../../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageSection } from '../../../../../feature/component/feature-page-section/feature-page-section';
 

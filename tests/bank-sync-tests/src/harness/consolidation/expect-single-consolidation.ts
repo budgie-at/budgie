@@ -1,6 +1,5 @@
-import { expect } from 'vitest';
-
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { expect } from 'vitest';
 
 export const expectSingleConsolidation = async (): Promise<void> => {
     const result = await transferConsolidationService.consolidate();

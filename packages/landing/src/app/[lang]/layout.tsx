@@ -84,7 +84,7 @@ export async function generateMetadata(props: Props) {
         metadataBase: new URL(BASE_URL),
         title: {
             default: siteTitle,
-            // eslint-disable-next-line lingui/no-unlocalized-strings
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
             template: '%s | Budgie'
         },
         description: i18n._(
@@ -96,7 +96,7 @@ export async function generateMetadata(props: Props) {
         authors: [{ name: i18n._(msg`Budgie Team`) }],
         creator: i18n._(msg`Budgie`),
         publisher: i18n._(msg`Budgie`),
-        // eslint-disable-next-line lingui/no-unlocalized-strings
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
         robots: 'index, follow',
         alternates: buildAlternates(lang, ''),
         openGraph: {
@@ -125,7 +125,7 @@ export default async function RootLayout({ params, children }: Props) {
 
     initLingui(lang);
 
-    /* eslint-disable lingui/no-unlocalized-strings */
+    /* oxlint-disable lingui/no-unlocalized-strings */
     const organizationData = {
         '@context': 'https://schema.org',
         '@type': 'Organization',
@@ -142,7 +142,7 @@ export default async function RootLayout({ params, children }: Props) {
         name: 'Budgie',
         url: BASE_URL
     };
-    /* eslint-enable lingui/no-unlocalized-strings */
+    /* oxlint-enable lingui/no-unlocalized-strings */
 
     return (
         <html lang={lang} suppressHydrationWarning>

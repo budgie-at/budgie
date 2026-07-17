@@ -1,6 +1,7 @@
 import { AccountTypeEnum, BankSyncModeEnum } from '@budgie/contracts';
 
 import { seed } from '../seed/seed';
+
 import { buildMonobank } from './build-monobank';
 import { monobankStub } from './monobank-stub';
 

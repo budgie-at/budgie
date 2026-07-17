@@ -19,5 +19,6 @@ const STYLED_FALLBACK_ICON = createStyledIcon(CircleQuestionMark);
 export const Icon = ({ icon, ...rest }: IconProps) => {
     const IconToRender = STYLED_ICONS[icon] ?? STYLED_FALLBACK_ICON;
 
+    // oxlint-disable-next-line react-hooks-js/static-components
     return <IconToRender {...rest} />;
 };

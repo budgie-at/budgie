@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { INDEXNOW_ENDPOINT, INDEXNOW_HOST, INDEXNOW_KEY } from '../constant/indexnow.constant';

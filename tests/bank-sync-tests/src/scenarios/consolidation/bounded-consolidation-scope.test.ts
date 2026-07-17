@@ -1,10 +1,8 @@
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-
 import { fetchCanonicalsOfType, seed, seedBankPair } from '../../harness';
-
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 const seedScopedTransferPair = (
     externalIdPrefix: string,

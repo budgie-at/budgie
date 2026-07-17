@@ -6,10 +6,11 @@ Bank integration package for synchronizing accounts and transactions from extern
 
 ```bash
 yarn build                    # Build package
-yarn test                     # Run Jest tests
-yarn ts                       # TypeScript check
-yarn lint                     # ESLint check
+yarn ts                       # Native TypeScript 7 check
+yarn lint                     # Oxlint + 13-rule ESLint fallback
 ```
+
+Integration verification lives in `tests/bank-sync-tests/` and runs from the repository root with `yarn workspace @budgie-at/bank-sync-tests test`.
 
 ## Structure
 

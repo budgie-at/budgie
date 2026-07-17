@@ -332,7 +332,7 @@ class TransactionService {
         );
 
         if (!isDefined(fromEntry) || !isDefined(toEntry)) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
+            // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error
             throw new Error('Transfer must have exactly two entries');
         }
 

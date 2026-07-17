@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import { PRECISION, TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService } from '../harness/test-context';

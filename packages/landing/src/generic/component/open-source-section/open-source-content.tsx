@@ -57,7 +57,7 @@ export const OpenSourceContent = ({ locale }: Props) => (
 
         <div className="hidden md:flex flex-wrap gap-4">
             <Button asChild className="rounded-full" size="lg">
-                {/* eslint-disable-next-line lingui/no-unlocalized-strings */}
+                {/* oxlint-disable-next-line lingui/no-unlocalized-strings */}
                 <Link href="https://github.com/budgie-at/budgie" rel="noopener noreferrer" target="_blank">
                     <GitBranch className="mr-2 size-5" />
                     <Trans>View on GitHub</Trans>
@@ -65,7 +65,7 @@ export const OpenSourceContent = ({ locale }: Props) => (
             </Button>
 
             <Button asChild className="rounded-full" size="lg" variant="outline">
-                {/* eslint-disable-next-line lingui/no-unlocalized-strings */}
+                {/* oxlint-disable-next-line lingui/no-unlocalized-strings */}
                 <Link href="https://github.com/sponsors/nickolay-ponomarev" rel="noopener noreferrer" target="_blank">
                     <Heart className="mr-2 size-5" />
                     <Trans>Sponsor Project</Trans>

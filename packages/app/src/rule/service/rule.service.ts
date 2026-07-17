@@ -89,7 +89,7 @@ class RuleService {
 
         const existingRule = await ruleRepository.findByIdWithRelations(id);
         if (!isDefined(existingRule)) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
             throw new Error(`Rule ${id} not found`);
         }
 

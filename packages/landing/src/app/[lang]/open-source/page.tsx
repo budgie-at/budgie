@@ -8,9 +8,9 @@ import { FeaturePageHeading } from '../../../feature/component/feature-page-head
 import { FeaturePageProse } from '../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageSection } from '../../../feature/component/feature-page-section/feature-page-section';
 import { PillarHubBreadcrumbs } from '../../../feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs';
-import { PillarHubHero } from '../../../feature/component/pillar-hub-hero/pillar-hub-hero';
 import { PillarHubHeroBulletItem } from '../../../feature/component/pillar-hub-hero-bullet-item/pillar-hub-hero-bullet-item';
 import { PillarHubHeroBulletList } from '../../../feature/component/pillar-hub-hero-bullet-list/pillar-hub-hero-bullet-list';
+import { PillarHubHero } from '../../../feature/component/pillar-hub-hero/pillar-hub-hero';
 import { PillarHubPageShell } from '../../../feature/component/pillar-hub-page-shell/pillar-hub-page-shell';
 import { buildPillarHubRouteMetadata } from '../../../feature/util/build-pillar-hub-route-metadata.util';
 import { buildSoftwareSourceCodeJsonLd } from '../../../feature/util/build-software-source-code-json-ld.util';

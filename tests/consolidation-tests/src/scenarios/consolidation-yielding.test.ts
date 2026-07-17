@@ -1,7 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
-
-import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { ConsolidationAutoCandidateService, ConsolidationFamilyRegistryService } from '@budgie/consolidation';
+import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
     atmCashWithdrawalRepository,

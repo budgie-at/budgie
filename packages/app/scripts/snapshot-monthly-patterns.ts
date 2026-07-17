@@ -1,7 +1,8 @@
-/* eslint-disable no-console */
-import Database from 'better-sqlite3';
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+
+/* eslint-disable no-console */
+import Database from 'better-sqlite3';
 
 const DB_PATH = resolve(__dirname, '../.bench/fixture.db');
 const OUTPUT_PATH = resolve(__dirname, 'monthly-patterns-baseline.json');

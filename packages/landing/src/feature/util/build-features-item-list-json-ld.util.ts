@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import { BASE_URL } from '../../generic/constant/seo.constant';
 import { FEATURE_REGISTRY } from '../constant/feature-registry.constant';
 

@@ -1,4 +1,4 @@
-/* eslint-disable max-lines,lingui/no-unlocalized-strings */
+/* oxlint-disable max-lines,lingui/no-unlocalized-strings */
 import { UserIconNameEnum } from '@budgie/contracts';
 
 export const USER_ICON_TAGS: Record<UserIconNameEnum | string, string[]> = {

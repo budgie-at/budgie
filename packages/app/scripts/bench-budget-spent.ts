@@ -1,8 +1,9 @@
-/* eslint-disable no-console */
-import Database from 'better-sqlite3';
 import { existsSync, rmSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+/* eslint-disable no-console */
+import Database from 'better-sqlite3';
 
 import { benchPercentile, benchRandomInt, ensureBenchDir } from './bench-util.ts';
 

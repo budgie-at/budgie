@@ -22,7 +22,7 @@ const updateRule = async (updateRuleData: UpdateRuleDataInterface, language: Lan
     const existingRule = allRules.find(rule => rule.id === updateRuleData.ruleId);
 
     if (!isDefined(existingRule)) {
-        // eslint-disable-next-line lingui/no-unlocalized-strings
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
         throw new Error('Rule not found');
     }
 

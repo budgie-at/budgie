@@ -1,8 +1,12 @@
-import { describe, expect, it } from 'vitest';
-import { eq } from 'drizzle-orm';
-
+import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { privatbankCategoryMatcherService } from '@app/sync/service/privatbank-category-matcher.service';
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { transactionImportService } from '@app/transaction/service/transaction-import.service';
 import { privatbankTransactionMapper } from '@budgie/bank-sync';
+import { mapBankTransactionToCreateInput } from '@budgie/bank-sync';
 import { ExternalSourceEnum, TransactionConsolidationTypeEnum, TransactionEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
+import { describe, expect, it } from 'vitest';
 
 import {
     buildMonobank,
@@ -13,12 +17,6 @@ import {
     monobankStub,
     testDb
 } from '../../harness';
-
-import { transactionImportService } from '@app/transaction/service/transaction-import.service';
-import { mapBankTransactionToCreateInput } from '@budgie/bank-sync';
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { privatbankCategoryMatcherService } from '@app/sync/service/privatbank-category-matcher.service';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 const TRANSFER_AMOUNT = 250;
 const MONOBANK_API_AMOUNT = TRANSFER_AMOUNT * 100;

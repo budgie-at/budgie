@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import { PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { describe, expect, it } from 'vitest';
 
 import { expectRefundCanonicalTags } from '../harness/expect-refund-canonical-tags';
 import { runRefundScenario } from '../harness/run-refund-scenario';

@@ -1,16 +1,14 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { http, HttpResponse } from 'msw';
-
-import { MONOBANK_RATE_LIMIT_MS } from '@budgie/bank-sync';
-
-import { emptyFn } from '@rnw-community/shared';
-
 import { microPause } from '@app/@generic/utils/micro-pause.util';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
+import { MONOBANK_RATE_LIMIT_MS } from '@budgie/bank-sync';
+import { http, HttpResponse } from 'msw';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
+import { emptyFn } from '@rnw-community/shared';
+
 import { monobankServer } from '../../harness/monobank/monobank-server';
+import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 
 const statementEndpoint = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
 const staleForwardSyncFromAt = new Date(2026, 0, 1);

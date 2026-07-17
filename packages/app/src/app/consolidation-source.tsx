@@ -28,7 +28,7 @@ export default function ConsolidationSourceModal() {
         () => () => {
             resolveConsolidationSource(null, { skipBack: true });
         },
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- Resolve on unmount only
+        // oxlint-disable-next-line react/exhaustive-deps -- Resolve on unmount only
         []
     );
 

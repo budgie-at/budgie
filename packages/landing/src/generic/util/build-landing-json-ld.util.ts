@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import { msg } from '@lingui/core/macro';
 
 import { BASE_URL } from '../constant/seo.constant';

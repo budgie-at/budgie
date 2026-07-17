@@ -1,6 +1,5 @@
-import { expect } from 'vitest';
-
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { expect } from 'vitest';
 
 import { testQueryService } from './test-context';
 

@@ -1,6 +1,5 @@
-import { eq } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
-
+import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
+import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import {
     AccountBalanceEntityTable,
     AccountTypeEnum,
@@ -9,9 +8,8 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-
-import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
-import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
+import { eq } from 'drizzle-orm';
+import { describe, expect, it } from 'vitest';
 
 import { seed, testDb } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';

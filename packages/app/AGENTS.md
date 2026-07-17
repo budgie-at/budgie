@@ -1,6 +1,6 @@
 # App Package (React Native)
 
-Main mobile application built with Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, and Lingui 6.1.
+Main mobile application built with Expo 56, React 19 + Compiler, Expo Router 56, Drizzle ORM, NativeWind 5, and Lingui 6.5.
 
 ## Commands
 
@@ -298,7 +298,7 @@ Valid cases for `max-statements` disable:
 
 ## Component Patterns
 
-> Composition rules (prop budget, compound components, explicit variants, hook chains) live in [docs/component-composition.md](../../docs/component-composition.md). The `budgie/max-component-props` lint rule errors above 8 props; refactor with composition instead of growing the grandfather list.
+> Composition rules (prop budget, compound components, explicit variants, hook chains) live in [docs/component-composition.md](../../docs/component-composition.md). Oxlint loads the `budgie/max-component-props` rule through its JavaScript-plugin bridge and errors above 8 props; refactor with composition instead of growing the `.oxlintrc.json` grandfather list.
 
 ### File Organization
 

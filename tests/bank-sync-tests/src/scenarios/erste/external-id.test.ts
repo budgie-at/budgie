@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import { ersteMapper } from '@budgie/bank-sync';
+import { describe, expect, it } from 'vitest';
 
 import type { ErsteRowInterface } from '@budgie/bank-sync';
 

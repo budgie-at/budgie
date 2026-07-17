@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import { ConsolidationFamilyRegistryService, type ConsolidationFamilyStrategyInterface } from '@budgie/consolidation';
+import { describe, expect, it } from 'vitest';
 
 import {
     atmCashWithdrawalRepository,

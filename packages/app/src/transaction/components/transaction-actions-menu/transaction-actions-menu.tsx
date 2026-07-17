@@ -7,8 +7,8 @@ import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
+import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { TransactionActionsMenuContext } from '../../context/transaction-actions-menu.context';
 
 import { TransactionActionsMenuSelector } from './transaction-actions-menu.selector';

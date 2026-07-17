@@ -1,6 +1,6 @@
-import { and, eq } from 'drizzle-orm';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
+import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
+import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { transactionImportService } from '@app/transaction/service/transaction-import.service';
 import {
     BankAccountTypeEnum,
     BankProviderEnum,
@@ -9,14 +9,12 @@ import {
     mapBankTransactionToCreateInput
 } from '@budgie/bank-sync';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { and, eq } from 'drizzle-orm';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { expectFileImportConsolidationEnqueued, seed, StubFileBankSyncService, testDb } from '../../harness';
-
-import { BaseFileBankSyncService } from '@app/sync/service/base-file-bank-sync.service';
-import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { transactionImportService } from '@app/transaction/service/transaction-import.service';
 
 import type {
     BankAccountInterface,
