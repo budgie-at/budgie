@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.43.1](https://github.com/budgie-at/budgie/compare/v5.43.0...v5.43.1) (2026-07-17)
+
+### Bug Fixes
+
+- **landing:** repair waitlist subscription flow ([#596](https://github.com/budgie-at/budgie/issues/596)) ([926b793](https://github.com/budgie-at/budgie/commit/926b7936f57a890c8ab41242e4a425657e2fe31e))
+
 # [5.43.0](https://github.com/budgie-at/budgie/compare/v5.42.0...v5.43.0) (2026-07-17)
 
 ### Features
