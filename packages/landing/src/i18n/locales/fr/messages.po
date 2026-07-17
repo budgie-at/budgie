@@ -10338,6 +10338,10 @@ msgstr "La politique de confidentialite de Plaid stipule explicitement qu'ils co
 msgid "Planned API for power users to build custom integrations"
 msgstr "API planifiée pour les utilisateurs avancés souhaitant créer des intégrations personnalisées"
 
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "Please enter a valid email address."
+msgstr "Veuillez saisir une adresse e-mail valide."
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Please report it responsibly by emailing security@budgie.at"
 msgstr ""
@@ -11505,10 +11509,6 @@ msgstr "Certaines fonctionnalités avancées encore en développement"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Some applications genuinely need server capabilities, like sending emails or processing payments. Local-first is about where data lives and who owns it, not about eliminating servers entirely. A local-first application can use servers for specific capabilities while keeping user data local. The key is that the server handles actions, not storage of personal data."
 msgstr "Certaines applications ont véritablement besoin de capacités serveur, comme l'envoi d'emails ou le traitement de paiements. Le local-first concerne l'emplacement des données et leur propriétaire, pas l'élimination totale des serveurs. Une application local-first peut utiliser des serveurs pour des capacités spécifiques tout en gardant les données utilisateur en local. L'essentiel est que le serveur gère des actions, pas le stockage de données personnelles."
-
-#: src/generic/component/waitlist-form/waitlist-form.tsx
-msgid "Something went wrong. Please try again."
-msgstr "Une erreur s'est produite. Veuillez réessayer."
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Sometimes a sync drifts — a transaction reconciles late, a refund posts wrong. The naive fix is a full re-sync, which wipes your edits. Budgie's window picker re-pulls only the slice you ask for."
@@ -13550,6 +13550,14 @@ msgstr "Nous collectons des rapports de plantage anonymises via les mecanismes d
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "We could have integrated Plaid. It would have been easier for us to implement and more convenient for users. One button click and your transactions appear automatically."
 msgstr "Nous aurions pu integrer Plaid. Cela aurait ete plus facile a implementer pour nous et plus pratique pour les utilisateurs. Un clic et vos transactions apparaissent automatiquement."
+
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "We couldn't confirm your signup. Please try again."
+msgstr "Nous n'avons pas pu confirmer votre inscription. Veuillez réessayer."
+
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "We couldn't save your email. Please try again."
+msgstr "Nous n'avons pas pu enregistrer votre adresse e-mail. Veuillez réessayer."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "We do not sell, trade, or rent your personal information to third parties. We may share limited information only in the following circumstances:"

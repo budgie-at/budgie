@@ -10338,6 +10338,10 @@ msgstr "Політика конфіденційності Plaid прямо за�
 msgid "Planned API for power users to build custom integrations"
 msgstr "Планований API для досвідчених користувачів для створення власних інтеграцій"
 
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "Please enter a valid email address."
+msgstr "Будь ласка, введіть дійсну електронну адресу."
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Please report it responsibly by emailing security@budgie.at"
 msgstr ""
@@ -11505,10 +11509,6 @@ msgstr "Деякі розширені функції ще в розробці"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Some applications genuinely need server capabilities, like sending emails or processing payments. Local-first is about where data lives and who owns it, not about eliminating servers entirely. A local-first application can use servers for specific capabilities while keeping user data local. The key is that the server handles actions, not storage of personal data."
 msgstr "Деякі застосунки справді потребують серверних можливостей, таких як відправка електронних листів або обробка платежів. Local-first — це про те, де живуть дані та кому вони належать, а не про повне усунення серверів. Local-first застосунок може використовувати сервери для конкретних можливостей, зберігаючи дані користувача локально. Ключове — сервер обробляє дії, а не зберігає особисті дані."
-
-#: src/generic/component/waitlist-form/waitlist-form.tsx
-msgid "Something went wrong. Please try again."
-msgstr "Щось пішло не так. Спробуйте ще раз."
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Sometimes a sync drifts — a transaction reconciles late, a refund posts wrong. The naive fix is a full re-sync, which wipes your edits. Budgie's window picker re-pulls only the slice you ask for."
@@ -13550,6 +13550,14 @@ msgstr "Ми збираємо анонімізовані звіти про зб�
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "We could have integrated Plaid. It would have been easier for us to implement and more convenient for users. One button click and your transactions appear automatically."
 msgstr "Ми могли б інтегрувати Plaid. Це було б простіше для нас у реалізації та зручніше для користувачів. Один клік — і ваші транзакції з'являються автоматично."
+
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "We couldn't confirm your signup. Please try again."
+msgstr "Нам не вдалося підтвердити Вашу реєстрацію. Будь ласка, спробуйте ще раз."
+
+#: src/generic/component/waitlist-form/waitlist-form.tsx
+msgid "We couldn't save your email. Please try again."
+msgstr "Нам не вдалося зберегти Вашу електронну адресу. Будь ласка, спробуйте ще раз."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "We do not sell, trade, or rent your personal information to third parties. We may share limited information only in the following circumstances:"

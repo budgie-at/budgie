@@ -1,6 +1,6 @@
 'use client';
 
-import { plural } from '@lingui/core/macro';
+import { msg, plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ArrowRight, Loader2, Users } from 'lucide-react';
@@ -10,8 +10,11 @@ import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../ui/button';
 import { joinWaitlist } from '../../action/waitlist.action';
+import { WaitlistMessageKeyEnum } from '../../enum/waitlist-message-key.enum';
 
 import { WaitlistSuccess } from './waitlist-success';
+
+import type { MessageDescriptor } from '@lingui/core';
 
 interface Props {
     variant?: 'hero' | 'cta';
@@ -66,13 +69,18 @@ const errorVariants = cva('text-sm', {
         }
     }
 });
+const WAITLIST_ERROR_MESSAGES: Partial<Record<WaitlistMessageKeyEnum, MessageDescriptor>> = {
+    [WaitlistMessageKeyEnum.ERROR]: msg`We couldn't save your email. Please try again.`,
+    [WaitlistMessageKeyEnum.INVALID_EMAIL]: msg`Please enter a valid email address.`
+};
+const WAITLIST_CONFIRMATION_ERROR_MESSAGE = msg`We couldn't confirm your signup. Please try again.`;
+const WAITLIST_CONFIRMATION_DEADLINE_MS = 8000;
 
 export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount = 0 }: Props) => {
-    const { t } = useLingui();
+    const { i18n, t } = useLingui();
 
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [isSuccess, setIsSuccess] = useState(false);
     const [position, setPosition] = useState<number | undefined>();
     const [error, setError] = useState('');
 
@@ -81,14 +89,27 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
         setError('');
         setIsLoading(true);
 
-        const result = await joinWaitlist(email);
-        setIsLoading(false);
+        let confirmationDeadlineTimer: number | undefined;
 
-        if (result.success) {
-            setIsSuccess(true);
-            setPosition(result.position);
-        } else {
-            setError(t`Something went wrong. Please try again.`);
+        try {
+            const confirmationDeadline = new Promise<never>((_resolve, reject) => {
+                confirmationDeadlineTimer = window.setTimeout(() => void reject(new Error()), WAITLIST_CONFIRMATION_DEADLINE_MS);
+            });
+            const result = await Promise.race([joinWaitlist(email), confirmationDeadline]);
+
+            if (
+                (result.messageKey === WaitlistMessageKeyEnum.SUCCESS || result.messageKey === WaitlistMessageKeyEnum.ALREADY_REGISTERED) &&
+                isPositiveNumber(result.position)
+            ) {
+                setPosition(result.position);
+            } else {
+                setError(i18n._(WAITLIST_ERROR_MESSAGES[result.messageKey] ?? WAITLIST_CONFIRMATION_ERROR_MESSAGE));
+            }
+        } catch {
+            setError(i18n._(WAITLIST_CONFIRMATION_ERROR_MESSAGE));
+        } finally {
+            window.clearTimeout(confirmationDeadlineTimer);
+            setIsLoading(false);
         }
     };
 
@@ -97,7 +118,7 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
         setError('');
     };
 
-    if (isSuccess) {
+    if (isPositiveNumber(position)) {
         return <WaitlistSuccess position={position} variant={variant} />;
     }
 
@@ -134,7 +155,11 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
                 </Button>
             </form>
 
-            {isNotEmptyString(error) && <p className={errorVariants({ variant })}>{error}</p>}
+            {isNotEmptyString(error) && (
+                <p className={errorVariants({ variant })} role="alert">
+                    {error}
+                </p>
+            )}
 
             {showCount && isPositiveNumber(initialCount) && (
                 <div className={countTextVariants({ variant })}>
