@@ -1,5 +1,5 @@
-import { testSeedService } from './test-context';
 import { runConsolidation } from './run-consolidation';
+import { testSeedService } from './test-context';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 

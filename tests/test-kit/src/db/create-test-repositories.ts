@@ -1,4 +1,3 @@
-import * as contracts from '@budgie/contracts';
 import {
     AtmCashWithdrawalRepository,
     ExistingTransferRepository,
@@ -6,6 +5,7 @@ import {
     RefundPairRepository,
     TransferPairRepository
 } from '@budgie/consolidation';
+import * as contracts from '@budgie/contracts';
 
 import type { DB } from '@budgie/contracts';
 

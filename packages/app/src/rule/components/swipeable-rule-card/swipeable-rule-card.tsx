@@ -75,8 +75,8 @@ export const SwipeableRuleCard = (props: Props) => {
     const didTriggerThresholdHaptic = useSharedValue(false);
 
     useEffect(() => {
-        translateY.value = withSpring(0, ENTRY_SPRING_CONFIG);
-        opacity.value = withSpring(1, ENTRY_SPRING_CONFIG);
+        translateY.set(withSpring(0, ENTRY_SPRING_CONFIG));
+        opacity.set(withSpring(1, ENTRY_SPRING_CONFIG));
     }, [opacity, translateY]);
 
     const handleSwipeThresholdReached = () => {
@@ -94,32 +94,32 @@ export const SwipeableRuleCard = (props: Props) => {
         .activeOffsetX(10)
         .onUpdate(event => {
             const clampedTranslation = Math.max(0, event.translationX);
-            translateX.value = clampedTranslation;
+            translateX.set(clampedTranslation);
 
             if (clampedTranslation >= SWIPE_THRESHOLD) {
-                if (!didTriggerThresholdHaptic.value) {
-                    didTriggerThresholdHaptic.value = true;
+                if (!didTriggerThresholdHaptic.get()) {
+                    didTriggerThresholdHaptic.set(true);
                     runOnJS(handleSwipeThresholdReached)();
                 }
             } else {
-                didTriggerThresholdHaptic.value = false;
+                didTriggerThresholdHaptic.set(false);
             }
         })
         .onEnd(event => {
-            didTriggerThresholdHaptic.value = false;
+            didTriggerThresholdHaptic.set(false);
 
             if (event.translationX >= SWIPE_THRESHOLD) {
-                translateX.value = withSpring(SLIDE_OUT_DISTANCE, SNAP_BACK_SPRING_CONFIG);
-                opacity.value = withSpring(0, SNAP_BACK_SPRING_CONFIG);
+                translateX.set(withSpring(SLIDE_OUT_DISTANCE, SNAP_BACK_SPRING_CONFIG));
+                opacity.set(withSpring(0, SNAP_BACK_SPRING_CONFIG));
                 runOnJS(onDismiss)();
             } else {
-                translateX.value = withSpring(0, SNAP_BACK_SPRING_CONFIG);
+                translateX.set(withSpring(0, SNAP_BACK_SPRING_CONFIG));
             }
         });
 
     const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
-        opacity: opacity.value
+        transform: [{ translateX: translateX.get() }, { translateY: translateY.get() }],
+        opacity: opacity.get()
     }));
 
     const handleYesPress = async () => {

@@ -1,6 +1,5 @@
-import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
-
 import { buildTestDb, createTestRepositories, resetTestDb } from '@budgie-at/test-kit';
+import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
 vi.mock('@app/sync/service/transfer-consolidation-drainer.service', () => ({
     transferConsolidationDrainerService: { enqueue: vi.fn() }

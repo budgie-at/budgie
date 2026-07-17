@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { describe, expect, it } from 'vitest';
 
 import { refundConsolidationService, testQueryService, testSeedService } from '../harness/test-context';
 

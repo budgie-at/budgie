@@ -1,8 +1,6 @@
-import { describe, expect, it } from 'vitest';
-
-import { TransactionEntityTable, TransactionTypeEnum } from '@budgie/contracts';
-
 import { transactionRepository } from '@app/@generic/drizzle/db/db';
+import { TransactionEntityTable, TransactionTypeEnum } from '@budgie/contracts';
+import { describe, expect, it } from 'vitest';
 
 import { fetchTransactionById } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';

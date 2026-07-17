@@ -68,15 +68,17 @@ export const UpdateDebtAccount = ({ account }: Props) => {
         return <EmptyScreen />;
     }
 
+    const instrumentSymbol = stickyInstrument.symbol;
+
     return (
         <UpdateAccountScreen
-            instrumentSymbol={stickyInstrument.symbol}
+            instrumentSymbol={instrumentSymbol}
             onSubmit={handleSubmit}
             account={account}
             control={control}
             isSubmitting={isSubmitting}
         >
-            <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} />
+            <AccountTargetBalanceField control={control} instrumentSymbol={instrumentSymbol} />
             <DebtAccountContactField control={control} />
             <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
             <IncludeInNetWorthField control={control} />

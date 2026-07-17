@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import { NextResponse } from 'next/server';
 
 import { isDefined } from '@rnw-community/shared';

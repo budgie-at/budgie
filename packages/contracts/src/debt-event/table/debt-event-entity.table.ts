@@ -6,8 +6,8 @@ import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-dr
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
-import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { DebtEventDirectionEnum } from '../enum/debt-event-direction.enum';
 import { DebtEventSourceEnum } from '../enum/debt-event-source.enum';
 

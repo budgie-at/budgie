@@ -1,11 +1,9 @@
-import { describe, expect, it } from 'vitest';
-import { eq } from 'drizzle-orm';
-
+import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { BankSyncEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
+import { describe, expect, it } from 'vitest';
 
 import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
-
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
 describe('monobank/unchanged-data-noop', () => {
     it('re-sync of identical data does not touch updatedAt on transactions or entries', async () => {

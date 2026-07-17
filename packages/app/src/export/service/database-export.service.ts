@@ -12,7 +12,7 @@ class DatabaseExportService {
         const fileName = `budgie-backup-${format(new Date(), 'yyyy-MM-dd-HHmmss')}.db`;
         const destinationPath = `${Paths.cache.uri}/${fileName}`;
 
-        await expoDb.execAsync('PRAGMA wal_checkpoint(FULL)'); // eslint-disable-line lingui/no-unlocalized-strings
+        await expoDb.execAsync('PRAGMA wal_checkpoint(FULL)'); // oxlint-disable-line lingui/no-unlocalized-strings
 
         const sourceFile = new File(sourcePath);
         const destinationFile = new File(destinationPath);

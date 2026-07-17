@@ -10,10 +10,18 @@
             "dependsOn": ["^ts"],
             "outputs": ["node_modules/.cache/tsbuildinfo.json"]
         },
-        "lint": {
-            "outputs": []
-        },
-        "format": {
+        "lint:eslint": {
+            "dependsOn": ["^lint:eslint"],
+            "env": ["CI", "ESLINT_USE_FLAT_CONFIG"],
+            "inputs": [
+                "$TURBO_DEFAULT$",
+                "$TURBO_ROOT$/.oxlintrc.json",
+                "$TURBO_ROOT$/eslint.config.mjs",
+                "$TURBO_ROOT$/eslint-rules/**",
+                "$TURBO_ROOT$/package.json",
+                "$TURBO_ROOT$/tsconfig*.json",
+                "$TURBO_ROOT$/yarn.lock"
+            ],
             "outputs": []
         },
         "clear": {
