@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings -- Sync orchestration requires sequential bank API work and background state */
+/* oxlint-disable no-await-in-loop, lingui/no-unlocalized-strings -- Sync orchestration requires sequential bank API work and background state */
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService, mapBankTransactionToCreateInput } from '@budgie/bank-sync';
 import { consolidationScopeService } from '@budgie/consolidation';
 import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';

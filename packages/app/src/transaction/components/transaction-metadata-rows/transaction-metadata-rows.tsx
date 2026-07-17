@@ -42,7 +42,11 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
 
     return (
         <View className="gap-y-xxs">
-            <RefundedPill transaction={transaction} testID={refundedPillTestID} />
+            <RefundedPill
+                key={`${transaction.id}-${transaction.consolidationType}`}
+                transaction={transaction}
+                testID={refundedPillTestID}
+            />
 
             {hasFee ? <TransactionMetadataRow label={feeLabel} testID={feeTestID} /> : null}
 

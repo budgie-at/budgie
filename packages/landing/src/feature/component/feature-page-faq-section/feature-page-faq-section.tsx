@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings -- schema.org keys, not user-facing copy */
+/* oxlint-disable lingui/no-unlocalized-strings -- schema.org keys, not user-facing copy */
 import { Trans } from '@lingui/react/macro';
 import { Children, isValidElement } from 'react';
 

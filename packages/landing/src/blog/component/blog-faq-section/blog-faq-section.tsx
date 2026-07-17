@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings -- schema.org keys, not user-facing copy */
+/* oxlint-disable lingui/no-unlocalized-strings -- schema.org keys, not user-facing copy */
 import { Children, type ReactNode, isValidElement } from 'react';
 
 import { isNotEmptyArray } from '@rnw-community/shared';

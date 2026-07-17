@@ -2,7 +2,7 @@ import { msg } from '@lingui/core/macro';
 
 import type { ArticleRegistryEntryInterface } from '../../../../blog/interface/article-registry-entry.interface';
 
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 
 export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'historical-exchange-rates-budget-analytics',
@@ -24,4 +24,4 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     relatedFeatureSlugs: ['multi-currency', 'spending-analytics', 'csv-import', 'monobank-sync']
 };
 
-/* eslint-enable lingui/no-unlocalized-strings */
+/* oxlint-enable lingui/no-unlocalized-strings */

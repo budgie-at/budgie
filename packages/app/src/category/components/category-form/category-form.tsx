@@ -9,8 +9,8 @@ import { AiTranslationFields } from '../../../@generic/component/ai-translation-
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
 import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
-import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';

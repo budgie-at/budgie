@@ -4,8 +4,8 @@ import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
+import { FullPage } from '../../../../@generic/component/page/full-page';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { UpdateAdjustmentTransaction } from '../../../../transaction/components/update-adjustment-transaction/update-adjustment-transaction';

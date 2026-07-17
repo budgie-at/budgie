@@ -1,6 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
-import { sql } from 'drizzle-orm';
-
+import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
+import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '@app/sync/constant/privatbank-duplicate-candidate-sql.constant';
+import { bankSyncRepairService } from '@app/sync/service/bank-sync-repair.service';
 import {
     ExternalSourceEnum,
     TransactionConsolidationTypeEnum,
@@ -9,13 +9,11 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { sql } from 'drizzle-orm';
+import { describe, expect, it, vi } from 'vitest';
 
-import { insertOne } from '../../harness/db/insert-one';
 import { seed, testDb } from '../../harness';
-
-import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
-import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '@app/sync/constant/privatbank-duplicate-candidate-sql.constant';
-import { bankSyncRepairService } from '@app/sync/service/bank-sync-repair.service';
+import { insertOne } from '../../harness/db/insert-one';
 
 import type { BankSyncDuplicateCandidateRowInterface } from '@app/sync/interface/bank-sync-duplicate-candidate-row.interface';
 import type {

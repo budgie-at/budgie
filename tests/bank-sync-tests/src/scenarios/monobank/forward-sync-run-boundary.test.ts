@@ -1,11 +1,10 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { http, HttpResponse } from 'msw';
-
 import { microPause } from '@app/@generic/utils/micro-pause.util';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { http, HttpResponse } from 'msw';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { monobankServer } from '../../harness/monobank/monobank-server';
+import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 
 const statementEndpoint = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
 const staleForwardSyncFromAt = new Date(2026, 0, 1);

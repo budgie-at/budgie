@@ -64,55 +64,91 @@ jobs:
         timeout-minutes: 60
         permissions:
             contents: read
-            id-token: write
-            pull-requests: write
+        outputs:
+            coverage-artifact-id: ${{ steps.upload-coverage.outputs.artifact-id }}
         steps:
             - name: Checkout repository
               uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
 
             - name: Setup Node
               uses: actions/setup-node@v6
               with:
-                  node-version: 22.x
+                  node-version: 22.22.1
 
             - name: Install dependencies
-              run: yarn install
+              run: yarn install --immutable
 
             - name: Lingui catalogs are up to date
-              run: |
-                  yarn i18n:sync
-
-                  if ! git diff --quiet HEAD -- packages/app/src/i18n/locales packages/landing/src/i18n/locales; then
-                    echo "::error::Lingui catalogs are stale. Run yarn i18n:sync and commit .po plus messages.ts files."
-                    git diff --name-only HEAD -- packages/app/src/i18n/locales packages/landing/src/i18n/locales
-                    exit 1
-                  fi
+              run: yarn i18n:check
 
             - name: Lint the PR Title
               run: printf '%s\n' "$PR_TITLE" | node_modules/.bin/commitlint
 
+            - name: Formatting checks
+              run: yarn format:check
+
             - name: Typescript checks
-              run: yarn turbo run ts
+              run: yarn ts
 
             - name: Maestro selector checks
               run: yarn workspace @budgie-at/app-tests selectors:check
 
-            - name: ESLint checks
-              run: yarn turbo run lint --concurrency=2
+            - name: Lint checks
+              run: yarn lint
 
             - name: Deadcode detection
-              continue-on-error: true
-              run: yarn turbo deadcode
+              run: yarn deadcode
 
             - name: Copy/Paste detection
-              run: yarn turbo cpd
+              run: yarn cpd
+
+            - name: Build
+              run: yarn build
 
             - name: Unit tests
-              run: yarn turbo run test:coverage
+              run: yarn test:coverage
+
+            - name: Verify generated files are committed
+              run: git diff --exit-code
+
+            - name: Upload coverage artifact
+              id: upload-coverage
+              uses: actions/upload-artifact@v6
+              with:
+                  name: coverage-reports
+                  path: |
+                      **/coverage/**
+                      !**/node_modules/**
+                  if-no-files-found: ignore
+                  retention-days: 1
+
+    codecov:
+        if: ${{ needs.code-quality.outputs.coverage-artifact-id != '' }}
+        needs: [code-quality]
+        name: Upload coverage reports
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
+
+            - name: Download coverage artifact
+              uses: actions/download-artifact@v6
+              with:
+                  name: coverage-reports
+                  path: coverage-reports
 
             - name: Upload coverage reports to Codecov
               uses: codecov/codecov-action@v5
               with:
+                  directory: coverage-reports
                   use_oidc: true
 
     eas-update-preview:
@@ -140,6 +176,8 @@ jobs:
 
             - name: Checkout repository
               uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
 
             - name: Setup Node
               uses: actions/setup-node@v6
@@ -147,7 +185,7 @@ jobs:
                   node-version: 22.x
 
             - name: Setup EAS
-              uses: expo/expo-github-action@v8
+              uses: expo/expo-github-action@v9
               with:
                   eas-version: ${{ env.EAS_CLI_VERSION }}
                   token: ${{ secrets.EXPO_TOKEN }}
@@ -192,6 +230,8 @@ jobs:
             CCACHE_NOHASHDIR: 'true'
         steps:
             - uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
 
             - name: Setup macOS toolchain PATH
               shell: bash
@@ -225,7 +265,7 @@ jobs:
               run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
 
             - name: Setup EAS
-              uses: expo/expo-github-action@v8
+              uses: expo/expo-github-action@v9
               with:
                   eas-version: ${{ env.EAS_CLI_VERSION }}
                   token: ${{ secrets.EXPO_TOKEN }}
@@ -469,6 +509,8 @@ jobs:
             EXPO_PUBLIC_AI_DISABLE: 'true'
         steps:
             - uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
 
             - name: Select Xcode 26.4.1
               run: |

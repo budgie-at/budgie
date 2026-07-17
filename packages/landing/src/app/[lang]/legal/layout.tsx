@@ -18,7 +18,7 @@ export async function generateMetadata(props: LegalLayoutProps): Promise<Metadat
 
     return {
         title: i18n._(msg`Legal`),
-        // eslint-disable-next-line lingui/no-unlocalized-strings
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
         robots: 'noindex, follow'
     };
 }

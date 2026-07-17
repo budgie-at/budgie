@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { statisticsRepository, transactionEntryRepository } from '@app/@generic/drizzle/db/db';
 import { moneyDataUpgradeService } from '@app/money-data/service/money-data-upgrade.service';
 import {
@@ -17,6 +15,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
+import { describe, expect, it } from 'vitest';
 
 import { requireInstrument } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';

@@ -26,7 +26,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     return {
         title,
         description,
-        // eslint-disable-next-line lingui/no-unlocalized-strings
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
         robots: 'index, follow',
         alternates: buildAlternates(lang, '/blog'),
         openGraph: {
@@ -63,7 +63,7 @@ export default async function BlogPage(props: PageLangParam) {
         readingTimeMinutes: entry.readingTimeMinutes
     })).sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime());
 
-    /* eslint-disable lingui/no-unlocalized-strings */
+    /* oxlint-disable lingui/no-unlocalized-strings */
     const breadcrumbData = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
@@ -72,7 +72,7 @@ export default async function BlogPage(props: PageLangParam) {
             { '@type': 'ListItem', position: 2, name: i18n._(msg`Blog`), item: `${BASE_URL}/${lang}/blog` }
         ]
     };
-    /* eslint-enable lingui/no-unlocalized-strings */
+    /* oxlint-enable lingui/no-unlocalized-strings */
 
     return (
         <main className="flex-1">

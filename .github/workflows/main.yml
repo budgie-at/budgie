@@ -103,6 +103,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
+          persist-credentials: false
           fetch-depth: 2
           ref: main
 
@@ -112,7 +113,7 @@ jobs:
           node-version: 22.x
 
       - name: Setup EAS
-        uses: expo/expo-github-action@v8
+        uses: expo/expo-github-action@v9
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}

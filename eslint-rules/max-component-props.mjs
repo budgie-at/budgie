@@ -21,7 +21,7 @@ const reportIfTooManyMembers = (context, node, typeName, members, max) => {
     }
 };
 
-export const maxComponentPropsRule = {
+const maxComponentPropsRule = {
     meta: {
         type: 'suggestion',
         docs: {
@@ -67,3 +67,5 @@ export const maxComponentPropsRule = {
         };
     },
 };
+
+export default { rules: { 'max-component-props': maxComponentPropsRule } };
