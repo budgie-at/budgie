@@ -79,15 +79,11 @@ export class DebtMigrationIdempotencyAssertions {
     private assertFreshPersistedRows(snapshot: DebtMigrationPersistedSnapshotInterface): void {
         expect(snapshot.accounts).toHaveLength(1);
         expect(snapshot.balances).toHaveLength(0);
-        expect(snapshot.transactions).toEqual([
-            expect.objectContaining({
-                deletedAt: null,
-                fromAccountId: DebtMigrationIdempotencyAssertions.FRESH_ACCOUNT_ID,
-                id: DebtMigrationIdempotencyAssertions.FRESH_ADJUSTMENT_TRANSACTION_ID,
-                toAccountId: null,
-                type: TransactionTypeEnum.ADJUSTMENT
-            })
-        ]);
+        this.assertAdjustmentTransactionRows(
+            snapshot,
+            DebtMigrationIdempotencyAssertions.FRESH_ACCOUNT_ID,
+            DebtMigrationIdempotencyAssertions.FRESH_ADJUSTMENT_TRANSACTION_ID
+        );
         expect(snapshot.transactionEntries).toEqual([
             expect.objectContaining({
                 accountId: DebtMigrationIdempotencyAssertions.FRESH_ACCOUNT_ID,
@@ -128,15 +124,11 @@ export class DebtMigrationIdempotencyAssertions {
                 id: DebtMigrationIdempotencyAssertions.LOOKALIKE_BALANCE_ID
             })
         ]);
-        expect(snapshot.transactions).toEqual([
-            expect.objectContaining({
-                deletedAt: null,
-                fromAccountId: DebtMigrationIdempotencyAssertions.LOOKALIKE_ACCOUNT_ID,
-                id: DebtMigrationIdempotencyAssertions.LOOKALIKE_TRANSACTION_ID,
-                toAccountId: null,
-                type: TransactionTypeEnum.ADJUSTMENT
-            })
-        ]);
+        this.assertAdjustmentTransactionRows(
+            snapshot,
+            DebtMigrationIdempotencyAssertions.LOOKALIKE_ACCOUNT_ID,
+            DebtMigrationIdempotencyAssertions.LOOKALIKE_TRANSACTION_ID
+        );
         expect(snapshot.transactionEntries).toEqual([
             expect.objectContaining({
                 accountId: DebtMigrationIdempotencyAssertions.LOOKALIKE_ACCOUNT_ID,
@@ -174,15 +166,11 @@ export class DebtMigrationIdempotencyAssertions {
     private assertMultiEntryPersistedRows(snapshot: DebtMigrationPersistedSnapshotInterface): void {
         expect(snapshot.accounts).toHaveLength(1);
         expect(snapshot.balances).toHaveLength(0);
-        expect(snapshot.transactions).toEqual([
-            expect.objectContaining({
-                deletedAt: null,
-                fromAccountId: DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID,
-                id: DebtMigrationIdempotencyAssertions.MULTI_ENTRY_TRANSACTION_ID,
-                toAccountId: null,
-                type: TransactionTypeEnum.ADJUSTMENT
-            })
-        ]);
+        this.assertAdjustmentTransactionRows(
+            snapshot,
+            DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID,
+            DebtMigrationIdempotencyAssertions.MULTI_ENTRY_TRANSACTION_ID
+        );
         expect(snapshot.transactionEntries).toEqual([
             expect.objectContaining({
                 accountId: DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID,
@@ -221,6 +209,22 @@ export class DebtMigrationIdempotencyAssertions {
                 source: DebtEventSourceEnum.MIGRATION,
                 transactionEntryId: DebtMigrationIdempotencyAssertions.MULTI_ENTRY_DEBT_ENTRY_ID,
                 transactionId: DebtMigrationIdempotencyAssertions.MULTI_ENTRY_TRANSACTION_ID
+            })
+        ]);
+    }
+
+    private assertAdjustmentTransactionRows(
+        snapshot: DebtMigrationPersistedSnapshotInterface,
+        accountId: number,
+        transactionId: number
+    ): void {
+        expect(snapshot.transactions).toEqual([
+            expect.objectContaining({
+                deletedAt: null,
+                fromAccountId: accountId,
+                id: transactionId,
+                toAccountId: null,
+                type: TransactionTypeEnum.ADJUSTMENT
             })
         ]);
     }

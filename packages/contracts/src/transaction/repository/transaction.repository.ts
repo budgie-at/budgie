@@ -522,33 +522,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     async findByIds(ids: number[], tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
-        if (isNotEmptyArray(ids)) {
-            return await (tx ?? this.db).query.TransactionEntityTable.findMany({
-                where: inArray(TransactionEntityTable.id, ids),
-                with: {
-                    [TransactionAssociationEnum.ENTRIES]: {
-                        where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
-                    }
-                }
-            });
-        }
-
-        return [];
+        return await this.findByIdsWithEntriesWhere(ids, TransactionRepository.LIVE_ENTRY_RELATION_WHERE, tx);
     }
 
     async findByIdsWithRefundConsolidationHistory(ids: number[], tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
-        if (isNotEmptyArray(ids)) {
-            return await (tx ?? this.db).query.TransactionEntityTable.findMany({
-                where: inArray(TransactionEntityTable.id, ids),
-                with: {
-                    [TransactionAssociationEnum.ENTRIES]: {
-                        where: isNull(TransactionEntryEntityTable.deletedAt)
-                    }
-                }
-            });
-        }
-
-        return [];
+        return await this.findByIdsWithEntriesWhere(ids, isNull(TransactionEntryEntityTable.deletedAt), tx);
     }
 
     async truncate(tx?: DB): Promise<void> {
@@ -764,6 +742,25 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
 
             return isDefined(condition) ? [condition] : [];
+        }
+
+        return [];
+    }
+
+    private async findByIdsWithEntriesWhere(
+        ids: number[],
+        entriesWhere: SQL | undefined,
+        tx?: DB
+    ): Promise<TransactionWithEntriesEntityInterface[]> {
+        if (isNotEmptyArray(ids)) {
+            return await (tx ?? this.db).query.TransactionEntityTable.findMany({
+                where: inArray(TransactionEntityTable.id, ids),
+                with: {
+                    [TransactionAssociationEnum.ENTRIES]: {
+                        where: entriesWhere
+                    }
+                }
+            });
         }
 
         return [];
