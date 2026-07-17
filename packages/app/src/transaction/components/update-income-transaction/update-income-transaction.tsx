@@ -1,5 +1,6 @@
 import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { useRef } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
@@ -10,11 +11,14 @@ import { useUpdateTransactionSharedActions } from '../../hook/use-update-transac
 import { buildIncomeEntry } from '../../utils/build-income-entry.util';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { UpdateSimpleTransactionPage } from '../update-simple-transaction-page/update-simple-transaction-page';
+import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
+import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
 export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
+    const simpleQuickFormRef = useRef<SimpleQuickFormRefInterface>(null);
     const transactionId = transaction.id;
     const simpleTransaction = useUpdateSimpleTransaction({
         transaction,
@@ -39,6 +43,7 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
         transactionType: TransactionTypeEnum.INCOME
     });
     const canConvertToRefund = !simpleTransaction.isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
+    const handleFeePress = () => simpleQuickFormRef.current?.openFee();
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const transferConvertProps = simpleTransaction.categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
     const debtSettlementProps = hasDebtSettlement
@@ -52,15 +57,21 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
         <UpdateSimpleTransactionPage
             form={simpleTransaction.form}
             title={t`Edit Income`}
-            isConsolidated={simpleTransaction.isConsolidated}
             onGoBack={simpleTransaction.handleGoBack}
-            onDelete={simpleTransaction.handleDelete}
-            onRevert={handleRevert}
-            {...refundConvertProps}
-            {...transferConvertProps}
-            {...debtSettlementProps}
+            right={
+                <UpdateTransactionActionsMenu
+                    onDelete={simpleTransaction.handleDelete}
+                    isConsolidated={simpleTransaction.isConsolidated}
+                    onRevert={handleRevert}
+                    onFeePress={handleFeePress}
+                    {...refundConvertProps}
+                    {...transferConvertProps}
+                    {...debtSettlementProps}
+                />
+            }
         >
             <SimpleQuickForm
+                ref={simpleQuickFormRef}
                 variant="positive"
                 transactionType={TransactionTypeEnum.INCOME}
                 accountFieldName="toAccountId"
@@ -71,6 +82,7 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
                 onSubmit={simpleTransaction.handleSubmit}
                 onCancel={simpleTransaction.handleGoBack}
                 rulePillSlotProps={simpleTransaction}
+                showInlineFeeAction={false}
             />
         </UpdateSimpleTransactionPage>
     );

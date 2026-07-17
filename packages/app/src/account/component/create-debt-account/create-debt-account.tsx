@@ -9,6 +9,7 @@ import { AccountDetailsField } from '../../../@generic/component/account-details
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 // jscpd:ignore-end
@@ -45,21 +46,25 @@ export const CreateDebtAccount = () => {
         instrumentId: defaultInstrument.id
     };
 
-    const { control, handleSubmit, instrument, debtType, setValue, getValues } = useDebtAccountForm(initialValues, async values => {
-        const effectiveOpeningAccountId = values.debtType === AccountDebtTypeEnum.LENT ? openingAccountId : null;
+    const { control, handleSubmit, instrument, debtType, setValue, getValues, isSubmitting } = useDebtAccountForm(
+        initialValues,
+        async values => {
+            const effectiveOpeningAccountId = values.debtType === AccountDebtTypeEnum.LENT ? openingAccountId : null;
 
-        if (isDefined(effectiveOpeningAccountId)) {
-            return accountDebtOpeningService.createLentDebtFromTransfer(
-                { ...values, targetBalance: values.currentBalance },
-                effectiveOpeningAccountId
-            );
+            if (isDefined(effectiveOpeningAccountId)) {
+                return accountDebtOpeningService.createLentDebtFromTransfer(
+                    { ...values, targetBalance: values.currentBalance },
+                    effectiveOpeningAccountId
+                );
+            }
+
+            return accountService.createDebt(values);
         }
-
-        return accountService.createDebt(values);
-    });
+    );
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
     const isOpeningFromAccount = isLentDebt && isDefined(openingAccountId);
     const variant = ACCOUNT_DEBT_TYPE_COLOR[debtType];
+    const stickyInstrument = useStickyDefinedValue(instrument);
 
     const handleCreateDebtAccountSubmit = () => {
         if (isOpeningFromAccount) {
@@ -69,13 +74,13 @@ export const CreateDebtAccount = () => {
         return handleSubmit();
     };
 
-    if (!isDefined(instrument)) {
+    if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
     }
 
     return (
-        <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleCreateDebtAccountSubmit}>
-            <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
+        <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleCreateDebtAccountSubmit} isSubmitting={isSubmitting}>
+            <AccountBalanceField variant={variant} instrumentSymbol={stickyInstrument.symbol} control={control} />
 
             <FormLayoutGroup>
                 <AccountDetailsField variant={variant} control={control} nameInputTestID={CreateAccountScreenSelector.NameInput} />
@@ -84,7 +89,7 @@ export const CreateDebtAccount = () => {
 
                 {isLentDebt && <DebtOpeningAccountField accountId={openingAccountId} variant={variant} onChange={setOpeningAccountId} />}
 
-                {!isOpeningFromAccount && <AccountTargetBalanceField control={control} instrumentSymbol={instrument.symbol} />}
+                {!isOpeningFromAccount && <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} />}
 
                 <DebtAccountTypeField control={control} />
 

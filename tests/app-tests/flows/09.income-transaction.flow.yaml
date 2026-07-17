@@ -80,6 +80,26 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TransactionInfo.EditButton.Label'
 
+- assertNotVisible: '^Set fee$'
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.FeeButton'
+- assertVisible:
+    id: 'TransactionActionsMenu.DeleteButton'
+- tapOn:
+    id: 'TransactionActionsMenu.FeeButton'
+- extendedWaitUntil:
+    visible:
+      id: 'SplitEntryRow.Amount.0'
+- assertVisible: 'Save fee'
+- swipe:
+    direction: DOWN
+- extendedWaitUntil:
+    notVisible:
+      id: 'SplitEntryRow.Amount.0'
+
 - longPressOn:
     id: 'TransactionKeypad.Backspace'
 - tapOn:
@@ -111,6 +131,11 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Edited_Income'
     timeout: 5000
 
+- extendedWaitUntil:
+    visible:
+      id: 'TabBar.Home'
+    timeout: 3000
+
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
@@ -139,6 +164,11 @@ appId: ${APP_ID}
     notVisible:
       id: 'TransactionCard.Label.E2E_Edited_Income'
     timeout: 5000
+
+- extendedWaitUntil:
+    visible:
+      id: 'TabBar.Home'
+    timeout: 3000
 
 - tapOn:
     id: 'TabBar.Home'

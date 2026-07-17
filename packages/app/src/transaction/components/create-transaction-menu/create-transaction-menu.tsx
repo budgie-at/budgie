@@ -185,7 +185,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
                         icon={UserIconNameEnum.Plus}
                         onPress={handleClose}
                         animatedStyle={buttonStyle}
-                        testID={CreateTransactionMenuSelector.Trigger}
+                        testID={CreateTransactionMenuSelector.Close}
                     />
                 </View>
             </View>

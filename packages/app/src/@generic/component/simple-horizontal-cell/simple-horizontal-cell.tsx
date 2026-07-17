@@ -13,22 +13,11 @@ interface Props extends Omit<ComponentProps<typeof HorizontalCell>, 'children'> 
     readonly disabled?: boolean;
     readonly singleLine?: boolean;
     readonly titleTestID?: string;
-    readonly descriptionTestID?: string;
     readonly onTitlePress?: () => void;
 }
 
 export const SimpleHorizontalCell = (props: Props) => {
-    const {
-        onPress,
-        title,
-        description,
-        disabled = false,
-        singleLine = false,
-        titleTestID,
-        descriptionTestID,
-        onTitlePress,
-        ...rest
-    } = props;
+    const { onPress, title, description, disabled = false, singleLine = false, titleTestID, onTitlePress, ...rest } = props;
 
     const right = isDefined(onPress) ? (
         <View className="ml-auto">
@@ -52,7 +41,7 @@ export const SimpleHorizontalCell = (props: Props) => {
             {isNotEmptyString(description) ? (
                 <Text
                     className="text-sm font-medium text-secondary-foreground"
-                    testID={descriptionTestID}
+                    pointerEvents="none"
                     {...(singleLine && { numberOfLines: 1 })}
                 >
                     {description}
