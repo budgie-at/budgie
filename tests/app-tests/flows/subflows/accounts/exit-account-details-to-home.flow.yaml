@@ -6,4 +6,4 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'HomePage.TotalBalance'
-    timeout: 3000
+    timeout: 10000

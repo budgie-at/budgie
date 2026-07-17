@@ -7,5 +7,6 @@ appId: ${APP_ID}
     text: 'Convert'
     index: 0
 - extendedWaitUntil:
-    notVisible: 'Convert to Transfer?'
+    notVisible:
+      id: 'ConvertToTransfer.Page'
     timeout: 15000

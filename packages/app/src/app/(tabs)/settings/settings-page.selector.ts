@@ -1,4 +1,8 @@
-const normalizePart = (value: string) => value.replace(/[^a-zA-Z0-9]+/gu, '_');
+import { isDefined } from '@rnw-community/shared';
+
+import type { AccountEntityInterface } from '@budgie/contracts';
+
+const normalizePart = (value: number | string) => String(value).replace(/[^a-zA-Z0-9]+/gu, '_');
 
 export const SettingsPageSelector = {
     Container: 'SettingsPage.Container',
@@ -8,12 +12,12 @@ export const SettingsPageSelector = {
     AppLockBiometricSwitch: 'SettingsPage.AppLockBiometricSwitch',
     ScreenshotProtectionCard: 'SettingsPage.ScreenshotProtectionCard',
     ScreenshotProtectionSwitch: 'SettingsPage.ScreenshotProtectionSwitch',
-    LanguageCard: 'SettingsPage.LanguageCard',
-    LanguageValue: (code: string) => `SettingsPage.LanguageValue.${normalizePart(code)}` as const,
-    MainCurrencyCard: 'SettingsPage.MainCurrencyCard',
-    MainCurrencyValue: (code: string) => `SettingsPage.MainCurrencyValue.${normalizePart(code)}` as const,
-    DefaultAccountCard: 'SettingsPage.DefaultAccountCard',
-    DefaultAccountValue: (title: string) => `SettingsPage.DefaultAccountValue.${normalizePart(title)}` as const,
+    LanguageCard: (code: string) => `SettingsPage.LanguageCard.${normalizePart(code)}` as const,
+    MainCurrencyCard: (code: string) => `SettingsPage.MainCurrencyCard.${normalizePart(code)}` as const,
+    DefaultAccountCard: (account: Pick<AccountEntityInterface, 'id' | 'title'> | null) =>
+        isDefined(account)
+            ? (`SettingsPage.DefaultAccountCard.Selected.${normalizePart(account.id)}.${normalizePart(account.title)}` as const)
+            : ('SettingsPage.DefaultAccountCard.None' as const),
     DarkModeCard: 'SettingsPage.DarkModeCard',
     DarkModeSwitch: 'SettingsPage.DarkModeSwitch',
     ShowCentsCard: 'SettingsPage.ShowCentsCard',

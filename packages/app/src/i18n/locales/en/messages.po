@@ -295,6 +295,10 @@ msgstr "Add item"
 msgid "Add Tag"
 msgstr "Add Tag"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "Add transactions to see how your spending breaks down by category."
+msgstr "Add transactions to see how your spending breaks down by category."
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Add your first account to start tracking your finances"
@@ -669,10 +673,6 @@ msgstr "Checking Account"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choose a preset to auto-fill column mappings"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Choose the type of account you want to add"
-msgstr "Choose the type of account you want to add"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1522,10 +1522,6 @@ msgstr "Fetching new..."
 msgid "Field"
 msgstr "Field"
 
-#: src/account/component/create-account-screen/create-account-screen.tsx
-msgid "Fill in the account details"
-msgstr "Fill in the account details"
-
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
 msgstr "Filter accounts"
@@ -2036,6 +2032,10 @@ msgstr "No bank sync repairs found."
 msgid "No categories found"
 msgstr "No categories found"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "No categories in this period"
+msgstr "No categories in this period"
+
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "No categories match your search"
@@ -2237,10 +2237,6 @@ msgstr "Open the Privatbank24 app"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
 msgstr "Operator"
-
-#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
-msgid "Optional per-category caps within this budget"
-msgstr "Optional per-category caps within this budget"
 
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
@@ -2765,7 +2761,7 @@ msgstr "Select External Source"
 msgid "Select Field"
 msgstr "Select Field"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 msgid "Select File"
 msgstr "Select File"
 
@@ -2936,7 +2932,7 @@ msgstr "Start from scratch and set every limit yourself"
 msgid "Start Import"
 msgstr "Start Import"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Start Sync"
@@ -2986,10 +2982,6 @@ msgstr "Switch between light and dark themes"
 msgid "Sync Failed"
 msgstr "Sync Failed"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
-msgid "Sync your Monobank accounts and transactions"
-msgstr "Sync your Monobank accounts and transactions"
-
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Syncing history..."
 msgstr "Syncing history..."
@@ -3014,7 +3006,7 @@ msgstr "Tag transactions to see how your spending breaks down by context."
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
-#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags"
 msgstr "Tags"
