@@ -290,8 +290,7 @@ export default ({ config }) => ({
     ],
     experiments: {
         typedRoutes: true,
-        reactCompiler: true,
-        buildCacheProvider: 'eas'
+        reactCompiler: true
     },
     runtimeVersion: {
         policy: 'fingerprint'

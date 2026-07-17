@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
 
+import { CountryFlag } from '../@generic/component/country-flag/country-flag';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
 import { SelectorCard } from '../@generic/component/selector-card/selector-card';
@@ -48,7 +49,7 @@ export default function LanguageSelectorModal() {
             testID={LanguageSelectorModalSelector.Option(item.code)}
             iconSlot={
                 <View className="w-12 h-12 bg-secondary-background rounded-5xl items-center justify-center">
-                    <Text className="text-primary text-4xl">{item.emoji}</Text>
+                    <CountryFlag language={item.code} size={28} />
                 </View>
             }
             title={<Text className="text-primary font-medium text-md">{t(item.name)}</Text>}

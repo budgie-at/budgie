@@ -1,12 +1,13 @@
 import { t } from '@lingui/core/macro';
 import { useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { FormPage } from '../../../@generic/component/form-page/form-page';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormSchema } from '../../constant/budget-form-schema.constant';
@@ -20,9 +21,6 @@ import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 import { BudgetSetupDeleteButton } from '../budget-setup-delete-button/budget-setup-delete-button';
 
 import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controller';
-
-const FORM_CONTENT_STYLE = { rowGap: 24 } as const;
-const FORM_EXTRA_BOTTOM_PADDING = 48;
 
 interface Props {
     readonly defaultInstrumentId: number;
@@ -49,6 +47,7 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const headerTitle = isEditing ? t`Edit budget` : t`Create budget`;
     const handleCategoryAdded = () => scrollViewRef.current?.scrollToEnd({ animated: true });
+    const scrollViewProps = { ref: scrollViewRef };
     const setupProgressBar =
         isEditing && isDefined(budget) ? (
             <BudgetProgressBar
@@ -66,23 +65,25 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
 
     return (
         <FormProvider {...form}>
-            <FormPage
-                scrollViewRef={scrollViewRef}
-                header={<PageHeader title={headerTitle} onGoBack={handleCancel} />}
+            <CollapsibleChromePage
+                title={headerTitle}
+                leading={<GoBackButton onPress={handleCancel} />}
+                contentClassName="gap-y-7xl"
+                scrollViewProps={scrollViewProps}
                 footer={
-                    <BudgetEditFooter
-                        onSubmit={handleSubmit}
-                        disabled={isSaveDisabled}
-                        deleteButton={<BudgetSetupDeleteButton isEditing={isEditing} onDelete={handleDelete} />}
-                    />
+                    <View className="gap-md pt-xl px-7xl">
+                        <BudgetEditFooter
+                            onSubmit={handleSubmit}
+                            disabled={isSaveDisabled}
+                            deleteButton={<BudgetSetupDeleteButton isEditing={isEditing} onDelete={handleDelete} />}
+                        />
+                    </View>
                 }
-                contentContainerStyle={FORM_CONTENT_STYLE}
-                extraBottomPadding={FORM_EXTRA_BOTTOM_PADDING}
             >
                 {setupProgressBar}
                 <BudgetOverallLimitField control={form.control} currencySymbol={currencySymbol} />
                 <BudgetInlineCategoryLimits currencySymbol={currencySymbol} onCategoryAdded={handleCategoryAdded} />
-            </FormPage>
+            </CollapsibleChromePage>
         </FormProvider>
     );
 };

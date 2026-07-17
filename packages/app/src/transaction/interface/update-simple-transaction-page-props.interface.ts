@@ -1,19 +1,11 @@
-import { ReactNode } from 'react';
-import { UseFormReturn } from 'react-hook-form';
-
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
+import type { ReactNode } from 'react';
+import type { UseFormReturn } from 'react-hook-form';
 
 export interface UpdateSimpleTransactionPagePropsInterface {
     readonly form: UseFormReturn<TransactionCreateInputInterface, unknown, TransactionCreateInputInterface>;
     readonly title: string;
-    readonly isConsolidated: boolean;
     readonly children: ReactNode;
     readonly onGoBack: () => void;
-    readonly onDelete: () => void;
-    readonly onRevert: () => void;
-    readonly onAttachDebtSettlement?: () => void;
-    readonly attachDebtSettlementLabel?: string;
-    readonly onDetachDebtSettlement?: () => void;
-    readonly onConvertToRefund?: () => void;
-    readonly onConvertToTransfer?: () => void;
+    readonly right: ReactNode;
 }

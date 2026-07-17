@@ -1,5 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
-import { ReactNode, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { LayoutChangeEvent, Modal, Pressable, StyleSheet, View, ViewStyle, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -33,8 +34,23 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
     const { t } = useLingui();
     const { width: screenWidth, height: screenHeight } = useWindowDimensions();
     const { bottom: safeBottom } = useSafeAreaInsets();
-    const { isAnimatingOut, backdropStyle, menuStyle } = usePopoverAnimation(isOpen, onCloseComplete);
+    const { isAnimatingOut, backdropStyle, menuStyle, forceClose } = usePopoverAnimation(isOpen, onCloseComplete);
     const [menuHeight, setMenuHeight] = useState(0);
+    const onCloseRef = useRef(onClose);
+
+    useEffect(() => {
+        onCloseRef.current = onClose;
+    });
+
+    useFocusEffect(
+        useCallback(
+            () => () => {
+                forceClose();
+                onCloseRef.current();
+            },
+            [forceClose]
+        )
+    );
 
     const handleLayout = (event: LayoutChangeEvent) => {
         setMenuHeight(event.nativeEvent.layout.height);
@@ -57,6 +73,8 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
 
     const menuContainerStyle: ViewStyle = { position: 'absolute', top: menuTop, right: menuRight };
     const animatedMenuStyle = [menuStyle, measuringStyle];
+    const measuringPointerEvents = isMeasuring ? 'none' : 'auto';
+    const measuringImportantForAccessibility = isMeasuring ? 'no-hide-descendants' : 'auto';
 
     const shouldRender = isOpen || isAnimatingOut;
 
@@ -78,6 +96,9 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
                         className="min-w-[220px] overflow-hidden rounded-2xl border border-secondary-corner bg-primary-reverse shadow-lg"
                         style={animatedMenuStyle}
                         onLayout={handleLayout}
+                        pointerEvents={measuringPointerEvents}
+                        accessibilityElementsHidden={isMeasuring}
+                        importantForAccessibility={measuringImportantForAccessibility}
                     >
                         {children}
                     </Animated.View>

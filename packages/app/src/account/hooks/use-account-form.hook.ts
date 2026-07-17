@@ -24,6 +24,7 @@ export const useAccountForm = (
         control: form.control,
         name: 'instrumentId'
     });
+    const { isSubmitting } = form.formState;
 
     const handleSubmit = async (values: LiabilityAccountCreateInputInterface) => {
         try {
@@ -40,6 +41,7 @@ export const useAccountForm = (
     return {
         ...form,
         instrument,
+        isSubmitting,
         handleSubmit: form.handleSubmit(handleSubmit)
     };
 };

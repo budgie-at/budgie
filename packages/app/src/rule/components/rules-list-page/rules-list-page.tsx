@@ -23,7 +23,6 @@ interface Props {
 const COMBINING_MARK_REGEX = /\p{Diacritic}/gu;
 const DISABLED_SEARCH_VALUE = 'disabled';
 const ENABLED_SEARCH_VALUE = 'enabled';
-const HEADER_SPACER_STYLE = { height: LEGEND_LIST_HEADER_HEIGHT };
 const SEARCH_TOKEN_SEPARATOR = /\s+/u;
 
 const normalizeSearchValue = (value: string) => value.normalize('NFKD').replace(COMBINING_MARK_REGEX, '').toLowerCase().trim();
@@ -127,8 +126,8 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
         })
     });
     const listHeaderComponent = isMatchingRulesFilterActive ? (
-        <View style={HEADER_SPACER_STYLE} className="justify-end pb-lg">
-            <View testID={RulesPageSelector.MatchingRulesFilter} className="self-start">
+        <View className="pb-lg items-start">
+            <View testID={RulesPageSelector.MatchingRulesFilter}>
                 <RuleIndicatorPill icon={UserIconNameEnum.Workflow}>{matchingRulesFilterLabel}</RuleIndicatorPill>
             </View>
         </View>

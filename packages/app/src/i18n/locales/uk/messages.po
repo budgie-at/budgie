@@ -294,6 +294,10 @@ msgstr "Додати запис"
 msgid "Add Tag"
 msgstr "Додати тег"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "Add transactions to see how your spending breaks down by category."
+msgstr "Додайте транзакції, щоб побачити, як розподіляються ваші витрати за категоріями."
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
@@ -668,10 +672,6 @@ msgstr "Поточний рахунок"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Choose the type of account you want to add"
-msgstr "Оберіть тип рахунку, який ви хочете додати"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1521,10 +1521,6 @@ msgstr "Завантаження нових..."
 msgid "Field"
 msgstr "Поле"
 
-#: src/account/component/create-account-screen/create-account-screen.tsx
-msgid "Fill in the account details"
-msgstr "Заповніть деталі рахунку"
-
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
 msgstr "Фільтрувати рахунки"
@@ -2035,6 +2031,10 @@ msgstr "Виправлень банківської синхронізації �
 msgid "No categories found"
 msgstr "Категорій не знайдено"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "No categories in this period"
+msgstr "Немає категорій за цей період"
+
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "Жодна категорія не відповідає вашому пошуку"
@@ -2236,10 +2236,6 @@ msgstr "Відкрийте додаток Приват24"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
 msgstr "Оператор"
-
-#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
-msgid "Optional per-category caps within this budget"
-msgstr "Опційні обмеження за категоріями у межах цього бюджету"
 
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
@@ -2764,7 +2760,7 @@ msgstr "Вибрати зовнішнє джерело"
 msgid "Select Field"
 msgstr "Вибрати поле"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 msgid "Select File"
 msgstr "Обрати файл"
 
@@ -2935,7 +2931,7 @@ msgstr "Почніть з нуля та задайте кожен ліміт с�
 msgid "Start Import"
 msgstr "Почати імпорт"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
@@ -2985,10 +2981,6 @@ msgstr "Перемикайтеся між світлою та темною те�
 msgid "Sync Failed"
 msgstr "Синхронізація не вдалась"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
-msgid "Sync your Monobank accounts and transactions"
-msgstr "Синхронізуйте свої рахунки та транзакції Монобанку"
-
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Syncing history..."
 msgstr "Синхронізація історії..."
@@ -3013,7 +3005,7 @@ msgstr "Позначайте транзакції тегами, щоб поба�
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
-#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags"
 msgstr "Теги"

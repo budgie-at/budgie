@@ -9,7 +9,8 @@ appId: ${APP_ID}
     when:
       visible: 'No accounts yet'
     commands:
-      - tapOn: 'Add Account'
+      - tapOn:
+          id: 'AccountsEmptyState.AddAccountButton'
       - extendedWaitUntil:
           visible:
             id: 'CreateAccount.BANK'

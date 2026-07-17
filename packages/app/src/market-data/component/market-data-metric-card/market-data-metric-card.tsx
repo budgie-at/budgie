@@ -13,11 +13,18 @@ interface Props {
     readonly testID?: string;
 }
 
+const LABEL_TEXT_STYLE = { lineHeight: 14, minHeight: 28 };
+
 export const MarketDataMetricCard = ({ icon, label, value, className, valueClassName, testID }: Props) => (
-    <View className={cn('border-secondary-corner bg-secondary-background rounded-4xl border p-3xl gap-y-md', className)} testID={testID}>
-        <View className="flex-row items-center gap-x-sm">
-            <Icon icon={icon} size={14} className="text-secondary-foreground" />
-            <Text className="text-secondary-foreground text-xs uppercase">{label}</Text>
+    <View
+        className={cn('border-secondary-corner bg-secondary-background rounded-4xl border p-3xl gap-y-md justify-center', className)}
+        testID={testID}
+    >
+        <View className="flex-row items-start gap-x-sm">
+            <Icon icon={icon} size={14} className="text-secondary-foreground mt-xxs" />
+            <Text className="text-secondary-foreground text-xs uppercase flex-1" style={LABEL_TEXT_STYLE} numberOfLines={2}>
+                {label}
+            </Text>
         </View>
 
         <Text selectable className={cn('text-primary text-lg font-semibold', valueClassName)} numberOfLines={1}>

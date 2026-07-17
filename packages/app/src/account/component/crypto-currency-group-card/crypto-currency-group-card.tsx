@@ -36,18 +36,15 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
 
     const toggleOpen = () => void setIsOpen(value => !value);
     const navigateToMarket = () => void router.push({ pathname: '/currency/[id]', params: { id: String(group.instrument.id) } });
-    const valuationRate = rate?.rate ?? latestPrice?.price;
+    const rateValue = rate?.rate;
+    const valuationRate = isDefined(rateValue) ? rateValue : latestPrice?.price;
     const formattedBalance = `${formatCryptoDigits(balance)} ${group.instrument.code}`;
     const formattedValue = isDefined(valuationRate) ? formatDigits(balance * valuationRate, defaultInstrument.symbol) : null;
     const formattedRate = isDefined(valuationRate) ? formatExchangeRate(valuationRate) : null;
 
     return (
         <View className="mb-3 gap-y-3">
-            <Card
-                className="border-warning-corner bg-secondary-background"
-                size="md"
-                testID={CryptoCurrencyGroupCardSelector.Card(group.instrument.code)}
-            >
+            <Card size="md" testID={CryptoCurrencyGroupCardSelector.Card(group.instrument.code)}>
                 <View className="gap-y-3">
                     <CryptoCurrencyGroupMarketLink
                         instrumentCode={group.instrument.code}

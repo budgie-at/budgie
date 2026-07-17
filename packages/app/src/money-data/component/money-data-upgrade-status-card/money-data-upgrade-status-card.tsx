@@ -40,7 +40,6 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeo
                     {percentText}
                 </Text>
             }
-            variant="secondary"
             contentClassName="gap-y-xs"
         >
             <Text numberOfLines={1} className="text-sm font-medium text-primary">

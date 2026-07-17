@@ -31,10 +31,17 @@ const ICON_SIZE = 20;
 const ITEM_SPACING = 72;
 const STAGGER_DELAY = 40;
 const SPRING_CONFIG = { damping: 12, stiffness: 180, mass: 0.6 };
+const actionItemBackgroundColorPalette: Record<ColorPaletteVariant, ClassValue> = {
+    ...BACKGROUND_COLOR_PALETTE,
+    secondary: 'bg-secondary-foreground/10',
+    positive: 'bg-positive-foreground/30',
+    warning: 'bg-warning-foreground/30',
+    destructive: 'bg-destructive-foreground/25'
+};
 
 const containerVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
     'w-12 h-12 rounded-full items-center justify-center border-0',
-    { variants: { variant: BACKGROUND_COLOR_PALETTE } }
+    { variants: { variant: actionItemBackgroundColorPalette } }
 );
 
 const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('', {

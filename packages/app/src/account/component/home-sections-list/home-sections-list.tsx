@@ -69,7 +69,7 @@ export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottom
             keyExtractor={keyExtractor}
             extraData={listFormatKey}
             showsVerticalScrollIndicator={false}
-            stickySectionHeadersEnabled={false}
+            stickySectionHeadersEnabled
             contentContainerStyle={contentContainerStyle}
             ListHeaderComponent={listHeaderComponent}
             ListFooterComponent={listFooterComponent}

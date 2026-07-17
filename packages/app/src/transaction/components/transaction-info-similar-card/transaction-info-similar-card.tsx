@@ -7,6 +7,8 @@ import { isDefined } from '@rnw-community/shared';
 import { Card } from '../../../@generic/component/card/card';
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
+import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
@@ -24,6 +26,7 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) =
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
+    const formatCompactDigits = useFormatCompactDigits(THOUSAND);
 
     const hasStats = isDefined(stats) && stats.count > 1;
     const opacityClassName = isLoading ? 'opacity-60' : 'opacity-100';
@@ -80,6 +83,7 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) =
                         month={month}
                         maxAmount={maxAmount}
                         currencySymbol={stats.currencySymbol}
+                        formatCompactDigits={formatCompactDigits}
                         formatDigits={formatDigits}
                         testID={TransactionInfoPageSelector.SimilarBar(index)}
                     />

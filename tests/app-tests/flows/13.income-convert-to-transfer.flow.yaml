@@ -131,6 +131,11 @@ appId: ${APP_ID}
           id: 'TransactionCard.Label.E2E_Convert_Income'
       timeout: 10000
 
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 10000
+
 - tapOn:
       id: 'TabBar.Home'
 - extendedWaitUntil:

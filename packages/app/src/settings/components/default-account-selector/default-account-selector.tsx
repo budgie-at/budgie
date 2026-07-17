@@ -17,6 +17,7 @@ export const DefaultAccountSelector = () => {
     const { selectedAccount, icon } = useAccountSelector({ accountId: defaultAccount?.id ?? null });
 
     const description = isDefined(selectedAccount) ? `${selectedAccount.title} – ${selectedAccount.instrument.code}` : null;
+    const defaultAccountSelectorId = SettingsPageSelector.DefaultAccountCard(selectedAccount ?? null);
 
     const handleOpen = async () => {
         const accountId = await openAccountSelector({ initialAccountId: defaultAccount?.id ?? null });
@@ -33,10 +34,7 @@ export const DefaultAccountSelector = () => {
             onPress={handleOpen}
             title={t`Default Account`}
             description={description ?? t`None selected`}
-            testID={SettingsPageSelector.DefaultAccountCard}
-            {...(isDefined(selectedAccount) && {
-                descriptionTestID: SettingsPageSelector.DefaultAccountValue(selectedAccount.title)
-            })}
+            testID={defaultAccountSelectorId}
         />
     );
 };

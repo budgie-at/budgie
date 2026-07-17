@@ -380,6 +380,7 @@ export default defineConfig(
                         { regex: { pattern: 'className', flags: 'i' } },
                         { regex: { pattern: 'icon', flags: 'i' } },
                         { regex: { pattern: 'sizes', flags: 'i' } },
+                        { regex: { pattern: 'fontFamily', flags: 'i' } },
                         { regex: { pattern: '^d$', flags: '' } }
                     ],
                     ignoreFunctions: [

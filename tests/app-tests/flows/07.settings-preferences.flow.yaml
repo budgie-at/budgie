@@ -14,16 +14,13 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'SettingsPage.LanguageCard'
-      timeout: 10000
-
-- assertVisible:
-      id: 'SettingsPage.LanguageValue.en'
+          id: 'SettingsPage.LanguageCard.en'
+      timeout: 3000
 
 - runFlow:
       file: subflows/navigation/open-settings-card.flow.yaml
       env:
-          CARD_ID: 'SettingsPage.LanguageCard'
+          CARD_ID: '^SettingsPage[.]LanguageCard[.].+$'
           DESTINATION_ID: 'LanguageSelector.SearchInput'
 - tapOn:
       id: 'LanguageSelector.SearchInput'
@@ -31,14 +28,18 @@ appId: ${APP_ID}
 - tapOn:
       id: 'LanguageSelector.Option.de'
 - extendedWaitUntil:
+      notVisible:
+          id: 'LanguageSelector.SearchInput'
+      timeout: 3000
+- extendedWaitUntil:
       visible:
-          id: 'SettingsPage.LanguageValue.de'
+          id: 'SettingsPage.LanguageCard.de'
       timeout: 10000
 
 - runFlow:
       file: subflows/navigation/open-settings-card.flow.yaml
       env:
-          CARD_ID: 'SettingsPage.LanguageCard'
+          CARD_ID: '^SettingsPage[.]LanguageCard[.].+$'
           DESTINATION_ID: 'LanguageSelector.SearchInput'
 - tapOn:
       id: 'LanguageSelector.SearchInput'
@@ -46,14 +47,18 @@ appId: ${APP_ID}
 - tapOn:
       id: 'LanguageSelector.Option.en'
 - extendedWaitUntil:
+      notVisible:
+          id: 'LanguageSelector.SearchInput'
+      timeout: 3000
+- extendedWaitUntil:
       visible:
-          id: 'SettingsPage.LanguageValue.en'
+          id: 'SettingsPage.LanguageCard.en'
       timeout: 10000
 
 - runFlow:
       file: subflows/navigation/open-settings-card.flow.yaml
       env:
-          CARD_ID: 'SettingsPage.MainCurrencyCard'
+          CARD_ID: '^SettingsPage[.]MainCurrencyCard[.].+$'
           DESTINATION_ID: 'CurrencySelector.SearchInput'
 - tapOn:
       id: 'CurrencySelector.SearchInput'
@@ -66,13 +71,13 @@ appId: ${APP_ID}
       timeout: 3000
 - extendedWaitUntil:
       visible:
-          id: 'SettingsPage.MainCurrencyValue.GBP'
+          id: 'SettingsPage.MainCurrencyCard.GBP'
       timeout: 3000
 
 - runFlow:
       file: subflows/navigation/open-settings-card.flow.yaml
       env:
-          CARD_ID: 'SettingsPage.DefaultAccountCard'
+          CARD_ID: '^SettingsPage[.]DefaultAccountCard[.].+$'
           DESTINATION_ID: 'AccountPickerBottomSheet.Input'
 - tapOn:
       id: 'AccountPickerBottomSheet.Input'
@@ -82,8 +87,12 @@ appId: ${APP_ID}
 - tapOn:
       id: 'AccountPickerBottomSheet.Option.E2E Settings Cash'
 - extendedWaitUntil:
+      notVisible:
+          id: 'AccountPickerBottomSheet.Input'
+      timeout: 3000
+- extendedWaitUntil:
       visible:
-          id: 'SettingsPage.DefaultAccountValue.E2E_Settings_Cash'
+          id: '^SettingsPage[.]DefaultAccountCard[.]Selected[.][0-9]+[.]E2E_Settings_Cash$'
       timeout: 10000
 
 - scrollUntilVisible:

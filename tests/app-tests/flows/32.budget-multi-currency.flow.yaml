@@ -153,6 +153,11 @@ env:
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Budget_MC_Category_Txn'
 
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 10000
+
 - tapOn:
       id: 'TabBar.Home'
 - extendedWaitUntil:

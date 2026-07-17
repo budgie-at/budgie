@@ -129,9 +129,18 @@ appId: ${APP_ID}
     visible:
       id: 'InactiveAccountCard.${UPDATED_ACCOUNT_NAME}'
     timeout: 10000
+- waitForAnimationToEnd
 - tapOn:
     id: 'InactiveAccountCard.ActivateButton.${UPDATED_ACCOUNT_NAME}'
-- tapOn: 'Activate'
+- extendedWaitUntil:
+    visible: 'Activate Account?'
+    timeout: 3000
+- tapOn:
+    text: '^Activate$'
+- extendedWaitUntil:
+    notVisible:
+      id: 'InactiveAccountCard.${UPDATED_ACCOUNT_NAME}'
+    timeout: 10000
 - tapOn:
     id: 'TabBar.Home'
 

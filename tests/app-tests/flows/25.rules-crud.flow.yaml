@@ -326,11 +326,22 @@ env:
 - tapOn:
     id: 'RuleForm.Condition.1.ValueInput'
 - inputText: 'Test08 Comment'
+- pressKey: enter
+- waitForAnimationToEnd
 
-- tapOn: Done
+- scrollUntilVisible:
+    element:
+      id: RuleForm.Action.0.TypeSelector
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
 
 - tapOn:
     id: RuleForm.Action.0.TypeSelector
+- extendedWaitUntil:
+    visible:
+      id: RuleForm.SelectorCard.SET_CATEGORY
+    timeout: 3000
 - tapOn:
     id: RuleForm.SelectorCard.SET_CATEGORY
 - waitForAnimationToEnd

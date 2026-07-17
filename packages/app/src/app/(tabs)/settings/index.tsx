@@ -2,7 +2,7 @@ import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
@@ -10,9 +10,8 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { Page } from '../../../@generic/component/page/page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useScrollToAnchor } from '../../../@generic/hook/use-scroll-to-anchor.hook';
@@ -20,6 +19,8 @@ import { openGithubIssueCreation } from '../../../@generic/utils/open-github-iss
 import { AiEmbeddingStatusCard } from '../../../ai/component/ai-embedding-status-card/ai-embedding-status-card';
 import { AiSystemStatusBanner } from '../../../ai/component/ai-system-status-banner/ai-system-status-banner';
 import { AiTranslationStatusCard } from '../../../ai/component/ai-translation-status-card/ai-translation-status-card';
+import { AiSystemUmbrellaStateEnum } from '../../../ai/enum/ai-system-umbrella-state.enum';
+import { useAiSystemUmbrella } from '../../../ai/hook/use-ai-system-umbrella.hook';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
@@ -45,11 +46,12 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 
 import { SettingsPageSelector } from './settings-page.selector';
 
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, max-statements
 export default function SettingsPage() {
     const { t } = useLingui();
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
+    const isAiDisabled = useAiSystemUmbrella().state === AiSystemUmbrellaStateEnum.DISABLED;
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -71,15 +73,11 @@ export default function SettingsPage() {
             Toast.show({ type: 'error', text1: t`Could not update settings`, text2: getErrorMessage(error) });
         });
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
+    const scrollViewProps = { ref: scrollViewRef, onLayout: onScrollViewLayout };
 
     return (
-        <Page testID={SettingsPageSelector.Container} header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
-            <ScrollView
-                ref={scrollViewRef}
-                onLayout={onScrollViewLayout}
-                contentContainerClassName="gap-y-7xl pt-16 pb-5xl"
-                showsVerticalScrollIndicator={false}
-            >
+        <CollapsibleChromePage title={t`Settings`} testID={SettingsPageSelector.Container} scrollViewProps={scrollViewProps}>
+            <View className="gap-y-7xl pb-5xl">
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
                         left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
@@ -122,15 +120,17 @@ export default function SettingsPage() {
                     </SettingsGroup>
                 </View>
 
-                <View {...anchorLayout('ai')}>
-                    <SettingsGroup title={t`AI`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                            <AiSystemStatusBanner />
-                            <AiTranslationStatusCard />
-                            <AiEmbeddingStatusCard />
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
+                {isAiDisabled ? null : (
+                    <View {...anchorLayout('ai')}>
+                        <SettingsGroup title={t`AI`}>
+                            <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
+                                <AiSystemStatusBanner />
+                                <AiTranslationStatusCard />
+                                <AiEmbeddingStatusCard />
+                            </Animated.View>
+                        </SettingsGroup>
+                    </View>
+                )}
 
                 <View {...anchorLayout('organization')}>
                     <SettingsGroup title={t`Organization`}>
@@ -258,7 +258,7 @@ export default function SettingsPage() {
                     </Animated.View>
                 </SettingsGroup>
                 <MenuSpacer />
-            </ScrollView>
-        </Page>
+            </View>
+        </CollapsibleChromePage>
     );
 }

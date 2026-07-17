@@ -32,9 +32,9 @@ const BANNER_COLOR: Record<AiSystemUmbrellaStateEnum, string> = {
 
 export const AiSystemStatusBanner = () => {
     const umbrella = useAiSystemUmbrella();
-    const isHealthy = umbrella.state === AiSystemUmbrellaStateEnum.HEALTHY;
+    const isHidden = umbrella.state === AiSystemUmbrellaStateEnum.HEALTHY || umbrella.state === AiSystemUmbrellaStateEnum.DISABLED;
 
-    if (isHealthy) {
+    if (isHidden) {
         return null;
     }
 

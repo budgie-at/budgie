@@ -30,7 +30,7 @@ export const CurrencyMarketMetrics = ({ instrumentCode, latestPrice }: Props) =>
 
     return (
         <>
-            <View className="flex-row gap-x-md">
+            <View className="flex-row items-stretch gap-x-md">
                 <MarketDataMetricCard
                     icon={UserIconNameEnum.BadgeDollarSign}
                     label={t`Market cap`}
