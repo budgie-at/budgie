@@ -13,7 +13,7 @@ trap cleanup EXIT
 
 mkdir -p "$TEMP_DIR/bin" "$TEMP_DIR/app-data/Documents/E2EFixtures" "$TEMP_DIR/app-data/Documents/SQLite" "$TEMP_DIR/flows"
 printf 'fixture' > "$TEMP_DIR/app-data/Documents/E2EFixtures/test.db"
-printf '%s\n' 'appId: ${APP_ID}' 'env:' '    FIXTURE_ROW_ID_MATCH: test.db' > "$TEMP_DIR/flows/test.flow.yaml"
+printf '%s\n' 'appId: ${APP_ID}' 'env:' "    FIXTURE_ROW_ID_MATCH: 'test.db'" > "$TEMP_DIR/flows/test.flow.yaml"
 
 cat > "$TEMP_DIR/bin/xcrun" <<'EOF'
 #!/bin/bash
@@ -60,11 +60,15 @@ run_case() {
         MOCK_MAESTRO_LOG="$case_dir/maestro.log" \
         MOCK_XCRUN_LOG="$case_dir/xcrun.log" \
         SIMULATOR_UDID='00000000-0000-0000-0000-000000000001' \
-        sh "$SCRIPT_DIR/run-maestro-suite.sh" com.example.test flows/test.flow.yaml --output "$case_dir/report.xml" --debug-output "$case_dir/artifacts/output" --test-output-dir "$case_dir/results/output" > "$case_dir/console.log" 2>&1 || status=$?
+        sh "$SCRIPT_DIR/run-maestro-suite.sh" com.example.test "$TEMP_DIR/flows/test.flow.yaml" --output "$case_dir/report.xml" --debug-output "$case_dir/artifacts/output" --test-output-dir "$case_dir/results/output" > "$case_dir/console.log" 2>&1 || status=$?
 
     test "$status" -eq "$expected_status"
     test "$(wc -l < "$case_dir/maestro.log" | tr -d ' ')" -eq "$expected_maestro_calls"
     test "$(grep -c '^simctl shutdown ' "$case_dir/xcrun.log" || true)" -eq "$expected_shutdown_calls"
+    if ! grep -q 'Refreshing iOS fixtures for com.example.test on 00000000-0000-0000-0000-000000000001 with 1 database fixture' "$case_dir/console.log"; then
+        sed -n '1,120p' "$case_dir/console.log"
+        exit 1
+    fi
 
     if [ "$failure_kind" = ax ]; then
         test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/maestro-console.log"

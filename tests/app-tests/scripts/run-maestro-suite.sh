@@ -166,6 +166,36 @@ extract_database_fixture_name() {
     return 1
 }
 
+collect_required_database_fixtures() {
+    local fixture_name
+    local flow_path
+    local required_fixtures=()
+
+    for flow_path in "${FLOW_PATHS[@]}"; do
+        fixture_name="$(extract_database_fixture_name "$flow_path" || true)"
+
+        if [ -z "$fixture_name" ]; then
+            continue
+        fi
+
+        if [ "${#required_fixtures[@]}" -eq 0 ]; then
+            required_fixtures+=("$fixture_name")
+            continue
+        fi
+
+        case " ${required_fixtures[*]} " in
+            *" $fixture_name "*) ;;
+            *) required_fixtures+=("$fixture_name") ;;
+        esac
+    done
+
+    if [ "${#required_fixtures[@]}" -eq 0 ]; then
+        return 0
+    fi
+
+    printf '%s\n' "${required_fixtures[@]}"
+}
+
 seed_ios_database_fixture_if_needed() {
     local flow_path="$1"
     local fixture_name
@@ -215,6 +245,9 @@ seed_ios_database_fixture_if_needed() {
 }
 
 refresh_ios_fixtures_if_needed() {
+    local required_database_fixtures=()
+    local required_database_fixture
+
     DETECTED_SIMULATOR_UDID="$(detect_booted_simulator_udid || true)"
 
     if [ -z "$DETECTED_SIMULATOR_UDID" ]; then
@@ -229,8 +262,22 @@ refresh_ios_fixtures_if_needed() {
         return 0
     fi
 
-    echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID"
-    sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID"
+    while IFS= read -r required_database_fixture; do
+        if [ -n "$required_database_fixture" ]; then
+            required_database_fixtures+=("$required_database_fixture")
+        fi
+    done < <(collect_required_database_fixtures)
+
+    if [ "${#required_database_fixtures[@]}" -eq 0 ]; then
+        echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID"
+        sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID"
+    elif [ "${#required_database_fixtures[@]}" -eq 1 ]; then
+        echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID with 1 database fixture"
+        sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID" "${required_database_fixtures[@]}"
+    else
+        echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID with ${#required_database_fixtures[@]} database fixtures"
+        sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID" "${required_database_fixtures[@]}"
+    fi
 }
 
 reboot_ios_simulator_if_needed() {
@@ -439,6 +486,7 @@ fs.writeFileSync(outputPath, xml);
 EOF
 }
 
+collect_flow_paths
 refresh_ios_fixtures_if_needed
 
 if [ -z "$RECURRING_EMPTY_DAY" ]; then
@@ -473,7 +521,6 @@ prime_deep_links() {
     fi
 }
 
-collect_flow_paths
 capture_output_path
 prime_deep_links
 

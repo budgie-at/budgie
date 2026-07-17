@@ -18,6 +18,7 @@ APP_DATA=$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data 2>/de
 FIXTURES_DIR="$APP_DATA/Documents/E2EFixtures"
 DYNAMIC_FIXTURES_DIR=$(mktemp -d)
 NORMALIZED_FIXTURES_DIR="$DYNAMIC_FIXTURES_DIR/normalized"
+REQUESTED_DATABASE_FIXTURES=$(printf '%s\n' "$@" | sed '1,2d')
 
 cleanup() {
     rm -rf "$DYNAMIC_FIXTURES_DIR"
@@ -33,9 +34,23 @@ install_database_fixture() {
     TARGET_FIXTURE_NAME="$2"
     NORMALIZED_FIXTURE_PATH="$NORMALIZED_FIXTURES_DIR/$TARGET_FIXTURE_NAME"
 
+    if ! should_install_database_fixture "$TARGET_FIXTURE_NAME"; then
+        return 0
+    fi
+
     cp "$SOURCE_FIXTURE_PATH" "$NORMALIZED_FIXTURE_PATH"
     sqlite3 "$NORMALIZED_FIXTURE_PATH" 'UPDATE settings SET is_screenshot_protection_enabled = 0;'
     "$INSTALL_DB_FIXTURE_SCRIPT" "$NORMALIZED_FIXTURE_PATH" "$TARGET_FIXTURE_NAME" "$SIMULATOR_UDID" "$APP_ID"
+}
+
+should_install_database_fixture() {
+    TARGET_FIXTURE_NAME="$1"
+
+    if [ -z "$REQUESTED_DATABASE_FIXTURES" ]; then
+        return 0
+    fi
+
+    printf '%s\n' "$REQUESTED_DATABASE_FIXTURES" | grep -Fxq "$TARGET_FIXTURE_NAME"
 }
 
 install_statement_fixtures() {
