@@ -208,7 +208,6 @@ seed_ios_database_fixture_if_needed() {
     rm -f "$sqlite_dir"/budgie.db*
     cp "$fixture_path" "$sqlite_dir/budgie.db"
     xcrun simctl launch "$DETECTED_SIMULATOR_UDID" "$APP_ID" >/dev/null
-    sleep 3
 
     DATABASE_FIXTURE_SEEDED="true"
     echo "Seeded active iOS database fixture $fixture_name"
@@ -439,6 +438,23 @@ fs.writeFileSync(outputPath, xml);
 EOF
 }
 
+record_flow_timing() {
+    local flow_index="$1"
+    local flow_name="$2"
+    local flow_status="$3"
+    local attempt_count="$4"
+    local started_at="$5"
+    local duration_seconds
+
+    if [ -z "$FLOW_TIMINGS_PATH" ]; then
+        return 0
+    fi
+
+    duration_seconds="$(($(date +%s) - started_at))"
+
+    printf '%s\t%s\t%s\t%s\t%s\n' "$flow_index" "$flow_name" "$flow_status" "$attempt_count" "$duration_seconds" >> "$FLOW_TIMINGS_PATH"
+}
+
 refresh_ios_fixtures_if_needed
 
 if [ -z "$RECURRING_EMPTY_DAY" ]; then
@@ -481,13 +497,16 @@ echo "Running Maestro suite from $WORKSPACE_DIR"
 
 REPORT_DIR=""
 REPORTS=()
+FLOW_TIMINGS_PATH=""
 FLOW_INDEX=0
 FLOW_TOTAL="${#FLOW_PATHS[@]}"
 
 if [ -n "$OUTPUT_PATH" ]; then
     REPORT_DIR="$(dirname "$OUTPUT_PATH")/.maestro-flow-reports"
+    FLOW_TIMINGS_PATH="$(dirname "$OUTPUT_PATH")/flow-timings.tsv"
     rm -rf "$REPORT_DIR"
     mkdir -p "$REPORT_DIR"
+    printf 'index\tflow\tstatus\tattempts\tduration_seconds\n' > "$FLOW_TIMINGS_PATH"
 fi
 
 for FLOW_PATH in "${FLOW_PATHS[@]}"; do
@@ -496,6 +515,7 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
     FLOW_OUTPUT_PATH=""
     FLOW_ARTIFACT_PATH=""
     FLOW_STATUS=0
+    FLOW_STARTED_AT="$(date +%s)"
 
     if [ -n "$OUTPUT_PATH" ]; then
         FLOW_OUTPUT_PATH="$REPORT_DIR/$FLOW_INDEX-$FLOW_NAME.xml"
@@ -515,6 +535,7 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
 
     if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$FLOW_ARTIFACT_PATH/attempt-1" > "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log" 2>&1; then
         cat "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log"
+        record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" success 1 "$FLOW_STARTED_AT"
         echo "Completed Maestro flow $FLOW_INDEX/$FLOW_TOTAL: $FLOW_NAME"
 
         if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
@@ -531,6 +552,7 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
 
             if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$FLOW_ARTIFACT_PATH/attempt-2" > "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log" 2>&1; then
                 cat "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log"
+                record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" success 2 "$FLOW_STARTED_AT"
                 echo "Completed Maestro flow $FLOW_INDEX/$FLOW_TOTAL after AX driver retry: $FLOW_NAME"
 
                 if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then
@@ -543,6 +565,9 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
 
             FLOW_STATUS=$?
             cat "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log"
+            record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" failure 2 "$FLOW_STARTED_AT"
+        else
+            record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" failure 1 "$FLOW_STARTED_AT"
         fi
 
         if [ -n "$FLOW_OUTPUT_PATH" ] && [ -f "$FLOW_OUTPUT_PATH" ]; then

@@ -23,6 +23,8 @@ printf '%s\n' "$*" >> "$MOCK_XCRUN_LOG"
 if [ "$1" = simctl ] && [ "$2" = get_app_container ]; then
     printf '%s\n' "$MOCK_APP_DATA"
 fi
+
+exit 0
 EOF
 chmod +x "$TEMP_DIR/bin/xcrun"
 
@@ -60,11 +62,11 @@ run_case() {
         MOCK_MAESTRO_LOG="$case_dir/maestro.log" \
         MOCK_XCRUN_LOG="$case_dir/xcrun.log" \
         SIMULATOR_UDID='00000000-0000-0000-0000-000000000001' \
-        "$SCRIPT_DIR/run-maestro-suite.sh" com.example.test flows/test.flow.yaml --output "$case_dir/report.xml" --debug-output "$case_dir/artifacts/output" --test-output-dir "$case_dir/results/output" > "$case_dir/console.log" 2>&1 || status=$?
+        sh "$SCRIPT_DIR/run-maestro-suite.sh" com.example.test "$TEMP_DIR/flows/test.flow.yaml" --output "$case_dir/report.xml" --debug-output "$case_dir/artifacts/output" --test-output-dir "$case_dir/results/output" > "$case_dir/console.log" 2>&1 || status=$?
 
     test "$status" -eq "$expected_status"
     test "$(wc -l < "$case_dir/maestro.log" | tr -d ' ')" -eq "$expected_maestro_calls"
-    test "$(grep -c '^shutdown ' "$case_dir/xcrun.log" || true)" -eq "$expected_shutdown_calls"
+    test "$(grep -c '^simctl shutdown ' "$case_dir/xcrun.log" || true)" -eq "$expected_shutdown_calls"
 
     if [ "$failure_kind" = ax ]; then
         test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/maestro-console.log"
@@ -76,6 +78,10 @@ run_case() {
         test "$(grep -c -- "--debug-output $case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-[12]/debug-output/output" "$case_dir/maestro.log")" -eq 2
         test "$(grep -c -- "--test-output-dir $case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-[12]/test-output-dir/output" "$case_dir/maestro.log")" -eq 2
     fi
+
+    test -f "$case_dir/flow-timings.tsv"
+    grep -q $'index\tflow\tstatus\tattempts\tduration_seconds' "$case_dir/flow-timings.tsv"
+    grep -q $'1\ttest.flow.yaml\t' "$case_dir/flow-timings.tsv"
 }
 
 run_case ax 0 3 1
