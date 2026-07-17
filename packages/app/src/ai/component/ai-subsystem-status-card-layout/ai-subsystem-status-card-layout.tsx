@@ -74,7 +74,7 @@ export const AiSubsystemStatusCardLayout = (props: Props) => {
     return (
         <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut}>
             <Animated.View style={scaleStyle}>
-                <HorizontalCell left={leftContent} right={rightContent} variant="secondary" contentClassName="gap-y-xs">
+                <HorizontalCell left={leftContent} right={rightContent} contentClassName="gap-y-xs">
                     <Text className="text-sm font-medium text-primary">{title}</Text>
                     <Text className="text-xs font-medium text-secondary-foreground">{snapshot.statusText}</Text>
                     <AiProgressBar progress={snapshot.percent} />

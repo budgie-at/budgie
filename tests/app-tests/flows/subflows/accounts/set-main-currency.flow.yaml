@@ -4,11 +4,21 @@ appId: ${APP_ID}
 - runFlow:
     file: ../navigation/navigate-to-settings.flow.yaml
 
-- runFlow:
-    file: ../navigation/open-settings-card.flow.yaml
-    env:
-      CARD_ID: 'SettingsPage.MainCurrencyCard'
-      DESTINATION_ID: 'CurrencySelector.SearchInput'
+- retry:
+    maxRetries: 1
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              id: 'CurrencySelector.SearchInput'
+          file: ../navigation/open-settings-card.flow.yaml
+          env:
+            CARD_ID: '^SettingsPage[.]MainCurrencyCard[.].+$'
+            DESTINATION_ID: 'CurrencySelector.SearchInput'
+      - extendedWaitUntil:
+          visible:
+            id: 'CurrencySelector.SearchInput'
+          timeout: 3000
 - runFlow:
     when:
       notVisible:
@@ -29,7 +39,7 @@ appId: ${APP_ID}
     timeout: 3000
 - extendedWaitUntil:
     visible:
-      id: 'SettingsPage.MainCurrencyValue.${CURRENCY_CODE}'
+      id: 'SettingsPage.MainCurrencyCard.${CURRENCY_CODE}'
     timeout: 10000
 - waitForAnimationToEnd
 - tapOn:

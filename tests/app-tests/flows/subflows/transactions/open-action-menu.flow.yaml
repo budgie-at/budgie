@@ -2,9 +2,19 @@ appId: ${APP_ID}
 env:
   ACTION_ITEM_ID: ${ACTION_ITEM_ID || 'ActionItem.Expense'}
 ---
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: '${ACTION_ITEM_ID}.Label'
+- waitForAnimationToEnd
+- retry:
+    maxRetries: 1
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              id: '${ACTION_ITEM_ID}.Label'
+          commands:
+            - tapOn:
+                id: 'ActionButton'
+      - extendedWaitUntil:
+          visible:
+            id: '${ACTION_ITEM_ID}.Label'
+          timeout: 3000
 - waitForAnimationToEnd

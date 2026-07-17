@@ -169,6 +169,11 @@ appId: ${APP_ID}
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Cross_Currency_Transfer'
 
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 3000
+
 - tapOn:
       id: 'TabBar.Home'
 - extendedWaitUntil:
