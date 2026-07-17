@@ -16,6 +16,7 @@
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {
+        "@budgie/logger": "workspace:*",
         "@lingui/core": "6.5.0",
         "@lingui/react": "6.5.0",
         "@radix-ui/react-accordion": "^1.2.12",

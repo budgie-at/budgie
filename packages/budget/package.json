@@ -1,6 +1,6 @@
 {
     "name": "@budgie/budget",
-    "version": "5.40.0",
+    "version": "5.43.0",
     "private": true,
     "description": "Budget domain services",
     "sideEffects": false,
