@@ -166,27 +166,27 @@ extract_database_fixture_name() {
     return 1
 }
 
-collect_required_database_fixtures() {
-    local fixture_name
+collect_required_fixtures() {
     local flow_path
+    local fixture_name
     local required_fixtures=()
 
     for flow_path in "${FLOW_PATHS[@]}"; do
-        fixture_name="$(extract_database_fixture_name "$flow_path" || true)"
+        while IFS= read -r fixture_name; do
+            if [ -z "$fixture_name" ]; then
+                continue
+            fi
 
-        if [ -z "$fixture_name" ]; then
-            continue
-        fi
+            if [ "${#required_fixtures[@]}" -eq 0 ]; then
+                required_fixtures+=("$fixture_name")
+                continue
+            fi
 
-        if [ "${#required_fixtures[@]}" -eq 0 ]; then
-            required_fixtures+=("$fixture_name")
-            continue
-        fi
-
-        case " ${required_fixtures[*]} " in
-            *" $fixture_name "*) ;;
-            *) required_fixtures+=("$fixture_name") ;;
-        esac
+            case " ${required_fixtures[*]} " in
+                *" $fixture_name "*) ;;
+                *) required_fixtures+=("$fixture_name") ;;
+            esac
+        done < <(collect_flow_required_fixtures "$flow_path")
     done
 
     if [ "${#required_fixtures[@]}" -eq 0 ]; then
@@ -194,6 +194,86 @@ collect_required_database_fixtures() {
     fi
 
     printf '%s\n' "${required_fixtures[@]}"
+}
+
+collect_flow_required_fixtures() {
+    local flow_path="$1"
+
+    node - "$flow_path" <<'EOF'
+const fs = require('node:fs');
+const path = require('node:path');
+
+const rootFlowPath = process.argv[2];
+const visited = new Set();
+const fixtures = new Set();
+
+const normalizeFileFixture = value => {
+    const trimmedValue = value.trim();
+
+    if (trimmedValue.startsWith('${')) {
+        return null;
+    }
+
+    const optionalExtensionMatch = trimmedValue.match(/^(.+?)\s*\(,\s*(csv|pdf|xlsx)\)\?$/);
+
+    if (optionalExtensionMatch) {
+        return `${optionalExtensionMatch[1]}.${optionalExtensionMatch[2]}`;
+    }
+
+    const commaExtensionMatch = trimmedValue.match(/^(.+?),\s*(csv|pdf|xlsx)$/);
+
+    if (commaExtensionMatch) {
+        return `${commaExtensionMatch[1]}.${commaExtensionMatch[2]}`;
+    }
+
+    if (/\.(csv|pdf|xlsx)$/.test(trimmedValue)) {
+        return path.basename(trimmedValue);
+    }
+
+    return null;
+};
+
+const collectFromFlow = (flowPath, depth) => {
+    const absoluteFlowPath = path.resolve(flowPath);
+
+    if (visited.has(absoluteFlowPath) || depth > 3 || !fs.existsSync(absoluteFlowPath)) {
+        return;
+    }
+
+    visited.add(absoluteFlowPath);
+
+    const source = fs.readFileSync(absoluteFlowPath, 'utf8');
+    const databaseFixtureMatch = source.match(/^\s*FIXTURE_ROW_ID_MATCH:\s*['"]([^'"]*\.db)[^'"]*['"]/m);
+
+    if (databaseFixtureMatch) {
+        fixtures.add(databaseFixtureMatch[1]);
+    }
+
+    for (const match of source.matchAll(/^\s*(?:FILE_ROW_ID_MATCH|PDF_ROW_ID_MATCH|XLSX_ROW_ID_MATCH):\s*['"]([^'"]+)['"]/gm)) {
+        const fixture = normalizeFileFixture(match[1]);
+
+        if (fixture) {
+            fixtures.add(fixture);
+        }
+    }
+
+    for (const match of source.matchAll(/^\s*CSV_DISPLAY_NAME:\s*['"]?([^'"\s]+)['"]?/gm)) {
+        if (!match[1].startsWith('${')) {
+            fixtures.add(`${match[1]}.csv`);
+        }
+    }
+
+    for (const match of source.matchAll(/^\s*file:\s*['"]?([^'"\s]+\.flow\.yaml)['"]?/gm)) {
+        collectFromFlow(path.resolve(path.dirname(absoluteFlowPath), match[1]), depth + 1);
+    }
+};
+
+collectFromFlow(rootFlowPath, 0);
+
+for (const fixture of fixtures) {
+    process.stdout.write(`${fixture}\n`);
+}
+EOF
 }
 
 seed_ios_database_fixture_if_needed() {
@@ -245,8 +325,9 @@ seed_ios_database_fixture_if_needed() {
 }
 
 refresh_ios_fixtures_if_needed() {
-    local required_database_fixtures=()
-    local required_database_fixture
+    local fixture_count_label
+    local required_fixtures=()
+    local required_fixture
 
     DETECTED_SIMULATOR_UDID="$(detect_booted_simulator_udid || true)"
 
@@ -262,21 +343,24 @@ refresh_ios_fixtures_if_needed() {
         return 0
     fi
 
-    while IFS= read -r required_database_fixture; do
-        if [ -n "$required_database_fixture" ]; then
-            required_database_fixtures+=("$required_database_fixture")
+    while IFS= read -r required_fixture; do
+        if [ -n "$required_fixture" ]; then
+            required_fixtures+=("$required_fixture")
         fi
-    done < <(collect_required_database_fixtures)
+    done < <(collect_required_fixtures)
 
-    if [ "${#required_database_fixtures[@]}" -eq 0 ]; then
+    if [ "${#required_fixtures[@]}" -eq 0 ]; then
         echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID"
         sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID"
-    elif [ "${#required_database_fixtures[@]}" -eq 1 ]; then
-        echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID with 1 database fixture"
-        sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID" "${required_database_fixtures[@]}"
     else
-        echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID with ${#required_database_fixtures[@]} database fixtures"
-        sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID" "${required_database_fixtures[@]}"
+        fixture_count_label="fixtures"
+
+        if [ "${#required_fixtures[@]}" -eq 1 ]; then
+            fixture_count_label="fixture"
+        fi
+
+        echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID with ${#required_fixtures[@]} $fixture_count_label"
+        sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID" "${required_fixtures[@]}"
     fi
 }
 

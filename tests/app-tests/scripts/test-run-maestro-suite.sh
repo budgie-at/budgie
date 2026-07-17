@@ -11,9 +11,15 @@ cleanup() {
 
 trap cleanup EXIT
 
-mkdir -p "$TEMP_DIR/bin" "$TEMP_DIR/app-data/Documents/E2EFixtures" "$TEMP_DIR/app-data/Documents/SQLite" "$TEMP_DIR/flows"
-printf 'fixture' > "$TEMP_DIR/app-data/Documents/E2EFixtures/test.db"
-printf '%s\n' 'appId: ${APP_ID}' 'env:' "    FIXTURE_ROW_ID_MATCH: 'test.db'" > "$TEMP_DIR/flows/test.flow.yaml"
+mkdir -p "$TEMP_DIR/bin" "$TEMP_DIR/app-data/Documents/E2EFixtures" "$TEMP_DIR/app-data/Documents/E2ECsvFixtures" "$TEMP_DIR/app-data/Documents/SQLite" "$TEMP_DIR/flows"
+printf 'stale' > "$TEMP_DIR/app-data/Documents/E2EFixtures/erste-statement-008.pdf"
+printf 'stale' > "$TEMP_DIR/app-data/Documents/E2ECsvFixtures/test-transactions.csv"
+printf '%s\n' \
+    'appId: ${APP_ID}' \
+    'env:' \
+    "    FIXTURE_ROW_ID_MATCH: '01.db'" \
+    "    FILE_ROW_ID_MATCH: 'e2e-budgie-import(, csv)?'" \
+    "    CSV_DISPLAY_NAME: test16-rules-import" > "$TEMP_DIR/flows/test.flow.yaml"
 
 cat > "$TEMP_DIR/bin/xcrun" <<'EOF'
 #!/bin/bash
@@ -65,10 +71,16 @@ run_case() {
     test "$status" -eq "$expected_status"
     test "$(wc -l < "$case_dir/maestro.log" | tr -d ' ')" -eq "$expected_maestro_calls"
     test "$(grep -c '^simctl shutdown ' "$case_dir/xcrun.log" || true)" -eq "$expected_shutdown_calls"
-    if ! grep -q 'Refreshing iOS fixtures for com.example.test on 00000000-0000-0000-0000-000000000001 with 1 database fixture' "$case_dir/console.log"; then
+    if ! grep -q 'Refreshing iOS fixtures for com.example.test on 00000000-0000-0000-0000-000000000001 with 3 fixtures' "$case_dir/console.log"; then
         sed -n '1,120p' "$case_dir/console.log"
         exit 1
     fi
+
+    test -f "$TEMP_DIR/app-data/Documents/E2EFixtures/01.db"
+    test -f "$TEMP_DIR/app-data/Documents/E2EFixtures/e2e-budgie-import.csv"
+    test ! -f "$TEMP_DIR/app-data/Documents/E2EFixtures/erste-statement-008.pdf"
+    test -f "$TEMP_DIR/app-data/Documents/E2ECsvFixtures/test16-rules-import.csv"
+    test ! -f "$TEMP_DIR/app-data/Documents/E2ECsvFixtures/test-transactions.csv"
 
     if [ "$failure_kind" = ax ]; then
         test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/maestro-console.log"
