@@ -650,6 +650,28 @@ jobs:
                     "${selected[@]}" \
                     2>&1 | tee ./artifacts/maestro/maestro-console.log
 
+            - name: Publish Maestro timing summary
+              if: always()
+              working-directory: tests/app-tests
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  timing_file="./artifacts/maestro/flow-timings.tsv"
+
+                  if [ ! -f "$timing_file" ]; then
+                    exit 0
+                  fi
+
+                  {
+                    echo '### Maestro flow timings'
+                    echo
+                    echo '| Flow | Status | Attempts | Seconds |'
+                    echo '| --- | --- | ---: | ---: |'
+                    tail -n +2 "$timing_file" |
+                      sort -t $'\t' -k5,5nr |
+                      awk -F '\t' '{ printf "| `%s` | %s | %s | %s |\n", $2, $3, $4, $5 }'
+                  } >> "$GITHUB_STEP_SUMMARY"
+
             - name: Stop iOS Simulator captures
               if: always()
               run: |
