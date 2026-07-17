@@ -1,6 +1,6 @@
 {
     "name": "@budgie/consolidation",
-    "version": "5.43.0",
+    "version": "5.43.2",
     "private": true,
     "description": "Consolidation domain services",
     "sideEffects": false,
