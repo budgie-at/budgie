@@ -14,8 +14,3 @@ appId: ${APP_ID}
           - extendedWaitUntil:
                 notVisible: 'Open in .*'
                 timeout: 5000
-
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionsPage.Container'
-      timeout: 15000
