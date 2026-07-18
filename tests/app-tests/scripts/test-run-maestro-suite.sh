@@ -13,7 +13,7 @@ trap cleanup EXIT
 
 mkdir -p "$TEMP_DIR/bin" "$TEMP_DIR/app-data/Documents/E2EFixtures" "$TEMP_DIR/app-data/Documents/SQLite" "$TEMP_DIR/flows"
 printf 'fixture' > "$TEMP_DIR/app-data/Documents/E2EFixtures/test.db"
-printf '%s\n' 'appId: ${APP_ID}' 'env:' '    FIXTURE_ROW_ID_MATCH: test.db' > "$TEMP_DIR/flows/test.flow.yaml"
+printf '%s\n' 'appId: ${APP_ID}' 'env:' '    FIXTURE_ROW_ID_MATCH: "test.db"' > "$TEMP_DIR/flows/test.flow.yaml"
 
 cat > "$TEMP_DIR/bin/xcrun" <<'EOF'
 #!/bin/bash
@@ -31,6 +31,18 @@ chmod +x "$TEMP_DIR/bin/xcrun"
 cat > "$TEMP_DIR/bin/maestro" <<'EOF'
 #!/bin/bash
 set -euo pipefail
+
+if [ -n "${MAESTRO_FIRST_FLOW_PREPARED_PATH:-}" ]; then
+    if [ ! -d "$MAESTRO_FIRST_FLOW_PREPARED_PATH" ]; then
+        echo "First-flow preparation signal missing before Maestro: $MAESTRO_FIRST_FLOW_PREPARED_PATH" >&2
+        exit 98
+    fi
+    if [ ! -f "$MOCK_APP_DATA/Documents/SQLite/budgie.db" ]; then
+        echo "Database fixture missing before Maestro." >&2
+        exit 97
+    fi
+fi
+
 printf '%s\n' "$*" >> "$MOCK_MAESTRO_LOG"
 call_count=$(wc -l < "$MOCK_MAESTRO_LOG" | tr -d ' ')
 
@@ -59,12 +71,20 @@ run_case() {
     local expected_status="$2"
     local expected_maestro_calls="$3"
     local expected_shutdown_calls="$4"
+    local signal_prepared="${5:-true}"
     local case_dir="$TEMP_DIR/$failure_kind"
+    local prepared_path
     local status=0
     local prime_line
     local business_line
 
     mkdir -p "$case_dir"
+
+    if [ "$signal_prepared" = true ]; then
+        prepared_path="$case_dir/first-flow-prepared"
+    else
+        prepared_path=""
+    fi
 
     PATH="$TEMP_DIR/bin:$PATH" \
         MOCK_APP_DATA="$TEMP_DIR/app-data" \
@@ -72,6 +92,7 @@ run_case() {
         MOCK_MAESTRO_LOG="$case_dir/maestro.log" \
         MOCK_WRAPPER_PATH="$case_dir/prime-and-business.flow.yaml" \
         MOCK_XCRUN_LOG="$case_dir/xcrun.log" \
+        MAESTRO_FIRST_FLOW_PREPARED_PATH="$prepared_path" \
         SIMULATOR_UDID='00000000-0000-0000-0000-000000000001' \
         sh "$SCRIPT_DIR/run-maestro-suite.sh" com.example.test "$TEMP_DIR/flows/test.flow.yaml" --output "$case_dir/report.xml" --debug-output "$case_dir/artifacts/output" --test-output-dir "$case_dir/results/output" > "$case_dir/console.log" 2>&1 || status=$?
 
@@ -80,6 +101,10 @@ run_case() {
     test "$(grep -c '^--device 00000000-0000-0000-0000-000000000001 test ' "$case_dir/maestro.log")" -eq "$expected_maestro_calls"
     test "$(grep -c '^simctl shutdown ' "$case_dir/xcrun.log" || true)" -eq "$expected_shutdown_calls"
     test "$(grep -c '^simctl get_app_container ' "$case_dir/xcrun.log" || true)" -eq 1
+
+    if [ "$signal_prepared" = true ]; then
+        test -d "$prepared_path"
+    fi
 
     if [ "$failure_kind" = ax ]; then
         test "$(grep -c 'prime-and-business.flow.yaml' "$case_dir/maestro.log")" -eq 2
@@ -115,6 +140,7 @@ run_case() {
 run_case ax 0 2 1
 run_case assertion 1 1 0
 run_case combined 0 1 0
+run_case no-signal 0 1 0 false
 
 run_quoted_path_case() {
     local case_dir="$TEMP_DIR/quoted-path"

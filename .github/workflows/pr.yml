@@ -735,7 +735,7 @@ jobs:
               env:
                   JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
                   MAESTRO_DRIVER_STARTUP_TIMEOUT: '180000'
-                  MAESTRO_LANE_START_STAGGER_SECONDS: '60'
+                  MAESTRO_LANE_1_PREPARE_TIMEOUT_SECONDS: '300'
                   MAESTRO_LANE_2_PREPARE_SCRIPT: ./scripts/prepare-ios-maestro-simulator.sh
               run: |
                   MAESTRO_LANE_2_APP_PATH="$APP_PATH" \
