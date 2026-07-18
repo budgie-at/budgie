@@ -761,6 +761,7 @@ jobs:
               shell: bash
               env:
                   JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
+                  MAESTRO_DRIVER_STARTUP_TIMEOUT: '180000'
               run: |
                   ./scripts/run-ios-maestro-lanes.sh \
                     com.vitalyiegorov.budgie.e2e \
