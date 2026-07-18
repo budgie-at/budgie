@@ -5,38 +5,27 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
       element:
+          id: 'SettingsPage.RecalculateBalancesCard'
+      direction: DOWN
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+
+- scrollUntilVisible:
+      element:
           id: 'SettingsPage.ConsolidateTransfersCard'
       direction: UP
       centerElement: true
       waitToSettleTimeoutMs: 1000
-      optional: true
-
-- runFlow:
-      when:
-          notVisible:
-              id: 'SettingsPage.ConsolidateTransfersCard'
-      commands:
-          - scrollUntilVisible:
-                element:
-                    id: 'SettingsPage.ConsolidateTransfersCard'
-                direction: DOWN
-                centerElement: true
-                waitToSettleTimeoutMs: 1000
-
 - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.ConsolidateTransfersCard'
       timeout: 3000
 
-- retry:
-      maxRetries: 3
-      commands:
-          - tapOn:
-                id: 'SettingsPage.ConsolidateTransfersCard'
-
-          - extendedWaitUntil:
-                visible: '.*high-confidence transfer.*'
-                timeout: 3000
+- tapOn:
+      id: 'SettingsPage.ConsolidateTransfersCard'
+- extendedWaitUntil:
+      visible: '.*high-confidence transfer.*'
+      timeout: 3000
 
 - tapOn: 'Consolidate'

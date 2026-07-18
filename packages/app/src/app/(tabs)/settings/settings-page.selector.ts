@@ -40,6 +40,7 @@ export const SettingsPageSelector = {
     BudgetPushSwitchStateOn: 'SettingsPage.BudgetPushSwitch.State.On',
     BudgetPushSwitchStateOff: 'SettingsPage.BudgetPushSwitch.State.Off',
     ConsolidateTransfersCard: 'SettingsPage.ConsolidateTransfersCard',
+    RecalculateBalancesCard: 'SettingsPage.RecalculateBalancesCard',
     MoneyDataUpgradeCard: 'SettingsPage.MoneyDataUpgradeCard',
     RepairBankSyncDataCard: 'SettingsPage.RepairBankSyncDataCard',
     ReportBugCard: 'SettingsPage.ReportBugCard'

@@ -31,13 +31,10 @@ env:
           id: '${CARD_ID}'
       timeout: 3000
 
-- retry:
-      maxRetries: 3
-      commands:
-          - tapOn:
-                id: '${CARD_ID}'
+- tapOn:
+      id: '${CARD_ID}'
 
-          - extendedWaitUntil:
-                visible:
-                    id: '${DESTINATION_ID}'
-                timeout: 3000
+- extendedWaitUntil:
+      visible:
+          id: '${DESTINATION_ID}'
+      timeout: 3000
