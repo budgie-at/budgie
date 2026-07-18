@@ -682,12 +682,6 @@ jobs:
                   mkdir -p tests/app-tests/artifacts/simulator
                   mkdir -p tests/app-tests/artifacts/diagnostics
 
-            - name: Start iOS Simulator log capture
-              run: |
-                  ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
-                  xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level default > "$ARTIFACT_DIR/simulator.log" 2>&1 &
-                  echo $! > "$ARTIFACT_DIR/simulator-log.pid"
-
             - name: Run Maestro UI tests
               timeout-minutes: 75
               working-directory: tests/app-tests
@@ -738,21 +732,20 @@ jobs:
                       awk -F '\t' '{ printf "| `%s` | %s | %s | %s |\n", $2, $3, $4, $5 }'
                   } >> "$GITHUB_STEP_SUMMARY"
 
-            - name: Stop iOS Simulator captures
-              if: always()
+            - name: Collect iOS Simulator failure diagnostics
+              if: failure()
+              timeout-minutes: 2
               run: |
                   ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
                   DIAGNOSTIC_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/diagnostics"
                   xcrun simctl io "$SIMULATOR_UDID" screenshot "$ARTIFACT_DIR/final-screen.png" || true
 
-                  if [ -f "$ARTIFACT_DIR/simulator-log.pid" ]; then
-                    kill "$(cat "$ARTIFACT_DIR/simulator-log.pid")" || true
-                  fi
-
-                  if [ -f "$ARTIFACT_DIR/simulator.log" ]; then
-                    tail -n 20000 "$ARTIFACT_DIR/simulator.log" > "$ARTIFACT_DIR/simulator.log.tail" || true
-                    mv "$ARTIFACT_DIR/simulator.log.tail" "$ARTIFACT_DIR/simulator.log" || true
-                  fi
+                  xcrun simctl spawn "$SIMULATOR_UDID" log show \
+                    --last 90m --style compact --info --debug \
+                    > "$ARTIFACT_DIR/simulator.log" 2>&1 || true
+                  tail -n 20000 "$ARTIFACT_DIR/simulator.log" \
+                    > "$ARTIFACT_DIR/simulator.log.tail" || true
+                  mv "$ARTIFACT_DIR/simulator.log.tail" "$ARTIFACT_DIR/simulator.log" || true
 
                   find "$HOME/Library/Logs/DiagnosticReports" -maxdepth 1 -type f \
                     \( -name 'budgieE2E*' -o -name 'budgie*' -o -name 'JetsamEvent*' \) \
