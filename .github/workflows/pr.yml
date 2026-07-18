@@ -687,6 +687,7 @@ jobs:
               working-directory: tests/app-tests
               shell: bash
               env:
+                  JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
                   SHARD_INDEX: ${{ matrix.shard-index }}
               run: |
                   set -euo pipefail
