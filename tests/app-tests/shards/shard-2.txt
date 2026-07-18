@@ -6,4 +6,6 @@
 20.recurring-calendar.flow.yaml
 24.split-transaction-and-analytics.flow.yaml
 27.mcc-default-category.flow.yaml
+28.rules-search.flow.yaml
 31.debt-settlement-attachments.flow.yaml
+35.debt-migration-repair.flow.yaml
