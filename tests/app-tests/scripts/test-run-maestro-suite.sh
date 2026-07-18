@@ -37,9 +37,25 @@ cat > "$TEMP_DIR/bin/maestro" <<'EOF'
 set -euo pipefail
 printf '%s\n' "$*" >> "$MOCK_MAESTRO_LOG"
 attempt_count=$(grep -c 'test.flow.yaml' "$MOCK_MAESTRO_LOG" || true)
+test_output_dir=''
+
+while [ "$#" -gt 0 ]; do
+    if [ "$1" = --test-output-dir ]; then
+        shift
+        test_output_dir="$1"
+    fi
+
+    shift || true
+done
 
 if [ "$MOCK_FAILURE" = ax ] && [ "$attempt_count" -eq 1 ]; then
     printf '%s\n' 'kAXErrorInvalidUIElement'
+    exit 1
+fi
+
+if [ "$MOCK_FAILURE" = ax_artifact ] && [ "$attempt_count" -eq 1 ]; then
+    mkdir -p "$test_output_dir/maestro"
+    printf '%s\n' 'Underlying Error: Error kAXErrorInvalidUIElement getting snapshot for element' > "$test_output_dir/maestro/xctest_runner.log"
     exit 1
 fi
 
@@ -82,7 +98,7 @@ run_case() {
     test -f "$TEMP_DIR/app-data/Documents/E2ECsvFixtures/test16-rules-import.csv"
     test ! -f "$TEMP_DIR/app-data/Documents/E2ECsvFixtures/test-transactions.csv"
 
-    if [ "$failure_kind" = ax ]; then
+    if [ "$failure_kind" = ax ] || [ "$failure_kind" = ax_artifact ]; then
         test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/maestro-console.log"
         test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-2/maestro-console.log"
         test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/debug-output/output"
@@ -95,4 +111,5 @@ run_case() {
 }
 
 run_case ax 0 3 1
+run_case ax_artifact 0 3 1
 run_case assertion 1 2 0

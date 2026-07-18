@@ -497,9 +497,17 @@ run_maestro_flow() {
 }
 
 is_ax_driver_failure() {
-    local output_path="$1"
+    local console_output_path="$1"
+    local attempt_output_path="$2"
 
-    grep -Eiq 'kAXErrorInvalidUIElement' "$output_path"
+    grep -Eiq 'kAXErrorInvalidUIElement' "$console_output_path" && return 0
+
+    if [ -n "$attempt_output_path" ] && [ -d "$attempt_output_path" ]; then
+        grep -REiq 'kAXErrorInvalidUIElement' "$attempt_output_path"
+        return
+    fi
+
+    return 1
 }
 
 reset_ios_simulator_after_ax_driver_failure() {
@@ -656,7 +664,7 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
         FLOW_STATUS=$?
         cat "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log"
 
-        if is_ax_driver_failure "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log"; then
+        if is_ax_driver_failure "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log" "$FLOW_ARTIFACT_PATH/attempt-1"; then
             reset_ios_simulator_after_ax_driver_failure
             mkdir -p "$FLOW_ARTIFACT_PATH/attempt-2"
 
