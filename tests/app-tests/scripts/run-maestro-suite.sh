@@ -28,10 +28,35 @@ RECURRING_EMPTY_DAY="${RECURRING_EMPTY_DAY:-}"
 DATABASE_FIXTURE_SEEDED="false"
 IOS_SIMULATOR_REBOOT_EVERY="${E2E_IOS_SIMULATOR_REBOOT_EVERY:-0}"
 APP_DATA_CONTAINER="${APP_DATA_CONTAINER:-}"
+FIRST_FLOW_PREPARED_PATH="${MAESTRO_FIRST_FLOW_PREPARED_PATH-}"
+FIRST_FLOW_PREPARED_SIGNALED=false
 
 if [ -n "$APP_DATA_CONTAINER" ] && [ ! -d "$APP_DATA_CONTAINER" ]; then
     echo "App data container override is not a directory: $APP_DATA_CONTAINER" >&2
     exit 1
+fi
+
+if [ -n "$FIRST_FLOW_PREPARED_PATH" ]; then
+    case "$FIRST_FLOW_PREPARED_PATH" in
+        /*)
+            ;;
+        *)
+            echo "MAESTRO_FIRST_FLOW_PREPARED_PATH must be absolute: $FIRST_FLOW_PREPARED_PATH" >&2
+            exit 1
+            ;;
+    esac
+
+    FIRST_FLOW_PREPARED_PARENT="$(dirname "$FIRST_FLOW_PREPARED_PATH")"
+
+    if [ ! -d "$FIRST_FLOW_PREPARED_PARENT" ] || [ ! -w "$FIRST_FLOW_PREPARED_PARENT" ]; then
+        echo "First-flow preparation marker parent must be a writable directory: $FIRST_FLOW_PREPARED_PARENT" >&2
+        exit 1
+    fi
+
+    if [ -e "$FIRST_FLOW_PREPARED_PATH" ]; then
+        echo "First-flow preparation marker already exists: $FIRST_FLOW_PREPARED_PATH" >&2
+        exit 1
+    fi
 fi
 
 compute_recurring_empty_day() {
@@ -380,6 +405,15 @@ create_prime_and_business_flow() {
     } > "$combined_flow_path"
 }
 
+signal_first_flow_prepared() {
+    if [ -z "$FIRST_FLOW_PREPARED_PATH" ] || [ "$FIRST_FLOW_PREPARED_SIGNALED" = true ]; then
+        return 0
+    fi
+
+    mkdir "$FIRST_FLOW_PREPARED_PATH"
+    FIRST_FLOW_PREPARED_SIGNALED=true
+}
+
 run_maestro_flow() {
     local flow_path="$1"
     local flow_output_path="$2"
@@ -401,6 +435,8 @@ run_maestro_flow() {
     while IFS= read -r -d '' arg; do
         args+=("$arg")
     done < <(build_maestro_args "$flow_output_path" "$attempt_output_path")
+
+    signal_first_flow_prepared
 
     if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
         maestro --device "$DETECTED_SIMULATOR_UDID" test "$execution_flow_path" \

@@ -16,14 +16,14 @@ LANE_2_SHARD="$5"
 ARTIFACT_ROOT="${MAESTRO_ARTIFACT_ROOT:-$WORKSPACE_DIR/artifacts/maestro}"
 MAESTRO_SUITE_RUNNER="${MAESTRO_SUITE_RUNNER:-$SCRIPT_DIR/run-maestro-suite.sh}"
 RUN_TOKEN="${E2E_RUN_TOKEN:-$(date +%s)}"
-LANE_START_STAGGER_SECONDS="${MAESTRO_LANE_START_STAGGER_SECONDS-0}"
+LANE_1_PREPARE_TIMEOUT_SECONDS="${MAESTRO_LANE_1_PREPARE_TIMEOUT_SECONDS-300}"
 LANE_2_PREPARE_SCRIPT="${MAESTRO_LANE_2_PREPARE_SCRIPT-}"
 LANE_2_APP_PATH="${MAESTRO_LANE_2_APP_PATH-}"
 UDID_PATTERN='^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$'
 
-case "$LANE_START_STAGGER_SECONDS" in
-    '' | *[!0-9]*)
-        echo "MAESTRO_LANE_START_STAGGER_SECONDS must be a nonnegative integer; got: $LANE_START_STAGGER_SECONDS" >&2
+case "$LANE_1_PREPARE_TIMEOUT_SECONDS" in
+    '' | *[!0-9]* | 0)
+        echo "MAESTRO_LANE_1_PREPARE_TIMEOUT_SECONDS must be a positive integer; got: $LANE_1_PREPARE_TIMEOUT_SECONDS" >&2
         exit 1
         ;;
 esac
@@ -60,6 +60,7 @@ run_lane() {
     local lane_number="$1"
     local simulator_udid="$2"
     local shard_number="$3"
+    local first_flow_prepared_path="${4:-}"
     local lane_artifact_dir="$ARTIFACT_ROOT/lane-$lane_number-shard-$shard_number"
     local shard_file="$WORKSPACE_DIR/shards/shard-$shard_number.txt"
     local flows=()
@@ -94,6 +95,7 @@ run_lane() {
 
     SIMULATOR_UDID="$simulator_udid" \
         E2E_RUN_TOKEN="$RUN_TOKEN-lane-$lane_number" \
+        MAESTRO_FIRST_FLOW_PREPARED_PATH="$first_flow_prepared_path" \
         MAESTRO_CLI_NO_ANALYTICS=true \
         MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true \
         sh "$MAESTRO_SUITE_RUNNER" "$APP_ID" \
@@ -105,13 +107,93 @@ run_lane() {
         2>&1 | tee "$lane_artifact_dir/maestro-console.log"
 }
 
-run_staggered_lane() {
+terminate_process_group() {
+    local group_pid="$1"
+    local attempt
+
+    if [ -z "$group_pid" ]; then
+        return 0
+    fi
+
+    kill -TERM -- "-$group_pid" 2>/dev/null || true
+
+    for attempt in 1 2 3 4 5 6 7 8 9 10; do
+        if ! kill -0 -- "-$group_pid" 2>/dev/null; then
+            return 0
+        fi
+        sleep 0.05
+    done
+
+    kill -KILL -- "-$group_pid" 2>/dev/null || true
+}
+
+wait_for_lane_1_prepared() {
+    local lane_1_pid="$1"
+    local elapsed_seconds=0
+
+    while true; do
+        if [ -d "$LANE_CANCEL_PATH" ]; then
+            echo "Lane coordinator was cancelled before lane 2 preparation." >&2
+            return 130
+        fi
+
+        if [ -d "$LANE_1_PREPARED_PATH" ]; then
+            return 0
+        fi
+
+        if ! kill -0 "$lane_1_pid" 2>/dev/null; then
+            if [ -d "$LANE_CANCEL_PATH" ]; then
+                echo "Lane coordinator was cancelled before lane 2 preparation." >&2
+                return 130
+            fi
+
+            if [ -d "$LANE_1_PREPARED_PATH" ]; then
+                return 0
+            fi
+
+            echo "Lane 1 exited before completing first-flow preparation." >&2
+            return 1
+        fi
+
+        if [ "$elapsed_seconds" -ge "$LANE_1_PREPARE_TIMEOUT_SECONDS" ]; then
+            if [ -d "$LANE_CANCEL_PATH" ]; then
+                echo "Lane coordinator was cancelled before lane 2 preparation." >&2
+                return 130
+            fi
+
+            if [ -d "$LANE_1_PREPARED_PATH" ]; then
+                return 0
+            fi
+
+            echo "Timed out waiting $LANE_1_PREPARE_TIMEOUT_SECONDS seconds for lane 1 first-flow preparation." >&2
+            return 124
+        fi
+
+        sleep 1
+        elapsed_seconds=$((elapsed_seconds + 1))
+    done
+}
+
+run_waiting_lane() {
     local lane_number="$1"
     local simulator_udid="$2"
     local shard_number="$3"
+    local lane_1_pid="$4"
+    local wait_status
 
-    if [ "$LANE_START_STAGGER_SECONDS" -gt 0 ]; then
-        sleep "$LANE_START_STAGGER_SECONDS"
+    wait_for_lane_1_prepared "$lane_1_pid" || {
+        wait_status=$?
+
+        if [ "$wait_status" -eq 124 ]; then
+            terminate_process_group "$lane_1_pid"
+        fi
+
+        return "$wait_status"
+    }
+
+    if [ -d "$LANE_CANCEL_PATH" ]; then
+        echo "Lane coordinator was cancelled before lane 2 preparation." >&2
+        return 130
     fi
 
     if [ -n "$LANE_2_PREPARE_SCRIPT" ]; then
@@ -121,19 +203,61 @@ run_staggered_lane() {
     run_lane "$lane_number" "$simulator_udid" "$shard_number"
 }
 
-mkdir -p "$ARTIFACT_ROOT"
+cancel_lane_jobs() {
+    local signal_status="$1"
 
-run_lane 1 "$LANE_1_UDID" "$LANE_1_SHARD" &
+    trap - INT TERM
+    mkdir "$LANE_CANCEL_PATH" 2>/dev/null || true
+
+    terminate_process_group "$LANE_1_PID"
+    terminate_process_group "$LANE_2_PID"
+
+    if [ -n "$LANE_1_PID" ]; then
+        wait "$LANE_1_PID" 2>/dev/null || true
+    fi
+    if [ -n "$LANE_2_PID" ]; then
+        wait "$LANE_2_PID" 2>/dev/null || true
+    fi
+
+    exit "$signal_status"
+}
+
+mkdir -p "$ARTIFACT_ROOT"
+BARRIER_DIR="$(mktemp -d "$ARTIFACT_ROOT/.lane-coordination.XXXXXX")"
+BARRIER_DIR="$(CDPATH= cd -- "$BARRIER_DIR" && pwd)"
+LANE_1_PREPARED_PATH="$BARRIER_DIR/lane-1-first-flow-prepared"
+LANE_CANCEL_PATH="$BARRIER_DIR/cancelled"
+LANE_1_PID=""
+LANE_2_PID=""
+
+trap 'cancel_lane_jobs 130' INT
+trap 'cancel_lane_jobs 143' TERM
+
+set -m
+
+run_lane 1 "$LANE_1_UDID" "$LANE_1_SHARD" "$LANE_1_PREPARED_PATH" &
 LANE_1_PID=$!
-run_staggered_lane 2 "$LANE_2_UDID" "$LANE_2_SHARD" &
+run_waiting_lane 2 "$LANE_2_UDID" "$LANE_2_SHARD" "$LANE_1_PID" &
 LANE_2_PID=$!
+printf '%s\n' "$LANE_1_PID" > "$BARRIER_DIR/lane-1.pid"
+printf '%s\n' "$LANE_2_PID" > "$BARRIER_DIR/lane-2.pid"
 
 set +e
-wait "$LANE_1_PID"
-LANE_1_STATUS=$?
 wait "$LANE_2_PID"
 LANE_2_STATUS=$?
+wait "$LANE_1_PID"
+LANE_1_STATUS=$?
 set -e
+
+trap - INT TERM
+rmdir "$LANE_1_PREPARED_PATH" 2>/dev/null || true
+rmdir "$LANE_CANCEL_PATH" 2>/dev/null || true
+rm -f "$BARRIER_DIR/lane-1.pid" "$BARRIER_DIR/lane-2.pid"
+rmdir "$BARRIER_DIR" 2>/dev/null || true
+
+if [ "$LANE_2_STATUS" -eq 124 ]; then
+    exit 124
+fi
 
 if [ "$LANE_1_STATUS" -ne 0 ]; then
     exit "$LANE_1_STATUS"
