@@ -22,10 +22,14 @@ appId: ${APP_ID}
           id: 'SettingsPage.ConsolidateTransfersCard'
       timeout: 3000
 
-- tapOn:
-      id: 'SettingsPage.ConsolidateTransfersCard'
-- extendedWaitUntil:
-      visible: '.*high-confidence transfer.*'
-      timeout: 3000
+- retry:
+      maxRetries: 3
+      commands:
+          - tapOn:
+                id: 'SettingsPage.ConsolidateTransfersCard'
+
+          - extendedWaitUntil:
+                visible: '.*high-confidence transfer.*'
+                timeout: 3000
 
 - tapOn: 'Consolidate'
