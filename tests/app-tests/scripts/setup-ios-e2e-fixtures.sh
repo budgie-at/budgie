@@ -14,7 +14,19 @@ privatbank/privatbank-statement-002.xlsx
 "
 SIMULATOR_UDID="${1:-${SIMULATOR_UDID:-booted}}"
 APP_ID="${2:-${APP_ID:-com.vitalyiegorov.budgie.e2e}}"
-APP_DATA=$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true)
+APP_DATA_CONTAINER_OVERRIDE="${APP_DATA_CONTAINER:-}"
+
+if [ -n "$APP_DATA_CONTAINER_OVERRIDE" ]; then
+    if [ ! -d "$APP_DATA_CONTAINER_OVERRIDE" ]; then
+        echo "App data container override is not a directory: $APP_DATA_CONTAINER_OVERRIDE" >&2
+        exit 1
+    fi
+
+    APP_DATA="$APP_DATA_CONTAINER_OVERRIDE"
+else
+    APP_DATA=$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true)
+fi
+
 FIXTURES_DIR="$APP_DATA/Documents/E2EFixtures"
 DYNAMIC_FIXTURES_DIR=$(mktemp -d)
 NORMALIZED_FIXTURES_DIR="$DYNAMIC_FIXTURES_DIR/normalized"
@@ -35,7 +47,13 @@ install_database_fixture() {
 
     cp "$SOURCE_FIXTURE_PATH" "$NORMALIZED_FIXTURE_PATH"
     sqlite3 "$NORMALIZED_FIXTURE_PATH" 'UPDATE settings SET is_screenshot_protection_enabled = 0;'
-    "$INSTALL_DB_FIXTURE_SCRIPT" "$NORMALIZED_FIXTURE_PATH" "$TARGET_FIXTURE_NAME" "$SIMULATOR_UDID" "$APP_ID"
+    install_fixture_file "$NORMALIZED_FIXTURE_PATH" "$TARGET_FIXTURE_NAME"
+}
+
+install_fixture_file() {
+    FIXTURE_FOLDER_NAME="${FIXTURE_FOLDER_NAME:-E2EFixtures}" \
+        APP_DATA_CONTAINER="$APP_DATA" \
+        "$INSTALL_DB_FIXTURE_SCRIPT" "$1" "$2" "$SIMULATOR_UDID" "$APP_ID"
 }
 
 install_statement_fixtures() {
@@ -101,15 +119,15 @@ install_database_fixture "$SCRIPT_DIR/../fixtures/31-debt.db" "31-debt.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/31-transaction-info.db" "31-transaction-info.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/budget-base.db" "budget-base.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/budget-multi-currency.db" "budget-multi-currency.db"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/e2e-budgie-import.csv" "e2e-budgie-import.csv" "$SIMULATOR_UDID" "$APP_ID"
+install_fixture_file "$SCRIPT_DIR/../fixtures/e2e-budgie-import.csv" "e2e-budgie-import.csv"
 
-FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test-transactions.csv" "test-transactions.csv" "$SIMULATOR_UDID" "$APP_ID"
-FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test15-suggested-rule.csv" "test15-suggested-rule.csv" "$SIMULATOR_UDID" "$APP_ID"
-FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test16-rules-import.csv" "test16-rules-import.csv" "$SIMULATOR_UDID" "$APP_ID"
-FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test17-suggested-rule.csv" "test17-suggested-rule.csv" "$SIMULATOR_UDID" "$APP_ID"
-FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test25-duplicate-rule.csv" "test25-duplicate-rule.csv" "$SIMULATOR_UDID" "$APP_ID"
-FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test27-matching-rules-pill.csv" "test27-matching-rules-pill.csv" "$SIMULATOR_UDID" "$APP_ID"
-FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/e2e-mcc-default-category.csv" "e2e-mcc-default-category.csv" "$SIMULATOR_UDID" "$APP_ID"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures install_fixture_file "$SCRIPT_DIR/../fixtures/test-transactions.csv" "test-transactions.csv"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures install_fixture_file "$SCRIPT_DIR/../fixtures/test15-suggested-rule.csv" "test15-suggested-rule.csv"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures install_fixture_file "$SCRIPT_DIR/../fixtures/test16-rules-import.csv" "test16-rules-import.csv"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures install_fixture_file "$SCRIPT_DIR/../fixtures/test17-suggested-rule.csv" "test17-suggested-rule.csv"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures install_fixture_file "$SCRIPT_DIR/../fixtures/test25-duplicate-rule.csv" "test25-duplicate-rule.csv"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures install_fixture_file "$SCRIPT_DIR/../fixtures/test27-matching-rules-pill.csv" "test27-matching-rules-pill.csv"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures install_fixture_file "$SCRIPT_DIR/../fixtures/e2e-mcc-default-category.csv" "e2e-mcc-default-category.csv"
 
 if [ -n "$APP_DATA" ]; then
     install_statement_fixtures

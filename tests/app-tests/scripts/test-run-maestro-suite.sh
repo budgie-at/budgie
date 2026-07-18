@@ -79,6 +79,7 @@ run_case() {
     test "$(wc -l < "$case_dir/maestro.log" | tr -d ' ')" -eq "$expected_maestro_calls"
     test "$(grep -c '^--device 00000000-0000-0000-0000-000000000001 test ' "$case_dir/maestro.log")" -eq "$expected_maestro_calls"
     test "$(grep -c '^simctl shutdown ' "$case_dir/xcrun.log" || true)" -eq "$expected_shutdown_calls"
+    test "$(grep -c '^simctl get_app_container ' "$case_dir/xcrun.log" || true)" -eq 1
 
     if [ "$failure_kind" = ax ]; then
         test "$(grep -c 'prime-and-business.flow.yaml' "$case_dir/maestro.log")" -eq 2

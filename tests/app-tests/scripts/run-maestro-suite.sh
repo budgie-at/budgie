@@ -27,6 +27,12 @@ SIMULATOR_UDID="${SIMULATOR_UDID:-}"
 RECURRING_EMPTY_DAY="${RECURRING_EMPTY_DAY:-}"
 DATABASE_FIXTURE_SEEDED="false"
 IOS_SIMULATOR_REBOOT_EVERY="${E2E_IOS_SIMULATOR_REBOOT_EVERY:-0}"
+APP_DATA_CONTAINER="${APP_DATA_CONTAINER:-}"
+
+if [ -n "$APP_DATA_CONTAINER" ] && [ ! -d "$APP_DATA_CONTAINER" ]; then
+    echo "App data container override is not a directory: $APP_DATA_CONTAINER" >&2
+    exit 1
+fi
 
 compute_recurring_empty_day() {
     node <<'EOF'
@@ -73,39 +79,52 @@ detect_booted_simulator_udid() {
 }
 
 compute_csv_fixtures_uri() {
-    UDID="$1"
+    local udid="$1"
+    local app_data_container
 
-    if [ -z "$UDID" ]; then
+    if [ -z "$udid" ]; then
         return 1
     fi
 
-    APP_DATA_CONTAINER="$(
-        xcrun simctl get_app_container "$UDID" "$APP_ID" data 2>/dev/null || true
-    )"
+    app_data_container="$(resolve_app_data_container "$udid" || true)"
 
-    if [ -z "$APP_DATA_CONTAINER" ] || [ ! -d "$APP_DATA_CONTAINER" ]; then
+    if [ -z "$app_data_container" ] || [ ! -d "$app_data_container" ]; then
         return 1
     fi
 
-    printf 'file://%s/Documents/E2ECsvFixtures' "$APP_DATA_CONTAINER"
+    printf 'file://%s/Documents/E2ECsvFixtures' "$app_data_container"
 }
 
 compute_db_fixtures_uri() {
-    UDID="$1"
+    local udid="$1"
+    local app_data_container
 
-    if [ -z "$UDID" ]; then
+    if [ -z "$udid" ]; then
         return 1
     fi
 
-    APP_DATA_CONTAINER="$(
-        xcrun simctl get_app_container "$UDID" "$APP_ID" data 2>/dev/null || true
-    )"
+    app_data_container="$(resolve_app_data_container "$udid" || true)"
 
-    if [ -z "$APP_DATA_CONTAINER" ] || [ ! -d "$APP_DATA_CONTAINER" ]; then
+    if [ -z "$app_data_container" ] || [ ! -d "$app_data_container" ]; then
         return 1
     fi
 
-    printf 'file://%s/Documents/E2EFixtures' "$APP_DATA_CONTAINER"
+    printf 'file://%s/Documents/E2EFixtures' "$app_data_container"
+}
+
+resolve_app_data_container() {
+    local udid="$1"
+
+    if [ -n "$APP_DATA_CONTAINER" ]; then
+        if [ ! -d "$APP_DATA_CONTAINER" ]; then
+            return 1
+        fi
+
+        printf '%s\n' "$APP_DATA_CONTAINER"
+        return 0
+    fi
+
+    xcrun simctl get_app_container "$udid" "$APP_ID" data 2>/dev/null || true
 }
 
 resolve_flow_file_path() {
@@ -185,9 +204,7 @@ seed_ios_database_fixture_if_needed() {
         return 0
     fi
 
-    app_data_container="$(
-        xcrun simctl get_app_container "$DETECTED_SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true
-    )"
+    app_data_container="$(resolve_app_data_container "$DETECTED_SIMULATOR_UDID" || true)"
 
     if [ -z "$app_data_container" ] || [ ! -d "$app_data_container" ]; then
         return 0
@@ -220,16 +237,15 @@ refresh_ios_fixtures_if_needed() {
         return 0
     fi
 
-    APP_DATA_CONTAINER="$(
-        xcrun simctl get_app_container "$DETECTED_SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true
-    )"
+    APP_DATA_CONTAINER="$(resolve_app_data_container "$DETECTED_SIMULATOR_UDID" || true)"
 
     if [ -z "$APP_DATA_CONTAINER" ]; then
         return 0
     fi
 
     echo "Refreshing iOS fixtures for $APP_ID on $DETECTED_SIMULATOR_UDID"
-    sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID"
+    APP_DATA_CONTAINER="$APP_DATA_CONTAINER" \
+        sh "$SCRIPT_DIR/setup-ios-e2e-fixtures.sh" "$DETECTED_SIMULATOR_UDID" "$APP_ID"
 }
 
 reboot_ios_simulator_if_needed() {
