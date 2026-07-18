@@ -27,6 +27,14 @@ SIMULATOR_UDID="${SIMULATOR_UDID:-}"
 RECURRING_EMPTY_DAY="${RECURRING_EMPTY_DAY:-}"
 DATABASE_FIXTURE_SEEDED="false"
 IOS_SIMULATOR_REBOOT_EVERY="${E2E_IOS_SIMULATOR_REBOOT_EVERY:-0}"
+PRIME_DEEP_LINK_TIMEOUT_SECONDS="${PRIME_DEEP_LINK_TIMEOUT_SECONDS:-240}"
+
+case "$PRIME_DEEP_LINK_TIMEOUT_SECONDS" in
+    '' | *[!0-9]* | 0)
+        echo "Invalid PRIME_DEEP_LINK_TIMEOUT_SECONDS=$PRIME_DEEP_LINK_TIMEOUT_SECONDS; using 240 seconds." >&2
+        PRIME_DEEP_LINK_TIMEOUT_SECONDS=240
+        ;;
+esac
 
 compute_recurring_empty_day() {
     node <<'EOF'
@@ -472,6 +480,48 @@ if [ -z "$E2E_DB_FIXTURES_URI" ]; then
     echo "Could not resolve E2E_DB_FIXTURES_URI for $APP_ID; database-import flows will fail." >&2
 fi
 
+run_prime_deep_link_with_watchdog() {
+    local prime_pid
+    local prime_status=0
+    local timed_out=false
+    local started_at
+    local attempt
+
+    "$@" &
+    prime_pid=$!
+    started_at="$(date +%s)"
+
+    while kill -0 "$prime_pid" 2>/dev/null; do
+        if [ "$(($(date +%s) - started_at))" -ge "$PRIME_DEEP_LINK_TIMEOUT_SECONDS" ]; then
+            timed_out=true
+            kill "$prime_pid" 2>/dev/null || true
+
+            for ((attempt = 1; attempt <= 20; attempt += 1)); do
+                if ! kill -0 "$prime_pid" 2>/dev/null; then
+                    break
+                fi
+                sleep 0.1
+            done
+
+            if kill -0 "$prime_pid" 2>/dev/null; then
+                kill -KILL "$prime_pid" 2>/dev/null || true
+            fi
+            break
+        fi
+        sleep 1
+    done
+
+    wait "$prime_pid" || prime_status=$?
+
+    if [ "$timed_out" = true ]; then
+        echo "Deep-link priming exceeded ${PRIME_DEEP_LINK_TIMEOUT_SECONDS}s and was terminated."
+    elif [ "$prime_status" -ne 0 ]; then
+        echo "Deep-link priming failed with status $prime_status; continuing."
+    fi
+
+    return 0
+}
+
 prime_deep_links() {
     local prime_flow_path="$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml"
 
@@ -482,9 +532,12 @@ prime_deep_links() {
     echo "Priming deep-link scheme confirmation"
 
     if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
-        maestro --device "$DETECTED_SIMULATOR_UDID" test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID" || true
+        run_prime_deep_link_with_watchdog \
+            maestro --device "$DETECTED_SIMULATOR_UDID" test "$prime_flow_path" \
+            --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID"
     else
-        maestro test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID" || true
+        run_prime_deep_link_with_watchdog \
+            maestro test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID"
     fi
 }
 

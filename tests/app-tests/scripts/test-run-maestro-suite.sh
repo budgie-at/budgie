@@ -34,6 +34,11 @@ set -euo pipefail
 printf '%s\n' "$*" >> "$MOCK_MAESTRO_LOG"
 attempt_count=$(grep -c 'test.flow.yaml' "$MOCK_MAESTRO_LOG" || true)
 
+if [ "$MOCK_FAILURE" = prime_hang ] && printf '%s\n' "$*" | grep -q 'prime-deep-links.flow.yaml'; then
+    printf '%s\n' "$$" > "$MOCK_PRIME_PID_FILE"
+    exec sleep 3600
+fi
+
 if [ "$MOCK_FAILURE" = ax ] && [ "$attempt_count" -eq 1 ]; then
     printf '%s\n' 'kAXErrorInvalidUIElement'
     exit 1
@@ -87,3 +92,60 @@ run_case() {
 
 run_case ax 0 3 1
 run_case assertion 1 2 0
+
+run_prime_hang_case() {
+    local case_dir="$TEMP_DIR/prime-hang"
+    local suite_pid
+    local prime_pid
+    local suite_status=0
+    local business_flow_started=false
+    local attempt
+
+    mkdir -p "$case_dir"
+
+    PATH="$TEMP_DIR/bin:$PATH" \
+        MOCK_APP_DATA="$TEMP_DIR/app-data" \
+        MOCK_FAILURE=prime_hang \
+        MOCK_MAESTRO_LOG="$case_dir/maestro.log" \
+        MOCK_PRIME_PID_FILE="$case_dir/prime.pid" \
+        MOCK_XCRUN_LOG="$case_dir/xcrun.log" \
+        PRIME_DEEP_LINK_TIMEOUT_SECONDS=1 \
+        SIMULATOR_UDID='00000000-0000-0000-0000-000000000001' \
+        sh "$SCRIPT_DIR/run-maestro-suite.sh" com.example.test "$TEMP_DIR/flows/test.flow.yaml" --output "$case_dir/report.xml" > "$case_dir/console.log" 2>&1 &
+    suite_pid=$!
+
+    for ((attempt = 1; attempt <= 500; attempt += 1)); do
+        if grep -q 'test.flow.yaml' "$case_dir/maestro.log" 2>/dev/null; then
+            business_flow_started=true
+            break
+        fi
+        if ! kill -0 "$suite_pid" 2>/dev/null; then
+            break
+        fi
+        sleep 0.01
+    done
+
+    if [ "$business_flow_started" != true ]; then
+        if [ -f "$case_dir/prime.pid" ]; then
+            prime_pid=$(cat "$case_dir/prime.pid")
+            kill "$prime_pid" 2>/dev/null || true
+        fi
+        kill "$suite_pid" 2>/dev/null || true
+        wait "$suite_pid" 2>/dev/null || true
+        echo "Business flow did not start after the prime timeout." >&2
+        return 1
+    fi
+
+    wait "$suite_pid" || suite_status=$?
+    test "$suite_status" -eq 0
+    prime_pid=$(cat "$case_dir/prime.pid")
+    if kill -0 "$prime_pid" 2>/dev/null; then
+        kill "$prime_pid" 2>/dev/null || true
+        echo "Prime Maestro process is still running: $prime_pid" >&2
+        return 1
+    fi
+    grep -q 'test.flow.yaml' "$case_dir/maestro.log"
+    grep -q 'Deep-link priming exceeded 1s and was terminated.' "$case_dir/console.log"
+}
+
+run_prime_hang_case
