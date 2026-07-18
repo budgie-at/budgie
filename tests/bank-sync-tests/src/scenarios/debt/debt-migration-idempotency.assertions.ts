@@ -40,6 +40,7 @@ export class DebtMigrationIdempotencyAssertions {
     private static readonly MULTI_ENTRY_SETTLEMENT_EVENT_ID = Number('900303');
     private static readonly MULTI_ENTRY_TRANSACTION_ID = Number('900301');
     private static readonly POST_CUTOFF_ACCOUNT_ID = Number('900501');
+    private static readonly POST_CUTOFF_ADJUSTMENT_AMOUNT = 250_000_000;
     private static readonly POST_CUTOFF_ADJUSTMENT_ENTRY_ID = Number('900501');
     private static readonly POST_CUTOFF_ADJUSTMENT_TRANSACTION_ID = Number('900501');
     private static readonly POST_CUTOFF_CLOSE_EVENT_ID = Number('900503');
@@ -229,6 +230,7 @@ export class DebtMigrationIdempotencyAssertions {
 
     private assertPostCutoffPersistedRows(snapshot: DebtMigrationPersistedSnapshotInterface): void {
         expect(snapshot.accounts).toHaveLength(1);
+        expect(snapshot.balances).toHaveLength(0);
         expect(snapshot.transactions).toEqual([
             expect.objectContaining({
                 deletedAt: null,
@@ -248,14 +250,14 @@ export class DebtMigrationIdempotencyAssertions {
         expect(snapshot.transactionEntries).toEqual([
             expect.objectContaining({
                 accountId: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID,
-                amount: 250_000_000,
+                amount: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_AMOUNT,
                 deletedAt: null,
                 id: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_ENTRY_ID,
                 type: TransactionEntryTypeEnum.CREDIT
             }),
             expect.objectContaining({
                 accountId: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID,
-                amount: 250_000_000,
+                amount: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_AMOUNT,
                 deletedAt: null,
                 id: DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ENTRY_ID,
                 type: TransactionEntryTypeEnum.DEBIT
@@ -275,6 +277,7 @@ export class DebtMigrationIdempotencyAssertions {
                 source: DebtEventSourceEnum.MANUAL
             }),
             expect.objectContaining({
+                amount: DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_AMOUNT,
                 direction: DebtEventDirectionEnum.CLOSE,
                 id: DebtMigrationIdempotencyAssertions.POST_CUTOFF_EVENT_ID,
                 source: DebtEventSourceEnum.TRANSFER,
@@ -367,11 +370,11 @@ export class DebtMigrationIdempotencyAssertions {
             ), (
                 ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_ENTRY_ID}, 1780358400, 1780358400, 'CREDIT',
                 ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, NULL, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_TRANSACTION_ID},
-                250000000, 'PRIMARY', 'USER', 1, NULL, 2, 0.92, 230000000
+                ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_AMOUNT}, 'PRIMARY', 'USER', 1, NULL, 2, 0.92, 230000000
             ), (
                 ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ENTRY_ID}, 1784131200, 1784131200, 'DEBIT',
                 ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, NULL, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ID},
-                250000000, 'PRIMARY', 'USER', 1, NULL, 2, 0.92, 230000000
+                ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_AMOUNT}, 'PRIMARY', 'USER', 1, NULL, 2, 0.92, 230000000
             );
 
             INSERT INTO debt_events (
@@ -386,10 +389,10 @@ export class DebtMigrationIdempotencyAssertions {
                 (${DebtMigrationIdempotencyAssertions.LOOKALIKE_SETTLEMENT_EVENT_ID}, 1781136000, 1781136000, ${DebtMigrationIdempotencyAssertions.LOOKALIKE_ACCOUNT_ID}, ${DebtMigrationIdempotencyAssertions.LOOKALIKE_TRANSACTION_ID}, ${DebtMigrationIdempotencyAssertions.LOOKALIKE_TRANSACTION_ENTRY_ID}, 'OPEN', 'MIGRATION', 300000000, 2, 0.92, 276000000, 1781136000),
                 (${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_OPEN_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID}, NULL, NULL, 'OPEN', 'MANUAL', 2000000000, 2, 0.92, 1840000000, 1780358400),
                 (${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_CLOSE_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID}, NULL, NULL, 'CLOSE', 'MANUAL', 1750000000, 2, 0.92, 1610000000, 1780358400),
-                (${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_SETTLEMENT_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID}, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_TRANSACTION_ID}, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_DEBT_ENTRY_ID}, 'OPEN', 'MIGRATION', 250000000, 2, 0.92, 230000000, 1780358400),
+                (${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_SETTLEMENT_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ACCOUNT_ID}, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_TRANSACTION_ID}, ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_DEBT_ENTRY_ID}, 'OPEN', 'MIGRATION', ${DebtMigrationIdempotencyAssertions.MULTI_ENTRY_ADJUSTMENT_AMOUNT}, 2, 0.92, 230000000, 1780358400),
                 (${DebtMigrationIdempotencyAssertions.POST_CUTOFF_OPEN_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, NULL, NULL, 'OPEN', 'MANUAL', 2000000000, 2, 0.92, 1840000000, 1780358400),
                 (${DebtMigrationIdempotencyAssertions.POST_CUTOFF_CLOSE_EVENT_ID}, 1780358400, 1780358400, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, NULL, NULL, 'CLOSE', 'MANUAL', 1750000000, 2, 0.92, 1610000000, 1780358400),
-                (${DebtMigrationIdempotencyAssertions.POST_CUTOFF_EVENT_ID}, 1784131200, 1784131200, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ID}, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ENTRY_ID}, 'CLOSE', 'TRANSFER', 250000000, 2, 0.92, 230000000, 1784131200);
+                (${DebtMigrationIdempotencyAssertions.POST_CUTOFF_EVENT_ID}, 1784131200, 1784131200, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ACCOUNT_ID}, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ID}, ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_TRANSACTION_ENTRY_ID}, 'CLOSE', 'TRANSFER', ${DebtMigrationIdempotencyAssertions.POST_CUTOFF_ADJUSTMENT_AMOUNT}, 2, 0.92, 230000000, 1784131200);
         `);
     }
 }
