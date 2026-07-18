@@ -16,7 +16,15 @@ LANE_2_SHARD="$5"
 ARTIFACT_ROOT="${MAESTRO_ARTIFACT_ROOT:-$WORKSPACE_DIR/artifacts/maestro}"
 MAESTRO_SUITE_RUNNER="${MAESTRO_SUITE_RUNNER:-$SCRIPT_DIR/run-maestro-suite.sh}"
 RUN_TOKEN="${E2E_RUN_TOKEN:-$(date +%s)}"
+LANE_START_STAGGER_SECONDS="${MAESTRO_LANE_START_STAGGER_SECONDS-0}"
 UDID_PATTERN='^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$'
+
+case "$LANE_START_STAGGER_SECONDS" in
+    '' | *[!0-9]*)
+        echo "MAESTRO_LANE_START_STAGGER_SECONDS must be a nonnegative integer; got: $LANE_START_STAGGER_SECONDS" >&2
+        exit 1
+        ;;
+esac
 
 if [[ ! "$LANE_1_UDID" =~ $UDID_PATTERN ]] || \
     [[ ! "$LANE_2_UDID" =~ $UDID_PATTERN ]] || \
@@ -74,11 +82,23 @@ run_lane() {
         2>&1 | tee "$lane_artifact_dir/maestro-console.log"
 }
 
+run_staggered_lane() {
+    local lane_number="$1"
+    local simulator_udid="$2"
+    local shard_number="$3"
+
+    if [ "$LANE_START_STAGGER_SECONDS" -gt 0 ]; then
+        sleep "$LANE_START_STAGGER_SECONDS"
+    fi
+
+    run_lane "$lane_number" "$simulator_udid" "$shard_number"
+}
+
 mkdir -p "$ARTIFACT_ROOT"
 
 run_lane 1 "$LANE_1_UDID" "$LANE_1_SHARD" &
 LANE_1_PID=$!
-run_lane 2 "$LANE_2_UDID" "$LANE_2_SHARD" &
+run_staggered_lane 2 "$LANE_2_UDID" "$LANE_2_SHARD" &
 LANE_2_PID=$!
 
 set +e
