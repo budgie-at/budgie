@@ -126,7 +126,7 @@ run_case() {
             abort "unexpected wrapper name" unless documents.fetch(0).fetch("name") == "test.flow"
         ' "$case_dir/prime-and-business.flow.yaml"
         test "$(grep -c '^- runFlow:' "$case_dir/prime-and-business.flow.yaml")" -eq 2
-        grep -q 'optional: true' "$case_dir/prime-and-business.flow.yaml"
+        test "$(grep -c 'optional: true' "$case_dir/prime-and-business.flow.yaml" || true)" -eq 0
         prime_line=$(grep -n 'prime-deep-links.flow.yaml' "$case_dir/prime-and-business.flow.yaml" | cut -d: -f1)
         business_line=$(grep -n "$TEMP_DIR/flows/test.flow.yaml" "$case_dir/prime-and-business.flow.yaml" | cut -d: -f1)
         test "$prime_line" -lt "$business_line"
@@ -141,6 +141,72 @@ run_case ax 0 2 1
 run_case assertion 1 1 0
 run_case combined 0 1 0
 run_case no-signal 0 1 0 false
+
+ruby -ryaml -e '
+    documents = YAML.load_stream(File.read(ARGV.fetch(0)))
+    commands = documents.fetch(1)
+
+    probe = commands.fetch(0).fetch("openLink")
+    abort "recovery probe must open the transactions deep link" unless probe.fetch("link") == "budgie://transactions"
+    abort "only the recovery probe may tolerate an openLink timeout" unless probe.fetch("optional") == true
+
+    prime_retry = commands.fetch(1).fetch("retry")
+    abort "prime retry count must be bounded" unless prime_retry.fetch("maxRetries") == 2
+
+    prime_commands = prime_retry.fetch("commands")
+    prompt_flow = prime_commands.fetch(0).fetch("runFlow")
+    abort "prompt recovery must target the iOS deep-link alert title" unless prompt_flow.fetch("when").fetch("visible") == "Open in .*"
+
+    prompt_retry = prompt_flow.fetch("commands").fetch(0).fetch("retry")
+    abort "prompt dismissal retry count must be bounded" unless prompt_retry.fetch("maxRetries") == 2
+
+    prompt_commands = prompt_retry.fetch("commands")
+    abort "prompt dismissal must tap Open" unless prompt_commands.fetch(0).fetch("tapOn").fetch("text") == "Open"
+    prompt_wait = prompt_commands.fetch(1).fetch("extendedWaitUntil")
+    abort "prompt dismissal must be verified" unless prompt_wait.fetch("notVisible") == "Open in .*"
+    abort "prompt dismissal wait must stay short" unless prompt_wait.fetch("timeout") == 3000
+
+    recovered_wait = prime_commands.fetch(1).fetch("extendedWaitUntil")
+    abort "prime must clear a possibly presented alert before the required open" unless recovered_wait.fetch("notVisible") == "Open in .*"
+    abort "prompt recovery wait must stay short" unless recovered_wait.fetch("timeout") == 3000
+
+    required_open = prime_commands.fetch(2).fetch("openLink")
+    abort "prime must require a post-recovery transactions deep link" unless required_open.fetch("link") == "budgie://transactions"
+    abort "post-recovery deep link must fail closed" if required_open.key?("optional")
+
+    post_open_prompt_wait = prime_commands.fetch(3).fetch("extendedWaitUntil")
+    abort "prime must reject a prompt left by the required open" unless post_open_prompt_wait.fetch("notVisible") == "Open in .*"
+    abort "post-open prompt wait must stay short" unless post_open_prompt_wait.fetch("timeout") == 3000
+
+    destination_wait = prime_commands.fetch(4).fetch("extendedWaitUntil")
+    abort "prime must verify the canonical transactions destination" unless destination_wait.fetch("visible").fetch("id") == "TransactionsPage.Container"
+    abort "transactions destination wait must be bounded" unless destination_wait.fetch("timeout") == 10000
+' "$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml"
+
+run_missing_prime_case() {
+    local case_dir="$TEMP_DIR/missing-prime"
+    local missing_prime_path="$case_dir/missing-prime.flow.yaml"
+    local status=0
+
+    mkdir -p "$case_dir"
+
+    PATH="$TEMP_DIR/bin:$PATH" \
+        MOCK_APP_DATA="$TEMP_DIR/app-data" \
+        MOCK_FAILURE=combined \
+        MOCK_MAESTRO_LOG="$case_dir/maestro.log" \
+        MOCK_WRAPPER_PATH="$case_dir/prime-and-business.flow.yaml" \
+        MOCK_XCRUN_LOG="$case_dir/xcrun.log" \
+        MAESTRO_PRIME_FLOW_PATH="$missing_prime_path" \
+        SIMULATOR_UDID='00000000-0000-0000-0000-000000000001' \
+        sh "$SCRIPT_DIR/run-maestro-suite.sh" com.example.test "$TEMP_DIR/flows/test.flow.yaml" --output "$case_dir/report.xml" > "$case_dir/console.log" 2>&1 || status=$?
+
+    test "$status" -eq 1
+    test ! -e "$case_dir/maestro.log"
+    test ! -e "$case_dir/prime-and-business.flow.yaml"
+    grep -Fq "Required deep-link prime flow is missing: $missing_prime_path" "$case_dir/console.log"
+}
+
+run_missing_prime_case
 
 run_quoted_path_case() {
     local case_dir="$TEMP_DIR/quoted-path"

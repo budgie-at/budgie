@@ -30,6 +30,7 @@ IOS_SIMULATOR_REBOOT_EVERY="${E2E_IOS_SIMULATOR_REBOOT_EVERY:-0}"
 APP_DATA_CONTAINER="${APP_DATA_CONTAINER:-}"
 FIRST_FLOW_PREPARED_PATH="${MAESTRO_FIRST_FLOW_PREPARED_PATH-}"
 FIRST_FLOW_PREPARED_SIGNALED=false
+PRIME_FLOW_PATH="${MAESTRO_PRIME_FLOW_PATH:-$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml}"
 
 if [ -n "$APP_DATA_CONTAINER" ] && [ ! -d "$APP_DATA_CONTAINER" ]; then
     echo "App data container override is not a directory: $APP_DATA_CONTAINER" >&2
@@ -379,10 +380,9 @@ print_yaml_single_quoted_scalar() {
 create_prime_and_business_flow() {
     local business_flow_path="$1"
     local combined_flow_path="$2"
-    local prime_flow_path="$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml"
     local business_flow_name
 
-    if [ ! -f "$prime_flow_path" ]; then
+    if [ ! -f "$PRIME_FLOW_PATH" ]; then
         return 1
     fi
 
@@ -396,9 +396,9 @@ create_prime_and_business_flow() {
         printf '\n'
         printf '%s\n' '---' '- runFlow:'
         printf '      file: '
-        print_yaml_single_quoted_scalar "$prime_flow_path"
+        print_yaml_single_quoted_scalar "$PRIME_FLOW_PATH"
         printf '\n'
-        printf '%s\n' '      optional: true' '- runFlow:'
+        printf '%s\n' '- runFlow:'
         printf '      file: '
         print_yaml_single_quoted_scalar "$business_flow_path"
         printf '\n'
@@ -428,7 +428,8 @@ run_maestro_flow() {
         execution_flow_path="$attempt_output_path/prime-and-business.flow.yaml"
 
         if ! create_prime_and_business_flow "$flow_path" "$execution_flow_path"; then
-            execution_flow_path="$flow_path"
+            echo "Required deep-link prime flow is missing: $PRIME_FLOW_PATH" >&2
+            return 1
         fi
     fi
 
