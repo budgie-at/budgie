@@ -27,14 +27,6 @@ SIMULATOR_UDID="${SIMULATOR_UDID:-}"
 RECURRING_EMPTY_DAY="${RECURRING_EMPTY_DAY:-}"
 DATABASE_FIXTURE_SEEDED="false"
 IOS_SIMULATOR_REBOOT_EVERY="${E2E_IOS_SIMULATOR_REBOOT_EVERY:-0}"
-PRIME_DEEP_LINK_TIMEOUT_SECONDS="${PRIME_DEEP_LINK_TIMEOUT_SECONDS:-240}"
-
-case "$PRIME_DEEP_LINK_TIMEOUT_SECONDS" in
-    '' | *[!0-9]* | 0)
-        echo "Invalid PRIME_DEEP_LINK_TIMEOUT_SECONDS=$PRIME_DEEP_LINK_TIMEOUT_SECONDS; using 240 seconds." >&2
-        PRIME_DEEP_LINK_TIMEOUT_SECONDS=240
-        ;;
-esac
 
 compute_recurring_empty_day() {
     node <<'EOF'
@@ -336,20 +328,66 @@ collect_flow_paths() {
     done
 }
 
+print_yaml_single_quoted_scalar() {
+    local value="$1"
+
+    value=${value//\'/\'\'}
+    printf "'%s'" "$value"
+}
+
+create_prime_and_business_flow() {
+    local business_flow_path="$1"
+    local combined_flow_path="$2"
+    local prime_flow_path="$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml"
+    local business_flow_name
+
+    if [ ! -f "$prime_flow_path" ]; then
+        return 1
+    fi
+
+    business_flow_name=$(basename "$business_flow_path")
+    business_flow_name="${business_flow_name%.yaml}"
+
+    {
+        printf '%s\n' 'appId: ${APP_ID}'
+        printf 'name: '
+        print_yaml_single_quoted_scalar "$business_flow_name"
+        printf '\n'
+        printf '%s\n' '---' '- runFlow:'
+        printf '      file: '
+        print_yaml_single_quoted_scalar "$prime_flow_path"
+        printf '\n'
+        printf '%s\n' '      optional: true' '- runFlow:'
+        printf '      file: '
+        print_yaml_single_quoted_scalar "$business_flow_path"
+        printf '\n'
+    } > "$combined_flow_path"
+}
+
 run_maestro_flow() {
     local flow_path="$1"
     local flow_output_path="$2"
     local attempt_output_path="$3"
+    local include_prime="$4"
     local args=()
+    local execution_flow_path="$flow_path"
 
     seed_ios_database_fixture_if_needed "$flow_path"
+
+    if [ "$include_prime" = true ]; then
+        execution_flow_path="$attempt_output_path/prime-and-business.flow.yaml"
+
+        if ! create_prime_and_business_flow "$flow_path" "$execution_flow_path"; then
+            execution_flow_path="$flow_path"
+        fi
+    fi
 
     while IFS= read -r -d '' arg; do
         args+=("$arg")
     done < <(build_maestro_args "$flow_output_path" "$attempt_output_path")
 
     if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
-        maestro --device "$DETECTED_SIMULATOR_UDID" test "$flow_path" \
+        maestro --device "$DETECTED_SIMULATOR_UDID" test "$execution_flow_path" \
             --config "$WORKSPACE_DIR/config.yaml" \
             -e APP_ID="$APP_ID" \
             -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
@@ -359,7 +397,7 @@ run_maestro_flow() {
             -e DATABASE_FIXTURE_SEEDED="$DATABASE_FIXTURE_SEEDED" \
             "${args[@]}"
     else
-        maestro test "$flow_path" \
+        maestro test "$execution_flow_path" \
             --config "$WORKSPACE_DIR/config.yaml" \
             -e APP_ID="$APP_ID" \
             -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
@@ -480,70 +518,8 @@ if [ -z "$E2E_DB_FIXTURES_URI" ]; then
     echo "Could not resolve E2E_DB_FIXTURES_URI for $APP_ID; database-import flows will fail." >&2
 fi
 
-run_prime_deep_link_with_watchdog() {
-    local prime_pid
-    local prime_status=0
-    local timed_out=false
-    local started_at
-    local attempt
-
-    "$@" &
-    prime_pid=$!
-    started_at="$(date +%s)"
-
-    while kill -0 "$prime_pid" 2>/dev/null; do
-        if [ "$(($(date +%s) - started_at))" -ge "$PRIME_DEEP_LINK_TIMEOUT_SECONDS" ]; then
-            timed_out=true
-            kill "$prime_pid" 2>/dev/null || true
-
-            for ((attempt = 1; attempt <= 20; attempt += 1)); do
-                if ! kill -0 "$prime_pid" 2>/dev/null; then
-                    break
-                fi
-                sleep 0.1
-            done
-
-            if kill -0 "$prime_pid" 2>/dev/null; then
-                kill -KILL "$prime_pid" 2>/dev/null || true
-            fi
-            break
-        fi
-        sleep 1
-    done
-
-    wait "$prime_pid" || prime_status=$?
-
-    if [ "$timed_out" = true ]; then
-        echo "Deep-link priming exceeded ${PRIME_DEEP_LINK_TIMEOUT_SECONDS}s and was terminated."
-    elif [ "$prime_status" -ne 0 ]; then
-        echo "Deep-link priming failed with status $prime_status; continuing."
-    fi
-
-    return 0
-}
-
-prime_deep_links() {
-    local prime_flow_path="$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml"
-
-    if [ ! -f "$prime_flow_path" ]; then
-        return 0
-    fi
-
-    echo "Priming deep-link scheme confirmation"
-
-    if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
-        run_prime_deep_link_with_watchdog \
-            maestro --device "$DETECTED_SIMULATOR_UDID" test "$prime_flow_path" \
-            --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID"
-    else
-        run_prime_deep_link_with_watchdog \
-            maestro test "$prime_flow_path" --config "$WORKSPACE_DIR/config.yaml" -e APP_ID="$APP_ID"
-    fi
-}
-
 collect_flow_paths
 capture_output_path
-prime_deep_links
 
 echo "Running Maestro suite from $WORKSPACE_DIR"
 
@@ -568,6 +544,11 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
     FLOW_ARTIFACT_PATH=""
     FLOW_STATUS=0
     FLOW_STARTED_AT="$(date +%s)"
+    INCLUDE_PRIME=false
+
+    if [ "$FLOW_INDEX" -eq 1 ]; then
+        INCLUDE_PRIME=true
+    fi
 
     if [ -n "$OUTPUT_PATH" ]; then
         FLOW_OUTPUT_PATH="$REPORT_DIR/$FLOW_INDEX-$FLOW_NAME.xml"
@@ -585,7 +566,7 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
 
     echo "Running Maestro flow $FLOW_INDEX/$FLOW_TOTAL: $FLOW_NAME"
 
-    if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$FLOW_ARTIFACT_PATH/attempt-1" > "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log" 2>&1; then
+    if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$FLOW_ARTIFACT_PATH/attempt-1" "$INCLUDE_PRIME" > "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log" 2>&1; then
         cat "$FLOW_ARTIFACT_PATH/attempt-1/maestro-console.log"
         record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" success 1 "$FLOW_STARTED_AT"
         echo "Completed Maestro flow $FLOW_INDEX/$FLOW_TOTAL: $FLOW_NAME"
@@ -602,7 +583,7 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
             reset_ios_simulator_after_ax_driver_failure
             mkdir -p "$FLOW_ARTIFACT_PATH/attempt-2"
 
-            if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$FLOW_ARTIFACT_PATH/attempt-2" > "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log" 2>&1; then
+            if run_maestro_flow "$FLOW_PATH" "$FLOW_OUTPUT_PATH" "$FLOW_ARTIFACT_PATH/attempt-2" "$INCLUDE_PRIME" > "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log" 2>&1; then
                 cat "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log"
                 record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" success 2 "$FLOW_STARTED_AT"
                 echo "Completed Maestro flow $FLOW_INDEX/$FLOW_TOTAL after AX driver retry: $FLOW_NAME"
