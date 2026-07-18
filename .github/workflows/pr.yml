@@ -518,22 +518,20 @@ jobs:
     e2e-ios:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, build-ios-e2e-app]
-        name: E2E Tests on iOS (shard ${{ matrix.shard-number }}/4)
+        name: E2E Tests on iOS (VM ${{ matrix.vm_number }}/2, shards ${{ matrix.lane_1_shard }} + ${{ matrix.lane_2_shard }})
         runs-on: [self-hosted, macOS, ARM64, macos-maestro]
         timeout-minutes: 90
         strategy:
             fail-fast: false
-            max-parallel: 4
+            max-parallel: 2
             matrix:
                 include:
-                    - shard-index: 0
-                      shard-number: 1
-                    - shard-index: 1
-                      shard-number: 2
-                    - shard-index: 2
-                      shard-number: 3
-                    - shard-index: 3
-                      shard-number: 4
+                    - vm_number: 1
+                      lane_1_shard: 1
+                      lane_2_shard: 2
+                    - vm_number: 2
+                      lane_1_shard: 3
+                      lane_2_shard: 4
         permissions:
             contents: read
         env:
@@ -569,39 +567,98 @@ jobs:
                   memory_pressure -Q | tail -n 1
                   vm_stat
 
-            - name: Start iOS Simulator
+            - name: Start two iOS Simulators
               shell: bash
               run: |
                   set -euo pipefail
-                  SIMULATOR_UDID="$(
-                    xcrun simctl list devices available |
-                      sed -n '/iPhone 17 Pro (/ { s/.*(\([A-F0-9-]\{36\}\)).*/\1/; p; q; }'
+                  simulator_selection="$(
+                    xcrun simctl list devices available -j |
+                      node -e '
+                        let input = "";
+                        process.stdin.on("data", chunk => input += chunk);
+                        process.stdin.on("end", () => {
+                          const deviceType = "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro";
+                          const inventory = JSON.parse(input).devices;
+                          const candidates = Object.entries(inventory)
+                            .map(([runtime, devices]) => [
+                              runtime,
+                              devices.filter(device =>
+                                device.isAvailable !== false &&
+                                device.name === "iPhone 17 Pro" &&
+                                device.deviceTypeIdentifier === deviceType
+                              ),
+                            ])
+                            .filter(([, devices]) => devices.length > 0)
+                            .sort(([left], [right]) =>
+                              right.localeCompare(left, undefined, { numeric: true })
+                            );
+                          if (candidates.length === 0) return;
+                          const [runtime, devices] = candidates[0];
+                          process.stdout.write([runtime, ...devices.slice(0, 2).map(device => device.udid)].join("\n"));
+                        });
+                      '
                   )"
+                  SIMULATOR_RUNTIME="$(printf '%s\n' "$simulator_selection" | sed -n '1p')"
+                  SIMULATOR_UDID_LANE_1="$(printf '%s\n' "$simulator_selection" | sed -n '2p')"
+                  SIMULATOR_UDID_LANE_2="$(printf '%s\n' "$simulator_selection" | sed -n '3p')"
 
-                  if [ -z "$SIMULATOR_UDID" ]; then
+                  if [ -z "$SIMULATOR_RUNTIME" ] || [ -z "$SIMULATOR_UDID_LANE_1" ]; then
                     echo "::error::No available iPhone 17 Pro simulator was found."
                     xcrun simctl list devices available
                     exit 1
                   fi
+                  echo "SIMULATOR_UDID_LANE_1=$SIMULATOR_UDID_LANE_1" >> "$GITHUB_ENV"
 
-                  booted=false
-                  for attempt in 1 2 3; do
-                    echo "Booting simulator $SIMULATOR_UDID (attempt $attempt/3)"
-                    xcrun simctl boot "$SIMULATOR_UDID" 2>/dev/null || true
-                    if xcrun simctl bootstatus "$SIMULATOR_UDID" -b; then
-                      booted=true
-                      break
-                    fi
-                    xcrun simctl shutdown "$SIMULATOR_UDID" 2>/dev/null || true
-                  done
+                  if [ -z "$SIMULATOR_UDID_LANE_2" ]; then
+                    SIMULATOR_UDID_LANE_2="$(
+                      xcrun simctl create \
+                        "Budgie CI lane 2 run $GITHUB_RUN_ID attempt $GITHUB_RUN_ATTEMPT" \
+                        com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro \
+                        "$SIMULATOR_RUNTIME"
+                    )"
+                  fi
 
-                  if [ "$booted" != true ]; then
-                    echo "::error::Simulator did not finish booting after 3 attempts."
+                  if [ -z "$SIMULATOR_UDID_LANE_2" ] || [ "$SIMULATOR_UDID_LANE_1" = "$SIMULATOR_UDID_LANE_2" ]; then
+                    echo "::error::Two distinct iPhone 17 Pro simulator UDIDs are required."
+                    exit 1
+                  fi
+                  echo "SIMULATOR_UDID_LANE_2=$SIMULATOR_UDID_LANE_2" >> "$GITHUB_ENV"
+
+                  boot_simulator() {
+                    local simulator_udid="$1"
+                    local attempt
+
+                    for attempt in 1 2 3; do
+                      echo "Booting simulator $simulator_udid (attempt $attempt/3)"
+                      xcrun simctl boot "$simulator_udid" 2>/dev/null || true
+                      if xcrun simctl bootstatus "$simulator_udid" -b; then
+                        return 0
+                      fi
+                      xcrun simctl shutdown "$simulator_udid" 2>/dev/null || true
+                    done
+
+                    echo "::error::Simulator $simulator_udid did not finish booting after 3 attempts."
+                    return 1
+                  }
+
+                  boot_simulator "$SIMULATOR_UDID_LANE_1" &
+                  lane_1_boot_pid=$!
+                  boot_simulator "$SIMULATOR_UDID_LANE_2" &
+                  lane_2_boot_pid=$!
+
+                  set +e
+                  wait "$lane_1_boot_pid"
+                  lane_1_boot_status=$?
+                  wait "$lane_2_boot_pid"
+                  lane_2_boot_status=$?
+                  set -e
+
+                  if [ "$lane_1_boot_status" -ne 0 ] || [ "$lane_2_boot_status" -ne 0 ]; then
                     exit 1
                   fi
 
-                  echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
-                  echo "Using simulator UDID: $SIMULATOR_UDID"
+                  echo "Lane 1 simulator UDID: $SIMULATOR_UDID_LANE_1"
+                  echo "Lane 2 simulator UDID: $SIMULATOR_UDID_LANE_2"
                   xcrun simctl list devices booted
 
             - name: Restore app from host-local CI handoff
@@ -657,10 +714,25 @@ jobs:
 
                   echo "APP_PATH=$APP_PATH" >> "$GITHUB_ENV"
 
-            - name: Install app on Simulator
+            - name: Install app on both Simulators
+              shell: bash
               run: |
+                  set -euo pipefail
                   echo "Installing app from: $APP_PATH"
-                  xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
+                  set +e
+                  xcrun simctl install "$SIMULATOR_UDID_LANE_1" "$APP_PATH" &
+                  lane_1_install_pid=$!
+                  xcrun simctl install "$SIMULATOR_UDID_LANE_2" "$APP_PATH" &
+                  lane_2_install_pid=$!
+                  wait "$lane_1_install_pid"
+                  lane_1_install_status=$?
+                  wait "$lane_2_install_pid"
+                  lane_2_install_status=$?
+                  set -e
+
+                  if [ "$lane_1_install_status" -ne 0 ] || [ "$lane_2_install_status" -ne 0 ]; then
+                    exit 1
+                  fi
 
             - name: Install Maestro
               run: |
@@ -679,7 +751,8 @@ jobs:
             - name: Prepare iOS E2E artifact directories
               run: |
                   mkdir -p tests/app-tests/artifacts/maestro
-                  mkdir -p tests/app-tests/artifacts/simulator
+                  mkdir -p tests/app-tests/artifacts/simulator/lane-1
+                  mkdir -p tests/app-tests/artifacts/simulator/lane-2
                   mkdir -p tests/app-tests/artifacts/diagnostics
 
             - name: Run Maestro UI tests
@@ -688,28 +761,13 @@ jobs:
               shell: bash
               env:
                   JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
-                  SHARD_INDEX: ${{ matrix.shard-index }}
               run: |
-                  set -euo pipefail
-                  all_flows=()
-                  while IFS= read -r flow; do
-                    all_flows+=("$flow")
-                  done < <(find flows -maxdepth 1 -type f -name '*.flow.yaml' | sort)
-                  selected=()
-                  for index in "${!all_flows[@]}"; do
-                    if (( index % 4 == SHARD_INDEX )); then
-                      selected+=("${all_flows[$index]}")
-                    fi
-                  done
-                  test "${#selected[@]}" -gt 0
-                  printf 'Shard %s flows:\n%s\n' "$SHARD_INDEX" "${selected[*]}"
-                  sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e \
-                    --format junit \
-                    --output ./artifacts/maestro/report.xml \
-                    --debug-output ./artifacts/maestro \
-                    --test-output-dir ./artifacts/maestro \
-                    "${selected[@]}" \
-                    2>&1 | tee ./artifacts/maestro/maestro-console.log
+                  ./scripts/run-ios-maestro-lanes.sh \
+                    com.vitalyiegorov.budgie.e2e \
+                    "$SIMULATOR_UDID_LANE_1" \
+                    "${{ matrix.lane_1_shard }}" \
+                    "$SIMULATOR_UDID_LANE_2" \
+                    "${{ matrix.lane_2_shard }}"
 
             - name: Publish Maestro timing summary
               if: always()
@@ -717,20 +775,22 @@ jobs:
               shell: bash
               run: |
                   set -euo pipefail
-                  timing_file="./artifacts/maestro/flow-timings.tsv"
-
-                  if [ ! -f "$timing_file" ]; then
-                    exit 0
-                  fi
-
                   {
-                    echo '### Maestro flow timings'
-                    echo
-                    echo '| Flow | Status | Attempts | Seconds |'
-                    echo '| --- | --- | ---: | ---: |'
-                    tail -n +2 "$timing_file" |
-                      sort -t $'\t' -k5,5nr |
-                      awk -F '\t' '{ printf "| `%s` | %s | %s | %s |\n", $2, $3, $4, $5 }'
+                    for timing_file in ./artifacts/maestro/lane-*/flow-timings.tsv; do
+                      if [ ! -f "$timing_file" ]; then
+                        continue
+                      fi
+
+                      lane_name="$(basename "$(dirname "$timing_file")")"
+                      echo "### Maestro flow timings: $lane_name"
+                      echo
+                      echo '| Flow | Status | Attempts | Seconds |'
+                      echo '| --- | --- | ---: | ---: |'
+                      tail -n +2 "$timing_file" |
+                        sort -t $'\t' -k5,5nr |
+                        awk -F '\t' '{ printf "| `%s` | %s | %s | %s |\n", $2, $3, $4, $5 }'
+                      echo
+                    done
                   } >> "$GITHUB_STEP_SUMMARY"
 
             - name: Collect iOS Simulator failure diagnostics
@@ -739,14 +799,27 @@ jobs:
               run: |
                   ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
                   DIAGNOSTIC_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/diagnostics"
-                  xcrun simctl io "$SIMULATOR_UDID" screenshot "$ARTIFACT_DIR/final-screen.png" || true
 
-                  xcrun simctl spawn "$SIMULATOR_UDID" log show \
-                    --last 90m --style compact --info --debug \
-                    > "$ARTIFACT_DIR/simulator.log" 2>&1 || true
-                  tail -n 20000 "$ARTIFACT_DIR/simulator.log" \
-                    > "$ARTIFACT_DIR/simulator.log.tail" || true
-                  mv "$ARTIFACT_DIR/simulator.log.tail" "$ARTIFACT_DIR/simulator.log" || true
+                  collect_simulator_diagnostics() {
+                    local lane_name="$1"
+                    local simulator_udid="$2"
+                    local lane_dir="$ARTIFACT_DIR/$lane_name"
+
+                    xcrun simctl io "$simulator_udid" screenshot "$lane_dir/final-screen.png" || true
+                    xcrun simctl spawn "$simulator_udid" log show \
+                      --last 90m --style compact --info --debug \
+                      > "$lane_dir/simulator.log" 2>&1 || true
+                    tail -n 20000 "$lane_dir/simulator.log" \
+                      > "$lane_dir/simulator.log.tail" || true
+                    mv "$lane_dir/simulator.log.tail" "$lane_dir/simulator.log" || true
+                  }
+
+                  collect_simulator_diagnostics lane-1 "$SIMULATOR_UDID_LANE_1" &
+                  lane_1_diagnostics_pid=$!
+                  collect_simulator_diagnostics lane-2 "$SIMULATOR_UDID_LANE_2" &
+                  lane_2_diagnostics_pid=$!
+                  wait "$lane_1_diagnostics_pid" || true
+                  wait "$lane_2_diagnostics_pid" || true
 
                   find "$HOME/Library/Logs/DiagnosticReports" -maxdepth 1 -type f \
                     \( -name 'budgieE2E*' -o -name 'budgie*' -o -name 'JetsamEvent*' \) \
@@ -756,27 +829,25 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v6
               with:
-                  name: maestro-ios-artifacts-shard-${{ matrix.shard-number }}
+                  name: maestro-ios-artifacts-vm-${{ matrix.vm_number }}-shards-${{ matrix.lane_1_shard }}-${{ matrix.lane_2_shard }}
                   include-hidden-files: true
                   path: |
                       tests/app-tests/artifacts/maestro/**
-                      tests/app-tests/.maestro/**
                   if-no-files-found: warn
 
             - name: Upload iOS simulator crash artifacts
               if: failure()
               uses: actions/upload-artifact@v6
               with:
-                  name: maestro-ios-simulator-failure-artifacts-shard-${{ matrix.shard-number }}
+                  name: maestro-ios-simulator-failure-artifacts-vm-${{ matrix.vm_number }}
                   include-hidden-files: true
                   path: |
                       tests/app-tests/artifacts/simulator/**
                       tests/app-tests/artifacts/diagnostics/**
                   if-no-files-found: warn
 
-            - name: Shutdown iOS Simulator
+            - name: Shutdown both iOS Simulators
               if: always()
               run: |
-                  if [ -n "${SIMULATOR_UDID:-}" ]; then
-                    xcrun simctl shutdown "$SIMULATOR_UDID" || true
-                  fi
+                  xcrun simctl shutdown "${SIMULATOR_UDID_LANE_1:-unavailable}" || true
+                  xcrun simctl shutdown "${SIMULATOR_UDID_LANE_2:-unavailable}" || true
