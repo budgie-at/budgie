@@ -76,7 +76,7 @@ run_lanes() {
         MOCK_LANE_2_STATUS="$lane_2_status" \
         MOCK_PREPARE_STATUS=0 \
         MAESTRO_ARTIFACT_ROOT="$ARTIFACT_ROOT" \
-        MAESTRO_LANE_START_STAGGER_SECONDS=120 \
+        MAESTRO_LANE_START_STAGGER_SECONDS=60 \
         MAESTRO_LANE_2_APP_PATH="$APP_PATH" \
         MAESTRO_LANE_2_PREPARE_SCRIPT="$MOCK_PREPARE" \
         MAESTRO_SUITE_RUNNER="$MOCK_RUNNER" \
@@ -97,7 +97,7 @@ run_lanes() {
     test -f "$ARTIFACT_ROOT/lane-1-shard-1/maestro-console.log"
     test -f "$ARTIFACT_ROOT/lane-2-shard-4/maestro-console.log"
     test "$(sed -n '1p' "$EVENT_LOG")" = 'runner:00000000-0000-0000-0000-000000000001'
-    test "$(sed -n '2p' "$EVENT_LOG")" = 'sleep:120'
+    test "$(sed -n '2p' "$EVENT_LOG")" = 'sleep:60'
     test "$(sed -n '3p' "$EVENT_LOG")" = "prepare:00000000-0000-0000-0000-000000000002:$APP_PATH"
     test "$(sed -n '4p' "$EVENT_LOG")" = 'runner:00000000-0000-0000-0000-000000000002'
 }
@@ -181,7 +181,7 @@ run_prepare_failure_case() {
         MOCK_LANE_2_STATUS=0 \
         MOCK_PREPARE_STATUS=12 \
         MAESTRO_ARTIFACT_ROOT="$case_dir/artifacts" \
-        MAESTRO_LANE_START_STAGGER_SECONDS=120 \
+        MAESTRO_LANE_START_STAGGER_SECONDS=60 \
         MAESTRO_LANE_2_APP_PATH="$APP_PATH" \
         MAESTRO_LANE_2_PREPARE_SCRIPT="$MOCK_PREPARE" \
         MAESTRO_SUITE_RUNNER="$MOCK_RUNNER" \
