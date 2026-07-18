@@ -17,6 +17,8 @@ ARTIFACT_ROOT="${MAESTRO_ARTIFACT_ROOT:-$WORKSPACE_DIR/artifacts/maestro}"
 MAESTRO_SUITE_RUNNER="${MAESTRO_SUITE_RUNNER:-$SCRIPT_DIR/run-maestro-suite.sh}"
 RUN_TOKEN="${E2E_RUN_TOKEN:-$(date +%s)}"
 LANE_START_STAGGER_SECONDS="${MAESTRO_LANE_START_STAGGER_SECONDS-0}"
+LANE_2_PREPARE_SCRIPT="${MAESTRO_LANE_2_PREPARE_SCRIPT-}"
+LANE_2_APP_PATH="${MAESTRO_LANE_2_APP_PATH-}"
 UDID_PATTERN='^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$'
 
 case "$LANE_START_STAGGER_SECONDS" in
@@ -25,6 +27,27 @@ case "$LANE_START_STAGGER_SECONDS" in
         exit 1
         ;;
 esac
+
+if [ -n "$LANE_2_PREPARE_SCRIPT" ] || [ -n "$LANE_2_APP_PATH" ]; then
+    if [ ! -f "$LANE_2_PREPARE_SCRIPT" ] || [ ! -r "$LANE_2_PREPARE_SCRIPT" ]; then
+        echo "MAESTRO_LANE_2_PREPARE_SCRIPT must be a readable file: $LANE_2_PREPARE_SCRIPT" >&2
+        exit 1
+    fi
+
+    case "$LANE_2_APP_PATH" in
+        *.app)
+            ;;
+        *)
+            echo "MAESTRO_LANE_2_APP_PATH must be a readable .app bundle directory: $LANE_2_APP_PATH" >&2
+            exit 1
+            ;;
+    esac
+
+    if [ ! -d "$LANE_2_APP_PATH" ] || [ ! -r "$LANE_2_APP_PATH" ]; then
+        echo "MAESTRO_LANE_2_APP_PATH must be a readable .app bundle directory: $LANE_2_APP_PATH" >&2
+        exit 1
+    fi
+fi
 
 if [[ ! "$LANE_1_UDID" =~ $UDID_PATTERN ]] || \
     [[ ! "$LANE_2_UDID" =~ $UDID_PATTERN ]] || \
@@ -89,6 +112,10 @@ run_staggered_lane() {
 
     if [ "$LANE_START_STAGGER_SECONDS" -gt 0 ]; then
         sleep "$LANE_START_STAGGER_SECONDS"
+    fi
+
+    if [ -n "$LANE_2_PREPARE_SCRIPT" ]; then
+        sh "$LANE_2_PREPARE_SCRIPT" "$simulator_udid" "$LANE_2_APP_PATH"
     fi
 
     run_lane "$lane_number" "$simulator_udid" "$shard_number"

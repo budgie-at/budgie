@@ -567,7 +567,7 @@ jobs:
                   memory_pressure -Q | tail -n 1
                   vm_stat
 
-            - name: Start two iOS Simulators
+            - name: Start lane 1 iOS Simulator
               shell: bash
               run: |
                   set -euo pipefail
@@ -641,24 +641,10 @@ jobs:
                     return 1
                   }
 
-                  boot_simulator "$SIMULATOR_UDID_LANE_1" &
-                  lane_1_boot_pid=$!
-                  boot_simulator "$SIMULATOR_UDID_LANE_2" &
-                  lane_2_boot_pid=$!
-
-                  set +e
-                  wait "$lane_1_boot_pid"
-                  lane_1_boot_status=$?
-                  wait "$lane_2_boot_pid"
-                  lane_2_boot_status=$?
-                  set -e
-
-                  if [ "$lane_1_boot_status" -ne 0 ] || [ "$lane_2_boot_status" -ne 0 ]; then
-                    exit 1
-                  fi
+                  boot_simulator "$SIMULATOR_UDID_LANE_1"
 
                   echo "Lane 1 simulator UDID: $SIMULATOR_UDID_LANE_1"
-                  echo "Lane 2 simulator UDID: $SIMULATOR_UDID_LANE_2"
+                  echo "Reserved cold lane 2 simulator UDID: $SIMULATOR_UDID_LANE_2"
                   xcrun simctl list devices booted
 
             - name: Restore app from host-local CI handoff
@@ -714,25 +700,12 @@ jobs:
 
                   echo "APP_PATH=$APP_PATH" >> "$GITHUB_ENV"
 
-            - name: Install app on both Simulators
+            - name: Install app on lane 1 Simulator
               shell: bash
               run: |
                   set -euo pipefail
                   echo "Installing app from: $APP_PATH"
-                  set +e
-                  xcrun simctl install "$SIMULATOR_UDID_LANE_1" "$APP_PATH" &
-                  lane_1_install_pid=$!
-                  xcrun simctl install "$SIMULATOR_UDID_LANE_2" "$APP_PATH" &
-                  lane_2_install_pid=$!
-                  wait "$lane_1_install_pid"
-                  lane_1_install_status=$?
-                  wait "$lane_2_install_pid"
-                  lane_2_install_status=$?
-                  set -e
-
-                  if [ "$lane_1_install_status" -ne 0 ] || [ "$lane_2_install_status" -ne 0 ]; then
-                    exit 1
-                  fi
+                  xcrun simctl install "$SIMULATOR_UDID_LANE_1" "$APP_PATH"
 
             - name: Install Maestro
               run: |
@@ -763,8 +736,10 @@ jobs:
                   JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
                   MAESTRO_DRIVER_STARTUP_TIMEOUT: '180000'
                   MAESTRO_LANE_START_STAGGER_SECONDS: '120'
+                  MAESTRO_LANE_2_PREPARE_SCRIPT: ./scripts/prepare-ios-maestro-simulator.sh
               run: |
-                  ./scripts/run-ios-maestro-lanes.sh \
+                  MAESTRO_LANE_2_APP_PATH="$APP_PATH" \
+                    ./scripts/run-ios-maestro-lanes.sh \
                     com.vitalyiegorov.budgie.e2e \
                     "$SIMULATOR_UDID_LANE_1" \
                     "${{ matrix.lane_1_shard }}" \
