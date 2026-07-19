@@ -89,11 +89,12 @@ run_lane() {
         return 1
     fi
 
-    mkdir -p "$lane_artifact_dir"
+    mkdir -p "$lane_artifact_dir/tmp"
     printf 'Lane %s uses simulator %s for shard %s:\n%s\n' \
         "$lane_number" "$simulator_udid" "$shard_number" "${flows[*]}"
 
-    SIMULATOR_UDID="$simulator_udid" \
+    TMPDIR="$lane_artifact_dir/tmp" \
+        SIMULATOR_UDID="$simulator_udid" \
         E2E_RUN_TOKEN="$RUN_TOKEN-lane-$lane_number" \
         MAESTRO_FIRST_FLOW_PREPARED_PATH="$first_flow_prepared_path" \
         MAESTRO_CLI_NO_ANALYTICS=true \
