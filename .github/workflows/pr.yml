@@ -17,9 +17,7 @@ concurrency:
     group: pr-${{ github.event.pull_request.number }}
     cancel-in-progress: true
 
-on:
-    pull_request:
-    workflow_dispatch:
+on: pull_request
 
 jobs:
     detect-mobile-impact:
@@ -86,7 +84,6 @@ jobs:
               run: yarn i18n:check
 
             - name: Lint the PR Title
-              if: github.event_name == 'pull_request'
               run: printf '%s\n' "$PR_TITLE" | node_modules/.bin/commitlint
 
             - name: Formatting checks
@@ -529,18 +526,14 @@ jobs:
     e2e-ios:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, build-ios-e2e-app]
-        name: E2E Tests on iOS (VM ${{ matrix.vm_number }}/2, shard ${{ matrix.shard }})
+        name: E2E Tests on iOS (shard ${{ matrix.shard }}/2)
         runs-on: [self-hosted, macOS, ARM64, macos-maestro]
         timeout-minutes: 90
         strategy:
             fail-fast: false
             max-parallel: 2
             matrix:
-                include:
-                    - vm_number: 1
-                      shard: 1
-                    - vm_number: 2
-                      shard: 2
+                shard: [1, 2]
         permissions:
             contents: read
         env:
@@ -719,29 +712,15 @@ jobs:
                   mkdir -p tests/app-tests/artifacts/simulator
                   mkdir -p tests/app-tests/artifacts/diagnostics
 
-            # One sacrificial cold start records an AppCDS class archive; the
-            # per-flow Maestro JVMs then map it
-            # instead of re-verifying the classpath, cutting JVM startup CPU on
-            # the already-saturated guests. -Xshare:auto below degrades to a
-            # plain start if the archive is missing or stale.
-            - name: Prepare Maestro AppCDS archive
-              run: |
-                  # MAESTRO_OPTS reaches only the wrapper's final exec, so the
-                  # JvmVersion probe stays free of CDS flags and its stdout
-                  # keeps parsing as a plain integer.
-                  MAESTRO_OPTS="-XX:ArchiveClassesAtExit=$HOME/.maestro/maestro-appcds.jsa" \
-                    MAESTRO_CLI_NO_ANALYTICS=true maestro --version >/dev/null 2>&1 || true
-                  ls -l "$HOME/.maestro/maestro-appcds.jsa" || echo "AppCDS archive unavailable; flows run without it"
 
             - name: Run Maestro UI tests
               timeout-minutes: 75
               working-directory: tests/app-tests
               shell: bash
               env:
+                  JAVA_TOOL_OPTIONS: -Djava.awt.headless=true -Xmx1024m
                   MAESTRO_DRIVER_STARTUP_TIMEOUT: '180000'
               run: |
-                  export JAVA_TOOL_OPTIONS="-Djava.awt.headless=true -Xmx1024m"
-                  export MAESTRO_OPTS="-XX:SharedArchiveFile=$HOME/.maestro/maestro-appcds.jsa -Xshare:auto"
                   ./scripts/run-ios-maestro-shard.sh \
                     com.vitalyiegorov.budgie.e2e \
                     "${{ matrix.shard }}"
@@ -803,7 +782,7 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v6
               with:
-                  name: maestro-ios-artifacts-vm-${{ matrix.vm_number }}-shard-${{ matrix.shard }}
+                  name: maestro-ios-artifacts-shard-${{ matrix.shard }}
                   include-hidden-files: true
                   path: |
                       tests/app-tests/artifacts/maestro/**
@@ -814,7 +793,7 @@ jobs:
               if: failure()
               uses: actions/upload-artifact@v6
               with:
-                  name: maestro-ios-simulator-failure-artifacts-vm-${{ matrix.vm_number }}
+                  name: maestro-ios-simulator-failure-artifacts-shard-${{ matrix.shard }}
                   include-hidden-files: true
                   path: |
                       tests/app-tests/artifacts/simulator/**
