@@ -609,14 +609,13 @@ jobs:
                   fi
                   echo "SIMULATOR_UDID_LANE_1=$SIMULATOR_UDID_LANE_1" >> "$GITHUB_ENV"
 
+                  LANE_2_PROVISIONING=prewarmed
                   if [ -z "$SIMULATOR_UDID_LANE_2" ]; then
-                    SIMULATOR_UDID_LANE_2="$(
-                      xcrun simctl create \
-                        "Budgie CI lane 2 run $GITHUB_RUN_ID attempt $GITHUB_RUN_ATTEMPT" \
-                        com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro \
-                        "$SIMULATOR_RUNTIME"
-                    )"
+                    echo "::warning::Only one prewarmed iPhone 17 Pro exists; cloning lane 1's settled device for lane 2."
+                    LANE_2_PROVISIONING=warm-clone
+                    SIMULATOR_UDID_LANE_2="$(xcrun simctl clone "$SIMULATOR_UDID_LANE_1" "iPhone 17 Pro")"
                   fi
+                  echo "LANE_2_PROVISIONING=$LANE_2_PROVISIONING" >> "$GITHUB_STEP_SUMMARY"
 
                   if [ -z "$SIMULATOR_UDID_LANE_2" ] || [ "$SIMULATOR_UDID_LANE_1" = "$SIMULATOR_UDID_LANE_2" ]; then
                     echo "::error::Two distinct iPhone 17 Pro simulator UDIDs are required."
@@ -733,7 +732,7 @@ jobs:
               working-directory: tests/app-tests
               shell: bash
               env:
-                  JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
+                  JAVA_TOOL_OPTIONS: -Djava.awt.headless=true -Xmx1024m
                   MAESTRO_DRIVER_STARTUP_TIMEOUT: '180000'
                   MAESTRO_LANE_1_PREPARE_TIMEOUT_SECONDS: '300'
                   MAESTRO_LANE_2_PREPARE_SCRIPT: ./scripts/prepare-ios-maestro-simulator.sh
