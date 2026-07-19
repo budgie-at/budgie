@@ -121,13 +121,6 @@ class TransactionService {
         });
     }
 
-    async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
-        return transactionRepository.findIdMapByExternalSource(externalSource);
-    }
-
-    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
-        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
-    }
 
     @InvalidateDatabaseLiveQuery()
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
@@ -175,6 +168,14 @@ class TransactionService {
 
             return transaction;
         });
+    }
+
+    async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
+        return transactionRepository.findIdMapByExternalSource(externalSource);
+    }
+
+    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
+        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
     }
 
     private getAccountIdsFromInputs(inputs: readonly Pick<TransactionCreateInputInterface, 'entries'>[]): number[] {
