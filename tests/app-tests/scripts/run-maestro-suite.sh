@@ -791,11 +791,11 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
                 fi
 
                 continue
+            else
+                FLOW_STATUS=$?
+                cat "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log"
+                record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" failure 2 "$FLOW_STARTED_AT"
             fi
-
-            FLOW_STATUS=$?
-            cat "$FLOW_ARTIFACT_PATH/attempt-2/maestro-console.log"
-            record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" failure 2 "$FLOW_STARTED_AT"
         else
             record_flow_timing "$FLOW_INDEX" "$FLOW_NAME" failure 1 "$FLOW_STARTED_AT"
         fi

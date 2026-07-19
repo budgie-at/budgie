@@ -83,6 +83,15 @@ if [ "$MOCK_FAILURE" = assertion ]; then
     printf '%s\n' 'Assertion is false: id: Expected is visible'
     exit 1
 fi
+
+if [ "$MOCK_FAILURE" = ax_then_fail ]; then
+    if [ "$call_count" -eq 1 ]; then
+        printf '%s\n' 'kAXErrorInvalidUIElement'
+    else
+        printf '%s\n' 'Assertion is false: id: Expected is visible'
+    fi
+    exit 1
+fi
 EOF
 chmod +x "$TEMP_DIR/bin/maestro"
 
@@ -174,6 +183,7 @@ run_case() {
 run_case ax 0 2 1
 run_case ax_artifact 0 2 1
 run_case assertion 1 1 0
+run_case ax_then_fail 1 2 1
 run_case combined 0 1 0
 run_case no-signal 0 1 0 false
 
