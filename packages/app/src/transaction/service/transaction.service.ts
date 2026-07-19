@@ -121,7 +121,6 @@ class TransactionService {
         });
     }
 
-
     @InvalidateDatabaseLiveQuery()
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return transactionAsync(db, async tx => {
