@@ -23,7 +23,19 @@ e2e-mcc-default-category.csv
 "
 SIMULATOR_UDID="${1:-${SIMULATOR_UDID:-booted}}"
 APP_ID="${2:-${APP_ID:-com.vitalyiegorov.budgie.e2e}}"
-APP_DATA=$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true)
+APP_DATA_CONTAINER_OVERRIDE="${APP_DATA_CONTAINER:-}"
+
+if [ -n "$APP_DATA_CONTAINER_OVERRIDE" ]; then
+    if [ ! -d "$APP_DATA_CONTAINER_OVERRIDE" ]; then
+        echo "App data container override is not a directory: $APP_DATA_CONTAINER_OVERRIDE" >&2
+        exit 1
+    fi
+
+    APP_DATA="$APP_DATA_CONTAINER_OVERRIDE"
+else
+    APP_DATA=$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true)
+fi
+
 FIXTURES_DIR="$APP_DATA/Documents/E2EFixtures"
 DYNAMIC_FIXTURES_DIR=$(mktemp -d)
 NORMALIZED_FIXTURES_DIR="$DYNAMIC_FIXTURES_DIR/normalized"
@@ -49,7 +61,7 @@ install_database_fixture() {
 
     cp "$SOURCE_FIXTURE_PATH" "$NORMALIZED_FIXTURE_PATH"
     sqlite3 "$NORMALIZED_FIXTURE_PATH" 'UPDATE settings SET is_screenshot_protection_enabled = 0;'
-    "$INSTALL_DB_FIXTURE_SCRIPT" "$NORMALIZED_FIXTURE_PATH" "$TARGET_FIXTURE_NAME" "$SIMULATOR_UDID" "$APP_ID"
+    install_fixture_file "$NORMALIZED_FIXTURE_PATH" "$TARGET_FIXTURE_NAME"
 }
 
 should_install_fixture() {
@@ -70,7 +82,9 @@ install_fixture_file() {
         return 0
     fi
 
-    "$INSTALL_DB_FIXTURE_SCRIPT" "$SOURCE_FIXTURE_PATH" "$TARGET_FIXTURE_NAME" "$SIMULATOR_UDID" "$APP_ID"
+    FIXTURE_FOLDER_NAME="${FIXTURE_FOLDER_NAME:-E2EFixtures}" \
+        APP_DATA_CONTAINER="$APP_DATA" \
+        "$INSTALL_DB_FIXTURE_SCRIPT" "$SOURCE_FIXTURE_PATH" "$TARGET_FIXTURE_NAME" "$SIMULATOR_UDID" "$APP_ID"
 }
 
 install_csv_fixture_file() {
@@ -80,7 +94,9 @@ install_csv_fixture_file() {
         return 0
     fi
 
-    FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/$TARGET_FIXTURE_NAME" "$TARGET_FIXTURE_NAME" "$SIMULATOR_UDID" "$APP_ID"
+    FIXTURE_FOLDER_NAME=E2ECsvFixtures \
+        APP_DATA_CONTAINER="$APP_DATA" \
+        "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/$TARGET_FIXTURE_NAME" "$TARGET_FIXTURE_NAME" "$SIMULATOR_UDID" "$APP_ID"
 }
 
 install_statement_fixtures() {
