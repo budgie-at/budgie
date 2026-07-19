@@ -10,12 +10,19 @@ set -euo pipefail
 LAUNCH_DAEMONS_DIR="${LAUNCH_DAEMONS_DIR:-/Library/LaunchDaemons}"
 
 # 1. Permanently unload diagnosticd: a fresh simulator boot floods it, and
-#    killing the process is useless because launchd respawns it. Best-effort
-#    because SIP may deny this on some configurations.
+#    killing the process is useless because launchd respawns it. `bootout`
+#    alone does not survive a reboot (the image build reboots the guest once),
+#    so persist the intent with `disable` first. Best-effort because SIP may
+#    deny this on some configurations.
+if launchctl disable system/com.apple.diagnosticd 2>/dev/null; then
+    echo "diagnosticd disabled persistently"
+else
+    echo "warning: could not disable diagnosticd (SIP may block this); continuing" >&2
+fi
 if launchctl bootout system/com.apple.diagnosticd 2>/dev/null; then
     echo "diagnosticd booted out"
 else
-    echo "warning: could not boot out diagnosticd (SIP may block this); continuing" >&2
+    echo "warning: could not boot out diagnosticd (may already be stopped); continuing" >&2
 fi
 
 # 2. Raise process/file-descriptor limits: each booted simulator adds ~150

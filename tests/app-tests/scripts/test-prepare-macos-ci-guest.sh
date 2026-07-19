@@ -23,6 +23,8 @@ LAUNCH_DAEMONS_DIR="$WORK_DIR/launchdaemons" PATH="$STUB_BIN:$PATH" \
 
 LOG="$WORK_DIR/calls.log"
 
+grep -q 'launchctl disable system/com.apple.diagnosticd' "$LOG" \
+    || { echo 'FAIL: diagnosticd was not disabled persistently (bootout alone does not survive the image-build reboot)' >&2; exit 1; }
 grep -q 'launchctl bootout system/com.apple.diagnosticd' "$LOG" \
     || { echo 'FAIL: diagnosticd was not booted out' >&2; exit 1; }
 grep -q 'mdutil -a -i off' "$LOG" \

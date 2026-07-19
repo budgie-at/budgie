@@ -17,7 +17,15 @@ concurrency:
     group: pr-${{ github.event.pull_request.number }}
     cancel-in-progress: true
 
-on: pull_request
+on:
+    pull_request:
+    workflow_dispatch:
+        inputs:
+            lane_concurrency:
+                description: 'Simulator lanes per VM (2 = fast gated runs, 1 = sequential full-inventory runs that avoid CPU saturation)'
+                type: choice
+                options: ['2', '1']
+                default: '2'
 
 jobs:
     detect-mobile-impact:
@@ -727,16 +735,28 @@ jobs:
                   mkdir -p tests/app-tests/artifacts/simulator/lane-2
                   mkdir -p tests/app-tests/artifacts/diagnostics
 
+            # One sacrificial cold start records an AppCDS class archive; the
+            # per-flow Maestro JVMs (~2 per flow across both lanes) then map it
+            # instead of re-verifying the classpath, cutting JVM startup CPU on
+            # the already-saturated guests. -Xshare:auto below degrades to a
+            # plain start if the archive is missing or stale.
+            - name: Prepare Maestro AppCDS archive
+              run: |
+                  JAVA_TOOL_OPTIONS="-Djava.awt.headless=true -XX:ArchiveClassesAtExit=$HOME/.maestro/maestro-appcds.jsa" \
+                    MAESTRO_CLI_NO_ANALYTICS=true maestro --version >/dev/null 2>&1 || true
+                  ls -l "$HOME/.maestro/maestro-appcds.jsa" || echo "AppCDS archive unavailable; flows run without it"
+
             - name: Run Maestro UI tests
               timeout-minutes: 75
               working-directory: tests/app-tests
               shell: bash
               env:
-                  JAVA_TOOL_OPTIONS: -Djava.awt.headless=true -Xmx1024m
                   MAESTRO_DRIVER_STARTUP_TIMEOUT: '180000'
                   MAESTRO_LANE_1_PREPARE_TIMEOUT_SECONDS: '300'
                   MAESTRO_LANE_2_PREPARE_SCRIPT: ./scripts/prepare-ios-maestro-simulator.sh
+                  MAESTRO_LANE_CONCURRENCY: ${{ github.event.inputs.lane_concurrency || '2' }}
               run: |
+                  export JAVA_TOOL_OPTIONS="-Djava.awt.headless=true -Xmx1024m -XX:SharedArchiveFile=$HOME/.maestro/maestro-appcds.jsa -Xshare:auto"
                   MAESTRO_LANE_2_APP_PATH="$APP_PATH" \
                     ./scripts/run-ios-maestro-lanes.sh \
                     com.vitalyiegorov.budgie.e2e \

@@ -491,3 +491,48 @@ run_cancel_during_prepare_case() {
 }
 
 run_cancel_during_prepare_case
+
+run_sequential_lanes() {
+    local lane_1_status="$1"
+    local lane_2_status="$2"
+    local expected_status="$3"
+    local status=0
+    local runner_1_line
+    local prepare_line
+    local runner_2_line
+
+    : > "$MOCK_LOG"
+    : > "$EVENT_LOG"
+    PATH="$TEMP_DIR/bin:$PATH" \
+        EVENT_LOG="$EVENT_LOG" \
+        MOCK_LOG="$MOCK_LOG" \
+        MOCK_LANE_1_SIGNAL_PREPARED=false \
+        MOCK_LANE_1_STATUS="$lane_1_status" \
+        MOCK_LANE_2_STATUS="$lane_2_status" \
+        MOCK_PREPARE_STATUS=0 \
+        MAESTRO_ARTIFACT_ROOT="$ARTIFACT_ROOT" \
+        MAESTRO_LANE_CONCURRENCY=1 \
+        MAESTRO_LANE_2_APP_PATH="$APP_PATH" \
+        MAESTRO_LANE_2_PREPARE_SCRIPT="$MOCK_PREPARE" \
+        MAESTRO_SUITE_RUNNER="$MOCK_RUNNER" \
+        E2E_RUN_TOKEN=test-run \
+        "$SCRIPT_DIR/run-ios-maestro-lanes.sh" \
+        com.example.test \
+        00000000-0000-0000-0000-000000000001 1 \
+        00000000-0000-0000-0000-000000000002 4 \
+        > "$TEMP_DIR/console.log" 2>&1 || status=$?
+
+    # Sequential mode still runs BOTH shards (a lane-1 failure must not hide
+    # lane-2 results) and reports lane 1's failure status first.
+    test "$status" -eq "$expected_status"
+    test "$(wc -l < "$MOCK_LOG" | tr -d ' ')" -eq 2
+    runner_1_line=$(event_line 'fixtures:00000000-0000-0000-0000-000000000001' "$EVENT_LOG")
+    prepare_line=$(event_line "prepare:00000000-0000-0000-0000-000000000002:$APP_PATH" "$EVENT_LOG")
+    runner_2_line=$(event_line 'runner:00000000-0000-0000-0000-000000000002' "$EVENT_LOG")
+    test "$runner_1_line" -lt "$prepare_line"
+    test "$prepare_line" -lt "$runner_2_line"
+}
+
+run_sequential_lanes 0 0 0
+run_sequential_lanes 9 0 9
+run_sequential_lanes 0 7 7

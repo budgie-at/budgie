@@ -19,6 +19,15 @@ RUN_TOKEN="${E2E_RUN_TOKEN:-$(date +%s)}"
 LANE_1_PREPARE_TIMEOUT_SECONDS="${MAESTRO_LANE_1_PREPARE_TIMEOUT_SECONDS-300}"
 LANE_2_PREPARE_SCRIPT="${MAESTRO_LANE_2_PREPARE_SCRIPT-}"
 LANE_2_APP_PATH="${MAESTRO_LANE_2_APP_PATH-}"
+LANE_CONCURRENCY="${MAESTRO_LANE_CONCURRENCY:-2}"
+
+case "$LANE_CONCURRENCY" in
+    1 | 2) ;;
+    *)
+        echo "MAESTRO_LANE_CONCURRENCY must be 1 or 2; got: $LANE_CONCURRENCY" >&2
+        exit 1
+        ;;
+esac
 UDID_PATTERN='^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$'
 
 case "$LANE_1_PREPARE_TIMEOUT_SECONDS" in
@@ -224,6 +233,26 @@ cancel_lane_jobs() {
 }
 
 mkdir -p "$ARTIFACT_ROOT"
+
+# Sequential mode for full-inventory runs: two saturated lanes per 4-vCPU VM
+# push the guest load past 100 for hours, so latency-tolerant runs trade wall
+# time for signal quality by running the shards one after the other.
+if [ "$LANE_CONCURRENCY" = "1" ]; then
+    LANE_1_STATUS=0
+    LANE_2_STATUS=0
+    run_lane 1 "$LANE_1_UDID" "$LANE_1_SHARD" || LANE_1_STATUS=$?
+
+    if [ -n "$LANE_2_PREPARE_SCRIPT" ]; then
+        sh "$LANE_2_PREPARE_SCRIPT" "$LANE_2_UDID" "$LANE_2_APP_PATH"
+    fi
+    run_lane 2 "$LANE_2_UDID" "$LANE_2_SHARD" || LANE_2_STATUS=$?
+
+    if [ "$LANE_1_STATUS" -ne 0 ]; then
+        exit "$LANE_1_STATUS"
+    fi
+    exit "$LANE_2_STATUS"
+fi
+
 BARRIER_DIR="$(mktemp -d "$ARTIFACT_ROOT/.lane-coordination.XXXXXX")"
 BARRIER_DIR="$(CDPATH= cd -- "$BARRIER_DIR" && pwd)"
 LANE_1_PREPARED_PATH="$BARRIER_DIR/lane-1-first-flow-prepared"
