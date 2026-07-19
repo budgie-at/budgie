@@ -92,6 +92,7 @@ jobs:
               run: yarn i18n:check
 
             - name: Lint the PR Title
+              if: github.event_name == 'pull_request'
               run: printf '%s\n' "$PR_TITLE" | node_modules/.bin/commitlint
 
             - name: Formatting checks
