@@ -20,12 +20,6 @@ concurrency:
 on:
     pull_request:
     workflow_dispatch:
-        inputs:
-            lane_concurrency:
-                description: 'Simulator lanes per VM (2 = fast gated runs, 1 = sequential full-inventory runs that avoid CPU saturation)'
-                type: choice
-                options: ['2', '1']
-                default: '2'
 
 jobs:
     detect-mobile-impact:
@@ -527,7 +521,7 @@ jobs:
     e2e-ios:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, build-ios-e2e-app]
-        name: E2E Tests on iOS (VM ${{ matrix.vm_number }}/2, shards ${{ matrix.lane_1_shard }} + ${{ matrix.lane_2_shard }})
+        name: E2E Tests on iOS (VM ${{ matrix.vm_number }}/2, shard ${{ matrix.shard }})
         runs-on: [self-hosted, macOS, ARM64, macos-maestro]
         timeout-minutes: 90
         strategy:
@@ -536,11 +530,9 @@ jobs:
             matrix:
                 include:
                     - vm_number: 1
-                      lane_1_shard: 1
-                      lane_2_shard: 2
+                      shard: 1
                     - vm_number: 2
-                      lane_1_shard: 3
-                      lane_2_shard: 4
+                      shard: 2
         permissions:
             contents: read
         env:
@@ -576,7 +568,7 @@ jobs:
                   memory_pressure -Q | tail -n 1
                   vm_stat
 
-            - name: Start lane 1 iOS Simulator
+            - name: Start the iOS Simulator
               shell: bash
               run: |
                   set -euo pipefail
@@ -608,29 +600,14 @@ jobs:
                       '
                   )"
                   SIMULATOR_RUNTIME="$(printf '%s\n' "$simulator_selection" | sed -n '1p')"
-                  SIMULATOR_UDID_LANE_1="$(printf '%s\n' "$simulator_selection" | sed -n '2p')"
-                  SIMULATOR_UDID_LANE_2="$(printf '%s\n' "$simulator_selection" | sed -n '3p')"
+                  SIMULATOR_UDID="$(printf '%s\n' "$simulator_selection" | sed -n '2p')"
 
-                  if [ -z "$SIMULATOR_RUNTIME" ] || [ -z "$SIMULATOR_UDID_LANE_1" ]; then
+                  if [ -z "$SIMULATOR_RUNTIME" ] || [ -z "$SIMULATOR_UDID" ]; then
                     echo "::error::No available iPhone 17 Pro simulator was found."
                     xcrun simctl list devices available
                     exit 1
                   fi
-                  echo "SIMULATOR_UDID_LANE_1=$SIMULATOR_UDID_LANE_1" >> "$GITHUB_ENV"
-
-                  LANE_2_PROVISIONING=prewarmed
-                  if [ -z "$SIMULATOR_UDID_LANE_2" ]; then
-                    echo "::warning::Only one prewarmed iPhone 17 Pro exists; cloning lane 1's settled device for lane 2."
-                    LANE_2_PROVISIONING=warm-clone
-                    SIMULATOR_UDID_LANE_2="$(xcrun simctl clone "$SIMULATOR_UDID_LANE_1" "iPhone 17 Pro")"
-                  fi
-                  echo "LANE_2_PROVISIONING=$LANE_2_PROVISIONING" >> "$GITHUB_STEP_SUMMARY"
-
-                  if [ -z "$SIMULATOR_UDID_LANE_2" ] || [ "$SIMULATOR_UDID_LANE_1" = "$SIMULATOR_UDID_LANE_2" ]; then
-                    echo "::error::Two distinct iPhone 17 Pro simulator UDIDs are required."
-                    exit 1
-                  fi
-                  echo "SIMULATOR_UDID_LANE_2=$SIMULATOR_UDID_LANE_2" >> "$GITHUB_ENV"
+                  echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
 
                   boot_simulator() {
                     local simulator_udid="$1"
@@ -649,10 +626,9 @@ jobs:
                     return 1
                   }
 
-                  boot_simulator "$SIMULATOR_UDID_LANE_1"
+                  boot_simulator "$SIMULATOR_UDID"
 
-                  echo "Lane 1 simulator UDID: $SIMULATOR_UDID_LANE_1"
-                  echo "Reserved cold lane 2 simulator UDID: $SIMULATOR_UDID_LANE_2"
+                  echo "Simulator UDID: $SIMULATOR_UDID"
                   xcrun simctl list devices booted
 
             - name: Restore app from host-local CI handoff
@@ -708,12 +684,12 @@ jobs:
 
                   echo "APP_PATH=$APP_PATH" >> "$GITHUB_ENV"
 
-            - name: Install app on lane 1 Simulator
+            - name: Install app on the Simulator
               shell: bash
               run: |
                   set -euo pipefail
                   echo "Installing app from: $APP_PATH"
-                  xcrun simctl install "$SIMULATOR_UDID_LANE_1" "$APP_PATH"
+                  xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
 
             - name: Install Maestro
               run: |
@@ -732,12 +708,11 @@ jobs:
             - name: Prepare iOS E2E artifact directories
               run: |
                   mkdir -p tests/app-tests/artifacts/maestro
-                  mkdir -p tests/app-tests/artifacts/simulator/lane-1
-                  mkdir -p tests/app-tests/artifacts/simulator/lane-2
+                  mkdir -p tests/app-tests/artifacts/simulator
                   mkdir -p tests/app-tests/artifacts/diagnostics
 
             # One sacrificial cold start records an AppCDS class archive; the
-            # per-flow Maestro JVMs (~2 per flow across both lanes) then map it
+            # per-flow Maestro JVMs then map it
             # instead of re-verifying the classpath, cutting JVM startup CPU on
             # the already-saturated guests. -Xshare:auto below degrades to a
             # plain start if the archive is missing or stale.
@@ -756,19 +731,12 @@ jobs:
               shell: bash
               env:
                   MAESTRO_DRIVER_STARTUP_TIMEOUT: '180000'
-                  MAESTRO_LANE_1_PREPARE_TIMEOUT_SECONDS: '300'
-                  MAESTRO_LANE_2_PREPARE_SCRIPT: ./scripts/prepare-ios-maestro-simulator.sh
-                  MAESTRO_LANE_CONCURRENCY: ${{ github.event.inputs.lane_concurrency || '2' }}
               run: |
                   export JAVA_TOOL_OPTIONS="-Djava.awt.headless=true -Xmx1024m"
                   export MAESTRO_OPTS="-XX:SharedArchiveFile=$HOME/.maestro/maestro-appcds.jsa -Xshare:auto"
-                  MAESTRO_LANE_2_APP_PATH="$APP_PATH" \
-                    ./scripts/run-ios-maestro-lanes.sh \
+                  ./scripts/run-ios-maestro-shard.sh \
                     com.vitalyiegorov.budgie.e2e \
-                    "$SIMULATOR_UDID_LANE_1" \
-                    "${{ matrix.lane_1_shard }}" \
-                    "$SIMULATOR_UDID_LANE_2" \
-                    "${{ matrix.lane_2_shard }}"
+                    "${{ matrix.shard }}"
 
             - name: Publish Maestro timing summary
               if: always()
@@ -777,13 +745,13 @@ jobs:
               run: |
                   set -euo pipefail
                   {
-                    for timing_file in ./artifacts/maestro/lane-*/flow-timings.tsv; do
+                    for timing_file in ./artifacts/maestro/shard-*/flow-timings.tsv; do
                       if [ ! -f "$timing_file" ]; then
                         continue
                       fi
 
-                      lane_name="$(basename "$(dirname "$timing_file")")"
-                      echo "### Maestro flow timings: $lane_name"
+                      shard_name="$(basename "$(dirname "$timing_file")")"
+                      echo "### Maestro flow timings: $shard_name"
                       echo
                       echo '| Flow | Status | Attempts | Seconds |'
                       echo '| --- | --- | ---: | ---: |'
@@ -802,25 +770,22 @@ jobs:
                   DIAGNOSTIC_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/diagnostics"
 
                   collect_simulator_diagnostics() {
-                    local lane_name="$1"
+                    local shard_label="$1"
                     local simulator_udid="$2"
-                    local lane_dir="$ARTIFACT_DIR/$lane_name"
+                    local shard_dir="$ARTIFACT_DIR/$shard_label"
 
-                    xcrun simctl io "$simulator_udid" screenshot "$lane_dir/final-screen.png" || true
+                    mkdir -p "$shard_dir"
+
+                    xcrun simctl io "$simulator_udid" screenshot "$shard_dir/final-screen.png" || true
                     xcrun simctl spawn "$simulator_udid" log show \
                       --last 90m --style compact --info --debug \
-                      > "$lane_dir/simulator.log" 2>&1 || true
-                    tail -n 20000 "$lane_dir/simulator.log" \
-                      > "$lane_dir/simulator.log.tail" || true
-                    mv "$lane_dir/simulator.log.tail" "$lane_dir/simulator.log" || true
+                      > "$shard_dir/simulator.log" 2>&1 || true
+                    tail -n 20000 "$shard_dir/simulator.log" \
+                      > "$shard_dir/simulator.log.tail" || true
+                    mv "$shard_dir/simulator.log.tail" "$shard_dir/simulator.log" || true
                   }
 
-                  collect_simulator_diagnostics lane-1 "$SIMULATOR_UDID_LANE_1" &
-                  lane_1_diagnostics_pid=$!
-                  collect_simulator_diagnostics lane-2 "$SIMULATOR_UDID_LANE_2" &
-                  lane_2_diagnostics_pid=$!
-                  wait "$lane_1_diagnostics_pid" || true
-                  wait "$lane_2_diagnostics_pid" || true
+                  collect_simulator_diagnostics "shard-${{ matrix.shard }}" "$SIMULATOR_UDID"
 
                   find "$HOME/Library/Logs/DiagnosticReports" -maxdepth 1 -type f \
                     \( -name 'budgieE2E*' -o -name 'budgie*' -o -name 'JetsamEvent*' \) \
@@ -830,7 +795,7 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v6
               with:
-                  name: maestro-ios-artifacts-vm-${{ matrix.vm_number }}-shards-${{ matrix.lane_1_shard }}-${{ matrix.lane_2_shard }}
+                  name: maestro-ios-artifacts-vm-${{ matrix.vm_number }}-shard-${{ matrix.shard }}
                   include-hidden-files: true
                   path: |
                       tests/app-tests/artifacts/maestro/**
@@ -847,8 +812,6 @@ jobs:
                       tests/app-tests/artifacts/diagnostics/**
                   if-no-files-found: warn
 
-            - name: Shutdown both iOS Simulators
+            - name: Shutdown the iOS Simulator
               if: always()
-              run: |
-                  xcrun simctl shutdown "${SIMULATOR_UDID_LANE_1:-unavailable}" || true
-                  xcrun simctl shutdown "${SIMULATOR_UDID_LANE_2:-unavailable}" || true
+              run: xcrun simctl shutdown "${SIMULATOR_UDID:-unavailable}" || true
