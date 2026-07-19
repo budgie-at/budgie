@@ -17,6 +17,9 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 WORKSPACE_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
 cd "$WORKSPACE_DIR"
 
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/driver-failure-pattern.sh"
+
 APP_ID="$1"
 shift
 MAESTRO_ARGS=("$@")
@@ -598,10 +601,10 @@ is_ax_driver_failure() {
     local console_output_path="$1"
     local attempt_output_path="$2"
 
-    grep -Eiq 'kAXErrorInvalidUIElement' "$console_output_path" && return 0
+    grep -Eiq "$MAESTRO_RECOVERABLE_FAILURE_PATTERN" "$console_output_path" && return 0
 
     if [ -n "$attempt_output_path" ] && [ -d "$attempt_output_path" ]; then
-        grep -REiq 'kAXErrorInvalidUIElement' "$attempt_output_path"
+        grep -REiq "$MAESTRO_RECOVERABLE_FAILURE_PATTERN" "$attempt_output_path"
         return
     fi
 
@@ -613,7 +616,8 @@ reset_ios_simulator_after_ax_driver_failure() {
         return 0
     fi
 
-    echo "Restarting iOS simulator after kAXErrorInvalidUIElement"
+    echo "Restarting iOS simulator and driver after a recoverable driver failure"
+    sh "$SCRIPT_DIR/recycle-ios-driver.sh" "$DETECTED_SIMULATOR_UDID" || true
     xcrun simctl shutdown "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
     xcrun simctl boot "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
     xcrun simctl bootstatus "$DETECTED_SIMULATOR_UDID" -b >/dev/null
