@@ -742,7 +742,10 @@ jobs:
             # plain start if the archive is missing or stale.
             - name: Prepare Maestro AppCDS archive
               run: |
-                  JAVA_TOOL_OPTIONS="-Djava.awt.headless=true -XX:ArchiveClassesAtExit=$HOME/.maestro/maestro-appcds.jsa" \
+                  # MAESTRO_OPTS reaches only the wrapper's final exec, so the
+                  # JvmVersion probe stays free of CDS flags and its stdout
+                  # keeps parsing as a plain integer.
+                  MAESTRO_OPTS="-XX:ArchiveClassesAtExit=$HOME/.maestro/maestro-appcds.jsa" \
                     MAESTRO_CLI_NO_ANALYTICS=true maestro --version >/dev/null 2>&1 || true
                   ls -l "$HOME/.maestro/maestro-appcds.jsa" || echo "AppCDS archive unavailable; flows run without it"
 
@@ -756,7 +759,8 @@ jobs:
                   MAESTRO_LANE_2_PREPARE_SCRIPT: ./scripts/prepare-ios-maestro-simulator.sh
                   MAESTRO_LANE_CONCURRENCY: ${{ github.event.inputs.lane_concurrency || '2' }}
               run: |
-                  export JAVA_TOOL_OPTIONS="-Djava.awt.headless=true -Xmx1024m -XX:SharedArchiveFile=$HOME/.maestro/maestro-appcds.jsa -Xshare:auto"
+                  export JAVA_TOOL_OPTIONS="-Djava.awt.headless=true -Xmx1024m"
+                  export MAESTRO_OPTS="-XX:SharedArchiveFile=$HOME/.maestro/maestro-appcds.jsa -Xshare:auto"
                   MAESTRO_LANE_2_APP_PATH="$APP_PATH" \
                     ./scripts/run-ios-maestro-lanes.sh \
                     com.vitalyiegorov.budgie.e2e \
