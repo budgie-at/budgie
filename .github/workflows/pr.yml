@@ -486,34 +486,6 @@ jobs:
                   mkdir -p "$ARTIFACT_DIR"
                   tar -C "$(dirname "$APP_PATH")" -czf "$ARTIFACT_DIR/$APP_BUNDLE_NAME.tar.gz" "$APP_BUNDLE_NAME"
 
-            - name: Stage app in host-local CI handoff
-              id: host-handoff
-              shell: bash
-              run: |
-                  set -euo pipefail
-                  shared_root='/Volumes/My Shared Files/ci-shared'
-                  if [ ! -d "$shared_root" ] || [ ! -w "$shared_root" ]; then
-                    echo '::notice::Host-local CI handoff is unavailable; Maestro jobs will use the GitHub artifact.'
-                    echo 'staged=false' >> "$GITHUB_OUTPUT"
-                    exit 0
-                  fi
-
-                  source_archive=$(find "$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app" -maxdepth 1 -name '*.tar.gz' -print -quit)
-                  test -n "$source_archive"
-                  handoff_dir="$shared_root/$GITHUB_REPOSITORY/$GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT/ios-e2e-app"
-                  mkdir -p "$handoff_dir"
-                  archive_name=$(basename "$source_archive")
-                  temporary_archive=$(mktemp "$handoff_dir/.${archive_name}.XXXXXX")
-                  cp "$source_archive" "$temporary_archive"
-                  mv -f "$temporary_archive" "$handoff_dir/$archive_name"
-                  (
-                    cd "$handoff_dir"
-                    shasum -a 256 "$archive_name" > "$archive_name.sha256.tmp"
-                    mv -f "$archive_name.sha256.tmp" "$archive_name.sha256"
-                  )
-                  echo 'staged=true' >> "$GITHUB_OUTPUT"
-                  echo "Host-local handoff: $handoff_dir/$archive_name"
-
             - name: Upload iOS E2E app artifact
               uses: actions/upload-artifact@v6
               with:
@@ -559,15 +531,6 @@ jobs:
 
             - name: Shutdown stale simulators
               run: xcrun simctl shutdown all || true
-
-            - name: VM resource diagnostics
-              shell: bash
-              run: |
-                  set -euo pipefail
-                  echo "Logical CPUs: $(sysctl -n hw.logicalcpu)"
-                  sysctl -n vm.swapusage
-                  memory_pressure -Q | tail -n 1
-                  vm_stat
 
             - name: Start the iOS Simulator
               shell: bash
@@ -632,32 +595,7 @@ jobs:
                   echo "Simulator UDID: $SIMULATOR_UDID"
                   xcrun simctl list devices booted
 
-            - name: Restore app from host-local CI handoff
-              id: local-handoff
-              shell: bash
-              run: |
-                  set -euo pipefail
-                  shared_root='/Volumes/My Shared Files/ci-shared'
-                  handoff_dir="$shared_root/$GITHUB_REPOSITORY/$GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT/ios-e2e-app"
-                  destination="$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app"
-                  archive=$(find "$handoff_dir" -maxdepth 1 -name '*.tar.gz' -print -quit 2>/dev/null || true)
-                  if [ -z "$archive" ] || [ ! -f "$archive.sha256" ]; then
-                    echo 'hit=false' >> "$GITHUB_OUTPUT"
-                    echo '::notice::Host-local app is unavailable; downloading the GitHub artifact.'
-                    exit 0
-                  fi
-
-                  mkdir -p "$destination"
-                  cp "$archive" "$archive.sha256" "$destination/"
-                  (
-                    cd "$destination"
-                    shasum -a 256 -c "$(basename "$archive").sha256"
-                  )
-                  echo 'hit=true' >> "$GITHUB_OUTPUT"
-                  echo "Restored $(basename "$archive") from host-local storage."
-
             - name: Download iOS E2E app artifact
-              if: steps.local-handoff.outputs.hit != 'true'
               uses: actions/download-artifact@v6
               with:
                   name: ios-e2e-app
