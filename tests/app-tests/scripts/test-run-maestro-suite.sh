@@ -281,4 +281,33 @@ run_quoted_path_case() {
     ' "$wrapper_path" "$expected_flow_name" "$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml" "$business_flow_path"
 }
 
+run_continue_after_failure_case() {
+    local case_dir="$TEMP_DIR/continue-after-failure"
+    local second_flow_path="$TEMP_DIR/flows/test-second.flow.yaml"
+    local status=0
+
+    mkdir -p "$case_dir"
+    printf '%s\n' 'appId: ${APP_ID}' '---' > "$second_flow_path"
+
+    PATH="$TEMP_DIR/bin:$PATH" \
+        MOCK_APP_DATA="$TEMP_DIR/app-data" \
+        MOCK_FAILURE=assertion \
+        MOCK_MAESTRO_LOG="$case_dir/maestro.log" \
+        MOCK_WRAPPER_PATH="$case_dir/prime-and-business.flow.yaml" \
+        MOCK_XCRUN_LOG="$case_dir/xcrun.log" \
+        SIMULATOR_UDID='00000000-0000-0000-0000-000000000001' \
+        sh "$SCRIPT_DIR/run-maestro-suite.sh" com.example.test "$TEMP_DIR/flows/test.flow.yaml" "$second_flow_path" --output "$case_dir/report.xml" > "$case_dir/console.log" 2>&1 || status=$?
+
+    # A failing first flow must not stop the suite: both flows run, the suite
+    # still exits non-zero, and every failed flow is named in the summary.
+    test "$status" -eq 1
+    test "$(wc -l < "$case_dir/maestro.log" | tr -d ' ')" -eq 2
+    grep -Fq 'Flow failed, continuing with remaining flows: test.flow.yaml (1/2)' "$case_dir/console.log"
+    grep -Fq 'Maestro suite finished with failures: test.flow.yaml, test-second.flow.yaml' "$case_dir/console.log"
+    grep -q $'1\ttest.flow.yaml\tfailure' "$case_dir/flow-timings.tsv"
+    grep -q $'2\ttest-second.flow.yaml\tfailure' "$case_dir/flow-timings.tsv"
+}
+
+run_continue_after_failure_case
+
 run_quoted_path_case

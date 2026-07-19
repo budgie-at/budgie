@@ -725,6 +725,8 @@ REPORTS=()
 FLOW_TIMINGS_PATH=""
 FLOW_INDEX=0
 FLOW_TOTAL="${#FLOW_PATHS[@]}"
+SUITE_STATUS=0
+FAILED_FLOW_NAMES=""
 
 if [ -n "$OUTPUT_PATH" ]; then
     REPORT_DIR="$(dirname "$OUTPUT_PATH")/.maestro-flow-reports"
@@ -805,6 +807,15 @@ for FLOW_PATH in "${FLOW_PATHS[@]}"; do
             merge_reports "$OUTPUT_PATH" "${REPORTS[@]}"
         fi
 
-        exit "$FLOW_STATUS"
+        # Keep running the remaining flows so one double-failure cannot hide
+        # every failure behind it; the suite still exits non-zero at the end.
+        SUITE_STATUS="$FLOW_STATUS"
+        FAILED_FLOW_NAMES="${FAILED_FLOW_NAMES}${FAILED_FLOW_NAMES:+, }${FLOW_NAME}"
+        echo "Flow failed, continuing with remaining flows: $FLOW_NAME ($FLOW_INDEX/$FLOW_TOTAL)"
     fi
 done
+
+if [ "$SUITE_STATUS" -ne 0 ]; then
+    echo "Maestro suite finished with failures: $FAILED_FLOW_NAMES"
+    exit "$SUITE_STATUS"
+fi
