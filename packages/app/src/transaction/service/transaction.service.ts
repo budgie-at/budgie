@@ -29,6 +29,7 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -54,6 +55,7 @@ class TransactionService {
         (error, inputs, tx, batchSize) =>
             `throw count=${inputs.length} firstExternalId=${inputs[0]?.externalId ?? ''} hasTx=${String(isDefined(tx))} batchSize=${batchSize} error=${getErrorMessage(error)}`
     )
+    @InvalidateDatabaseLiveQuery()
     async bulkCreate(
         inputs: TransactionCreateInputInterface[],
         tx?: DB,
@@ -86,11 +88,13 @@ class TransactionService {
         (error, input) =>
             `throw externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')} error=${getErrorMessage(error)}`
     )
+    @InvalidateDatabaseLiveQuery()
     async update(input: TransactionCreateInputInterface): Promise<void> {
         await transactionAsync(db, async tx => importedTransactionEntryUpdateService.update(input.entries, input, tx));
     }
 
     @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
+    @InvalidateDatabaseLiveQuery()
     async deleteById(id: number): Promise<void> {
         await transactionAsync(db, async tx => {
             const transaction = await transactionRepository.getByIdWithEntries(id, tx);
@@ -109,6 +113,7 @@ class TransactionService {
     }
 
     @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
+    @InvalidateDatabaseLiveQuery()
     async unconsolidateById(id: number): Promise<void> {
         await transactionAsync(db, async tx => {
             await unconsolidateByIdInTransaction(id, tx);
@@ -124,6 +129,7 @@ class TransactionService {
         return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
     }
 
+    @InvalidateDatabaseLiveQuery()
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return transactionAsync(db, async tx => {
             const [transaction] = await this.bulkCreate([input], tx);
@@ -132,10 +138,12 @@ class TransactionService {
         });
     }
 
+    @InvalidateDatabaseLiveQuery()
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => this.createInternalTransferInTransaction(input, tx));
     }
 
+    @InvalidateDatabaseLiveQuery()
     async updateById(id: number, input: TransactionUpdateServiceInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
             const existingTransaction = await transactionRepository.getByIdWithEntries(id, tx);
