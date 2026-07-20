@@ -86,5 +86,5 @@ export const TransactionAmount = ({ transaction, accountId = null }: Props) => {
     const sideVariant = TRANSACTION_COLOR[getTransactionType(transaction)];
     const sideTestID = isAdjustment ? TransactionCardSelector.AdjustmentAmount(convertFromMicroUnits(sideEntry.amount)) : amountTestID;
 
-    return <TransactionEntryAmount entry={sideEntry} variant={sideVariant} testID={sideTestID} />;
+    return <TransactionEntryAmount debtEvent={transaction.debtEvents.at(0)} entry={sideEntry} variant={sideVariant} testID={sideTestID} />;
 };

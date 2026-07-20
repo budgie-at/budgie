@@ -13,6 +13,7 @@ SIMULATOR_UDID="${3:-${SIMULATOR_UDID:-}}"
 APP_ID="${4:-${APP_ID:-com.vitalyiegorov.budgie.e2e}}"
 WORKING_FIXTURE_PATH="$FIXTURE_PATH"
 FIXTURE_FOLDER_NAME="${FIXTURE_FOLDER_NAME:-E2EFixtures}"
+APP_DATA_CONTAINER_OVERRIDE="${APP_DATA_CONTAINER:-}"
 
 if [ ! -f "$FIXTURE_PATH" ]; then
     echo "Fixture not found: $FIXTURE_PATH" >&2
@@ -60,9 +61,18 @@ if [ -z "$SIMULATOR_UDID" ]; then
     SIMULATOR_UDID="$(printf '%s\n' "$BOOTED_UDIDS" | sed -n '1p')"
 fi
 
-APP_DATA_CONTAINER="$(
-    xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true
-)"
+if [ -n "$APP_DATA_CONTAINER_OVERRIDE" ]; then
+    if [ ! -d "$APP_DATA_CONTAINER_OVERRIDE" ]; then
+        echo "App data container override is not a directory: $APP_DATA_CONTAINER_OVERRIDE" >&2
+        exit 1
+    fi
+
+    APP_DATA_CONTAINER="$APP_DATA_CONTAINER_OVERRIDE"
+else
+    APP_DATA_CONTAINER="$(
+        xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true
+    )"
+fi
 
 if [ -z "$APP_DATA_CONTAINER" ] || [ ! -d "$APP_DATA_CONTAINER" ]; then
     echo "App data container not found for $APP_ID on simulator $SIMULATOR_UDID." >&2

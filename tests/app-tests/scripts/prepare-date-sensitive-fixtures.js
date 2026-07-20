@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { execFileSync } = require('node:child_process');
-const { mkdirSync } = require('node:fs');
+const { copyFileSync, mkdirSync } = require('node:fs');
 const path = require('node:path');
 const fixturesDirectoryPath = path.resolve(__dirname, '../fixtures');
 const outputDirectoryPath = process.argv[2];
@@ -17,8 +17,8 @@ const runSqlite = (databasePath, sql) => {
     execFileSync('sqlite3', [databasePath, sql], { stdio: 'inherit' });
 };
 
-const backupFixture = (sourcePath, targetPath) => {
-    execFileSync('sqlite3', [sourcePath, `.backup ${targetPath}`], { stdio: 'inherit' });
+const copyFixture = (sourcePath, targetPath) => {
+    copyFileSync(sourcePath, targetPath);
 };
 
 const shiftTransactionsFixtureToNow = () => {
@@ -35,7 +35,7 @@ const shiftTransactionsFixtureToNow = () => {
     const missingRateCategoryId = 42;
     const missingRateAmount = 15_000_000_000;
 
-    backupFixture(sourcePath, targetPath);
+    copyFixture(sourcePath, targetPath);
     runSqlite(
         targetPath,
         `
@@ -355,7 +355,7 @@ const generateBudgetMultiCurrencyFixture = () => {
     const targetPath = path.join(outputDirectoryPath, 'budget-multi-currency.db');
     const transactionTimestamp = buildMonthlyTimestamp(0, 19);
 
-    backupFixture(sourcePath, targetPath);
+    copyFixture(sourcePath, targetPath);
     runSqlite(
         targetPath,
         `
@@ -397,7 +397,7 @@ const generateRecurringFixture = () => {
     ].join(',\n            ');
     const totalRecurringAmount = rentAmount * rentDates.length + gymAmount * gymDates.length;
 
-    backupFixture(sourcePath, targetPath);
+    copyFixture(sourcePath, targetPath);
     runSqlite(
         targetPath,
         `
@@ -520,7 +520,7 @@ const generateConsolidationFixture = () => {
     const balanceEur = u92;
     const balanceCard = u1000 - u500;
 
-    backupFixture(sourcePath, targetPath);
+    copyFixture(sourcePath, targetPath);
     runSqlite(
         targetPath,
         `
@@ -677,7 +677,7 @@ const generateRefundConsolidationFixture = () => {
 
     const balance = u1000 - u120 + u40 - u55 + u55 - u30 - u30 + u30 - u18 + u18;
 
-    backupFixture(sourcePath, targetPath);
+    copyFixture(sourcePath, targetPath);
 
     runSqlite(
         targetPath,
@@ -747,7 +747,7 @@ const shiftTransactionInfoFixtureToNow = () => {
     const sourcePath = path.join(fixturesDirectoryPath, '31-transaction-info.db');
     const targetPath = path.join(outputDirectoryPath, '31-transaction-info.db');
 
-    backupFixture(sourcePath, targetPath);
+    copyFixture(sourcePath, targetPath);
     runSqlite(
         targetPath,
         `

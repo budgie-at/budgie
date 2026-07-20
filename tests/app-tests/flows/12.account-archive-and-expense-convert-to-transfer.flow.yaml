@@ -65,6 +65,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       notVisible: 'Restore Account?'
       timeout: 10000
+- extendedWaitUntil:
+      notVisible:
+          id: 'ArchivedAccountCard.RestoreButton.E2E Expense Target'
+      timeout: 10000
 
 - tapOn:
       id: 'TabBar.Home'

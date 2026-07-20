@@ -1,4 +1,16 @@
 const { execSync } = require('node:child_process');
+const { readFileSync } = require('node:fs');
+
+const expoMetroConfigVersion = require('@expo/metro-config/package.json').version;
+const expoMetroSourceMapPath = require.resolve('@expo/metro-config/build/serializer/sourceMap.js');
+const expoMetroSourceMap = readFileSync(expoMetroSourceMapPath, 'utf8');
+
+if (!expoMetroSourceMap.includes('repairInvalidNegativeIndices')) {
+    console.error(
+        `[after-install] @expo/metro-config ${expoMetroConfigVersion} lacks the Hermes negative-index source-map repair.`
+    );
+    process.exit(1);
+}
 
 const skipInAutomation =
     process.env.CI === 'true' ||

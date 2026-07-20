@@ -105,10 +105,10 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
     element:
-      id: 'AccountForm.ActiveTitle'
+      id: 'AccountForm.ActiveRow'
     direction: DOWN
 - tapOn:
-    id: 'AccountForm.ActiveTitle'
+    id: 'AccountForm.ActiveRow'
 - tapOn:
     id: 'AccountForm.SubmitButton'
 - waitForAnimationToEnd

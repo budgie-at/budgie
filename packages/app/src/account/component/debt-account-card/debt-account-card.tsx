@@ -49,7 +49,7 @@ export const DebtAccountCard = (props: Props) => {
     const { formatCompactFullDate } = useFormatDate();
 
     const fallbackSummary = buildDebtAccountProgressSummary({
-        balance,
+        balance: 0,
         closedAmount: 0,
         debtType,
         openedExtraAmount: 0,

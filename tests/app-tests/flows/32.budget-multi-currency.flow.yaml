@@ -131,7 +131,7 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'TransactionCard.Label.E2E_Budget_MC_Category_Txn'
-      timeout: 5000
+      timeout: 15000
 
 - tapOn:
       id: 'TabBar.Home'

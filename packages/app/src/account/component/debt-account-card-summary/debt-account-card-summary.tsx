@@ -35,16 +35,37 @@ export const DebtAccountCardSummary = ({ debtType, instrumentSymbol, outstanding
     const totalAmountSelector = DebtAccountCardSummarySelector.TotalAmount(title, totalAmount);
 
     return (
-        <View className="flex-row items-center justify-between">
-            <ProtectedText className="text-primary font-medium" testID={outstandingAmountSelector}>
-                {amountLeft}
-            </ProtectedText>
+        <View className="flex-row items-center">
+            <View className="flex-1 min-w-0 pr-md">
+                <ProtectedText
+                    adjustsFontSizeToFit
+                    className="text-primary font-medium"
+                    ellipsizeMode="tail"
+                    minimumFontScale={0.72}
+                    numberOfLines={1}
+                    testID={outstandingAmountSelector}
+                >
+                    {amountLeft}
+                </ProtectedText>
+            </View>
 
-            <View>
-                <ProtectedText className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })} testID={paidAmountSelector}>
+            <View className="shrink-0 items-end max-w-[45%]">
+                <ProtectedText
+                    adjustsFontSizeToFit
+                    className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}
+                    minimumFontScale={0.72}
+                    numberOfLines={1}
+                    testID={paidAmountSelector}
+                >
                     {compactPaidAmountLabel}
                 </ProtectedText>
-                <ProtectedText className="text-secondary-foreground text-xxs font-medium text-right" testID={totalAmountSelector}>
+                <ProtectedText
+                    adjustsFontSizeToFit
+                    className="text-secondary-foreground text-xxs font-medium text-right"
+                    minimumFontScale={0.72}
+                    numberOfLines={1}
+                    testID={totalAmountSelector}
+                >
                     {totalAmountLabel}
                 </ProtectedText>
             </View>

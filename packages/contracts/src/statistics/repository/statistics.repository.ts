@@ -41,6 +41,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             /* jscpd:ignore-start */
             with: {
                 [TransactionAssociationEnum.ENTRIES]: {
+                    where: and(isNull(TransactionEntryEntityTable.deletedAt), isNull(TransactionEntryEntityTable.originalTransactionId)),
                     with: {
                         [TransactionEntryAssociationEnum.ACCOUNT]: {
                             with: {
@@ -59,7 +60,11 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 [TransactionAssociationEnum.DEBT_EVENTS]: {
                     where: isNull(DebtEventEntityTable.deletedAt),
                     with: {
-                        [DebtEventAssociationEnum.DEBT_ACCOUNT]: true
+                        [DebtEventAssociationEnum.DEBT_ACCOUNT]: {
+                            with: {
+                                [AccountAssociationEnum.INSTRUMENT]: true
+                            }
+                        }
                     }
                 },
                 [TransactionAssociationEnum.FROM_ACCOUNT]: true,

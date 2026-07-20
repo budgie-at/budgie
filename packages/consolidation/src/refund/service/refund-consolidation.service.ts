@@ -40,7 +40,7 @@ export class RefundConsolidationService {
     }
 
     private async convertToRefundInner(params: ConvertToRefundParamsInterface, tx: DB): Promise<number> {
-        const transactions = await this.dependencies.transactionRepository.findByIds(
+        const transactions = await this.dependencies.transactionRepository.findByIdsWithRefundConsolidationHistory(
             [params.refundIncomeTransactionId, params.expenseTransactionId],
             tx
         );

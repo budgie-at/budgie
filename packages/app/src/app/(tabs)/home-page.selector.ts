@@ -2,5 +2,6 @@ const normalizePart = (value: string | number) => value.toString().replace(/[^a-
 
 export const HomePageSelector = {
     TotalBalance: 'HomePage.TotalBalance',
-    NetWorthValue: (value: string | number) => `HomePage.NetWorthValue.${normalizePart(value)}` as const
+    NetWorthValue: (value: string | number) => `HomePage.NetWorthValue.${normalizePart(value)}` as const,
+    NetWorthValueCollapsed: (value: string | number) => `HomePage.NetWorthValueCollapsed.${normalizePart(value)}` as const
 } as const;
