@@ -253,6 +253,13 @@
             "when": 1783537200000,
             "tag": "0035_add_debt_events",
             "breakpoints": true
+        },
+        {
+            "idx": 36,
+            "version": "6",
+            "when": 1784131200000,
+            "tag": "0036_repair_borrowed_debt_migration",
+            "breakpoints": true
         }
     ]
 }

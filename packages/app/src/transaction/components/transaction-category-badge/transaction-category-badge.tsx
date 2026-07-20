@@ -23,15 +23,17 @@ const wrapperClassName = 'self-start rounded-sm py-xxs px-sm bg-primary/10 borde
 const textClassName = 'text-secondary-foreground text-xxs font-medium';
 
 export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) => {
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const { t } = useLingui();
 
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     const hasMultipleEntries = categoryEntries.length > 1;
+    const hasDebtSettlement = isDefined(transaction.debtEvents.at(0));
+    const shouldShowEntryAmounts = hasMultipleEntries || hasDebtSettlement;
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
-    if (hasMultipleEntries) {
+    if (shouldShowEntryAmounts) {
         return (
             <View className="flex-row flex-wrap gap-xs">
                 {categoryEntries.map(entry => {
@@ -42,7 +44,8 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
                     return (
                         <View className={wrapperClassName} testID={entryTestID} key={entry.id}>
                             <Text className={textClassName}>
-                                {entryLabel} <Text className="text-primary/70">{formatDigits(entryAmount, defaultInstrument.symbol)}</Text>
+                                {entryLabel}{' '}
+                                <Text className="text-primary/70">{formatDigits(entryAmount, entry.account.instrument.symbol)}</Text>
                             </Text>
                         </View>
                     );
