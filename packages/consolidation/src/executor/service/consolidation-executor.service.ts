@@ -1,6 +1,6 @@
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined, isError } from '@rnw-community/shared';
 
 import { ConsolidationEligibilityService } from './consolidation-eligibility.service';
 import { ConsolidationMutationService } from './consolidation-mutation.service';
@@ -28,24 +28,18 @@ export class ConsolidationExecutorService {
     }
 
     @Log(
-        (candidate, consolidationPlan) =>
-            `enter pair=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} bucket=${candidate.confidenceBucket} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (result, candidate, consolidationPlan) =>
-            `done pairResult=${String(result)} pair=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (error, candidate, consolidationPlan) =>
-            `throw pair=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
+        () => 'enter pair',
+        result => `done pairOutcome=${String(result)}`,
+        error => `throw pairErrorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async consolidatePair(candidate: TransferPairCandidateInterface, consolidationPlan: ConsolidationPlanInterface): Promise<boolean> {
         return await this.consolidateTwoRequiredSources(candidate.expenseTransactionId, candidate.incomeTransactionId, consolidationPlan);
     }
 
     @Log(
-        (candidate, consolidationPlan) =>
-            `enter atm=${candidate.transactionId} cash=${candidate.sourceAccountId}->${candidate.targetCashAccountId} amount=${candidate.amount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (result, candidate, consolidationPlan) =>
-            `done atmResult=${String(result)} transaction=${candidate.transactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (error, candidate, consolidationPlan) =>
-            `throw atm=${candidate.transactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
+        () => 'enter atmWithdrawal',
+        result => `done atmWithdrawalOutcome=${String(result)}`,
+        error => `throw atmWithdrawalErrorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async consolidateAtmCashWithdrawal(
         candidate: AtmCashWithdrawalCandidateInterface,
@@ -57,12 +51,9 @@ export class ConsolidationExecutorService {
     }
 
     @Log(
-        (candidate, consolidationPlan) =>
-            `enter ibanBridge=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} route=${candidate.sourceAccountId}->${candidate.bridgeAccountId}->${candidate.targetAccountId} rate=${candidate.exchangeRate} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (result, candidate, consolidationPlan) =>
-            `done ibanBridgeResult=${String(result)} direct=${candidate.existingDirectTransferId ?? ''} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (error, candidate, consolidationPlan) =>
-            `throw ibanBridge=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} amount=${candidate.bridgeAmount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
+        () => 'enter ibanBridge',
+        result => `done ibanBridgeOutcome=${String(result)}`,
+        error => `throw ibanBridgeErrorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async consolidateIbanBridgeTransfer(
         candidate: IbanBridgeTransferCandidateInterface,
@@ -72,12 +63,9 @@ export class ConsolidationExecutorService {
     }
 
     @Log(
-        (candidate, consolidationPlan) =>
-            `enter existingBridge=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.existingTransferId} route=${candidate.sourceAccountId}->${candidate.bridgeAccountId}->${candidate.targetAccountId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (result, candidate, consolidationPlan) =>
-            `done existingBridgeResult=${String(result)} amounts=${candidate.sourceAmount}/${candidate.targetAmount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (error, candidate, consolidationPlan) =>
-            `throw existingBridge=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.existingTransferId} rate=${candidate.exchangeRate} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
+        () => 'enter existingTransferBridge',
+        result => `done existingTransferBridgeOutcome=${String(result)}`,
+        error => `throw existingTransferBridgeErrorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async consolidateExistingTransferBridge(
         candidate: ExistingTransferBridgeCandidateInterface,
@@ -95,12 +83,9 @@ export class ConsolidationExecutorService {
     }
 
     @Log(
-        (candidate, consolidationPlan) =>
-            `enter bridgeChain=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.bridgeExpenseTransactionId}/${candidate.targetIncomeTransactionId} route=${candidate.sourceAccountId}->${candidate.bridgeAccountId}->${candidate.targetAccountId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (result, candidate, consolidationPlan) =>
-            `done bridgeChainResult=${String(result)} amounts=${candidate.sourceAmount}/${candidate.targetAmount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (error, candidate, consolidationPlan) =>
-            `throw bridgeChain=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.bridgeExpenseTransactionId}/${candidate.targetIncomeTransactionId} rate=${candidate.exchangeRate} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
+        () => 'enter ibanBridgeChain',
+        result => `done ibanBridgeChainOutcome=${String(result)}`,
+        error => `throw ibanBridgeChainErrorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async consolidateIbanBridgeChainTransfer(
         candidate: IbanBridgeChainTransferCandidateInterface,

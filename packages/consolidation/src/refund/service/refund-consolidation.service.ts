@@ -1,7 +1,7 @@
 import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined, isError } from '@rnw-community/shared';
 
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
 
@@ -18,23 +18,15 @@ export class RefundConsolidationService {
     constructor(private readonly dependencies: RefundConsolidationDependenciesInterface) {}
 
     @Log(
-        (refundIncomeTransactionId, search) => `enter refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}"`,
-        (result, refundIncomeTransactionId, search) =>
-            `done refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" candidateIds=${result.map(candidate => candidate.id).join(',')}`,
-        (error, refundIncomeTransactionId, search) =>
-            `throw refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" error=${getErrorMessage(error)}`
+        () => 'enter',
+        result => `done candidateCount=${result.length}`,
+        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async findRefundableExpenses(refundIncomeTransactionId: number, search: string): Promise<RefundableExpenseCandidateInterface[]> {
         return await this.dependencies.refundPairRepository.findRefundableExpenseCandidates(refundIncomeTransactionId, search);
     }
 
-    @Log(
-        params => `enter refundIncomeTransactionId=${params.refundIncomeTransactionId} expenseTransactionId=${params.expenseTransactionId}`,
-        (result, params) =>
-            `done refundIncomeTransactionId=${params.refundIncomeTransactionId} expenseTransactionId=${params.expenseTransactionId} canonicalTransactionId=${result}`,
-        (error, params) =>
-            `throw refundIncomeTransactionId=${params.refundIncomeTransactionId} expenseTransactionId=${params.expenseTransactionId} error=${getErrorMessage(error)}`
-    )
+    @Log(() => 'enter', () => 'done', error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`)
     async convertToRefund(params: ConvertToRefundParamsInterface): Promise<number> {
         return await this.dependencies.runTransaction(this.dependencies.database, async tx => this.convertToRefundInner(params, tx));
     }

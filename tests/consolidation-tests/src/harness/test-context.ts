@@ -23,6 +23,7 @@ export const existingTransferRepository = repositories.existingTransferRepositor
 export const ibanBridgeTransferRepository = repositories.ibanBridgeTransferRepository;
 export const refundPairRepository = repositories.refundPairRepository;
 export const transferPairRepository = repositories.transferPairRepository;
+export const transactionRepository = repositories.transactionRepository;
 
 const consolidationExecutorDependencies = {
     database: testDb,
