@@ -30,4 +30,11 @@ export const consoleTransport = {
     }
 };
 
-export const Log = createLogDecorator({ transport: consoleTransport });
+export const Log = Object.assign(createLogDecorator({ transport: consoleTransport }), {
+    withoutErrorPayload: createLogDecorator({
+        transport: {
+            ...consoleTransport,
+            error: (message, _error, logContext) => void consoleTransport.error(message, null, logContext)
+        }
+    })
+});

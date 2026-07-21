@@ -17,7 +17,7 @@ import type {
 export class RefundConsolidationService {
     constructor(private readonly dependencies: RefundConsolidationDependenciesInterface) {}
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter',
         result => `done candidateCount=${result.length}`,
         error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
@@ -26,7 +26,7 @@ export class RefundConsolidationService {
         return await this.dependencies.refundPairRepository.findRefundableExpenseCandidates(refundIncomeTransactionId, search);
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`)
+    @Log.withoutErrorPayload(() => 'enter', () => 'done', error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`)
     async convertToRefund(params: ConvertToRefundParamsInterface): Promise<number> {
         return await this.dependencies.runTransaction(this.dependencies.database, async tx => this.convertToRefundInner(params, tx));
     }

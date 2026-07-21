@@ -18,7 +18,7 @@ import type {
 export class ConsolidationMutationService {
     constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {}
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter canonicalTransfer',
         () => 'done canonicalTransfer',
         error => `throw canonicalTransferErrorClass=${isError(error) ? error.name : 'UnknownError'}`
@@ -76,7 +76,7 @@ export class ConsolidationMutationService {
         return canonicalTransaction;
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter atmWithdrawalFeeEntry',
         () => 'done atmWithdrawalFeeEntry',
         error => `throw atmWithdrawalFeeEntryErrorClass=${isError(error) ? error.name : 'UnknownError'}`
@@ -116,7 +116,7 @@ export class ConsolidationMutationService {
         );
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter moveSources',
         () => 'done moveSources',
         error => `throw moveSourcesErrorClass=${isError(error) ? error.name : 'UnknownError'}`
@@ -126,7 +126,7 @@ export class ConsolidationMutationService {
         await this.dependencies.transactionRepository.setConsolidationParent(sourceTransactionIds, canonicalTransactionId, tx);
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter copySourceTags',
         () => 'done copySourceTags',
         error => `throw copySourceTagsErrorClass=${isError(error) ? error.name : 'UnknownError'}`
