@@ -2,7 +2,7 @@ import { Log } from '@budgie/logger';
 import { and, count, eq, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isError, isNotEmptyArray } from '@rnw-community/shared';
 
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -19,11 +19,10 @@ import type { PendingBaseValuationBucketInterface } from '../interface/pending-b
 export class TransactionEntryRepository {
     constructor(private db: DB) {}
 
-    @Log(
-        (sourceIds, canonicalId, tx) => `enter sourceIds=${sourceIds.join(',')} canonicalId=${canonicalId} inTx=${String(isDefined(tx))}`,
+    @Log.withoutErrorPayload(
+        sourceIds => `enter sourceCount=${sourceIds.length}`,
         'done',
-        (error, sourceIds, canonicalId, tx) =>
-            `throw sourceIds=${sourceIds.join(',')} canonicalId=${canonicalId} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (error, sourceIds) => `throw sourceCount=${sourceIds.length} errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async moveToConsolidatedTransaction(sourceTransactionIds: number[], canonicalTransactionId: number, tx?: DB): Promise<void> {
         if (!isNotEmptyArray(sourceTransactionIds)) {
@@ -45,11 +44,7 @@ export class TransactionEntryRepository {
             );
     }
 
-    @Log(
-        (canonicalId, tx) => `enter canonicalId=${canonicalId} inTx=${String(isDefined(tx))}`,
-        'done',
-        (error, canonicalId, tx) => `throw canonicalId=${canonicalId} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
+    @Log.withoutErrorPayload(() => 'enter', 'done', error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`)
     async moveBackToOriginalTransactions(canonicalTransactionId: number, tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntryEntityTable)
@@ -66,12 +61,11 @@ export class TransactionEntryRepository {
             );
     }
 
-    @Log(
-        (transactionIds, tx) => `enter transactionIds=${transactionIds.join(',')} inTx=${String(isDefined(tx))}`,
-        (result, transactionIds, tx) =>
-            `done result=${String(result)} transactionIds=${transactionIds.join(',')} inTx=${String(isDefined(tx))}`,
-        (error, transactionIds, tx) =>
-            `throw transactionIds=${transactionIds.join(',')} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    @Log.withoutErrorPayload(
+        transactionIds => `enter transactionCount=${transactionIds.length}`,
+        (result, transactionIds) => `done moved=${String(result)} transactionCount=${transactionIds.length}`,
+        (error, transactionIds) =>
+            `throw transactionCount=${transactionIds.length} errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async hasMovedSourceEntries(transactionIds: number[], tx?: DB): Promise<boolean> {
         if (!isNotEmptyArray(transactionIds)) {

@@ -1,7 +1,7 @@
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined, isError } from '@rnw-community/shared';
 
 import type { UnconsolidationDependenciesInterface } from '../interface/unconsolidation-dependencies.interface';
 import type { DB, TransactionEntityInterface } from '@budgie/contracts';
@@ -9,11 +9,7 @@ import type { DB, TransactionEntityInterface } from '@budgie/contracts';
 export class UnconsolidationService {
     constructor(private readonly dependencies: UnconsolidationDependenciesInterface) {}
 
-    @Log(
-        (transactionId, tx) => `enter transactionId=${transactionId} hasTx=${String(isDefined(tx))}`,
-        (result, transactionId, tx) => `done result=${String(result)} transactionId=${transactionId} hasTx=${String(isDefined(tx))}`,
-        (error, transactionId, tx) => `throw transactionId=${transactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
+    @Log.withoutErrorPayload(() => 'enter', () => 'done', error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`)
     async unconsolidateById(transactionId: number, tx: DB): Promise<void> {
         const canonical = await this.dependencies.transactionRepository.getByIdRaw(transactionId, tx);
 

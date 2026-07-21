@@ -1,6 +1,6 @@
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isError } from '@rnw-community/shared';
 
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type { ConsolidationAutoCandidateService } from './consolidation-auto-candidate.service';
@@ -13,13 +13,10 @@ export class ConsolidationCoordinatorService {
         private readonly consolidationAutoCandidateService: ConsolidationAutoCandidateService
     ) {}
 
-    @Log(
-        (scope, onProgress) =>
-            `enter hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))}`,
-        (result, scope, onProgress) =>
-            `done hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
-        (error, scope, onProgress) =>
-            `throw hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
+    @Log.withoutErrorPayload(
+        () => 'enter consolidate',
+        result => `done foundCount=${result.found} consolidatedCount=${result.consolidated}`,
+        error => `throw consolidateErrorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async consolidate(
         scope: ConsolidationScanScopeInterface | null = null,
@@ -28,27 +25,38 @@ export class ConsolidationCoordinatorService {
         return this.consolidationAutoCandidateService.process(scope, onProgress);
     }
 
-    @Log(
-        scope => `enter hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0}`,
-        (result, scope) => `done hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} count=${result}`,
-        (error, scope) =>
-            `throw hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} error=${getErrorMessage(error)}`
+    @Log.withoutErrorPayload(
+        () => 'enter countAutoCandidates',
+        result => `done candidateCount=${result}`,
+        error => `throw countAutoCandidatesErrorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async countAutoCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<number> {
         return this.consolidationAutoCandidateService.count(scope);
     }
 
-    @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log.withoutErrorPayload(
+        'enter',
+        result => `done count=${result}`,
+        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
+    )
     async countManualReviewCandidates(): Promise<number> {
         return this.consolidationCandidateService.countManualReviewCandidates();
     }
 
-    @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log.withoutErrorPayload(
+        'enter',
+        result => `done count=${result}`,
+        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
+    )
     async countExistingTransferIncomeDuplicateRepairCandidates(): Promise<number> {
         return (await this.consolidationCandidateService.findExistingTransferIncomeDuplicateRepairCandidates()).length;
     }
 
-    @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log.withoutErrorPayload(
+        'enter',
+        result => `done repairedCount=${result}`,
+        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
+    )
     async repairExistingTransferIncomeDuplicates(): Promise<number> {
         const candidates = await this.consolidationCandidateService.findExistingTransferIncomeDuplicateRepairCandidates();
 
