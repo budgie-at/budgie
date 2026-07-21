@@ -143,7 +143,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     @Log(
         (accountId, from, to) => `enter accountId=${accountId} from=${from} to=${to ?? 'now'}`,
-        result => `done transferCount=${result.success ? result.data.length : 0}`,
+        result => `done count=${result.success ? result.data.length : 0}`,
         error => `throw error=${getErrorMessage(error)}`
     )
     async getTransactions(accountId: string, from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
@@ -204,7 +204,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     @Log(
         (accountId, from, to) => `enter accountId=${accountId} from=${from} to=${to ?? 'now'}`,
-        result => `done count=${result.success ? result.data.length : 0}`,
+        result => `done transferCount=${result.success ? result.data.length : 0}`,
         error => `throw error=${getErrorMessage(error)}`
     )
     async getTransfers(accountId: string, from: number, to?: number): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
