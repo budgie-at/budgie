@@ -3,7 +3,15 @@ import { Log } from '@budgie/logger';
 import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
-import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import {
+    getErrorMessage,
+    isDefined,
+    isEmptyArray,
+    isError,
+    isNotEmptyArray,
+    isNotEmptyString,
+    isPositiveNumber
+} from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
@@ -53,25 +61,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         }
     } as const;
 
-    @Log(
-        (inputs, tx) =>
-            `enter hasTx=${String(isDefined(tx))} count=${inputs.length} externalIds=${inputs
-                .slice(0, 5)
-                .map(input => input.externalId)
-                .join(',')}`,
-        (result, inputs, tx) =>
-            `done hasTx=${String(isDefined(tx))} count=${inputs.length} externalIds=${inputs
-                .slice(0, 5)
-                .map(input => input.externalId)
-                .join(',')} insertedIds=${result
-                .slice(0, 5)
-                .map(row => row.id)
-                .join(',')}`,
-        (error, inputs, tx) =>
-            `throw hasTx=${String(isDefined(tx))} count=${inputs.length} externalIds=${inputs
-                .slice(0, 5)
-                .map(input => input.externalId)
-                .join(',')} error=${getErrorMessage(error)}`
+    @Log.withoutErrorPayload(
+        inputs => `enter count=${inputs.length}`,
+        (result, inputs) => `done requestedCount=${inputs.length} insertedCount=${result.length}`,
+        (error, inputs) => `throw count=${inputs.length} errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
@@ -350,12 +343,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
     }
 
-    @Log(
-        (sourceTransactionIds, canonicalTransactionId, tx) =>
-            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
+    @Log.withoutErrorPayload(
+        sourceTransactionIds => `enter sourceCount=${sourceTransactionIds.length}`,
         'done',
-        (error, sourceTransactionIds, canonicalTransactionId, tx) =>
-            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (error, sourceTransactionIds) =>
+            `throw sourceCount=${sourceTransactionIds.length} errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async setConsolidationParent(sourceTransactionIds: number[], canonicalTransactionId: number, tx?: DB): Promise<void> {
         if (isEmptyArray(sourceTransactionIds)) {
@@ -374,11 +366,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
     }
 
-    @Log(
-        (transactionId, type, tx) => `enter transactionId=${transactionId} type=${type ?? 'null'} hasTx=${String(isDefined(tx))}`,
+    @Log.withoutErrorPayload(
+        (_transactionId, type) => `enter type=${type ?? 'null'}`,
         'done',
-        (error, transactionId, type, tx) =>
-            `throw transactionId=${transactionId} type=${type ?? 'null'} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (error, _transactionId, type) => `throw type=${type ?? 'null'} errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async setConsolidationType(transactionId: number, type: TransactionConsolidationTypeEnum | null, tx?: DB): Promise<void> {
         await (tx ?? this.db)
@@ -387,12 +378,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .where(and(eq(TransactionEntityTable.id, transactionId), isNull(TransactionEntityTable.consolidationParentTransactionId)));
     }
 
-    @Log(
-        (canonicalTransactionId, tx) => `enter canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
-        'done',
-        (error, canonicalTransactionId, tx) =>
-            `throw canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
+    @Log.withoutErrorPayload(() => 'enter', 'done', error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`)
     async clearConsolidationParent(canonicalTransactionId: number, tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)

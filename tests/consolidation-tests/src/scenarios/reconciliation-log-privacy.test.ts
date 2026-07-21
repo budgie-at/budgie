@@ -1,23 +1,29 @@
-import { PRECISION } from '@budgie/contracts';
+import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { isError } from '@rnw-community/shared';
+import { emptyFn, isError } from '@rnw-community/shared';
 
 import {
     consolidationAutoCandidateService,
     consolidationRepairExecutorService,
     refundConsolidationService,
     refundPairRepository,
+    testDb,
     testQueryService,
     testSeedService,
-    transactionRepository
+    transactionRepository,
+    unconsolidationService
 } from '../harness/test-context';
 
 const reconciliationLogContexts = [
+    'ConsolidationAutoCandidateService',
+    'ConsolidationEligibilityService',
     'ConsolidationExecutorService',
     'ConsolidationMutationService',
     'ConsolidationRepairExecutorService',
-    'RefundConsolidationService'
+    'RefundConsolidationService',
+    'UnconsolidationService'
 ];
 
 const reconciliationSentinels = [
@@ -26,12 +32,22 @@ const reconciliationSentinels = [
     'external-id-sentinel',
     'DE89370400440532013000',
     'reference-sentinel',
+    '810000000001',
+    '820000000001',
+    '830000000001',
     'executor-mutation-error-sentinel',
     'repair-error-sentinel',
     'refund-error-sentinel'
 ];
 
-const capturedReconciliationLogLines: string[] = [];
+const capturedConsoleLines: string[] = [];
+
+class OrdinaryLoggedService {
+    @Log('enter', 'done', 'throw')
+    fail(error: Error): never {
+        throw error;
+    }
+}
 
 const serializeConsoleArgument = (value: unknown): string => {
     if (isError(value)) {
@@ -41,13 +57,9 @@ const serializeConsoleArgument = (value: unknown): string => {
     return JSON.stringify(value) ?? String(value);
 };
 
-const captureReconciliationLogLines = (): void => {
+const captureConsoleLines = (): void => {
     const captureArguments = (...arguments_: unknown[]): void => {
-        const serializedArguments = arguments_.map(serializeConsoleArgument).join('\n');
-
-        if (reconciliationLogContexts.some(context => serializedArguments.includes(`[${context}::`))) {
-            capturedReconciliationLogLines.push(serializedArguments);
-        }
+        capturedConsoleLines.push(arguments_.map(serializeConsoleArgument).join('\n'));
     };
 
     vi.spyOn(console, 'debug').mockImplementation(captureArguments);
@@ -56,25 +68,29 @@ const captureReconciliationLogLines = (): void => {
 };
 
 const expectReconciliationLogsArePrivate = (): void => {
-    const capturedOutput = capturedReconciliationLogLines.join('\n');
+    const capturedOutput = capturedConsoleLines.join('\n');
 
-    expect(capturedReconciliationLogLines).not.toEqual([]);
-    for (const context of reconciliationLogContexts) {
-        expect(capturedOutput).toContain(`[${context}::`);
-    }
+    expect(capturedConsoleLines).not.toEqual([]);
     for (const sentinel of reconciliationSentinels) {
         expect(capturedOutput).not.toContain(sentinel);
     }
 };
 
+const seedSensitiveIdentifiers = async (): Promise<void> => {
+    await testDb.$client.runAsync("INSERT INTO sqlite_sequence(name, seq) VALUES ('accounts', 810000000000)");
+    await testDb.$client.runAsync("INSERT INTO sqlite_sequence(name, seq) VALUES ('transactions', 820000000000)");
+    await testDb.$client.runAsync("INSERT INTO sqlite_sequence(name, seq) VALUES ('transaction_entries', 830000000000)");
+};
+
 describe('consolidation/reconciliation-log-privacy', () => {
     afterEach(() => {
         vi.restoreAllMocks();
-        capturedReconciliationLogLines.length = 0;
+        capturedConsoleLines.length = 0;
     });
 
     it('does not expose reconciliation data in successful lifecycle logs from every reconciliation service', async () => {
-        captureReconciliationLogLines();
+        captureConsoleLines();
+        await seedSensitiveIdentifiers();
 
         const transferMcc = testQueryService.findMccByCode('4829');
         testSeedService.amountTransferPair(424242 * PRECISION, transferMcc.id);
@@ -91,13 +107,20 @@ describe('consolidation/reconciliation-log-privacy', () => {
         const refundCandidates = await refundPairRepository.findCandidates();
 
         expect(transferResult.consolidated).toBe(1);
+        const canonicalTransfer = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)[0];
+
         await expect(consolidationRepairExecutorService.consolidateRefund(refundCandidates[0])).resolves.toBe(true);
         await expect(refundConsolidationService.findRefundableExpenses(refunds[0].id, 'reference-sentinel')).resolves.toEqual([]);
+        await expect(unconsolidationService.unconsolidateById(canonicalTransfer.id, testDb)).resolves.toBeUndefined();
+        for (const context of reconciliationLogContexts) {
+            expect(capturedConsoleLines.join('\n')).toContain(`[${context}::`);
+        }
         expectReconciliationLogsArePrivate();
     });
 
     it('does not expose thrown error payloads from every reconciliation service', async () => {
-        captureReconciliationLogLines();
+        captureConsoleLines();
+        await seedSensitiveIdentifiers();
 
         const transferMcc = testQueryService.findMccByCode('4829');
         testSeedService.amountTransferPair(424242 * PRECISION, transferMcc.id);
@@ -127,7 +150,14 @@ describe('consolidation/reconciliation-log-privacy', () => {
         vi.spyOn(refundPairRepository, 'findRefundableExpenseCandidates').mockRejectedValue(new Error('refund-error-sentinel'));
 
         await expect(refundConsolidationService.findRefundableExpenses(-1, 'reference-sentinel')).rejects.toThrow('refund-error-sentinel');
-        expect(vi.mocked(console.error).mock.calls.some(arguments_ => arguments_.includes(executorMutationError))).toBe(true);
         expectReconciliationLogsArePrivate();
+    });
+
+    it('preserves raw error diagnostics for ordinary logs outside reconciliation', () => {
+        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(emptyFn);
+        const ordinaryError = new Error('ordinary-error-diagnostic');
+
+        expect(() => new OrdinaryLoggedService().fail(ordinaryError)).toThrow('ordinary-error-diagnostic');
+        expect(consoleErrorSpy.mock.calls.some(arguments_ => arguments_.includes(ordinaryError))).toBe(true);
     });
 });

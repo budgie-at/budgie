@@ -1,6 +1,6 @@
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { isError } from '@rnw-community/shared';
 
 import type { ConsolidationRepositoriesInterface } from '../interface/consolidation-repositories.interface';
 import type {
@@ -18,7 +18,11 @@ export class ConsolidationCandidateService {
         private readonly yieldControl: () => Promise<void>
     ) {}
 
-    @Log('enter', result => `done existingTransferIncomeDuplicateCount=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log.withoutErrorPayload(
+        'enter',
+        result => `done existingTransferIncomeDuplicateCount=${result.length}`,
+        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
+    )
     async findExistingTransferIncomeDuplicateRepairCandidates(): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
         const existingTransferBridgeCandidates = await this.repositories.existingTransferRepository.findBridgeCandidates(null);
         await this.yieldControl();
@@ -42,7 +46,11 @@ export class ConsolidationCandidateService {
         return existingTransferIncomeDuplicateCandidates;
     }
 
-    @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log.withoutErrorPayload(
+        'enter',
+        result => `done count=${result}`,
+        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
+    )
     async countManualReviewCandidates(): Promise<number> {
         const [manualReviewCandidates, atmCashWithdrawalReviewCandidates, refundReviewCandidates] = await Promise.all([
             this.repositories.transferPairRepository.findManualReviewCandidates(),

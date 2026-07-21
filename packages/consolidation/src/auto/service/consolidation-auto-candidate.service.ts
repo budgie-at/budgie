@@ -1,6 +1,6 @@
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isError } from '@rnw-community/shared';
 
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type { ConsolidationFamilyRegistryService } from './consolidation-family-registry.service';
@@ -9,12 +9,10 @@ import type { ConsolidationScanScopeInterface, ExistingTransferIncomeDuplicateCa
 export class ConsolidationAutoCandidateService {
     constructor(private readonly consolidationFamilyRegistryService: ConsolidationFamilyRegistryService) {}
 
-    @Log(
-        (scope, onProgress) => `enter scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))}`,
-        (result, scope, onProgress) =>
-            `done scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
-        (error, scope, onProgress) =>
-            `throw scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
+    @Log.withoutErrorPayload(
+        () => 'enter process',
+        result => `done foundCount=${result.found} consolidatedCount=${result.consolidated}`,
+        error => `throw processErrorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async process(
         scope: ConsolidationScanScopeInterface | null = null,
@@ -54,10 +52,10 @@ export class ConsolidationAutoCandidateService {
         return { found: result.found, consolidated: result.consolidated };
     }
 
-    @Log(
-        scope => `enter scopeIdCount=${scope?.transactionIds.length ?? 0}`,
-        (result, scope) => `done scopeIdCount=${scope?.transactionIds.length ?? 0} count=${result}`,
-        (error, scope) => `throw scopeIdCount=${scope?.transactionIds.length ?? 0} error=${getErrorMessage(error)}`
+    @Log.withoutErrorPayload(
+        () => 'enter count',
+        result => `done candidateCount=${result}`,
+        error => `throw countErrorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async count(scope: ConsolidationScanScopeInterface | null = null): Promise<number> {
         const families = this.consolidationFamilyRegistryService.buildFamilies();
@@ -83,10 +81,11 @@ export class ConsolidationAutoCandidateService {
         return result.found;
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         candidates => `enter existingTransferIncomeDuplicateCount=${candidates.length}`,
         (result, candidates) => `done existingTransferIncomeDuplicateCount=${candidates.length} consolidated=${result}`,
-        (error, candidates) => `throw existingTransferIncomeDuplicateCount=${candidates.length} error=${getErrorMessage(error)}`
+        (error, candidates) =>
+            `throw existingTransferIncomeDuplicateCount=${candidates.length} errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async processExistingTransferIncomeDuplicateCandidates(
         candidates: ExistingTransferIncomeDuplicateCandidateInterface[]
