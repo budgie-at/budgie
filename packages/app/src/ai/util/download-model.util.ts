@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings -- Internal error message, not user-facing */
+/* oxlint-disable lingui/no-unlocalized-strings -- Internal error message, not user-facing */
 import { File, Paths } from 'expo-file-system';
 import { createDownloadResumable } from 'expo-file-system/legacy';
 

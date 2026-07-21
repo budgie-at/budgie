@@ -74,7 +74,7 @@ export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void })
             isLiveRef.current = false;
             cancel();
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- Single mount-bound lifecycle: starts when ready, recurses on re-record, cancels on unmount
+        // oxlint-disable-next-line react/exhaustive-deps -- Single mount-bound lifecycle: starts when ready, recurses on re-record, cancels on unmount
     }, [isReady]);
 
     const handleRecord = () => {

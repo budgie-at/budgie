@@ -1,11 +1,13 @@
+import { setTimeout } from 'node:timers';
+
 import { vi } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
 
 export const withCoolDownSpy = async (coolDownWindowMs: number, run: () => Promise<void>): Promise<number[]> => {
     const coolDownDelays: number[] = [];
-    const realSetTimeout = globalThis.setTimeout;
-    const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout').mockImplementation((handler: TimerHandler, delay?: number, ...args) => {
+    const realSetTimeout = setTimeout;
+    const setTimeoutSpy = vi.spyOn(global, 'setTimeout').mockImplementation((handler, delay, ...args) => {
         if (typeof handler === 'function' && delay === coolDownWindowMs) {
             coolDownDelays.push(delay);
             handler();

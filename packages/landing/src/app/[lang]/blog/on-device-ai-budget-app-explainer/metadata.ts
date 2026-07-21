@@ -2,7 +2,7 @@ import { msg } from '@lingui/core/macro';
 
 import type { ArticleRegistryEntryInterface } from '../../../../blog/interface/article-registry-entry.interface';
 
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 
 export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'on-device-ai-budget-app-explainer',
@@ -19,4 +19,4 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     relatedFeatureSlugs: ['ai-auto-categorization', 'voice-transaction-entry', 'ai-transaction-suggestions', 'on-device-ai-budget-app']
 };
 
-/* eslint-enable lingui/no-unlocalized-strings */
+/* oxlint-enable lingui/no-unlocalized-strings */

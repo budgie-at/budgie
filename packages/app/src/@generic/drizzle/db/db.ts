@@ -1,4 +1,3 @@
-import * as SQLite from 'expo-sqlite';
 import { BudgetCategoryLimitRepository } from '@budgie/budget/query/budget-category-limit-repository';
 import { BudgetRepository } from '@budgie/budget/query/budget-repository';
 import {
@@ -8,8 +7,6 @@ import {
     RefundPairRepository,
     TransferPairRepository
 } from '@budgie/consolidation';
-import { getLogger } from '@budgie/logger';
-import { drizzle } from 'drizzle-orm/expo-sqlite';
 import {
     AccountBalanceRepository,
     AccountRepository,
@@ -38,12 +35,18 @@ import {
     TransactionRuleRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
-import { DB_NAME } from '../constant/db-name.constant';
-import * as schema from './schema';
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getLogger } from '@budgie/logger';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
 import * as SecureStore from 'expo-secure-store';
+import * as SQLite from 'expo-sqlite';
+
+import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+
 import { PIN_KEY } from '../../../auth/constant/pin-key.constant';
 import { PIN_SECURE_STORE_OPTIONS } from '../../../auth/constant/pin-secure-store-options.constant';
+import { DB_NAME } from '../constant/db-name.constant';
+
+import * as schema from './schema';
 
 import type { DB } from '@budgie/contracts';
 
@@ -62,17 +65,17 @@ const dbInit = () => {
         global.__expoSqliteDb__.execSync(`PRAGMA key = '${pin}';`);
     }
 
-    global.__expoSqliteDb__.execSync('PRAGMA journal_mode = WAL;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA busy_timeout = 5000;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA foreign_keys = ON;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA synchronous = NORMAL;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA cache_size = -20000;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA mmap_size = 268435456;'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('PRAGMA temp_store = MEMORY;'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA journal_mode = WAL;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA busy_timeout = 5000;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA foreign_keys = ON;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA synchronous = NORMAL;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA cache_size = -20000;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA mmap_size = 268435456;'); // oxlint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA temp_store = MEMORY;'); // oxlint-disable-line lingui/no-unlocalized-strings
 
     try {
         logger.log('sqlite:bundled-extensions', { extensionNames: Object.keys(SQLite.bundledExtensions).join(',') });
-        const extension = SQLite.bundledExtensions['sqlite-vec']; // eslint-disable-line lingui/no-unlocalized-strings
+        const extension = SQLite.bundledExtensions['sqlite-vec']; // oxlint-disable-line lingui/no-unlocalized-strings
 
         if (isDefined(extension)) {
             logger.log('sqlite:vec-extension', {
@@ -85,9 +88,9 @@ const dbInit = () => {
             } else {
                 logger.log('sqlite:vec-load-skip');
             }
-            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
-            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
-            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
+            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
+            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
+            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
             logger.log('sqlite:vec-tables-ready');
         } else {
             logger.log('sqlite:vec-extension-missing');

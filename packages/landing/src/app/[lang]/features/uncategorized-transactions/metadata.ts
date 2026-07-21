@@ -4,7 +4,7 @@ import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum'
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 export const FEATURE_METADATA = {
     slug: 'uncategorized-transactions',
     tier: FeatureTierEnum.CORE,

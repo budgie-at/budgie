@@ -1,10 +1,9 @@
-import { describe, it } from 'vitest';
+import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { http, HttpResponse } from 'msw';
+import { describe, it } from 'vitest';
 
 import { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases, setupMonobankFixture } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
-
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
 describe('monobank/error-recovery', () => {
     for (const { label, status } of httpFailureCases) {

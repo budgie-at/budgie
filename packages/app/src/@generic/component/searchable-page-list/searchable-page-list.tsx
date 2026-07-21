@@ -1,6 +1,9 @@
+import { useScreenChrome } from '@budgie/screen-chrome';
+import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactElement, ReactNode } from 'react';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -10,9 +13,9 @@ import {
     LEGEND_LIST_STYLE,
     legendListKeyExtractor
 } from '../../constant/legend-list.constant';
+import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
-import { BudgieLegendList } from '../budgie-legend-list/budgie-legend-list';
 import { DeletableRow } from '../deletable-row/deletable-row';
 
 import { SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM, SEARCHABLE_LIST_FOOTER_HEIGHT } from './searchable-page-list.constant';
@@ -31,12 +34,9 @@ interface Props<T extends IdInterface> {
     sizing?: LegendListSizingInterface<T>;
 }
 
-const CONTENT_CONTAINER_STYLE = { gap: LEGEND_LIST_CONTENT_GAP, paddingBottom: SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM };
-
-const HEADER_SPACER_STYLE = { height: LEGEND_LIST_HEADER_HEIGHT };
 const FOOTER_SPACER_STYLE = { height: SEARCHABLE_LIST_FOOTER_HEIGHT };
+const MAINTAIN_VISIBLE_CONTENT_POSITION = { data: false, size: true };
 
-const listHeader = <View style={HEADER_SPACER_STYLE} />;
 const listFooter = <View style={FOOTER_SPACER_STYLE} />;
 
 export const SearchablePageList = <T extends IdInterface>({
@@ -50,6 +50,13 @@ export const SearchablePageList = <T extends IdInterface>({
     sizing
 }: Props<T>) => {
     const [notify] = useVibration();
+    const { scrollY } = useScreenChrome();
+    const insets = useSafeAreaInsets();
+    const contentContainerStyle = {
+        gap: LEGEND_LIST_CONTENT_GAP,
+        paddingTop: insets.top + SCREEN_CHROME_CONTENT_INSET_TOP,
+        paddingBottom: SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM
+    };
 
     const handleDeleteItem = async (id: number) => {
         if (!isDefined(onDelete)) {
@@ -80,13 +87,15 @@ export const SearchablePageList = <T extends IdInterface>({
         );
     };
 
+    const sharedValues = { scrollOffset: scrollY };
+
     return (
         <>
-            <BudgieLegendList
+            <AnimatedLegendList
                 style={LEGEND_LIST_STYLE}
                 data={data}
-                contentContainerStyle={CONTENT_CONTAINER_STYLE}
-                ListHeaderComponent={customListHeader ?? listHeader}
+                contentContainerStyle={contentContainerStyle}
+                ListHeaderComponent={customListHeader}
                 estimatedHeaderSize={estimatedHeaderSize}
                 renderItem={renderItem}
                 keyExtractor={legendListKeyExtractor}
@@ -94,6 +103,10 @@ export const SearchablePageList = <T extends IdInterface>({
                 getItemType={sizing?.getItemType}
                 keyboardShouldPersistTaps="handled"
                 ListFooterComponent={listFooter}
+                sharedValues={sharedValues}
+                recycleItems
+                maintainVisibleContentPosition={MAINTAIN_VISIBLE_CONTENT_POSITION}
+                showsVerticalScrollIndicator={false}
             />
 
             {children}

@@ -1,11 +1,9 @@
-import { describe, expect, it } from 'vitest';
-import { eq } from 'drizzle-orm';
-
+import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, SyncModeEnum, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
+import { describe, expect, it } from 'vitest';
 
 import { buildMonobank, monobankStub, seed, testDb } from '../../harness';
-
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
 describe('monobank/consolidation-survives-resync', () => {
     it('re-importing a consolidated source transaction must not destroy the canonical TRANSFER (regression: bug 2)', async () => {

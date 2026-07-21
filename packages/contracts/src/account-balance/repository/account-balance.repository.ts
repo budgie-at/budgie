@@ -11,9 +11,9 @@ import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { SyncEntityTable } from '../../sync/table/sync-entity.table';
-import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
 
 import { accountBalanceDebtProgressSqlInputBuilder } from './account-balance-debt-progress-sql-input.builder';

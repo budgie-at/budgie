@@ -294,6 +294,10 @@ msgstr "Додати запис"
 msgid "Add Tag"
 msgstr "Додати тег"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "Add transactions to see how your spending breaks down by category."
+msgstr ""
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
@@ -1406,7 +1410,7 @@ msgstr "Введіть значення..."
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код для розблокування"
 
@@ -1422,7 +1426,7 @@ msgstr "Введіть свій API-секрет Binance"
 msgid "Enter your Monobank API token"
 msgstr "Введіть ваш API-токен Монобанку"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
 
@@ -1549,10 +1553,6 @@ msgstr "Завантаження нових..."
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field"
 msgstr "Поле"
-
-#: src/account/component/create-account-screen/create-account-screen.tsx
-msgid "Fill in the account details"
-msgstr "Заповніть деталі рахунку"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
@@ -1750,7 +1750,7 @@ msgstr "Доходи за категоріями"
 msgid "Income by Tag"
 msgstr "Доходи за тегами"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
@@ -2072,6 +2072,10 @@ msgstr "Жоден архівований рахунок не відповіда
 msgid "No categories found"
 msgstr "Категорій не знайдено"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "No categories in this period"
+msgstr ""
+
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "Жодна категорія не відповідає вашому пошуку"
@@ -2282,10 +2286,6 @@ msgstr "Відкрийте додаток Приват24"
 msgid "Operator"
 msgstr "Оператор"
 
-#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
-msgid "Optional per-category caps within this budget"
-msgstr "Опційні обмеження за категоріями у межах цього бюджету"
-
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "або"
@@ -2377,7 +2377,6 @@ msgstr "Оберіть категорію для встановлення лім
 msgid "Pick a window. Existing data is preserved."
 msgstr "Виберіть період. Наявні дані зберігаються."
 
-#: src/app/(main)/pin.tsx
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PIN must be {PIN_LENGTH} digits"
 msgstr "PIN-код має бути {PIN_LENGTH} цифр"
@@ -2825,7 +2824,7 @@ msgstr "Вибрати зовнішнє джерело"
 msgid "Select Field"
 msgstr "Вибрати поле"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 msgid "Select File"
 msgstr "Обрати файл"
 
@@ -2997,7 +2996,7 @@ msgid "Start Import"
 msgstr "Почати імпорт"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
@@ -3096,7 +3095,7 @@ msgstr "Позначайте транзакції тегами, щоб поба�
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
-#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags"
 msgstr "Теги"

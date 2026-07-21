@@ -1,5 +1,5 @@
-import { binanceSyncService } from '@app/sync/service/binance-sync.service';
 import { transferPairRepository } from '@app/@generic/drizzle/db/db';
+import { binanceSyncService } from '@app/sync/service/binance-sync.service';
 import { PRECISION, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 

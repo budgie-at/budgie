@@ -1,6 +1,6 @@
 import { isDefined } from '@rnw-community/shared';
 
-import { databaseLiveQueryRevisionStore } from '../store/database-live-query-revision.store';
+import { databaseRefreshService } from '../../service/database-refresh.service';
 
 export function InvalidateDatabaseLiveQuery(shouldInvalidate?: (...args: unknown[]) => boolean) {
     return function <This, Args extends unknown[], Result>(
@@ -18,7 +18,10 @@ export function InvalidateDatabaseLiveQuery(shouldInvalidate?: (...args: unknown
             const result = await originalMethod.call(this, ...args);
 
             if (shouldInvalidate?.(...args) ?? true) {
-                databaseLiveQueryRevisionStore.notifyChanged();
+                // useDatabaseLiveQuery keys its deps on databaseRefreshService;
+                // the previous revision store had no subscribers, so decorated
+                // mutations (e.g. convert-to-transfer) never refreshed the UI.
+                databaseRefreshService.notifyChanged();
             }
 
             return result;

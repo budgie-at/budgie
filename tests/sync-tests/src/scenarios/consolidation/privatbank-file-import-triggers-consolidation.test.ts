@@ -1,12 +1,10 @@
+import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { SyncAccountTypeEnum, SyncProviderEnum, privatbankTransactionMapper } from '@budgie/sync';
+import { eq } from 'drizzle-orm';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { SyncAccountTypeEnum, SyncProviderEnum, privatbankTransactionMapper } from '@budgie/sync';
-import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
-import { eq } from 'drizzle-orm';
-
 import { expectFileImportConsolidationEnqueued, seed, StubFileBankSyncService, testDb } from '../../harness';
-
-import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';

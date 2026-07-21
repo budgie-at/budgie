@@ -7,8 +7,8 @@ import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { FullPage } from '../../../@generic/component/page/full-page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';

@@ -9,6 +9,8 @@ const VIRTUAL_SHIMS: Record<string, string> = {
     expo: `export const requireNativeModule = () => ({});`,
     'expo-file-system': `export const File = class { constructor() {} };`,
     'expo-sqlite': `
+        export class SQLiteDatabase {}
+        export class SQLiteStatement {}
         export const openDatabaseSync = () => ({});
         export const deleteDatabaseAsync = async () => undefined;
         export const bundledExtensions = {};

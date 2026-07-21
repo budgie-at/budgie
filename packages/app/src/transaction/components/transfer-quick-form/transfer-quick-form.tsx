@@ -116,7 +116,7 @@ export const TransferQuickForm = (props: Props) => {
 
         conversion.convert(sourceKeypad.numericValue, fromInstrumentId, toInstrumentId);
         hasInitializedRef.current = true;
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- conversion methods are stable, only trigger on value/instrument changes
+        // oxlint-disable-next-line react/exhaustive-deps -- conversion methods are stable, only trigger on value/instrument changes
     }, [sourceKeypad.numericValue, fromInstrumentId, toInstrumentId]);
 
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);

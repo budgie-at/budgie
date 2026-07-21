@@ -1,0 +1,1028 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [],
+  "jsPlugins": [
+    {
+      "name": "lingui",
+      "specifier": "eslint-plugin-lingui"
+    },
+    {
+      "name": "react-hooks-js",
+      "specifier": "eslint-plugin-react-hooks"
+    },
+    {
+      "name": "n",
+      "specifier": "eslint-plugin-n"
+    },
+    {
+      "name": "@rnw-community",
+      "specifier": "@rnw-community/eslint-plugin"
+    },
+    {
+      "name": "@stylistic",
+      "specifier": "@stylistic/eslint-plugin"
+    },
+    {
+      "name": "budgie",
+      "specifier": "./eslint-rules/max-component-props.mjs"
+    }
+  ],
+  "categories": {
+    "correctness": "off"
+  },
+  "options": {
+    "typeAware": true
+  },
+  "env": {
+    "builtin": true
+  },
+  "settings": {
+    "node": {
+      "version": ">=22.0.0"
+    }
+  },
+  "ignorePatterns": [
+    "**/.next/**",
+    "**/.turbo/**",
+    "**/.expo/**",
+    "**/.android/**",
+    "**/.ios/**",
+    ".agents/**",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/public/**",
+    "**/build/**",
+    "**/drizzle/**",
+    "**/*.html",
+    "**/*.json",
+    "**/*.d.ts",
+    "**/messages.po",
+    "**/messages.ts",
+    "**/babel.config.js",
+    "**/fingerprint.config.js",
+    "packages/app/scripts/**",
+    "eslint.config.mjs"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "accessor-pairs": "error",
+        "array-callback-return": "error",
+        "arrow-body-style": [
+          "error",
+          "as-needed"
+        ],
+        "block-scoped-var": "error",
+        "capitalized-comments": "off",
+        "class-methods-use-this": "off",
+        "complexity": [
+          "error",
+          25
+        ],
+        "constructor-super": "error",
+        "curly": [
+          "error",
+          "all"
+        ],
+        "default-case": "error",
+        "default-case-last": "error",
+        "default-param-last": "error",
+        "eqeqeq": "error",
+        "for-direction": "error",
+        "func-name-matching": "error",
+        "func-names": "error",
+        "func-style": "error",
+        "getter-return": "error",
+        "grouped-accessor-pairs": "error",
+        "guard-for-in": "error",
+        "id-length": [
+          "error",
+          {
+            "exceptions": [
+              "x",
+              "y",
+              "z",
+              "i",
+              "j",
+              "e",
+              "_",
+              "w",
+              "h",
+              "t",
+              "X"
+            ],
+            "checkGeneric": false
+          }
+        ],
+        "id-match": "error",
+        "init-declarations": "off",
+        "logical-assignment-operators": "error",
+        "max-classes-per-file": "error",
+        "max-depth": "error",
+        "max-lines": "error",
+        "max-lines-per-function": [
+          "error",
+          {
+            "max": 85,
+            "skipBlankLines": true,
+            "skipComments": true
+          }
+        ],
+        "max-nested-callbacks": "error",
+        "max-params": [
+          "error",
+          {
+            "max": 4
+          }
+        ],
+        "max-statements": [
+          "error",
+          {
+            "max": 12
+          },
+          {
+            "ignoreTopLevelFunctions": true
+          }
+        ],
+        "new-cap": "off",
+        "no-alert": "error",
+        "no-array-constructor": "error",
+        "no-async-promise-executor": "error",
+        "no-await-in-loop": "error",
+        "no-bitwise": "error",
+        "no-caller": "error",
+        "no-case-declarations": "error",
+        "no-class-assign": "error",
+        "no-compare-neg-zero": "error",
+        "no-cond-assign": "error",
+        "no-console": "error",
+        "no-const-assign": "error",
+        "no-constant-binary-expression": "error",
+        "no-constant-condition": "error",
+        "no-constructor-return": "error",
+        "no-continue": "error",
+        "no-control-regex": "error",
+        "no-debugger": "error",
+        "no-delete-var": "error",
+        "no-div-regex": "error",
+        "no-dupe-class-members": "error",
+        "no-dupe-else-if": "error",
+        "no-dupe-keys": "error",
+        "no-duplicate-case": "error",
+        "no-duplicate-imports": "off",
+        "no-else-return": "error",
+        "no-empty": "error",
+        "no-empty-character-class": "error",
+        "no-empty-function": [
+          "error",
+          {
+            "allow": [
+              "constructors"
+            ]
+          }
+        ],
+        "no-empty-pattern": "error",
+        "no-empty-static-block": "error",
+        "no-eq-null": "error",
+        "no-eval": "error",
+        "no-ex-assign": "error",
+        "no-extend-native": "error",
+        "no-extra-bind": "error",
+        "no-extra-boolean-cast": "error",
+        "no-extra-label": "error",
+        "no-fallthrough": "error",
+        "no-func-assign": "error",
+        "no-global-assign": "error",
+        "no-implicit-coercion": "error",
+        "no-implicit-globals": "error",
+        "no-implied-eval": "off",
+        "no-import-assign": "error",
+        "no-inline-comments": "error",
+        "no-inner-declarations": "error",
+        "no-invalid-regexp": "error",
+        "no-irregular-whitespace": "error",
+        "no-iterator": "error",
+        "no-label-var": "error",
+        "no-labels": "error",
+        "no-lone-blocks": "error",
+        "no-lonely-if": "error",
+        "no-loop-func": "error",
+        "no-loss-of-precision": "error",
+        "no-magic-numbers": [
+          "error",
+          {
+            "ignore": [
+              -20,
+              -10,
+              -2,
+              -4,
+              -3,
+              -6,
+              -5,
+              -1,
+              -0.5,
+              0,
+              0.0001,
+              0.01,
+              0.05,
+              0.1,
+              0.2,
+              0.3,
+              0.35,
+              0.5,
+              0.6,
+              0.64,
+              0.65,
+              0.66,
+              0.75,
+              0.76,
+              0.79,
+              0.8,
+              0.81,
+              0.83,
+              1,
+              1.5,
+              1.8,
+              1.97,
+              2,
+              2.5,
+              3,
+              3.2,
+              3.25,
+              4,
+              4.25,
+              4.5,
+              5,
+              5.5,
+              6,
+              6.5,
+              7,
+              7.5,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              19,
+              18,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              31.5,
+              32,
+              33,
+              35,
+              34,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              45,
+              48,
+              50,
+              51,
+              59,
+              60,
+              70,
+              75,
+              80,
+              96,
+              99,
+              100,
+              125,
+              150,
+              180,
+              200,
+              201,
+              250,
+              255,
+              256,
+              300,
+              307,
+              308,
+              350,
+              360,
+              365,
+              400,
+              404,
+              405,
+              500,
+              600,
+              640,
+              725,
+              750,
+              900,
+              1000,
+              1024,
+              1200,
+              1600,
+              2000,
+              2019,
+              2500,
+              3000,
+              3500,
+              3600,
+              5000,
+              6000,
+              10000,
+              10001,
+              10100,
+              16000,
+              30000,
+              60000,
+              120000,
+              1000000000,
+              999
+            ]
+          }
+        ],
+        "no-misleading-character-class": "error",
+        "no-multi-assign": "error",
+        "no-multi-str": "error",
+        "no-negated-condition": "error",
+        "no-nested-ternary": "error",
+        "no-new": "error",
+        "no-new-func": "error",
+        "no-new-native-nonconstructor": "error",
+        "no-new-wrappers": "error",
+        "no-nonoctal-decimal-escape": "error",
+        "no-obj-calls": "error",
+        "no-object-constructor": "error",
+        "no-param-reassign": "error",
+        "no-plusplus": "error",
+        "no-promise-executor-return": "error",
+        "no-proto": "error",
+        "no-prototype-builtins": "error",
+        "no-redeclare": "error",
+        "no-regex-spaces": "error",
+        "no-restricted-exports": [
+          "error",
+          {}
+        ],
+        "no-restricted-globals": "error",
+        "no-restricted-imports": "error",
+        "no-restricted-properties": "error",
+        "no-return-assign": "error",
+        "no-script-url": "error",
+        "no-self-assign": "error",
+        "no-self-compare": "error",
+        "no-sequences": "error",
+        "no-setter-return": "error",
+        "no-shadow": "off",
+        "no-shadow-restricted-names": "error",
+        "no-sparse-arrays": "error",
+        "no-template-curly-in-string": "error",
+        "no-ternary": "off",
+        "no-this-before-super": "error",
+        "no-throw-literal": "off",
+        "no-unassigned-vars": "error",
+        "no-undefined": "error",
+        "no-underscore-dangle": "error",
+        "no-unexpected-multiline": "error",
+        "no-unmodified-loop-condition": "error",
+        "no-unneeded-ternary": "error",
+        "no-unreachable": "error",
+        "no-unreachable-loop": [
+          "error",
+          {
+            "ignore": []
+          }
+        ],
+        "no-unsafe-finally": "error",
+        "no-unsafe-negation": "error",
+        "no-unsafe-optional-chaining": "error",
+        "no-unused-expressions": "error",
+        "no-unused-labels": "error",
+        "no-unused-private-class-members": "error",
+        "no-unused-vars": [
+          "error",
+          {
+            "args": "all",
+            "argsIgnorePattern": "^_",
+            "caughtErrors": "all",
+            "caughtErrorsIgnorePattern": "^_",
+            "destructuredArrayIgnorePattern": "^_",
+            "varsIgnorePattern": "(^_)|(Fields$)",
+            "ignoreRestSiblings": true
+          }
+        ],
+        "no-use-before-define": "error",
+        "no-useless-assignment": "error",
+        "no-useless-backreference": "error",
+        "no-useless-call": "error",
+        "no-useless-catch": "error",
+        "no-useless-computed-key": "error",
+        "no-useless-concat": "error",
+        "no-useless-constructor": "error",
+        "no-useless-escape": "error",
+        "no-useless-rename": "error",
+        "no-useless-return": "error",
+        "no-var": "error",
+        "no-void": "off",
+        "no-warning-comments": [
+          "error",
+          {
+            "terms": [
+              "fixme",
+              "xxx"
+            ],
+            "location": "start"
+          }
+        ],
+        "no-with": "error",
+        "object-shorthand": "error",
+        "operator-assignment": "error",
+        "prefer-arrow-callback": "error",
+        "prefer-const": "error",
+        "prefer-destructuring": "error",
+        "prefer-exponentiation-operator": "error",
+        "prefer-named-capture-group": "off",
+        "prefer-numeric-literals": "error",
+        "prefer-object-has-own": "error",
+        "prefer-object-spread": "error",
+        "prefer-promise-reject-errors": "off",
+        "prefer-regex-literals": "error",
+        "prefer-rest-params": "error",
+        "prefer-spread": "error",
+        "prefer-template": "error",
+        "preserve-caught-error": "error",
+        "radix": "error",
+        "require-await": "off",
+        "require-unicode-regexp": "error",
+        "require-yield": "error",
+        "sort-keys": "off",
+        "sort-vars": "error",
+        "symbol-description": "error",
+        "unicode-bom": "error",
+        "use-isnan": "error",
+        "valid-typeof": "error",
+        "vars-on-top": "error",
+        "yoda": "error",
+        "typescript/consistent-return": "error",
+        "typescript/dot-notation": "error",
+        "typescript/await-thenable": "error",
+        "typescript/ban-ts-comment": [
+          "error",
+          {
+            "ts-expect-error": "allow-with-description",
+            "minimumDescriptionLength": 5
+          }
+        ],
+        "typescript/no-array-delete": "error",
+        "typescript/no-base-to-string": "error",
+        "typescript/no-confusing-void-expression": [
+          "error",
+          {
+            "ignoreVoidOperator": true
+          }
+        ],
+        "typescript/no-deprecated": "off",
+        "typescript/no-duplicate-enum-values": "error",
+        "typescript/no-duplicate-type-constituents": "error",
+        "typescript/no-dynamic-delete": "error",
+        "typescript/no-empty-object-type": "warn",
+        "typescript/no-explicit-any": "error",
+        "typescript/no-extra-non-null-assertion": "error",
+        "typescript/no-extraneous-class": [
+          "error",
+          {
+            "allowWithDecorator": true
+          }
+        ],
+        "typescript/no-floating-promises": "error",
+        "typescript/no-for-in-array": "error",
+        "typescript/no-implied-eval": "error",
+        "typescript/no-invalid-void-type": "error",
+        "typescript/no-meaningless-void-operator": "off",
+        "typescript/no-misused-new": "error",
+        "typescript/no-misused-promises": [
+          "error",
+          {
+            "checksVoidReturn": {
+              "attributes": false
+            }
+          }
+        ],
+        "typescript/no-misused-spread": "error",
+        "typescript/no-mixed-enums": "error",
+        "typescript/no-namespace": "error",
+        "typescript/no-non-null-asserted-nullish-coalescing": "error",
+        "typescript/no-non-null-asserted-optional-chain": "error",
+        "typescript/no-non-null-assertion": "error",
+        "typescript/no-unnecessary-condition": "error",
+        "typescript/no-redundant-type-constituents": "error",
+        "typescript/no-require-imports": "error",
+        "typescript/no-this-alias": "error",
+        "typescript/no-unnecessary-boolean-literal-compare": "error",
+        "typescript/no-unnecessary-template-expression": "error",
+        "typescript/no-unnecessary-type-arguments": "error",
+        "typescript/no-unnecessary-type-assertion": "error",
+        "typescript/no-unnecessary-type-constraint": "error",
+        "typescript/no-unnecessary-type-conversion": "error",
+        "typescript/no-unnecessary-type-parameters": "warn",
+        "typescript/no-unsafe-argument": "error",
+        "typescript/no-unsafe-assignment": "error",
+        "typescript/no-unsafe-call": "error",
+        "typescript/no-unsafe-declaration-merging": "error",
+        "typescript/no-unsafe-enum-comparison": "error",
+        "typescript/no-unsafe-function-type": "error",
+        "typescript/no-unsafe-member-access": "error",
+        "typescript/no-unsafe-return": "error",
+        "typescript/no-unsafe-unary-minus": "error",
+        "typescript/no-useless-default-assignment": "error",
+        "typescript/no-wrapper-object-types": "error",
+        "typescript/only-throw-error": "error",
+        "typescript/prefer-as-const": "error",
+        "typescript/prefer-literal-enum-member": "error",
+        "typescript/prefer-namespace-keyword": "error",
+        "typescript/prefer-promise-reject-errors": "error",
+        "typescript/prefer-reduce-type-parameter": "error",
+        "typescript/prefer-return-this-type": "error",
+        "typescript/related-getter-setter-pairs": "error",
+        "typescript/require-await": "off",
+        "typescript/restrict-plus-operands": [
+          "error",
+          {
+            "allowAny": false,
+            "allowBoolean": false,
+            "allowNullish": false,
+            "allowNumberAndString": false,
+            "allowRegExp": false
+          }
+        ],
+        "typescript/restrict-template-expressions": [
+          "error",
+          {
+            "allowNumber": true
+          }
+        ],
+        "typescript/return-await": [
+          "error",
+          "error-handling-correctness-only"
+        ],
+        "typescript/triple-slash-reference": "error",
+        "typescript/unbound-method": "error",
+        "typescript/unified-signatures": "error",
+        "typescript/use-unknown-in-catch-callback-variable": "error",
+        "typescript/explicit-member-accessibility": [
+          "error",
+          {
+            "accessibility": "no-public"
+          }
+        ],
+        "typescript/promise-function-async": "off",
+        "typescript/explicit-function-return-type": "off"
+      },
+      "plugins": [
+        "typescript"
+      ]
+    },
+    {
+      "files": [
+        "**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "@stylistic/lines-between-class-members": [
+          "error",
+          "always",
+          {
+            "exceptAfterSingleLine": true
+          }
+        ],
+        "budgie/max-component-props": [
+          "error",
+          {
+            "max": 8,
+            "allow": [
+              "packages/app/src/transaction/components/simple-quick-form-display/simple-quick-form-display.tsx",
+              "packages/app/src/transaction/components/quick-form-bottom-overlay/quick-form-bottom-overlay.tsx",
+              "packages/app/src/transaction/components/simple-quick-form/simple-quick-form.tsx",
+              "packages/app/src/transaction/components/transaction-picker/transaction-picker.tsx",
+              "packages/app/src/transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer.tsx",
+              "packages/app/src/transaction/components/transaction-amount-display/transaction-amount-display.tsx",
+              "packages/app/src/transaction/components/transaction-field-icons/transaction-field-icons.tsx",
+              "packages/app/src/transaction/interface/update-simple-transaction-page-props.interface.ts",
+              "packages/app/src/@generic/component/page-header/page-header.tsx",
+              "packages/app/src/@generic/component/searchable-page/searchable-page.tsx",
+              "packages/app/src/@generic/component/selector-card/selector-card.tsx",
+              "packages/app/src/transaction/components/simple-quick-form-controls/simple-quick-form-controls.tsx",
+              "packages/landing/src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx",
+              "packages/app/src/@generic/component/ai-translation-fields/ai-translation-fields.tsx",
+              "packages/app/src/@generic/component/card/card.tsx",
+              "packages/app/src/@generic/component/circle-icon/circle-icon.tsx",
+              "packages/app/src/@generic/component/empty-state/empty-state.tsx",
+              "packages/app/src/@generic/component/form-amount-input/form-amount-input.tsx",
+              "packages/app/src/@generic/component/form-page/form-page.tsx",
+              "packages/app/src/@generic/component/selector-grid-content/selector-grid-content.tsx",
+              "packages/app/src/account/component/account-action-card/account-action-card.tsx",
+              "packages/app/src/account/component/account-card-base/account-card-base.tsx",
+              "packages/app/src/ai/component/voice-review-footer/voice-review-footer.tsx",
+              "packages/app/src/auth/components/pin-form/pin-form.tsx",
+              "packages/app/src/budget/components/budget-progress-bar/budget-progress-bar.tsx",
+              "packages/app/src/category/components/category-select-content/category-select-content.tsx",
+              "packages/app/src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx",
+              "packages/app/src/settings/components/budget-setting-card/budget-setting-card.tsx",
+              "packages/app/src/tag/components/tags-select-content/tags-select-content.tsx",
+              "packages/app/src/transaction/components/split-entry-row/split-entry-row.tsx",
+              "packages/app/src/transaction/components/transaction-field-icon/transaction-field-icon.tsx",
+              "packages/app/src/transaction/components/transaction-keypad-button/transaction-keypad-button.tsx",
+              "packages/app/src/transaction/components/transaction-keypad/transaction-keypad.tsx",
+              "packages/landing/src/generic/component/blog-card/blog-card.tsx"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "packages/app/**/*.{ts,tsx}",
+        "packages/landing/**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "lingui/t-call-in-function": "error",
+        "lingui/no-single-variables-to-translate": "error",
+        "lingui/no-expression-in-message": "error",
+        "lingui/no-single-tag-to-translate": "error",
+        "lingui/no-trans-inside-trans": "error"
+      }
+    },
+    {
+      "files": [
+        "packages/app/**/*.{ts,tsx}",
+        "packages/landing/**/*.{ts,tsx}"
+      ],
+      "excludeFiles": [
+        "packages/app/**/*.selector.ts"
+      ],
+      "rules": {
+        "lingui/no-unlocalized-strings": [
+          "error",
+          {
+            "ignore": [
+              "^(?![A-Z])\\S+$",
+              "^[A-Z0-9_-]+$",
+              "rgba",
+              "rgb",
+              "^Inter_[0-9A-Z]+",
+              "^Arrow[A-Z]+",
+              "Tab",
+              "Enter",
+              "use client"
+            ],
+            "ignoreNames": [
+              {
+                "regex": {
+                  "pattern": "className",
+                  "flags": "i"
+                }
+              },
+              {
+                "regex": {
+                  "pattern": "icon",
+                  "flags": "i"
+                }
+              },
+              {
+                "regex": {
+                  "pattern": "sizes",
+                  "flags": "i"
+                }
+              },
+              {
+                "regex": {
+                  "pattern": "^d$",
+                  "flags": ""
+                }
+              }
+            ],
+            "ignoreFunctions": [
+              "format",
+              "cva",
+              "Log",
+              "getLogger",
+              "logger.log",
+              "logger.error",
+              "logger.debug",
+              "syncLogger.log",
+              "syncLogger.error"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "**/*.service.ts"
+      ],
+      "rules": {
+        "max-lines": [
+          "error",
+          {
+            "max": 500,
+            "skipBlankLines": true,
+            "skipComments": true
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "import/export": "error",
+        "import/namespace": "off",
+        "import/default": "off",
+        "import/no-named-as-default": "off",
+        "import/no-named-as-default-member": "off",
+        "import/no-duplicates": "warn",
+        "import/no-cycle": "off",
+        "import/extensions": "off"
+      },
+      "env": {
+        "es2018": true,
+        "es2026": true
+      },
+      "plugins": [
+        "import"
+      ]
+    },
+    {
+      "files": [
+        "**/*.ts"
+      ],
+      "rules": {
+        "node/no-exports-assign": "error",
+        "n/hashbang": "error",
+        "n/no-deprecated-api": "error",
+        "n/no-extraneous-import": [
+          "error",
+          {
+            "allowModules": [
+              "@jest/globals"
+            ]
+          }
+        ],
+        "n/no-extraneous-require": "error",
+        "n/no-missing-require": "error",
+        "n/no-process-exit": "error",
+        "n/no-unpublished-bin": "error",
+        "n/no-unpublished-import": "error",
+        "n/no-unpublished-require": "error",
+        "n/no-unsupported-features/es-builtins": "error",
+        "n/no-unsupported-features/node-builtins": "error",
+        "n/process-exit-as-throw": "error"
+      },
+      "globals": {
+        "__dirname": "readonly",
+        "__filename": "readonly",
+        "AbortController": "readonly",
+        "AbortSignal": "readonly",
+        "atob": "readonly",
+        "Blob": "readonly",
+        "BroadcastChannel": "readonly",
+        "btoa": "readonly",
+        "Buffer": "readonly",
+        "ByteLengthQueuingStrategy": "readonly",
+        "clearImmediate": "readonly",
+        "clearInterval": "readonly",
+        "clearTimeout": "readonly",
+        "CloseEvent": "readonly",
+        "CompressionStream": "readonly",
+        "console": "readonly",
+        "CountQueuingStrategy": "readonly",
+        "crypto": "readonly",
+        "Crypto": "readonly",
+        "CryptoKey": "readonly",
+        "CustomEvent": "readonly",
+        "DecompressionStream": "readonly",
+        "DOMException": "readonly",
+        "Event": "readonly",
+        "EventTarget": "readonly",
+        "fetch": "readonly",
+        "File": "readonly",
+        "FormData": "readonly",
+        "Headers": "readonly",
+        "MessageChannel": "readonly",
+        "MessageEvent": "readonly",
+        "MessagePort": "readonly",
+        "navigator": "readonly",
+        "Navigator": "readonly",
+        "performance": "readonly",
+        "Performance": "readonly",
+        "PerformanceEntry": "readonly",
+        "PerformanceMark": "readonly",
+        "PerformanceMeasure": "readonly",
+        "PerformanceObserver": "readonly",
+        "PerformanceObserverEntryList": "readonly",
+        "PerformanceResourceTiming": "readonly",
+        "process": "readonly",
+        "queueMicrotask": "readonly",
+        "ReadableByteStreamController": "readonly",
+        "ReadableStream": "readonly",
+        "ReadableStreamBYOBReader": "readonly",
+        "ReadableStreamBYOBRequest": "readonly",
+        "ReadableStreamDefaultController": "readonly",
+        "ReadableStreamDefaultReader": "readonly",
+        "Request": "readonly",
+        "Response": "readonly",
+        "setImmediate": "readonly",
+        "setInterval": "readonly",
+        "setTimeout": "readonly",
+        "structuredClone": "readonly",
+        "SubtleCrypto": "readonly",
+        "TextDecoder": "readonly",
+        "TextDecoderStream": "readonly",
+        "TextEncoder": "readonly",
+        "TextEncoderStream": "readonly",
+        "TransformStream": "readonly",
+        "TransformStreamDefaultController": "readonly",
+        "URL": "readonly",
+        "URLSearchParams": "readonly",
+        "WebAssembly": "readonly",
+        "WebSocket": "readonly",
+        "WritableStream": "readonly",
+        "WritableStreamDefaultController": "readonly",
+        "WritableStreamDefaultWriter": "readonly"
+      },
+      "plugins": [
+        "node"
+      ],
+      "env": {
+        "commonjs": true,
+        "es2024": true
+      }
+    },
+    {
+      "files": [
+        "**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "promise/always-return": "error",
+        "promise/no-return-wrap": "error",
+        "promise/no-return-in-finally": "warn",
+        "promise/param-names": "error",
+        "promise/catch-or-return": "error",
+        "promise/no-nesting": "warn",
+        "promise/no-promise-in-callback": "warn",
+        "promise/no-callback-in-promise": "warn",
+        "promise/avoid-new": "off",
+        "promise/no-new-statics": "error",
+        "promise/valid-params": "warn"
+      },
+      "plugins": [
+        "promise"
+      ]
+    },
+    {
+      "files": [
+        "**/*.tsx",
+        "**/*.hook.ts"
+      ],
+      "rules": {
+        "react/display-name": "off",
+        "react/jsx-key": "error",
+        "react/jsx-no-comment-textnodes": "error",
+        "react/jsx-no-duplicate-props": "error",
+        "react/jsx-no-target-blank": "error",
+        "react/jsx-no-undef": "error",
+        "react/no-children-prop": "error",
+        "react/no-danger-with-children": "error",
+        "react/no-direct-mutation-state": "error",
+        "react/no-find-dom-node": "error",
+        "react/no-is-mounted": "error",
+        "react/no-render-return-value": "error",
+        "react/no-string-refs": "error",
+        "react/no-unescaped-entities": "error",
+        "react/no-unknown-property": [
+          "error",
+          {
+            "ignore": [
+              "popover",
+              "popoverTarget",
+              "popoverTargetAction"
+            ]
+          }
+        ],
+        "react/no-unsafe": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/require-render-return": "error",
+        "react/rules-of-hooks": "error",
+        "react/exhaustive-deps": "warn",
+        "max-statements": [
+          "error",
+          15
+        ],
+        "@rnw-community/no-complex-jsx-logic": "error",
+        "react-hooks-js/static-components": "error",
+        "react-hooks-js/use-memo": "error",
+        "react-hooks-js/preserve-manual-memoization": "error",
+        "react-hooks-js/incompatible-library": "warn",
+        "react-hooks-js/immutability": "error",
+        "react-hooks-js/globals": "error",
+        "react-hooks-js/refs": "error",
+        "react-hooks-js/set-state-in-effect": "error",
+        "react-hooks-js/error-boundaries": "error",
+        "react-hooks-js/purity": "error",
+        "react-hooks-js/set-state-in-render": "error",
+        "react-hooks-js/unsupported-syntax": "warn",
+        "react-hooks-js/config": "error",
+        "react-hooks-js/gating": "error",
+        "react/jsx-curly-brace-presence": [
+          "error",
+          {
+            "props": "never",
+            "children": "never"
+          }
+        ],
+        "react/no-multi-comp": "error",
+        "react/forbid-component-props": "off",
+        "react/jsx-filename-extension": [
+          "error",
+          {
+            "extensions": [
+              ".tsx"
+            ]
+          }
+        ],
+        "react/jsx-props-no-spreading": "off",
+        "react/jsx-max-depth": [
+          "error",
+          {
+            "max": 6
+          }
+        ],
+        "react/jsx-no-literals": "off",
+        "react/jsx-no-constructed-context-values": "off"
+      },
+      "plugins": [
+        "react"
+      ]
+    },
+    {
+      "files": [
+        "**/*.spec.ts"
+      ],
+      "rules": {
+        "jest/expect-expect": "off",
+        "jest/no-alias-methods": "error",
+        "jest/no-commented-out-tests": "warn",
+        "jest/no-conditional-expect": "error",
+        "jest/no-deprecated-functions": "error",
+        "jest/no-disabled-tests": "warn",
+        "jest/no-done-callback": "off",
+        "jest/no-export": "error",
+        "jest/no-focused-tests": "error",
+        "jest/no-identical-title": "error",
+        "jest/no-interpolation-in-snapshots": "error",
+        "jest/no-jasmine-globals": "error",
+        "jest/no-mocks-import": "error",
+        "jest/no-standalone-expect": "error",
+        "jest/no-test-prefixes": "error",
+        "jest/valid-describe-callback": "error",
+        "jest/valid-expect": "error",
+        "jest/valid-expect-in-promise": "error",
+        "jest/valid-title": "error",
+        "no-await-in-loop": "off",
+        "jest/require-hook": "off",
+        "jest/max-expects": "off",
+        "no-undefined": "off",
+        "max-classes-per-file": "off",
+        "max-lines-per-function": "off",
+        "max-lines": "off",
+        "max-statements": "off",
+        "func-names": "off",
+        "promise/no-nesting": "off",
+        "no-magic-numbers": "warn"
+      },
+      "plugins": [
+        "jest",
+        "promise",
+        "typescript"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
+}

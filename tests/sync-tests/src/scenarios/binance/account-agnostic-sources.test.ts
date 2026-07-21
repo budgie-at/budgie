@@ -1,5 +1,4 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
-import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import {
     AccountEntityTable,
     AccountTypeEnum,
@@ -8,6 +7,7 @@ import {
     InstrumentTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 

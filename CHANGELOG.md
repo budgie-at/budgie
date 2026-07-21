@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.43.3](https://github.com/budgie-at/budgie/compare/v5.43.2...v5.43.3) (2026-07-20)
+
+
+### Bug Fixes
+
+* **app:** repair migrated borrowed debt history ([#597](https://github.com/budgie-at/budgie/issues/597)) ([c998892](https://github.com/budgie-at/budgie/commit/c998892d7e2811e72c658c87721e5946a3c4d2b4))
+
+
+
+
+
+## [5.43.2](https://github.com/budgie-at/budgie/compare/v5.43.1...v5.43.2) (2026-07-17)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [5.43.1](https://github.com/budgie-at/budgie/compare/v5.43.0...v5.43.1) (2026-07-17)
+
+### Bug Fixes
+
+- **landing:** repair waitlist subscription flow ([#596](https://github.com/budgie-at/budgie/issues/596)) ([926b793](https://github.com/budgie-at/budgie/commit/926b7936f57a890c8ab41242e4a425657e2fe31e))
+
+# [5.43.0](https://github.com/budgie-at/budgie/compare/v5.42.0...v5.43.0) (2026-07-17)
+
+### Features
+
+- **screen-chrome:** progressive blur chrome, collapsible headers and ios 26 edge-effect fix ([#592](https://github.com/budgie-at/budgie/issues/592)) ([2adae1d](https://github.com/budgie-at/budgie/commit/2adae1d11154dbd181b95a167a166b96ff6ef998)), closes [suuudokuuu#187](https://github.com/suuudokuuu/issues/187) [#3](https://github.com/budgie-at/budgie/issues/3) [#42](https://github.com/budgie-at/budgie/issues/42)
+
 # [5.42.0](https://github.com/budgie-at/budgie/compare/v5.41.0...v5.42.0) (2026-07-10)
 
 ### Features

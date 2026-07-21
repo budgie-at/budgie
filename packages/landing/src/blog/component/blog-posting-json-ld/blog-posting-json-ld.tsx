@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import { isDefined } from '@rnw-community/shared';
 
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
@@ -70,4 +70,4 @@ export const BlogPostingJsonLd = ({
         </>
     );
 };
-/* eslint-enable lingui/no-unlocalized-strings */
+/* oxlint-enable lingui/no-unlocalized-strings */

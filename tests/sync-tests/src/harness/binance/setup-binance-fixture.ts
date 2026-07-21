@@ -1,7 +1,8 @@
-import { encodeBinanceAccountId, BinanceWalletEnum } from '@budgie/sync';
 import { AccountTypeEnum, SyncModeEnum, SyncStatusEnum, ExternalSourceEnum, InstrumentTypeEnum } from '@budgie/contracts';
+import { encodeBinanceAccountId, BinanceWalletEnum } from '@budgie/sync';
 
 import { seed } from '../seed/seed';
+
 import { binanceStub } from './binance-stub';
 
 const BINANCE_TOKEN = JSON.stringify({ apiKey: 'test-api-key', apiSecret: 'test-api-secret' });

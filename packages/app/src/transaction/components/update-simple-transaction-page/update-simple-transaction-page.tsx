@@ -1,47 +1,12 @@
 import { FormProvider } from 'react-hook-form';
 
-import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
+import { FullPage } from '../../../@generic/component/page/full-page';
 
 import type { UpdateSimpleTransactionPagePropsInterface } from '../../interface/update-simple-transaction-page-props.interface';
 
-export const UpdateSimpleTransactionPage = ({
-    form,
-    title,
-    isConsolidated,
-    children,
-    onGoBack,
-    onDelete,
-    onRevert,
-    onAttachDebtSettlement,
-    attachDebtSettlementLabel,
-    onDetachDebtSettlement,
-    onConvertToRefund,
-    onConvertToTransfer
-}: UpdateSimpleTransactionPagePropsInterface) => (
+export const UpdateSimpleTransactionPage = ({ form, title, children, onGoBack, right }: UpdateSimpleTransactionPagePropsInterface) => (
     <FormProvider {...form}>
-        <FullPage
-            header={
-                <PageHeader
-                    title={title}
-                    onGoBack={onGoBack}
-                    right={
-                        <UpdateTransactionActionsMenu
-                            onDelete={onDelete}
-                            isConsolidated={isConsolidated}
-                            onRevert={onRevert}
-                            onAttachDebtSettlement={onAttachDebtSettlement}
-                            attachDebtSettlementLabel={attachDebtSettlementLabel}
-                            onDetachDebtSettlement={onDetachDebtSettlement}
-                            onConvertToRefund={onConvertToRefund}
-                            onConvertToTransfer={onConvertToTransfer}
-                        />
-                    }
-                />
-            }
-        >
-            {children}
-        </FullPage>
+        <FullPage header={<PageHeader title={title} onGoBack={onGoBack} right={right} />}>{children}</FullPage>
     </FormProvider>
 );

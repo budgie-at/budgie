@@ -78,11 +78,10 @@ export const CreateBinanceAccount = () => {
             <BinanceParkedAssetsNotice parkedPreviews={parkedPreviews} />
         </>
     );
-    const footer = isInputStep ? (
-        <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />
-    ) : (
-        <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />
-    );
+    const footerAction = isInputStep ? handleFetchAccounts : handleSetupSync;
+    const footerDisabled = isInputStep ? isLoading : isStartSyncDisabled;
+    const footerContent = isInputStep ? t`Fetch Accounts` : t`Start Sync`;
+    const footer = <Button onPress={footerAction} disabled={footerDisabled} content={footerContent} />;
     const pageContent = isInputStep ? inputStepContent : accountsStepContent;
 
     return (

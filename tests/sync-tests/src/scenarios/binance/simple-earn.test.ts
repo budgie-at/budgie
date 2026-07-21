@@ -1,6 +1,6 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
-import { BinanceSignedClient, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { SyncModeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { BinanceSignedClient, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { describe, expect, it } from 'vitest';
 
 import {

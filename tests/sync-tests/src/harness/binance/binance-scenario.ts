@@ -9,8 +9,9 @@ import {
 import { eq } from 'drizzle-orm';
 import { expect } from 'vitest';
 
-import { seed } from '../seed/seed';
 import { testDb } from '../scenario/setup';
+import { seed } from '../seed/seed';
+
 import { binanceStub } from './binance-stub';
 import { buildBinance } from './build-binance';
 import { setupBinanceFixture } from './setup-binance-fixture';

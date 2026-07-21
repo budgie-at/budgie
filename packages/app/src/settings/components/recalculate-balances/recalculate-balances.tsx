@@ -7,6 +7,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
+import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { SettingsCard } from '../settings-card/settings-card';
 
 export const RecalculateBalances = () => {
@@ -43,6 +44,7 @@ export const RecalculateBalances = () => {
             description={t`Clear cached balances and recalculate from transactions`}
             icon={UserIconNameEnum.RefreshCw}
             isLoading={isLoading}
+            testID={SettingsPageSelector.RecalculateBalancesCard}
         />
     );
 };

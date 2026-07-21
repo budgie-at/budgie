@@ -1,8 +1,6 @@
-import { type InferInsertModel, type InferSelectModel, Table } from 'drizzle-orm';
+import { type SQLiteInsertValue, SQLiteTable } from 'drizzle-orm/sqlite-core';
 
 import { testDb } from '../scenario/setup';
 
-export const insertOne = <T extends Table>(table: T, values: InferInsertModel<T>): InferSelectModel<T> => {
-    const rows = testDb.insert(table).values(values).returning().all() as InferSelectModel<T>[];
-    return rows[0];
-};
+export const insertOne = <T extends SQLiteTable>(table: T, values: SQLiteInsertValue<T>): T['$inferSelect'] =>
+    testDb.insert(table).values(values).returning().get();

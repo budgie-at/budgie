@@ -1,6 +1,5 @@
-import { beforeEach } from 'vitest';
-
 import { resetTestDb } from '@budgie-at/test-kit';
+import { beforeEach } from 'vitest';
 
 import { testDb } from './test-context';
 

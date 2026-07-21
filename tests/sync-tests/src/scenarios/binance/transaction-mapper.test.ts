@@ -1,6 +1,7 @@
 import { SyncTransactionTypeEnum, binanceMapper } from '@budgie/sync';
-import { isDefined } from '@rnw-community/shared';
 import { describe, expect, it } from 'vitest';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { buildBinance } from '../../harness';
 

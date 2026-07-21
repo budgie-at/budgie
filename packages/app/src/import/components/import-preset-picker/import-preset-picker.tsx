@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* oxlint-disable lingui/no-unlocalized-strings */
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 

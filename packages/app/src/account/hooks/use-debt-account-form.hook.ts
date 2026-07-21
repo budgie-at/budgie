@@ -24,7 +24,7 @@ export const useDebtAccountForm = (
         mode: 'onSubmit',
         defaultValues: initialValues
     });
-    const { dirtyFields } = form.formState;
+    const { dirtyFields, isSubmitting } = form.formState;
     const { reset } = form;
 
     useEffect(() => {
@@ -56,6 +56,7 @@ export const useDebtAccountForm = (
         ...form,
         debtType,
         instrument,
+        isSubmitting,
         handleSubmit: form.handleSubmit(handleSubmit)
     };
 };

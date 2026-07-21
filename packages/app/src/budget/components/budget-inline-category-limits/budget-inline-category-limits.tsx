@@ -12,8 +12,8 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
-import { BudgetCategoryLimitCompactRow } from '../budget-category-limit-compact-row/budget-category-limit-compact-row';
 import { BudgetCategoryLimitCompactRowLayout } from '../budget-category-limit-compact-row-layout/budget-category-limit-compact-row-layout';
+import { BudgetCategoryLimitCompactRow } from '../budget-category-limit-compact-row/budget-category-limit-compact-row';
 import { BudgetCategoryLimitsEmptyState } from '../budget-category-limits-empty-state/budget-category-limits-empty-state';
 import { BudgetLimitAmountInput } from '../budget-limit-amount-input/budget-limit-amount-input';
 
@@ -86,9 +86,6 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
                     />
                 </View>
             </View>
-            <Text className="text-secondary-foreground text-sm">
-                <Trans>Optional per-category caps within this budget</Trans>
-            </Text>
             <BudgetCategoryLimitCompactRowLayout
                 amountInput={
                     <BudgetLimitAmountInput
