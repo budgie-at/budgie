@@ -86,11 +86,15 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.TypeApplyButton'
 
-- scrollUntilVisible:
-      element:
-          id: 'TransactionFilters.AccountChip'
-      direction: RIGHT
-      speed: 20
+- repeat:
+      times: 2
+      commands:
+          - swipe:
+                start: '90%,15%'
+                end: '10%,15%'
+                duration: 500
+- assertVisible:
+      id: 'TransactionFilters.AccountChip'
 - tapOn:
       id: 'TransactionFilters.AccountChip'
 - extendedWaitUntil:
