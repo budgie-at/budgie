@@ -78,10 +78,9 @@ export const CreateBinanceAccount = () => {
             <BinanceParkedAssetsNotice parkedPreviews={parkedPreviews} />
         </>
     );
-    const footerAction = isInputStep ? handleFetchAccounts : handleSetupSync;
-    const footerDisabled = isInputStep ? isLoading : isStartSyncDisabled;
-    const footerContent = isInputStep ? t`Fetch Accounts` : t`Start Sync`;
-    const footer = <Button onPress={footerAction} disabled={footerDisabled} content={footerContent} />;
+    const footerProps = isInputStep
+        ? { onPress: handleFetchAccounts, disabled: isLoading, content: t`Fetch Accounts` }
+        : { onPress: handleSetupSync, disabled: isStartSyncDisabled, content: t`Start Sync` };
     const pageContent = isInputStep ? inputStepContent : accountsStepContent;
 
     return (
@@ -89,7 +88,7 @@ export const CreateBinanceAccount = () => {
             title={t`Connect Binance`}
             description={t`Sync your Binance balances and transactions`}
             onGoBack={handleGoBack}
-            footer={footer}
+            footer={<Button {...footerProps} />}
             scrollViewTestID={CreateBinanceAccountSelector.ScrollView}
         >
             {pageContent}

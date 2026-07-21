@@ -143,23 +143,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     @Log(
         (accountId, from, to) => `enter accountId=${accountId} from=${from} to=${to ?? 'now'}`,
-        result => `done count=${result.success ? result.data.length : 0}`,
+        result => `done transferCount=${result.success ? result.data.length : 0}`,
         error => `throw error=${getErrorMessage(error)}`
     )
     async getTransactions(accountId: string, from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        const decoded = decodeBinanceAccountId(accountId);
-        if (!isDefined(decoded)) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
+        return this.withDecodedAccount(accountId, from, to, async (decoded, startTimeMs, endTimeMs) => {
+            const sourcesResult = await this.fetchTransactionSources(decoded.wallet, startTimeMs, endTimeMs);
 
-        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
-
-        const sourcesResult = await this.fetchTransactionSources(decoded.wallet, startTimeMs, endTimeMs);
-        if (!sourcesResult.success) {
-            return sourcesResult;
-        }
-
-        return this.success(this.buildTransactions(accountId, decoded.asset, sourcesResult.data));
+            return sourcesResult.success
+                ? this.success(this.buildTransactions(accountId, decoded.asset, sourcesResult.data))
+                : sourcesResult;
+        });
     }
 
     @Log(
@@ -214,14 +208,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         error => `throw error=${getErrorMessage(error)}`
     )
     async getTransfers(accountId: string, from: number, to?: number): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const decoded = decodeBinanceAccountId(accountId);
-        if (!isDefined(decoded)) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
-
-        return this.fetchAllTransfers(startTimeMs, endTimeMs);
+        return this.withDecodedAccount(accountId, from, to, (_decoded, startTimeMs, endTimeMs) =>
+            this.fetchAllTransfers(startTimeMs, endTimeMs)
+        );
     }
 
     protected getDefaultHeaders(): Record<string, string> {
@@ -257,31 +246,21 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return earnRewardsResult;
         }
 
-        const depositsResult = await this.fetchDeposits(wallet, startTimeMs, endTimeMs);
-        if (!depositsResult.success) {
-            return depositsResult;
+        const capitalSourcesResult = await this.fetchCapitalSources(wallet, startTimeMs, endTimeMs);
+        if (!capitalSourcesResult.success) {
+            return capitalSourcesResult;
         }
 
-        const withdrawalsResult = await this.fetchWithdrawals(wallet, startTimeMs, endTimeMs);
-        if (!withdrawalsResult.success) {
-            return withdrawalsResult;
-        }
-
-        const fiatDepositsResult = await this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs);
-        if (!fiatDepositsResult.success) {
-            return fiatDepositsResult;
-        }
-
-        const fiatWithdrawalsResult = await this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs);
-        if (!fiatWithdrawalsResult.success) {
-            return fiatWithdrawalsResult;
+        const fiatSourcesResult = await this.fetchFiatSources(startTimeMs, endTimeMs);
+        if (!fiatSourcesResult.success) {
+            return fiatSourcesResult;
         }
 
         return this.success({
-            deposits: depositsResult.data,
-            withdrawals: withdrawalsResult.data,
-            fiatDeposits: fiatDepositsResult.data,
-            fiatWithdrawals: fiatWithdrawalsResult.data,
+            deposits: capitalSourcesResult.data.deposits,
+            withdrawals: capitalSourcesResult.data.withdrawals,
+            fiatDeposits: fiatSourcesResult.data.fiatDeposits,
+            fiatWithdrawals: fiatSourcesResult.data.fiatWithdrawals,
             c2cOrders: c2cOrdersResult.data,
             earnRewards: earnRewardsResult.data
         });
@@ -306,6 +285,26 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
 
         return this.success(this.dedupeTransactions(this.buildSourceTransactions(BinanceWalletEnum.SPOT, sourcesResult.data)));
+    }
+
+    private async withDecodedAccount<T>(
+        accountId: string,
+        from: number,
+        to: number | undefined,
+        execute: (
+            decoded: NonNullable<ReturnType<typeof decodeBinanceAccountId>>,
+            startTimeMs: number,
+            endTimeMs: number
+        ) => Promise<SyncResultInterface<T>>
+    ): Promise<SyncResultInterface<T>> {
+        const decoded = decodeBinanceAccountId(accountId);
+        if (!isDefined(decoded)) {
+            return this.failure(SyncError.invalidResponse(this.provider));
+        }
+
+        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
+
+        return execute(decoded, startTimeMs, endTimeMs);
     }
 
     private async fetchCapitalSources(
@@ -1014,24 +1013,28 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.failure(error);
     }
 
-    private async fetchPagedOrders<T>(
+    private fetchPagedOrders<T>(
         fetchPage: (page: number) => Promise<SyncResultInterface<{ orders: T[]; hasMore: boolean }>>
     ): Promise<SyncResultInterface<T[]>> {
         const orders: T[] = [];
-        let page = 1;
-        let hasMore = true;
-        while (hasMore) {
-            const pageResult = await fetchPage(page);
+
+        return this.fetchNextOrderPage(fetchPage, 1, orders);
+    }
+
+    private fetchNextOrderPage<T>(
+        fetchPage: (page: number) => Promise<SyncResultInterface<{ orders: T[]; hasMore: boolean }>>,
+        page: number,
+        orders: T[]
+    ): Promise<SyncResultInterface<T[]>> {
+        return fetchPage(page).then(pageResult => {
             if (!pageResult.success) {
                 return pageResult;
             }
 
             orders.push(...pageResult.data.orders);
-            hasMore = pageResult.data.hasMore;
-            page += 1;
-        }
 
-        return this.success(orders);
+            return pageResult.data.hasMore ? this.fetchNextOrderPage(fetchPage, page + 1, orders) : this.success(orders);
+        });
     }
 
     private async fetchEarnRewards(startTimeMs: number, endTimeMs: number): Promise<SyncResultInterface<BinanceEarnRewardApiInterface[]>> {
@@ -1106,17 +1109,12 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private async fetchSpotBalancesWithEarn(): Promise<SyncResultInterface<SyncAccountInterface[]>> {
-        const result = await this.signedRequest(SPOT_BALANCE_ENDPOINT, 'POST');
-        if (!result.success) {
-            return result;
+        const balancesResult = await this.fetchBalances(SPOT_BALANCE_ENDPOINT);
+        if (!balancesResult.success) {
+            return balancesResult;
         }
 
-        const parsed = BinanceAssetBalanceListApiSchema.safeParse(result.data);
-        if (!parsed.success) {
-            return this.failure(SyncError.invalidResponse(this.provider));
-        }
-
-        const balanceByAsset = this.buildSpotBalanceMap(parsed.data);
+        const balanceByAsset = this.buildSpotBalanceMap(balancesResult.data);
 
         const earnFailure = await this.foldAllEarnPositions(balanceByAsset);
         if (isDefined(earnFailure)) {
@@ -1228,28 +1226,45 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.success(parsed.data.rows);
     }
 
-    private async fetchEarnPositionPages<T>(
+    private fetchEarnPositionPages<T>(
         fetchPage: (current: number) => Promise<SyncResultInterface<T[]>>
     ): Promise<SyncResultInterface<T[]>> {
         const positions: T[] = [];
-        let current = 1;
-        let hasMore = true;
-        while (hasMore) {
-            const pageResult = await fetchPage(current);
+
+        return this.fetchNextEarnPositionPage(fetchPage, 1, positions);
+    }
+
+    private fetchNextEarnPositionPage<T>(
+        fetchPage: (current: number) => Promise<SyncResultInterface<T[]>>,
+        current: number,
+        positions: T[]
+    ): Promise<SyncResultInterface<T[]>> {
+        return fetchPage(current).then(pageResult => {
             if (!pageResult.success) {
                 return pageResult;
             }
 
             positions.push(...pageResult.data);
-            hasMore = pageResult.data.length === EARN_PAGE_SIZE;
-            current += 1;
-        }
 
-        return this.success(positions);
+            return pageResult.data.length === EARN_PAGE_SIZE
+                ? this.fetchNextEarnPositionPage(fetchPage, current + 1, positions)
+                : this.success(positions);
+        });
     }
 
     private async fetchWalletBalances(wallet: BinanceWalletEnum): Promise<SyncResultInterface<SyncAccountInterface[]>> {
         const endpoint = wallet === BinanceWalletEnum.SPOT ? SPOT_BALANCE_ENDPOINT : FUNDING_BALANCE_ENDPOINT;
+        const balancesResult = await this.fetchBalances(endpoint);
+        if (!balancesResult.success) {
+            return balancesResult;
+        }
+
+        const accounts = balancesResult.data.map(balance => this.mapBalance(balance, wallet)).filter(isDefined);
+
+        return this.success(accounts);
+    }
+
+    private async fetchBalances(endpoint: string): Promise<SyncResultInterface<BinanceAssetBalanceApiInterface[]>> {
         const result = await this.signedRequest(endpoint, 'POST');
         if (!result.success) {
             return result;
@@ -1260,9 +1275,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return this.failure(SyncError.invalidResponse(this.provider));
         }
 
-        const accounts = parsed.data.map(balance => this.mapBalance(balance, wallet)).filter(isDefined);
-
-        return this.success(accounts);
+        return this.success(parsed.data);
     }
 
     private computeRawTotalBalance(balance: BinanceAssetBalanceApiInterface): number | null {
