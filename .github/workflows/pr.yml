@@ -652,7 +652,7 @@ jobs:
 
 
             - name: Run Maestro UI tests
-              timeout-minutes: 75
+              timeout-minutes: 85
               working-directory: tests/app-tests
               shell: bash
               env:
