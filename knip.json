@@ -30,7 +30,9 @@
         "packages/app/scripts/bench-queries.ts",
         "packages/app/scripts/seed-bench-db.ts",
         "packages/app/scripts/snapshot-monthly-patterns.ts",
-        "tests/sync-tests/src/harness/shims/**"
+        "tests/sync-tests/src/harness/shims/**",
+        "packages/screen-chrome/src/edge-fade/utils/edge-fade-get-backdrop-filter.util.ts",
+        "packages/screen-chrome/src/edge-fade/interface/web-edge-fade-style.interface.ts"
     ],
     "ignoreDependencies": [
         "husky",
@@ -40,6 +42,7 @@
         "metro-minify-terser",
         "react-compiler-runtime",
         "babel-jest",
+        "@oxlint/migrate",
         "@jest/globals",
         "expo-pdf-text-extract",
         "babel-plugin-react-compiler",
