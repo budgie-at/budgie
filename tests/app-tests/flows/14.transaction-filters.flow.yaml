@@ -86,14 +86,11 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.TypeApplyButton'
 
-- swipe:
-      from:
-          id: 'TransactionFilters.DateChip'
-      direction: LEFT
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'TransactionFilters.AccountChip'
-      timeout: 5000
+      direction: RIGHT
+      speed: 20
 - tapOn:
       id: 'TransactionFilters.AccountChip'
 - extendedWaitUntil:
