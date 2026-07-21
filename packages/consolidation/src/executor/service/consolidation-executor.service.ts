@@ -27,7 +27,7 @@ export class ConsolidationExecutorService {
         this.consolidationMutationService = new ConsolidationMutationService(dependencies);
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter pair',
         result => `done pairOutcome=${String(result)}`,
         error => `throw pairErrorClass=${isError(error) ? error.name : 'UnknownError'}`
@@ -36,7 +36,7 @@ export class ConsolidationExecutorService {
         return await this.consolidateTwoRequiredSources(candidate.expenseTransactionId, candidate.incomeTransactionId, consolidationPlan);
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter atmWithdrawal',
         result => `done atmWithdrawalOutcome=${String(result)}`,
         error => `throw atmWithdrawalErrorClass=${isError(error) ? error.name : 'UnknownError'}`
@@ -50,7 +50,7 @@ export class ConsolidationExecutorService {
         );
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter ibanBridge',
         result => `done ibanBridgeOutcome=${String(result)}`,
         error => `throw ibanBridgeErrorClass=${isError(error) ? error.name : 'UnknownError'}`
@@ -62,7 +62,7 @@ export class ConsolidationExecutorService {
         return await this.consolidateTwoRequiredSources(candidate.expenseTransactionId, candidate.incomeTransactionId, consolidationPlan);
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter existingTransferBridge',
         result => `done existingTransferBridgeOutcome=${String(result)}`,
         error => `throw existingTransferBridgeErrorClass=${isError(error) ? error.name : 'UnknownError'}`
@@ -82,7 +82,7 @@ export class ConsolidationExecutorService {
         );
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter ibanBridgeChain',
         result => `done ibanBridgeChainOutcome=${String(result)}`,
         error => `throw ibanBridgeChainErrorClass=${isError(error) ? error.name : 'UnknownError'}`

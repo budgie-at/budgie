@@ -16,16 +16,16 @@ import type {
 } from '@budgie/contracts';
 
 export class ConsolidationRepairExecutorService {
-    private readonly consolidationEligibilityService: ConsolidationEligibilityService;
-
     private readonly consolidationMutationService: ConsolidationMutationService;
 
+    private readonly consolidationEligibilityService: ConsolidationEligibilityService;
+
     constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {
-        this.consolidationEligibilityService = new ConsolidationEligibilityService(dependencies);
         this.consolidationMutationService = new ConsolidationMutationService(dependencies);
+        this.consolidationEligibilityService = new ConsolidationEligibilityService(dependencies);
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter ibanBridgeCanonicalDuplicate',
         result => `done ibanBridgeCanonicalDuplicateOutcome=${String(result)}`,
         error => `throw ibanBridgeCanonicalDuplicateErrorClass=${isError(error) ? error.name : 'UnknownError'}`
@@ -36,7 +36,7 @@ export class ConsolidationRepairExecutorService {
         );
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter existingTransferChainReclaim',
         result => `done existingTransferChainReclaimOutcome=${String(result)}`,
         error => `throw existingTransferChainReclaimErrorClass=${isError(error) ? error.name : 'UnknownError'}`
@@ -47,7 +47,7 @@ export class ConsolidationRepairExecutorService {
         );
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter existingTransferIncomeDuplicate',
         result => `done existingTransferIncomeDuplicateOutcome=${String(result)}`,
         error => `throw existingTransferIncomeDuplicateErrorClass=${isError(error) ? error.name : 'UnknownError'}`
@@ -58,7 +58,7 @@ export class ConsolidationRepairExecutorService {
         );
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         () => 'enter refundRepair',
         result => `done refundRepairOutcome=${String(result)}`,
         error => `throw refundRepairErrorClass=${isError(error) ? error.name : 'UnknownError'}`
