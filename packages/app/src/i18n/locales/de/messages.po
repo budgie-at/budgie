@@ -483,6 +483,10 @@ msgstr "Bank"
 msgid "Bank sync"
 msgstr "Bank-Synchronisation"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Bank Sync"
+msgstr ""
+
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
 msgstr "Bank-Synchronisation zurückgesetzt"
@@ -663,10 +667,6 @@ msgstr "Girokonto"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Wählen Sie eine Vorlage zum automatischen Ausfüllen der Spaltenzuordnungen"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Choose the type of account you want to add"
-msgstr "Wählen Sie den Kontotyp aus, den Sie hinzufügen möchten"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -3042,7 +3042,6 @@ msgstr "Wische, um dieses Kategorielimit aus deinem Budget zu entfernen."
 msgid "Switch between light and dark themes"
 msgstr "Zwischen hellem und dunklem Design wechseln"
 
-#: src/app/(main)/create-account/index.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Sync"
 msgstr "Synchronisation"
