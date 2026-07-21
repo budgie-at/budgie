@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
 import { accountBalanceRepository, accountRepository, testQueryService, testSeedService } from '../harness/test-context';
@@ -13,7 +12,7 @@ describe('consolidation/transfer-pair-by-amount', () => {
         const { expense, income } = testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
         const result = await runConsolidation();
-        expect(result.groups.pairCandidates).toHaveLength(1);
+        expect(result.found).toBe(1);
         expect(result.consolidated).toBe(1);
 
         const canonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
@@ -51,7 +50,7 @@ describe('consolidation/transfer-pair-by-amount', () => {
         );
 
         const result = await runConsolidation();
-        expect(result.groups.pairCandidates).toHaveLength(1);
+        expect(result.found).toBe(1);
         expect(result.consolidated).toBe(1);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
     });

@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.43.3](https://github.com/budgie-at/budgie/compare/v5.43.2...v5.43.3) (2026-07-20)
+
+**Note:** Version bump only for package @budgie/ai
+
+
+
+
+
+## [5.43.2](https://github.com/budgie-at/budgie/compare/v5.43.1...v5.43.2) (2026-07-17)
+
+**Note:** Version bump only for package @budgie/ai
+
+
+
+
+
+# [5.43.0](https://github.com/budgie-at/budgie/compare/v5.42.0...v5.43.0) (2026-07-17)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.40.0](https://github.com/budgie-at/budgie/compare/v5.39.0...v5.40.0) (2026-07-09)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.39.0](https://github.com/budgie-at/budgie/compare/v5.38.2...v5.39.0) (2026-06-29)
+
+### Features
+
+- **app:** add transaction info page ([#568](https://github.com/budgie-at/budgie/issues/568)) ([5059c95](https://github.com/budgie-at/budgie/commit/5059c959d0754e5f030c04f81b08bfff1f70b7d6))
+
+# [5.38.0](https://github.com/budgie-at/budgie/compare/v5.37.1...v5.38.0) (2026-06-16)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.37.1](https://github.com/budgie-at/budgie/compare/v5.37.0...v5.37.1) (2026-06-12)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.36.2](https://github.com/budgie-at/budgie/compare/v5.36.1...v5.36.2) (2026-06-09)
+
+**Note:** Version bump only for package @budgie/ai
+
 ## [5.36.1](https://github.com/budgie-at/budgie/compare/v5.36.0...v5.36.1) (2026-06-07)
 
 **Note:** Version bump only for package @budgie/ai

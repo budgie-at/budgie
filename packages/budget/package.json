@@ -1,0 +1,48 @@
+{
+    "name": "@budgie/budget",
+    "version": "5.43.3",
+    "private": true,
+    "description": "Budget domain services",
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "types": "./dist/esm/index.d.ts",
+            "import": "./dist/esm/index.js",
+            "react-native": "./dist/esm/index.js",
+            "default": "./dist/esm/index.js"
+        },
+        "./package.json": "./package.json",
+        "./query/budget-repository": {
+            "types": "./dist/esm/query/repository/budget.repository.d.ts",
+            "import": "./dist/esm/query/repository/budget.repository.js",
+            "react-native": "./dist/esm/query/repository/budget.repository.js",
+            "default": "./dist/esm/query/repository/budget.repository.js"
+        },
+        "./query/budget-category-limit-repository": {
+            "types": "./dist/esm/query/repository/budget-category-limit.repository.d.ts",
+            "import": "./dist/esm/query/repository/budget-category-limit.repository.js",
+            "react-native": "./dist/esm/query/repository/budget-category-limit.repository.js",
+            "default": "./dist/esm/query/repository/budget-category-limit.repository.js"
+        }
+    },
+    "main": "./dist/esm/index.js",
+    "react-native": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "scripts": {
+        "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json",
+        "build:watch": "yarn build --watch",
+        "clear": "yarn run -T rimraf dist node_modules/.cache .turbo",
+        "format": "run -T oxfmt --write src",
+        "lint": "run -T oxlint --type-aware src && run -T eslint src",
+        "lint:eslint": "run -T eslint src",
+        "lint:fix": "run -T oxlint --type-aware --fix src && run -T eslint --fix src",
+        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
+    },
+    "dependencies": {
+        "@budgie/contracts": "workspace:^",
+        "@budgie/logger": "workspace:*",
+        "@rnw-community/shared": "^2.2.0",
+        "date-fns": "^4.3.0",
+        "drizzle-orm": "^0.45.2"
+    }
+}

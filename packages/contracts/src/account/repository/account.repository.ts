@@ -3,10 +3,10 @@ import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInA
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
-import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
@@ -188,13 +188,15 @@ export class AccountRepository {
     }
 
     private buildSearchWhereClause(search: string, filter: AccountFilterInterface) {
-        const { excludeTypes, excludeAccountId, onlyActive } = filter;
+        const { debtType, excludeTypes, includeTypes, excludeAccountId, onlyActive } = filter;
 
         return and(
             isNull(AccountEntityTable.parentId),
             isNull(AccountEntityTable.deletedAt),
             like(AccountEntityTable.titleSearch, `%${search.toLowerCase()}%`),
+            isNotEmptyArray(includeTypes) ? inArray(AccountEntityTable.type, includeTypes) : sql`1=1`,
             isNotEmptyArray(excludeTypes) ? notInArray(AccountEntityTable.type, excludeTypes) : sql`1=1`,
+            isDefined(debtType) ? eq(AccountEntityTable.debtType, debtType) : sql`1=1`,
             isDefined(excludeAccountId) ? ne(AccountEntityTable.id, excludeAccountId) : sql`1=1`,
             onlyActive === true ? eq(AccountEntityTable.isActive, true) : sql`1=1`
         );

@@ -5,9 +5,9 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
+import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { TransactionTypeFilterItem } from '../transaction/components/transaction-type-filter/transaction-type-filter-item';

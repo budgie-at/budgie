@@ -7,8 +7,8 @@ import { BlogArticleContent } from '../../../../blog/component/blog-article-cont
 import { BlogArticleCta } from '../../../../blog/component/blog-article-cta/blog-article-cta';
 import { BlogArticleHeading } from '../../../../blog/component/blog-article-heading/blog-article-heading';
 import { BlogArticleHero } from '../../../../blog/component/blog-article-hero/blog-article-hero';
-import { BlogArticleList } from '../../../../blog/component/blog-article-list/blog-article-list';
 import { BlogArticleListItem } from '../../../../blog/component/blog-article-list-item/blog-article-list-item';
+import { BlogArticleList } from '../../../../blog/component/blog-article-list/blog-article-list';
 import { BlogArticleMeta } from '../../../../blog/component/blog-article-meta/blog-article-meta';
 import { BlogArticleProse } from '../../../../blog/component/blog-article-prose/blog-article-prose';
 import { BlogArticleSection } from '../../../../blog/component/blog-article-section/blog-article-section';

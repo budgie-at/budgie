@@ -98,7 +98,7 @@ Acceptable responses: `200 OK`, `202 Accepted`. A `403` means the key file is un
 The `config.matcher` in `src/proxy.ts` excludes:
 
 ```
-api | _next/static | _next/image | favicon.ico | robots.txt | sitemap.xml | manifest.webmanifest | .well-known | images (svg/png/jpg/jpeg/gif/webp)
+api | _next/static | _next/image | favicon.ico | robots.txt | sitemap.xml | manifest.webmanifest | ota/manifest.plist | .well-known | images (svg/png/jpg/jpeg/gif/webp)
 ```
 
 API routes and root `.txt` files must stay excluded, otherwise the IndexNow submitter and key verification file are locale-redirected to HTML pages.
@@ -106,7 +106,7 @@ API routes and root `.txt` files must stay excluded, otherwise the IndexNow subm
 ```ts
 export const config = {
     matcher: [
-        '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|.well-known|[^/]+\\.txt$|[^.]*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
+        '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|ota/manifest\\.plist|.well-known|[^/]+\\.txt$|[^.]*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
     ]
 };
 ```

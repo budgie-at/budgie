@@ -1,20 +1,17 @@
+import { privatbankCategoryMatcherService } from '@app/sync/service/privatbank-category-matcher.service';
+import { transactionImportService } from '@app/transaction/service/transaction-import.service';
+import { mapBankTransactionToCreateInput, privatbankTransactionMapper } from '@budgie/bank-sync';
+import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { describe, it } from 'vitest';
 
-import { privatbankTransactionMapper } from '@budgie/bank-sync';
-import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
-
 import { expectAtmCashWithdrawalConsolidation, seed } from '../../harness';
-
-import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
-import { privatbankCategoryMatcherMatch } from '@app/sync/service/privatbank-category-matcher.service';
-import { transactionImportService } from '@app/transaction/service/transaction-import.service';
 
 const PRIVATBANK_CARD_ID = 'privat-card';
 const PRIVATBANK_CASH_WITHDRAWAL_CATEGORY = 'Зняття готівки';
 const WITHDRAWAL_AMOUNT = 500;
 
 const importPrivatbankCashWithdrawal = async (privatbankAccountId: number): Promise<number> => {
-    const categoryMap = await privatbankCategoryMatcherMatch([PRIVATBANK_CASH_WITHDRAWAL_CATEGORY]);
+    const categoryMap = await privatbankCategoryMatcherService.match([PRIVATBANK_CASH_WITHDRAWAL_CATEGORY]);
     const transaction = privatbankTransactionMapper({
         rawDate: '15.01.2026 12:00:00',
         date: new Date(2026, 0, 15, 12, 0, 0),
@@ -29,7 +26,7 @@ const importPrivatbankCashWithdrawal = async (privatbankAccountId: number): Prom
         balanceCurrency: 'UAH'
     });
     const mccCategoryLookup = categoryMap.get(PRIVATBANK_CASH_WITHDRAWAL_CATEGORY) ?? null;
-    const input = mapBankTransactionToCreateInput(transaction, privatbankAccountId, mccCategoryLookup, ExternalSourceEnum.PRIVATBANK);
+    const input = mapBankTransactionToCreateInput(transaction, privatbankAccountId, mccCategoryLookup);
     const [imported] = await transactionImportService.bulkUpsertImported([input], new Map());
 
     return imported.id;

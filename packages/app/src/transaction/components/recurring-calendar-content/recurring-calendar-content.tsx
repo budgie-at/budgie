@@ -8,6 +8,7 @@ import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer'
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useRecurringCalendar } from '../../hook/use-recurring-calendar.hook';
@@ -39,14 +40,7 @@ export const RecurringCalendarContent = () => {
 
     const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
     const hasSelectedDay = isDefined(selectedDay);
-    const isSelectedToday = isCurrentMonth && selectedDay === now.getDate();
-    let selectedDayHeaderTestID = null;
-
-    if (isSelectedToday) {
-        selectedDayHeaderTestID = RecurringCalendarSelector.SelectedTodayHeader;
-    } else if (hasSelectedDay) {
-        selectedDayHeaderTestID = RecurringCalendarSelector.SelectedDayHeader(selectedDay);
-    }
+    const selectedDayHeaderTestID = hasSelectedDay ? RecurringCalendarSelector.SelectedDayHeader(selectedDay) : null;
 
     const selectedEntries = isDefined(selectedDay)
         ? [...(entriesByDay.get(selectedDay) ?? []), ...(forecastedEntriesByDay.get(selectedDay) ?? [])]
@@ -110,10 +104,7 @@ export const RecurringCalendarContent = () => {
             {hasSelectedDay ? (
                 <View className="flex-1 pt-lg">
                     <View className="bg-primary-reverse py-md -mx-5xl px-5xl flex-row justify-between items-center">
-                        <Text
-                            className="text-xs uppercase text-secondary-foreground"
-                            {...(isDefined(selectedDayHeaderTestID) && { testID: selectedDayHeaderTestID })}
-                        >
+                        <Text className="text-xs uppercase text-secondary-foreground" {...testIDProps(selectedDayHeaderTestID)}>
                             <Trans>Day {selectedDay}</Trans>
                         </Text>
                         <ProtectedText className="text-xs text-secondary-foreground">{formattedDayTotal}</ProtectedText>

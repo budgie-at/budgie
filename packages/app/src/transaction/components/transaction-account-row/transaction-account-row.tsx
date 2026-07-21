@@ -2,16 +2,17 @@ import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contr
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
@@ -53,28 +54,33 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
     const displayLabel = label ?? t`Account`;
     const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Select`}`;
     const isInactiveAccount = isDefined(account) && !account.isActive;
+    const selectedAccountTestID = isDefined(account?.title) ? SimpleQuickFormSelector.SelectedAccount(account.title) : null;
+    const hasTestID = isNotEmptyString(testID);
 
     return (
         <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)}>
             <Animated.View style={shakeStyle}>
                 <HapticPressable
-                    className="flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl"
+                    className="relative flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl"
                     onPress={handlePress}
                     accessibilityLabel={accessibilityLabel}
                     accessibilityRole="button"
+                    accessible
+                    collapsable={false}
+                    nativeID={testID}
                     testID={testID}
                 >
+                    {hasTestID ? (
+                        <View collapsable={false} nativeID={testID} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testID} />
+                    ) : null}
+
                     <AccountInactiveIcon isInactive={isInactiveAccount} size={28}>
                         <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
                     </AccountInactiveIcon>
 
                     <View className="flex-1">
                         <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>
-                        <Text
-                            className="text-md font-medium text-primary"
-                            numberOfLines={1}
-                            {...(isDefined(account?.title) && { testID: SimpleQuickFormSelector.SelectedAccount(account.title) })}
-                        >
+                        <Text className="text-md font-medium text-primary" numberOfLines={1} {...testIDProps(selectedAccountTestID)}>
                             {account?.title ?? t`Select account`}
                         </Text>
                     </View>

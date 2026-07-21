@@ -1,6 +1,5 @@
+import { privatbankTransactionMapper } from '@budgie/bank-sync';
 import { describe, expect, it } from 'vitest';
-
-import { generatePrivatbankExternalId, privatbankTransactionMapper } from '@budgie/bank-sync';
 
 const buildPrivatbankRow = (date: Date, endBalance = 12_345.67) => ({
     rawDate: '13.01.2026 11:42:53',
@@ -20,8 +19,10 @@ describe('privatbank/external-id', () => {
     it('uses raw statement data instead of parsed date identity', () => {
         const first = buildPrivatbankRow(new Date('2026-01-13T09:42:53.000Z'));
         const shifted = buildPrivatbankRow(new Date('2026-01-13T10:42:53.000Z'));
+        const firstTransaction = privatbankTransactionMapper(first);
+        const shiftedTransaction = privatbankTransactionMapper(shifted);
 
-        expect(generatePrivatbankExternalId(first)).toBe(generatePrivatbankExternalId(shifted));
+        expect(firstTransaction.id).toBe(shiftedTransaction.id);
     });
 
     it('ignores volatile statement balance identity and keeps legacy identity', () => {
@@ -30,7 +31,6 @@ describe('privatbank/external-id', () => {
         const firstTransaction = privatbankTransactionMapper(first);
         const changedBalanceTransaction = privatbankTransactionMapper(changedBalance);
 
-        expect(generatePrivatbankExternalId(first)).toBe(generatePrivatbankExternalId(changedBalance));
         expect(firstTransaction.id).toBe(changedBalanceTransaction.id);
         expect(firstTransaction.legacyExternalIds?.[0]).not.toBe(changedBalanceTransaction.legacyExternalIds?.[0]);
         expect(firstTransaction.id).not.toBe(firstTransaction.legacyExternalIds?.[0]);
@@ -42,7 +42,9 @@ describe('privatbank/external-id', () => {
             ...first,
             description: 'З гривневого рахунку ТОВ'
         };
+        const firstTransaction = privatbankTransactionMapper(first);
+        const changedDescriptionTransaction = privatbankTransactionMapper(changedDescription);
 
-        expect(generatePrivatbankExternalId(first)).not.toBe(generatePrivatbankExternalId(changedDescription));
+        expect(firstTransaction.id).not.toBe(changedDescriptionTransaction.id);
     });
 });

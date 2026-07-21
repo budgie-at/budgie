@@ -7,8 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { AmountInput } from '../@generic/component/amount-input/amount-input';
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
+import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FormItem } from '../@generic/component/form-item/form-item';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';

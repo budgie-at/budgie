@@ -4,8 +4,8 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { derivePrimaryTagView } from '../../utils/derive-primary-tag-view.util';
-import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionCardTagChip } from '../transaction-card-tag-chip/transaction-card-tag-chip';
+import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -19,8 +19,12 @@ export const TransactionCardTags = ({ transaction }: Props) => {
     }
 
     return (
-        <View className="flex-row items-center gap-x-xs" testID={TransactionCardSelector.Tag(primaryTag.title)}>
-            <TransactionCardTagChip title={primaryTag.title} isPrimary={hasMultipleTags} />
+        <View className="flex-row items-center gap-x-xs">
+            <TransactionCardTagChip
+                title={primaryTag.title}
+                isPrimary={hasMultipleTags}
+                testID={TransactionCardSelector.Tag(primaryTag.title)}
+            />
             {hasMultipleTags ? (
                 <View className="rounded-full border border-secondary-corner px-sm py-[2px]">
                     <Text

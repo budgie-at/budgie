@@ -6,6 +6,7 @@ import { TransactionCreateEntitySchema } from './transaction-create-entity.schem
 
 export const TransactionCreateInputSchema = TransactionCreateEntitySchema.extend({
     amount: number(),
+    debtAccountId: number().positive().nullable().optional(),
     externalIdAliases: array(string()).optional(),
     tagIds: array(number()),
     entries: array(TransactionEntryCreateInputSchema).min(1)

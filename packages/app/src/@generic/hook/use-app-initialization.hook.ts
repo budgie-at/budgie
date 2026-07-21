@@ -5,6 +5,7 @@ import { emptyFn } from '@rnw-community/shared';
 
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { authService } from '../../auth/service/auth.service';
+import { budgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
 import { historicalMarketDataLoaderService } from '../../market-data/service/historical-market-data-loader.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
@@ -17,7 +18,15 @@ const STARTUP_SERVICE_DELAY_MS = 1_000;
 
 const syncAppData = async (): Promise<void> => {
     await exchangeRatesSyncService.sync().catch(emptyFn);
+    if (syncWorkloadService.hasQueuedUserWork()) {
+        return;
+    }
+
     await monobankSyncService.sync().catch(emptyFn);
+    if (syncWorkloadService.hasQueuedUserWork()) {
+        return;
+    }
+
     await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
 };
 
@@ -27,6 +36,7 @@ const initializeAppServices = async (): Promise<void> => {
     await accountBalanceIncrementalService.registerBackgroundTask().catch(emptyFn);
     await transferConsolidationService.registerBackgroundTask().catch(emptyFn);
     await monobankSyncService.registerBackgroundTask().catch(emptyFn);
+    await budgetAlertMonitorService.registerBackgroundTask().catch(emptyFn);
     await syncWorkloadService.run('startup', syncAppData);
     void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
 };

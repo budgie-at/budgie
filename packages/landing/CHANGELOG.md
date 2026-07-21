@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.43.2](https://github.com/budgie-at/budgie/compare/v5.43.1...v5.43.2) (2026-07-17)
+
+**Note:** Version bump only for package @budgie-at/landing
+
+
+
+
+
+## [5.43.1](https://github.com/budgie-at/budgie/compare/v5.43.0...v5.43.1) (2026-07-17)
+
+### Bug Fixes
+
+- **landing:** repair waitlist subscription flow ([#596](https://github.com/budgie-at/budgie/issues/596)) ([926b793](https://github.com/budgie-at/budgie/commit/926b7936f57a890c8ab41242e4a425657e2fe31e))
+
+# [5.42.0](https://github.com/budgie-at/budgie/compare/v5.41.0...v5.42.0) (2026-07-10)
+
+### Features
+
+- **landing:** per-build ios-dev releases with IPA redirect route ([#588](https://github.com/budgie-at/budgie/issues/588)) ([fac29c6](https://github.com/budgie-at/budgie/commit/fac29c69186386814bf1e341253d4f1e13ceba9f))
+
+# [5.41.0](https://github.com/budgie-at/budgie/compare/v5.40.0...v5.41.0) (2026-07-10)
+
+### Features
+
+- **landing:** add iOS OTA beta install page ([#584](https://github.com/budgie-at/budgie/issues/584)) ([da65cbe](https://github.com/budgie-at/budgie/commit/da65cbe75c38301df4968f3441bef8ef96b007cf))
+
 # [5.34.0](https://github.com/budgie-at/budgie/compare/v5.33.1...v5.34.0) (2026-06-04)
 
 ### Features

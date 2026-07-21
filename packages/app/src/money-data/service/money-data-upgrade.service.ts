@@ -155,7 +155,7 @@ class MoneyDataUpgradeService {
         const baseExchangeRate =
             bucket.sourceInstrumentId === baseInstrumentId
                 ? 1
-                : await entryBaseValuationService.resolveHistoricalBaseExchangeRate(
+                : await entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
                       bucket.sourceInstrumentId,
                       baseInstrumentId,
                       operatedAt,

@@ -4,6 +4,7 @@ import {
     CategorySourceEnum,
     RuleActionTypeEnum,
     RuleConditionFieldEnum,
+    TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     TransactionUpdatedByEnum,
@@ -25,6 +26,7 @@ import {
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
+import { getTransactionDisplayTitle } from '../../transaction/utils/get-transaction-display-title.util';
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
 
@@ -339,6 +341,7 @@ class RuleEngineService {
     private toRuleEvaluationInput(input: TransactionCreateInputInterface, mccCodeMap: Map<number, string>): RuleEvaluationInputInterface {
         return {
             ...input,
+            title: getTransactionDisplayTitle(input),
             entries: input.entries.map(entry => ({
                 ...entry,
                 mccCode: isDefined(entry.mccCategoryId) ? (mccCodeMap.get(entry.mccCategoryId) ?? null) : null
@@ -651,6 +654,7 @@ class RuleEngineService {
                 transactionId,
                 accountId: fromAccountId,
                 type: TransactionEntryTypeEnum.CREDIT,
+                kind: TransactionEntryKindEnum.PRIMARY,
                 amount: originalEntry.amount,
                 categoryId: originalEntry.categoryId,
                 categorySource: originalEntry.categorySource,
@@ -664,6 +668,7 @@ class RuleEngineService {
                 transactionId,
                 accountId: toAccountId,
                 type: TransactionEntryTypeEnum.DEBIT,
+                kind: TransactionEntryKindEnum.PRIMARY,
                 amount: convertedAmount,
                 categoryId: originalEntry.categoryId,
                 categorySource: originalEntry.categorySource,

@@ -1,4 +1,5 @@
 import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
@@ -29,7 +30,7 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly onLongPress?: OnEventFn;
 }
 
-const cardVariants = cva('relative gap-3 active:scale-xs overflow-hidden', {
+const cardVariants = cva('relative flex-none gap-3 active:scale-xs overflow-hidden', {
     variants: {
         deadlinePriority: {
             high: 'border-dark-warning-corner',
@@ -57,48 +58,59 @@ export const AccountCardBase = (props: Props) => {
         onLongPress
     } = props;
 
+    const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
 
-    const navigateToAccount = () => void router.push(`/account/${id}/details`);
-    const navigateToEditAccount = () => void router.push(`/account/${id}/update`);
+    const navigateToAccount = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
+    const navigateToEditAccount = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(id) } });
 
+    const accountCardTestID = AccountCardBaseSelector.Card(title);
     const accountBalance = formatDigits(balance, instrumentSymbol);
     const accountBalanceTestValue = formatDigits(balance);
 
     return (
         <Card
-            testID={AccountCardBaseSelector.Card(title)}
+            accessible
+            testID={accountCardTestID}
+            accessibilityLabel={`${title}, ${accountBalance}`}
             onPress={navigateToAccount}
             onLongPress={onLongPress}
             className={cn(cardVariants({ deadlinePriority }), className)}
         >
-            <View className="flex-row items-center justify-between">
-                <View className="flex-row items-center gap-x-lg">
-                    <CircleIcon size={36} iconSize={20} icon={icon} variant={circleVariant} border={false} />
-                    {topRight}
+            <View className="gap-3">
+                <View className="flex-row items-center justify-between">
+                    <View className="flex-row items-center gap-x-lg">
+                        <CircleIcon size={36} iconSize={20} icon={icon} variant={circleVariant} border={false} />
+                        {topRight}
+                    </View>
+
+                    <HapticPressable
+                        className="rounded-full active:bg-secondary-background"
+                        onPress={navigateToEditAccount}
+                        accessibilityRole="button"
+                        accessibilityLabel={t`Edit account`}
+                    >
+                        <Icon className="text-primary" icon={UserIconNameEnum.EllipsisVertical} size={14} />
+                    </HapticPressable>
                 </View>
 
-                <HapticPressable className="rounded-full active:bg-secondary-background" onPress={navigateToEditAccount}>
-                    <Icon className="text-primary" icon={UserIconNameEnum.EllipsisVertical} size={14} />
-                </HapticPressable>
+                <View className="gap-1">
+                    <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1}>
+                        {title}
+                    </Text>
+
+                    {balanceContent ?? (
+                        <ProtectedText
+                            className="text-primary font-medium"
+                            testID={AccountCardBaseSelector.Balance(title, accountBalanceTestValue)}
+                        >
+                            {accountBalance}
+                        </ProtectedText>
+                    )}
+                </View>
+
+                {children}
             </View>
-
-            <View className="gap-1">
-                <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1}>
-                    {title}
-                </Text>
-
-                {balanceContent ?? (
-                    <ProtectedText
-                        className="text-primary font-medium"
-                        testID={AccountCardBaseSelector.Balance(title, accountBalanceTestValue)}
-                    >
-                        {accountBalance}
-                    </ProtectedText>
-                )}
-            </View>
-
-            {children}
         </Card>
     );
 };

@@ -1,0 +1,305 @@
+appId: ${APP_ID}
+env:
+    ACCOUNT_NAME: Rules Test Account
+    CATEGORY_NAME: Rules Test Category
+    UPDATE_COMMENT: E2E Budget Update Txn
+---
+- runFlow:
+      file: setup/setup-budget-test.flow.yaml
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://budget'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.EmptyState'
+      timeout: 3000
+
+- tapOn:
+      id: 'BudgetWidget.EmptyState'
+- runFlow:
+      file: subflows/budget/choose-empty-canvas.flow.yaml
+
+- tapOn:
+      id: 'BudgetSetup.OverallLimitInput'
+- inputText: '1000'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.OverallLimitInput'
+          text: '1000'
+      timeout: 3000
+
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.CategoryLimitAddButton'
+      direction: DOWN
+      centerElement: true
+- retry:
+      maxRetries: 3
+      commands:
+          - tapOn:
+                id: 'BudgetSetup.CategoryLimitAddButton'
+          - extendedWaitUntil:
+                visible:
+                    id: 'CategoryPickerBottomSheet.Input'
+                timeout: 3000
+- runFlow:
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
+
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.CategoryLimit.0.Row'
+      timeout: 3000
+- tapOn:
+      id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+- inputText: '200'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+          text: '200'
+      timeout: 3000
+- tapOn: 'Category limits'
+- waitForAnimationToEnd
+- tapOn:
+      id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.Card'
+      timeout: 3000
+- assertVisible:
+      id: 'BudgetWidget.SpentLabel'
+      text: '€0 / €1,000'
+- assertVisible:
+      id: 'BudgetWidget.CategorySpentLabel.42'
+      text: '0%'
+
+- runFlow:
+      file: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+      file: subflows/transactions/open-transaction-form.flow.yaml
+      env:
+          ACTION_ITEM_ID: 'ActionItem.Expense'
+          FORM_TITLE: 'New Expense'
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.1'
+- tapOn:
+      id: 'TransactionKeypad.Digit.0'
+- tapOn:
+      id: 'TransactionKeypad.Digit.0'
+
+- runFlow:
+      file: subflows/transactions/select-account.flow.yaml
+      env:
+          ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+- tapOn:
+      id: 'TransactionForm.CategorySelector'
+- runFlow:
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
+
+- runFlow:
+      file: subflows/transactions/enter-comment.flow.yaml
+      env:
+          COMMENT: 'E2E Budget Refund Expense'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Budget_Refund_Expense'
+      timeout: 5000
+
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.SpentLabel'
+          text: '€100 / €1,000'
+      timeout: 3000
+- assertVisible:
+      id: 'BudgetWidget.CategorySpentLabel.42'
+      text: '50%'
+
+- runFlow:
+      file: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+      file: subflows/transactions/open-transaction-form.flow.yaml
+      env:
+          ACTION_ITEM_ID: 'ActionItem.Income'
+          FORM_TITLE: 'New Income'
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.3'
+- tapOn:
+      id: 'TransactionKeypad.Digit.0'
+
+- runFlow:
+      file: subflows/transactions/select-account.flow.yaml
+      env:
+          ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+- tapOn:
+      id: 'TransactionForm.CategorySelector'
+- runFlow:
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
+
+- runFlow:
+      file: subflows/transactions/enter-comment.flow.yaml
+      env:
+          COMMENT: 'E2E Budget Refund Income'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.SpentLabel'
+          text: '€100 / €1,000'
+      timeout: 3000
+- assertVisible:
+      id: 'BudgetWidget.CategorySpentLabel.42'
+      text: '50%'
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/10/income'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.TriggerButton'
+      timeout: 10000
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.ConvertToRefundButton'
+      timeout: 3000
+- tapOn:
+      id: 'TransactionActionsMenu.ConvertToRefundButton'
+- extendedWaitUntil:
+      visible:
+          id: 'ConvertToRefund.Page'
+      timeout: 10000
+- assertVisible:
+      id: 'ConvertToRefund.CandidateRow.9'
+- tapOn:
+      id: 'ConvertToRefund.CandidateRow.9'
+- tapOn:
+      id: 'ConvertToRefund.ConvertButton'
+- extendedWaitUntil:
+      visible: 'Convert to Refund?'
+      timeout: 10000
+- tapOn:
+      text: 'Convert'
+      index: 0
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.RefundedPill'
+      timeout: 10000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.SpentLabel'
+          text: '€70 / €1,000'
+      timeout: 5000
+- assertVisible:
+      id: 'BudgetWidget.CategorySpentLabel.42'
+      text: '35%'
+
+- runFlow:
+      file: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+      file: subflows/transactions/open-transaction-form.flow.yaml
+      env:
+          ACTION_ITEM_ID: 'ActionItem.Expense'
+          FORM_TITLE: 'New Expense'
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.6'
+- tapOn:
+      id: 'TransactionKeypad.Digit.0'
+
+- runFlow:
+      file: subflows/transactions/select-account.flow.yaml
+      env:
+          ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+- tapOn:
+      id: 'TransactionForm.CategorySelector'
+- runFlow:
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
+
+- runFlow:
+      file: subflows/transactions/enter-comment.flow.yaml
+      env:
+          COMMENT: ${UPDATE_COMMENT}
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+      timeout: 5000
+
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.SpentLabel'
+          text: '€130 / €1,000'
+      timeout: 3000
+- assertVisible:
+      id: 'BudgetWidget.CategorySpentLabel.42'
+      text: '65%'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+      timeout: 5000
+
+- tapOn:
+      id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+
+- runFlow: subflows/transactions/delete-transaction.flow.yaml
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Budget_Update_Txn'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 3000
+
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.SpentLabel'
+          text: '€70 / €1,000'
+      timeout: 3000
+- assertVisible:
+      id: 'BudgetWidget.CategorySpentLabel.42'
+      text: '35%'

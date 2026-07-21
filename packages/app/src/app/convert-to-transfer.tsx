@@ -6,8 +6,8 @@ import { router } from 'expo-router';
 import { FormProvider, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { ModalPage } from '../@generic/component/page/modal-page';
 import { PageHeader } from '../@generic/component/page-header/page-header';
+import { ModalPage } from '../@generic/component/page/modal-page';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { SystemCategoryIdEnum } from '../category/enum/system-category-id.enum';
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
@@ -22,7 +22,7 @@ import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.sele
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 /* jscpd:ignore-end */
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
     const [, resolveConvertToTransfer, currentParams] = useConvertToTransferModal();
@@ -98,8 +98,6 @@ export default function ConvertToTransferModal() {
                 resolveConvertToTransfer(true);
             } else {
                 resolveConvertToTransfer(true, { skipBack: true });
-                const transferRoute = `/transactions/${transactionId}/transfer` as const;
-
                 if (router.canDismiss()) {
                     router.dismiss();
                 }
@@ -107,7 +105,7 @@ export default function ConvertToTransferModal() {
                     router.back();
                 }
 
-                router.push(transferRoute);
+                router.push({ pathname: '/transactions/[id]/transfer', params: { id: String(transactionId) } });
             }
         } catch {
             Toast.show({ type: 'error', text1: t`Conversion failed`, text2: t`Please try again` });

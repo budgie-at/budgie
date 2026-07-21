@@ -1,14 +1,11 @@
 appId: ${APP_ID}
 ---
-# Navigate to Home first to avoid Maestro freeze with nested Stack
-- tapOn:
-    id: 'TabBar.Home'
-- tapOn:
-    id: 'TabBar.Settings'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'TabBar.Settings'
+- runFlow:
+      file: open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings'
+
 - extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-    timeout: 15000
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 15000

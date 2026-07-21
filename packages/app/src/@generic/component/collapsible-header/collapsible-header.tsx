@@ -106,7 +106,10 @@ export const CollapsibleHeader = ({ scrollY, netWorth, fiatTotal, cryptoTotal, f
                     <Text className="text-xs uppercase text-secondary-foreground">
                         <Trans>Total Balance</Trans>
                     </Text>
-                    <ProtectedText className="text-lg font-medium text-primary" testID={netWorthValueTestID}>
+                    <ProtectedText
+                        className="text-lg font-medium text-primary"
+                        testID={HomePageSelector.NetWorthValueCollapsed(formattedNetWorthValue)}
+                    >
                         {formattedNetWorth}
                     </ProtectedText>
                 </Animated.View>
@@ -120,7 +123,7 @@ export const CollapsibleHeader = ({ scrollY, netWorth, fiatTotal, cryptoTotal, f
                         <Trans>Total Balance</Trans>
                     </Text>
 
-                    <View testID={netWorthValueTestID}>
+                    <View collapsable={false} testID={netWorthValueTestID}>
                         <ProtectedMoney
                             minFontSize={24}
                             maxFontSize={60}

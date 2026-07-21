@@ -1,6 +1,7 @@
 import { InstrumentPriceProviderEnum, InstrumentTypeEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
+import Constants from 'expo-constants';
 import * as TaskManager from 'expo-task-manager';
 import ky from 'ky';
 
@@ -19,8 +20,10 @@ import { exchangeRatesService } from './exchange-rates.service';
 import type { ExchangeRateCreateEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
 
 class ExchangeRatesSyncService {
+    private static readonly APP_VARIANT_EXTRA_KEY = 'appVariant';
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
     private static readonly COINGECKO_SIMPLE_PRICE_API_URL = 'https://api.coingecko.com/api/v3/simple/price';
+    private static readonly E2E_APP_VARIANT = 'e2e';
     private static readonly EXCHANGE_RATE_API_URL = 'https://api.exchangerate-api.com/v4/latest';
     private static readonly CRYPTO_RATE_SYNC_BATCH_SIZE = 40;
     private static readonly FETCH_TIMEOUT_MS = 5000;
@@ -39,6 +42,10 @@ class ExchangeRatesSyncService {
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async registerBackgroundTask(): Promise<void> {
+        if (this.isE2EApp()) {
+            return;
+        }
+
         if (await TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK)) {
             return;
         }
@@ -50,6 +57,10 @@ class ExchangeRatesSyncService {
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async sync(): Promise<void> {
+        if (this.isE2EApp()) {
+            return;
+        }
+
         if (this.isSyncing) {
             return;
         }
@@ -61,6 +72,10 @@ class ExchangeRatesSyncService {
         } finally {
             this.isSyncing = false;
         }
+    }
+
+    private isE2EApp(): boolean {
+        return Constants.expoConfig?.extra?.[ExchangeRatesSyncService.APP_VARIANT_EXTRA_KEY] === ExchangeRatesSyncService.E2E_APP_VARIANT;
     }
 
     private async syncInner(): Promise<void> {

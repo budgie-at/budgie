@@ -1,15 +1,15 @@
 import { AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { accountRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 
 type AccountGroups = Partial<Record<AccountTypeEnum, AccountWithInstrumentEntityInterface[]>>;
 
 export const useSearchAccountsGroupedQuery = (search = '', withActive = true) => {
-    const { data, ...rest } = useLiveQuery(accountRepository.findBySearchQuery(search), [search]);
-    const { data: countData } = useLiveQuery(accountRepository.count(), []);
+    const { data, ...rest } = useDatabaseLiveQuery(accountRepository.findBySearchQuery(search), [search]);
+    const { data: countData } = useDatabaseLiveQuery(accountRepository.count(), []);
 
     const filteredData = data.filter(account => (withActive ? account.isActive : true));
     const isLoading = !isDefined(rest.updatedAt);

@@ -7,7 +7,9 @@ import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } fro
 import { Icon } from '../../../@generic/component/icon/icon';
 import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { CreateTransactionMenuSelector } from '../create-transaction-menu/create-transaction-menu.selector';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -29,10 +31,17 @@ const ICON_SIZE = 20;
 const ITEM_SPACING = 72;
 const STAGGER_DELAY = 40;
 const SPRING_CONFIG = { damping: 12, stiffness: 180, mass: 0.6 };
+const actionItemBackgroundColorPalette: Record<ColorPaletteVariant, ClassValue> = {
+    ...BACKGROUND_COLOR_PALETTE,
+    secondary: 'bg-secondary-foreground/10',
+    positive: 'bg-positive-foreground/30',
+    warning: 'bg-warning-foreground/30',
+    destructive: 'bg-destructive-foreground/25'
+};
 
 const containerVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
     'w-12 h-12 rounded-full items-center justify-center border-0',
-    { variants: { variant: BACKGROUND_COLOR_PALETTE } }
+    { variants: { variant: actionItemBackgroundColorPalette } }
 );
 
 const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('', {
@@ -73,18 +82,23 @@ export const ActionItem = ({ icon, label, testID, variant, index, totalItems, is
         onPress();
     };
 
+    const actionItemTestID = testID ?? CreateTransactionMenuSelector.item(index);
+
     return (
         <Animated.View className="absolute right-0" style={animatedStyle}>
             <Pressable
                 className="flex-row-reverse items-center p-sm"
                 hitSlop={10}
                 onPress={handlePress}
-                testID={testID ?? CreateTransactionMenuSelector.item(index)}
+                testID={actionItemTestID}
+                collapsable={false}
             >
                 <View className={containerVariants({ variant })}>
                     <Icon className={iconVariants({ variant })} icon={icon} size={ICON_SIZE} />
                 </View>
-                <Text className="text-white text-sm font-medium mr-lg">{label}</Text>
+                <Text className="text-white text-sm font-medium mr-lg" {...testIDProps(actionItemTestID, TestIDPartEnum.LABEL)}>
+                    {label}
+                </Text>
             </Pressable>
         </Animated.View>
     );

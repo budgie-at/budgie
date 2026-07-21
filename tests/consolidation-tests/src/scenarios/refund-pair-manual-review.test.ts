@@ -1,10 +1,10 @@
+import { PRECISION } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { PRECISION } from '@budgie/contracts';
 import { isDefined } from '@rnw-community/shared';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { consolidationCandidateService, refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
+import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
 
 const seedSeezonaRefund = (accountId: number, refundAccountId?: number) => {
     const mcc = testQueryService.findMccByCode('5621');
@@ -23,11 +23,12 @@ const seedSeezonaRefund = (accountId: number, refundAccountId?: number) => {
 };
 
 const expectManualSeezonaCandidate = async (refundId: number, accountTitle?: string) => {
-    const groups = await consolidationCandidateService.findGroups();
+    const autoCandidates = await refundPairRepository.findCandidates();
+    const reviewCandidates = await refundPairRepository.findReviewCandidates();
     const manualCandidates = await refundPairRepository.findRefundableExpenseCandidates(refundId, '');
 
-    expect(groups.refundCandidates).toHaveLength(0);
-    expect(groups.refundReviewCandidates.length).toBeGreaterThanOrEqual(1);
+    expect(autoCandidates).toHaveLength(0);
+    expect(reviewCandidates.length).toBeGreaterThanOrEqual(1);
     expect(manualCandidates).toMatchObject([
         {
             title: 'Seezona',
@@ -51,9 +52,10 @@ describe('consolidation/refund-pair-manual-review', () => {
             refundMccCategoryId: mcc.id
         });
 
-        const groups = await consolidationCandidateService.findGroups();
-        expect(groups.refundCandidates).toHaveLength(0);
-        expect(groups.refundReviewCandidates.length).toBeGreaterThanOrEqual(1);
+        const autoCandidates = await refundPairRepository.findCandidates();
+        const reviewCandidates = await refundPairRepository.findReviewCandidates();
+        expect(autoCandidates).toHaveLength(0);
+        expect(reviewCandidates.length).toBeGreaterThanOrEqual(1);
 
         const result = await runConsolidation();
         expect(result.consolidated).toBe(0);

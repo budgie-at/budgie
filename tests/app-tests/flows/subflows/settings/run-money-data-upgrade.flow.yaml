@@ -3,16 +3,27 @@ appId: ${APP_ID}
 - runFlow:
       file: ../navigation/navigate-to-settings.flow.yaml
 
+# The scroll-driven blur chrome keeps invalidating the iOS 26 AX snapshot;
+# settle animations first and re-query after the scroll instead of trusting
+# the mid-scroll snapshot (see PR #597 four-lane A/B forensics).
+- waitForAnimationToEnd
+
 - scrollUntilVisible:
       element:
           id: 'SettingsPage.MoneyDataUpgradeCard'
       direction: DOWN
+      centerElement: true
+- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.MoneyDataUpgradeCard'
+      timeout: 10000
 - tapOn:
       id: 'SettingsPage.MoneyDataUpgradeCard'
 - extendedWaitUntil:
       visible: 'Value historical entries?'
       timeout: 10000
-- tapOn: 'Value'
+- tapOn: 'Value entries'
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.MoneyDataUpgradeCard.Status.COMPLETE'

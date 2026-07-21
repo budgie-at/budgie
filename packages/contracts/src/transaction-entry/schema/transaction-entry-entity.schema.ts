@@ -3,6 +3,7 @@ import { number, enum as zodEnum } from 'zod';
 
 import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.constant';
 import { CategorySourceEnum } from '../enum/category-source.enum';
+import { TransactionEntryKindEnum } from '../enum/transaction-entry-kind.enum';
 import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
@@ -14,6 +15,7 @@ export const TransactionEntryEntitySchema = createSelectSchema(TransactionEntryE
     categorySource: zodEnum(CategorySourceEnum).describe('Source that assigned the categoryId'),
     mccCategoryId: schema => schema.positive().nullable().describe('Id of the MCC category the entry belongs to'),
     type: zodEnum(TransactionEntryTypeEnum).describe('Type of the entry'),
+    kind: zodEnum(TransactionEntryKindEnum).describe('Kind of the entry'),
     amount: number().positive().describe('Amount of the entry'),
     externalId: schema => schema.nullable().default(null).describe('External id of the entry'),
     exchangeRate: schema =>

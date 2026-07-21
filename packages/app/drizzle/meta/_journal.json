@@ -218,6 +218,48 @@
             "when": 1780738800000,
             "tag": "0030_seed_top_crypto_market_prices",
             "breakpoints": true
+        },
+        {
+            "idx": 31,
+            "version": "6",
+            "when": 1780825200000,
+            "tag": "0031_add_account_lookup_indexes",
+            "breakpoints": true
+        },
+        {
+            "idx": 32,
+            "version": "6",
+            "when": 1780825201000,
+            "tag": "0032_add_budget_planning",
+            "breakpoints": true
+        },
+        {
+            "idx": 33,
+            "version": "6",
+            "when": 1781257200000,
+            "tag": "0033_add_transaction_entry_kind",
+            "breakpoints": true
+        },
+        {
+            "idx": 34,
+            "version": "6",
+            "when": 1781868000000,
+            "tag": "0034_add_debt_target_base_valuation",
+            "breakpoints": true
+        },
+        {
+            "idx": 35,
+            "version": "6",
+            "when": 1783537200000,
+            "tag": "0035_add_debt_events",
+            "breakpoints": true
+        },
+        {
+            "idx": 36,
+            "version": "6",
+            "when": 1784131200000,
+            "tag": "0036_repair_borrowed_debt_migration",
+            "breakpoints": true
         }
     ]
 }

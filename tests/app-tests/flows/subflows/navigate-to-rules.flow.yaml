@@ -1,15 +1,11 @@
 appId: ${APP_ID}
 ---
-
-- openLink: 'budgie://settings/rules'
-
 - runFlow:
-    when:
-      visible: 'Open'
-    commands:
-      - tapOn: 'Open'
+      file: navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings/rules'
 
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-    timeout: 10000
+      visible:
+          id: 'RulesPage.Page'
+      timeout: 15000

@@ -33,9 +33,25 @@ msgstr "{accountTitle} se restaurará en tu vista principal y se incluirá en lo
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} se restaurará en tu vista principal."
 
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
+msgstr "{approxTransactions, plural, one {~# transacción} other {~# transacciones}}"
+
 #: src/app/import-column-mapper.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# columna disponible} other {# columnas disponibles}}"
+
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "{categoriesCount, plural, one {# category} other {# categories}}"
+msgstr "{categoriesCount, plural, one {# categoría} other {# categorías}}"
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "{categoryName}: {threshold}% spent"
+msgstr "{categoryName}: {threshold}% gastado"
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "{categoryName}: limit reached"
+msgstr "{categoryName}: límite alcanzado"
 
 #: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
 msgid "{count, plural, one {# bank sync item repaired} other {# bank sync items repaired}}"
@@ -90,6 +106,14 @@ msgstr "{localSelectedCount, plural, =0 {Mostrar todos los tipos} one {Mostrar #
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# regla coincidente} other {# reglas coincidentes}}"
 
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "{months, plural, one {# month} other {# months}}"
+msgstr "{months, plural, one {# mes} other {# meses}}"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
+msgstr "{newTransactionCount} nuevas, {existingTransactionCount} ya importadas, {parsedTransactionCount} comprobadas"
+
 #: src/category/components/category-statistics-card/category-statistics-card.tsx
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
 msgid "{percentage}% of expenses"
@@ -112,6 +136,10 @@ msgstr "{selectedCount, plural, =0 {Mostrar todas las categorías} one {Mostrar 
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Mostrar todas las etiquetas} one {Mostrar # etiqueta} other {Mostrar # etiquetas}}"
 
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
+msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
+msgstr "{similarCount, plural, one {# transacción similar} other {# transacciones similares}}"
+
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "{source} error · {message}"
 msgstr "Error de {source} · {message}"
@@ -127,6 +155,10 @@ msgstr "{splitEntryCount, plural, one {# elemento} other {# elementos}}"
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transacción} other {# transacciones}}"
+
+#: src/budget/components/budget-widget-category-list/budget-widget-category-list.tsx
+msgid "+{hiddenCategoryCount} more"
+msgstr "+{hiddenCategoryCount} más"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "<"
@@ -152,6 +184,10 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
 
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "A balanced starter budget with common categories"
+msgstr "Un presupuesto inicial equilibrado con categorías comunes"
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
 msgstr "Ya existe una regla con las mismas condiciones."
@@ -165,12 +201,17 @@ msgstr "Acerca de"
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Account"
 msgstr "Cuenta"
 
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Account {accountId} not found"
 msgstr "Cuenta {accountId} no encontrada"
+
+#: src/account/service/account-debt-opening.service.ts
+msgid "Account {id} not found"
+msgstr "Cuenta {id} no encontrada"
 
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
@@ -233,9 +274,17 @@ msgstr "Activo"
 msgid "Add a note..."
 msgstr "Agregar una nota..."
 
+#: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
+msgid "Add a per-category cap"
+msgstr "Añadir un tope por categoría"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add Account"
 msgstr "Añadir Cuenta"
+
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+msgid "Add category"
+msgstr "Añadir categoría"
 
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
@@ -244,6 +293,10 @@ msgstr "Agregar elemento"
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Add Tag"
 msgstr "Añadir etiqueta"
+
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "Add transactions to see how your spending breaks down by category."
+msgstr "Agrega transacciones para ver cómo se distribuyen tus gastos por categoría."
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
@@ -302,6 +355,10 @@ msgstr "Todo el tiempo"
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. Sin sincronización en la nube, sin seguimiento, sin compartir datos."
 
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
+msgid "Allocated"
+msgstr "Asignado"
+
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
 msgstr "Ya sincronizando"
@@ -314,7 +371,7 @@ msgid "Amount"
 msgstr "Cantidad"
 
 #: src/app/(main)/create-transaction/transfer.tsx
-#: src/app/(main)/transactions/[id]/transfer.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Amount exceeds debt account balance"
 msgstr "El monto excede el saldo de la cuenta de deuda"
 
@@ -375,10 +432,15 @@ msgstr "¿Seguro que quieres eliminar esta regla?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Are you sure?"
 msgstr "¿Estás seguro?"
+
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Attach debt"
+msgstr "Vincular deuda"
 
 #: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx
 msgid "Auto-assign categories from MCC"
@@ -395,6 +457,10 @@ msgstr "Sincronizar automáticamente cuentas y transacciones de Monobank"
 #: src/app/import-column-mapper.tsx
 msgid "Available Columns"
 msgstr "Columnas disponibles"
+
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
+msgid "Average"
+msgstr "Promedio"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -441,6 +507,10 @@ msgstr "Moneda base"
 msgid "Base instrument not found"
 msgstr "Moneda base no encontrada"
 
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "Based on your recent spending"
+msgstr "Basado en tus gastos recientes"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
 msgstr "entre"
@@ -461,9 +531,31 @@ msgstr "Binance"
 msgid "Biometric Authentication"
 msgstr "Autenticación biométrica"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "Borrowed"
 msgstr "Prestado"
+
+#: src/account/service/account-debt-opening.service.ts
+msgid "Borrowed debt account expected"
+msgstr "Se esperaba una cuenta de deuda tomada prestada"
+
+#: src/app/(tabs)/settings/index.tsx
+msgid "Budget"
+msgstr "Presupuesto"
+
+#: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
+msgid "Budget alerts"
+msgstr "Alertas de presupuesto"
+
+#: src/budget/components/budget-details/budget-details.tsx
+msgid "Budget details"
+msgstr "Detalles del presupuesto"
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "Budget limit reached"
+msgstr "Límite de presupuesto alcanzado"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Budgie"
@@ -473,6 +565,10 @@ msgstr "Budgie"
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie puede encontrar importaciones duplicadas de sincronización bancaria y reparar consolidaciones de transferencias que terminaron en cuentas inactivas."
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
+msgstr "Budgie encontró un problema inesperado. Puedes reiniciar la app o informar del problema para que podamos investigarlo."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie rellenará los valores faltantes en la moneda base usando tipos de cambio históricos. Es posible que las analíticas no estén disponibles hasta que termine."
@@ -480,6 +576,10 @@ msgstr "Budgie rellenará los valores faltantes en la moneda base usando tipos d
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged."
 msgstr "Budgie fusionará coincidencias de transferencias y reembolsos de alta confianza. Las coincidencias ambiguas no se modificarán."
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Budgie will notify you when it finishes"
+msgstr "Budgie te avisará cuando termine"
 
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
@@ -495,6 +595,7 @@ msgstr "Budgie eliminará de forma reversible {countText}. Tus transacciones man
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
+#: src/budget/hooks/use-budget-form.hook.ts
 #: src/import/components/import-database/import-database.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
@@ -506,10 +607,10 @@ msgstr "Budgie eliminará de forma reversible {countText}. Tus transacciones man
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "Cancel"
 msgstr "Cancelar"
@@ -532,14 +633,21 @@ msgstr "Categorías ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
-#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
+#: src/budget/service/budget-alert-monitor.service.ts
+#: src/category/components/category-form-selector/category-form-selector.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Category"
 msgstr "Categoría"
 
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx
 msgid "Category → {categoryTitle}"
 msgstr "Categoría → {categoryTitle}"
+
+#: src/budget/components/budget-details/budget-details.tsx
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+msgid "Category limits"
+msgstr "Límites por categoría"
 
 #: src/category/components/category-title-input/category-title-input.tsx
 msgid "Category Name"
@@ -565,10 +673,6 @@ msgstr "Cuenta corriente"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Elige un preset para autocompletar las asignaciones de columnas"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Choose the type of account you want to add"
-msgstr "Elige el tipo de cuenta que deseas agregar"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -648,6 +752,10 @@ msgstr "Consolidar"
 msgid "Consolidate Matches"
 msgstr "Consolidar coincidencias"
 
+#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+msgid "Consolidation"
+msgstr "Consolidación"
+
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Contact (optional)"
 msgstr "Contacto (opcional)"
@@ -674,7 +782,8 @@ msgstr "Error en la conversión"
 msgid "Convert"
 msgstr "Convertir"
 
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
+#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
+#: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Refund"
 msgstr "Convertir en reembolso"
@@ -685,7 +794,8 @@ msgstr "¿Convertir en reembolso?"
 
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
-#: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx
+#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
+#: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Transfer"
 msgstr "Convertir a transferencia"
@@ -706,6 +816,12 @@ msgstr "No se pudo activar la cuenta."
 msgid "Could not archive account"
 msgstr "No se pudo archivar la cuenta"
 
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Could not attach debt"
+msgstr "No se pudo vincular la deuda"
+
 #: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Could not check bank sync data"
 msgstr "No se pudieron comprobar los datos de sincronización bancaria"
@@ -721,6 +837,10 @@ msgstr "No se pudieron consolidar las coincidencias"
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "Could not convert to refund"
 msgstr "No se pudo convertir en reembolso"
+
+#: src/budget/hooks/use-budget-form.hook.ts
+msgid "Could not create budget"
+msgstr "No se pudo crear el presupuesto"
 
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not create category"
@@ -746,6 +866,10 @@ msgstr "No se pudo crear la transacción. Por favor, inténtalo de nuevo más ta
 #: src/app/(tabs)/settings/archived.tsx
 msgid "Could not delete account."
 msgstr "No se pudo eliminar la cuenta."
+
+#: src/budget/hooks/use-budget-form.hook.ts
+msgid "Could not delete budget"
+msgstr "No se pudo eliminar el presupuesto"
 
 #: src/app/(tabs)/settings/categories.tsx
 msgid "Could not delete category"
@@ -792,6 +916,10 @@ msgstr "No se pudo fusionar la categoría"
 msgid "Could not merge tag"
 msgstr "No se pudo fusionar la etiqueta"
 
+#: src/app/(tabs)/settings/index.tsx
+msgid "Could not open GitHub"
+msgstr "No se pudo abrir GitHub"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not read CSV file"
 msgstr "No se pudo leer el archivo CSV"
@@ -824,6 +952,10 @@ msgstr "No se pudo restaurar la cuenta."
 msgid "Could not revert consolidation."
 msgstr "No se pudo revertir la consolidación."
 
+#: src/budget/hooks/use-budget-form.hook.ts
+msgid "Could not save budget"
+msgstr "No se pudo guardar el presupuesto"
+
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not save category"
 msgstr "No se pudo guardar la categoría"
@@ -848,20 +980,33 @@ msgstr "No se pudo configurar la sincronización"
 msgid "Could not unconsolidate transaction."
 msgstr "No se pudo desconsolidar la transacción."
 
+#: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
+msgid "Could not update notifications"
+msgstr "No se pudieron actualizar las notificaciones"
+
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Could not update rule"
 msgstr "No se pudo actualizar la regla"
 
+#: src/app/(tabs)/settings/index.tsx
+msgid "Could not update settings"
+msgstr "No se pudo actualizar la configuración"
+
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
 msgid "Could not update token"
 msgstr "No se pudo actualizar el token"
 
 #: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "No se pudo actualizar la transacción."
+
+#: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
+msgid "Could not update widget setting"
+msgstr "No se pudo actualizar la configuración del widget"
 
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
 msgid "Count this account in your net worth calculation"
@@ -870,6 +1015,11 @@ msgstr "Contar esta cuenta en el cálculo de su patrimonio neto"
 #: src/export/components/export-database/export-database.tsx
 msgid "Create a backup of all your data"
 msgstr "Crear una copia de seguridad de todos tus datos"
+
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+#: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
+msgid "Create a debt account first."
+msgstr "Crea primero una cuenta de deuda."
 
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
@@ -890,6 +1040,11 @@ msgstr "Crear y organizar etiquetas de transacciones"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Create anyway"
 msgstr "Crear de todos modos"
+
+#: src/app/(main)/budget/create/index.tsx
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
+msgid "Create budget"
+msgstr "Crear presupuesto"
 
 #: src/category/components/category-form/category-form.tsx
 msgid "Create Category"
@@ -915,6 +1070,10 @@ msgstr "Crear etiqueta"
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "Create tags to organize your transactions"
 msgstr "Crea etiquetas para organizar tus transacciones"
+
+#: src/budget/components/budget-empty-state/budget-empty-state.tsx
+msgid "Create your budget"
+msgstr "Crea tu presupuesto"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Create your first account to start tracking your finances"
@@ -942,7 +1101,6 @@ msgid "Currency"
 msgstr "Moneda"
 
 #: src/account/component/account-balance/account-balance.tsx
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Current Balance"
 msgstr "Saldo actual"
 
@@ -965,6 +1123,7 @@ msgstr "Base de datos exportada"
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Date"
 msgstr "Fecha"
 
@@ -972,23 +1131,38 @@ msgstr "Fecha"
 msgid "Day {selectedDay}"
 msgstr "Día {selectedDay}"
 
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Debt"
 msgstr "Deuda"
+
+#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
+msgid "Debt · {accountTitle}"
+msgstr "Deuda · {accountTitle}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/app/(main)/create-account/index.tsx
 msgid "Debt Account"
 msgstr "Cuenta de deuda"
 
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt account cannot match transaction account"
+msgstr "La cuenta de deuda no puede coincidir con la cuenta de la transacción"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Debt account not found"
+msgstr "Cuenta de deuda no encontrada"
+
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
 msgstr "Cuenta predeterminada"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/budget/hooks/use-budget-form.hook.ts
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Delete"
 msgstr "Eliminar"
 
@@ -999,6 +1173,10 @@ msgstr "¿Eliminar cuenta permanentemente?"
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Delete all transactions and settings"
 msgstr "Eliminar todas las transacciones y la configuración"
+
+#: src/budget/hooks/use-budget-form.hook.ts
+msgid "Delete budget?"
+msgstr "¿Eliminar presupuesto?"
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Delete data"
@@ -1013,7 +1191,7 @@ msgid "Delete rule"
 msgstr "Eliminar regla"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
 msgid "Delete Transaction"
 msgstr "Eliminar transacción"
 
@@ -1021,9 +1199,17 @@ msgstr "Eliminar transacción"
 msgid "Deselect all"
 msgstr "Deseleccionar todo"
 
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Detach debt"
+msgstr "Desvincular deuda"
+
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
 msgstr "Desactivar bloqueo"
+
+#: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
+msgid "Display the budget card on the home screen"
+msgstr "Mostrar la tarjeta de presupuesto en la pantalla de inicio"
 
 #: src/app/import-column-mapper.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
@@ -1055,6 +1241,14 @@ msgstr "Duplicar regla"
 msgid "Dutch (Netherlands)"
 msgstr "Neerlandés (Países Bajos)"
 
+#: src/budget/components/budget-overall-limit-field/budget-overall-limit-field.tsx
+msgid "e.g. 1000"
+msgstr "p. ej. 1000"
+
+#: src/budget/components/budget-limit-amount-input/budget-limit-amount-input.tsx
+msgid "e.g. 200"
+msgstr "p. ej. 200"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "e.g. Business, Personal, Vacation"
 msgstr "p. ej. Negocios, Personal, Vacaciones"
@@ -1067,6 +1261,14 @@ msgstr "p. ej. Compras, Entretenimiento"
 msgid "e.g. Savings Account"
 msgstr "ej. Cuenta de ahorros"
 
+#: src/account/component/account-card-base/account-card-base.tsx
+msgid "Edit account"
+msgstr "Editar cuenta"
+
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
+msgid "Edit budget"
+msgstr "Editar presupuesto"
+
 #: src/category/components/category-form/category-form.tsx
 msgid "Edit Category"
 msgstr "Editar categoría"
@@ -1075,11 +1277,11 @@ msgstr "Editar categoría"
 msgid "Edit existing"
 msgstr "Editar existente"
 
-#: src/app/(main)/transactions/[id]/expense.tsx
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
 msgid "Edit Expense"
 msgstr "Editar gasto"
 
-#: src/app/(main)/transactions/[id]/income.tsx
+#: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
 msgstr "Editar ingreso"
 
@@ -1091,17 +1293,25 @@ msgstr "Editar regla"
 msgid "Edit Tag"
 msgstr "Editar etiqueta"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-info-page/transaction-info-page.tsx
+msgid "Edit transaction"
+msgstr "Editar transacción"
+
+#: src/transaction/components/transaction-list-edit-menu-item/transaction-list-edit-menu-item.tsx
 msgid "Edit Transaction"
 msgstr "Editar transacción"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Edit Transfer"
 msgstr "Editar transferencia"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Emergency fund and savings goals"
 msgstr "Fondo de emergencia y metas de ahorro"
+
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "Empty canvas"
+msgstr "Lienzo en blanco"
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx
 msgid "Enable"
@@ -1115,6 +1325,10 @@ msgstr "¿Activar desbloqueo biométrico?"
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Enable Face ID unlock?"
 msgstr "¿Activar desbloqueo con Face ID?"
+
+#: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
+msgid "Enable them in device settings to receive budget alerts."
+msgstr "Actívalas en los ajustes del dispositivo para recibir alertas de presupuesto."
 
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Enable Touch ID unlock?"
@@ -1140,6 +1354,7 @@ msgstr "Traducción al inglés"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Ingresa un PIN de {PIN_LENGTH} dígitos"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Enter all amounts"
 msgstr "Introduce todos los importes"
@@ -1172,7 +1387,7 @@ msgstr "Introduce valor..."
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos para desbloquear"
 
@@ -1180,7 +1395,7 @@ msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos para desbloquear"
 msgid "Enter your Monobank API token"
 msgstr "Ingrese su token API de Monobank"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your PIN"
 msgstr "Ingresa tu PIN"
 
@@ -1212,6 +1427,10 @@ msgstr "Erste Bank"
 #: src/app/(main)/create-account/index.tsx
 msgid "Everyday transactions and spending"
 msgstr "Transacciones y gastos diarios"
+
+#: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
+msgid "Exchange rate"
+msgstr "Tipo de cambio"
 
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
@@ -1279,6 +1498,14 @@ msgstr "Error al guardar el PIN. Inténtalo de nuevo."
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Indexación rápida {done} de {total} • toca para pausar"
 
+#: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
+msgid "Fee"
+msgstr "Comisión"
+
+#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+msgid "Fee · {formattedFeeAmount}"
+msgstr "Comisión · {formattedFeeAmount}"
+
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Fee {formattedAmount}"
 msgstr "Comisión {formattedAmount}"
@@ -1295,17 +1522,13 @@ msgstr "Obteniendo nuevos..."
 msgid "Field"
 msgstr "Campo"
 
-#: src/account/component/create-account-screen/create-account-screen.tsx
-msgid "Fill in the account details"
-msgstr "Completa los detalles de la cuenta"
-
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
 msgstr "Filtrar cuentas"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Filter by amount"
-msgstr "Filtrar por importe"
+msgstr ""
 
 #: src/app/transaction-category-filter.tsx
 msgid "Filter categories"
@@ -1318,6 +1541,10 @@ msgstr "Filtrar etiquetas"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Corregir errores"
+
+#: src/app/(tabs)/settings/index.tsx
+msgid "Found an issue or have an idea? Open GitHub issue templates."
+msgstr "¿Encontraste un problema o tienes una idea? Abre las plantillas de incidencias de GitHub."
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -1338,7 +1565,12 @@ msgstr "De"
 
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "From {fromText}"
-msgstr "Desde {fromText}"
+msgstr ""
+
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
+msgid "From account"
+msgstr "Cuenta de origen"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Account"
@@ -1356,6 +1588,10 @@ msgstr "Moneda origen"
 msgid "General"
 msgstr "General"
 
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "Generic"
+msgstr "Genérico"
+
 #: src/i18n/constant/languages.constant.ts
 msgid "German"
 msgstr "Alemán"
@@ -1367,6 +1603,14 @@ msgstr "Alemán (Alemania)"
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Get API Token"
 msgstr "Obtener token API"
+
+#: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
+msgid "Get notified when a budget threshold is crossed"
+msgstr "Recibe una alerta cuando se supera un umbral de presupuesto"
+
+#: src/@generic/component/go-back-button/go-back-button.tsx
+msgid "Go back"
+msgstr "Volver"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Greater Than"
@@ -1415,12 +1659,17 @@ msgid "Import Erste Bank"
 msgstr "Importar Erste Bank"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/hook/use-quick-import.hook.ts
 msgid "Import failed"
 msgstr "Error de importación"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
 msgstr "Importar Privatbank"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Import started"
+msgstr "Importación iniciada"
 
 #: src/import/components/import-csv/import-csv.tsx
 msgid "Import transactions from a CSV file"
@@ -1470,7 +1719,7 @@ msgstr "Ingresos por categoría"
 msgid "Income by Tag"
 msgstr "Ingresos por etiqueta"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
@@ -1543,13 +1792,35 @@ msgstr "Aprendiendo transacciones"
 msgid "Learning up to date"
 msgstr "Aprendizaje actualizado"
 
+#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
+msgid "Left"
+msgstr "Restante"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Left to receive"
+msgstr "Por recibir"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Left to repay"
+msgstr "Por devolver"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Prestado"
 
+#: src/account/service/account-debt-opening.service.ts
+msgid "Lent debt account expected"
+msgstr "Se esperaba una cuenta de deuda prestada"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Less Than"
 msgstr "Menor que"
+
+#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+msgid "Limit"
+msgstr "Límite"
 
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx
 msgid "Listening..."
@@ -1578,6 +1849,11 @@ msgstr "Cargando..."
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
 msgstr "Moneda principal"
+
+#: src/budget/components/budget-details/budget-details.tsx
+#: src/settings/components/budget-management-card/budget-management-card.tsx
+msgid "Manage budget"
+msgstr "Gestionar presupuesto"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Manage Categories"
@@ -1645,7 +1921,7 @@ msgstr "Coincide con regex"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Maximum amount"
-msgstr "Importe máximo"
+msgstr ""
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
@@ -1660,6 +1936,7 @@ msgid "MCC Code"
 msgstr "Código MCC"
 
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Merchant code"
 msgstr "Código de comercio"
 
@@ -1677,7 +1954,7 @@ msgstr "Unir transferencias y reembolsos coincidentes"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Minimum amount"
-msgstr "Importe mínimo"
+msgstr ""
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -1696,6 +1973,15 @@ msgstr "Dinero prestado o recibido"
 #: src/rule/constant/external-source.constant.ts
 msgid "Monobank"
 msgstr "Monobank"
+
+#: src/budget/components/budget-details/budget-details.tsx
+#: src/budget/components/budget-widget/budget-widget.tsx
+msgid "Monthly budget"
+msgstr "Presupuesto mensual"
+
+#: src/budget/hooks/use-budget-form.hook.ts
+msgid "Monthly Budget"
+msgstr "Presupuesto mensual"
 
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Monthly Costs"
@@ -1716,6 +2002,10 @@ msgstr "Navega a Menú → Extractos"
 #: src/app/(main)/create-account/index.tsx
 msgid "New Account"
 msgstr "Nueva cuenta"
+
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+msgid "New borrowed debt"
+msgstr "Nueva deuda pedida prestada"
 
 #: src/app/(main)/create-transaction/expense.tsx
 msgid "New Expense"
@@ -1759,9 +2049,18 @@ msgstr "No se encontraron reparaciones de sincronización bancaria."
 msgid "No categories found"
 msgstr "No se encontraron categorías"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "No categories in this period"
+msgstr "No hay categorías en este período"
+
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "Ninguna categoría coincide con tu búsqueda"
+
+#: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
+#: src/budget/components/budget-details/budget-details.tsx
+msgid "No category limits yet"
+msgstr "Sin límites de categoría"
 
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
@@ -1787,6 +2086,10 @@ msgstr "No se encontraron monedas"
 msgid "No Custom Categories"
 msgstr "Sin categorías personalizadas"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No enabled accounts were found in this file"
+msgstr "No se encontraron cuentas activadas en este archivo"
+
 #: src/app/icon-selector.tsx
 msgid "No icons found"
 msgstr "No se encontraron iconos"
@@ -1807,6 +2110,10 @@ msgstr "No hay elementos para guardar"
 msgid "No languages found"
 msgstr "No se encontraron idiomas"
 
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No matching accounts"
+msgstr "No hay cuentas coincidentes"
+
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "No matching expenses"
 msgstr "No hay gastos coincidentes"
@@ -1823,6 +2130,10 @@ msgstr "No hay códigos MCC disponibles"
 #: src/app/rule-mcc-selector.tsx
 msgid "No MCC codes found"
 msgstr "No se encontraron códigos MCC"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "No new transactions"
+msgstr "No hay transacciones nuevas"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
@@ -1898,6 +2209,7 @@ msgid "not set"
 msgstr "no establecido"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
 msgstr "Nota"
 
@@ -1909,6 +2221,7 @@ msgstr "Solo se convierten las transacciones de gastos e ingresos: los gastos se
 msgid "Only expense transactions can be converted"
 msgstr "Solo se pueden convertir transacciones de gasto"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only income transactions can be converted"
 msgstr "Solo se pueden convertir transacciones de ingreso"
@@ -1917,6 +2230,7 @@ msgstr "Solo se pueden convertir transacciones de ingreso"
 msgid "Only single-entry expenses can be converted"
 msgstr "Solo se pueden convertir gastos de una sola entrada"
 
+#: src/account/service/account-debt-opening.service.ts
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Solo se pueden convertir ingresos de una sola entrada"
@@ -1928,6 +2242,10 @@ msgstr "Abre George (banca online de Erste Bank)"
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Open Monobank to get your token"
 msgstr "Abra Monobank para obtener su token"
+
+#: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
+msgid "Open settings"
+msgstr "Abrir configuración"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Open the Privatbank24 app"
@@ -1953,11 +2271,42 @@ msgstr "Las transacciones importadas originales serán restauradas y la transacc
 msgid "Original transaction"
 msgstr "Transacción original"
 
+#: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
+msgid "Other"
+msgstr "Otros"
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "Other budget: {threshold}% spent"
+msgstr "Presupuesto de otros: {threshold}% gastado"
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "Other budget: limit reached"
+msgstr "Presupuesto de otros: límite alcanzado"
+
+#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
+msgid "Over budget"
+msgstr "Por encima del presupuesto"
+
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
+msgid "Over by"
+msgstr "Excedido en"
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "Overall budget: {threshold}% spent"
+msgstr "Presupuesto total: {threshold}% gastado"
+
+#: src/budget/components/budget-overall-limit-field/budget-overall-limit-field.tsx
+msgid "Overall monthly limit"
+msgstr "Límite mensual total"
+
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Overview"
 msgstr "Resumen"
 
-#: src/account/constant/debt-section-kind-label.constant.ts
+#: src/account/component/debt-section-header/debt-section-header.tsx
 msgid "Owed to you"
 msgstr "Te deben"
 
@@ -1965,17 +2314,9 @@ msgstr "Te deben"
 msgid "Owes you"
 msgstr "Te debe"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Paid: {formattedBalance}"
-msgstr "Pagado: {formattedBalance}"
-
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
 msgstr "Pegue su token API a continuación:"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Payment Progress"
-msgstr "Progreso del pago"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
@@ -1985,11 +2326,14 @@ msgstr "Extracto PDF"
 msgid "Permission to access contacts was denied."
 msgstr "Se denegó el permiso para acceder a los contactos."
 
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+msgid "Pick a category to set a limit"
+msgstr "Elige una categoría para definir un límite"
+
 #: src/app/resync-window-picker.tsx
 msgid "Pick a window. Existing data is preserved."
 msgstr "Elige un periodo. Los datos existentes se conservan."
 
-#: src/app/(main)/pin.tsx
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PIN must be {PIN_LENGTH} digits"
 msgstr "El PIN debe tener {PIN_LENGTH} dígitos"
@@ -2049,6 +2393,10 @@ msgstr "Privatbank"
 #: src/account/constant/bank-provider-title.constant.ts
 msgid "PrivatBank"
 msgstr "PrivatBank"
+
+#: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
+msgid "Push notifications are disabled"
+msgstr "Las notificaciones push están desactivadas"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Quick rule"
@@ -2142,6 +2490,19 @@ msgstr "Reembolsado"
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Reembolsado {formattedRefundedAmount}"
 
+#: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
+msgid "Remaining"
+msgstr "Restante"
+
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
+msgid "Remove"
+msgstr "Eliminar"
+
+#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
+msgid "Remove category limit?"
+msgstr "¿Eliminar el límite de categoría?"
+
 #: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
 msgid "Remove duplicate imported bank transactions"
 msgstr "Eliminar transacciones bancarias importadas duplicadas"
@@ -2162,6 +2523,10 @@ msgstr "Eliminar división"
 msgid "Remove split?"
 msgstr "¿Eliminar división?"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Repaid"
+msgstr "Devuelto"
+
 #: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 msgid "Repair"
 msgstr "Reparar"
@@ -2171,9 +2536,22 @@ msgstr "Reparar"
 msgid "Repair Bank Sync Data"
 msgstr "Reparar datos de sincronización bancaria"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Repayment Progress"
+msgstr "Progreso de devolución"
+
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+#: src/app/(tabs)/settings/index.tsx
+msgid "Report a Bug"
+msgstr "Informar de un error"
+
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
 msgstr "Restablece todo el estado de sincronización"
+
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
+msgid "Restart App"
+msgstr "Reiniciar app"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid "Restore"
@@ -2192,10 +2570,18 @@ msgstr "Restaurar desde un archivo de copia de seguridad"
 msgid "Resuming AI…"
 msgstr "Reanudando IA…"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Return Progress"
+msgstr "Progreso de devolución recibida"
+
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+msgid "Returned"
+msgstr "Recibido"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx
+#: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Revert"
 msgstr "Revertir"
@@ -2344,6 +2730,7 @@ msgstr "Selecciona una etiqueta para fusionar"
 msgid "Select a valid column"
 msgstr "Selecciona una columna válida"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Select account"
@@ -2374,7 +2761,7 @@ msgstr "Seleccionar todas las categorías"
 msgid "Select category"
 msgstr "Seleccionar categoría"
 
-#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
+#: src/category/components/category-form-selector/category-form-selector.tsx
 msgid "Select Category"
 msgstr "Seleccionar categoría"
 
@@ -2390,7 +2777,7 @@ msgstr "Seleccionar fuente externa"
 msgid "Select Field"
 msgstr "Seleccionar campo"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 msgid "Select File"
 msgstr "Seleccionar archivo"
 
@@ -2442,11 +2829,24 @@ msgstr "Seleccionado"
 msgid "Sending {fromCode}"
 msgstr "Enviando {fromCode}"
 
+#: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
+msgid "Set a default currency in Settings first"
+msgstr "Primero configura una moneda predeterminada en Ajustes"
+
+#: src/settings/components/budget-management-card/budget-management-card.tsx
+msgid "Set a monthly limit and track spending"
+msgstr "Establece un límite mensual y controla tus gastos"
+
+#: src/budget/components/budget-empty-state/budget-empty-state.tsx
+msgid "Set a monthly limit and track your spending"
+msgstr "Establece un límite mensual y controla tus gastos"
+
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
 msgstr "Establecer categoría"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Set fee"
 msgstr "Establecer comisión"
 
@@ -2464,11 +2864,15 @@ msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show all amounts"
-msgstr "Mostrar todos los importes"
+msgstr ""
 
 #: src/app/date-filter.tsx
 msgid "Show all dates"
 msgstr "Mostrar todas las fechas"
+
+#: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
+msgid "Show budget on home"
+msgstr "Mostrar presupuesto en el inicio"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show Cents"
@@ -2476,7 +2880,7 @@ msgstr "Mostrar centavos"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show only transactions with a total inside this range, in your default currency."
-msgstr "Mostrar solo las transacciones cuyo total esté dentro de este rango, en tu moneda predeterminada."
+msgstr ""
 
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx
@@ -2487,6 +2891,10 @@ msgstr "Mostrar rango seleccionado"
 msgid "Show this account on the main page"
 msgstr "Mostrar esta cuenta en la página principal"
 
+#: src/transaction/components/transaction-info-page/transaction-info-page.tsx
+msgid "Similar transactions"
+msgstr "Transacciones similares"
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Saltar"
@@ -2495,6 +2903,7 @@ msgstr "Saltar"
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
 msgstr "Algunas transacciones pueden coincidir con varias reglas. La primera regla coincidente tendrá prioridad."
 
+#: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/@generic/hook/use-show-error.hook.ts
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 msgid "Something went wrong"
@@ -2531,6 +2940,7 @@ msgstr "Gastos por categoría"
 msgid "Spending by Tag"
 msgstr "Gastos por etiqueta"
 
+#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Gastado"
@@ -2539,11 +2949,15 @@ msgstr "Gastado"
 msgid "Split"
 msgstr "Dividir"
 
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "Start from scratch and set every limit yourself"
+msgstr "Empieza desde cero y define cada límite tú mismo"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Start Import"
 msgstr "Iniciar importación"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Iniciar sincronización"
@@ -2568,6 +2982,10 @@ msgstr "Enviar"
 msgid "Subscriptions"
 msgstr "Suscripciones"
 
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "Suggested"
+msgstr "Sugerido"
+
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Swap accounts"
 msgstr "Intercambiar cuentas"
@@ -2577,6 +2995,10 @@ msgstr "Intercambiar cuentas"
 msgid "Swipe left"
 msgstr "Desliza a la izquierda"
 
+#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
+msgid "Swipe to remove this per-category cap from your budget."
+msgstr "Desliza para eliminar este tope por categoría de tu presupuesto."
+
 #: src/settings/components/theme-switch/theme-switch.tsx
 msgid "Switch between light and dark themes"
 msgstr "Cambiar entre temas claro y oscuro"
@@ -2584,10 +3006,6 @@ msgstr "Cambiar entre temas claro y oscuro"
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Sync Failed"
 msgstr "Sincronización fallida"
-
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
-msgid "Sync your Monobank accounts and transactions"
-msgstr "Sincronice sus cuentas y transacciones de Monobank"
 
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Syncing history..."
@@ -2613,6 +3031,7 @@ msgstr "Etiqueta tus transacciones para ver cómo se desglosan tus gastos por co
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags"
 msgstr "Etiquetas"
@@ -2644,8 +3063,8 @@ msgstr "Esta cuenta se ocultará de tu vista principal y no se incluirá en los 
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "This action cannot be undone."
 msgstr "Esta acción no se puede deshacer."
 
@@ -2693,6 +3112,10 @@ msgstr "Esto vinculará el gasto seleccionado con este ingreso de reembolso. Pue
 msgid "This will remove the fee entry from this transaction."
 msgstr "Esto eliminará el asiento de comisión de esta transacción."
 
+#: src/budget/hooks/use-budget-form.hook.ts
+msgid "This will remove your monthly budget. You can create a new one anytime."
+msgstr "Esto eliminará tu presupuesto mensual. Puedes crear uno nuevo en cualquier momento."
+
 #: src/app/resync-window-picker.tsx
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Esto restablecerá el historial de sincronización y volverá a sincronizar todas las transacciones de esta cuenta bancaria. Tus transacciones, etiquetas y categorías existentes se conservarán y se actualizarán con cualquier dato nuevo."
@@ -2721,7 +3144,11 @@ msgstr "A"
 
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "To {toText}"
-msgstr "Hasta {toText}"
+msgstr ""
+
+#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
+msgid "To account"
+msgstr "Cuenta de destino"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "To Account"
@@ -2741,6 +3168,7 @@ msgid "Token required"
 msgstr "Token requerido"
 
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
 msgstr "Total"
 
@@ -2748,13 +3176,22 @@ msgstr "Total"
 msgid "Total Balance"
 msgstr "Saldo total"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Total: {formattedAmountToReturn}"
-msgstr "Total: {formattedAmountToReturn}"
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+#: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
+msgid "Total borrowed"
+msgstr "Total pedido prestado"
+
+#: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+msgid "Total lent"
+msgstr "Total prestado"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Touch ID"
 msgstr "Touch ID"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Transaction already has a debt attachment"
+msgstr "La transacción ya tiene una vinculación de deuda"
 
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction must have a destination account"
@@ -2764,6 +3201,12 @@ msgstr "La transacción debe tener una cuenta de destino"
 msgid "Transaction must have a source account"
 msgstr "La transacción debe tener una cuenta de origen"
 
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Transaction must have exactly one primary entry"
+msgstr "La transacción debe tener exactamente un asiento principal"
+
+#: src/account/service/account-debt-opening.service.ts
+#: src/transaction/service/transaction-debt-settlement.service.ts
 #: src/transaction/service/transaction-transfer.service.ts
 msgid "Transaction not found"
 msgstr "Transacción no encontrada"
@@ -2772,6 +3215,10 @@ msgstr "Transacción no encontrada"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Transacciones"
+
+#: src/sync/hook/use-quick-import.hook.ts
+msgid "Transactions imported"
+msgstr "Transacciones importadas"
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
 msgid "Transactions synced"
@@ -2956,6 +3403,10 @@ msgstr "Ver y eliminar categorías personalizadas"
 msgid "View and restore archived accounts"
 msgstr "Ver y restaurar cuentas archivadas"
 
+#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+msgid "View source transactions"
+msgstr "Ver transacciones de origen"
+
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"
 msgstr "Volumen"
@@ -2996,16 +3447,28 @@ msgstr "Exportación XLSX"
 msgid "Yesterday"
 msgstr "Ayer"
 
-#: src/account/constant/account-debt-type-description.constant.ts
+#: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You gave money"
 msgstr "Diste dinero"
 
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "You have used {spentPercent}% of your overall budget."
+msgstr "Ha utilizado {spentPercent}% de su presupuesto total."
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "You have used {threshold}% of the limit for {categoryName}."
+msgstr "Ha utilizado {threshold}% del límite para {categoryName}."
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "You have used {threshold}% of your budget for spending outside category limits."
+msgstr "Has usado el {threshold}% de tu presupuesto en gastos fuera de los límites de categoría."
+
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
-#: src/account/constant/debt-section-kind-label.constant.ts
+#: src/account/component/debt-section-header/debt-section-header.tsx
 msgid "You owe"
 msgstr "Debes"
 
-#: src/account/constant/account-debt-type-description.constant.ts
+#: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You received money"
 msgstr "Recibiste dinero"
 

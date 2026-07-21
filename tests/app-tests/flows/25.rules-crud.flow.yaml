@@ -12,23 +12,14 @@ env:
 
 # --- Create Basic Rule (title contains "Netflix" → set category) ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: Netflix
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -38,13 +29,8 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
+    file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
@@ -68,7 +54,7 @@ env:
 - eraseText
 - inputText: Netflix Updated
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
@@ -104,17 +90,8 @@ env:
 
 # --- Delete Rule (swipe-to-delete, verify empty state) ---
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- waitForAnimationToEnd
-
-- tapOn:
-    id: DeletableRow.DeleteButton
-
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -125,16 +102,8 @@ env:
 
 # --- Create Rule with Multiple Conditions (title + comment) ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
@@ -146,13 +115,14 @@ env:
 - tapOn:
     id: 'RuleForm.Condition.1.FieldSelector'
 
-- tapOn: Comment
+- tapOn:
+    id: RuleForm.SelectorCard.COMMENT
 
 - tapOn:
     id: 'RuleForm.Condition.1.ValueInput'
 - inputText: Premium
 
-- tapOn: return
+- tapOn: Done
 
 - assertVisible:
     text: 'Match All'
@@ -171,13 +141,8 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
+    file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
@@ -191,38 +156,22 @@ env:
 
 # --- Delete Rule (clean up) ---
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-
-- tapOn:
-    id: DeletableRow.DeleteButton
-
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
 # --- Create Rule with Multiple Actions (category + tag) ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: Amazon
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -252,13 +201,8 @@ env:
 - tapOn:
     text: ${TAG_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
+    file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - waitForAnimationToEnd
 
 - assertVisible:
@@ -270,33 +214,16 @@ env:
 
 # --- Delete Rule (clean up) ---
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-
-- tapOn:
-    id: DeletableRow.DeleteButton
-
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
 # --- Remove Condition and Action (add extras, remove them, then submit) ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
     id: 'RuleForm.ConditionSection.AddButton'
@@ -335,7 +262,7 @@ env:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: TestRemove
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -360,35 +287,19 @@ env:
 
 # --- Delete Rule (clean up) ---
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-
-- tapOn:
-    id: DeletableRow.DeleteButton
-
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
 # --- All Field Types (amount GREATER_THAN + comment) ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.AMOUNT
 - waitForAnimationToEnd
@@ -409,16 +320,28 @@ env:
 - tapOn:
     id: 'RuleForm.Condition.1.FieldSelector'
 
-- tapOn: Comment
+- tapOn:
+    id: RuleForm.SelectorCard.COMMENT
 
 - tapOn:
     id: 'RuleForm.Condition.1.ValueInput'
 - inputText: 'Test08 Comment'
+- pressKey: enter
+- waitForAnimationToEnd
 
-- tapOn: return
+- scrollUntilVisible:
+    element:
+      id: RuleForm.Action.0.TypeSelector
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
 
 - tapOn:
     id: RuleForm.Action.0.TypeSelector
+- extendedWaitUntil:
+    visible:
+      id: RuleForm.SelectorCard.SET_CATEGORY
+    timeout: 3000
 - tapOn:
     id: RuleForm.SelectorCard.SET_CATEGORY
 - waitForAnimationToEnd
@@ -448,36 +371,19 @@ env:
 
 # --- Delete Rule (clean up) ---
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-
-- tapOn:
-    id: DeletableRow.DeleteButton
-
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
 # --- Account & Transaction Type Conditions ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.ACCOUNT_ID
 - waitForAnimationToEnd
@@ -534,13 +440,8 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
+    file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
@@ -550,16 +451,8 @@ env:
 
 # --- Delete Rule (clean up) ---
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-
-- tapOn:
-    id: DeletableRow.DeleteButton
-
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -567,16 +460,8 @@ env:
 # --- Condition Operators (EQUALS, NOT_CONTAINS, LESS_THAN) ---
 
 # Rule 1: Title EQUALS operator
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
     id: 'RuleForm.Condition.0.OperatorSelector'
@@ -588,7 +473,7 @@ env:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Exact Match'
 
-- tapOn: return
+- tapOn: Done
 
 - scrollUntilVisible:
     element:
@@ -613,19 +498,11 @@ env:
     id: 'RulesPage.RuleCard.0'
 
 # Rule 2: Comment NOT_CONTAINS operator
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.COMMENT
 - waitForAnimationToEnd
@@ -640,7 +517,7 @@ env:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'exclude'
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -649,32 +526,19 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
+    file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - waitForAnimationToEnd
 
 - assertVisible:
     id: 'RulesPage.RuleCard.1'
 
 # Rule 3: Amount LESS_THAN operator
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.AMOUNT
 - waitForAnimationToEnd
@@ -706,13 +570,8 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
+    file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
@@ -722,54 +581,27 @@ env:
 
 # --- Delete All 3 Rules (clean up) ---
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 - waitForAnimationToEnd
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 - waitForAnimationToEnd
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
 # --- BETWEEN Operator (amount 10–100) ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.AMOUNT
 - waitForAnimationToEnd
@@ -809,13 +641,8 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
+    file: subflows/rules/submit-rule-skip-existing.flow.yaml
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
@@ -825,16 +652,8 @@ env:
 
 # --- Delete Rule (clean up) ---
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-
-- tapOn:
-    id: DeletableRow.DeleteButton
-
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
@@ -842,20 +661,11 @@ env:
 # --- External Source & MCC Conditions ---
 
 # Rule 1: EXTERNAL_SOURCE condition
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.EXTERNAL_SOURCE
 - waitForAnimationToEnd
@@ -892,20 +702,11 @@ env:
     id: 'RulesPage.RuleCard.0'
 
 # Rule 2: MCC_CODE condition
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
 - tapOn:
     id: RuleForm.SelectorCard.MCC_CODE
 - waitForAnimationToEnd
@@ -914,7 +715,7 @@ env:
 - waitForAnimationToEnd
 - tapOn: 'Search by code or description...'
 - inputText: '0742'
-- tapOn: return
+- tapOn: Done
 - extendedWaitUntil:
     visible:
       id: 'RuleMccSelector.Card.0742'
@@ -947,47 +748,26 @@ env:
 
 # --- Delete All 2 Rules (clean up) ---
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 - waitForAnimationToEnd
 
-- swipe:
-    from:
-      id: 'RulesPage.RuleCard.0'
-    direction: LEFT
-    duration: 300
-- tapOn:
-    id: DeletableRow.DeleteButton
-- tapOn: Delete
+- runFlow:
+    file: subflows/rules/delete-first-rule.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
 # --- Match Type Any (with transaction verification) ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.CreateButton'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RulesPage.CreateButton'
-- extendedWaitUntil:
-    visible: 'Create Rule'
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Spotify'
 
-- tapOn: return
+- tapOn: Done
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -997,13 +777,8 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- extendedWaitUntil:
-    visible: 'Apply to existing transactions?'
-    timeout: 10000
-- tapOn: 'Apply'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/rules/submit-rule-apply-existing.flow.yaml
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'

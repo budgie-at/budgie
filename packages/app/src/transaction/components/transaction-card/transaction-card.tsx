@@ -11,6 +11,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
+import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { TransactionCardContent } from '../transaction-card-content/transaction-card-content';
 
@@ -20,16 +21,24 @@ export interface TransactionCardProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly formattedDate: string;
     readonly categoryLabel: string | null;
+    readonly accountId?: number | null;
     readonly onPress?: (transaction: TransactionWithRelationsEntityInterface) => void;
     readonly onLongPress?: (transaction: TransactionWithRelationsEntityInterface, anchor: PopoverMenuAnchor) => void;
 }
 
-export const TransactionCard = ({ transaction, formattedDate, categoryLabel, onPress, onLongPress }: TransactionCardProps) => {
+export const TransactionCard = ({
+    transaction,
+    formattedDate,
+    categoryLabel,
+    accountId = null,
+    onPress,
+    onLongPress
+}: TransactionCardProps) => {
     const cardRef = useRef<View>(null);
 
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
-    const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
+    const title = getTransactionDisplayTitle(transaction);
     let cardTestID: string = TransactionCardSelector.Card(transaction.id);
 
     if (isAdjustment) {
@@ -57,7 +66,12 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel, onP
 
     const card = (
         <Card className="p-xl gap-y-8" testID={cardTestID} {...interactionProps}>
-            <TransactionCardContent transaction={transaction} formattedDate={formattedDate} categoryLabel={categoryLabel} />
+            <TransactionCardContent
+                transaction={transaction}
+                formattedDate={formattedDate}
+                categoryLabel={categoryLabel}
+                accountId={accountId}
+            />
         </Card>
     );
 

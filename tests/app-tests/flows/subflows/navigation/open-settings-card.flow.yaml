@@ -1,27 +1,40 @@
 appId: ${APP_ID}
 env:
-  CARD_ID: ${CARD_ID}
-  DESTINATION_ID: ${DESTINATION_ID}
+    CARD_ID: ${CARD_ID}
+    DESTINATION_ID: ${DESTINATION_ID}
 ---
 - scrollUntilVisible:
-    element:
-      id: '${CARD_ID}'
-    direction: DOWN
-    speed: 20
-    centerElement: true
-    waitToSettleTimeoutMs: 1000
+      element:
+          id: '${CARD_ID}'
+      direction: UP
+      speed: 20
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+      optional: true
+
+- runFlow:
+      when:
+          notVisible:
+              id: '${CARD_ID}'
+      commands:
+          - scrollUntilVisible:
+                element:
+                    id: '${CARD_ID}'
+                direction: DOWN
+                speed: 20
+                centerElement: true
+                waitToSettleTimeoutMs: 1000
 
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: '${CARD_ID}'
-    timeout: 3000
+      visible:
+          id: '${CARD_ID}'
+      timeout: 3000
 
 - tapOn:
-    id: '${CARD_ID}'
-    retryTapIfNoChange: true
+      id: '${CARD_ID}'
 
 - extendedWaitUntil:
-    visible:
-      id: '${DESTINATION_ID}'
-    timeout: 15000
+      visible:
+          id: '${DESTINATION_ID}'
+      timeout: 3000

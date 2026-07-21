@@ -9,34 +9,64 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 
+import { DebtAccountCardSummarySelector } from './debt-account-card-summary.selector';
+
 interface Props {
-    readonly targetBalance: number;
-    readonly currentBalance: number;
-    readonly instrumentSymbol: string;
     readonly debtType: AccountDebtTypeEnum;
+    readonly instrumentSymbol: string;
+    readonly outstandingAmount: number;
+    readonly paidAmount: number;
+    readonly title: string;
+    readonly totalAmount: number;
 }
 
-const textVariant = cva('flex-1 text-xxs font-semibold text-right border-b border-b-secondary-corner pb-[2px]', {
+const textVariant = cva('text-xxs font-semibold text-right border-b border-b-secondary-corner pb-[2px]', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const DebtAccountCardSummary = ({ targetBalance, instrumentSymbol, currentBalance, debtType }: Props) => {
+export const DebtAccountCardSummary = ({ debtType, instrumentSymbol, outstandingAmount, paidAmount, title, totalAmount }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatMoney = useFormatDigits(decimalPlaces);
-    const amountLeft = formatMoney(Math.max(targetBalance - currentBalance, 0), instrumentSymbol);
+    const amountLeft = formatMoney(outstandingAmount, instrumentSymbol);
+    const compactPaidAmountLabel = `${instrumentSymbol}${abbreviateNumber(paidAmount, 2)}`;
+    const totalAmountLabel = `${instrumentSymbol}${abbreviateNumber(totalAmount, 2)}`;
+    const outstandingAmountSelector = DebtAccountCardSummarySelector.OutstandingAmount(title, outstandingAmount);
+    const paidAmountSelector = DebtAccountCardSummarySelector.PaidAmount(title, paidAmount);
+    const totalAmountSelector = DebtAccountCardSummarySelector.TotalAmount(title, totalAmount);
 
     return (
-        <View className="flex-row items-center justify-between">
-            <ProtectedText className="text-primary font-medium">{amountLeft}</ProtectedText>
-
-            <View>
-                <ProtectedText className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}>
-                    {instrumentSymbol}
-                    {abbreviateNumber(currentBalance, 2)}
+        <View className="flex-row items-center">
+            <View className="flex-1 min-w-0 pr-md">
+                <ProtectedText
+                    adjustsFontSizeToFit
+                    className="text-primary font-medium"
+                    ellipsizeMode="tail"
+                    minimumFontScale={0.72}
+                    numberOfLines={1}
+                    testID={outstandingAmountSelector}
+                >
+                    {amountLeft}
                 </ProtectedText>
-                <ProtectedText className="text-secondary-foreground text-xxs font-medium text-right">
-                    {instrumentSymbol}
-                    {abbreviateNumber(targetBalance, 2)}
+            </View>
+
+            <View className="shrink-0 items-end max-w-[45%]">
+                <ProtectedText
+                    adjustsFontSizeToFit
+                    className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}
+                    minimumFontScale={0.72}
+                    numberOfLines={1}
+                    testID={paidAmountSelector}
+                >
+                    {compactPaidAmountLabel}
+                </ProtectedText>
+                <ProtectedText
+                    adjustsFontSizeToFit
+                    className="text-secondary-foreground text-xxs font-medium text-right"
+                    minimumFontScale={0.72}
+                    numberOfLines={1}
+                    testID={totalAmountSelector}
+                >
+                    {totalAmountLabel}
                 </ProtectedText>
             </View>
         </View>

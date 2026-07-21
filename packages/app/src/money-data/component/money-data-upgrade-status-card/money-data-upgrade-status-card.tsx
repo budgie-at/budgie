@@ -1,10 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Text } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HorizontalCell } from '../../../@generic/component/horizontal-cell/horizontal-cell';
+import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AiProgressBar } from '../../../settings/components/ai-progress-bar/ai-progress-bar';
 import { MoneyDataUpgradeProgressStateEnum } from '../../enum/money-data-upgrade-progress-state.enum';
 import { useMoneyDataUpgradeStatus } from '../../hook/use-money-data-upgrade-status.hook';
@@ -23,8 +23,6 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeo
     const percentText = `${snapshot.percent}%`;
     const isWorking = snapshot.state === MoneyDataUpgradeProgressStateEnum.WORKING;
     const isActionable = !isWorking;
-    const statusTestID = isDefined(testID) ? `${testID}.Status.${snapshot.state}` : testID;
-    const percentTestID = isDefined(testID) ? `${testID}.Percent` : testID;
     const handlePress = () => {
         void handlePrimaryAction();
     };
@@ -35,17 +33,23 @@ export const MoneyDataUpgradeStatusCard = ({ testID }: Pick<ComponentProps<typeo
             {...(isActionable && { onPress: handlePress })}
             left={<CircleIcon icon={UserIconNameEnum.Database} variant="positive" border={false} size={36} iconSize={20} />}
             right={
-                <Text testID={percentTestID} className={`text-sm font-medium text-right w-12 ${STATE_TEXT_CLASS[snapshot.state]}`}>
+                <Text
+                    {...testIDProps(testID, TestIDPartEnum.PERCENT)}
+                    className={`text-sm font-medium text-right w-12 ${STATE_TEXT_CLASS[snapshot.state]}`}
+                >
                     {percentText}
                 </Text>
             }
-            variant="secondary"
             contentClassName="gap-y-xs"
         >
             <Text numberOfLines={1} className="text-sm font-medium text-primary">
                 {snapshot.title}
             </Text>
-            <Text numberOfLines={1} testID={statusTestID} className="text-xs font-medium text-secondary-foreground">
+            <Text
+                numberOfLines={1}
+                {...testIDProps(testID, TestIDPartEnum.STATUS, snapshot.state)}
+                className="text-xs font-medium text-secondary-foreground"
+            >
                 {snapshot.statusText}
             </Text>
             <AiProgressBar progress={snapshot.percent} />

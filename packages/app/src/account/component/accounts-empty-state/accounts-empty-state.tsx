@@ -6,6 +6,8 @@ import { Text, View } from 'react-native';
 import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
 
+import { AccountsEmptyStateSelector } from './accounts-empty-state.selector';
+
 export const AccountsEmptyState = () => {
     const router = useRouter();
 
@@ -31,6 +33,7 @@ export const AccountsEmptyState = () => {
                     leftIcon={UserIconNameEnum.Plus}
                     onPress={handleAddAccount}
                     content={<Trans>Add Account</Trans>}
+                    testID={AccountsEmptyStateSelector.AddAccountButton}
                 />
             </View>
         </View>

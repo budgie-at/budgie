@@ -113,10 +113,10 @@ export default ({ config }) => ({
         [
             'expo-build-properties',
             {
-                buildReactNativeFromSource: true,
                 useHermesV1: true,
                 ios: {
-                    ccacheEnabled: true
+                    ccacheEnabled: true,
+                    usePrecompiledModules: true
                 }
             }
         ],
@@ -290,8 +290,7 @@ export default ({ config }) => ({
     ],
     experiments: {
         typedRoutes: true,
-        reactCompiler: true,
-        buildCacheProvider: 'eas'
+        reactCompiler: true
     },
     runtimeVersion: {
         policy: 'fingerprint'

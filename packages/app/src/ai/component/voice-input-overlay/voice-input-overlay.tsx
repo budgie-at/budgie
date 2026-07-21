@@ -57,11 +57,11 @@ export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void })
                 const hasSingleSavedTransaction = result.transactionIds.length === 1;
                 onClose();
                 if (hasSingleSavedTransaction) {
-                    router.push(`/transactions/${result.transactionIds[0]}/expense`);
+                    router.push({ pathname: '/transactions/[id]/expense', params: { id: String(result.transactionIds[0]) } });
 
                     return;
                 }
-                router.push(`/account/${result.accountId}/details`);
+                router.push({ pathname: '/account/[id]/details', params: { id: String(result.accountId) } });
 
                 return;
             }
@@ -74,7 +74,7 @@ export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void })
             isLiveRef.current = false;
             cancel();
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- Single mount-bound lifecycle: starts when ready, recurses on re-record, cancels on unmount
+        // oxlint-disable-next-line react/exhaustive-deps -- Single mount-bound lifecycle: starts when ready, recurses on re-record, cancels on unmount
     }, [isReady]);
 
     const handleRecord = () => {

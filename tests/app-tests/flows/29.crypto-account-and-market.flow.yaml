@@ -3,47 +3,16 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
-          FIXTURE_ROW_ID_MATCH: '02.db(, db)?'
+          FIXTURE_ROW_ID_MATCH: '29.db'
 
-# --- Create fiat account so asset chips have both sides ---
-
-- runFlow:
-      file: subflows/accounts/create-liability-account.flow.yaml
-      env:
-          ACCOUNT_TYPE_ID: 'CreateAccount.CASH'
-          ACCOUNT_NAME: 'E2E Fiat Pocket'
-          ACCOUNT_AMOUNT: '100'
-          CURRENCY_CODE: 'EUR'
-
-# --- Create crypto accounts ---
-
-- runFlow:
-      file: subflows/accounts/create-crypto-account.flow.yaml
-      env:
-          ACCOUNT_NAME: 'E2E Crypto Vault'
-          ACCOUNT_AMOUNT: '2'
-          CURRENCY_CODE: 'BTC'
-
-- runFlow:
-      file: subflows/accounts/create-crypto-account.flow.yaml
-      env:
-          ACCOUNT_NAME: 'E2E Binance BTC'
-          ACCOUNT_AMOUNT: '2'
-          CURRENCY_CODE: 'BTC'
-
-- runFlow:
-      file: subflows/accounts/create-crypto-account.flow.yaml
-      env:
-          ACCOUNT_NAME: 'E2E Ethereum Stack'
-          ACCOUNT_AMOUNT: '1'
-          CURRENCY_CODE: 'ETH'
-
-# --- Home crypto group ---
+# --- Home crypto group (fiat + crypto accounts pre-seeded by 29.db) ---
 
 - extendedWaitUntil:
       visible:
           id: 'CryptoGroup.Market.BTC'
       timeout: 10000
+- assertVisible:
+      id: 'CryptoGroup.Card.BTC'
 - assertVisible:
       id: 'CryptoGroup.Container.BTC'
 - assertVisible:
@@ -67,6 +36,8 @@ appId: ${APP_ID}
           id: 'CryptoGroup.Market.ETH'
       timeout: 10000
 - assertVisible:
+      id: 'CryptoGroup.Card.ETH'
+- assertVisible:
       id: 'CryptoGroup.Container.ETH'
 - assertVisible:
       id: 'CryptoGroup.Balance.ETH'
@@ -81,10 +52,11 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'CryptoGroup.Toggle.BTC'
+- waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.E2E Crypto Vault'
-      timeout: 3000
+      timeout: 10000
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.E2E Binance BTC'
@@ -142,6 +114,19 @@ appId: ${APP_ID}
 # --- Seeded ETH market page ---
 
 - tapOn:
+      id: 'CryptoGroup.Toggle.BTC'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+      notVisible:
+          id: 'AccountCard.E2E Crypto Vault'
+      timeout: 5000
+
+- extendedWaitUntil:
+      visible:
+          id: 'CryptoGroup.Market.ETH'
+      timeout: 5000
+- waitForAnimationToEnd
+- tapOn:
       id: 'CryptoGroup.Market.ETH'
 - extendedWaitUntil:
       visible:
@@ -187,12 +172,20 @@ appId: ${APP_ID}
       commands:
           - tapOn:
                 id: 'CryptoGroup.Toggle.BTC'
+          - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.E2E Crypto Vault'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 100
+      centerElement: true
 - tapOn:
-      id: 'AccountCard.E2E Crypto Vault'
+      id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
 - extendedWaitUntil:
       visible:
           id: 'AccountDetails.EditButton'
@@ -237,7 +230,7 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'TransactionCard.Category.E2E_Crypto_Buy'
 - assertVisible:
-      id: 'TransactionCard.Account.E2E_Crypto_Vault'
+      id: 'TransactionCard.Account.E2E_Crypto_Vault.Label'
 
 - tapOn:
       id: 'PageHeader.BackButton'

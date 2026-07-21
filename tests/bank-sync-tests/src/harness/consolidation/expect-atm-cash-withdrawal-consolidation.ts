@@ -1,11 +1,9 @@
-import { expect } from 'vitest';
-
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { expect } from 'vitest';
 
 import { fetchCanonicalsOfType } from '../db/fetch-canonicals-of-type';
 import { fetchTransactionById } from '../db/fetch-transaction-by-id';
-
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 export const expectAtmCashWithdrawalConsolidation = async (
     sourceAccountId: number,

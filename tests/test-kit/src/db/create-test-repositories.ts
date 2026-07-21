@@ -1,4 +1,12 @@
+import {
+    AtmCashWithdrawalRepository,
+    ExistingTransferRepository,
+    IbanBridgeTransferRepository,
+    RefundPairRepository,
+    TransferPairRepository
+} from '@budgie/consolidation';
 import * as contracts from '@budgie/contracts';
+
 import type { DB } from '@budgie/contracts';
 
 export const createTestRepositories = (db: DB) => ({
@@ -9,7 +17,10 @@ export const createTestRepositories = (db: DB) => ({
     instrumentRepository: new contracts.InstrumentRepository(db),
     exchangeRateRepository: new contracts.ExchangeRateRepository(db),
     historicalExchangeRateRepository: new contracts.HistoricalExchangeRateRepository(db),
+    instrumentDailyMarketPriceRepository: new contracts.InstrumentDailyMarketPriceRepository(db),
+    instrumentMarketDataJobRepository: new contracts.InstrumentMarketDataJobRepository(db),
     accountBalanceRepository: new contracts.AccountBalanceRepository(db),
+    debtEventRepository: new contracts.DebtEventRepository(db),
     bankSyncRepository: new contracts.BankSyncRepository(db),
     ruleRepository: new contracts.RuleRepository(db),
     ruleActionRepository: new contracts.RuleActionRepository(db),
@@ -24,6 +35,9 @@ export const createTestRepositories = (db: DB) => ({
     transactionTagsRepository: new contracts.TransactionTagsRepository(db),
     merchantEmbeddingRepository: new contracts.MerchantEmbeddingRepository(db),
     commentEmbeddingRepository: new contracts.CommentEmbeddingRepository(db),
-    transferPairRepository: new contracts.TransferPairRepository(db),
-    refundPairRepository: new contracts.RefundPairRepository(db)
+    transferPairRepository: new TransferPairRepository(db),
+    atmCashWithdrawalRepository: new AtmCashWithdrawalRepository(db),
+    existingTransferRepository: new ExistingTransferRepository(db),
+    ibanBridgeTransferRepository: new IbanBridgeTransferRepository(db),
+    refundPairRepository: new RefundPairRepository(db)
 });

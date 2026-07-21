@@ -1,14 +1,14 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { View } from 'react-native';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { FormPage } from '../../../@generic/component/form-page/form-page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useAccountSelection } from '../../hook/use-account-selection.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
@@ -17,10 +17,7 @@ import { TokenInputStep } from '../token-input-step/token-input-step';
 
 import { CreateMonobankAccountSelector } from './create-monobank-account.selector';
 
-import type { Edge } from 'react-native-safe-area-context';
-
 type SetupStep = 'token' | 'accounts';
-const FORM_PAGE_SAFE_EDGES: Edge[] = ['bottom', 'top'];
 
 export const CreateMonobankAccount = () => {
     const { t } = useLingui();
@@ -29,8 +26,6 @@ export const CreateMonobankAccount = () => {
     const [token, setToken] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { accountPreviews, selectedAccounts, setPreviews, toggleAccount, selectAllAccounts, deselectAllAccounts } = useAccountSelection();
-
-    const handleGoBack = () => void goBackOrReplace('/');
 
     const handleFetchAccounts = async () => {
         const trimmedToken = token.trim();
@@ -68,23 +63,27 @@ export const CreateMonobankAccount = () => {
     const isStartSyncDisabled = isLoading || selectedAccounts.size === 0;
     const footer =
         step === 'token' ? (
-            <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />
+            <Button
+                onPress={handleFetchAccounts}
+                disabled={isLoading}
+                content={t`Fetch Accounts`}
+                testID={CreateMonobankAccountSelector.FetchAccountsButton}
+            />
         ) : (
-            <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />
+            <Button
+                onPress={handleSetupSync}
+                disabled={isStartSyncDisabled}
+                content={t`Start Sync`}
+                testID={CreateMonobankAccountSelector.StartSyncButton}
+            />
         );
 
     return (
-        <FormPage
-            header={
-                <PageHeader
-                    onGoBack={handleGoBack}
-                    title={t`Connect Monobank`}
-                    description={t`Sync your Monobank accounts and transactions`}
-                />
-            }
-            footer={footer}
-            safeEdges={FORM_PAGE_SAFE_EDGES}
-            scrollViewTestID={CreateMonobankAccountSelector.ScrollView}
+        <CollapsibleChromePage
+            title={t`Connect Monobank`}
+            leading={<HeaderBackButton />}
+            testID={CreateMonobankAccountSelector.ScrollView}
+            footer={<View className="gap-md pt-xl px-7xl">{footer}</View>}
         >
             <FormLayoutGroup>
                 {step === 'token' && <TokenInputStep token={token} onTokenChange={setToken} />}
@@ -99,6 +98,6 @@ export const CreateMonobankAccount = () => {
                     />
                 )}
             </FormLayoutGroup>
-        </FormPage>
+        </CollapsibleChromePage>
     );
 };

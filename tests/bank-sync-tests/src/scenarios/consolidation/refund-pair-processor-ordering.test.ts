@@ -1,10 +1,8 @@
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-
 import { fetchCanonicalsOfType, fetchTransactionById, seedAmountTransferPair } from '../../harness';
-
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 describe('consolidation/refund-pair-processor-ordering', () => {
     it('lets the transfer-pair processor reparent first when an income is also a transfer-pair partner', async () => {

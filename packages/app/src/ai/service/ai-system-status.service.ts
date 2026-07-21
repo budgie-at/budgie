@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- State machine service co-locates recompute, derivation, and action dispatcher */
 import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 
@@ -311,7 +310,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         return null;
     }
 
-    /* eslint-disable lingui/no-unlocalized-strings -- Diagnostic source labels embedded in error statusText (the message itself is native) */
+    /* oxlint-disable lingui/no-unlocalized-strings -- Diagnostic source labels embedded in error statusText (the message itself is native) */
     private firstSubsystemError(): AiErrorSourceInterface | null {
         const chatError = chatService.getSnapshot().errorMessage;
         if (isNotEmptyString(chatError)) {

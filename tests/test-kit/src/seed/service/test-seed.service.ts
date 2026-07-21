@@ -1,5 +1,6 @@
 import {
     AccountEntityTable,
+    AccountDebtTypeEnum,
     AccountNatureEnum,
     AccountTypeEnum,
     BankSyncEntityTable,
@@ -10,6 +11,7 @@ import {
     InstrumentTypeEnum,
     MccCategoryEntityTable,
     TagEntityTable,
+    TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
@@ -72,7 +74,17 @@ export class TestSeedService {
                 instrumentId: input.instrumentId ?? 1,
                 externalId: input.externalId ?? null,
                 externalSource: input.externalSource ?? null,
-                iban: input.iban ?? null
+                iban: input.iban ?? null,
+                debtType: input.debtType ?? AccountDebtTypeEnum.LENT,
+                deadline: input.deadline ?? null,
+                parentId: input.parentId ?? null,
+                contactId: input.contactId ?? null,
+                targetBalance: input.targetBalance ?? 0,
+                targetBaseInstrumentId: input.targetBaseInstrumentId ?? null,
+                targetBaseExchangeRate: input.targetBaseExchangeRate ?? null,
+                targetBaseAmount: input.targetBaseAmount ?? null,
+                includeInNetWorth: input.includeInNetWorth ?? true,
+                isActive: input.isActive ?? true
             } satisfies AccountCreateEntityInterface)
             .returning()
             .all();
@@ -203,6 +215,76 @@ export class TestSeedService {
         );
 
         return { fromAccount, toAccount, expense, income };
+    }
+
+    directTransfer(input: {
+        readonly consolidationType?: TransactionConsolidationTypeEnum | null;
+        readonly exchangeRate: number;
+        readonly operatedAt: Date;
+        readonly sourceAccountId: number;
+        readonly sourceAmount: number;
+        readonly sourceEntryExchangeRate: number;
+        readonly targetAccountId: number;
+        readonly targetAmount: number;
+        readonly targetEntryExchangeRate?: number;
+        readonly title?: string;
+        readonly toIban: string | null;
+    }): TransactionEntityInterface {
+        const transactionRows = this.database
+            .insert(TransactionEntityTable)
+            .values({
+                type: TransactionTypeEnum.TRANSFER,
+                title: input.title ?? 'Generated direct transfer',
+                externalId: null,
+                externalSource: null,
+                operatedAt: input.operatedAt,
+                exchangeRate: input.exchangeRate,
+                fromAccountId: input.sourceAccountId,
+                toAccountId: input.targetAccountId,
+                comment: '',
+                needsEmbedding: false,
+                consolidationParentTransactionId: null,
+                consolidationType: input.consolidationType ?? null,
+                updatedBy: null
+            } satisfies TransactionCreateEntityInterface)
+            .returning()
+            .all();
+        const transfer = this.requireInserted(transactionRows, 'transactions');
+
+        const entryRows = this.database
+            .insert(TransactionEntryEntityTable)
+            .values([
+                {
+                    transactionId: transfer.id,
+                    accountId: input.sourceAccountId,
+                    categoryId: null,
+                    mccCategoryId: null,
+                    type: TransactionEntryTypeEnum.CREDIT,
+                    amount: input.sourceAmount,
+                    externalId: null,
+                    exchangeRate: input.sourceEntryExchangeRate,
+                    toIban: input.toIban,
+                    originalTransactionId: null
+                },
+                {
+                    transactionId: transfer.id,
+                    accountId: input.targetAccountId,
+                    categoryId: null,
+                    mccCategoryId: null,
+                    type: TransactionEntryTypeEnum.DEBIT,
+                    amount: input.targetAmount,
+                    externalId: null,
+                    exchangeRate: input.targetEntryExchangeRate ?? 1,
+                    toIban: null,
+                    originalTransactionId: null
+                }
+            ] satisfies TransactionEntryCreateEntityInterface[])
+            .returning()
+            .all();
+
+        this.requireInserted(entryRows, 'transaction_entries');
+
+        return transfer;
     }
 
     refundedExpense(input: {

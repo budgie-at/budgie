@@ -35,15 +35,16 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
     const { latestPrice } = useInstrumentMarketDataQuery(group.instrument.id, defaultInstrument.id);
 
     const toggleOpen = () => void setIsOpen(value => !value);
-    const navigateToMarket = () => void router.push(`/currency/${group.instrument.id}`);
-    const valuationRate = rate?.rate ?? latestPrice?.price;
+    const navigateToMarket = () => void router.push({ pathname: '/currency/[id]', params: { id: String(group.instrument.id) } });
+    const rateValue = rate?.rate;
+    const valuationRate = isDefined(rateValue) ? rateValue : latestPrice?.price;
     const formattedBalance = `${formatCryptoDigits(balance)} ${group.instrument.code}`;
     const formattedValue = isDefined(valuationRate) ? formatDigits(balance * valuationRate, defaultInstrument.symbol) : null;
     const formattedRate = isDefined(valuationRate) ? formatExchangeRate(valuationRate) : null;
 
     return (
         <View className="mb-3 gap-y-3">
-            <Card className="border-warning-corner bg-secondary-background" size="md">
+            <Card size="md" testID={CryptoCurrencyGroupCardSelector.Card(group.instrument.code)}>
                 <View className="gap-y-3">
                     <CryptoCurrencyGroupMarketLink
                         instrumentCode={group.instrument.code}
@@ -54,12 +55,12 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
                     />
 
                     <CryptoCurrencyGroupToggleRow
-                        onPress={toggleOpen}
                         accountsCount={group.accounts.length}
                         defaultInstrumentSymbol={defaultInstrument.symbol}
                         formattedRate={formattedRate}
                         instrumentCode={group.instrument.code}
                         isOpen={isOpen}
+                        onPress={toggleOpen}
                         testID={CryptoCurrencyGroupCardSelector.Toggle(group.instrument.code)}
                     />
                 </View>

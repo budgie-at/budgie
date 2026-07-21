@@ -1,0 +1,21 @@
+{
+    "name": "@budgie-at/budget-tests",
+    "version": "1.18.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "test": "vitest run",
+        "test:coverage": "vitest run",
+        "test:watch": "vitest",
+        "ts": "node ../../node_modules/@typescript/native/bin/tsc --noEmit"
+    },
+    "dependencies": {
+        "@budgie/budget": "workspace:*",
+        "@rnw-community/shared": "^2.2.0",
+        "vitest": "^4.1.7"
+    },
+    "devDependencies": {
+        "@types/node": "22.20.1",
+        "typescript": "npm:@typescript/typescript6@6.0.2"
+    }
+}

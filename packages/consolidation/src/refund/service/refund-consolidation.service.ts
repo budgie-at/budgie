@@ -36,11 +36,11 @@ export class RefundConsolidationService {
             `throw refundIncomeTransactionId=${params.refundIncomeTransactionId} expenseTransactionId=${params.expenseTransactionId} error=${getErrorMessage(error)}`
     )
     async convertToRefund(params: ConvertToRefundParamsInterface): Promise<number> {
-        return await this.dependencies.transactionRunner.run(this.dependencies.database, async tx => this.convertToRefundInner(params, tx));
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx => this.convertToRefundInner(params, tx));
     }
 
     private async convertToRefundInner(params: ConvertToRefundParamsInterface, tx: DB): Promise<number> {
-        const transactions = await this.dependencies.transactionRepository.findByIds(
+        const transactions = await this.dependencies.transactionRepository.findByIdsWithRefundConsolidationHistory(
             [params.refundIncomeTransactionId, params.expenseTransactionId],
             tx
         );

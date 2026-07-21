@@ -19,6 +19,7 @@ export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.re
 
 export type { DB, TX } from './@generic/type/db.type';
 
+export { convertAmountToBase } from './@generic/util/convert-amount-to-base.util';
 export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
 export { transactionAsync } from './@generic/util/transaction-async.util';
 
@@ -63,6 +64,22 @@ export type { AccountBalanceCreateEntityInterface } from './account-balance/enti
 export type { AccountBalanceUpdateEntityInterface } from './account-balance/entity/account-balance-update-entity.interface';
 
 export { AccountBalanceRepository } from './account-balance/repository/account-balance.repository';
+
+export { DebtEventDirectionEnum } from './debt-event/enum/debt-event-direction.enum';
+export { DebtEventSourceEnum } from './debt-event/enum/debt-event-source.enum';
+export { DebtEventAssociationEnum } from './debt-event/enum/debt-event-association.enum';
+
+export { DebtEventEntityTable } from './debt-event/table/debt-event-entity.table';
+export { DebtEventEntityRelations } from './debt-event/relations/debt-event-entity.relations';
+
+export { DebtEventEntitySchema } from './debt-event/schema/debt-event-entity.schema';
+export { DebtEventCreateEntitySchema } from './debt-event/schema/debt-event-create-entity.schema';
+
+export type { DebtEventEntityInterface } from './debt-event/entity/debt-event-entity.interface';
+export type { DebtEventCreateEntityInterface } from './debt-event/entity/debt-event-create-entity.interface';
+export type { DebtEventWithRelationsEntityInterface } from './debt-event/entity/debt-event-with-relations-entity.interface';
+
+export { DebtEventRepository } from './debt-event/repository/debt-event.repository';
 
 export { BankSyncModeEnum } from './bank-sync/enum/bank-sync-mode.enum';
 export { BankSyncStatusEnum } from './bank-sync/enum/bank-sync-status.enum';
@@ -223,7 +240,11 @@ export type { TransactionCreateInputInterface } from './transaction/input/transa
 
 export type { TransactionUpdateInputInterface } from './transaction/input/transaction-update-input.interface';
 export type { TransactionUpdateServiceInputInterface } from './transaction/input/transaction-update-service-input.interface';
+export type { ConsolidationScanScopeInterface } from './transaction/interface/consolidation-scan-scope.interface';
 export type { ConsolidationSourceRowInterface } from './transaction/interface/consolidation-source-row.interface';
+export type { SimilarTransactionMonthRowInterface } from './transaction/interface/similar-transaction-month-row.interface';
+export type { SimilarTransactionStatsInterface } from './transaction/interface/similar-transaction-stats.interface';
+export type { SimilarTransactionStatsQueryInterface } from './transaction/interface/similar-transaction-stats-query.interface';
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 
@@ -265,23 +286,27 @@ export type { RepeatedTransactionPatternInterface } from './transaction/interfac
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
 export { TransactionRuleRepository } from './transaction/repository/transaction-rule.repository';
 
+export { TransferPairAutoConfidenceBucketEnum } from './transaction/enum/transfer-pair-auto-confidence-bucket.enum';
 export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
 export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
 export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
 export type { ExistingTransferBridgeCandidateInterface } from './transaction/interface/existing-transfer-bridge-candidate.interface';
+export type { ExistingTransferChainReclaimCandidateInterface } from './transaction/interface/existing-transfer-chain-reclaim-candidate.interface';
 export type { ExistingTransferIncomeDuplicateCandidateInterface } from './transaction/interface/existing-transfer-income-duplicate-candidate.interface';
 export type { IbanBridgeCanonicalDuplicateCandidateInterface } from './transaction/interface/iban-bridge-canonical-duplicate-candidate.interface';
 export type { IbanBridgeChainTransferCandidateInterface } from './transaction/interface/iban-bridge-chain-transfer-candidate.interface';
 export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
 export type { RefundAutoConfidenceBucket } from './transaction/interface/refund-auto-confidence-bucket.type';
+export type { RefundCandidateBaseInterface } from './transaction/interface/refund-candidate-base.interface';
+export type { RefundCandidateBaseRowInterface } from './transaction/interface/refund-candidate-base-row.interface';
 export type { RefundCandidateInterface } from './transaction/interface/refund-candidate.interface';
+export type { RefundCandidateRowInterface } from './transaction/interface/refund-candidate-row.interface';
 export type { RefundableExpenseCandidateInterface } from './transaction/interface/refundable-expense-candidate.interface';
+export type { RefundableExpenseCandidateRowInterface } from './transaction/interface/refundable-expense-candidate-row.interface';
 export type { RefundReviewConfidenceBucket } from './transaction/interface/refund-review-confidence-bucket.type';
 export type { RefundReviewCandidateInterface } from './transaction/interface/refund-review-candidate.interface';
-
-export { TransferPairRepository } from './transaction/repository/transfer-pair.repository';
-export { RefundPairRepository } from './transaction/repository/refund-pair.repository';
+export type { RefundReviewCandidateRowInterface } from './transaction/interface/refund-review-candidate-row.interface';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';
@@ -290,6 +315,7 @@ export { isNegativeAdjustmentTransaction } from './transaction/type-guard/is-neg
 export { isPositiveAdjustmentTransaction } from './transaction/type-guard/is-positive-adjustment-transaction.type-guard';
 
 export { CategorySourceEnum } from './transaction-entry/enum/category-source.enum';
+export { TransactionEntryKindEnum } from './transaction-entry/enum/transaction-entry-kind.enum';
 export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 
@@ -436,3 +462,23 @@ export type { RuleActionWithRelationsEntityInterface } from './rule-action/entit
 export type { RuleActionCreateEntityInterface } from './rule-action/entity/rule-action-create-entity.interface';
 export type { RuleActionCreateInputInterface } from './rule-action/input/rule-action-create-input.interface';
 export { RuleActionRepository } from './rule-action/repository/rule-action.repository';
+
+export { BudgetPeriodEnum } from './budget/enum/budget-period.enum';
+export { BudgetEntityTable } from './budget/table/budget-entity.table';
+export { BudgetEntityRelations } from './budget/relations/budget-entity.relations';
+export { BudgetEntitySchema } from './budget/schema/budget-entity.schema';
+export { BudgetCreateEntitySchema } from './budget/schema/budget-create-entity.schema';
+export { BudgetUpdateEntitySchema } from './budget/schema/budget-update-entity.schema';
+export type { BudgetEntityInterface } from './budget/entity/budget-entity.interface';
+export type { BudgetCreateEntityInterface } from './budget/entity/budget-create-entity.interface';
+export type { BudgetUpdateEntityInterface } from './budget/entity/budget-update-entity.interface';
+
+export { BudgetCategoryLimitEntityTable } from './budget-category-limit/table/budget-category-limit-entity.table';
+export { BudgetCategoryLimitEntityRelations } from './budget-category-limit/relations/budget-category-limit-entity.relations';
+export { BudgetCategoryLimitEntitySchema } from './budget-category-limit/schema/budget-category-limit-entity.schema';
+export { BudgetCategoryLimitCreateEntitySchema } from './budget-category-limit/schema/budget-category-limit-create-entity.schema';
+export { BudgetCategoryLimitUpdateEntitySchema } from './budget-category-limit/schema/budget-category-limit-update-entity.schema';
+export type { BudgetCategoryLimitEntityInterface } from './budget-category-limit/entity/budget-category-limit-entity.interface';
+export type { BudgetCategoryLimitCreateEntityInterface } from './budget-category-limit/entity/budget-category-limit-create-entity.interface';
+export type { BudgetCategoryLimitUpdateEntityInterface } from './budget-category-limit/entity/budget-category-limit-update-entity.interface';
+export type { BudgetCategoryLimitBulkUpdateInputInterface } from './budget-category-limit/input/budget-category-limit-bulk-update-input.interface';

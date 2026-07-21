@@ -1,22 +1,51 @@
 appId: ${APP_ID}
 ---
 
-- runFlow: ../navigation/navigate-to-settings.flow.yaml
+- runFlow:
+    file: ../navigation/navigate-to-settings.flow.yaml
 
-- tapOn:
-    id: 'SettingsPage.MainCurrencyCard'
+- retry:
+    maxRetries: 1
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              id: 'CurrencySelector.SearchInput'
+          file: ../navigation/open-settings-card.flow.yaml
+          env:
+            CARD_ID: '^SettingsPage[.]MainCurrencyCard[.].+$'
+            DESTINATION_ID: 'CurrencySelector.SearchInput'
+      - extendedWaitUntil:
+          visible:
+            id: 'CurrencySelector.SearchInput'
+          timeout: 3000
+- runFlow:
+    when:
+      notVisible:
+        id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+    commands:
+      - tapOn:
+          id: 'CurrencySelector.SearchInput'
+      - inputText: ${CURRENCY_CODE}
 - extendedWaitUntil:
     visible:
-      id: 'CurrencySelector.SearchInput'
+      id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
     timeout: 3000
-- tapOn:
-    id: 'CurrencySelector.SearchInput'
-- inputText: ${CURRENCY_CODE}
 - tapOn:
     id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
 - extendedWaitUntil:
     notVisible:
       id: 'CurrencySelector.SearchInput'
     timeout: 3000
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.MainCurrencyCard.${CURRENCY_CODE}'
+    timeout: 10000
+- waitForAnimationToEnd
 - tapOn:
     id: 'TabBar.Home'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 30000

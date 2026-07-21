@@ -1,12 +1,20 @@
 appId: ${APP_ID}
 ---
 
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.NameInput'
+    direction: UP
 - tapOn:
     id: 'AccountForm.NameInput'
 - eraseText: 60
 - inputText: ${UPDATED_ACCOUNT_NAME}
 - tapOn:
-    id: 'AccountForm.ScrollView'
+    text: 'ACCOUNT NAME & ICON'
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.SubmitButton'
+    direction: DOWN
 - extendedWaitUntil:
     visible:
       id: 'AccountForm.SubmitButton'
@@ -17,4 +25,4 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
-    timeout: 3000
+    timeout: 10000

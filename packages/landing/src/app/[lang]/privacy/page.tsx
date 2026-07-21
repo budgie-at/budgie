@@ -6,9 +6,9 @@ import { FeaturePageFaqItem } from '../../../feature/component/feature-page-faq-
 import { FeaturePageFaqSection } from '../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { PillarHubBreadcrumbs } from '../../../feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs';
 import { PillarHubFeatureGrid } from '../../../feature/component/pillar-hub-feature-grid/pillar-hub-feature-grid';
-import { PillarHubHero } from '../../../feature/component/pillar-hub-hero/pillar-hub-hero';
 import { PillarHubHeroBulletItem } from '../../../feature/component/pillar-hub-hero-bullet-item/pillar-hub-hero-bullet-item';
 import { PillarHubHeroBulletList } from '../../../feature/component/pillar-hub-hero-bullet-list/pillar-hub-hero-bullet-list';
+import { PillarHubHero } from '../../../feature/component/pillar-hub-hero/pillar-hub-hero';
 import { PillarHubPageShell } from '../../../feature/component/pillar-hub-page-shell/pillar-hub-page-shell';
 import { PillarHubSection } from '../../../feature/component/pillar-hub-section/pillar-hub-section';
 import { buildPillarHubRouteMetadata } from '../../../feature/util/build-pillar-hub-route-metadata.util';

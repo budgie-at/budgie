@@ -9,7 +9,7 @@
         "packages/app/fingerprint.config.js",
         "packages/app/plugins/with-vec-xcframework-fix.js",
         "scripts/after-install.cjs",
-        "tests/app-tests/scripts/prepare-date-sensitive-fixtures.mjs",
+        "tests/app-tests/scripts/prepare-date-sensitive-fixtures.js",
         "packages/contracts/babel.config.js",
         "packages/ai/babel.config.js",
         "packages/bank-sync/babel.config.js",
@@ -24,10 +24,15 @@
         "packages/app/src/game/store/game.state.ts",
         "packages/contracts/src/**/*.enum.ts",
         "packages/app/src/category/enum/system-category-id.enum.ts",
+        "packages/app/scripts/bench-budget-spent.ts",
+        "packages/app/scripts/bench-budget-alerts.ts",
+        "packages/app/scripts/bench-util.ts",
         "packages/app/scripts/bench-queries.ts",
         "packages/app/scripts/seed-bench-db.ts",
         "packages/app/scripts/snapshot-monthly-patterns.ts",
-        "tests/bank-sync-tests/src/harness/shims/**"
+        "tests/bank-sync-tests/src/harness/shims/**",
+        "packages/screen-chrome/src/edge-fade/utils/edge-fade-get-backdrop-filter.util.ts",
+        "packages/screen-chrome/src/edge-fade/interface/web-edge-fade-style.interface.ts"
     ],
     "ignoreDependencies": [
         "husky",
@@ -36,13 +41,13 @@
         "@expo/fingerprint",
         "metro-minify-terser",
         "react-compiler-runtime",
-        "babel-jest",
         "@jest/globals",
         "expo-pdf-text-extract",
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom",
-        "rimraf"
+        "rimraf",
+        "@oxlint/migrate"
     ],
     "ignoreBinaries": ["run", "build"]
 }

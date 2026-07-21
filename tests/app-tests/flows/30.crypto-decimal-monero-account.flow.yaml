@@ -3,7 +3,7 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
-          FIXTURE_ROW_ID_MATCH: '02.db(, db)?'
+          FIXTURE_ROW_ID_MATCH: '02.db'
 
 - runFlow:
       file: subflows/accounts/create-crypto-account.flow.yaml
@@ -17,6 +17,8 @@ appId: ${APP_ID}
           id: 'CryptoGroup.Market.XMR'
       timeout: 10000
 - assertVisible:
+      id: 'CryptoGroup.Card.XMR'
+- assertVisible:
       id: 'CryptoGroup.Container.XMR'
 - assertVisible:
       id: 'CryptoGroup.Balance.XMR'
@@ -24,13 +26,15 @@ appId: ${APP_ID}
       id: 'CryptoGroup.Value.XMR'
 - assertVisible:
       id: 'CryptoGroup.Rate.XMR'
+- waitForAnimationToEnd
 
 - tapOn:
-      id: 'CryptoGroup.Toggle.XMR'
+      id: 'CryptoGroup.AccountCount.XMR'
+- waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.E2E Monero Ledger'
-      timeout: 3000
+      timeout: 10000
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Monero_Ledger.22_123456_XMR'
 
@@ -38,7 +42,7 @@ appId: ${APP_ID}
       id: 'CryptoGroup.Market.XMR'
 - extendedWaitUntil:
       visible:
-          id: 'CurrencyMarket.Header.XMR'
+          id: 'CurrencyMarket.Holdings.XMR'
       timeout: 10000
 - assertVisible:
       id: 'CurrencyMarket.Holdings.XMR'

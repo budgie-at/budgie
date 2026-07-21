@@ -1,0 +1,107 @@
+appId: ${APP_ID}
+env:
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
+---
+- runFlow:
+    file: setup/setup-rules-test.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/create-expense.flow.yaml
+    env:
+      AMOUNT: '10'
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+      COMMENT: 'Auto Transfer'
+
+- runFlow:
+    file: subflows/navigate-to-rules.flow.yaml
+
+- runFlow:
+    file: subflows/rules/open-create-rule-form.flow.yaml
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector.Value'
+- tapOn:
+    id: 'RuleForm.SelectorCard.COMMENT'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Auto Transfer'
+
+- tapOn: Done
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Action.0.TypeSelector'
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.SelectorCard.CONVERT_TO_TRANSFER'
+- tapOn:
+    id: 'RuleForm.SelectorCard.CONVERT_TO_TRANSFER'
+- waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.AccountSelector'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'RuleForm.Action.0.AccountSelector'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'Test22 Destination'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Option.Test22 Destination'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Option.Test22 Destination'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
+- waitForAnimationToEnd
+
+- runFlow:
+    file: subflows/rules/submit-rule-apply-existing.flow.yaml
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+- assertVisible:
+    id: 'RulesPage.RuleCardActions.0'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+    text: '.*Transfer → Test22 Destination.*'
+
+- runFlow:
+    file: subflows/navigation/open-deep-link.flow.yaml
+    env:
+      DEEP_LINK: budgie://transactions/9/transfer
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionInfo.Page'
+    timeout: 10000
+- assertNotVisible:
+    id: 'TransactionInfo.Row.Note'
+- assertVisible:
+    id: 'TransactionInfo.Row.FromAccount'
+- assertVisible:
+    id: 'TransactionInfo.Row.ToAccount'
+- tapOn:
+    id: 'TransactionInfo.EditButton.Label'
+- extendedWaitUntil:
+    visible: 'Edit Transfer'
+    timeout: 10000
+- assertVisible: 'Note: Auto Transfer'
+- assertVisible:
+    id: 'TransferForm.SelectedFromAccount.Rules Test Account'
+- assertVisible:
+    id: 'TransferForm.SelectedToAccount.Test22 Destination'

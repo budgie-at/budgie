@@ -19,7 +19,8 @@ const buildTransactionFilter = (filters: StatisticsFilterInterface): Transaction
 
 export const useGetStatisticsTransactionsQuery = (filters: StatisticsFilterInterface) => {
     const language = useSetting('language');
-    const filterKey = `${buildTransactionFilterKey(buildTransactionFilter(filters))}|${language}`;
+    const excludedCategoryKey = filters.excludedCategoryIds?.join(',') ?? 'null';
+    const filterKey = `${buildTransactionFilterKey(buildTransactionFilter(filters))}|${excludedCategoryKey}|${language}`;
     const buildQuery = (limit: number) => statisticsRepository.getTransactions(filters, limit, language);
 
     return useGetTransactionSectionsQuery(buildQuery, filterKey);

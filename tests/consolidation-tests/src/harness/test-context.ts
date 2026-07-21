@@ -1,36 +1,55 @@
+import { buildTestDb, createTestRepositories, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
 import {
     ConsolidationAutoCandidateService,
-    ConsolidationCandidateService,
     ConsolidationExecutorService,
+    ConsolidationFamilyRegistryService,
+    ConsolidationRepairExecutorService,
     RefundConsolidationService,
     UnconsolidationService
 } from '@budgie/consolidation';
 
-import { buildTestDb, createTestRepositories, createTestTransactionRunner, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
+import type { DB } from '@budgie/contracts';
 
 export const testDb = buildTestDb();
 
 const repositories = createTestRepositories(testDb);
-const transactionRunner = createTestTransactionRunner();
+const runTestTransaction = <T>(database: DB, callback: (transactionDatabase: DB) => Promise<T>): Promise<T> => callback(database);
+const yieldControl = (): Promise<void> => Promise.resolve();
 
 export const accountBalanceRepository = repositories.accountBalanceRepository;
 export const accountRepository = repositories.accountRepository;
+export const atmCashWithdrawalRepository = repositories.atmCashWithdrawalRepository;
+export const existingTransferRepository = repositories.existingTransferRepository;
+export const ibanBridgeTransferRepository = repositories.ibanBridgeTransferRepository;
 export const refundPairRepository = repositories.refundPairRepository;
+export const transferPairRepository = repositories.transferPairRepository;
 
-const consolidationExecutorService = new ConsolidationExecutorService({
+const consolidationExecutorDependencies = {
     database: testDb,
-    transactionRunner,
+    runTransaction: runTestTransaction,
     transactionRepository: repositories.transactionRepository,
     transactionEntryRepository: repositories.transactionEntryRepository,
     transactionTagsRepository: repositories.transactionTagsRepository
-});
+};
 
-export const consolidationCandidateService = new ConsolidationCandidateService({
-    transferPairRepository: repositories.transferPairRepository,
-    refundPairRepository: repositories.refundPairRepository
-});
+export const consolidationExecutorService = new ConsolidationExecutorService(consolidationExecutorDependencies);
 
-export const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationExecutorService);
+export const consolidationRepairExecutorService = new ConsolidationRepairExecutorService(consolidationExecutorDependencies);
+
+const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryService(
+    {
+        atmCashWithdrawalRepository: repositories.atmCashWithdrawalRepository,
+        existingTransferRepository: repositories.existingTransferRepository,
+        ibanBridgeTransferRepository: repositories.ibanBridgeTransferRepository,
+        refundPairRepository: repositories.refundPairRepository,
+        transferPairRepository: repositories.transferPairRepository
+    },
+    consolidationExecutorService,
+    consolidationRepairExecutorService,
+    yieldControl
+);
+
+export const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationFamilyRegistryService);
 
 export const unconsolidationService = new UnconsolidationService({
     transactionRepository: repositories.transactionRepository,
@@ -43,7 +62,7 @@ export const refundConsolidationService = new RefundConsolidationService({
     refundPairRepository: repositories.refundPairRepository,
     transactionEntryRepository: repositories.transactionEntryRepository,
     transactionRepository: repositories.transactionRepository,
-    transactionRunner,
+    runTransaction: runTestTransaction,
     transactionTagsRepository: repositories.transactionTagsRepository
 });
 

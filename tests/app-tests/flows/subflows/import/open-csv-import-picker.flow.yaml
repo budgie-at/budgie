@@ -1,0 +1,28 @@
+appId: ${APP_ID}
+---
+- openLink: 'budgie://settings?anchor=data'
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 15000
+
+- scrollUntilVisible:
+      element:
+          id: 'CsvPage.ImportCard'
+      direction: DOWN
+      timeout: 20000
+      centerElement: true
+      waitToSettleTimeoutMs: 500
+- waitForAnimationToEnd
+
+- retry:
+      maxRetries: 2
+      commands:
+          - tapOn:
+                id: 'CsvPage.ImportCard'
+          - extendedWaitUntil:
+                visible: 'Cancel'
+                timeout: 15000

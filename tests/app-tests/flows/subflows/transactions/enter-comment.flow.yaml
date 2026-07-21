@@ -1,5 +1,9 @@
 appId: ${APP_ID}
 ---
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.CommentInput'
+    timeout: 10000
 - tapOn:
     id: 'TransactionForm.CommentInput'
 - extendedWaitUntil:
@@ -11,3 +15,8 @@ appId: ${APP_ID}
 - inputText: ${COMMENT}
 - tapOn:
     id: 'NoteInput.SubmitButton'
+- extendedWaitUntil:
+    notVisible:
+      id: 'NoteInput.Input'
+    timeout: 5000
+- waitForAnimationToEnd

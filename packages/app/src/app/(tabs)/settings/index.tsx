@@ -2,26 +2,34 @@ import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
+
+import { getErrorMessage } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { Page } from '../../../@generic/component/page/page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useScrollToAnchor } from '../../../@generic/hook/use-scroll-to-anchor.hook';
+import { openGithubIssueCreation } from '../../../@generic/utils/open-github-issue-creation.util';
 import { AiEmbeddingStatusCard } from '../../../ai/component/ai-embedding-status-card/ai-embedding-status-card';
 import { AiSystemStatusBanner } from '../../../ai/component/ai-system-status-banner/ai-system-status-banner';
 import { AiTranslationStatusCard } from '../../../ai/component/ai-translation-status-card/ai-translation-status-card';
+import { AiSystemUmbrellaStateEnum } from '../../../ai/enum/ai-system-umbrella-state.enum';
+import { useAiSystemUmbrella } from '../../../ai/hook/use-ai-system-umbrella.hook';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { MoneyDataUpgradeStatusCard } from '../../../money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card';
 import { AutoAssignMccCategory } from '../../../settings/components/auto-assign-mcc-category/auto-assign-mcc-category';
+import { BudgetManagementCard } from '../../../settings/components/budget-management-card/budget-management-card';
+import { BudgetPushToggle } from '../../../settings/components/budget-push-toggle/budget-push-toggle';
+import { BudgetWidgetToggle } from '../../../settings/components/budget-widget-toggle/budget-widget-toggle';
 import { ConsolidateTransfers } from '../../../settings/components/consolidate-transfers/consolidate-transfers';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
@@ -38,34 +46,38 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 
 import { SettingsPageSelector } from './settings-page.selector';
 
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, max-statements
 export default function SettingsPage() {
     const { t } = useLingui();
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
+    const isAiDisabled = useAiSystemUmbrella().state === AiSystemUmbrellaStateEnum.DISABLED;
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
-
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const handleNavigateToTags = () => void router.push('/settings/tags');
     const handleNavigateToRules = () => void router.push('/settings/rules');
+    const handleReportBug = () =>
+        void openGithubIssueCreation().catch((error: unknown) => {
+            Toast.show({ type: 'error', text1: t`Could not open GitHub`, text2: getErrorMessage(error) });
+        });
 
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
     };
+    const handleToggleShowCents = () =>
+        void updateSettingsMutation({ showCents: !showCents }).catch((error: unknown) => {
+            Toast.show({ type: 'error', text1: t`Could not update settings`, text2: getErrorMessage(error) });
+        });
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
+    const scrollViewProps = { ref: scrollViewRef, onLayout: onScrollViewLayout };
 
     return (
-        <Page testID={SettingsPageSelector.Container} header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
-            <ScrollView
-                ref={scrollViewRef}
-                onLayout={onScrollViewLayout}
-                contentContainerClassName="gap-y-7xl pt-16 pb-5xl"
-                showsVerticalScrollIndicator={false}
-            >
+        <CollapsibleChromePage title={t`Settings`} testID={SettingsPageSelector.Container} scrollViewProps={scrollViewProps}>
+            <View className="gap-y-7xl pb-5xl">
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
                         left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
@@ -108,15 +120,17 @@ export default function SettingsPage() {
                     </SettingsGroup>
                 </View>
 
-                <View {...anchorLayout('ai')}>
-                    <SettingsGroup title={t`AI`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                            <AiSystemStatusBanner />
-                            <AiTranslationStatusCard />
-                            <AiEmbeddingStatusCard />
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
+                {isAiDisabled ? null : (
+                    <View {...anchorLayout('ai')}>
+                        <SettingsGroup title={t`AI`}>
+                            <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
+                                <AiSystemStatusBanner />
+                                <AiTranslationStatusCard />
+                                <AiEmbeddingStatusCard />
+                            </Animated.View>
+                        </SettingsGroup>
+                    </View>
+                )}
 
                 <View {...anchorLayout('organization')}>
                     <SettingsGroup title={t`Organization`}>
@@ -165,6 +179,16 @@ export default function SettingsPage() {
                     </SettingsGroup>
                 </View>
 
+                <View {...anchorLayout('budget')}>
+                    <SettingsGroup title={t`Budget`}>
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('budget')}>
+                            <BudgetManagementCard />
+                            <BudgetWidgetToggle />
+                            <BudgetPushToggle />
+                        </Animated.View>
+                    </SettingsGroup>
+                </View>
+
                 <View {...anchorLayout('appearance')}>
                     <SettingsGroup title={t`Appearance`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('appearance')}>
@@ -174,6 +198,7 @@ export default function SettingsPage() {
                             />
                             <SettingsCard
                                 testID={SettingsPageSelector.ShowCentsCard}
+                                onPress={handleToggleShowCents}
                                 title={t`Show Cents`}
                                 description={t`Show $1,234.56 instead of $1,235`}
                                 icon={UserIconNameEnum.DollarSign}
@@ -210,20 +235,30 @@ export default function SettingsPage() {
                 </View>
 
                 <SettingsGroup title={t`About`}>
-                    <Card variant="ghost" className="items-center gap-y-3xl">
-                        <Text className="text-primary text-base font-medium text-center">{t`Budgie`}</Text>
-                        <Text className="text-secondary-foreground text-sm text-center">
-                            {t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.`}
-                        </Text>
-                        <View className="self-stretch h-px bg-secondary-corner" />
-                        <View className="items-center gap-y-xs">
-                            <Text className="text-secondary-foreground text-xs uppercase tracking-wide">{t`App Version`}</Text>
-                            <Text className="text-primary text-sm font-semibold">{appVersion}</Text>
-                        </View>
-                    </Card>
+                    <Animated.View className="gap-y-lg">
+                        <SettingsCard
+                            onPress={handleReportBug}
+                            title={t`Report a Bug`}
+                            description={t`Found an issue or have an idea? Open GitHub issue templates.`}
+                            icon={UserIconNameEnum.Bug}
+                            variant="ghost"
+                            testID={SettingsPageSelector.ReportBugCard}
+                        />
+                        <Card variant="ghost" className="items-center gap-y-3xl">
+                            <Text className="text-primary text-base font-medium text-center">{t`Budgie`}</Text>
+                            <Text className="text-secondary-foreground text-sm text-center">
+                                {t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.`}
+                            </Text>
+                            <View className="self-stretch h-px bg-secondary-corner" />
+                            <View className="items-center gap-y-xs">
+                                <Text className="text-secondary-foreground text-xs uppercase tracking-wide">{t`App Version`}</Text>
+                                <Text className="text-primary text-sm font-semibold">{appVersion}</Text>
+                            </View>
+                        </Card>
+                    </Animated.View>
                 </SettingsGroup>
                 <MenuSpacer />
-            </ScrollView>
-        </Page>
+            </View>
+        </CollapsibleChromePage>
     );
 }

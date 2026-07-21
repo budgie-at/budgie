@@ -73,7 +73,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
 
     const handleCreateAccount = () => {
         onClose();
-        router.push('/(main)/create-account');
+        router.push('/create-account');
     };
 
     const handleAiPress = () => {
@@ -125,7 +125,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
 
     useEffect(() => {
         if (isOpen) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect -- Animation mount/unmount pattern: visibility deferred until close animation completes
+            // oxlint-disable-next-line react-hooks-js/set-state-in-effect -- Animation mount/unmount pattern: visibility deferred until close animation completes
             setIsVisible(true);
             rotation.value = withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG);
             menuScale.value = withSpring(1, SPRING_CONFIG);
@@ -185,7 +185,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
                         icon={UserIconNameEnum.Plus}
                         onPress={handleClose}
                         animatedStyle={buttonStyle}
-                        testID={CreateTransactionMenuSelector.Trigger}
+                        testID={CreateTransactionMenuSelector.Close}
                     />
                 </View>
             </View>

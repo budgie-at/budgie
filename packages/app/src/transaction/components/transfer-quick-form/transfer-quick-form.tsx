@@ -1,6 +1,6 @@
 import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -31,10 +31,14 @@ import {
     TransactionTransferAccountsRowRef
 } from '../transaction-transfer-accounts-row/transaction-transfer-accounts-row';
 
+import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
+
 interface Props {
+    readonly ref?: RefObject<SimpleQuickFormRefInterface | null>;
     readonly variant: ColorPaletteVariant;
     readonly initialDestinationAmount?: number;
     readonly isSubmitting?: boolean;
+    readonly showInlineFeeAction?: boolean;
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
     readonly onConsolidationPress?: () => void;
@@ -42,7 +46,16 @@ interface Props {
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Transfer form orchestrates multiple hooks and display computations
 export const TransferQuickForm = (props: Props) => {
-    const { variant, initialDestinationAmount, isSubmitting, onSubmit, onCancel, onConsolidationPress } = props;
+    const {
+        ref,
+        variant,
+        initialDestinationAmount,
+        isSubmitting,
+        showInlineFeeAction = true,
+        onSubmit,
+        onCancel,
+        onConsolidationPress
+    } = props;
 
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
@@ -103,7 +116,7 @@ export const TransferQuickForm = (props: Props) => {
 
         conversion.convert(sourceKeypad.numericValue, fromInstrumentId, toInstrumentId);
         hasInitializedRef.current = true;
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- conversion methods are stable, only trigger on value/instrument changes
+        // oxlint-disable-next-line react/exhaustive-deps -- conversion methods are stable, only trigger on value/instrument changes
     }, [sourceKeypad.numericValue, fromInstrumentId, toInstrumentId]);
 
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
@@ -145,7 +158,7 @@ export const TransferQuickForm = (props: Props) => {
         }
     };
 
-    const handleFeePress = async () => {
+    const openFeeModal = async () => {
         const currentEntries = getValues('entries');
         const currentFeeEntries = getTransactionFeeEntries(currentEntries);
         const sourceAccountId = fromAccountId ?? 0;
@@ -163,8 +176,15 @@ export const TransferQuickForm = (props: Props) => {
         const categoryEntries = getTransactionCategoryEntries(currentEntries);
         const nextFeeEntries = result.map(entry => ({ ...entry, accountId: sourceAccountId, type: TransactionEntryTypeEnum.FEE }));
 
-        setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldValidate: false });
+        setValue('entries', [...categoryEntries, ...nextFeeEntries], { shouldDirty: true, shouldValidate: false });
     };
+
+    const handleFeePress = () => void openFeeModal();
+
+    useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
+    const amountBottomContent = showInlineFeeAction ? (
+        <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} showEmptyState onPress={handleFeePress} />
+    ) : null;
 
     const handleConfirm = () => {
         if (isEditingDestination) {
@@ -208,13 +228,6 @@ export const TransferQuickForm = (props: Props) => {
         onSubmit();
     };
 
-    const handleFeePillPress = () => void handleFeePress();
-    const amountTopContent = (
-        <View className="h-[38px] items-center justify-end">
-            <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} showEmptyState onPress={handleFeePillPress} />
-        </View>
-    );
-
     return (
         <View className="flex-1">
             <TransactionAmountDisplay
@@ -224,9 +237,9 @@ export const TransferQuickForm = (props: Props) => {
                 variant={variant}
                 secondaryAmount={display.secondaryAmountText}
                 label={display.amountLabel}
+                bottomContent={amountBottomContent}
                 isLabelFlipped={isEditingDestination}
                 testID={SimpleQuickFormSelector.AmountInput}
-                topContent={amountTopContent}
                 {...(conversion.isCrossCurrency && {
                     onLabelPress: handleConversionRowPress,
                     onSecondaryAmountPress: handleConversionRowPress
@@ -242,7 +255,7 @@ export const TransferQuickForm = (props: Props) => {
                 commentTestID={SimpleQuickFormSelector.CommentInput}
             />
 
-            <View className="mb-xl">
+            <View className="mb-xl gap-sm">
                 <TransactionTransferAccountsRow ref={transferAccountsRef} variant={variant} />
             </View>
 

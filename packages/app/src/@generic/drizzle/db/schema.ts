@@ -12,6 +12,8 @@ export {
     CategoryEntityRelations,
     DefaultCategoryTranslationEntityTable,
     DefaultCategoryTranslationEntityRelations,
+    DebtEventEntityTable,
+    DebtEventEntityRelations,
     TransactionTagsEntityRelations,
     AccountBalanceEntityTable,
     AccountBalanceEntityRelations,
@@ -43,5 +45,9 @@ export {
     RuleConditionEntityTable,
     RuleConditionEntityRelations,
     RuleActionEntityTable,
-    RuleActionEntityRelations
+    RuleActionEntityRelations,
+    BudgetEntityTable,
+    BudgetEntityRelations,
+    BudgetCategoryLimitEntityTable,
+    BudgetCategoryLimitEntityRelations
 } from '@budgie/contracts';

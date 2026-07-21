@@ -1,63 +1,61 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-    when:
-      notVisible:
-        id: 'TabBar.Home'
-    commands:
-      - launchApp
+      when:
+          notVisible:
+              id: 'TabBar.Home'
+      commands:
+          - launchApp
 
 - extendedWaitUntil:
-    visible:
-      id: 'TabBar.Home'
-    timeout: 3000
+      visible:
+          id: 'TabBar.Home'
+      timeout: 3000
 
 - openLink: 'budgie://settings?anchor=data'
 
-- runFlow:
-    when:
-      visible: 'Open'
-    commands:
-      - tapOn: 'Open'
-
 - extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-    timeout: 3000
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 3000
 
 - scrollUntilVisible:
-    element:
-      id: 'SettingsPage.ClearDataCard'
-    direction: DOWN
-    centerElement: true
+      element:
+          id: 'SettingsPage.ClearDataCard'
+      direction: DOWN
+      centerElement: true
 
 - extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.ClearDataCard'
-    timeout: 3000
+      visible:
+          id: 'SettingsPage.ClearDataCard'
+      timeout: 3000
 
 - tapOn:
-    id: 'SettingsPage.ClearDataCard'
+      id: 'SettingsPage.ClearDataCard'
 
 - extendedWaitUntil:
-    visible: 'Delete data'
-    timeout: 3000
+      visible: 'Delete data'
+      timeout: 3000
 
 - tapOn:
-    text: 'Delete data'
+      text: 'Delete data'
 
-- stopApp
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 10000
 
-- launchApp
+- tapOn:
+      id: 'TabBar.Home'
 
 - runFlow:
-    when:
-      visible:
-        id: 'SettingsPage.Container'
-    commands:
-      - tapOn:
-          id: 'TabBar.Home'
+      when:
+          visible:
+              id: 'SettingsPage.Container'
+      commands:
+          - tapOn:
+                id: 'TabBar.Home'
 
 - extendedWaitUntil:
-    visible: 'No accounts yet'
-    timeout: 3000
+      visible: 'No accounts yet'
+      timeout: 3000

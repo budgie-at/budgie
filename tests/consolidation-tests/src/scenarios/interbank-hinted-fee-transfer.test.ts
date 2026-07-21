@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import {
     ExternalSourceEnum,
     PRECISION,
@@ -7,6 +5,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService } from '../harness/test-context';
@@ -119,7 +118,7 @@ describe('consolidation/interbank-hinted-fee-transfer', () => {
 
         const result = await runConsolidation();
 
-        expect(result.groups.pairCandidates).toHaveLength(0);
+        expect(result.found).toBe(0);
         expect(result.consolidated).toBe(0);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();

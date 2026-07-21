@@ -3,7 +3,7 @@ import { Log } from '@budgie/logger';
 import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
-import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
@@ -11,6 +11,8 @@ import { buildTranslatedCategoryRelation } from '../../@generic/util/build-trans
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
+import { DebtEventAssociationEnum } from '../../debt-event/enum/debt-event-association.enum';
+import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -29,6 +31,9 @@ import type { TransactionWithEntriesEntityInterface } from '../entity/transactio
 import type { TransactionWithEntriesMccCategoryEntityInterface } from '../entity/transaction-with-entries-mcc-category-entity.interface';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
 import type { ConsolidationSourceRowInterface } from '../interface/consolidation-source-row.interface';
+import type { SimilarTransactionMonthRowInterface } from '../interface/similar-transaction-month-row.interface';
+import type { SimilarTransactionStatsQueryInterface } from '../interface/similar-transaction-stats-query.interface';
+import type { SimilarTransactionStatsInterface } from '../interface/similar-transaction-stats.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private static readonly NON_INDEXABLE_EMBEDDING_TYPES: TransactionTypeEnum[] = [
@@ -36,8 +41,14 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         TransactionTypeEnum.ADJUSTMENT
     ];
 
-    private entriesWithMccCategoryRelations = {
+    private static readonly LIVE_ENTRY_RELATION_WHERE = and(
+        isNull(TransactionEntryEntityTable.originalTransactionId),
+        isNull(TransactionEntryEntityTable.deletedAt)
+    );
+
+    private static readonly ENTRIES_WITH_MCC_CATEGORY_RELATIONS = {
         [TransactionAssociationEnum.ENTRIES]: {
+            where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE,
             with: { [TransactionEntryAssociationEnum.MCC_CATEGORY]: true }
         }
     } as const;
@@ -151,6 +162,42 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             LIMIT ?`,
             [mccCategoryId, mccCategoryId, limit]
         );
+    }
+
+    @Log(
+        query =>
+            `enter transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months}`,
+        (result, query) =>
+            `done transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months} count=${isDefined(result) ? result.count : 0}`,
+        (error, query) =>
+            `throw transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months} error=${getErrorMessage(error)}`
+    )
+    async findSimilarStats(query: SimilarTransactionStatsQueryInterface): Promise<SimilarTransactionStatsInterface | null> {
+        if (!isPositiveNumber(query.accountId) || !isPositiveNumber(query.months)) {
+            return null;
+        }
+
+        const rows = await this.db.$client.getAllAsync<SimilarTransactionMonthRowInterface>(
+            this.buildSimilarStatsSql(query),
+            this.buildSimilarStatsParams(query)
+        );
+
+        if (isEmptyArray(rows)) {
+            return null;
+        }
+
+        const count = rows.reduce((sum, row) => sum + row.count, 0);
+        const totalAmount = rows.reduce((sum, row) => sum + row.totalAmount, 0);
+        const firstRow = rows.at(0);
+        const currencySymbol = isDefined(firstRow) ? firstRow.currencySymbol : '';
+
+        return {
+            count,
+            totalAmount,
+            averageAmount: count > 0 ? totalAmount / count : 0,
+            currencySymbol,
+            months: rows
+        };
     }
 
     @Log(
@@ -420,7 +467,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
         return await this.db.query.TransactionEntityTable.findMany({
             where: inArray(TransactionEntityTable.id, ids),
-            with: this.entriesWithMccCategoryRelations
+            with: TransactionRepository.ENTRIES_WITH_MCC_CATEGORY_RELATIONS
         });
     }
 
@@ -431,7 +478,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return this.db.query.TransactionEntityTable.findMany({
             with: {
                 [TransactionAssociationEnum.ENTRIES]: {
-                    where: isNull(TransactionEntryEntityTable.originalTransactionId)
+                    where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
                 }
             },
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
@@ -442,7 +489,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     async findAllWithMccCategoryOffset(limit: number, offset: number): Promise<TransactionWithEntriesMccCategoryEntityInterface[]> {
         return await this.db.query.TransactionEntityTable.findMany({
-            with: this.entriesWithMccCategoryRelations,
+            with: TransactionRepository.ENTRIES_WITH_MCC_CATEGORY_RELATIONS,
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
             limit,
             offset,
@@ -468,21 +515,18 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             where: eq(TransactionEntityTable.id, id),
             with: {
                 [TransactionAssociationEnum.ENTRIES]: {
-                    where: isNull(TransactionEntryEntityTable.originalTransactionId)
+                    where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
                 }
             }
         });
     }
 
     async findByIds(ids: number[], tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
-        if (isNotEmptyArray(ids)) {
-            return await (tx ?? this.db).query.TransactionEntityTable.findMany({
-                where: inArray(TransactionEntityTable.id, ids),
-                with: { [TransactionAssociationEnum.ENTRIES]: true }
-            });
-        }
+        return await this.findByIdsWithEntriesWhere(ids, TransactionRepository.LIVE_ENTRY_RELATION_WHERE, tx);
+    }
 
-        return [];
+    async findByIdsWithRefundConsolidationHistory(ids: number[], tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
+        return await this.findByIdsWithEntriesWhere(ids, isNull(TransactionEntryEntityTable.deletedAt), tx);
     }
 
     async truncate(tx?: DB): Promise<void> {
@@ -596,7 +640,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
         return await this.db.query.TransactionEntityTable.findMany({
-            where: or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
+            where: this.buildSingleAccountCondition(accountId),
             orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
         });
     }
@@ -610,12 +654,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         const result = await this.db
             .select({ operatedAt: aggregateSql })
             .from(TransactionEntityTable)
-            .where(
-                and(
-                    or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
-                    ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)
-                )
-            );
+            .where(and(this.buildSingleAccountCondition(accountId), ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)));
 
         const time = result[0]?.operatedAt;
         if (isPositiveNumber(time)) {
@@ -654,7 +693,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     async findTransfersForConversion(accountId: number, tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
         return await (tx ?? this.db).query.TransactionEntityTable.findMany({
             where: this.buildTransfersByAccountIdWhere(accountId),
-            with: { [TransactionAssociationEnum.ENTRIES]: true }
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
+                }
+            }
         });
     }
 
@@ -693,7 +736,9 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         if (isNotEmptyArray(accountIds)) {
             const condition = or(
                 inArray(TransactionEntityTable.fromAccountId, accountIds),
-                inArray(TransactionEntityTable.toAccountId, accountIds)
+                inArray(TransactionEntityTable.toAccountId, accountIds),
+                inArray(TransactionEntityTable.id, this.buildTransactionIdsByEntryAccountIdsQuery(accountIds)),
+                inArray(TransactionEntityTable.id, this.buildTransactionIdsByDebtEventAccountIdsQuery(accountIds))
             );
 
             return isDefined(condition) ? [condition] : [];
@@ -702,11 +747,132 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return [];
     }
 
+    private async findByIdsWithEntriesWhere(
+        ids: number[],
+        entriesWhere: SQL | undefined,
+        tx?: DB
+    ): Promise<TransactionWithEntriesEntityInterface[]> {
+        if (isNotEmptyArray(ids)) {
+            return await (isDefined(tx) ? tx : this.db).query.TransactionEntityTable.findMany({
+                where: inArray(TransactionEntityTable.id, ids),
+                with: {
+                    [TransactionAssociationEnum.ENTRIES]: {
+                        where: entriesWhere
+                    }
+                }
+            });
+        }
+
+        return [];
+    }
+
+    private buildSingleAccountCondition(accountId: number) {
+        return or(
+            eq(TransactionEntityTable.fromAccountId, accountId),
+            eq(TransactionEntityTable.toAccountId, accountId),
+            inArray(TransactionEntityTable.id, this.buildTransactionIdsByEntryAccountIdsQuery([accountId])),
+            inArray(TransactionEntityTable.id, this.buildTransactionIdsByDebtEventAccountIdsQuery([accountId]))
+        );
+    }
+
     private buildTransfersByAccountIdWhere(accountId: number) {
         return and(
             eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
             or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
         );
+    }
+
+    private buildTransactionIdsByEntryAccountIdsQuery(accountIds: number[]) {
+        return this.db
+            .select({ transactionId: TransactionEntryEntityTable.transactionId })
+            .from(TransactionEntryEntityTable)
+            .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), this.buildLedgerEntryCondition()));
+    }
+
+    private buildTransactionIdsByDebtEventAccountIdsQuery(accountIds: number[]) {
+        return this.db
+            .select({ transactionId: DebtEventEntityTable.transactionId })
+            .from(DebtEventEntityTable)
+            .where(
+                and(
+                    inArray(DebtEventEntityTable.debtAccountId, accountIds),
+                    isNotNull(DebtEventEntityTable.transactionId),
+                    isNull(DebtEventEntityTable.deletedAt)
+                )
+            );
+    }
+
+    private buildSimilarStatsSql(query: SimilarTransactionStatsQueryInterface): string {
+        const conditions = [
+            't.id != ?',
+            't.type = ?',
+            't.deleted_at IS NULL',
+            't.consolidation_parent_transaction_id IS NULL',
+            'te.deleted_at IS NULL',
+            'te.original_transaction_id IS NULL',
+            'te.account_id = ?',
+            't.operated_at >= ?',
+            't.operated_at < ?',
+            ...this.buildSimilarIdentityConditions(query)
+        ];
+
+        return `
+            SELECT
+                strftime('%Y-%m', t.operated_at, 'unixepoch') AS monthKey,
+                SUM(te.amount) AS totalAmount,
+                COUNT(DISTINCT t.id) AS count,
+                MAX(instrument.symbol) AS currencySymbol
+            FROM transactions t
+            INNER JOIN transaction_entries te ON te.transaction_id = t.id
+            INNER JOIN accounts account ON account.id = te.account_id
+            INNER JOIN instruments instrument ON instrument.id = account.instrument_id
+            WHERE ${conditions.join(' AND ')}
+            GROUP BY monthKey
+            ORDER BY monthKey ASC
+        `;
+    }
+
+    private buildSimilarStatsParams(query: SimilarTransactionStatsQueryInterface): (number | string)[] {
+        const operatedAtSeconds = Math.floor(query.operatedAt.getTime() / 1000);
+        const sinceSeconds = Math.floor(this.getSimilarStatsSinceDate(query).getTime() / 1000);
+        const params: (number | string)[] = [query.transactionId, query.type, query.accountId, sinceSeconds, operatedAtSeconds];
+
+        if (isNotEmptyString(query.title)) {
+            params.push(query.title);
+        } else if (isNotEmptyString(query.comment)) {
+            params.push(query.comment);
+        }
+
+        if (isDefined(query.categoryId) && isPositiveNumber(query.categoryId)) {
+            params.push(query.categoryId);
+        }
+
+        return params;
+    }
+
+    private buildSimilarIdentityConditions(query: SimilarTransactionStatsQueryInterface): string[] {
+        const conditions: string[] = [];
+
+        if (isNotEmptyString(query.title)) {
+            conditions.push('LOWER(t.title) = LOWER(?)');
+        } else if (isNotEmptyString(query.comment)) {
+            conditions.push('LOWER(t.comment) = LOWER(?)');
+        }
+
+        if (isDefined(query.categoryId) && isPositiveNumber(query.categoryId)) {
+            conditions.push('te.category_id = ?');
+        }
+
+        return conditions;
+    }
+
+    private getSimilarStatsSinceDate(query: SimilarTransactionStatsQueryInterface): Date {
+        const since = new Date(query.operatedAt);
+        since.setDate(1);
+        since.setHours(0, 0, 0, 0);
+        since.setMonth(since.getMonth() - query.months + 1);
+
+        return since;
     }
 
     private buildWhere({ types, tagIds, categoryIds, accountIds, date, amount }: TransactionFilterInterface) {
@@ -797,7 +963,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     private buildFullRelations(language: LanguageEnum) {
         return {
             [TransactionAssociationEnum.ENTRIES]: {
-                where: isNull(TransactionEntryEntityTable.originalTransactionId),
+                where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE,
                 with: {
                     [TransactionEntryAssociationEnum.ACCOUNT]: {
                         with: {
@@ -811,6 +977,16 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             [TransactionAssociationEnum.TRANSACTION_TAGS]: {
                 with: {
                     [TransactionTagsAssociationEnum.TAG]: true
+                }
+            },
+            [TransactionAssociationEnum.DEBT_EVENTS]: {
+                where: isNull(DebtEventEntityTable.deletedAt),
+                with: {
+                    [DebtEventAssociationEnum.DEBT_ACCOUNT]: {
+                        with: {
+                            [AccountAssociationEnum.INSTRUMENT]: true
+                        }
+                    }
                 }
             },
             [TransactionAssociationEnum.FROM_ACCOUNT]: true,

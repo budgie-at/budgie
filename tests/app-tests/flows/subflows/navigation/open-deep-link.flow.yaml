@@ -1,0 +1,7 @@
+appId: ${APP_ID}
+env:
+    DEEP_LINK: ${DEEP_LINK}
+---
+- openLink: ${DEEP_LINK}
+
+- waitForAnimationToEnd

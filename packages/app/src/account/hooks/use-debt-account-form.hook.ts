@@ -1,6 +1,7 @@
 import { AccountEntityInterface, DebtAccountCreateInputInterface, DebtAccountCreateInputSchema } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
+import { useEffect } from 'react';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
@@ -14,15 +15,25 @@ interface DebtAccountFormValues extends Omit<DebtAccountCreateInputInterface, 'c
 
 export const useDebtAccountForm = (
     initialValues: DebtAccountFormValues,
-    onSubmit: (values: DebtAccountFormValues) => Promise<AccountEntityInterface>
+    onSubmit: (values: DebtAccountFormValues) => Promise<AccountEntityInterface>,
+    syncInitialValues = false
 ) => {
     const showError = useShowError();
     const form = useForm<DebtAccountFormValues>({
         resolver: zodResolver(DebtAccountCreateInputSchema) as Resolver<DebtAccountFormValues>,
         mode: 'onSubmit',
-        defaultValues: initialValues,
-        values: initialValues
+        defaultValues: initialValues
     });
+    const { dirtyFields, isSubmitting } = form.formState;
+    const { reset } = form;
+
+    useEffect(() => {
+        if (!syncInitialValues) {
+            return;
+        }
+
+        reset(initialValues, { keepDirtyValues: true });
+    }, [dirtyFields, initialValues, reset, syncInitialValues]);
 
     const [instrumentId, debtType] = useWatch({
         control: form.control,
@@ -45,6 +56,7 @@ export const useDebtAccountForm = (
         ...form,
         debtType,
         instrument,
+        isSubmitting,
         handleSubmit: form.handleSubmit(handleSubmit)
     };
 };
