@@ -13,6 +13,7 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 vi.unmock('@app/sync/service/transfer-consolidation-drainer.service');
 
 const reconciliationSentinel = 'app-reconciliation-error-sentinel';
+const reconciliationPreviewSentinel = 'app-reconciliation-preview-error-sentinel';
 const reconciliationScope: ConsolidationScanScopeInterface = {
     operatedAtFrom: new Date('2026-06-07T08:09:10.000Z'),
     operatedAtTo: new Date('2026-06-08T09:10:11.000Z'),
@@ -60,6 +61,7 @@ const expectReconciliationConsoleArgumentsArePrivate = (): void => {
 
     expect(capturedConsoleArguments).not.toEqual([]);
     expect(capturedOutput).not.toContain(reconciliationSentinel);
+    expect(capturedOutput).not.toContain(reconciliationPreviewSentinel);
     for (const sentinel of reconciliationScopeSentinels) {
         expect(capturedOutput).not.toContain(sentinel);
     }
@@ -82,6 +84,14 @@ describe('consolidation/app-reconciliation-log-privacy', () => {
         await expect(syncWorkloadService.run('transfer-consolidation-drain', () => Promise.reject(reconciliationError))).rejects.toBe(
             reconciliationError
         );
+
+        const reconciliationPreviewError = new Error(reconciliationPreviewSentinel);
+        const coordinatorCountAutoCandidatesSpy = vi
+            .spyOn(consolidationCoordinatorService, 'countAutoCandidates')
+            .mockRejectedValue(reconciliationPreviewError);
+        await expect(transferConsolidationService.preview()).rejects.toBe(reconciliationPreviewError);
+        await expect(transferConsolidationService.getProgressSnapshot()).rejects.toBe(reconciliationPreviewError);
+        expect(coordinatorCountAutoCandidatesSpy).toHaveBeenCalledTimes(2);
 
         vi.useFakeTimers();
         Object.assign(transferConsolidationDrainerService, {
