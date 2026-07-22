@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.43.4](https://github.com/budgie-at/budgie/compare/v5.43.3...v5.43.4) (2026-07-22)
+
+
+### Bug Fixes
+
+* **app:** reconcile Monobank batches before rate-limit wait ([#602](https://github.com/budgie-at/budgie/issues/602)) ([e52329d](https://github.com/budgie-at/budgie/commit/e52329d90519f8823f50462dba133e7f3447d804))
+
+
+
+
+
 ## [5.43.3](https://github.com/budgie-at/budgie/compare/v5.43.2...v5.43.3) (2026-07-20)
 
 
