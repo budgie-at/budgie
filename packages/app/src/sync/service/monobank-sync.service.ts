@@ -19,6 +19,7 @@ import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to
 
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
+import { transferConsolidationService } from './transfer-consolidation.service';
 
 import type { MccCategoryLookupInterface, SyncEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 import type { SyncAccountInterface, SyncBatchResultInterface } from '@budgie/sync';
@@ -94,17 +95,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             transactionCount: result.transactions.length
         });
 
-        if (isPositiveNumber(changedTransactionCount)) {
-            const scope = consolidationScopeService.buildFromTransactions(changedTransactions);
-            if (isDefined(scope)) {
-                transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, scope);
-                logger.log('executeSyncBatch:consolidation-enqueued', {
-                    changedTransactionCount,
-                    scopeTransactionIds: scope.transactionIds.join(','),
-                    syncId: sync.id
-                });
-            }
-        }
+        await this.reconcileChangedTransactions(changedTransactions);
 
         await microPause();
         logger.log('executeSyncBatch:done', { durationMs: Date.now() - startedAt, syncId: sync.id });
@@ -190,6 +181,21 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
 
     protected override accountIcon(account: SyncAccountInterface): UserIconNameEnum {
         return account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : super.accountIcon(account);
+    }
+
+    private async reconcileChangedTransactions(
+        changedTransactions: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>>
+    ): Promise<void> {
+        const consolidationScope = consolidationScopeService.buildFromTransactions(changedTransactions);
+        if (!isDefined(consolidationScope)) {
+            return;
+        }
+
+        try {
+            await transferConsolidationService.consolidate(consolidationScope);
+        } finally {
+            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope);
+        }
     }
 
     // eslint-disable-next-line max-statements -- Sync import path keeps adjacent phase timing logs for live performance debugging
