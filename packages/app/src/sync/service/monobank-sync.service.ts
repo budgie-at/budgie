@@ -25,6 +25,7 @@ import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.u
 
 import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
+import { transferConsolidationService } from './transfer-consolidation.service';
 
 import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
 import type {
@@ -284,7 +285,7 @@ class AppMonobankSyncService {
         await microPause();
 
         const changedTransactions = await this.processFetchedTransactions(result.transactions, account.id);
-        this.enqueueConsolidationForChangedTransactions(changedTransactions);
+        await this.reconcileChangedTransactions(changedTransactions);
         await microPause();
 
         return result;
@@ -415,6 +416,21 @@ class AppMonobankSyncService {
 
     private shouldYieldToQueuedWork(): boolean {
         return syncWorkloadService.hasQueuedWork();
+    }
+
+    private async reconcileChangedTransactions(
+        changedTransactions: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>>
+    ): Promise<void> {
+        const consolidationScope = consolidationScopeService.buildFromTransactions(changedTransactions);
+        if (!isDefined(consolidationScope)) {
+            return;
+        }
+
+        try {
+            await transferConsolidationService.consolidate(consolidationScope);
+        } finally {
+            this.enqueueConsolidationForChangedTransactions(changedTransactions);
+        }
     }
 
     private enqueueConsolidationForChangedTransactions(
