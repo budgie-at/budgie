@@ -1,6 +1,6 @@
 import { Log } from '@budgie/logger';
 
-import { isDefined, isEmptyArray, isError } from '@rnw-community/shared';
+import { isEmptyArray } from '@rnw-community/shared';
 
 import type { BankSyncDuplicateCandidateRowInterface } from '../interface/bank-sync-duplicate-candidate-row.interface';
 import type { BankSyncDuplicateSoftDeleteResultInterface } from '../interface/bank-sync-duplicate-soft-delete-result.interface';
@@ -9,13 +9,7 @@ import type { DB } from '@budgie/contracts';
 class BankSyncDuplicateSoftDeleteService {
     private static readonly SQLITE_BATCH_SIZE = 500;
 
-    @Log.withoutErrorPayload(
-        (tx, duplicateTransactionIds) => `enter tx=${String(isDefined(tx))} requestedCount=${duplicateTransactionIds.length}`,
-        (result, tx, duplicateTransactionIds) =>
-            `done tx=${String(isDefined(tx))} requestedCount=${duplicateTransactionIds.length} updatedCount=${result.updatedTransactionIds.length}`,
-        (error, tx, duplicateTransactionIds) =>
-            `throw tx=${String(isDefined(tx))} requestedCount=${duplicateTransactionIds.length} errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload()
     async remove(tx: DB, duplicateTransactionIds: readonly number[]): Promise<BankSyncDuplicateSoftDeleteResultInterface> {
         if (isEmptyArray(duplicateTransactionIds)) {
             return this.buildEmptyResult();
@@ -32,13 +26,7 @@ class BankSyncDuplicateSoftDeleteService {
         return { updatedTransactionIds };
     }
 
-    @Log.withoutErrorPayload(
-        (tx, duplicateTransactionIds) => `enter tx=${String(isDefined(tx))} requestedCount=${duplicateTransactionIds.length}`,
-        (result, tx, duplicateTransactionIds) =>
-            `done tx=${String(isDefined(tx))} requestedCount=${duplicateTransactionIds.length} updatedCount=${result.length}`,
-        (error, tx, duplicateTransactionIds) =>
-            `throw tx=${String(isDefined(tx))} requestedCount=${duplicateTransactionIds.length} errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload()
     private async softDeleteTransactionChunk(
         tx: DB,
         duplicateTransactionIds: readonly number[]
@@ -51,12 +39,7 @@ class BankSyncDuplicateSoftDeleteService {
         );
     }
 
-    @Log.withoutErrorPayload(
-        (tx, updatedTransactionIds) => `enter tx=${String(isDefined(tx))} updatedCount=${updatedTransactionIds.length}`,
-        (_result, tx, updatedTransactionIds) => `done tx=${String(isDefined(tx))} updatedCount=${updatedTransactionIds.length}`,
-        (error, tx, updatedTransactionIds) =>
-            `throw tx=${String(isDefined(tx))} updatedCount=${updatedTransactionIds.length} errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload()
     private async softDeleteEntryChunk(tx: DB, updatedTransactionIds: readonly number[]): Promise<void> {
         const bindTransactionIds = [...updatedTransactionIds];
 

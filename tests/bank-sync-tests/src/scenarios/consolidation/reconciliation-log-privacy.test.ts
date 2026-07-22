@@ -1,20 +1,29 @@
-import { bankSyncRepairService } from '@app/sync/service/bank-sync-repair.service';
+import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { bankSyncDuplicateSoftDeleteService } from '@app/sync/service/bank-sync-duplicate-soft-delete.service';
+import { bankSyncRepairService } from '@app/sync/service/bank-sync-repair.service';
 import { consolidationCoordinatorService } from '@app/sync/service/consolidation-coordinator.service';
 import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
+import {
+    ExternalSourceEnum,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { isError, isObject } from '@rnw-community/shared';
 
-import { ExternalSourceEnum, TransactionEntityTable, TransactionEntryEntityTable, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-
-import { insertOne } from '../../harness/db/insert-one';
 import { seed, testDb } from '../../harness';
+import { insertOne } from '../../harness/db/insert-one';
 
-import type { ConsolidationScanScopeInterface, TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
+import type {
+    ConsolidationScanScopeInterface,
+    TransactionCreateEntityInterface,
+    TransactionEntryCreateEntityInterface
+} from '@budgie/contracts';
 
 vi.unmock('@app/sync/service/transfer-consolidation-drainer.service');
 

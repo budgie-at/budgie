@@ -26,12 +26,7 @@ class TransferConsolidationDrainerService {
     private timer: ReturnType<typeof setTimeout> | null = null;
     private cancelIdleCallback: (() => void) | null = null;
 
-    @Log.withoutErrorPayload(
-        (reason, scope) => `enter reason=${reason} scopeIdCount=${scope?.transactionIds.length ?? 0}`,
-        (_result, reason, scope) => `done reason=${reason} scopeIdCount=${scope?.transactionIds.length ?? 0}`,
-        (error, reason, scope) =>
-            `throw reason=${reason} scopeIdCount=${scope?.transactionIds.length ?? 0} errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload()
     enqueue(reason: TransferConsolidationDrainReasonEnum, scope: ConsolidationScanScopeInterface | null = null): void {
         this.addPendingScope(scope);
         this.hasPendingRun = true;
@@ -54,7 +49,7 @@ class TransferConsolidationDrainerService {
         this.cancelScheduledRun();
     }
 
-    @Log.withoutErrorPayload('enter', 'done', error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`)
+    @Log.withoutErrorPayload(void 0, void 0, error => (isError(error) ? error.name : typeof error))
     private async run(): Promise<void> {
         if (this.isRunning) {
             return;
