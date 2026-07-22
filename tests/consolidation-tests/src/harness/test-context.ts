@@ -1,6 +1,8 @@
 import { buildTestDb, createTestRepositories, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
 import {
     ConsolidationAutoCandidateService,
+    ConsolidationCandidateService,
+    ConsolidationCoordinatorService,
     ConsolidationExecutorService,
     ConsolidationFamilyRegistryService,
     ConsolidationRepairExecutorService,
@@ -51,6 +53,21 @@ const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryServic
 );
 
 export const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationFamilyRegistryService);
+
+const consolidationCandidateService = new ConsolidationCandidateService(
+    {
+        atmCashWithdrawalRepository: repositories.atmCashWithdrawalRepository,
+        existingTransferRepository: repositories.existingTransferRepository,
+        refundPairRepository: repositories.refundPairRepository,
+        transferPairRepository: repositories.transferPairRepository
+    },
+    yieldControl
+);
+
+export const consolidationCoordinatorService = new ConsolidationCoordinatorService(
+    consolidationCandidateService,
+    consolidationAutoCandidateService
+);
 
 export const unconsolidationService = new UnconsolidationService({
     transactionRepository: repositories.transactionRepository,

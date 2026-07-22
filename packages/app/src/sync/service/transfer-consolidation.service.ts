@@ -2,7 +2,7 @@ import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isError, isPositiveNumber } from '@rnw-community/shared';
 
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -43,13 +43,10 @@ class TransferConsolidationService {
         return this.runExclusive(() => this.buildPreview());
     }
 
-    @Log(
-        scope =>
-            `enter appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIdCount=${scope?.transactionIds.length ?? 0}`,
-        (result, scope) =>
-            `done appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIdCount=${scope?.transactionIds.length ?? 0} found=${result.found} consolidated=${result.consolidated}`,
-        (error, scope) =>
-            `throw appScopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} appScopeTo=${scope?.operatedAtTo.toISOString() ?? ''} appScopeIdCount=${scope?.transactionIds.length ?? 0} error=${getErrorMessage(error)}`
+    @Log.withoutErrorPayload(
+        scope => `enter scopeIdCount=${scope?.transactionIds.length ?? 0}`,
+        (result, scope) => `done scopeIdCount=${scope?.transactionIds.length ?? 0} found=${result.found} consolidated=${result.consolidated}`,
+        (error, scope) => `throw scopeIdCount=${scope?.transactionIds.length ?? 0} errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async consolidate(scope: ConsolidationScanScopeInterface | null = null): Promise<ConsolidationResultInterface> {
         return this.runExclusive(() => this.runConsolidationIfIdle(scope));
