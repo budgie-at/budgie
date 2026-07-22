@@ -39,6 +39,7 @@ These rules are vital and apply to every AI agent and orchestrator working in th
 - Set the LOWEST effort level that fits the task; raise effort only for verification/judging stages where correctness is critical.
 - Subagent prompts must be self-contained (paths, rules, constraints, validation steps) so no round-trips are wasted.
 - Do not spawn a top-tier agent for work a cheaper one can verify; prefer cheap execution + targeted verification over expensive single-shot runs.
+- Never commit agent-generated planning, design, or specification artifacts (including `docs/superpowers/plans` and `docs/superpowers/specs`); keep them outside the repository or untracked. Product documentation may be committed only when explicitly requested by the human.
 
 ## Git Commits And Pull Requests
 
