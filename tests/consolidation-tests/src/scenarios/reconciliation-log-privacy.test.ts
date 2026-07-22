@@ -1,3 +1,4 @@
+import { consolidationScopeService } from '@budgie/consolidation';
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -6,6 +7,7 @@ import { emptyFn, isError } from '@rnw-community/shared';
 
 import {
     consolidationAutoCandidateService,
+    consolidationCoordinatorService,
     consolidationRepairExecutorService,
     refundConsolidationService,
     refundPairRepository,
@@ -18,10 +20,13 @@ import {
 
 const reconciliationLogContexts = [
     'ConsolidationAutoCandidateService',
+    'ConsolidationCandidateService',
+    'ConsolidationCoordinatorService',
     'ConsolidationEligibilityService',
     'ConsolidationExecutorService',
     'ConsolidationMutationService',
     'ConsolidationRepairExecutorService',
+    'ConsolidationScopeService',
     'RefundConsolidationService',
     'UnconsolidationService'
 ];
@@ -37,7 +42,8 @@ const reconciliationSentinels = [
     '830000000001',
     'executor-mutation-error-sentinel',
     'repair-error-sentinel',
-    'refund-error-sentinel'
+    'refund-error-sentinel',
+    '2026-06-07T08:09:10.000Z'
 ];
 
 const capturedConsoleLines: string[] = [];
@@ -94,7 +100,7 @@ describe('consolidation/reconciliation-log-privacy', () => {
 
         const transferMcc = testQueryService.findMccByCode('4829');
         testSeedService.amountTransferPair(424242 * PRECISION, transferMcc.id);
-        const transferResult = await consolidationAutoCandidateService.process();
+        const transferResult = await consolidationCoordinatorService.consolidate();
         const account = testSeedService.account({ externalId: 'external-id-sentinel', iban: 'DE89370400440532013000' });
         const { refunds } = testSeedService.refundedExpense({
             accountId: account.id,
@@ -112,6 +118,16 @@ describe('consolidation/reconciliation-log-privacy', () => {
         await expect(consolidationRepairExecutorService.consolidateRefund(refundCandidates[0])).resolves.toBe(true);
         await expect(refundConsolidationService.findRefundableExpenses(refunds[0].id, 'reference-sentinel')).resolves.toEqual([]);
         await expect(unconsolidationService.unconsolidateById(canonicalTransfer.id, testDb)).resolves.toBeUndefined();
+        await expect(consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates()).resolves.toBe(0);
+        expect(
+            consolidationScopeService.buildFromTransactions([
+                { id: 810000000001, operatedAt: new Date('2026-06-07T08:09:10.000Z') }
+            ])
+        ).toEqual({
+            operatedAtFrom: expect.any(Date),
+            operatedAtTo: expect.any(Date),
+            transactionIds: [810000000001]
+        });
         for (const context of reconciliationLogContexts) {
             expect(capturedConsoleLines.join('\n')).toContain(`[${context}::`);
         }

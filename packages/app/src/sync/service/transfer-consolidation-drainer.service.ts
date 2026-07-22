@@ -1,7 +1,7 @@
 import { consolidationScopeService } from '@budgie/consolidation';
 import { Log } from '@budgie/logger';
 
-import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isError } from '@rnw-community/shared';
 
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
@@ -26,13 +26,11 @@ class TransferConsolidationDrainerService {
     private timer: ReturnType<typeof setTimeout> | null = null;
     private cancelIdleCallback: (() => void) | null = null;
 
-    @Log(
-        (reason, scope) =>
-            `enter reason=${reason} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (_result, reason, scope) =>
-            `done reason=${reason} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+    @Log.withoutErrorPayload(
+        (reason, scope) => `enter reason=${reason} scopeIdCount=${scope?.transactionIds.length ?? 0}`,
+        (_result, reason, scope) => `done reason=${reason} scopeIdCount=${scope?.transactionIds.length ?? 0}`,
         (error, reason, scope) =>
-            `throw reason=${reason} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+            `throw reason=${reason} scopeIdCount=${scope?.transactionIds.length ?? 0} errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     enqueue(reason: TransferConsolidationDrainReasonEnum, scope: ConsolidationScanScopeInterface | null = null): void {
         this.addPendingScope(scope);
@@ -56,7 +54,7 @@ class TransferConsolidationDrainerService {
         this.cancelScheduledRun();
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @Log.withoutErrorPayload('enter', 'done', error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`)
     private async run(): Promise<void> {
         if (this.isRunning) {
             return;

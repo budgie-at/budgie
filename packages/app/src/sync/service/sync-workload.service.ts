@@ -20,10 +20,11 @@ class SyncWorkloadService {
         this.cancelQueuedWork();
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         (name, work) => `enter queue=background name="${name}" workName="${work.name}"`,
         (result, name, work) => `done queue=background name="${name}" workName="${work.name}" result=${String(result)}`,
-        (error, name, work) => `throw queue=background name="${name}" workName="${work.name}" error=${getErrorMessage(error)}`
+        (error, name, work) =>
+            `throw queue=background name="${name}" workName="${work.name}" errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async run<T>(name: string, work: () => Promise<T>): Promise<T> {
         this.throwIfBlocked();

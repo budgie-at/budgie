@@ -1,7 +1,7 @@
 import { ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, isDefined, isError, isPositiveNumber } from '@rnw-community/shared';
 
 import { db } from '../../@generic/drizzle/db/db';
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
@@ -26,29 +26,28 @@ class BankSyncRepairService {
 
     private activeOperation: Promise<unknown> | null = null;
 
-    @Log(
+    @Log.withoutErrorPayload(
         'enter',
         result => `done duplicateTransactionCount=${result.duplicateTransactionCount}`,
-        error => `throw error=${getErrorMessage(error)}`
+        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async previewDuplicates(): Promise<BankSyncDuplicateRepairPreviewInterface> {
         return this.runExclusive(() => this.buildPreview());
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         'enter',
         result => `done repairedTransactionCount=${result.repairedTransactionCount}`,
-        error => `throw error=${getErrorMessage(error)}`
+        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async removeDuplicates(): Promise<BankSyncDuplicateRepairResultInterface> {
         return this.runExclusive(() => foregroundWorkloadService.run(() => this.removeDuplicatesInner()));
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         database => `enter sourceDatabase=${String(isDefined(database))}`,
-        (result, database) =>
-            `done sourceDatabase=${String(isDefined(database))} duplicateTransactionIds=${result.map(candidate => candidate.duplicateTransactionId).join(',')}`,
-        (error, database) => `throw sourceDatabase=${String(isDefined(database))} error=${getErrorMessage(error)}`
+        (result, database) => `done sourceDatabase=${String(isDefined(database))} candidateCount=${result.length}`,
+        (error, database) => `throw sourceDatabase=${String(isDefined(database))} errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     private async findDuplicateCandidates(database: DB): Promise<BankSyncDuplicateCandidateRowInterface[]> {
         const candidateGroups = await Promise.all(
@@ -58,15 +57,16 @@ class BankSyncRepairService {
         return candidateGroups.flat();
     }
 
-    @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log.withoutErrorPayload('enter', result => `done repairedCount=${result}`, error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`)
     private async repairConsolidationDuplicates(): Promise<number> {
         return consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         result => `enter repairedTransactionCount=${result.repairedTransactionCount}`,
         (done, result) => `done repairedTransactionCount=${result.repairedTransactionCount} result=${String(done)}`,
-        (error, result) => `throw repairedTransactionCount=${result.repairedTransactionCount} error=${getErrorMessage(error)}`
+        (error, result) =>
+            `throw repairedTransactionCount=${result.repairedTransactionCount} errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     private async rebuildBalancesWhenNeeded(result: BankSyncDuplicateRepairResultInterface): Promise<void> {
         if (isPositiveNumber(result.repairedTransactionCount)) {
@@ -74,10 +74,10 @@ class BankSyncRepairService {
         }
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         tx => `enter tx=${String(isDefined(tx))}`,
         (result, tx) => `done tx=${String(isDefined(tx))} repairedTransactionCount=${result.repairedTransactionCount}`,
-        (error, tx) => `throw tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (error, tx) => `throw tx=${String(isDefined(tx))} errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     private async removeDuplicatesInTransaction(tx: DB): Promise<BankSyncDuplicateRepairResultInterface> {
         const candidates = await this.findDuplicateCandidates(tx);
