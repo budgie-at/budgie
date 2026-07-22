@@ -609,3 +609,5 @@ export const MyFormComponent = (props: Props) => { ... };
 ## Local Documentation
 
 The `docs/plans/` and `docs/superpowers/` folders contain design documents, specs, and implementation plans (including those produced by the superpowers brainstorming and writing-plans skills). These folders are gitignored for local-only usage — plans and specs are working documents that don't need version control.
+
+Agents must not create or commit plans or design docs unless explicitly requested by a human.

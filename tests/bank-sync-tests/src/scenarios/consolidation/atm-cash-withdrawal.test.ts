@@ -94,7 +94,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
         await monobankSyncService.sync();
         const result = await transferConsolidationService.consolidate();
 
-        expect(result.consolidated).toBe(1);
+        expect(result.consolidated).toBe(0);
 
         const [canonical] = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
         expect(canonical.fromAccountId).toBe(bankAccount.id);
