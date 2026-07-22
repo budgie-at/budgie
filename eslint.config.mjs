@@ -1,17 +1,40 @@
+import { fileURLToPath } from 'node:url';
+
 import js from '@eslint/js';
-import stylistic from '@stylistic/eslint-plugin';
+import { fixupPluginRules } from '@eslint/compat';
 import importPlugin from 'eslint-plugin-import';
 import jestPlugin from 'eslint-plugin-jest';
-import nodePlugin from 'eslint-plugin-n';
+import pluginLingui from 'eslint-plugin-lingui';
+import eslintPluginOxlint from 'eslint-plugin-oxlint';
 import promisePlugin from 'eslint-plugin-promise';
 import reactPlugin from 'eslint-plugin-react';
-import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
-import pluginLingui from 'eslint-plugin-lingui';
-import rnwcPlugin from '@rnw-community/eslint-plugin';
 
-import { maxComponentPropsRule } from './eslint-rules/max-component-props.mjs';
+const compatibleImportPlugin = fixupPluginRules(importPlugin);
+const compatibleReactPlugin = fixupPluginRules(reactPlugin);
+const compatibleImportRecommendedConfig = {
+    ...importPlugin.flatConfigs.recommended,
+    plugins: { import: compatibleImportPlugin }
+};
+const compatibleImportTypescriptConfig = {
+    ...importPlugin.flatConfigs.typescript,
+    plugins: { import: compatibleImportPlugin }
+};
+const compatibleReactRecommendedConfig = {
+    ...reactPlugin.configs.flat.recommended,
+    plugins: { react: compatibleReactPlugin }
+};
+const residualRuleIds =
+    `consistent-this id-denylist no-restricted-syntax require-atomic-updates @typescript-eslint/member-ordering camelcase no-invalid-this no-octal no-undef-init newline-before-return react/jsx-uses-react react/jsx-uses-vars react/no-deprecated`.split(
+        ' '
+    );
+const oxlintFallbackConfigs = eslintPluginOxlint
+    .buildFromOxlintConfigFile(fileURLToPath(new URL('./.oxlintrc.json', import.meta.url)))
+    .map(config => ({
+        ...config,
+        rules: Object.fromEntries(Object.entries(config.rules ?? {}).filter(([ruleId]) => !residualRuleIds.includes(ruleId)))
+    }));
 
 export default defineConfig(
     {
@@ -45,10 +68,11 @@ export default defineConfig(
     {
         files: ['**/*.{ts,tsx}'],
         extends: [js.configs.all],
-        plugins: { '@stylistic': stylistic },
         rules: {
             camelcase: ['error', { properties: 'never' }],
             complexity: ['error', 25],
+            'consistent-return': 'off',
+            'dot-notation': 'off',
             indent: 'off',
             strict: 'off',
             'init-declarations': 'off',
@@ -56,7 +80,6 @@ export default defineConfig(
             'one-var': 'off',
             'new-cap': 'off',
             'lines-between-class-members': 'off',
-            '@stylistic/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
             'no-duplicate-imports': 'off',
             'no-ternary': 'off',
             'no-void': 'off',
@@ -64,16 +87,7 @@ export default defineConfig(
             'no-undef': 'off',
             'no-magic-numbers': 'off',
             'no-unused-vars': 'off',
-            'sort-imports': [
-                'error',
-                {
-                    allowSeparatedGroups: false,
-                    ignoreCase: false,
-                    ignoreDeclarationSort: true,
-                    ignoreMemberSort: false,
-                    memberSyntaxSortOrder: ['all', 'multiple', 'none', 'single']
-                }
-            ],
+            'sort-imports': 'off',
             'no-warning-comments': ['error', { terms: ['fixme', 'xxx'], location: 'start' }],
             'sort-keys': 'off',
             'no-shadow': 'off',
@@ -82,11 +96,9 @@ export default defineConfig(
             'capitalized-comments': 'off',
             'arrow-body-style': ['error', 'as-needed'],
             curly: ['error', 'all'],
-            'nonblock-statement-body-position': ['error', 'below'],
             'multiline-ternary': 'off',
             'max-lines-per-function': ['error', { max: 85, skipBlankLines: true, skipComments: true }],
             'max-statements': ['error', { max: 12 }, { ignoreTopLevelFunctions: true }],
-            'id-length': ['error', { exceptions: ['x', 'y', 'z', 'i', 'j', 'e', '_', 'w', 'h', 't'] }],
             'max-params': 'off',
             'operator-linebreak': 'off',
             'newline-before-return': 'error',
@@ -97,8 +109,11 @@ export default defineConfig(
     },
     {
         files: ['**/*.{ts,tsx}'],
-        extends: [tseslint.configs.strictTypeChecked],
+        extends: [tseslint.configs.strict],
         rules: {
+            'no-implied-eval': 'off',
+            'no-throw-literal': 'off',
+            'prefer-promise-reject-errors': 'off',
             '@typescript-eslint/class-methods-use-this': 'off',
             '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
             '@typescript-eslint/no-magic-numbers': [
@@ -146,7 +161,6 @@ export default defineConfig(
             ],
             '@typescript-eslint/no-empty-object-type': 1,
             '@typescript-eslint/no-extraneous-class': [2, { allowWithDecorator: true }],
-            '@typescript-eslint/naming-convention': ['error', { selector: 'enumMember', format: ['UPPER_CASE', 'PascalCase'] }],
             '@typescript-eslint/member-ordering': [
                 'error',
                 {
@@ -238,61 +252,6 @@ export default defineConfig(
         }
     },
     {
-        files: ['**/*.{ts,tsx}'],
-        plugins: { budgie: { rules: { 'max-component-props': maxComponentPropsRule } } },
-        rules: {
-            'budgie/max-component-props': [
-                'error',
-                {
-                    max: 8,
-                    allow: [
-                        'packages/app/src/transaction/components/simple-quick-form-display/simple-quick-form-display.tsx',
-                        'packages/app/src/transaction/components/quick-form-bottom-overlay/quick-form-bottom-overlay.tsx',
-                        'packages/app/src/transaction/components/simple-quick-form/simple-quick-form.tsx',
-                        'packages/app/src/transaction/components/transaction-picker/transaction-picker.tsx',
-                        'packages/app/src/transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer.tsx',
-                        'packages/app/src/transaction/components/transaction-amount-display/transaction-amount-display.tsx',
-                        'packages/app/src/transaction/components/transaction-field-icons/transaction-field-icons.tsx',
-                        'packages/app/src/transaction/interface/update-simple-transaction-page-props.interface.ts',
-                        'packages/app/src/@generic/component/page-header/page-header.tsx',
-                        'packages/app/src/@generic/component/searchable-page/searchable-page.tsx',
-                        'packages/app/src/@generic/component/selector-card/selector-card.tsx',
-                        'packages/app/src/transaction/components/simple-quick-form-controls/simple-quick-form-controls.tsx',
-                        'packages/landing/src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx',
-                        'packages/app/src/@generic/component/ai-translation-fields/ai-translation-fields.tsx',
-                        'packages/app/src/@generic/component/card/card.tsx',
-                        'packages/app/src/@generic/component/circle-icon/circle-icon.tsx',
-                        'packages/app/src/@generic/component/empty-state/empty-state.tsx',
-                        'packages/app/src/@generic/component/form-amount-input/form-amount-input.tsx',
-                        'packages/app/src/@generic/component/form-page/form-page.tsx',
-                        'packages/app/src/@generic/component/selector-grid-content/selector-grid-content.tsx',
-                        'packages/app/src/account/component/account-action-card/account-action-card.tsx',
-                        'packages/app/src/account/component/account-card-base/account-card-base.tsx',
-                        'packages/app/src/ai/component/voice-review-footer/voice-review-footer.tsx',
-                        'packages/app/src/auth/components/pin-form/pin-form.tsx',
-                        'packages/app/src/budget/components/budget-progress-bar/budget-progress-bar.tsx',
-                        'packages/app/src/category/components/category-select-content/category-select-content.tsx',
-                        'packages/app/src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx',
-                        'packages/app/src/settings/components/budget-setting-card/budget-setting-card.tsx',
-                        'packages/app/src/tag/components/tags-select-content/tags-select-content.tsx',
-                        'packages/app/src/transaction/components/split-entry-row/split-entry-row.tsx',
-                        'packages/app/src/transaction/components/transaction-field-icon/transaction-field-icon.tsx',
-                        'packages/app/src/transaction/components/transaction-keypad-button/transaction-keypad-button.tsx',
-                        'packages/app/src/transaction/components/transaction-keypad/transaction-keypad.tsx',
-                        'packages/landing/src/generic/component/blog-card/blog-card.tsx'
-                    ]
-                }
-            ]
-        }
-    },
-    {
-        languageOptions: {
-            parserOptions: {
-                projectService: true
-            }
-        }
-    },
-    {
         files: ['**/*.service.ts'],
         rules: {
             'max-lines': ['error', { max: 500, skipBlankLines: true, skipComments: true }]
@@ -300,7 +259,7 @@ export default defineConfig(
     },
     {
         files: ['**/*.{ts,tsx}'],
-        extends: [importPlugin.flatConfigs.recommended, importPlugin.flatConfigs.typescript],
+        extends: [compatibleImportRecommendedConfig, compatibleImportTypescriptConfig],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module'
@@ -316,42 +275,7 @@ export default defineConfig(
             'import/no-unused-modules': 'off',
             'import/no-deprecated': 'off',
             'import/extensions': 'off',
-            'import/order': [
-                'error',
-                {
-                    alphabetize: {
-                        caseInsensitive: true,
-                        order: 'asc'
-                    },
-                    groups: ['builtin', 'external', 'object', 'parent', 'sibling', 'index', 'type'],
-                    'newlines-between': 'always',
-                    pathGroups: [
-                        {
-                            group: 'object',
-                            pattern: '@rnw-community/*',
-                            position: 'after'
-                        }
-                    ],
-                    pathGroupsExcludedImportTypes: ['builtin', 'type']
-                }
-            ]
-        }
-    },
-    {
-        files: ['**/*.ts'],
-        extends: [nodePlugin.configs['flat/recommended']],
-        settings: {
-            node: { version: '>=22.0.0' }
-        },
-        rules: {
-            'n/no-missing-import': 'off',
-            'n/no-unsupported-features/es-syntax': 'off',
-            'n/no-extraneous-import': [
-                'error',
-                {
-                    allowModules: ['@jest/globals']
-                }
-            ]
+            'import/order': 'off'
         }
     },
     {
@@ -359,65 +283,13 @@ export default defineConfig(
         extends: [promisePlugin.configs['flat/recommended']]
     },
     {
-        files: ['packages/app/**/*.{ts,tsx}', 'packages/landing/**/*.{ts,tsx}'],
-        extends: [pluginLingui.configs['flat/recommended']],
-        rules: {
-            'lingui/no-unlocalized-strings': [
-                'error',
-                {
-                    ignore: [
-                        '^(?![A-Z])\\S+$',
-                        '^[A-Z0-9_-]+$',
-                        'rgba',
-                        'rgb',
-                        '^Inter_[0-9A-Z]+',
-                        '^Arrow[A-Z]+',
-                        'Tab',
-                        'Enter',
-                        'use client'
-                    ],
-                    ignoreNames: [
-                        { regex: { pattern: 'className', flags: 'i' } },
-                        { regex: { pattern: 'icon', flags: 'i' } },
-                        { regex: { pattern: 'sizes', flags: 'i' } },
-                        { regex: { pattern: '^d$', flags: '' } }
-                    ],
-                    ignoreFunctions: [
-                        'format',
-                        'cva',
-                        'Log',
-                        'getLogger',
-                        'logger.log',
-                        'logger.error',
-                        'logger.debug',
-                        'syncLogger.log',
-                        'syncLogger.error'
-                    ]
-                }
-            ],
-            'lingui/t-call-in-function': 2,
-            'lingui/no-single-variables-to-translate': 2,
-            'lingui/no-expression-in-message': 2,
-            'lingui/no-single-tag-to-translate': 2,
-            'lingui/no-trans-inside-trans': 2
-        }
-    },
-    {
-        files: ['packages/app/**/*.selector.ts'],
-        rules: {
-            'lingui/no-unlocalized-strings': 'off'
-        }
-    },
-    {
         files: ['**/*.tsx', '**/*.hook.ts'],
-        extends: [reactPlugin.configs.flat.recommended, reactHooksPlugin.configs.flat.recommended],
-        plugins: { '@rnw-community': rnwcPlugin },
+        extends: [compatibleReactRecommendedConfig],
         settings: {
             react: { version: 'detect' }
         },
         rules: {
             'max-statements': ['error', 15],
-            '@rnw-community/no-complex-jsx-logic': 'error',
             'react/jsx-curly-brace-presence': [
                 'error',
                 {
@@ -447,29 +319,6 @@ export default defineConfig(
             'react/jsx-child-element-spacing': 'off',
             'react/destructuring-assignment': 'off',
             'react/no-unknown-property': ['error', { ignore: ['popover', 'popoverTarget', 'popoverTargetAction'] }]
-        }
-    },
-    {
-        files: ['**/*.spec.ts'],
-        extends: [jestPlugin.configs['flat/recommended']],
-        rules: {
-            'no-await-in-loop': 'off',
-
-            'jest/require-hook': 'off',
-            'jest/max-expects': 'off',
-            'jest/unbound-method': 'off',
-            'jest/expect-expect': 'off',
-            'jest/no-done-callback': 'off',
-
-            'no-undef': 'off',
-            'no-undefined': 'off',
-            'max-classes-per-file': 'off',
-            'max-lines-per-function': 'off',
-            'max-lines': 'off',
-            'max-statements': 'off',
-            'func-names': 'off',
-            'promise/no-nesting': 'off',
-            '@typescript-eslint/no-magic-numbers': 'warn'
         }
     },
     {
@@ -511,6 +360,51 @@ export default defineConfig(
                     message: 'Use isEmptyString(x) from @rnw-community/shared.'
                 }
             ]
+        }
+    },
+    {
+        files: ['packages/app/src/**/*.{ts,tsx}', 'packages/landing/src/**/*.{ts,tsx}'],
+        plugins: { lingui: pluginLingui }
+    },
+    {
+        linterOptions: {
+            reportUnusedDisableDirectives: 'off'
+        }
+    },
+    ...oxlintFallbackConfigs,
+    {
+        files: ['**/*.spec.ts'],
+        extends: [jestPlugin.configs['flat/recommended']],
+        rules: {
+            'no-await-in-loop': 'off',
+
+            'jest/require-hook': 'off',
+            'jest/max-expects': 'off',
+            'jest/unbound-method': 'off',
+            'jest/expect-expect': 'off',
+            'jest/no-done-callback': 'off',
+
+            'no-undef': 'off',
+            'no-undefined': 'off',
+            'max-classes-per-file': 'off',
+            'max-lines-per-function': 'off',
+            'max-lines': 'off',
+            'max-statements': 'off',
+            'func-names': 'off',
+            'promise/no-nesting': 'off',
+            '@typescript-eslint/no-magic-numbers': 'warn'
+        }
+    },
+    {
+        files: ['**/*.{ts,tsx}'],
+        rules: {
+            'id-length': 'off',
+            'import/export': 'off',
+            'no-restricted-exports': 'off',
+            'no-unreachable-loop': 'off',
+            'no-useless-assignment': 'off',
+            'promise/no-return-in-finally': 'off',
+            'react/require-render-return': 'off'
         }
     }
 );

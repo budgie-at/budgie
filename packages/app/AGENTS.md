@@ -1,6 +1,6 @@
 # App Package (React Native)
 
-Main mobile application built with Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, and Lingui 6.1.
+Main mobile application built with Expo 56, React 19 + Compiler, Expo Router 56, Drizzle ORM, NativeWind 5, and Lingui 6.5.
 
 ## Commands
 
@@ -298,7 +298,7 @@ Valid cases for `max-statements` disable:
 
 ## Component Patterns
 
-> Composition rules (prop budget, compound components, explicit variants, hook chains) live in [docs/component-composition.md](../../docs/component-composition.md). The `budgie/max-component-props` lint rule errors above 8 props; refactor with composition instead of growing the grandfather list.
+> Composition rules (prop budget, compound components, explicit variants, hook chains) live in [docs/component-composition.md](../../docs/component-composition.md). Oxlint loads the `budgie/max-component-props` rule through its JavaScript-plugin bridge and errors above 8 props; refactor with composition instead of growing the `.oxlintrc.json` grandfather list.
 
 ### File Organization
 
@@ -363,7 +363,7 @@ export const MyComponent = ({ title, onPress }: MyComponentPropsInterface) => { 
 ```typescript
 // Good - Destructure in body for many props
 export const MyComponent = (props: Props) => {
-    const { className, header, footer, children, contentClassName, withBlur = false, ...rest } = props;
+    const { className, header, footer, children, contentClassName, collapsable = false, ...rest } = props;
 };
 
 // Good - Destructure in signature for few props
@@ -576,7 +576,7 @@ Toast.show({
 
 ## Provider Architecture
 
-Root layout has 14 nested providers in this order:
+Root layout has 15 nested providers in this order:
 
 1. SafeAreaProvider
 2. SQLiteProvider
@@ -584,14 +584,15 @@ Root layout has 14 nested providers in this order:
 4. I18nProvider
 5. KeyboardProvider
 6. ThemeProvider
-7. GestureHandlerRootView
-8. AuthProvider
-9. AuthGuard
-10. CreateActionProvider
-11. AiProviderWrapper
-12. AiEmbeddingProgressProvider
-13. AiStatusProvider
-14. ModalProvider (wraps all 20 modal providers internally)
+7. ScreenChromeThemeProvider
+8. GestureHandlerRootView
+9. AuthProvider
+10. AuthGuard
+11. CreateActionProvider
+12. AiProviderWrapper
+13. AiEmbeddingProgressProvider
+14. AiStatusProvider
+15. ModalProvider (wraps all 20 modal providers internally)
 
 ## AI/LLM Module Patterns
 

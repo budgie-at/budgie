@@ -37,6 +37,7 @@ import m0032 from './0032_add_budget_planning.sql';
 import m0033 from './0033_add_transaction_entry_kind.sql';
 import m0034 from './0034_add_debt_target_base_valuation.sql';
 import m0035 from './0035_add_debt_events.sql';
+import m0036 from './0036_repair_borrowed_debt_migration.sql';
 
 export default {
     journal,
@@ -76,6 +77,7 @@ export default {
         m0032,
         m0033,
         m0034,
-        m0035
+        m0035,
+        m0036
     }
 };

@@ -1,11 +1,8 @@
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { FormPage } from '../../../@generic/component/form-page/form-page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 
 import type { ReactNode } from 'react';
-import type { Edge } from 'react-native-safe-area-context';
-
-const FORM_PAGE_SAFE_EDGES: Edge[] = ['bottom', 'top'];
 
 interface Props {
     readonly title: string;
@@ -17,12 +14,13 @@ interface Props {
 }
 
 export const SyncAccountSetupPage = ({ title, description, onGoBack, footer, scrollViewTestID, children }: Props) => (
-    <FormPage
-        header={<PageHeader onGoBack={onGoBack} title={title} description={description} />}
+    <CollapsibleChromePage
+        title={title}
+        subtitle={description}
+        leading={<GoBackButton onPress={onGoBack} />}
         footer={footer}
-        safeEdges={FORM_PAGE_SAFE_EDGES}
-        scrollViewTestID={scrollViewTestID}
+        testID={scrollViewTestID}
     >
         <FormLayoutGroup>{children}</FormLayoutGroup>
-    </FormPage>
+    </CollapsibleChromePage>
 );

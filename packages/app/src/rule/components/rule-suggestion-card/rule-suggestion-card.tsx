@@ -110,13 +110,13 @@ export const RuleSuggestionCard = (props: Props) => {
             const handleEditExisting = () => {
                 logger.log('handleYes:duplicate-alert:edit', { duplicateRuleId: duplicateRule.id });
                 void openRuleForm({ ruleId: duplicateRule.id });
-                // eslint-disable-next-line lingui/no-unlocalized-strings
+                // oxlint-disable-next-line lingui/no-unlocalized-strings
                 reject(new Error('Edit'));
             };
 
             const handleCancel = () => {
                 logger.log('handleYes:duplicate-alert:cancel');
-                // eslint-disable-next-line lingui/no-unlocalized-strings
+                // oxlint-disable-next-line lingui/no-unlocalized-strings
                 reject(new Error('Cancelled'));
             };
 
@@ -150,7 +150,7 @@ export const RuleSuggestionCard = (props: Props) => {
 
         if (!isDefined(ruleInput)) {
             logger.error('handleYes:throw:invalid-input');
-            // eslint-disable-next-line lingui/no-unlocalized-strings
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
             throw new Error('Invalid rule input');
         }
 

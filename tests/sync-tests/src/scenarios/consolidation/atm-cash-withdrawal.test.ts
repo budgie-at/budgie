@@ -1,6 +1,8 @@
-import { describe, expect, it, vi } from 'vitest';
-import { eq } from 'drizzle-orm';
-
+import { accountBalanceRepository, syncRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { transactionService } from '@app/transaction/service/transaction.service';
 import {
     AccountTypeEnum,
     BANK_FEE_CATEGORY_ID,
@@ -12,6 +14,8 @@ import {
     TransactionEntryTypeEnum,
     TransactionEntityTable
 } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
     buildMonobank,
@@ -27,12 +31,6 @@ import {
     testDb
 } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
-
-import { accountBalanceRepository, syncRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
-import { transactionService } from '@app/transaction/service/transaction.service';
 
 import type { TransactionEntryCreateEntityInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 

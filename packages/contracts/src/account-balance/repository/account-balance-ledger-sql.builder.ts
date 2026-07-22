@@ -1,8 +1,8 @@
 import { sql } from 'drizzle-orm';
 
+import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 
 class AccountBalanceLedgerSqlBuilder {
     getLiveTransactionConditionSql() {

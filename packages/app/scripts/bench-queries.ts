@@ -1,6 +1,7 @@
+import { resolve } from 'node:path';
+
 /* eslint-disable no-console */
 import Database from 'better-sqlite3';
-import { resolve } from 'node:path';
 
 const DB_PATH = resolve(__dirname, '../.bench/fixture.db');
 const WARMUP_ITERATIONS = 5;

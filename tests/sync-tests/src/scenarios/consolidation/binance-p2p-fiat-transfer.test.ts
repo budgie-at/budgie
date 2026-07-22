@@ -1,10 +1,8 @@
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-
 import { fetchCanonicalsOfType, fetchTransactionById, seedBankPair, seedP2pFiatTransferFixture } from '../../harness';
-
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 import type { TransactionEntityInterface } from '@budgie/contracts';
 

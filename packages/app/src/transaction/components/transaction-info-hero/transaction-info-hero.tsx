@@ -104,6 +104,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
             {showMetaPills ? (
                 <View className="flex-row flex-wrap justify-center gap-xs">
                     <RefundedPill
+                        key={`${transaction.id}-${transaction.consolidationType}`}
                         transaction={transaction}
                         onPress={onOpenRefundSources}
                         testID={TransactionInfoPageSelector.RefundedPill}

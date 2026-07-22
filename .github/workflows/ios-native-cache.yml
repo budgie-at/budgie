@@ -35,6 +35,8 @@ jobs:
         timeout-minutes: 120
         steps:
             - uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
 
             - name: Setup macOS toolchain PATH
               shell: bash
@@ -54,7 +56,7 @@ jobs:
               run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
 
             - name: Setup EAS CLI
-              uses: expo/expo-github-action@v8
+              uses: expo/expo-github-action@v9
               with:
                   eas-version: ${{ env.EAS_CLI_VERSION }}
                   token: ${{ secrets.EXPO_TOKEN }}

@@ -14,10 +14,12 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'AccountCard.E2E Expense Target'
+      retryTapIfNoChange: true
+- waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'AccountDetails.EditButton'
-      timeout: 10000
+      timeout: 20000
 
 - tapOn:
       id: 'AccountDetails.EditButton'
@@ -62,6 +64,10 @@ appId: ${APP_ID}
       text: '^Restore$'
 - extendedWaitUntil:
       notVisible: 'Restore Account?'
+      timeout: 10000
+- extendedWaitUntil:
+      notVisible:
+          id: 'ArchivedAccountCard.RestoreButton.E2E Expense Target'
       timeout: 10000
 
 - tapOn:
@@ -204,6 +210,11 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       notVisible:
           id: 'TransactionCard.Label.E2E_Convert_Expense'
+      timeout: 10000
+
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
       timeout: 10000
 
 - tapOn:

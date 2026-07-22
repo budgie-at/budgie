@@ -1,5 +1,4 @@
 import 'server-only';
-
 import { I18n, Messages, setupI18n } from '@lingui/core';
 
 import { SUPPORTED_LOCALES as locales } from './supported-locales.constant.mjs';

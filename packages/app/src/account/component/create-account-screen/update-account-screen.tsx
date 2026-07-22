@@ -13,11 +13,10 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { Button } from '../../../@generic/component/button/button';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { FormPage } from '../../../@generic/component/form-page/form-page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { AccountActiveToggleField } from '../account-active-toggle-field/account-active-toggle-field';
@@ -33,33 +32,36 @@ interface Props<T extends FieldValues> {
     readonly children?: ReactNode;
     readonly control: Control<T>;
     readonly onSubmit: EmptyFn;
+    readonly isSubmitting?: boolean;
 }
 
 export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterface | DebtAccountCreateInputInterface>(props: Props<T>) => {
-    const { children, account, onSubmit, control, instrumentSymbol, allowNegativeBalance } = props;
+    const { children, account, onSubmit, control, instrumentSymbol, allowNegativeBalance, isSubmitting } = props;
     const { t } = useLingui();
-
-    const handleGoBack = () => void goBackOrReplace('/');
 
     const variant = account.type === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[account.type];
     const showInstrumentAfterAmount = account.type === AccountTypeEnum.CRYPTO || account.type === AccountTypeEnum.CRYPTO_SYNC;
     const minimumDecimalPlaces = showInstrumentAfterAmount ? MICRO_UNIT_DECIMAL_PLACES : 0;
 
     return (
-        <FormPage
-            scrollViewTestID={CreateAccountScreenSelector.ScrollView}
-            header={<PageHeader iconVariant={variant} onGoBack={handleGoBack} title={t`Account Settings`} />}
+        <CollapsibleChromePage
+            title={t`Account Settings`}
+            leading={<HeaderBackButton />}
+            testID={CreateAccountScreenSelector.ScrollView}
             footer={
-                <View className="flex-row gap-2">
-                    <ArchiveAccount accountId={account.id} />
-                    <Button
-                        onPress={onSubmit}
-                        size="sm"
-                        variant={variant}
-                        content={t`Update Account`}
-                        className="flex-1"
-                        testID={CreateAccountScreenSelector.SubmitButton}
-                    />
+                <View className="gap-md pt-xl px-7xl">
+                    <View className="flex-row gap-2">
+                        <ArchiveAccount accountId={account.id} />
+                        <Button
+                            onPress={onSubmit}
+                            size="sm"
+                            variant={variant}
+                            isLoading={isSubmitting}
+                            content={t`Update Account`}
+                            className="flex-1"
+                            testID={CreateAccountScreenSelector.SubmitButton}
+                        />
+                    </View>
                 </View>
             }
         >
@@ -84,6 +86,6 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
 
                 <AccountActiveToggleField control={control} />
             </FormLayoutGroup>
-        </FormPage>
+        </CollapsibleChromePage>
     );
 };

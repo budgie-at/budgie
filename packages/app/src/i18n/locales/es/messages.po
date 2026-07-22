@@ -294,6 +294,10 @@ msgstr "Agregar elemento"
 msgid "Add Tag"
 msgstr "Añadir etiqueta"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "Add transactions to see how your spending breaks down by category."
+msgstr ""
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Agrega tu primera cuenta para comenzar a rastrear tus finanzas"
@@ -479,6 +483,10 @@ msgstr "Banco"
 msgid "Bank sync"
 msgstr "Sincronización bancaria"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Bank Sync"
+msgstr ""
+
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
 msgstr "Sincronización bancaria restablecida"
@@ -659,10 +667,6 @@ msgstr "Cuenta corriente"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Elige un preset para autocompletar las asignaciones de columnas"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Choose the type of account you want to add"
-msgstr "Elige el tipo de cuenta que deseas agregar"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1406,7 +1410,7 @@ msgstr "Introduce valor..."
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos para desbloquear"
 
@@ -1422,7 +1426,7 @@ msgstr "Introduce tu secreto API de Binance"
 msgid "Enter your Monobank API token"
 msgstr "Ingrese su token API de Monobank"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your PIN"
 msgstr "Ingresa tu PIN"
 
@@ -1537,7 +1541,8 @@ msgstr "Comisión · {formattedFeeAmount}"
 msgid "Fee {formattedAmount}"
 msgstr "Comisión {formattedAmount}"
 
-#: src/sync/component/sync-account-setup-page/sync-account-setup-page.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
 msgstr "Obtener cuentas"
 
@@ -1548,10 +1553,6 @@ msgstr "Obteniendo nuevos..."
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field"
 msgstr "Campo"
-
-#: src/account/component/create-account-screen/create-account-screen.tsx
-msgid "Fill in the account details"
-msgstr "Completa los detalles de la cuenta"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
@@ -1749,7 +1750,7 @@ msgstr "Ingresos por categoría"
 msgid "Income by Tag"
 msgstr "Ingresos por etiqueta"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
@@ -2071,6 +2072,10 @@ msgstr "Ninguna cuenta archivada coincide con tu búsqueda"
 msgid "No categories found"
 msgstr "No se encontraron categorías"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "No categories in this period"
+msgstr ""
+
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "Ninguna categoría coincide con tu búsqueda"
@@ -2281,10 +2286,6 @@ msgstr "Abre la aplicación Privatbank24"
 msgid "Operator"
 msgstr "Operador"
 
-#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
-msgid "Optional per-category caps within this budget"
-msgstr "Topes opcionales por categoría dentro de este presupuesto"
-
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "o"
@@ -2376,7 +2377,6 @@ msgstr "Elige una categoría para definir un límite"
 msgid "Pick a window. Existing data is preserved."
 msgstr "Elige un periodo. Los datos existentes se conservan."
 
-#: src/app/(main)/pin.tsx
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PIN must be {PIN_LENGTH} digits"
 msgstr "El PIN debe tener {PIN_LENGTH} dígitos"
@@ -2824,7 +2824,7 @@ msgstr "Seleccionar fuente externa"
 msgid "Select Field"
 msgstr "Seleccionar campo"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 msgid "Select File"
 msgstr "Seleccionar archivo"
 
@@ -2995,8 +2995,9 @@ msgstr "Empieza desde cero y define cada límite tú mismo"
 msgid "Start Import"
 msgstr "Iniciar importación"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
-#: src/sync/component/sync-account-setup-page/sync-account-setup-page.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Iniciar sincronización"
 
@@ -3041,7 +3042,6 @@ msgstr "Desliza para eliminar este tope por categoría de tu presupuesto."
 msgid "Switch between light and dark themes"
 msgstr "Cambiar entre temas claro y oscuro"
 
-#: src/app/(main)/create-account/index.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Sync"
 msgstr "Sincronización"
@@ -3094,7 +3094,7 @@ msgstr "Etiqueta tus transacciones para ver cómo se desglosan tus gastos por co
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
-#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags"
 msgstr "Etiquetas"

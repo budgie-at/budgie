@@ -1,8 +1,9 @@
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, InstrumentTypeEnum, SettingsEntityTable } from '@budgie/contracts';
 
 import { requireInstrument } from '../db/require-instrument';
-import { seed } from '../seed/seed';
 import { testDb } from '../scenario/setup';
+import { seed } from '../seed/seed';
+
 import { seedExchangeRate } from './seed-exchange-rate';
 
 import type { AccountEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';

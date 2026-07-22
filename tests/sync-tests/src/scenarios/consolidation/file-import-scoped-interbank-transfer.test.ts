@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
+import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
+import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -15,13 +17,9 @@ import {
     StubFileBankSyncService
 } from '../../harness';
 
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
-import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
-
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
-import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 import type { AccountEntityInterface, ConsolidationScanScopeInterface, MccCategoryLookupInterface } from '@budgie/contracts';
+import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
 const IMPORTED_AMOUNT = 250;
 const OPERATED_AT = new Date('2026-01-13T09:42:53.000Z');

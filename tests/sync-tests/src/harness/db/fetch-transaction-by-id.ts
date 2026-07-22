@@ -1,6 +1,5 @@
-import { eq } from 'drizzle-orm';
-
 import { TransactionEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 
 import { testDb } from '../scenario/setup';
 

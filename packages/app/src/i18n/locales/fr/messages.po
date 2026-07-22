@@ -294,6 +294,10 @@ msgstr "Ajouter un élément"
 msgid "Add Tag"
 msgstr "Ajouter un tag"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "Add transactions to see how your spending breaks down by category."
+msgstr ""
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Ajoutez votre premier compte pour commencer à suivre vos finances"
@@ -479,6 +483,10 @@ msgstr "Banque"
 msgid "Bank sync"
 msgstr "Synchronisation bancaire"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Bank Sync"
+msgstr ""
+
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
 msgstr "Synchronisation bancaire réinitialisée"
@@ -659,10 +667,6 @@ msgstr "Compte courant"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choisissez un modèle pour remplir automatiquement les correspondances de colonnes"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Choose the type of account you want to add"
-msgstr "Choisissez le type de compte que vous souhaitez ajouter"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1406,7 +1410,7 @@ msgstr "Saisir la valeur..."
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Entrez votre code PIN à {PIN_LENGTH} chiffres"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Entrez votre code PIN à {PIN_LENGTH} chiffres pour déverrouiller"
 
@@ -1422,7 +1426,7 @@ msgstr "Saisissez votre secret API Binance"
 msgid "Enter your Monobank API token"
 msgstr "Entrez votre jeton API Monobank"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your PIN"
 msgstr "Entrez votre code PIN"
 
@@ -1537,7 +1541,8 @@ msgstr "Frais · {formattedFeeAmount}"
 msgid "Fee {formattedAmount}"
 msgstr "Frais {formattedAmount}"
 
-#: src/sync/component/sync-account-setup-page/sync-account-setup-page.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
 msgstr "Récupérer les comptes"
 
@@ -1548,10 +1553,6 @@ msgstr "Récupération des nouvelles..."
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field"
 msgstr "Champ"
-
-#: src/account/component/create-account-screen/create-account-screen.tsx
-msgid "Fill in the account details"
-msgstr "Remplissez les détails du compte"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
@@ -1749,7 +1750,7 @@ msgstr "Revenus par catégorie"
 msgid "Income by Tag"
 msgstr "Revenus par étiquette"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/hook/use-pin-authentication.hook.ts
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
@@ -2071,6 +2072,10 @@ msgstr "Aucun compte archivé ne correspond à votre recherche"
 msgid "No categories found"
 msgstr "Aucune catégorie trouvée"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "No categories in this period"
+msgstr ""
+
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "Aucune catégorie ne correspond à votre recherche"
@@ -2281,10 +2286,6 @@ msgstr "Ouvrez l'application Privatbank24"
 msgid "Operator"
 msgstr "Opérateur"
 
-#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
-msgid "Optional per-category caps within this budget"
-msgstr "Plafonds optionnels par catégorie au sein de ce budget"
-
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "ou"
@@ -2376,7 +2377,6 @@ msgstr "Choisissez une catégorie pour définir une limite"
 msgid "Pick a window. Existing data is preserved."
 msgstr "Choisissez une fenêtre. Les données existantes sont conservées."
 
-#: src/app/(main)/pin.tsx
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PIN must be {PIN_LENGTH} digits"
 msgstr "Le code PIN doit comporter {PIN_LENGTH} chiffres"
@@ -2824,7 +2824,7 @@ msgstr "Sélectionner une source externe"
 msgid "Select Field"
 msgstr "Sélectionner un champ"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 msgid "Select File"
 msgstr "Sélectionner un fichier"
 
@@ -2995,8 +2995,9 @@ msgstr "Partez de zéro et définissez chaque limite vous-même"
 msgid "Start Import"
 msgstr "Démarrer l'importation"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
-#: src/sync/component/sync-account-setup-page/sync-account-setup-page.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Démarrer la synchronisation"
 
@@ -3041,7 +3042,6 @@ msgstr "Balayez pour supprimer ce plafond par catégorie de votre budget."
 msgid "Switch between light and dark themes"
 msgstr "Basculer entre les thèmes clair et sombre"
 
-#: src/app/(main)/create-account/index.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Sync"
 msgstr "Synchronisation"
@@ -3094,7 +3094,7 @@ msgstr "Étiquetez vos transactions pour voir la répartition de vos dépenses p
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
-#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags"
 msgstr "Étiquettes"
