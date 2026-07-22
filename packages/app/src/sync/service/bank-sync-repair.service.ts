@@ -26,29 +26,17 @@ class BankSyncRepairService {
 
     private activeOperation: Promise<unknown> | null = null;
 
-    @Log.withoutErrorPayload(
-        'enter',
-        result => `done duplicateTransactionCount=${result.duplicateTransactionCount}`,
-        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload(void 0, void 0, error => (isError(error) ? error.name : typeof error))
     async previewDuplicates(): Promise<BankSyncDuplicateRepairPreviewInterface> {
         return this.runExclusive(() => this.buildPreview());
     }
 
-    @Log.withoutErrorPayload(
-        'enter',
-        result => `done repairedTransactionCount=${result.repairedTransactionCount}`,
-        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload(void 0, void 0, error => (isError(error) ? error.name : typeof error))
     async removeDuplicates(): Promise<BankSyncDuplicateRepairResultInterface> {
         return this.runExclusive(() => foregroundWorkloadService.run(() => this.removeDuplicatesInner()));
     }
 
-    @Log.withoutErrorPayload(
-        database => `enter sourceDatabase=${String(isDefined(database))}`,
-        (result, database) => `done sourceDatabase=${String(isDefined(database))} candidateCount=${result.length}`,
-        (error, database) => `throw sourceDatabase=${String(isDefined(database))} errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload()
     private async findDuplicateCandidates(database: DB): Promise<BankSyncDuplicateCandidateRowInterface[]> {
         const candidateGroups = await Promise.all(
             BankSyncRepairService.SOURCE_STRATEGIES.map(strategy => strategy.findDuplicateCandidates(database))
@@ -57,28 +45,19 @@ class BankSyncRepairService {
         return candidateGroups.flat();
     }
 
-    @Log.withoutErrorPayload('enter', result => `done repairedCount=${result}`, error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`)
+    @Log.withoutErrorPayload()
     private async repairConsolidationDuplicates(): Promise<number> {
         return consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
     }
 
-    @Log.withoutErrorPayload(
-        result => `enter repairedTransactionCount=${result.repairedTransactionCount}`,
-        (done, result) => `done repairedTransactionCount=${result.repairedTransactionCount} result=${String(done)}`,
-        (error, result) =>
-            `throw repairedTransactionCount=${result.repairedTransactionCount} errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload()
     private async rebuildBalancesWhenNeeded(result: BankSyncDuplicateRepairResultInterface): Promise<void> {
         if (isPositiveNumber(result.repairedTransactionCount)) {
             await accountBalanceIncrementalService.updateAllBalances(true);
         }
     }
 
-    @Log.withoutErrorPayload(
-        tx => `enter tx=${String(isDefined(tx))}`,
-        (result, tx) => `done tx=${String(isDefined(tx))} repairedTransactionCount=${result.repairedTransactionCount}`,
-        (error, tx) => `throw tx=${String(isDefined(tx))} errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload()
     private async removeDuplicatesInTransaction(tx: DB): Promise<BankSyncDuplicateRepairResultInterface> {
         const candidates = await this.findDuplicateCandidates(tx);
         const duplicateTransactionIds = candidates.map(candidate => candidate.duplicateTransactionId);

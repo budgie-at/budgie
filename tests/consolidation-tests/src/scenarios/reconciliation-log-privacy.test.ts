@@ -120,9 +120,7 @@ describe('consolidation/reconciliation-log-privacy', () => {
         await expect(unconsolidationService.unconsolidateById(canonicalTransfer.id, testDb)).resolves.toBeUndefined();
         await expect(consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates()).resolves.toBe(0);
         expect(
-            consolidationScopeService.buildFromTransactions([
-                { id: 810000000001, operatedAt: new Date('2026-06-07T08:09:10.000Z') }
-            ])
+            consolidationScopeService.buildFromTransactions([{ id: 810000000001, operatedAt: new Date('2026-06-07T08:09:10.000Z') }])
         ).toEqual({
             operatedAtFrom: expect.any(Date),
             operatedAtTo: expect.any(Date),

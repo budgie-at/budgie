@@ -1,8 +1,6 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { isDefined, isError } from '@rnw-community/shared';
-
 import { ERSTE_DUPLICATE_CANDIDATE_SQL } from '../constant/erste-duplicate-candidate-sql.constant';
 import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '../constant/privatbank-duplicate-candidate-sql.constant';
 
@@ -16,11 +14,7 @@ class BankSyncDuplicateRepairSourceService implements BankSyncDuplicateRepairSou
         private readonly candidateSql: string
     ) {}
 
-    @Log.withoutErrorPayload(
-        database => `enter database=${String(isDefined(database))}`,
-        (result, database) => `done database=${String(isDefined(database))} candidateCount=${result.length}`,
-        (error, database) => `throw database=${String(isDefined(database))} errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload()
     async findDuplicateCandidates(database: DB): Promise<BankSyncDuplicateCandidateRowInterface[]> {
         return database.$client.getAllAsync<BankSyncDuplicateCandidateRowInterface>(this.candidateSql);
     }

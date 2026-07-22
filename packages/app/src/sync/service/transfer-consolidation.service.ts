@@ -34,30 +34,17 @@ class TransferConsolidationService {
         });
     }
 
-    @Log.withoutErrorPayload(
-        'enter',
-        result => `done autoCandidateCount=${result.autoCandidateCount} manualReviewCandidateCount=${result.manualReviewCandidateCount}`,
-        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload(void 0, void 0, error => (isError(error) ? error.name : typeof error))
     async preview(): Promise<ConsolidationPreviewInterface> {
         return this.runExclusive(() => this.buildPreview());
     }
 
-    @Log.withoutErrorPayload(
-        scope => `enter scopeIdCount=${scope?.transactionIds.length ?? 0}`,
-        (result, scope) => `done scopeIdCount=${scope?.transactionIds.length ?? 0} found=${result.found} consolidated=${result.consolidated}`,
-        (error, scope) => `throw scopeIdCount=${scope?.transactionIds.length ?? 0} errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload()
     async consolidate(scope: ConsolidationScanScopeInterface | null = null): Promise<ConsolidationResultInterface> {
         return this.runExclusive(() => this.runConsolidationIfIdle(scope));
     }
 
-    @Log.withoutErrorPayload(
-        'enter',
-        result =>
-            `done autoCandidateCount=${result.autoCandidateCount} manualReviewCandidateCount=${result.manualReviewCandidateCount} remainingCandidateGroupCount=${result.remainingCandidateGroupCount} isRunning=${String(result.isRunning)}`,
-        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
-    )
+    @Log.withoutErrorPayload(void 0, void 0, error => (isError(error) ? error.name : typeof error))
     async getProgressSnapshot(): Promise<ConsolidationProgressSnapshotInterface> {
         return this.runExclusive(() => this.buildProgressSnapshot());
     }
