@@ -34,10 +34,10 @@ class TransferConsolidationService {
         });
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         'enter',
         result => `done autoCandidateCount=${result.autoCandidateCount} manualReviewCandidateCount=${result.manualReviewCandidateCount}`,
-        error => `throw error=${getErrorMessage(error)}`
+        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async preview(): Promise<ConsolidationPreviewInterface> {
         return this.runExclusive(() => this.buildPreview());
@@ -52,11 +52,11 @@ class TransferConsolidationService {
         return this.runExclusive(() => this.runConsolidationIfIdle(scope));
     }
 
-    @Log(
+    @Log.withoutErrorPayload(
         'enter',
         result =>
             `done autoCandidateCount=${result.autoCandidateCount} manualReviewCandidateCount=${result.manualReviewCandidateCount} remainingCandidateGroupCount=${result.remainingCandidateGroupCount} isRunning=${String(result.isRunning)}`,
-        error => `throw error=${getErrorMessage(error)}`
+        error => `throw errorClass=${isError(error) ? error.name : 'UnknownError'}`
     )
     async getProgressSnapshot(): Promise<ConsolidationProgressSnapshotInterface> {
         return this.runExclusive(() => this.buildProgressSnapshot());
