@@ -16,6 +16,10 @@ export class SyncError extends Error implements SyncErrorInterface {
         this.originalError = originalError;
     }
 
+    static from(error: SyncErrorInterface): SyncError {
+        return error instanceof SyncError ? error : new SyncError(error.code, error.message, error.provider, error.originalError);
+    }
+
     static unauthorized(provider: SyncProviderEnum, originalError?: unknown): SyncError {
         return new SyncError(SyncErrorCodeEnum.UNAUTHORIZED, 'Unauthorized access', provider, originalError);
     }

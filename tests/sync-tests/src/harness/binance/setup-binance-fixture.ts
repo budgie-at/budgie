@@ -1,7 +1,8 @@
-import { encodeBinanceAccountId, BinanceWalletEnum } from '@budgie/sync';
-import { AccountTypeEnum, SyncModeEnum, SyncStatusEnum, ExternalSourceEnum, InstrumentTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, InstrumentTypeEnum, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 
 import { seed } from '../seed/seed';
+
 import { binanceStub } from './binance-stub';
 
 const BINANCE_TOKEN = JSON.stringify({ apiKey: 'test-api-key', apiSecret: 'test-api-secret' });
@@ -12,6 +13,7 @@ interface SetupBinanceFixtureOptions {
     readonly mode?: SyncModeEnum;
     readonly backwardSyncFromAt?: Date;
     readonly forwardSyncFromAt?: Date;
+    readonly forwardSyncedAt?: Date;
     readonly instrumentType?: InstrumentTypeEnum;
 }
 
@@ -37,7 +39,8 @@ export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
         status: SyncStatusEnum.SYNCING,
         backwardSyncFromAt: options.backwardSyncFromAt ?? new Date(),
         backwardSyncedAt: null,
-        forwardSyncFromAt: options.forwardSyncFromAt ?? new Date()
+        forwardSyncFromAt: options.forwardSyncFromAt ?? new Date(),
+        forwardSyncedAt: options.forwardSyncedAt ?? null
     });
 
     binanceStub.serverTime();

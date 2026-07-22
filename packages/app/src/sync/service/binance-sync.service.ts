@@ -1,12 +1,4 @@
-import {
-    AccountTypeEnum,
-    BANK_FEE_CATEGORY_ID,
-    CategorySourceEnum,
-    ExternalSourceEnum,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log, getLogger } from '@budgie/logger';
 import {
     BINANCE_ASSET_ALIAS,
@@ -32,6 +24,7 @@ import { BINANCE_TRANSFER_LOOKBACK_YEARS } from '../constant/binance-transfer-lo
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { BinanceResolvableAccountInterface } from '../interface/binance-resolvable-account.interface';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
+import { BinanceTransferInputMapper } from '../mapper/binance-transfer-input.mapper';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
@@ -41,8 +34,7 @@ import type {
     AccountEntityInterface,
     InstrumentEntityInterface,
     SyncEntityInterface,
-    TransactionCreateInputInterface,
-    TransactionEntryCreateInputInterface
+    TransactionCreateInputInterface
 } from '@budgie/contracts';
 import type {
     BinanceTransferInterface,
@@ -58,8 +50,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     private static readonly TRANSFER_CHUNK_SIZE = 50;
     private static readonly SOURCE_INPUT_YIELD_INTERVAL = 50;
     private static readonly FORWARD_OVERLAP_DAYS = 1;
-    private static readonly FEE_ENTRY_EXTERNAL_ID_SUFFIX = ':fee';
-    private static readonly MILLISECONDS_PER_SECOND = 1000;
+    private static readonly FIAT_REFRESH_INTERVAL_MS = 23 * 60 * 60 * 1000;
 
     protected readonly provider = ExternalSourceEnum.BINANCE;
     // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
@@ -74,6 +65,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     private runSignedClient: BinanceSignedClient | null = null;
     private runClientToken: string | null = null;
     private runExchangeAccounts: SyncAccountInterface[] | null = null;
+    private fiatSyncedAtMs: number | null = null;
 
     @Log(
         token => `enter keyLen=${token.length}`,
@@ -176,6 +168,18 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         return this.sourcesSyncedThisRun && this.transfersSyncedThisRun;
     }
 
+    protected override isRetryableError(error: unknown): boolean {
+        if (!(error instanceof SyncError)) {
+            return true;
+        }
+
+        return (
+            error.code === SyncErrorCodeEnum.NETWORK_ERROR ||
+            error.code === SyncErrorCodeEnum.RATE_LIMITED ||
+            error.code === SyncErrorCodeEnum.UNKNOWN
+        );
+    }
+
     protected override generateAccountTitle(account: SyncAccountInterface): string {
         if (isNotEmptyString(account.title)) {
             return account.title;
@@ -195,6 +199,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             await microPause();
             changedCount += await this.processTransfers(sync, externalAccountId);
             await microPause();
+            changedCount += await this.processFiatSource(sync);
 
             return changedCount;
         } catch (error) {
@@ -214,8 +219,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
         const result = await this.getRunSignedClient(token).getAccounts();
         if (!result.success) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
-            throw new Error(`Failed to fetch accounts: ${result.error.code} ${result.error.message}`);
+            throw SyncError.from(result.error);
         }
         this.runExchangeAccounts = result.data;
 
@@ -260,10 +264,29 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         createdCount += await this.commitSourceType(sync.token, () => client.getC2cTransactions(fromUnixTime));
         createdCount += await this.commitSourceType(sync.token, () => client.getEarnTransactions(fromUnixTime));
         createdCount += await this.commitSourceType(sync.token, () => client.getCapitalTransactions(fromUnixTime));
-        createdCount += await this.commitSourceType(sync.token, () => client.getFiatTransactions(fromUnixTime));
+
+        return createdCount;
+    }
+
+    private async processFiatSource(sync: SyncEntityInterface): Promise<number> {
+        if (this.sourcesSyncedThisRun) {
+            return 0;
+        }
+
+        let createdCount = 0;
+        if (this.shouldRefreshFiatHistory()) {
+            const client = this.getRunSignedClient(sync.token);
+            const fromUnixTime = await this.resolveSourceWindowStart(sync);
+            createdCount += await this.commitSourceType(sync.token, () => client.getFiatTransactions(fromUnixTime));
+            this.fiatSyncedAtMs = Date.now();
+        }
         this.sourcesSyncedThisRun = true;
 
         return createdCount;
+    }
+
+    private shouldRefreshFiatHistory(): boolean {
+        return !isDefined(this.fiatSyncedAtMs) || Date.now() - this.fiatSyncedAtMs >= AppBinanceSyncService.FIAT_REFRESH_INTERVAL_MS;
     }
 
     private async commitSourceType(
@@ -305,13 +328,12 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             return result.data;
         }
 
-        // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
-        throw new Error(`Failed to fetch transfers ${getErrorMessage(result.error)}`);
+        throw SyncError.from(result.error);
     }
 
     private async createSyncedTransfers(transfers: BinanceTransferInterface[], token: string): Promise<number> {
         const resolveAccount = await this.buildRunAccountResolver(token);
-        const inputs = await this.collectTransferInputs(transfers, resolveAccount);
+        const inputs = await new BinanceTransferInputMapper(resolveAccount).map(transfers);
 
         let createdCount = 0;
         for (const chunk of this.chunkTransferInputs(inputs)) {
@@ -325,24 +347,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         return createdCount;
     }
 
-    private async collectTransferInputs(
-        transfers: BinanceTransferInterface[],
-        resolveAccount: (codecAccountId: string) => Promise<AccountEntityInterface | null>
-    ): Promise<TransactionCreateInputInterface[]> {
-        const inputs: TransactionCreateInputInterface[] = [];
-        for (const transfer of transfers) {
-            // eslint-disable-next-line no-await-in-loop -- Account resolution is sequential per transfer
-            const input = await this.mapTransferToCreateInput(transfer, resolveAccount);
-            if (isDefined(input)) {
-                inputs.push(input);
-            } else {
-                logger.log('createSyncedTransfers:skip-parked-leg', { externalId: transfer.externalId });
-            }
-        }
-
-        return inputs;
-    }
-
     private chunkTransferInputs(inputs: TransactionCreateInputInterface[]): TransactionCreateInputInterface[][] {
         const chunks: TransactionCreateInputInterface[][] = [];
         for (let index = 0; index < inputs.length; index += AppBinanceSyncService.TRANSFER_CHUNK_SIZE) {
@@ -350,70 +354,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         }
 
         return chunks;
-    }
-
-    private async mapTransferToCreateInput(
-        transfer: BinanceTransferInterface,
-        resolveAccount: (codecAccountId: string) => Promise<AccountEntityInterface | null>
-    ): Promise<TransactionCreateInputInterface | null> {
-        const fromAccount = await resolveAccount(transfer.fromAssetAccountId);
-        const toAccount = await resolveAccount(transfer.toAssetAccountId);
-        if (!isDefined(fromAccount) || !isDefined(toAccount)) {
-            return null;
-        }
-
-        const feeAccount = isDefined(transfer.feeAssetAccountId) ? await resolveAccount(transfer.feeAssetAccountId) : null;
-        const entries = [
-            this.buildTransferEntry(fromAccount.id, TransactionEntryTypeEnum.CREDIT, transfer.fromAmount, transfer.externalId),
-            this.buildTransferEntry(toAccount.id, TransactionEntryTypeEnum.DEBIT, transfer.toAmount, transfer.externalId)
-        ];
-        if (isPositiveNumber(transfer.feeAmount)) {
-            entries.push({
-                ...this.buildTransferEntry(
-                    feeAccount?.id ?? fromAccount.id,
-                    TransactionEntryTypeEnum.FEE,
-                    transfer.feeAmount,
-                    `${transfer.externalId}${AppBinanceSyncService.FEE_ENTRY_EXTERNAL_ID_SUFFIX}`
-                ),
-                categoryId: BANK_FEE_CATEGORY_ID,
-                categorySource: CategorySourceEnum.FEE
-            });
-        }
-
-        return {
-            amount: transfer.fromAmount,
-            title: transfer.description,
-            comment: '',
-            type: TransactionTypeEnum.TRANSFER,
-            exchangeRate: 1,
-            operatedAt: new Date(transfer.time * AppBinanceSyncService.MILLISECONDS_PER_SECOND),
-            externalId: transfer.externalId,
-            updatedBy: null,
-            externalSource: ExternalSourceEnum.BINANCE,
-            fromAccountId: fromAccount.id,
-            toAccountId: toAccount.id,
-            tagIds: [],
-            entries
-        };
-    }
-
-    private buildTransferEntry(
-        accountId: number,
-        type: TransactionEntryTypeEnum,
-        amount: number,
-        externalId: string
-    ): TransactionEntryCreateInputInterface {
-        return {
-            accountId,
-            type,
-            amount,
-            categoryId: null,
-            categorySource: CategorySourceEnum.USER,
-            mccCategoryId: null,
-            externalId,
-            exchangeRate: 1,
-            toIban: null
-        };
     }
 
     private async anchorAllBalances(token: string): Promise<number> {
@@ -473,8 +413,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             return result.data;
         }
 
-        // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
-        throw new Error(`Failed to fetch sources ${getErrorMessage(result.error)}`);
+        throw SyncError.from(result.error);
     }
 
     private async buildSourceCreateInput(

@@ -112,7 +112,8 @@ export const binanceStub = {
     fiatOrders: (
         fiatDeposits: BinanceFiatOrderApiInterface[],
         fiatWithdrawals: BinanceFiatOrderApiInterface[],
-        requestedWindows?: TimeWindow[]
+        requestedWindows?: TimeWindow[],
+        requestOrder?: string[]
     ): void => {
         mockServer.use(
             http.get(FIAT_ORDERS_URL, ({ request }) => {
@@ -121,6 +122,7 @@ export const binanceStub = {
                 const isFirstPage = url.searchParams.get('page') === FIRST_PAGE;
                 const window = parseTimeWindow(url, 'beginTime', 'endTime');
                 requestedWindows?.push(window);
+                requestOrder?.push('fiat');
                 const typeOrders = isDeposit ? fiatDeposits : fiatWithdrawals;
                 const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
                 const orders = isFirstPage ? windowOrders : [];
@@ -175,21 +177,28 @@ export const binanceStub = {
     exchangeInfoAllValid: (): void => {
         binanceStub.exchangeInfo(buildAllValidSymbols());
     },
-    myTrades: (tradesBySymbol: Record<string, BinanceTradeApiInterface[]>, requestedSymbols?: Set<string>): void => {
+    myTrades: (tradesBySymbol: Record<string, BinanceTradeApiInterface[]>, requestedSymbols?: Set<string>, requestedUrls?: URL[]): void => {
         mockServer.use(
             http.get(MY_TRADES_URL, ({ request }) => {
                 const url = new URL(request.url);
                 const symbol = url.searchParams.get('symbol') ?? '';
                 const fromId = Number(url.searchParams.get('fromId') ?? '0');
                 requestedSymbols?.add(symbol);
+                requestedUrls?.push(url);
                 const symbolTrades = tradesBySymbol[symbol] ?? [];
-                const trades = fromId === 0 ? symbolTrades : [];
+                const window = parseTimeWindow(url, 'startTime', 'endTime');
+                const trades = fromId === 0 ? symbolTrades.filter(trade => isWithinWindow(trade.time, window)) : [];
 
                 return HttpResponse.json(trades, { headers: WEIGHT_HEADERS });
             })
         );
     },
-    convertTradeFlow: (flows: BinanceConvertFlowApiInterface[], requestedWindows?: TimeWindow[], forceMoreData = false): void => {
+    convertTradeFlow: (
+        flows: BinanceConvertFlowApiInterface[],
+        requestedWindows?: TimeWindow[],
+        forceMoreData = false,
+        requestOrder?: string[]
+    ): void => {
         mockServer.use(
             http.get(CONVERT_TRADE_FLOW_URL, ({ request }) => {
                 const url = new URL(request.url);
@@ -200,6 +209,7 @@ export const binanceStub = {
                 const matched = flows.filter(flow => isWithinWindow(flow.createTime, window));
                 const hasMore = forceMoreData && matched.length > 1;
                 requestedWindows?.push(window);
+                requestOrder?.push('convert');
 
                 return HttpResponse.json(
                     { list: hasMore ? matched.slice(0, 1) : matched, startTime, endTime, limit, moreData: hasMore },

@@ -10,7 +10,7 @@ const BinanceC2cOrderApiSchema = z.object({
     unitPrice: z.string(),
     orderStatus: z.string(),
     createTime: z.number(),
-    commission: z.string()
+    takerCommission: z.string()
 });
 
 export const BinanceC2cOrderListApiSchema = z.object({
@@ -19,6 +19,16 @@ export const BinanceC2cOrderListApiSchema = z.object({
     data: z.array(BinanceC2cOrderApiSchema),
     total: z.number(),
     success: z.boolean()
+});
+
+export const BinanceC2cResponseStatusApiSchema = z.object({
+    code: z.union([z.string(), z.number()]),
+    message: z.string(),
+    success: z.boolean()
+});
+
+export const BinanceC2cResponseShapeApiSchema = z.object({
+    data: z.array(z.record(z.string(), z.unknown()))
 });
 
 export type BinanceC2cOrderApiInterface = z.infer<typeof BinanceC2cOrderApiSchema>;

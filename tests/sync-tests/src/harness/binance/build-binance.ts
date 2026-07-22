@@ -64,7 +64,7 @@ export const buildBinance = {
         unitPrice: '1',
         orderStatus: 'COMPLETED',
         createTime: Date.now(),
-        commission: '0',
+        takerCommission: '0',
         ...overrides
     }),
     trade: (overrides: TradeOverrides): BinanceTradeApiInterface => ({

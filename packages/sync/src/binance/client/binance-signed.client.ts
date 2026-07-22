@@ -3,6 +3,7 @@ import { Log } from '@budgie/logger';
 import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
+import { subMonths } from 'date-fns';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -20,7 +21,11 @@ import { BINANCE_MICRO_UNITS_PRECISION as MICRO_UNITS_PRECISION } from '../const
 import { BINANCE_RETRY_METHODS, BINANCE_RETRY_STATUS_CODES } from '../constant/binance-retry-status-codes.constant';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
 import { BinanceAssetBalanceListApiSchema } from '../interface/binance-asset-balance-api.schema';
-import { BinanceC2cOrderListApiSchema } from '../interface/binance-c2c-order-api.schema';
+import {
+    BinanceC2cOrderListApiSchema,
+    BinanceC2cResponseShapeApiSchema,
+    BinanceC2cResponseStatusApiSchema
+} from '../interface/binance-c2c-order-api.schema';
 import { BinanceConvertTradeFlowApiSchema } from '../interface/binance-convert-api.schema';
 import { BinanceDepositListApiSchema } from '../interface/binance-deposit-api.schema';
 import { BinanceEarnPositionListApiSchema } from '../interface/binance-earn-position-api.schema';
@@ -93,6 +98,8 @@ const TRADES_PER_SYMBOL_LIMIT = 1000;
 const EARN_LD_PREFIX = 'LD';
 
 export class BinanceSignedClient extends BaseSyncProviderClient {
+    private static readonly C2C_HISTORY_MONTHS = 6;
+
     protected readonly provider = SyncProviderEnum.BINANCE;
     protected readonly baseUrl = BINANCE_API_BASE_URL;
 
@@ -104,6 +111,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly c2cOrderCache = new Map<string, BinanceC2cOrderApiInterface[]>();
     private readonly earnRewardCache = new Map<string, BinanceEarnRewardApiInterface[]>();
     private readonly transferCache = new Map<string, BinanceTransferInterface[]>();
+    private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
     private serverTimeOffsetMs: number | undefined;
     private validSymbols: Set<string> | undefined;
 
@@ -869,7 +877,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         endTimeMs: number
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
         const transfers: BinanceTransferInterface[] = [];
-        let fromId = 0;
+        let fromId: number | null = null;
         let hasMore = true;
         while (hasMore) {
             // eslint-disable-next-line no-await-in-loop -- myTrades pages must be fetched sequentially via the fromId cursor against the shared api IP weight pool
@@ -880,7 +888,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
             transfers.push(...pageResult.data.transfers);
             hasMore = isDefined(pageResult.data.nextFromId);
-            fromId = pageResult.data.nextFromId ?? fromId;
+            fromId = pageResult.data.nextFromId;
         }
 
         return this.success(transfers);
@@ -888,13 +896,13 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     private async fetchSymbolTradePage(
         symbol: BinanceTradeSymbolInterface,
-        fromId: number,
+        fromId: number | null,
         startTimeMs: number,
         endTimeMs: number
     ): Promise<SyncResultInterface<{ transfers: BinanceTransferInterface[]; nextFromId: number | null }>> {
         const result = await this.signedRequest(MY_TRADES_ENDPOINT, 'GET', {
             symbol: symbol.symbol,
-            fromId,
+            ...(isDefined(fromId) ? { fromId } : { startTime: startTimeMs }),
             limit: TRADES_PER_SYMBOL_LIMIT
         });
         if (!result.success) {
@@ -930,13 +938,18 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private async fetchC2cOrders(startTimeMs: number, endTimeMs: number): Promise<SyncResultInterface<BinanceC2cOrderApiInterface[]>> {
-        const cacheKey = `${startTimeMs}-${endTimeMs}`;
+        const availableStartTimeMs = Math.max(startTimeMs, this.c2cHistoryFloorTimeMs);
+        if (availableStartTimeMs >= endTimeMs) {
+            return this.success([]);
+        }
+
+        const cacheKey = `${availableStartTimeMs}-${endTimeMs}`;
         const cached = this.c2cOrderCache.get(cacheKey);
         if (isDefined(cached)) {
             return this.success(cached);
         }
 
-        const result = await this.fetchC2cBuyAndSell(startTimeMs, endTimeMs);
+        const result = await this.fetchC2cBuyAndSell(availableStartTimeMs, endTimeMs);
         if (result.success) {
             this.c2cOrderCache.set(cacheKey, result.data);
         }
@@ -1010,8 +1023,34 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return this.handleC2cFailure(result.error, tradeType);
         }
 
-        const parsed = BinanceC2cOrderListApiSchema.safeParse(result.data);
+        return this.parseC2cOrderPage(result.data, tradeType);
+    }
+
+    private parseC2cOrderPage(
+        response: unknown,
+        tradeType: string
+    ): SyncResultInterface<{ orders: BinanceC2cOrderApiInterface[]; hasMore: boolean }> {
+        const parsed = BinanceC2cOrderListApiSchema.safeParse(response);
         if (!parsed.success) {
+            const responseStatus = BinanceC2cResponseStatusApiSchema.safeParse(response);
+            if (responseStatus.success && !responseStatus.data.success) {
+                syncLogger.error('binance:c2c:api-error', {
+                    tradeType,
+                    code: responseStatus.data.code,
+                    message: responseStatus.data.message
+                });
+            } else {
+                const responseShape = BinanceC2cResponseShapeApiSchema.safeParse(response);
+                syncLogger.error('binance:c2c:invalid-response', {
+                    tradeType,
+                    issues: parsed.error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join('; '),
+                    firstOrderKeys:
+                        responseShape.success && isNotEmptyArray(responseShape.data.data)
+                            ? Object.keys(responseShape.data.data[0]).join(',')
+                            : ''
+                });
+            }
+
             return this.failure(SyncError.invalidResponse(this.provider));
         }
 

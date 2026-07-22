@@ -1,6 +1,6 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
+import { AccountEntityTable, SyncModeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
-import { AccountEntityTable, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
@@ -16,6 +16,10 @@ import {
     setupUsdtSpotFixtureWithBalances,
     testDb
 } from '../../harness';
+
+const RECURRING_SYNC_AGE_MS = 5 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+const MILLISECONDS_PER_SECOND = 1000;
 
 const stubAdaUsdtTrade = (id: number, qty: string, quoteQty: string, isBuyer: boolean): void => {
     binanceStub.myTrades({
@@ -33,6 +37,50 @@ const setupUsdtAdaBnbFixture = (bnbFree: string): void => {
 };
 
 describe('binance/spot-trades', () => {
+    it('starts recurring myTrades requests at the sync window instead of restarting from trade ID zero', async () => {
+        const now = new Date();
+        const forwardSyncedAt = new Date(now.getTime() - RECURRING_SYNC_AGE_MS);
+        seedCryptoInstrument('ADA');
+        setupBinanceFixture({
+            asset: 'USDT',
+            mode: SyncModeEnum.FORWARD,
+            forwardSyncedAt
+        });
+        binanceStub.exchangeInfo(['ADAUSDT']);
+        binanceStub.spotBalances([
+            buildBinance.balance({ asset: 'ADA', free: '200' }),
+            buildBinance.balance({ asset: 'USDT', free: '100' })
+        ]);
+        const requestedUrls: URL[] = [];
+        binanceStub.myTrades(
+            {
+                ADAUSDT: [
+                    buildBinance.trade({
+                        symbol: 'ADAUSDT',
+                        id: 9,
+                        qty: '1',
+                        quoteQty: '1',
+                        isBuyer: true,
+                        time: now.getTime(),
+                        commission: '0'
+                    })
+                ]
+            },
+            new Set<string>(),
+            requestedUrls
+        );
+
+        await binanceSyncService.sync();
+
+        expect(requestedUrls.length).toBeGreaterThan(0);
+        expect(requestedUrls[0].searchParams.has('fromId')).toBe(false);
+        expect(Number(requestedUrls[0].searchParams.get('startTime'))).toBe(
+            Math.floor((forwardSyncedAt.getTime() - DAY_MS) / MILLISECONDS_PER_SECOND) * MILLISECONDS_PER_SECOND
+        );
+    });
+});
+
+describe('binance/spot-trades/mapping', () => {
     it('maps a buy fill to a TRANSFER with quote-out CREDIT and base-in DEBIT at exchangeRate 1', async () => {
         seedCryptoInstrument('ADA');
         setupUsdtSpotFixtureWithBalances('ADA', '200');
@@ -115,7 +163,9 @@ describe('binance/spot-trades', () => {
 
         expect(fetchBinanceTransactions()).toHaveLength(0);
     });
+});
 
+describe('binance/spot-trades/symbols', () => {
     it('returns trades for all accounts in a single run, not just the first account', async () => {
         seedCryptoInstrument('ADA');
         seedCryptoInstrument('BNB');
@@ -176,7 +226,9 @@ describe('binance/spot-trades', () => {
         expect(ldSymbolsQueried).toEqual([]);
         expect(requestedSymbols.has('ADAUSDT')).toBe(true);
     });
+});
 
+describe('binance/spot-trades/resync', () => {
     it('does not create duplicate transfers on a second sync run', async () => {
         seedCryptoInstrument('ADA');
         setupUsdtSpotFixtureWithBalances('ADA', '200');

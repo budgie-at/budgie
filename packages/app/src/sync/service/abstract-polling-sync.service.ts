@@ -28,6 +28,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     protected runDeferred = false;
 
     private isRunning = false;
+    private failedSyncId: number | null = null;
     private readonly processedForwardSyncIds = new Set<number>();
 
     protected abstract readonly rateLimitMs: number;
@@ -42,18 +43,13 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         if (this.isRunning) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
-        this.isRunning = true;
-        this.runDeadlineAtMs = deadlineAtMs;
-        this.runDeferred = false;
-        this.processedForwardSyncIds.clear();
+        this.startSyncRun(deadlineAtMs);
         try {
             await this.beforeSyncRun();
 
             return await this.executeSyncLoop();
         } finally {
-            this.processedForwardSyncIds.clear();
-            this.isRunning = false;
-            await this.afterSyncRun();
+            await this.finishSyncRun();
         }
     }
 
@@ -169,7 +165,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return BackgroundTask.BackgroundTaskResult.Failed;
         }
 
-        if (await this.retryAfterError(enabledSyncs, errorMessage)) {
+        if (this.isRetryableError(error) && (await this.retryAfterError(enabledSyncs, errorMessage))) {
             return this.executeSyncLoop();
         }
 
@@ -220,9 +216,29 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         }
     }
 
+    protected isRetryableError(_error: unknown): boolean {
+        return true;
+    }
+
+    private startSyncRun(deadlineAtMs: number): void {
+        this.isRunning = true;
+        this.runDeadlineAtMs = deadlineAtMs;
+        this.runDeferred = false;
+        this.failedSyncId = null;
+        this.processedForwardSyncIds.clear();
+    }
+
+    private async finishSyncRun(): Promise<void> {
+        this.failedSyncId = null;
+        this.processedForwardSyncIds.clear();
+        this.isRunning = false;
+        await this.afterSyncRun();
+    }
+
     private async retryAfterError(enabledSyncs: SyncEntityInterface[], errorMessage: string): Promise<boolean> {
-        const syncToRetry = enabledSyncs.find(sync => sync.errorCount < SYNC_ERROR_THRESHOLD);
-        if (!isDefined(syncToRetry)) {
+        const failedSync = enabledSyncs.find(sync => sync.id === this.failedSyncId);
+        const syncToRetry = failedSync ?? enabledSyncs[0];
+        if (!isDefined(syncToRetry) || syncToRetry.errorCount >= SYNC_ERROR_THRESHOLD) {
             return false;
         }
 
@@ -248,9 +264,11 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     private async processSyncBatch(pendingSync: SyncEntityInterface): Promise<void> {
+        this.failedSyncId = pendingSync.id;
         const result = await this.executeSyncBatch(pendingSync);
         await this.applyProgressUpdate(pendingSync, result);
         this.recordProcessedSyncBatch(pendingSync, result);
+        this.failedSyncId = null;
     }
 
     private async shouldYieldAfterBatch(): Promise<boolean> {

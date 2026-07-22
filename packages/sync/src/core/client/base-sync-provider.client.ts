@@ -1,6 +1,7 @@
 import ky, { HTTPError, TimeoutError } from 'ky';
+import { z } from 'zod';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { SyncErrorCodeEnum } from '../enum/sync-error-code.enum';
 import { SyncError } from '../error/sync.error';
@@ -37,6 +38,12 @@ const DEFAULT_RETRY_METHODS = ['get'];
 const DEFAULT_RETRY_LIMIT = 3;
 const DEFAULT_TIMEOUT_MS = 30000;
 
+const SyncProviderApiErrorSchema = z.object({
+    code: z.union([z.string(), z.number()]).optional(),
+    message: z.string().optional(),
+    msg: z.string().optional()
+});
+
 export abstract class BaseSyncProviderClient implements SyncProviderClientInterface {
     protected readonly retryLimit: number;
     protected readonly timeoutMs: number;
@@ -71,7 +78,8 @@ export abstract class BaseSyncProviderClient implements SyncProviderClientInterf
 
     protected async fetchJson<T>(endpoint: string, options?: RequestInit): Promise<SyncResultInterface<T>> {
         const url = `${this.baseUrl}${endpoint}`;
-        syncLogger.log('http:request', { provider: this.provider, endpoint });
+        const loggedEndpoint = endpoint.replace(/([?&]signature=)[^&]*/u, '$1[REDACTED]');
+        syncLogger.log('http:request', { provider: this.provider, endpoint: loggedEndpoint });
         try {
             const data = await ky(url, {
                 ...options,
@@ -92,14 +100,14 @@ export abstract class BaseSyncProviderClient implements SyncProviderClientInterf
             }).json<T>();
             syncLogger.log('http:response:ok', {
                 provider: this.provider,
-                endpoint,
+                endpoint: loggedEndpoint,
                 isArray: Array.isArray(data),
                 ...(Array.isArray(data) && { size: data.length })
             });
 
             return this.success(data);
         } catch (error) {
-            return this.handleError<T>(error);
+            return this.handleError<T>(error, loggedEndpoint);
         }
     }
 
@@ -108,10 +116,25 @@ export abstract class BaseSyncProviderClient implements SyncProviderClientInterf
     }
 
     // eslint-disable-next-line max-statements -- Instrumented with diagnostic logs (temporary)
-    private handleError<T>(error: unknown): SyncResultInterface<T> {
-        if (error instanceof HTTPError) {
-            const { status, statusText } = error.response;
-            syncLogger.error('http:response:httpError', { provider: this.provider, status, statusText });
+    private async handleError<T>(caughtError: unknown, endpoint: string): Promise<SyncResultInterface<T>> {
+        if (caughtError instanceof HTTPError) {
+            const { status, statusText } = caughtError.response;
+            const responseBody: unknown = caughtError.response.bodyUsed
+                ? null
+                : await caughtError.response
+                      .clone()
+                      .json()
+                      .catch(() => null);
+            const apiError = SyncProviderApiErrorSchema.safeParse(responseBody);
+            syncLogger.error('http:response:httpError', {
+                provider: this.provider,
+                endpoint,
+                status,
+                statusText,
+                ...(apiError.success && isDefined(apiError.data.code) && { apiCode: apiError.data.code }),
+                ...(apiError.success && isDefined(apiError.data.message) && { apiMessage: apiError.data.message }),
+                ...(apiError.success && isDefined(apiError.data.msg) && { apiMessage: apiError.data.msg })
+            });
 
             if (status === HTTP_STATUS_UNAUTHORIZED || status === HTTP_STATUS_FORBIDDEN) {
                 return this.failure(SyncError.unauthorized(this.provider));
@@ -128,15 +151,15 @@ export abstract class BaseSyncProviderClient implements SyncProviderClientInterf
             return this.failure(new SyncError(SyncErrorCodeEnum.UNKNOWN, `HTTP ${status}: ${statusText}`, this.provider));
         }
 
-        if (error instanceof TimeoutError) {
-            syncLogger.error('http:response:timeout', { provider: this.provider });
+        if (caughtError instanceof TimeoutError) {
+            syncLogger.error('http:response:timeout', { provider: this.provider, endpoint });
 
             return this.failure(new SyncError(SyncErrorCodeEnum.NETWORK_ERROR, 'Request timeout', this.provider));
         }
 
-        syncLogger.error('http:response:networkError', { provider: this.provider, error: getErrorMessage(error) });
+        syncLogger.error('http:response:networkError', { provider: this.provider, endpoint, error: getErrorMessage(caughtError) });
 
-        return this.failure(SyncError.networkError(this.provider, error));
+        return this.failure(SyncError.networkError(this.provider, caughtError));
     }
 
     abstract getClientInfo(): Promise<SyncResultInterface<SyncClientInfoInterface>>;
