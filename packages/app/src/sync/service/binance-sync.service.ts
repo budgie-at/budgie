@@ -2,7 +2,6 @@ import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie
 import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log, getLogger } from '@budgie/logger';
 import {
-    BINANCE_ASSET_ALIAS,
     BINANCE_RATE_LIMIT_MS,
     BinanceCredentialsSchema,
     BinanceSignedClient,
@@ -31,6 +30,7 @@ import { BinanceTransferInputMapper } from '../mapper/binance-transfer-input.map
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
+import { binanceAssetCodeService } from './binance-asset-code.service';
 import { binanceSourceQuoteService } from './binance-source-quote.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
@@ -56,6 +56,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     private static readonly FORWARD_OVERLAP_DAYS = 1;
     private static readonly FIAT_REFRESH_INTERVAL_MS = 23 * 60 * 60 * 1000;
     protected readonly provider = ExternalSourceEnum.BINANCE;
+    protected override readonly updatesTokenByProviderCredentialGroup = true;
     // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
     protected readonly providerTitle = 'Binance';
     protected readonly accountType = AccountTypeEnum.CRYPTO_SYNC;
@@ -384,14 +385,15 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private async fetchTransferBatch(sync: SyncEntityInterface, externalAccountId: string): Promise<BinanceTransferInterface[]> {
-        const client = this.getRunSignedClient(sync.token);
-        const from = await this.resolveTransferWindowStart(sync);
-        const result = await client.getTransfers(externalAccountId, getUnixTime(from));
-
+        const result = await this.getRunSignedClient(sync.token).getTransfers(
+            externalAccountId,
+            getUnixTime(await this.resolveTransferWindowStart(sync)),
+            null,
+            await binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(this.provider)
+        );
         if (result.success) {
             return result.data;
         }
-
         throw SyncError.from(result.error);
     }
 
@@ -570,13 +572,9 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         exchangeAccount: SyncAccountInterface,
         instruments: InstrumentEntityInterface[]
     ): InstrumentEntityInterface | null {
-        const instrumentCode = this.resolveInstrumentCode(exchangeAccount.currencyCode);
+        const instrumentCode = binanceAssetCodeService.resolveInstrumentCode(exchangeAccount.currencyCode);
 
         return instruments.find(instrument => instrument.code === instrumentCode) ?? null;
-    }
-
-    private resolveInstrumentCode(asset: string): string {
-        return BINANCE_ASSET_ALIAS[asset] ?? asset;
     }
 
     private resolveAccountInstrumentId(

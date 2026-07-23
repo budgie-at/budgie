@@ -37,8 +37,12 @@ export class TransferPairRepository {
         return this.db.$client.getAllAsync<P2pFiatAuthoritativeCandidateInterface>(buildP2pFiatAuthoritativeCandidateSql(scope));
     }
 
-    async findP2pFiatAuthoritativeRepairCandidates(): Promise<P2pFiatAuthoritativeRepairCandidateInterface[]> {
-        return this.db.$client.getAllAsync<P2pFiatAuthoritativeRepairCandidateInterface>(buildP2pFiatAuthoritativeRepairCandidateSql());
+    async findP2pFiatAuthoritativeRepairCandidates(
+        scope: ConsolidationScanScopeInterface | null = null
+    ): Promise<P2pFiatAuthoritativeRepairCandidateInterface[]> {
+        return this.db.$client.getAllAsync<P2pFiatAuthoritativeRepairCandidateInterface>(
+            buildP2pFiatAuthoritativeRepairCandidateSql(scope)
+        );
     }
 
     async findManualReviewCandidates(): Promise<TransferPairReviewCandidateInterface[]> {

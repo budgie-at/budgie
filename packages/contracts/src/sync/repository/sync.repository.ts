@@ -35,6 +35,27 @@ export class SyncRepository {
     }
 
     @Log(
+        (provider, token, input, ...[tx]) =>
+            `enter provider=${provider} tokenLen=${token.length} mode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))}`,
+        (result, provider, token, input, ...[tx]) =>
+            `done provider=${provider} tokenLen=${token.length} mode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} updatedCount=${result.length}`,
+        (error, provider, token, input, ...[tx]) =>
+            `throw provider=${provider} tokenLen=${token.length} mode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async updateByProviderAndToken(
+        provider: ExternalSourceEnum,
+        token: string,
+        input: SyncUpdateEntityInterface,
+        tx?: DB
+    ): Promise<SyncEntityInterface[]> {
+        return await (tx ?? this.db)
+            .update(SyncEntityTable)
+            .set({ ...input })
+            .where(and(eq(SyncEntityTable.provider, provider), eq(SyncEntityTable.token, token), isNull(SyncEntityTable.deletedAt)))
+            .returning();
+    }
+
+    @Log(
         (provider, staleThresholdMs) => `enter provider=${provider} staleThresholdMs=${staleThresholdMs}`,
         (result, provider, staleThresholdMs) =>
             `done provider=${provider} staleThresholdMs=${staleThresholdMs} ids=${result.map(row => row.id).join(',')}`,

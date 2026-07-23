@@ -36,7 +36,7 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
     }
 
     override async process(context: ConsolidationFamilyRunContextInterface): Promise<ConsolidationFamilyRunResultInterface> {
-        const repairCandidates = await this.transferPairRepository.findP2pFiatAuthoritativeRepairCandidates();
+        const repairCandidates = await this.transferPairRepository.findP2pFiatAuthoritativeRepairCandidates(context.scope);
 
         await Promise.all(
             repairCandidates.map(candidate =>

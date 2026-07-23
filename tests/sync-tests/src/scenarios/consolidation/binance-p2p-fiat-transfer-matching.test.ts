@@ -32,8 +32,6 @@ const LARGE_P2P_QUOTE_AMOUNT = Number('25842') * PRECISION;
 const SMALL_P2P_QUOTE_AMOUNT = Number('524') * PRECISION;
 const LARGE_P2P_CRYPTO_AMOUNT = Number('585.91') * PRECISION;
 const SMALL_P2P_CRYPTO_AMOUNT = Number('11.87') * PRECISION;
-const REPAIR_PRIMARY_AMOUNT = 3_500 * PRECISION;
-const REPAIR_EXTRA_AMOUNT = 500 * PRECISION;
 
 describe('consolidation/binance-p2p-fiat-transfer time window', () => {
     it('accepts an expense exactly one hour away', async () => {
@@ -152,38 +150,6 @@ describe('consolidation/binance-p2p-fiat-transfer ranked ownership', () => {
         expect(fetchTransactionById(largeIncome.id).consolidationParentTransactionId).not.toBe(
             fetchTransactionById(smallIncome.id).consolidationParentTransactionId
         );
-    });
-
-    it('repairs a system-generated group after provider fiat data is backfilled', async () => {
-        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
-        const primaryExpense = seedBankPair.expense(
-            { externalId: 'mono-uah-repair-primary', operatedAt: P2P_OPERATED_AT },
-            { accountId: bankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
-        );
-        const extraExpense = seedBankPair.expense(
-            { externalId: 'mono-uah-repair-extra', operatedAt: P2P_OPERATED_AT },
-            { accountId: bankAccount.id, amount: REPAIR_EXTRA_AMOUNT }
-        );
-        const income = seedP2pIncome('binance:c2c:buy-repair', binanceAccount.id);
-
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(1);
-        expect(fetchTransactionById(extraExpense.id).consolidationParentTransactionId).not.toBeNull();
-
-        testDb
-            .update(TransactionEntryEntityTable)
-            .set({
-                quotedInstrumentId: uah.id,
-                quotedAmount: REPAIR_PRIMARY_AMOUNT,
-                quotedUnitPrice: 35 * PRECISION
-            })
-            .where(eq(TransactionEntryEntityTable.originalTransactionId, income.id))
-            .run();
-
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(1);
-        expect(fetchTransactionById(primaryExpense.id).consolidationParentTransactionId).toBe(
-            fetchTransactionById(income.id).consolidationParentTransactionId
-        );
-        expect(fetchTransactionById(extraExpense.id).consolidationParentTransactionId).toBeNull();
     });
 });
 

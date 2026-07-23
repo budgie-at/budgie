@@ -24,6 +24,8 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
     override readonly supportsTokenAuth: boolean = true;
 
+    protected readonly updatesTokenByProviderCredentialGroup: boolean = false;
+
     protected runDeadlineAtMs = Number.POSITIVE_INFINITY;
     protected runDeferred = false;
 
@@ -75,6 +77,11 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         if (!isDefined(sync)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
             throw new Error('Bank sync not found');
+        }
+        if (this.updatesTokenByProviderCredentialGroup) {
+            await syncRepository.updateByProviderAndToken(this.provider, sync.token, { token, errorCount: 0, lastError: null });
+
+            return;
         }
         await syncRepository.update(sync.id, { token, errorCount: 0, lastError: null });
     }

@@ -66,6 +66,45 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Binance_BTC.2_BTC'
 
+# --- Binance account settings credentials editor ---
+
+- runFlow:
+      file: subflows/accounts/open-account-settings.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Binance BTC'
+
+- scrollUntilVisible:
+      element:
+          id: 'SyncTokenSection.ChangeButton'
+      direction: DOWN
+      timeout: 3000
+- assertNotVisible:
+      id: 'SyncTokenSection.TokenLabel'
+- tapOn:
+      id: 'SyncTokenSection.ChangeButton'
+- extendedWaitUntil:
+      visible:
+          id: 'SyncTokenSection.BinanceApiKeyInput'
+      timeout: 3000
+- assertVisible:
+      id: 'SyncTokenSection.BinanceApiSecretInput'
+- assertNotVisible:
+      id: 'SyncTokenSection.MonobankPasteButton'
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.Page'
+      timeout: 3000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 3000
+
 # --- Market page ---
 
 - tapOn:

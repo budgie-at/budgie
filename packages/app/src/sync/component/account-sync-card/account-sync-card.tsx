@@ -1,4 +1,4 @@
-import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
@@ -11,6 +11,7 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useAccountSync } from '../../hook/use-account-sync.hook';
 import { syncProviderRegistryService } from '../../service/sync-provider-registry.service';
 import { buildSyncStatusLabel } from '../../utils/build-sync-status-label.util';
+import { BinanceSyncTokenSection } from '../binance-sync-token-section/binance-sync-token-section';
 import { ResyncAccount } from '../resync-account/resync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
 import { SyncTokenSection } from '../sync-token-section/sync-token-section';
@@ -50,6 +51,12 @@ export const AccountSyncCard = ({ accountId }: Props) => {
 
     const providerService = syncProviderRegistryService.getServiceForProvider(sync.provider);
     const supportsTokenAuth = providerService?.supportsTokenAuth === true;
+    const tokenSection =
+        sync.provider === ExternalSourceEnum.BINANCE ? (
+            <BinanceSyncTokenSection accountId={accountId} token={sync.token} />
+        ) : (
+            <SyncTokenSection accountId={accountId} token={sync.token} />
+        );
 
     return (
         <Card className="p-4xl gap-y-lg">
@@ -93,7 +100,7 @@ export const AccountSyncCard = ({ accountId }: Props) => {
                     </>
                 )}
 
-                {supportsTokenAuth && <SyncTokenSection accountId={accountId} token={sync.token} />}
+                {supportsTokenAuth ? tokenSection : null}
             </View>
         </Card>
     );

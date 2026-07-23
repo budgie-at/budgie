@@ -166,6 +166,31 @@ describe('binance/spot-trades/mapping', () => {
 });
 
 describe('binance/spot-trades/symbols', () => {
+    it('discovers only locally resolvable sold-off base asset trades through selected quote balances and exchangeInfo', async () => {
+        seedCryptoInstrument('ADA');
+        setupBinanceFixture({ asset: 'USDT' });
+        binanceStub.exchangeInfo(['ADAUSDT', 'DOGEUSDT', 'PEPEUSDT', 'XRPUSDT']);
+        binanceStub.spotBalances([buildBinance.balance({ asset: 'USDT', free: '100' })]);
+        const requestedSymbols = new Set<string>();
+        binanceStub.myTrades(
+            {
+                ADAUSDT: [
+                    buildBinance.trade({ symbol: 'ADAUSDT', id: 18, qty: '200', quoteQty: '100', commission: '0', isBuyer: true }),
+                    buildBinance.trade({ symbol: 'ADAUSDT', id: 19, qty: '200', quoteQty: '120', commission: '0', isBuyer: false })
+                ]
+            },
+            requestedSymbols
+        );
+
+        await binanceSyncService.sync();
+
+        const externalIds = fetchBinanceTransactions()
+            .map(transaction => transaction.externalId)
+            .sort();
+        expect([...requestedSymbols]).toEqual(['ADAUSDT']);
+        expect(externalIds).toEqual(['binance:trade:ADAUSDT:18', 'binance:trade:ADAUSDT:19']);
+    });
+
     it('returns trades for all accounts in a single run, not just the first account', async () => {
         seedCryptoInstrument('ADA');
         seedCryptoInstrument('BNB');

@@ -5,7 +5,7 @@ import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
 import { subMonths } from 'date-fns';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BaseSyncProviderClient } from '../../core/client/base-sync-provider.client';
 import { SyncErrorCodeEnum } from '../../core/enum/sync-error-code.enum';
@@ -217,9 +217,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         result => `done transferCount=${result.success ? result.data.length : 0}`,
         error => `throw error=${getErrorMessage(error)}`
     )
-    async getTransfers(accountId: string, from: number, to?: number): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
+    async getTransfers(
+        accountId: string,
+        from: number,
+        to: number | null = null,
+        eligibleSoldOffBaseAssets: readonly string[] = []
+    ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
         return this.withDecodedAccount(accountId, from, to, (_decoded, startTimeMs, endTimeMs) =>
-            this.fetchAllTransfers(startTimeMs, endTimeMs)
+            this.fetchAllTransfers(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets)
         );
     }
 
@@ -276,7 +281,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         });
     }
 
-    private resolveSourceWindow(from: number, to?: number): { startTimeMs: number; endTimeMs: number } {
+    private resolveSourceWindow(from: number, to?: number | null): { startTimeMs: number; endTimeMs: number } {
         const startTimeMs = from * MILLISECONDS_PER_SECOND;
         const endTimeMs = isDefined(to) ? to * MILLISECONDS_PER_SECOND : Date.now();
 
@@ -301,7 +306,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private async withDecodedAccount<T>(
         accountId: string,
         from: number,
-        to: number | undefined,
+        to: number | null | undefined,
         execute: (
             decoded: NonNullable<ReturnType<typeof decodeBinanceAccountId>>,
             startTimeMs: number,
@@ -615,14 +620,18 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return new Set(assets);
     }
 
-    private async fetchAllTransfers(startTimeMs: number, endTimeMs: number): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const cacheKey = `${startTimeMs}-${endTimeMs}`;
+    private async fetchAllTransfers(
+        startTimeMs: number,
+        endTimeMs: number,
+        eligibleSoldOffBaseAssets: readonly string[]
+    ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
+        const cacheKey = `${startTimeMs}-${endTimeMs}:${[...eligibleSoldOffBaseAssets].sort().join(',')}`;
         const cached = this.transferCache.get(cacheKey);
         if (isDefined(cached)) {
             return this.success(cached);
         }
 
-        const result = await this.fetchTradesAndConverts(startTimeMs, endTimeMs);
+        const result = await this.fetchTradesAndConverts(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets);
         if (result.success) {
             this.transferCache.set(cacheKey, result.data);
         }
@@ -630,13 +639,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return result;
     }
 
-    private async fetchTradesAndConverts(startTimeMs: number, endTimeMs: number): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
+    private async fetchTradesAndConverts(
+        startTimeMs: number,
+        endTimeMs: number,
+        eligibleSoldOffBaseAssets: readonly string[]
+    ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
         const convertResult = await this.fetchConvertTransfers(startTimeMs, endTimeMs);
         if (!convertResult.success) {
             return convertResult;
         }
 
-        const tradeResult = await this.fetchTradeTransfers(startTimeMs, endTimeMs, convertResult.data);
+        const tradeResult = await this.fetchTradeTransfers(startTimeMs, endTimeMs, convertResult.data, eligibleSoldOffBaseAssets);
         if (!tradeResult.success) {
             return tradeResult;
         }
@@ -721,9 +734,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private async fetchTradeTransfers(
         startTimeMs: number,
         endTimeMs: number,
-        convertTransfers: BinanceTransferInterface[]
+        convertTransfers: BinanceTransferInterface[],
+        eligibleSoldOffBaseAssets: readonly string[]
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const symbolsResult = await this.deriveTradeSymbols(startTimeMs, endTimeMs, convertTransfers);
+        const symbolsResult = await this.deriveTradeSymbols(startTimeMs, endTimeMs, convertTransfers, eligibleSoldOffBaseAssets);
         if (!symbolsResult.success) {
             return symbolsResult;
         }
@@ -752,7 +766,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private async deriveTradeSymbols(
         startTimeMs: number,
         endTimeMs: number,
-        convertTransfers: BinanceTransferInterface[]
+        convertTransfers: BinanceTransferInterface[],
+        eligibleSoldOffBaseAssets: readonly string[]
     ): Promise<SyncResultInterface<BinanceTradeSymbolInterface[]>> {
         const balanceResult = await this.signedRequest(SPOT_BALANCE_ENDPOINT, 'POST');
         if (!balanceResult.success) {
@@ -766,8 +781,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
         const baseAssets = this.collectBaseAssets(parsed.data, convertTransfers);
         await this.addHistoryAssets(baseAssets, startTimeMs, endTimeMs);
-        const candidates = this.buildSymbolPairs(baseAssets);
         const validSymbols = await this.resolveValidSymbols();
+        const candidates = this.buildTradeSymbolCandidates(baseAssets, validSymbols, new Set(eligibleSoldOffBaseAssets));
 
         return this.success(this.filterCandidatesByExchangeInfo(candidates, validSymbols));
     }
@@ -857,17 +872,62 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
     }
 
-    private buildSymbolPairs(baseAssets: Set<string>): BinanceTradeSymbolInterface[] {
-        const symbols: BinanceTradeSymbolInterface[] = [];
+    private buildTradeSymbolCandidates(
+        baseAssets: Set<string>,
+        validSymbols: Set<string> | null,
+        eligibleSoldOffBaseAssets: Set<string>
+    ): BinanceTradeSymbolInterface[] {
+        const symbolsById = new Map<string, BinanceTradeSymbolInterface>();
+        this.addBaseAssetSymbolPairs(symbolsById, baseAssets);
+        if (isDefined(validSymbols)) {
+            this.addSelectedQuoteSymbolPairs(symbolsById, baseAssets, validSymbols, eligibleSoldOffBaseAssets);
+        }
+
+        return [...symbolsById.values()];
+    }
+
+    private addBaseAssetSymbolPairs(symbolsById: Map<string, BinanceTradeSymbolInterface>, baseAssets: Set<string>): void {
         for (const baseAsset of baseAssets) {
             for (const quoteAsset of BINANCE_MAJOR_QUOTE_ASSETS) {
                 if (baseAsset !== quoteAsset) {
-                    symbols.push({ symbol: `${baseAsset}${quoteAsset}`, baseAsset, quoteAsset });
+                    const symbol = `${baseAsset}${quoteAsset}`;
+                    symbolsById.set(symbol, { symbol, baseAsset, quoteAsset });
                 }
             }
         }
+    }
 
-        return symbols;
+    private addSelectedQuoteSymbolPairs(
+        symbolsById: Map<string, BinanceTradeSymbolInterface>,
+        baseAssets: Set<string>,
+        validSymbols: Set<string>,
+        eligibleSoldOffBaseAssets: Set<string>
+    ): void {
+        for (const symbol of validSymbols) {
+            const tradeSymbol = this.parseSelectedQuoteTradeSymbol(symbol, baseAssets, eligibleSoldOffBaseAssets);
+            if (isDefined(tradeSymbol)) {
+                symbolsById.set(tradeSymbol.symbol, tradeSymbol);
+            }
+        }
+    }
+
+    private parseSelectedQuoteTradeSymbol(
+        symbol: string,
+        baseAssets: Set<string>,
+        eligibleSoldOffBaseAssets: Set<string>
+    ): BinanceTradeSymbolInterface | null {
+        for (const quoteAsset of BINANCE_MAJOR_QUOTE_ASSETS) {
+            const isSelectedQuotePair = baseAssets.has(quoteAsset) && symbol.endsWith(quoteAsset) && symbol !== quoteAsset;
+            if (isSelectedQuotePair) {
+                const baseAsset = symbol.slice(0, -quoteAsset.length);
+                const isSpotTradeable =
+                    isNotEmptyString(baseAsset) && !baseAsset.startsWith(EARN_LD_PREFIX) && eligibleSoldOffBaseAssets.has(baseAsset);
+
+                return isSpotTradeable ? { symbol, baseAsset, quoteAsset } : null;
+            }
+        }
+
+        return null;
     }
 
     private async fetchSymbolTrades(

@@ -608,7 +608,7 @@ msgstr "Budgie позначить як видалені такі записи: {
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
-#: src/sync/component/sync-token-section/sync-token-section.tsx
+#: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
@@ -657,6 +657,7 @@ msgstr "Ліміти за категоріями"
 msgid "Category Name"
 msgstr "Назва категорії"
 
+#: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Change"
 msgstr "Змінити"
@@ -1007,7 +1008,7 @@ msgstr "Не вдалося оновити правило"
 msgid "Could not update settings"
 msgstr "Не вдалося оновити налаштування"
 
-#: src/sync/component/sync-token-section/sync-token-section.tsx
+#: src/sync/hook/use-sync-token-update.hook.ts
 msgid "Could not update token"
 msgstr "Не вдалося оновити токен"
 
@@ -1104,6 +1105,7 @@ msgstr "Створіть свій бюджет"
 msgid "Create your first account to start tracking your finances"
 msgstr "Створіть свій перший рахунок, щоб почати відстежувати свої фінанси"
 
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Credentials required"
 msgstr "Потрібні облікові дані"
@@ -1424,11 +1426,11 @@ msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код"
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код для розблокування"
 
-#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
 msgid "Enter your Binance API key"
 msgstr "Введіть свій API-ключ Binance"
 
-#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
 msgid "Enter your Binance API secret"
 msgstr "Введіть свій API-секрет Binance"
 
@@ -2363,11 +2365,13 @@ msgstr "Вставте токен у поле нижче"
 msgid "Paste your API token below:"
 msgstr "Вставте ваш API-токен нижче:"
 
-#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
+#: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 msgid "Paste your Binance API key:"
 msgstr "Вставте свій API-ключ Binance:"
 
-#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
+#: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 msgid "Paste your Binance API secret:"
 msgstr "Вставте свій API-секрет Binance:"
 
@@ -2395,6 +2399,7 @@ msgstr "PIN-код має бути {PIN_LENGTH} цифр"
 msgid "PINs do not match"
 msgstr "PIN-коди не збігаються"
 
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Please enter your Binance API key and secret"
 msgstr "Будь ласка, введіть свій API-ключ і секрет Binance"
@@ -2668,7 +2673,7 @@ msgid "Rules"
 msgstr "Правила"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
-#: src/sync/component/sync-token-section/sync-token-section.tsx
+#: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
 msgstr "Зберегти"
 

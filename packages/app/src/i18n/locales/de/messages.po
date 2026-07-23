@@ -608,7 +608,7 @@ msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
-#: src/sync/component/sync-token-section/sync-token-section.tsx
+#: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
@@ -657,6 +657,7 @@ msgstr "Kategoriegrenzen"
 msgid "Category Name"
 msgstr "Kategoriename"
 
+#: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Change"
 msgstr "Ändern"
@@ -1007,7 +1008,7 @@ msgstr "Regel konnte nicht aktualisiert werden"
 msgid "Could not update settings"
 msgstr "Einstellungen konnten nicht aktualisiert werden"
 
-#: src/sync/component/sync-token-section/sync-token-section.tsx
+#: src/sync/hook/use-sync-token-update.hook.ts
 msgid "Could not update token"
 msgstr "Token konnte nicht aktualisiert werden"
 
@@ -1104,6 +1105,7 @@ msgstr "Erstelle dein Budget"
 msgid "Create your first account to start tracking your finances"
 msgstr "Erstellen Sie Ihr erstes Konto, um Ihre Finanzen zu verfolgen"
 
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Credentials required"
 msgstr "Zugangsdaten erforderlich"
@@ -1424,11 +1426,11 @@ msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN ein"
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN zum Entsperren ein"
 
-#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
 msgid "Enter your Binance API key"
 msgstr "Geben Sie Ihren Binance-API-Schlüssel ein"
 
-#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
 msgid "Enter your Binance API secret"
 msgstr "Geben Sie Ihr Binance-API-Secret ein"
 
@@ -2363,11 +2365,13 @@ msgstr "Fügen Sie den Token in das Feld unten ein"
 msgid "Paste your API token below:"
 msgstr "Fügen Sie Ihren API-Token unten ein:"
 
-#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
+#: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 msgid "Paste your Binance API key:"
 msgstr "Fügen Sie Ihren Binance-API-Schlüssel ein:"
 
-#: src/sync/component/key-secret-input-step/key-secret-input-step.tsx
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
+#: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 msgid "Paste your Binance API secret:"
 msgstr "Fügen Sie Ihr Binance-API-Secret ein:"
 
@@ -2395,6 +2399,7 @@ msgstr "PIN muss {PIN_LENGTH} Ziffern haben"
 msgid "PINs do not match"
 msgstr "PINs stimmen nicht überein"
 
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Please enter your Binance API key and secret"
 msgstr "Bitte geben Sie Ihren Binance-API-Schlüssel und Ihr Secret ein"
@@ -2668,7 +2673,7 @@ msgid "Rules"
 msgstr "Regeln"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
-#: src/sync/component/sync-token-section/sync-token-section.tsx
+#: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
 msgstr "Speichern"
 

@@ -1,14 +1,16 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
-import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Input } from '../../../@generic/component/input/input';
-import { syncProviderRegistryService } from '../../service/sync-provider-registry.service';
+import { useSyncTokenUpdate } from '../../hook/use-sync-token-update.hook';
 import { PasteTokenButton } from '../paste-token-button/paste-token-button';
+import { SyncTokenSectionActions } from '../sync-token-section-actions/sync-token-section-actions';
+
+import { SyncTokenSectionSelector } from './sync-token-section.selector';
 
 interface Props {
     readonly accountId: number;
@@ -29,7 +31,7 @@ export const SyncTokenSection = ({ accountId, token }: Props) => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [newToken, setNewToken] = useState('');
-    const [isSaving, setIsSaving] = useState(false);
+    const { isSaving, saveAccountSyncToken } = useSyncTokenUpdate();
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -46,22 +48,17 @@ export const SyncTokenSection = ({ accountId, token }: Props) => {
             return;
         }
 
-        setIsSaving(true);
-        try {
-            const service = await syncProviderRegistryService.getServiceForAccount(accountId);
-            await service?.updateAccountToken?.(accountId, newToken.trim());
+        await saveAccountSyncToken(accountId, newToken.trim(), () => {
             setIsEditing(false);
             setNewToken('');
-        } catch (error) {
-            Toast.show({ type: 'error', text1: t`Could not update token`, text2: getErrorMessage(error) });
-        } finally {
-            setIsSaving(false);
-        }
+        });
     };
 
     return (
         <View className="gap-y-sm pt-md border-t border-secondary-corner mt-md">
-            <Text className="text-xs text-secondary-foreground">{t`API Token`}</Text>
+            <Text className="text-xs text-secondary-foreground" testID={SyncTokenSectionSelector.TokenLabel}>
+                {t`API Token`}
+            </Text>
 
             {isEditing ? (
                 <View className="gap-y-sm">
@@ -75,17 +72,20 @@ export const SyncTokenSection = ({ accountId, token }: Props) => {
                             autoCorrect={false}
                             secureTextEntry
                         />
-                        <PasteTokenButton onPaste={setNewToken} />
+                        <PasteTokenButton onPaste={setNewToken} testID={SyncTokenSectionSelector.MonobankPasteButton} />
                     </View>
-                    <View className="flex-row gap-x-sm">
-                        <Button variant="secondary" size="sm" onPress={handleCancel} className="flex-1" content={t`Cancel`} />
-                        <Button variant="default" size="sm" onPress={handleSave} disabled={isSaving} className="flex-1" content={t`Save`} />
-                    </View>
+                    <SyncTokenSectionActions onCancel={handleCancel} onSave={handleSave} isSaving={isSaving} />
                 </View>
             ) : (
                 <View className="flex-row items-center justify-between">
                     <Text className="text-primary text-sm font-mono">{maskToken(token)}</Text>
-                    <Button variant="default" size="sm" onPress={handleEdit} content={t`Change`} />
+                    <Button
+                        variant="default"
+                        size="sm"
+                        onPress={handleEdit}
+                        content={t`Change`}
+                        testID={SyncTokenSectionSelector.ChangeButton}
+                    />
                 </View>
             )}
         </View>
