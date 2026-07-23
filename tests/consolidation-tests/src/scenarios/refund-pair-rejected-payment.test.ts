@@ -19,6 +19,26 @@ const UNRELATED_INCOME_OPERATED_AT = new Date(REJECTED_PAYMENT_YEAR, 5, 23, 13, 
 const UNRELATED_INCOME_AMOUNT_UAH = 41_000;
 const UNRELATED_INCOME_AMOUNT = UNRELATED_INCOME_AMOUNT_UAH * PRECISION;
 
+const seedRetryExpense = (accountId: number, externalIdPrefix: string) =>
+    testSeedService.refundedExpense({
+        accountId,
+        title: 'FOP TESTOVYI PRODUCTS',
+        expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
+        refundAmounts: [],
+        expenseOperatedAt: REJECTED_PAYMENT_RETRY_OPERATED_AT,
+        externalIdPrefix
+    }).expense;
+
+const runConsolidationAndAssertSingleRefund = async (expenseId: number, refundId: number) => {
+    const result = await runConsolidation();
+
+    expect(result.consolidated).toBe(1);
+    expect(testQueryService.fetchTransactionById(expenseId).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+    expect(testQueryService.fetchTransactionById(refundId).consolidationParentTransactionId).toBe(expenseId);
+
+    return result;
+};
+
 describe('consolidation/refund-pair-rejected-payment', () => {
     it('auto-consolidates a PrivatBank rejected-payment principal refund matched by title prefix', async () => {
         const { consolidated, expense, refunds } = await runRefundScenario({
@@ -46,20 +66,10 @@ describe('consolidation/refund-pair-rejected-payment', () => {
             refundDelaySeconds: 4_380,
             externalIdPrefix: 'rejected-payment-original'
         });
-        const retryExpense = testSeedService.refundedExpense({
-            accountId: account.id,
-            title: 'FOP TESTOVYI PRODUCTS',
-            expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
-            refundAmounts: [],
-            expenseOperatedAt: REJECTED_PAYMENT_RETRY_OPERATED_AT,
-            externalIdPrefix: 'rejected-payment-retry'
-        }).expense;
+        const retryExpense = seedRetryExpense(account.id, 'rejected-payment-retry');
 
-        const result = await runConsolidation();
+        await runConsolidationAndAssertSingleRefund(expense.id, refunds[0].id);
 
-        expect(result.consolidated).toBe(1);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
         expect(testQueryService.fetchTransactionById(retryExpense.id).consolidationType).toBeNull();
         expect(testQueryService.fetchTransactionById(retryExpense.id).consolidationParentTransactionId).toBeNull();
     });
@@ -76,11 +86,7 @@ describe('consolidation/refund-pair-rejected-payment', () => {
             refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS
         });
 
-        const result = await runConsolidation();
-
-        expect(result.consolidated).toBe(1);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+        await runConsolidationAndAssertSingleRefund(expense.id, refunds[0].id);
     });
 
     it('does not match a fee-return refund title when the expense has no FEE entry', async () => {
@@ -115,14 +121,7 @@ describe('consolidation/refund-pair-rejected-payment full cycle', () => {
             refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS,
             externalIdPrefix: 'rejected-payment-full'
         });
-        const retryExpense = testSeedService.refundedExpense({
-            accountId: account.id,
-            title: 'FOP TESTOVYI PRODUCTS',
-            expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
-            refundAmounts: [],
-            expenseOperatedAt: REJECTED_PAYMENT_RETRY_OPERATED_AT,
-            externalIdPrefix: 'rejected-payment-full-retry'
-        }).expense;
+        const retryExpense = seedRetryExpense(account.id, 'rejected-payment-full-retry');
         const unrelatedIncome = testSeedService.bankPairIncome(
             { externalId: 'unrelated-income', operatedAt: UNRELATED_INCOME_OPERATED_AT },
             { accountId: otherAccount.id, amount: UNRELATED_INCOME_AMOUNT }
