@@ -3,5 +3,5 @@ import type { RefundReviewConfidenceBucket } from './refund-review-confidence-bu
 
 export interface RefundReviewCandidateInterface extends RefundCandidateBaseInterface {
     readonly confidenceBucket: RefundReviewConfidenceBucket;
-    readonly matchType: 'prefix-title-mcc';
+    readonly matchType: 'prefix-title-mcc' | 'localized-refund-title';
 }

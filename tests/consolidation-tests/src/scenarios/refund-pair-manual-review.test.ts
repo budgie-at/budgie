@@ -6,14 +6,26 @@ import { isDefined } from '@rnw-community/shared';
 import { runConsolidation } from '../harness/run-consolidation';
 import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
 
+const SEEZONA_EXPENSE_AMOUNT_UAH = 103.2;
+const SEEZONA_EXPENSE_AMOUNT = SEEZONA_EXPENSE_AMOUNT_UAH * PRECISION;
+const SEEZONA_REFUND_AMOUNT_UAH = 102;
+const SEEZONA_REFUND_AMOUNT = SEEZONA_REFUND_AMOUNT_UAH * PRECISION;
+const STARBUCKS_EXPENSE_AMOUNT_UAH = 120;
+const STARBUCKS_EXPENSE_AMOUNT = STARBUCKS_EXPENSE_AMOUNT_UAH * PRECISION;
+const LIME_EXPENSE_AMOUNT_UAH = 898;
+const LIME_EXPENSE_AMOUNT = LIME_EXPENSE_AMOUNT_UAH * PRECISION;
+const LIME_REFUND_YEAR = 2026;
+const FIRST_LIME_EXPENSE_OPERATED_AT = new Date(LIME_REFUND_YEAR, 0, 15, 12, 0, 0);
+const SECOND_LIME_EXPENSE_OPERATED_AT = new Date(LIME_REFUND_YEAR, 0, 16, 12, 0, 0);
+
 const seedSeezonaRefund = (accountId: number, refundAccountId?: number) => {
     const mcc = testQueryService.findMccByCode('5621');
 
     return testSeedService.refundedExpense({
         accountId,
         ...(isDefined(refundAccountId) && { refundAccountId }),
-        expenseAmount: 103.2 * PRECISION,
-        refundAmounts: [102 * PRECISION],
+        expenseAmount: SEEZONA_EXPENSE_AMOUNT,
+        refundAmounts: [SEEZONA_REFUND_AMOUNT],
         title: 'Seezona',
         refundTitle: 'Скасування. Seezona,Stockholm,SE',
         mccCategoryId: mcc.id,
@@ -44,8 +56,8 @@ describe('consolidation/refund-pair-manual-review', () => {
         const mcc = testQueryService.findMccByCode('5814');
         const { expense, refunds } = testSeedService.refundedExpense({
             accountId: account.id,
-            expenseAmount: 120 * PRECISION,
-            refundAmounts: [120 * PRECISION],
+            expenseAmount: STARBUCKS_EXPENSE_AMOUNT,
+            refundAmounts: [STARBUCKS_EXPENSE_AMOUNT],
             title: 'STARBUCKS #1234',
             refundTitle: 'REFUND STARBUCKS #1234',
             mccCategoryId: mcc.id,
@@ -84,8 +96,8 @@ describe('consolidation/refund-pair-manual-review', () => {
 
         testSeedService.refundedExpense({
             accountId: account.id,
-            expenseAmount: 120 * PRECISION,
-            refundAmounts: [120 * PRECISION],
+            expenseAmount: STARBUCKS_EXPENSE_AMOUNT,
+            refundAmounts: [STARBUCKS_EXPENSE_AMOUNT],
             title: 'STARBUCKS #1234',
             refundTitle: 'REFUND',
             mccCategoryId: mcc.id,
@@ -95,5 +107,43 @@ describe('consolidation/refund-pair-manual-review', () => {
         const reviewCandidates = await refundPairRepository.findReviewCandidates();
 
         expect(reviewCandidates).toHaveLength(0);
+    });
+
+    it('surfaces a gated-out localized-refund-title candidate for manual review when multiple expenses compete', async () => {
+        const account = testSeedService.account({ externalId: 'mono-card' });
+        testSeedService.refundedExpense({
+            accountId: account.id,
+            expenseAmount: LIME_EXPENSE_AMOUNT,
+            refundAmounts: [],
+            title: 'Lime',
+            externalIdPrefix: 'first',
+            expenseOperatedAt: FIRST_LIME_EXPENSE_OPERATED_AT
+        });
+        const { expense: secondExpense, refunds } = testSeedService.refundedExpense({
+            accountId: account.id,
+            expenseAmount: LIME_EXPENSE_AMOUNT,
+            refundAmounts: [LIME_EXPENSE_AMOUNT],
+            title: 'Lime',
+            refundTitle: 'Скасування. Lime',
+            externalIdPrefix: 'second',
+            expenseOperatedAt: SECOND_LIME_EXPENSE_OPERATED_AT,
+            refundDelaySeconds: 24 * 60 * 60
+        });
+
+        const autoCandidates = await refundPairRepository.findCandidates();
+        const reviewCandidates = await refundPairRepository.findReviewCandidates();
+
+        expect(autoCandidates).toHaveLength(0);
+        expect(reviewCandidates).toEqual([
+            {
+                confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
+                matchType: 'localized-refund-title',
+                accountId: account.id,
+                expenseTransactionId: secondExpense.id,
+                expenseEntryAmount: LIME_EXPENSE_AMOUNT,
+                refundIncomeTransactionIds: [refunds[0].id],
+                refundsTotal: LIME_EXPENSE_AMOUNT
+            }
+        ]);
     });
 });

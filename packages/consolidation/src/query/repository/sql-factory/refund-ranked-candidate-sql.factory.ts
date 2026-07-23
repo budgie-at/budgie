@@ -256,7 +256,18 @@ export const REFUND_REVIEW_CANDIDATES_SQL = `
         GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
     FROM (${buildRankedCandidateSql(null)})
     WHERE refundRank = 1
-        AND confidenceBucket IN ('REVIEW_REFUND_PREFIX_TITLE_MCC')
+        AND (
+            confidenceBucket = 'REVIEW_REFUND_PREFIX_TITLE_MCC'
+            OR (
+                confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
+                AND refundCandidateCount > 1
+                AND NOT (
+                    expenseRank = 1
+                    AND expenseAmount = refundAmount
+                    AND timeDiff <= ${CARD_REVERSAL_TIME_WINDOW_SECONDS}
+                )
+            )
+        )
     GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
     HAVING SUM(refundAmount) <= expenseAmount
 `;
