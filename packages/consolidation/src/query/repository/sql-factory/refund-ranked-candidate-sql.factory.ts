@@ -7,6 +7,8 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
 const CARD_REVERSAL_TIME_WINDOW_SECONDS = 600;
 
+const REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIX = 'Повернення коштів за забракованим платежем';
+
 const AUTO_TITLE_PREFIXES = [
     'Скасування. ',
     'Скасування.',
@@ -118,6 +120,10 @@ const buildCompatiblePairsSql = (): string => `
                     AND inc.rawNormTitle != exp.rawNormTitle AND inc.operatedAt > exp.operatedAt
                     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
                 THEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
+                WHEN inc.rawNormTitle LIKE '${REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIX}%' AND inc.accountId = exp.accountId
+                    AND inc.amount = exp.amount AND inc.operatedAt > exp.operatedAt
+                    AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
+                THEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE'
                 WHEN (inc.reviewNormTitle = exp.reviewNormTitle OR inc.reviewMerchantNormTitle = exp.reviewMerchantNormTitle)
                     AND inc.reviewMerchantNormTitle != ''
                     AND inc.mccCategoryId = exp.mccCategoryId
@@ -129,6 +135,7 @@ const buildCompatiblePairsSql = (): string => `
             CASE
                 WHEN inc.rawNormTitle = exp.rawNormTitle THEN 'exact-title'
                 WHEN inc.autoNormTitle = exp.autoNormTitle THEN 'localized-refund-title'
+                WHEN inc.rawNormTitle LIKE '${REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIX}%' THEN 'rejected-payment-principal-title'
                 ELSE 'prefix-title-mcc'
             END AS matchType
         FROM income_entries inc
@@ -150,7 +157,8 @@ const buildRankedPairsSql = (): string => `
                     CASE confidenceBucket
                         WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
                         WHEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' THEN 2
-                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 3
+                        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE' THEN 3
+                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 4
                         ELSE 99
                     END,
                     timeDiff
@@ -161,7 +169,8 @@ const buildRankedPairsSql = (): string => `
                     CASE confidenceBucket
                         WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
                         WHEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' THEN 2
-                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 3
+                        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE' THEN 3
+                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 4
                         ELSE 99
                     END,
                     timeDiff,
@@ -199,7 +208,11 @@ export const REFUND_AUTO_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterfac
         GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
     FROM (${buildRankedCandidateSql(scope)})
     WHERE refundRank = 1
-        AND confidenceBucket IN ('AUTO_REFUND_EXACT_TITLE', 'AUTO_REFUND_LOCALIZED_REFUND_TITLE')
+        AND confidenceBucket IN (
+            'AUTO_REFUND_EXACT_TITLE',
+            'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
+            'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE'
+        )
         AND (
             refundCandidateCount = 1
             OR (
