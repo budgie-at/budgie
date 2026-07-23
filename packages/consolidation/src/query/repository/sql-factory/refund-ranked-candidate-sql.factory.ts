@@ -8,6 +8,7 @@ const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
 const CARD_REVERSAL_TIME_WINDOW_SECONDS = 600;
 
 const REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIX = 'Повернення коштів за забракованим платежем';
+const REJECTED_PAYMENT_FEE_TITLE_PREFIX = 'Повернення комісій';
 
 const AUTO_TITLE_PREFIXES = [
     'Скасування. ',
@@ -53,7 +54,18 @@ const buildExpenseEntriesSql = (
             UPPER(TRIM(expense_tx.title)) AS rawNormTitle,
             ${autoTitle} AS autoNormTitle,
             ${reviewTitle} AS reviewNormTitle,
-            ${reviewMerchantTitle} AS reviewMerchantNormTitle
+            ${reviewMerchantTitle} AS reviewMerchantNormTitle,
+            (
+                SELECT expense_fee_entry.amount
+                FROM transaction_entries expense_fee_entry
+                WHERE expense_fee_entry.transaction_id = expense_tx.id
+                    AND expense_fee_entry.account_id = expense_entry.account_id
+                    AND expense_fee_entry.deleted_at IS NULL
+                    AND expense_fee_entry.original_transaction_id IS NULL
+                    AND expense_fee_entry.type = '${TransactionEntryTypeEnum.FEE}'
+                    AND expense_fee_entry.amount > 0
+                LIMIT 1
+            ) AS feeAmount
         FROM transactions expense_tx INDEXED BY transactions_visible_type_operated_idx
         INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
             ON expense_entry.transaction_id = expense_tx.id
@@ -124,6 +136,11 @@ const buildCompatiblePairsSql = (): string => `
                     AND inc.amount = exp.amount AND inc.operatedAt > exp.operatedAt
                     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
                 THEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE'
+                WHEN inc.rawNormTitle LIKE '${REJECTED_PAYMENT_FEE_TITLE_PREFIX}%' AND inc.accountId = exp.accountId
+                    AND exp.feeAmount IS NOT NULL AND inc.amount = exp.feeAmount
+                    AND inc.operatedAt > exp.operatedAt
+                    AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
+                THEN 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE'
                 WHEN (inc.reviewNormTitle = exp.reviewNormTitle OR inc.reviewMerchantNormTitle = exp.reviewMerchantNormTitle)
                     AND inc.reviewMerchantNormTitle != ''
                     AND inc.mccCategoryId = exp.mccCategoryId
@@ -136,6 +153,7 @@ const buildCompatiblePairsSql = (): string => `
                 WHEN inc.rawNormTitle = exp.rawNormTitle THEN 'exact-title'
                 WHEN inc.autoNormTitle = exp.autoNormTitle THEN 'localized-refund-title'
                 WHEN inc.rawNormTitle LIKE '${REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIX}%' THEN 'rejected-payment-principal-title'
+                WHEN inc.rawNormTitle LIKE '${REJECTED_PAYMENT_FEE_TITLE_PREFIX}%' THEN 'rejected-payment-fee-title'
                 ELSE 'prefix-title-mcc'
             END AS matchType
         FROM income_entries inc
@@ -158,7 +176,8 @@ const buildRankedPairsSql = (): string => `
                         WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
                         WHEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' THEN 2
                         WHEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE' THEN 3
-                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 4
+                        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN 4
+                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 5
                         ELSE 99
                     END,
                     timeDiff
@@ -170,7 +189,8 @@ const buildRankedPairsSql = (): string => `
                         WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
                         WHEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' THEN 2
                         WHEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE' THEN 3
-                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 4
+                        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN 4
+                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 5
                         ELSE 99
                     END,
                     timeDiff,
@@ -211,7 +231,8 @@ export const REFUND_AUTO_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterfac
         AND confidenceBucket IN (
             'AUTO_REFUND_EXACT_TITLE',
             'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
-            'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE'
+            'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE',
+            'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE'
         )
         AND (
             refundCandidateCount = 1

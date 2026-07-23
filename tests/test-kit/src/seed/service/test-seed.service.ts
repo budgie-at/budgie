@@ -21,7 +21,7 @@ import {
 } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import type { SeedBankPairEntryInputType } from '../interface/seed-bank-pair-entry-input.type';
 import type {
@@ -292,6 +292,7 @@ export class TestSeedService {
         readonly accountId: number;
         readonly expenseAmount: number;
         readonly refundAmounts: readonly number[];
+        readonly expenseFeeAmount?: number;
         readonly expenseOperatedAt?: Date;
         readonly externalIdPrefix?: string;
         readonly mccCategoryId?: number | null;
@@ -299,6 +300,7 @@ export class TestSeedService {
         readonly refundDelaySeconds?: number;
         readonly refundMccCategoryId?: number | null;
         readonly refundTitle?: string;
+        readonly refundTitles?: readonly string[];
         readonly title?: string;
     }): {
         readonly expense: TransactionEntityInterface;
@@ -322,6 +324,14 @@ export class TestSeedService {
                 mccCategoryId: input.mccCategoryId ?? null
             }
         );
+
+        if (isPositiveNumber(input.expenseFeeAmount)) {
+            this.insertEntry(expense.id, TransactionEntryTypeEnum.FEE, `${externalIdPrefix}-expense-fee`, {
+                accountId: input.accountId,
+                amount: input.expenseFeeAmount
+            });
+        }
+
         const refunds = input.refundAmounts.map((refundAmount, index) => {
             const operatedAt = new Date(expenseOperatedAt.getTime() + refundDelaySeconds * 1000 * (index + 1));
 
@@ -329,7 +339,7 @@ export class TestSeedService {
                 {
                     externalId: `${externalIdPrefix}-refund-${index}`,
                     operatedAt,
-                    title: refundTitle
+                    title: input.refundTitles?.[index] ?? refundTitle
                 },
                 {
                     accountId: refundAccountId,
