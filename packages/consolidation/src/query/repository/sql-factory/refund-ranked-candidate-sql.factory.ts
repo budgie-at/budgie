@@ -5,7 +5,6 @@ import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
-const CARD_REVERSAL_TIME_WINDOW_SECONDS = 600;
 
 const REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIX = 'Повернення коштів за забракованим платежем';
 const REJECTED_PAYMENT_FEE_TITLE_PREFIX = 'Повернення комісій';
@@ -164,6 +163,20 @@ const buildCompatiblePairsSql = (): string => `
     )
 `;
 
+const buildBucketPriorityOrderSql = (): string => `
+    CASE confidenceBucket
+        WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
+        WHEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' THEN 2
+        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE' THEN 3
+        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN 4
+        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 5
+        ELSE 99
+    END
+`;
+
+const buildLocalizedAmountMismatchOrderSql = (): string =>
+    `CASE WHEN confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' AND expenseAmount != refundAmount THEN 1 ELSE 0 END`;
+
 const buildRankedPairsSql = (): string => `
     ranked_pairs AS (
         SELECT
@@ -171,33 +184,30 @@ const buildRankedPairsSql = (): string => `
             COUNT(*) OVER (PARTITION BY refundTxId) AS refundCandidateCount,
             ROW_NUMBER() OVER (
                 PARTITION BY refundTxId
-                ORDER BY
-                    CASE confidenceBucket
-                        WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
-                        WHEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' THEN 2
-                        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE' THEN 3
-                        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN 4
-                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 5
-                        ELSE 99
-                    END,
-                    timeDiff
+                ORDER BY ${buildBucketPriorityOrderSql()}, ${buildLocalizedAmountMismatchOrderSql()}, timeDiff
             ) AS refundRank,
             ROW_NUMBER() OVER (
                 PARTITION BY expenseTxId
-                ORDER BY
-                    CASE confidenceBucket
-                        WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
-                        WHEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' THEN 2
-                        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE' THEN 3
-                        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN 4
-                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 5
-                        ELSE 99
-                    END,
-                    timeDiff,
-                    refundTxId
+                ORDER BY ${buildBucketPriorityOrderSql()}, ${buildLocalizedAmountMismatchOrderSql()}, timeDiff, refundTxId
             ) AS expenseRank
         FROM compatible_pairs
         WHERE confidenceBucket IS NOT NULL
+    )
+`;
+
+const buildRankedCandidatesSql = (): string => `
+    ranked_candidates AS (
+        SELECT
+            *,
+            SUM(
+                CASE
+                    WHEN confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
+                        AND expenseAmount = refundAmount
+                        AND expenseRank = 1
+                    THEN 1 ELSE 0
+                END
+            ) OVER (PARTITION BY refundTxId) AS localizedExactAmountMatchCount
+        FROM ranked_pairs
     )
 `;
 
@@ -213,8 +223,9 @@ const buildRankedCandidateSql = (scope: ConsolidationScanScopeInterface | null):
         WITH ${buildExpenseEntriesSql(expenseAutoTitle, expenseReviewTitle, expenseReviewMerchantTitle, scope)},
         ${buildIncomeEntriesSql(incomeAutoTitle, incomeReviewTitle, incomeReviewMerchantTitle, scope)},
         ${buildCompatiblePairsSql()},
-        ${buildRankedPairsSql()}
-        SELECT * FROM ranked_pairs
+        ${buildRankedPairsSql()},
+        ${buildRankedCandidatesSql()}
+        SELECT * FROM ranked_candidates
     `;
 };
 
@@ -238,9 +249,9 @@ export const REFUND_AUTO_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterfac
             refundCandidateCount = 1
             OR (
                 confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
-                AND expenseRank = 1
                 AND expenseAmount = refundAmount
-                AND timeDiff <= ${CARD_REVERSAL_TIME_WINDOW_SECONDS}
+                AND expenseRank = 1
+                AND localizedExactAmountMatchCount = 1
             )
         )
     GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
@@ -262,9 +273,9 @@ export const REFUND_REVIEW_CANDIDATES_SQL = `
                 confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
                 AND refundCandidateCount > 1
                 AND NOT (
-                    expenseRank = 1
-                    AND expenseAmount = refundAmount
-                    AND timeDiff <= ${CARD_REVERSAL_TIME_WINDOW_SECONDS}
+                    expenseAmount = refundAmount
+                    AND expenseRank = 1
+                    AND localizedExactAmountMatchCount = 1
                 )
             )
         )
