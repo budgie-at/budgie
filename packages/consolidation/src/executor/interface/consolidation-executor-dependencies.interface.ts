@@ -7,12 +7,28 @@ export interface ConsolidationExecutorDependenciesInterface {
     readonly resolveP2pTransferTitle: (direction: P2pFiatDirectionEnum, assetCode: string) => string;
     readonly transactionEntryRepository: Pick<
         TransactionEntryRepository,
-        'bulkCreate' | 'hasMovedSourceEntries' | 'moveToConsolidatedTransaction' | 'updateById'
+        | 'bulkCreate'
+        | 'deleteByTransactionId'
+        | 'deleteLedgerByTransactionId'
+        | 'hasMovedSourceEntries'
+        | 'moveBackToOriginalTransactions'
+        | 'moveToConsolidatedTransaction'
+        | 'updateById'
     >;
     readonly transactionRepository: Pick<
         TransactionRepository,
-        'create' | 'findByIds' | 'getByIdRaw' | 'setConsolidationParent' | 'setConsolidationType' | 'updateById'
+        | 'clearConsolidationParent'
+        | 'create'
+        | 'deleteById'
+        | 'findByIds'
+        | 'getByIdRaw'
+        | 'setConsolidationParent'
+        | 'setConsolidationType'
+        | 'updateById'
     >;
     readonly runTransaction: TransactionRunnerType;
-    readonly transactionTagsRepository: Pick<TransactionTagsRepository, 'bulkCreate' | 'findByTransactionId' | 'findByTransactionIds'>;
+    readonly transactionTagsRepository: Pick<
+        TransactionTagsRepository,
+        'bulkCreate' | 'deleteByTransactionId' | 'findByTransactionId' | 'findByTransactionIds'
+    >;
 }

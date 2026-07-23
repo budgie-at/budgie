@@ -19,4 +19,7 @@ export interface BaseTransactionFieldsInterface {
     readonly counterName?: string;
     readonly comment?: string;
     readonly category?: string;
+    readonly quotedCurrencyCode?: string;
+    readonly quotedAmount?: number;
+    readonly quotedUnitPrice?: number;
 }

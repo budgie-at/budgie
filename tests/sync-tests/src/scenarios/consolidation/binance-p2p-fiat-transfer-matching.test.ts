@@ -1,5 +1,6 @@
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
-import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { PRECISION, TransactionConsolidationTypeEnum, TransactionEntryEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -16,7 +17,8 @@ import {
     seedBankPair,
     seedP2pFiatTransferFixture,
     seedP2pIncome,
-    seedP2pPair
+    seedP2pPair,
+    testDb
 } from '../../harness';
 
 const ONE_SECOND_MS = 1_000;
@@ -26,6 +28,12 @@ const FARTHER_INCOME_OFFSET_MS = 120_000;
 const FIRST_FIXED_POINT_EXPENSE_OFFSET_MS = 10_000;
 const SECOND_FIXED_POINT_INCOME_OFFSET_MS = 11_000;
 const SECOND_FIXED_POINT_EXPENSE_OFFSET_MS = 20_000;
+const LARGE_P2P_QUOTE_AMOUNT = Number('25842') * PRECISION;
+const SMALL_P2P_QUOTE_AMOUNT = Number('524') * PRECISION;
+const LARGE_P2P_CRYPTO_AMOUNT = Number('585.91') * PRECISION;
+const SMALL_P2P_CRYPTO_AMOUNT = Number('11.87') * PRECISION;
+const REPAIR_PRIMARY_AMOUNT = 3_500 * PRECISION;
+const REPAIR_EXTRA_AMOUNT = 500 * PRECISION;
 
 describe('consolidation/binance-p2p-fiat-transfer time window', () => {
     it('accepts an expense exactly one hour away', async () => {
@@ -102,6 +110,84 @@ describe('consolidation/binance-p2p-fiat-transfer ambiguity', () => {
 });
 
 describe('consolidation/binance-p2p-fiat-transfer ranked ownership', () => {
+    it('uses provider fiat totals before considering grouped bank expenses', async () => {
+        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const largeExpense = seedBankPair.expense(
+            { externalId: 'mono-uah-authoritative-large', operatedAt: P2P_OPERATED_AT },
+            { accountId: bankAccount.id, amount: LARGE_P2P_QUOTE_AMOUNT }
+        );
+        const smallExpense = seedBankPair.expense(
+            { externalId: 'mono-uah-authoritative-small', operatedAt: P2P_OPERATED_AT },
+            { accountId: bankAccount.id, amount: SMALL_P2P_QUOTE_AMOUNT }
+        );
+        const largeIncome = seedP2pIncome('binance:c2c:buy-authoritative-large', binanceAccount.id, {
+            quotedInstrumentId: uah.id,
+            quotedAmount: LARGE_P2P_QUOTE_AMOUNT,
+            quotedUnitPrice: Number('44.1') * PRECISION
+        });
+        const smallIncome = seedP2pIncome('binance:c2c:buy-authoritative-small', binanceAccount.id, {
+            quotedInstrumentId: uah.id,
+            quotedAmount: SMALL_P2P_QUOTE_AMOUNT,
+            quotedUnitPrice: Number('44.14') * PRECISION
+        });
+
+        testDb
+            .update(TransactionEntryEntityTable)
+            .set({ amount: LARGE_P2P_CRYPTO_AMOUNT })
+            .where(eq(TransactionEntryEntityTable.transactionId, largeIncome.id))
+            .run();
+        testDb
+            .update(TransactionEntryEntityTable)
+            .set({ amount: SMALL_P2P_CRYPTO_AMOUNT })
+            .where(eq(TransactionEntryEntityTable.transactionId, smallIncome.id))
+            .run();
+
+        expect((await transferConsolidationService.consolidate()).consolidated).toBe(2);
+        expect(fetchTransactionById(largeExpense.id).consolidationParentTransactionId).toBe(
+            fetchTransactionById(largeIncome.id).consolidationParentTransactionId
+        );
+        expect(fetchTransactionById(smallExpense.id).consolidationParentTransactionId).toBe(
+            fetchTransactionById(smallIncome.id).consolidationParentTransactionId
+        );
+        expect(fetchTransactionById(largeIncome.id).consolidationParentTransactionId).not.toBe(
+            fetchTransactionById(smallIncome.id).consolidationParentTransactionId
+        );
+    });
+
+    it('repairs a system-generated group after provider fiat data is backfilled', async () => {
+        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const primaryExpense = seedBankPair.expense(
+            { externalId: 'mono-uah-repair-primary', operatedAt: P2P_OPERATED_AT },
+            { accountId: bankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
+        );
+        const extraExpense = seedBankPair.expense(
+            { externalId: 'mono-uah-repair-extra', operatedAt: P2P_OPERATED_AT },
+            { accountId: bankAccount.id, amount: REPAIR_EXTRA_AMOUNT }
+        );
+        const income = seedP2pIncome('binance:c2c:buy-repair', binanceAccount.id);
+
+        expect((await transferConsolidationService.consolidate()).consolidated).toBe(1);
+        expect(fetchTransactionById(extraExpense.id).consolidationParentTransactionId).not.toBeNull();
+
+        testDb
+            .update(TransactionEntryEntityTable)
+            .set({
+                quotedInstrumentId: uah.id,
+                quotedAmount: REPAIR_PRIMARY_AMOUNT,
+                quotedUnitPrice: 35 * PRECISION
+            })
+            .where(eq(TransactionEntryEntityTable.originalTransactionId, income.id))
+            .run();
+
+        expect((await transferConsolidationService.consolidate()).consolidated).toBe(1);
+        expect(fetchTransactionById(primaryExpense.id).consolidationParentTransactionId).toBe(
+            fetchTransactionById(income.id).consolidationParentTransactionId
+        );
+        expect(fetchTransactionById(extraExpense.id).consolidationParentTransactionId).toBeNull();
+    });
+});
+
+describe('consolidation/binance-p2p-fiat-transfer ranked heuristic ownership', () => {
     it('assigns an overlapping bank expense to its uniquely better Binance income', async () => {
         const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
         const expense = seedBankPair.expense(

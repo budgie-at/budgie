@@ -57,6 +57,7 @@ export class ConsolidationFamilyRegistryService {
             new P2pFiatTransferConsolidationFamilyService(
                 this.repositories.transferPairRepository,
                 this.consolidationExecutorService,
+                this.consolidationRepairExecutorService,
                 this.yieldControl
             ),
             new TransferPairConsolidationFamilyService(

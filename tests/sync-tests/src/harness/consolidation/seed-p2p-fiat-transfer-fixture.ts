@@ -5,11 +5,13 @@ import {
     InstrumentTypeEnum,
     PRECISION,
     SettingsEntityTable,
-    TransactionConsolidationTypeEnum
+    TransactionConsolidationTypeEnum,
+    TransactionEntryEntityTable
 } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 import { expect } from 'vitest';
 
-import { getDefined } from '@rnw-community/shared';
+import { getDefined, isDefined } from '@rnw-community/shared';
 
 import { fetchCanonicalsOfType } from '../db/fetch-canonicals-of-type';
 import { fetchTransactionById } from '../db/fetch-transaction-by-id';
@@ -20,7 +22,12 @@ import { seedBankPair } from '../seed/seed-bank-pair';
 
 import { seedExchangeRate } from './seed-exchange-rate';
 
-import type { AccountEntityInterface, InstrumentEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
+import type {
+    AccountEntityInterface,
+    InstrumentEntityInterface,
+    TransactionEntityInterface,
+    TransactionEntryCreateEntityInterface
+} from '@budgie/contracts';
 
 const UAH_PER_USD_RATE = 40;
 const USD_PER_UAH_RATE = 1 / UAH_PER_USD_RATE;
@@ -88,8 +95,19 @@ export const seedP2pPair = (
     return { expense, income };
 };
 
-export const seedP2pIncome = (externalId: string, accountId: number): TransactionEntityInterface =>
-    seedBankPair.income({ externalId, operatedAt: P2P_OPERATED_AT }, { accountId, amount: P2P_USDT_AMOUNT });
+export const seedP2pIncome = (
+    externalId: string,
+    accountId: number,
+    quote?: Required<Pick<TransactionEntryCreateEntityInterface, 'quotedInstrumentId' | 'quotedAmount' | 'quotedUnitPrice'>>
+): TransactionEntityInterface => {
+    const transaction = seedBankPair.income({ externalId, operatedAt: P2P_OPERATED_AT }, { accountId, amount: P2P_USDT_AMOUNT });
+
+    if (isDefined(quote)) {
+        testDb.update(TransactionEntryEntityTable).set(quote).where(eq(TransactionEntryEntityTable.transactionId, transaction.id)).run();
+    }
+
+    return transaction;
+};
 
 export const fetchP2pCanonical = (): TransactionEntityInterface =>
     getDefined(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER).at(0), () => {

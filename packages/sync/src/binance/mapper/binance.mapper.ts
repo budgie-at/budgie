@@ -137,7 +137,9 @@ class BinanceMapper {
     )
     mapC2cOrderToTransaction(order: BinanceC2cOrderApiInterface, accountId: string): SyncTransactionInterface | null {
         const amount = this.parseBinanceAmount(order.amount);
-        if (!isDefined(amount)) {
+        const quotedAmount = this.parseBinanceAmount(order.totalPrice);
+        const quotedUnitPrice = this.parseBinanceAmount(order.unitPrice);
+        if (!isDefined(amount) || !isDefined(quotedAmount) || !isDefined(quotedUnitPrice)) {
             return null;
         }
 
@@ -152,7 +154,10 @@ class BinanceMapper {
             description,
             amount,
             operationAmount: amount,
-            feeAmount: 0
+            feeAmount: 0,
+            quotedCurrencyCode: order.fiat,
+            quotedAmount,
+            quotedUnitPrice
         };
     }
 

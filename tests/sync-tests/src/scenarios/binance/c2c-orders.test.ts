@@ -1,7 +1,7 @@
 import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { AccountTypeEnum, ExternalSourceEnum, PRECISION, SyncModeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, PRECISION, SyncModeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { BinanceSignedClient, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -13,6 +13,7 @@ import {
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
     resetBinanceSyncForResync,
+    requireInstrument,
     seed,
     setupBinanceFixture,
     stubEmptyBinanceBalances
@@ -69,8 +70,15 @@ describe('binance/c2c-orders reconciliation', () => {
         await binanceSyncService.sync();
 
         const entries = fetchBinanceEntriesByExternalId(externalId);
-        expect(entries).toHaveLength(1);
-        expect(entries[0].accountId).toBe(fundingAccount.id);
+        const uah = await requireInstrument(CurrencyEnum.UAH);
+        expect(entries).toEqual([
+            expect.objectContaining({
+                accountId: fundingAccount.id,
+                quotedInstrumentId: uah.id,
+                quotedAmount: 100 * PRECISION,
+                quotedUnitPrice: PRECISION
+            })
+        ]);
         expect(enqueueSpy.mock.calls).toContainEqual([TransferConsolidationDrainReasonEnum.BINANCE_SYNC]);
     });
 
@@ -124,11 +132,29 @@ describe('binance/c2c-orders reconciliation', () => {
 describe('binance/c2c-orders mapping', () => {
     it('maps a P2P BUY order to an INCOME transaction on the asset account', async () => {
         setupForwardUsdtScenario();
-        stubBuyC2cOrder('c2c-buy-1');
+        binanceStub.c2cOrders(
+            [
+                buildBinance.c2cOrder({
+                    orderNumber: 'c2c-buy-1',
+                    tradeType: 'BUY',
+                    asset: 'USDT',
+                    amount: '585.91',
+                    totalPrice: '25842',
+                    unitPrice: '44.1'
+                })
+            ],
+            []
+        );
 
         await binanceSyncService.sync();
 
         expectSingleBinanceTransaction(TransactionTypeEnum.INCOME, 'binance:c2c:c2c-buy-1');
+        const uah = await requireInstrument(CurrencyEnum.UAH);
+        expect(fetchBinanceEntriesByExternalId('binance:c2c:c2c-buy-1')[0]).toMatchObject({
+            quotedInstrumentId: uah.id,
+            quotedAmount: Number('25842') * PRECISION,
+            quotedUnitPrice: Number('44.1') * PRECISION
+        });
     });
 
     it('maps a P2P SELL order to an EXPENSE transaction', async () => {

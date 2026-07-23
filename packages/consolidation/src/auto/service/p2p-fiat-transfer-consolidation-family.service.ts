@@ -9,8 +9,12 @@ import { P2pFiatDirectionEnum } from '../enum/p2p-fiat-direction.enum';
 import { ConsolidationFamilyStrategyService } from './consolidation-family-strategy.service';
 
 import type { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
+import type { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
 import type { P2pFiatAtomicCandidateInterface } from '../../query/interface/p2p-fiat-atomic-candidate.interface';
+import type { P2pFiatAuthoritativeCandidateInterface } from '../../query/interface/p2p-fiat-authoritative-candidate.interface';
 import type { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
+import type { ConsolidationFamilyRunContextInterface } from '../interface/consolidation-family-run-context.interface';
+import type { ConsolidationFamilyRunResultInterface } from '../interface/consolidation-family-run-result.interface';
 import type { P2pFiatTransferCandidateInterface } from '../interface/p2p-fiat-transfer-candidate.interface';
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
@@ -20,16 +24,42 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
     readonly key = ConsolidationFamilyKeyEnum.P2P_FIAT_TRANSFER;
 
     constructor(
-        private readonly transferPairRepository: Pick<TransferPairRepository, 'findP2pFiatAtomicCandidates'>,
+        private readonly transferPairRepository: Pick<
+            TransferPairRepository,
+            'findP2pFiatAtomicCandidates' | 'findP2pFiatAuthoritativeCandidates' | 'findP2pFiatAuthoritativeRepairCandidates'
+        >,
         private readonly consolidationExecutorService: Pick<ConsolidationExecutorService, 'consolidateP2pFiatTransfer'>,
+        private readonly consolidationRepairExecutorService: Pick<ConsolidationRepairExecutorService, 'repairP2pFiatCanonical'>,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
     }
 
+    override async process(context: ConsolidationFamilyRunContextInterface): Promise<ConsolidationFamilyRunResultInterface> {
+        const repairCandidates = await this.transferPairRepository.findP2pFiatAuthoritativeRepairCandidates();
+
+        await Promise.all(
+            repairCandidates.map(candidate =>
+                this.consolidationRepairExecutorService.repairP2pFiatCanonical(candidate.canonicalTransactionId)
+            )
+        );
+
+        return super.process(context);
+    }
+
     protected async findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<P2pFiatTransferCandidateInterface[]> {
+        const authoritativeRows = await this.transferPairRepository.findP2pFiatAuthoritativeCandidates(scope);
+        const authoritativeCandidates = this.selectCandidates(this.buildAuthoritativeCandidates(authoritativeRows));
+        if (isNotEmptyArray(authoritativeCandidates)) {
+            return authoritativeCandidates;
+        }
+
+        const reservedTransactionIds = new Set(authoritativeRows.flatMap(row => [row.expenseTransactionId, row.incomeTransactionId]));
         const rows = await this.transferPairRepository.findP2pFiatAtomicCandidates(scope);
-        const candidates = [...this.buildBuyCandidates(rows), ...this.buildSellCandidates(rows)];
+        const unreservedRows = rows.filter(
+            row => !reservedTransactionIds.has(row.expenseTransactionId) && !reservedTransactionIds.has(row.incomeTransactionId)
+        );
+        const candidates = [...this.buildBuyCandidates(unreservedRows), ...this.buildSellCandidates(unreservedRows)];
 
         return this.selectCandidates(candidates);
     }
@@ -44,6 +74,19 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
 
     protected override shouldRepeatAfterSuccessfulPass(): boolean {
         return true;
+    }
+
+    private buildAuthoritativeCandidates(rows: P2pFiatAuthoritativeCandidateInterface[]): P2pFiatTransferCandidateInterface[] {
+        return rows
+            .map(row => {
+                const candidate =
+                    row.incomeAccountType === AccountTypeEnum.CRYPTO_SYNC
+                        ? this.buildBuyCandidate([row], true)
+                        : this.buildSellCandidate(row, true);
+
+                return isDefined(candidate) ? { ...candidate, rateDifference: row.quoteDelta / row.quotedAmount } : null;
+            })
+            .filter(isDefined);
     }
 
     private buildBuyCandidates(rows: P2pFiatAtomicCandidateInterface[]): P2pFiatTransferCandidateInterface[] {
@@ -125,7 +168,10 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
         return isDefined(lastRow) ? rows.indexOf(lastRow) + 1 : 0;
     }
 
-    private buildBuyCandidate(combination: P2pFiatAtomicCandidateInterface[]): P2pFiatTransferCandidateInterface | null {
+    private buildBuyCandidate(
+        combination: P2pFiatAtomicCandidateInterface[],
+        isAuthoritative = false
+    ): P2pFiatTransferCandidateInterface | null {
         if (!isNotEmptyArray(combination)) {
             return null;
         }
@@ -137,7 +183,7 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
             representativeRow.expectedExchangeRate
         );
 
-        if (rateDifference > TRANSFER_PAIR_P2P_FIAT_RATE_TOLERANCE) {
+        if (!isAuthoritative && rateDifference > TRANSFER_PAIR_P2P_FIAT_RATE_TOLERANCE) {
             return null;
         }
 
@@ -162,10 +208,10 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
         };
     }
 
-    private buildSellCandidate(row: P2pFiatAtomicCandidateInterface): P2pFiatTransferCandidateInterface | null {
+    private buildSellCandidate(row: P2pFiatAtomicCandidateInterface, isAuthoritative = false): P2pFiatTransferCandidateInterface | null {
         const rateDifference = this.computeRateDifference(row.incomeEntryAmount / row.expenseEntryAmount, row.expectedExchangeRate);
 
-        if (rateDifference > TRANSFER_PAIR_P2P_FIAT_RATE_TOLERANCE) {
+        if (!isAuthoritative && rateDifference > TRANSFER_PAIR_P2P_FIAT_RATE_TOLERANCE) {
             return null;
         }
 

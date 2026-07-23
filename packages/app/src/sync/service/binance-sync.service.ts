@@ -20,6 +20,7 @@ import { accountBalanceRepository, accountRepository, instrumentRepository, tran
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountService } from '../../account/service/account.service';
+import { importedTransactionEntryUpdateService } from '../../transaction/service/imported-transaction-entry-update.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BINANCE_SYNC_TASK } from '../constant/binance-sync-task.constant';
 import { BINANCE_TRANSFER_LOOKBACK_YEARS } from '../constant/binance-transfer-lookback-years.constant';
@@ -30,6 +31,7 @@ import { BinanceTransferInputMapper } from '../mapper/binance-transfer-input.map
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
+import { binanceSourceQuoteService } from './binance-source-quote.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
 import type {
@@ -53,7 +55,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     private static readonly SOURCE_INPUT_YIELD_INTERVAL = 50;
     private static readonly FORWARD_OVERLAP_DAYS = 1;
     private static readonly FIAT_REFRESH_INTERVAL_MS = 23 * 60 * 60 * 1000;
-
     protected readonly provider = ExternalSourceEnum.BINANCE;
     // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
     protected readonly providerTitle = 'Binance';
@@ -183,11 +184,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     protected override generateAccountTitle(account: SyncAccountInterface): string {
-        if (isNotEmptyString(account.title)) {
-            return account.title;
-        }
-
-        return super.generateAccountTitle(account);
+        return isNotEmptyString(account.title) ? account.title : super.generateAccountTitle(account);
     }
 
     protected override accountIcon(): UserIconNameEnum {
@@ -357,14 +354,18 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         const account = await resolveAccount(transaction.accountId);
         const transactionId = existingIdMap.get(transaction.id);
         if (isDefined(account) && isDefined(transactionId)) {
-            return (await transactionService.moveExternalEntryToAccount(
+            const accountChanged = await transactionService.moveExternalEntryToAccount(
                 transactionId,
                 transaction.id,
                 account.id,
                 transaction.type === SyncTransactionTypeEnum.INCOME
-            ))
-                ? 1
-                : 0;
+            );
+            const quote = await binanceSourceQuoteService.resolve(transaction);
+            const quoteChanged =
+                isDefined(quote) &&
+                (await importedTransactionEntryUpdateService.updateExternalEntryQuote(transactionId, transaction.id, quote));
+
+            return accountChanged || quoteChanged ? 1 : 0;
         }
 
         return 0;
@@ -490,7 +491,9 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             return null;
         }
 
-        return mapBankTransactionToCreateInput(transaction, account.id, null, this.provider);
+        const input = mapBankTransactionToCreateInput(transaction, account.id, null, this.provider);
+
+        return binanceSourceQuoteService.applyToInput(input, transaction);
     }
 
     private async collectSourceInputs(
