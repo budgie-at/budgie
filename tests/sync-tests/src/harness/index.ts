@@ -51,4 +51,16 @@ export {
 export { withCoolDownSpy } from './binance/with-cooldown-spy';
 export { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases } from './scenario/error-recovery';
 export { seedExchangeRate } from './consolidation/seed-exchange-rate';
-export { seedP2pFiatTransferFixture } from './consolidation/seed-p2p-fiat-transfer-fixture';
+export {
+    P2P_ONE_HOUR_MS,
+    P2P_OPERATED_AT,
+    P2P_OUT_OF_WINDOW_OFFSET_MS,
+    P2P_UAH_TOTAL,
+    P2P_USDT_AMOUNT,
+    expectConsolidatedToP2pCanonical,
+    expectP2pUnconsolidated,
+    fetchP2pCanonical,
+    seedP2pFiatTransferFixture,
+    seedP2pIncome,
+    seedP2pPair
+} from './consolidation/seed-p2p-fiat-transfer-fixture';

@@ -191,6 +191,23 @@ export class TransactionEntryRepository {
         });
     }
 
+    async findByTransactionIdAndExternalId(
+        transactionId: number,
+        externalId: string,
+        tx?: DB
+    ): Promise<TransactionEntryEntityInterface | undefined> {
+        return await (tx ?? this.db).query.TransactionEntryEntityTable.findFirst({
+            where: and(
+                eq(TransactionEntryEntityTable.externalId, externalId),
+                or(
+                    eq(TransactionEntryEntityTable.transactionId, transactionId),
+                    eq(TransactionEntryEntityTable.originalTransactionId, transactionId)
+                ),
+                isNull(TransactionEntryEntityTable.deletedAt)
+            )
+        });
+    }
+
     async updateByExternalIdAndAccountId(
         externalId: string,
         accountId: number,

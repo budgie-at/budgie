@@ -1,6 +1,12 @@
 import { buildTestDb, createTestRepositories, resetTestDb } from '@budgie-at/test-kit';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
+vi.mock('@lingui/core', () => ({
+    i18n: {
+        _: (message: string, values: Record<string, string>): string => message.replace('{assetCode}', values['assetCode'])
+    }
+}));
+
 vi.mock('@app/sync/service/transfer-consolidation-drainer.service', () => ({
     transferConsolidationDrainerService: { enqueue: vi.fn() }
 }));

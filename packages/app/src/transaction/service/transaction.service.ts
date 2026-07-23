@@ -21,6 +21,7 @@ import { Log } from '@budgie/logger';
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -152,6 +153,34 @@ class TransactionService {
     )
     async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
         return transactionRepository.findIdMapByExternalSource(externalSource);
+    }
+
+    @Log(
+        (transactionId, ...[externalId, accountId, isIncome]) =>
+            `enter transactionId=${transactionId} externalId=${externalId} accountId=${accountId} isIncome=${String(isIncome)}`,
+        (result, ...[transactionId, externalId, accountId, isIncome]) =>
+            `done result=${String(result)} transactionId=${transactionId} externalId=${externalId} accountId=${accountId} isIncome=${String(isIncome)}`,
+        (error, ...[transactionId, externalId, accountId, isIncome]) =>
+            `throw transactionId=${transactionId} externalId=${externalId} accountId=${accountId} isIncome=${String(isIncome)} error=${getErrorMessage(error)}`
+    )
+    @InvalidateDatabaseLiveQuery()
+    async moveExternalEntryToAccount(transactionId: number, externalId: string, accountId: number, isIncome: boolean): Promise<boolean> {
+        return transactionAsync(db, async tx => {
+            const existingEntry = await transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId, tx);
+            if (!isDefined(existingEntry) || existingEntry.accountId === accountId) {
+                return false;
+            }
+
+            await transactionEntryRepository.updateById(existingEntry.id, { accountId }, tx);
+            await transactionRepository.updateById(
+                existingEntry.originalTransactionId ?? existingEntry.transactionId,
+                isIncome ? { toAccountId: accountId } : { fromAccountId: accountId },
+                tx
+            );
+            await accountBalanceIncrementalService.updateBalancesByAccountIds([existingEntry.accountId, accountId], tx);
+
+            return true;
+        });
     }
 
     @Log(

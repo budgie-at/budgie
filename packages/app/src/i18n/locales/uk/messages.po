@@ -12,6 +12,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#. js-lingui-explicit-id
+#: src/sync/service/consolidation-coordinator.service.ts
+msgid "Binance P2P buy {assetCode}"
+msgstr "P2P-купівля {assetCode} на Binance"
+
+#. js-lingui-explicit-id
+#: src/sync/service/consolidation-coordinator.service.ts
+msgid "Binance P2P sell {assetCode}"
+msgstr "P2P-продаж {assetCode} на Binance"
+
 #: src/ai/service/ai-system-status.service.ts
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} транзакц. у черзі"

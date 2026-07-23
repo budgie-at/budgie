@@ -72,10 +72,6 @@ export class TransferPairConsolidationFamilyService extends ConsolidationFamilyS
             return TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER;
         }
 
-        if (candidate.confidenceBucket === TransferPairAutoConfidenceBucketEnum.AUTO_P2P_FIAT_TRANSFER) {
-            return TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER;
-        }
-
         return TransactionConsolidationTypeEnum.TRANSFER_PAIR;
     }
 }

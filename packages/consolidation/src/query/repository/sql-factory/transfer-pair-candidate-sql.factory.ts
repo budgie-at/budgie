@@ -29,7 +29,7 @@ export const buildTransferPairCandidatesSql = (scope: ConsolidationScanScopeInte
             FROM (${rankedCandidateSql})
             WHERE expenseRank = 1
                 AND incomeRank = 1
-                AND confidenceBucket IN ('AUTO_IBAN_AMOUNT', 'AUTO_SAME_CURRENCY_AMOUNT', 'AUTO_CROSS_CURRENCY_OPERATION', 'AUTO_CROSS_CURRENCY_IMPLIED_RATE', 'AUTO_P2P_FIAT_TRANSFER', 'AUTO_SAME_BANK_CROSS_CURRENCY', 'AUTO_SAME_BANK_HINTED_FEE', 'AUTO_INTERBANK_HINTED_FEE')
+                AND confidenceBucket IN ('AUTO_IBAN_AMOUNT', 'AUTO_SAME_CURRENCY_AMOUNT', 'AUTO_CROSS_CURRENCY_OPERATION', 'AUTO_CROSS_CURRENCY_IMPLIED_RATE', 'AUTO_SAME_BANK_CROSS_CURRENCY', 'AUTO_SAME_BANK_HINTED_FEE', 'AUTO_INTERBANK_HINTED_FEE')
         `;
 };
 

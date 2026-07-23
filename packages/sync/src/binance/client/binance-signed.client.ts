@@ -170,7 +170,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         error => `throw error=${getErrorMessage(error)}`
     )
     async getC2cTransactions(from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        return this.getSourceTransactions(from, to, async (startTimeMs, endTimeMs) => {
+        return this.getSourceTransactions(BinanceWalletEnum.FUNDING, from, to, async (startTimeMs, endTimeMs) => {
             const c2cOrdersResult = await this.fetchC2cOrders(startTimeMs, endTimeMs);
 
             return c2cOrdersResult.success ? this.success(this.emptySources({ c2cOrders: c2cOrdersResult.data })) : c2cOrdersResult;
@@ -183,7 +183,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         error => `throw error=${getErrorMessage(error)}`
     )
     async getEarnTransactions(from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        return this.getSourceTransactions(from, to, async (startTimeMs, endTimeMs) => {
+        return this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, async (startTimeMs, endTimeMs) => {
             const earnRewardsResult = await this.fetchEarnRewards(startTimeMs, endTimeMs);
 
             return earnRewardsResult.success ? this.success(this.emptySources({ earnRewards: earnRewardsResult.data })) : earnRewardsResult;
@@ -196,7 +196,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         error => `throw error=${getErrorMessage(error)}`
     )
     async getCapitalTransactions(from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        return this.getSourceTransactions(from, to, (startTimeMs, endTimeMs) =>
+        return this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
             this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs)
         );
     }
@@ -207,7 +207,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         error => `throw error=${getErrorMessage(error)}`
     )
     async getFiatTransactions(from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        return this.getSourceTransactions(from, to, (startTimeMs, endTimeMs) => this.fetchFiatSources(startTimeMs, endTimeMs));
+        return this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
+            this.fetchFiatSources(startTimeMs, endTimeMs)
+        );
     }
 
     @Log(
@@ -282,6 +284,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private async getSourceTransactions(
+        wallet: BinanceWalletEnum,
         from: number,
         to: number | undefined,
         fetchSources: (startTimeMs: number, endTimeMs: number) => Promise<SyncResultInterface<BinanceTransactionSourcesInterface>>
@@ -292,7 +295,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return sourcesResult;
         }
 
-        return this.success(this.dedupeTransactions(this.buildSourceTransactions(BinanceWalletEnum.SPOT, sourcesResult.data)));
+        return this.success(this.dedupeTransactions(this.buildSourceTransactions(wallet, sourcesResult.data)));
     }
 
     private async withDecodedAccount<T>(

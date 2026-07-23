@@ -1,3 +1,4 @@
+import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -5,6 +6,7 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 import { ConsolidationEligibilityService } from './consolidation-eligibility.service';
 import { ConsolidationMutationService } from './consolidation-mutation.service';
 
+import type { P2pFiatTransferCandidateInterface } from '../../auto/interface/p2p-fiat-transfer-candidate.interface';
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
 import type { ConsolidationPlanInterface } from '../interface/consolidation-plan.interface';
@@ -115,6 +117,36 @@ export class ConsolidationExecutorService {
 
         return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
             this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
+        );
+    }
+
+    @Log(
+        candidate =>
+            `enter p2p=${candidate.p2pTransactionId} bank=${candidate.bankTransactionIds.join(',')} direction=${candidate.direction}`,
+        (result, candidate) =>
+            `done p2pResult=${String(result)} p2p=${candidate.p2pTransactionId} bank=${candidate.bankTransactionIds.join(',')} direction=${candidate.direction}`,
+        (error, candidate) =>
+            `throw p2p=${candidate.p2pTransactionId} bank=${candidate.bankTransactionIds.join(',')} direction=${candidate.direction} error=${getErrorMessage(error)}`
+    )
+    async consolidateP2pFiatTransfer(candidate: P2pFiatTransferCandidateInterface): Promise<boolean> {
+        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
+            this.executeConsolidation(
+                [...candidate.sourceTransactionIds],
+                {
+                    title: this.dependencies.resolveP2pTransferTitle(candidate.direction, candidate.assetCode),
+                    operatedAt: candidate.operatedAt,
+                    fromAccountId: candidate.fromAccountId,
+                    toAccountId: candidate.toAccountId,
+                    fromAmount: candidate.fromAmount,
+                    toAmount: candidate.toAmount,
+                    exchangeRate: candidate.fromAmount / candidate.toAmount,
+                    consolidationType: TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER,
+                    fromEntryExchangeRate: candidate.fromEntryExchangeRate,
+                    toEntryExchangeRate: candidate.toEntryExchangeRate,
+                    fromEntryToIban: candidate.fromEntryToIban
+                },
+                tx
+            )
         );
     }
 

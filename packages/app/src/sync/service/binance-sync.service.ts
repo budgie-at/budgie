@@ -1,3 +1,4 @@
+import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie/consolidation';
 import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log, getLogger } from '@budgie/logger';
 import {
@@ -7,6 +8,7 @@ import {
     BinanceSignedClient,
     SyncError,
     SyncErrorCodeEnum,
+    SyncTransactionTypeEnum,
     binanceMapper,
     decodeBinanceAccountId
 } from '@budgie/sync';
@@ -14,7 +16,7 @@ import { getUnixTime, subDays, subYears } from 'date-fns';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountBalanceRepository, accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { accountBalanceRepository, accountRepository, instrumentRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountService } from '../../account/service/account.service';
@@ -261,9 +263,9 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         const fromUnixTime = await this.resolveSourceWindowStart(sync);
 
         let createdCount = 0;
-        createdCount += await this.commitSourceType(sync.token, () => client.getC2cTransactions(fromUnixTime));
-        createdCount += await this.commitSourceType(sync.token, () => client.getEarnTransactions(fromUnixTime));
-        createdCount += await this.commitSourceType(sync.token, () => client.getCapitalTransactions(fromUnixTime));
+        createdCount += await this.commitSourceType(sync.token, () => client.getC2cTransactions(fromUnixTime), true);
+        createdCount += await this.commitSourceType(sync.token, () => client.getEarnTransactions(fromUnixTime), false);
+        createdCount += await this.commitSourceType(sync.token, () => client.getCapitalTransactions(fromUnixTime), false);
 
         return createdCount;
     }
@@ -277,7 +279,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         if (this.shouldRefreshFiatHistory()) {
             const client = this.getRunSignedClient(sync.token);
             const fromUnixTime = await this.resolveSourceWindowStart(sync);
-            createdCount += await this.commitSourceType(sync.token, () => client.getFiatTransactions(fromUnixTime));
+            createdCount += await this.commitSourceType(sync.token, () => client.getFiatTransactions(fromUnixTime), false);
             this.fiatSyncedAtMs = Date.now();
         }
         this.sourcesSyncedThisRun = true;
@@ -291,20 +293,81 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
     private async commitSourceType(
         token: string,
-        fetchSourceType: () => Promise<SyncResultInterface<SyncTransactionInterface[]>>
+        fetchSourceType: () => Promise<SyncResultInterface<SyncTransactionInterface[]>>,
+        enqueueExistingConsolidation: boolean
     ): Promise<number> {
         const transactions = await this.resolveSourceTransactions(fetchSourceType);
         if (!isNotEmptyArray(transactions)) {
             return 0;
         }
 
-        const existingIds = await transactionService.findByExternalSource(this.provider);
-        const newTransactions = transactions.filter(sourceTransaction => !existingIds.has(sourceTransaction.id));
-        if (!isNotEmptyArray(newTransactions)) {
-            return 0;
+        const existingIdMap = await transactionService.findIdMapByExternalSource(this.provider);
+        const existingTransactions = transactions.filter(sourceTransaction => existingIdMap.has(sourceTransaction.id));
+        const reconciledCount = await this.reconcileSourceAccounts(existingTransactions, token, existingIdMap);
+        if (enqueueExistingConsolidation) {
+            await this.enqueueExistingSourceConsolidation(existingTransactions, existingIdMap);
         }
 
-        return this.createSyncedSources(newTransactions, token);
+        const newTransactions = transactions.filter(sourceTransaction => !existingIdMap.has(sourceTransaction.id));
+        if (!isNotEmptyArray(newTransactions)) {
+            return reconciledCount;
+        }
+
+        return reconciledCount + (await this.createSyncedSources(newTransactions, token));
+    }
+
+    private async enqueueExistingSourceConsolidation(
+        sourceTransactions: SyncTransactionInterface[],
+        existingIdMap: ReadonlyMap<string, number>
+    ): Promise<void> {
+        const transactionIds = sourceTransactions
+            .filter(transaction => transaction.id.includes(P2P_ORDER_EXTERNAL_ID_MARKER))
+            .map(transaction => existingIdMap.get(transaction.id))
+            .filter(isDefined);
+        if (!isNotEmptyArray(transactionIds)) {
+            return;
+        }
+
+        const transactions = await transactionRepository.findByIds(transactionIds);
+        const consolidationScope = consolidationScopeService.buildFromTransactions(transactions);
+        if (isDefined(consolidationScope)) {
+            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC, consolidationScope);
+        }
+    }
+
+    private async reconcileSourceAccounts(
+        transactions: SyncTransactionInterface[],
+        token: string,
+        existingIdMap: ReadonlyMap<string, number>
+    ): Promise<number> {
+        const resolveAccount = await this.buildRunAccountResolver(token);
+
+        return transactions.reduce(
+            (previousCount, transaction) =>
+                previousCount.then(async count => count + (await this.reconcileSourceAccount(transaction, resolveAccount, existingIdMap))),
+            Promise.resolve(0)
+        );
+    }
+
+    private async reconcileSourceAccount(
+        transaction: SyncTransactionInterface,
+        resolveAccount: (codecAccountId: string) => Promise<AccountEntityInterface | null>,
+        existingIdMap: ReadonlyMap<string, number>
+    ): Promise<number> {
+        const account = await resolveAccount(transaction.accountId);
+        const transactionId = existingIdMap.get(transaction.id);
+        if (isDefined(account) && isDefined(transactionId)) {
+            return (await transactionService.moveExternalEntryToAccount(
+                transactionId,
+                transaction.id,
+                account.id,
+                transaction.type === SyncTransactionTypeEnum.INCOME
+            ))
+                ? 1
+                : 0;
+        }
+
+        return 0;
     }
 
     private async createSyncedSources(transactions: SyncTransactionInterface[], token: string): Promise<number> {

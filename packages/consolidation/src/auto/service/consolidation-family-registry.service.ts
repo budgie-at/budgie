@@ -5,6 +5,7 @@ import { ExistingTransferIncomeDuplicateConsolidationFamilyService } from './exi
 import { IbanBridgeCanonicalDuplicateConsolidationFamilyService } from './iban-bridge-canonical-duplicate-consolidation-family.service';
 import { IbanBridgeChainTransferConsolidationFamilyService } from './iban-bridge-chain-transfer-consolidation-family.service';
 import { IbanBridgeTransferConsolidationFamilyService } from './iban-bridge-transfer-consolidation-family.service';
+import { P2pFiatTransferConsolidationFamilyService } from './p2p-fiat-transfer-consolidation-family.service';
 import { RefundPairConsolidationFamilyService } from './refund-pair-consolidation-family.service';
 import { TransferPairConsolidationFamilyService } from './transfer-pair-consolidation-family.service';
 
@@ -51,6 +52,11 @@ export class ConsolidationFamilyRegistryService {
             new ExistingTransferIncomeDuplicateConsolidationFamilyService(
                 this.repositories.existingTransferRepository,
                 this.consolidationRepairExecutorService,
+                this.yieldControl
+            ),
+            new P2pFiatTransferConsolidationFamilyService(
+                this.repositories.transferPairRepository,
+                this.consolidationExecutorService,
                 this.yieldControl
             ),
             new TransferPairConsolidationFamilyService(

@@ -4,6 +4,7 @@ import {
     ConsolidationExecutorService,
     ConsolidationFamilyRegistryService,
     ConsolidationRepairExecutorService,
+    P2pFiatDirectionEnum,
     RefundConsolidationService,
     UnconsolidationService
 } from '@budgie/consolidation';
@@ -16,16 +17,18 @@ const repositories = createTestRepositories(testDb);
 const runTestTransaction = <T>(database: DB, callback: (transactionDatabase: DB) => Promise<T>): Promise<T> => callback(database);
 const yieldControl = (): Promise<void> => Promise.resolve();
 
-export const accountBalanceRepository = repositories.accountBalanceRepository;
-export const accountRepository = repositories.accountRepository;
-export const atmCashWithdrawalRepository = repositories.atmCashWithdrawalRepository;
-export const existingTransferRepository = repositories.existingTransferRepository;
-export const ibanBridgeTransferRepository = repositories.ibanBridgeTransferRepository;
-export const refundPairRepository = repositories.refundPairRepository;
-export const transferPairRepository = repositories.transferPairRepository;
+export const { accountBalanceRepository } = repositories;
+export const { accountRepository } = repositories;
+export const { atmCashWithdrawalRepository } = repositories;
+export const { existingTransferRepository } = repositories;
+export const { ibanBridgeTransferRepository } = repositories;
+export const { refundPairRepository } = repositories;
+export const { transferPairRepository } = repositories;
 
 const consolidationExecutorDependencies = {
     database: testDb,
+    resolveP2pTransferTitle: (direction: P2pFiatDirectionEnum, assetCode: string): string =>
+        direction === P2pFiatDirectionEnum.BUY ? `Binance P2P buy ${assetCode}` : `Binance P2P sell ${assetCode}`,
     runTransaction: runTestTransaction,
     transactionRepository: repositories.transactionRepository,
     transactionEntryRepository: repositories.transactionEntryRepository,

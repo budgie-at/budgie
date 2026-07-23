@@ -12,6 +12,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. js-lingui-explicit-id
+#: src/sync/service/consolidation-coordinator.service.ts
+msgid "Binance P2P buy {assetCode}"
+msgstr "Binance P2P-Kauf von {assetCode}"
+
+#. js-lingui-explicit-id
+#: src/sync/service/consolidation-coordinator.service.ts
+msgid "Binance P2P sell {assetCode}"
+msgstr "Binance P2P-Verkauf von {assetCode}"
+
 #: src/ai/service/ai-system-status.service.ts
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} Tx ausstehend"
