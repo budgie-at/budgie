@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.43.5](https://github.com/budgie-at/budgie/compare/v5.43.4...v5.43.5) (2026-07-24)
+
+
+### Bug Fixes
+
+* **consolidation:** consolidate PrivatBank rejected-payment refunds ([#603](https://github.com/budgie-at/budgie/issues/603)) ([d1f5fe3](https://github.com/budgie-at/budgie/commit/d1f5fe31f75b81b878d0b66954297c527735fd11))
+
+
+
+
+
 ## [5.43.4](https://github.com/budgie-at/budgie/compare/v5.43.3...v5.43.4) (2026-07-22)
 
 
