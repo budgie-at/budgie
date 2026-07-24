@@ -206,9 +206,32 @@ const buildRankedCandidatesSql = (): string => `
                         AND expenseRank = 1
                     THEN 1 ELSE 0
                 END
-            ) OVER (PARTITION BY refundTxId) AS localizedExactAmountMatchCount
+            ) OVER (PARTITION BY refundTxId) AS localizedExactAmountMatchCount,
+            SUM(CASE WHEN refundRank = 1 THEN refundAmount ELSE 0 END) OVER (
+                PARTITION BY expenseTxId, accountId, confidenceBucket, matchType, expenseAmount
+                ORDER BY expenseRank
+                ROWS UNBOUNDED PRECEDING
+            ) AS expenseRunningRefundTotal
         FROM ranked_pairs
     )
+`;
+
+const buildAutoAcceptanceGateSql = (): string => `
+        confidenceBucket IN (
+            'AUTO_REFUND_EXACT_TITLE',
+            'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
+            'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE',
+            'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE'
+        )
+        AND (
+            refundCandidateCount = 1
+            OR (
+                confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
+                AND expenseAmount = refundAmount
+                AND expenseRank = 1
+                AND localizedExactAmountMatchCount = 1
+            )
+        )
 `;
 
 const buildRankedCandidateSql = (scope: ConsolidationScanScopeInterface | null): string => {
@@ -239,21 +262,8 @@ export const REFUND_AUTO_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterfac
         GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
     FROM (${buildRankedCandidateSql(scope)})
     WHERE refundRank = 1
-        AND confidenceBucket IN (
-            'AUTO_REFUND_EXACT_TITLE',
-            'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
-            'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE',
-            'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE'
-        )
-        AND (
-            refundCandidateCount = 1
-            OR (
-                confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
-                AND expenseAmount = refundAmount
-                AND expenseRank = 1
-                AND localizedExactAmountMatchCount = 1
-            )
-        )
+        AND ${buildAutoAcceptanceGateSql()}
+        AND expenseRunningRefundTotal <= expenseAmount
     GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
     HAVING SUM(refundAmount) <= expenseAmount
 `;
@@ -277,6 +287,10 @@ export const REFUND_REVIEW_CANDIDATES_SQL = `
                     AND expenseRank = 1
                     AND localizedExactAmountMatchCount = 1
                 )
+            )
+            OR (
+                ${buildAutoAcceptanceGateSql()}
+                AND expenseRunningRefundTotal > expenseAmount
             )
         )
     GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
