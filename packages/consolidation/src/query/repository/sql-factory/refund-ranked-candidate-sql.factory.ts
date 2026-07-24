@@ -238,15 +238,14 @@ export const REFUND_AUTO_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterfac
         SUM(refundAmount) AS refundsTotal,
         GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
     FROM (${buildRankedCandidateSql(scope)})
-    WHERE refundRank = 1
-        AND confidenceBucket IN (
+    WHERE confidenceBucket IN (
             'AUTO_REFUND_EXACT_TITLE',
             'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
             'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE',
             'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE'
         )
         AND (
-            refundCandidateCount = 1
+            (refundRank = 1 AND refundCandidateCount = 1)
             OR (
                 confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
                 AND expenseAmount = refundAmount
