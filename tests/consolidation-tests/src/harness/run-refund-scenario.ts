@@ -10,6 +10,7 @@ export const runRefundScenario = async (input: {
         readonly refunds: TransactionEntityInterface[];
     }) => void;
     readonly expenseAmount: number;
+    readonly expenseFeeAmount?: number;
     readonly expenseOperatedAt?: Date;
     readonly externalIdPrefix?: string;
     readonly mccCategoryId?: number | null;
@@ -17,6 +18,7 @@ export const runRefundScenario = async (input: {
     readonly refundDelaySeconds?: number;
     readonly refundMccCategoryId?: number | null;
     readonly refundTitle?: string;
+    readonly refundTitles?: readonly string[];
     readonly title?: string;
 }): Promise<{
     readonly account: AccountEntityInterface;

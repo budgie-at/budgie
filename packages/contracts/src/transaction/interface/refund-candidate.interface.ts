@@ -3,5 +3,5 @@ import type { RefundCandidateBaseInterface } from './refund-candidate-base.inter
 
 export interface RefundCandidateInterface extends RefundCandidateBaseInterface {
     readonly confidenceBucket: RefundAutoConfidenceBucket;
-    readonly matchType: 'exact-title' | 'localized-refund-title';
+    readonly matchType: 'exact-title' | 'localized-refund-title' | 'rejected-payment-principal-title' | 'rejected-payment-fee-title';
 }

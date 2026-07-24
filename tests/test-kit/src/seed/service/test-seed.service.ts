@@ -21,7 +21,7 @@ import {
 } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import type { SeedBankPairEntryInputType } from '../interface/seed-bank-pair-entry-input.type';
 import type {
@@ -41,8 +41,8 @@ import type {
 
 export class TestSeedService {
     private static readonly DEFAULT_REFUND_TITLE = 'STARBUCKS #1234';
-    private static readonly DEFAULT_REFUND_DELAY_SECONDS = 86_400;
-    private static readonly DEFAULT_TRANSFER_OPERATED_AT = new Date(2026, 0, 15, 12, 0, 0);
+    private static readonly DEFAULT_REFUND_DELAY_SECONDS = 24 * 60 * 60;
+    private static readonly DEFAULT_TRANSFER_OPERATED_AT = new Date('2026-01-15T12:00:00');
     private static readonly DEFAULT_BASE_INSTRUMENT_ID = 1;
 
     constructor(private readonly database: DB) {}
@@ -92,6 +92,7 @@ export class TestSeedService {
         return this.requireInserted(rows, 'accounts');
     }
 
+    // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments
     bankSyncAccount(
         title: string,
         externalSource: ExternalSourceEnum | null,
@@ -291,6 +292,7 @@ export class TestSeedService {
         readonly accountId: number;
         readonly expenseAmount: number;
         readonly refundAmounts: readonly number[];
+        readonly expenseFeeAmount?: number;
         readonly expenseOperatedAt?: Date;
         readonly externalIdPrefix?: string;
         readonly mccCategoryId?: number | null;
@@ -298,6 +300,7 @@ export class TestSeedService {
         readonly refundDelaySeconds?: number;
         readonly refundMccCategoryId?: number | null;
         readonly refundTitle?: string;
+        readonly refundTitles?: readonly string[];
         readonly title?: string;
     }): {
         readonly expense: TransactionEntityInterface;
@@ -321,6 +324,14 @@ export class TestSeedService {
                 mccCategoryId: input.mccCategoryId ?? null
             }
         );
+
+        if (isPositiveNumber(input.expenseFeeAmount)) {
+            this.insertEntry(expense.id, TransactionEntryTypeEnum.FEE, `${externalIdPrefix}-expense-fee`, {
+                accountId: input.accountId,
+                amount: input.expenseFeeAmount
+            });
+        }
+
         const refunds = input.refundAmounts.map((refundAmount, index) => {
             const operatedAt = new Date(expenseOperatedAt.getTime() + refundDelaySeconds * 1000 * (index + 1));
 
@@ -328,7 +339,7 @@ export class TestSeedService {
                 {
                     externalId: `${externalIdPrefix}-refund-${index}`,
                     operatedAt,
-                    title: refundTitle
+                    title: input.refundTitles?.[index] ?? refundTitle
                 },
                 {
                     accountId: refundAccountId,
@@ -422,6 +433,7 @@ export class TestSeedService {
         return inserted;
     }
 
+    // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments
     private insertTransaction(
         type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
         transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt' | 'title'>,
@@ -480,7 +492,7 @@ export class TestSeedService {
     }
 
     private requireInserted<T>(rows: readonly T[], tableName: string): T {
-        const row = rows[0];
+        const [row] = rows;
 
         if (!isDefined(row)) {
             throw new Error(`Failed to insert into ${tableName}`);

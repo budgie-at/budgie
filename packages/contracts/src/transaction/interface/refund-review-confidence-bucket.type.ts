@@ -1,1 +1,1 @@
-export type RefundReviewConfidenceBucket = 'REVIEW_REFUND_PREFIX_TITLE_MCC';
+export type RefundReviewConfidenceBucket = 'REVIEW_REFUND_PREFIX_TITLE_MCC' | 'AUTO_REFUND_LOCALIZED_REFUND_TITLE';
