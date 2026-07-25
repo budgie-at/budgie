@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 6.0.0 (2026-07-25)
+
+
+### Features
+
+* **app:** add budget planning v1 (monthly budgets, alerts, push, multi-currency) ([#426](https://github.com/budgie-at/budgie/issues/426)) ([dd28726](https://github.com/budgie-at/budgie/commit/dd28726a79560be55e9c77e439369fc5132ccb01)), closes [#2](https://github.com/budgie-at/budgie/issues/2) [#483](https://github.com/budgie-at/budgie/issues/483) [#1](https://github.com/budgie-at/budgie/issues/1) [#483](https://github.com/budgie-at/budgie/issues/483) [#3](https://github.com/budgie-at/budgie/issues/3) [#483](https://github.com/budgie-at/budgie/issues/483)
+
+
+
+
+
 ## [5.43.5](https://github.com/budgie-at/budgie/compare/v5.43.4...v5.43.5) (2026-07-24)
 
 **Note:** Version bump only for package @budgie/budget
