@@ -115,14 +115,18 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      # ndk;27.1.12297006 is rootProject.ext.ndkVersion from the Expo version
+      # catalog. ndk;27.0.12077973 is the Android Gradle plugin default, which
+      # expo-updates falls back to because its externalNativeBuild block does
+      # not read rootProject.ext.ndkVersion.
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
         with:
-          packages: 'platform-tools platforms;android-36 build-tools;36.0.0 ndk;27.1.12297006'
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0 ndk;27.1.12297006 ndk;27.0.12077973 cmake;3.22.1'
 
       - name: Verify Android toolchain
         run: |
-          for ndk_version in 27.1.12297006; do
+          for ndk_version in 27.1.12297006 27.0.12077973; do
             test -d "$ANDROID_HOME/ndk/$ndk_version" || {
               echo "::warning::NDK $ndk_version is not installed; Gradle will download it while configuring expo-updates."
             }
@@ -142,6 +146,20 @@ jobs:
         env:
           APP_VARIANT: production
         run: ../../node_modules/.bin/expo prebuild --platform android --no-install --clean
+
+      # Google Play rejects a release without a 64-bit ABI. There is no Android
+      # artifact job in this repository yet, so the guard runs against the
+      # generated production project instead of a packaged bundle.
+      - name: Verify production Android ABIs
+        working-directory: packages/app
+        run: |
+          abis=$(sed -n 's/^reactNativeArchitectures=//p' android/gradle.properties)
+          echo "Production ABIs: $abis"
+
+          printf '%s\n' "$abis" | tr ',' '\n' | grep -qx arm64-v8a || {
+            echo "::error::arm64-v8a is missing from the production ABI list; Google Play requires a 64-bit ABI."
+            exit 1
+          }
 
       - name: Run release lint
         working-directory: packages/app/android
