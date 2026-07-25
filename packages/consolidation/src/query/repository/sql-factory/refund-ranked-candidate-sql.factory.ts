@@ -63,6 +63,7 @@ const buildExpenseEntriesSql = (
                     AND expense_fee_entry.original_transaction_id IS NULL
                     AND expense_fee_entry.type = '${TransactionEntryTypeEnum.FEE}'
                     AND expense_fee_entry.amount > 0
+                ORDER BY expense_fee_entry.id
                 LIMIT 1
             ) AS feeAmount
         FROM transactions expense_tx INDEXED BY transactions_visible_type_operated_idx
