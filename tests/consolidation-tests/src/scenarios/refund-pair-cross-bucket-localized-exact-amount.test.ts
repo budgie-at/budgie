@@ -50,7 +50,12 @@ describe('consolidation/refund-pair-cross-bucket-localized-exact-amount', () => 
                 refundIncomeTransactionIds: [refund.id]
             })
         );
-        expect(autoCandidates.some(candidate => candidate.expenseTransactionId === exactTitleExpense.id && candidate.refundIncomeTransactionIds.includes(refund.id))).toBe(false);
+        expect(
+            autoCandidates.some(
+                candidate =>
+                    candidate.expenseTransactionId === exactTitleExpense.id && candidate.refundIncomeTransactionIds.includes(refund.id)
+            )
+        ).toBe(false);
         expect(reviewCandidates.some(candidate => candidate.refundIncomeTransactionIds.includes(refund.id))).toBe(false);
 
         await runConsolidation();
