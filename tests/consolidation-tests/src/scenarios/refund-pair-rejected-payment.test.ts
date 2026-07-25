@@ -63,33 +63,27 @@ const expectBothRefundsConsolidatedToExpense = (expenseId: number, refunds: Tran
     ]);
 };
 
+const runRejectedPaymentPrincipalRefundScenarioAndAssert = async (refundTitle: string) => {
+    const { consolidated, expense, refunds } = await runRefundScenario({
+        title: 'FOP TESTOVYI PRODUCTS',
+        refundTitle,
+        expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
+        refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT],
+        refundDelaySeconds: 4_380
+    });
+
+    expect(consolidated).toBe(1);
+    expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+    expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+};
+
 describe('consolidation/refund-pair-rejected-payment', () => {
     it('auto-consolidates a PrivatBank rejected-payment principal refund matched by title prefix', async () => {
-        const { consolidated, expense, refunds } = await runRefundScenario({
-            title: 'FOP TESTOVYI PRODUCTS',
-            refundTitle: REJECTED_PAYMENT_PRINCIPAL_TITLE,
-            expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
-            refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT],
-            refundDelaySeconds: 4_380
-        });
-
-        expect(consolidated).toBe(1);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+        await runRejectedPaymentPrincipalRefundScenarioAndAssert(REJECTED_PAYMENT_PRINCIPAL_TITLE);
     });
 
     it('auto-consolidates an ALL-CAPS PrivatBank rejected-payment principal refund matched by title prefix', async () => {
-        const { consolidated, expense, refunds } = await runRefundScenario({
-            title: 'FOP TESTOVYI PRODUCTS',
-            refundTitle: REJECTED_PAYMENT_PRINCIPAL_TITLE_ALL_CAPS,
-            expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
-            refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT],
-            refundDelaySeconds: 4_380
-        });
-
-        expect(consolidated).toBe(1);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+        await runRejectedPaymentPrincipalRefundScenarioAndAssert(REJECTED_PAYMENT_PRINCIPAL_TITLE_ALL_CAPS);
     });
 
     it('does not consolidate a same-title retry expense that occurs after the refund income', async () => {
