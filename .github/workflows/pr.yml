@@ -84,6 +84,9 @@ jobs:
               run: yarn i18n:check
 
             - name: Lint the PR Title
+              # Dependabot titles carry the 'deps' scope, which config-lerna-scopes
+              # rejects because it only accepts workspace package names.
+              if: github.actor != 'dependabot[bot]'
               run: printf '%s\n' "$PR_TITLE" | node_modules/.bin/commitlint
 
             - name: Formatting checks
@@ -152,7 +155,9 @@ jobs:
                   use_oidc: true
 
     eas-update-preview:
-        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        # Dependabot-triggered runs are never given repository secrets, so
+        # EXPO_TOKEN arrives empty and the preview export can only ever fail.
+        if: needs.detect-mobile-impact.outputs.mobile == 'true' && github.actor != 'dependabot[bot]'
         needs: [detect-mobile-impact]
         name: EAS Update Preview
         # Expo's Hermes compiler package ships an x86-64 Linux host binary.
