@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.2](https://github.com/budgie-at/budgie/compare/v6.0.1...v6.0.2) (2026-07-31)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
 ## [6.0.1](https://github.com/budgie-at/budgie/compare/v6.0.0...v6.0.1) (2026-07-25)
 
 **Note:** Version bump only for package @budgie-at/app
