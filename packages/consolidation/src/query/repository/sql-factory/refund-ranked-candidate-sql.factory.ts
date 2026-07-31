@@ -6,8 +6,12 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
 
-const REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIX = 'Повернення коштів за забракованим платежем';
-const REJECTED_PAYMENT_FEE_TITLE_PREFIX = 'Повернення комісій';
+const REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES = [
+    'Повернення коштів за забракованим платежем',
+    'ПОВЕРНЕННЯ КОШТІВ ЗА ЗАБРАКОВАНИМ ПЛАТЕЖЕМ'
+] as const;
+
+const REJECTED_PAYMENT_FEE_TITLE_PREFIXES = ['Повернення комісій', 'ПОВЕРНЕННЯ КОМІСІЙ'] as const;
 
 const AUTO_TITLE_PREFIXES = [
     'Скасування. ',
@@ -37,6 +41,9 @@ const buildStripPrefixesSql = (seedExpression: string, prefixes: readonly string
 
 const buildStripCommaSuffixSql = (seedExpression: string): string =>
     `TRIM(CASE WHEN INSTR(${seedExpression}, ',') > 0 THEN SUBSTR(${seedExpression}, 1, INSTR(${seedExpression}, ',') - 1) ELSE ${seedExpression} END)`;
+
+const buildPrefixLikeSql = (column: string, prefixes: readonly string[]): string =>
+    `(${prefixes.map(prefix => `${column} LIKE '${prefix}%'`).join(' OR ')})`;
 
 const buildExpenseEntriesSql = (
     autoTitle: string,
@@ -132,11 +139,11 @@ const buildCompatiblePairsSql = (): string => `
                     AND inc.rawNormTitle != exp.rawNormTitle AND inc.operatedAt > exp.operatedAt
                     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
                 THEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
-                WHEN inc.rawNormTitle LIKE '${REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIX}%' AND inc.accountId = exp.accountId
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES)} AND inc.accountId = exp.accountId
                     AND inc.amount = exp.amount AND inc.operatedAt > exp.operatedAt
                     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
                 THEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE'
-                WHEN inc.rawNormTitle LIKE '${REJECTED_PAYMENT_FEE_TITLE_PREFIX}%' AND inc.accountId = exp.accountId
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_FEE_TITLE_PREFIXES)} AND inc.accountId = exp.accountId
                     AND exp.feeAmount IS NOT NULL AND inc.amount = exp.feeAmount
                     AND inc.operatedAt > exp.operatedAt
                     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
@@ -152,8 +159,8 @@ const buildCompatiblePairsSql = (): string => `
             CASE
                 WHEN inc.rawNormTitle = exp.rawNormTitle THEN 'exact-title'
                 WHEN inc.autoNormTitle = exp.autoNormTitle THEN 'localized-refund-title'
-                WHEN inc.rawNormTitle LIKE '${REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIX}%' THEN 'rejected-payment-principal-title'
-                WHEN inc.rawNormTitle LIKE '${REJECTED_PAYMENT_FEE_TITLE_PREFIX}%' THEN 'rejected-payment-fee-title'
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES)} THEN 'rejected-payment-principal-title'
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_FEE_TITLE_PREFIXES)} THEN 'rejected-payment-fee-title'
                 ELSE 'prefix-title-mcc'
             END AS matchType
         FROM income_entries inc

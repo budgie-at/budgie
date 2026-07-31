@@ -6,7 +6,8 @@ import {
     REJECTED_PAYMENT_FEE_AMOUNT,
     REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS,
     REJECTED_PAYMENT_FEE_TITLE,
-    REJECTED_PAYMENT_PRINCIPAL_TITLE
+    REJECTED_PAYMENT_PRINCIPAL_TITLE,
+    REJECTED_PAYMENT_PRINCIPAL_TITLE_ALL_CAPS
 } from '../harness/rejected-payment-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
 import { runRefundScenario } from '../harness/run-refund-scenario';
@@ -62,19 +63,27 @@ const expectBothRefundsConsolidatedToExpense = (expenseId: number, refunds: Tran
     ]);
 };
 
+const runRejectedPaymentPrincipalRefundScenarioAndAssert = async (refundTitle: string) => {
+    const { consolidated, expense, refunds } = await runRefundScenario({
+        title: 'FOP TESTOVYI PRODUCTS',
+        refundTitle,
+        expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
+        refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT],
+        refundDelaySeconds: 4_380
+    });
+
+    expect(consolidated).toBe(1);
+    expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+    expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+};
+
 describe('consolidation/refund-pair-rejected-payment', () => {
     it('auto-consolidates a PrivatBank rejected-payment principal refund matched by title prefix', async () => {
-        const { consolidated, expense, refunds } = await runRefundScenario({
-            title: 'FOP TESTOVYI PRODUCTS',
-            refundTitle: REJECTED_PAYMENT_PRINCIPAL_TITLE,
-            expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
-            refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT],
-            refundDelaySeconds: 4_380
-        });
+        await runRejectedPaymentPrincipalRefundScenarioAndAssert(REJECTED_PAYMENT_PRINCIPAL_TITLE);
+    });
 
-        expect(consolidated).toBe(1);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+    it('auto-consolidates an ALL-CAPS PrivatBank rejected-payment principal refund matched by title prefix', async () => {
+        await runRejectedPaymentPrincipalRefundScenarioAndAssert(REJECTED_PAYMENT_PRINCIPAL_TITLE_ALL_CAPS);
     });
 
     it('does not consolidate a same-title retry expense that occurs after the refund income', async () => {
