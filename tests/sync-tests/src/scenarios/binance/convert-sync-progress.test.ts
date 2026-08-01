@@ -1,5 +1,6 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
-import { ExternalSourceEnum } from '@budgie/contracts';
+import { SyncEntityTable } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -7,10 +8,10 @@ import {
     buildBinance,
     fetchBinanceTransactions,
     fetchSyncById,
-    seed,
     seedCryptoInstrument,
     setupBinanceFixture,
-    setupUsdtSpotFixtureWithBalances
+    setupUsdtSpotFixtureWithBalances,
+    testDb
 } from '../../harness';
 
 import type { TimeWindow } from '../../harness';
@@ -23,7 +24,9 @@ const OLDER_CONVERT_AGE_DAYS = 1000;
 const NEWER_CONVERT_AGE_MS = 5_000;
 const MIN_SPLIT_WINDOW_COUNT = 1;
 const EXPECTED_CREATED_TRANSACTION_COUNT = 1;
-const PARTIAL_BACKFILL_AGE_MS = 10 * DAY_MS;
+const BACKFILL_STARTED_AT = new Date('2026-07-01T00:00:00.000Z');
+const INTERRUPTED_PROGRESS_AT = new Date('2026-06-01T00:00:00.000Z');
+const EXPECTED_BACKFILL_START_MS = new Date('2021-07-01T00:00:00.000Z').getTime();
 
 const stubUsdtToBtcConvert = (orderId: number): void => {
     binanceStub.convertTradeFlow([
@@ -81,19 +84,17 @@ describe('binance/convert-sync-progress', () => {
         expect(fetchSyncById(sync.id).transactionCount).toBe(EXPECTED_CREATED_TRANSACTION_COUNT);
     });
 
-    it('resumes an interrupted first source backfill before partial imported ledger rows', async () => {
-        const partialBackfillOperatedAt = new Date(Date.now() - PARTIAL_BACKFILL_AGE_MS);
-        const requestedWindows: TimeWindow[] = [];
-        const { account } = setupBinanceFixture({ asset: 'USDT' });
-        const partialTransaction = seed.bankPairIncome(
-            { externalId: 'binance:c2c:partial-first-run', operatedAt: partialBackfillOperatedAt },
-            { accountId: account.id, amount: 100 }
-        );
-        seed.updateTransaction(partialTransaction.id, { externalSource: ExternalSourceEnum.BINANCE });
-        binanceStub.c2cOrders([], [], requestedWindows);
+    it('resumes an interrupted first backfill from its original floor for sources and transfers', async () => {
+        const sourceWindows: TimeWindow[] = [];
+        const transferWindows: TimeWindow[] = [];
+        const { sync } = setupBinanceFixture({ asset: 'USDT', backwardSyncFromAt: BACKFILL_STARTED_AT });
+        testDb.update(SyncEntityTable).set({ backwardSyncedAt: INTERRUPTED_PROGRESS_AT }).where(eq(SyncEntityTable.id, sync.id)).run();
+        binanceStub.deposits([], sourceWindows);
+        binanceStub.convertTradeFlow([], transferWindows);
 
         await binanceSyncService.sync();
 
-        expect(requestedWindows[0].startMs).toBeLessThan(partialBackfillOperatedAt.getTime());
+        expect(Math.min(...sourceWindows.map(window => window.startMs))).toBe(EXPECTED_BACKFILL_START_MS);
+        expect(Math.min(...transferWindows.map(window => window.startMs))).toBe(EXPECTED_BACKFILL_START_MS);
     });
 });

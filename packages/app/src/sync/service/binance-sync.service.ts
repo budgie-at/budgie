@@ -1,5 +1,5 @@
 import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie/consolidation';
-import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import {
     BINANCE_RATE_LIMIT_MS,
@@ -271,7 +271,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         }
 
         const client = this.getRunSignedClient(sync.token);
-        const fromUnixTime = await this.resolveSourceWindowStart(sync);
+        const fromUnixTime = getUnixTime(this.resolveWindowStart(sync));
 
         let createdCount = 0;
         createdCount += await this.commitSourceType(sync.token, () => client.getC2cTransactions(fromUnixTime), true);
@@ -289,7 +289,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         let createdCount = 0;
         if (this.shouldRefreshFiatHistory()) {
             const client = this.getRunSignedClient(sync.token);
-            const fromUnixTime = await this.resolveSourceWindowStart(sync);
+            const fromUnixTime = getUnixTime(this.resolveWindowStart(sync));
             createdCount += await this.commitSourceType(sync.token, () => client.getFiatTransactions(fromUnixTime), false);
             this.fiatSyncedAtMs = Date.now();
         }
@@ -400,7 +400,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     private async fetchTransferBatch(sync: SyncEntityInterface, externalAccountId: string): Promise<BinanceTransferInterface[]> {
         const result = await this.getRunSignedClient(sync.token).getTransfers(
             externalAccountId,
-            getUnixTime(await this.resolveTransferWindowStart(sync)),
+            getUnixTime(this.resolveWindowStart(sync)),
             null,
             await binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(this.provider)
         );
@@ -466,22 +466,16 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         return error instanceof SyncError && error.code === SyncErrorCodeEnum.DEFERRED;
     }
 
-    private async resolveSourceWindowStart(sync: SyncEntityInterface): Promise<number> {
-        if (isDefined(sync.forwardSyncedAt)) {
-            return getUnixTime(subDays(sync.forwardSyncedAt, AppBinanceSyncService.FORWARD_OVERLAP_DAYS));
+    private resolveWindowStart(sync: SyncEntityInterface): Date {
+        if (sync.mode === SyncModeEnum.BACKWARD) {
+            return subYears(sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date(), BINANCE_TRANSFER_LOOKBACK_YEARS);
         }
 
-        return getUnixTime(sync.backwardSyncedAt ?? subYears(new Date(), BINANCE_TRANSFER_LOOKBACK_YEARS));
-    }
-
-    private async resolveTransferWindowStart(sync: SyncEntityInterface): Promise<Date> {
         if (isDefined(sync.forwardSyncedAt)) {
             return subDays(sync.forwardSyncedAt, AppBinanceSyncService.FORWARD_OVERLAP_DAYS);
         }
 
-        const earliestTransactionTime = await transactionService.getEarliestTransactionTimeByAccountId(sync.accountId);
-
-        return earliestTransactionTime ?? sync.backwardSyncedAt ?? subYears(new Date(), BINANCE_TRANSFER_LOOKBACK_YEARS);
+        return subYears(sync.forwardSyncFromAt ?? new Date(), BINANCE_TRANSFER_LOOKBACK_YEARS);
     }
 
     private async resolveSourceTransactions(

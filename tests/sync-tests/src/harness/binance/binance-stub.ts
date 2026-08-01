@@ -97,11 +97,12 @@ export const binanceStub = {
     fundingBalances: (balances: BinanceAssetBalanceApiInterface[]): void => {
         mockServer.use(http.post(FUNDING_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
     },
-    deposits: (deposits: BinanceDepositApiInterface[]): void => {
+    deposits: (deposits: BinanceDepositApiInterface[], requestedWindows?: TimeWindow[]): void => {
         mockServer.use(
             http.get(DEPOSIT_URL, ({ request }) => {
                 const url = new URL(request.url);
                 const window = parseTimeWindow(url, 'startTime', 'endTime');
+                requestedWindows?.push(window);
                 const matched = deposits.filter(deposit => isWithinWindow(deposit.insertTime, window));
 
                 return HttpResponse.json(sliceOffsetPage(url, matched), { headers: WEIGHT_HEADERS });
