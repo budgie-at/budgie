@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "composite": true,
-        "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo.json",
+        "tsBuildInfoFile": "./dist/tsbuildinfo.json",
         "rootDir": "./src",
         "lib": ["esnext"],
         "outDir": "dist/esm",
