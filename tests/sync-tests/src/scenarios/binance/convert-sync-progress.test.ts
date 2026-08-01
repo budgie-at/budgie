@@ -1,4 +1,5 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -6,6 +7,7 @@ import {
     buildBinance,
     fetchBinanceTransactions,
     fetchSyncById,
+    seed,
     seedCryptoInstrument,
     setupBinanceFixture,
     setupUsdtSpotFixtureWithBalances
@@ -21,6 +23,7 @@ const OLDER_CONVERT_AGE_DAYS = 1000;
 const NEWER_CONVERT_AGE_MS = 5_000;
 const MIN_SPLIT_WINDOW_COUNT = 1;
 const EXPECTED_CREATED_TRANSACTION_COUNT = 1;
+const PARTIAL_BACKFILL_AGE_MS = 10 * DAY_MS;
 
 const stubUsdtToBtcConvert = (orderId: number): void => {
     binanceStub.convertTradeFlow([
@@ -76,5 +79,21 @@ describe('binance/convert-sync-progress', () => {
         await binanceSyncService.sync();
 
         expect(fetchSyncById(sync.id).transactionCount).toBe(EXPECTED_CREATED_TRANSACTION_COUNT);
+    });
+
+    it('resumes an interrupted first source backfill before partial imported ledger rows', async () => {
+        const partialBackfillOperatedAt = new Date(Date.now() - PARTIAL_BACKFILL_AGE_MS);
+        const requestedWindows: TimeWindow[] = [];
+        const { account } = setupBinanceFixture({ asset: 'USDT' });
+        const partialTransaction = seed.bankPairIncome(
+            { externalId: 'binance:c2c:partial-first-run', operatedAt: partialBackfillOperatedAt },
+            { accountId: account.id, amount: 100 }
+        );
+        seed.updateTransaction(partialTransaction.id, { externalSource: ExternalSourceEnum.BINANCE });
+        binanceStub.c2cOrders([], [], requestedWindows);
+
+        await binanceSyncService.sync();
+
+        expect(requestedWindows[0].startMs).toBeLessThan(partialBackfillOperatedAt.getTime());
     });
 });

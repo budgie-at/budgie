@@ -1,5 +1,6 @@
-import { AccountTypeEnum, TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
+import { P2P_FIAT_BANK_ACCOUNT_TYPE_SQL } from '../../../shared/constant/p2p-fiat-bank-account-type-sql.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import {
     TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH,
@@ -63,6 +64,7 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                 LEFT JOIN mcc_categories expense_mcc ON expense_entry.mcc_category_id = expense_mcc.id
                 WHERE expense_entry.deleted_at IS NULL
                     AND expense_entry.original_transaction_id IS NULL
+                    AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
                     AND expense_entry.exchange_rate > 0
                     ${EXPENSE_SCOPE_SQL_PLACEHOLDER}
             ),
@@ -106,6 +108,7 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                 LEFT JOIN mcc_categories income_mcc ON income_entry.mcc_category_id = income_mcc.id
                 WHERE income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL
+                    AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
                     ${INCOME_SCOPE_SQL_PLACEHOLDER}
             ),
             latest_exchange_rates AS (
@@ -276,13 +279,10 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                             AND expense_entries.expenseEntryAmount > 0
                             AND income_entries.incomeEntryAmount > 0
                             AND (
-                                (income_entries.incomeAccountType = '${AccountTypeEnum.CRYPTO_SYNC}'
-                                    AND income_entries.incomeTransactionExternalId LIKE '%${P2P_ORDER_EXTERNAL_ID_MARKER}%'
-                                    AND expense_entries.expenseAccountType != '${AccountTypeEnum.CRYPTO_SYNC}')
-                                OR
-                                (expense_entries.expenseAccountType = '${AccountTypeEnum.CRYPTO_SYNC}'
-                                    AND expense_entries.expenseTransactionExternalId LIKE '%${P2P_ORDER_EXTERNAL_ID_MARKER}%'
-                                    AND income_entries.incomeAccountType != '${AccountTypeEnum.CRYPTO_SYNC}')
+                                (income_entries.incomeAccountType = '${AccountTypeEnum.CRYPTO_SYNC}' AND income_entries.incomeTransactionExternalId LIKE '%${P2P_ORDER_EXTERNAL_ID_MARKER}%'
+                                    AND expense_entries.expenseAccountType IN (${P2P_FIAT_BANK_ACCOUNT_TYPE_SQL}))
+                                OR (expense_entries.expenseAccountType = '${AccountTypeEnum.CRYPTO_SYNC}' AND expense_entries.expenseTransactionExternalId LIKE '%${P2P_ORDER_EXTERNAL_ID_MARKER}%'
+                                    AND income_entries.incomeAccountType IN (${P2P_FIAT_BANK_ACCOUNT_TYPE_SQL}))
                             )
                         THEN 1
                         ELSE 0

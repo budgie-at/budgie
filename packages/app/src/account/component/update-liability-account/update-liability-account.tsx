@@ -8,6 +8,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
@@ -38,7 +39,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         isActive: account.isActive
     };
 
-    const { control, handleSubmit, instrument } = useAccountForm(
+    const { control, handleSubmit, instrument, isSubmitting } = useAccountForm(
         formValues,
         async values =>
             await accountService.updateById(account.id, {
@@ -53,6 +54,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             })
     );
 
+    const stickyInstrument = useStickyDefinedValue(instrument);
     const accountTypeVariant = ACCOUNT_COLOR[account.type];
     const isSyncedAccount = account.type === AccountTypeEnum.BANK_SYNC || account.type === AccountTypeEnum.CRYPTO_SYNC;
     const currencyField =
@@ -60,17 +62,18 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             <CreateAccountCurrencyField control={control} instrumentType={InstrumentTypeEnum.CRYPTO} />
         ) : null;
 
-    if (!isDefined(instrument)) {
+    if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
     }
 
     return (
         <UpdateAccountScreen
-            instrumentSymbol={instrument.symbol}
-            onSubmit={handleSubmit}
             account={account}
-            control={control}
             allowNegativeBalance
+            control={control}
+            instrumentSymbol={stickyInstrument.symbol}
+            isSubmitting={isSubmitting}
+            onSubmit={handleSubmit}
         >
             {currencyField}
             <FormItem label={t`Account Type`}>

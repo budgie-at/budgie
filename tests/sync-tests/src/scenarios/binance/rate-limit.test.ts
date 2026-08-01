@@ -21,6 +21,18 @@ const NEAR_CEILING_UID_WEIGHT = '80000';
 const COOL_DOWN_WINDOW_MS = 60_000;
 
 describe('binance/rate-limit', () => {
+    it('returns a dedicated deferred error when the signed request deadline has expired', async () => {
+        stubBinanceServerTime();
+
+        const client = new BinanceSignedClient(BINANCE_TEST_TOKEN, Date.now() - 1);
+        const result = await client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
+
+        expect(result.success).toBe(false);
+        if (!result.success) {
+            expect(result.error.code).toBe('DEFERRED');
+        }
+    });
+
     it('maps a 429 deposit response to a rate-limited error', async () => {
         stubBinanceServerTime();
         mockServer.use(http.get(FIAT_ORDERS_URL, () => HttpResponse.json(EMPTY_FIAT_RESPONSE)));

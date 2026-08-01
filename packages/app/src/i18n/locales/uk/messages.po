@@ -231,6 +231,10 @@ msgstr "Назва і іконка рахунку"
 msgid "Account Settings"
 msgstr "Налаштування рахунку"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Account Sync"
+msgstr "Синхронізація рахунків"
+
 #: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Account Type"
 msgstr "Тип рахунку"
@@ -306,7 +310,7 @@ msgstr "Додати тег"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Add transactions to see how your spending breaks down by category."
-msgstr ""
+msgstr "Додайте транзакції, щоб побачити, як ваші витрати розподіляються за категоріями."
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
@@ -492,10 +496,6 @@ msgstr "Банк"
 #: src/account/constant/account-type.constant.ts
 msgid "Bank sync"
 msgstr "Синхронізація банку"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Bank Sync"
-msgstr ""
 
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
@@ -2086,7 +2086,7 @@ msgstr "Категорій не знайдено"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "No categories in this period"
-msgstr ""
+msgstr "Немає категорій за цей період"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"

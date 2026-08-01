@@ -4,6 +4,7 @@ import { Log } from '@budgie/logger';
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository, syncRepository } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { accountService } from '../../account/service/account.service';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 
@@ -26,6 +27,7 @@ export abstract class AbstractSyncService {
         (_result, accountId, enabled) => `done accountId=${accountId} enabled=${String(enabled)}`,
         (error, accountId, enabled) => `throw accountId=${accountId} enabled=${String(enabled)} error=${getErrorMessage(error)}`
     )
+    @InvalidateDatabaseLiveQuery()
     async setAccountSyncEnabled(accountId: number, enabled: boolean): Promise<void> {
         await syncRepository.setEnabled(accountId, enabled);
     }

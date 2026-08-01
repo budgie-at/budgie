@@ -16,7 +16,7 @@ import { binanceStub } from './binance-stub';
 import { buildBinance } from './build-binance';
 import { setupBinanceFixture } from './setup-binance-fixture';
 
-const EARN_MONTH_KEY_LENGTH = 7;
+const EARN_DAY_KEY_LENGTH = 10;
 const DEFAULT_RECENT_DAY_OF_MONTH = 15;
 const SPOT_QUOTE_FREE = '100';
 
@@ -44,7 +44,7 @@ export const expectSingleBinanceTransaction = (transactionType: TransactionTypeE
     expect(transactions[0].externalId).toBe(externalId);
 };
 
-export const buildEarnMonthKey = (timeMs: number): string => new Date(timeMs).toISOString().slice(0, EARN_MONTH_KEY_LENGTH);
+export const buildEarnDayKey = (timeMs: number): string => new Date(timeMs).toISOString().slice(0, EARN_DAY_KEY_LENGTH);
 
 export const recentDayInMonthsAgo = (monthsAgo: number): number => {
     const now = new Date();

@@ -231,6 +231,10 @@ msgstr "Kontoname & Symbol"
 msgid "Account Settings"
 msgstr "Kontoeinstellungen"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Account Sync"
+msgstr "Account-Synchronisierung"
+
 #: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Account Type"
 msgstr "Kontotyp"
@@ -306,7 +310,7 @@ msgstr "Tag hinzufügen"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Add transactions to see how your spending breaks down by category."
-msgstr ""
+msgstr "Füge Transaktionen hinzu, um zu sehen, wie sich deine Ausgaben nach Kategorien aufteilen."
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
@@ -492,10 +496,6 @@ msgstr "Bank"
 #: src/account/constant/account-type.constant.ts
 msgid "Bank sync"
 msgstr "Bank-Synchronisation"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Bank Sync"
-msgstr ""
 
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
@@ -2086,7 +2086,7 @@ msgstr "Keine Kategorien gefunden"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "No categories in this period"
-msgstr ""
+msgstr "Keine Kategorien in diesem Zeitraum"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"

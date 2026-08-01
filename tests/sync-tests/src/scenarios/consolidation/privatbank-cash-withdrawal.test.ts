@@ -1,4 +1,4 @@
-import { privatbankCategoryMatcherMatch } from '@app/sync/service/privatbank-category-matcher.service';
+import { privatbankCategoryMatcherService } from '@app/sync/service/privatbank-category-matcher.service';
 import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
 import { transactionImportService } from '@app/transaction/service/transaction-import.service';
 import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
@@ -13,7 +13,7 @@ const WITHDRAWAL_AMOUNT = 500;
 const WITHDRAWAL_OPERATED_AT = new Date('2026-01-15T12:00:00.000Z');
 
 const importPrivatbankCashWithdrawal = async (privatbankAccountId: number): Promise<number> => {
-    const categoryMap = await privatbankCategoryMatcherMatch([PRIVATBANK_CASH_WITHDRAWAL_CATEGORY]);
+    const categoryMap = await privatbankCategoryMatcherService.match([PRIVATBANK_CASH_WITHDRAWAL_CATEGORY]);
     const transaction = privatbankTransactionMapper({
         rawDate: '15.01.2026 12:00:00',
         date: WITHDRAWAL_OPERATED_AT,

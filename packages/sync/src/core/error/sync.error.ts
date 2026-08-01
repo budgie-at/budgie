@@ -28,6 +28,10 @@ export class SyncError extends Error implements SyncErrorInterface {
         return new SyncError(SyncErrorCodeEnum.RATE_LIMITED, 'Rate limit exceeded', provider, originalError);
     }
 
+    static deferred(provider: SyncProviderEnum, originalError?: unknown): SyncError {
+        return new SyncError(SyncErrorCodeEnum.DEFERRED, 'Sync deferred', provider, originalError);
+    }
+
     static networkError(provider: SyncProviderEnum, originalError?: unknown): SyncError {
         return new SyncError(SyncErrorCodeEnum.NETWORK_ERROR, 'Network error occurred', provider, originalError);
     }

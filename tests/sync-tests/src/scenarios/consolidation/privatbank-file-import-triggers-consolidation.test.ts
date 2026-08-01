@@ -1,6 +1,6 @@
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
-import { SyncAccountTypeEnum, SyncProviderEnum, privatbankTransactionMapper } from '@budgie/sync';
+import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, privatbankTransactionMapper } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -13,13 +13,17 @@ const PRIVATBANK_CARD_ID = 'privat-card';
 const PRIVATBANK_STATEMENT_URI = 'privatbank-statement.xlsx';
 const PRIVATBANK_TRANSFER_CATEGORY = 'Зарахування переказу';
 const TRANSFER_AMOUNT = 250;
+const UAH_CURRENCY_CODE_NUMERIC = 980;
+
+const enqueueSpy = vi.spyOn(transferConsolidationDrainerService, 'enqueue');
 
 const buildPrivatbankBankAccount = (): SyncAccountInterface => ({
     id: PRIVATBANK_CARD_ID,
     provider: SyncProviderEnum.PRIVATBANK,
     currencyCode: 'UAH',
-    currencyCodeNumeric: 980,
+    currencyCodeNumeric: UAH_CURRENCY_CODE_NUMERIC,
     balance: TRANSFER_AMOUNT,
+    balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
     creditLimit: 0,
     type: SyncAccountTypeEnum.CARD
 });
@@ -64,7 +68,7 @@ const seedPrivatbankAccount = (): void => {
 
 describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
     beforeEach(() => {
-        vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();
+        enqueueSpy.mockClear();
     });
 
     it('enqueues consolidation after a Privatbank file import introduces new transactions', async () => {
@@ -87,10 +91,10 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
         const syncService = buildPrivatbankSyncService([buildPrivatbankTransaction()]);
 
         await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
-        vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();
+        enqueueSpy.mockClear();
 
         await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
 
-        expect(transferConsolidationDrainerService.enqueue).not.toHaveBeenCalled();
+        expect(enqueueSpy).not.toHaveBeenCalled();
     });
 });

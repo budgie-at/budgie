@@ -1,6 +1,6 @@
 import { databaseRefreshService } from '@app/@generic/service/database-refresh.service';
 import { ExternalSourceEnum } from '@budgie/contracts';
-import { SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
+import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
 import { describe, expect, it } from 'vitest';
 
 import { StubFileBankSyncService, seed } from '../../harness';
@@ -17,6 +17,7 @@ const buildBankAccount = (): SyncAccountInterface => ({
     currencyCode: 'UAH',
     currencyCodeNumeric: 980,
     balance: 0,
+    balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
     creditLimit: 0,
     type: SyncAccountTypeEnum.CHECKING,
     iban: BANK_ACCOUNT_ID

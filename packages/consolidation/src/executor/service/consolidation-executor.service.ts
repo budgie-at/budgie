@@ -130,24 +130,39 @@ export class ConsolidationExecutorService {
     )
     async consolidateP2pFiatTransfer(candidate: P2pFiatTransferCandidateInterface): Promise<boolean> {
         return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.executeConsolidation(
-                [...candidate.sourceTransactionIds],
-                {
-                    title: this.dependencies.resolveP2pTransferTitle(candidate.direction, candidate.assetCode),
-                    operatedAt: candidate.operatedAt,
-                    fromAccountId: candidate.fromAccountId,
-                    toAccountId: candidate.toAccountId,
-                    fromAmount: candidate.fromAmount,
-                    toAmount: candidate.toAmount,
-                    exchangeRate: candidate.fromAmount / candidate.toAmount,
-                    consolidationType: TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER,
-                    fromEntryExchangeRate: candidate.fromEntryExchangeRate,
-                    toEntryExchangeRate: candidate.toEntryExchangeRate,
-                    fromEntryToIban: candidate.fromEntryToIban
-                },
-                tx
-            )
+            this.consolidateP2pFiatTransferInner(candidate, tx)
         );
+    }
+
+    private async consolidateP2pFiatTransferInner(candidate: P2pFiatTransferCandidateInterface, tx: DB): Promise<boolean> {
+        const sourceTransactionIds = [...candidate.sourceTransactionIds];
+        const sourceTransactions = await this.consolidationEligibilityService.findEligibleSourceTransactions(sourceTransactionIds, tx);
+
+        if (!isDefined(sourceTransactions)) {
+            return false;
+        }
+
+        const canonicalTransaction = await this.consolidationMutationService.createCanonicalTransfer(
+            {
+                title: this.dependencies.resolveP2pTransferTitle(candidate.direction, candidate.assetCode),
+                operatedAt: candidate.operatedAt,
+                fromAccountId: candidate.fromAccountId,
+                toAccountId: candidate.toAccountId,
+                fromAmount: candidate.fromAmount,
+                toAmount: candidate.toAmount,
+                exchangeRate: candidate.fromAmount / candidate.toAmount,
+                consolidationType: TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER,
+                fromEntryExchangeRate: candidate.fromEntryExchangeRate,
+                toEntryExchangeRate: candidate.toEntryExchangeRate,
+                fromEntryToIban: candidate.fromEntryToIban
+            },
+            tx
+        );
+
+        await this.consolidationMutationService.createP2pFiatTransferFeeEntries(candidate, sourceTransactions, canonicalTransaction.id, tx);
+        await this.consolidationMutationService.moveSourcesToCanonical(sourceTransactionIds, canonicalTransaction.id, tx);
+
+        return true;
     }
 
     private async consolidateAtmCashWithdrawalInner(

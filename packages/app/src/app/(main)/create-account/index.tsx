@@ -15,6 +15,7 @@ export default function Index() {
     const monobankRoute = { pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.MONOBANK } } as const;
     const privatbankRoute = { pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.PRIVATBANK } } as const;
     const ersteRoute = { pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.ERSTE } } as const;
+    const binanceRoute = { pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.BINANCE } } as const;
 
     return (
         <CollapsibleChromePage title={t`New Account`} leading={<HeaderBackButton />} contentClassName="gap-y-xl pb-5xl">
@@ -44,7 +45,7 @@ export default function Index() {
             />
 
             <Text className="text-secondary-foreground text-sm px-md mt-xl">
-                <Trans>Bank Sync</Trans>
+                <Trans>Account Sync</Trans>
             </Text>
 
             <CreateSyncCard
@@ -68,7 +69,7 @@ export default function Index() {
             <CreateSyncCard
                 description={t`Sync crypto balances and transactions from Binance with a read-only API key`}
                 title={t`Binance`}
-                route={`/create-account/${ExternalSourceEnum.BINANCE}`}
+                route={binanceRoute}
                 bankProvider={ExternalSourceEnum.BINANCE}
             />
 

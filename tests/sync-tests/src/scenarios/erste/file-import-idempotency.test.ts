@@ -2,7 +2,7 @@ import { AbstractFileSyncService } from '@app/sync/service/abstract-file-sync.se
 import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
 import { transactionImportService } from '@app/transaction/service/transaction-import.service';
 import { AccountTypeEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
-import { SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum, ersteMapper } from '@budgie/sync';
+import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum, ersteMapper } from '@budgie/sync';
 import { and, eq } from 'drizzle-orm';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -26,6 +26,7 @@ const buildErsteBankAccount = (): SyncAccountInterface => ({
     currencyCode: 'UAH',
     currencyCodeNumeric: 980,
     balance: 0,
+    balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
     creditLimit: 0,
     type: SyncAccountTypeEnum.CHECKING,
     iban: ERSTE_ACCOUNT_ID

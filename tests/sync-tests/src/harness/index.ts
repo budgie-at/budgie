@@ -26,7 +26,7 @@ export type { TimeWindow } from './binance/binance-stub';
 export { buildBinance } from './binance/build-binance';
 export { setupBinanceFixture } from './binance/setup-binance-fixture';
 export {
-    buildEarnMonthKey,
+    buildEarnDayKey,
     expectNoDuplicateAfterResync,
     expectSingleBinanceTransaction,
     fetchBinanceEntriesByExternalId,

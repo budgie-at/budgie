@@ -1,5 +1,5 @@
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
-import { SyncAccountTypeEnum, SyncProviderEnum, privatbankTransactionMapper } from '@budgie/sync';
+import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, privatbankTransactionMapper } from '@budgie/sync';
 import { and, eq, isNull } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
@@ -19,6 +19,7 @@ const buildPrivatbankBankAccount = (): SyncAccountInterface => ({
     currencyCode: 'UAH',
     currencyCodeNumeric: 980,
     balance: 0,
+    balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
     creditLimit: 0,
     type: SyncAccountTypeEnum.CARD
 });

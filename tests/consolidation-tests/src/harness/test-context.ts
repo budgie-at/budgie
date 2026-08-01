@@ -23,6 +23,7 @@ export const { atmCashWithdrawalRepository } = repositories;
 export const { existingTransferRepository } = repositories;
 export const { ibanBridgeTransferRepository } = repositories;
 export const { refundPairRepository } = repositories;
+export const { statisticsRepository } = repositories;
 export const { transferPairRepository } = repositories;
 
 const consolidationExecutorDependencies = {

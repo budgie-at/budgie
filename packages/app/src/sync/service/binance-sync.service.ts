@@ -1,10 +1,11 @@
 import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie/consolidation';
 import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
-import { Log, getLogger } from '@budgie/logger';
+import { Log } from '@budgie/logger';
 import {
     BINANCE_RATE_LIMIT_MS,
     BinanceCredentialsSchema,
     BinanceSignedClient,
+    SyncAccountBalanceStateEnum,
     SyncError,
     SyncErrorCodeEnum,
     SyncTransactionTypeEnum,
@@ -16,6 +17,7 @@ import { getUnixTime, subDays, subYears } from 'date-fns';
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountBalanceRepository, accountRepository, instrumentRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountService } from '../../account/service/account.service';
@@ -47,8 +49,6 @@ import type {
     SyncResultInterface,
     SyncTransactionInterface
 } from '@budgie/sync';
-
-const logger = getLogger('AppBinanceSyncService');
 
 class AppBinanceSyncService extends AbstractPollingSyncService {
     private static readonly TRANSFER_CHUNK_SIZE = 50;
@@ -92,12 +92,17 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         (result, token, externalIds) => `done keyLen=${token.length} externalIds=${externalIds.join(',')} createdCount=${result}`,
         (error, token, externalIds) => `throw keyLen=${token.length} externalIds=${externalIds.join(',')} error=${getErrorMessage(error)}`
     )
+    @InvalidateDatabaseLiveQuery()
     async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<number> {
         const exchangeAccounts = await this.fetchExchangeAccounts(token);
         const instruments = await instrumentRepository.getAll();
         const resolvableAccounts = exchangeAccounts
             .filter(exchangeAccount => externalIds.includes(exchangeAccount.id))
-            .map(exchangeAccount => this.resolveAccountInstrumentId(exchangeAccount, instruments))
+            .map(exchangeAccount => {
+                const instrument = this.resolveInstrument(exchangeAccount, instruments);
+
+                return isDefined(instrument) ? { exchangeAccount, instrumentId: instrument.id } : null;
+            })
             .filter(isDefined);
 
         let createdCount = 0;
@@ -135,11 +140,12 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     )
     protected async executeSyncBatch(sync: SyncEntityInterface): Promise<SyncBatchResultInterface> {
         const account = await accountRepository.findById(sync.accountId);
-        if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
+        const externalAccountId = account?.externalId ?? null;
+        if (!isNotEmptyString(externalAccountId)) {
             return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
         }
 
-        const changedCount = await this.runSyncPhases(sync, account.externalId);
+        const changedCount = await this.runSyncPhases(sync, externalAccountId);
         if (isPositiveNumber(changedCount)) {
             await transactionService.updateAllBalances();
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC);
@@ -154,6 +160,27 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             nextFrom: progressDate,
             completed: !this.runDeferred
         };
+    }
+
+    @Log('enter', result => `done changedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    private async runSyncPhases(sync: SyncEntityInterface, externalAccountId: string): Promise<number> {
+        let changedCount = 0;
+        try {
+            changedCount += await this.processSources(sync);
+            await microPause();
+            changedCount += await this.processTransfers(sync, externalAccountId);
+            await microPause();
+            changedCount += await this.processFiatSource(sync);
+
+            return changedCount;
+        } catch (error) {
+            if (!this.isDeadlineDeferral(error)) {
+                throw error;
+            }
+            this.runDeferred = true;
+
+            return changedCount;
+        }
     }
 
     protected override validateToken(token: string): void {
@@ -184,32 +211,16 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         );
     }
 
+    protected override isCredentialWideError(error: unknown): boolean {
+        return error instanceof SyncError && error.code === SyncErrorCodeEnum.UNAUTHORIZED;
+    }
+
     protected override generateAccountTitle(account: SyncAccountInterface): string {
         return isNotEmptyString(account.title) ? account.title : super.generateAccountTitle(account);
     }
 
     protected override accountIcon(): UserIconNameEnum {
         return UserIconNameEnum.Bitcoin;
-    }
-
-    private async runSyncPhases(sync: SyncEntityInterface, externalAccountId: string): Promise<number> {
-        let changedCount = 0;
-        try {
-            changedCount += await this.processSources(sync);
-            await microPause();
-            changedCount += await this.processTransfers(sync, externalAccountId);
-            await microPause();
-            changedCount += await this.processFiatSource(sync);
-
-            return changedCount;
-        } catch (error) {
-            if (!this.isDeadlineDeferral(error)) {
-                throw error;
-            }
-            this.runDeferred = true;
-
-            return changedCount;
-        }
     }
 
     private async fetchExchangeAccounts(token: string): Promise<SyncAccountInterface[]> {
@@ -228,7 +239,9 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
     private async setupResolvedAccount(resolvableAccount: BinanceResolvableAccountInterface, token: string): Promise<void> {
         const account = await this.getOrCreateAccount(resolvableAccount.exchangeAccount, resolvableAccount.instrumentId);
-        await this.anchorAccountBalance(account.id, resolvableAccount.exchangeAccount.balance);
+        if (resolvableAccount.exchangeAccount.balanceState === SyncAccountBalanceStateEnum.REPRESENTABLE) {
+            await this.anchorAccountBalance(account.id, resolvableAccount.exchangeAccount.balance);
+        }
         await this.createOrUpdateSync(account.id, token);
     }
 
@@ -424,15 +437,17 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
     private async anchorAllBalances(token: string): Promise<number> {
         const exchangeAccounts = await this.fetchExchangeAccounts(token);
-        const balanceByExternalId = new Map(exchangeAccounts.map(exchangeAccount => [exchangeAccount.id, exchangeAccount.balance]));
+        const exchangeAccountByExternalId = new Map(exchangeAccounts.map(exchangeAccount => [exchangeAccount.id, exchangeAccount]));
         const accounts = await accountRepository.findByExternalSource(this.provider);
 
         let anchoredCount = 0;
         for (const account of accounts) {
-            const balance = isNotEmptyString(account.externalId) ? (balanceByExternalId.get(account.externalId) ?? 0) : 0;
-            // eslint-disable-next-line no-await-in-loop -- Balance anchors persist sequentially per account
-            await this.anchorAccountBalance(account.id, balance);
-            anchoredCount += 1;
+            const exchangeAccount = isNotEmptyString(account.externalId) ? exchangeAccountByExternalId.get(account.externalId) : null;
+            if (!isDefined(exchangeAccount) || exchangeAccount.balanceState === SyncAccountBalanceStateEnum.REPRESENTABLE) {
+                // eslint-disable-next-line no-await-in-loop -- Balance anchors persist sequentially per account
+                await this.anchorAccountBalance(account.id, exchangeAccount?.balance ?? 0);
+                anchoredCount += 1;
+            }
         }
 
         return anchoredCount;
@@ -448,7 +463,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private isDeadlineDeferral(error: unknown): boolean {
-        return error instanceof SyncError && error.code === SyncErrorCodeEnum.RATE_LIMITED;
+        return error instanceof SyncError && error.code === SyncErrorCodeEnum.DEFERRED;
     }
 
     private async resolveSourceWindowStart(sync: SyncEntityInterface): Promise<number> {
@@ -456,9 +471,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             return getUnixTime(subDays(sync.forwardSyncedAt, AppBinanceSyncService.FORWARD_OVERLAP_DAYS));
         }
 
-        const earliestTransactionTime = await transactionService.getEarliestTransactionTimeByExternalSource(this.provider);
-
-        return getUnixTime(earliestTransactionTime ?? subYears(new Date(), BINANCE_TRANSFER_LOOKBACK_YEARS));
+        return getUnixTime(sync.backwardSyncedAt ?? subYears(new Date(), BINANCE_TRANSFER_LOOKBACK_YEARS));
     }
 
     private async resolveTransferWindowStart(sync: SyncEntityInterface): Promise<Date> {
@@ -488,8 +501,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     ): Promise<TransactionCreateInputInterface | null> {
         const account = await resolveAccount(transaction.accountId);
         if (!isDefined(account)) {
-            logger.log('createSyncedSources:skip-parked-source', { externalId: transaction.id, accountId: transaction.accountId });
-
             return null;
         }
 
@@ -545,27 +556,19 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
                 return existingAccount;
             }
 
-            const exchangeAccount = exchangeAccounts.get(codecAccountId) ?? this.buildExchangeAccountFromCodec(codecAccountId);
-            if (!isDefined(exchangeAccount)) {
-                return null;
+            let resolvedExchangeAccount = exchangeAccounts.get(codecAccountId);
+            if (!isDefined(resolvedExchangeAccount)) {
+                const decoded = decodeBinanceAccountId(codecAccountId);
+                if (!isDefined(decoded)) {
+                    return null;
+                }
+                resolvedExchangeAccount = binanceMapper.mapBalanceToAccount(decoded.asset, decoded.wallet, 0);
             }
 
-            const instrument = this.resolveInstrument(exchangeAccount, await instrumentsPromise);
-            if (!isDefined(instrument)) {
-                return null;
-            }
+            const instrument = this.resolveInstrument(resolvedExchangeAccount, await instrumentsPromise);
 
-            return this.getOrCreateAccount(exchangeAccount, instrument.id);
+            return isDefined(instrument) ? this.getOrCreateAccount(resolvedExchangeAccount, instrument.id) : null;
         };
-    }
-
-    private buildExchangeAccountFromCodec(codecAccountId: string): SyncAccountInterface | null {
-        const decoded = decodeBinanceAccountId(codecAccountId);
-        if (!isDefined(decoded)) {
-            return null;
-        }
-
-        return binanceMapper.mapBalanceToAccount(decoded.asset, decoded.wallet, 0);
     }
 
     private resolveInstrument(
@@ -575,15 +578,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         const instrumentCode = binanceAssetCodeService.resolveInstrumentCode(exchangeAccount.currencyCode);
 
         return instruments.find(instrument => instrument.code === instrumentCode) ?? null;
-    }
-
-    private resolveAccountInstrumentId(
-        exchangeAccount: SyncAccountInterface,
-        instruments: InstrumentEntityInterface[]
-    ): BinanceResolvableAccountInterface | null {
-        const instrument = this.resolveInstrument(exchangeAccount, instruments);
-
-        return isDefined(instrument) ? { exchangeAccount, instrumentId: instrument.id } : null;
     }
 
     private async anchorAccountBalance(accountId: number, balance: number): Promise<void> {

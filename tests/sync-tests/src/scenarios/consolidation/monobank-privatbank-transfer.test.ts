@@ -1,5 +1,5 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { privatbankCategoryMatcherMatch } from '@app/sync/service/privatbank-category-matcher.service';
+import { privatbankCategoryMatcherService } from '@app/sync/service/privatbank-category-matcher.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
 import { transactionImportService } from '@app/transaction/service/transaction-import.service';
@@ -43,7 +43,7 @@ const setupMonobankTransfer = async (monobankAccountId: string): Promise<void> =
 };
 
 const importPrivatbankTransfer = async (privatbankAccountId: number, privatbankCardId: string) => {
-    const categoryMap = await privatbankCategoryMatcherMatch([PRIVATBANK_TRANSFER_CATEGORY]);
+    const categoryMap = await privatbankCategoryMatcherService.match([PRIVATBANK_TRANSFER_CATEGORY]);
     const privatbankTransaction = privatbankTransactionMapper({
         rawDate: '20.05.2026 15:00:00',
         date: new Date(OPERATED_AT.getTime() + SLOW_WINDOW_OFFSET_MS),

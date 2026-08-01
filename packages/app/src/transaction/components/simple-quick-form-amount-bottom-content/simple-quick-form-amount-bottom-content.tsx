@@ -1,3 +1,4 @@
+import { InstrumentTypeEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { DebtSettlementPill } from '../debt-settlement-pill/debt-settlement-pill';
@@ -7,6 +8,7 @@ interface Props {
     readonly debtSettlementAccountTitle: string | null;
     readonly feeAmount: number;
     readonly feeCurrencySymbol: string;
+    readonly feeInstrumentType: InstrumentTypeEnum;
     readonly showInlineFeeAction: boolean;
     readonly onFeePress: () => void;
 }
@@ -15,6 +17,7 @@ export const SimpleQuickFormAmountBottomContent = ({
     debtSettlementAccountTitle,
     feeAmount,
     feeCurrencySymbol,
+    feeInstrumentType,
     showInlineFeeAction,
     onFeePress
 }: Props) => (
@@ -23,6 +26,7 @@ export const SimpleQuickFormAmountBottomContent = ({
         <SimpleQuickFormFeePill
             amount={feeAmount}
             currencySymbol={feeCurrencySymbol}
+            instrumentType={feeInstrumentType}
             showInlineAction={showInlineFeeAction}
             onPress={onFeePress}
         />

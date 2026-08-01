@@ -44,6 +44,10 @@ const SyncProviderApiErrorSchema = z.object({
     msg: z.string().optional()
 });
 
+const SyncProviderHttpErrorDataSchema = z.object({
+    data: SyncProviderApiErrorSchema
+});
+
 export abstract class BaseSyncProviderClient implements SyncProviderClientInterface {
     protected readonly retryLimit: number;
     protected readonly timeoutMs: number;
@@ -125,30 +129,39 @@ export abstract class BaseSyncProviderClient implements SyncProviderClientInterf
                       .clone()
                       .json()
                       .catch(() => null);
-            const apiError = SyncProviderApiErrorSchema.safeParse(responseBody);
+            const responseApiError = SyncProviderApiErrorSchema.safeParse(responseBody);
+            const caughtApiError = SyncProviderHttpErrorDataSchema.safeParse(caughtError);
+            let apiError: z.infer<typeof SyncProviderApiErrorSchema> | null = null;
+            if (responseApiError.success) {
+                apiError = responseApiError.data;
+            } else if (caughtApiError.success) {
+                apiError = caughtApiError.data.data;
+            }
             syncLogger.error('http:response:httpError', {
                 provider: this.provider,
                 endpoint,
                 status,
                 statusText,
-                ...(apiError.success && isDefined(apiError.data.code) && { apiCode: apiError.data.code }),
-                ...(apiError.success && isDefined(apiError.data.message) && { apiMessage: apiError.data.message }),
-                ...(apiError.success && isDefined(apiError.data.msg) && { apiMessage: apiError.data.msg })
+                ...(isDefined(apiError) && isDefined(apiError.code) && { apiCode: apiError.code }),
+                ...(isDefined(apiError) && isDefined(apiError.message) && { apiMessage: apiError.message }),
+                ...(isDefined(apiError) && isDefined(apiError.msg) && { apiMessage: apiError.msg })
             });
 
             if (status === HTTP_STATUS_UNAUTHORIZED || status === HTTP_STATUS_FORBIDDEN) {
-                return this.failure(SyncError.unauthorized(this.provider));
+                return this.failure(SyncError.unauthorized(this.provider, apiError ?? caughtError));
             }
 
             if (status === HTTP_STATUS_TOO_MANY_REQUESTS) {
-                return this.failure(SyncError.rateLimited(this.provider));
+                return this.failure(SyncError.rateLimited(this.provider, apiError ?? caughtError));
             }
 
             if (status === HTTP_STATUS_BAD_REQUEST) {
-                return this.failure(SyncError.invalidResponse(this.provider));
+                return this.failure(SyncError.invalidResponse(this.provider, apiError ?? caughtError));
             }
 
-            return this.failure(new SyncError(SyncErrorCodeEnum.UNKNOWN, `HTTP ${status}: ${statusText}`, this.provider));
+            return this.failure(
+                new SyncError(SyncErrorCodeEnum.UNKNOWN, `HTTP ${status}: ${statusText}`, this.provider, apiError ?? caughtError)
+            );
         }
 
         if (caughtError instanceof TimeoutError) {

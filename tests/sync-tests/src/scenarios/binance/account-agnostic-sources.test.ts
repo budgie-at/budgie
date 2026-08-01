@@ -14,7 +14,7 @@ import { describe, expect, it } from 'vitest';
 import {
     binanceStub,
     buildBinance,
-    buildEarnMonthKey,
+    buildEarnDayKey,
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
     recentDayInMonthsAgo,
@@ -75,8 +75,8 @@ const expectAllSourceExternalIds = (previousMonth: number, currentMonth: number)
     expect(externalIds).toStrictEqual(
         [
             'binance:c2c:usdt-p2p-buy',
-            `binance:earn:USDT:${buildEarnMonthKey(previousMonth)}`,
-            `binance:earn:USDT:${buildEarnMonthKey(currentMonth)}`,
+            `binance:earn:USDT:${buildEarnDayKey(previousMonth)}`,
+            `binance:earn:USDT:${buildEarnDayKey(currentMonth)}`,
             'btc-wd',
             'eth-dep',
             'eur-fiat-dep'
@@ -123,7 +123,7 @@ describe('binance/account-agnostic-sources', () => {
         const externalIds = fetchBinanceTransactions()
             .map(transaction => transaction.externalId)
             .sort();
-        expect(externalIds).toStrictEqual([`binance:c2c:usdt-c2c`, `binance:earn:USDT:${buildEarnMonthKey(earnTime)}`].sort());
+        expect(externalIds).toStrictEqual([`binance:c2c:usdt-c2c`, `binance:earn:USDT:${buildEarnDayKey(earnTime)}`].sort());
         expect(fetchBinanceEntriesByExternalId('binance:c2c:usdt-c2c')[0].accountId).toBe(usdtFundingAccount.id);
     });
 });

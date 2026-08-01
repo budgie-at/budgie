@@ -1,5 +1,6 @@
-import { AccountTypeEnum, PRECISION, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
+import { P2P_FIAT_BANK_ACCOUNT_TYPE_SQL } from '../../../shared/constant/p2p-fiat-bank-account-type-sql.constant';
 import {
     TRANSFER_PAIR_P2P_FIAT_AUTHORITATIVE_MAX_DELTA,
     TRANSFER_PAIR_P2P_FIAT_AUTHORITATIVE_MAX_DELTA_RATIO,
@@ -25,6 +26,7 @@ const SQL = `
             p2p_transaction.operated_at AS operatedAt,
             p2p_entry.account_id AS accountId,
             p2p_entry.amount AS amount,
+            p2p_entry.type AS entryType,
             p2p_entry.exchange_rate AS exchangeRate,
             p2p_entry.to_iban AS toIban,
             p2p_entry.quoted_amount AS quotedAmount,
@@ -58,6 +60,7 @@ const SQL = `
             bank_transaction.operated_at AS operatedAt,
             bank_entry.account_id AS accountId,
             bank_entry.amount AS amount,
+            bank_entry.type AS entryType,
             bank_entry.exchange_rate AS exchangeRate,
             bank_entry.to_iban AS toIban,
             bank_account.type AS accountType,
@@ -70,7 +73,7 @@ const SQL = `
             AND bank_transaction.consolidation_parent_transaction_id IS NULL
         INNER JOIN accounts bank_account
             ON bank_account.id = bank_entry.account_id
-            AND bank_account.type != '${AccountTypeEnum.CRYPTO_SYNC}'
+            AND bank_account.type IN (${P2P_FIAT_BANK_ACCOUNT_TYPE_SQL})
             AND bank_account.deleted_at IS NULL
             AND bank_account.is_active = 1
         INNER JOIN instruments bank_instrument ON bank_instrument.id = bank_account.instrument_id
@@ -104,6 +107,8 @@ const SQL = `
         INNER JOIN bank_entries bank
             ON p2p.transactionType = '${TransactionTypeEnum.INCOME}'
             AND bank.transactionType = '${TransactionTypeEnum.EXPENSE}'
+            AND p2p.entryType = '${TransactionEntryTypeEnum.DEBIT}'
+            AND bank.entryType = '${TransactionEntryTypeEnum.CREDIT}'
             AND bank.instrumentId = p2p.quotedInstrumentId
             AND ABS(p2p.operatedAt - bank.operatedAt) <= ${TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS}
             AND bank.amount >= p2p.quotedAmount
@@ -135,6 +140,8 @@ const SQL = `
         INNER JOIN bank_entries bank
             ON p2p.transactionType = '${TransactionTypeEnum.EXPENSE}'
             AND bank.transactionType = '${TransactionTypeEnum.INCOME}'
+            AND p2p.entryType = '${TransactionEntryTypeEnum.CREDIT}'
+            AND bank.entryType = '${TransactionEntryTypeEnum.DEBIT}'
             AND bank.instrumentId = p2p.quotedInstrumentId
             AND ABS(p2p.operatedAt - bank.operatedAt) <= ${TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS}
             AND p2p.quotedAmount >= bank.amount

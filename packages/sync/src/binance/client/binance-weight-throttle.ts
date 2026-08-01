@@ -33,7 +33,7 @@ export class BinanceWeightThrottle {
     async waitIfNeeded(): Promise<void> {
         if (this.shouldCoolDown()) {
             if (Date.now() + WEIGHT_WINDOW_MS >= this.deadlineAtMs) {
-                throw SyncError.rateLimited(SyncProviderEnum.BINANCE);
+                throw SyncError.deferred(SyncProviderEnum.BINANCE);
             }
 
             await this.coolDown();

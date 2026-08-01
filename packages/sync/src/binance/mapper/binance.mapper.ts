@@ -4,6 +4,7 @@ import { getUnixTime } from 'date-fns';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
@@ -13,7 +14,7 @@ import { BinanceTransferSourceEnum } from '../enum/binance-transfer-source.enum'
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
 import { encodeBinanceAccountId } from '../util/binance-account-id.util';
 
-import { BinanceEarnMonthBucket } from './binance-earn-month-bucket';
+import { BinanceEarnDayBucket } from './binance-earn-day-bucket';
 
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
@@ -30,7 +31,7 @@ const MICRO_UNITS_DECIMALS = 6;
 const DECIMAL_DIGITS_PATTERN = /^\d+$/u;
 const MILLISECONDS_PER_SECOND = 1000;
 const C2C_BUY_TRADE_TYPE = 'BUY';
-const EARN_MONTH_DIGITS = 2;
+const EARN_DATE_PART_DIGITS = 2;
 
 class BinanceMapper {
     @Log(
@@ -45,9 +46,22 @@ class BinanceMapper {
             currencyCode: asset,
             currencyCodeNumeric: BINANCE_NO_NUMERIC_CODE,
             balance,
+            balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
             creditLimit: 0,
             type: SyncAccountTypeEnum.CRYPTO,
             title: `Binance ${wallet} · ${asset}`
+        };
+    }
+
+    @Log(
+        (asset, wallet) => `enter wallet=${wallet} asset=${asset}`,
+        (result, asset, wallet) => `done wallet=${wallet} asset=${asset} accountId=${result.id}`,
+        (error, asset, wallet) => `throw wallet=${wallet} asset=${asset} error=${getErrorMessage(error)}`
+    )
+    mapUnrepresentableBalanceToAccount(asset: string, wallet: BinanceWalletEnum): SyncAccountInterface {
+        return {
+            ...this.mapBalanceToAccount(asset, wallet, 0),
+            balanceState: SyncAccountBalanceStateEnum.UNREPRESENTABLE
         };
     }
 
@@ -228,9 +242,9 @@ class BinanceMapper {
         (error, asset, accountId) => `throw accountId=${accountId} asset=${asset} error=${getErrorMessage(error)}`
     )
     mapEarnRewardsToTransactions(asset: string, accountId: string, rewards: BinanceEarnRewardApiInterface[]): SyncTransactionInterface[] {
-        const monthlyBuckets = this.groupEarnRewardsByMonth(rewards);
+        const dailyBuckets = this.groupEarnRewardsByDay(rewards);
 
-        return [...monthlyBuckets.values()].map(bucket => this.mapEarnMonthBucket(asset, accountId, bucket)).filter(isDefined);
+        return [...dailyBuckets.values()].map(bucket => this.mapEarnDayBucket(asset, accountId, bucket)).filter(isDefined);
     }
 
     parseBinanceAmount(value: string): number | null {
@@ -249,26 +263,25 @@ class BinanceMapper {
         return Number(totalMicroUnits) / BINANCE_MICRO_UNITS_PRECISION;
     }
 
-    private groupEarnRewardsByMonth(rewards: BinanceEarnRewardApiInterface[]): Map<string, BinanceEarnMonthBucket> {
-        const buckets = new Map<string, BinanceEarnMonthBucket>();
+    private groupEarnRewardsByDay(rewards: BinanceEarnRewardApiInterface[]): Map<string, BinanceEarnDayBucket> {
+        const buckets = new Map<string, BinanceEarnDayBucket>();
         for (const reward of rewards) {
-            const monthKey = this.buildEarnMonthKey(reward.time);
+            const dayKey = this.buildEarnDayKey(reward.time);
             const rewardMicroUnits = this.parseEarnRewardMicroUnits(reward.rewards);
-            const bucket = buckets.get(monthKey) ?? new BinanceEarnMonthBucket(monthKey);
-            bucket.add(rewardMicroUnits, reward.time);
-            buckets.set(monthKey, bucket);
+            const bucket = buckets.get(dayKey) ?? new BinanceEarnDayBucket(dayKey);
+            buckets.set(dayKey, bucket.add(rewardMicroUnits, reward.time));
         }
 
         return buckets;
     }
 
-    private mapEarnMonthBucket(asset: string, accountId: string, bucket: BinanceEarnMonthBucket): SyncTransactionInterface | null {
+    private mapEarnDayBucket(asset: string, accountId: string, bucket: BinanceEarnDayBucket): SyncTransactionInterface | null {
         if (bucket.totalMicroUnits <= 0) {
             return null;
         }
 
         const amount = bucket.totalMicroUnits / BINANCE_MICRO_UNITS_PRECISION;
-        const externalId = `binance:earn:${asset}:${bucket.monthKey}`;
+        const externalId = `binance:earn:${asset}:${bucket.dayKey}`;
         const time = Math.floor(bucket.lastRewardTime / MILLISECONDS_PER_SECOND);
 
         return {
@@ -287,12 +300,13 @@ class BinanceMapper {
         return isDefined(amount) && amount > 0 ? Math.round(amount * BINANCE_MICRO_UNITS_PRECISION) : 0;
     }
 
-    private buildEarnMonthKey(timeMs: number): string {
+    private buildEarnDayKey(timeMs: number): string {
         const date = new Date(timeMs);
         const year = date.getUTCFullYear();
-        const month = `${date.getUTCMonth() + 1}`.padStart(EARN_MONTH_DIGITS, '0');
+        const month = `${date.getUTCMonth() + 1}`.padStart(EARN_DATE_PART_DIGITS, '0');
+        const day = `${date.getUTCDate()}`.padStart(EARN_DATE_PART_DIGITS, '0');
 
-        return `${year}-${month}`;
+        return `${year}-${month}-${day}`;
     }
 
     private encodeSpotAccountId(asset: string): string {

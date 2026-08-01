@@ -2,6 +2,7 @@ export { disableLogging, Log } from '@budgie/logger';
 export { syncLogger } from './core/util/sync-logger.util';
 
 export { SyncAccountTypeEnum } from './core/enum/sync-account-type.enum';
+export { SyncAccountBalanceStateEnum } from './core/enum/sync-account-balance-state.enum';
 export { SyncProviderEnum } from './core/enum/sync-provider.enum';
 export { SyncErrorCodeEnum } from './core/enum/sync-error-code.enum';
 export { SyncError } from './core/error/sync.error';

@@ -1,11 +1,10 @@
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-
 import { isDefined } from '@rnw-community/shared';
 
 import { syncRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 
 export const useAccountSync = (accountId: number) => {
-    const { data, error } = useLiveQuery(syncRepository.findByAccountId(accountId), [accountId]);
+    const { data, error } = useDatabaseLiveQuery(syncRepository.findByAccountId(accountId), [accountId]);
 
     return {
         sync: data ?? null,

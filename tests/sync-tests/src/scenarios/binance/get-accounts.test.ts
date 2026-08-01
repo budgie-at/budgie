@@ -5,6 +5,8 @@ import { BINANCE_TEST_TOKEN, binanceStub, buildBinance } from '../../harness';
 
 import type { SyncAccountInterface, SyncResultInterface } from '@budgie/sync';
 
+const BNB_EARN_TOTAL_BALANCE = 0.788412;
+
 const fetchAccountsResult = (): Promise<SyncResultInterface<SyncAccountInterface[]>> =>
     new BinanceSignedClient(BINANCE_TEST_TOKEN).getAccounts();
 
@@ -40,11 +42,11 @@ describe('binance/get-accounts', () => {
         expect(result.success).toBe(true);
         if (result.success) {
             const bnbAccount = result.data.find(account => account.currencyCode === 'BNB');
-            expect(bnbAccount?.balance).toBeCloseTo(0.788412, 5);
+            expect(bnbAccount?.balance).toBeCloseTo(BNB_EARN_TOTAL_BALANCE, 5);
         }
     });
 
-    it('parks an asset whose microunit balance would exceed MAX_SAFE_INTEGER', async () => {
+    it('marks an asset whose microunit balance would exceed MAX_SAFE_INTEGER as balance-unrepresentable', async () => {
         binanceStub.serverTime();
         binanceStub.spotBalances([
             buildBinance.balance({ asset: 'PEPE', free: '99999999999' }),
@@ -58,9 +60,10 @@ describe('binance/get-accounts', () => {
 
         expect(result.success).toBe(true);
         if (result.success) {
-            const codes = result.data.map(account => account.currencyCode);
-            expect(codes).toContain('BTC');
-            expect(codes).not.toContain('PEPE');
+            const btcAccount = result.data.find(account => account.currencyCode === 'BTC');
+            const pepeAccount = result.data.find(account => account.currencyCode === 'PEPE');
+            expect(btcAccount?.balanceState).toBe('REPRESENTABLE');
+            expect(pepeAccount?.balanceState).toBe('UNREPRESENTABLE');
         }
     });
 });

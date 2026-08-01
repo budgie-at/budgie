@@ -177,6 +177,12 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
         }
 
         const [representativeRow] = combination;
+        const bankTransactionIds = combination.map(row => row.expenseTransactionId).sort((left, right) => left - right);
+
+        if (new Set(bankTransactionIds).size !== bankTransactionIds.length) {
+            return null;
+        }
+
         const fromAmount = combination.reduce((total, row) => total + row.expenseEntryAmount, 0);
         const rateDifference = this.computeRateDifference(
             representativeRow.incomeEntryAmount / fromAmount,
@@ -186,8 +192,6 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
         if (!isAuthoritative && rateDifference > TRANSFER_PAIR_P2P_FIAT_RATE_TOLERANCE) {
             return null;
         }
-
-        const bankTransactionIds = combination.map(row => row.expenseTransactionId).sort((left, right) => left - right);
 
         return {
             sourceTransactionIds: [...bankTransactionIds, representativeRow.incomeTransactionId],

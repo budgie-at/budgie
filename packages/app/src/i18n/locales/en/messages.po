@@ -232,6 +232,10 @@ msgstr "Account Name & Icon"
 msgid "Account Settings"
 msgstr "Account Settings"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Account Sync"
+msgstr "Account Sync"
+
 #: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Account Type"
 msgstr "Account Type"
@@ -493,10 +497,6 @@ msgstr "Bank"
 #: src/account/constant/account-type.constant.ts
 msgid "Bank sync"
 msgstr "Bank sync"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Bank Sync"
-msgstr "Bank Sync"
 
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"

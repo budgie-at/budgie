@@ -48,6 +48,7 @@ const FIAT_DEPOSIT_TRANSACTION_TYPE = '0';
 const FIRST_PAGE = '1';
 const C2C_BUY_TRADE_TYPE = 'BUY';
 const C2C_UNAUTHORIZED_STATUS = 401;
+const FIRST_OFFSET = 0;
 
 const WEIGHT_HEADERS = {
     'x-mbx-used-weight-1m': '10',
@@ -79,6 +80,13 @@ const buildPagedEarnResponse = <TRow>(url: URL, rows: TRow[]): { rows: TRow[]; t
     return { rows: pageRows, total: pageRows.length };
 };
 
+const sliceOffsetPage = <TRow>(url: URL, rows: TRow[]): TRow[] => {
+    const offset = Number(url.searchParams.get('offset') ?? String(FIRST_OFFSET));
+    const limit = Number(url.searchParams.get('limit') ?? String(rows.length));
+
+    return rows.slice(offset, offset + limit);
+};
+
 export const binanceStub = {
     serverTime: (): void => {
         mockServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() }, { headers: WEIGHT_HEADERS })));
@@ -92,20 +100,22 @@ export const binanceStub = {
     deposits: (deposits: BinanceDepositApiInterface[]): void => {
         mockServer.use(
             http.get(DEPOSIT_URL, ({ request }) => {
-                const window = parseTimeWindow(new URL(request.url), 'startTime', 'endTime');
+                const url = new URL(request.url);
+                const window = parseTimeWindow(url, 'startTime', 'endTime');
                 const matched = deposits.filter(deposit => isWithinWindow(deposit.insertTime, window));
 
-                return HttpResponse.json(matched, { headers: WEIGHT_HEADERS });
+                return HttpResponse.json(sliceOffsetPage(url, matched), { headers: WEIGHT_HEADERS });
             })
         );
     },
     withdrawals: (withdrawals: BinanceWithdrawalApiInterface[]): void => {
         mockServer.use(
             http.get(WITHDRAW_URL, ({ request }) => {
-                const window = parseTimeWindow(new URL(request.url), 'startTime', 'endTime');
+                const url = new URL(request.url);
+                const window = parseTimeWindow(url, 'startTime', 'endTime');
                 const matched = withdrawals.filter(withdrawal => isWithinWindow(new Date(withdrawal.applyTime).getTime(), window));
 
-                return HttpResponse.json(matched, { headers: WEIGHT_HEADERS });
+                return HttpResponse.json(sliceOffsetPage(url, matched), { headers: WEIGHT_HEADERS });
             })
         );
     },
@@ -192,6 +202,9 @@ export const binanceStub = {
                 return HttpResponse.json(trades, { headers: WEIGHT_HEADERS });
             })
         );
+    },
+    myTradesFailure: (status: number, body: { readonly code: number; readonly msg: string }): void => {
+        mockServer.use(http.get(MY_TRADES_URL, () => HttpResponse.json(body, { status, headers: WEIGHT_HEADERS })));
     },
     convertTradeFlow: (
         flows: BinanceConvertFlowApiInterface[],

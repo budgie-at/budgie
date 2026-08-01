@@ -3,6 +3,7 @@ import { getUnixTime } from 'date-fns';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
@@ -27,6 +28,7 @@ class ErsteMapper {
             currencyCode: account.currency,
             currencyCodeNumeric: ERSTE_CURRENCY_CODE_EUR,
             balance: account.newBalance,
+            balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
             creditLimit: 0,
             type: SyncAccountTypeEnum.CHECKING,
             iban: account.iban

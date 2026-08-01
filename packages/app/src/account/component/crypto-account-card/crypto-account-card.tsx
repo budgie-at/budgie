@@ -1,9 +1,8 @@
-import { AccountEntityInterface, SyncEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, InstrumentTypeEnum, SyncEntityInterface } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
 import { SyncStatusDot } from '../sync-status-dot/sync-status-dot';
@@ -18,9 +17,9 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
 
 export const CryptoAccountCard = (props: Props) => {
     const { id, title, icon, balance, sync, className, instrumentCode, instrumentSymbol } = props;
-    const formatDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
+    const formatInstrumentAmount = useFormatInstrumentAmount();
 
-    const formattedBalance = `${formatDigits(balance)} ${instrumentCode}`;
+    const formattedBalance = formatInstrumentAmount(balance, instrumentCode, InstrumentTypeEnum.CRYPTO);
 
     const balanceContent = (
         <View className="gap-y-1">

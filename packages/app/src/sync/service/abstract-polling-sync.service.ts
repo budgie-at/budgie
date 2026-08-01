@@ -6,6 +6,7 @@ import * as TaskManager from 'expo-task-manager';
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { syncRepository } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
@@ -70,6 +71,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         (_result, accountId, token) => `done accountId=${accountId} tokenLen=${token.length}`,
         (error, accountId, token) => `throw accountId=${accountId} tokenLen=${token.length} error=${getErrorMessage(error)}`
     )
+    @InvalidateDatabaseLiveQuery()
     override async updateAccountToken(accountId: number, token: string): Promise<void> {
         this.validateToken(token);
 
@@ -91,6 +93,10 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         try {
             const enabledSyncs = await syncRepository.getEnabledByProvider(this.provider);
             if (!isNotEmptyArray(enabledSyncs)) {
+                return BackgroundTask.BackgroundTaskResult.Success;
+            }
+
+            if (this.shouldStopProcessing()) {
                 return BackgroundTask.BackgroundTaskResult.Success;
             }
 
@@ -176,7 +182,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return this.executeSyncLoop();
         }
 
-        await this.disableFailedSyncs(enabledSyncs, errorMessage);
+        await this.disableFailedSyncs(enabledSyncs, error, errorMessage);
 
         return BackgroundTask.BackgroundTaskResult.Failed;
     }
@@ -227,6 +233,10 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return true;
     }
 
+    protected isCredentialWideError(_error: unknown): boolean {
+        return false;
+    }
+
     private startSyncRun(deadlineAtMs: number): void {
         this.isRunning = true;
         this.runDeadlineAtMs = deadlineAtMs;
@@ -255,15 +265,26 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return true;
     }
 
-    private async disableFailedSyncs(enabledSyncs: SyncEntityInterface[], errorMessage: string): Promise<void> {
+    private async disableFailedSyncs(enabledSyncs: SyncEntityInterface[], error: unknown, errorMessage: string): Promise<void> {
         const disableSyncPromises: Array<Promise<unknown>> = [];
-        for (const sync of enabledSyncs) {
+        for (const sync of this.resolveSyncsToDisable(enabledSyncs, error)) {
             disableSyncPromises.push(
                 syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false })
             );
         }
 
         await Promise.all(disableSyncPromises);
+    }
+
+    private resolveSyncsToDisable(enabledSyncs: SyncEntityInterface[], error: unknown): SyncEntityInterface[] {
+        const failedSync = enabledSyncs.find(sync => sync.id === this.failedSyncId);
+        if (this.isCredentialWideError(error)) {
+            const credentialGroupSync = failedSync ?? enabledSyncs[0];
+
+            return enabledSyncs.filter(sync => sync.token === credentialGroupSync.token);
+        }
+
+        return isDefined(failedSync) ? [failedSync] : [enabledSyncs[0]];
     }
 
     private shouldStopProcessing(): boolean {

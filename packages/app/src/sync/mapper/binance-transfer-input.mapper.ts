@@ -6,6 +6,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -15,6 +16,7 @@ import type { BinanceTransferInterface } from '@budgie/sync';
 export class BinanceTransferInputMapper {
     private static readonly FEE_ENTRY_EXTERNAL_ID_SUFFIX = ':fee';
     private static readonly MILLISECONDS_PER_SECOND = 1000;
+    private static readonly logger = getLogger('BinanceTransferInputMapper');
 
     constructor(private readonly resolveAccount: (codecAccountId: string) => Promise<AccountEntityInterface | null>) {}
 
@@ -34,16 +36,22 @@ export class BinanceTransferInputMapper {
             this.buildEntry(fromAccount.id, TransactionEntryTypeEnum.CREDIT, transfer.fromAmount, transfer.externalId),
             this.buildEntry(toAccount.id, TransactionEntryTypeEnum.DEBIT, transfer.toAmount, transfer.externalId)
         ];
-        if (isPositiveNumber(transfer.feeAmount)) {
+        if (isPositiveNumber(transfer.feeAmount) && isDefined(feeAccount)) {
             entries.push({
                 ...this.buildEntry(
-                    feeAccount?.id ?? fromAccount.id,
+                    feeAccount.id,
                     TransactionEntryTypeEnum.FEE,
                     transfer.feeAmount,
                     `${transfer.externalId}${BinanceTransferInputMapper.FEE_ENTRY_EXTERNAL_ID_SUFFIX}`
                 ),
                 categoryId: BANK_FEE_CATEGORY_ID,
                 categorySource: CategorySourceEnum.FEE
+            });
+        }
+        if (isPositiveNumber(transfer.feeAmount) && !isDefined(feeAccount)) {
+            BinanceTransferInputMapper.logger.log('mapTransfer:skip-unresolved-fee-asset', {
+                externalId: transfer.externalId,
+                feeAssetAccountId: transfer.feeAssetAccountId ?? null
             });
         }
 

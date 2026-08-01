@@ -68,4 +68,36 @@ describe('binance/anchor-once-reset-ordering', () => {
 
         upsertSpy.mockRestore();
     });
+
+    it('anchors an existing account to zero when Binance omits the asset from balances', async () => {
+        const { account } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+        await accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION, updatedAt: new Date() });
+        binanceStub.spotBalances([buildBinance.balance({ asset: 'ETH', free: '2' })]);
+
+        await binanceSyncService.sync();
+
+        expect(fetchAnchoredAmount(account.id)).toBe(0);
+    });
+
+    it('does not anchor an existing account to zero when Binance reports an unrepresentable balance', async () => {
+        const { account } = setupBinanceFixture({ asset: 'PEPE', mode: SyncModeEnum.BACKWARD });
+        await accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION, updatedAt: new Date() });
+        binanceStub.spotBalances([buildBinance.balance({ asset: 'PEPE', free: '99999999999' })]);
+
+        await binanceSyncService.sync();
+
+        expect(fetchAnchoredAmount(account.id)).toBe(7 * PRECISION);
+    });
+
+    it('does not send signed requests or disable sync when the background deadline is already expired', async () => {
+        const { sync } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+        const upsertSpy = vi.spyOn(accountBalanceRepository, 'upsert');
+
+        await binanceSyncService.sync(Date.now() - 1);
+
+        expect(upsertSpy).not.toHaveBeenCalled();
+        expect(fetchAnchoredAmount(sync.accountId)).toBeUndefined();
+
+        upsertSpy.mockRestore();
+    });
 });

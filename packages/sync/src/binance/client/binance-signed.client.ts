@@ -4,6 +4,7 @@ import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
 import { subMonths } from 'date-fns';
+import { z } from 'zod';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -90,12 +91,17 @@ const C2C_MAX_PERIOD_MS = 2592000000;
 const CAPITAL_HISTORY_MAX_PERIOD_MS = 7776000000;
 const CONVERT_MAX_PERIOD_MS = 2592000000;
 const CONVERT_ROWS_PER_PAGE = 1000;
+const CONVERT_SUCCESS_STATUS = 'SUCCESS';
 const EARN_REWARD_MAX_PERIOD_MS = 2592000000;
 const UNBOUNDED_DORMANCY_WINDOW_COUNT = Number.MAX_SAFE_INTEGER;
 const EARN_REWARD_TYPE_ALL = 'ALL';
 const EARN_PAGE_SIZE = 100;
 const TRADES_PER_SYMBOL_LIMIT = 1000;
-const EARN_LD_PREFIX = 'LD';
+const BINANCE_INVALID_SYMBOL_CODE = -1121;
+
+const BinanceApiErrorCodeSchema = z.object({
+    code: z.union([z.string(), z.number()])
+});
 
 export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly C2C_HISTORY_MONTHS = 6;
@@ -105,6 +111,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     private readonly credentials: BinanceCredentialsInterface;
     private readonly throttle: BinanceWeightThrottle;
+    private readonly deadlineAtMs: number;
     private readonly depositCache = new Map<string, BinanceDepositApiInterface[]>();
     private readonly withdrawalCache = new Map<string, BinanceWithdrawalApiInterface[]>();
     private readonly fiatOrderCache = new Map<string, BinanceFiatOrderApiInterface[]>();
@@ -119,6 +126,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         super(token, { retryStatusCodes: BINANCE_RETRY_STATUS_CODES, retryMethods: BINANCE_RETRY_METHODS });
         this.credentials = BinanceSignedClient.parseCredentials(token);
         this.throttle = new BinanceWeightThrottle(deadlineAtMs);
+        this.deadlineAtMs = deadlineAtMs;
     }
 
     @Log('enter', 'done')
@@ -378,22 +386,36 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         config: BinanceWindowWalkConfigInterface,
         fetchOneWindow: (windowStartMs: number, windowEndMs: number) => Promise<SyncResultInterface<T[]>>
     ): Promise<SyncResultInterface<T[]>> {
-        const records: T[] = [];
-        let windowEndMs = config.endTimeMs;
-        let consecutiveEmptyWindows = 0;
-        while (consecutiveEmptyWindows < config.dormancyWindowCount && windowEndMs > config.startTimeMs) {
-            const windowStartMs = Math.max(config.startTimeMs, windowEndMs - config.periodMs);
-            // eslint-disable-next-line no-await-in-loop -- Windows must be fetched sequentially so the weight throttle serializes the heaviest calls
-            const windowResult = await fetchOneWindow(windowStartMs, windowEndMs);
-            if (!windowResult.success) {
-                return windowResult;
-            }
+        return this.walkNextWindow({ config, fetchOneWindow, records: [], windowEndMs: config.endTimeMs, consecutiveEmptyWindows: 0 });
+    }
 
-            consecutiveEmptyWindows = this.accumulateWindow(records, windowResult.data, consecutiveEmptyWindows);
-            windowEndMs = windowStartMs;
+    private async walkNextWindow<T>(state: {
+        readonly config: BinanceWindowWalkConfigInterface;
+        readonly fetchOneWindow: (windowStartMs: number, windowEndMs: number) => Promise<SyncResultInterface<T[]>>;
+        readonly records: T[];
+        readonly windowEndMs: number;
+        readonly consecutiveEmptyWindows: number;
+    }): Promise<SyncResultInterface<T[]>> {
+        if (state.consecutiveEmptyWindows >= state.config.dormancyWindowCount || state.windowEndMs <= state.config.startTimeMs) {
+            return this.success(state.records);
         }
 
-        return this.success(records);
+        const deadlineError = this.resolveDeadlineError();
+        if (isDefined(deadlineError)) {
+            return this.failure(deadlineError);
+        }
+
+        const windowStartMs = Math.max(state.config.startTimeMs, state.windowEndMs - state.config.periodMs);
+        const windowResult = await state.fetchOneWindow(windowStartMs, state.windowEndMs);
+        if (!windowResult.success) {
+            return windowResult;
+        }
+
+        return this.walkNextWindow({
+            ...state,
+            windowEndMs: windowStartMs,
+            consecutiveEmptyWindows: this.accumulateWindow(state.records, windowResult.data, state.consecutiveEmptyWindows)
+        });
     }
 
     private accumulateWindow<T>(records: T[], windowData: T[], consecutiveEmptyWindows: number): number {
@@ -424,10 +446,24 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return this.success(cached);
         }
 
+        const result = await this.fetchOffsetPagedRows(offset => this.fetchDepositWindowPage(startTimeMs, endTimeMs, offset));
+        if (result.success) {
+            this.depositCache.set(cacheKey, result.data);
+        }
+
+        return result;
+    }
+
+    private async fetchDepositWindowPage(
+        startTimeMs: number,
+        endTimeMs: number,
+        offset: number
+    ): Promise<SyncResultInterface<BinanceDepositApiInterface[]>> {
         const result = await this.signedRequest(DEPOSIT_HISTORY_ENDPOINT, 'GET', {
             startTime: startTimeMs,
             endTime: endTimeMs,
-            limit: MAX_TRANSACTIONS_PER_WINDOW
+            limit: MAX_TRANSACTIONS_PER_WINDOW,
+            offset
         });
         if (!result.success) {
             return result;
@@ -437,8 +473,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         if (!parsed.success) {
             return this.failure(SyncError.invalidResponse(this.provider));
         }
-
-        this.depositCache.set(cacheKey, parsed.data);
 
         return this.success(parsed.data);
     }
@@ -465,10 +499,24 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return this.success(cached);
         }
 
+        const result = await this.fetchOffsetPagedRows(offset => this.fetchWithdrawalWindowPage(startTimeMs, endTimeMs, offset));
+        if (result.success) {
+            this.withdrawalCache.set(cacheKey, result.data);
+        }
+
+        return result;
+    }
+
+    private async fetchWithdrawalWindowPage(
+        startTimeMs: number,
+        endTimeMs: number,
+        offset: number
+    ): Promise<SyncResultInterface<BinanceWithdrawalApiInterface[]>> {
         const result = await this.signedRequest(WITHDRAW_HISTORY_ENDPOINT, 'GET', {
             startTime: startTimeMs,
             endTime: endTimeMs,
-            limit: MAX_TRANSACTIONS_PER_WINDOW
+            limit: MAX_TRANSACTIONS_PER_WINDOW,
+            offset
         });
         if (!result.success) {
             return result;
@@ -479,9 +527,31 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return this.failure(SyncError.invalidResponse(this.provider));
         }
 
-        this.withdrawalCache.set(cacheKey, parsed.data);
-
         return this.success(parsed.data);
+    }
+
+    private fetchOffsetPagedRows<T>(fetchPage: (offset: number) => Promise<SyncResultInterface<T[]>>): Promise<SyncResultInterface<T[]>> {
+        const rows: T[] = [];
+
+        return this.fetchNextOffsetPage(fetchPage, 0, rows);
+    }
+
+    private fetchNextOffsetPage<T>(
+        fetchPage: (offset: number) => Promise<SyncResultInterface<T[]>>,
+        offset: number,
+        rows: T[]
+    ): Promise<SyncResultInterface<T[]>> {
+        return fetchPage(offset).then(pageResult => {
+            if (!pageResult.success) {
+                return pageResult;
+            }
+
+            rows.push(...pageResult.data);
+
+            return pageResult.data.length === MAX_TRANSACTIONS_PER_WINDOW
+                ? this.fetchNextOffsetPage(fetchPage, offset + MAX_TRANSACTIONS_PER_WINDOW, rows)
+                : this.success(rows);
+        });
     }
 
     private async fetchFiatOrders(
@@ -672,7 +742,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return flowsResult;
         }
 
-        const transfers = flowsResult.data.map(flow => binanceMapper.mapConvertToTransfer(flow)).filter(isDefined);
+        const transfers = flowsResult.data
+            .filter(flow => flow.orderStatus === CONVERT_SUCCESS_STATUS)
+            .map(flow => binanceMapper.mapConvertToTransfer(flow))
+            .filter(isDefined);
 
         return this.success(transfers);
     }
@@ -831,8 +904,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const baseAssets = new Set<string>();
         for (const balance of balances) {
             const total = this.computeRawTotalBalance(balance);
-            const isSpotTradeable = !balance.asset.startsWith(EARN_LD_PREFIX);
-            if (isDefined(total) && total > 0 && isSpotTradeable) {
+            if (isDefined(total) && total > 0) {
                 baseAssets.add(balance.asset);
             }
         }
@@ -920,8 +992,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             const isSelectedQuotePair = baseAssets.has(quoteAsset) && symbol.endsWith(quoteAsset) && symbol !== quoteAsset;
             if (isSelectedQuotePair) {
                 const baseAsset = symbol.slice(0, -quoteAsset.length);
-                const isSpotTradeable =
-                    isNotEmptyString(baseAsset) && !baseAsset.startsWith(EARN_LD_PREFIX) && eligibleSoldOffBaseAssets.has(baseAsset);
+                const isSpotTradeable = isNotEmptyString(baseAsset) && eligibleSoldOffBaseAssets.has(baseAsset);
 
                 return isSpotTradeable ? { symbol, baseAsset, quoteAsset } : null;
             }
@@ -935,22 +1006,31 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         startTimeMs: number,
         endTimeMs: number
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const transfers: BinanceTransferInterface[] = [];
-        let fromId: number | null = null;
-        let hasMore = true;
-        while (hasMore) {
-            // eslint-disable-next-line no-await-in-loop -- myTrades pages must be fetched sequentially via the fromId cursor against the shared api IP weight pool
-            const pageResult = await this.fetchSymbolTradePage(symbol, fromId, startTimeMs, endTimeMs);
-            if (!pageResult.success) {
-                return pageResult;
-            }
+        return this.fetchNextSymbolTradePage({ symbol, startTimeMs, endTimeMs, fromId: null, transfers: [] });
+    }
 
-            transfers.push(...pageResult.data.transfers);
-            hasMore = isDefined(pageResult.data.nextFromId);
-            fromId = pageResult.data.nextFromId;
+    private async fetchNextSymbolTradePage(state: {
+        readonly symbol: BinanceTradeSymbolInterface;
+        readonly startTimeMs: number;
+        readonly endTimeMs: number;
+        readonly fromId: number | null;
+        readonly transfers: BinanceTransferInterface[];
+    }): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
+        const deadlineError = this.resolveDeadlineError();
+        if (isDefined(deadlineError)) {
+            return this.failure(deadlineError);
         }
 
-        return this.success(transfers);
+        const pageResult = await this.fetchSymbolTradePage(state.symbol, state.fromId, state.startTimeMs, state.endTimeMs);
+        if (!pageResult.success) {
+            return pageResult;
+        }
+
+        state.transfers.push(...pageResult.data.transfers);
+
+        return isDefined(pageResult.data.nextFromId)
+            ? this.fetchNextSymbolTradePage({ ...state, fromId: pageResult.data.nextFromId })
+            : this.success(state.transfers);
     }
 
     private async fetchSymbolTradePage(
@@ -987,13 +1067,23 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         result: SyncResultInterface<unknown> & { success: false },
         symbol: string
     ): SyncResultInterface<{ transfers: BinanceTransferInterface[]; nextFromId: number | null }> {
-        if (result.error.code === SyncErrorCodeEnum.INVALID_RESPONSE) {
+        if (this.isInvalidSymbolError(result.error)) {
             syncLogger.log('binance:trades:unknown-symbol', { symbol });
 
             return this.success({ transfers: [], nextFromId: null });
         }
 
         return result;
+    }
+
+    private isInvalidSymbolError(error: SyncErrorInterface): boolean {
+        if (error.code !== SyncErrorCodeEnum.INVALID_RESPONSE) {
+            return false;
+        }
+
+        const parsed = BinanceApiErrorCodeSchema.safeParse(error.originalError);
+
+        return parsed.success && Number(parsed.data.code) === BINANCE_INVALID_SYMBOL_CODE;
     }
 
     private async fetchC2cOrders(startTimeMs: number, endTimeMs: number): Promise<SyncResultInterface<BinanceC2cOrderApiInterface[]>> {
@@ -1168,22 +1258,30 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         startTimeMs: number,
         endTimeMs: number
     ): Promise<SyncResultInterface<BinanceEarnRewardApiInterface[]>> {
-        const rewards: BinanceEarnRewardApiInterface[] = [];
-        let current = 1;
-        let hasMore = true;
-        while (hasMore) {
-            // eslint-disable-next-line no-await-in-loop -- Earn reward pages must be fetched sequentially so the weight throttle serializes the heaviest calls
-            const pageResult = await this.fetchEarnRewardPage(startTimeMs, endTimeMs, current);
-            if (!pageResult.success) {
-                return pageResult;
-            }
+        return this.fetchNextEarnRewardPage({ startTimeMs, endTimeMs, current: 1, rewards: [] });
+    }
 
-            rewards.push(...pageResult.data);
-            hasMore = pageResult.data.length === EARN_PAGE_SIZE;
-            current += 1;
+    private async fetchNextEarnRewardPage(state: {
+        readonly startTimeMs: number;
+        readonly endTimeMs: number;
+        readonly current: number;
+        readonly rewards: BinanceEarnRewardApiInterface[];
+    }): Promise<SyncResultInterface<BinanceEarnRewardApiInterface[]>> {
+        const deadlineError = this.resolveDeadlineError();
+        if (isDefined(deadlineError)) {
+            return this.failure(deadlineError);
         }
 
-        return this.success(rewards);
+        const pageResult = await this.fetchEarnRewardPage(state.startTimeMs, state.endTimeMs, state.current);
+        if (!pageResult.success) {
+            return pageResult;
+        }
+
+        state.rewards.push(...pageResult.data);
+
+        return pageResult.data.length === EARN_PAGE_SIZE
+            ? this.fetchNextEarnRewardPage({ ...state, current: state.current + 1 })
+            : this.success(state.rewards);
     }
 
     private async fetchEarnRewardPage(
@@ -1226,7 +1324,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.success(this.buildSpotAccounts(balanceByAsset));
     }
 
-    private async foldAllEarnPositions(balanceByAsset: Map<string, number>): Promise<SyncResultInterface<SyncAccountInterface[]> | null> {
+    private async foldAllEarnPositions(
+        balanceByAsset: Map<string, number | null>
+    ): Promise<SyncResultInterface<SyncAccountInterface[]> | null> {
         const earnResult = await this.fetchEarnPositions();
         if (!earnResult.success) {
             return earnResult;
@@ -1244,48 +1344,59 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return null;
     }
 
-    private buildSpotBalanceMap(balances: BinanceAssetBalanceApiInterface[]): Map<string, number> {
-        const balanceByAsset = new Map<string, number>();
+    private buildSpotBalanceMap(balances: BinanceAssetBalanceApiInterface[]): Map<string, number | null> {
+        const balanceByAsset = new Map<string, number | null>();
         for (const balance of balances) {
             const total = this.computeRawTotalBalance(balance);
             if (isDefined(total) && total > 0) {
-                balanceByAsset.set(balance.asset, total);
+                balanceByAsset.set(balance.asset, total * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER ? null : total);
+            } else if (!isDefined(total)) {
+                balanceByAsset.set(balance.asset, null);
             }
         }
 
         return balanceByAsset;
     }
 
-    private foldEarnPositions(balanceByAsset: Map<string, number>, positions: BinanceEarnPositionApiInterface[]): void {
+    private foldEarnPositions(balanceByAsset: Map<string, number | null>, positions: BinanceEarnPositionApiInterface[]): void {
         for (const position of positions) {
-            const asset = this.stripEarnPrefix(position.asset);
-            const quantity = binanceMapper.parseBinanceAmount(position.totalAmount);
-            if (isDefined(quantity) && quantity > 0) {
-                balanceByAsset.set(asset, (balanceByAsset.get(asset) ?? 0) + quantity);
-            }
+            this.foldEarnPositionAmount(balanceByAsset, position.asset, position.totalAmount);
         }
     }
 
-    private foldLockedEarnPositions(balanceByAsset: Map<string, number>, positions: BinanceLockedEarnPositionApiInterface[]): void {
+    private foldLockedEarnPositions(balanceByAsset: Map<string, number | null>, positions: BinanceLockedEarnPositionApiInterface[]): void {
         for (const position of positions) {
-            const quantity = binanceMapper.parseBinanceAmount(position.amount);
-            if (isDefined(quantity) && quantity > 0) {
-                balanceByAsset.set(position.asset, (balanceByAsset.get(position.asset) ?? 0) + quantity);
-            }
+            this.foldEarnPositionAmount(balanceByAsset, position.asset, position.amount);
         }
     }
 
-    private stripEarnPrefix(asset: string): string {
-        return asset.startsWith(EARN_LD_PREFIX) ? asset.slice(EARN_LD_PREFIX.length) : asset;
+    private foldEarnPositionAmount(balanceByAsset: Map<string, number | null>, asset: string, rawAmount: string): void {
+        const quantity = binanceMapper.parseBinanceAmount(rawAmount);
+        if (isDefined(quantity) && quantity > 0) {
+            this.addBalanceQuantity(balanceByAsset, asset, quantity);
+        } else if (!isDefined(quantity)) {
+            balanceByAsset.set(asset, null);
+        }
     }
 
-    private buildSpotAccounts(balanceByAsset: Map<string, number>): SyncAccountInterface[] {
+    private addBalanceQuantity(balanceByAsset: Map<string, number | null>, asset: string, quantity: number): void {
+        const currentBalance = balanceByAsset.get(asset);
+        if (!isDefined(currentBalance) && balanceByAsset.has(asset)) {
+            return;
+        }
+
+        const nextBalance = (currentBalance ?? 0) + quantity;
+        balanceByAsset.set(asset, nextBalance * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER ? null : nextBalance);
+    }
+
+    private buildSpotAccounts(balanceByAsset: Map<string, number | null>): SyncAccountInterface[] {
         const accounts: SyncAccountInterface[] = [];
         for (const [asset, total] of balanceByAsset) {
-            if (total * MICRO_UNITS_PRECISION <= Number.MAX_SAFE_INTEGER) {
+            if (isDefined(total)) {
                 accounts.push(binanceMapper.mapBalanceToAccount(asset, BinanceWalletEnum.SPOT, total));
             } else {
                 syncLogger.log('binance:earn:fold-overflow-park', { asset, total });
+                accounts.push(binanceMapper.mapUnrepresentableBalanceToAccount(asset, BinanceWalletEnum.SPOT));
             }
         }
 
@@ -1391,21 +1502,20 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private mapBalance(balance: BinanceAssetBalanceApiInterface, wallet: BinanceWalletEnum): SyncAccountInterface | null {
-        const totalBalance = this.computeTotalBalance(balance);
-        if (!isDefined(totalBalance) || totalBalance <= 0) {
+        const totalBalance = this.computeRawTotalBalance(balance);
+        if (!isDefined(totalBalance)) {
+            return binanceMapper.mapUnrepresentableBalanceToAccount(balance.asset, wallet);
+        }
+
+        if (totalBalance <= 0) {
             return null;
+        }
+
+        if (totalBalance * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER) {
+            return binanceMapper.mapUnrepresentableBalanceToAccount(balance.asset, wallet);
         }
 
         return binanceMapper.mapBalanceToAccount(balance.asset, wallet, totalBalance);
-    }
-
-    private computeTotalBalance(balance: BinanceAssetBalanceApiInterface): number | null {
-        const total = this.computeRawTotalBalance(balance);
-        if (!isDefined(total)) {
-            return null;
-        }
-
-        return total * MICRO_UNITS_PRECISION > Number.MAX_SAFE_INTEGER ? null : total;
     }
 
     private async signedRequest(
@@ -1413,9 +1523,59 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         method: 'GET' | 'POST',
         params: Record<string, string | number> = {}
     ): Promise<SyncResultInterface<unknown>> {
-        await this.throttle.waitIfNeeded();
+        const initialDeadlineError = this.resolveDeadlineError();
+        if (isDefined(initialDeadlineError)) {
+            return this.failure(initialDeadlineError);
+        }
+
+        const throttleError = await this.waitForRequestSlot();
+        if (isDefined(throttleError)) {
+            return this.failure(throttleError);
+        }
+
+        const timestampResult = await this.resolveSignedRequestTimestamp();
+        if (!timestampResult.success) {
+            return timestampResult;
+        }
+
+        return this.fetchSignedJson(endpoint, method, params, timestampResult.data);
+    }
+
+    private async waitForRequestSlot(): Promise<SyncError | null> {
+        try {
+            await this.throttle.waitIfNeeded();
+
+            return null;
+        } catch (error) {
+            if (error instanceof SyncError && error.code === SyncErrorCodeEnum.DEFERRED) {
+                return error;
+            }
+
+            throw error;
+        }
+    }
+
+    private async resolveSignedRequestTimestamp(): Promise<SyncResultInterface<number>> {
+        const delayedDeadlineError = this.resolveDeadlineError();
+        if (isDefined(delayedDeadlineError)) {
+            return this.failure(delayedDeadlineError);
+        }
 
         const timestamp = await this.resolveTimestamp();
+        const timestampDeadlineError = this.resolveDeadlineError();
+        if (isDefined(timestampDeadlineError)) {
+            return this.failure(timestampDeadlineError);
+        }
+
+        return this.success(timestamp);
+    }
+
+    private fetchSignedJson(
+        endpoint: string,
+        method: 'GET' | 'POST',
+        params: Record<string, string | number>,
+        timestamp: number
+    ): Promise<SyncResultInterface<unknown>> {
         const baseParams = { ...params, recvWindow: SIGNATURE_RECV_WINDOW_MS, timestamp };
         const query = Object.entries(baseParams)
             .map(([key, value]) => `${key}=${String(value)}`)
@@ -1424,6 +1584,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const signedEndpoint = `${endpoint}?${query}&signature=${signature}`;
 
         return this.fetchJson<unknown>(signedEndpoint, { method });
+    }
+
+    private resolveDeadlineError(): SyncError | null {
+        return Date.now() >= this.deadlineAtMs ? SyncError.deferred(this.provider) : null;
     }
 
     private async resolveTimestamp(): Promise<number> {

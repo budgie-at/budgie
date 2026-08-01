@@ -1,7 +1,7 @@
-/* eslint-disable no-await-in-loop -- Sync orchestration requires sequential awaits and many log tags */
+/* eslint-disable no-await-in-loop -- Sync orchestration requires sequential awaits */
 import { consolidationScopeService } from '@budgie/consolidation';
 import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { Log, getLogger } from '@budgie/logger';
+import { Log } from '@budgie/logger';
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService, SyncAccountTypeEnum } from '@budgie/sync';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -23,8 +23,6 @@ import { transferConsolidationService } from './transfer-consolidation.service';
 
 import type { MccCategoryLookupInterface, SyncEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 import type { SyncAccountInterface, SyncBatchResultInterface } from '@budgie/sync';
-
-const logger = getLogger('AppMonobankSyncService');
 
 class AppMonobankSyncService extends AbstractPollingSyncService {
     protected readonly provider = ExternalSourceEnum.MONOBANK;
@@ -51,6 +49,39 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
     }
 
     @Log(
+        (token, externalIds) => `enter tokenLen=${token.length} externalIdCount=${externalIds.length}`,
+        (result, token, externalIds) => `done tokenLen=${token.length} externalIdCount=${externalIds.length} result=${String(result)}`,
+        (error, token, externalIds) =>
+            `throw tokenLen=${token.length} externalIdCount=${externalIds.length} error=${getErrorMessage(error)}`
+    )
+    override async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
+        const bankAccounts = await this.fetchBankAccountsAndJars(token);
+
+        for (const externalId of externalIds) {
+            const bankAccount = bankAccounts.find(acc => acc.id === externalId);
+            if (isDefined(bankAccount)) {
+                const account = await this.getOrCreateSyncAccount(bankAccount);
+                await this.createOrUpdateSync(account.id, token);
+            }
+        }
+
+        void this.registerBackgroundTask();
+        void this.sync();
+    }
+
+    @Log(
+        (accountId, enabled) => `enter accountId=${accountId} enabled=${String(enabled)}`,
+        (result, accountId, enabled) => `done accountId=${accountId} enabled=${String(enabled)} result=${String(result)}`,
+        (error, accountId, enabled) => `throw accountId=${accountId} enabled=${String(enabled)} error=${getErrorMessage(error)}`
+    )
+    override async setAccountSyncEnabled(accountId: number, enabled: boolean): Promise<void> {
+        await super.setAccountSyncEnabled(accountId, enabled);
+        if (enabled) {
+            void this.sync();
+        }
+    }
+
+    @Log(
         sync => `enter syncId=${sync.id} mode=${sync.mode}`,
         (result, sync) =>
             `done syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} transactionIds=${result.transactions
@@ -59,48 +90,26 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
                 .join(',')} completed=${result.completed}`,
         (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
     )
-    // eslint-disable-next-line max-statements -- Sync batch keeps adjacent phase timing logs for live performance debugging
-    protected async executeSyncBatch(sync: SyncEntityInterface): Promise<SyncBatchResultInterface> {
-        const startedAt = Date.now();
+    protected override async executeSyncBatch(sync: SyncEntityInterface): Promise<SyncBatchResultInterface> {
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
-            logger.log('executeSyncBatch:missing-account', {
-                accountId: sync.accountId,
-                durationMs: Date.now() - startedAt,
-                syncId: sync.id
-            });
-
             return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
         }
 
-        const fetchStartedAt = Date.now();
         const result = await this.fetchTransactionBatch(sync, account.externalId);
-        logger.log('executeSyncBatch:fetch', {
-            completed: result.completed,
-            durationMs: Date.now() - fetchStartedAt,
-            mode: sync.mode,
-            syncId: sync.id,
-            transactionCount: result.transactions.length
-        });
         await microPause();
 
-        const processStartedAt = Date.now();
         const changedTransactions = await this.processFetchedTransactions(result.transactions, account.id);
-        const changedTransactionCount = changedTransactions.length;
-        logger.log('executeSyncBatch:process', {
-            accountId: account.id,
-            changedTransactionCount,
-            durationMs: Date.now() - processStartedAt,
-            syncId: sync.id,
-            transactionCount: result.transactions.length
-        });
-
         await this.reconcileChangedTransactions(changedTransactions);
 
         await microPause();
-        logger.log('executeSyncBatch:done', { durationMs: Date.now() - startedAt, syncId: sync.id });
 
         return result;
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    protected override async beforeSyncRun(): Promise<void> {
+        await this.loadMccCategories();
     }
 
     @Log(
@@ -137,30 +146,138 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         });
     }
 
-    async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
-        const bankAccounts = await this.fetchBankAccountsAndJars(token);
-
-        for (const externalId of externalIds) {
-            const bankAccount = bankAccounts.find(acc => acc.id === externalId);
-            if (isDefined(bankAccount)) {
-                const account = await this.getOrCreateSyncAccount(bankAccount);
-                await this.createOrUpdateSync(account.id, token);
-            }
+    @Log(
+        changedTransactions => `enter changedTransactionCount=${changedTransactions.length}`,
+        (result, changedTransactions) => `done changedTransactionCount=${changedTransactions.length} result=${String(result)}`,
+        (error, changedTransactions) => `throw changedTransactionCount=${changedTransactions.length} error=${getErrorMessage(error)}`
+    )
+    private async reconcileChangedTransactions(
+        changedTransactions: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>>
+    ): Promise<void> {
+        const consolidationScope = consolidationScopeService.buildFromTransactions(changedTransactions);
+        if (!isDefined(consolidationScope)) {
+            return;
         }
 
-        void this.registerBackgroundTask();
-        void this.sync();
-    }
-
-    override async setAccountSyncEnabled(accountId: number, enabled: boolean): Promise<void> {
-        await super.setAccountSyncEnabled(accountId, enabled);
-        if (enabled) {
-            void this.sync();
+        try {
+            await transferConsolidationService.consolidate(consolidationScope);
+        } finally {
+            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope);
         }
     }
 
-    protected override async beforeSyncRun(): Promise<void> {
-        await this.loadMccCategories();
+    @Log(
+        (transactions, accountId) => `enter accountId=${accountId} transactionCount=${transactions.length}`,
+        (result, transactions, accountId) =>
+            `done accountId=${accountId} transactionCount=${transactions.length} changedTransactionCount=${result.length}`,
+        (error, transactions, accountId) =>
+            `throw accountId=${accountId} transactionCount=${transactions.length} error=${getErrorMessage(error)}`
+    )
+    private async processFetchedTransactions(
+        transactions: SyncBatchResultInterface['transactions'],
+        accountId: number
+    ): Promise<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]> {
+        if (!isNotEmptyArray(transactions)) {
+            return [];
+        }
+
+        const existingTransactionIdMap = await transactionService.findIdMapByExternalSource(this.provider);
+        const newTransactions = transactions.filter(bankTransaction => !existingTransactionIdMap.has(bankTransaction.id));
+        const existingTransactions = transactions.filter(bankTransaction => existingTransactionIdMap.has(bankTransaction.id));
+
+        const createdTransactions = await this.createNewTransactions(newTransactions, accountId);
+        const updatedTransactionCount = await this.updateExistingTransactions(existingTransactions, accountId);
+        const updatedTransactions = this.buildExistingTransactionScopeSeeds(existingTransactions, existingTransactionIdMap);
+
+        if (isPositiveNumber(updatedTransactionCount)) {
+            await transactionService.updateAllBalances();
+        }
+
+        return [...createdTransactions, ...updatedTransactions];
+    }
+
+    @Log(
+        (newTransactions, accountId) => `enter accountId=${accountId} transactionCount=${newTransactions.length}`,
+        (result, newTransactions, accountId) =>
+            `done accountId=${accountId} transactionCount=${newTransactions.length} createdTransactionCount=${result.length}`,
+        (error, newTransactions, accountId) =>
+            `throw accountId=${accountId} transactionCount=${newTransactions.length} error=${getErrorMessage(error)}`
+    )
+    private async createNewTransactions(
+        newTransactions: SyncBatchResultInterface['transactions'],
+        accountId: number
+    ): Promise<TransactionEntityInterface[]> {
+        if (!isNotEmptyArray(newTransactions)) {
+            return [];
+        }
+
+        const inputs = newTransactions.map(bankTransaction => {
+            const lookup = this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null;
+
+            return mapBankTransactionToCreateInput(bankTransaction, accountId, lookup, this.provider);
+        });
+        const prepared = await ruleEngineService.prepareCreateInputsForRules(inputs);
+        const createdTransactions = await transactionService.bulkCreate(prepared.transactionInputs);
+        const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
+        const postCreateTransactionInputs = prepared.postCreateIndexes.map(index => prepared.transactionInputs[index]).filter(isDefined);
+
+        if (isNotEmptyArray(postCreateTransactionIds)) {
+            ruleApplicationDrainerService.enqueueTransactions(postCreateTransactionIds, postCreateTransactionInputs);
+        }
+
+        return createdTransactions;
+    }
+
+    @Log(
+        (existingTransactions, accountId) => `enter accountId=${accountId} transactionCount=${existingTransactions.length}`,
+        (result, existingTransactions, accountId) =>
+            `done accountId=${accountId} transactionCount=${existingTransactions.length} updatedTransactionCount=${result}`,
+        (error, existingTransactions, accountId) =>
+            `throw accountId=${accountId} transactionCount=${existingTransactions.length} error=${getErrorMessage(error)}`
+    )
+    private async updateExistingTransactions(
+        existingTransactions: SyncBatchResultInterface['transactions'],
+        accountId: number
+    ): Promise<number> {
+        if (!isNotEmptyArray(existingTransactions)) {
+            return 0;
+        }
+
+        for (const bankTransaction of existingTransactions) {
+            await transactionService.update(mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider));
+            await microPause();
+        }
+
+        return existingTransactions.length;
+    }
+
+    @Log(
+        (sync, externalAccountId) => `enter syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId}`,
+        (result, sync, externalAccountId) =>
+            `done syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} transactionCount=${result.transactions.length} completed=${String(result.completed)}`,
+        (error, sync, externalAccountId) =>
+            `throw syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} error=${getErrorMessage(error)}`
+    )
+    private async fetchTransactionBatch(sync: SyncEntityInterface, externalAccountId: string): Promise<SyncBatchResultInterface> {
+        const service = new MonobankSyncService(sync.token);
+        const isForward = sync.mode === SyncModeEnum.FORWARD;
+
+        return isForward
+            ? await service.syncTransactionsForward(externalAccountId, sync.forwardSyncFromAt ?? new Date())
+            : await service.syncTransactionsBackward(externalAccountId, sync.backwardSyncFromAt ?? new Date(), sync.backwardSyncedAt);
+    }
+
+    @Log(
+        token => `enter tokenLen=${token.length}`,
+        (result, token) => `done tokenLen=${token.length} accountCount=${result.length}`,
+        (error, token) => `throw tokenLen=${token.length} error=${getErrorMessage(error)}`
+    )
+    private async fetchBankAccountsAndJars(token: string): Promise<SyncAccountInterface[]> {
+        const service = new MonobankSyncService(token);
+        const accounts = await service.syncAccounts();
+        const jars = await service.syncJars();
+
+        return [...accounts, ...jars];
     }
 
     protected override generateAccountTitle(account: SyncAccountInterface): string {
@@ -181,173 +298,6 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
 
     protected override accountIcon(account: SyncAccountInterface): UserIconNameEnum {
         return account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : super.accountIcon(account);
-    }
-
-    private async reconcileChangedTransactions(
-        changedTransactions: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>>
-    ): Promise<void> {
-        const consolidationScope = consolidationScopeService.buildFromTransactions(changedTransactions);
-        if (!isDefined(consolidationScope)) {
-            return;
-        }
-
-        try {
-            await transferConsolidationService.consolidate(consolidationScope);
-        } finally {
-            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope);
-        }
-    }
-
-    // eslint-disable-next-line max-statements -- Sync import path keeps adjacent phase timing logs for live performance debugging
-    private async processFetchedTransactions(
-        transactions: SyncBatchResultInterface['transactions'],
-        accountId: number
-    ): Promise<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]> {
-        const startedAt = Date.now();
-        if (!isNotEmptyArray(transactions)) {
-            logger.log('processFetchedTransactions:empty', { accountId, durationMs: Date.now() - startedAt });
-
-            return [];
-        }
-
-        const existingStartedAt = Date.now();
-        const existingTransactionIdMap = await transactionService.findIdMapByExternalSource(this.provider);
-        logger.log('processFetchedTransactions:existing-ids', {
-            accountId,
-            durationMs: Date.now() - existingStartedAt,
-            existingCount: existingTransactionIdMap.size,
-            fetchedCount: transactions.length
-        });
-        const newTransactions = transactions.filter(bankTransaction => !existingTransactionIdMap.has(bankTransaction.id));
-        const existingTransactions = transactions.filter(bankTransaction => existingTransactionIdMap.has(bankTransaction.id));
-        logger.log('processFetchedTransactions:classified', {
-            accountId,
-            existingCount: existingTransactions.length,
-            fetchedCount: transactions.length,
-            newCount: newTransactions.length
-        });
-
-        const createdTransactions = await this.createNewTransactions(newTransactions, accountId);
-        const updatedTransactionCount = await this.updateExistingTransactions(existingTransactions, accountId);
-        const updatedTransactions = this.buildExistingTransactionScopeSeeds(existingTransactions, existingTransactionIdMap);
-
-        if (isPositiveNumber(updatedTransactionCount)) {
-            const balanceStartedAt = Date.now();
-            await transactionService.updateAllBalances();
-            logger.log('processFetchedTransactions:balances', {
-                accountId,
-                durationMs: Date.now() - balanceStartedAt,
-                updatedTransactionCount
-            });
-        }
-
-        logger.log('processFetchedTransactions:done', {
-            accountId,
-            createdTransactionCount: createdTransactions.length,
-            durationMs: Date.now() - startedAt,
-            updatedTransactionCount
-        });
-
-        return [...createdTransactions, ...updatedTransactions];
-    }
-
-    // eslint-disable-next-line max-statements -- Sync create path keeps adjacent phase timing logs for live performance debugging
-    private async createNewTransactions(
-        newTransactions: SyncBatchResultInterface['transactions'],
-        accountId: number
-    ): Promise<TransactionEntityInterface[]> {
-        const startedAt = Date.now();
-        if (!isNotEmptyArray(newTransactions)) {
-            logger.log('createNewTransactions:empty', { accountId, durationMs: Date.now() - startedAt });
-
-            return [];
-        }
-
-        const inputs = newTransactions.map(bankTransaction => {
-            const lookup = this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null;
-
-            return mapBankTransactionToCreateInput(bankTransaction, accountId, lookup, this.provider);
-        });
-        const prepareStartedAt = Date.now();
-        const prepared = await ruleEngineService.prepareCreateInputsForRules(inputs);
-        logger.log('createNewTransactions:rules', {
-            accountId,
-            durationMs: Date.now() - prepareStartedAt,
-            inputCount: inputs.length,
-            postCreateCount: prepared.postCreateIndexes.length
-        });
-        const createStartedAt = Date.now();
-        const createdTransactions = await transactionService.bulkCreate(prepared.transactionInputs);
-        logger.log('createNewTransactions:bulk-create', {
-            accountId,
-            createdCount: createdTransactions.length,
-            durationMs: Date.now() - createStartedAt
-        });
-        const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
-        const postCreateTransactionInputs = prepared.postCreateIndexes.map(index => prepared.transactionInputs[index]).filter(isDefined);
-
-        if (isNotEmptyArray(postCreateTransactionIds)) {
-            ruleApplicationDrainerService.enqueueTransactions(postCreateTransactionIds, postCreateTransactionInputs);
-        }
-        logger.log('createNewTransactions:done', {
-            accountId,
-            createdCount: createdTransactions.length,
-            durationMs: Date.now() - startedAt,
-            postCreateCount: postCreateTransactionIds.length
-        });
-
-        return createdTransactions;
-    }
-
-    private async updateExistingTransactions(
-        existingTransactions: SyncBatchResultInterface['transactions'],
-        accountId: number
-    ): Promise<number> {
-        const startedAt = Date.now();
-        if (!isNotEmptyArray(existingTransactions)) {
-            logger.log('updateExistingTransactions:empty', { accountId, durationMs: Date.now() - startedAt });
-
-            return 0;
-        }
-
-        for (const bankTransaction of existingTransactions) {
-            await transactionService.update(mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider));
-            await microPause();
-        }
-        logger.log('updateExistingTransactions:done', {
-            accountId,
-            durationMs: Date.now() - startedAt,
-            updatedCount: existingTransactions.length
-        });
-
-        return existingTransactions.length;
-    }
-
-    private async fetchTransactionBatch(sync: SyncEntityInterface, extAccId: string): Promise<SyncBatchResultInterface> {
-        const startedAt = Date.now();
-        const svc = new MonobankSyncService(sync.token);
-        const isForward = sync.mode === SyncModeEnum.FORWARD;
-
-        const result = isForward
-            ? await svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date())
-            : await svc.syncTransactionsBackward(extAccId, sync.backwardSyncFromAt ?? new Date(), sync.backwardSyncedAt);
-        logger.log('fetchTransactionBatch:done', {
-            completed: result.completed,
-            durationMs: Date.now() - startedAt,
-            mode: sync.mode,
-            syncId: sync.id,
-            transactionCount: result.transactions.length
-        });
-
-        return result;
-    }
-
-    private async fetchBankAccountsAndJars(token: string): Promise<SyncAccountInterface[]> {
-        const service = new MonobankSyncService(token);
-        const accounts = await service.syncAccounts();
-        const jars = await service.syncJars();
-
-        return [...accounts, ...jars];
     }
 }
 

@@ -1,3 +1,4 @@
+import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { MONOBANK_BALANCE_DIVISOR } from '../constant/monobank-balance-divisor.constant';
 
@@ -14,6 +15,7 @@ export const monobankAccountMapper = (account: MonobankAccountApiInterface): Syn
     currencyCode: monobankCurrencyCodeMapper(account.currencyCode),
     currencyCodeNumeric: account.currencyCode,
     balance: account.balance / MONOBANK_BALANCE_DIVISOR,
+    balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
     creditLimit: account.creditLimit / MONOBANK_BALANCE_DIVISOR,
     type: monobankAccountTypeMapper(account.type),
     iban: account.iban,
