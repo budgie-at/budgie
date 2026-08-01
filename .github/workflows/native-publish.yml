@@ -81,3 +81,97 @@ jobs:
       - name: Remove App Store Connect key
         if: always()
         run: rm -f packages/app/asc_api_key.p8
+
+  # Android Lint is excluded from the production Gradle command in
+  # packages/app/eas.json, because the Android Gradle plugin wires
+  # lintVitalRelease into release bundling and it runs inline in the store
+  # build. The fatal-severity check runs here instead, on a hosted runner,
+  # against the same production Expo config.
+  #
+  # This repository has no Android build and submit job yet. When one is added
+  # it must declare `needs: android-release-lint` so a fatal lint finding still
+  # blocks the Google Play submission.
+  android-release-lint:
+    name: Android release lint gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # ndk;27.1.12297006 is rootProject.ext.ndkVersion from the Expo version
+      # catalog. ndk;27.0.12077973 is the Android Gradle plugin default, which
+      # expo-updates falls back to because its externalNativeBuild block does
+      # not read rootProject.ext.ndkVersion.
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0 ndk;27.1.12297006 ndk;27.0.12077973 cmake;3.22.1'
+
+      - name: Verify Android toolchain
+        run: |
+          for ndk_version in 27.1.12297006 27.0.12077973; do
+            test -d "$ANDROID_HOME/ndk/$ndk_version" || {
+              echo "::warning::NDK $ndk_version is not installed; Gradle will download it while configuring expo-updates."
+            }
+          done
+
+          java -version
+          sdkmanager --version
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build internal workspace packages
+        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
+
+      - name: Generate production Android project
+        working-directory: packages/app
+        env:
+          APP_VARIANT: production
+        run: ../../node_modules/.bin/expo prebuild --platform android --no-install --clean
+
+      # Google Play rejects a release without a 64-bit ABI. There is no Android
+      # artifact job in this repository yet, so the guard runs against the
+      # generated production project instead of a packaged bundle.
+      - name: Verify production Android ABIs
+        working-directory: packages/app
+        run: |
+          abis=$(sed -n 's/^reactNativeArchitectures=//p' android/gradle.properties)
+          echo "Production ABIs: $abis"
+
+          printf '%s\n' "$abis" | tr ',' '\n' | grep -qx arm64-v8a || {
+            echo "::error::arm64-v8a is missing from the production ABI list; Google Play requires a 64-bit ABI."
+            exit 1
+          }
+
+      - name: Run release lint
+        working-directory: packages/app/android
+        run: ./gradlew :app:lintVitalRelease -PreactNativeArchitectures=arm64-v8a --no-daemon
+
+      - name: Upload lint report
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: budgie-production-android-lint
+          path: |
+            packages/app/android/app/build/reports/lint-results-*.html
+            packages/app/android/app/build/reports/lint-results-*.xml
+          if-no-files-found: ignore
+          retention-days: 14
