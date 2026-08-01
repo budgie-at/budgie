@@ -48,7 +48,10 @@
             "env": {
                 "APP_VARIANT": "production"
             },
-            "channel": "production"
+            "channel": "production",
+            "android": {
+                "gradleCommand": ":app:bundleRelease -x lint -x lintVitalAnalyzeRelease -x lintAnalyzeRelease"
+            }
         }
     },
     "submit": {
