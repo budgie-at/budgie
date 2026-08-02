@@ -126,6 +126,7 @@ const buildCompatiblePairsSql = (): string => `
             exp.expenseTxId AS expenseTxId,
             exp.accountId AS accountId,
             exp.amount AS expenseAmount,
+            exp.feeAmount AS feeAmount,
             inc.txId AS refundTxId,
             inc.amount AS refundAmount,
             inc.operatedAt - exp.operatedAt AS timeDiff,
@@ -262,8 +263,8 @@ export const REFUND_AUTO_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterfac
                 AND localizedExactAmountMatchCount = 1
             )
         )
-    GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
-    HAVING SUM(refundAmount) <= expenseAmount
+    GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount, feeAmount
+    HAVING SUM(refundAmount) <= CASE WHEN confidenceBucket = 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN feeAmount ELSE expenseAmount END
 `;
 
 export const REFUND_REVIEW_CANDIDATES_SQL = `

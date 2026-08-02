@@ -6,6 +6,8 @@ import {
     REJECTED_PAYMENT_FEE_AMOUNT,
     REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS,
     REJECTED_PAYMENT_FEE_TITLE,
+    REJECTED_PAYMENT_HIGH_FEE_FEE_AMOUNT,
+    REJECTED_PAYMENT_HIGH_FEE_PRIMARY_AMOUNT,
     REJECTED_PAYMENT_PRINCIPAL_TITLE,
     REJECTED_PAYMENT_PRINCIPAL_TITLE_ALL_CAPS
 } from '../harness/rejected-payment-fixture';
@@ -115,6 +117,21 @@ describe('consolidation/refund-pair-rejected-payment', () => {
             expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
             expenseFeeAmount: REJECTED_PAYMENT_FEE_AMOUNT,
             refundAmounts: [REJECTED_PAYMENT_FEE_AMOUNT],
+            refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS
+        });
+
+        await runConsolidationAndAssertSingleRefund(expense.id, refunds[0].id);
+    });
+
+    it('auto-consolidates a PrivatBank fee-return refund when the FEE entry exceeds the primary CREDIT amount', async () => {
+        const account = testSeedService.account({ externalId: 'privat-card' });
+        const { expense, refunds } = testSeedService.refundedExpense({
+            accountId: account.id,
+            title: 'FOP TESTOVYI PRODUCTS',
+            refundTitle: REJECTED_PAYMENT_FEE_TITLE,
+            expenseAmount: REJECTED_PAYMENT_HIGH_FEE_PRIMARY_AMOUNT,
+            expenseFeeAmount: REJECTED_PAYMENT_HIGH_FEE_FEE_AMOUNT,
+            refundAmounts: [REJECTED_PAYMENT_HIGH_FEE_FEE_AMOUNT],
             refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS
         });
 
