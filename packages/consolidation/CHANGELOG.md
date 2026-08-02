@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.4](https://github.com/budgie-at/budgie/compare/v6.0.3...v6.0.4) (2026-08-02)
+
+
+### Bug Fixes
+
+* **consolidation:** fee-return refund rejected when FEE entry exceeds primary CREDIT amount ([#612](https://github.com/budgie-at/budgie/issues/612)) ([367894d](https://github.com/budgie-at/budgie/commit/367894da6466513dfd38aac061c946333800f952))
+
+
+
+
+
 ## [6.0.3](https://github.com/budgie-at/budgie/compare/v6.0.2...v6.0.3) (2026-08-01)
 
 **Note:** Version bump only for package @budgie/consolidation
