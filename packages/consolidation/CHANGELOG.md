@@ -3,24 +3,62 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [5.43.3](https://github.com/budgie-at/budgie/compare/v5.43.2...v5.43.3) (2026-07-20)
-
+## [6.0.4](https://github.com/budgie-at/budgie/compare/v6.0.3...v6.0.4) (2026-08-02)
 
 ### Bug Fixes
 
-* **app:** repair migrated borrowed debt history ([#597](https://github.com/budgie-at/budgie/issues/597)) ([c998892](https://github.com/budgie-at/budgie/commit/c998892d7e2811e72c658c87721e5946a3c4d2b4))
+- **consolidation:** fee-return refund rejected when FEE entry exceeds primary CREDIT amount ([#612](https://github.com/budgie-at/budgie/issues/612)) ([367894d](https://github.com/budgie-at/budgie/commit/367894da6466513dfd38aac061c946333800f952))
 
+## [6.0.3](https://github.com/budgie-at/budgie/compare/v6.0.2...v6.0.3) (2026-08-01)
 
+**Note:** Version bump only for package @budgie/consolidation
 
+## [6.0.2](https://github.com/budgie-at/budgie/compare/v6.0.1...v6.0.2) (2026-07-31)
 
+**Note:** Version bump only for package @budgie/consolidation
+
+## [6.0.1](https://github.com/budgie-at/budgie/compare/v6.0.0...v6.0.1) (2026-07-25)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+# 6.0.0 (2026-07-25)
+
+### Bug Fixes
+
+- address bank sync repair review ([4f7192b](https://github.com/budgie-at/budgie/commit/4f7192beb56a90067451976031a7a5c609a8bd76))
+- address bot review feedback ([26a1e3f](https://github.com/budgie-at/budgie/commit/26a1e3fd41389199d4608188d2bf315fa620bd7d))
+- address consolidation review feedback ([91e6c59](https://github.com/budgie-at/budgie/commit/91e6c59de89c9f5b2cdc89bf091a24f525d56726))
+- **app:** repair migrated borrowed debt history ([#597](https://github.com/budgie-at/budgie/issues/597)) ([0c2ed91](https://github.com/budgie-at/budgie/commit/0c2ed910c73e7f46582853af4bd4e73748c1627e))
+- batch consolidation candidate yields ([272782f](https://github.com/budgie-at/budgie/commit/272782f7e52692677ee84750dcca92aa1f445b0a))
+- consolidate ATM withdrawals with fees ([38196ea](https://github.com/budgie-at/budgie/commit/38196ea75e7dc8cfbfa024e3587cfb29455d3ff1))
+- **consolidation:** consolidate PrivatBank rejected-payment refunds ([#603](https://github.com/budgie-at/budgie/issues/603)) ([17cb639](https://github.com/budgie-at/budgie/commit/17cb639328ccd5408884d02c7e1e41a2dc6ff916))
+- deduplicate two-source consolidation execution ([e2bd378](https://github.com/budgie-at/budgie/commit/e2bd378bd03f58147629a3d62455699ea859a55e))
+- optimize consolidation query plans ([5756907](https://github.com/budgie-at/budgie/commit/5756907e0812c6ff6a8dc925425e2420b9ab36eb))
+- preserve ATM fees and split transaction flows ([dac1247](https://github.com/budgie-at/budgie/commit/dac1247656cb20f353dab9755b4d00e3f6f427a8))
+- reduce consolidation log duplication ([680535e](https://github.com/budgie-at/budgie/commit/680535e3ce88fa4f02b25f95b701f07b306b8fc3))
+- remove consolidation executor duplication ([28e80f6](https://github.com/budgie-at/budgie/commit/28e80f69deee49a1e11395db567c221788a025e7))
+- yield during consolidation drains ([5f7653f](https://github.com/budgie-at/budgie/commit/5f7653f6974b20ec71a9ea700671b685545ad792))
+
+### Features
+
+- add consolidation package shell ([d7cabe0](https://github.com/budgie-at/budgie/commit/d7cabe02702f24bd65906301fbd4621bb830f5d1))
+- add fee entries to transactions ([ab58152](https://github.com/budgie-at/budgie/commit/ab581526d2fecabf706f176a108d104b8b8e1df6))
+
+## [5.43.5](https://github.com/budgie-at/budgie/compare/v5.43.4...v5.43.5) (2026-07-24)
+
+### Bug Fixes
+
+- **consolidation:** consolidate PrivatBank rejected-payment refunds ([#603](https://github.com/budgie-at/budgie/issues/603)) ([d1f5fe3](https://github.com/budgie-at/budgie/commit/d1f5fe31f75b81b878d0b66954297c527735fd11))
+
+## [5.43.3](https://github.com/budgie-at/budgie/compare/v5.43.2...v5.43.3) (2026-07-20)
+
+### Bug Fixes
+
+- **app:** repair migrated borrowed debt history ([#597](https://github.com/budgie-at/budgie/issues/597)) ([c998892](https://github.com/budgie-at/budgie/commit/c998892d7e2811e72c658c87721e5946a3c4d2b4))
 
 ## [5.43.2](https://github.com/budgie-at/budgie/compare/v5.43.1...v5.43.2) (2026-07-17)
 
 **Note:** Version bump only for package @budgie/consolidation
-
-
-
-
 
 # [5.43.0](https://github.com/budgie-at/budgie/compare/v5.42.0...v5.43.0) (2026-07-17)
 

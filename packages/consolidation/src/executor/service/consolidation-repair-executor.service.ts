@@ -192,7 +192,11 @@ export class ConsolidationRepairExecutorService {
     private async consolidateRefundInner(candidate: RefundCandidateInterface, tx: DB): Promise<boolean> {
         const sourceTransactionIds = [candidate.expenseTransactionId, ...candidate.refundIncomeTransactionIds];
 
-        if (!(await this.consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds, tx))) {
+        if (
+            !(await this.consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds, tx, [
+                candidate.expenseTransactionId
+            ]))
+        ) {
             return false;
         }
 

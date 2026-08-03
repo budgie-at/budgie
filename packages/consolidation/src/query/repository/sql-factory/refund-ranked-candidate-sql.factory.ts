@@ -5,7 +5,13 @@ import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
-const CARD_REVERSAL_TIME_WINDOW_SECONDS = 600;
+
+const REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES = [
+    'Повернення коштів за забракованим платежем',
+    'ПОВЕРНЕННЯ КОШТІВ ЗА ЗАБРАКОВАНИМ ПЛАТЕЖЕМ'
+] as const;
+
+const REJECTED_PAYMENT_FEE_TITLE_PREFIXES = ['Повернення комісій', 'ПОВЕРНЕННЯ КОМІСІЙ'] as const;
 
 const AUTO_TITLE_PREFIXES = [
     'Скасування. ',
@@ -36,6 +42,9 @@ const buildStripPrefixesSql = (seedExpression: string, prefixes: readonly string
 const buildStripCommaSuffixSql = (seedExpression: string): string =>
     `TRIM(CASE WHEN INSTR(${seedExpression}, ',') > 0 THEN SUBSTR(${seedExpression}, 1, INSTR(${seedExpression}, ',') - 1) ELSE ${seedExpression} END)`;
 
+const buildPrefixLikeSql = (column: string, prefixes: readonly string[]): string =>
+    `(${prefixes.map(prefix => `${column} LIKE '${prefix}%'`).join(' OR ')})`;
+
 const buildExpenseEntriesSql = (
     autoTitle: string,
     reviewTitle: string,
@@ -51,7 +60,19 @@ const buildExpenseEntriesSql = (
             UPPER(TRIM(expense_tx.title)) AS rawNormTitle,
             ${autoTitle} AS autoNormTitle,
             ${reviewTitle} AS reviewNormTitle,
-            ${reviewMerchantTitle} AS reviewMerchantNormTitle
+            ${reviewMerchantTitle} AS reviewMerchantNormTitle,
+            (
+                SELECT expense_fee_entry.amount
+                FROM transaction_entries expense_fee_entry
+                WHERE expense_fee_entry.transaction_id = expense_tx.id
+                    AND expense_fee_entry.account_id = expense_entry.account_id
+                    AND expense_fee_entry.deleted_at IS NULL
+                    AND expense_fee_entry.original_transaction_id IS NULL
+                    AND expense_fee_entry.type = '${TransactionEntryTypeEnum.FEE}'
+                    AND expense_fee_entry.amount > 0
+                ORDER BY expense_fee_entry.id
+                LIMIT 1
+            ) AS feeAmount
         FROM transactions expense_tx INDEXED BY transactions_visible_type_operated_idx
         INNER JOIN transaction_entries expense_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
             ON expense_entry.transaction_id = expense_tx.id
@@ -105,6 +126,7 @@ const buildCompatiblePairsSql = (): string => `
             exp.expenseTxId AS expenseTxId,
             exp.accountId AS accountId,
             exp.amount AS expenseAmount,
+            exp.feeAmount AS feeAmount,
             inc.txId AS refundTxId,
             inc.amount AS refundAmount,
             inc.operatedAt - exp.operatedAt AS timeDiff,
@@ -118,6 +140,15 @@ const buildCompatiblePairsSql = (): string => `
                     AND inc.rawNormTitle != exp.rawNormTitle AND inc.operatedAt > exp.operatedAt
                     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
                 THEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES)} AND inc.accountId = exp.accountId
+                    AND inc.amount = exp.amount AND inc.operatedAt > exp.operatedAt
+                    AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
+                THEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE'
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_FEE_TITLE_PREFIXES)} AND inc.accountId = exp.accountId
+                    AND exp.feeAmount IS NOT NULL AND inc.amount = exp.feeAmount
+                    AND inc.operatedAt > exp.operatedAt
+                    AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
+                THEN 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE'
                 WHEN (inc.reviewNormTitle = exp.reviewNormTitle OR inc.reviewMerchantNormTitle = exp.reviewMerchantNormTitle)
                     AND inc.reviewMerchantNormTitle != ''
                     AND inc.mccCategoryId = exp.mccCategoryId
@@ -129,6 +160,8 @@ const buildCompatiblePairsSql = (): string => `
             CASE
                 WHEN inc.rawNormTitle = exp.rawNormTitle THEN 'exact-title'
                 WHEN inc.autoNormTitle = exp.autoNormTitle THEN 'localized-refund-title'
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES)} THEN 'rejected-payment-principal-title'
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_FEE_TITLE_PREFIXES)} THEN 'rejected-payment-fee-title'
                 ELSE 'prefix-title-mcc'
             END AS matchType
         FROM income_entries inc
@@ -139,6 +172,20 @@ const buildCompatiblePairsSql = (): string => `
     )
 `;
 
+const buildBucketPriorityOrderSql = (): string => `
+    CASE confidenceBucket
+        WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
+        WHEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' THEN 2
+        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE' THEN 3
+        WHEN 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN 4
+        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 5
+        ELSE 99
+    END
+`;
+
+const buildLocalizedAmountMismatchOrderSql = (): string =>
+    `CASE WHEN confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' AND expenseAmount != refundAmount THEN 1 ELSE 0 END`;
+
 const buildRankedPairsSql = (): string => `
     ranked_pairs AS (
         SELECT
@@ -146,29 +193,30 @@ const buildRankedPairsSql = (): string => `
             COUNT(*) OVER (PARTITION BY refundTxId) AS refundCandidateCount,
             ROW_NUMBER() OVER (
                 PARTITION BY refundTxId
-                ORDER BY
-                    CASE confidenceBucket
-                        WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
-                        WHEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' THEN 2
-                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 3
-                        ELSE 99
-                    END,
-                    timeDiff
+                ORDER BY ${buildBucketPriorityOrderSql()}, ${buildLocalizedAmountMismatchOrderSql()}, timeDiff
             ) AS refundRank,
             ROW_NUMBER() OVER (
                 PARTITION BY expenseTxId
-                ORDER BY
-                    CASE confidenceBucket
-                        WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
-                        WHEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' THEN 2
-                        WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 3
-                        ELSE 99
-                    END,
-                    timeDiff,
-                    refundTxId
+                ORDER BY ${buildBucketPriorityOrderSql()}, ${buildLocalizedAmountMismatchOrderSql()}, timeDiff, refundTxId
             ) AS expenseRank
         FROM compatible_pairs
         WHERE confidenceBucket IS NOT NULL
+    )
+`;
+
+const buildRankedCandidatesSql = (): string => `
+    ranked_candidates AS (
+        SELECT
+            *,
+            SUM(
+                CASE
+                    WHEN confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
+                        AND expenseAmount = refundAmount
+                        AND expenseRank = 1
+                    THEN 1 ELSE 0
+                END
+            ) OVER (PARTITION BY refundTxId) AS localizedExactAmountMatchCount
+        FROM ranked_pairs
     )
 `;
 
@@ -184,8 +232,9 @@ const buildRankedCandidateSql = (scope: ConsolidationScanScopeInterface | null):
         WITH ${buildExpenseEntriesSql(expenseAutoTitle, expenseReviewTitle, expenseReviewMerchantTitle, scope)},
         ${buildIncomeEntriesSql(incomeAutoTitle, incomeReviewTitle, incomeReviewMerchantTitle, scope)},
         ${buildCompatiblePairsSql()},
-        ${buildRankedPairsSql()}
-        SELECT * FROM ranked_pairs
+        ${buildRankedPairsSql()},
+        ${buildRankedCandidatesSql()}
+        SELECT * FROM ranked_candidates
     `;
 };
 
@@ -199,18 +248,23 @@ export const REFUND_AUTO_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterfac
         GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
     FROM (${buildRankedCandidateSql(scope)})
     WHERE refundRank = 1
-        AND confidenceBucket IN ('AUTO_REFUND_EXACT_TITLE', 'AUTO_REFUND_LOCALIZED_REFUND_TITLE')
+        AND confidenceBucket IN (
+            'AUTO_REFUND_EXACT_TITLE',
+            'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
+            'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE',
+            'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE'
+        )
         AND (
             refundCandidateCount = 1
             OR (
                 confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
-                AND expenseRank = 1
                 AND expenseAmount = refundAmount
-                AND timeDiff <= ${CARD_REVERSAL_TIME_WINDOW_SECONDS}
+                AND expenseRank = 1
+                AND localizedExactAmountMatchCount = 1
             )
         )
-    GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
-    HAVING SUM(refundAmount) <= expenseAmount
+    GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount, feeAmount
+    HAVING SUM(refundAmount) <= CASE WHEN confidenceBucket = 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN feeAmount ELSE expenseAmount END
 `;
 
 export const REFUND_REVIEW_CANDIDATES_SQL = `
@@ -222,7 +276,18 @@ export const REFUND_REVIEW_CANDIDATES_SQL = `
         GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
     FROM (${buildRankedCandidateSql(null)})
     WHERE refundRank = 1
-        AND confidenceBucket IN ('REVIEW_REFUND_PREFIX_TITLE_MCC')
+        AND (
+            confidenceBucket = 'REVIEW_REFUND_PREFIX_TITLE_MCC'
+            OR (
+                confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
+                AND refundCandidateCount > 1
+                AND NOT (
+                    expenseAmount = refundAmount
+                    AND expenseRank = 1
+                    AND localizedExactAmountMatchCount = 1
+                )
+            )
+        )
     GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
     HAVING SUM(refundAmount) <= expenseAmount
 `;

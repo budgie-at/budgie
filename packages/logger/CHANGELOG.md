@@ -3,13 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [5.43.2](https://github.com/budgie-at/budgie/compare/v5.43.1...v5.43.2) (2026-07-17)
+## [6.0.3](https://github.com/budgie-at/budgie/compare/v6.0.2...v6.0.3) (2026-08-01)
 
 **Note:** Version bump only for package @budgie/logger
 
+# 6.0.0 (2026-07-25)
 
+**Note:** Version bump only for package @budgie/logger
 
+## [5.43.2](https://github.com/budgie-at/budgie/compare/v5.43.1...v5.43.2) (2026-07-17)
 
+**Note:** Version bump only for package @budgie/logger
 
 ## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
 
