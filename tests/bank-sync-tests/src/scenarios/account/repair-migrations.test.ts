@@ -3,6 +3,8 @@ import { resolve } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
+import { getDefined } from '@rnw-community/shared';
+
 import { testDb } from '../../harness';
 
 const applyMigration = async (fileName: string): Promise<void> => {
@@ -69,5 +71,48 @@ describe('account/repair-migrations', () => {
         const row = await testDb.$client.getFirstAsync<{ icon: string }>(`SELECT icon FROM accounts WHERE title = 'Stale Icon'`);
 
         expect(row?.icon).toBe('AlarmClockCheck');
+    });
+});
+
+describe('account/repair-zero-target-debt', () => {
+    it('backfills target balance from the opening debt event', async () => {
+        await testDb.$client.runAsync(
+            `INSERT INTO accounts (title, title_search, type, nature, icon, instrument_id, "order", iban, is_active, include_in_net_worth, target_balance, debt_type)
+             VALUES ('Zero Target Debt', 'zero target debt', 'DEBT', 'LIABILITY', 'Landmark', 1, 910, NULL, 1, 1, 0, 'BORROW')`
+        );
+
+        const account = await testDb.$client.getFirstAsync<{ id: number }>(`SELECT id FROM accounts WHERE title = 'Zero Target Debt'`);
+        const accountId = getDefined(account?.id, () => {
+            throw new Error('Zero Target Debt account was not inserted');
+        });
+
+        await testDb.$client.runAsync(
+            `INSERT INTO debt_events (debt_account_id, transaction_id, transaction_entry_id, direction, source, operated_at, amount)
+             VALUES (?, NULL, NULL, 'OPEN', 'INCOME_ATTACHMENT', 1780000000, 1500000)`,
+            [accountId]
+        );
+
+        await applyMigration('0038_repair_zero_target_debt_accounts.sql');
+
+        const repaired = await testDb.$client.getFirstAsync<{ target_balance: number }>(
+            `SELECT target_balance FROM accounts WHERE title = 'Zero Target Debt'`
+        );
+
+        expect(repaired?.target_balance).toBe(1_500_000);
+    });
+
+    it('leaves debt accounts without an opening event untouched', async () => {
+        await testDb.$client.runAsync(
+            `INSERT INTO accounts (title, title_search, type, nature, icon, instrument_id, "order", iban, is_active, include_in_net_worth, target_balance, debt_type)
+             VALUES ('Orphan Debt', 'orphan debt', 'DEBT', 'LIABILITY', 'Landmark', 1, 911, NULL, 1, 1, 0, 'BORROW')`
+        );
+
+        await applyMigration('0038_repair_zero_target_debt_accounts.sql');
+
+        const row = await testDb.$client.getFirstAsync<{ target_balance: number }>(
+            `SELECT target_balance FROM accounts WHERE title = 'Orphan Debt'`
+        );
+
+        expect(row?.target_balance).toBe(0);
     });
 });
