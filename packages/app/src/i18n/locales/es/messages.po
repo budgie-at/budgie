@@ -2324,6 +2324,11 @@ msgstr "El PIN debe tener {PIN_LENGTH} dígitos"
 msgid "PINs do not match"
 msgstr "Los PIN no coinciden"
 
+#: src/account/hooks/use-account-form.hook.ts
+#: src/account/hooks/use-debt-account-form.hook.ts
+msgid "Please check the account details"
+msgstr "Por favor, revisa los detalles de la cuenta"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Please enter your Monobank API token"
 msgstr "Por favor, ingrese su token API de Monobank"
