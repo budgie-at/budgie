@@ -1,4 +1,11 @@
 UPDATE accounts
+SET iban = upper(
+        replace(replace(replace(replace(replace(iban, ' ', ''), char(9), ''), char(10), ''), char(13), ''), char(160), '')
+    )
+WHERE iban IS NOT NULL
+  AND iban GLOB '*[^A-Z0-9]*';
+--> statement-breakpoint
+UPDATE accounts
 SET iban = 'UA00PRIVATBANK' || substr(iban, 10)
 WHERE iban IS NOT NULL
   AND length(iban) = 13

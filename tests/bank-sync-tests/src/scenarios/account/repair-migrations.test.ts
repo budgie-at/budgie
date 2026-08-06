@@ -47,6 +47,22 @@ describe('account/repair-migrations', () => {
         expect(rows.every(row => row.iban === null)).toBe(true);
     });
 
+    it('canonicalizes lowercase and space-formatted IBANs instead of discarding them', async () => {
+        await testDb.$client.runAsync(
+            `INSERT INTO accounts (title, title_search, type, nature, icon, instrument_id, "order", iban, is_active, include_in_net_worth, target_balance)
+             VALUES ('Lowercase Spaced Iban', 'lowercase spaced iban', 'BANK_SYNC', 'ASSET', 'Landmark', 1, 905, 'at48 1200 0100 1234 5678', 1, 1, 0),
+                    ('Nbsp Iban', 'nbsp iban', 'BANK_SYNC', 'ASSET', 'Landmark', 1, 906, 'AT48' || char(160) || '1200010012345678', 1, 1, 0)`
+        );
+
+        await applyMigration('0037_repair_invalid_account_ibans.sql');
+
+        const rows = await testDb.$client.getAllAsync<{ iban: string | null }>(
+            `SELECT iban FROM accounts WHERE title IN ('Lowercase Spaced Iban', 'Nbsp Iban') ORDER BY "order"`
+        );
+
+        expect(rows.map(row => row.iban)).toStrictEqual(['AT481200010012345678', 'AT481200010012345678']);
+    });
+
     it('keeps valid IBANs untouched', async () => {
         await testDb.$client.runAsync(
             `INSERT INTO accounts (title, title_search, type, nature, icon, instrument_id, "order", iban, is_active, include_in_net_worth, target_balance)
