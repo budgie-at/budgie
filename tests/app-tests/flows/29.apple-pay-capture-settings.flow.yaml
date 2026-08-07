@@ -1,0 +1,18 @@
+appId: ${APP_ID}
+---
+- openLink: 'budgie://settings?anchor=general'
+- waitForAnimationToEnd
+- scrollUntilVisible:
+      element:
+          id: 'SettingsPage.ApplePayCaptureCard'
+      direction: DOWN
+- tapOn:
+      id: 'SettingsPage.ApplePayCaptureCard'
+- extendedWaitUntil:
+      visible:
+          id: 'ApplePayCaptureSettings.Container'
+      timeout: 10000
+- assertVisible: 'Apple Pay capture'
+- assertVisible: '.*Wallet history.*'
+- assertVisible:
+      id: 'ApplePayCaptureSettings.OpenShortcutsButton'
