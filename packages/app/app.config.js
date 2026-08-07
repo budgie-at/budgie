@@ -28,6 +28,8 @@ const getUniqueIdentifier = isAndroid => {
     return prefix;
 };
 
+const getWalletCaptureAppGroupIdentifier = () => `group.${getUniqueIdentifier(false)}.wallet-capture`;
+
 const getAppName = () => {
     if (IS_DEV) {
         return 'budgie (Dev)';
@@ -122,6 +124,7 @@ export default ({ config }) => ({
                 }
             }
         ],
+        ['./modules/apple-wallet-capture/app.plugin.js', { appGroupIdentifier: getWalletCaptureAppGroupIdentifier() }],
         './plugins/with-vec-xcframework-fix',
         'expo-asset',
         'expo-image',
