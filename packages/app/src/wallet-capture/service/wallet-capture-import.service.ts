@@ -152,9 +152,12 @@ class WalletCaptureImportService {
     }
 
     @Log(
-        record => `enter captureId="${record.captureId}" accountId=${record.accountId}`,
-        (result, record) => `done captureId="${record.captureId}" accountId=${record.accountId} hasReview=${String(isDefined(result))}`,
-        (error, record) => `throw captureId="${record.captureId}" accountId=${record.accountId} error=${getErrorMessage(error)}`
+        record =>
+            `enter pendingCaptureId="${record.captureId}" amount=${record.amount} merchant="${record.merchant}" accountId=${record.accountId}`,
+        (result, record) =>
+            `done pendingCaptureId="${record.captureId}" amount=${record.amount} merchant="${record.merchant}" accountId=${record.accountId} reviewReason=${result?.reason ?? ''}`,
+        (error, record) =>
+            `throw pendingCaptureId="${record.captureId}" amount=${record.amount} merchant="${record.merchant}" accountId=${record.accountId} error=${getErrorMessage(error)}`
     )
     private async processPendingCapture(record: WalletCaptureNativeRecordInterface): Promise<WalletCaptureReviewItemInterface | null> {
         const unavailableAccountReview = await this.findUnavailableAccountReview(record);
@@ -179,9 +182,11 @@ class WalletCaptureImportService {
     }
 
     @Log(
-        record => `enter captureId="${record.captureId}" accountId=${record.accountId}`,
-        (result, record) => `done captureId="${record.captureId}" accountId=${record.accountId} hasReview=${String(isDefined(result))}`,
-        (error, record) => `throw captureId="${record.captureId}" accountId=${record.accountId} error=${getErrorMessage(error)}`
+        record => `enter accountLookupCaptureId="${record.captureId}" accountId=${record.accountId} capturedAt=${record.capturedAt}`,
+        (result, record) =>
+            `done accountLookupCaptureId="${record.captureId}" accountId=${record.accountId} capturedAt=${record.capturedAt} unavailable=${String(isDefined(result))}`,
+        (error, record) =>
+            `throw accountLookupCaptureId="${record.captureId}" accountId=${record.accountId} capturedAt=${record.capturedAt} error=${getErrorMessage(error)}`
     )
     private async findUnavailableAccountReview(
         record: WalletCaptureNativeRecordInterface
@@ -190,21 +195,13 @@ class WalletCaptureImportService {
             const account = await accountService.findByIdOrFail(record.accountId);
 
             if (!account.isActive) {
-                return {
-                    capture: record,
-                    duplicateTransactionId: null,
-                    reason: WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE
-                };
+                return this.createUnavailableAccountReview(record);
             }
 
             return null;
         } catch (error) {
             if (getErrorMessage(error) === `Account with id ${record.accountId} not found`) {
-                return {
-                    capture: record,
-                    duplicateTransactionId: null,
-                    reason: WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE
-                };
+                return this.createUnavailableAccountReview(record);
             }
 
             throw error;
@@ -212,9 +209,11 @@ class WalletCaptureImportService {
     }
 
     @Log(
-        record => `enter captureId="${record.captureId}" accountId=${record.accountId}`,
-        (result, record) => `done captureId="${record.captureId}" accountId=${record.accountId} duplicateTransactionId=${result ?? ''}`,
-        (error, record) => `throw captureId="${record.captureId}" accountId=${record.accountId} error=${getErrorMessage(error)}`
+        record => `enter duplicateLookupCaptureId="${record.captureId}" merchant="${record.merchant}" amount=${record.amount}`,
+        (result, record) =>
+            `done duplicateLookupCaptureId="${record.captureId}" merchant="${record.merchant}" amount=${record.amount} duplicateTransactionId=${result ?? ''}`,
+        (error, record) =>
+            `throw duplicateLookupCaptureId="${record.captureId}" merchant="${record.merchant}" amount=${record.amount} error=${getErrorMessage(error)}`
     )
     private async findDuplicateTransactionId(record: WalletCaptureNativeRecordInterface): Promise<number | null> {
         return transactionRepository.findPotentialExpenseDuplicate({
@@ -227,9 +226,11 @@ class WalletCaptureImportService {
     }
 
     @Log(
-        record => `enter captureId="${record.captureId}" accountId=${record.accountId}`,
-        (result, record) => `done captureId="${record.captureId}" accountId=${record.accountId} hasReview=${String(isDefined(result))}`,
-        (error, record) => `throw captureId="${record.captureId}" accountId=${record.accountId} error=${getErrorMessage(error)}`
+        record => `enter createAttemptCaptureId="${record.captureId}" status=${record.status} accountId=${record.accountId}`,
+        (result, record) =>
+            `done createAttemptCaptureId="${record.captureId}" status=${record.status} accountId=${record.accountId} reviewReason=${result?.reason ?? ''}`,
+        (error, record) =>
+            `throw createAttemptCaptureId="${record.captureId}" status=${record.status} accountId=${record.accountId} error=${getErrorMessage(error)}`
     )
     private async tryCreateAndAcknowledgeCapture(
         record: WalletCaptureNativeRecordInterface
@@ -244,9 +245,10 @@ class WalletCaptureImportService {
     }
 
     @Log(
-        record => `enter captureId="${record.captureId}" accountId=${record.accountId}`,
-        (_result, record) => `done captureId="${record.captureId}" accountId=${record.accountId}`,
-        (error, record) => `throw captureId="${record.captureId}" accountId=${record.accountId} error=${getErrorMessage(error)}`
+        record => `enter createCaptureId="${record.captureId}" merchant="${record.merchant}" accountId=${record.accountId}`,
+        (_result, record) => `done createCaptureId="${record.captureId}" merchant="${record.merchant}" accountId=${record.accountId}`,
+        (error, record) =>
+            `throw createCaptureId="${record.captureId}" merchant="${record.merchant}" accountId=${record.accountId} error=${getErrorMessage(error)}`
     )
     private async createAndAcknowledgeCapture(record: WalletCaptureNativeRecordInterface): Promise<void> {
         await walletCaptureTransactionService.createCaptureTransaction(record);
@@ -254,11 +256,12 @@ class WalletCaptureImportService {
     }
 
     @Log(
-        (record, transactionId) => `enter captureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId}`,
+        (record, transactionId) =>
+            `enter retryRulesCaptureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId}`,
         (_result, record, transactionId) =>
-            `done captureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId}`,
+            `done retryRulesCaptureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId}`,
         (error, record, transactionId) =>
-            `throw captureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId} error=${getErrorMessage(error)}`
+            `throw retryRulesCaptureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId} error=${getErrorMessage(error)}`
     )
     private async tryApplyRulesToExistingAndAcknowledgeCapture(
         record: WalletCaptureNativeRecordInterface,
@@ -268,11 +271,12 @@ class WalletCaptureImportService {
     }
 
     @Log(
-        (record, transactionId) => `enter captureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId}`,
+        (record, transactionId) =>
+            `enter applyRulesCaptureId="${record.captureId}" merchant="${record.merchant}" transactionId=${transactionId}`,
         (_result, record, transactionId) =>
-            `done captureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId}`,
+            `done applyRulesCaptureId="${record.captureId}" merchant="${record.merchant}" transactionId=${transactionId}`,
         (error, record, transactionId) =>
-            `throw captureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId} error=${getErrorMessage(error)}`
+            `throw applyRulesCaptureId="${record.captureId}" merchant="${record.merchant}" transactionId=${transactionId} error=${getErrorMessage(error)}`
     )
     private async applyRulesToExistingAndAcknowledgeCapture(
         record: WalletCaptureNativeRecordInterface,
@@ -294,6 +298,14 @@ class WalletCaptureImportService {
         }
 
         return this.findUnavailableAccountReview(record);
+    }
+
+    private createUnavailableAccountReview(record: WalletCaptureNativeRecordInterface): WalletCaptureReviewItemInterface {
+        return {
+            capture: record,
+            duplicateTransactionId: null,
+            reason: WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE
+        };
     }
 }
 
