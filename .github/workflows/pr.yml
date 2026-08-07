@@ -203,6 +203,8 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, code-quality]
         name: iOS Maestro E2E
+        permissions:
+            contents: read
         uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@bc5927455f3ca5aed5c1b7733c9286fc8b53769e # v1.0.0
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
