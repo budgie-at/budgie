@@ -9,5 +9,5 @@
             "@app/*": ["../../packages/app/src/*"]
         }
     },
-    "include": ["src/**/*.ts"]
+    "include": ["src/**/*.ts", "vitest.config.ts"]
 }
