@@ -1,6 +1,6 @@
 import { requireNativeModule } from 'expo';
 
-// eslint-disable-next-line lingui/no-unlocalized-strings -- Native module identifier registered by AppleWalletCaptureModule
-const AppleWalletCapture = requireNativeModule<Record<string, never>>('AppleWalletCapture');
+import type { WalletCaptureNativeModuleInterface } from '../../../src/wallet-capture/interface/wallet-capture-native-module.interface';
 
-export default AppleWalletCapture;
+// eslint-disable-next-line lingui/no-unlocalized-strings -- Native module identifier registered by AppleWalletCaptureModule
+export const appleWalletCaptureNativeModule = requireNativeModule<WalletCaptureNativeModuleInterface>('AppleWalletCapture');
