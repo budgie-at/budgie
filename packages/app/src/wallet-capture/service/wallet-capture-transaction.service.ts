@@ -22,22 +22,28 @@ class WalletCaptureTransactionService {
         const input = this.mapCaptureToTransactionInput(record);
         const prepared = await ruleEngineService.prepareCreateInputsForRules([input]);
         const createdTransactions = await transactionService.bulkCreate(prepared.transactionInputs);
-        const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
-        const postCreateTransactionInputs = prepared.postCreateIndexes.map(index => prepared.transactionInputs[index]).filter(isDefined);
 
-        if (isNotEmptyArray(postCreateTransactionIds)) {
-            await ruleEngineService.applyRulesToTransactions(postCreateTransactionIds, postCreateTransactionInputs);
-        }
+        const ruleApplicationPromises = prepared.postCreateIndexes.map(async postCreateIndex => {
+            const createdTransactionId = createdTransactions[postCreateIndex]?.id;
+            const postCreateTransactionInput = prepared.transactionInputs[postCreateIndex];
+
+            if (isDefined(createdTransactionId) && isDefined(postCreateTransactionInput)) {
+                await ruleEngineService.applyRulesToTransactions([createdTransactionId], [postCreateTransactionInput]);
+            }
+        });
+
+        await Promise.all(ruleApplicationPromises);
 
         return createdTransactions;
     }
 
     @Log(
-        (record, transactionId) => `enter captureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId}`,
+        (record, transactionId) =>
+            `enter existingCaptureId="${record.captureId}" status=${record.status} merchant="${record.merchant}" transactionId=${transactionId}`,
         (_result, record, transactionId) =>
-            `done captureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId}`,
+            `done existingCaptureId="${record.captureId}" status=${record.status} merchant="${record.merchant}" transactionId=${transactionId}`,
         (error, record, transactionId) =>
-            `throw captureId="${record.captureId}" accountId=${record.accountId} transactionId=${transactionId} error=${getErrorMessage(error)}`
+            `throw existingCaptureId="${record.captureId}" status=${record.status} merchant="${record.merchant}" transactionId=${transactionId} error=${getErrorMessage(error)}`
     )
     async applyRulesToExistingCaptureTransaction(record: WalletCaptureNativeRecordInterface, transactionId: number): Promise<void> {
         const input = this.mapCaptureToTransactionInput(record);
