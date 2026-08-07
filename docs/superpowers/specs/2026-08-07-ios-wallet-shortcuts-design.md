@@ -267,4 +267,3 @@ The Wallet transaction trigger itself cannot be reliably generated in the simula
 - Release notes describe the feature as Apple Pay tap capture through Shortcuts.
 - Product copy must not call it Wallet history sync or bank synchronization.
 - Initial rollout should be treated as best effort because Wallet trigger payload completeness is controlled by iOS and card issuers.
-
