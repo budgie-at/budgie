@@ -3,7 +3,7 @@ import { WalletCaptureStatusEnum } from '@app/wallet-capture/enum/wallet-capture
 
 import type { WalletCaptureAccountInterface } from '@app/wallet-capture/interface/wallet-capture-account.interface';
 
-export class WalletCaptureNativeStub {
+class WalletCaptureNativeStub {
     private accounts: WalletCaptureAccountInterface[] = [];
     private records: unknown[] = [];
 
