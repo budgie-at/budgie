@@ -1485,6 +1485,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@budgie-at/wallet-capture-tests@workspace:tests/wallet-capture-tests":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/wallet-capture-tests@workspace:tests/wallet-capture-tests"
+  dependencies:
+    "@budgie-at/test-kit": "workspace:*"
+    "@budgie/contracts": "workspace:^"
+    "@rnw-community/shared": "npm:^2.2.0"
+    "@types/better-sqlite3": "npm:^7.6.13"
+    "@types/node": "npm:^24.5.2"
+    better-sqlite3: "npm:^12.10.0"
+    drizzle-orm: "npm:^0.45.2"
+    typescript: "npm:^5.9.3"
+    vitest: "npm:^4.1.7"
+  languageName: unknown
+  linkType: soft
+
 "@budgie/ai@workspace:^, @budgie/ai@workspace:packages/ai":
   version: 0.0.0-use.local
   resolution: "@budgie/ai@workspace:packages/ai"
