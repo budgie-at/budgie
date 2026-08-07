@@ -246,6 +246,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                     eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
                     eq(TransactionEntryEntityTable.amount, input.amountInMicroUnits),
                     isNull(TransactionEntryEntityTable.deletedAt),
+                    isNull(TransactionEntryEntityTable.originalTransactionId),
                     sql`LOWER(TRIM(${TransactionEntityTable.title})) = ${input.normalizedTitle}`,
                     gte(TransactionEntityTable.operatedAt, lowerBound),
                     lte(TransactionEntityTable.operatedAt, upperBound)
