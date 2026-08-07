@@ -57,10 +57,26 @@ declare global {
     var __drizzleDb__: DB | undefined;
 }
 
+const readPinSync = (): string | null => {
+    try {
+        return SecureStore.getItem(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
+    } catch (secureStoreError) {
+        // A Keychain read can throw (e.g. a missing entitlement on some build
+        // configurations) even when no PIN was ever set. This runs at module
+        // init time before any error boundary exists, so an uncaught throw
+        // here crashes the JS runtime before SplashScreen.hideAsync() is ever
+        // reachable, leaving the app stuck on the native launch screen
+        // forever. Fail open (treat as "no PIN configured") instead.
+        logger.error('secure-store:read-pin-error', { errorMessage: getErrorMessage(secureStoreError) });
+
+        return null;
+    }
+};
+
 const dbInit = () => {
     global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
 
-    const pin = SecureStore.getItem(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
+    const pin = readPinSync();
     if (isNotEmptyString(pin)) {
         global.__expoSqliteDb__.execSync(`PRAGMA key = '${pin}';`);
     }
