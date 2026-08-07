@@ -395,6 +395,10 @@ msgstr "Versión de la app"
 msgid "Appearance"
 msgstr "Apariencia"
 
+#: src/rule/constant/external-source.constant.ts
+msgid "Apple Pay automation"
+msgstr "Automatización de Apple Pay"
+
 #: src/app/note-input.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Apply"
