@@ -18,9 +18,10 @@ APP_VARIANT=e2e EXPO_PUBLIC_AI_DISABLE=true EXPO_PUBLIC_LOGGING_DISABLE=true \
 # 3. Refresh fixtures (reinstall wipes them)
 cd ../.. && sh tests/app-tests/scripts/setup-ios-e2e-fixtures.sh <UDID> com.vitalyiegorov.budgie.e2e
 
-# 4. Run a flow
+# 4. Run a flow, then print the status trap 6 requires you to observe
 maestro test tests/app-tests/flows/14.transaction-filters.flow.yaml \
   -e APP_ID=com.vitalyiegorov.budgie.e2e --config tests/app-tests/config.yaml
+MAESTRO_EXIT=$?; echo "MAESTRO_EXIT=$MAESTRO_EXIT"
 ```
 
 ## Traps that cost real time
