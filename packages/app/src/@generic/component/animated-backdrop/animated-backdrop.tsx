@@ -34,7 +34,7 @@ export const AnimatedBackdrop = ({ isVisible, onClose }: Props) => {
 
     const combinedStyle = [StyleSheet.absoluteFill, backdropStyle];
 
-    if (!isMounted) {
+    if (!isVisible && !isMounted) {
         return null;
     }
 
