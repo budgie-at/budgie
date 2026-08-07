@@ -14,6 +14,7 @@
 23.privatbank-xlsx-import.flow.yaml
 24.split-transaction-and-analytics.flow.yaml
 28.rules-search.flow.yaml
+29.apple-pay-capture-settings.flow.yaml
 29.crypto-account-and-market.flow.yaml
 31.debt-settlement-attachments.flow.yaml
 33.budget-transactions.flow.yaml
