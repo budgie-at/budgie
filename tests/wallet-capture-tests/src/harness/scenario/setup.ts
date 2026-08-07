@@ -21,8 +21,8 @@ vi.mock('@budgie/contracts', async importOriginal => {
     };
 });
 
-vi.mock('@app/wallet-capture/service/wallet-capture-native.service', () => ({
-    walletCaptureNativeService: walletCaptureNativeStub
+vi.mock('@app/../modules/apple-wallet-capture/src/apple-wallet-capture', () => ({
+    appleWalletCaptureNativeModule: walletCaptureNativeStub
 }));
 
 beforeEach(() => {

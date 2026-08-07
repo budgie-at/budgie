@@ -1,0 +1,5 @@
+export enum WalletCaptureReviewReasonEnum {
+    DUPLICATE = 'DUPLICATE',
+    ACCOUNT_UNAVAILABLE = 'ACCOUNT_UNAVAILABLE',
+    INVALID_PAYLOAD = 'INVALID_PAYLOAD'
+}
