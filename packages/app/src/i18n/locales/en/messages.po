@@ -206,6 +206,10 @@ msgstr "About"
 msgid "Account"
 msgstr "Account"
 
+#: src/wallet-capture/component/wallet-capture-review-list/wallet-capture-review-list.tsx
+msgid "Account {accountId}"
+msgstr "Account {accountId}"
+
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Account {accountId} not found"
 msgstr "Account {accountId} not found"
@@ -213,6 +217,10 @@ msgstr "Account {accountId} not found"
 #: src/account/service/account-debt-opening.service.ts
 msgid "Account {id} not found"
 msgstr "Account {id} not found"
+
+#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
+msgid "Account is archived"
+msgstr "Account is archived"
 
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
@@ -225,6 +233,10 @@ msgstr "Account Settings"
 #: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Account Type"
 msgstr "Account Type"
+
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+msgid "Account: {accountTitle}"
+msgstr "Account: {accountTitle}"
 
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx
 msgid "Accounts"
@@ -282,6 +294,10 @@ msgstr "Add a per-category cap"
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add Account"
 msgstr "Add Account"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Add Budgie's Capture Apple Pay transaction action."
+msgstr "Add Budgie's Capture Apple Pay transaction action."
 
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
@@ -375,6 +391,10 @@ msgstr "Amount"
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
+#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
+msgid "Amount or merchant is empty"
+msgstr "Amount or merchant is empty"
+
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "and"
 msgstr "and"
@@ -399,6 +419,16 @@ msgstr "Appearance"
 #: src/rule/constant/external-source.constant.ts
 msgid "Apple Pay automation"
 msgstr "Apple Pay automation"
+
+#: src/app/(tabs)/settings/apple-pay-capture.tsx
+#: src/wallet-capture/component/apple-pay-capture-settings-card/apple-pay-capture-settings-card.tsx
+msgid "Apple Pay capture"
+msgstr "Apple Pay capture"
+
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+#: src/wallet-capture/service/wallet-capture-transaction.service.ts
+msgid "Apple Pay purchase"
+msgstr "Apple Pay purchase"
 
 #: src/app/note-input.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -457,6 +487,10 @@ msgstr "Auto-categorize transactions"
 #: src/app/(main)/create-account/index.tsx
 msgid "Auto-sync accounts and transactions from Monobank"
 msgstr "Auto-sync accounts and transactions from Monobank"
+
+#: src/wallet-capture/component/apple-pay-capture-settings-card/apple-pay-capture-settings-card.tsx
+msgid "Automatically record eligible card taps using Shortcuts"
+msgstr "Automatically record eligible card taps using Shortcuts"
 
 #: src/app/import-column-mapper.tsx
 msgid "Available Columns"
@@ -531,6 +565,18 @@ msgstr "Billing Dates"
 msgid "Binance"
 msgstr "Binance"
 
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Bind Amount to Shortcut Input → Amount."
+msgstr "Bind Amount to Shortcut Input → Amount."
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Bind Merchant to Shortcut Input → Merchant."
+msgstr "Bind Merchant to Shortcut Input → Merchant."
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Bind the optional Card field to the Wallet card/pass value."
+msgstr "Bind the optional Card field to the Wallet card/pass value."
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Biometric Authentication"
 msgstr "Biometric Authentication"
@@ -564,6 +610,10 @@ msgstr "Budget limit reached"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Budgie"
 msgstr "Budgie"
+
+#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
+msgid "Budgie action is missing"
+msgstr "Budgie action is missing"
 
 #: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
@@ -616,8 +666,17 @@ msgstr "Budgie will soft-delete {countText}. This keeps your manual transactions
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
+#: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
 msgid "Cancel"
 msgstr "Cancel"
+
+#: src/app/(tabs)/settings/apple-pay-capture.tsx
+msgid "Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
+msgstr "Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
+
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+msgid "Card: {cardNameText}"
+msgstr "Card: {cardNameText}"
 
 #: src/account/constant/account-type.constant.ts
 msgid "Cash"
@@ -924,9 +983,17 @@ msgstr "Could not merge tag"
 msgid "Could not open GitHub"
 msgstr "Could not open GitHub"
 
+#: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
+msgid "Could not open Shortcuts"
+msgstr "Could not open Shortcuts"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not read CSV file"
 msgstr "Could not read CSV file"
+
+#: src/app/(tabs)/settings/apple-pay-capture.tsx
+msgid "Could not read Wallet captures"
+msgstr "Could not read Wallet captures"
 
 #: src/app/(tabs)/settings/categories.tsx
 msgid "Could not reassign category"
@@ -1210,6 +1277,15 @@ msgstr "Detach debt"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
 msgstr "Disable App Lock"
+
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+#: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
+msgid "Dismiss"
+msgstr "Dismiss"
+
+#: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
+msgid "Dismiss Wallet capture?"
+msgstr "Dismiss Wallet capture?"
 
 #: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
 msgid "Display the budget card on the home screen"
@@ -1641,6 +1717,10 @@ msgstr "Import accounts and transactions from Erste Bank PDF statement"
 msgid "Import accounts and transactions from Privatbank XLSX export"
 msgstr "Import accounts and transactions from Privatbank XLSX export"
 
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+msgid "Import anyway"
+msgstr "Import anyway"
+
 #: src/import/components/import-csv/import-csv.tsx
 msgid "Import CSV"
 msgstr "Import CSV"
@@ -1986,6 +2066,10 @@ msgstr "Navigate to Account → Statements"
 msgid "Navigate to Menu → Statements"
 msgstr "Navigate to Menu → Statements"
 
+#: src/app/(tabs)/settings/apple-pay-capture.tsx
+msgid "Needs review"
+msgstr "Needs review"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "New Account"
 msgstr "New Account"
@@ -2222,6 +2306,10 @@ msgstr "Only single-entry expenses can be converted"
 msgid "Only single-entry incomes can be converted"
 msgstr "Only single-entry incomes can be converted"
 
+#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
+msgid "Open Budgie once after updating, then return to Shortcuts and search for Budgie again."
+msgstr "Open Budgie once after updating, then return to Shortcuts and search for Budgie again."
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "Open George (Erste Bank online banking)"
@@ -2230,9 +2318,21 @@ msgstr "Open George (Erste Bank online banking)"
 msgid "Open Monobank to get your token"
 msgstr "Open Monobank to get your token"
 
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+msgid "Open possible duplicate"
+msgstr "Open possible duplicate"
+
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Open settings"
 msgstr "Open settings"
+
+#: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
+msgid "Open Shortcuts"
+msgstr "Open Shortcuts"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Open Shortcuts and create a personal automation."
+msgstr "Open Shortcuts and create a personal automation."
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Open the Privatbank24 app"
@@ -2552,6 +2652,10 @@ msgstr "Restore Account?"
 msgid "Restore from a backup file"
 msgstr "Restore from a backup file"
 
+#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
+msgid "Restore the account or choose another active account in the automation before importing the capture."
+msgstr "Restore the account or choose another active account in the automation before importing the capture."
+
 #: src/ai/service/ai-system-status.service.ts
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "Resuming AI…"
@@ -2609,6 +2713,10 @@ msgstr "Save {count}"
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Save fee"
 msgstr "Save fee"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Save the automation."
+msgstr "Save the automation."
 
 #: src/account/constant/account-type.constant.ts
 msgid "Savings"
@@ -2709,6 +2817,10 @@ msgstr "Select a category to merge into"
 msgid "Select a contact"
 msgstr "Select a contact"
 
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Select a fixed Budgie account in the action's Account picker."
+msgstr "Select a fixed Budgie account in the action's Account picker."
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Select a tag to merge into"
 msgstr "Select a tag to merge into"
@@ -2776,9 +2888,17 @@ msgstr "Select Import Preset"
 msgid "Select MCC code"
 msgstr "Select MCC code"
 
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Select one Wallet card."
+msgstr "Select one Wallet card."
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Select Operator"
 msgstr "Select Operator"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Select Run Immediately."
+msgstr "Select Run Immediately."
 
 #: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx
 msgid "Select source"
@@ -2795,6 +2915,10 @@ msgstr "Select the downloaded PDF file"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Select the exported XLSX file"
 msgstr "Select the exported XLSX file"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Select the Wallet or Transaction trigger."
+msgstr "Select the Wallet or Transaction trigger."
 
 #: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx
 msgid "Select Transaction Type"
@@ -2845,6 +2969,14 @@ msgstr "Set Return Date"
 msgid "Settings"
 msgstr "Settings"
 
+#: src/app/(tabs)/settings/apple-pay-capture.tsx
+msgid "Setup"
+msgstr "Setup"
+
+#: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
+msgid "Shortcuts is not available on this device."
+msgstr "Shortcuts is not available on this device."
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
@@ -2876,6 +3008,10 @@ msgstr "Similar transactions"
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Skip"
+
+#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
+msgid "Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings."
+msgstr "Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings."
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
@@ -3062,6 +3198,10 @@ msgstr "This re-indexes every transaction. Continue?"
 msgid "This re-translates every category and tag. Continue?"
 msgstr "This re-translates every category and tag. Continue?"
 
+#: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
+msgid "This removes the pending capture without creating a transaction."
+msgstr "This removes the pending capture without creating a transaction."
+
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Week"
 msgstr "This Week"
@@ -3238,6 +3378,10 @@ msgstr "Translation"
 msgid "Translations ready"
 msgstr "Translations ready"
 
+#: src/app/(tabs)/settings/apple-pay-capture.tsx
+msgid "Troubleshooting"
+msgstr "Troubleshooting"
+
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Try a different merchant, amount, or date."
 msgstr "Try a different merchant, amount, or date."
@@ -3297,6 +3441,10 @@ msgstr "Unconsolidate transaction?"
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
 msgid "Unknown"
 msgstr "Unknown"
+
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
+msgid "Unknown card"
+msgstr "Unknown card"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
@@ -3387,6 +3535,10 @@ msgstr "Volume"
 #: src/sync/utils/build-bank-sync-status-label.util.ts
 msgid "Waiting"
 msgstr "Waiting"
+
+#: src/app/(tabs)/settings/apple-pay-capture.tsx
+msgid "Wallet history is not available"
+msgstr "Wallet history is not available"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."
