@@ -325,7 +325,7 @@ The root `readme.md` backlog tracks restoring automated `UPPER_CASE` enum-member
 - CI builds the iOS E2E app and runs two Maestro shards only when the mobile-impact gate is true
 - There is no Android E2E job in the current PR workflow
 - Config: tests/app-tests/config.yaml
-- Two checked `tests/app-tests/shards/shard-*.txt` manifest files assign the 41 entry flows exactly once for selector validation
+- Two checked `tests/app-tests/shards/shard-*.txt` manifest files assign the 41 entry flows exactly once for shard coverage validation
 - The current PR workflow consumes those same two manifest partitions directly via `ios-maestro.yml`'s `shard-manifest-dir` input, preserving the hand-tuned wall-clock balance instead of falling back to a computed index-modulo split
 
 ### Integration Tests
