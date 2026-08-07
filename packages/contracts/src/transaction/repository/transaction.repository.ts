@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { Log } from '@budgie/logger';
-import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, notInArray, or, sql } from 'drizzle-orm';
+import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, lte, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -31,6 +31,7 @@ import type { TransactionWithEntriesEntityInterface } from '../entity/transactio
 import type { TransactionWithEntriesMccCategoryEntityInterface } from '../entity/transaction-with-entries-mcc-category-entity.interface';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
 import type { ConsolidationSourceRowInterface } from '../interface/consolidation-source-row.interface';
+import type { PotentialExpenseDuplicateInputInterface } from '../interface/potential-expense-duplicate-input.interface';
 import type { SimilarTransactionMonthRowInterface } from '../interface/similar-transaction-month-row.interface';
 import type { SimilarTransactionStatsQueryInterface } from '../interface/similar-transaction-stats-query.interface';
 import type { SimilarTransactionStatsInterface } from '../interface/similar-transaction-stats.interface';
@@ -219,6 +220,46 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
 
         return results.map(row => row.externalId).filter(isDefined);
+    }
+
+    @Log(
+        (input, tx) =>
+            `enter accountId=${input.accountId} operatedAt=${input.operatedAt.toISOString()} timeWindowSeconds=${input.timeWindowSeconds} hasTx=${String(isDefined(tx))}`,
+        (result, input, tx) =>
+            `done accountId=${input.accountId} operatedAt=${input.operatedAt.toISOString()} timeWindowSeconds=${input.timeWindowSeconds} hasTx=${String(isDefined(tx))} result=${result ?? ''}`,
+        (error, input, tx) =>
+            `throw accountId=${input.accountId} operatedAt=${input.operatedAt.toISOString()} timeWindowSeconds=${input.timeWindowSeconds} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async findPotentialExpenseDuplicate(input: PotentialExpenseDuplicateInputInterface, tx?: DB): Promise<number | null> {
+        const lowerBound = new Date(input.operatedAt.getTime() - input.timeWindowSeconds * 1000);
+        const upperBound = new Date(input.operatedAt.getTime() + input.timeWindowSeconds * 1000);
+        const candidates = await (tx ?? this.db)
+            .select({ id: TransactionEntityTable.id })
+            .from(TransactionEntityTable)
+            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .where(
+                and(
+                    isNull(TransactionEntityTable.deletedAt),
+                    isNull(TransactionEntityTable.consolidationParentTransactionId),
+                    inArray(TransactionEntityTable.type, [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.DEBT]),
+                    eq(TransactionEntryEntityTable.accountId, input.accountId),
+                    eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
+                    eq(TransactionEntryEntityTable.amount, input.amountInMicroUnits),
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    sql`LOWER(TRIM(${TransactionEntityTable.title})) = ${input.normalizedTitle}`,
+                    gte(TransactionEntityTable.operatedAt, lowerBound),
+                    lte(TransactionEntityTable.operatedAt, upperBound)
+                )
+            )
+            .limit(1);
+
+        if (isEmptyArray(candidates)) {
+            return null;
+        }
+
+        const [candidate] = candidates;
+
+        return candidate.id;
     }
 
     @Log(
