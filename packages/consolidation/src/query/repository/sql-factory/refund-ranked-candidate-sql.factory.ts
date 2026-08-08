@@ -6,6 +6,14 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
 
+const AUTO_BUCKET_MEMBERSHIP_SQL = `confidenceBucket IN ('AUTO_REFUND_EXACT_TITLE', 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
+    'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE', 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE')`;
+
+const REFUND_CEILING_SQL = `CASE WHEN confidenceBucket = 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN feeAmount ELSE expenseAmount END`;
+
+const AMBIGUITY_RESOLVED_SQL = `(refundCandidateCount = 1 OR (confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
+    AND expenseAmount = refundAmount AND expenseRank = 1 AND localizedExactAmountMatchCount = 1))`;
+
 const REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES = [
     'Повернення коштів за забракованим платежем',
     'ПОВЕРНЕННЯ КОШТІВ ЗА ЗАБРАКОВАНИМ ПЛАТЕЖЕМ'
@@ -208,15 +216,34 @@ const buildRankedCandidatesSql = (): string => `
     ranked_candidates AS (
         SELECT
             *,
-            SUM(
-                CASE
-                    WHEN confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
-                        AND expenseAmount = refundAmount
-                        AND expenseRank = 1
-                    THEN 1 ELSE 0
-                END
-            ) OVER (PARTITION BY refundTxId) AS localizedExactAmountMatchCount
+            SUM(CASE WHEN confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
+                    AND expenseAmount = refundAmount AND expenseRank = 1 THEN 1 ELSE 0 END)
+                OVER (PARTITION BY refundTxId) AS localizedExactAmountMatchCount
         FROM ranked_pairs
+    )
+`;
+
+const buildGatedCandidatesSql = (): string => `
+    gated_candidates AS (
+        SELECT
+            *,
+            CASE WHEN refundRank = 1 AND ${AUTO_BUCKET_MEMBERSHIP_SQL} AND ${AMBIGUITY_RESOLVED_SQL}
+                THEN 1 ELSE 0 END AS isAutoEligible,
+            COALESCE(SUM(CASE WHEN refundRank = 1 AND ${AUTO_BUCKET_MEMBERSHIP_SQL} AND NOT ${AMBIGUITY_RESOLVED_SQL}
+                    THEN 1 ELSE 0 END)
+                OVER (PARTITION BY expenseTxId ORDER BY expenseRank ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0) AS rejectedBetterRankedRefundCount
+        FROM ranked_candidates
+    )
+`;
+
+const buildFilledCandidatesSql = (): string => `
+    filled_candidates AS (
+        SELECT
+            *,
+            SUM(CASE WHEN isAutoEligible = 1 AND rejectedBetterRankedRefundCount = 0 THEN refundAmount ELSE 0 END)
+                OVER (PARTITION BY confidenceBucket, matchType, expenseTxId, accountId
+                    ORDER BY expenseRank ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS expenseFilledRefundTotal
+        FROM gated_candidates
     )
 `;
 
@@ -233,8 +260,14 @@ const buildRankedCandidateSql = (scope: ConsolidationScanScopeInterface | null):
         ${buildIncomeEntriesSql(incomeAutoTitle, incomeReviewTitle, incomeReviewMerchantTitle, scope)},
         ${buildCompatiblePairsSql()},
         ${buildRankedPairsSql()},
-        ${buildRankedCandidatesSql()}
-        SELECT * FROM ranked_candidates
+        ${buildRankedCandidatesSql()},
+        ${buildGatedCandidatesSql()},
+        ${buildFilledCandidatesSql()}
+        SELECT
+            *,
+            CASE WHEN isAutoEligible = 1 AND rejectedBetterRankedRefundCount = 0
+                AND expenseFilledRefundTotal <= ${REFUND_CEILING_SQL} THEN 1 ELSE 0 END AS isAutoConsolidatable
+        FROM filled_candidates
     `;
 };
 
@@ -247,24 +280,9 @@ export const REFUND_AUTO_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterfac
         SUM(refundAmount) AS refundsTotal,
         GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
     FROM (${buildRankedCandidateSql(scope)})
-    WHERE refundRank = 1
-        AND confidenceBucket IN (
-            'AUTO_REFUND_EXACT_TITLE',
-            'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
-            'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE',
-            'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE'
-        )
-        AND (
-            refundCandidateCount = 1
-            OR (
-                confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
-                AND expenseAmount = refundAmount
-                AND expenseRank = 1
-                AND localizedExactAmountMatchCount = 1
-            )
-        )
+    WHERE isAutoConsolidatable = 1
     GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount, feeAmount
-    HAVING SUM(refundAmount) <= CASE WHEN confidenceBucket = 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE' THEN feeAmount ELSE expenseAmount END
+    HAVING SUM(refundAmount) <= ${REFUND_CEILING_SQL}
 `;
 
 export const REFUND_REVIEW_CANDIDATES_SQL = `
@@ -276,18 +294,7 @@ export const REFUND_REVIEW_CANDIDATES_SQL = `
         GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
     FROM (${buildRankedCandidateSql(null)})
     WHERE refundRank = 1
-        AND (
-            confidenceBucket = 'REVIEW_REFUND_PREFIX_TITLE_MCC'
-            OR (
-                confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
-                AND refundCandidateCount > 1
-                AND NOT (
-                    expenseAmount = refundAmount
-                    AND expenseRank = 1
-                    AND localizedExactAmountMatchCount = 1
-                )
-            )
-        )
+        AND (confidenceBucket = 'REVIEW_REFUND_PREFIX_TITLE_MCC' OR (${AUTO_BUCKET_MEMBERSHIP_SQL} AND isAutoConsolidatable = 0))
     GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
     HAVING SUM(refundAmount) <= expenseAmount
 `;
