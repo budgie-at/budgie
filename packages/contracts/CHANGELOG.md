@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.6](https://github.com/budgie-at/budgie/compare/v6.0.5...v6.0.6) (2026-08-08)
+
+
+### Bug Fixes
+
+* **consolidation:** accept mutual-best refund instead of silently dropping over-sum group ([#633](https://github.com/budgie-at/budgie/issues/633)) ([820585f](https://github.com/budgie-at/budgie/commit/820585f0cfcf44c58293981b6349472450e8a8d3))
+
+
+
+
+
 ## [6.0.5](https://github.com/budgie-at/budgie/compare/v6.0.4...v6.0.5) (2026-08-08)
 
 
