@@ -33,6 +33,7 @@ jobs:
       enable-android: false
       ios-runner-labels: '["self-hosted","macOS","ARM64","macos-tartelet"]'
       app-dir: packages/app
+      asc-key-path: asc_api_key.p8
     secrets:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       ASC_API_KEY: ${{ secrets.EXPO_IOS_ASC_API_KEY }}

@@ -34,7 +34,7 @@ jobs:
       ios-runner-labels: '["self-hosted","macOS","ARM64","macos-tartelet"]'
       app-dir: packages/app
       tag-prefix: dev
-      keep-releases: 5
+      keep-releases: '5'
     secrets:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       ASC_API_KEY: ${{ secrets.EXPO_IOS_ASC_API_KEY }}
