@@ -1,8 +1,11 @@
 import { AccountEntityInterface, DebtAccountCreateInputInterface, DebtAccountCreateInputSchema } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { t } from '@lingui/core/macro';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
-import { Resolver, useForm, useWatch } from 'react-hook-form';
+import { FieldErrors, Resolver, useForm, useWatch } from 'react-hook-form';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
@@ -52,11 +55,17 @@ export const useDebtAccountForm = (
         }
     };
 
+    const handleInvalid = (errors: FieldErrors<DebtAccountFormValues>) => {
+        const message = Object.values(errors).find(error => isNotEmptyString(error.message))?.message;
+
+        showError(new Error(isNotEmptyString(message) ? message : t`Please check the account details`));
+    };
+
     return {
         ...form,
         debtType,
         instrument,
         isSubmitting,
-        handleSubmit: form.handleSubmit(handleSubmit)
+        handleSubmit: form.handleSubmit(handleSubmit, handleInvalid)
     };
 };

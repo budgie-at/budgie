@@ -49,6 +49,8 @@ export type { AccountFilterInterface } from './account/interface/account-filter.
 
 export { AccountRepository } from './account/repository/account.repository';
 
+export { normalizeAccountIban } from './account/util/normalize-account-iban.util';
+
 export { AccountBalanceAssociationEnum } from './account-balance/enum/account-balance-association.enum';
 
 export { AccountBalanceEntityTable } from './account-balance/table/account-balance-entity.table';
