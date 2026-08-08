@@ -15,6 +15,7 @@ export const DebtAccountCreateInputSchema = convertToCreateEntitySchema(AccountE
         targetBaseExchangeRate: true,
         targetBaseAmount: true,
         externalSource: true,
+        integrationId: true,
         titleSearch: true
     })
     .required({

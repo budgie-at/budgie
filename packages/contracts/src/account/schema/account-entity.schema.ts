@@ -24,6 +24,7 @@ export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     nature: zodEnum(AccountNatureEnum).describe('The account nature.'),
     externalId: schema => schema.nullable().default(null).describe('The external id of the account.'),
     externalSource: zodEnum(ExternalSourceEnum).nullable().default(null).describe('The external source of the account.'),
+    integrationId: schema => schema.positive().nullable().default(null).describe('The id of the bank integration this account belongs to.'),
     iban: schema =>
         schema
             .regex(/^[A-Z]{2}[0-9]{2}[A-Z0-9]+$/u, 'Invalid IBAN format')

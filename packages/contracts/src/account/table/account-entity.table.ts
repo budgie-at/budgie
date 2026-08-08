@@ -4,6 +4,7 @@ import { index, int, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
 import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { BankIntegrationEntityTable } from '../../bank-integration/table/bank-integration-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { AccountDebtTypeEnum } from '../enum/account-debt-type.enum';
 import { AccountNatureEnum } from '../enum/account-nature.enum';
@@ -46,6 +47,7 @@ export const AccountEntityTable = sqliteTable(
         targetBaseExchangeRate: real('target_base_exchange_rate'),
         targetBaseAmount: int('target_base_amount', { mode: 'number' }),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
+        integrationId: int('integration_id', { mode: 'number' }).references(() => BankIntegrationEntityTable.id, { onDelete: 'set null' }),
         iban: text('iban'),
         includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull(),
         isActive: int('is_active', { mode: 'boolean' }).default(true).notNull()
