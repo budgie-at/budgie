@@ -7,8 +7,24 @@ permissions:
   contents: write
 
 jobs:
+  verify-apple-secrets:
+    name: Verify Apple secrets
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Verify APPLE_PASSWORD is set
+        env:
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+        run: |
+          if [ -z "$APPLE_PASSWORD" ]; then
+            echo "::error::APPLE_PASSWORD secret is not set. EAS_EXTRA_ENV would pass EXPO_APPLE_APP_SPECIFIC_PASSWORD with an empty value, which only fails once eas submit reaches App Store Connect. Set the APPLE_PASSWORD repository secret before running this workflow."
+            exit 1
+          fi
+
   dev-release:
     name: iOS development build and release
+    needs: verify-apple-secrets
     permissions:
       contents: write
     uses: rnw-community/mobile-ci/.github/workflows/native-dev-release.yml@a252f5df9e911387598b2b01b0bb28bc40057ce0 # v1.2.0
