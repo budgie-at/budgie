@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.5](https://github.com/budgie-at/budgie/compare/v6.0.4...v6.0.5) (2026-08-08)
+
+
+### Bug Fixes
+
+* **app:** repair silent account edit save failure and overlay close blink ([#629](https://github.com/budgie-at/budgie/issues/629)) ([766ad0a](https://github.com/budgie-at/budgie/commit/766ad0a203fac562934b031f2cdb776033537661))
+
+
+
+
+
 ## [6.0.4](https://github.com/budgie-at/budgie/compare/v6.0.3...v6.0.4) (2026-08-02)
 
 
