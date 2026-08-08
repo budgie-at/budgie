@@ -221,6 +221,7 @@ jobs:
             shard-manifest-dir: tests/app-tests/shards
             pre-run-flow: tests/app-tests/flows/setup/prime-deep-links.flow.yaml
             pre-test-command: bash tests/app-tests/scripts/setup-ios-e2e-fixtures.sh "$SIMULATOR_UDID" "$APP_ID"
+            flow-retries: '1'
             maestro-version: '2.6.1'
             cache-profile: ios-e2e-budgie-v2
             build-command: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
