@@ -222,3 +222,32 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'PageHeader.BackButton'
+
+- evalScript: ${output.phase = 'edit-imported-account-balance'}
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.Page'
+      timeout: 10000
+
+- runFlow: subflows/accounts/open-visible-account-settings.flow.yaml
+
+- runFlow:
+      file: subflows/accounts/update-account-balance.flow.yaml
+      env:
+          NEW_BALANCE: '600'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountCard.Balance.Privatbank_1234.600'
+      timeout: 15000
+
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'Privatbank •1234'
+
+- runFlow:
+      file: subflows/accounts/assert-adjustment-transaction.flow.yaml
+      env:
+          ADJUSTMENT_DELTA: '53'

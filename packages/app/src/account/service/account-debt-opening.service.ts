@@ -96,10 +96,12 @@ class AccountDebtOpeningService {
             const primaryAccount = await this.getAccountOrFail(primaryEntry.accountId, tx);
             const account = await this.createZeroTargetDebtAccount({ ...input, instrumentId: primaryAccount.instrumentId }, tx);
 
-            return transactionDebtSettlementService.attachInTransaction(
+            await transactionDebtSettlementService.attachInTransaction(
                 { transactionId: incomeTransactionId, debtAccountId: account.id },
                 tx
             );
+
+            return this.updateDebtTargetAmount(account, primaryEntry.amount, transaction.operatedAt, tx);
         });
     }
 

@@ -260,6 +260,20 @@
             "when": 1784131200000,
             "tag": "0036_repair_borrowed_debt_migration",
             "breakpoints": true
+        },
+        {
+            "idx": 37,
+            "version": "6",
+            "when": 1785500000000,
+            "tag": "0037_repair_invalid_account_ibans",
+            "breakpoints": true
+        },
+        {
+            "idx": 38,
+            "version": "6",
+            "when": 1785600000000,
+            "tag": "0038_repair_zero_target_debt_accounts",
+            "breakpoints": true
         }
     ]
 }
