@@ -11,7 +11,7 @@ jobs:
     name: iOS build and publish
     permissions:
       contents: read
-    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@0eadcb345bc704b1ccc8e9965634af1ff3d2e25e # v1.1.0
+    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@a252f5df9e911387598b2b01b0bb28bc40057ce0 # v1.2.0
     with:
       enable-ios: true
       enable-android: false
@@ -20,6 +20,7 @@ jobs:
     secrets:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       ASC_API_KEY: ${{ secrets.EXPO_IOS_ASC_API_KEY }}
+      EAS_EXTRA_ENV: EXPO_APPLE_APP_SPECIFIC_PASSWORD=${{ secrets.APPLE_PASSWORD }}
 
   # Android Lint is excluded from the production Gradle command in
   # packages/app/eas.json, because the Android Gradle plugin wires

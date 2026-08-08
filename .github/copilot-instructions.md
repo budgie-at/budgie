@@ -106,7 +106,7 @@
 3. **eas-update-preview** (hosted `ubuntu-24.04`, mobile-impact changes only):
     - Exports iOS and Android bundles and publishes an EAS Update to the development channel
 
-4. **ios-maestro** (`rnw-community/mobile-ci`'s reusable `ios-maestro.yml` workflow, pinned to `v1.0.0`, mobile-impact changes after code quality):
+4. **ios-maestro** (`rnw-community/mobile-ci`'s reusable `ios-maestro.yml` workflow, pinned to `v1.2.0`, mobile-impact changes after code quality):
     - Build job on self-hosted Apple Silicon `macos-builder`: reuses a fingerprinted native app when possible (repacking the current PR's JS bundle into the cached shell via `repack-on-hit`), and falls back to a full native build when required
     - Test job on two self-hosted Apple Silicon `macos-maestro` shards: downloads the built app and runs the 41 entry flows assigned via `tests/app-tests/shards/shard-*.txt`
     - There is no Android E2E job in the current PR workflow

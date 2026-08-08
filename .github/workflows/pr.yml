@@ -205,7 +205,7 @@ jobs:
         name: iOS Maestro E2E
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@0eadcb345bc704b1ccc8e9965634af1ff3d2e25e # v1.1.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@a252f5df9e911387598b2b01b0bb28bc40057ce0 # v1.2.0
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
