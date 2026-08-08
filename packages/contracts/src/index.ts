@@ -82,6 +82,21 @@ export type { DebtEventWithRelationsEntityInterface } from './debt-event/entity/
 
 export { DebtEventRepository } from './debt-event/repository/debt-event.repository';
 
+export { BankIntegrationAssociationEnum } from './bank-integration/enum/bank-integration-association.enum';
+
+export { BankIntegrationEntityTable } from './bank-integration/table/bank-integration-entity.table';
+export { BankIntegrationEntityRelations } from './bank-integration/relations/bank-integration-entity.relations';
+
+export { BankIntegrationEntitySchema } from './bank-integration/schema/bank-integration-entity.schema';
+export { BankIntegrationCreateEntitySchema } from './bank-integration/schema/bank-integration-create-entity.schema';
+export { BankIntegrationUpdateEntitySchema } from './bank-integration/schema/bank-integration-update-entity.schema';
+
+export type { BankIntegrationEntityInterface } from './bank-integration/entity/bank-integration-entity.interface';
+export type { BankIntegrationCreateEntityInterface } from './bank-integration/entity/bank-integration-create-entity.interface';
+export type { BankIntegrationUpdateEntityInterface } from './bank-integration/entity/bank-integration-update-entity.interface';
+
+export { BankIntegrationRepository } from './bank-integration/repository/bank-integration.repository';
+
 export { BankSyncModeEnum } from './bank-sync/enum/bank-sync-mode.enum';
 export { BankSyncStatusEnum } from './bank-sync/enum/bank-sync-status.enum';
 export { BankSyncAssociationEnum } from './bank-sync/enum/bank-sync-association.enum';
