@@ -46,6 +46,7 @@ executionOrder:
         - 33.budget-transactions.flow
         - 34.matching-rules-navigation.flow
         - 36.bank-integration-settings.flow
+        - 37.deposit-lifecycle.flow
 
 platform:
     ios:
