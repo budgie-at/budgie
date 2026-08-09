@@ -257,7 +257,6 @@ export abstract class BaseFileBankSyncService {
 
         await bankSyncRepository.create(
             {
-                token: '',
                 accountId,
                 provider: this.provider,
                 enabled: true,

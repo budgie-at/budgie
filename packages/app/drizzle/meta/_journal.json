@@ -281,6 +281,13 @@
             "when": 1786000000000,
             "tag": "0039_add_bank_integrations",
             "breakpoints": true
+        },
+        {
+            "idx": 40,
+            "version": "6",
+            "when": 1786100000000,
+            "tag": "0040_drop_bank_syncs_token",
+            "breakpoints": true
         }
     ]
 }

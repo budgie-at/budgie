@@ -28,17 +28,6 @@ export class BankIntegrationRepository {
     }
 
     @Log(
-        (id, tx) => `enter id=${id} hasTx=${String(isDefined(tx))}`,
-        (result, id, tx) => `done id=${id} hasTx=${String(isDefined(tx))} found=${String(isDefined(result))}`,
-        (error, id, tx) => `throw id=${id} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async findById(id: number, tx?: DB): Promise<BankIntegrationEntityInterface | undefined> {
-        return await (tx ?? this.db).query.BankIntegrationEntityTable.findFirst({
-            where: and(eq(BankIntegrationEntityTable.id, id), isNull(BankIntegrationEntityTable.deletedAt))
-        });
-    }
-
-    @Log(
         (provider, token, tx) => `enter provider=${provider} tokenLen=${token.length} hasTx=${String(isDefined(tx))}`,
         (result, provider, token, tx) =>
             `done provider=${provider} tokenLen=${token.length} hasTx=${String(isDefined(tx))} found=${String(isDefined(result))}`,
@@ -79,5 +68,11 @@ export class BankIntegrationRepository {
             .returning();
 
         return bankIntegration;
+    }
+
+    findById(id: number, tx?: DB) {
+        return (tx ?? this.db).query.BankIntegrationEntityTable.findFirst({
+            where: and(eq(BankIntegrationEntityTable.id, id), isNull(BankIntegrationEntityTable.deletedAt))
+        });
     }
 }

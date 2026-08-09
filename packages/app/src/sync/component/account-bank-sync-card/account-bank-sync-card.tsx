@@ -88,7 +88,7 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
                     </>
                 )}
 
-                <BankSyncTokenSection accountId={accountId} token={bankSync.token} />
+                <BankSyncTokenSection accountId={accountId} />
             </View>
         </Card>
     );

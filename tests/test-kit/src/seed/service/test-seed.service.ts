@@ -3,6 +3,7 @@ import {
     AccountDebtTypeEnum,
     AccountNatureEnum,
     AccountTypeEnum,
+    BankIntegrationEntityTable,
     BankSyncEntityTable,
     BankSyncModeEnum,
     BankSyncStatusEnum,
@@ -19,14 +20,16 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import type { SeedBankPairEntryInputType } from '../interface/seed-bank-pair-entry-input.type';
 import type {
     AccountCreateEntityInterface,
     AccountEntityInterface,
+    BankIntegrationCreateEntityInterface,
+    BankIntegrationEntityInterface,
     BankSyncCreateEntityInterface,
     BankSyncEntityInterface,
     DB,
@@ -111,13 +114,22 @@ export class TestSeedService {
         });
     }
 
-    bankSync(input: Partial<BankSyncCreateEntityInterface> & Pick<BankSyncCreateEntityInterface, 'accountId'>): BankSyncEntityInterface {
+    bankSync(
+        input: Partial<BankSyncCreateEntityInterface> & Pick<BankSyncCreateEntityInterface, 'accountId'> & { readonly token?: string }
+    ): BankSyncEntityInterface {
+        const provider = input.provider ?? ExternalSourceEnum.MONOBANK;
+        const integration = this.bankIntegration({ provider, token: input.token ?? 'test-token' });
+        this.database
+            .update(AccountEntityTable)
+            .set({ integrationId: integration.id })
+            .where(eq(AccountEntityTable.id, input.accountId))
+            .run();
+
         const rows = this.database
             .insert(BankSyncEntityTable)
             .values({
                 accountId: input.accountId,
-                token: input.token ?? 'test-token',
-                provider: input.provider ?? ExternalSourceEnum.MONOBANK,
+                provider,
                 mode: input.mode ?? BankSyncModeEnum.FORWARD,
                 status: input.status ?? BankSyncStatusEnum.IDLE,
                 enabled: input.enabled ?? true,
@@ -133,6 +145,27 @@ export class TestSeedService {
             .all();
 
         return this.requireInserted(rows, 'bank_syncs');
+    }
+
+    bankIntegration(input: Partial<BankIntegrationCreateEntityInterface> = {}): BankIntegrationEntityInterface {
+        const provider = input.provider ?? ExternalSourceEnum.MONOBANK;
+        const token = input.token ?? 'test-token';
+        const existingRows = this.database
+            .select()
+            .from(BankIntegrationEntityTable)
+            .where(and(eq(BankIntegrationEntityTable.provider, provider), eq(BankIntegrationEntityTable.token, token)))
+            .all();
+        if (isNotEmptyArray(existingRows)) {
+            return existingRows[0];
+        }
+
+        const rows = this.database
+            .insert(BankIntegrationEntityTable)
+            .values({ provider, token } satisfies BankIntegrationCreateEntityInterface)
+            .returning()
+            .all();
+
+        return this.requireInserted(rows, 'bank_integrations');
     }
 
     mccCategory(
