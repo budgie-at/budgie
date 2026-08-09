@@ -130,9 +130,13 @@ class TransactionService {
         });
     }
 
-    @InvalidateDatabaseLiveQuery()
-    async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        return await transactionAsync(db, async tx => this.createInternalTransferInTransaction(input, tx));
+    @InvalidateDatabaseLiveQuery((_input, tx) => !isDefined(tx))
+    async createInternalTransfer(input: TransactionCreateInputInterface, tx?: DB): Promise<TransactionEntityInterface> {
+        if (!isDefined(tx)) {
+            return transactionAsync(db, async innerTx => this.createInternalTransfer(input, innerTx));
+        }
+
+        return this.createInternalTransferInTransaction(input, tx);
     }
 
     @InvalidateDatabaseLiveQuery()

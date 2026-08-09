@@ -81,6 +81,10 @@ msgstr "{count, plural, one {Ce tag contient # transaction. Sélectionnez un aut
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
 
+#: src/account/component/close-deposit-account/close-deposit-account.tsx
+msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
+msgstr "{formattedBalance} sera transféré vers {destinationAccountTitle} et ce dépôt sera archivé. Vous pouvez le restaurer à tout moment depuis Paramètres → Comptes archivés."
+
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} à attribuer"
@@ -589,6 +593,7 @@ msgstr "Budgie supprimera de façon réversible {countText}. Vos transactions ma
 #: src/account/component/account-action-card/account-action-card.tsx
 #: src/account/component/archive-account/archive-account.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/close-deposit-account/close-deposit-account.tsx
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -700,6 +705,14 @@ msgstr "Le presse-papiers est vide"
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Close"
 msgstr "Fermer"
+
+#: src/account/component/close-deposit-account/close-deposit-account.tsx
+msgid "Close Deposit"
+msgstr "Clôturer le dépôt"
+
+#: src/account/component/close-deposit-account/close-deposit-account.tsx
+msgid "Close Deposit?"
+msgstr "Clôturer le dépôt ?"
 
 #: src/@generic/component/popover-menu/popover-menu.tsx
 msgid "Close menu"
@@ -828,6 +841,10 @@ msgstr "Impossible de vérifier les données de synchro bancaire"
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Could not clear data"
 msgstr "Impossible d'effacer les données"
+
+#: src/account/component/close-deposit-account/close-deposit-account.tsx
+msgid "Could not close deposit"
+msgstr "Impossible de clôturer le dépôt"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Could not consolidate matches"

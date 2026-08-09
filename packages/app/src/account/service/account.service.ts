@@ -131,19 +131,7 @@ class AccountService {
 
     @InvalidateDatabaseLiveQuery()
     async archiveById(id: number): Promise<void> {
-        await transactionAsync(db, async tx => {
-            await this.unconsolidateActiveAutoByAccountId(id, tx);
-
-            await accountRepository.archiveById(id, tx);
-            await debtEventRepository.archiveByAccountIds([id], tx);
-            await transactionEntryRepository.archiveByAccountIds([id], tx);
-            await transactionRepository.archiveByAccountIds([id], tx);
-
-            const settings = await settingsRepository.getSettings();
-            if (settings.defaultAccountId === id) {
-                await settingsRepository.update({ defaultAccountId: null }, tx);
-            }
-        });
+        await transactionAsync(db, async tx => this.archiveByIdInTransaction(id, tx));
     }
 
     @InvalidateDatabaseLiveQuery()
@@ -205,6 +193,20 @@ class AccountService {
         }
 
         return account;
+    }
+
+    async archiveByIdInTransaction(id: number, tx: DB): Promise<void> {
+        await this.unconsolidateActiveAutoByAccountId(id, tx);
+
+        await accountRepository.archiveById(id, tx);
+        await debtEventRepository.archiveByAccountIds([id], tx);
+        await transactionEntryRepository.archiveByAccountIds([id], tx);
+        await transactionRepository.archiveByAccountIds([id], tx);
+
+        const settings = await settingsRepository.getSettings();
+        if (settings.defaultAccountId === id) {
+            await settingsRepository.update({ defaultAccountId: null }, tx);
+        }
     }
 
     private async unconsolidateActiveAutoByAccountId(id: number, tx: DB): Promise<void> {
