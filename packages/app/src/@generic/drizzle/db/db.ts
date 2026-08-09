@@ -10,6 +10,7 @@ import {
 import {
     AccountBalanceRepository,
     AccountRepository,
+    BankIntegrationRepository,
     BankSyncRepository,
     CategoryRepository,
     CommentEmbeddingRepository,
@@ -131,6 +132,7 @@ export const instrumentMarketDataJobRepository = new InstrumentMarketDataJobRepo
 export const accountBalanceRepository = new AccountBalanceRepository(db);
 export const debtEventRepository = new DebtEventRepository(db);
 export const bankSyncRepository = new BankSyncRepository(db);
+export const bankIntegrationRepository = new BankIntegrationRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
 export const transactionEmbeddingRepository = new TransactionEmbeddingRepository(db);
