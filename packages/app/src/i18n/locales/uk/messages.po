@@ -1194,6 +1194,10 @@ msgstr "Видалити правило"
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
 
+#: src/account/constant/account-type.constant.ts
+msgid "Deposit"
+msgstr "Депозит"
+
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
 msgstr "Скасувати вибір"

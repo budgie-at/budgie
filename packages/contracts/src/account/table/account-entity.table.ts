@@ -46,6 +46,7 @@ export const AccountEntityTable = sqliteTable(
         }),
         targetBaseExchangeRate: real('target_base_exchange_rate'),
         targetBaseAmount: int('target_base_amount', { mode: 'number' }),
+        interestRate: real('interest_rate'),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         integrationId: int('integration_id', { mode: 'number' }).references(() => BankIntegrationEntityTable.id, { onDelete: 'set null' }),
         iban: text('iban'),

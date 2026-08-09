@@ -36,9 +36,11 @@ export { AccountEntityRelations } from './account/relations/account-entity.relat
 
 export { DebtAccountCreateInputSchema } from './account/schema/debt-account-create-input.schema';
 export { LiabilityAccountCreateInputSchema } from './account/schema/liability-account-create-input.schema';
+export { DepositAccountCreateInputSchema } from './account/schema/deposit-account-create-input.schema';
 
 export type { LiabilityAccountCreateInputInterface } from './account/input/liability-account-create-input.interface';
 export type { DebtAccountCreateInputInterface } from './account/input/debt-account-create-input.interface';
+export type { DepositAccountCreateInputInterface } from './account/input/deposit-account-create-input.interface';
 
 export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
