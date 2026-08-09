@@ -1194,6 +1194,10 @@ msgstr "Supprimer la règle"
 msgid "Delete Transaction"
 msgstr "Supprimer la transaction"
 
+#: src/account/constant/account-type.constant.ts
+msgid "Deposit"
+msgstr "Dépôt à terme"
+
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
 msgstr "Tout désélectionner"

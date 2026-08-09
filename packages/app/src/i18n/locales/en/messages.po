@@ -1195,6 +1195,10 @@ msgstr "Delete rule"
 msgid "Delete Transaction"
 msgstr "Delete Transaction"
 
+#: src/account/constant/account-type.constant.ts
+msgid "Deposit"
+msgstr "Deposit"
+
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
 msgstr "Deselect all"
