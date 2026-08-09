@@ -1130,6 +1130,10 @@ msgstr "Дата"
 msgid "Day {selectedDay}"
 msgstr "День {selectedDay}"
 
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Days Remaining"
+msgstr "Залишилось днів"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/transaction/constant/transaction-type.constant.ts
@@ -1197,6 +1201,11 @@ msgstr "Видалити транзакцію"
 #: src/account/constant/account-type.constant.ts
 msgid "Deposit"
 msgstr "Депозит"
+
+#: src/account/component/create-deposit-account/create-deposit-account.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Deposit Account"
+msgstr "Депозитний рахунок"
 
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
@@ -1443,6 +1452,14 @@ msgstr "Обмінний курс {sourceInstrumentId}->{targetInstrumentId} н�
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Курс обміну: {rateLabel}. Натисніть, щоб редагувати суму отримання"
 
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Expected maturity date"
+msgstr "Очікувана дата погашення"
+
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Expected Payout"
+msgstr "Очікувана виплата"
+
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Expected return date"
 msgstr "Очікувана дата повернення"
@@ -1540,6 +1557,10 @@ msgstr "Фільтрувати теги"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Виправити помилки"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Fixed-term savings with an interest rate"
+msgstr "Строкові заощадження з відсотковою ставкою"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Found an issue or have an idea? Open GitHub issue templates."
@@ -1725,6 +1746,14 @@ msgstr "Індексування {done} з {total}"
 #: src/market-data/service/historical-market-data-loader.service.ts
 msgid "Instrument not found"
 msgstr "Інструмент не знайдено"
+
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Interest Rate"
+msgstr "Відсоткова ставка"
+
+#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+msgid "Interest Rate % (Optional)"
+msgstr "Відсоткова ставка % (необов'язково)"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
 msgid "Invalid file"
@@ -1912,6 +1941,14 @@ msgstr "збігається"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Matches Regex"
 msgstr "Відповідає регулярному виразу"
+
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Maturity Date"
+msgstr "Дата погашення"
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Maturity Date (Optional)"
+msgstr "Дата погашення (необов'язково)"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
@@ -2328,8 +2365,8 @@ msgstr "PIN-код має бути {PIN_LENGTH} цифр"
 msgid "PINs do not match"
 msgstr "PIN-коди не збігаються"
 
+#: src/account/hooks/use-account-entity-form.hook.ts
 #: src/account/hooks/use-account-form.hook.ts
-#: src/account/hooks/use-debt-account-form.hook.ts
 msgid "Please check the account details"
 msgstr "Перевірте дані рахунку"
 
@@ -2840,6 +2877,10 @@ msgstr "Встановити категорію"
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Set fee"
 msgstr "Встановити комісію"
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Set Maturity Date"
+msgstr "Встановити дату погашення"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
@@ -3395,6 +3436,10 @@ msgstr "Очікування"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."
 msgstr "Ми повторимо спробу у фоновому режимі."
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "When does the deposit mature?"
+msgstr "Коли настає термін погашення депозиту?"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"

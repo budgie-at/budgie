@@ -31,14 +31,20 @@ import { updateDebtTargetBaseValuation } from '../util/update-debt-target-base-v
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 import { accountTransferConversionService } from './account-transfer-conversion.service';
 
-import type { AccountEntityInterface, DB, DebtAccountCreateInputInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
+import type {
+    AccountEntityInterface,
+    DB,
+    DebtAccountCreateInputInterface,
+    DepositAccountCreateInputInterface,
+    LiabilityAccountCreateInputInterface
+} from '@budgie/contracts';
 
 class AccountService {
     @InvalidateDatabaseLiveQuery()
     async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const [{ count }] = await accountRepository.count();
-            const createdAccount = await this.createLiabilityAccount({ ...input }, count, tx);
+            const createdAccount = await this.createAccountRecord({ ...input }, count, tx);
 
             await this.adjustBalanceTo(createdAccount.id, input.currentBalance, tx);
 
@@ -55,7 +61,7 @@ class AccountService {
         return transactionAsync(db, async tx => {
             const [{ count }] = await accountRepository.count();
             const operatedAt = new Date();
-            const createdAccount = await this.createLiabilityAccount(
+            const createdAccount = await this.createAccountRecord(
                 { ...input, targetBalance: convertToMicroUnits(input.targetBalance) },
                 count,
                 tx
@@ -68,6 +74,18 @@ class AccountService {
             await this.syncManualDebtEvents(valuedAccount, initialCurrentBalance, operatedAt, tx);
 
             return valuedAccount;
+        });
+    }
+
+    @InvalidateDatabaseLiveQuery()
+    async createDeposit(input: DepositAccountCreateInputInterface): Promise<AccountEntityInterface> {
+        return transactionAsync(db, async tx => {
+            const [{ count }] = await accountRepository.count();
+            const createdAccount = await this.createAccountRecord(input, count, tx, AccountNatureEnum.ASSET);
+
+            await this.adjustBalanceTo(createdAccount.id, input.currentBalance, tx);
+
+            return createdAccount;
         });
     }
 
@@ -87,6 +105,28 @@ class AccountService {
     @InvalidateDatabaseLiveQuery()
     async updateDebtById(id: number, input: Partial<DebtAccountCreateInputInterface>): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => this.updateDebtByIdInTransaction(id, input, tx));
+    }
+
+    @InvalidateDatabaseLiveQuery()
+    async updateDepositById(
+        id: number,
+        input: Partial<
+            Pick<
+                DepositAccountCreateInputInterface,
+                'title' | 'icon' | 'currentBalance' | 'interestRate' | 'deadline' | 'includeInNetWorth' | 'isActive'
+            >
+        >
+    ): Promise<AccountEntityInterface> {
+        return transactionAsync(db, async tx => {
+            const { currentBalance, ...accountInput } = input;
+            const updatedAccount = await accountRepository.updateById(id, accountInput, tx);
+
+            if (isNumber(currentBalance)) {
+                await this.adjustBalanceTo(updatedAccount.id, currentBalance, tx);
+            }
+
+            return updatedAccount;
+        });
     }
 
     @InvalidateDatabaseLiveQuery()
@@ -384,12 +424,13 @@ class AccountService {
         return convertFromMicroUnits(Math.max(account.targetBalance - closedAmount, 0));
     }
 
-    private async createLiabilityAccount(
+    private async createAccountRecord(
         input: Omit<LiabilityAccountCreateInputInterface, 'currentBalance'> & Record<string, unknown>,
         count: number,
-        tx: DB
+        tx: DB,
+        nature: AccountNatureEnum = AccountNatureEnum.LIABILITY
     ): Promise<AccountEntityInterface> {
-        return accountRepository.create({ ...input, order: count + 1, nature: AccountNatureEnum.LIABILITY }, tx);
+        return accountRepository.create({ ...input, order: count + 1, nature }, tx);
     }
 
     private async processBatch(batch: LiabilityAccountCreateInputInterface[]): Promise<AccountEntityInterface[]> {
