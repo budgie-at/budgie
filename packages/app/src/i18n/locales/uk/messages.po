@@ -290,6 +290,10 @@ msgstr "Додати рахунок"
 msgid "Add category"
 msgstr "Додати категорію"
 
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Add deposit"
+msgstr "Додати депозит"
+
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Додати запис"

@@ -291,6 +291,10 @@ msgstr "Add Account"
 msgid "Add category"
 msgstr "Add category"
 
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Add deposit"
+msgstr "Add deposit"
+
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Add item"
