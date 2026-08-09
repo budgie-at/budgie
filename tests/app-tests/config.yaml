@@ -45,6 +45,7 @@ executionOrder:
         - 32.budget-multi-currency.flow
         - 33.budget-transactions.flow
         - 34.matching-rules-navigation.flow
+        - 36.bank-integration-settings.flow
 
 platform:
     ios:
