@@ -504,6 +504,9 @@ const generateConsolidationFixture = () => {
     const usdId = 1;
     const eurId = 2;
 
+    const monobankIntegrationToken = 'e2e-consolidation-monobank-token';
+    const privatbankIntegrationToken = 'e2e-consolidation-privatbank-token';
+
     const u1030 = 1_030_000_000;
     const u200 = 200_000_000;
     const u100 = 100_000_000;
@@ -564,20 +567,20 @@ const generateConsolidationFixture = () => {
 
         INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, token, created_at, updated_at)
         VALUES
-            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (2, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (3, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (4, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (5, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (7, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (8, 'PRIVATBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (9, 'PRIVATBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (10, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (11, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (12, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (13, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (14, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
-            (15, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now});
+            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (2, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (3, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (4, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (5, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (7, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (8, 'PRIVATBANK', 0, 'BACKWARD', 'IDLE', '${privatbankIntegrationToken}', ${now}, ${now}),
+            (9, 'PRIVATBANK', 0, 'BACKWARD', 'IDLE', '${privatbankIntegrationToken}', ${now}, ${now}),
+            (10, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (11, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (12, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (13, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (14, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (15, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now});
 
         INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, from_account_id, to_account_id, external_source, external_id)
         VALUES
@@ -667,6 +670,7 @@ const generateRefundConsolidationFixture = () => {
     const tLocalizedRefund = now - 1 * 60;
 
     const uahId = 33;
+    const monobankIntegrationToken = 'e2e-refund-monobank-token';
 
     const u30 = 30_000_000;
     const u40 = 40_000_000;
@@ -698,7 +702,7 @@ const generateRefundConsolidationFixture = () => {
 
         INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, token, created_at, updated_at)
         VALUES
-            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now});
+            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now});
 
         INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, from_account_id, to_account_id, external_source, external_id)
         VALUES
