@@ -3,5 +3,6 @@ export enum TestIDPartEnum {
     PERCENT = 'Percent',
     STATUS = 'Status',
     TITLE = 'Title',
+    TOGGLE = 'Toggle',
     VALUE = 'Value'
 }

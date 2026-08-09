@@ -9,6 +9,7 @@ import * as TaskManager from 'expo-task-manager';
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountRepository, bankIntegrationRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -139,6 +140,7 @@ class AppMonobankSyncService {
         await bankIntegrationRepository.updateById(integrationId, { token });
     }
 
+    @InvalidateDatabaseLiveQuery()
     @Log(
         (accountId, enabled) => `enter accountId=${accountId} enabled=${enabled}`,
         (_result, accountId, enabled) => `done accountId=${accountId} enabled=${enabled}`,

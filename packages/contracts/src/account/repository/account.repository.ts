@@ -101,6 +101,13 @@ export class AccountRepository {
         });
     }
 
+    findByIntegrationId(integrationId: number, tx?: DB) {
+        return (tx ?? this.db).query.AccountEntityTable.findMany({
+            where: and(eq(AccountEntityTable.integrationId, integrationId), isNull(AccountEntityTable.deletedAt)),
+            with: { [AccountAssociationEnum.INSTRUMENT]: true }
+        });
+    }
+
     async findByIds(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
         if (!isNotEmptyArray(ids)) {
             return [];
