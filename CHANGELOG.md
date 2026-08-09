@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.7](https://github.com/budgie-at/budgie/compare/v6.0.6...v6.0.7) (2026-08-09)
+
+
+### Bug Fixes
+
+* **consolidation:** stop cross-bucket rank-1 shadowing unique exact-amount refund match ([#648](https://github.com/budgie-at/budgie/issues/648)) ([fae9806](https://github.com/budgie-at/budgie/commit/fae9806cff571b5c96942beb10c0da304db73bb6))
+
+
+
+
+
 ## [6.0.6](https://github.com/budgie-at/budgie/compare/v6.0.5...v6.0.6) (2026-08-08)
 
 
