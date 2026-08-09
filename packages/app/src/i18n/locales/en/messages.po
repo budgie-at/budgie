@@ -863,6 +863,10 @@ msgstr "Could not create budget"
 msgid "Could not create category"
 msgstr "Could not create category"
 
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "Could not create deposit account"
+msgstr "Could not create deposit account"
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Could not create rule"
@@ -1217,6 +1221,7 @@ msgid "Delete Transaction"
 msgstr "Delete Transaction"
 
 #: src/account/constant/account-type.constant.ts
+#: src/account/hooks/use-deposit-create-action.hook.ts
 msgid "Deposit"
 msgstr "Deposit"
 
@@ -1616,6 +1621,10 @@ msgstr "From Amount"
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Currency"
 msgstr "From Currency"
+
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "Funding amount"
+msgstr "Funding amount"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "General"
@@ -2047,6 +2056,10 @@ msgstr "New Account"
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "New borrowed debt"
 msgstr "New borrowed debt"
+
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "New deposit account"
+msgstr "New deposit account"
 
 #: src/app/(main)/create-transaction/expense.tsx
 msgid "New Expense"

@@ -862,6 +862,10 @@ msgstr "Budget konnte nicht erstellt werden"
 msgid "Could not create category"
 msgstr "Kategorie konnte nicht erstellt werden"
 
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "Could not create deposit account"
+msgstr "Einlagenkonto konnte nicht erstellt werden"
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Could not create rule"
@@ -1216,6 +1220,7 @@ msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
 #: src/account/constant/account-type.constant.ts
+#: src/account/hooks/use-deposit-create-action.hook.ts
 msgid "Deposit"
 msgstr "Termineinlage"
 
@@ -1615,6 +1620,10 @@ msgstr "Von Betrag"
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Currency"
 msgstr "Von Währung"
+
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "Funding amount"
+msgstr "Einzahlungsbetrag"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "General"
@@ -2046,6 +2055,10 @@ msgstr "Neues Konto"
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "New borrowed debt"
 msgstr "Neue geliehene Schuld"
+
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "New deposit account"
+msgstr "Neues Einlagenkonto"
 
 #: src/app/(main)/create-transaction/expense.tsx
 msgid "New Expense"

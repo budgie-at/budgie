@@ -41,7 +41,7 @@ export default function AccountSelectorModal() {
 
         createAction
             .onCreate()
-            .then(() => void resolveAccountSelector(null))
+            .then(createdAccountId => void resolveAccountSelector(createdAccountId))
             .catch(() => void Toast.show({ type: 'error', text1: createAction.errorMessage }));
     };
     const contentCreateAction = isDefined(createAction)
