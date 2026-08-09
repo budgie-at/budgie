@@ -287,6 +287,15 @@ msgstr "Add a per-category cap"
 msgid "Add Account"
 msgstr "Add Account"
 
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+msgid "Add accounts"
+msgstr "Add accounts"
+
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Add accounts from bank"
+msgstr "Add accounts from bank"
+
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
 msgstr "Add category"
@@ -343,6 +352,10 @@ msgstr "AI-powered budgeting app with complete privacy. All data processing happ
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "All"
 msgstr "All"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "All accounts already added"
+msgstr "All accounts already added"
 
 #: src/app/import-column-mapper.tsx
 msgid "All columns have been assigned"
@@ -833,6 +846,10 @@ msgstr "Cost basis"
 msgid "Could not activate account."
 msgstr "Could not activate account."
 
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+msgid "Could not add accounts"
+msgstr "Could not add accounts"
+
 #: src/account/component/archive-account/archive-account.tsx
 msgid "Could not archive account"
 msgstr "Could not archive account"
@@ -932,6 +949,10 @@ msgstr "Could not fetch accounts"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not import CSV file"
 msgstr "Could not import CSV file"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Could not load accounts from the bank"
+msgstr "Could not load accounts from the bank"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -1466,6 +1487,10 @@ msgstr "Erste"
 #: src/app/(main)/create-account/index.tsx
 msgid "Erste Bank"
 msgstr "Erste Bank"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Every account from this bank is already linked."
+msgstr "Every account from this bank is already linked."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Everyday transactions and spending"
@@ -3346,6 +3371,10 @@ msgstr "Try a different search term or create a new tag"
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
 
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Try again"
+msgstr "Try again"
+
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 #: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Try Again"
@@ -3406,6 +3435,10 @@ msgstr "Update Account"
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"
 msgstr "Update rule?"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Update the token from any account already syncing with this integration, then try again."
+msgstr "Update the token from any account already syncing with this integration, then try again."
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Updated {formattedDate}"

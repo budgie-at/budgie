@@ -286,6 +286,15 @@ msgstr "Limit pro Kategorie hinzufügen"
 msgid "Add Account"
 msgstr "Konto hinzufügen"
 
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+msgid "Add accounts"
+msgstr "Konten hinzufügen"
+
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Add accounts from bank"
+msgstr "Konten von der Bank hinzufügen"
+
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
 msgstr "Kategorie hinzufügen"
@@ -342,6 +351,10 @@ msgstr "KI-gestützte Budget-App mit vollständigem Datenschutz. Alle Daten werd
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "All"
 msgstr "Alle"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "All accounts already added"
+msgstr "Alle Konten wurden bereits hinzugefügt"
 
 #: src/app/import-column-mapper.tsx
 msgid "All columns have been assigned"
@@ -832,6 +845,10 @@ msgstr "Kostenbasis"
 msgid "Could not activate account."
 msgstr "Konto konnte nicht aktiviert werden."
 
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+msgid "Could not add accounts"
+msgstr "Konten konnten nicht hinzugefügt werden"
+
 #: src/account/component/archive-account/archive-account.tsx
 msgid "Could not archive account"
 msgstr "Konto konnte nicht archiviert werden"
@@ -931,6 +948,10 @@ msgstr "Konten konnten nicht abgerufen werden"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not import CSV file"
 msgstr "CSV-Datei konnte nicht importiert werden"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Could not load accounts from the bank"
+msgstr "Konten von der Bank konnten nicht geladen werden"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -1465,6 +1486,10 @@ msgstr "Erste"
 #: src/app/(main)/create-account/index.tsx
 msgid "Erste Bank"
 msgstr "Erste Bank"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Every account from this bank is already linked."
+msgstr "Jedes Konto dieser Bank ist bereits verknüpft."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Everyday transactions and spending"
@@ -3345,6 +3370,10 @@ msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag
 msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Try again"
+msgstr "Erneut versuchen"
+
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 #: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Try Again"
@@ -3405,6 +3434,10 @@ msgstr "Konto aktualisieren"
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"
 msgstr "Regel aktualisieren?"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Update the token from any account already syncing with this integration, then try again."
+msgstr "Aktualisieren Sie den Token über ein Konto, das bereits mit dieser Integration synchronisiert wird, und versuchen Sie es erneut."
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Updated {formattedDate}"
