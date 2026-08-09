@@ -8,7 +8,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository, bankIntegrationRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -24,6 +24,7 @@ import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util'
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 
+import { monobankIntegrationTokenService } from './monobank-integration-token.service';
 import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 import { transferConsolidationService } from './transfer-consolidation.service';
@@ -31,7 +32,6 @@ import { transferConsolidationService } from './transfer-consolidation.service';
 import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
 import type {
     AccountEntityInterface,
-    BankIntegrationEntityInterface,
     BankSyncEntityInterface,
     MccCategoryLookupInterface,
     TransactionEntityInterface
@@ -87,6 +87,7 @@ class AppMonobankSyncService {
         });
     }
 
+    @InvalidateDatabaseLiveQuery()
     @Log(
         (token, externalIds) => `enter tokenLen=${token.length} externalIdCount=${externalIds.length}`,
         (_result, token, externalIds) => `done tokenLen=${token.length} externalIdCount=${externalIds.length}`,
@@ -95,7 +96,7 @@ class AppMonobankSyncService {
     )
     async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
         const bankAccounts = await this.fetchBankAccountsAndJars(token);
-        const integration = await this.getOrCreateIntegration(token);
+        const integration = await monobankIntegrationTokenService.getOrCreateIntegration(token);
 
         for (const externalId of externalIds) {
             const bankAccount = bankAccounts.find(candidateBankAccount => candidateBankAccount.id === externalId);
@@ -108,36 +109,6 @@ class AppMonobankSyncService {
 
         void this.registerBackgroundTask();
         void this.sync();
-    }
-
-    @Log(
-        (accountId, token) => `enter accountId=${accountId} tokenLen=${token.length}`,
-        (_result, accountId, token) => `done accountId=${accountId} tokenLen=${token.length}`,
-        (error, accountId, token) => `throw accountId=${accountId} tokenLen=${token.length} error=${getErrorMessage(error)}`
-    )
-    async updateAccountToken(accountId: number, token: string): Promise<void> {
-        const bankSync = await bankSyncRepository.getByAccountId(accountId);
-        if (!isDefined(bankSync)) {
-            throw new Error('Bank sync not found');
-        }
-
-        const account = await accountRepository.findById(accountId);
-        if (!isDefined(account)) {
-            throw new Error('Account not found');
-        }
-
-        await this.applyAccountIntegrationToken(account, token);
-
-        await bankSyncRepository.update(bankSync.id, { errorCount: 0, lastError: null });
-    }
-
-    @Log(
-        (integrationId, token) => `enter integrationId=${integrationId} tokenLen=${token.length}`,
-        (_result, integrationId, token) => `done integrationId=${integrationId} tokenLen=${token.length}`,
-        (error, integrationId, token) => `throw integrationId=${integrationId} tokenLen=${token.length} error=${getErrorMessage(error)}`
-    )
-    async updateIntegrationToken(integrationId: number, token: string): Promise<void> {
-        await bankIntegrationRepository.updateById(integrationId, { token });
     }
 
     @InvalidateDatabaseLiveQuery()
@@ -303,7 +274,7 @@ class AppMonobankSyncService {
             return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
         }
 
-        const token = await this.resolveIntegrationToken(account);
+        const token = await monobankIntegrationTokenService.resolveIntegrationToken(account);
         const result = await this.fetchTransactionBatch(sync, account.externalId, token);
         await microPause();
 
@@ -312,24 +283,6 @@ class AppMonobankSyncService {
         await microPause();
 
         return result;
-    }
-
-    @Log(
-        account => `enter accountId=${account.id} integrationId=${account.integrationId}`,
-        (result, account) => `done accountId=${account.id} integrationId=${account.integrationId} tokenLen=${result.length}`,
-        (error, account) => `throw accountId=${account.id} integrationId=${account.integrationId} error=${getErrorMessage(error)}`
-    )
-    private async resolveIntegrationToken(account: AccountEntityInterface): Promise<string> {
-        if (!isDefined(account.integrationId)) {
-            throw new Error('Account has no linked bank integration');
-        }
-
-        const integration = await bankIntegrationRepository.findById(account.integrationId);
-        if (!isDefined(integration)) {
-            throw new Error('Bank integration not found');
-        }
-
-        return integration.token;
     }
 
     @Log(
@@ -436,32 +389,6 @@ class AppMonobankSyncService {
         return isForward
             ? await service.syncTransactionsForward(externalAccountId, sync.forwardSyncFromAt ?? new Date())
             : await service.syncTransactionsBackward(externalAccountId, sync.backwardSyncFromAt ?? new Date(), sync.backwardSyncedAt);
-    }
-
-    @Log(
-        (account, token) => `enter accountId=${account.id} integrationId=${account.integrationId} tokenLen=${token.length}`,
-        (_result, account, token) => `done accountId=${account.id} integrationId=${account.integrationId} tokenLen=${token.length}`,
-        (error, account, token) =>
-            `throw accountId=${account.id} integrationId=${account.integrationId} tokenLen=${token.length} error=${getErrorMessage(error)}`
-    )
-    private async applyAccountIntegrationToken(account: AccountEntityInterface, token: string): Promise<void> {
-        const existingIntegration = await bankIntegrationRepository.findByProviderAndToken(this.provider, token);
-        if (isDefined(existingIntegration)) {
-            if (existingIntegration.id !== account.integrationId) {
-                await accountRepository.updateById(account.id, { integrationId: existingIntegration.id });
-            }
-
-            return;
-        }
-
-        if (isDefined(account.integrationId)) {
-            await this.updateIntegrationToken(account.integrationId, token);
-
-            return;
-        }
-
-        const integration = await this.getOrCreateIntegration(token);
-        await accountRepository.updateById(account.id, { integrationId: integration.id });
     }
 
     private buildExistingTransactionScopeSeeds(
@@ -574,15 +501,6 @@ class AppMonobankSyncService {
             forwardSyncFromAt: now,
             forwardSyncedAt: null
         });
-    }
-
-    private async getOrCreateIntegration(token: string): Promise<BankIntegrationEntityInterface> {
-        const existingIntegration = await bankIntegrationRepository.findByProviderAndToken(this.provider, token);
-        if (isDefined(existingIntegration)) {
-            return existingIntegration;
-        }
-
-        return bankIntegrationRepository.create({ provider: this.provider, token });
     }
 }
 

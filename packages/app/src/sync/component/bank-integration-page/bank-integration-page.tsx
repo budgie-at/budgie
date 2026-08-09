@@ -1,4 +1,4 @@
-import { AccountTypeEnum, BankIntegrationEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, BankIntegrationEntityInterface, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { ScrollView } from 'react-native';
@@ -21,11 +21,15 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     const { accounts } = useGetAccountsByIntegrationIdQuery(integration.id);
 
     const handleGoBack = () => void goBackOrReplace('/');
+    const handleAddAccounts = () =>
+        void router.push({ pathname: '/bank-integration/[id]/add-accounts', params: { id: String(integration.id) } });
     const handleAddDeposit = () =>
         void router.push({
             pathname: '/create-account/[type]',
             params: { type: AccountTypeEnum.DEPOSIT, integrationId: String(integration.id) }
         });
+
+    const canAddAccountsFromBank = integration.provider === ExternalSourceEnum.MONOBANK;
 
     return (
         <Page
@@ -37,6 +41,15 @@ export const BankIntegrationPage = ({ integration }: Props) => {
                 {(accounts ?? []).map(account => (
                     <BankIntegrationAccountRow key={account.id} account={account} />
                 ))}
+
+                {canAddAccountsFromBank && (
+                    <SimpleHorizontalCell
+                        testID={BankIntegrationSelector.AddAccountsButton}
+                        left={<CircleIcon icon={UserIconNameEnum.CloudDownload} variant="ghost" size={46} iconSize={20} border={false} />}
+                        title={t`Add accounts from bank`}
+                        onPress={handleAddAccounts}
+                    />
+                )}
 
                 <SimpleHorizontalCell
                     testID={BankIntegrationSelector.AddDepositButton}
