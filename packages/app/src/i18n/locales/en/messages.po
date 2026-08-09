@@ -1131,6 +1131,10 @@ msgstr "Date"
 msgid "Day {selectedDay}"
 msgstr "Day {selectedDay}"
 
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Days Remaining"
+msgstr "Days Remaining"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/transaction/constant/transaction-type.constant.ts
@@ -1198,6 +1202,11 @@ msgstr "Delete Transaction"
 #: src/account/constant/account-type.constant.ts
 msgid "Deposit"
 msgstr "Deposit"
+
+#: src/account/component/create-deposit-account/create-deposit-account.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Deposit Account"
+msgstr "Deposit Account"
 
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
@@ -1444,6 +1453,14 @@ msgstr "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Expected maturity date"
+msgstr "Expected maturity date"
+
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Expected Payout"
+msgstr "Expected Payout"
+
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Expected return date"
 msgstr "Expected return date"
@@ -1541,6 +1558,10 @@ msgstr "Filter tags"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Fix Errors"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Fixed-term savings with an interest rate"
+msgstr "Fixed-term savings with an interest rate"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Found an issue or have an idea? Open GitHub issue templates."
@@ -1726,6 +1747,14 @@ msgstr "Indexing {done} of {total}"
 #: src/market-data/service/historical-market-data-loader.service.ts
 msgid "Instrument not found"
 msgstr "Instrument not found"
+
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Interest Rate"
+msgstr "Interest Rate"
+
+#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+msgid "Interest Rate % (Optional)"
+msgstr "Interest Rate % (Optional)"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
 msgid "Invalid file"
@@ -1913,6 +1942,14 @@ msgstr "matches"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Matches Regex"
 msgstr "Matches Regex"
+
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Maturity Date"
+msgstr "Maturity Date"
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Maturity Date (Optional)"
+msgstr "Maturity Date (Optional)"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
@@ -2329,8 +2366,8 @@ msgstr "PIN must be {PIN_LENGTH} digits"
 msgid "PINs do not match"
 msgstr "PINs do not match"
 
+#: src/account/hooks/use-account-entity-form.hook.ts
 #: src/account/hooks/use-account-form.hook.ts
-#: src/account/hooks/use-debt-account-form.hook.ts
 msgid "Please check the account details"
 msgstr "Please check the account details"
 
@@ -2841,6 +2878,10 @@ msgstr "Set Category"
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Set fee"
 msgstr "Set fee"
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Set Maturity Date"
+msgstr "Set Maturity Date"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
@@ -3396,6 +3437,10 @@ msgstr "Waiting"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."
 msgstr "We will retry this quietly."
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "When does the deposit mature?"
+msgstr "When does the deposit mature?"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"
