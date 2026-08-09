@@ -2400,6 +2400,11 @@ msgstr "PIN must be {PIN_LENGTH} digits"
 msgid "PINs do not match"
 msgstr "PINs do not match"
 
+#: src/account/hooks/use-account-form.hook.ts
+#: src/account/hooks/use-debt-account-form.hook.ts
+msgid "Please check the account details"
+msgstr "Please check the account details"
+
 #: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Please enter your Binance API key and secret"

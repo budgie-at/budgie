@@ -1,4 +1,4 @@
-import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum, normalizeAccountIban } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -115,7 +115,7 @@ export abstract class AbstractSyncService {
             currentBalance: 0,
             externalId: account.id,
             externalSource: this.provider,
-            iban: account.iban
+            iban: normalizeAccountIban(account.iban)
         };
     }
 

@@ -2399,6 +2399,11 @@ msgstr "PIN-код має бути {PIN_LENGTH} цифр"
 msgid "PINs do not match"
 msgstr "PIN-коди не збігаються"
 
+#: src/account/hooks/use-account-form.hook.ts
+#: src/account/hooks/use-debt-account-form.hook.ts
+msgid "Please check the account details"
+msgstr "Перевірте дані рахунку"
+
 #: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Please enter your Binance API key and secret"
