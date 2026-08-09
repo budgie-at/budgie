@@ -488,6 +488,10 @@ msgstr "Balance Adjustment"
 msgid "Bank"
 msgstr "Bank"
 
+#: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
+msgid "Bank integration settings"
+msgstr "Bank integration settings"
+
 #: src/account/constant/account-type.constant.ts
 msgid "Bank sync"
 msgstr "Bank sync"

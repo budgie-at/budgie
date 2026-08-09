@@ -5,6 +5,7 @@ import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account
 import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { isBankProviderSection } from '../../type-guard/is-bank-provider-section.type-guard';
 import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
+import { buildBankProviderGroupKey } from '../../utils/build-bank-provider-group-key.util';
 import { AccountSectionHeader } from '../account-section-header/account-section-header';
 import { BankProviderSectionHeader } from '../bank-provider-section-header/bank-provider-section-header';
 import { DebtSectionHeader } from '../debt-section-header/debt-section-header';
@@ -21,9 +22,9 @@ const SECTION_KIND_TO_DEBT_TYPE: Record<HomeSectionKindEnum.DEBT_YOU_OWE | HomeS
 
 export const HomeSectionHeader = ({ section, balanceSummary }: Props) => {
     if (isBankProviderSection(section)) {
-        const total = balanceSummary.bankProviderTotals.get(section.provider) ?? 0;
+        const total = balanceSummary.bankProviderTotals.get(buildBankProviderGroupKey(section.integrationId, section.provider)) ?? 0;
 
-        return <BankProviderSectionHeader provider={section.provider} total={total} />;
+        return <BankProviderSectionHeader provider={section.provider} integrationId={section.integrationId} total={total} />;
     }
 
     if (isDebtSection(section)) {

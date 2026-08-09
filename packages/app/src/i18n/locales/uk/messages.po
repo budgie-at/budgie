@@ -487,6 +487,10 @@ msgstr "Коригування балансу"
 msgid "Bank"
 msgstr "Банк"
 
+#: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
+msgid "Bank integration settings"
+msgstr "Налаштування банківської інтеграції"
+
 #: src/account/constant/account-type.constant.ts
 msgid "Bank sync"
 msgstr "Синхронізація банку"
