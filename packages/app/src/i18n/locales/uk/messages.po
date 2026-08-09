@@ -81,6 +81,10 @@ msgstr "{count, plural, one {Цей тег має # транзакцію. Виб
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
 
+#: src/account/component/close-deposit-account/close-deposit-account.tsx
+msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
+msgstr "{formattedBalance} буде переведено на {destinationAccountTitle}, а цей депозит буде архівовано. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
+
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} залишилось розподілити"
@@ -589,6 +593,7 @@ msgstr "Budgie позначить як видалені такі записи: {
 #: src/account/component/account-action-card/account-action-card.tsx
 #: src/account/component/archive-account/archive-account.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/close-deposit-account/close-deposit-account.tsx
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -700,6 +705,14 @@ msgstr "Буфер обміну порожній"
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Close"
 msgstr "Закрити"
+
+#: src/account/component/close-deposit-account/close-deposit-account.tsx
+msgid "Close Deposit"
+msgstr "Закрити депозит"
+
+#: src/account/component/close-deposit-account/close-deposit-account.tsx
+msgid "Close Deposit?"
+msgstr "Закрити депозит?"
 
 #: src/@generic/component/popover-menu/popover-menu.tsx
 msgid "Close menu"
@@ -828,6 +841,10 @@ msgstr "Не вдалося перевірити дані банківської
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Could not clear data"
 msgstr "Не вдалося очистити дані"
+
+#: src/account/component/close-deposit-account/close-deposit-account.tsx
+msgid "Could not close deposit"
+msgstr "Не вдалося закрити депозит"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Could not consolidate matches"

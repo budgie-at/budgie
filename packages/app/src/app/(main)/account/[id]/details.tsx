@@ -16,6 +16,7 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { AccountBalance } from '../../../../account/component/account-balance/account-balance';
 import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
+import { CloseDepositAccount } from '../../../../account/component/close-deposit-account/close-deposit-account';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { DepositDetailsCard } from '../../../../account/component/deposit-details-card/deposit-details-card';
 import { ACCOUNT_COLOR } from '../../../../account/constant/account-color.constant';
@@ -100,19 +101,25 @@ export default function AccountDetails() {
                     )}
 
                     {account.type === AccountTypeEnum.DEPOSIT ? (
-                        <DepositDetailsCard
-                            balance={balance}
-                            instrumentSymbol={account.instrument.symbol}
-                            interestRate={account.interestRate}
-                            deadline={account.deadline}
-                        />
+                        <>
+                            <DepositDetailsCard
+                                balance={balance}
+                                instrumentSymbol={account.instrument.symbol}
+                                interestRate={account.interestRate}
+                                deadline={account.deadline}
+                            />
+
+                            <View className="px-5xl mt-md">
+                                <CloseDepositAccount accountId={id} balance={balance} instrumentSymbol={account.instrument.symbol} />
+                            </View>
+                        </>
                     ) : null}
                 </View>
 
                 <TransactionList accountId={id} footerSpacerMultiplier={3} />
             </Page>
 
-            <AccountDetailsMenuControls accountId={id} />
+            <AccountDetailsMenuControls accountId={id} accountType={account.type} />
         </View>
     );
 }
