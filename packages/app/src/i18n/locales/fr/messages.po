@@ -487,6 +487,10 @@ msgstr "Ajustement de solde"
 msgid "Bank"
 msgstr "Banque"
 
+#: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
+msgid "Bank integration settings"
+msgstr "Paramètres de l'intégration bancaire"
+
 #: src/account/constant/account-type.constant.ts
 msgid "Bank sync"
 msgstr "Synchronisation bancaire"

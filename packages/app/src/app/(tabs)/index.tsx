@@ -9,11 +9,14 @@ import { CollapsibleHeader } from '../../@generic/component/collapsible-header/c
 import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
 import { HomeSectionKindEnum } from '../../account/enum/home-section-kind.enum';
+import { BankProviderGroupInterface } from '../../account/interface/bank-provider-group.interface';
 import { CryptoCurrencyGroupInterface } from '../../account/interface/crypto-currency-group.interface';
 import { DebtSectionInterface } from '../../account/interface/debt-section.interface';
 import { HomeSectionInterface } from '../../account/interface/home-section.interface';
 import { useHomePageDataQuery } from '../../account/query/use-home-page-data.query';
+import { buildIntegrationProviderMap } from '../../account/utils/build-integration-provider-map.util';
 import { pairAccountsIntoRows } from '../../account/utils/pair-accounts-into-rows.util';
+import { resolveBankProviderGroup } from '../../account/utils/resolve-bank-provider-group.util';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
@@ -27,6 +30,23 @@ const appendAccount = <Key, Value>(groups: Map<Key, Value[]>, key: Key, value: V
     }
 
     groups.set(key, [value]);
+};
+
+const appendBankProviderGroup = (
+    groups: Map<string, BankProviderGroupInterface>,
+    bankProviderGroup: NonNullable<ReturnType<typeof resolveBankProviderGroup>>,
+    account: AccountWithBankSyncEntityInterface
+): void => {
+    const { key, integrationId, provider } = bankProviderGroup;
+    const group = groups.get(key);
+
+    if (isDefined(group)) {
+        group.accounts.push(account);
+
+        return;
+    }
+
+    groups.set(key, { integrationId, provider, accounts: [account] });
 };
 
 const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInterface[]): CryptoCurrencyGroupInterface[] => {
@@ -50,9 +70,12 @@ const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInte
     return [...groups.values()];
 };
 
-const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterface[]): HomeSectionInterface[] => {
+const buildHomePageSections = (
+    accounts: AccountWithBankSyncEntityInterface[],
+    integrationProviders: ReadonlyMap<number, ExternalSourceEnum>
+): HomeSectionInterface[] => {
     const accountGroups = new Map<AccountTypeEnum, AccountWithBankSyncEntityInterface[]>();
-    const providerGroups = new Map<ExternalSourceEnum, AccountWithBankSyncEntityInterface[]>();
+    const providerGroups = new Map<string, BankProviderGroupInterface>();
     const debtGroups = new Map<DebtSectionInterface['kind'], AccountWithBankSyncEntityInterface[]>();
     const debtSectionKinds = [
         HomeSectionKindEnum.DEBT_YOU_OWE,
@@ -60,21 +83,19 @@ const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterface[]): 
     ] satisfies DebtSectionInterface['kind'][];
 
     accounts.forEach(account => {
-        if (account.type === AccountTypeEnum.BANK_SYNC) {
-            const provider = account.bankSync?.provider;
-
-            if (isDefined(provider)) {
-                appendAccount(providerGroups, provider, account);
-            }
-
-            return;
-        }
-
         if (account.type === AccountTypeEnum.DEBT) {
             const kind =
                 account.debtType === AccountDebtTypeEnum.BORROW ? HomeSectionKindEnum.DEBT_YOU_OWE : HomeSectionKindEnum.DEBT_OWED_TO_YOU;
 
             appendAccount(debtGroups, kind, account);
+
+            return;
+        }
+
+        const bankProviderGroup = resolveBankProviderGroup(account, integrationProviders);
+
+        if (isDefined(bankProviderGroup)) {
+            appendBankProviderGroup(providerGroups, bankProviderGroup, account);
 
             return;
         }
@@ -103,11 +124,12 @@ const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterface[]): 
         }
     });
 
-    providerGroups.forEach((groupAccounts, provider) => {
+    providerGroups.forEach(group => {
         sections.push({
             kind: HomeSectionKindEnum.BANK_PROVIDER,
-            provider,
-            data: pairAccountsIntoRows(groupAccounts)
+            provider: group.provider,
+            integrationId: group.integrationId,
+            data: pairAccountsIntoRows(group.accounts)
         });
     });
 
@@ -122,7 +144,8 @@ export default function HomePage() {
     const isBudgetWidgetEnabled = useSetting('isBudgetWidgetEnabled');
     const focusKey = useFocusKey();
     const activeAccounts = accounts.filter(account => account.isActive);
-    const sections = buildHomePageSections(activeAccounts);
+    const integrationProviders = buildIntegrationProviderMap(accounts);
+    const sections = buildHomePageSections(activeAccounts, integrationProviders);
     const budgetWidgetRemountKey = `${language}-${isBudgetWidgetEnabled ? 'enabled' : 'disabled'}-${focusKey}`;
     const listHeaderComponent = (
         <View className="mb-3xl">
