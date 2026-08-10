@@ -567,7 +567,7 @@ const generateConsolidationFixture = () => {
 
         INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, token, created_at, updated_at)
         VALUES
-            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
+            (1, 'MONOBANK', 1, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
             (2, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
             (3, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
             (4, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '${monobankIntegrationToken}', ${now}, ${now}),
