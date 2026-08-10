@@ -33,12 +33,12 @@ const appendAccount = <Key, Value>(groups: Map<Key, Value[]>, key: Key, value: V
 };
 
 const appendBankProviderGroup = (
-    groups: Map<string, BankProviderGroupInterface>,
+    groups: Map<number, BankProviderGroupInterface>,
     bankProviderGroup: NonNullable<ReturnType<typeof resolveBankProviderGroup>>,
     account: AccountWithBankSyncEntityInterface
 ): void => {
-    const { key, integrationId, provider } = bankProviderGroup;
-    const group = groups.get(key);
+    const { integrationId, provider } = bankProviderGroup;
+    const group = groups.get(integrationId);
 
     if (isDefined(group)) {
         group.accounts.push(account);
@@ -46,7 +46,7 @@ const appendBankProviderGroup = (
         return;
     }
 
-    groups.set(key, { integrationId, provider, accounts: [account] });
+    groups.set(integrationId, { integrationId, provider, accounts: [account] });
 };
 
 const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInterface[]): CryptoCurrencyGroupInterface[] => {
@@ -75,7 +75,7 @@ const buildHomePageSections = (
     integrationProviders: ReadonlyMap<number, ExternalSourceEnum>
 ): HomeSectionInterface[] => {
     const accountGroups = new Map<AccountTypeEnum, AccountWithBankSyncEntityInterface[]>();
-    const providerGroups = new Map<string, BankProviderGroupInterface>();
+    const providerGroups = new Map<number, BankProviderGroupInterface>();
     const debtGroups = new Map<DebtSectionInterface['kind'], AccountWithBankSyncEntityInterface[]>();
     const debtSectionKinds = [
         HomeSectionKindEnum.DEBT_YOU_OWE,
@@ -92,7 +92,7 @@ const buildHomePageSections = (
             return;
         }
 
-        const bankProviderGroup = resolveBankProviderGroup(account, integrationProviders);
+        const bankProviderGroup = resolveBankProviderGroup(account.integrationId, integrationProviders);
 
         if (isDefined(bankProviderGroup)) {
             appendBankProviderGroup(providerGroups, bankProviderGroup, account);

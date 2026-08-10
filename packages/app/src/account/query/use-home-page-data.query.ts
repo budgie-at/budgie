@@ -19,7 +19,7 @@ import type { AccountWithBankSyncEntityInterface } from '@budgie/contracts';
 const createHomeAccountBalanceSummary = () => ({
     accountTypeTotals: new Map<AccountTypeEnum, number>(),
     balancesByAccountId: new Map<number, HomeAccountBalanceInterface>(),
-    bankProviderTotals: new Map<string, number>(),
+    bankProviderTotals: new Map<number, number>(),
     cryptoCount: 0,
     cryptoTotal: 0,
     debtTypeTotals: new Map<AccountDebtTypeEnum, number>(),
@@ -38,14 +38,9 @@ const addActiveTotal = <Key>(totals: Map<Key, number>, key: Key, amount: number,
     }
 };
 
-const addBankProviderTotal = (
-    totals: Map<string, number>,
-    bankProviderGroupKey: string | null,
-    amount: number,
-    isActive: boolean
-): void => {
-    if (isActive && isDefined(bankProviderGroupKey)) {
-        addTotal(totals, bankProviderGroupKey, amount);
+const addBankProviderTotal = (totals: Map<number, number>, integrationId: number | null, amount: number, isActive: boolean): void => {
+    if (isActive && isDefined(integrationId)) {
+        addTotal(totals, integrationId, amount);
     }
 };
 
@@ -100,10 +95,7 @@ export const useHomePageDataQuery = () => {
     );
 
     const balanceSummary: HomeAccountBalanceSummaryInterface = data.reduce((summary, row) => {
-        const bankProviderGroup = resolveBankProviderGroup(
-            { type: row.account.type, integrationId: row.account.integrationId, bankSync: row.bankSync },
-            integrationProviders
-        );
+        const bankProviderGroup = resolveBankProviderGroup(row.account.integrationId, integrationProviders);
         const convertedDebtProgressSummary = {
             closedAmount: convertFromMicroUnits(row.convertedDebtClosedAmount),
             creditAmount: convertFromMicroUnits(row.convertedCreditAmount),
@@ -143,7 +135,7 @@ export const useHomePageDataQuery = () => {
 
         summary.balancesByAccountId.set(accountId, homeAccountBalance);
         addActiveTotal(summary.accountTypeTotals, accountType, convertedBalance, isActive);
-        addBankProviderTotal(summary.bankProviderTotals, bankProviderGroup?.key ?? null, convertedBalance, isActive);
+        addBankProviderTotal(summary.bankProviderTotals, bankProviderGroup?.integrationId ?? null, convertedBalance, isActive);
         addDebtTypeTotal(summary.debtTypeTotals, homeAccountBalance);
         addNetWorthAssetTotals(summary, homeAccountBalance);
 

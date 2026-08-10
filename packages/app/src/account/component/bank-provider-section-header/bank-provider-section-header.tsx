@@ -15,7 +15,7 @@ import { BankProviderSectionHeaderSelector } from './bank-provider-section-heade
 
 interface Props {
     readonly provider: ExternalSourceEnum;
-    readonly integrationId: number | null;
+    readonly integrationId: number;
     readonly total: number;
 }
 
@@ -28,24 +28,20 @@ export const BankProviderSectionHeader = ({ provider, integrationId, total }: Pr
     const handleOpenIntegrationSettings = () =>
         void router.push({ pathname: '/bank-integration/[id]', params: { id: String(integrationId) } });
 
-    const settingsButton = isDefined(integrationId) ? (
-        <HapticPressable
-            className="rounded-full active:bg-secondary-background"
-            onPress={handleOpenIntegrationSettings}
-            accessibilityRole="button"
-            accessibilityLabel={t`Bank integration settings`}
-            testID={BankProviderSectionHeaderSelector.SettingsButton(integrationId)}
-        >
-            <Icon className="text-secondary-foreground" icon={UserIconNameEnum.Settings} size={16} />
-        </HapticPressable>
-    ) : null;
-
     return (
         <AccountSectionHeaderFrame total={total}>
             <View className="flex-row items-center gap-sm">
                 <BankLogo bankProvider={provider} size={20} />
                 <Text className="text-xs uppercase text-secondary-foreground">{title}</Text>
-                {settingsButton}
+                <HapticPressable
+                    className="rounded-full active:bg-secondary-background"
+                    onPress={handleOpenIntegrationSettings}
+                    accessibilityRole="button"
+                    accessibilityLabel={t`Bank integration settings`}
+                    testID={BankProviderSectionHeaderSelector.SettingsButton(integrationId)}
+                >
+                    <Icon className="text-secondary-foreground" icon={UserIconNameEnum.Settings} size={16} />
+                </HapticPressable>
             </View>
         </AccountSectionHeaderFrame>
     );

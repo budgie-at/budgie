@@ -17,9 +17,10 @@ import { monobankSyncService } from '../../service/monobank-sync.service';
 
 interface Props {
     readonly account: Pick<AccountWithInstrumentEntityInterface, 'id' | 'title' | 'icon' | AccountAssociationEnum.INSTRUMENT>;
+    readonly isLiveApi: boolean;
 }
 
-export const BankIntegrationAccountRow = ({ account }: Props) => {
+export const BankIntegrationAccountRow = ({ account, isLiveApi }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
     const { bankSync, hasBankSync } = useAccountBankSync(account.id);
     const formatDigits = useDisplayFormatDigits();
@@ -28,7 +29,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     const handleToggle = (enabled: boolean) => void monobankSyncService.setAccountSyncEnabled(account.id, enabled);
 
     const toggle =
-        hasBankSync && isDefined(bankSync) ? (
+        isLiveApi && hasBankSync && isDefined(bankSync) ? (
             <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} {...testID(rowTestID, TestIDPartEnum.TOGGLE)} />
         ) : null;
 

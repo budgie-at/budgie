@@ -70,6 +70,15 @@ export class BankIntegrationRepository {
         return bankIntegration;
     }
 
+    @Log(
+        (provider, tx) => `enter provider=${provider} hasTx=${String(isDefined(tx))}`,
+        (result, provider, tx) => `done provider=${provider} hasTx=${String(isDefined(tx))} found=${String(isDefined(result))}`,
+        (error, provider, tx) => `throw provider=${provider} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async findFileImportIntegration(provider: ExternalSourceEnum, tx?: DB): Promise<BankIntegrationEntityInterface | undefined> {
+        return this.findByProviderAndToken(provider, '', tx);
+    }
+
     findById(id: number, tx?: DB) {
         return (tx ?? this.db).query.BankIntegrationEntityTable.findFirst({
             where: and(eq(BankIntegrationEntityTable.id, id), isNull(BankIntegrationEntityTable.deletedAt))

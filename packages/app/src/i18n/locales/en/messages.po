@@ -288,11 +288,11 @@ msgid "Add Account"
 msgstr "Add Account"
 
 #: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
 msgid "Add accounts"
 msgstr "Add accounts"
 
 #: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
-#: src/sync/component/bank-integration-page/bank-integration-page.tsx
 msgid "Add accounts from bank"
 msgstr "Add accounts from bank"
 
@@ -1737,6 +1737,10 @@ msgstr "Import Erste Bank"
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "Import failed"
 msgstr "Import failed"
+
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Import file"
+msgstr "Import file"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"

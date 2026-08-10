@@ -6,7 +6,7 @@ import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankIntegrationRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
 import { databaseRefreshService } from '../../@generic/service/database-refresh.service';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -25,7 +25,13 @@ import { transferConsolidationDrainerService } from './transfer-consolidation-dr
 
 import type { ImportContextInterface } from '../interface/import-context.interface';
 import type { BankAccountInterface, FileBasedBankSyncClientInterface, ParsedFileResultInterface } from '@budgie/bank-sync';
-import type { DB, MccCategoryLookupInterface, TransactionCreateInputInterface, TransactionEntityInterface } from '@budgie/contracts';
+import type {
+    AccountEntityInterface,
+    DB,
+    MccCategoryLookupInterface,
+    TransactionCreateInputInterface,
+    TransactionEntityInterface
+} from '@budgie/contracts';
 
 export abstract class BaseFileBankSyncService {
     private importQueue: Promise<unknown> = Promise.resolve();
@@ -113,8 +119,7 @@ export abstract class BaseFileBankSyncService {
         bankAccount: BankAccountInterface,
         context: ImportContextInterface
     ): Promise<FileBankSyncAccountImportResultInterface> {
-        const account = await getOrCreateBankAccount(bankAccount, context.tx);
-        await this.createBankSyncRecord(account.id, context.tx);
+        const account = await this.prepareImportAccount(bankAccount, context.tx);
 
         const transactions = client.getTransactions(bankAccount.id);
         if (!isNotEmptyArray(transactions)) {
@@ -185,6 +190,36 @@ export abstract class BaseFileBankSyncService {
         databaseRefreshService.notifyChanged();
 
         return result;
+    }
+
+    @Log(
+        (bankAccount, tx) => `enter externalId=${bankAccount.id} hasTx=${String(isDefined(tx))}`,
+        (result, bankAccount, tx) => `done externalId=${bankAccount.id} hasTx=${String(isDefined(tx))} accountId=${result.id}`,
+        (error, bankAccount, tx) => `throw externalId=${bankAccount.id} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    private async prepareImportAccount(bankAccount: BankAccountInterface, tx: DB): Promise<AccountEntityInterface> {
+        const account = await getOrCreateBankAccount(bankAccount, tx);
+        await this.createBankSyncRecord(account.id, tx);
+        await this.linkFileImportIntegration(account, tx);
+
+        return account;
+    }
+
+    @Log(
+        (account, tx) => `enter accountId=${account.id} integrationId=${account.integrationId} hasTx=${String(isDefined(tx))}`,
+        (_result, account, tx) => `done accountId=${account.id} integrationId=${account.integrationId} hasTx=${String(isDefined(tx))}`,
+        (error, account, tx) =>
+            `throw accountId=${account.id} integrationId=${account.integrationId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    private async linkFileImportIntegration(account: AccountEntityInterface, tx: DB): Promise<void> {
+        if (isDefined(account.integrationId)) {
+            return;
+        }
+
+        const existingIntegration = await bankIntegrationRepository.findFileImportIntegration(this.provider, tx);
+        const integration = existingIntegration ?? (await bankIntegrationRepository.create({ provider: this.provider, token: '' }, tx));
+
+        await accountRepository.updateById(account.id, { integrationId: integration.id }, tx);
     }
 
     private async quickImportInner(uri: string): Promise<FileBankSyncImportResultInterface> {
