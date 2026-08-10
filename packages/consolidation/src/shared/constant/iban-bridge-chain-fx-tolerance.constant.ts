@@ -1,0 +1,1 @@
+export const IBAN_BRIDGE_CHAIN_FX_TOLERANCE = 0.01;
