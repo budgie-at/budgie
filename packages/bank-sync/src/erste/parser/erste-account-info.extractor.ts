@@ -22,7 +22,7 @@ class ErsteAccountInfoExtractor {
     @Log(
         items => `enter itemCount=${items.length}`,
         (result, items) =>
-            `done itemCount=${items.length} iban=${result.iban} oldBalance=${result.oldBalance} newBalance=${result.newBalance}`,
+            `done itemCount=${items.length} ibanSuffix=${result.iban.slice(-4)} oldBalance=${result.oldBalance} newBalance=${result.newBalance}`,
         (error, items) => `throw itemCount=${items.length} error=${getErrorMessage(error)}`
     )
     extract(items: PdfTextItemInterface[]): ErsteAccountInfoInterface {

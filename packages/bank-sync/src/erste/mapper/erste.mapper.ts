@@ -15,10 +15,12 @@ import type { ErsteAccountInfoInterface } from '../interface/erste-account-info.
 import type { ErsteRowInterface } from '../interface/erste-row.interface';
 
 class ErsteMapper {
+    private static readonly LOG_PREVIEW_LENGTH = 16;
+
     @Log(
-        account => `enter iban=${account.iban} newBalance=${account.newBalance}`,
-        (result, account) => `done iban=${account.iban} accountId=${result.id}`,
-        (error, account) => `throw iban=${account.iban} error=${getErrorMessage(error)}`
+        account => `enter ibanSuffix=${account.iban.slice(-4)} newBalance=${account.newBalance}`,
+        (result, account) => `done ibanSuffix=${account.iban.slice(-4)} accountIdSuffix=${result.id.slice(-4)}`,
+        (error, account) => `throw ibanSuffix=${account.iban.slice(-4)} error=${getErrorMessage(error)}`
     )
     mapAccount(account: ErsteAccountInfoInterface): BankAccountInterface {
         return {
@@ -34,9 +36,11 @@ class ErsteMapper {
     }
 
     @Log(
-        (row, iban) => `enter iban=${iban} date=${row.date.toISOString()} amount=${row.amount} reference="${row.reference}"`,
-        (result, row, iban) => `done iban=${iban} date=${row.date.toISOString()} externalId=${result.id}`,
-        (error, row, iban) => `throw iban=${iban} date=${row.date.toISOString()} amount=${row.amount} error=${getErrorMessage(error)}`
+        (row, iban) =>
+            `enter ibanSuffix=${iban.slice(-4)} date=${row.date.toISOString()} amount=${row.amount} referencePreview="${row.reference.slice(0, ErsteMapper.LOG_PREVIEW_LENGTH)}" referenceLen=${row.reference.length}`,
+        (result, row, iban) => `done ibanSuffix=${iban.slice(-4)} date=${row.date.toISOString()} externalId=${result.id}`,
+        (error, row, iban) =>
+            `throw ibanSuffix=${iban.slice(-4)} date=${row.date.toISOString()} amount=${row.amount} error=${getErrorMessage(error)}`
     )
     mapTransaction(row: ErsteRowInterface, iban: string): BankTransactionInterface {
         const id = this.generateExternalId(row, iban);

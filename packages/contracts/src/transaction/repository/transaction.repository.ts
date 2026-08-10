@@ -36,6 +36,8 @@ import type { SimilarTransactionStatsQueryInterface } from '../interface/similar
 import type { SimilarTransactionStatsInterface } from '../interface/similar-transaction-stats.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
+    private static readonly LOG_PREVIEW_LENGTH = 16;
+
     private static readonly NON_INDEXABLE_EMBEDDING_TYPES: TransactionTypeEnum[] = [
         TransactionTypeEnum.TRANSFER,
         TransactionTypeEnum.ADJUSTMENT
@@ -166,11 +168,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     @Log(
         query =>
-            `enter transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months}`,
+            `enter transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} titlePreview="${query.title.slice(0, TransactionRepository.LOG_PREVIEW_LENGTH)}" titleLen=${query.title.length} commentLen=${query.comment.length} accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months}`,
         (result, query) =>
-            `done transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months} count=${isDefined(result) ? result.count : 0}`,
+            `done transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} titlePreview="${query.title.slice(0, TransactionRepository.LOG_PREVIEW_LENGTH)}" titleLen=${query.title.length} commentLen=${query.comment.length} accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months} count=${isDefined(result) ? result.count : 0}`,
         (error, query) =>
-            `throw transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months} error=${getErrorMessage(error)}`
+            `throw transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} titlePreview="${query.title.slice(0, TransactionRepository.LOG_PREVIEW_LENGTH)}" titleLen=${query.title.length} commentLen=${query.comment.length} accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months} error=${getErrorMessage(error)}`
     )
     async findSimilarStats(query: SimilarTransactionStatsQueryInterface): Promise<SimilarTransactionStatsInterface | null> {
         if (!isPositiveNumber(query.accountId) || !isPositiveNumber(query.months)) {

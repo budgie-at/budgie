@@ -8,12 +8,15 @@ import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TE
 import { TranslationResultInterface } from '../interface/translation-result.interface';
 
 export class TranslationLlmService {
+    private static readonly LOG_PREVIEW_LENGTH = 16;
+
     constructor(private readonly chat: ChatInvokerInterface) {}
 
     @Log(
-        title => `enter title="${title}"`,
+        title => `enter titlePreview="${title.slice(0, TranslationLlmService.LOG_PREVIEW_LENGTH)}" titleLen=${title.length}`,
         result => `done titleEnLen=${result.titleEn.length} tagsLen=${result.titleTags.length}`,
-        (error, title) => `throw title="${title}" error=${getErrorMessage(error)}`
+        (error, title) =>
+            `throw titlePreview="${title.slice(0, TranslationLlmService.LOG_PREVIEW_LENGTH)}" titleLen=${title.length} error=${getErrorMessage(error)}`
     )
     async translate(title: string): Promise<TranslationResultInterface> {
         const trimmedTitleEn = await this.translateToEnglish(title);
@@ -23,9 +26,10 @@ export class TranslationLlmService {
     }
 
     @Log(
-        titleEn => `enter titleEn="${titleEn}"`,
+        titleEn => `enter titleEnPreview="${titleEn.slice(0, TranslationLlmService.LOG_PREVIEW_LENGTH)}" titleEnLen=${titleEn.length}`,
         result => `done tagsLen=${result.length}`,
-        (error, titleEn) => `throw titleEn="${titleEn}" error=${getErrorMessage(error)}`
+        (error, titleEn) =>
+            `throw titleEnPreview="${titleEn.slice(0, TranslationLlmService.LOG_PREVIEW_LENGTH)}" titleEnLen=${titleEn.length} error=${getErrorMessage(error)}`
     )
     private async generateTags(titleEn: string): Promise<string> {
         const tags = await this.chat.generate(TAG_GENERATION_SYSTEM_PROMPT, titleEn, { temperature: TRANSLATION_TEMPERATURE });
@@ -34,9 +38,10 @@ export class TranslationLlmService {
     }
 
     @Log(
-        title => `enter title="${title}"`,
+        title => `enter titlePreview="${title.slice(0, TranslationLlmService.LOG_PREVIEW_LENGTH)}" titleLen=${title.length}`,
         result => `done resultLen=${result.length}`,
-        (error, title) => `throw title="${title}" error=${getErrorMessage(error)}`
+        (error, title) =>
+            `throw titlePreview="${title.slice(0, TranslationLlmService.LOG_PREVIEW_LENGTH)}" titleLen=${title.length} error=${getErrorMessage(error)}`
     )
     private async translateToEnglish(title: string): Promise<string> {
         if (!containsNonLatin(title)) {

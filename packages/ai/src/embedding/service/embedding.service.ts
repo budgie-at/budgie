@@ -9,13 +9,15 @@ export class EmbeddingService {
     private static inferenceQueue: Promise<void> = Promise.resolve();
     private static readonly embeddingCache = new Map<string, Promise<Float32Array | null>>();
     private static readonly EMBEDDING_CACHE_LIMIT = 50;
+    private static readonly LOG_PREVIEW_LENGTH = 16;
 
     constructor(private readonly embedding: EmbeddingInvokerInterface) {}
 
     @Log(
-        text => `enter text="${text}"`,
+        text => `enter textPreview="${text.slice(0, EmbeddingService.LOG_PREVIEW_LENGTH)}" textLen=${text.length}`,
         result => `done dimensions=${isDefined(result) ? result.length : 0}`,
-        (error, text) => `throw text="${text}" error=${getErrorMessage(error)}`
+        (error, text) =>
+            `throw textPreview="${text.slice(0, EmbeddingService.LOG_PREVIEW_LENGTH)}" textLen=${text.length} error=${getErrorMessage(error)}`
     )
     async generateEmbedding(text: string): Promise<Float32Array | null> {
         const cached = EmbeddingService.embeddingCache.get(text);

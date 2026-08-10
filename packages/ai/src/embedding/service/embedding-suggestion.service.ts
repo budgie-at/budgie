@@ -29,6 +29,7 @@ import type { SerializedEmbeddingResultInterface } from '../interface/serialized
 import type { SuggestionContextInterface } from '../interface/suggestion-context.interface';
 
 export class EmbeddingSuggestionService {
+    private static readonly LOG_PREVIEW_LENGTH = 16;
     private static readonly MCC_BLEND_WEIGHT = 7 / 10;
 
     constructor(
@@ -42,11 +43,11 @@ export class EmbeddingSuggestionService {
 
     @Log(
         (categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
-            `enter title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryIds=${categories.map(category => category.id).join(',')}`,
+            `enter titlePreview="${transactionTitle.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" titleLen=${transactionTitle.length} mcc="${mccDescription ?? 'none'}" commentLen=${comment.length} aiContextLen=${aiContext.length} mccCategoryId=${String(mccCategoryId)} categoryIds=${categories.map(category => category.id).join(',')}`,
         (result, categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
-            `done title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryCount=${categories.length} resolvedIds=${result.map(category => category.id).join(',')}`,
+            `done titlePreview="${transactionTitle.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" titleLen=${transactionTitle.length} mcc="${mccDescription ?? 'none'}" commentLen=${comment.length} aiContextLen=${aiContext.length} mccCategoryId=${String(mccCategoryId)} categoryCount=${categories.length} resolvedIds=${result.map(category => category.id).join(',')}`,
         (error, categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
-            `throw title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryCount=${categories.length} error=${getErrorMessage(error)}`
+            `throw titlePreview="${transactionTitle.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" titleLen=${transactionTitle.length} mcc="${mccDescription ?? 'none'}" commentLen=${comment.length} aiContextLen=${aiContext.length} mccCategoryId=${String(mccCategoryId)} categoryCount=${categories.length} error=${getErrorMessage(error)}`
     )
     async suggestCategories(
         categories: CategoryEntityInterface[],
@@ -86,11 +87,11 @@ export class EmbeddingSuggestionService {
 
     @Log(
         (allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `enter title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagIds=${allTags.map(tag => tag.id).join(',')}`,
+            `enter titlePreview="${transactionTitle.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" titleLen=${transactionTitle.length} mcc="${mccDescription ?? 'none'}" commentLen=${comment.length} aiContextLen=${aiContext.length} categoryId=${categoryId} tagIds=${allTags.map(tag => tag.id).join(',')}`,
         (result, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `done title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagCount=${allTags.length} resolvedIds=${result.map(tag => tag.id).join(',')}`,
+            `done titlePreview="${transactionTitle.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" titleLen=${transactionTitle.length} mcc="${mccDescription ?? 'none'}" commentLen=${comment.length} aiContextLen=${aiContext.length} categoryId=${categoryId} tagCount=${allTags.length} resolvedIds=${result.map(tag => tag.id).join(',')}`,
         (error, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `throw title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagCount=${allTags.length} error=${getErrorMessage(error)}`
+            `throw titlePreview="${transactionTitle.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" titleLen=${transactionTitle.length} mcc="${mccDescription ?? 'none'}" commentLen=${comment.length} aiContextLen=${aiContext.length} categoryId=${categoryId} tagCount=${allTags.length} error=${getErrorMessage(error)}`
     )
     async suggestTags(
         allTags: TagEntityInterface[],
@@ -125,11 +126,11 @@ export class EmbeddingSuggestionService {
 
     @Log(
         (categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `enter categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}"`,
+            `enter categoryId=${categoryId} titlePreview="${transactionTitle.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" titleLen=${transactionTitle.length} mcc="${mccDescription ?? 'none'}" commentLen=${comment.length} aiContextLen=${aiContext.length}`,
         (result, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `done categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" count=${result.length}`,
+            `done categoryId=${categoryId} titlePreview="${transactionTitle.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" titleLen=${transactionTitle.length} mcc="${mccDescription ?? 'none'}" commentLen=${comment.length} aiContextLen=${aiContext.length} count=${result.length}`,
         (error, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
-            `throw categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" error=${getErrorMessage(error)}`
+            `throw categoryId=${categoryId} titlePreview="${transactionTitle.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" titleLen=${transactionTitle.length} mcc="${mccDescription ?? 'none'}" commentLen=${comment.length} aiContextLen=${aiContext.length} error=${getErrorMessage(error)}`
     )
     async suggestComments(
         categoryId: number,
@@ -154,9 +155,11 @@ export class EmbeddingSuggestionService {
     }
 
     @Log(
-        context => `enter context="${context}"`,
-        (result, context) => `done context="${context}" resolved=${String(isDefined(result))}`,
-        (error, context) => `throw context="${context}" error=${getErrorMessage(error)}`
+        context => `enter contextPreview="${context.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" contextLen=${context.length}`,
+        (result, context) =>
+            `done contextPreview="${context.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" contextLen=${context.length} resolved=${String(isDefined(result))}`,
+        (error, context) =>
+            `throw contextPreview="${context.slice(0, EmbeddingSuggestionService.LOG_PREVIEW_LENGTH)}" contextLen=${context.length} error=${getErrorMessage(error)}`
     )
     private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
         const service = new EmbeddingService(this.embedding);

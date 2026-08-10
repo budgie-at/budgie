@@ -30,7 +30,8 @@ class ErsteParser {
 
     @Log(
         items => `enter itemCount=${items.length}`,
-        (result, items) => `done itemCount=${items.length} iban=${result.account.iban} transactionCount=${result.transactions.length}`,
+        (result, items) =>
+            `done itemCount=${items.length} ibanSuffix=${result.account.iban.slice(-4)} transactionCount=${result.transactions.length}`,
         (error, items) => `throw itemCount=${items.length} error=${getErrorMessage(error)}`
     )
     parse(items: PdfTextItemInterface[]): ErsteParsedDataInterface {

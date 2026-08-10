@@ -16,15 +16,17 @@ import type {
 } from '@budgie/contracts';
 
 export class ConsolidationMutationService {
+    private static readonly LOG_PREVIEW_LENGTH = 16;
+
     constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {}
 
     @Log(
         (input, tx) =>
-            `enter title="${input.title}" fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))}`,
+            `enter titlePreview="${input.title.slice(0, ConsolidationMutationService.LOG_PREVIEW_LENGTH)}" titleLen=${input.title.length} fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))}`,
         (result, input, tx) =>
-            `done title="${input.title}" fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))} canonicalTransactionId=${result.id}`,
+            `done titlePreview="${input.title.slice(0, ConsolidationMutationService.LOG_PREVIEW_LENGTH)}" titleLen=${input.title.length} fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))} canonicalTransactionId=${result.id}`,
         (error, input, tx) =>
-            `throw title="${input.title}" fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+            `throw titlePreview="${input.title.slice(0, ConsolidationMutationService.LOG_PREVIEW_LENGTH)}" titleLen=${input.title.length} fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async createCanonicalTransfer(input: CanonicalTransferInputInterface, tx: DB): Promise<TransactionEntityInterface> {
         const canonicalTransaction = await this.dependencies.transactionRepository.create(

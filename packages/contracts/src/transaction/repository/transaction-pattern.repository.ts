@@ -58,7 +58,7 @@ export class TransactionPatternRepository {
         (query, language) =>
             `enter type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes} language=${language}`,
         (result, query, language) =>
-            `done type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes} language=${language} categoryIds=${result.map(pattern => pattern.categoryId).join(',')} titles=${result.map(pattern => pattern.title).join('|')}`,
+            `done type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes} language=${language} categoryIds=${result.map(pattern => pattern.categoryId).join(',')} patternCount=${result.length}`,
         (error, query, language) =>
             `throw type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes} language=${language} error=${getErrorMessage(error)}`
     )
@@ -83,7 +83,7 @@ export class TransactionPatternRepository {
         (query, language) =>
             `enter type=${query.type} defaultInstrumentId=${query.defaultInstrumentId} displayMonth=${query.displayMonth} tzOffset=${query.timezoneOffsetSeconds} language=${language}`,
         (result, query, language) =>
-            `done type=${query.type} displayMonth=${query.displayMonth} language=${language} titles=${result.map(pattern => pattern.title).join('|')} accountIds=${result.map(pattern => pattern.accountId).join(',')}`,
+            `done type=${query.type} displayMonth=${query.displayMonth} language=${language} patternCount=${result.length} accountIds=${result.map(pattern => pattern.accountId).join(',')}`,
         (error, query, language) =>
             `throw type=${query.type} displayMonth=${query.displayMonth} language=${language} error=${getErrorMessage(error)}`
     )
@@ -114,7 +114,7 @@ export class TransactionPatternRepository {
         (query, language) =>
             `enter type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax} language=${language}`,
         (result, query, language) =>
-            `done type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax} language=${language} categoryIds=${result.map(pattern => pattern.categoryId).join(',')} titles=${result.map(pattern => pattern.title).join('|')}`,
+            `done type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax} language=${language} categoryIds=${result.map(pattern => pattern.categoryId).join(',')} patternCount=${result.length}`,
         (error, query, language) =>
             `throw type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax} language=${language} error=${getErrorMessage(error)}`
     )

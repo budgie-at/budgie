@@ -15,14 +15,17 @@ import type {
 } from '@budgie/contracts';
 
 export class RefundConsolidationService {
+    private static readonly LOG_PREVIEW_LENGTH = 16;
+
     constructor(private readonly dependencies: RefundConsolidationDependenciesInterface) {}
 
     @Log(
-        (refundIncomeTransactionId, search) => `enter refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}"`,
+        (refundIncomeTransactionId, search) =>
+            `enter refundIncomeTransactionId=${refundIncomeTransactionId} searchPreview="${search.slice(0, RefundConsolidationService.LOG_PREVIEW_LENGTH)}" searchLen=${search.length}`,
         (result, refundIncomeTransactionId, search) =>
-            `done refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" candidateIds=${result.map(candidate => candidate.id).join(',')}`,
+            `done refundIncomeTransactionId=${refundIncomeTransactionId} searchPreview="${search.slice(0, RefundConsolidationService.LOG_PREVIEW_LENGTH)}" searchLen=${search.length} candidateIds=${result.map(candidate => candidate.id).join(',')}`,
         (error, refundIncomeTransactionId, search) =>
-            `throw refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" error=${getErrorMessage(error)}`
+            `throw refundIncomeTransactionId=${refundIncomeTransactionId} searchPreview="${search.slice(0, RefundConsolidationService.LOG_PREVIEW_LENGTH)}" searchLen=${search.length} error=${getErrorMessage(error)}`
     )
     async findRefundableExpenses(refundIncomeTransactionId: number, search: string): Promise<RefundableExpenseCandidateInterface[]> {
         return await this.dependencies.refundPairRepository.findRefundableExpenseCandidates(refundIncomeTransactionId, search);
