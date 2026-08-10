@@ -380,6 +380,10 @@ export class TestSeedService {
         return this.requireInserted(rows, 'transactions');
     }
 
+    feeEntry(transactionId: number, externalId: string | null, entry: SeedBankPairEntryInputType): void {
+        this.insertEntry(transactionId, TransactionEntryTypeEnum.FEE, externalId, entry);
+    }
+
     private expenseTransaction(
         transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt' | 'title'>,
         entry: SeedBankPairEntryInputType
