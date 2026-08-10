@@ -1,7 +1,5 @@
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
 
 import { ConsolidationFamilyStrategyService } from './consolidation-family-strategy.service';
@@ -31,13 +29,7 @@ export class IbanBridgeTransferConsolidationFamilyService extends ConsolidationF
     }
 
     protected getSourceTransactionIds(candidate: IbanBridgeTransferCandidateInterface): number[] {
-        const sourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
-
-        if (isDefined(candidate.existingDirectTransferId)) {
-            return [...sourceTransactionIds, candidate.existingDirectTransferId];
-        }
-
-        return sourceTransactionIds;
+        return [candidate.expenseTransactionId, candidate.incomeTransactionId];
     }
 
     private buildConsolidationPlan(candidate: IbanBridgeTransferCandidateInterface): ConsolidationPlanInterface {

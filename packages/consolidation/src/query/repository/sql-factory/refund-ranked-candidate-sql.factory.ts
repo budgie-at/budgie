@@ -191,8 +191,7 @@ const buildBucketPriorityOrderSql = (): string => `
     END
 `;
 
-const buildLocalizedAmountMismatchOrderSql = (): string =>
-    `CASE WHEN confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE' AND expenseAmount != refundAmount THEN 1 ELSE 0 END`;
+const buildAmountMismatchOrderSql = (): string => `CASE WHEN refundAmount = ${REFUND_CEILING_SQL} THEN 0 ELSE 1 END`;
 
 const buildRankedPairsSql = (): string => `
     ranked_pairs AS (
@@ -201,11 +200,11 @@ const buildRankedPairsSql = (): string => `
             COUNT(*) OVER (PARTITION BY refundTxId) AS refundCandidateCount,
             ROW_NUMBER() OVER (
                 PARTITION BY refundTxId
-                ORDER BY ${buildBucketPriorityOrderSql()}, ${buildLocalizedAmountMismatchOrderSql()}, timeDiff
+                ORDER BY ${buildAmountMismatchOrderSql()}, ${buildBucketPriorityOrderSql()}, timeDiff
             ) AS refundRank,
             ROW_NUMBER() OVER (
                 PARTITION BY expenseTxId
-                ORDER BY ${buildBucketPriorityOrderSql()}, ${buildLocalizedAmountMismatchOrderSql()}, timeDiff, refundTxId
+                ORDER BY ${buildAmountMismatchOrderSql()}, ${buildBucketPriorityOrderSql()}, timeDiff, refundTxId
             ) AS expenseRank
         FROM compatible_pairs
         WHERE confidenceBucket IS NOT NULL
