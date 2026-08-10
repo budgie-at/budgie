@@ -1,7 +1,10 @@
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+
+import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
+import { buildIbanBridgeChainCanonicalInput } from '../utils/build-iban-bridge-chain-canonical-input.util';
 
 import { ConsolidationEligibilityService } from './consolidation-eligibility.service';
 import { ConsolidationMutationService } from './consolidation-mutation.service';
@@ -12,7 +15,8 @@ import type {
     ExistingTransferChainReclaimCandidateInterface,
     ExistingTransferIncomeDuplicateCandidateInterface,
     IbanBridgeCanonicalDuplicateCandidateInterface,
-    RefundCandidateInterface
+    RefundCandidateInterface,
+    TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
 export class ConsolidationRepairExecutorService {
@@ -98,11 +102,11 @@ export class ConsolidationRepairExecutorService {
         candidate: ExistingTransferChainReclaimCandidateInterface,
         tx: DB
     ): Promise<boolean> {
-        const sourceTransactionIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
+        const bridgeSourceTransactionIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
 
         if (
             !(await this.consolidationEligibilityService.isExistingTransferConsolidationStillEligible(
-                sourceTransactionIds,
+                bridgeSourceTransactionIds,
                 candidate.existingTransferId,
                 tx
             ))
@@ -110,14 +114,97 @@ export class ConsolidationRepairExecutorService {
             return false;
         }
 
+        const [existingTransfer] = await this.dependencies.transactionRepository.findByIds([candidate.existingTransferId], tx);
+
+        if (!isDefined(existingTransfer)) {
+            return false;
+        }
+
+        if (this.hasChainReclaimConsistentLedger(candidate, existingTransfer)) {
+            return this.absorbChainReclaimBridgeLegs(candidate, bridgeSourceTransactionIds, tx);
+        }
+
+        return this.rebuildChainReclaimCanonical(candidate, existingTransfer.title, tx);
+    }
+
+    private async absorbChainReclaimBridgeLegs(
+        candidate: ExistingTransferChainReclaimCandidateInterface,
+        bridgeSourceTransactionIds: number[],
+        tx: DB
+    ): Promise<boolean> {
         await this.dependencies.transactionRepository.setConsolidationType(
             candidate.existingTransferId,
             TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
             tx
         );
-        await this.consolidationMutationService.moveSourcesToCanonical(sourceTransactionIds, candidate.existingTransferId, tx);
+        await this.consolidationMutationService.moveSourcesToCanonical(bridgeSourceTransactionIds, candidate.existingTransferId, tx);
 
         return true;
+    }
+
+    private async rebuildChainReclaimCanonical(
+        candidate: ExistingTransferChainReclaimCandidateInterface,
+        existingTransferTitle: string,
+        tx: DB
+    ): Promise<boolean> {
+        const canonicalTransaction = await this.consolidationMutationService.createCanonicalTransfer(
+            buildIbanBridgeChainCanonicalInput({
+                title: existingTransferTitle,
+                operatedAt: candidate.operatedAt,
+                fromAccountId: candidate.sourceAccountId,
+                toAccountId: candidate.targetAccountId,
+                fromAmount: candidate.sourceAmount,
+                toAmount: candidate.targetAmount,
+                exchangeRate: candidate.exchangeRate,
+                fromEntryToIban: candidate.targetAccountIban
+            }),
+            tx
+        );
+
+        await this.consolidationMutationService.moveSourcesToCanonical(
+            [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId, candidate.existingTransferId],
+            canonicalTransaction.id,
+            tx
+        );
+
+        return true;
+    }
+
+    private hasChainReclaimConsistentLedger(
+        candidate: ExistingTransferChainReclaimCandidateInterface,
+        existingTransfer: TransactionWithEntriesEntityInterface
+    ): boolean {
+        if (existingTransfer.fromAccountId !== candidate.sourceAccountId || existingTransfer.toAccountId !== candidate.targetAccountId) {
+            return false;
+        }
+
+        const sourceEntry = existingTransfer.entries.find(
+            entry => entry.accountId === candidate.sourceAccountId && entry.type === TransactionEntryTypeEnum.CREDIT
+        );
+        const targetEntry = existingTransfer.entries.find(
+            entry => entry.accountId === candidate.targetAccountId && entry.type === TransactionEntryTypeEnum.DEBIT
+        );
+
+        if (!isDefined(sourceEntry) || !isDefined(targetEntry)) {
+            return false;
+        }
+
+        return (
+            sourceEntry.amount === candidate.sourceAmount &&
+            targetEntry.amount === candidate.targetAmount &&
+            targetEntry.exchangeRate === 1 &&
+            sourceEntry.toIban === candidate.targetAccountIban &&
+            this.isWithinChainFxTolerance(sourceEntry.exchangeRate, candidate.exchangeRate) &&
+            this.isWithinChainFxTolerance(existingTransfer.exchangeRate, candidate.exchangeRate)
+        );
+    }
+
+    private isWithinChainFxTolerance(actualRate: number, expectedRate: number): boolean {
+        if (!isPositiveNumber(expectedRate)) {
+            return false;
+        }
+
+        return Math.abs(actualRate - expectedRate) / expectedRate <= IBAN_BRIDGE_CHAIN_FX_TOLERANCE;
     }
 
     private async consolidateExistingTransferIncomeDuplicateInner(
