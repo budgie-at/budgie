@@ -16,6 +16,9 @@ export const BankIntegrationEntityTable = sqliteTable(
     table => [
         uniqueIndex('bank_integrations_provider_token_unq')
             .on(table.provider, table.token)
-            .where(sql`${table.deletedAt} IS NULL`)
+            .where(sql`${table.deletedAt} IS NULL`),
+        uniqueIndex('bank_integrations_provider_file_import_unq')
+            .on(table.provider)
+            .where(sql`${table.token} = '' AND ${table.deletedAt} IS NULL`)
     ]
 );

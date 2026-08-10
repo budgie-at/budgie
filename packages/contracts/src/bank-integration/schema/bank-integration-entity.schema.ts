@@ -8,5 +8,7 @@ import { BankIntegrationEntityTable } from '../table/bank-integration-entity.tab
 export const BankIntegrationEntitySchema = createSelectSchema(BankIntegrationEntityTable, {
     ...BaseEntityFields,
     provider: zodEnum(ExternalSourceEnum).describe('The bank provider for this integration.'),
-    token: string().min(1).describe('API token shared by every account linked to this integration.')
+    token: string().describe(
+        "API token shared by every account linked to this integration, or '' for file-import providers with no live API token."
+    )
 });
