@@ -14,8 +14,7 @@ const LEGACY_IOS_DEV_TAG_PATTERN = /^ios-dev-(\d+)$/u;
 const RUN_NUMBER_SORT_MULTIPLIER = 2;
 const PREFERRED_SCHEME_SORT_BONUS = 1;
 
-const isIosDevReleaseTag = (tagName: string): boolean =>
-    DEV_IOS_TAG_PATTERN.test(tagName) || LEGACY_IOS_DEV_TAG_PATTERN.test(tagName);
+const isIosDevReleaseTag = (tagName: string): boolean => DEV_IOS_TAG_PATTERN.test(tagName) || LEGACY_IOS_DEV_TAG_PATTERN.test(tagName);
 
 const iosDevTagSortWeight = (tagName: string): number => {
     const preferredSchemeMatch = DEV_IOS_TAG_PATTERN.exec(tagName);
