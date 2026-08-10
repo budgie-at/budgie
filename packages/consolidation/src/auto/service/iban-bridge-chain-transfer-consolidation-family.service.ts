@@ -1,5 +1,4 @@
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-
+import { buildIbanBridgeChainCanonicalInput } from '../../executor/utils/build-iban-bridge-chain-canonical-input.util';
 import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
 
 import { ConsolidationFamilyStrategyService } from './consolidation-family-strategy.service';
@@ -41,7 +40,7 @@ export class IbanBridgeChainTransferConsolidationFamilyService extends Consolida
         return {
             sourceTransactionIds: this.getSourceTransactionIds(candidate),
             allowedMovedSourceTransactionIds: [],
-            canonicalInput: {
+            canonicalInput: buildIbanBridgeChainCanonicalInput({
                 title:
                     candidate.bridgeExpenseTransactionTitle ??
                     candidate.sourceExpenseTransactionTitle ??
@@ -54,11 +53,8 @@ export class IbanBridgeChainTransferConsolidationFamilyService extends Consolida
                 fromAmount: candidate.sourceAmount,
                 toAmount: candidate.targetAmount,
                 exchangeRate: candidate.exchangeRate,
-                consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
-                fromEntryExchangeRate: candidate.exchangeRate,
-                toEntryExchangeRate: 1,
                 fromEntryToIban: candidate.sourceExpenseEntryToIban
-            }
+            })
         };
     }
 }
