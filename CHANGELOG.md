@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.8](https://github.com/budgie-at/budgie/compare/v6.0.7...v6.0.8) (2026-08-10)
+
+
+### Bug Fixes
+
+* **consolidation:** fx-tolerant bridge chain reclaim with rebuild fallback ([#651](https://github.com/budgie-at/budgie/issues/651)) ([08852f3](https://github.com/budgie-at/budgie/commit/08852f3b6e6b6c117072fccfbbc3acd2edbea861))
+
+
+
+
+
 ## [6.0.7](https://github.com/budgie-at/budgie/compare/v6.0.6...v6.0.7) (2026-08-09)
 
 
