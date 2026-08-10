@@ -1,5 +1,4 @@
 import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -10,7 +9,6 @@ import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizon
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { testID } from '../../../@generic/utils/test-id.util';
-import { ACCOUNT_TYPE } from '../../../account/constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -18,11 +16,10 @@ import { useAccountBankSync } from '../../hook/use-account-bank-sync.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
 
 interface Props {
-    readonly account: Pick<AccountWithInstrumentEntityInterface, 'id' | 'title' | 'icon' | 'type' | AccountAssociationEnum.INSTRUMENT>;
+    readonly account: Pick<AccountWithInstrumentEntityInterface, 'id' | 'title' | 'icon' | AccountAssociationEnum.INSTRUMENT>;
 }
 
 export const BankIntegrationAccountRow = ({ account }: Props) => {
-    const { t } = useLingui();
     const { balance } = useAccountBalanceQuery(account.id);
     const { bankSync, hasBankSync } = useAccountBankSync(account.id);
     const formatDigits = useDisplayFormatDigits();
@@ -38,9 +35,9 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     return (
         <SimpleHorizontalCell
             testID={rowTestID}
+            singleLine
             left={<CircleIcon icon={account.icon} variant="ghost" size={46} iconSize={20} border={false} />}
             title={account.title}
-            description={t(ACCOUNT_TYPE[account.type])}
             right={
                 <View className="flex-row items-center gap-x-lg">
                     <ProtectedText className="text-primary text-sm font-semibold">

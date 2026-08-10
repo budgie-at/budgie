@@ -1,16 +1,17 @@
 import { AccountTypeEnum, BankIntegrationEntityInterface, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { ScrollView } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { Page } from '../../../@generic/component/page/page';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { BANK_PROVIDER_TITLE } from '../../../account/constant/bank-provider-title.constant';
 import { useGetAccountsByIntegrationIdQuery } from '../../../account/query/use-get-accounts-by-integration-id.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { BankIntegrationAccountRow } from '../bank-integration-account-row/bank-integration-account-row';
-import { BankIntegrationHeader } from '../bank-integration-header/bank-integration-header';
 
 interface Props {
     readonly integration: BankIntegrationEntityInterface;
@@ -20,7 +21,6 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     const { t } = useLingui();
     const { accounts } = useGetAccountsByIntegrationIdQuery(integration.id);
 
-    const handleGoBack = () => void goBackOrReplace('/');
     const handleAddAccounts = () =>
         void router.push({ pathname: '/bank-integration/[id]/add-accounts', params: { id: String(integration.id) } });
     const handleAddDeposit = () =>
@@ -30,34 +30,35 @@ export const BankIntegrationPage = ({ integration }: Props) => {
         });
 
     const canAddAccountsFromBank = integration.provider === ExternalSourceEnum.MONOBANK;
+    const titleDescriptor = BANK_PROVIDER_TITLE[integration.provider];
+    const title = isDefined(titleDescriptor) ? t(titleDescriptor) : integration.provider;
 
     return (
-        <Page
+        <CollapsibleChromePage
             testID={BankIntegrationSelector.Page}
-            header={<BankIntegrationHeader provider={integration.provider} onGoBack={handleGoBack} />}
-            contentClassName="px-0"
+            title={title}
+            leading={<HeaderBackButton />}
+            contentClassName="gap-y-lg pb-7xl"
         >
-            <ScrollView contentContainerClassName="px-5xl gap-y-lg pb-7xl">
-                {(accounts ?? []).map(account => (
-                    <BankIntegrationAccountRow key={account.id} account={account} />
-                ))}
+            {(accounts ?? []).map(account => (
+                <BankIntegrationAccountRow key={account.id} account={account} />
+            ))}
 
-                {canAddAccountsFromBank && (
-                    <SimpleHorizontalCell
-                        testID={BankIntegrationSelector.AddAccountsButton}
-                        left={<CircleIcon icon={UserIconNameEnum.CloudDownload} variant="ghost" size={46} iconSize={20} border={false} />}
-                        title={t`Add accounts from bank`}
-                        onPress={handleAddAccounts}
-                    />
-                )}
-
+            {canAddAccountsFromBank && (
                 <SimpleHorizontalCell
-                    testID={BankIntegrationSelector.AddDepositButton}
-                    left={<CircleIcon icon={UserIconNameEnum.Plus} variant="ghost" size={46} iconSize={20} border={false} />}
-                    title={t`Add deposit`}
-                    onPress={handleAddDeposit}
+                    testID={BankIntegrationSelector.AddAccountsButton}
+                    left={<CircleIcon icon={UserIconNameEnum.CloudDownload} variant="ghost" size={46} iconSize={20} border={false} />}
+                    title={t`Add accounts from bank`}
+                    onPress={handleAddAccounts}
                 />
-            </ScrollView>
-        </Page>
+            )}
+
+            <SimpleHorizontalCell
+                testID={BankIntegrationSelector.AddDepositButton}
+                left={<CircleIcon icon={UserIconNameEnum.Plus} variant="ghost" size={46} iconSize={20} border={false} />}
+                title={t`Add deposit`}
+                onPress={handleAddDeposit}
+            />
+        </CollapsibleChromePage>
     );
 };
