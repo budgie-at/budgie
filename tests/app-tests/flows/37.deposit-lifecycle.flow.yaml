@@ -363,6 +363,7 @@ appId: ${APP_ID}
 - assertVisible: '.*555.*'
 - tapOn:
       text: '^Close Deposit$'
+      enabled: true
 - extendedWaitUntil:
       notVisible: 'Close Deposit?'
       timeout: 10000
