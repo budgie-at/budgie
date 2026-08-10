@@ -9,12 +9,23 @@ import { findIosDevIpaDownloadUrl } from './find-ios-dev-ipa-download-url.util';
 import type { IosDevRelease } from '../constant/ios-dev-release-schema.constant';
 
 const IOS_DEV_RELEASES_URL = 'https://api.github.com/repos/budgie-at/budgie/releases?per_page=20';
-const IOS_DEV_TAG_PATTERN = /^ios-dev-(\d+)$/u;
+const DEV_IOS_TAG_PATTERN = /^dev-ios-(\d+)$/u;
+const LEGACY_IOS_DEV_TAG_PATTERN = /^ios-dev-(\d+)$/u;
+const RUN_NUMBER_SORT_MULTIPLIER = 2;
+const PREFERRED_SCHEME_SORT_BONUS = 1;
 
-const parseIosDevRunNumber = (tagName: string): number => {
-    const match = IOS_DEV_TAG_PATTERN.exec(tagName);
+const isIosDevReleaseTag = (tagName: string): boolean =>
+    DEV_IOS_TAG_PATTERN.test(tagName) || LEGACY_IOS_DEV_TAG_PATTERN.test(tagName);
 
-    return isDefined(match) ? Number(match[1]) : 0;
+const iosDevTagSortWeight = (tagName: string): number => {
+    const preferredSchemeMatch = DEV_IOS_TAG_PATTERN.exec(tagName);
+    if (isDefined(preferredSchemeMatch)) {
+        return Number(preferredSchemeMatch[1]) * RUN_NUMBER_SORT_MULTIPLIER + PREFERRED_SCHEME_SORT_BONUS;
+    }
+
+    const legacySchemeMatch = LEGACY_IOS_DEV_TAG_PATTERN.exec(tagName);
+
+    return isDefined(legacySchemeMatch) ? Number(legacySchemeMatch[1]) * RUN_NUMBER_SORT_MULTIPLIER : 0;
 };
 
 export const iosDevReleaseFetchApi = async (requestInit: RequestInit): Promise<IosDevRelease | null> => {
@@ -33,8 +44,8 @@ export const iosDevReleaseFetchApi = async (requestInit: RequestInit): Promise<I
         }
 
         const iosDevReleases = parseResult.data
-            .filter(release => IOS_DEV_TAG_PATTERN.test(release.tag_name) && isDefined(findIosDevIpaDownloadUrl(release)))
-            .sort((releaseA, releaseB) => parseIosDevRunNumber(releaseB.tag_name) - parseIosDevRunNumber(releaseA.tag_name));
+            .filter(release => isIosDevReleaseTag(release.tag_name) && isDefined(findIosDevIpaDownloadUrl(release)))
+            .sort((releaseA, releaseB) => iosDevTagSortWeight(releaseB.tag_name) - iosDevTagSortWeight(releaseA.tag_name));
 
         return isNotEmptyArray(iosDevReleases) ? iosDevReleases[0] : null;
     } catch {
