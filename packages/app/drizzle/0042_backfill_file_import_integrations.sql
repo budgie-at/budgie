@@ -13,6 +13,7 @@ INNER JOIN accounts
     ON accounts.id = bank_syncs.account_id
     AND accounts.deleted_at IS NULL
 WHERE bank_syncs.deleted_at IS NULL
+  AND bank_syncs.provider IN ('ERSTE', 'PRIVATBANK')
   AND accounts.integration_id IS NULL
 GROUP BY bank_syncs.provider;
 --> statement-breakpoint
@@ -26,6 +27,7 @@ SET integration_id = (
         AND bank_integrations.deleted_at IS NULL
     WHERE bank_syncs.account_id = accounts.id
       AND bank_syncs.deleted_at IS NULL
+      AND bank_syncs.provider IN ('ERSTE', 'PRIVATBANK')
 )
 WHERE accounts.deleted_at IS NULL
   AND accounts.integration_id IS NULL
@@ -34,4 +36,5 @@ WHERE accounts.deleted_at IS NULL
       FROM bank_syncs
       WHERE bank_syncs.account_id = accounts.id
         AND bank_syncs.deleted_at IS NULL
+        AND bank_syncs.provider IN ('ERSTE', 'PRIVATBANK')
   );
