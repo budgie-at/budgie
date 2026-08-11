@@ -20,7 +20,7 @@ export class UnconsolidationService {
         await this.dependencies.transactionEntryRepository.moveBackToOriginalTransactions(transactionId, tx);
         await this.dependencies.transactionRepository.clearConsolidationParent(transactionId, tx);
 
-        if (this.isRefundCanonical(canonical)) {
+        if (this.isPreExistingCanonical(canonical)) {
             await this.dependencies.transactionRepository.setConsolidationType(transactionId, null, tx);
 
             return;
@@ -31,7 +31,15 @@ export class UnconsolidationService {
         await this.dependencies.transactionRepository.deleteById(transactionId, tx);
     }
 
-    private isRefundCanonical(transaction: TransactionEntityInterface | undefined): boolean {
-        return isDefined(transaction) && transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
+    private isPreExistingCanonical(transaction: TransactionEntityInterface | undefined): boolean {
+        if (!isDefined(transaction)) {
+            return false;
+        }
+
+        return (
+            transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
+            isDefined(transaction.externalId) ||
+            isDefined(transaction.externalSource)
+        );
     }
 }
