@@ -43,6 +43,7 @@ import m0039 from './0039_add_bank_integrations.sql';
 import m0040 from './0040_drop_bank_syncs_token.sql';
 import m0041 from './0041_add_deposit_account_fields.sql';
 import m0042 from './0042_backfill_file_import_integrations.sql';
+import m0043 from './0043_update_default_account_icons.sql';
 import journal from './meta/_journal.json';
 
 export default {
@@ -90,6 +91,7 @@ export default {
         m0039,
         m0040,
         m0041,
-        m0042
+        m0042,
+        m0043
     }
 };
