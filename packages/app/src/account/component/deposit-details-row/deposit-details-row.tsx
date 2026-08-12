@@ -13,14 +13,18 @@ export const DepositDetailsRow = ({ label, value, testID }: Props) => {
     const isTextValue = isString(value) || isNumber(value);
 
     return (
-        <View className="items-end gap-y-xs" testID={testID}>
-            <Text className="text-right text-secondary-foreground text-sm uppercase font-medium">{label}</Text>
+        <View className="flex-row items-start justify-between gap-x-lg" testID={testID}>
+            <View className="min-w-0 flex-1">
+                <Text className="text-left text-secondary-foreground text-sm uppercase font-medium">{label}</Text>
+            </View>
 
-            {isTextValue ? (
-                <Text className="text-right text-primary text-sm font-semibold">{value}</Text>
-            ) : (
-                <View className="items-end">{value}</View>
-            )}
+            <View className="min-w-0 flex-1 items-end">
+                {isTextValue ? (
+                    <Text className="text-right text-primary text-sm font-semibold">{value}</Text>
+                ) : (
+                    <View className="items-end">{value}</View>
+                )}
+            </View>
         </View>
     );
 };
