@@ -178,6 +178,10 @@ appId: ${APP_ID}
       visible:
           id: 'AccountPickerBottomSheet.Input'
       timeout: 3000
+- extendedWaitUntil:
+      visible:
+          id: 'AccountPickerBottomSheet.Option.E2E Expense Source'
+      timeout: 3000
 - assertNotVisible:
       id: 'AccountPickerBottomSheet.Option.E2E Deposit Account'
 - runFlow:
