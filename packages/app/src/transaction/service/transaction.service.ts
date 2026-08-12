@@ -95,7 +95,10 @@ class TransactionService {
     )
     @InvalidateDatabaseLiveQuery()
     async update(input: TransactionCreateInputInterface): Promise<void> {
-        await transactionAsync(db, async tx => importedTransactionEntryUpdateService.update(input.entries, input, tx));
+        await transactionAsync(db, async tx => {
+            await this.assertNoDepositExpenseImportedUpdate(input, tx);
+            await importedTransactionEntryUpdateService.update(input.entries, input, tx);
+        });
     }
 
     @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
@@ -239,6 +242,32 @@ class TransactionService {
                 })
             );
         }
+    }
+
+    private async assertNoDepositExpenseImportedUpdate(input: TransactionCreateInputInterface, tx: DB): Promise<void> {
+        const existingEntries = (await Promise.all(input.entries.map(entry => this.findExistingImportedUpdateEntry(entry, tx)))).filter(
+            isDefined
+        );
+
+        if (!isNotEmptyArray(existingEntries)) {
+            return;
+        }
+
+        const transactionIds = [...new Set(existingEntries.map(entry => entry.originalTransactionId ?? entry.transactionId))];
+        const transactions = await transactionRepository.findByIds(transactionIds, tx);
+
+        await this.assertNoDepositExpenseInputs(transactions, tx);
+    }
+
+    private async findExistingImportedUpdateEntry(
+        entry: Pick<TransactionEntryCreateInputInterface, 'accountId' | 'externalId'>,
+        tx: DB
+    ): Promise<TransactionEntryEntityInterface | null> {
+        if (!isDefined(entry.externalId)) {
+            return null;
+        }
+
+        return (await transactionEntryRepository.findByExternalIdAndAccountId(entry.externalId, entry.accountId, tx)) ?? null;
     }
 
     private async createInternalTransferInTransaction(input: TransactionCreateInputInterface, tx: DB): Promise<TransactionEntityInterface> {

@@ -5,6 +5,7 @@ import { transactionService } from '@app/transaction/service/transaction.service
 import {
     AccountBalanceEntityTable,
     AccountTypeEnum,
+    ExternalSourceEnum,
     PRECISION,
     TransactionEntityTable,
     TransactionEntryEntityTable,
@@ -23,6 +24,9 @@ const LEGACY_EXPENSE_AMOUNT = 100 * PRECISION;
 const LEGACY_INCOME_AMOUNT = 40 * PRECISION;
 const LEGACY_NEGATIVE_BALANCE = 0 - LEGACY_EXPENSE_AMOUNT;
 const IMPROVED_LEGACY_NEGATIVE_BALANCE = LEGACY_NEGATIVE_BALANCE + LEGACY_INCOME_AMOUNT;
+const IMPORTED_EXTERNAL_ID = 'deposit-imported-expense';
+const IMPORTED_INITIAL_AMOUNT = 20 * PRECISION;
+const IMPORTED_UPDATED_AMOUNT = 30;
 const OPERATED_AT = new Date(OPERATED_AT_YEAR, 0, 15, 12, 0, 0);
 
 const buildExpenseInput = (accountId: number, amount: number) => ({
@@ -108,6 +112,19 @@ const buildTransferInput = (fromAccountId: number, toAccountId: number, amount: 
     ]
 });
 
+const buildImportedExpenseInput = (accountId: number) => {
+    const input = buildExpenseInput(accountId, IMPORTED_UPDATED_AMOUNT);
+
+    return {
+        ...input,
+        title: 'Updated imported deposit expense',
+        comment: 'updated',
+        externalId: IMPORTED_EXTERNAL_ID,
+        externalSource: ExternalSourceEnum.MONOBANK,
+        entries: input.entries.map(entry => ({ ...entry, externalId: IMPORTED_EXTERNAL_ID, exchangeRate: 1, toIban: null }))
+    };
+};
+
 const seedBalance = (accountId: number, amount: number): void => {
     insertOne(AccountBalanceEntityTable, {
         accountId,
@@ -116,17 +133,22 @@ const seedBalance = (accountId: number, amount: number): void => {
     });
 };
 
-const seedExpenseLedgerTransaction = (accountId: number, amount: number): void => {
+const seedExpenseLedgerTransaction = (
+    accountId: number,
+    amount: number,
+    externalId: string | null = null,
+    externalSource: ExternalSourceEnum | null = null
+): void => {
     const transaction = insertOne(TransactionEntityTable, {
         type: TransactionTypeEnum.EXPENSE,
         title: 'Legacy deposit expense',
-        externalId: null,
+        externalId,
         comment: '',
         operatedAt: OPERATED_AT,
         fromAccountId: accountId,
         toAccountId: null,
         exchangeRate: 1,
-        externalSource: null,
+        externalSource,
         updatedBy: null,
         needsEmbedding: false
     });
@@ -139,7 +161,7 @@ const seedExpenseLedgerTransaction = (accountId: number, amount: number): void =
         amount,
         categoryId: null,
         mccCategoryId: null,
-        externalId: null,
+        externalId,
         exchangeRate: 1,
         baseInstrumentId: null,
         baseExchangeRate: null,
@@ -189,6 +211,33 @@ describe('account/deposit-transaction-safety', () => {
         expect(preservedTransaction?.type).toBe(TransactionTypeEnum.EXPENSE);
         expect(preservedTransaction?.fromAccountId).toBe(bankAccount.id);
         expect(preservedTransaction?.entries.map(entry => entry.accountId)).toEqual([bankAccount.id]);
+        expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * PRECISION);
+    });
+
+    it('rejects imported updates that would keep an existing deposit expense and preserves imported rows', async () => {
+        const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
+
+        seedExpenseLedgerTransaction(depositAccount.id, IMPORTED_INITIAL_AMOUNT, IMPORTED_EXTERNAL_ID, ExternalSourceEnum.MONOBANK);
+        seedBalance(depositAccount.id, 100 * PRECISION);
+
+        await expect(transactionService.update(buildImportedExpenseInput(depositAccount.id))).rejects.toThrow(
+            DepositTransactionSafetyErrorEnum.DEPOSIT_EXPENSE
+        );
+
+        const importedTransaction = testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(eq(TransactionEntityTable.externalId, IMPORTED_EXTERNAL_ID))
+            .get();
+        const importedEntry = testDb
+            .select()
+            .from(TransactionEntryEntityTable)
+            .where(eq(TransactionEntryEntityTable.externalId, IMPORTED_EXTERNAL_ID))
+            .get();
+
+        expect(importedTransaction?.title).toBe('Legacy deposit expense');
+        expect(importedTransaction?.comment).toBe('');
+        expect(importedEntry?.amount).toBe(IMPORTED_INITIAL_AMOUNT);
         expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * PRECISION);
     });
 
