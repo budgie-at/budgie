@@ -10,9 +10,12 @@ import { testDb } from '../../harness';
 const applyMigration = async (fileName: string): Promise<void> => {
     const sqlText = readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', fileName), 'utf8');
 
-    for (const statement of sqlText.split('--> statement-breakpoint')) {
-        await testDb.$client.execAsync(statement);
-    }
+    await sqlText
+        .split('--> statement-breakpoint')
+        .reduce<Promise<void>>(
+            (migrationPromise, statement) => migrationPromise.then(() => testDb.$client.execAsync(statement)),
+            Promise.resolve()
+        );
 };
 
 describe('account/repair-migrations', () => {
@@ -88,10 +91,40 @@ describe('account/repair-migrations', () => {
 
         expect(row?.icon).toBe('AlarmClockCheck');
     });
+
+    it('updates legacy default account icons without replacing custom choices', async () => {
+        await testDb.$client.runAsync(
+            `INSERT INTO accounts (title, title_search, type, nature, icon, instrument_id, "order", iban, is_active, include_in_net_worth, target_balance)
+             VALUES ('Default Cash Icon', 'default cash icon', 'CASH', 'ASSET', 'Wallet', 1, 920, NULL, 1, 1, 0),
+                    ('Custom Cash Icon', 'custom cash icon', 'CASH', 'ASSET', 'Landmark', 1, 921, NULL, 1, 1, 0),
+                    ('Default Savings Icon', 'default savings icon', 'SAVINGS', 'ASSET', 'Coins', 1, 922, NULL, 1, 1, 0),
+                    ('Custom Savings Icon', 'custom savings icon', 'SAVINGS', 'ASSET', 'WalletCards', 1, 923, NULL, 1, 1, 0),
+                    ('Default Deposit Icon', 'default deposit icon', 'DEPOSIT', 'ASSET', 'PiggyBank', 1, 924, NULL, 1, 1, 0),
+                    ('Custom Deposit Icon', 'custom deposit icon', 'DEPOSIT', 'ASSET', 'Percent', 1, 925, NULL, 1, 1, 0)`
+        );
+
+        await applyMigration('0043_update_default_account_icons.sql');
+        await applyMigration('0043_update_default_account_icons.sql');
+
+        const rows = await testDb.$client.getAllAsync<{ icon: string }>(
+            `SELECT icon FROM accounts WHERE title IN (
+                'Default Cash Icon',
+                'Custom Cash Icon',
+                'Default Savings Icon',
+                'Custom Savings Icon',
+                'Default Deposit Icon',
+                'Custom Deposit Icon'
+            ) ORDER BY "order"`
+        );
+
+        expect(rows.map(row => row.icon)).toStrictEqual(['PiggyBank', 'Landmark', 'PiggyBank', 'WalletCards', 'Landmark', 'Percent']);
+    });
 });
 
 describe('account/repair-zero-target-debt', () => {
     it('backfills target balance from the opening debt event', async () => {
+        const openingDebtAmount = 1_500_000;
+
         await testDb.$client.runAsync(
             `INSERT INTO accounts (title, title_search, type, nature, icon, instrument_id, "order", iban, is_active, include_in_net_worth, target_balance, debt_type)
              VALUES ('Zero Target Debt', 'zero target debt', 'DEBT', 'LIABILITY', 'Landmark', 1, 910, NULL, 1, 1, 0, 'BORROW')`
@@ -104,8 +137,8 @@ describe('account/repair-zero-target-debt', () => {
 
         await testDb.$client.runAsync(
             `INSERT INTO debt_events (debt_account_id, transaction_id, transaction_entry_id, direction, source, operated_at, amount)
-             VALUES (?, NULL, NULL, 'OPEN', 'INCOME_ATTACHMENT', 1780000000, 1500000)`,
-            [accountId]
+             VALUES (?, NULL, NULL, 'OPEN', 'INCOME_ATTACHMENT', 1780000000, ?)`,
+            [accountId, openingDebtAmount]
         );
 
         await applyMigration('0038_repair_zero_target_debt_accounts.sql');
@@ -114,7 +147,7 @@ describe('account/repair-zero-target-debt', () => {
             `SELECT target_balance FROM accounts WHERE title = 'Zero Target Debt'`
         );
 
-        expect(repaired?.target_balance).toBe(1_500_000);
+        expect(repaired?.target_balance).toBe(openingDebtAmount);
     });
 
     it('leaves debt accounts without an opening event untouched', async () => {

@@ -1,10 +1,11 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useFormatDigits } from '../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
+import { ACCOUNT_ICON } from '../constant/account-icon.constant';
 import { useGetAccountByIdQuery } from '../query/use-get-account-by-id.query';
 import { accountService } from '../service/account.service';
 
@@ -29,7 +30,7 @@ export const useDepositCreateAction = (
             type: AccountTypeEnum.DEPOSIT,
             title: t`Deposit`,
             iban: null,
-            icon: UserIconNameEnum.PiggyBank,
+            icon: ACCOUNT_ICON[AccountTypeEnum.DEPOSIT],
             instrumentId: sourceAccount.instrumentId,
             integrationId: sourceAccount.integrationId,
             includeInNetWorth: true,

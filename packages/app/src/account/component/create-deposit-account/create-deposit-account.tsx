@@ -1,4 +1,4 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams } from 'expo-router';
 
@@ -9,14 +9,13 @@ import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { useDepositAccountForm } from '../../hooks/use-deposit-account-form.hook';
 import { accountService } from '../../service/account.service';
 import { CreateAccountCoreFields } from '../create-account-core-fields/create-account-core-fields';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
 import { DepositInterestRateField } from '../deposit-interest-rate-field/deposit-interest-rate-field';
 import { DepositMaturityDateField } from '../deposit-maturity-date-field/deposit-maturity-date-field';
-
-const DEFAULT_ICON = UserIconNameEnum.PiggyBank;
 
 export const CreateDepositAccount = () => {
     const { defaultInstrument } = useSettingsContext();
@@ -33,7 +32,7 @@ export const CreateDepositAccount = () => {
         deadline: null,
         interestRate: null,
         currentBalance: 0,
-        icon: DEFAULT_ICON,
+        icon: ACCOUNT_ICON[AccountTypeEnum.DEPOSIT],
         includeInNetWorth: true,
         type: AccountTypeEnum.DEPOSIT,
         instrumentId: defaultInstrument.id,

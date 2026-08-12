@@ -302,6 +302,13 @@
             "when": 1786300000000,
             "tag": "0042_backfill_file_import_integrations",
             "breakpoints": true
+        },
+        {
+            "idx": 43,
+            "version": "6",
+            "when": 1786400000000,
+            "tag": "0043_update_default_account_icons",
+            "breakpoints": true
         }
     ]
 }
