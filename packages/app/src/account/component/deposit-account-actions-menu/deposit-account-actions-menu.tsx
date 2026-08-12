@@ -2,8 +2,6 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { emptyFn } from '@rnw-community/shared';
-
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
@@ -29,8 +27,7 @@ export const DepositAccountActionsMenu = ({ accountId, balance, instrumentSymbol
             <View collapsable={false} testID={DepositAccountActionsMenuSelector.TriggerButton}>
                 <HapticPressable
                     className="ml-auto h-10 w-10 items-center justify-center"
-                    onPress={emptyFn}
-                    onPressIn={menu.handleToggleMenu}
+                    onPress={menu.handleToggleMenu}
                     hitSlop={16}
                     disabled={closeAction.isLoading}
                     accessibilityRole="button"

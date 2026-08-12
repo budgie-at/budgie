@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 
-import { EmptyFn, isDefined } from '@rnw-community/shared';
+import { EmptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 
@@ -43,7 +43,7 @@ export const useDepositAccountActionsMenu = (accountId: number, isLoading: boole
         }
 
         const { pageX, pageY } = event.nativeEvent;
-        const hasValidAnchor = Number.isFinite(pageX) && Number.isFinite(pageY) && pageX > 0 && pageY > 0;
+        const hasValidAnchor = Number.isFinite(pageX) && Number.isFinite(pageY) && isPositiveNumber(pageX) && isPositiveNumber(pageY);
 
         if (hasValidAnchor) {
             setAnchor({ x: pageX - TRIGGER_SIZE / 2, y: pageY - TRIGGER_SIZE / 2, width: TRIGGER_SIZE, height: TRIGGER_SIZE });
