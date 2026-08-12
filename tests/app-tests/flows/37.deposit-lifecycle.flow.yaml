@@ -281,7 +281,13 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'Deposit'
 
 - tapOn:
-      id: 'AccountDetails.EditButton'
+      id: 'DepositAccountActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'DepositAccountActionsMenu.EditButton'
+      timeout: 3000
+- tapOn:
+      id: 'DepositAccountActionsMenu.EditButton'
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.NameInput'
@@ -348,7 +354,13 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Deposit Account'
 
 - tapOn:
-      id: 'AccountDetails.CloseDepositButton'
+      id: 'DepositAccountActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'DepositAccountActionsMenu.CloseDepositButton'
+      timeout: 3000
+- tapOn:
+      id: 'DepositAccountActionsMenu.CloseDepositButton'
 - extendedWaitUntil:
       visible:
           id: 'AccountPickerBottomSheet.Input'
