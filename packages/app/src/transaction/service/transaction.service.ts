@@ -19,10 +19,12 @@ import {
     transactionAsync
 } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
+import { i18n, type MessageDescriptor } from '@lingui/core';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import {
+    accountRepository,
     db,
     debtEventRepository,
     transactionEntryRepository,
@@ -32,8 +34,8 @@ import {
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
+import { DepositTransactionSafetyErrorEnum } from '../../account/enum/deposit-transaction-safety-error.enum';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { accountService } from '../../account/service/account.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
@@ -70,6 +72,9 @@ class TransactionService {
         }
 
         const { stampedInputs } = stampForDeferredEmbedding(inputs, 'bulkCreate');
+
+        await this.assertNoDepositExpenseInputs(stampedInputs, tx);
+
         const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
             transactionBatchCreateService.create(batch, tx)
         );
@@ -143,6 +148,16 @@ class TransactionService {
     async updateById(id: number, input: TransactionUpdateServiceInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
             const existingTransaction = await transactionRepository.getByIdWithEntries(id, tx);
+            await this.assertNoDepositExpenseInputs(
+                [
+                    {
+                        ...input,
+                        type: input.type ?? existingTransaction?.type ?? TransactionTypeEnum.EXPENSE
+                    }
+                ],
+                tx
+            );
+
             const isConsolidated = isDefined(existingTransaction?.consolidationType);
             const transaction = await transactionRepository.updateById(
                 id,
@@ -189,11 +204,48 @@ class TransactionService {
         return [...new Set(transactions.flatMap(transaction => transaction.entries.map(entry => entry.accountId)))];
     }
 
+    private async assertNoDepositExpenseInputs(
+        inputs: readonly {
+            readonly entries: readonly Pick<TransactionEntryCreateInputInterface, 'accountId' | 'type'>[];
+            readonly fromAccountId?: number | null;
+            readonly type: TransactionTypeEnum;
+        }[],
+        tx: DB
+    ): Promise<void> {
+        const expenseSourceAccountIds = [
+            ...new Set(
+                inputs.flatMap(input =>
+                    input.type === TransactionTypeEnum.EXPENSE
+                        ? [
+                              ...(isDefined(input.fromAccountId) ? [input.fromAccountId] : []),
+                              ...input.entries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT).map(entry => entry.accountId)
+                          ]
+                        : []
+                )
+            )
+        ];
+
+        if (!isNotEmptyArray(expenseSourceAccountIds)) {
+            return;
+        }
+
+        const accounts = await accountRepository.findByIds(expenseSourceAccountIds, tx);
+        const hasDepositAccount = accounts.some(account => account.type === AccountTypeEnum.DEPOSIT);
+
+        if (hasDepositAccount) {
+            throw new Error(
+                this.getErrorMessage({
+                    id: DepositTransactionSafetyErrorEnum.DEPOSIT_EXPENSE
+                })
+            );
+        }
+    }
+
     private async createInternalTransferInTransaction(input: TransactionCreateInputInterface, tx: DB): Promise<TransactionEntityInterface> {
         const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
         const [fromAccount, toAccount] = await Promise.all([
-            accountService.findByIdOrFail(fromEntry.accountId),
-            accountService.findByIdOrFail(toEntry.accountId)
+            this.findAccountByIdOrFail(fromEntry.accountId, tx),
+            this.findAccountByIdOrFail(toEntry.accountId, tx)
         ]);
         const fromAmountInMicroUnits = convertToMicroUnits(fromEntry.amount);
         const { amount: toAmount, exchangeRate } = await this.getTransferAmountAndExchangeRate(
@@ -227,6 +279,24 @@ class TransactionService {
         await this.finalizeInternalTransfer(input, transaction.id, tx);
 
         return transaction;
+    }
+
+    private async findAccountByIdOrFail(id: number, tx: DB): Promise<AccountEntityInterface> {
+        const account = await accountRepository.findById(id, tx);
+
+        if (!isDefined(account)) {
+            throw new Error(
+                this.getErrorMessage({
+                    id: DepositTransactionSafetyErrorEnum.ACCOUNT_NOT_FOUND
+                })
+            );
+        }
+
+        return account;
+    }
+
+    private getErrorMessage(messageDescriptor: MessageDescriptor): string {
+        return isNotEmptyString(i18n.locale) ? i18n._(messageDescriptor) : messageDescriptor.id;
     }
 
     private async getTransferAmountAndExchangeRate(

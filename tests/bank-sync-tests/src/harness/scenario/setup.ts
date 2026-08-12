@@ -1,30 +1,54 @@
 import { buildTestDb, createTestRepositories, resetTestDb } from '@budgie-at/test-kit';
+import { sql } from 'drizzle-orm';
 import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
+
+import type { DB } from '@budgie/contracts';
 
 vi.mock('@app/sync/service/transfer-consolidation-drainer.service', () => ({
     transferConsolidationDrainerService: { enqueue: vi.fn() }
 }));
 
 vi.mock('@app/@generic/utils/micro-pause.util', () => ({
-    microPause: vi.fn(async (): Promise<void> => undefined)
+    microPause: vi.fn((): Promise<void> => Promise.resolve())
 }));
 
 export const testDb = buildTestDb();
 
-vi.mock('@app/@generic/drizzle/db/db', async () => {
-    return {
-        db: testDb,
-        ...createTestRepositories(testDb),
-        expoDb: undefined,
-        __REMOVE_ME_RESET_DB: async () => undefined
-    };
-});
+let transactionDepth = 0;
+
+vi.mock('@app/@generic/drizzle/db/db', async () => ({
+    db: testDb,
+    ...createTestRepositories(testDb),
+    expoDb: void 0,
+    __REMOVE_ME_RESET_DB: (): Promise<void> => Promise.resolve()
+}));
 
 vi.mock('@budgie/contracts', async importOriginal => {
     const actual = await importOriginal<typeof import('@budgie/contracts')>();
+
     return {
         ...actual,
-        transactionAsync: async <T>(database: unknown, cb: (tx: unknown) => Promise<T>): Promise<T> => cb(database)
+        transactionAsync: async <T>(_database: DB, cb: (tx: DB) => Promise<T>): Promise<T> => {
+            const savepointName = `test_transaction_${transactionDepth}`;
+
+            transactionDepth += 1;
+            testDb.run(sql.raw(`SAVEPOINT ${savepointName}`));
+
+            try {
+                const result = await cb(testDb);
+
+                testDb.run(sql.raw(`RELEASE SAVEPOINT ${savepointName}`));
+
+                return result;
+            } catch (error) {
+                testDb.run(sql.raw(`ROLLBACK TO SAVEPOINT ${savepointName}`));
+                testDb.run(sql.raw(`RELEASE SAVEPOINT ${savepointName}`));
+
+                throw error;
+            } finally {
+                transactionDepth -= 1;
+            }
+        }
     };
 });
 
@@ -35,6 +59,7 @@ beforeAll(() => {
 });
 
 beforeEach(async () => {
+    transactionDepth = 0;
     resetTestDb(testDb);
     const { resetSingletons } = await import('./reset-singletons');
     resetSingletons();
