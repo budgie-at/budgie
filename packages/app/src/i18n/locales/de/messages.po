@@ -81,7 +81,7 @@ msgstr "{count, plural, one {Dieser Tag hat # Transaktion. Wählen Sie einen and
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
 
-#: src/account/component/close-deposit-account/close-deposit-account.tsx
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} wird auf {destinationAccountTitle} übertragen und diese Einlage wird archiviert. Sie können sie jederzeit unter Einstellungen → Archivierte Konten wiederherstellen."
 
@@ -220,6 +220,11 @@ msgstr "Konto {id} nicht gefunden"
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
 msgstr "Kontoname & Symbol"
+
+#. js-lingui-explicit-id
+#: src/transaction/service/transaction.service.ts
+msgid "transaction.accountNotFound"
+msgstr ""
 
 #: src/account/component/create-account-screen/update-account-screen.tsx
 msgid "Account Settings"
@@ -614,7 +619,7 @@ msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen 
 #: src/account/component/account-action-card/account-action-card.tsx
 #: src/account/component/archive-account/archive-account.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
-#: src/account/component/close-deposit-account/close-deposit-account.tsx
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -727,11 +732,12 @@ msgstr "Die Zwischenablage ist leer"
 msgid "Close"
 msgstr "Schließen"
 
-#: src/account/component/close-deposit-account/close-deposit-account.tsx
+#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Close Deposit"
 msgstr "Einlage schließen"
 
-#: src/account/component/close-deposit-account/close-deposit-account.tsx
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Close Deposit?"
 msgstr "Einlage schließen?"
 
@@ -867,7 +873,7 @@ msgstr "Bank-Sync-Daten konnten nicht geprüft werden"
 msgid "Could not clear data"
 msgstr "Daten konnten nicht gelöscht werden"
 
-#: src/account/component/close-deposit-account/close-deposit-account.tsx
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Could not close deposit"
 msgstr "Einlage konnte nicht geschlossen werden"
 
@@ -1258,6 +1264,16 @@ msgstr "Termineinlage"
 msgid "Deposit Account"
 msgstr "Einlagenkonto"
 
+#. js-lingui-explicit-id
+#: src/transaction/service/transaction-deposit-safety.service.ts
+msgid "transaction.depositExpenseDisallowed"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/account/service/account-balance-incremental.service.ts
+msgid "account.depositNegativeBalanceDisallowed"
+msgstr ""
+
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
 msgstr "Alle abwählen"
@@ -1327,6 +1343,10 @@ msgstr "z.B. Lebensmittel, Unterhaltung"
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "e.g. Savings Account"
 msgstr "z. B. Sparkonto"
+
+#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
+msgid "Edit"
+msgstr ""
 
 #: src/account/component/account-card-base/account-card-base.tsx
 msgid "Edit account"

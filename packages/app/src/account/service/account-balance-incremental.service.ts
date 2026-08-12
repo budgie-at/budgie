@@ -11,11 +11,10 @@ import { i18n } from '@lingui/core';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { accountBalanceRepository, accountRepository, db } from '../../@generic/drizzle/db/db';
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
-import { DepositTransactionSafetyErrorEnum } from '../enum/deposit-transaction-safety-error.enum';
 
 class AccountBalanceIncrementalService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 7 * 24 * 60;
@@ -176,11 +175,9 @@ class AccountBalanceIncrementalService {
             const shouldReject = isDefined(previousBalance) && balance.amount < 0 && balance.amount < previousBalance;
 
             if (shouldReject) {
-                const messageDescriptor = {
-                    id: DepositTransactionSafetyErrorEnum.NEGATIVE_DEPOSIT_BALANCE
-                };
-
-                throw new Error(isNotEmptyString(i18n.locale) ? i18n._(messageDescriptor) : messageDescriptor.id);
+                throw new Error(
+                    i18n._({ id: 'account.depositNegativeBalanceDisallowed', message: 'Deposit balance cannot become negative' })
+                );
             }
         }
     }
