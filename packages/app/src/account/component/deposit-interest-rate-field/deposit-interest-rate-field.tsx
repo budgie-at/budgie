@@ -24,6 +24,7 @@ export const DepositInterestRateField = ({ control }: Props) => {
                     testID={CreateAccountScreenSelector.InterestRateInput}
                     value={value ?? 0}
                     onChangeValue={handleChangeValue}
+                    placeholder={t`e.g. 5`}
                     size="lg"
                 />
             </FormItem>
