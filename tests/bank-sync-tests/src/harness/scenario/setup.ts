@@ -12,6 +12,27 @@ vi.mock('@app/@generic/utils/micro-pause.util', () => ({
     microPause: vi.fn((): Promise<void> => Promise.resolve())
 }));
 
+vi.mock('@lingui/core', () => ({
+    i18n: {
+        _: (descriptor: unknown): string => {
+            if (typeof descriptor === 'string') {
+                return descriptor;
+            }
+
+            if (
+                typeof descriptor === 'object' &&
+                descriptor !== null &&
+                'message' in descriptor &&
+                typeof descriptor.message === 'string'
+            ) {
+                return descriptor.message;
+            }
+
+            return '';
+        }
+    }
+}));
+
 export const testDb = buildTestDb();
 
 let transactionDepth = 0;
