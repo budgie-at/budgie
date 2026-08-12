@@ -76,7 +76,13 @@ export const DepositDetailsCard = ({ balance, instrumentSymbol, interestRate, de
                     testID={DepositDetailsCardSelector.ExpectedPayoutRow}
                     label={<Trans>Expected Payout</Trans>}
                     value={
-                        <ProtectedMoney instrumentSymbol={instrumentSymbol} fontSize={16}>
+                        <ProtectedMoney
+                            instrumentSymbol={instrumentSymbol}
+                            className="font-semibold"
+                            fontSize={14}
+                            minFontSize={14}
+                            maxFontSize={14}
+                        >
                             {expectedPayout}
                         </ProtectedMoney>
                     }

@@ -1312,6 +1312,10 @@ msgstr "z. B. 1000"
 msgid "e.g. 200"
 msgstr "z. B. 200"
 
+#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+msgid "e.g. 5"
+msgstr "z. B. 5"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "e.g. Business, Personal, Vacation"
 msgstr "z.B. Geschäft, Persönlich, Urlaub"

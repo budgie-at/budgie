@@ -1313,6 +1313,10 @@ msgstr "e.g. 1000"
 msgid "e.g. 200"
 msgstr "e.g. 200"
 
+#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+msgid "e.g. 5"
+msgstr "e.g. 5"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "e.g. Business, Personal, Vacation"
 msgstr "e.g. Business, Personal, Vacation"
