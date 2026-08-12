@@ -8,7 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
+import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 // jscpd:ignore-end
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { accountDebtOpeningService } from '../../service/account-debt-opening.service';
@@ -58,7 +58,7 @@ export const CreateDebtAccount = () => {
     );
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
     const isOpeningFromAccount = isLentDebt && isDefined(openingAccountId);
-    const variant = ACCOUNT_DEBT_TYPE_COLOR[debtType];
+    const variant = ACCOUNT_COLOR.DEBT;
     const stickyInstrument = useStickyDefinedValue(instrument);
 
     const handleCreateDebtAccountSubmit = () => {

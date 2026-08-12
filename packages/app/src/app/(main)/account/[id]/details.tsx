@@ -20,7 +20,6 @@ import { CloseDepositAccount } from '../../../../account/component/close-deposit
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { DepositDetailsCard } from '../../../../account/component/deposit-details-card/deposit-details-card';
 import { ACCOUNT_COLOR } from '../../../../account/constant/account-color.constant';
-import { ACCOUNT_DEBT_TYPE_COLOR } from '../../../../account/constant/account-debt-type-color.constant';
 import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useDebtAccountProgressSummaryQuery } from '../../../../account/query/use-debt-account-progress-summary.query';
@@ -53,7 +52,7 @@ export default function AccountDetails() {
         return <Redirect href="/" />;
     }
 
-    const accountVariant = account.type === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[account.type];
+    const accountVariant = ACCOUNT_COLOR[account.type];
 
     return (
         <View className="relative flex-1">

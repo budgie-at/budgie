@@ -4,6 +4,8 @@ export type ColorPaletteVariant =
     | 'warning'
     | 'dark-warning'
     | 'positive'
+    | 'violet'
+    | 'cyan'
     | 'ghost'
     | 'pink'
     | 'secondary'
