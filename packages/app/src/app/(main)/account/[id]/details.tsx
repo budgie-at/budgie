@@ -16,8 +16,8 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { AccountBalance } from '../../../../account/component/account-balance/account-balance';
 import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
-import { CloseDepositAccount } from '../../../../account/component/close-deposit-account/close-deposit-account';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
+import { DepositAccountActionsMenu } from '../../../../account/component/deposit-account-actions-menu/deposit-account-actions-menu';
 import { DepositDetailsCard } from '../../../../account/component/deposit-details-card/deposit-details-card';
 import { ACCOUNT_COLOR } from '../../../../account/constant/account-color.constant';
 import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant';
@@ -53,6 +53,21 @@ export default function AccountDetails() {
     }
 
     const accountVariant = ACCOUNT_COLOR[account.type];
+    const headerRight =
+        account.type === AccountTypeEnum.DEPOSIT ? (
+            <DepositAccountActionsMenu accountId={id} balance={balance} instrumentSymbol={account.instrument.symbol} />
+        ) : (
+            <HapticPressable
+                className="ml-auto h-10 w-10 items-center justify-center"
+                onPress={handleOpenAccountSettings}
+                testID={AccountDetailsSelector.EditButton}
+                nativeID={AccountDetailsSelector.EditButton}
+                collapsable={false}
+                accessibilityRole="button"
+            >
+                <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
+            </HapticPressable>
+        );
 
     return (
         <View className="relative flex-1">
@@ -64,24 +79,7 @@ export default function AccountDetails() {
                         onGoBack={handleGoBack}
                         title={account.title}
                         iconVariant={accountVariant}
-                        right={
-                            <HapticPressable
-                                className="ml-auto h-10 w-10 items-center justify-center"
-                                onPress={handleOpenAccountSettings}
-                                testID={AccountDetailsSelector.EditButton}
-                                nativeID={AccountDetailsSelector.EditButton}
-                                collapsable={false}
-                                accessibilityRole="button"
-                            >
-                                <CircleIcon
-                                    icon={UserIconNameEnum.EllipsisVertical}
-                                    variant="ghost"
-                                    size={40}
-                                    iconSize={24}
-                                    border={false}
-                                />
-                            </HapticPressable>
-                        }
+                        right={headerRight}
                         description={t(ACCOUNT_TYPE[account.type])}
                         descriptionClassName={descriptionVariants({ variant: accountVariant })}
                     />
@@ -100,18 +98,12 @@ export default function AccountDetails() {
                     )}
 
                     {account.type === AccountTypeEnum.DEPOSIT ? (
-                        <>
-                            <DepositDetailsCard
-                                balance={balance}
-                                instrumentSymbol={account.instrument.symbol}
-                                interestRate={account.interestRate}
-                                deadline={account.deadline}
-                            />
-
-                            <View className="px-5xl mt-md">
-                                <CloseDepositAccount accountId={id} balance={balance} instrumentSymbol={account.instrument.symbol} />
-                            </View>
-                        </>
+                        <DepositDetailsCard
+                            balance={balance}
+                            instrumentSymbol={account.instrument.symbol}
+                            interestRate={account.interestRate}
+                            deadline={account.deadline}
+                        />
                     ) : null}
                 </View>
 
