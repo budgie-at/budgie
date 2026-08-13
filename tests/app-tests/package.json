@@ -8,6 +8,7 @@
         "test:ios": "./scripts/run-argent-suite.sh"
     },
     "devDependencies": {
-        "@swmansion/argent": "0.20.0"
+        "@swmansion/argent": "0.20.0",
+        "yaml": "2.9.0"
     }
 }

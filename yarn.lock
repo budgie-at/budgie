@@ -1233,6 +1233,7 @@ __metadata:
   resolution: "@budgie-at/app-tests@workspace:tests/app-tests"
   dependencies:
     "@swmansion/argent": "npm:0.20.0"
+    yaml: "npm:2.9.0"
   languageName: unknown
   linkType: soft
 

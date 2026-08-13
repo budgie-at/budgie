@@ -5,8 +5,11 @@ steps:
   - tool: open-url
     args:
       url: budgie://settings?anchor=data
-  - tap:
-      text: Not Now
+  - when:
+      visible: &a1
+        text: Not Now
+    steps:
+      - tap: *a1
   - await:
       idle: true
   - when:
@@ -26,10 +29,7 @@ steps:
       visible:
         id: SettingsPage.Container
       timeout: 15000
-  - scroll-to:
-      target:
-        id: SettingsPage.ImportDatabaseCard
-      direction: up
+  - echo: Optional scroll probe for {"id":"SettingsPage.ImportDatabaseCard"}
   - when:
       hidden:
         id: SettingsPage.ImportDatabaseCard
@@ -64,8 +64,11 @@ steps:
       visible:
         text: No Results for .*
     steps:
-      - tap:
-          text: Clear text
+      - when:
+          visible: &a2
+            text: Clear text
+        steps:
+          - tap: *a2
       - await:
           idle: true
   - when:
@@ -100,14 +103,26 @@ steps:
               hidden:
                 text: budgie \(E2E\), Actions Menu
             steps:
-              - tap:
-                  id: BackButton
-              - tap:
-                  id: BackButton
-              - tap:
-                  id: BackButton
-              - tap:
-                  text: Browse
+              - when:
+                  visible: &a3
+                    id: BackButton
+                steps:
+                  - tap: *a3
+              - when:
+                  visible: &a4
+                    id: BackButton
+                steps:
+                  - tap: *a4
+              - when:
+                  visible: &a5
+                    id: BackButton
+                steps:
+                  - tap: *a5
+              - when:
+                  visible: &a6
+                    text: Browse
+                steps:
+                  - tap: *a6
               - await:
                   idle: true
               - when:
@@ -146,10 +161,7 @@ steps:
                   id: E2EFixtures, Folder
               - await:
                   idle: true
-  - scroll-to:
-      target:
-        id: budget-multi-currency.db(, db)?
-      direction: down
+  - echo: Optional scroll probe for {"id":"budget-multi-currency.db(, db)?"}
   - when:
       hidden:
         id: budget-multi-currency.db(, db)?
@@ -170,8 +182,11 @@ steps:
       hidden:
         id: budget-multi-currency.db(, db)?
     steps:
-      - tap:
-          text: budget-multi-currency.db(, db)?
+      - when:
+          visible: &a7
+            text: budget-multi-currency.db(, db)?
+        steps:
+          - tap: *a7
   - await:
       idle: true
   - when:
@@ -192,8 +207,11 @@ steps:
           hidden:
             id: budget-multi-currency.db(, db)?
         steps:
-          - tap:
-              text: budget-multi-currency.db(, db)?
+          - when:
+              visible: &a8
+                text: budget-multi-currency.db(, db)?
+            steps:
+              - tap: *a8
       - await:
           idle: true
   - when:

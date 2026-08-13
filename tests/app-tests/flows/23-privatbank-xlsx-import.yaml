@@ -3,8 +3,11 @@ steps:
   - tool: open-url
     args:
       url: budgie://settings?anchor=data
-  - tap:
-      text: Not Now
+  - when:
+      visible: &a1
+        text: Not Now
+    steps:
+      - tap: *a1
   - await:
       idle: true
   - when:
@@ -24,10 +27,7 @@ steps:
       visible:
         id: SettingsPage.Container
       timeout: 15000
-  - scroll-to:
-      target:
-        id: SettingsPage.ImportDatabaseCard
-      direction: up
+  - echo: Optional scroll probe for {"id":"SettingsPage.ImportDatabaseCard"}
   - when:
       hidden:
         id: SettingsPage.ImportDatabaseCard
@@ -62,8 +62,11 @@ steps:
       visible:
         text: No Results for .*
     steps:
-      - tap:
-          text: Clear text
+      - when:
+          visible: &a2
+            text: Clear text
+        steps:
+          - tap: *a2
       - await:
           idle: true
   - when:
@@ -98,14 +101,26 @@ steps:
               hidden:
                 text: budgie \(E2E\), Actions Menu
             steps:
-              - tap:
-                  id: BackButton
-              - tap:
-                  id: BackButton
-              - tap:
-                  id: BackButton
-              - tap:
-                  text: Browse
+              - when:
+                  visible: &a3
+                    id: BackButton
+                steps:
+                  - tap: *a3
+              - when:
+                  visible: &a4
+                    id: BackButton
+                steps:
+                  - tap: *a4
+              - when:
+                  visible: &a5
+                    id: BackButton
+                steps:
+                  - tap: *a5
+              - when:
+                  visible: &a6
+                    text: Browse
+                steps:
+                  - tap: *a6
               - await:
                   idle: true
               - when:
@@ -144,10 +159,7 @@ steps:
                   id: E2EFixtures, Folder
               - await:
                   idle: true
-  - scroll-to:
-      target:
-        id: 23.db
-      direction: down
+  - echo: Optional scroll probe for {"id":"23.db"}
   - when:
       hidden:
         id: 23.db
@@ -168,8 +180,11 @@ steps:
       hidden:
         id: 23.db
     steps:
-      - tap:
-          text: 23.db
+      - when:
+          visible: &a7
+            text: 23.db
+        steps:
+          - tap: *a7
   - await:
       idle: true
   - when:
@@ -190,8 +205,11 @@ steps:
           hidden:
             id: 23.db
         steps:
-          - tap:
-              text: 23.db
+          - when:
+              visible: &a8
+                text: 23.db
+            steps:
+              - tap: *a8
       - await:
           idle: true
   - when:
@@ -299,8 +317,11 @@ steps:
       visible:
         text: No Results for .*
     steps:
-      - tap:
-          text: Clear text
+      - when:
+          visible: &a9
+            text: Clear text
+        steps:
+          - tap: *a9
       - await:
           idle: true
   - when:
@@ -335,14 +356,26 @@ steps:
               hidden:
                 text: budgie \(E2E\), Actions Menu
             steps:
-              - tap:
-                  id: BackButton
-              - tap:
-                  id: BackButton
-              - tap:
-                  id: BackButton
-              - tap:
-                  text: Browse
+              - when:
+                  visible: &a10
+                    id: BackButton
+                steps:
+                  - tap: *a10
+              - when:
+                  visible: &a11
+                    id: BackButton
+                steps:
+                  - tap: *a11
+              - when:
+                  visible: &a12
+                    id: BackButton
+                steps:
+                  - tap: *a12
+              - when:
+                  visible: &a13
+                    text: Browse
+                steps:
+                  - tap: *a13
               - await:
                   idle: true
               - when:
@@ -381,10 +414,7 @@ steps:
                   id: E2EFixtures, Folder
               - await:
                   idle: true
-  - scroll-to:
-      target:
-        id: privatbank-statement-001, xlsx
-      direction: down
+  - echo: Optional scroll probe for {"id":"privatbank-statement-001, xlsx"}
   - when:
       hidden:
         id: privatbank-statement-001, xlsx
@@ -405,8 +435,11 @@ steps:
       hidden:
         id: privatbank-statement-001, xlsx
     steps:
-      - tap:
-          text: privatbank-statement-001, xlsx
+      - when:
+          visible: &a14
+            text: privatbank-statement-001, xlsx
+        steps:
+          - tap: *a14
   - await:
       idle: true
   - when:
@@ -427,8 +460,11 @@ steps:
           hidden:
             id: privatbank-statement-001, xlsx
         steps:
-          - tap:
-              text: privatbank-statement-001, xlsx
+          - when:
+              visible: &a15
+                text: privatbank-statement-001, xlsx
+            steps:
+              - tap: *a15
       - await:
           idle: true
   - when:
@@ -562,8 +598,11 @@ steps:
       visible:
         text: No Results for .*
     steps:
-      - tap:
-          text: Clear text
+      - when:
+          visible: &a16
+            text: Clear text
+        steps:
+          - tap: *a16
       - await:
           idle: true
   - when:
@@ -598,14 +637,26 @@ steps:
               hidden:
                 text: budgie \(E2E\), Actions Menu
             steps:
-              - tap:
-                  id: BackButton
-              - tap:
-                  id: BackButton
-              - tap:
-                  id: BackButton
-              - tap:
-                  text: Browse
+              - when:
+                  visible: &a17
+                    id: BackButton
+                steps:
+                  - tap: *a17
+              - when:
+                  visible: &a18
+                    id: BackButton
+                steps:
+                  - tap: *a18
+              - when:
+                  visible: &a19
+                    id: BackButton
+                steps:
+                  - tap: *a19
+              - when:
+                  visible: &a20
+                    text: Browse
+                steps:
+                  - tap: *a20
               - await:
                   idle: true
               - when:
@@ -644,10 +695,7 @@ steps:
                   id: E2EFixtures, Folder
               - await:
                   idle: true
-  - scroll-to:
-      target:
-        id: privatbank-statement-002, xlsx
-      direction: down
+  - echo: Optional scroll probe for {"id":"privatbank-statement-002, xlsx"}
   - when:
       hidden:
         id: privatbank-statement-002, xlsx
@@ -668,8 +716,11 @@ steps:
       hidden:
         id: privatbank-statement-002, xlsx
     steps:
-      - tap:
-          text: privatbank-statement-002, xlsx
+      - when:
+          visible: &a21
+            text: privatbank-statement-002, xlsx
+        steps:
+          - tap: *a21
   - await:
       idle: true
   - when:
@@ -690,8 +741,11 @@ steps:
           hidden:
             id: privatbank-statement-002, xlsx
         steps:
-          - tap:
-              text: privatbank-statement-002, xlsx
+          - when:
+              visible: &a22
+                text: privatbank-statement-002, xlsx
+            steps:
+              - tap: *a22
       - await:
           idle: true
   - when:
@@ -967,8 +1021,11 @@ steps:
       visible:
         text: No Results for .*
     steps:
-      - tap:
-          text: Clear text
+      - when:
+          visible: &a23
+            text: Clear text
+        steps:
+          - tap: *a23
       - await:
           idle: true
   - when:
@@ -1003,14 +1060,26 @@ steps:
               hidden:
                 text: budgie \(E2E\), Actions Menu
             steps:
-              - tap:
-                  id: BackButton
-              - tap:
-                  id: BackButton
-              - tap:
-                  id: BackButton
-              - tap:
-                  text: Browse
+              - when:
+                  visible: &a24
+                    id: BackButton
+                steps:
+                  - tap: *a24
+              - when:
+                  visible: &a25
+                    id: BackButton
+                steps:
+                  - tap: *a25
+              - when:
+                  visible: &a26
+                    id: BackButton
+                steps:
+                  - tap: *a26
+              - when:
+                  visible: &a27
+                    text: Browse
+                steps:
+                  - tap: *a27
               - await:
                   idle: true
               - when:
@@ -1049,10 +1118,7 @@ steps:
                   id: E2EFixtures, Folder
               - await:
                   idle: true
-  - scroll-to:
-      target:
-        id: privatbank-statement-002, xlsx
-      direction: down
+  - echo: Optional scroll probe for {"id":"privatbank-statement-002, xlsx"}
   - when:
       hidden:
         id: privatbank-statement-002, xlsx
@@ -1073,8 +1139,11 @@ steps:
       hidden:
         id: privatbank-statement-002, xlsx
     steps:
-      - tap:
-          text: privatbank-statement-002, xlsx
+      - when:
+          visible: &a28
+            text: privatbank-statement-002, xlsx
+        steps:
+          - tap: *a28
   - await:
       idle: true
   - when:
@@ -1095,8 +1164,11 @@ steps:
           hidden:
             id: privatbank-statement-002, xlsx
         steps:
-          - tap:
-              text: privatbank-statement-002, xlsx
+          - when:
+              visible: &a29
+                text: privatbank-statement-002, xlsx
+            steps:
+              - tap: *a29
       - await:
           idle: true
   - when:

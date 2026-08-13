@@ -1,5 +1,6 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
+import YAML from 'yaml';
 
 const repositoryRoot = new URL('../../../', import.meta.url).pathname;
 const appTestsRoot = join(repositoryRoot, 'tests/app-tests');
@@ -50,10 +51,22 @@ const collectFlows = async directory => {
 await collectFlows(join(appTestsRoot, 'flows'));
 for (const flowFile of flowFiles) {
     const source = await readFile(flowFile, 'utf8');
-    if (!/^steps:\s*$/m.test(source)) failures.push(`${relative(repositoryRoot, flowFile)}: missing Argent steps root`);
-    if (/^(appId|env):/m.test(source) || /^---\s*$/m.test(source)) failures.push(`${relative(repositoryRoot, flowFile)}: legacy flow document shape`);
-    if (/\$\{[^}]+\}/.test(source)) failures.push(`${relative(repositoryRoot, flowFile)}: unresolved legacy interpolation`);
-    if (/^\s*-\s+run:/m.test(source)) failures.push(`${relative(repositoryRoot, flowFile)}: generated top-level flow must be self-contained`);
+    const repositoryPath = relative(repositoryRoot, flowFile);
+    if (!/^steps:\s*$/m.test(source)) failures.push(`${repositoryPath}: missing Argent steps root`);
+    if (/^(appId|env):/m.test(source) || /^---\s*$/m.test(source)) failures.push(`${repositoryPath}: legacy flow document shape`);
+    if (/\$\{[^}]+\}/.test(source)) failures.push(`${repositoryPath}: unresolved legacy interpolation`);
+    if (/^\s*-\s+run:/m.test(source)) failures.push(`${repositoryPath}: generated top-level flow must be self-contained`);
+
+    const document = YAML.parse(source);
+    const visitSteps = (steps, guardedByVisibility = false) => {
+        for (const step of steps || []) {
+            if (step?.tap?.text === 'Not Now' && !guardedByVisibility) {
+                failures.push(`${repositoryPath}: optional interstitial tap must be guarded by when visible`);
+            }
+            visitSteps(step?.steps, Boolean(step?.when?.visible));
+        }
+    };
+    visitSteps(document?.steps);
 }
 
 if (failures.length > 0) {

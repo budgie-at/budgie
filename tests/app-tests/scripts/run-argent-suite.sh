@@ -39,12 +39,20 @@ run_flow() {
     [[ "$status" == 'passed' ]]
 }
 
+suite_failed=0
+
 if [[ -n "$SHARD" ]]; then
     while IFS= read -r flow; do
-        [[ -z "$flow" ]] || run_flow "$flow"
+        if [[ -n "$flow" ]] && ! run_flow "$flow"; then
+            suite_failed=1
+        fi
     done < "$WORKSPACE_DIR/shards/shard-$SHARD.txt"
 else
     for flow in "$WORKSPACE_DIR"/flows/*.yaml; do
-        run_flow "$(basename "$flow")"
+        if ! run_flow "$(basename "$flow")"; then
+            suite_failed=1
+        fi
     done
 fi
+
+exit "$suite_failed"
