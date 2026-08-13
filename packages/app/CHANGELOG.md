@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.1.0](https://github.com/budgie-at/budgie/compare/v6.0.9...v6.1.0) (2026-08-13)
+
+
+### Bug Fixes
+
+* **app:** align deposit details into columns ([8fe62dd](https://github.com/budgie-at/budgie/commit/8fe62ddd19c08a8a81864f43cc9dec59887ab0ef))
+* **app:** clarify and align deposit details ([72298e5](https://github.com/budgie-at/budgie/commit/72298e5e86e55666394ef53c068b4e7bf9277586))
+* **app:** enforce deposit transaction safety ([7d1bbe5](https://github.com/budgie-at/budgie/commit/7d1bbe581060eb80a458bf926b38b9723a0c001e))
+* **app:** guard deposit expenses in imports ([2f3eb38](https://github.com/budgie-at/budgie/commit/2f3eb38452d3afcb4feebad9c9c5bd9f42715457))
+* **app:** guard imported deposit expense updates ([5ad6153](https://github.com/budgie-at/budgie/commit/5ad6153374cbe3e57e48e93153a3210985e9e8c2))
+* **app:** hide deposits from expense sources ([0c68ec6](https://github.com/budgie-at/budgie/commit/0c68ec6c007eea152f9f17f126aea647256d2bd1))
+* **app:** make deposit actions accessible ([546d818](https://github.com/budgie-at/budgie/commit/546d818f6b427a5828519077ab489a601ce67ab1))
+* **app:** preserve custom icons while updating account defaults ([e1d0cb3](https://github.com/budgie-at/budgie/commit/e1d0cb37094cf529ac2b353f639a3130e24c1111))
+* **app:** preserve legacy data during debt migration ([5e64f72](https://github.com/budgie-at/budgie/commit/5e64f72bff145a05642f6c64bdc2bb3b45a5c624))
+* **app:** scope file-import integration backfill to file-import providers ([e824a2e](https://github.com/budgie-at/budgie/commit/e824a2efd9d6ac9799c5b2970d27522171e3d2c7)), closes [#661](https://github.com/budgie-at/budgie/issues/661)
+* **app:** settle dismissed account selector requests ([d50e9d1](https://github.com/budgie-at/budgie/commit/d50e9d17f32d43e79846501e5bc3a4544a46d61d))
+* **app:** use standard screen chrome and full-width rows on bank integration page ([02b9004](https://github.com/budgie-at/budgie/commit/02b90044b5e0a182735df03b717963a227735f05)), closes [#644](https://github.com/budgie-at/budgie/issues/644)
+
+
+### Features
+
+* **app:** add accounts from bank on integration settings page ([60de96f](https://github.com/budgie-at/budgie/commit/60de96fef1266087dd545c468be31bad70d4cfbd)), closes [#645](https://github.com/budgie-at/budgie/issues/645)
+* **app:** bank integration settings page ([a5b9cd0](https://github.com/budgie-at/budgie/commit/a5b9cd054ea195973185a433642589b3fc3a96a6)), closes [#644](https://github.com/budgie-at/budgie/issues/644)
+* **app:** close deposit action and transfer destination prefill ([36580ac](https://github.com/budgie-at/budgie/commit/36580ac3d1e10c97663c776846eeea9f66a3dbe7)), closes [#641](https://github.com/budgie-at/budgie/issues/641)
+* **app:** create deposit account form, routing and details display ([6225ad0](https://github.com/budgie-at/budgie/commit/6225ad0a2638f484fd96261eba16aaf812b0c21d)), closes [#639](https://github.com/budgie-at/budgie/issues/639)
+* **app:** distinguish every account type by color ([954f925](https://github.com/budgie-at/budgie/commit/954f925a8961ba7c0bb40222c06f0983350d452b))
+* **app:** generic bank integrations for all providers with capability-driven settings page ([31530da](https://github.com/budgie-at/budgie/commit/31530da83c475a280aabdcc12994ec40aabdbc88)), closes [#661](https://github.com/budgie-at/budgie/issues/661)
+* **app:** group home accounts sections by integration with settings entry ([ca1be6f](https://github.com/budgie-at/budgie/commit/ca1be6f4abc80b8969b2b745e8e9e81f3ba5215a)), closes [#643](https://github.com/budgie-at/budgie/issues/643)
+* **app:** inline deposit creation in convert-to-transfer account picker ([c500f65](https://github.com/budgie-at/budgie/commit/c500f65bbab5bcf2800ae64e7069aa4f53d824e5)), closes [#642](https://github.com/budgie-at/budgie/issues/642)
+* **app:** move deposit actions into header menu ([b9b1b61](https://github.com/budgie-at/budgie/commit/b9b1b613f02ae99d4ac99d9bb7603655049107a6))
+* **contracts:** add bank_integrations table with backfill migration ([2451973](https://github.com/budgie-at/budgie/commit/24519732c679559a1488afc88737dc0ff5b34eb4)), closes [#636](https://github.com/budgie-at/budgie/issues/636)
+* **contracts:** add DEPOSIT account type, interestRate column and deposit create-input schema ([401baa9](https://github.com/budgie-at/budgie/commit/401baa9cd95d03dd8711637ebc3a79e342f0779a)), closes [#638](https://github.com/budgie-at/budgie/issues/638)
+
+
+
+
+
 ## [6.0.9](https://github.com/budgie-at/budgie/compare/v6.0.8...v6.0.9) (2026-08-11)
 
 **Note:** Version bump only for package @budgie-at/app

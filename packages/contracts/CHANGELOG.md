@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.1.0](https://github.com/budgie-at/budgie/compare/v6.0.9...v6.1.0) (2026-08-13)
+
+
+### Features
+
+* **app:** bank integration settings page ([a5b9cd0](https://github.com/budgie-at/budgie/commit/a5b9cd054ea195973185a433642589b3fc3a96a6)), closes [#644](https://github.com/budgie-at/budgie/issues/644)
+* **app:** generic bank integrations for all providers with capability-driven settings page ([31530da](https://github.com/budgie-at/budgie/commit/31530da83c475a280aabdcc12994ec40aabdbc88)), closes [#661](https://github.com/budgie-at/budgie/issues/661)
+* **contracts:** add bank_integrations table with backfill migration ([2451973](https://github.com/budgie-at/budgie/commit/24519732c679559a1488afc88737dc0ff5b34eb4)), closes [#636](https://github.com/budgie-at/budgie/issues/636)
+* **contracts:** add DEPOSIT account type, interestRate column and deposit create-input schema ([401baa9](https://github.com/budgie-at/budgie/commit/401baa9cd95d03dd8711637ebc3a79e342f0779a)), closes [#638](https://github.com/budgie-at/budgie/issues/638)
+
+
+
+
+
 ## [6.0.8](https://github.com/budgie-at/budgie/compare/v6.0.7...v6.0.8) (2026-08-10)
 
 
