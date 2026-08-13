@@ -19,10 +19,12 @@ import {
     transactionAsync
 } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
+import { i18n } from '@lingui/core';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import {
+    accountRepository,
     db,
     debtEventRepository,
     transactionEntryRepository,
@@ -33,7 +35,6 @@ import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/in
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { accountService } from '../../account/service/account.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
@@ -45,6 +46,7 @@ import { upsertTransactionEntriesAndTags } from '../utils/upsert-transaction-ent
 
 import { importedTransactionEntryUpdateService } from './imported-transaction-entry-update.service';
 import { transactionBatchCreateService } from './transaction-batch-create.service';
+import { transactionDepositSafetyService } from './transaction-deposit-safety.service';
 
 class TransactionService {
     @Log(
@@ -70,6 +72,9 @@ class TransactionService {
         }
 
         const { stampedInputs } = stampForDeferredEmbedding(inputs, 'bulkCreate');
+
+        await transactionDepositSafetyService.assertNoDepositExpenseInputs(stampedInputs, tx);
+
         const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
             transactionBatchCreateService.create(batch, tx)
         );
@@ -90,7 +95,10 @@ class TransactionService {
     )
     @InvalidateDatabaseLiveQuery()
     async update(input: TransactionCreateInputInterface): Promise<void> {
-        await transactionAsync(db, async tx => importedTransactionEntryUpdateService.update(input.entries, input, tx));
+        await transactionAsync(db, async tx => {
+            await transactionDepositSafetyService.assertNoDepositExpenseImportedUpdate(input, tx);
+            await importedTransactionEntryUpdateService.update(input.entries, input, tx);
+        });
     }
 
     @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
@@ -130,15 +138,30 @@ class TransactionService {
         });
     }
 
-    @InvalidateDatabaseLiveQuery()
-    async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        return await transactionAsync(db, async tx => this.createInternalTransferInTransaction(input, tx));
+    @InvalidateDatabaseLiveQuery((_input, tx) => !isDefined(tx))
+    async createInternalTransfer(input: TransactionCreateInputInterface, tx?: DB): Promise<TransactionEntityInterface> {
+        if (!isDefined(tx)) {
+            return transactionAsync(db, async innerTx => this.createInternalTransfer(input, innerTx));
+        }
+
+        return this.createInternalTransferInTransaction(input, tx);
     }
 
     @InvalidateDatabaseLiveQuery()
     async updateById(id: number, input: TransactionUpdateServiceInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
             const existingTransaction = await transactionRepository.getByIdWithEntries(id, tx);
+            await transactionDepositSafetyService.assertNoDepositExpenseInputs(
+                [
+                    {
+                        entries: input.entries,
+                        fromAccountId: input.fromAccountId ?? existingTransaction?.fromAccountId ?? null,
+                        type: input.type ?? existingTransaction?.type ?? TransactionTypeEnum.EXPENSE
+                    }
+                ],
+                tx
+            );
+
             const isConsolidated = isDefined(existingTransaction?.consolidationType);
             const transaction = await transactionRepository.updateById(
                 id,
@@ -188,8 +211,8 @@ class TransactionService {
     private async createInternalTransferInTransaction(input: TransactionCreateInputInterface, tx: DB): Promise<TransactionEntityInterface> {
         const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
         const [fromAccount, toAccount] = await Promise.all([
-            accountService.findByIdOrFail(fromEntry.accountId),
-            accountService.findByIdOrFail(toEntry.accountId)
+            this.findAccountByIdOrFail(fromEntry.accountId, tx),
+            this.findAccountByIdOrFail(toEntry.accountId, tx)
         ]);
         const fromAmountInMicroUnits = convertToMicroUnits(fromEntry.amount);
         const { amount: toAmount, exchangeRate } = await this.getTransferAmountAndExchangeRate(
@@ -223,6 +246,16 @@ class TransactionService {
         await this.finalizeInternalTransfer(input, transaction.id, tx);
 
         return transaction;
+    }
+
+    private async findAccountByIdOrFail(id: number, tx: DB): Promise<AccountEntityInterface> {
+        const account = await accountRepository.findById(id, tx);
+
+        if (!isDefined(account)) {
+            throw new Error(i18n._({ id: 'transaction.accountNotFound', message: 'Account not found' }));
+        }
+
+        return account;
     }
 
     private async getTransferAmountAndExchangeRate(

@@ -7,12 +7,12 @@ import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Input } from '../../../@generic/component/input/input';
-import { monobankSyncService } from '../../service/monobank-sync.service';
+import { useBankSyncToken } from '../../hook/use-bank-sync-token.hook';
+import { monobankIntegrationTokenService } from '../../service/monobank-integration-token.service';
 import { PasteTokenButton } from '../paste-token-button/paste-token-button';
 
 interface Props {
     readonly accountId: number;
-    readonly token: string;
 }
 
 const maskToken = (token: string): string => {
@@ -24,12 +24,14 @@ const maskToken = (token: string): string => {
     return `${token.slice(0, 4)}••••${token.slice(-4)}`;
 };
 
-export const BankSyncTokenSection = ({ accountId, token }: Props) => {
+export const BankSyncTokenSection = ({ accountId }: Props) => {
     const { t } = useLingui();
 
     const [isEditing, setIsEditing] = useState(false);
     const [newToken, setNewToken] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+
+    const token = useBankSyncToken(accountId);
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -48,7 +50,7 @@ export const BankSyncTokenSection = ({ accountId, token }: Props) => {
 
         setIsSaving(true);
         try {
-            await monobankSyncService.updateAccountToken(accountId, newToken.trim());
+            await monobankIntegrationTokenService.updateAccountToken(accountId, newToken.trim());
             setIsEditing(false);
             setNewToken('');
         } catch (error) {

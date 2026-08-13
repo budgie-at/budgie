@@ -7,5 +7,6 @@ import { AccountRowInterface } from './account-row.interface';
 export interface BankProviderSectionInterface {
     readonly kind: HomeSectionKindEnum.BANK_PROVIDER;
     readonly provider: ExternalSourceEnum;
+    readonly integrationId: number;
     readonly data: AccountRowInterface[];
 }

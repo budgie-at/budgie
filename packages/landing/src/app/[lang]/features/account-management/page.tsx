@@ -73,7 +73,7 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 locale={lang}
                 tagline={
                     <Trans>
-                        Track unlimited bank accounts, cash wallets, savings, crypto, stocks, and debt — grouped, archived, and renamed
+                        Track unlimited bank accounts, cash wallets, deposits, crypto, stocks, and debt — grouped, archived, and renamed
                         however you want.
                     </Trans>
                 }
@@ -85,9 +85,9 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Real life is multi-account. A current account, a savings pot, a Revolut card, a crypto wallet, a parental loan.
-                        Budgie treats each as a first-class account with its own currency, type, balance, and &ldquo;include in net
-                        worth&rdquo; toggle.
+                        Real life is multi-account. A current account, a savings pot, a fixed-term deposit, a Revolut card, a crypto wallet,
+                        a parental loan. Budgie treats each as a first-class account with its own currency, type, balance, and
+                        &ldquo;include in net worth&rdquo; toggle.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -104,13 +104,15 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Unlimited accounts: Bank, Cash, Crypto, Stocks, Debt — each with its own currency and balance</Trans>
+                        <Trans>
+                            Unlimited accounts: Bank, Cash, Deposit, Crypto, Stocks, Debt — each with its own currency and balance
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Bank-synced accounts auto-group by provider on the home screen</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Liability and debt accounts support negative balances and a target return date</Trans>
+                        <Trans>Deposit accounts track maturity details; liability and debt accounts support negative balances</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>Archive without deleting — old accounts disappear from the home but stay searchable</Trans>
@@ -127,8 +129,8 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Crypto, Stocks, Debt.
-                        Reorder, rename, archive, or permanently delete from the account detail page.
+                        Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Deposit, Crypto, Stocks,
+                        Debt. Reorder, rename, archive, or permanently delete from the account detail page.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -157,6 +159,15 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                         <Trans>
                             Budgie prompts you to migrate them to another account or wipe them. Archiving is the safer alternative — it
                             hides the account from the home but keeps the data.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I track fixed-term deposits?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Deposit is a dedicated account type with interest rate, maturity date, days remaining, expected payout, and
+                            a Close Deposit action that transfers the balance to a selected destination account.
                         </Trans>
                     }
                 />

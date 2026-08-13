@@ -7,13 +7,15 @@ import {
     TransactionTypeEnum,
     transactionAsync
 } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
 import { t } from '@lingui/core/macro';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { accountBalanceRepository, db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
 import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
@@ -22,12 +24,16 @@ import { entryBaseValuationService } from '../../money-data/service/entry-base-v
 import { TRANSFER_CONVERSION_ERROR_MESSAGE } from '../constant/transfer-conversion-error-message.constant';
 import { BuildTransferEntryCreateEntityInputInterface } from '../interface/build-transfer-entry-create-entity-input.interface';
 import { TransferConversionResultInterface } from '../interface/transfer-conversion-result.interface';
+import { buildTransferEntries } from '../utils/build-transfer-entries.util';
+import { createTransactionInput } from '../utils/create-transaction-input.util';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 import { getTransactionFeeEntries } from '../utils/get-transaction-fee-entries.util';
 
+import { transactionService } from './transaction.service';
+
 import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
 import type { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
-import type { DB, TransactionEntryEntityInterface } from '@budgie/contracts';
+import type { DB, TransactionCreateInputInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 
 class TransactionTransferService {
     @InvalidateDatabaseLiveQuery()
@@ -38,6 +44,38 @@ class TransactionTransferService {
     @InvalidateDatabaseLiveQuery()
     async convertIncomeToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
         return this.convertToTransfer(params, 'income');
+    }
+
+    @Log(
+        (depositAccountId, destinationAccountId) =>
+            `enter depositAccountId=${depositAccountId} destinationAccountId=${destinationAccountId}`,
+        (_result, depositAccountId, destinationAccountId) =>
+            `done depositAccountId=${depositAccountId} destinationAccountId=${destinationAccountId}`,
+        (error, depositAccountId, destinationAccountId) =>
+            `throw depositAccountId=${depositAccountId} destinationAccountId=${destinationAccountId} error=${getErrorMessage(error)}`
+    )
+    @InvalidateDatabaseLiveQuery()
+    async closeDepositTo(depositAccountId: number, destinationAccountId: number): Promise<void> {
+        await transactionAsync(db, async tx => {
+            const depositBalanceRows = await accountBalanceRepository.getByAccountId(depositAccountId, tx);
+            const depositBalanceMicroUnits = depositBalanceRows.at(0)?.balance ?? 0;
+
+            if (depositBalanceMicroUnits < 0) {
+                // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, surfaced via caller's Toast
+                throw new Error('Cannot close a deposit with a negative balance');
+            }
+
+            if (isPositiveNumber(depositBalanceMicroUnits)) {
+                const transferInput = await this.buildDepositCloseTransferInput(
+                    depositAccountId,
+                    destinationAccountId,
+                    depositBalanceMicroUnits
+                );
+                await transactionService.createInternalTransfer(transferInput, tx);
+            }
+
+            await accountService.archiveByIdInTransaction(depositAccountId, tx);
+        });
     }
 
     private async convertToTransfer(
@@ -239,6 +277,56 @@ class TransactionTransferService {
         }
 
         throw new Error(t`Transaction must have a destination account`);
+    }
+
+    private async buildDepositCloseTransferInput(
+        depositAccountId: number,
+        destinationAccountId: number,
+        amountInMicroUnits: number
+    ): Promise<TransactionCreateInputInterface> {
+        const [depositAccount, destinationAccount] = await Promise.all([
+            accountService.findByIdOrFail(depositAccountId),
+            accountService.findByIdOrFail(destinationAccountId)
+        ]);
+        const exchangeRate = await this.resolveDepositCloseExchangeRate(
+            depositAccount.instrumentId,
+            destinationAccount.instrumentId,
+            amountInMicroUnits
+        );
+        const amount = convertFromMicroUnits(amountInMicroUnits);
+
+        return createTransactionInput({
+            type: TransactionTypeEnum.TRANSFER,
+            fromAccountId: depositAccountId,
+            toAccountId: destinationAccountId,
+            amount,
+            exchangeRate,
+            entries: buildTransferEntries({
+                fromAccountId: depositAccountId,
+                toAccountId: destinationAccountId,
+                amount,
+                categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER
+            })
+        });
+    }
+
+    private async resolveDepositCloseExchangeRate(
+        fromInstrumentId: number,
+        toInstrumentId: number,
+        amountInMicroUnits: number
+    ): Promise<number> {
+        if (fromInstrumentId === toInstrumentId) {
+            return 1;
+        }
+
+        const conversion = await exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits);
+
+        if (!isDefined(conversion) || !isPositiveNumber(conversion.amount)) {
+            // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, surfaced via caller's Toast
+            throw new Error('No exchange rate available to close this deposit into the selected account');
+        }
+
+        return amountInMicroUnits / conversion.amount;
     }
 }
 

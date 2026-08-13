@@ -14,6 +14,7 @@ const MUTABLE_TABLES = [
     'rule_conditions',
     'rules',
     'bank_syncs',
+    'bank_integrations',
     'exchange_rates',
     'merchant_embeddings',
     'merchant_embedding_tags',
