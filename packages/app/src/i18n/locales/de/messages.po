@@ -303,10 +303,6 @@ msgstr "Limit pro Kategorie hinzufügen"
 msgid "Add Account"
 msgstr "Konto hinzufügen"
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Add Budgie's Capture Apple Pay transaction action."
-msgstr "Füge die Budgie-Aktion „Apple Pay-Transaktion erfassen“ hinzu."
-
 #: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
 #: src/sync/component/bank-integration-page/bank-integration-page.tsx
 msgid "Add accounts"
@@ -315,6 +311,10 @@ msgstr "Konten hinzufügen"
 #: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
 msgid "Add accounts from bank"
 msgstr "Konten von der Bank hinzufügen"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Add Budgie's Capture Apple Pay transaction action."
+msgstr "Füge die Budgie-Aktion „Apple Pay-Transaktion erfassen“ hinzu."
 
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
