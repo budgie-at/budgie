@@ -40,7 +40,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     });
 }
 
-export default async function AccountManagementFeaturePage(props: PageLangParam) {
+export default async function DepositTrackingFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
@@ -69,31 +69,30 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
             />
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Multi-Account Money Management</Trans>}
+                heading={<Trans>Deposit Tracking</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Track unlimited bank accounts, cash wallets, deposits, crypto, stocks, and debt — grouped, archived, and renamed
-                        however you want.
+                        Track fixed-term savings as deposit accounts kept separate from everyday spending, with interest rate, maturity
+                        date, days remaining, and expected payout.
                     </Trans>
                 }
             />
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why real life is multi-account</Trans>
+                    <Trans>Why deposits need their own account type</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Real life is multi-account. A current account, a savings pot, a fixed-term deposit, a Revolut card, a crypto wallet,
-                        a parental loan. Budgie treats each as a first-class account with its own currency, type, balance, and
-                        &ldquo;include in net worth&rdquo; toggle.
+                        A deposit is not everyday cash. Budgie treats it as a distinct account type so the principal stays separate from
+                        normal spending accounts while still appearing in your broader account list.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Bank-synced accounts auto-group by provider on the home screen. Liability and debt accounts support negative
-                        balances. Archived accounts disappear from the home but stay searchable.
+                        Deposit accounts store an optional annual interest rate and maturity date. The account details screen uses those
+                        fields to show days remaining and an expected payout estimate, without pretending interest has automatically posted.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -104,21 +103,22 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>
-                            Unlimited accounts: Bank, Cash, Deposit, Crypto, Stocks, Debt — each with its own currency and balance
-                        </Trans>
+                        <Trans>Dedicated Deposit account type for fixed-term savings and locked principal</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Bank-synced accounts auto-group by provider on the home screen</Trans>
+                        <Trans>Interest rate and maturity date fields for each deposit account</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Deposit accounts track maturity details; liability and debt accounts support negative balances</Trans>
+                        <Trans>Days remaining and expected payout shown from your balance, rate, and maturity date</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Archive without deleting — old accounts disappear from the home but stay searchable</Trans>
+                        <Trans>Close a deposit into a selected destination account with a transfer, then archive it</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>&ldquo;Include in net worth&rdquo; toggle per account for partial-truth balance sheets</Trans>
+                        <Trans>Deposit principal is protected from normal expense spending and cannot go negative</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>&ldquo;Include in net worth&rdquo; stays available when a deposit should or should not count</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -129,54 +129,52 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Deposit, Crypto, Stocks,
-                        Debt. Reorder, rename, archive, or permanently delete from the account detail page.
+                        Create a Deposit account manually or from a bank integration. Add its current balance, currency, interest rate, and
+                        maturity date so Budgie can show the deposit details alongside your other accounts.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        When the deposit matures, choose the destination account and close it. Budgie transfers the remaining balance from
+                        the deposit account and archives the deposit so it leaves the home screen without losing history.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
-                    question={<Trans>Is there a limit on the number of accounts?</Trans>}
+                    question={<Trans>Can I spend from a deposit account?</Trans>}
                     answer={
                         <Trans>
-                            No. Add as many as you need — the home screen organizes them by type and provider so the list stays scannable.
+                            No. Deposit accounts are excluded from normal expense source selection, and Budgie prevents deposit balances
+                            from becoming negative.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can I track an account in a different currency?</Trans>}
+                    question={<Trans>Does Budgie automatically accrue deposit interest?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Each account has a fixed currency. Daily exchange-rate snapshots convert everything to your base currency
-                            for net worth.
+                            No. Budgie stores the interest rate and maturity date, then calculates an expected payout estimate from the
+                            current balance and days remaining. It does not automatically create interest transactions.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What happens to transactions when I delete an account?</Trans>}
+                    question={<Trans>How do I close a deposit?</Trans>}
                     answer={
                         <Trans>
-                            Budgie prompts you to migrate them to another account or wipe them. Archiving is the safer alternative — it
-                            hides the account from the home but keeps the data.
+                            Use the Close Deposit action, select the destination account, and confirm. Budgie transfers the remaining
+                            deposit balance to that account and archives the deposit.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can I track fixed-term deposits?</Trans>}
+                    question={<Trans>Can deposits be included in net worth?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Deposit is a dedicated account type with interest rate, maturity date, days remaining, expected payout, and
-                            a Close Deposit action that transfers the balance to a selected destination account.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Can I track loans I owe or money owed to me?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes. Debt is a dedicated account type with explicit &ldquo;I owe&rdquo; / &ldquo;owes me&rdquo; direction. See
-                            Debt &amp; Loan Tracking for details.
+                            Yes. Like other accounts, deposits have an &ldquo;include in net worth&rdquo; setting, so you can decide whether
+                            a locked deposit belongs in your net worth view.
                         </Trans>
                     }
                 />
