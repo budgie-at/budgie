@@ -1,0 +1,10 @@
+{
+    "accountId": 1,
+    "amount": 12.34,
+    "capturedAt": "2026-08-13T10:15:30.123Z",
+    "captureId": "11111111-1111-4111-8111-111111111111",
+    "cardName": "Visa ·•••• 4242",
+    "duplicateTransactionId": 5,
+    "merchant": "Kava Bar",
+    "status": "NEEDS_REVIEW"
+}

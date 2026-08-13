@@ -6,6 +6,7 @@ appId: ${APP_ID}
       element:
           id: 'SettingsPage.ApplePayCaptureCard'
       direction: DOWN
+      centerElement: true
 - tapOn:
       id: 'SettingsPage.ApplePayCaptureCard'
 - extendedWaitUntil:
@@ -14,5 +15,12 @@ appId: ${APP_ID}
       timeout: 10000
 - assertVisible: 'Apple Pay capture'
 - assertVisible: '.*Wallet history.*'
+- scrollUntilVisible:
+      element:
+          id: 'ApplePayCaptureSettings.OpenShortcutsButton'
+      direction: DOWN
+      centerElement: true
 - assertVisible:
       id: 'ApplePayCaptureSettings.OpenShortcutsButton'
+- assertVisible:
+      id: 'ApplePayCaptureSettings.InstructionsGuideLink'

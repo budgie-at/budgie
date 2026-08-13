@@ -1,0 +1,24 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: capture-apple-pay-shortcuts-settings.flow.yaml
+- tapOn:
+      id: 'SettingsPage.ApplePayCaptureCard'
+- extendedWaitUntil:
+      visible:
+          id: 'ApplePayCaptureSettings.Container'
+      timeout: 10000
+- scrollUntilVisible:
+      element:
+          id: 'ApplePayCaptureSettings.OpenShortcutsButton'
+      direction: DOWN
+      centerElement: true
+- assertVisible:
+      id: 'ApplePayCaptureSettings.OpenShortcutsButton'
+- scrollUntilVisible:
+      element:
+          id: 'ApplePayCaptureSettings.SetupCard'
+      direction: UP
+      centerElement: true
+- assertVisible:
+      id: 'ApplePayCaptureSettings.SetupCard'
