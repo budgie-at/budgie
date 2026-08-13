@@ -1,4 +1,4 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, UserIconNameEnum, normalizeAccountIban } from '@budgie/contracts';
 
 import { BankAccountTypeEnum } from '../enum/bank-account-type.enum';
 import { formatBankAccountTitle } from '../util/format-bank-account-title.util';
@@ -22,6 +22,6 @@ export const mapBankAccountToCreateInput = (
         currentBalance: 0,
         externalId: bankAccount.id,
         externalSource: mapBankProviderToExternalSource(bankAccount.provider),
-        iban: bankAccount.iban
+        iban: normalizeAccountIban(bankAccount.iban)
     };
 };

@@ -19,6 +19,5 @@ export interface IbanBridgeTransferCandidateInterface {
     readonly targetAccountId: number;
     readonly targetAccountTitle: string;
     readonly exchangeRate: number;
-    readonly existingDirectTransferId: number | null;
     readonly timeDiff: number;
 }

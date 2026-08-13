@@ -67,7 +67,23 @@ WHERE debt_entry.kind = 'DEBT_SETTLEMENT'
   AND (
       (debt_account.debt_type = 'LENT' AND debt_entry.type IN ('CREDIT', 'DEBIT'))
       OR (debt_account.debt_type = 'BORROW' AND debt_entry.type IN ('CREDIT', 'DEBIT'))
-  );
+  )
+  AND (
+      SELECT COUNT(*)
+      FROM transaction_entries counted_debt_entry
+      INNER JOIN accounts counted_debt_account
+          ON counted_debt_account.id = counted_debt_entry.account_id
+          AND counted_debt_account.type = 'DEBT'
+          AND counted_debt_account.deleted_at IS NULL
+      WHERE counted_debt_entry.transaction_id = debt_entry.transaction_id
+        AND counted_debt_entry.kind = 'DEBT_SETTLEMENT'
+        AND counted_debt_entry.deleted_at IS NULL
+        AND counted_debt_entry.original_transaction_id IS NULL
+        AND (
+            (counted_debt_account.debt_type = 'LENT' AND counted_debt_entry.type IN ('CREDIT', 'DEBIT'))
+            OR (counted_debt_account.debt_type = 'BORROW' AND counted_debt_entry.type IN ('CREDIT', 'DEBIT'))
+        )
+  ) = 1;
 --> statement-breakpoint
 INSERT INTO debt_events (
     created_at,
@@ -119,6 +135,22 @@ WHERE debt_entry.kind = 'PRIMARY'
       (debt_account.debt_type = 'LENT' AND debt_entry.type IN ('DEBIT', 'CREDIT'))
       OR (debt_account.debt_type = 'BORROW' AND debt_entry.type IN ('CREDIT', 'DEBIT'))
   )
+  AND (
+      SELECT COUNT(*)
+      FROM transaction_entries counted_debt_entry
+      INNER JOIN accounts counted_debt_account
+          ON counted_debt_account.id = counted_debt_entry.account_id
+          AND counted_debt_account.type = 'DEBT'
+          AND counted_debt_account.deleted_at IS NULL
+      WHERE counted_debt_entry.transaction_id = debt_entry.transaction_id
+        AND counted_debt_entry.kind = 'PRIMARY'
+        AND counted_debt_entry.deleted_at IS NULL
+        AND counted_debt_entry.original_transaction_id IS NULL
+        AND (
+            (counted_debt_account.debt_type = 'LENT' AND counted_debt_entry.type IN ('DEBIT', 'CREDIT'))
+            OR (counted_debt_account.debt_type = 'BORROW' AND counted_debt_entry.type IN ('CREDIT', 'DEBIT'))
+        )
+  ) = 1
   AND NOT EXISTS (
       SELECT 1
       FROM debt_events existing_event

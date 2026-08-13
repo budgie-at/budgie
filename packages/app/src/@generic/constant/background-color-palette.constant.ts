@@ -8,6 +8,8 @@ export const BACKGROUND_COLOR_PALETTE: Record<ColorPaletteVariant, ClassValue> =
     destructive: 'border-destructive-corner bg-destructive-background',
     positive: 'border-positive-corner bg-positive-background',
     pink: 'border-pink-corner bg-pink-background',
+    violet: 'border-violet-corner bg-violet-background',
+    cyan: 'border-cyan-corner bg-cyan-background',
     warning: 'border-warning-corner bg-warning-background',
     'dark-warning': 'border-dark-warning-corner bg-dark-warning-background',
     ghost: 'border-secondary-corner bg-ghost-background',

@@ -1,12 +1,15 @@
 import { ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
+import { expectRevertRestoresSources } from '../harness/consolidation-revert-audit';
 import { runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService } from '../harness/test-context';
 
 const TRANSFER_AMOUNT = 10_000 * PRECISION;
-const TRANSFER_WITH_FEE_AMOUNT = 10_300 * PRECISION;
-const TOO_LARGE_FEE_AMOUNT = 10_600 * PRECISION;
+const TRANSFER_FEE_DELTA_AMOUNT = 300 * PRECISION;
+const TRANSFER_WITH_FEE_AMOUNT = TRANSFER_AMOUNT + TRANSFER_FEE_DELTA_AMOUNT;
+const TOO_LARGE_FEE_AMOUNT = TRANSFER_AMOUNT + 600 * PRECISION;
+const HINTED_FEE_OPERATED_AT = new Date('2026-05-14T11:30:00');
 const SOURCE_CARD_SUFFIX = '0356';
 const TARGET_CARD_SUFFIX = '5524';
 const PRIVATBANK_FAKE_IBAN_PREFIX = 'UA1111111';
@@ -17,10 +20,10 @@ const seedPrivatbankAccount = (suffix: string, externalSource: ExternalSourceEnu
 const seedPrivatbankFeeTransfer = (
     incomeTitle: string = `Зі своєї картки *${SOURCE_CARD_SUFFIX}`,
     expenseAmount: number = TRANSFER_WITH_FEE_AMOUNT,
-    incomeOperatedAt: Date = new Date(2026, 4, 14, 11, 30, 0),
+    incomeOperatedAt: Date = HINTED_FEE_OPERATED_AT,
     externalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK
 ) => {
-    const operatedAt = new Date(2026, 4, 14, 11, 30, 0);
+    const operatedAt = HINTED_FEE_OPERATED_AT;
     const transferMcc = testQueryService.findMccByCode('4829');
     const sourceAccount = seedPrivatbankAccount(SOURCE_CARD_SUFFIX, externalSource);
     const targetAccount = seedPrivatbankAccount(TARGET_CARD_SUFFIX, externalSource);
@@ -68,7 +71,7 @@ const expectPrivatbankFeeTransferConsolidated = async (
     const { expense, income, sourceAccount, targetAccount } = seedPrivatbankFeeTransfer(
         `Зі своєї картки *${SOURCE_CARD_SUFFIX}`,
         TRANSFER_WITH_FEE_AMOUNT,
-        new Date(2026, 4, 14, 11, 30, 0),
+        HINTED_FEE_OPERATED_AT,
         externalSource
     );
 
@@ -84,6 +87,16 @@ describe('consolidation/same-bank-hinted-fee-transfer', () => {
 
     it('auto-consolidates legacy same-bank own-card transfers when account source is missing but IBAN bank prefix matches', async () => {
         await expectPrivatbankFeeTransferConsolidated(null);
+    });
+
+    it('restores both hinted fee transfer sides and account balances when the canonical is reverted', async () => {
+        const { expense, income, sourceAccount, targetAccount } = seedPrivatbankFeeTransfer();
+
+        await expectRevertRestoresSources({
+            accountIds: [sourceAccount.id, targetAccount.id],
+            consolidationType: TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER,
+            sourceTransactionIds: [expense.id, income.id]
+        });
     });
 
     it('leaves a hinted transfer unconsolidated when the reciprocal account hint does not match', async () => {
@@ -105,11 +118,10 @@ describe('consolidation/same-bank-hinted-fee-transfer', () => {
     });
 
     it('leaves a hinted transfer unconsolidated when the matching transactions are not close in time', async () => {
-        const operatedAt = new Date(2026, 4, 14, 11, 30, 0);
         const { expense, income } = seedPrivatbankFeeTransfer(
             `Зі своєї картки *${SOURCE_CARD_SUFFIX}`,
             TRANSFER_WITH_FEE_AMOUNT,
-            new Date(operatedAt.getTime() + 3 * 60 * 1000)
+            new Date(HINTED_FEE_OPERATED_AT.getTime() + 3 * 60 * 1000)
         );
 
         const result = await runConsolidation();

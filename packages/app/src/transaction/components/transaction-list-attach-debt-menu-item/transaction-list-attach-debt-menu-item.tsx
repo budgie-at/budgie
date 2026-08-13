@@ -37,7 +37,7 @@ export const TransactionListAttachDebtMenuItem = () => {
     const [categoryEntry] = categoryEntries;
     const debtAttachmentErrorMessage = t`Could not attach debt`;
 
-    const createBorrowedDebtAccount = async () => {
+    const createBorrowedDebtAccount = async (): Promise<number | null> => {
         await accountDebtOpeningService.createBorrowedDebtFromIncome(
             {
                 title: isNotEmptyString(transaction.title) ? transaction.title : t`Borrowed`,
@@ -53,6 +53,8 @@ export const TransactionListAttachDebtMenuItem = () => {
             },
             transaction.id
         );
+
+        return null;
     };
 
     const borrowedDebtCreateAction: AccountSelectorCreateActionInterface | null = isIncomeTransaction(transaction)

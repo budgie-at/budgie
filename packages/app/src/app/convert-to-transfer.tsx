@@ -9,9 +9,11 @@ import Toast from 'react-native-toast-message';
 import { PageHeader } from '../@generic/component/page-header/page-header';
 import { ModalPage } from '../@generic/component/page/modal-page';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
+import { useDepositCreateAction } from '../account/hooks/use-deposit-create-action.hook';
 import { SystemCategoryIdEnum } from '../category/enum/system-category-id.enum';
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConvertToTransferModal } from '../transaction/context/convert-to-transfer-modal.context';
+import { TransferToAccountCreateActionContext } from '../transaction/context/transfer-to-account-create-action.context';
 import { useConvertExpenseToTransferMutation } from '../transaction/hooks/use-convert-expense-to-transfer.mutation';
 import { useConvertIncomeToTransferMutation } from '../transaction/hooks/use-convert-income-to-transfer.mutation';
 import { buildTransferEntries } from '../transaction/utils/build-transfer-entries.util';
@@ -22,7 +24,7 @@ import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.sele
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 /* jscpd:ignore-end */
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
     const [, resolveConvertToTransfer, currentParams] = useConvertToTransferModal();
@@ -41,6 +43,8 @@ export default function ConvertToTransferModal() {
 
     const fromAccountId = isExpense ? excludeAccountId : 0;
     const toAccountId = isExpense ? 0 : excludeAccountId;
+
+    const depositCreateAction = useDepositCreateAction(isExpense, excludeAccountId, sourceAmount);
 
     const form = useForm<TransactionCreateInputInterface>({
         mode: 'onSubmit',
@@ -118,7 +122,9 @@ export default function ConvertToTransferModal() {
                 testID={ConvertToTransferModalSelector.Page}
                 header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />}
             >
-                <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />
+                <TransferToAccountCreateActionContext value={depositCreateAction}>
+                    <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />
+                </TransferToAccountCreateActionContext>
             </ModalPage>
         </FormProvider>
     );

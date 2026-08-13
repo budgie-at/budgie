@@ -81,6 +81,10 @@ msgstr "{count, plural, one {Цей тег має # транзакцію. Виб
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
 
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
+msgstr "{formattedBalance} буде переведено на {destinationAccountTitle}, а цей депозит буде архівовано. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
+
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} залишилось розподілити"
@@ -225,6 +229,11 @@ msgstr "Рахунок архівовано"
 msgid "Account Name & Icon"
 msgstr "Назва і іконка рахунку"
 
+#. js-lingui-explicit-id
+#: src/transaction/service/transaction.service.ts
+msgid "transaction.accountNotFound"
+msgstr ""
+
 #: src/account/component/create-account-screen/update-account-screen.tsx
 msgid "Account Settings"
 msgstr "Налаштування рахунку"
@@ -298,9 +307,22 @@ msgstr "Додати рахунок"
 msgid "Add Budgie's Capture Apple Pay transaction action."
 msgstr "Додайте дію Budgie «Зберегти транзакцію Apple Pay»."
 
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Add accounts"
+msgstr "Додати рахунки"
+
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+msgid "Add accounts from bank"
+msgstr "Додати рахунки з банку"
+
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
 msgstr "Додати категорію"
+
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Add deposit"
+msgstr "Додати депозит"
 
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
@@ -350,6 +372,10 @@ msgstr "Бюджетний застосунок на базі ШІ з повно
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "All"
 msgstr "Усі"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "All accounts already added"
+msgstr "Усі рахунки вже додано"
 
 #: src/app/import-column-mapper.tsx
 msgid "All columns have been assigned"
@@ -517,6 +543,10 @@ msgstr "Коригування балансу"
 msgid "Bank"
 msgstr "Банк"
 
+#: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
+msgid "Bank integration settings"
+msgstr "Налаштування банківської інтеграції"
+
 #: src/account/constant/account-type.constant.ts
 msgid "Bank sync"
 msgstr "Синхронізація банку"
@@ -643,6 +673,7 @@ msgstr "Budgie позначить як видалені такі записи: {
 #: src/account/component/account-action-card/account-action-card.tsx
 #: src/account/component/archive-account/archive-account.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -764,6 +795,15 @@ msgstr "Буфер обміну порожній"
 msgid "Close"
 msgstr "Закрити"
 
+#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+msgid "Close Deposit"
+msgstr "Закрити депозит"
+
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+msgid "Close Deposit?"
+msgstr "Закрити депозит?"
+
 #: src/@generic/component/popover-menu/popover-menu.tsx
 msgid "Close menu"
 msgstr "Закрити меню"
@@ -874,6 +914,10 @@ msgstr "Собівартість"
 msgid "Could not activate account."
 msgstr "Не вдалося активувати рахунок."
 
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+msgid "Could not add accounts"
+msgstr "Не вдалося додати рахунки"
+
 #: src/account/component/archive-account/archive-account.tsx
 msgid "Could not archive account"
 msgstr "Не вдалося архівувати рахунок"
@@ -892,6 +936,10 @@ msgstr "Не вдалося перевірити дані банківської
 msgid "Could not clear data"
 msgstr "Не вдалося очистити дані"
 
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+msgid "Could not close deposit"
+msgstr "Не вдалося закрити депозит"
+
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Could not consolidate matches"
 msgstr "Не вдалося консолідувати збіги"
@@ -907,6 +955,10 @@ msgstr "Не вдалося створити бюджет"
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
+
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "Could not create deposit account"
+msgstr "Не вдалося створити депозитний рахунок"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -965,6 +1017,10 @@ msgstr "Не вдалося отримати рахунки"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Could not load accounts from the bank"
+msgstr "Не вдалося завантажити рахунки з банку"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -1205,6 +1261,10 @@ msgstr "Дата"
 msgid "Day {selectedDay}"
 msgstr "День {selectedDay}"
 
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Days Remaining"
+msgstr "Залишилось днів"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/transaction/constant/transaction-type.constant.ts
@@ -1269,6 +1329,26 @@ msgstr "Видалити правило"
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
 
+#: src/account/constant/account-type.constant.ts
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "Deposit"
+msgstr "Депозит"
+
+#: src/account/component/create-deposit-account/create-deposit-account.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Deposit Account"
+msgstr "Депозитний рахунок"
+
+#. js-lingui-explicit-id
+#: src/transaction/service/transaction-deposit-safety.service.ts
+msgid "transaction.depositExpenseDisallowed"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/account/service/account-balance-incremental.service.ts
+msgid "account.depositNegativeBalanceDisallowed"
+msgstr ""
+
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
 msgstr "Скасувати вибір"
@@ -1332,6 +1412,10 @@ msgstr "напр. 1000"
 msgid "e.g. 200"
 msgstr "напр. 200"
 
+#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+msgid "e.g. 5"
+msgstr "напр. 5"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "e.g. Business, Personal, Vacation"
 msgstr "напр. Бізнес, Особисте, Відпустка"
@@ -1343,6 +1427,10 @@ msgstr "напр. Продукти, Розваги"
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
+
+#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
+msgid "Edit"
+msgstr ""
 
 #: src/account/component/account-card-base/account-card-base.tsx
 msgid "Edit account"
@@ -1507,6 +1595,10 @@ msgstr "Erste"
 msgid "Erste Bank"
 msgstr "Erste Bank"
 
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Every account from this bank is already linked."
+msgstr "Усі рахунки цього банку вже прив'язано."
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Everyday transactions and spending"
 msgstr "Щоденні транзакції та витрати"
@@ -1522,6 +1614,14 @@ msgstr "Обмінний курс {sourceInstrumentId}->{targetInstrumentId} н�
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Курс обміну: {rateLabel}. Натисніть, щоб редагувати суму отримання"
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Expected maturity date"
+msgstr "Очікувана дата погашення"
+
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Expected Payout"
+msgstr "Очікувана виплата"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Expected return date"
@@ -1621,6 +1721,10 @@ msgstr "Фільтрувати теги"
 msgid "Fix Errors"
 msgstr "Виправити помилки"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Fixed-term savings with an interest rate"
+msgstr "Строкові заощадження з відсотковою ставкою"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "Знайшли проблему або маєте ідею? Відкрийте шаблони GitHub Issues."
@@ -1657,6 +1761,10 @@ msgstr "Сума з"
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Currency"
 msgstr "Валюта з"
+
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "Funding amount"
+msgstr "Сума поповнення"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "General"
@@ -1741,6 +1849,10 @@ msgstr "Імпортувати Erste Bank"
 msgid "Import failed"
 msgstr "Помилка імпорту"
 
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Import file"
+msgstr "Імпортувати файл"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
 msgstr "Імпорт Приватбанку"
@@ -1809,6 +1921,14 @@ msgstr "Індексування {done} з {total}"
 #: src/market-data/service/historical-market-data-loader.service.ts
 msgid "Instrument not found"
 msgstr "Інструмент не знайдено"
+
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Interest Rate"
+msgstr "Відсоткова ставка"
+
+#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+msgid "Interest Rate % (Optional)"
+msgstr "Відсоткова ставка % (необов'язково)"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
 msgid "Invalid file"
@@ -1997,6 +2117,14 @@ msgstr "збігається"
 msgid "Matches Regex"
 msgstr "Відповідає регулярному виразу"
 
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Maturity Date"
+msgstr "Дата погашення"
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Maturity Date (Optional)"
+msgstr "Дата погашення (необов'язково)"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
 msgstr "MCC"
@@ -2080,6 +2208,10 @@ msgstr "Новий рахунок"
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "New borrowed debt"
 msgstr "Новий позичений борг"
+
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "New deposit account"
+msgstr "Новий депозитний рахунок"
 
 #: src/app/(main)/create-transaction/expense.tsx
 msgid "New Expense"
@@ -2431,6 +2563,11 @@ msgstr "PIN-код має бути {PIN_LENGTH} цифр"
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PINs do not match"
 msgstr "PIN-коди не збігаються"
+
+#: src/account/hooks/use-account-entity-form.hook.ts
+#: src/account/hooks/use-account-form.hook.ts
+msgid "Please check the account details"
+msgstr "Перевірте дані рахунку"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Please enter your Monobank API token"
@@ -2964,6 +3101,10 @@ msgstr "Встановити категорію"
 msgid "Set fee"
 msgstr "Встановити комісію"
 
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Set Maturity Date"
+msgstr "Встановити дату погашення"
+
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
@@ -3409,6 +3550,10 @@ msgstr "Спробуйте інший пошуковий запит або ст�
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Try again"
+msgstr "Спробувати ще раз"
+
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 #: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Try Again"
@@ -3473,6 +3618,10 @@ msgstr "Оновити рахунок"
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"
 msgstr "Оновити?"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Update the token from any account already syncing with this integration, then try again."
+msgstr "Оновіть токен через будь-який рахунок, який уже синхронізується з цією інтеграцією, а потім спробуйте ще раз."
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Updated {formattedDate}"
@@ -3550,6 +3699,10 @@ msgstr "Історія Wallet недоступна"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."
 msgstr "Ми повторимо спробу у фоновому режимі."
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "When does the deposit mature?"
+msgstr "Коли настає термін погашення депозиту?"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"

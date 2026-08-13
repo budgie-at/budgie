@@ -7,6 +7,8 @@ export const FOREGROUND_COLOR_PALETTE: Record<ColorPaletteVariant, ClassValue> =
     destructive: 'text-destructive-foreground',
     positive: 'text-positive-foreground',
     pink: 'text-pink-foreground',
+    violet: 'text-violet-foreground',
+    cyan: 'text-cyan-foreground',
     warning: 'text-warning-foreground',
     'dark-warning': 'text-dark-warning-foreground',
     ghost: 'text-ghost-foreground',

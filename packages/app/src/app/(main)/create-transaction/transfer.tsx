@@ -5,11 +5,12 @@ import { useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
@@ -27,9 +28,10 @@ const SAFE_EDGES: Edge[] = ['top', 'bottom'];
 export default function CreateTransferTransactionPage() {
     const { t } = useLingui();
     const { markForEmbedding } = useEmbeddingGenerator();
-    const { accountId } = useLocalSearchParams<{ accountId?: string }>();
+    const { accountId, toAccountId } = useLocalSearchParams<{ accountId?: string | string[]; toAccountId?: string | string[] }>();
 
-    const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
+    const parsedAccountId = isPositiveNumber(Number(normalizeRouteParam(accountId))) ? Number(normalizeRouteParam(accountId)) : null;
+    const parsedToAccountId = isPositiveNumber(Number(normalizeRouteParam(toAccountId))) ? Number(normalizeRouteParam(toAccountId)) : null;
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
@@ -42,7 +44,7 @@ export default function CreateTransferTransactionPage() {
         schema: TransferTransactionCreateInputSchema,
         type: TransactionTypeEnum.TRANSFER,
         fromAccountId: parsedAccountId ?? 0,
-        toAccountId: 0
+        toAccountId: parsedToAccountId ?? 0
     });
 
     const [fromAccountId, amount] = useWatch({

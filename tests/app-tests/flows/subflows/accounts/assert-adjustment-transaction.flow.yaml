@@ -1,0 +1,8 @@
+appId: ${APP_ID}
+---
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Badge.Adjustment'
+      timeout: 10000
+- assertVisible:
+      id: 'TransactionCard.AdjustmentAmount.${ADJUSTMENT_DELTA}'

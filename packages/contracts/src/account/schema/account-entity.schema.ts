@@ -24,6 +24,7 @@ export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     nature: zodEnum(AccountNatureEnum).describe('The account nature.'),
     externalId: schema => schema.nullable().default(null).describe('The external id of the account.'),
     externalSource: zodEnum(ExternalSourceEnum).nullable().default(null).describe('The external source of the account.'),
+    integrationId: schema => schema.positive().nullable().default(null).describe('The id of the bank integration this account belongs to.'),
     iban: schema =>
         schema
             .regex(/^[A-Z]{2}[0-9]{2}[A-Z0-9]+$/u, 'Invalid IBAN format')
@@ -39,6 +40,7 @@ export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     targetBaseInstrumentId: schema => schema.positive().nullable().describe('Base instrument id used to value the target balance'),
     targetBaseExchangeRate: schema => schema.positive().nullable().describe('Historical exchange rate used to value the target balance'),
     targetBaseAmount: schema => schema.positive().nullable().describe('Target balance valued in the base instrument'),
+    interestRate: schema => schema.positive().nullable().default(null).describe('The annual interest rate of the account, in percent.'),
     contactId: schema => schema.nullable().default(null).describe('The id of the contact associated with the account.'),
     isActive: schema => schema.default(true).describe('Determines whether the account is active and visible on the main page.')
 });

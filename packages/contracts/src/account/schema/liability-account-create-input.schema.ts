@@ -16,6 +16,7 @@ export const LiabilityAccountCreateInputSchema = convertToCreateEntitySchema(Acc
         contactId: true,
         deadline: true,
         debtType: true,
+        interestRate: true,
         nature: true,
         order: true,
         titleSearch: true
@@ -26,5 +27,6 @@ export const LiabilityAccountCreateInputSchema = convertToCreateEntitySchema(Acc
         externalId: true,
         parentId: true,
         iban: true,
-        isActive: true
+        isActive: true,
+        integrationId: true
     });

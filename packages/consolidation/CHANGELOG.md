@@ -3,6 +3,66 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.1.0](https://github.com/budgie-at/budgie/compare/v6.0.9...v6.1.0) (2026-08-13)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
+## [6.0.9](https://github.com/budgie-at/budgie/compare/v6.0.8...v6.0.9) (2026-08-11)
+
+
+### Bug Fixes
+
+* **consolidation:** restore absorbed transactions on unconsolidate instead of deleting them ([f35499b](https://github.com/budgie-at/budgie/commit/f35499b42d7ce02586831c3e0123522dd6ac5cd4)), closes [#651](https://github.com/budgie-at/budgie/issues/651)
+
+
+
+
+
+## [6.0.8](https://github.com/budgie-at/budgie/compare/v6.0.7...v6.0.8) (2026-08-10)
+
+
+### Bug Fixes
+
+* **consolidation:** fx-tolerant bridge chain reclaim with rebuild fallback ([#651](https://github.com/budgie-at/budgie/issues/651)) ([08852f3](https://github.com/budgie-at/budgie/commit/08852f3b6e6b6c117072fccfbbc3acd2edbea861))
+
+
+
+
+
+## [6.0.7](https://github.com/budgie-at/budgie/compare/v6.0.6...v6.0.7) (2026-08-09)
+
+
+### Bug Fixes
+
+* **consolidation:** stop cross-bucket rank-1 shadowing unique exact-amount refund match ([#648](https://github.com/budgie-at/budgie/issues/648)) ([fae9806](https://github.com/budgie-at/budgie/commit/fae9806cff571b5c96942beb10c0da304db73bb6))
+
+
+
+
+
+## [6.0.6](https://github.com/budgie-at/budgie/compare/v6.0.5...v6.0.6) (2026-08-08)
+
+
+### Bug Fixes
+
+* **consolidation:** accept mutual-best refund instead of silently dropping over-sum group ([#633](https://github.com/budgie-at/budgie/issues/633)) ([820585f](https://github.com/budgie-at/budgie/commit/820585f0cfcf44c58293981b6349472450e8a8d3))
+
+
+
+
+
+## [6.0.5](https://github.com/budgie-at/budgie/compare/v6.0.4...v6.0.5) (2026-08-08)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
 ## [6.0.4](https://github.com/budgie-at/budgie/compare/v6.0.3...v6.0.4) (2026-08-02)
 
 

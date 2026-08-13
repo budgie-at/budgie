@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { router } from 'expo-router';
@@ -30,10 +30,11 @@ interface Props {
     readonly isOpen: boolean;
     readonly onClose: () => void;
     readonly accountId?: number;
+    readonly accountType?: AccountTypeEnum;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements
-export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => {
+export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType }: Props) => {
     const { t } = useLingui();
     const [, hapticImpact] = useVibration();
     const { bottom } = useSafeAreaInsets();
@@ -68,7 +69,9 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
 
     const handleCreateTransfer = () => {
         onClose();
-        router.push({ pathname: '/create-transaction/transfer', params: { accountId } });
+        const isDepositAccount = accountType === AccountTypeEnum.DEPOSIT;
+        const transferParams = isDepositAccount ? { toAccountId: accountId } : { accountId };
+        router.push({ pathname: '/create-transaction/transfer', params: transferParams });
     };
 
     const handleCreateAccount = () => {
