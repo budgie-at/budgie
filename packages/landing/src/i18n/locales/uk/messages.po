@@ -26,6 +26,10 @@ msgstr "\"Але мені потрібне хмарне резервне коп�
 msgid "“How do I sync across devices?”"
 msgstr "\"Як мені синхронізувати між пристроями?\""
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "“Include in net worth” stays available when a deposit should or should not count"
+msgstr "«Враховувати у чистих активах» залишається доступним, коли депозит потрібно або не потрібно враховувати"
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "“Include in net worth” toggle per account for partial-truth balance sheets"
 msgstr "Перемикач «Враховувати у чистих активах» для кожного рахунку, щоб у підсумок входили лише вибрані вами баланси"
@@ -2237,6 +2241,10 @@ msgstr "Окрема вкладка Теги розміщена поряд з в
 msgid "A deliberate gap-finder. Transactions without tags accumulate in this bucket so you can spot bookkeeping gaps and tighten them up."
 msgstr "Навмисний пошукач прогалин. Транзакції без тегів накопичуються в цьому кошику, щоб ви могли знайти прогалини у веденні обліку і усунути їх."
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "A deposit is not everyday cash. Budgie treats it as a distinct account type so the principal stays separate from normal spending accounts while still appearing in your broader account list."
+msgstr "Депозит — це не повсякденні кошти. Budgie розглядає його як окремий тип рахунку, тож основна сума залишається відокремленою від звичайних рахунків для витрат, але все одно відображається у ширшому списку Ваших рахунків."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/metadata.ts
 msgid "A detailed technical analysis of how cloud-based budgeting apps collect, share, and expose your financial data through Plaid integrations, data breaches, and third-party aggregation."
 msgstr "Детальний технічний аналіз того, як хмарні бюджетні додатки збирають, поширюють та розкривають ваші фінансові дані через інтеграції з Plaid, витоки даних та агрегацію третіх сторін."
@@ -3253,8 +3261,8 @@ msgid "Bank, cash, crypto, stocks, ETFs, and debt — all roll up into a single 
 msgstr "Банк, готівка, крипто, акції, ETF та борги — все зводиться до однієї цифри чистих активів на головному екрані, з вбудованою мультивалютною конвертацією."
 
 #: src/app/[lang]/features/account-management/metadata.ts
-msgid "Bank, cash, savings, crypto, stocks, debt — all on one home screen."
-msgstr "Банк, готівка, заощадження, крипто, акції, борги — все на одному головному екрані."
+msgid "Bank, cash, deposit, crypto, stocks, debt — all on one home screen."
+msgstr "Банк, готівка, депозит, крипто, акції, борг — усе на одному головному екрані."
 
 #: src/generic/component/hero-section/hero-section-badges.tsx
 msgid "Bank, Crypto & Cash"
@@ -4130,6 +4138,10 @@ msgstr "Можуть зламати або вилучити за повістк�
 msgid "Can be overwhelming for casual users"
 msgstr "Може бути перевантаженим для звичайних користувачів"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Can deposits be included in net worth?"
+msgstr "Чи можна враховувати депозити у чистих активах?"
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Can historical values be rebuilt after changing my main currency?"
 msgstr ""
@@ -4290,9 +4302,17 @@ msgstr "Чи можу я зібрати додаток самостійно?"
 msgid "Can I self-host Budgie?"
 msgstr "Чи можна розгорнути Budgie на власному сервері?"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Can I spend from a deposit account?"
+msgstr "Чи можна витрачати з депозитного рахунку?"
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Can I track an account in a different currency?"
 msgstr "Чи можна відстежувати рахунок в іншій валюті?"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Can I track fixed-term deposits?"
+msgstr "Чи можна відстежувати строкові депозити?"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Can I track loans I owe or money owed to me?"
@@ -4511,6 +4531,10 @@ msgstr "Натисніть на назву вашого бюджету"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Clone the repository for local development"
 msgstr ""
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Close a deposit into a selected destination account with a transfer, then archive it"
+msgstr "Закрийте депозит переказом на вибраний рахунок призначення, а потім архівуйте його"
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Closed"
@@ -5026,13 +5050,17 @@ msgstr "CRDT обробляють це автоматично для об'єдн
 msgid "CRDTs solve the conflict resolution problem but leave open questions about how changes propagate between devices. Sync engines handle this layer, managing:"
 msgstr "CRDT вирішують проблему вирішення конфліктів, але залишають відкритими питання про те, як зміни поширюються між пристроями. Синхронізаційні рушії обробляють цей рівень, керуючи:"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Create a Deposit account manually or from a bank integration. Add its current balance, currency, interest rate, and maturity date so Budgie can show the deposit details alongside your other accounts."
+msgstr "Створіть рахунок типу «Депозит» вручну або через банківську інтеграцію. Додайте його поточний баланс, валюту, відсоткову ставку та дату погашення, щоб Budgie міг показувати деталі депозиту поруч з іншими Вашими рахунками."
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Create a feature branch for your changes"
 msgstr ""
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Crypto, Stocks, Debt. Reorder, rename, archive, or permanently delete from the account detail page."
-msgstr "Створюйте рахунки вручну або через банківську синхронізацію. Кожен рахунок належить до одного з типів: Банк, Готівка, Крипто, Акції, Борг. Перевпорядковуйте, перейменовуйте, архівуйте або видаляйте назавжди на сторінці деталей рахунку."
+msgid "Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Deposit, Crypto, Stocks, Debt. Reorder, rename, archive, or permanently delete from the account detail page."
+msgstr "Створюйте рахунки вручну або через банківську синхронізацію. Кожен рахунок належить до одного з типів: Банк, Готівка, Депозит, Крипто, Акції, Борг. Змінюйте порядок, перейменовуйте, архівуйте або назавжди видаляйте їх зі сторінки деталей рахунку."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Create an account in Budgie for each bank account or credit card you track. Set the correct currency for each account. You do not need to connect anything to your bank at this stage — the accounts are just containers for imported transactions."
@@ -5442,6 +5470,10 @@ msgstr "Фільтри дат охоплюють: Сьогодні, Вчора, 
 msgid "dates"
 msgstr "дати"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Days remaining and expected payout shown from your balance, rate, and maturity date"
+msgstr "Залишок днів і очікувана виплата на основі Вашого балансу, ставки та дати погашення"
+
 #: src/app/[lang]/features/debt-tracking/opengraph-image.tsx
 msgid "debt"
 msgstr "борг"
@@ -5476,6 +5508,10 @@ msgstr "Параметри роздільника десяткових знак�
 msgid "Decisions and rationales are documented publicly"
 msgstr "Рішення та їх обґрунтування документуються публічно"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Dedicated Deposit account type for fixed-term savings and locked principal"
+msgstr "Окремий тип рахунку «Депозит» для строкових заощаджень і заблокованої основної суми"
+
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Dedicated Tags tab alongside the Categories tab — one tap to switch views"
 msgstr "Окрема вкладка Теги поряд з вкладкою Категорії — один дотик для перемикання переглядів"
@@ -5495,6 +5531,32 @@ msgstr "Видалити свій акаунт у бюджетному дода�
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Dependency Auditing"
 msgstr "Аудит залежностей"
+
+#: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
+msgid "deposit"
+msgstr "депозит"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Deposit accounts store an optional annual interest rate and maturity date. The account details screen uses those fields to show days remaining and an expected payout estimate, without pretending interest has automatically posted."
+msgstr "Депозитні рахунки зберігають необов'язкову річну відсоткову ставку та дату погашення. Екран деталей рахунку використовує ці поля, щоб показати залишок днів і орієнтовну очікувану виплату, не вдаючи, що відсотки вже автоматично нараховано."
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Deposit accounts track maturity details; liability and debt accounts support negative balances"
+msgstr "Депозитні рахунки відстежують деталі погашення; рахунки зобов'язань і боргів підтримують від'ємні баланси"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Deposit principal is protected from normal expense spending and cannot go negative"
+msgstr "Основна сума депозиту захищена від звичайних витрат і не може стати від'ємною"
+
+#: src/app/[lang]/features/deposit-tracking/metadata.ts
+#: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Deposit Tracking"
+msgstr "Відстеження депозитів"
+
+#: src/app/[lang]/features/deposit-tracking/metadata.ts
+msgid "Deposit Tracking — Budgie"
+msgstr "Відстеження депозитів — Budgie"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Description"
@@ -5696,6 +5758,10 @@ msgstr "Чи працює синхронізація з банком офлай�
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Does Budgie auto-backup?"
 msgstr "Чи робить Budgie резервні копії автоматично?"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Does Budgie automatically accrue deposit interest?"
+msgstr "Чи нараховує Budgie відсотки за депозитом автоматично?"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Does Budgie change my original imported amounts?"
@@ -6450,6 +6516,7 @@ msgstr "функції"
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
+#: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/expense-tracking/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
@@ -6647,6 +6714,10 @@ msgstr "П'ять попередніх налаштувань вікна: 7, 30,
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Fix bugs and submit pull requests"
 msgstr "Виправляйте помилки та надсилайте pull requests"
+
+#: src/app/[lang]/features/deposit-tracking/metadata.ts
+msgid "Fixed-term savings kept separate from everyday spending, with maturity dates and expected payout math."
+msgstr "Строкові заощадження, відокремлені від повсякденних витрат, із датами погашення та розрахунком очікуваної виплати."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "FLAG_SECURE on Android — no OS-level screenshot, no screen recording"
@@ -7108,6 +7179,7 @@ msgstr "Позиції об'єднуються в чисті активи раз
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
+#: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/expense-tracking/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
@@ -7235,6 +7307,10 @@ msgstr "Як оцінюються криптовалютні та фондові
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "How do I budget without bank sync?"
 msgstr "Як бюджетувати без синхронізації з банком?"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "How do I close a deposit?"
+msgstr "Як закрити депозит?"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How do I export my data if I stop using Budgie?"
@@ -7392,6 +7468,7 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
+#: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/expense-tracking/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
@@ -7834,6 +7911,14 @@ msgstr "Інтеграції"
 msgid "Inter-personal debt is invisible to most apps. Budgie has Debt as a real account type, with explicit \"I owe\" / \"owes me\" direction, optional contact, target return date, and target balance."
 msgstr "Міжособистісні борги невидимі для більшості додатків. Budgie має Борг як справжній тип рахунку з явним напрямком \"я винен\" / \"мені винні\", необов'язковим контактом, цільовою датою повернення та цільовим балансом."
 
+#: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
+msgid "interest"
+msgstr "відсотки"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Interest rate and maturity date fields for each deposit account"
+msgstr "Поля відсоткової ставки та дати погашення для кожного депозитного рахунку"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Intuit’s official recommendation was to migrate to Credit Karma. On the surface, it makes sense: same parent company, established platform, free to use. But for developers and privacy-conscious users, Credit Karma has fundamental problems."
 msgstr "Офіційна рекомендація Intuit полягала у міграції до Credit Karma. На перший погляд, це логічно: та сама материнська компанія, усталена платформа, безкоштовне використання. Але для розробників та користувачів, які цінують конфіденційність, Credit Karma має фундаментальні проблеми."
@@ -8112,10 +8197,6 @@ msgstr "Рахунки зобов'язань"
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Liability and debt accounts subtract automatically; receivables add"
 msgstr "Рахунки зобов'язань та боргів автоматично зменшують; дебіторська заборгованість — збільшує"
-
-#: src/app/[lang]/features/account-management/page.tsx
-msgid "Liability and debt accounts support negative balances and a target return date"
-msgstr "Рахунки зобов'язань та боргів підтримують від'ємні баланси та цільову дату повернення"
 
 #: src/generic/component/footer/footer.tsx
 msgid "License"
@@ -8507,6 +8588,14 @@ msgstr ""
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Marketing copy only"
 msgstr "Лише маркетинговий текст"
+
+#: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
+msgid "maturity"
+msgstr "погашення"
+
+#: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
+msgid "Maturity date, payout, and close flow."
+msgstr "Дата погашення, виплата та процес закриття."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "May require data transformation"
@@ -9341,9 +9430,17 @@ msgstr "Ні. Оскільки Budgie зберігає всі дані лока�
 msgid "No. Budgie bank sync connects directly from your device to supported bank APIs without routing through a financial aggregator. For banks not yet supported by direct sync, CSV and PDF import provides full compatibility without any third-party credential handling."
 msgstr "Ні. Синхронізація Budgie з банком підключається безпосередньо з вашого пристрою до підтримуваних банківських API без маршрутизації через фінансовий агрегатор. Для банків, ще не підтримуваних прямою синхронізацією, імпорт CSV та PDF забезпечує повну сумісність без обробки облікових даних третьою стороною."
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "No. Budgie stores the interest rate and maturity date, then calculates an expected payout estimate from the current balance and days remaining. It does not automatically create interest transactions."
+msgstr "Ні. Budgie зберігає відсоткову ставку та дату погашення, а потім розраховує очікувану виплату на основі поточного балансу й залишку днів. Budgie не створює транзакції відсотків автоматично."
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "No. Budgie uses an indexed local SQLite query for the count and the drill-down list. Everything runs on-device, without a cloud analytics service."
 msgstr "Ні. Budgie використовує індексований локальний SQLite-запит для кількості та списку деталізації. Усе працює на пристрої, без хмарного сервісу аналітики."
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "No. Deposit accounts are excluded from normal expense source selection, and Budgie prevents deposit balances from becoming negative."
+msgstr "Ні. Депозитні рахунки виключено зі звичайного вибору джерела витрат, і Budgie не дає їхнім балансам ставати від'ємними."
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "No. Every transaction, category, and balance lives in an encrypted SQLite database on your device. Budgie has no backend that receives financial data."
@@ -10813,8 +10910,8 @@ msgid "Real Data Breaches in Financial Apps"
 msgstr "Реальні витоки даних у фінансових додатках"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Real life is multi-account. A current account, a savings pot, a Revolut card, a crypto wallet, a parental loan. Budgie treats each as a first-class account with its own currency, type, balance, and “include in net worth” toggle."
-msgstr "Реальне життя — це кілька рахунків. Поточний рахунок, ощадний рахунок, картка Revolut, криптогаманець, батьківська позика. Budgie розглядає кожен як першокласний рахунок зі своєю валютою, типом, балансом та перемикачем «включити до чистих активів»."
+msgid "Real life is multi-account. A current account, a savings pot, a fixed-term deposit, a Revolut card, a crypto wallet, a parental loan. Budgie treats each as a first-class account with its own currency, type, balance, and “include in net worth” toggle."
+msgstr "У реальному житті рахунків багато. Поточний рахунок, ощадна скарбничка, строковий депозит, картка Revolut, криптогаманець, позика від батьків. Budgie розглядає кожен із них як повноцінний рахунок із власною валютою, типом, балансом і перемикачем «Враховувати у чистих активах»."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Real-World Examples of Local-First Apps"
@@ -13012,6 +13109,10 @@ msgstr "Обліковуйте комісії банкоматів, перека
 msgid "Track bank fees as first-class transaction entries. ATM fees, transfer fees, and card commissions stay visible in analytics even when the main movement is a transfer."
 msgstr "Обліковуйте банківські комісії як повноцінні записи транзакцій. Комісії банкоматів, переказів і карток залишаються видимими в аналітиці, навіть коли основний рух коштів є переказом."
 
+#: src/app/[lang]/features/account-management/metadata.ts
+msgid "Track bank, cash, deposit, crypto, stocks, and debt accounts in one private app. Multi-currency, offline-first, with per-account net worth control."
+msgstr "Відстежуйте банківські рахунки, готівку, депозити, крипто, акції та борги в одному приватному застосунку. Мультивалютність, offline-first і контроль чистих активів для кожного рахунку."
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Track Bitcoin, Ethereum, AAPL, an S&P 500 ETF, and gold alongside your bank accounts in a single net-worth view."
 msgstr "Відстежуйте Bitcoin, Ethereum, AAPL, ETF на S&P 500 та золото разом із банківськими рахунками в одному вигляді чистих активів."
@@ -13023,10 +13124,6 @@ msgstr "Відстежуйте Bitcoin, Ethereum, AAPL, ETF на S&P 500 та з
 #: src/generic/component/features-section/features-section-grid.tsx
 msgid "Track Bitcoin, Ethereum, stocks, and ETFs alongside cash accounts. Manual or CSV imports."
 msgstr "Відстежуйте Bitcoin, Ethereum, акції та ETF поряд з готівковими рахунками. Ручний або CSV-імпорт."
-
-#: src/app/[lang]/features/account-management/metadata.ts
-msgid "Track checking, savings, credit cards, cash, and brokerage accounts in one private app. Multi-currency, offline-first, no bank login required."
-msgstr "Поточні, ощадні, карткові, готівкові й брокерські рахунки — в одному приватному застосунку. Мультивалютність, готовність до офлайну, без банківського логіна."
 
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx
 msgid "Track Everything"
@@ -13047,6 +13144,14 @@ msgstr "Відстежуйте витрати, банківські дані, к
 #: src/app/[lang]/layout.tsx
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
 msgstr "Відстежуйте витрати, імпортуйте банки, стежте за крипто й акціями — без передачі вашого фінансового життя в хмару."
+
+#: src/app/[lang]/features/deposit-tracking/metadata.ts
+msgid "Track fixed-term deposits as a dedicated account type with interest rate, maturity date, days remaining, expected payout, close-to-account transfers, and net worth control."
+msgstr "Відстежуйте строкові депозити як окремий тип рахунку з відсотковою ставкою, датою погашення, залишком днів, очікуваною виплатою, переказами на рахунок під час закриття та контролем чистих активів."
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Track fixed-term savings as deposit accounts kept separate from everyday spending, with interest rate, maturity date, days remaining, and expected payout."
+msgstr "Відстежуйте строкові заощадження як депозитні рахунки, відокремлені від повсякденних витрат, із відсотковою ставкою, датою погашення, залишком днів і очікуваною виплатою."
 
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx
 msgid "Track in any currency. Sum in yours."
@@ -13078,8 +13183,8 @@ msgid "Track Progress Over Time"
 msgstr "Відстежуйте прогрес з часом"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Track unlimited bank accounts, cash wallets, savings, crypto, stocks, and debt — grouped, archived, and renamed however you want."
-msgstr "Відстежуйте необмежену кількість банківських рахунків, готівкових гаманців, заощаджень, криптовалюти, акцій та боргів — згруповані, заархівовані та перейменовані як завгодно."
+msgid "Track unlimited bank accounts, cash wallets, deposits, crypto, stocks, and debt — grouped, archived, and renamed however you want."
+msgstr "Відстежуйте необмежену кількість банківських рахунків, готівкових гаманців, депозитів, крипто, акцій і боргів — групуйте, архівуйте та перейменовуйте їх як Вам зручно."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Tracked as fee entries"
@@ -13337,8 +13442,8 @@ msgid "Unlike some projects that publish only portions of their code while keepi
 msgstr "На відміну від деяких проєктів, які публікують лише частини коду, залишаючи критичні компоненти пропрієтарними, Budgie тримає вихідний код продукту публічним:"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Unlimited accounts: Bank, Cash, Crypto, Stocks, Debt — each with its own currency and balance"
-msgstr "Необмежена кількість рахунків: Банк, Готівка, Крипто, Акції, Борг — кожен зі своєю валютою та балансом"
+msgid "Unlimited accounts: Bank, Cash, Deposit, Crypto, Stocks, Debt — each with its own currency and balance"
+msgstr "Необмежена кількість рахунків: Банк, Готівка, Депозит, Крипто, Акції, Борг — кожен зі своєю валютою та балансом"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Unlimited splits per transaction — every category gets its accurate share"
@@ -13363,6 +13468,10 @@ msgstr ""
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Use Budgie CSV import screen to map your file columns to Budgie fields. The importer shows a preview of the first few rows so you can verify the mapping before committing. Budgie deduplicates transactions on import, so overlapping date ranges between files will not create duplicates."
 msgstr "Використовуйте екран імпорту CSV у Budgie для відображення стовпців файлу на поля Budgie. Імпортер показує попередній перегляд перших кількох рядків, щоб ви могли перевірити відображення перед підтвердженням. Budgie дедублікує транзакції під час імпорту, тому перекриваючі діапазони дат між файлами не створять дублікатів."
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Use the Close Deposit action, select the destination account, and confirm. Budgie transfers the remaining deposit balance to that account and archives the deposit."
+msgstr "Скористайтеся дією «Закрити депозит», виберіть рахунок призначення та підтвердьте. Budgie переказує залишок депозиту на цей рахунок і архівує депозит."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Use the Service for any illegal or unauthorized purpose"
@@ -13999,6 +14108,7 @@ msgstr "Які компроміси розглядаються"
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
+#: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/expense-tracking/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
@@ -14123,6 +14233,10 @@ msgstr "Коли Intuit Mint закрився 23 березня 2024 року, �
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "When source code is public, anyone with the relevant expertise can examine it. Security researchers, privacy advocates, concerned users, and professional auditors can all review the code for potential issues. This distributed auditing creates multiple layers of oversight that closed-source companies simply cannot match."
 msgstr "Коли вихідний код публічний, будь-хто з відповідною експертизою може його вивчити. Дослідники безпеки, захисники конфіденційності, зацікавлені користувачі та професійні аудитори — всі вони можуть перевірити код на потенційні проблеми. Цей розподілений аудит створює багатошаровий контроль, який компанії із закритим кодом просто не можуть забезпечити."
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "When the deposit matures, choose the destination account and close it. Budgie transfers the remaining balance from the deposit account and archives the deposit so it leaves the home screen without losing history."
+msgstr "Коли депозит досягає дати погашення, виберіть рахунок призначення та закрийте його. Budgie переказує залишок із депозитного рахунку й архівує депозит, щоб він зник із головного екрана без втрати історії."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "When the embedding stage produces low-confidence results — for example, with a new merchant or an ambiguous description — the full language model takes over. The LLM receives the transaction description and your category list as context, and generates a ranked suggestion."
@@ -14421,6 +14535,10 @@ msgstr "Чому Credit Karma — не відповідь"
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Why CSV is the universal escape hatch"
 msgstr "Чому CSV — це універсальний запасний вихід"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Why deposits need their own account type"
+msgstr "Чому депозитам потрібен власний тип рахунку"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Why Developers Are Choosing Local-First"
@@ -15006,6 +15124,10 @@ msgid "Yes. Debt is a dedicated account type with explicit “I owe” / “owes
 msgstr "Так. Борг — це спеціальний тип рахунку з явним напрямком «я винен» / «мені винні». Дивіться «Відстеження боргів та позик» для деталей."
 
 #: src/app/[lang]/features/account-management/page.tsx
+msgid "Yes. Deposit is a dedicated account type with interest rate, maturity date, days remaining, expected payout, and a Close Deposit action that transfers the balance to a selected destination account."
+msgstr "Так. Депозит — це окремий тип рахунку з відсотковою ставкою, датою погашення, залишком днів, очікуваною виплатою та дією «Закрити депозит», яка переказує баланс на вибраний рахунок призначення."
+
+#: src/app/[lang]/features/account-management/page.tsx
 msgid "Yes. Each account has a fixed currency. Daily exchange-rate snapshots convert everything to your base currency for net worth."
 msgstr "Так. Кожен рахунок має фіксовану валюту. Щоденні знімки обмінних курсів конвертують все в вашу базову валюту для підрахунку чистих активів."
 
@@ -15032,6 +15154,10 @@ msgstr "Так. Редагування транзакції зберігає п�
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-faq-section/bank-fee-tracking-faq-section.tsx
 msgid "Yes. Fee entries count toward their selected category, including bank fees attached to transfers."
 msgstr "Так. Записи комісій зараховуються до вибраної категорії, включно з банківськими комісіями, прив’язаними до переказів."
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Yes. Like other accounts, deposits have an “include in net worth” setting, so you can decide whether a locked deposit belongs in your net worth view."
+msgstr "Так. Як і інші рахунки, депозити мають налаштування «Враховувати у чистих активах», тож Ви можете вирішити, чи має заблокований депозит входити до перегляду чистих активів."
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Yes. Long-press the transfer and choose \"Split back into two transactions\"; both halves return to their original types."
