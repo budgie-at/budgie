@@ -74,6 +74,16 @@ for (const flowFile of flowFiles) {
                     failures.push(`${repositoryPath}: open-url must dismiss the iOS confirmation with a system-level tap`);
                 }
             }
+            if (step?.when?.visible?.text === 'Browse' && step?.steps?.[0]?.tap?.text === 'Browse') {
+                const browseTap = steps[index + 1];
+                if (
+                    browseTap?.tool !== 'gesture-tap' ||
+                    browseTap?.args?.x !== 0.714 ||
+                    browseTap?.args?.y !== 0.944
+                ) {
+                    failures.push(`${repositoryPath}: fixture navigation must select the Files Browse tab with a system-level tap`);
+                }
+            }
             visitSteps(step?.steps, Boolean(step?.when?.visible));
         }
     };

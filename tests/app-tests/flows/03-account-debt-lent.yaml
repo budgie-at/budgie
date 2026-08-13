@@ -129,6 +129,10 @@ steps:
                     text: Browse
                 steps:
                   - tap: *a6
+              - tool: gesture-tap
+                args:
+                  x: 0.714
+                  y: 0.944
               - await:
                   idle: true
               - when:
