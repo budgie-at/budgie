@@ -1,4 +1,5 @@
 import { getUnixTime } from 'date-fns';
+import { z } from 'zod';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -17,6 +18,21 @@ import type { MonobankClientInfoApiInterface } from '../interface/monobank-clien
 import type { MonobankTransactionApiInterface } from '../interface/monobank-transaction-api.type';
 
 export class MonobankClient extends BaseBankProviderClient {
+    private static readonly JARS_SCHEMA = z
+        .array(
+            z.object({
+                id: z.string(),
+                sendId: z.string(),
+                title: z.string(),
+                description: z.string(),
+                currencyCode: z.number(),
+                balance: z.number(),
+                goal: z.number()
+            })
+        )
+        .nullish()
+        .transform(jars => jars ?? []);
+
     protected readonly provider = BankProviderEnum.MONOBANK;
     protected readonly baseUrl = MONOBANK_API_BASE_URL;
     private cachedClientInfo: MonobankClientInfoApiInterface | undefined;
@@ -103,7 +119,10 @@ export class MonobankClient extends BaseBankProviderClient {
         const result = await this.fetchJson<MonobankClientInfoApiInterface>('/personal/client-info');
 
         if (result.success) {
-            this.cachedClientInfo = result.data;
+            const clientInfo: MonobankClientInfoApiInterface = { ...result.data, jars: MonobankClient.JARS_SCHEMA.parse(result.data.jars) };
+            this.cachedClientInfo = clientInfo;
+
+            return this.success(clientInfo);
         }
 
         return result;

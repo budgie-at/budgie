@@ -10,6 +10,7 @@ import {
 import {
     AccountBalanceRepository,
     AccountRepository,
+    BankIntegrationRepository,
     BankSyncRepository,
     CategoryRepository,
     CommentEmbeddingRepository,
@@ -102,20 +103,7 @@ const dbInit = () => {
     return global.__expoSqliteDb__;
 };
 
-export let expoDb = dbInit();
-
-/** @deprecated TODO: DELETE ME WHEN DB IS STABLE */
-export const __REMOVE_ME_RESET_DB = async () => {
-    if (!__DEV__) {
-        return;
-    }
-
-    await expoDb.closeAsync();
-    await SQLite.deleteDatabaseAsync(DB_NAME);
-    global.__expoSqliteDb__ = undefined;
-    global.__drizzleDb__ = undefined;
-    expoDb = dbInit();
-};
+export const expoDb = dbInit();
 
 export const db: DB = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
@@ -131,6 +119,7 @@ export const instrumentMarketDataJobRepository = new InstrumentMarketDataJobRepo
 export const accountBalanceRepository = new AccountBalanceRepository(db);
 export const debtEventRepository = new DebtEventRepository(db);
 export const bankSyncRepository = new BankSyncRepository(db);
+export const bankIntegrationRepository = new BankIntegrationRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
 export const transactionEmbeddingRepository = new TransactionEmbeddingRepository(db);

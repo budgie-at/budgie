@@ -1,6 +1,5 @@
 // This file is required for Expo/React Native SQLite migrations - https://orm.drizzle.team/quick-sqlite/expo
 
-import journal from './meta/_journal.json';
 import m0000 from './0000_normal_dragon_man.sql';
 import m0001 from './0001_late_red_wolf.sql';
 import m0002 from './0002_dark_prima.sql';
@@ -40,6 +39,12 @@ import m0035 from './0035_add_debt_events.sql';
 import m0036 from './0036_repair_borrowed_debt_migration.sql';
 import m0037 from './0037_repair_invalid_account_ibans.sql';
 import m0038 from './0038_repair_zero_target_debt_accounts.sql';
+import m0039 from './0039_add_bank_integrations.sql';
+import m0040 from './0040_drop_bank_syncs_token.sql';
+import m0041 from './0041_add_deposit_account_fields.sql';
+import m0042 from './0042_backfill_file_import_integrations.sql';
+import m0043 from './0043_update_default_account_icons.sql';
+import journal from './meta/_journal.json';
 
 export default {
     journal,
@@ -82,6 +87,11 @@ export default {
         m0035,
         m0036,
         m0037,
-        m0038
+        m0038,
+        m0039,
+        m0040,
+        m0041,
+        m0042,
+        m0043
     }
 };

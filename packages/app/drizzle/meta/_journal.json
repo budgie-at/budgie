@@ -274,6 +274,41 @@
             "when": 1785600000000,
             "tag": "0038_repair_zero_target_debt_accounts",
             "breakpoints": true
+        },
+        {
+            "idx": 39,
+            "version": "6",
+            "when": 1786000000000,
+            "tag": "0039_add_bank_integrations",
+            "breakpoints": true
+        },
+        {
+            "idx": 40,
+            "version": "6",
+            "when": 1786100000000,
+            "tag": "0040_drop_bank_syncs_token",
+            "breakpoints": true
+        },
+        {
+            "idx": 41,
+            "version": "6",
+            "when": 1786200000000,
+            "tag": "0041_add_deposit_account_fields",
+            "breakpoints": true
+        },
+        {
+            "idx": 42,
+            "version": "6",
+            "when": 1786300000000,
+            "tag": "0042_backfill_file_import_integrations",
+            "breakpoints": true
+        },
+        {
+            "idx": 43,
+            "version": "6",
+            "when": 1786400000000,
+            "tag": "0043_update_default_account_icons",
+            "breakpoints": true
         }
     ]
 }

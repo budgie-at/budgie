@@ -15,6 +15,8 @@ import { BankSyncTokenSection } from '../bank-sync-token-section/bank-sync-token
 import { ResyncBankSyncAccount } from '../resync-bank-sync-account/resync-bank-sync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
 
+import { AccountBankSyncCardSelector } from './account-bank-sync-card.selector';
+
 interface Props {
     readonly accountId: number;
 }
@@ -57,7 +59,7 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
                     <Text className={statusTextVariants({ status: bankSync.status })}>{statusLabel}</Text>
                 </View>
                 <View className="content-center">
-                    <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} />
+                    <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} testID={AccountBankSyncCardSelector.Switch} />
                 </View>
             </View>
 
@@ -88,7 +90,7 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
                     </>
                 )}
 
-                <BankSyncTokenSection accountId={accountId} token={bankSync.token} />
+                <BankSyncTokenSection accountId={accountId} />
             </View>
         </Card>
     );

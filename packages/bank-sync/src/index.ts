@@ -26,6 +26,7 @@ export { formatBankAccountTitle } from './core/util/format-bank-account-title.ut
 
 export { MonobankSyncService } from './monobank/service/monobank-sync.service';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
+export { MONOBANK_MAX_PERIOD_SECONDS } from './monobank/constant/monobank-max-period-seconds.constant';
 export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-ms.constant';
 export { MonobankAccountTypeEnum } from './monobank/enum/monobank-account-type.enum';
 export { MonobankCashbackTypeEnum } from './monobank/enum/monobank-cashback-type.enum';
