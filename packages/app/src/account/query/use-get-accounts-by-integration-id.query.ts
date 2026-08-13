@@ -1,0 +1,14 @@
+import { isDefined } from '@rnw-community/shared';
+
+import { accountRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+
+export const useGetAccountsByIntegrationIdQuery = (integrationId: number) => {
+    const { data, updatedAt, error } = useDatabaseLiveQuery(accountRepository.findByIntegrationId(integrationId), [integrationId]);
+
+    if (!isDefined(data)) {
+        return { isLoading: true, accounts: null, updatedAt: null, error };
+    }
+
+    return { accounts: data, isLoading: false, updatedAt, error };
+};

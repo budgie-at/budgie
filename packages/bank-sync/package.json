@@ -1,6 +1,6 @@
 {
     "name": "@budgie/bank-sync",
-    "version": "6.0.8",
+    "version": "6.1.0",
     "private": true,
     "description": "Bank synchronization package with multi-bank support",
     "sideEffects": false,
@@ -32,6 +32,7 @@
         "@rnw-community/shared": "^2.2.0",
         "date-fns": "^4.3.0",
         "ky": "^2.0.2",
-        "xlsx": "^0.18.5"
+        "xlsx": "^0.18.5",
+        "zod": "4.1.12"
     }
 }

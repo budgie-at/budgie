@@ -5,6 +5,7 @@ import { CreateBankAccount } from '../../../account/component/create-bank-accoun
 import { CreateCashAccount } from '../../../account/component/create-cash-account/create-cash-account';
 import { CreateCryptoAccount } from '../../../account/component/create-crypto-account/create-crypto-account';
 import { CreateDebtAccount } from '../../../account/component/create-debt-account/create-debt-account';
+import { CreateDepositAccount } from '../../../account/component/create-deposit-account/create-deposit-account';
 import { CreateErsteAccount } from '../../../sync/component/create-erste-account/create-erste-account';
 import { CreateMonobankAccount } from '../../../sync/component/create-monobank-account/create-monobank-account';
 import { CreatePrivatbankAccount } from '../../../sync/component/create-privatbank-account/create-privatbank-account';
@@ -21,6 +22,8 @@ export default function CreateAccountType() {
             return <CreateBankAccount />;
         case AccountTypeEnum.DEBT:
             return <CreateDebtAccount />;
+        case AccountTypeEnum.DEPOSIT:
+            return <CreateDepositAccount />;
         case AccountTypeEnum.CRYPTO:
             return <CreateCryptoAccount />;
         case ExternalSourceEnum.MONOBANK:

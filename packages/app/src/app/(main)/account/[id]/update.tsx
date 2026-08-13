@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { EmptyScreen } from '../../../../@generic/component/empty-screen/empty-screen';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { UpdateDebtAccount } from '../../../../account/component/update-debt-account/update-debt-account';
+import { UpdateDepositAccount } from '../../../../account/component/update-deposit-account/update-deposit-account';
 import { UpdateLiabilityAccount } from '../../../../account/component/update-liability-account/update-liability-account';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 
@@ -24,6 +25,8 @@ export default function UpdateAccount() {
     switch (account.type) {
         case AccountTypeEnum.DEBT:
             return <UpdateDebtAccount account={account} />;
+        case AccountTypeEnum.DEPOSIT:
+            return <UpdateDepositAccount account={account} />;
         default:
             return <UpdateLiabilityAccount account={account} />;
     }

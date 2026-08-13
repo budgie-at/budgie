@@ -20,6 +20,8 @@ export const statsBarVariants = cva<{ variant: Record<ColorPaletteVariant, Class
             default: 'bg-default-foreground',
             ghost: 'bg-ghost-foreground',
             pink: 'bg-pink-foreground',
+            violet: 'bg-violet-foreground',
+            cyan: 'bg-cyan-foreground',
             primary: 'bg-primary',
             cta: 'bg-cta-foreground'
         }

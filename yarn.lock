@@ -1508,6 +1508,7 @@ __metadata:
     date-fns: "npm:^4.3.0"
     ky: "npm:^2.0.2"
     xlsx: "npm:^0.18.5"
+    zod: "npm:4.1.12"
   languageName: unknown
   linkType: soft
 
