@@ -1,12 +1,18 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { Linking, ScrollView, Text } from 'react-native';
+import Toast from 'react-native-toast-message';
 
+import { getErrorMessage } from '@rnw-community/shared';
+
+import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { Page } from '../../../@generic/component/page/page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { ApplePayCaptureOpenShortcutsButton } from '../../../wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button';
 import { ApplePayCaptureSetupCard } from '../../../wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card';
 import { ApplePayCaptureTroubleshootingCard } from '../../../wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card';
@@ -19,6 +25,7 @@ const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function ApplePayCaptureSettingsPage() {
     const { t } = useLingui();
+    const language = useSetting('language');
     const {
         dismissCapture,
         errorMessage,
@@ -34,6 +41,16 @@ export default function ApplePayCaptureSettingsPage() {
     useEffect(() => {
         void refresh();
     }, [refresh]);
+
+    const handleOpenInstructionsGuide = async () => {
+        try {
+            await Linking.openURL(`https://budgie.at/${language}/blog/apple-pay-shortcuts-instructions`);
+        } catch (error) {
+            Toast.show({ type: 'error', text1: t`Could not open instructions`, text2: getErrorMessage(error) });
+        }
+    };
+
+    const handlePressInstructionsGuide = () => void handleOpenInstructionsGuide();
 
     return (
         <Page
@@ -64,10 +81,18 @@ export default function ApplePayCaptureSettingsPage() {
                 ) : null}
 
                 <SettingsGroup title={t`Setup`}>
-                    <ApplePayCaptureSetupCard />
+                    <ApplePayCaptureSetupCard testID={ApplePayCaptureSettingsSelector.SetupCard} />
                 </SettingsGroup>
 
                 <ApplePayCaptureOpenShortcutsButton testID={ApplePayCaptureSettingsSelector.OpenShortcutsButton} />
+
+                <Button
+                    testID={ApplePayCaptureSettingsSelector.InstructionsGuideLink}
+                    onPress={handlePressInstructionsGuide}
+                    content={t`View step-by-step instructions`}
+                    leftIcon={UserIconNameEnum.ExternalLink}
+                    variant="ghost"
+                />
 
                 {hasReviewItems ? (
                     <SettingsGroup title={t`Needs review`}>
