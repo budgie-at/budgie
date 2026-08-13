@@ -59,9 +59,16 @@ for (const flowFile of flowFiles) {
 
     const document = YAML.parse(source);
     const visitSteps = (steps, guardedByVisibility = false) => {
-        for (const step of steps || []) {
+        for (let index = 0; index < (steps || []).length; index += 1) {
+            const step = steps[index];
             if (step?.tap?.text === 'Not Now' && !guardedByVisibility) {
                 failures.push(`${repositoryPath}: optional interstitial tap must be guarded by when visible`);
+            }
+            if (step?.tool === 'open-url') {
+                const confirmation = steps[index + 1];
+                if (confirmation?.when?.visible?.text !== 'Open in .*' || confirmation?.steps?.[0]?.tap?.text !== 'Open') {
+                    failures.push(`${repositoryPath}: open-url must handle the iOS confirmation dialog`);
+                }
             }
             visitSteps(step?.steps, Boolean(step?.when?.visible));
         }

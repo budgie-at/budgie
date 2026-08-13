@@ -6,6 +6,14 @@ steps:
     args:
       url: budgie://settings?anchor=data
   - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
+  - when:
       visible: &a1
         text: Not Now
     steps:
@@ -19,6 +27,14 @@ steps:
       - tool: open-url
         args:
           url: budgie://settings
+      - when:
+          visible:
+            text: Open in .*
+        steps:
+          - tap:
+              text: Open
+          - await:
+              idle: true
       - await:
           idle: true
       - await:
@@ -247,6 +263,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://budget
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
@@ -369,6 +393,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
@@ -508,6 +540,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
@@ -550,6 +590,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:

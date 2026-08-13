@@ -4,6 +4,14 @@ steps:
     args:
       url: budgie://settings?anchor=data
   - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
+  - when:
       visible: &a1
         text: Not Now
     steps:
@@ -17,6 +25,14 @@ steps:
       - tool: open-url
         args:
           url: budgie://settings
+      - when:
+          visible:
+            text: Open in .*
+        steps:
+          - tap:
+              text: Open
+          - await:
+              idle: true
       - await:
           idle: true
       - await:
@@ -245,6 +261,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://settings/import?fileUri=file:///tmp/budgie-e2e-fixtures/test15-suggested-rule.csv
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
@@ -271,6 +295,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
@@ -349,6 +381,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://settings/rules
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
@@ -402,6 +442,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://settings/import?fileUri=file:///tmp/budgie-e2e-fixtures/test17-suggested-rule.csv
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
@@ -428,6 +476,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
@@ -506,6 +562,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://settings/rules
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
@@ -562,6 +626,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://settings/import?fileUri=file:///tmp/budgie-e2e-fixtures/test25-duplicate-rule.csv
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
@@ -588,6 +660,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
@@ -666,6 +746,14 @@ steps:
   - tool: open-url
     args:
       url: budgie://settings/rules
+  - when:
+      visible:
+        text: Open in .*
+    steps:
+      - tap:
+          text: Open
+      - await:
+          idle: true
   - await:
       idle: true
   - await:
