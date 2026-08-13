@@ -173,6 +173,18 @@ export default async function ApplePayShortcutsInstructionsArticle(props: PageLa
                         <Trans>Create the Shortcuts automation</Trans>
                     </BlogArticleHeading>
 
+                    <ArticleFigure
+                        alt={t(
+                            i18n
+                        )`Create one iOS Shortcuts automation so future eligible Apple Pay taps can arrive in Budgie for review.`}
+                        caption={
+                            <Trans>
+                                Create one iOS Shortcuts automation so future eligible Apple Pay taps can arrive in Budgie for review.
+                            </Trans>
+                        }
+                        src="/images/apple-pay-shortcuts-instructions/apple-pay-shortcuts-automation-flow.webp"
+                    />
+
                     <BlogArticleProse>
                         <Trans>
                             Open Shortcuts, choose Automation, then create a personal automation for Wallet transactions. Select the card
