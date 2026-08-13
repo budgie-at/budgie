@@ -1,6 +1,7 @@
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
+import { expectSourcesRestored, fetchLedgerBalances } from '../harness/consolidation-revert-audit';
 import {
     REJECTED_PAYMENT_EXPENSE_AMOUNT,
     REJECTED_PAYMENT_FEE_AMOUNT,
@@ -30,6 +31,28 @@ describe('consolidation/unconsolidate-refund-restores-sources', () => {
 
         const restoredRefund = testQueryService.fetchTransactionById(refunds[0].id);
         expect(restoredRefund.consolidationParentTransactionId).toBeNull();
+    });
+
+    it('keeps tags copied from the refund income on the expense after unconsolidating a refund', async () => {
+        const tag = testSeedService.tag('Refunded order');
+        const { account, expense, refunds } = await runRefundScenario({
+            beforeConsolidation: ({ refunds }) => {
+                testSeedService.transactionTag(refunds[0].id, tag.id);
+            },
+            expenseAmount: STANDALONE_REFUND_EXPENSE_AMOUNT_UAH * PRECISION,
+            externalIdPrefix: 'refund-tag-revert',
+            refundAmounts: [STANDALONE_REFUND_EXPENSE_AMOUNT_UAH * PRECISION]
+        });
+        const balancesAfterConsolidation = await fetchLedgerBalances([account.id]);
+
+        expect(testQueryService.fetchTransactionTagIds(expense.id)).toEqual([tag.id]);
+
+        await unconsolidationService.unconsolidateById(expense.id, testDb);
+
+        expectSourcesRestored([refunds[0].id]);
+        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBeNull();
+        expect(testQueryService.fetchTransactionTagIds(expense.id)).toEqual([tag.id]);
+        expect(await fetchLedgerBalances([account.id])).toEqual(balancesAfterConsolidation);
     });
 
     it('restores both refund incomes and their original DEBIT entries after unconsolidating a two-income rejected-payment expense', async () => {

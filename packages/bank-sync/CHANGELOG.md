@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.1.0](https://github.com/budgie-at/budgie/compare/v6.0.9...v6.1.0) (2026-08-13)
+
+
+### Bug Fixes
+
+* **bank-sync:** clamp forward sync window and guard missing jars payload ([8298973](https://github.com/budgie-at/budgie/commit/8298973d1c7ea5f233d591abf0db302e38101210)), closes [#656](https://github.com/budgie-at/budgie/issues/656) [#657](https://github.com/budgie-at/budgie/issues/657)
+
+
+
+
+
+## [6.0.8](https://github.com/budgie-at/budgie/compare/v6.0.7...v6.0.8) (2026-08-10)
+
+**Note:** Version bump only for package @budgie/bank-sync
+
+
+
+
+
+## [6.0.6](https://github.com/budgie-at/budgie/compare/v6.0.5...v6.0.6) (2026-08-08)
+
+**Note:** Version bump only for package @budgie/bank-sync
+
+
+
+
+
+## [6.0.5](https://github.com/budgie-at/budgie/compare/v6.0.4...v6.0.5) (2026-08-08)
+
+
+### Bug Fixes
+
+* **app:** repair silent account edit save failure and overlay close blink ([#629](https://github.com/budgie-at/budgie/issues/629)) ([766ad0a](https://github.com/budgie-at/budgie/commit/766ad0a203fac562934b031f2cdb776033537661))
+
+
+
+
+
 ## [6.0.3](https://github.com/budgie-at/budgie/compare/v6.0.2...v6.0.3) (2026-08-01)
 
 **Note:** Version bump only for package @budgie/bank-sync

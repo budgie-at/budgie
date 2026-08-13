@@ -42,7 +42,6 @@ import { TRANSACTION_FEE_MODAL_OPTIONS } from '../@generic/constant/transaction-
 import { VOICE_REVIEW_MODAL_OPTIONS } from '../@generic/constant/voice-review-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
-import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
 import { useAppInitialization } from '../@generic/hook/use-app-initialization.hook';
 import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
@@ -99,9 +98,8 @@ const handleAppStateChange = (isReady: boolean, isActive: boolean): void => {
 
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export const RootLayoutContent = () => {
-    const { success, error } = useMigrations(db, migrations);
+    const { success } = useMigrations(db, migrations);
 
-    useResetDb(error);
     useAppInitialization(success);
     useAppState(isActive => void handleAppStateChange(success, isActive));
 

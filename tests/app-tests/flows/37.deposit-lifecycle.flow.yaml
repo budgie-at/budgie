@@ -1,0 +1,411 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+      file: subflows/import/import-database-from-settings.flow.yaml
+      env:
+          FIXTURE_ROW_ID_MATCH: '12.db(, db)?'
+
+# --- Create Deposit Account ---
+
+- runFlow: subflows/accounts/open-new-account.flow.yaml
+
+- tapOn:
+      id: 'CreateAccount.DEPOSIT'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.NameInput'
+      timeout: 3000
+
+- tapOn:
+      id: 'CreateAccount.Amount'
+- eraseText: 100
+- inputText: '500'
+
+- tapOn:
+      id: 'AccountForm.NameInput'
+- inputText: 'E2E Deposit Account'
+- tapOn:
+      text: 'Deposit Account'
+
+- scrollUntilVisible:
+      element:
+          id: 'AccountForm.InterestRateInput'
+      direction: DOWN
+      centerElement: true
+- tapOn:
+      id: 'AccountForm.InterestRateInput'
+- eraseText: 100
+- inputText: '12'
+- tapOn:
+      text: 'Deposit Account'
+
+- scrollUntilVisible:
+      element:
+          id: 'AccountForm.MaturityDate'
+      direction: DOWN
+      centerElement: true
+- tapOn:
+      id: 'AccountForm.MaturityDate'
+- extendedWaitUntil:
+      visible:
+          id: 'DatePicker.Day.20'
+      timeout: 10000
+- tapOn:
+      id: 'DatePicker.Day.20'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.SubmitButton'
+          enabled: true
+      timeout: 3000
+- tapOn:
+      id: 'AccountForm.SubmitButton'
+      enabled: true
+      retryTapIfNoChange: true
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+- assertVisible:
+      id: 'AccountCard.Balance.E2E_Deposit_Account.500'
+- assertVisible:
+      id: 'HomePage.NetWorthValue.700'
+
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Deposit Account'
+
+- assertVisible:
+      id: 'DepositDetailsCard.Container'
+- assertVisible:
+      id: 'DepositDetailsCard.InterestRateRow'
+- assertVisible:
+      id: 'DepositDetailsCard.MaturityDateRow'
+- assertVisible:
+      id: 'DepositDetailsCard.DaysRemainingRow'
+- assertVisible:
+      id: 'DepositDetailsCard.ExpectedPayoutRow'
+
+# --- Top Up Deposit Via Transfer ---
+
+- runFlow:
+      file: subflows/transactions/open-transaction-form.flow.yaml
+      env:
+          ACTION_ITEM_ID: 'ActionItem.Transfer'
+          FORM_TITLE: 'New Transfer'
+
+- assertVisible:
+      id: 'TransferForm.SelectedToAccount.E2E Deposit Account'
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.4'
+- tapOn:
+      id: 'TransactionKeypad.Digit.0'
+
+- tapOn:
+      id: 'TransferForm.FromAccount'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountPickerBottomSheet.Input'
+- runFlow:
+      file: subflows/shared/select-account-from-native-picker.flow.yaml
+      env:
+          ACCOUNT_OPTION_ID: 'AccountPickerBottomSheet.Option.E2E Expense Source'
+
+- tapOn:
+      id: 'TransactionForm.SubmitButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.Page'
+      timeout: 10000
+
+# --- Record Interest Via Income ---
+
+- runFlow:
+      file: subflows/transactions/open-transaction-form.flow.yaml
+      env:
+          ACTION_ITEM_ID: 'ActionItem.Income'
+          FORM_TITLE: 'New Income'
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.1'
+- tapOn:
+      id: 'TransactionKeypad.Digit.5'
+
+- runFlow:
+      file: subflows/categories/select-category.flow.yaml
+      env:
+          CATEGORY_NAME: 'Savings'
+
+- tapOn:
+      id: 'TransactionForm.SubmitButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.Page'
+      timeout: 10000
+
+- runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
+
+- assertVisible:
+      id: 'AccountCard.Balance.E2E_Deposit_Account.555'
+- assertVisible:
+      id: 'AccountCard.Balance.E2E_Expense_Source.60'
+- assertVisible:
+      id: 'HomePage.NetWorthValue.715'
+
+# --- Convert Expense To New Deposit ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+      file: subflows/transactions/open-transaction-form.flow.yaml
+      env:
+          ACTION_ITEM_ID: 'ActionItem.Expense'
+          FORM_TITLE: 'New Expense'
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.2'
+- tapOn:
+      id: 'TransactionKeypad.Digit.5'
+
+- tapOn:
+      id: 'TransactionForm.AccountSelector'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountPickerBottomSheet.Input'
+      timeout: 3000
+- extendedWaitUntil:
+      visible:
+          id: 'AccountPickerBottomSheet.Option.E2E Expense Source'
+      timeout: 3000
+- assertNotVisible:
+      id: 'AccountPickerBottomSheet.Option.E2E Deposit Account'
+- runFlow:
+      file: subflows/shared/select-account-by-search.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Expense Target'
+
+- runFlow:
+      file: subflows/categories/select-category.flow.yaml
+      env:
+          CATEGORY_NAME: 'Shopping'
+
+- waitForAnimationToEnd
+- scrollUntilVisible:
+      element:
+          id: 'TransactionForm.CommentInput'
+      direction: DOWN
+      centerElement: true
+
+- runFlow:
+      file: subflows/transactions/enter-comment.flow.yaml
+      env:
+          COMMENT: 'E2E Deposit Convert Expense'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Deposit_Convert_Expense'
+      timeout: 5000
+
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+- assertVisible:
+      id: 'HomePage.NetWorthValue.690'
+- assertVisible:
+      id: 'AccountCard.Balance.E2E_Expense_Target.75'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- tapOn:
+      id: 'TransactionCard.Label.E2E_Deposit_Convert_Expense'
+
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.ConvertToTransferButton'
+- tapOn:
+      id: 'TransactionActionsMenu.ConvertToTransferButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'ConvertToTransfer.Page'
+
+- tapOn:
+      id: 'TransferForm.ToAccount'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountPickerBottomSheet.Input'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountPickerBottomSheet.CreateAction'
+- tapOn:
+      id: 'AccountPickerBottomSheet.CreateAction'
+- extendedWaitUntil:
+      notVisible:
+          id: 'AccountPickerBottomSheet.Input'
+      timeout: 10000
+- assertVisible:
+      id: 'TransferForm.SelectedToAccount.Deposit'
+
+- tapOn:
+      id: 'TransactionForm.SubmitButton'
+- runFlow: subflows/transactions/confirm-convert-to-transfer.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 3000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 10000
+
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+- assertVisible:
+      id: 'AccountCard.Balance.Deposit.25'
+- assertVisible:
+      id: 'AccountCard.Balance.E2E_Expense_Target.75'
+- assertVisible:
+      id: 'HomePage.NetWorthValue.715'
+
+# --- Edit New Deposit Account ---
+
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'Deposit'
+
+- tapOn:
+      id: 'DepositAccountActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'DepositAccountActionsMenu.EditButton'
+      timeout: 3000
+- tapOn:
+      id: 'DepositAccountActionsMenu.EditButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.NameInput'
+      timeout: 3000
+
+- scrollUntilVisible:
+      element:
+          id: 'AccountForm.InterestRateInput'
+      direction: DOWN
+      centerElement: true
+- tapOn:
+      id: 'AccountForm.InterestRateInput'
+- eraseText: 100
+- inputText: '5'
+- tapOn:
+      text: 'Account Settings'
+
+- scrollUntilVisible:
+      element:
+          id: 'AccountForm.MaturityDate'
+      direction: DOWN
+      centerElement: true
+- tapOn:
+      id: 'AccountForm.MaturityDate'
+- extendedWaitUntil:
+      visible:
+          id: 'DatePicker.Day.10'
+      timeout: 10000
+- tapOn:
+      id: 'DatePicker.Day.10'
+
+- tapOn:
+      id: 'AccountForm.SubmitButton'
+      retryTapIfNoChange: true
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'Deposit'
+
+- assertVisible:
+      id: 'DepositDetailsCard.Container'
+- assertVisible:
+      id: 'DepositDetailsCard.InterestRateRow'
+- assertVisible:
+      id: 'DepositDetailsCard.MaturityDateRow'
+- assertVisible:
+      id: 'DepositDetailsCard.DaysRemainingRow'
+- assertVisible:
+      id: 'DepositDetailsCard.ExpectedPayoutRow'
+
+- runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
+
+# --- Close Original Deposit ---
+
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Deposit Account'
+
+- tapOn:
+      id: 'DepositAccountActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'DepositAccountActionsMenu.CloseDepositButton'
+      timeout: 3000
+- tapOn:
+      id: 'DepositAccountActionsMenu.CloseDepositButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountPickerBottomSheet.Input'
+- runFlow:
+      file: subflows/shared/select-account-from-native-picker.flow.yaml
+      env:
+          ACCOUNT_OPTION_ID: 'AccountPickerBottomSheet.Option.E2E Expense Source'
+
+- extendedWaitUntil:
+      visible: 'Close Deposit?'
+      timeout: 10000
+- assertVisible: '.*555.*'
+- tapOn:
+      text: '^Close Deposit$'
+      enabled: true
+- extendedWaitUntil:
+      notVisible: 'Close Deposit?'
+      timeout: 10000
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+- assertVisible:
+      id: 'AccountCard.Balance.E2E_Expense_Source.615'
+- assertVisible:
+      id: 'HomePage.NetWorthValue.715'
+- assertNotVisible:
+      id: 'AccountCard.E2E Deposit Account'
+
+# --- Verify Deposit Archived ---
+
+- runFlow: subflows/accounts/open-archived-accounts.flow.yaml
+
+- assertVisible:
+      id: 'ArchivedAccountCard.E2E Deposit Account'
