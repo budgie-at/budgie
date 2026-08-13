@@ -1,0 +1,711 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: 09.db(, db)?
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: 09.db(, db)?
+      direction: down
+  - when:
+      hidden:
+        id: 09.db(, db)?
+    steps:
+      - scroll-to:
+          target:
+            text: 09.db(, db)?
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: 09.db(, db)?
+    steps:
+      - tap:
+          id: 09.db(, db)?
+  - when:
+      hidden:
+        id: 09.db(, db)?
+    steps:
+      - tap:
+          text: 09.db(, db)?
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: 09.db(, db)?
+        steps:
+          - tap:
+              id: 09.db(, db)?
+      - when:
+          hidden:
+            id: 09.db(, db)?
+        steps:
+          - tap:
+              text: 09.db(, db)?
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 1)
+  - when:
+      hidden:
+        id: ActionItem.Income.Label
+    steps:
+      - tap:
+          id: ActionButton
+  - await:
+      visible:
+        id: ActionItem.Income.Label
+      timeout: 3000
+  - await:
+      idle: true
+  - tap:
+      id: ActionItem.Income.Label
+  - await:
+      visible:
+        text: New Income
+  - await:
+      visible:
+        id: TransactionKeypad.Digit.1
+  - await:
+      idle: true
+  - tap:
+      id: TransactionForm.SubmitButton
+  - assert:
+      visible:
+        text: New Income
+  - tap:
+      id: TransactionForm.SubmitButton
+  - assert:
+      visible:
+        text: New Income
+  - tap:
+      id: TransactionKeypad.Digit.1
+  - tap:
+      id: TransactionKeypad.Digit.0
+  - tap:
+      id: TransactionKeypad.Digit.0
+  - when:
+      hidden:
+        text: E2E Txn Account
+    steps:
+      - echo: Native recovery attempt (migrated from retry, max 3)
+      - tap:
+          id: TransactionForm.AccountSelector
+      - await:
+          visible:
+            id: AccountPickerBottomSheet.Input
+          timeout: 3000
+      - tap:
+          id: AccountPickerBottomSheet.Input
+      - tool: keyboard
+        args:
+          text: E2E Txn Account
+      - tap:
+          text: Done
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: AccountPickerBottomSheet.Option.E2E Txn Account
+      - tap:
+          id: AccountPickerBottomSheet.Option.E2E Txn Account
+      - await:
+          idle: true
+      - await:
+          hidden:
+            id: AccountPickerBottomSheet.Input
+      - await:
+          idle: true
+  - tap:
+      id: TransactionForm.CategorySelector.Title
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - tool: keyboard
+    args:
+      text: E2E Txn Category
+  - tap:
+      text: Done
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.E2E Txn Category.Label
+      timeout: 15000
+  - tap:
+      id: CategoryPickerBottomSheet.Card.E2E Txn Category.Label
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+  - await:
+      visible:
+        id: TransactionForm.CommentInput
+      timeout: 10000
+  - tap:
+      id: TransactionForm.CommentInput
+  - await:
+      visible:
+        id: NoteInput.Input
+      timeout: 5000
+  - tap:
+      id: NoteInput.Input
+  - tool: keyboard
+    args:
+      text: E2E Test Income
+  - tap:
+      id: NoteInput.SubmitButton
+  - await:
+      hidden:
+        id: NoteInput.Input
+      timeout: 5000
+  - await:
+      idle: true
+  - tap:
+      id: TransactionForm.SubmitButton
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 60000
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Test_Income
+      timeout: 5000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+  - assert:
+      visible:
+        id: HomePage.NetWorthValue.200
+  - assert:
+      visible:
+        id: AccountCard.Balance.E2E_Txn_Account.200
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - tap:
+      id: TransactionCard.Label.E2E_Test_Income
+  - await:
+      visible:
+        id: TransactionInfo.Page
+      timeout: 5000
+  - assert:
+      visible:
+        id: TransactionInfo.Row.Account
+  - assert:
+      visible:
+        id: TransactionInfo.Row.Category
+  - tap:
+      id: TransactionInfo.EditButton.Label
+  - assert:
+      hidden:
+        text: ^Set fee$
+  - tap:
+      id: TransactionActionsMenu.TriggerButton
+  - await:
+      visible:
+        id: TransactionActionsMenu.FeeButton
+  - assert:
+      visible:
+        id: TransactionActionsMenu.DeleteButton
+  - tap:
+      id: TransactionActionsMenu.FeeButton
+  - await:
+      visible:
+        id: SplitEntryRow.Amount.0
+  - assert:
+      visible:
+        text: Save fee
+  - tool: gesture-swipe
+    args:
+      fromX: 0.5
+      fromY: 0.25
+      toX: 0.5
+      toY: 0.78
+      durationMs: 350
+      settle: true
+  - await:
+      hidden:
+        id: SplitEntryRow.Amount.0
+  - long-press:
+      id: TransactionKeypad.Backspace
+  - tap:
+      id: TransactionKeypad.Digit.1
+  - tap:
+      id: TransactionKeypad.Digit.2
+  - tap:
+      id: TransactionKeypad.Digit.5
+  - tap:
+      id: TransactionForm.CommentInput
+  - await:
+      visible:
+        id: NoteInput.Input
+      timeout: 5000
+  - tap:
+      id: NoteInput.Input
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      text: E2E Edited Income
+  - tap:
+      id: NoteInput.SubmitButton
+  - await:
+      hidden:
+        id: NoteInput.Input
+      timeout: 5000
+  - tap:
+      id: TransactionForm.SubmitButton
+  - await:
+      visible:
+        id: TransactionInfo.Page
+      timeout: 15000
+  - assert:
+      visible:
+        id: TransactionInfo.Row.Account
+  - assert:
+      visible:
+        id: TransactionInfo.Row.Category
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Edited_Income
+      timeout: 5000
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 3000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+  - assert:
+      visible:
+        id: HomePage.NetWorthValue.225
+  - assert:
+      visible:
+        id: AccountCard.Balance.E2E_Txn_Account.225
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - tap:
+      id: TransactionCard.Label.E2E_Edited_Income
+  - await:
+      visible:
+        id: TransactionInfo.Page
+      timeout: 5000
+  - await:
+      visible:
+        id: TransactionInfo.Page
+      timeout: 20000
+  - await:
+      visible:
+        id: TransactionActionsMenu.TriggerButton
+      timeout: 20000
+  - tap:
+      id: TransactionActionsMenu.TriggerButton
+  - await:
+      visible:
+        id: TransactionActionsMenu.DeleteButton
+  - tap:
+      id: TransactionActionsMenu.DeleteButton
+  - await:
+      idle: true
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Are you sure?
+      timeout: 3000
+  - tap:
+      text: Delete
+  - await:
+      idle: true
+  - await:
+      hidden:
+        text: Are you sure?
+      timeout: 10000
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - await:
+      hidden:
+        id: TransactionCard.Label.E2E_Edited_Income
+      timeout: 5000
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 3000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+  - assert:
+      visible:
+        id: HomePage.NetWorthValue.100
+  - assert:
+      visible:
+        id: AccountCard.Balance.E2E_Txn_Account.100

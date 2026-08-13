@@ -1,0 +1,1593 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: 01.db(, db)?
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: 01.db(, db)?
+      direction: down
+  - when:
+      hidden:
+        id: 01.db(, db)?
+    steps:
+      - scroll-to:
+          target:
+            text: 01.db(, db)?
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: 01.db(, db)?
+    steps:
+      - tap:
+          id: 01.db(, db)?
+  - when:
+      hidden:
+        id: 01.db(, db)?
+    steps:
+      - tap:
+          text: 01.db(, db)?
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: 01.db(, db)?
+        steps:
+          - tap:
+              id: 01.db(, db)?
+      - when:
+          hidden:
+            id: 01.db(, db)?
+        steps:
+          - tap:
+              text: 01.db(, db)?
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: No accounts yet
+    steps:
+      - tap:
+          id: AccountsEmptyState.AddAccountButton
+      - await:
+          visible:
+            id: CreateAccount.BANK
+          timeout: 10000
+  - when:
+      hidden:
+        id: CreateAccount.BANK
+    steps:
+      - when:
+          visible:
+            id: ActionButton
+        steps:
+          - tap:
+              id: ActionButton
+      - when:
+          hidden:
+            id: ActionButton
+        steps:
+          - await:
+              visible:
+                id: ActionButton
+              timeout: 10000
+          - tap:
+              id: ActionButton
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: ActionItem.AddAccount.Label
+          timeout: 10000
+      - tap:
+          id: ActionItem.AddAccount.Label
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: CreateAccount.BANK
+      timeout: 10000
+  - await:
+      visible:
+        id: CreateAccount.BANK
+      timeout: 3000
+  - tap:
+      id: CreateAccount.BANK
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: AccountForm.NameInput
+      timeout: 3000
+  - tap:
+      id: AccountForm.NameInput
+  - tool: keyboard
+    args:
+      text: E2E Checking Account
+  - tap:
+      id: AccountForm.CurrencySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CurrencySelector.SearchInput
+      timeout: 3000
+  - tap:
+      id: CurrencySelector.SearchInput
+  - tool: keyboard
+    args:
+      text: EUR
+  - await:
+      visible:
+        id: AccountForm.CurrencyOption.EUR
+      timeout: 3000
+  - tap:
+      id: AccountForm.CurrencyOption.EUR
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CurrencySelector.SearchInput
+      timeout: 3000
+  - await:
+      visible:
+        id: CreateAccount.Amount
+      timeout: 3000
+  - tap:
+      id: CreateAccount.Amount
+  - tool: keyboard
+    args:
+      text: "100"
+  - tap:
+      text: ACCOUNT NAME & ICON
+  - await:
+      visible:
+        id: AccountForm.SubmitButton
+      timeout: 3000
+  - tap:
+      id: AccountForm.SubmitButton
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 15000
+  - await:
+      visible:
+        id: AccountCard.E2E Checking Account
+      timeout: 20000
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Checking Account
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: AccountCard.E2E Checking Account
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: TransactionCard.Badge.Adjustment
+      timeout: 10000
+  - assert:
+      visible:
+        id: TransactionCard.AdjustmentAmount.100
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - tap:
+      id: AccountDetails.EditButton
+  - await:
+      visible:
+        text: Account Settings
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: AccountForm.NameInput
+      direction: up
+  - tap:
+      id: AccountForm.NameInput
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      text: E2E Checking Account EUR
+  - tap:
+      text: ACCOUNT NAME & ICON
+  - scroll-to:
+      target:
+        id: AccountForm.SubmitButton
+      direction: down
+  - await:
+      visible:
+        id: AccountForm.SubmitButton
+      timeout: 3000
+  - tap:
+      id: AccountForm.SubmitButton
+  - await:
+      visible:
+        id: AccountCard.E2E Checking Account EUR
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Checking Account EUR
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: AccountCard.E2E Checking Account EUR
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: TransactionCard.AdjustmentAmount.100
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - tap:
+      id: AccountDetails.EditButton
+  - await:
+      visible:
+        text: Account Settings
+      timeout: 10000
+  - tap:
+      id: CreateAccount.Amount
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      text: "175"
+  - await:
+      visible:
+        id: AccountForm.SubmitButton
+      timeout: 3000
+  - tap:
+      id: AccountForm.SubmitButton
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Checking Account EUR
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: AccountCard.E2E Checking Account EUR
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: TransactionCard.Badge.Adjustment
+      timeout: 10000
+  - assert:
+      visible:
+        id: TransactionCard.AdjustmentAmount.75
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - tap:
+      id: AccountDetails.EditButton
+  - await:
+      visible:
+        text: Account Settings
+      timeout: 10000
+  - tap:
+      id: CreateAccount.Amount
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      text: "140"
+  - await:
+      visible:
+        id: AccountForm.SubmitButton
+      timeout: 3000
+  - tap:
+      id: AccountForm.SubmitButton
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Checking Account EUR
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: AccountCard.E2E Checking Account EUR
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: TransactionCard.Badge.Adjustment
+      timeout: 10000
+  - assert:
+      visible:
+        id: TransactionCard.AdjustmentAmount.75
+  - assert:
+      visible:
+        id: TransactionCard.AdjustmentAmount.35
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 10000
+  - tool: open-url
+    args:
+      url: budgie://settings
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - echo: Native recovery attempt (migrated from retry, max 1)
+  - when:
+      hidden:
+        id: CurrencySelector.SearchInput
+    steps:
+      - scroll-to:
+          target:
+            id: ^SettingsPage[.]MainCurrencyCard[.].+$
+          direction: up
+      - when:
+          hidden:
+            id: ^SettingsPage[.]MainCurrencyCard[.].+$
+        steps:
+          - scroll-to:
+              target:
+                id: ^SettingsPage[.]MainCurrencyCard[.].+$
+              direction: down
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: ^SettingsPage[.]MainCurrencyCard[.].+$
+          timeout: 3000
+      - tap:
+          id: ^SettingsPage[.]MainCurrencyCard[.].+$
+      - await:
+          visible:
+            id: CurrencySelector.SearchInput
+          timeout: 3000
+  - await:
+      visible:
+        id: CurrencySelector.SearchInput
+      timeout: 3000
+  - when:
+      hidden:
+        id: AccountForm.CurrencyOption.EUR
+    steps:
+      - tap:
+          id: CurrencySelector.SearchInput
+      - tool: keyboard
+        args:
+          text: EUR
+  - await:
+      visible:
+        id: AccountForm.CurrencyOption.EUR
+      timeout: 3000
+  - tap:
+      id: AccountForm.CurrencyOption.EUR
+  - await:
+      hidden:
+        id: CurrencySelector.SearchInput
+      timeout: 3000
+  - await:
+      visible:
+        id: SettingsPage.MainCurrencyCard.EUR
+      timeout: 10000
+  - await:
+      idle: true
+  - tap:
+      id: TabBar.Home
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - await:
+      visible:
+        id: HomePage.NetWorthValue.140
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Checking Account EUR
+      direction: down
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Checking Account EUR
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: AccountCard.E2E Checking Account EUR
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - tap:
+      id: AccountDetails.EditButton
+  - await:
+      visible:
+        text: Account Settings
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: AccountForm.ActiveRow
+      direction: down
+  - tap:
+      id: AccountForm.ActiveRow
+  - tap:
+      id: AccountForm.SubmitButton
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: HomePage.NetWorthValue.140
+      timeout: 10000
+  - await:
+      idle: true
+  - assert:
+      hidden:
+        id: AccountCard.E2E Checking Account EUR
+  - tool: open-url
+    args:
+      url: budgie://settings/inactive
+  - await:
+      visible:
+        id: InactiveAccountsPage.Container
+      timeout: 15000
+  - await:
+      visible:
+        id: InactiveAccountCard.E2E Checking Account EUR
+      timeout: 10000
+  - await:
+      idle: true
+  - tap:
+      id: InactiveAccountCard.ActivateButton.E2E Checking Account EUR
+  - await:
+      visible:
+        text: Activate Account?
+      timeout: 3000
+  - tap:
+      text: ^Activate$
+  - await:
+      hidden:
+        id: InactiveAccountCard.E2E Checking Account EUR
+      timeout: 10000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.NetWorthValue.140
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Checking Account EUR
+      direction: down
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Checking Account EUR
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: AccountCard.E2E Checking Account EUR
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - tap:
+      id: AccountDetails.EditButton
+  - await:
+      visible:
+        text: Account Settings
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: AccountForm.IncludeInNetWorthTitle
+      direction: down
+  - tap:
+      id: AccountForm.IncludeInNetWorthTitle
+  - tap:
+      id: AccountForm.SubmitButton
+  - await:
+      visible:
+        id: HomePage.NetWorthValue.0
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Checking Account EUR
+      direction: down
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Checking Account EUR
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: AccountCard.E2E Checking Account EUR
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - tap:
+      id: AccountDetails.EditButton
+  - await:
+      visible:
+        text: Account Settings
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: AccountForm.IncludeInNetWorthTitle
+      direction: down
+  - tap:
+      id: AccountForm.IncludeInNetWorthTitle
+  - tap:
+      id: AccountForm.SubmitButton
+  - await:
+      visible:
+        id: HomePage.NetWorthValue.140
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Checking Account EUR
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: AccountCard.E2E Checking Account EUR
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - tap:
+      id: AccountDetails.EditButton
+  - await:
+      visible:
+        text: Account Settings
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: AccountDetails.ArchiveButton
+      direction: down
+  - tap:
+      id: AccountDetails.ArchiveButton
+  - tap:
+      text: Archive
+  - await:
+      visible:
+        id: HomePage.NetWorthValue.0
+      timeout: 10000
+  - assert:
+      hidden:
+        id: AccountCard.E2E Checking Account EUR
+  - tool: open-url
+    args:
+      url: budgie://settings/archived
+  - await:
+      visible:
+        id: ArchivedAccountsPage.Container
+      timeout: 10000
+  - await:
+      visible:
+        id: ArchivedAccountCard.E2E Checking Account EUR
+      timeout: 10000

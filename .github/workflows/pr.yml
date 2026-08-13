@@ -1,13 +1,9 @@
 name: Pull Request
 env:
-    MAESTRO_DRIVER_STARTUP_TIMEOUT: '120000'
     TURBO_TEAM: vitalyiegorov
     TURBO_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     PR_NUMBER: ${{ github.event.pull_request.number }}
     PR_TITLE: ${{ github.event.pull_request.title }}
-    MAESTRO_CLI_NO_ANALYTICS: 'true'
-    MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: 'true'
-    MAESTRO_VERSION: '2.6.1'
     EAS_CLI_VERSION: '20.5.1'
     EXPO_REPACK_VERSION: '0.7.2'
     RCT_USE_PREBUILT_RNCORE: 1
@@ -92,8 +88,8 @@ jobs:
             - name: Typescript checks
               run: yarn ts
 
-            - name: Maestro selector checks
-              run: yarn workspace @budgie-at/app-tests selectors:check
+            - name: Argent selector checks
+              run: yarn workspace @budgie-at/app-tests flows:check
 
             - name: Lint checks
               run: yarn lint
@@ -630,53 +626,41 @@ jobs:
                   echo "Installing app from: $APP_PATH"
                   xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
 
-            - name: Install Maestro
-              run: |
-                  maestro_bin="$HOME/.maestro/bin/maestro"
-                  installed_version="$(
-                    MAESTRO_CLI_NO_ANALYTICS=true \
-                      MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true \
-                      "$maestro_bin" --version 2>/dev/null | tail -n 1 | tr -d '\r' || true
-                  )"
-                  if [ ! -x "$maestro_bin" ] || [ "$installed_version" != "$MAESTRO_VERSION" ]; then
-                    curl -fsSL "https://get.maestro.mobile.dev" | env MAESTRO_VERSION="$MAESTRO_VERSION" bash
-                  fi
-                  echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
-                  test "$(MAESTRO_CLI_NO_ANALYTICS=true MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true "$maestro_bin" --version 2>&1 | tail -n 1 | tr -d '\r')" = "$MAESTRO_VERSION"
+            - name: Install workspace dependencies
+              run: yarn install --immutable
 
             - name: Prepare iOS E2E artifact directories
               run: |
-                  mkdir -p tests/app-tests/artifacts/maestro
+                  mkdir -p tests/app-tests/artifacts/argent
                   mkdir -p tests/app-tests/artifacts/simulator
                   mkdir -p tests/app-tests/artifacts/diagnostics
 
 
-            - name: Run Maestro UI tests
+            - name: Run Argent UI tests
               timeout-minutes: 75
               working-directory: tests/app-tests
               shell: bash
               env:
                   JAVA_TOOL_OPTIONS: -Djava.awt.headless=true -Xmx1024m
-                  MAESTRO_DRIVER_STARTUP_TIMEOUT: '180000'
               run: |
-                  ./scripts/run-ios-maestro-shard.sh \
-                    com.vitalyiegorov.budgie.e2e \
+                  ./scripts/run-argent-suite.sh \
+                    "$SIMULATOR_UDID" \
                     "${{ matrix.shard }}"
 
-            - name: Publish Maestro timing summary
+            - name: Publish Argent timing summary
               if: always()
               working-directory: tests/app-tests
               shell: bash
               run: |
                   set -euo pipefail
                   {
-                    for timing_file in ./artifacts/maestro/shard-*/flow-timings.tsv; do
+                    for timing_file in ./artifacts/argent/shard-*/flow-timings.tsv; do
                       if [ ! -f "$timing_file" ]; then
                         continue
                       fi
 
                       shard_name="$(basename "$(dirname "$timing_file")")"
-                      echo "### Maestro flow timings: $shard_name"
+                      echo "### Argent flow timings: $shard_name"
                       echo
                       echo '| Flow | Status | Attempts | Seconds |'
                       echo '| --- | --- | ---: | ---: |'
@@ -716,14 +700,14 @@ jobs:
                     \( -name 'budgieE2E*' -o -name 'budgie*' -o -name 'JetsamEvent*' \) \
                     -exec cp {} "$DIAGNOSTIC_DIR/" \; || true
 
-            - name: Upload Maestro artifacts (report, logs, screenshots)
+            - name: Upload Argent artifacts (report, logs, screenshots)
               if: always()
               uses: actions/upload-artifact@v6
               with:
-                  name: maestro-ios-artifacts-shard-${{ matrix.shard }}
+                  name: argent-ios-artifacts-shard-${{ matrix.shard }}
                   include-hidden-files: true
                   path: |
-                      tests/app-tests/artifacts/maestro/**
+                      tests/app-tests/artifacts/argent/**
                   if-no-files-found: warn
                   retention-days: 7
 
@@ -731,7 +715,7 @@ jobs:
               if: failure()
               uses: actions/upload-artifact@v6
               with:
-                  name: maestro-ios-simulator-failure-artifacts-shard-${{ matrix.shard }}
+                  name: argent-ios-simulator-failure-artifacts-shard-${{ matrix.shard }}
                   include-hidden-files: true
                   path: |
                       tests/app-tests/artifacts/simulator/**

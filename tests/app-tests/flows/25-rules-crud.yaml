@@ -1,0 +1,1588 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: 25.db
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: 25.db
+      direction: down
+  - when:
+      hidden:
+        id: 25.db
+    steps:
+      - scroll-to:
+          target:
+            text: 25.db
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: 25.db
+    steps:
+      - tap:
+          id: 25.db
+  - when:
+      hidden:
+        id: 25.db
+    steps:
+      - tap:
+          text: 25.db
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: 25.db
+        steps:
+          - tap:
+              id: 25.db
+      - when:
+          hidden:
+            id: 25.db
+        steps:
+          - tap:
+              text: 25.db
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - echo: App process stop requested; the following launch performs a clean restart.
+  - launch: com.vitalyiegorov.budgie.e2e
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tool: open-url
+    args:
+      url: budgie://settings/rules
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: RulesPage.Page
+      timeout: 15000
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - tool: keyboard
+    args:
+      text: Netflix
+  - tap:
+      text: Done
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - when:
+      visible:
+        text: Apply to existing transactions?
+    steps:
+      - tap:
+          text: Skip
+  - await:
+      visible:
+        id: RulesPage.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: RulesPage.Page
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.0
+  - assert:
+      visible:
+        id: RulesPage.RuleCardConditions.0
+  - assert:
+      visible:
+        id: RulesPage.RuleCardActions.0
+  - tap:
+      id: RulesPage.RuleCard.0
+  - await:
+      visible:
+        text: Edit Rule
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - tool: keyboard
+    args:
+      text: Netflix Updated
+  - tap:
+      text: Done
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - await:
+      visible:
+        id: RulesPage.RuleCard.0
+      timeout: 5000
+  - assert:
+      visible:
+        id: RulesPage.RuleCardConditions.0
+  - assert:
+      visible:
+        id: RulesPage.RuleCardActions.0
+  - tap:
+      id: RulesPage.RuleCardEnabledSwitch.0
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.RuleCardEnabledSwitch.0
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Edit Rule
+    steps:
+      - tap:
+          text: Cancel
+      - await:
+          idle: true
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.0
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - assert:
+      visible:
+        id: RulesPage.EmptyState
+  - assert:
+      visible:
+        text: No Rules Yet
+  - assert:
+      visible:
+        text: Create rules to automatically categorize and tag your bank transactions
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - tool: keyboard
+    args:
+      text: Spotify
+  - tap:
+      id: RuleForm.ConditionSection.AddButton
+  - tap:
+      id: RuleForm.Condition.1.FieldSelector
+  - tap:
+      id: RuleForm.SelectorCard.COMMENT
+  - tap:
+      id: RuleForm.Condition.1.ValueInput
+  - tool: keyboard
+    args:
+      text: Premium
+  - tap:
+      text: Done
+  - assert:
+      visible:
+        text: Match All
+  - scroll-to:
+      target:
+        id: RuleForm.Action.0.CategorySelector
+      direction: down
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - when:
+      visible:
+        text: Apply to existing transactions?
+    steps:
+      - tap:
+          text: Skip
+  - await:
+      visible:
+        id: RulesPage.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: RulesPage.Page
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.0
+  - assert:
+      visible:
+        id: RulesPage.RuleCardConditions.0
+  - assert:
+      visible:
+        id: RulesPage.RuleCardActions.0
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - assert:
+      visible:
+        id: RulesPage.EmptyState
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - tool: keyboard
+    args:
+      text: Amazon
+  - tap:
+      text: Done
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.ActionSection.AddButton
+  - tap:
+      id: RuleForm.Action.1.TypeSelector
+  - tap:
+      id: RuleForm.SelectorCard.ADD_TAG
+  - await:
+      idle: true
+  - scroll-to:
+      target:
+        id: RuleForm.Action.1.TagSelector
+      direction: down
+  - tap:
+      id: RuleForm.Action.1.TagSelector
+  - await:
+      idle: true
+  - tap:
+      text: Rules Test Tag
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - when:
+      visible:
+        text: Apply to existing transactions?
+    steps:
+      - tap:
+          text: Skip
+  - await:
+      visible:
+        id: RulesPage.Page
+      timeout: 10000
+  - await:
+      idle: true
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.0
+  - assert:
+      visible:
+        id: RulesPage.RuleCardConditions.0
+  - assert:
+      visible:
+        id: RulesPage.RuleCardActions.0
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - assert:
+      visible:
+        id: RulesPage.EmptyState
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.ConditionSection.AddButton
+  - await:
+      idle: true
+  - assert:
+      visible:
+        id: RuleForm.Condition.1.FieldSelector
+  - tap:
+      id: RuleForm.Condition.1.RemoveButton
+  - await:
+      idle: true
+  - assert:
+      hidden:
+        id: RuleForm.Condition.1.FieldSelector
+  - tap:
+      id: RuleForm.ActionSection.AddButton
+  - await:
+      idle: true
+  - assert:
+      visible:
+        id: RuleForm.Action.1.TypeSelector
+  - tap:
+      id: RuleForm.Action.1.RemoveButton
+  - await:
+      idle: true
+  - assert:
+      hidden:
+        id: RuleForm.Action.1.TypeSelector
+  - scroll-to:
+      target:
+        id: RuleForm.Condition.0.ValueInput
+      direction: up
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - tool: keyboard
+    args:
+      text: TestRemove
+  - tap:
+      text: Done
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - await:
+      visible:
+        id: RulesPage.Page
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.0
+  - assert:
+      visible:
+        id: RulesPage.RuleCardConditions.0
+  - assert:
+      visible:
+        id: RulesPage.RuleCardActions.0
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - assert:
+      visible:
+        id: RulesPage.EmptyState
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.FieldSelector.Value
+  - tap:
+      id: RuleForm.SelectorCard.AMOUNT
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.OperatorSelector
+  - tap:
+      id: RuleForm.SelectorCard.GREATER_THAN
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - tool: keyboard
+    args:
+      text: "100"
+  - tap:
+      id: RuleForm.ConditionSection.AddButton
+  - tap:
+      id: RuleForm.Condition.1.FieldSelector
+  - tap:
+      id: RuleForm.SelectorCard.COMMENT
+  - tap:
+      id: RuleForm.Condition.1.ValueInput
+  - tool: keyboard
+    args:
+      text: Test08 Comment
+  - tool: keyboard
+    args:
+      key: enter
+  - await:
+      idle: true
+  - scroll-to:
+      target:
+        id: RuleForm.Action.0.TypeSelector
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Action.0.TypeSelector
+  - await:
+      visible:
+        id: RuleForm.SelectorCard.SET_CATEGORY
+      timeout: 3000
+  - tap:
+      id: RuleForm.SelectorCard.SET_CATEGORY
+  - await:
+      idle: true
+  - scroll-to:
+      target:
+        id: RuleForm.Action.0.CategorySelector
+      direction: down
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.0
+  - assert:
+      visible:
+        id: RulesPage.RuleCardConditions.0
+  - assert:
+      visible:
+        id: RulesPage.RuleCardActions.0
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - assert:
+      visible:
+        id: RulesPage.EmptyState
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.FieldSelector.Value
+  - tap:
+      id: RuleForm.SelectorCard.ACCOUNT_ID
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: RuleForm.Condition.0.ValueInput
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: AccountPickerBottomSheet.Input
+  - tap:
+      id: AccountPickerBottomSheet.Input
+  - tool: keyboard
+    args:
+      text: Rules Test Account
+  - await:
+      visible:
+        id: AccountPickerBottomSheet.Option.Rules Test Account
+  - tap:
+      id: AccountPickerBottomSheet.Option.Rules Test Account
+  - await:
+      hidden:
+        id: AccountPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.ConditionSection.AddButton
+  - tap:
+      id: RuleForm.Condition.1.FieldSelector
+  - tap:
+      id: RuleForm.SelectorCard.TRANSACTION_TYPE
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: RuleForm.Condition.1.ValueInput
+  - tap:
+      id: RuleForm.Condition.1.ValueInput
+  - tap:
+      text: Expense
+  - await:
+      idle: true
+  - scroll-to:
+      target:
+        id: RuleForm.Action.0.CategorySelector
+      direction: down
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - when:
+      visible:
+        text: Apply to existing transactions?
+    steps:
+      - tap:
+          text: Skip
+  - await:
+      visible:
+        id: RulesPage.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: RulesPage.Page
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.0
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - assert:
+      visible:
+        id: RulesPage.EmptyState
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.OperatorSelector
+  - tap:
+      id: RuleForm.SelectorCard.EQUALS
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - tool: keyboard
+    args:
+      text: Exact Match
+  - tap:
+      text: Done
+  - scroll-to:
+      target:
+        id: RuleForm.Action.0.CategorySelector
+      direction: down
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - await:
+      visible:
+        id: RulesPage.Page
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.0
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.FieldSelector.Value
+  - tap:
+      id: RuleForm.SelectorCard.COMMENT
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.OperatorSelector
+  - tap:
+      id: RuleForm.SelectorCard.NOT_CONTAINS
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - tool: keyboard
+    args:
+      text: exclude
+  - tap:
+      text: Done
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - when:
+      visible:
+        text: Apply to existing transactions?
+    steps:
+      - tap:
+          text: Skip
+  - await:
+      visible:
+        id: RulesPage.Page
+      timeout: 10000
+  - await:
+      idle: true
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.1
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.FieldSelector.Value
+  - tap:
+      id: RuleForm.SelectorCard.AMOUNT
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.OperatorSelector
+  - tap:
+      id: RuleForm.SelectorCard.LESS_THAN
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - tool: keyboard
+    args:
+      text: "50"
+  - tap:
+      id: RuleForm.ConditionSection.Header
+  - await:
+      idle: true
+  - scroll-to:
+      target:
+        id: RuleForm.Action.0.CategorySelector
+      direction: down
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - when:
+      visible:
+        text: Apply to existing transactions?
+    steps:
+      - tap:
+          text: Skip
+  - await:
+      visible:
+        id: RulesPage.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: RulesPage.Page
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.2
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - await:
+      idle: true
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - await:
+      idle: true
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - assert:
+      visible:
+        id: RulesPage.EmptyState
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.FieldSelector.Value
+  - tap:
+      id: RuleForm.SelectorCard.AMOUNT
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.OperatorSelector
+  - tap:
+      id: RuleForm.SelectorCard.BETWEEN
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - tool: keyboard
+    args:
+      text: "10"
+  - tap:
+      id: RuleForm.ConditionSection.Header
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.SecondaryValueInput
+  - tool: keyboard
+    args:
+      text: "100"
+  - tap:
+      id: RuleForm.ConditionSection.Header
+  - await:
+      idle: true
+  - scroll-to:
+      target:
+        id: RuleForm.Action.0.CategorySelector
+      direction: down
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - when:
+      visible:
+        text: Apply to existing transactions?
+    steps:
+      - tap:
+          text: Skip
+  - await:
+      visible:
+        id: RulesPage.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: RulesPage.Page
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.0
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - assert:
+      visible:
+        id: RulesPage.EmptyState
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.FieldSelector.Value
+  - tap:
+      id: RuleForm.SelectorCard.EXTERNAL_SOURCE
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - await:
+      visible:
+        id: RuleForm.SelectorCard.MONOBANK
+      timeout: 3000
+  - tap:
+      id: RuleForm.SelectorCard.MONOBANK
+  - await:
+      idle: true
+  - scroll-to:
+      target:
+        id: RuleForm.Action.0.CategorySelector
+      direction: down
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - await:
+      visible:
+        id: RulesPage.Page
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.0
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.FieldSelector.Value
+  - tap:
+      id: RuleForm.SelectorCard.MCC_CODE
+  - await:
+      idle: true
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - await:
+      idle: true
+  - tap:
+      text: Search by code or description...
+  - tool: keyboard
+    args:
+      text: "0742"
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: RuleMccSelector.Card.0742
+      timeout: 10000
+  - tap:
+      id: RuleMccSelector.Card.0742
+  - await:
+      idle: true
+  - scroll-to:
+      target:
+        id: RuleForm.Action.0.CategorySelector
+      direction: down
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - await:
+      visible:
+        id: RulesPage.Page
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.1
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - await:
+      idle: true
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      idle: true
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Delete
+  - assert:
+      visible:
+        id: RulesPage.EmptyState
+  - tap:
+      id: ActionButton
+  - await:
+      visible:
+        id: RulesPage.CreateButton.Label
+  - await:
+      idle: true
+  - tap:
+      id: RulesPage.CreateButton.Label
+  - await:
+      visible:
+        text: Create Rule
+  - tap:
+      id: RuleForm.Condition.0.ValueInput
+  - tool: keyboard
+    args:
+      text: Spotify
+  - tap:
+      text: Done
+  - tap:
+      id: RuleForm.Action.0.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - tap:
+      id: RuleForm.Footer.SubmitButton
+  - await:
+      visible:
+        text: Apply to existing transactions?
+      timeout: 10000
+  - tap:
+      text: Apply
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: RulesPage.Page
+      timeout: 10000
+  - assert:
+      visible:
+        id: RulesPage.RuleCard.0
+  - tap:
+      id: TabBar.Transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionCard.Label.Spotify_Premium
+  - await:
+      visible:
+        id: TransactionCard.Category.Rules_Test_Category

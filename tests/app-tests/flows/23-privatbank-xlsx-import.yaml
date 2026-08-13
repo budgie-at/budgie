@@ -1,0 +1,1487 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: 23.db
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: 23.db
+      direction: down
+  - when:
+      hidden:
+        id: 23.db
+    steps:
+      - scroll-to:
+          target:
+            text: 23.db
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: 23.db
+    steps:
+      - tap:
+          id: 23.db
+  - when:
+      hidden:
+        id: 23.db
+    steps:
+      - tap:
+          text: 23.db
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: 23.db
+        steps:
+          - tap:
+              id: 23.db
+      - when:
+          hidden:
+            id: 23.db
+        steps:
+          - tap:
+              text: 23.db
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - echo: "Phase: argent-output.phase = 'clear-state-import'"
+  - tap:
+      id: TabBar.Home
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: No accounts yet
+    steps:
+      - tap:
+          id: AccountsEmptyState.AddAccountButton
+      - await:
+          visible:
+            id: CreateAccount.BANK
+          timeout: 10000
+  - when:
+      hidden:
+        id: CreateAccount.BANK
+    steps:
+      - when:
+          visible:
+            id: ActionButton
+        steps:
+          - tap:
+              id: ActionButton
+      - when:
+          hidden:
+            id: ActionButton
+        steps:
+          - await:
+              visible:
+                id: ActionButton
+              timeout: 10000
+          - tap:
+              id: ActionButton
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: ActionItem.AddAccount.Label
+          timeout: 10000
+      - tap:
+          id: ActionItem.AddAccount.Label
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: CreateAccount.BANK
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: CreateAccount.PRIVATBANK
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: CreateAccount.PRIVATBANK
+  - await:
+      visible:
+        id: CreateFileBankAccount.SelectFileButton
+      timeout: 10000
+  - tap:
+      id: CreateFileBankAccount.SelectFileButton
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: privatbank-statement-001, xlsx
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: privatbank-statement-001, xlsx
+      direction: down
+  - when:
+      hidden:
+        id: privatbank-statement-001, xlsx
+    steps:
+      - scroll-to:
+          target:
+            text: privatbank-statement-001, xlsx
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: privatbank-statement-001, xlsx
+    steps:
+      - tap:
+          id: privatbank-statement-001, xlsx
+  - when:
+      hidden:
+        id: privatbank-statement-001, xlsx
+    steps:
+      - tap:
+          text: privatbank-statement-001, xlsx
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: privatbank-statement-001, xlsx
+        steps:
+          - tap:
+              id: privatbank-statement-001, xlsx
+      - when:
+          hidden:
+            id: privatbank-statement-001, xlsx
+        steps:
+          - tap:
+              text: privatbank-statement-001, xlsx
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        id: SyncAccountSelection.Row.Privatbank_1234
+      timeout: 5000
+  - assert:
+      visible:
+        text: Select all
+  - tap:
+      id: SyncAccountSelection.Row.Privatbank_1234
+  - await:
+      visible:
+        text: Deselect all
+      timeout: 3000
+  - tap:
+      id: SyncAccountSelection.ToggleAll
+  - await:
+      visible:
+        text: Select all
+      timeout: 3000
+  - tap:
+      id: SyncAccountSelection.ToggleAll
+  - await:
+      visible:
+        text: Deselect all
+      timeout: 3000
+  - await:
+      visible:
+        id: CreateFileBankAccount.StartSyncButton
+      timeout: 15000
+  - tap:
+      id: CreateFileBankAccount.StartSyncButton
+  - when:
+      visible:
+        text: Already syncing
+    steps:
+      - tap:
+          id: PageHeader.BackButton
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 60000
+  - scroll-to:
+      target:
+        id: AccountCard.Privatbank •1234
+      direction: down
+  - assert:
+      visible:
+        id: AccountCard.Balance.Privatbank_1234.747
+  - tap:
+      id: AccountCard.Privatbank •1234
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Privatbank_Market
+      timeout: 20000
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Privatbank_Salary
+      timeout: 20000
+  - await:
+      visible:
+        id: TransactionCard.Category.Groceries
+      timeout: 3000
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Privatbank_ATM
+      direction: down
+  - assert:
+      visible:
+        id: TransactionCard.FeeMetadata.3
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: AccountCard.Privatbank •1234
+      timeout: 10000
+  - echo: "Phase: argent-output.phase = 'existing-account-quick-import'"
+  - tool: open-url
+    args:
+      url: budgie://settings
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.AutoAssignMccCategorySwitch
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: SettingsPage.AutoAssignMccCategorySwitch
+  - await:
+      idle: true
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: AccountCard.Privatbank •1234
+      timeout: 10000
+  - long-press:
+      id: AccountCard.Privatbank •1234
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: privatbank-statement-002, xlsx
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: privatbank-statement-002, xlsx
+      direction: down
+  - when:
+      hidden:
+        id: privatbank-statement-002, xlsx
+    steps:
+      - scroll-to:
+          target:
+            text: privatbank-statement-002, xlsx
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: privatbank-statement-002, xlsx
+    steps:
+      - tap:
+          id: privatbank-statement-002, xlsx
+  - when:
+      hidden:
+        id: privatbank-statement-002, xlsx
+    steps:
+      - tap:
+          text: privatbank-statement-002, xlsx
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: privatbank-statement-002, xlsx
+        steps:
+          - tap:
+              id: privatbank-statement-002, xlsx
+      - when:
+          hidden:
+            id: privatbank-statement-002, xlsx
+        steps:
+          - tap:
+              text: privatbank-statement-002, xlsx
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        id: AccountCard.Balance.Privatbank_1234.547
+      timeout: 5000
+  - tap:
+      id: AccountCard.Privatbank •1234
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Privatbank_Coffee
+      direction: down
+  - echo: "Phase: argent-output.phase = 'edit-then-reimport-no-duplicate'"
+  - long-press:
+      id: TransactionCard.Label.E2E_Privatbank_Coffee
+  - await:
+      visible:
+        id: TransactionContextMenu.EditButton
+  - tap:
+      id: TransactionContextMenu.EditButton
+  - await:
+      visible:
+        id: TransactionInfo.EditButton.Label
+      timeout: 10000
+  - tap:
+      id: TransactionInfo.EditButton.Label
+  - await:
+      visible:
+        text: Edit Expense
+      timeout: 5000
+  - tap:
+      id: TransactionForm.CategorySelector.Title
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - tool: keyboard
+    args:
+      text: E2E Privatbank Import Category
+  - tool: keyboard
+    args:
+      key: enter
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.CreateButton
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryForm.Input
+  - tap:
+      id: CategoryForm.Submit
+  - await:
+      hidden:
+        id: CategoryForm.Input
+  - tap:
+      id: TransactionForm.CommentInput
+  - await:
+      visible:
+        id: NoteInput.Input
+      timeout: 5000
+  - tap:
+      id: NoteInput.Input
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      text: EDITED PRIVATBANK DEDUP TEST
+  - tap:
+      id: NoteInput.SubmitButton
+  - await:
+      hidden:
+        id: NoteInput.Input
+      timeout: 5000
+  - tap:
+      id: TransactionForm.SubmitButton
+  - await:
+      visible:
+        id: TransactionInfo.Page
+      timeout: 15000
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: AccountCard.Privatbank •1234
+      timeout: 10000
+  - assert:
+      visible:
+        id: AccountCard.Balance.Privatbank_1234.547
+  - long-press:
+      id: AccountCard.Privatbank •1234
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: privatbank-statement-002, xlsx
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: privatbank-statement-002, xlsx
+      direction: down
+  - when:
+      hidden:
+        id: privatbank-statement-002, xlsx
+    steps:
+      - scroll-to:
+          target:
+            text: privatbank-statement-002, xlsx
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: privatbank-statement-002, xlsx
+    steps:
+      - tap:
+          id: privatbank-statement-002, xlsx
+  - when:
+      hidden:
+        id: privatbank-statement-002, xlsx
+    steps:
+      - tap:
+          text: privatbank-statement-002, xlsx
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: privatbank-statement-002, xlsx
+        steps:
+          - tap:
+              id: privatbank-statement-002, xlsx
+      - when:
+          hidden:
+            id: privatbank-statement-002, xlsx
+        steps:
+          - tap:
+              text: privatbank-statement-002, xlsx
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        id: AccountCard.Balance.Privatbank_1234.547
+      timeout: 5000
+  - tap:
+      id: AccountCard.Privatbank •1234
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Privatbank_Coffee
+      direction: down
+  - tap:
+      id: TransactionCard.Label.E2E_Privatbank_Coffee
+  - await:
+      visible:
+        id: TransactionInfo.Page
+      timeout: 5000
+  - assert:
+      visible:
+        text: EDITED PRIVATBANK DEDUP TEST
+  - tap:
+      id: PageHeader.BackButton
+  - echo: "Phase: argent-output.phase = 'edit-imported-account-balance'"
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - tap:
+      id: AccountDetails.EditButton
+  - await:
+      visible:
+        text: Account Settings
+      timeout: 10000
+  - tap:
+      id: CreateAccount.Amount
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      text: "600"
+  - await:
+      visible:
+        id: AccountForm.SubmitButton
+      timeout: 3000
+  - tap:
+      id: AccountForm.SubmitButton
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 15000
+  - await:
+      visible:
+        id: AccountCard.Balance.Privatbank_1234.600
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: AccountCard.Privatbank •1234
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: AccountCard.Privatbank •1234
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: TransactionCard.Badge.Adjustment
+      timeout: 10000
+  - assert:
+      visible:
+        id: TransactionCard.AdjustmentAmount.53

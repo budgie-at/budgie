@@ -1,0 +1,558 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: 21.db
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: 21.db
+      direction: down
+  - when:
+      hidden:
+        id: 21.db
+    steps:
+      - scroll-to:
+          target:
+            text: 21.db
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: 21.db
+    steps:
+      - tap:
+          id: 21.db
+  - when:
+      hidden:
+        id: 21.db
+    steps:
+      - tap:
+          text: 21.db
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: 21.db
+        steps:
+          - tap:
+              id: 21.db
+      - when:
+          hidden:
+            id: 21.db
+        steps:
+          - tap:
+              text: 21.db
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 10000
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_P1_Out
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_P1_In
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_P2_Out
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_P2_In
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_Untouched
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_ATM_Out
+      direction: down
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_ATM_Out
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_SameBank_Out_5524
+      direction: down
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_SameBank_In_0356
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_Bridge_Out
+      direction: down
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_Bridge_In
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_Bridge_Chain_Out
+      direction: down
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_Chain_Source
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_Chain_Target
+  - tool: open-url
+    args:
+      url: budgie://settings
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - await:
+      idle: true
+  - scroll-to:
+      target:
+        id: SettingsPage.RecalculateBalancesCard
+      direction: down
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.RecalculateBalancesCard
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: SettingsPage.ConsolidateTransfersCard
+      direction: up
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.ConsolidateTransfersCard
+      timeout: 3000
+  - tap:
+      id: SettingsPage.ConsolidateTransfersCard
+  - await:
+      visible:
+        text: .*high-confidence transfer.*
+      timeout: 3000
+  - tap:
+      text: Consolidate
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_P1_Out
+      direction: up
+  - when:
+      hidden:
+        id: TransactionCard.Label.E2E_Consolidation_P1_Out
+    steps:
+      - scroll-to:
+          target:
+            id: TransactionCard.Label.E2E_Consolidation_P1_Out
+          direction: down
+  - await:
+      visible:
+        id: TransactionCard.FromAccount.E2E_Consolidation_A.Label
+      timeout: 60000
+  - assert:
+      visible:
+        id: TransactionCard.FromAccount.E2E_Consolidation_A.Label
+  - assert:
+      visible:
+        id: TransactionCard.ToAccount.E2E_Consolidation_B.Label
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_P2_Out
+  - assert:
+      visible:
+        id: TransactionCard.FromAccount.E2E_Consolidation_USD.Label
+  - assert:
+      visible:
+        id: TransactionCard.ToAccount.E2E_Consolidation_EUR.Label
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_ATM_Out
+  - assert:
+      visible:
+        id: TransactionCard.FromAccount.E2E_Consolidation_Card.Label
+  - assert:
+      visible:
+        id: TransactionCard.ToAccount.E2E_Consolidation_Cash.Label
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_SameBank_Out_5524
+      direction: down
+  - assert:
+      visible:
+        id: TransactionCard.FromAccount.E2E_Consolidation_Privat_Source.Label
+  - assert:
+      visible:
+        id: TransactionCard.ToAccount.E2E_Consolidation_Privat_Target.Label
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_Bridge_Out
+      direction: down
+  - assert:
+      visible:
+        id: TransactionCard.FromAccount.E2E_Consolidation_Bridge_Source.Label
+  - assert:
+      visible:
+        id: TransactionCard.ToAccount.E2E_Consolidation_Bridge_Target.Label
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_Bridge_Chain_Out
+      direction: down
+  - assert:
+      visible:
+        id: TransactionCard.FromAccount.E2E_Consolidation_Chain_Source.Label
+  - assert:
+      visible:
+        id: TransactionCard.ToAccount.E2E_Consolidation_Chain_Target.Label
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Consolidation_Chain_Target
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Consolidation_Chain_Source
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_SameBank_Out_5524
+      direction: up
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Consolidation_SameBank_In_0356
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_Bridge_Out
+      direction: down
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Consolidation_Bridge_In
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_P1_Out
+      direction: up
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Consolidation_P1_In
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Consolidation_P2_In
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_Untouched
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_P1_Out
+      direction: up
+  - tap:
+      id: TransactionCard.Label.E2E_Consolidation_P1_Out
+  - await:
+      visible:
+        id: TransactionInfo.Row.Consolidation
+      timeout: 10000
+  - tap:
+      id: TransactionInfo.Row.Consolidation
+  - await:
+      visible:
+        id: ConsolidationSourceModal.Row.0
+      timeout: 10000
+  - assert:
+      visible:
+        id: ConsolidationSourceModal.Row.1
+  - assert:
+      visible:
+        text: .*E2E Consolidation P1 Out.*
+  - assert:
+      visible:
+        text: .*\+₴200.*
+  - assert:
+      visible:
+        text: .*E2E Consolidation P1 In.*
+  - assert:
+      visible:
+        text: .*-₴200.*
+  - assert:
+      visible:
+        id: ConsolidationSourceModal.RevertButton
+  - tap:
+      id: ConsolidationSourceModal.RevertButton
+  - await:
+      visible:
+        text: Revert consolidation?
+      timeout: 10000
+  - tap:
+      text: Revert
+  - await:
+      hidden:
+        text: Revert consolidation?
+      timeout: 15000
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_P1_In
+      timeout: 10000
+  - await:
+      hidden:
+        id: TransactionCard.FromAccount.E2E_Consolidation_A.Label
+      timeout: 5000
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Consolidation_ATM_Out
+      direction: down
+  - long-press:
+      id: TransactionCard.Label.E2E_Consolidation_ATM_Out
+  - await:
+      visible:
+        id: TransactionContextMenu.RevertButton
+      timeout: 10000
+  - assert:
+      hidden:
+        id: TransactionContextMenu.DeleteButton
+  - tap:
+      id: TransactionContextMenu.RevertButton
+  - await:
+      visible:
+        text: Revert consolidation?
+      timeout: 10000
+  - tap:
+      text: Revert
+  - await:
+      hidden:
+        text: Revert consolidation?
+      timeout: 15000
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Consolidation_ATM_Out
+      timeout: 10000
+  - assert:
+      hidden:
+        id: TransactionCard.FromAccount.E2E_Consolidation_Card.Label
+  - assert:
+      hidden:
+        id: TransactionCard.ToAccount.E2E_Consolidation_Cash.Label
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: AccountCard.Balance.E2E_Consolidation_Cash.0
+      direction: down
+  - assert:
+      visible:
+        id: AccountCard.Balance.E2E_Consolidation_Cash.0
+  - scroll-to:
+      target:
+        id: AccountCard.Balance.E2E_Consolidation_A.750
+      direction: down
+  - assert:
+      visible:
+        id: AccountCard.Balance.E2E_Consolidation_A.750
+  - assert:
+      visible:
+        id: AccountCard.Balance.E2E_Consolidation_B.200
+  - scroll-to:
+      target:
+        id: AccountCard.Balance.E2E_Consolidation_Untouched.0
+      direction: down
+  - assert:
+      visible:
+        id: AccountCard.Balance.E2E_Consolidation_Untouched.0

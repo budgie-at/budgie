@@ -1,8 +1,0 @@
-appId: ${APP_ID}
----
-- openLink: 'budgie://settings/archived'
-
-- extendedWaitUntil:
-      visible:
-          id: 'ArchivedAccountsPage.Container'
-      timeout: 10000

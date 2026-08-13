@@ -1,0 +1,1092 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: 16.db
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: 16.db
+      direction: down
+  - when:
+      hidden:
+        id: 16.db
+    steps:
+      - scroll-to:
+          target:
+            text: 16.db
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: 16.db
+    steps:
+      - tap:
+          id: 16.db
+  - when:
+      hidden:
+        id: 16.db
+    steps:
+      - tap:
+          text: 16.db
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: 16.db
+        steps:
+          - tap:
+              id: 16.db
+      - when:
+          hidden:
+            id: 16.db
+        steps:
+          - tap:
+              text: 16.db
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - echo: "Phase: argent-output.phase = 'clear-state-import'"
+  - tap:
+      id: TabBar.Home
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: No accounts yet
+    steps:
+      - tap:
+          id: AccountsEmptyState.AddAccountButton
+      - await:
+          visible:
+            id: CreateAccount.BANK
+          timeout: 10000
+  - when:
+      hidden:
+        id: CreateAccount.BANK
+    steps:
+      - when:
+          visible:
+            id: ActionButton
+        steps:
+          - tap:
+              id: ActionButton
+      - when:
+          hidden:
+            id: ActionButton
+        steps:
+          - await:
+              visible:
+                id: ActionButton
+              timeout: 10000
+          - tap:
+              id: ActionButton
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: ActionItem.AddAccount.Label
+          timeout: 10000
+      - tap:
+          id: ActionItem.AddAccount.Label
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: CreateAccount.BANK
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: CreateAccount.ERSTE
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: CreateAccount.ERSTE
+  - await:
+      visible:
+        id: CreateFileBankAccount.SelectFileButton
+      timeout: 10000
+  - tap:
+      id: CreateFileBankAccount.SelectFileButton
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: erste-statement-008, pdf
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: erste-statement-008, pdf
+      direction: down
+  - when:
+      hidden:
+        id: erste-statement-008, pdf
+    steps:
+      - scroll-to:
+          target:
+            text: erste-statement-008, pdf
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: erste-statement-008, pdf
+    steps:
+      - tap:
+          id: erste-statement-008, pdf
+  - when:
+      hidden:
+        id: erste-statement-008, pdf
+    steps:
+      - tap:
+          text: erste-statement-008, pdf
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: erste-statement-008, pdf
+        steps:
+          - tap:
+              id: erste-statement-008, pdf
+      - when:
+          hidden:
+            id: erste-statement-008, pdf
+        steps:
+          - tap:
+              text: erste-statement-008, pdf
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        id: SyncAccountSelection.Row.Erste_EUR
+      timeout: 5000
+  - tap:
+      id: SyncAccountSelection.Row.Erste_EUR
+  - await:
+      visible:
+        id: CreateFileBankAccount.StartSyncButton
+      timeout: 15000
+  - tap:
+      id: CreateFileBankAccount.StartSyncButton
+  - when:
+      visible:
+        text: Already syncing
+    steps:
+      - tap:
+          id: PageHeader.BackButton
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 60000
+  - scroll-to:
+      target:
+        id: AccountCard.Erste EUR
+      direction: down
+  - assert:
+      visible:
+        id: AccountCard.Balance.Erste_EUR._478
+  - tap:
+      id: AccountCard.Erste EUR
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - await:
+      visible:
+        id: TransactionCard.Label.Sample_Counterparty
+      timeout: 20000
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: AccountCard.Erste EUR
+      timeout: 10000
+  - echo: "Phase: argent-output.phase = 'existing-account-quick-import'"
+  - long-press:
+      id: AccountCard.Erste EUR
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: erste-statement-009, pdf
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: erste-statement-009, pdf
+      direction: down
+  - when:
+      hidden:
+        id: erste-statement-009, pdf
+    steps:
+      - scroll-to:
+          target:
+            text: erste-statement-009, pdf
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: erste-statement-009, pdf
+    steps:
+      - tap:
+          id: erste-statement-009, pdf
+  - when:
+      hidden:
+        id: erste-statement-009, pdf
+    steps:
+      - tap:
+          text: erste-statement-009, pdf
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: erste-statement-009, pdf
+        steps:
+          - tap:
+              id: erste-statement-009, pdf
+      - when:
+          hidden:
+            id: erste-statement-009, pdf
+        steps:
+          - tap:
+              text: erste-statement-009, pdf
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        id: AccountCard.Balance.Erste_EUR._3_412
+      timeout: 60000
+  - tap:
+      id: AccountCard.Erste EUR
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.AREALIS_GmbH
+      direction: down
+  - echo: "Phase: argent-output.phase = 'edit-then-reimport-no-duplicate'"
+  - long-press:
+      id: TransactionCard.Label.AREALIS_GmbH
+  - await:
+      visible:
+        id: TransactionContextMenu.EditButton
+  - tap:
+      id: TransactionContextMenu.EditButton
+  - await:
+      visible:
+        id: TransactionInfo.EditButton.Label
+      timeout: 10000
+  - tap:
+      id: TransactionInfo.EditButton.Label
+  - await:
+      visible:
+        text: Edit Expense
+      timeout: 5000
+  - tap:
+      id: TransactionForm.CategorySelector.Title
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - tool: keyboard
+    args:
+      text: Groceries
+  - tap:
+      text: Done
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Groceries.Label
+      timeout: 15000
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: TransactionForm.CommentInput
+  - await:
+      visible:
+        id: NoteInput.Input
+      timeout: 5000
+  - tap:
+      id: NoteInput.Input
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      text: EDITED FOR DEDUP TEST
+  - tap:
+      id: NoteInput.SubmitButton
+  - await:
+      hidden:
+        id: NoteInput.Input
+      timeout: 5000
+  - await:
+      visible:
+        id: TransactionForm.SubmitButton
+      timeout: 15000
+  - tap:
+      id: TransactionForm.SubmitButton
+  - await:
+      visible:
+        id: TransactionInfo.Page
+      timeout: 15000
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: AccountDetails.EditButton
+      timeout: 10000
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: AccountCard.Erste EUR
+      timeout: 10000
+  - assert:
+      visible:
+        id: AccountCard.Balance.Erste_EUR._3_412
+  - long-press:
+      id: AccountCard.Erste EUR
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: erste-statement-009, pdf
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: erste-statement-009, pdf
+      direction: down
+  - when:
+      hidden:
+        id: erste-statement-009, pdf
+    steps:
+      - scroll-to:
+          target:
+            text: erste-statement-009, pdf
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: erste-statement-009, pdf
+    steps:
+      - tap:
+          id: erste-statement-009, pdf
+  - when:
+      hidden:
+        id: erste-statement-009, pdf
+    steps:
+      - tap:
+          text: erste-statement-009, pdf
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: erste-statement-009, pdf
+        steps:
+          - tap:
+              id: erste-statement-009, pdf
+      - when:
+          hidden:
+            id: erste-statement-009, pdf
+        steps:
+          - tap:
+              text: erste-statement-009, pdf
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        id: AccountCard.Balance.Erste_EUR._3_412
+      timeout: 60000
+  - tap:
+      id: AccountCard.Erste EUR
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.AREALIS_GmbH
+      direction: down
+  - long-press:
+      id: TransactionCard.Label.AREALIS_GmbH
+  - await:
+      visible:
+        id: TransactionContextMenu.EditButton
+  - tap:
+      id: TransactionContextMenu.EditButton
+  - await:
+      visible:
+        id: TransactionInfo.EditButton.Label
+      timeout: 10000
+  - tap:
+      id: TransactionInfo.EditButton.Label
+  - await:
+      visible:
+        text: Edit Expense
+      timeout: 5000
+  - tap:
+      id: TransactionForm.CommentInput
+  - await:
+      visible:
+        id: NoteInput.Input
+      timeout: 5000
+  - assert:
+      visible:
+        text: EDITED FOR DEDUP TEST
+  - tap:
+      id: NoteInput.SubmitButton
+  - tap:
+      id: PageHeader.BackButton

@@ -1,0 +1,7 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Contact;Argent E2E;;;
+FN:Argent E2E Contact
+TEL;TYPE=CELL:+15555550123
+EMAIL;TYPE=INTERNET:argent-e2e@example.com
+END:VCARD

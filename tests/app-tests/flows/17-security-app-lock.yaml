@@ -1,0 +1,457 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: 17.db
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: 17.db
+      direction: down
+  - when:
+      hidden:
+        id: 17.db
+    steps:
+      - scroll-to:
+          target:
+            text: 17.db
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: 17.db
+    steps:
+      - tap:
+          id: 17.db
+  - when:
+      hidden:
+        id: 17.db
+    steps:
+      - tap:
+          text: 17.db
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: 17.db
+        steps:
+          - tap:
+              id: 17.db
+      - when:
+          hidden:
+            id: 17.db
+        steps:
+          - tap:
+              text: 17.db
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - tool: open-url
+    args:
+      url: budgie://settings
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.AppLockCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.AppLockCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.AppLockCard
+          direction: down
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.AppLockCard
+      timeout: 3000
+  - tap:
+      id: SettingsPage.AppLockCard
+  - await:
+      visible:
+        id: PinPage.Container
+      timeout: 3000
+  - await:
+      visible:
+        id: PinPage.Container
+      timeout: 10000
+  - tap:
+      id: PinPage.Digit.1
+  - tap:
+      id: PinPage.Digit.2
+  - tap:
+      id: PinPage.Digit.3
+  - tap:
+      id: PinPage.Digit.4
+  - await:
+      visible:
+        id: PinPage.Container
+      timeout: 10000
+  - tap:
+      id: PinPage.Digit.1
+  - tap:
+      id: PinPage.Digit.2
+  - tap:
+      id: PinPage.Digit.3
+  - tap:
+      id: PinPage.Digit.4
+  - await:
+      visible:
+        text: Enter your PIN
+      timeout: 10000
+  - tap:
+      id: PinPage.Digit.1
+  - tap:
+      id: PinPage.Digit.1
+  - tap:
+      id: PinPage.Digit.1
+  - tap:
+      id: PinPage.Digit.1
+  - await:
+      visible:
+        id: PinPage.Error
+      timeout: 10000
+  - tap:
+      id: PinPage.Digit.1
+  - tap:
+      id: PinPage.Digit.2
+  - tap:
+      id: PinPage.Digit.3
+  - tap:
+      id: PinPage.Digit.4
+  - await:
+      visible:
+        id: TabBar.Settings
+      timeout: 10000
+  - tool: open-url
+    args:
+      url: budgie://settings
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.AppLockChangePinButton
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.AppLockChangePinButton
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.AppLockChangePinButton
+          direction: down
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.AppLockChangePinButton
+      timeout: 3000
+  - tap:
+      id: SettingsPage.AppLockChangePinButton
+  - await:
+      visible:
+        id: PinPage.Container
+      timeout: 3000
+  - await:
+      visible:
+        id: PinPage.Container
+      timeout: 10000
+  - tap:
+      id: PinPage.Digit.1
+  - tap:
+      id: PinPage.Digit.2
+  - tap:
+      id: PinPage.Digit.3
+  - tap:
+      id: PinPage.Digit.4
+  - await:
+      visible:
+        id: PinPage.Container
+      timeout: 10000
+  - tap:
+      id: PinPage.Digit.5
+  - tap:
+      id: PinPage.Digit.6
+  - tap:
+      id: PinPage.Digit.7
+  - tap:
+      id: PinPage.Digit.8
+  - await:
+      visible:
+        id: PinPage.Container
+      timeout: 10000
+  - tap:
+      id: PinPage.Digit.5
+  - tap:
+      id: PinPage.Digit.6
+  - tap:
+      id: PinPage.Digit.7
+  - tap:
+      id: PinPage.Digit.8
+  - await:
+      visible:
+        text: Enter your PIN
+      timeout: 10000
+  - tap:
+      id: PinPage.Digit.1
+  - tap:
+      id: PinPage.Digit.2
+  - tap:
+      id: PinPage.Digit.3
+  - tap:
+      id: PinPage.Digit.4
+  - await:
+      visible:
+        id: PinPage.Error
+      timeout: 10000
+  - tap:
+      id: PinPage.Digit.5
+  - tap:
+      id: PinPage.Digit.6
+  - tap:
+      id: PinPage.Digit.7
+  - tap:
+      id: PinPage.Digit.8
+  - await:
+      visible:
+        id: TabBar.Settings
+      timeout: 10000
+  - tool: open-url
+    args:
+      url: budgie://settings
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.AppLockDisableButton
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.AppLockDisableButton
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.AppLockDisableButton
+          direction: down
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.AppLockDisableButton
+      timeout: 3000
+  - tap:
+      id: SettingsPage.AppLockDisableButton
+  - await:
+      visible:
+        id: PinPage.Container
+      timeout: 3000
+  - await:
+      visible:
+        id: PinPage.Container
+      timeout: 10000
+  - tap:
+      id: PinPage.Digit.5
+  - tap:
+      id: PinPage.Digit.6
+  - tap:
+      id: PinPage.Digit.7
+  - tap:
+      id: PinPage.Digit.8
+  - await:
+      visible:
+        id: TabBar.Settings
+      timeout: 10000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 10000

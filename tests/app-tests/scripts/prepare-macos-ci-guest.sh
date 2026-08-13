@@ -26,7 +26,7 @@ else
 fi
 
 # 2. Raise process/file-descriptor limits: each booted simulator adds ~150
-#    processes and ~3000 file descriptors; two lanes plus Maestro JVMs
+#    processes and ~3000 file descriptors; two lanes plus Argent JVMs
 #    exceed the default 2666-process ceiling.
 write_limit_plist() {
     local plist_path="$1" label="$2" limit_flag="$3" soft="$4" hard="$5"

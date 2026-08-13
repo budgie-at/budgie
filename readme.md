@@ -80,8 +80,8 @@
 - *8Market Data**: On-demand price fetch & local cache for stocks/crypto; offline last-known prices
 - **AI**: On-device first (small LLM) with optional cloud inference; RAG over local data
 - **Observability**: Sentry (crash/perf), opt-in analytics (redacted events)
-- **Testing**: Vitest/Jest, React Native Testing Library, Maestro (E2E)
-- **CI/CD**: GitHub Actions → EAS build & submit; Maestro for E2E
+- **Testing**: Vitest/Jest, React Native Testing Library, Argent (E2E)
+- **CI/CD**: GitHub Actions → EAS build & submit; Argent for E2E
 
 ---
 
@@ -107,7 +107,7 @@
 **Deliverables**
 - Boot iOS/Android; dark mode
 - WMDB schema + migrations; seed sample data
-- Actions: typecheck, lint, tests, EAS build; Maestro “app opens”
+- Actions: typecheck, lint, tests, EAS build; Argent “app opens”
 - Sentry; analytics consent
 
 **Acceptance**
@@ -117,7 +117,7 @@
 - `feat: expo + ts strict + router`
 - `feat(contracts): data contracts`
 - `feat(db): watermelon schema v0 + migrations`
-- `chore(ci): actions + EAS + maestro skeleton`
+- `chore(ci): actions + EAS + argent skeleton`
 - `feat(security): secure storage + opt-in analytics`
 
 ---
@@ -303,7 +303,7 @@
 
 - **Unit**: currency math, dedupe, rules, amortization, P&L
 - **Component**: Quick Add, BudgetCard, HoldingsEditor, DebtPlanner, Chat
-- **E2E (Maestro)**: First run → Link bank (mock) → Import → Budget updates → Portfolio render → Debt payoff → Chat Q&A
+- **E2E (Argent)**: First run → Link bank (mock) → Import → Budget updates → Portfolio render → Debt payoff → Chat Q&A
 - **Property-based**: dedupe & rules engine
 
 ## CI/CD

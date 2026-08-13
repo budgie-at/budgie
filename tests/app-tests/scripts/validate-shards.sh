@@ -6,7 +6,7 @@ WORKSPACE_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
 FLOWS_DIR="$WORKSPACE_DIR/flows"
 SHARDS_DIR="$WORKSPACE_DIR/shards"
 
-ACTUAL_FLOWS=$(find "$FLOWS_DIR" -maxdepth 1 -name '*.flow.yaml' -exec basename {} \; | sort)
+ACTUAL_FLOWS=$(find "$FLOWS_DIR" -maxdepth 1 -name '*.yaml' -exec basename {} \; | sort)
 SHARDED_FLOWS=$(cat "$SHARDS_DIR"/shard-*.txt | sed '/^$/d' | sort)
 DUPLICATED_FLOWS=$(printf '%s\n' "$SHARDED_FLOWS" | uniq -d)
 
@@ -20,7 +20,7 @@ MISSING_FLOWS=$(printf '%s\n%s\n' "$ACTUAL_FLOWS" "$SHARDED_FLOWS" | sort | uniq
 
 if [ -n "$MISSING_FLOWS" ]; then
     printf '%s\n' "$MISSING_FLOWS"
-    echo "Every flows/*.flow.yaml must appear in exactly one tests/app-tests/shards/shard-*.txt (and vice versa)."
+    echo "Every flows/*.yaml must appear in exactly one tests/app-tests/shards/shard-*.txt (and vice versa)."
     exit 1
 fi
 

@@ -1,9 +1,0 @@
-appId: ${APP_ID}
----
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'RuleForm.SelectorCard.COMMENT'
-- waitForAnimationToEnd

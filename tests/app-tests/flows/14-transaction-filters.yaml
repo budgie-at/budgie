@@ -1,0 +1,799 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: 14.db
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: 14.db
+      direction: down
+  - when:
+      hidden:
+        id: 14.db
+    steps:
+      - scroll-to:
+          target:
+            text: 14.db
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: 14.db
+    steps:
+      - tap:
+          id: 14.db
+  - when:
+      hidden:
+        id: 14.db
+    steps:
+      - tap:
+          text: 14.db
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: 14.db
+        steps:
+          - tap:
+              id: 14.db
+      - when:
+          hidden:
+            id: 14.db
+        steps:
+          - tap:
+              text: 14.db
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - tool: open-url
+    args:
+      url: budgie://settings
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - await:
+      idle: true
+  - scroll-to:
+      target:
+        id: SettingsPage.MoneyDataUpgradeCard
+      direction: down
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.MoneyDataUpgradeCard
+      timeout: 10000
+  - tap:
+      id: SettingsPage.MoneyDataUpgradeCard
+  - await:
+      visible:
+        text: Value historical entries?
+      timeout: 10000
+  - tap:
+      text: Value entries
+  - await:
+      visible:
+        id: SettingsPage.MoneyDataUpgradeCard.Status.COMPLETE
+      timeout: 30000
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Expense
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Transfer
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Missing_Rate_Expense
+  - assert:
+      visible:
+        text: 7 transactions
+  - tap:
+      id: TransactionFilters.TypeChip
+  - tap:
+      id: TransactionFilters.TypeOption.EXPENSE
+  - tap:
+      id: TransactionFilters.TypeApplyButton
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Expense
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Missing_Rate_Expense
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Transfer
+  - assert:
+      visible:
+        text: 4 transactions
+  - tap:
+      id: TransactionFilters.TypeChip
+  - tap:
+      id: TransactionFilters.TypeOption.EXPENSE
+  - tap:
+      id: TransactionFilters.TypeApplyButton
+  - tap:
+      id: TransactionFilters.TypeChip
+  - tap:
+      id: TransactionFilters.TypeOption.INCOME
+  - tap:
+      id: TransactionFilters.TypeApplyButton
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Expense
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Transfer
+  - await:
+      visible:
+        id: UncategorizedTransactionsPill.Button
+  - assert:
+      visible:
+        text: 1 missing category
+  - tap:
+      id: UncategorizedTransactionsPill.Button
+  - await:
+      visible:
+        text: Missing categories
+  - assert:
+      visible:
+        text: Income
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Uncategorized_Income
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - tap:
+      id: TransactionFilters.TypeChip
+  - tap:
+      id: TransactionFilters.TypeOption.INCOME
+  - tap:
+      id: TransactionFilters.TypeApplyButton
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 350
+      settle: true
+  - await:
+      visible:
+        id: TransactionFilters.AccountChip
+      timeout: 5000
+  - tap:
+      id: TransactionFilters.AccountChip
+  - await:
+      visible:
+        id: TransactionFilters.AccountGroupToggle.CASH
+      timeout: 5000
+  - tap:
+      id: TransactionFilters.AccountGroupToggle.CASH
+  - await:
+      visible:
+        id: TransactionFilters.AccountOption.E2E Filter Cash A
+      timeout: 5000
+  - tap:
+      id: TransactionFilters.AccountOption.E2E Filter Cash A
+  - await:
+      visible:
+        id: TransactionFilters.AccountApplyButton
+      timeout: 5000
+  - assert:
+      visible:
+        id: TransactionFilters.AccountApplyButton
+        text: Show 1 account
+  - tap:
+      id: TransactionFilters.AccountApplyButton
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Expense
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Transfer
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - assert:
+      visible:
+        text: 2 transactions
+  - tap:
+      id: TransactionFilters.ClearAllButton
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Expense
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Transfer
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Missing_Rate_Expense
+  - tap:
+      id: TransactionFilters.CategoryChip
+  - await:
+      visible:
+        id: TransactionFilters.CategorySearchInput
+      timeout: 5000
+  - tap:
+      id: TransactionFilters.CategorySearchInput
+  - tool: keyboard
+    args:
+      text: E2E Filter Income Category
+  - tool: keyboard
+    args:
+      key: enter
+  - await:
+      visible:
+        id: TransactionFilters.CategoryOption.E2E Filter Income Category
+      timeout: 5000
+  - tap:
+      id: TransactionFilters.CategoryOption.E2E Filter Income Category
+  - tap:
+      id: TransactionFilters.CategoryApplyButton
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Expense
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Transfer
+  - tap:
+      id: TransactionFilters.CategoryChip
+  - await:
+      visible:
+        id: TransactionFilters.CategorySearchInput
+      timeout: 5000
+  - tap:
+      id: TransactionFilters.CategorySearchInput
+  - tool: keyboard
+    args:
+      text: E2E Filter Income Category
+  - tool: keyboard
+    args:
+      key: enter
+  - await:
+      visible:
+        id: TransactionFilters.CategoryOption.E2E Filter Income Category
+      timeout: 5000
+  - tap:
+      id: TransactionFilters.CategoryOption.E2E Filter Income Category
+  - tap:
+      id: TransactionFilters.CategoryApplyButton
+  - scroll-to:
+      target:
+        id: TransactionFilters.TagChip
+      direction: right
+  - tap:
+      id: TransactionFilters.TagChip
+  - await:
+      visible:
+        id: TransactionFilters.TagSearchInput
+      timeout: 5000
+  - tap:
+      id: TransactionFilters.TagSearchInput
+  - tool: keyboard
+    args:
+      text: Expense Tag
+  - tool: keyboard
+    args:
+      key: enter
+  - await:
+      visible:
+        id: TagPickerBottomSheet.Card.E2E Filter Expense Tag
+      timeout: 5000
+  - tap:
+      id: TagPickerBottomSheet.Card.E2E Filter Expense Tag
+  - tap:
+      id: TransactionFilters.TagApplyButton
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Expense
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Transfer
+  - assert:
+      visible:
+        text: 1 transaction
+  - scroll-to:
+      target:
+        id: TransactionFilters.ClearAllButton
+      direction: left
+  - tap:
+      id: TransactionFilters.ClearAllButton
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Expense
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Transfer
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 1)
+  - when:
+      hidden:
+        id: ActionItem.Expense.Label
+    steps:
+      - tap:
+          id: ActionButton
+  - await:
+      visible:
+        id: ActionItem.Expense.Label
+      timeout: 3000
+  - await:
+      idle: true
+  - tap:
+      id: ActionItem.Expense.Label
+  - await:
+      visible:
+        text: New Expense
+  - await:
+      visible:
+        id: TransactionKeypad.Digit.1
+  - await:
+      idle: true
+  - tap:
+      id: TransactionKeypad.Digit.5
+  - when:
+      hidden:
+        text: E2E Filter Cash A
+    steps:
+      - echo: Native recovery attempt (migrated from retry, max 3)
+      - tap:
+          id: TransactionForm.AccountSelector
+      - await:
+          visible:
+            id: AccountPickerBottomSheet.Input
+          timeout: 3000
+      - tap:
+          id: AccountPickerBottomSheet.Input
+      - tool: keyboard
+        args:
+          text: E2E Filter Cash A
+      - tap:
+          text: Done
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: AccountPickerBottomSheet.Option.E2E Filter Cash A
+      - tap:
+          id: AccountPickerBottomSheet.Option.E2E Filter Cash A
+      - await:
+          idle: true
+      - await:
+          hidden:
+            id: AccountPickerBottomSheet.Input
+      - await:
+          idle: true
+  - tap:
+      id: TransactionForm.CategorySelector.Title
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - tool: keyboard
+    args:
+      text: E2E Filter Expense Category
+  - tap:
+      text: Done
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.E2E Filter Expense Category.Label
+      timeout: 15000
+  - tap:
+      id: CategoryPickerBottomSheet.Card.E2E Filter Expense Category.Label
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: TransactionForm.TagsSelector
+  - await:
+      visible:
+        id: TagPickerBottomSheet.Input
+  - tap:
+      id: TagPickerBottomSheet.Input
+  - tool: keyboard
+    args:
+      text: E2E Filter Expense Tag
+  - await:
+      visible:
+        id: TagPickerBottomSheet.Card.E2E Filter Expense Tag
+      timeout: 15000
+  - tap:
+      id: TagPickerBottomSheet.Card.E2E Filter Expense Tag
+  - tap:
+      id: tags-selector-modal-done-button
+  - await:
+      hidden:
+        id: TagPickerBottomSheet.Input
+  - await:
+      visible:
+        id: TransactionForm.CommentInput
+      timeout: 10000
+  - tap:
+      id: TransactionForm.CommentInput
+  - await:
+      visible:
+        id: NoteInput.Input
+      timeout: 5000
+  - tap:
+      id: NoteInput.Input
+  - tool: keyboard
+    args:
+      text: E2E Date Today Expense
+  - tap:
+      id: NoteInput.SubmitButton
+  - await:
+      hidden:
+        id: NoteInput.Input
+      timeout: 5000
+  - await:
+      idle: true
+  - tap:
+      id: TransactionForm.SubmitButton
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 60000
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Date_Today_Expense
+      timeout: 5000
+  - scroll-to:
+      target:
+        id: TransactionFilters.DateChip
+      direction: left
+  - tap:
+      id: TransactionFilters.DateChip
+  - tap:
+      id: TransactionFilters.DatePeriod.TODAY
+  - tap:
+      id: TransactionFilters.DateApplyButton
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Date_Today_Expense
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Expense
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Transfer
+  - tap:
+      id: TransactionFilters.ClearAllButton
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Date_Today_Expense
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Expense
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Income
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Transfer
+  - tap:
+      id: TabBar.Analytics
+  - await:
+      visible:
+        id: AnalyticsPage.Container
+      timeout: 5000
+  - tap:
+      id: TransactionFilters.DateChipActive
+  - tap:
+      id: TransactionFilters.DatePeriod.TODAY
+  - tap:
+      id: TransactionFilters.DateApplyButton
+  - assert:
+      visible:
+        id: TransactionAnalyticsCard.Amount.Spent.5
+  - assert:
+      visible:
+        id: CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.5000000
+  - tap:
+      id: CategoryStatisticsCard.E2E_Filter_Expense_Category
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Date_Today_Expense
+      timeout: 5000
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: AnalyticsPage.Container
+  - tap:
+      id: AnalyticsPage.Tab.Tags
+  - assert:
+      visible:
+        id: TagStatisticsCard.Amount.E2E_Filter_Expense_Tag.5000000
+  - tap:
+      id: TagStatisticsCard.E2E_Filter_Expense_Tag
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Date_Today_Expense
+      timeout: 5000
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: AnalyticsPage.Container
+  - tap:
+      id: AnalyticsPage.Tab.Categories
+  - tap:
+      id: TransactionFilters.ClearAllButton
+  - assert:
+      visible:
+        id: TransactionAnalyticsCard.Amount.Spent.40
+  - assert:
+      visible:
+        id: CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.40000000
+  - assert:
+      hidden:
+        id: CategoryStatisticsCard.Amount.E2E_Missing_Rate_Category.15000000000
+  - tap:
+      id: CategoryStatisticsCard.E2E_Filter_Expense_Category
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Historical_UAH_2026
+      timeout: 5000
+  - scroll-to:
+      target:
+        id: TransactionCard.Label.E2E_Historical_UAH_2011
+      direction: down
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: AnalyticsPage.Container
+  - tap:
+      id: TabBar.Home
+  - scroll-to:
+      target:
+        id: AccountCard.E2E Filter Cash A
+      direction: down
+  - await:
+      idle: true
+  - tap:
+      id: AccountCard.E2E Filter Cash A
+  - await:
+      visible:
+        id: AccountDetails.Page
+      timeout: 10000
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Expense
+      timeout: 5000
+  - assert:
+      visible:
+        text: 3 transactions
+  - tap:
+      id: TransactionFilters.TypeChip
+  - tap:
+      id: TransactionFilters.TypeOption.EXPENSE
+  - tap:
+      id: TransactionFilters.TypeApplyButton
+  - assert:
+      visible:
+        id: TransactionCard.Label.E2E_Filter_Expense
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Filter_Transfer
+  - assert:
+      visible:
+        text: 2 transactions

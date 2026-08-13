@@ -1,0 +1,291 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: 20.db
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: 20.db
+      direction: down
+  - when:
+      hidden:
+        id: 20.db
+    steps:
+      - scroll-to:
+          target:
+            text: 20.db
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: 20.db
+    steps:
+      - tap:
+          id: 20.db
+  - when:
+      hidden:
+        id: 20.db
+    steps:
+      - tap:
+          text: 20.db
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: 20.db
+        steps:
+          - tap:
+              id: 20.db
+      - when:
+          hidden:
+            id: 20.db
+        steps:
+          - tap:
+              text: 20.db
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - tap:
+      id: TransactionsPage.Tab.Recurring
+  - await:
+      visible:
+        id: RecurringCalendar.Container
+      timeout: 5000
+  - when:
+      visible:
+        id: RecurringCalendar.UpcomingHeader
+    steps:
+      - assert:
+          visible:
+            id: RecurringCalendar.UpcomingHeader
+      - assert:
+          visible:
+            id: RecurringCalendar.Row.E2E_Recurring_Gym
+  - tap:
+      id: RecurringCalendar.Day.CurrentMonth.19
+  - await:
+      visible:
+        id: RecurringCalendar.SelectedDayHeader.19
+      timeout: 5000
+  - assert:
+      visible:
+        id: RecurringCalendar.Row.E2E_Recurring_Rent
+  - tap:
+      id: RecurringCalendar.Day.CurrentMonth.19
+  - await:
+      visible:
+        id: RecurringCalendar.Day.CurrentMonth.19
+      timeout: 5000
+  - when:
+      visible:
+        id: RecurringCalendar.UpcomingHeader
+    steps:
+      - assert:
+          visible:
+            id: RecurringCalendar.UpcomingHeader
+      - assert:
+          visible:
+            id: RecurringCalendar.Row.E2E_Recurring_Gym
+  - tap:
+      id: RecurringCalendar.Day.CurrentMonth.1
+  - await:
+      visible:
+        id: RecurringCalendar.SelectedDayHeader.1
+      timeout: 5000
+  - assert:
+      visible:
+        id: RecurringCalendar.SelectedDayEmptyState
+  - tap:
+      id: RecurringCalendar.PreviousMonthButton
+  - await:
+      visible:
+        id: RecurringCalendar.AllRecurringHeader
+      timeout: 5000
+  - assert:
+      visible:
+        id: RecurringCalendar.Row.E2E_Recurring_Rent
+  - assert:
+      visible:
+        id: RecurringCalendar.Row.E2E_Recurring_Gym

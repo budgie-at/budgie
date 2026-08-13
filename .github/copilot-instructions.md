@@ -94,7 +94,7 @@
 
 2. **code-quality** (self-hosted `linux-tiered` / `linux-large`, 30-minute timeout):
     - Validates PR title with commitlint (conventional commits required)
-    - Verifies Lingui catalogs and Maestro selector assignments
+    - Verifies Lingui catalogs and Argent selector assignments
     - Runs `yarn format:check` (Oxfmt)
     - Runs `yarn ts` (native TypeScript 7 checks)
     - Runs `yarn lint` (type-aware Oxlint plus the direct-root 13-rule syntax-only ESLint fallback)
@@ -110,7 +110,7 @@
     - Reuses a fingerprinted native app when possible, repacks the current bundle, and falls back to a full native build when required
 
 5. **e2e-ios** (two self-hosted Apple Silicon `macos-maestro` shards, mobile-impact changes only):
-    - Downloads the current E2E app artifact and runs the 40 assigned Maestro entry flows across two shards
+    - Downloads the current E2E app artifact and runs the 41 assigned Argent entry flows across two shards
     - There is no Android E2E job in the current PR workflow
 
 ### Main Branch Workflow (.github/workflows/main.yml)
@@ -142,7 +142,7 @@
 │   ├── logger/           # Shared logging package
 │   └── landing/          # Next.js marketing website
 ├── tests/
-│   ├── app-tests/        # Maestro E2E tests
+│   ├── app-tests/        # Argent E2E tests
 │   ├── bank-sync-tests/  # Bank-sync integration tests
 │   ├── budget-tests/     # Budget integration tests
 │   └── consolidation-tests/ # Consolidation integration tests
@@ -323,12 +323,12 @@ The root `readme.md` backlog tracks restoring automated `UPPER_CASE` enum-member
 ### E2E Tests
 
 - Located in tests/app-tests/
-- Use Maestro for React Native testing
-- CI builds the iOS E2E app and runs two Maestro shards only when the mobile-impact gate is true
+- Use Argent for React Native testing
+- CI builds the iOS E2E app and runs two Argent shards only when the mobile-impact gate is true
 - There is no Android E2E job in the current PR workflow
-- Config: tests/app-tests/config.yaml
-- Four checked `tests/app-tests/shards/shard-*.txt` manifest files assign the 40 entry flows exactly once for selector validation
-- The current PR workflow does not consume those four manifest partitions; it dynamically splits the sorted flow list across two jobs by index modulo 2
+- Argent flows are self-contained under `tests/app-tests/flows/*.yaml`; the former shared-flow config was removed.
+- Two checked `tests/app-tests/shards/shard-*.txt` manifest files assign all 41 entry flows exactly once for static validation
+- The PR workflow consumes those two manifests directly, one per matrix shard.
 
 ### Integration Tests
 

@@ -136,7 +136,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
-27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `bank-sync`, `budget`, `consolidation`, `logger`) do not host Jest/Vitest/etc. Verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/bank-sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
+27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `bank-sync`, `budget`, `consolidation`, `logger`) do not host Jest/Vitest/etc. Verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Argent. Integration coverage lives in `tests/bank-sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
 28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `yarn cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
@@ -175,7 +175,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.
 57. **For `@Log` callbacks, preserve APIs and destructure callback rest args.** If logging callbacks trip `max-params`, use `(result, ...[argA, argB]) => ...`; never reshape the method signature or add a lint disable just for the decorator.
 58. **Do not decorate query-builder factory methods with `@Log`.** If a repository method returns a Drizzle builder for callers to finish with `.get()` / `.all()` / `.execute()`, keep it plain and log the executed service or repository boundary instead.
-59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the Maestro flow, fixture, or test harness.
+59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the Argent flow, fixture, or test harness.
 60. **Database live-query boundaries are explicit.** React reads that render app database state use `useDatabaseLiveQuery`, not raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. Class service methods that perform top-level app database writes use `@InvalidateDatabaseLiveQuery()` so subscribers refresh after successful writes without manual invalidation inside business logic. Use the predicate form only to preserve real transaction ownership, such as nested writes that receive an existing `tx`. Do not add event names, groups, or metadata until profiling proves broad invalidation is a real rerender problem. Free-function mutations may invalidate directly only when converting to a service would create a one-method class.
 61. **Component prop budget: more than 8 props is a lint error.** Enforced repo-wide by the local `budgie/max-component-props` rule loaded through Oxlint's JavaScript-plugin bridge (`eslint-rules/max-component-props.mjs`). The `allow` list in `.oxlintrc.json` is a grandfather register that may only shrink — never add a file to it. Prop-relay components, `isVisible` props, and boolean mode props (`isRefund`) are prohibited; use children composition, compound components sharing a context, and explicit variant components instead. Full guide with the reference implementation: [docs/component-composition.md](docs/component-composition.md).
 62. **No delegate-only hooks, no logic above components.** A hook whose body is one call to another hook plus constants (strings, an enum literal, a settings key) gets inlined into its consumers and deleted. Every layer of a hook chain must add real composition (state, refs, effects, 2+ composed sources with branching); single-consumer wrapper hooks are inlined into their component unless that forces a new lint disable. Component files contain imports, the inline `Props`, and the component — free functions with branching, hooks, and inline anonymous object types above a component belong in their proper module folders or in the child component that consumes them. See [docs/component-composition.md](docs/component-composition.md).
@@ -534,7 +534,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 9. When several simulators are booted, target the requested device with `-d <udid|name>` for taps, buttons, rotation, permissions, and other subcommands.
 10. Run serve-sim with project Node `>=22`; taps can fail on older shell Node versions.
 11. Use `serve-sim tap` for taps. Use normalized coordinates only.
-12. Do not use Maestro for dev-client checks. Maestro is only acceptance evidence against a clean E2E build.
+12. Do not use Argent for dev-client checks. Argent is only acceptance evidence against a clean E2E build.
 
 ## E2E Testing
 
@@ -542,14 +542,14 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 2. Use real user-visible import paths for database backups and bank PDFs.
 3. A deep link is acceptable only for navigation shortcuts, for example opening Settings at a specific anchor.
 4. Seed fixtures through simulator or emulator setup scripts, not through hidden app services.
-5. Run Maestro verification only against a clean E2E build installed fresh from the current branch. Dev-client or Metro runs are useful for debugging, but they are not acceptance evidence and must not be reported as passing E2E.
-6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Maestro against that bundle id. Local build/run procedure and cache/stale-binary traps: `tests/app-tests/E2E-RUNBOOK.md`.
-7. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
+5. Run Argent verification only against a clean E2E build installed fresh from the current branch. Dev-client or Metro runs are useful for debugging, but they are not acceptance evidence and must not be reported as passing E2E.
+6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Argent against that bundle id. Local build/run procedure and cache/stale-binary traps: `tests/app-tests/E2E-RUNBOOK.md`.
+7. If Argent needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
 8. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the E2E app before rerunning the test.
 9. When an app component derives a child or state-specific `testID` from a base id, use `testID` from `packages/app/src/@generic/utils/test-id.util.ts` and spread it in JSX, for example `<Text {...testID(parentTestID, 'Label')} />`. If the component already has a `testID` prop in scope, alias the import as `testIDProps`. Do not hand-build strings like `` `${testID}.Label` `` inside components. Selector factory files that intentionally create canonical ids are excluded.
-10. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
+10. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Argent flows without explicit user approval for that exact case.
 
-### Maestro Robustness
+### Argent Robustness
 
 1. Wait for the destination identity once, not container plus child plus redundant assert.
 2. After `scrollUntilVisible` on a tappable card inside a scroll view, let the list settle before tapping.
@@ -558,9 +558,9 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 5. Keep flows state-driven: positive target checks beat blind waits and negative assertions.
 6. Date-sensitive fixtures must be refreshed before the suite so test time and app time stay aligned.
 7. Shared subflows must stay minimal and deterministic. Do not add recovery branches, retries, relaunches, or alternative navigation paths without explicit user approval.
-8. If a stable deeplink already exists for setup or navigation, prefer it over replaying UI navigation in Maestro.
+8. If a stable deeplink already exists for setup or navigation, prefer it over replaying UI navigation in Argent.
 9. If a flow appears fundamentally broken, stop and ask the user before adding test-side workaround logic.
-10. System or simulator prompts outside the app, such as Apple account verification sheets, are environment noise and must not be treated as app or Maestro regressions.
+10. System or simulator prompts outside the app, such as Apple account verification sheets, are environment noise and must not be treated as app or Argent regressions.
 11. Settings flows must verify the user-visible outcome after a toggle, not only the switch interaction itself.
 12. When a correct selector matches the right element but the native control only responds to a specific hit target inside that element, use `tapOn` with the selector plus `point` to target the relative position inside the matched bounds. Prefer this over absolute screen coordinates.
 

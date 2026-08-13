@@ -6,7 +6,7 @@ WORKSPACE_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
 
 if [ "$#" -lt 2 ]; then
     echo "Usage: $0 <capture-flow-path> <output-fixture-name> [simulator-udid] [app-id]"
-    echo "Example: $0 flows/setup/capture-31-debt-fixture.flow.yaml 31-debt.db"
+    echo "Example: $0 flows/setup/capture-31-debt-fixture.yaml 31-debt.db"
     exit 1
 fi
 
@@ -15,7 +15,10 @@ OUTPUT_FIXTURE_NAME="$2"
 SIMULATOR_UDID="${3:-booted}"
 APP_ID="${4:-com.vitalyiegorov.budgie.e2e}"
 
-sh "$SCRIPT_DIR/run-maestro-suite.sh" "$APP_ID" "$CAPTURE_FLOW_PATH" --debug-output "$WORKSPACE_DIR/artifacts/capture"
+yarn --cwd "$WORKSPACE_DIR" exec argent flow run "$WORKSPACE_DIR/$CAPTURE_FLOW_PATH" \
+    --platform ios \
+    --device "$SIMULATOR_UDID" \
+    --output "$WORKSPACE_DIR/artifacts/capture"
 
 xcrun simctl terminate "$SIMULATOR_UDID" "$APP_ID" >/dev/null 2>&1 || true
 sleep 2

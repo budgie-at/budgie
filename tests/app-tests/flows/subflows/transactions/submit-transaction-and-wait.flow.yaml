@@ -1,9 +1,0 @@
-appId: ${APP_ID}
----
-- tapOn:
-    id: 'TransactionForm.SubmitButton'
-    retryTapIfNoChange: true
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionsPage.Container'
-    timeout: 60000

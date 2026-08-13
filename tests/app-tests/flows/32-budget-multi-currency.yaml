@@ -1,0 +1,554 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - echo: App process stop requested; the following launch performs a clean restart.
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: budget-multi-currency.db(, db)?
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: budget-multi-currency.db(, db)?
+      direction: down
+  - when:
+      hidden:
+        id: budget-multi-currency.db(, db)?
+    steps:
+      - scroll-to:
+          target:
+            text: budget-multi-currency.db(, db)?
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: budget-multi-currency.db(, db)?
+    steps:
+      - tap:
+          id: budget-multi-currency.db(, db)?
+  - when:
+      hidden:
+        id: budget-multi-currency.db(, db)?
+    steps:
+      - tap:
+          text: budget-multi-currency.db(, db)?
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: budget-multi-currency.db(, db)?
+        steps:
+          - tap:
+              id: budget-multi-currency.db(, db)?
+      - when:
+          hidden:
+            id: budget-multi-currency.db(, db)?
+        steps:
+          - tap:
+              text: budget-multi-currency.db(, db)?
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - echo: App process stop requested; the following launch performs a clean restart.
+  - launch: com.vitalyiegorov.budgie.e2e
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tool: open-url
+    args:
+      url: budgie://budget
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: BudgetWidget.EmptyState
+      timeout: 3000
+  - tap:
+      id: BudgetWidget.EmptyState
+  - await:
+      visible:
+        id: BudgetCreate.Template.Empty
+      timeout: 5000
+  - tap:
+      id: BudgetCreate.Template.Empty
+  - await:
+      visible:
+        id: BudgetSetup.OverallLimitInput
+      timeout: 5000
+  - tap:
+      id: BudgetSetup.OverallLimitInput
+  - tool: keyboard
+    args:
+      text: "200"
+  - await:
+      visible:
+        id: BudgetSetup.OverallLimitInput
+        text: "200"
+      timeout: 3000
+  - scroll-to:
+      target:
+        id: BudgetSetup.CategoryLimitAddButton
+      direction: down
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 3)
+  - tap:
+      id: BudgetSetup.CategoryLimitAddButton
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 3000
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Groceries
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.0.Row
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.CategoryLimit.0.AmountInput
+  - tool: keyboard
+    args:
+      text: "80"
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.0.AmountInput
+        text: "80"
+      timeout: 3000
+  - tap:
+      text: Category limits
+  - await:
+      idle: true
+  - tap:
+      id: BudgetSetup.SaveButton
+  - await:
+      visible:
+        id: BudgetWidget.Card
+      timeout: 3000
+  - assert:
+      visible:
+        id: BudgetWidget.SpentLabel
+        text: €136 / €200
+  - tap:
+      id: BudgetWidget.Card
+  - await:
+      visible:
+        text: Budget details
+      timeout: 3000
+  - assert:
+      visible:
+        id: BudgetDetails.SpentLabel
+        text: €136 / €200
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: BudgetWidget.Card
+      timeout: 3000
+  - assert:
+      visible:
+        id: BudgetWidget.CategoryRow.11
+  - assert:
+      visible:
+        id: BudgetWidget.CategorySpentLabel.11
+        text: 0%
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 1)
+  - when:
+      hidden:
+        id: ActionItem.Expense.Label
+    steps:
+      - tap:
+          id: ActionButton
+  - await:
+      visible:
+        id: ActionItem.Expense.Label
+      timeout: 3000
+  - await:
+      idle: true
+  - tap:
+      id: ActionItem.Expense.Label
+  - await:
+      visible:
+        text: New Expense
+  - await:
+      visible:
+        id: TransactionKeypad.Digit.1
+  - await:
+      idle: true
+  - tap:
+      id: TransactionKeypad.Digit.4
+  - tap:
+      id: TransactionKeypad.Digit.0
+  - when:
+      hidden:
+        text: E2E Foreign Account
+    steps:
+      - echo: Native recovery attempt (migrated from retry, max 3)
+      - tap:
+          id: TransactionForm.AccountSelector
+      - await:
+          visible:
+            id: AccountPickerBottomSheet.Input
+          timeout: 3000
+      - tap:
+          id: AccountPickerBottomSheet.Input
+      - tool: keyboard
+        args:
+          text: E2E Foreign Account
+      - tap:
+          text: Done
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: AccountPickerBottomSheet.Option.E2E Foreign Account
+      - tap:
+          id: AccountPickerBottomSheet.Option.E2E Foreign Account
+      - await:
+          idle: true
+      - await:
+          hidden:
+            id: AccountPickerBottomSheet.Input
+      - await:
+          idle: true
+  - tap:
+      id: TransactionForm.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Groceries
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - await:
+      visible:
+        id: TransactionForm.CommentInput
+      timeout: 10000
+  - tap:
+      id: TransactionForm.CommentInput
+  - await:
+      visible:
+        id: NoteInput.Input
+      timeout: 5000
+  - tap:
+      id: NoteInput.Input
+  - tool: keyboard
+    args:
+      text: E2E Budget MC Category Txn
+  - tap:
+      id: NoteInput.SubmitButton
+  - await:
+      hidden:
+        id: NoteInput.Input
+      timeout: 5000
+  - await:
+      idle: true
+  - tap:
+      id: TransactionForm.SubmitButton
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 60000
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Budget_MC_Category_Txn
+      timeout: 15000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: BudgetWidget.CategorySpentLabel.11
+        text: 50%
+      timeout: 3000
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - tap:
+      id: TransactionCard.Label.E2E_Budget_MC_Category_Txn
+  - await:
+      visible:
+        id: TransactionInfo.Page
+      timeout: 20000
+  - await:
+      visible:
+        id: TransactionActionsMenu.TriggerButton
+      timeout: 20000
+  - tap:
+      id: TransactionActionsMenu.TriggerButton
+  - await:
+      visible:
+        id: TransactionActionsMenu.DeleteButton
+  - tap:
+      id: TransactionActionsMenu.DeleteButton
+  - await:
+      idle: true
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Are you sure?
+      timeout: 3000
+  - tap:
+      text: Delete
+  - await:
+      idle: true
+  - await:
+      hidden:
+        text: Are you sure?
+      timeout: 10000
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Budget_MC_Category_Txn
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 10000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: BudgetWidget.CategorySpentLabel.11
+        text: 0%
+      timeout: 3000

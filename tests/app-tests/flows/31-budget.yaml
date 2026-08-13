@@ -1,0 +1,1471 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - echo: App process stop requested; the following launch performs a clean restart.
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: budget-base.db(, db)?
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: budget-base.db(, db)?
+      direction: down
+  - when:
+      hidden:
+        id: budget-base.db(, db)?
+    steps:
+      - scroll-to:
+          target:
+            text: budget-base.db(, db)?
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: budget-base.db(, db)?
+    steps:
+      - tap:
+          id: budget-base.db(, db)?
+  - when:
+      hidden:
+        id: budget-base.db(, db)?
+    steps:
+      - tap:
+          text: budget-base.db(, db)?
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: budget-base.db(, db)?
+        steps:
+          - tap:
+              id: budget-base.db(, db)?
+      - when:
+          hidden:
+            id: budget-base.db(, db)?
+        steps:
+          - tap:
+              text: budget-base.db(, db)?
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - echo: App process stop requested; the following launch performs a clean restart.
+  - launch: com.vitalyiegorov.budgie.e2e
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Settings
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 3000
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=budget
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.BudgetManagementCard
+      timeout: 3000
+  - tap:
+      id: SettingsPage.BudgetManagementCard
+  - await:
+      visible:
+        text: Create budget
+      timeout: 3000
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      idle: true
+  - tool: open-url
+    args:
+      url: budgie://budget
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: BudgetWidget.EmptyState
+      timeout: 3000
+  - tap:
+      id: BudgetWidget.EmptyState
+  - await:
+      visible:
+        id: BudgetCreate.Template.Generic
+      timeout: 3000
+  - assert:
+      hidden:
+        id: BudgetCreate.Template.Suggested
+  - assert:
+      visible:
+        id: BudgetCreate.Template.Empty
+  - await:
+      visible:
+        id: BudgetCreate.Template.Empty
+      timeout: 5000
+  - tap:
+      id: BudgetCreate.Template.Empty
+  - await:
+      visible:
+        id: BudgetSetup.OverallLimitInput
+      timeout: 5000
+  - tap:
+      id: BudgetSetup.OverallLimitInput
+  - tool: keyboard
+    args:
+      text: "1000"
+  - await:
+      visible:
+        id: BudgetSetup.OverallLimitInput
+        text: "1000"
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.CategoryLimitsHeader
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: BudgetSetup.SaveButton
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.SaveButton
+  - await:
+      visible:
+        id: BudgetWidget.Card
+      timeout: 3000
+  - assert:
+      visible:
+        id: BudgetWidget.SpentLabel
+        text: €0 / €1,000
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 1)
+  - when:
+      hidden:
+        id: ActionItem.Expense.Label
+    steps:
+      - tap:
+          id: ActionButton
+  - await:
+      visible:
+        id: ActionItem.Expense.Label
+      timeout: 3000
+  - await:
+      idle: true
+  - tap:
+      id: ActionItem.Expense.Label
+  - await:
+      visible:
+        text: New Expense
+  - await:
+      visible:
+        id: TransactionKeypad.Digit.1
+  - await:
+      idle: true
+  - tap:
+      id: TransactionKeypad.Digit.4
+  - tap:
+      id: TransactionKeypad.Digit.2
+  - when:
+      hidden:
+        text: Rules Test Account
+    steps:
+      - echo: Native recovery attempt (migrated from retry, max 3)
+      - tap:
+          id: TransactionForm.AccountSelector
+      - await:
+          visible:
+            id: AccountPickerBottomSheet.Input
+          timeout: 3000
+      - tap:
+          id: AccountPickerBottomSheet.Input
+      - tool: keyboard
+        args:
+          text: Rules Test Account
+      - tap:
+          text: Done
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: AccountPickerBottomSheet.Option.Rules Test Account
+      - tap:
+          id: AccountPickerBottomSheet.Option.Rules Test Account
+      - await:
+          idle: true
+      - await:
+          hidden:
+            id: AccountPickerBottomSheet.Input
+      - await:
+          idle: true
+  - tap:
+      id: TransactionForm.CategorySelector
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - scroll-to:
+      target:
+        id: TransactionForm.CommentInput
+      direction: down
+  - await:
+      visible:
+        id: TransactionForm.CommentInput
+      timeout: 10000
+  - tap:
+      id: TransactionForm.CommentInput
+  - await:
+      visible:
+        id: NoteInput.Input
+      timeout: 5000
+  - tap:
+      id: NoteInput.Input
+  - tool: keyboard
+    args:
+      text: E2E Budget Details Match
+  - tap:
+      id: NoteInput.SubmitButton
+  - await:
+      hidden:
+        id: NoteInput.Input
+      timeout: 5000
+  - await:
+      idle: true
+  - tap:
+      id: TransactionForm.SubmitButton
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 60000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: BudgetWidget.SpentLabel
+        text: €42 / €1,000
+      timeout: 3000
+  - tool: open-url
+    args:
+      url: budgie://budget
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Budget details
+      timeout: 3000
+  - assert:
+      hidden:
+        text: Edit budget
+  - assert:
+      visible:
+        id: BudgetDetails.SpentLabel
+        text: €42 / €1,000
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: BudgetWidget.Card
+      timeout: 3000
+  - tap:
+      id: BudgetWidget.Card
+  - await:
+      visible:
+        text: Budget details
+      timeout: 3000
+  - assert:
+      hidden:
+        text: Edit budget
+  - tap:
+      id: BudgetDetails.EditButton
+  - await:
+      visible:
+        text: Edit budget
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.OverallLimitInput
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      text: "1500"
+  - await:
+      visible:
+        id: BudgetSetup.OverallLimitInput
+        text: "1500"
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.CategoryLimitsHeader
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: BudgetSetup.SaveButton
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.SaveButton
+  - await:
+      visible:
+        text: Budget details
+      timeout: 3000
+  - assert:
+      visible:
+        id: BudgetDetails.SpentLabel
+        text: €42 / €1,500
+  - tap:
+      id: BudgetDetails.EditButton
+  - await:
+      visible:
+        text: Edit budget
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.OverallLimitInput
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      text: "9999"
+  - await:
+      visible:
+        id: BudgetSetup.OverallLimitInput
+        text: "9999"
+      timeout: 3000
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Budget details
+      timeout: 3000
+  - assert:
+      hidden:
+        text: Edit budget
+  - assert:
+      visible:
+        id: BudgetDetails.SpentLabel
+        text: €42 / €1,500
+  - tap:
+      id: BudgetDetails.EditButton
+  - await:
+      visible:
+        text: Edit budget
+      timeout: 3000
+  - echo: Native recovery attempt (migrated from retry, max 3)
+  - tap:
+      id: BudgetSetup.CategoryLimitAddButton
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 3000
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Rules Test Category
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Rules Test Category.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.0.Row
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.CategoryLimit.0.AmountInput
+  - tool: keyboard
+    args:
+      text: "200"
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.0.AmountInput
+        text: "200"
+      timeout: 3000
+  - tap:
+      text: Category limits
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 3)
+  - tap:
+      id: BudgetSetup.CategoryLimitAddButton
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 3000
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Groceries
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.1.Row
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.CategoryLimit.1.AmountInput
+  - tool: keyboard
+    args:
+      text: "100"
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.1.AmountInput
+        text: "100"
+      timeout: 3000
+  - tap:
+      text: Category limits
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 3)
+  - tap:
+      id: BudgetSetup.CategoryLimitAddButton
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 3000
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Restaurants & Cafes
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Restaurants & Cafes.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Restaurants & Cafes.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.2.Row
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.CategoryLimit.2.AmountInput
+  - tool: keyboard
+    args:
+      text: "150"
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.2.AmountInput
+        text: "150"
+      timeout: 3000
+  - tap:
+      text: Category limits
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 3)
+  - tap:
+      id: BudgetSetup.CategoryLimitAddButton
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 3000
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Car & Fuel
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Car & Fuel.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Car & Fuel.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.3.Row
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.CategoryLimit.3.AmountInput
+  - tool: keyboard
+    args:
+      text: "75"
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.3.AmountInput
+        text: "75"
+      timeout: 3000
+  - tap:
+      text: Category limits
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: BudgetSetup.SaveButton
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.SaveButton
+  - await:
+      visible:
+        text: Budget details
+      timeout: 3000
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: BudgetWidget.CategoryRow.42
+      timeout: 3000
+  - assert:
+      visible:
+        id: BudgetWidget.CategorySpentLabel.42
+        text: 21%
+  - assert:
+      visible:
+        id: BudgetWidget.CategoryRow.11
+  - assert:
+      visible:
+        id: BudgetWidget.CategoryRow.12
+  - assert:
+      visible:
+        id: BudgetWidget.MoreCategoriesLabel
+        text: +1 more
+  - assert:
+      hidden:
+        id: BudgetWidget.CategoryRow.14
+  - tap:
+      id: BudgetWidget.Card
+  - await:
+      visible:
+        text: Budget details
+      timeout: 3000
+  - scroll-to:
+      target:
+        id: BudgetDetails.CategoryRow.42
+      direction: down
+  - assert:
+      visible:
+        id: BudgetDetails.CategoryRow.42
+  - assert:
+      visible:
+        id: BudgetDetails.CategorySpentLabel.42
+        text: €42
+  - scroll-to:
+      target:
+        id: BudgetDetails.CategoryRow.11
+      direction: up
+  - assert:
+      visible:
+        id: BudgetDetails.CategoryRow.11
+  - assert:
+      visible:
+        id: BudgetDetails.CategoryRow.12
+  - scroll-to:
+      target:
+        id: BudgetDetails.CategoryRow.14
+      direction: down
+  - scroll-to:
+      target:
+        id: BudgetDetails.CategoryRow.42
+      direction: down
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: BudgetWidget.Card
+      timeout: 3000
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 1)
+  - when:
+      hidden:
+        id: ActionItem.Expense.Label
+    steps:
+      - tap:
+          id: ActionButton
+  - await:
+      visible:
+        id: ActionItem.Expense.Label
+      timeout: 3000
+  - await:
+      idle: true
+  - tap:
+      id: ActionItem.Expense.Label
+  - await:
+      visible:
+        text: New Expense
+  - await:
+      visible:
+        id: TransactionKeypad.Digit.1
+  - await:
+      idle: true
+  - when:
+      hidden:
+        text: Rules Test Account
+    steps:
+      - echo: Native recovery attempt (migrated from retry, max 3)
+      - tap:
+          id: TransactionForm.AccountSelector
+      - await:
+          visible:
+            id: AccountPickerBottomSheet.Input
+          timeout: 3000
+      - tap:
+          id: AccountPickerBottomSheet.Input
+      - tool: keyboard
+        args:
+          text: Rules Test Account
+      - tap:
+          text: Done
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: AccountPickerBottomSheet.Option.Rules Test Account
+      - tap:
+          id: AccountPickerBottomSheet.Option.Rules Test Account
+      - await:
+          idle: true
+      - await:
+          hidden:
+            id: AccountPickerBottomSheet.Input
+      - await:
+          idle: true
+  - echo: Native recovery attempt (migrated from retry, max 3)
+  - tap:
+      id: TransactionForm.CategorySelector
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 3000
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Groceries
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - scroll-to:
+      target:
+        id: TransactionForm.CommentInput
+      direction: down
+  - await:
+      visible:
+        id: TransactionForm.CommentInput
+      timeout: 10000
+  - tap:
+      id: TransactionForm.CommentInput
+  - await:
+      visible:
+        id: NoteInput.Input
+      timeout: 5000
+  - tap:
+      id: NoteInput.Input
+  - tool: keyboard
+    args:
+      text: E2E Budget Details Other Category
+  - tap:
+      id: NoteInput.SubmitButton
+  - await:
+      hidden:
+        id: NoteInput.Input
+      timeout: 5000
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionKeypad.Digit.1
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 3)
+  - long-press:
+      id: TransactionKeypad.Backspace
+  - tap:
+      id: TransactionKeypad.Digit.1
+  - tap:
+      id: TransactionKeypad.Digit.0
+  - await:
+      visible:
+        text: ^.* 10$
+      timeout: 1000
+  - tap:
+      id: TransactionForm.SubmitButton
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 60000
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Budget_Details_Other_Category
+      timeout: 5000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: BudgetWidget.Card
+      timeout: 3000
+  - tap:
+      id: BudgetWidget.Card
+  - await:
+      visible:
+        text: Budget details
+      timeout: 3000
+  - scroll-to:
+      target:
+        id: BudgetDetails.CategoryRow.42
+      direction: down
+  - tap:
+      id: BudgetDetails.CategoryRow.42
+  - await:
+      visible:
+        id: TransactionCard.Label.E2E_Budget_Details_Match
+      timeout: 3000
+  - assert:
+      hidden:
+        id: TransactionCard.Label.E2E_Budget_Details_Other_Category
+  - assert:
+      hidden:
+        id: TransactionCard.Label.Spotify_Premium
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        text: Budget details
+      timeout: 3000
+  - tap:
+      id: BudgetDetails.EditButton
+  - await:
+      visible:
+        text: Edit budget
+      timeout: 3000
+  - scroll-to:
+      target:
+        id: BudgetSetup.CategoryLimit.0.Row
+      direction: down
+  - tool: gesture-swipe
+    args:
+      fromX: 0.82
+      fromY: 0.5
+      toX: 0.18
+      toY: 0.5
+      durationMs: 300
+      settle: true
+  - await:
+      visible:
+        id: DeletableRow.DeleteButton
+      timeout: 3000
+  - tap:
+      id: DeletableRow.DeleteButton
+  - tap:
+      text: Remove
+  - await:
+      idle: true
+  - tap:
+      id: BudgetSetup.SaveButton
+  - await:
+      visible:
+        text: Budget details
+      timeout: 3000
+  - assert:
+      visible:
+        id: BudgetDetails.CategoryRow.42
+  - assert:
+      hidden:
+        id: BudgetDetails.CategoryRow.11
+  - tap:
+      id: BudgetDetails.EditButton
+  - await:
+      visible:
+        text: Edit budget
+      timeout: 3000
+  - scroll-to:
+      target:
+        id: BudgetSetup.CategoryLimitAddButton
+      direction: down
+  - echo: Native recovery attempt (migrated from retry, max 3)
+  - tap:
+      id: BudgetSetup.CategoryLimitAddButton
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 3000
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Groceries
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.3.Row
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.CategoryLimit.3.AmountInput
+  - tool: keyboard
+    args:
+      text: "300"
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.3.AmountInput
+        text: "300"
+      timeout: 3000
+  - tap:
+      text: Category limits
+  - await:
+      idle: true
+  - tap:
+      id: BudgetSetup.SaveButton
+  - await:
+      visible:
+        id: BudgetDetails.CategoryRow.11
+      timeout: 3000
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=budget
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.BudgetManagementCard
+      timeout: 3000
+  - tap:
+      id: SettingsPage.BudgetManagementCard
+  - await:
+      visible:
+        text: Edit budget
+      timeout: 3000
+  - assert:
+      hidden:
+        id: BudgetCreate.Template.Generic
+  - tap:
+      id: PageHeader.BackButton
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 3000
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=budget
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.BudgetPushSwitch
+        text: "0"
+      timeout: 3000
+  - tap:
+      id: SettingsPage.BudgetPushSwitch
+  - await:
+      visible:
+        id: SettingsPage.BudgetPushSwitch
+        text: "1"
+      timeout: 3000
+  - tap:
+      id: SettingsPage.BudgetPushSwitch
+  - await:
+      visible:
+        id: SettingsPage.BudgetPushSwitch
+        text: "0"
+      timeout: 3000
+  - assert:
+      visible:
+        id: SettingsPage.BudgetWidgetSwitch
+        text: "1"
+  - tap:
+      id: SettingsPage.BudgetWidgetSwitch
+  - await:
+      visible:
+        id: SettingsPage.BudgetWidgetSwitch
+        text: "0"
+      timeout: 3000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 3000
+  - assert:
+      hidden:
+        id: BudgetWidget.Card
+  - assert:
+      hidden:
+        id: BudgetWidget.EmptyState
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=budget
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.BudgetWidgetSwitch
+        text: "0"
+      timeout: 3000
+  - tap:
+      id: SettingsPage.BudgetWidgetSwitch
+  - await:
+      visible:
+        id: SettingsPage.BudgetWidgetSwitch
+        text: "1"
+      timeout: 3000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: BudgetWidget.Card
+      timeout: 3000
+  - tap:
+      id: BudgetWidget.Card
+  - await:
+      visible:
+        text: Budget details
+      timeout: 3000
+  - tap:
+      id: BudgetDetails.EditButton
+  - await:
+      visible:
+        text: Edit budget
+      timeout: 3000
+  - scroll-to:
+      target:
+        id: BudgetSetup.DeleteButton
+      direction: down
+  - tap:
+      id: BudgetSetup.DeleteButton
+  - await:
+      visible:
+        text: Delete budget?
+      timeout: 3000
+  - tap:
+      text: Delete
+  - await:
+      idle: true
+  - assert:
+      hidden:
+        id: BudgetWidget.Card
+  - await:
+      visible:
+        id: BudgetWidget.EmptyState
+      timeout: 3000
+  - tap:
+      id: BudgetWidget.EmptyState
+  - await:
+      visible:
+        id: BudgetCreate.Template.Empty
+      timeout: 5000
+  - tap:
+      id: BudgetCreate.Template.Empty
+  - await:
+      visible:
+        id: BudgetSetup.OverallLimitInput
+      timeout: 5000
+  - tap:
+      id: BudgetSetup.OverallLimitInput
+  - tool: keyboard
+    args:
+      text: "100"
+  - await:
+      visible:
+        id: BudgetSetup.OverallLimitInput
+        text: "100"
+      timeout: 3000
+  - scroll-to:
+      target:
+        id: BudgetSetup.CategoryLimitAddButton
+      direction: down
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 3)
+  - tap:
+      id: BudgetSetup.CategoryLimitAddButton
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 3000
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Input
+  - tap:
+      id: CategoryPickerBottomSheet.Input
+  - await:
+      idle: true
+  - tool: keyboard
+    args:
+      text: Groceries
+  - tap:
+      text: Done
+  - await:
+      visible:
+        id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - tap:
+      id: CategoryPickerBottomSheet.Card.Groceries.Label
+  - await:
+      idle: true
+  - await:
+      hidden:
+        id: CategoryPickerBottomSheet.Input
+      timeout: 5000
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.0.Row
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.CategoryLimit.0.AmountInput
+  - tool: keyboard
+    args:
+      text: "150"
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.0.AmountInput
+        text: "150"
+      timeout: 3000
+  - tap:
+      text: Category limits
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: BudgetSetup.AllocationSummary.OverBy
+      timeout: 3000
+  - tap:
+      id: BudgetSetup.SaveButton
+  - await:
+      idle: true
+  - assert:
+      visible:
+        text: Create budget
+  - assert:
+      hidden:
+        id: BudgetWidget.Card
+  - tap:
+      id: BudgetSetup.CategoryLimit.0.AmountInput
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      key: backspace
+  - tool: keyboard
+    args:
+      text: "80"
+  - await:
+      visible:
+        id: BudgetSetup.CategoryLimit.0.AmountInput
+        text: "80"
+      timeout: 3000
+  - tap:
+      text: Category limits
+  - await:
+      idle: true
+  - assert:
+      hidden:
+        id: BudgetSetup.AllocationSummary.OverBy
+  - tap:
+      id: BudgetSetup.SaveButton
+  - await:
+      visible:
+        id: BudgetWidget.Card
+      timeout: 3000
+  - assert:
+      visible:
+        id: BudgetWidget.CategoryRow.11
+  - assert:
+      visible:
+        id: BudgetWidget.CategorySpentLabel.11
+        text: 13%

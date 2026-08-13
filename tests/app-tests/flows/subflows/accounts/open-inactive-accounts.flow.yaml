@@ -1,8 +1,0 @@
-appId: ${APP_ID}
----
-- openLink: 'budgie://settings/inactive'
-
-- extendedWaitUntil:
-      visible:
-          id: 'InactiveAccountsPage.Container'
-      timeout: 15000

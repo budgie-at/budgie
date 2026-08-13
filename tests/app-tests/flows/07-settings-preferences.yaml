@@ -1,0 +1,491 @@
+steps:
+  - launch: com.vitalyiegorov.budgie.e2e
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=data
+  - tap:
+      text: Not Now
+  - await:
+      idle: true
+  - when:
+      hidden:
+        id: SettingsPage.Container
+    steps:
+      - tool: open-url
+        args:
+          url: budgie://settings
+      - await:
+          idle: true
+      - await:
+          visible:
+            id: SettingsPage.Container
+          timeout: 15000
+  - await:
+      visible:
+        id: SettingsPage.Container
+      timeout: 15000
+  - scroll-to:
+      target:
+        id: SettingsPage.ImportDatabaseCard
+      direction: up
+  - when:
+      hidden:
+        id: SettingsPage.ImportDatabaseCard
+    steps:
+      - scroll-to:
+          target:
+            id: SettingsPage.ImportDatabaseCard
+          direction: down
+      - await:
+          idle: true
+  - await:
+      visible:
+        id: SettingsPage.ImportDatabaseCard
+      timeout: 5000
+  - tap:
+      id: SettingsPage.ImportDatabaseCard
+  - await:
+      idle: true
+  - await:
+      visible:
+        text: Cancel
+      timeout: 15000
+  - when:
+      visible:
+        text: Apple Account Verification
+    steps:
+      - tap:
+          text: Not Now
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: No Results for .*
+    steps:
+      - tap:
+          text: Clear text
+      - await:
+          idle: true
+  - when:
+      hidden:
+        id: 07.db
+    steps:
+      - when:
+          visible:
+            id: E2EFixtures, Folder
+        steps:
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          visible:
+            text: budgie \(E2E\), Actions Menu
+        steps:
+          - await:
+              visible:
+                id: E2EFixtures, Folder
+              timeout: 3000
+          - tap:
+              id: E2EFixtures, Folder
+          - await:
+              idle: true
+      - when:
+          hidden:
+            text: E2EFixtures, Actions Menu
+        steps:
+          - when:
+              hidden:
+                text: budgie \(E2E\), Actions Menu
+            steps:
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  id: BackButton
+              - tap:
+                  text: Browse
+              - await:
+                  idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - when:
+                      visible:
+                        text: On My iPhone
+                    steps:
+                      - tap:
+                          text: On My iPhone
+                      - await:
+                          idle: true
+              - when:
+                  hidden:
+                    text: budgie \(E2E\)
+                steps:
+                  - scroll-to:
+                      target:
+                        text: budgie \(E2E\)
+                      direction: down
+              - await:
+                  visible:
+                    text: budgie \(E2E\)
+                  timeout: 3000
+              - tap:
+                  text: budgie \(E2E\)
+              - await:
+                  idle: true
+              - await:
+                  visible:
+                    id: E2EFixtures, Folder
+                  timeout: 3000
+              - tap:
+                  id: E2EFixtures, Folder
+              - await:
+                  idle: true
+  - scroll-to:
+      target:
+        id: 07.db
+      direction: down
+  - when:
+      hidden:
+        id: 07.db
+    steps:
+      - scroll-to:
+          target:
+            text: 07.db
+          direction: down
+  - await:
+      idle: true
+  - when:
+      visible:
+        id: 07.db
+    steps:
+      - tap:
+          id: 07.db
+  - when:
+      hidden:
+        id: 07.db
+    steps:
+      - tap:
+          text: 07.db
+  - await:
+      idle: true
+  - when:
+      visible:
+        text: Continue
+    steps:
+      - tap:
+          text: Continue
+      - await:
+          idle: true
+      - when:
+          visible:
+            id: 07.db
+        steps:
+          - tap:
+              id: 07.db
+      - when:
+          hidden:
+            id: 07.db
+        steps:
+          - tap:
+              text: 07.db
+      - await:
+          idle: true
+  - when:
+      visible:
+        text: Open
+    steps:
+      - tap:
+          text: Open
+  - await:
+      visible:
+        text: Importing a database will replace all current data.*
+      timeout: 3000
+  - tap:
+      text: Import Database
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TabBar.Home
+      timeout: 30000
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: HomePage.TotalBalance
+      timeout: 30000
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=general
+  - await:
+      idle: true
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.LanguageCard.en
+      timeout: 3000
+  - scroll-to:
+      target:
+        id: ^SettingsPage[.]LanguageCard[.].+$
+      direction: up
+  - when:
+      hidden:
+        id: ^SettingsPage[.]LanguageCard[.].+$
+    steps:
+      - scroll-to:
+          target:
+            id: ^SettingsPage[.]LanguageCard[.].+$
+          direction: down
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: ^SettingsPage[.]LanguageCard[.].+$
+      timeout: 3000
+  - tap:
+      id: ^SettingsPage[.]LanguageCard[.].+$
+  - await:
+      visible:
+        id: LanguageSelector.SearchInput
+      timeout: 3000
+  - tap:
+      id: LanguageSelector.SearchInput
+  - tool: keyboard
+    args:
+      text: de
+  - tap:
+      id: LanguageSelector.Option.de
+  - await:
+      hidden:
+        id: LanguageSelector.SearchInput
+      timeout: 3000
+  - await:
+      visible:
+        id: SettingsPage.LanguageCard.de
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: ^SettingsPage[.]LanguageCard[.].+$
+      direction: up
+  - when:
+      hidden:
+        id: ^SettingsPage[.]LanguageCard[.].+$
+    steps:
+      - scroll-to:
+          target:
+            id: ^SettingsPage[.]LanguageCard[.].+$
+          direction: down
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: ^SettingsPage[.]LanguageCard[.].+$
+      timeout: 3000
+  - tap:
+      id: ^SettingsPage[.]LanguageCard[.].+$
+  - await:
+      visible:
+        id: LanguageSelector.SearchInput
+      timeout: 3000
+  - tap:
+      id: LanguageSelector.SearchInput
+  - tool: keyboard
+    args:
+      text: en
+  - tap:
+      id: LanguageSelector.Option.en
+  - await:
+      hidden:
+        id: LanguageSelector.SearchInput
+      timeout: 3000
+  - await:
+      visible:
+        id: SettingsPage.LanguageCard.en
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: ^SettingsPage[.]MainCurrencyCard[.].+$
+      direction: up
+  - when:
+      hidden:
+        id: ^SettingsPage[.]MainCurrencyCard[.].+$
+    steps:
+      - scroll-to:
+          target:
+            id: ^SettingsPage[.]MainCurrencyCard[.].+$
+          direction: down
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: ^SettingsPage[.]MainCurrencyCard[.].+$
+      timeout: 3000
+  - tap:
+      id: ^SettingsPage[.]MainCurrencyCard[.].+$
+  - await:
+      visible:
+        id: CurrencySelector.SearchInput
+      timeout: 3000
+  - tap:
+      id: CurrencySelector.SearchInput
+  - tool: keyboard
+    args:
+      text: GBP
+  - tap:
+      id: AccountForm.CurrencyOption.GBP
+  - await:
+      hidden:
+        id: CurrencySelector.SearchInput
+      timeout: 3000
+  - await:
+      visible:
+        id: SettingsPage.MainCurrencyCard.GBP
+      timeout: 3000
+  - scroll-to:
+      target:
+        id: ^SettingsPage[.]DefaultAccountCard[.].+$
+      direction: up
+  - when:
+      hidden:
+        id: ^SettingsPage[.]DefaultAccountCard[.].+$
+    steps:
+      - scroll-to:
+          target:
+            id: ^SettingsPage[.]DefaultAccountCard[.].+$
+          direction: down
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: ^SettingsPage[.]DefaultAccountCard[.].+$
+      timeout: 3000
+  - tap:
+      id: ^SettingsPage[.]DefaultAccountCard[.].+$
+  - await:
+      visible:
+        id: AccountPickerBottomSheet.Input
+      timeout: 3000
+  - tap:
+      id: AccountPickerBottomSheet.Input
+  - tool: keyboard
+    args:
+      text: E2E Settings Cash
+  - tap:
+      text: Done
+  - await:
+      idle: true
+  - tap:
+      id: AccountPickerBottomSheet.Option.E2E Settings Cash
+  - await:
+      hidden:
+        id: AccountPickerBottomSheet.Input
+      timeout: 3000
+  - await:
+      visible:
+        id: ^SettingsPage[.]DefaultAccountCard[.]Selected[.][0-9]+[.]E2E_Settings_Cash$
+      timeout: 10000
+  - scroll-to:
+      target:
+        id: SettingsPage.DarkModeCard
+      direction: down
+  - assert:
+      visible:
+        id: SettingsPage.DarkModeCard
+  - tap:
+      id: SettingsPage.DarkModeCard
+  - await:
+      idle: true
+  - tap:
+      id: SettingsPage.DarkModeCard
+  - await:
+      idle: true
+  - assert:
+      visible:
+        id: SettingsPage.ShowCentsCard
+  - tap:
+      id: SettingsPage.ShowCentsCard
+  - await:
+      idle: true
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: AccountCard.Balance.E2E_Settings_Bank.100_00
+      timeout: 10000
+  - assert:
+      visible:
+        id: AccountCard.Balance.E2E_Settings_Cash.250_00
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - assert:
+      visible:
+        text: .*\$100\.00.*
+  - assert:
+      visible:
+        text: .*\$250\.00.*
+  - tool: open-url
+    args:
+      url: budgie://settings?anchor=appearance
+  - await:
+      idle: true
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: SettingsPage.ShowCentsCard
+      timeout: 10000
+  - tap:
+      id: SettingsPage.ShowCentsCard
+  - await:
+      idle: true
+  - tap:
+      id: TabBar.Home
+  - await:
+      visible:
+        id: AccountCard.Balance.E2E_Settings_Bank.100
+      timeout: 10000
+  - assert:
+      visible:
+        id: AccountCard.Balance.E2E_Settings_Cash.250
+  - tool: open-url
+    args:
+      url: budgie://transactions
+  - await:
+      idle: true
+  - await:
+      visible:
+        id: TransactionsPage.Container
+      timeout: 10000
+  - await:
+      idle: true
+  - echo: Native recovery attempt (migrated from retry, max 1)
+  - when:
+      hidden:
+        id: ActionItem.Expense.Label
+    steps:
+      - tap:
+          id: ActionButton
+  - await:
+      visible:
+        id: ActionItem.Expense.Label
+      timeout: 3000
+  - await:
+      idle: true
+  - tap:
+      id: ActionItem.Expense.Label
+  - await:
+      visible:
+        id: TransactionForm.SelectedAccount.E2E_Settings_Cash
+      timeout: 10000

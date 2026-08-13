@@ -26,11 +26,6 @@
             "sourceType": "github",
             "computedHash": "9edba9a38684c060fdc38290f640e1dc0c37de286723ac9be73bacacf7cd6f3d"
         },
-        "maestro-e2e": {
-            "source": "raphaelbarbosaqwerty/maestro-dev-skills",
-            "sourceType": "github",
-            "computedHash": "7608fc573831ddb1666bfd4cf3814878dc21d697639e2638f6dce7ab0ddeb11f"
-        },
         "receiving-code-review": {
             "source": "obra/superpowers",
             "sourceType": "github",

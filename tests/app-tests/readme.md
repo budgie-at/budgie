@@ -1,52 +1,13 @@
 # Budgie App Tests
 
-End-to-end tests for the Budgie expense tracking app using [Maestro](https://maestro.mobile.dev/).
+Deterministic iOS E2E flows powered by Argent 0.20.0.
 
-## Running Tests Locally
-
-### Prerequisites
-
-- Install Maestro CLI 2.6.0: `export MAESTRO_VERSION=2.6.0; curl -fsSL "https://get.maestro.mobile.dev" | bash`
-- iOS Simulator or Android Emulator running
-- App installed on the simulator/emulator
-
-### Commands
-
-iOS:
+- Self-contained flows: `flows/*.yaml`
+- Fixtures: `fixtures/`
+- Runner: `scripts/run-argent-suite.sh`
+- Runbook: `E2E-RUNBOOK.md`
 
 ```bash
-sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e
+yarn workspace @budgie-at/app-tests flows:check
+ARGENT_DEVICE=<simulator-udid> yarn workspace @budgie-at/app-tests test:ios
 ```
-
-Local bank statement import flows:
-
-```bash
-sh ./scripts/setup-ios-e2e-fixtures.sh
-maestro test ./flows/16.erste-pdf-import.flow.yaml \
-  -e APP_ID=com.vitalyiegorov.budgie.e2e
-maestro test ./flows/23.privatbank-xlsx-import.flow.yaml \
-  -e APP_ID=com.vitalyiegorov.budgie.e2e
-```
-
-Bank import flows use committed sanitized statement fixtures from `tests/app-tests/fixtures/erste/` and `tests/app-tests/fixtures/privatbank/`.
-
-Android:
-
-```bash
-sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e
-```
-
-## CI/CD
-
-E2E tests run automatically on pull requests via the GitHub Actions workflow (`.github/workflows/pr.yml`).
-Tests execute on both iOS (macos-latest) and Android (ubuntu-latest) after code quality checks pass.
-
-## Future Test Coverage
-
-- [ ] Multiple account types (Savings, Debt)
-- [ ] Income transactions
-- [ ] Transfer transactions
-- [ ] Transaction editing and deletion
-- [ ] Category and tag management
-- [ ] Analytics screen verification
-- [ ] Settings and preferences
