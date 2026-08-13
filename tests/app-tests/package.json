@@ -3,6 +3,7 @@
     "version": "1.18.0",
     "private": true,
     "scripts": {
+        "argent": "argent",
         "flows:check": "node ./scripts/validate-argent-migration.mjs && sh ./scripts/validate-shards.sh",
         "test:ios": "./scripts/run-argent-suite.sh"
     },
