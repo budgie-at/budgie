@@ -982,6 +982,10 @@ msgstr "Tag konnte nicht zusammengeführt werden"
 msgid "Could not open GitHub"
 msgstr "GitHub konnte nicht geöffnet werden"
 
+#: src/app/(tabs)/settings/apple-pay-capture.tsx
+msgid "Could not open instructions"
+msgstr "Anleitung konnte nicht geöffnet werden"
+
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Could not open Shortcuts"
 msgstr "Shortcuts konnte nicht geöffnet werden"
@@ -3526,6 +3530,10 @@ msgstr "Archivierte Konten anzeigen und wiederherstellen"
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"
 msgstr "Quelltransaktionen anzeigen"
+
+#: src/app/(tabs)/settings/apple-pay-capture.tsx
+msgid "View step-by-step instructions"
+msgstr "Schritt-für-Schritt-Anleitung ansehen"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"

@@ -982,6 +982,10 @@ msgstr "Impossible de fusionner l'étiquette"
 msgid "Could not open GitHub"
 msgstr "Impossible d’ouvrir GitHub"
 
+#: src/app/(tabs)/settings/apple-pay-capture.tsx
+msgid "Could not open instructions"
+msgstr "Impossible d’ouvrir les instructions"
+
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Could not open Shortcuts"
 msgstr "Impossible d’ouvrir Shortcuts"
@@ -3526,6 +3530,10 @@ msgstr "Afficher et restaurer les comptes archivés"
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "View source transactions"
 msgstr "Voir les transactions source"
+
+#: src/app/(tabs)/settings/apple-pay-capture.tsx
+msgid "View step-by-step instructions"
+msgstr "Voir les instructions étape par étape"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"

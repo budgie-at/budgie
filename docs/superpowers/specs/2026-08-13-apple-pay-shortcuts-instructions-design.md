@@ -80,16 +80,20 @@ The in-app text should avoid implying that Budgie can finish setup automatically
 
 ## Screenshot and asset pipeline
 
+The asset boundary is split by source. The screenshot pipeline emits three real Budgie PNG screenshots from simulator state. The canonical Shortcuts schematic SVGs are hand-designed checked-in assets derived from the imagegen reference, reviewed in the design lane, and then preserved by capture tooling.
+
+The capture script must validate that the three Shortcuts SVG files are present and non-empty, but it must not generate, overwrite, or delete them. This keeps the design review durable: the simulator cannot faithfully capture Wallet automation UI, and shell-generated SVGs would replace reviewed design with unreviewed procedural output.
+
 ### Visual inventory
 
-| Visual                                     | Source                                             | Required handling                                                                     |
-| ------------------------------------------ | -------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| Apple Pay capture settings page            | Real Budgie simulator screenshot                   | Seed attractive local data, run app, capture screenshot                               |
-| Review card or successful imported expense | Real Budgie simulator screenshot                   | Seed demo capture/import state or local DB data without production test-only behavior |
-| Shortcuts automation trigger selection     | Schematic illustration                             | Label as illustration because simulator capture is not faithful                       |
-| Wallet transaction trigger options         | Schematic illustration                             | Label as illustration and avoid exact unsupported device claims                       |
-| Budgie action field binding                | Schematic illustration                             | Number amount, merchant, card, and account fields                                     |
-| First-payment verification                 | Real Budgie screenshot plus schematic payment note | Do not imply simulator generated a Wallet transaction                                 |
+| Visual                                     | Source                                             | Required handling                                                                            |
+| ------------------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Apple Pay capture settings page            | Real Budgie simulator screenshot                   | Seed attractive local data, run app, capture screenshot                                      |
+| Review card or successful imported expense | Real Budgie simulator screenshot                   | Seed demo capture/import state or local DB data without production test-only behavior        |
+| Shortcuts automation trigger selection     | Checked-in schematic SVG from design lane          | Label as illustration because simulator capture is not faithful; preserve in capture tooling |
+| Wallet transaction trigger options         | Checked-in schematic SVG from design lane          | Label as illustration and avoid exact unsupported device claims; preserve in capture tooling |
+| Budgie action field binding                | Checked-in schematic SVG from design lane          | Number amount, merchant, card, and account fields; preserve in capture tooling               |
+| First-payment verification                 | Real Budgie screenshot plus schematic payment note | Do not imply simulator generated a Wallet transaction                                        |
 
 ### Asset style
 
@@ -105,10 +109,7 @@ The in-app text should avoid implying that Budgie can finish setup automatically
 
 ### Reproducibility
 
-Implementation should add either:
-
-- a documented local seed command that produces the screenshot state; or
-- a screenshot fixture script under an existing scripts/test area, if the repo already has that pattern.
+Implementation should add a screenshot fixture script under the existing test scripts area. That script produces the three Budgie PNG screenshots from deterministic simulator state and validates the checked-in Shortcuts SVG schematics.
 
 The seed must not add product behavior that exists only for screenshots. If the existing seed system can create accounts and transactions, use it. If native Wallet capture queue seeding is required for review-state screenshots, keep it in test or local tooling and document the command.
 
