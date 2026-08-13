@@ -5,14 +5,10 @@ steps:
   - tool: open-url
     args:
       url: budgie://settings?anchor=data
-  - when:
-      visible:
-        text: Open in .*
-    steps:
-      - tap:
-          text: Open
-      - await:
-          idle: true
+  - tool: gesture-tap
+    args:
+      x: 0.684
+      y: 0.542
   - when:
       visible: &a1
         text: Not Now
@@ -27,14 +23,10 @@ steps:
       - tool: open-url
         args:
           url: budgie://settings
-      - when:
-          visible:
-            text: Open in .*
-        steps:
-          - tap:
-              text: Open
-          - await:
-              idle: true
+      - tool: gesture-tap
+        args:
+          x: 0.684
+          y: 0.542
       - await:
           idle: true
       - await:
@@ -263,14 +255,10 @@ steps:
   - tool: open-url
     args:
       url: budgie://budget
-  - when:
-      visible:
-        text: Open in .*
-    steps:
-      - tap:
-          text: Open
-      - await:
-          idle: true
+  - tool: gesture-tap
+    args:
+      x: 0.684
+      y: 0.542
   - await:
       idle: true
   - await:
@@ -372,14 +360,10 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions
-  - when:
-      visible:
-        text: Open in .*
-    steps:
-      - tap:
-          text: Open
-      - await:
-          idle: true
+  - tool: gesture-tap
+    args:
+      x: 0.684
+      y: 0.542
   - await:
       idle: true
   - await:
@@ -525,14 +509,10 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions
-  - when:
-      visible:
-        text: Open in .*
-    steps:
-      - tap:
-          text: Open
-      - await:
-          idle: true
+  - tool: gesture-tap
+    args:
+      x: 0.684
+      y: 0.542
   - await:
       idle: true
   - await:
@@ -672,14 +652,10 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions/10/income
-  - when:
-      visible:
-        text: Open in .*
-    steps:
-      - tap:
-          text: Open
-      - await:
-          idle: true
+  - tool: gesture-tap
+    args:
+      x: 0.684
+      y: 0.542
   - await:
       idle: true
   - await:
@@ -731,14 +707,10 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions
-  - when:
-      visible:
-        text: Open in .*
-    steps:
-      - tap:
-          text: Open
-      - await:
-          idle: true
+  - tool: gesture-tap
+    args:
+      x: 0.684
+      y: 0.542
   - await:
       idle: true
   - await:
@@ -882,14 +854,10 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions
-  - when:
-      visible:
-        text: Open in .*
-    steps:
-      - tap:
-          text: Open
-      - await:
-          idle: true
+  - tool: gesture-tap
+    args:
+      x: 0.684
+      y: 0.542
   - await:
       idle: true
   - await:
@@ -936,14 +904,10 @@ steps:
   - tool: open-url
     args:
       url: budgie://transactions
-  - when:
-      visible:
-        text: Open in .*
-    steps:
-      - tap:
-          text: Open
-      - await:
-          idle: true
+  - tool: gesture-tap
+    args:
+      x: 0.684
+      y: 0.542
   - await:
       idle: true
   - await:

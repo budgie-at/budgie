@@ -66,8 +66,12 @@ for (const flowFile of flowFiles) {
             }
             if (step?.tool === 'open-url') {
                 const confirmation = steps[index + 1];
-                if (confirmation?.when?.visible?.text !== 'Open in .*' || confirmation?.steps?.[0]?.tap?.text !== 'Open') {
-                    failures.push(`${repositoryPath}: open-url must handle the iOS confirmation dialog`);
+                if (
+                    confirmation?.tool !== 'gesture-tap' ||
+                    confirmation?.args?.x !== 0.684 ||
+                    confirmation?.args?.y !== 0.542
+                ) {
+                    failures.push(`${repositoryPath}: open-url must dismiss the iOS confirmation with a system-level tap`);
                 }
             }
             visitSteps(step?.steps, Boolean(step?.when?.visible));
