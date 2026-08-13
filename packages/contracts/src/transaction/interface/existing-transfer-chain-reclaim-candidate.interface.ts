@@ -22,4 +22,5 @@ export interface ExistingTransferChainReclaimCandidateInterface extends Pick<
     readonly confidenceBucket: 'AUTO_EXISTING_TRANSFER_CHAIN_RECLAIM';
     readonly existingTransferId: number;
     readonly existingTransferTitle: string | null;
+    readonly targetAccountIban: string;
 }

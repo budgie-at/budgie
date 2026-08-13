@@ -36,9 +36,11 @@ export { AccountEntityRelations } from './account/relations/account-entity.relat
 
 export { DebtAccountCreateInputSchema } from './account/schema/debt-account-create-input.schema';
 export { LiabilityAccountCreateInputSchema } from './account/schema/liability-account-create-input.schema';
+export { DepositAccountCreateInputSchema } from './account/schema/deposit-account-create-input.schema';
 
 export type { LiabilityAccountCreateInputInterface } from './account/input/liability-account-create-input.interface';
 export type { DebtAccountCreateInputInterface } from './account/input/debt-account-create-input.interface';
+export type { DepositAccountCreateInputInterface } from './account/input/deposit-account-create-input.interface';
 
 export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
@@ -48,6 +50,8 @@ export type { AccountWithBankSyncEntityInterface } from './account/entity/accoun
 export type { AccountFilterInterface } from './account/interface/account-filter.interface';
 
 export { AccountRepository } from './account/repository/account.repository';
+
+export { normalizeAccountIban } from './account/util/normalize-account-iban.util';
 
 export { AccountBalanceAssociationEnum } from './account-balance/enum/account-balance-association.enum';
 
@@ -79,6 +83,21 @@ export type { DebtEventCreateEntityInterface } from './debt-event/entity/debt-ev
 export type { DebtEventWithRelationsEntityInterface } from './debt-event/entity/debt-event-with-relations-entity.interface';
 
 export { DebtEventRepository } from './debt-event/repository/debt-event.repository';
+
+export { BankIntegrationAssociationEnum } from './bank-integration/enum/bank-integration-association.enum';
+
+export { BankIntegrationEntityTable } from './bank-integration/table/bank-integration-entity.table';
+export { BankIntegrationEntityRelations } from './bank-integration/relations/bank-integration-entity.relations';
+
+export { BankIntegrationEntitySchema } from './bank-integration/schema/bank-integration-entity.schema';
+export { BankIntegrationCreateEntitySchema } from './bank-integration/schema/bank-integration-create-entity.schema';
+export { BankIntegrationUpdateEntitySchema } from './bank-integration/schema/bank-integration-update-entity.schema';
+
+export type { BankIntegrationEntityInterface } from './bank-integration/entity/bank-integration-entity.interface';
+export type { BankIntegrationCreateEntityInterface } from './bank-integration/entity/bank-integration-create-entity.interface';
+export type { BankIntegrationUpdateEntityInterface } from './bank-integration/entity/bank-integration-update-entity.interface';
+
+export { BankIntegrationRepository } from './bank-integration/repository/bank-integration.repository';
 
 export { BankSyncModeEnum } from './bank-sync/enum/bank-sync-mode.enum';
 export { BankSyncStatusEnum } from './bank-sync/enum/bank-sync-status.enum';

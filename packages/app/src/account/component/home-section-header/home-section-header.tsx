@@ -21,9 +21,9 @@ const SECTION_KIND_TO_DEBT_TYPE: Record<HomeSectionKindEnum.DEBT_YOU_OWE | HomeS
 
 export const HomeSectionHeader = ({ section, balanceSummary }: Props) => {
     if (isBankProviderSection(section)) {
-        const total = balanceSummary.bankProviderTotals.get(section.provider) ?? 0;
+        const total = balanceSummary.bankProviderTotals.get(section.integrationId) ?? 0;
 
-        return <BankProviderSectionHeader provider={section.provider} total={total} />;
+        return <BankProviderSectionHeader provider={section.provider} integrationId={section.integrationId} total={total} />;
     }
 
     if (isDebtSection(section)) {

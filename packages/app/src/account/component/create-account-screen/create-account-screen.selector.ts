@@ -23,5 +23,7 @@ export const CreateAccountScreenSelector = {
     ContactOption: (name: string) => `AccountForm.ContactOption.${normalizePart(name)}` as const,
     SelectedContact: (name: string) => `AccountForm.SelectedContact.${normalizePart(name)}` as const,
     ReturnDateButton: 'AccountForm.ReturnDate',
+    InterestRateInput: 'AccountForm.InterestRateInput',
+    MaturityDateButton: 'AccountForm.MaturityDate',
     SubmitButton: 'AccountForm.SubmitButton'
 } as const;

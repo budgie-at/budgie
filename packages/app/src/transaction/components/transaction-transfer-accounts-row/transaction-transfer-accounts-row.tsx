@@ -11,6 +11,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
+import { useTransferToAccountCreateAction } from '../../context/transfer-to-account-create-action.context';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
@@ -31,6 +32,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
     const { t } = useLingui();
     const { setValue } = useFormContext<TransactionCreateInputInterface>();
     const [openAccountSelector] = useAccountSelectorModal();
+    const toCreateAction = useTransferToAccountCreateAction();
     const { shake: shakeFrom, animatedStyle: fromAnimatedStyle } = useShakeAnimation();
     const { shake: shakeTo, animatedStyle: toAnimatedStyle } = useShakeAnimation();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
@@ -56,7 +58,8 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
         const selectedAccountId = await openAccountSelector({
             initialAccountId: toAccountId,
             excludeAccountId: fromAccountId,
-            onlyActive: false
+            onlyActive: false,
+            ...(isDefined(toCreateAction) && { createAction: toCreateAction })
         });
 
         if (isDefined(selectedAccountId)) {

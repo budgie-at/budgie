@@ -1,5 +1,6 @@
 import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
+import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
 import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
@@ -32,6 +33,7 @@ const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_BASE_SQL = `
                 bridgeAccountTitle,
                 targetAccountId,
                 targetAccountTitle,
+                targetAccountIban,
                 sourceAmount,
                 bridgeAmount,
                 targetAmount,
@@ -52,6 +54,7 @@ const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_BASE_SQL = `
                     bridge_account.title as bridgeAccountTitle,
                     target_account.id as targetAccountId,
                     target_account.title as targetAccountTitle,
+                    target_account.iban as targetAccountIban,
                     existing_source_entry.amount as sourceAmount,
                     bridge_income_entry.amount as bridgeAmount,
                     existing_target_entry.amount as targetAmount,
@@ -128,7 +131,7 @@ const EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_BASE_SQL = `
                     AND bridge_income_entry.exchange_rate > 0
                     AND bridge_income_entry.amount = existing_target_entry.amount
                     AND bridge_income_entry.to_iban = source_account.iban
-                    AND ROUND(bridge_income_entry.amount / bridge_income_entry.exchange_rate) = existing_source_entry.amount
+                    AND ABS(existing_source_entry.amount - (bridge_income_entry.amount / bridge_income_entry.exchange_rate)) / existing_source_entry.amount <= ${IBAN_BRIDGE_CHAIN_FX_TOLERANCE}
                 INNER JOIN accounts bridge_account ON
                     bridge_account.id = bridge_income_entry.account_id
                     AND bridge_account.deleted_at IS NULL

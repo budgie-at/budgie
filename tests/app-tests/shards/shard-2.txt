@@ -19,3 +19,4 @@
 31.transaction-info.flow.yaml
 32.budget-multi-currency.flow.yaml
 35.debt-migration-repair.flow.yaml
+37.deposit-lifecycle.flow.yaml

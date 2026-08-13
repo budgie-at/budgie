@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.1.0](https://github.com/budgie-at/budgie/compare/v6.0.9...v6.1.0) (2026-08-13)
+
+**Note:** Version bump only for package @budgie/budget
+
+
+
+
+
+## [6.0.8](https://github.com/budgie-at/budgie/compare/v6.0.7...v6.0.8) (2026-08-10)
+
+**Note:** Version bump only for package @budgie/budget
+
+
+
+
+
+## [6.0.6](https://github.com/budgie-at/budgie/compare/v6.0.5...v6.0.6) (2026-08-08)
+
+**Note:** Version bump only for package @budgie/budget
+
+
+
+
+
+## [6.0.5](https://github.com/budgie-at/budgie/compare/v6.0.4...v6.0.5) (2026-08-08)
+
+**Note:** Version bump only for package @budgie/budget
+
+
+
+
+
 ## [6.0.3](https://github.com/budgie-at/budgie/compare/v6.0.2...v6.0.3) (2026-08-01)
 
 **Note:** Version bump only for package @budgie/budget

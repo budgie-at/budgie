@@ -7,7 +7,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
+import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { buildDebtAccountProgressSummary } from '../../utils/build-debt-account-progress-summary.util';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
@@ -66,7 +66,6 @@ export const DebtAccountCard = (props: Props) => {
         percentage: fallbackSummary.percentage,
         totalAmount: fallbackSummary.totalAmount
     };
-    const circleVariant = ACCOUNT_DEBT_TYPE_COLOR[debtType];
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
     const progressStyle: ViewStyle = { width: `${summary.percentage}%` };
 
@@ -95,7 +94,7 @@ export const DebtAccountCard = (props: Props) => {
             icon={icon}
             balance={balance}
             instrumentSymbol={instrumentSymbol}
-            circleVariant={circleVariant}
+            circleVariant={ACCOUNT_COLOR.DEBT}
             deadlinePriority={deadlinePriority}
             topRight={topRight}
             balanceContent={balanceContent}
