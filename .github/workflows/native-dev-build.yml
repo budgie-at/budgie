@@ -25,6 +25,20 @@ jobs:
           persist-credentials: false
           ref: main
 
+      - name: Ensure GitHub CLI is available
+        run: command -v gh >/dev/null 2>&1 || brew install gh
+
+      - name: Verify release tag is available
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="ios-dev-${GITHUB_RUN_NUMBER}"
+          if gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${TAG}" --jq '.id' > /dev/null 2>&1; then
+            echo "::error::Release ${TAG} already exists, so this re-run cannot publish again. Delete that release or dispatch a new run."
+            exit 1
+          fi
+          echo "RELEASE_TAG=${TAG}" >> "$GITHUB_ENV"
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
@@ -78,19 +92,15 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Ensure GitHub CLI is available
-        run: command -v gh >/dev/null 2>&1 || brew install gh
-
       - name: Publish iOS dev prerelease
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
+          BUILD_SHA=$(git rev-parse HEAD)
           SHORT_SHA=$(git rev-parse --short HEAD)
-          BRANCH_NAME="${GITHUB_REF_NAME}"
           BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-          TAG="ios-dev-${GITHUB_RUN_NUMBER}"
 
           NOTES_FILE=$(mktemp)
           {
@@ -98,14 +108,26 @@ jobs:
             echo ""
             echo "Version: ${VERSION}"
             echo "Commit: ${SHORT_SHA}"
-            echo "Branch: ${BRANCH_NAME}"
+            echo "Dispatched from: ${GITHUB_REF_NAME}"
             echo "Built: ${BUILD_DATE}"
             echo "Workflow run: ${RUN_URL}"
           } > "$NOTES_FILE"
 
-          gh release create "$TAG" artifacts/budgie-development.ipa --repo "${GITHUB_REPOSITORY}" --draft --prerelease --target "${GITHUB_SHA}" --title "Budgie iOS Dev Build v${VERSION} (${SHORT_SHA})" --notes-file "$NOTES_FILE"
+          if ! RELEASE_ID=$(gh api --method POST "repos/${GITHUB_REPOSITORY}/releases" \
+            -f "tag_name=${RELEASE_TAG}" \
+            -f "target_commitish=${BUILD_SHA}" \
+            -f "name=Budgie iOS Dev Build v${VERSION} (${SHORT_SHA})" \
+            -F "body=@${NOTES_FILE}" \
+            -F "draft=true" \
+            -F "prerelease=true" \
+            --jq '.id'); then
+            echo "::error::Draft release creation was rejected. GITHUB_TOKEN cannot target a commit whose .github/workflows content differs from the default branch head, so re-run once the built main commit matches main's current workflow files."
+            exit 1
+          fi
 
-          RELEASE_ID=$(gh api "repos/${GITHUB_REPOSITORY}/releases" | jq -r --arg tag "$TAG" '[.[] | select(.draft and .tag_name == $tag)][0].id')
+          gh api --method POST "https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=budgie-development.ipa" \
+            -H "Content-Type: application/octet-stream" \
+            --input artifacts/budgie-development.ipa > /dev/null
 
           gh api --method PATCH "repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}" -F draft=false > /dev/null
 
