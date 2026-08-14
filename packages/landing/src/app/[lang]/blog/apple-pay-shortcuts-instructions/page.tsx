@@ -197,7 +197,7 @@ export default async function ApplePayShortcutsInstructionsArticle(props: PageLa
                         caption={
                             <Trans>Illustration: choose the Wallet transaction trigger so iOS starts the automation after a payment.</Trans>
                         }
-                        src="/images/apple-pay-shortcuts-instructions/illustrations/shortcuts-trigger-selection.svg"
+                        src="/images/apple-pay-shortcuts-instructions/shortcuts-trigger-selection.webp"
                     />
 
                     <BlogArticleSubheading>
@@ -218,7 +218,7 @@ export default async function ApplePayShortcutsInstructionsArticle(props: PageLa
                                 Illustration: pass the Wallet transaction fields into the Budgie action instead of typing fixed values.
                             </Trans>
                         }
-                        src="/images/apple-pay-shortcuts-instructions/illustrations/shortcuts-action-binding.svg"
+                        src="/images/apple-pay-shortcuts-instructions/shortcuts-action-binding.webp"
                     />
 
                     <BlogArticleSubheading>
@@ -235,7 +235,7 @@ export default async function ApplePayShortcutsInstructionsArticle(props: PageLa
                     <ArticleFigure
                         alt={t(i18n)`Illustration of saving the Apple Pay Shortcuts automation`}
                         caption={<Trans>Illustration: save the personal automation after the Budgie action is connected.</Trans>}
-                        src="/images/apple-pay-shortcuts-instructions/illustrations/shortcuts-save-automation.svg"
+                        src="/images/apple-pay-shortcuts-instructions/shortcuts-save-automation.webp"
                     />
                 </BlogArticleSection>
 

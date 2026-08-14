@@ -9,12 +9,11 @@ APP_ID="${2:-${APP_ID:-com.vitalyiegorov.budgie.e2e}}"
 INSTALL_GUIDE_FIXTURES_SCRIPT="${INSTALL_GUIDE_FIXTURES_SCRIPT:-$SCRIPT_DIR/install-apple-pay-shortcuts-guide-fixtures.sh}"
 RUN_MAESTRO_SUITE_SCRIPT="${RUN_MAESTRO_SUITE_SCRIPT:-$SCRIPT_DIR/run-maestro-suite.sh}"
 ASSET_OUTPUT_DIR="${ASSET_OUTPUT_DIR:-$PROJECT_ROOT/packages/landing/public/images/apple-pay-shortcuts-instructions}"
-ILLUSTRATION_OUTPUT_DIR="$ASSET_OUTPUT_DIR/illustrations"
 CAPTURE_OUTPUT_DIR="$WORKSPACE_DIR/artifacts/apple-pay-shortcuts-guide-capture"
 SETTINGS_SCREEN_PATH="$ASSET_OUTPUT_DIR/apple-pay-capture-settings-screen.png"
 SETUP_SCREEN_PATH="$ASSET_OUTPUT_DIR/apple-pay-capture-setup-screen.png"
 REVIEW_SCREEN_PATH="$ASSET_OUTPUT_DIR/apple-pay-capture-review-screen.png"
-mkdir -p "$ASSET_OUTPUT_DIR" "$ILLUSTRATION_OUTPUT_DIR" "$CAPTURE_OUTPUT_DIR"
+mkdir -p "$ASSET_OUTPUT_DIR" "$CAPTURE_OUTPUT_DIR"
 STAGED_SCREENSHOT_DIR=$(mktemp -d "$CAPTURE_OUTPUT_DIR/staged.XXXXXX")
 STAGED_SETTINGS_SCREEN_PATH="$STAGED_SCREENSHOT_DIR/apple-pay-capture-settings-screen.png"
 STAGED_SETUP_SCREEN_PATH="$STAGED_SCREENSHOT_DIR/apple-pay-capture-setup-screen.png"
@@ -22,9 +21,9 @@ STAGED_REVIEW_SCREEN_PATH="$STAGED_SCREENSHOT_DIR/apple-pay-capture-review-scree
 PROMOTION_SETTINGS_SCREEN_PATH=$(mktemp "$ASSET_OUTPUT_DIR/apple-pay-capture-settings-screen.png.XXXXXX")
 PROMOTION_SETUP_SCREEN_PATH=$(mktemp "$ASSET_OUTPUT_DIR/apple-pay-capture-setup-screen.png.XXXXXX")
 PROMOTION_REVIEW_SCREEN_PATH=$(mktemp "$ASSET_OUTPUT_DIR/apple-pay-capture-review-screen.png.XXXXXX")
-TRIGGER_SVG_PATH="$ILLUSTRATION_OUTPUT_DIR/shortcuts-trigger-selection.svg"
-ACTION_SVG_PATH="$ILLUSTRATION_OUTPUT_DIR/shortcuts-action-binding.svg"
-SAVE_SVG_PATH="$ILLUSTRATION_OUTPUT_DIR/shortcuts-save-automation.svg"
+TRIGGER_WEBP_PATH="$ASSET_OUTPUT_DIR/shortcuts-trigger-selection.webp"
+ACTION_WEBP_PATH="$ASSET_OUTPUT_DIR/shortcuts-action-binding.webp"
+SAVE_WEBP_PATH="$ASSET_OUTPUT_DIR/shortcuts-save-automation.webp"
 
 cleanup() {
     rm -rf "$STAGED_SCREENSHOT_DIR"
@@ -51,9 +50,9 @@ for EXPECTED_ASSET_PATH in \
     "$STAGED_SETTINGS_SCREEN_PATH" \
     "$STAGED_SETUP_SCREEN_PATH" \
     "$STAGED_REVIEW_SCREEN_PATH" \
-    "$TRIGGER_SVG_PATH" \
-    "$ACTION_SVG_PATH" \
-    "$SAVE_SVG_PATH"; do
+    "$TRIGGER_WEBP_PATH" \
+    "$ACTION_WEBP_PATH" \
+    "$SAVE_WEBP_PATH"; do
     if [ ! -s "$EXPECTED_ASSET_PATH" ]; then
         echo "Expected guide asset is missing or empty: $EXPECTED_ASSET_PATH" >&2
         exit 1
