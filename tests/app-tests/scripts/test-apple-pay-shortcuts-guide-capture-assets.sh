@@ -17,10 +17,10 @@ cleanup() {
 trap cleanup EXIT
 
 mkdir -p "$TEMP_DIR/bin"
-mkdir -p "$ASSET_OUTPUT_DIR/illustrations"
-printf '%s\n' '<svg id="trigger"></svg>' > "$ASSET_OUTPUT_DIR/illustrations/shortcuts-trigger-selection.svg"
-printf '%s\n' '<svg id="action"></svg>' > "$ASSET_OUTPUT_DIR/illustrations/shortcuts-action-binding.svg"
-printf '%s\n' '<svg id="save"></svg>' > "$ASSET_OUTPUT_DIR/illustrations/shortcuts-save-automation.svg"
+mkdir -p "$ASSET_OUTPUT_DIR"
+printf '%s\n' 'webp-trigger' > "$ASSET_OUTPUT_DIR/shortcuts-trigger-selection.webp"
+printf '%s\n' 'webp-action' > "$ASSET_OUTPUT_DIR/shortcuts-action-binding.webp"
+printf '%s\n' 'webp-save' > "$ASSET_OUTPUT_DIR/shortcuts-save-automation.webp"
 
 cat > "$TEMP_DIR/bin/xcrun" <<'EOF'
 #!/bin/bash
@@ -138,12 +138,12 @@ test -s "$ASSET_OUTPUT_DIR/apple-pay-capture-review-screen.png"
 grep -Fxq 'png' "$ASSET_OUTPUT_DIR/apple-pay-capture-settings-screen.png"
 grep -Fxq 'png' "$ASSET_OUTPUT_DIR/apple-pay-capture-setup-screen.png"
 grep -Fxq 'png' "$ASSET_OUTPUT_DIR/apple-pay-capture-review-screen.png"
-test -s "$ASSET_OUTPUT_DIR/illustrations/shortcuts-trigger-selection.svg"
-test -s "$ASSET_OUTPUT_DIR/illustrations/shortcuts-action-binding.svg"
-test -s "$ASSET_OUTPUT_DIR/illustrations/shortcuts-save-automation.svg"
-grep -Fxq '<svg id="trigger"></svg>' "$ASSET_OUTPUT_DIR/illustrations/shortcuts-trigger-selection.svg"
-grep -Fxq '<svg id="action"></svg>' "$ASSET_OUTPUT_DIR/illustrations/shortcuts-action-binding.svg"
-grep -Fxq '<svg id="save"></svg>' "$ASSET_OUTPUT_DIR/illustrations/shortcuts-save-automation.svg"
+test -s "$ASSET_OUTPUT_DIR/shortcuts-trigger-selection.webp"
+test -s "$ASSET_OUTPUT_DIR/shortcuts-action-binding.webp"
+test -s "$ASSET_OUTPUT_DIR/shortcuts-save-automation.webp"
+grep -Fxq 'webp-trigger' "$ASSET_OUTPUT_DIR/shortcuts-trigger-selection.webp"
+grep -Fxq 'webp-action' "$ASSET_OUTPUT_DIR/shortcuts-action-binding.webp"
+grep -Fxq 'webp-save' "$ASSET_OUTPUT_DIR/shortcuts-save-automation.webp"
 grep -Fq 'flows/setup/capture-apple-pay-shortcuts-settings.flow.yaml' "$MAESTRO_LOG"
 grep -Fq 'flows/setup/capture-apple-pay-shortcuts-setup.flow.yaml' "$MAESTRO_LOG"
 grep -Fq 'flows/setup/capture-apple-pay-shortcuts-review.flow.yaml' "$MAESTRO_LOG"
