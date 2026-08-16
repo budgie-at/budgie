@@ -24,7 +24,8 @@ export const useSimpleTransactionActionsMenu = ({
     const transactionId = transaction.id;
     const [openConvertToTransfer] = useConvertToTransferModal();
     const handleOpenRefundConvert = useOpenRefundConvert(transactionId);
-    const [sourceEntry] = getTransactionCategoryEntries(transaction.entries);
+    const persistedCategoryEntries = getTransactionCategoryEntries(transaction.entries);
+    const [sourceEntry] = persistedCategoryEntries;
     const isConsolidated = isDefined(transaction.consolidationType);
     const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
     const debtSettlementActions = useDebtSettlementTransactionActions({
@@ -41,7 +42,7 @@ export const useSimpleTransactionActionsMenu = ({
         void openConvertToTransfer({
             transactionId,
             transactionType,
-            excludeAccountId: transactionAccountId ?? 0,
+            excludeAccountId: (transactionType === TransactionTypeEnum.EXPENSE ? transaction.fromAccountId : transaction.toAccountId) ?? 0,
             sourceAmount: convertFromMicroUnits(sourceEntry.amount),
             sourceInstrumentId: sourceEntry.account.instrumentId,
             sourceCode: sourceEntry.account.instrument.code
@@ -51,7 +52,8 @@ export const useSimpleTransactionActionsMenu = ({
     const canConvertToRefund =
         transactionType === TransactionTypeEnum.INCOME && !isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
-    const transferConvertProps = categoryEntryCount === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
+    const canConvertToTransfer = persistedCategoryEntries.length === 1 && categoryEntryCount === 1;
+    const transferConvertProps = canConvertToTransfer ? { onConvertToTransfer: handleOpenConvert } : {};
     const debtSettlementProps = debtSettlementActions.hasDebtSettlement
         ? { onDetachDebtSettlement: debtSettlementActions.handleDetachDebtSettlement }
         : {
@@ -60,18 +62,17 @@ export const useSimpleTransactionActionsMenu = ({
                   attachDebtSettlementLabel: debtSettlementActions.debtSettlementAccountTitle
               })
           };
-    const actionsMenuProps = {
-        onDelete,
-        isConsolidated,
-        onRevert: handleRevert,
-        onFeePress,
-        ...refundConvertProps,
-        ...transferConvertProps,
-        ...debtSettlementProps
-    };
 
     return {
-        actionsMenuProps,
+        actionsMenuProps: {
+            onDelete,
+            isConsolidated,
+            onRevert: handleRevert,
+            onFeePress,
+            ...refundConvertProps,
+            ...transferConvertProps,
+            ...debtSettlementProps
+        },
         debtSettlementAccountTitle: debtSettlementActions.debtSettlementAccountTitle
     };
 };
