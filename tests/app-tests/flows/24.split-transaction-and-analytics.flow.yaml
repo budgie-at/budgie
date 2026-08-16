@@ -281,6 +281,7 @@ appId: ${APP_ID}
       id: 'SplitEntryRow.Amount.0'
 - tapOn:
     id: 'SplitEntryRow.Amount.0'
+- eraseText: 20
 - inputText: '15'
 - tapOn:
     id: 'SplitEntries.AddItemButton'
@@ -290,6 +291,11 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SplitEntryRow.Amount.1'
 - inputText: '30'
+- scrollUntilVisible:
+    element:
+      id: 'SplitEntryRow.Category.1'
+    direction: DOWN
+    centerElement: true
 
 - runFlow:
     file: subflows/transactions/select-split-category.flow.yaml
