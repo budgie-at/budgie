@@ -1,6 +1,5 @@
 import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRef } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
@@ -16,19 +15,17 @@ import { TransactionCardSelector } from '../transaction-card/transaction-card.se
 import { UpdateSimpleTransactionPage } from '../update-simple-transaction-page/update-simple-transaction-page';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
-import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
 export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
-    const simpleQuickFormRef = useRef<SimpleQuickFormRefInterface>(null);
     const transactionId = transaction.id;
     const simpleTransaction = useUpdateSimpleTransaction({
         transaction,
         transactionId,
         schema: ExpenseTransactionCreateInputSchema
     });
-    const handleFeePress = useOpenTransactionFeeFromSearchParams(simpleQuickFormRef);
+    const { handleFeePress, setFormRef } = useOpenTransactionFeeFromSearchParams();
 
     const fromAccountId = useWatch({ control: simpleTransaction.form.control, name: 'fromAccountId' });
     const [openConsolidationSourceModal] = useConsolidationSourceModal();
@@ -72,7 +69,7 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
             }
         >
             <SimpleQuickForm
-                ref={simpleQuickFormRef}
+                ref={setFormRef}
                 variant="destructive"
                 transactionType={TransactionTypeEnum.EXPENSE}
                 accountFieldName="fromAccountId"

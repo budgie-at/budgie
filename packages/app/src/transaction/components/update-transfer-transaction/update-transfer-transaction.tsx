@@ -1,6 +1,6 @@
 import { AccountTypeEnum, TransactionEntryTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
@@ -21,13 +21,11 @@ import { convertTransactionToInput } from '../../utils/convert-transaction-to-in
 import { TransferQuickForm } from '../transfer-quick-form/transfer-quick-form';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
-import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
 export const UpdateTransferTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
-    const simpleQuickFormRef = useRef<SimpleQuickFormRefInterface>(null);
-    const handleFeePress = useOpenTransactionFeeFromSearchParams(simpleQuickFormRef);
+    const { handleFeePress, setFormRef } = useOpenTransactionFeeFromSearchParams();
     const { markForEmbedding } = useEmbeddingGenerator();
     const [openConsolidationSource] = useConsolidationSourceModal();
 
@@ -79,7 +77,7 @@ export const UpdateTransferTransaction = ({ transaction }: UpdateTransactionForm
                 }
             >
                 <TransferQuickForm
-                    ref={simpleQuickFormRef}
+                    ref={setFormRef}
                     variant="default"
                     initialDestinationAmount={initialDestinationAmount}
                     onSubmit={handleSubmit}

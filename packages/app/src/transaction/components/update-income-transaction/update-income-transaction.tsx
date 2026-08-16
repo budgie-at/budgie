@@ -1,6 +1,5 @@
 import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRef } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
@@ -14,13 +13,11 @@ import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { UpdateSimpleTransactionPage } from '../update-simple-transaction-page/update-simple-transaction-page';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
-import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
 export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
-    const simpleQuickFormRef = useRef<SimpleQuickFormRefInterface>(null);
-    const handleFeePress = useOpenTransactionFeeFromSearchParams(simpleQuickFormRef);
+    const { handleFeePress, setFormRef } = useOpenTransactionFeeFromSearchParams();
     const transactionId = transaction.id;
     const simpleTransaction = useUpdateSimpleTransaction({
         transaction,
@@ -72,7 +69,7 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
             }
         >
             <SimpleQuickForm
-                ref={simpleQuickFormRef}
+                ref={setFormRef}
                 variant="positive"
                 transactionType={TransactionTypeEnum.INCOME}
                 accountFieldName="toAccountId"
