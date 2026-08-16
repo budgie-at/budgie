@@ -1,5 +1,5 @@
 import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { ReactNode, RefObject, useImperativeHandle, useRef } from 'react';
+import { ReactNode, Ref, useImperativeHandle, useRef } from 'react';
 import { View } from 'react-native';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -22,7 +22,7 @@ import type { TransactionAccountRowRef } from '../transaction-account-row/transa
 import type { TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 
 interface Props {
-    readonly ref?: RefObject<SimpleQuickFormRefInterface | null>;
+    readonly ref?: Ref<SimpleQuickFormRefInterface>;
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
     readonly accountFieldName: QuickFormAccountFieldName;

@@ -1,19 +1,23 @@
 import { useLocalSearchParams } from 'expo-router';
-import { RefObject, useCallback, useEffect, useRef } from 'react';
+import { useRef } from 'react';
+
+import { isDefined } from '@rnw-community/shared';
 
 import type { SimpleQuickFormRefInterface } from '../interface/simple-quick-form-ref.interface';
 
-export const useOpenTransactionFeeFromSearchParams = (formRef: RefObject<SimpleQuickFormRefInterface | null>) => {
+export const useOpenTransactionFeeFromSearchParams = () => {
     const { openFee } = useLocalSearchParams<{ openFee?: string }>();
     const hasOpenedFeeRef = useRef(false);
-    const handleFeePress = useCallback(() => formRef.current?.openFee(), [formRef]);
+    const formRef = useRef<SimpleQuickFormRefInterface>(null);
+    const handleFeePress = () => formRef.current?.openFee();
+    const setFormRef = (form: SimpleQuickFormRefInterface | null) => {
+        formRef.current = form;
 
-    useEffect(() => {
-        if (openFee === '1' && !hasOpenedFeeRef.current) {
+        if (openFee === '1' && isDefined(form) && !hasOpenedFeeRef.current) {
             hasOpenedFeeRef.current = true;
-            handleFeePress();
+            form.openFee();
         }
-    }, [handleFeePress, openFee]);
+    };
 
-    return handleFeePress;
+    return { handleFeePress, setFormRef };
 };
