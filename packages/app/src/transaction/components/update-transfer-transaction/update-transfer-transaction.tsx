@@ -14,8 +14,8 @@ import { useAccountBalanceQuery } from '../../../account/query/use-account-balan
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
-import { useOpenTransactionFeeFromSearchParams } from '../../hook/use-open-transaction-fee-from-search-params.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
+import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
 import { TransferQuickForm } from '../transfer-quick-form/transfer-quick-form';
@@ -23,10 +23,10 @@ import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
-export const UpdateTransferTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
+export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
-    const { handleFeePress, setFormRef } = useOpenTransactionFeeFromSearchParams();
     const { markForEmbedding } = useEmbeddingGenerator();
+    const { formRef, handleFeePress } = useTransactionFeeFormActions(openFeeOnMount);
     const [openConsolidationSource] = useConsolidationSourceModal();
 
     const initialDestinationAmount = convertFromMicroUnits(
@@ -77,7 +77,7 @@ export const UpdateTransferTransaction = ({ transaction }: UpdateTransactionForm
                 }
             >
                 <TransferQuickForm
-                    ref={setFormRef}
+                    ref={formRef}
                     variant="default"
                     initialDestinationAmount={initialDestinationAmount}
                     onSubmit={handleSubmit}

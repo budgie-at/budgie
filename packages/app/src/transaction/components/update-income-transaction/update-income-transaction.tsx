@@ -5,7 +5,7 @@ import { useWatch } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { useOpenRefundConvert } from '../../hook/use-open-refund-convert.hook';
-import { useOpenTransactionFeeFromSearchParams } from '../../hook/use-open-transaction-fee-from-search-params.hook';
+import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
 import { useUpdateTransactionSharedActions } from '../../hook/use-update-transaction-shared-actions.hook';
 import { buildIncomeEntry } from '../../utils/build-income-entry.util';
@@ -15,15 +15,15 @@ import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
-export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
+export const UpdateIncomeTransaction = ({ transaction, openFeeOnMount }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
-    const { handleFeePress, setFormRef } = useOpenTransactionFeeFromSearchParams();
     const transactionId = transaction.id;
     const simpleTransaction = useUpdateSimpleTransaction({
         transaction,
         transactionId,
         schema: IncomeTransactionCreateInputSchema
     });
+    const { formRef, handleFeePress } = useTransactionFeeFormActions(openFeeOnMount);
 
     const toAccountId = useWatch({ control: simpleTransaction.form.control, name: 'toAccountId' });
     const mccCategoryId = simpleTransaction.categoryEntries.at(0)?.mccCategoryId ?? null;
@@ -69,7 +69,7 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
             }
         >
             <SimpleQuickForm
-                ref={setFormRef}
+                ref={formRef}
                 variant="positive"
                 transactionType={TransactionTypeEnum.INCOME}
                 accountFieldName="toAccountId"
