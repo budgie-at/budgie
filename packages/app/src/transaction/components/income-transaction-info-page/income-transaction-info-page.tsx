@@ -35,7 +35,7 @@ export const IncomeTransactionInfoPage = ({ transaction }: UpdateTransactionForm
         transactionId,
         transactionType: TransactionTypeEnum.INCOME
     });
-    const handleOpenFee = () => void router.push(getTransactionFeeEditHref(editHref.pathname, transactionId));
+    const handleOpenFee = () => void router.push(getTransactionFeeEditHref(TransactionTypeEnum.INCOME, transactionId));
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const transferConvertProps =
         getTransactionCategoryEntries(transaction.entries).length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};

@@ -43,7 +43,7 @@ export const ExpenseTransactionInfoPage = ({ transaction }: UpdateTransactionFor
           };
 
     const editHref = { pathname: '/transactions/[id]/expense/edit' as const, params: { id: String(transactionId) } };
-    const handleOpenFee = () => void router.push(getTransactionFeeEditHref(editHref.pathname, transactionId));
+    const handleOpenFee = () => void router.push(getTransactionFeeEditHref(TransactionTypeEnum.EXPENSE, transactionId));
     const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
     const actionsMenu = (
         <UpdateTransactionActionsMenu

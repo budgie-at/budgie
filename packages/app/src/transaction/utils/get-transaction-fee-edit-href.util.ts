@@ -1,4 +1,10 @@
+import { TransactionTypeEnum } from '@budgie/contracts';
+import { type Href } from 'expo-router';
+
 export const getTransactionFeeEditHref = (
-    pathname: '/transactions/[id]/expense/edit' | '/transactions/[id]/income/edit' | '/transactions/[id]/transfer/edit',
+    type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME | TransactionTypeEnum.TRANSFER,
     transactionId: number
-) => ({ pathname, params: { id: String(transactionId), openFee: '1' } });
+): Href => ({
+    pathname: `/transactions/[id]/${type.toLowerCase()}/edit`,
+    params: { id: String(transactionId), openFee: '1' }
+});
