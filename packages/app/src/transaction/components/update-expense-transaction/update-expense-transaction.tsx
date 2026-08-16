@@ -7,6 +7,7 @@ import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transacti
 import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
 import { buildExpenseEntry } from '../../utils/build-expense-entry.util';
+import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
@@ -26,17 +27,19 @@ export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: Update
     const { formRef, handleFeePress } = useTransactionFeeFormActions(openFeeOnMount);
 
     const fromAccountId = useWatch({ control: simpleTransaction.form.control, name: 'fromAccountId' });
+    const entries = useWatch({ control: simpleTransaction.form.control, name: 'entries' });
+    const categoryEntries = getTransactionCategoryEntries(entries);
     const [openConsolidationSourceModal] = useConsolidationSourceModal();
     const { actionsMenuProps, debtSettlementAccountTitle } = useSimpleTransactionActionsMenu({
         transaction,
         transactionAccountId: fromAccountId,
         transactionType: TransactionTypeEnum.EXPENSE,
-        categoryEntryCount: simpleTransaction.categoryEntries.length,
+        categoryEntryCount: categoryEntries.length,
         onDelete: simpleTransaction.handleDelete,
         onFeePress: handleFeePress
     });
     const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId });
-    const mccCategoryId = simpleTransaction.categoryEntries.at(0)?.mccCategoryId ?? null;
+    const mccCategoryId = categoryEntries.at(0)?.mccCategoryId ?? null;
 
     return (
         <UpdateSimpleTransactionPage

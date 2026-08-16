@@ -6,6 +6,7 @@ import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transacti
 import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
 import { buildIncomeEntry } from '../../utils/build-income-entry.util';
+import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { UpdateSimpleTransactionPage } from '../update-simple-transaction-page/update-simple-transaction-page';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
@@ -23,12 +24,14 @@ export const UpdateIncomeTransaction = ({ transaction, openFeeOnMount }: UpdateT
     const { formRef, handleFeePress } = useTransactionFeeFormActions(openFeeOnMount);
 
     const toAccountId = useWatch({ control: simpleTransaction.form.control, name: 'toAccountId' });
-    const mccCategoryId = simpleTransaction.categoryEntries.at(0)?.mccCategoryId ?? null;
+    const entries = useWatch({ control: simpleTransaction.form.control, name: 'entries' });
+    const categoryEntries = getTransactionCategoryEntries(entries);
+    const mccCategoryId = categoryEntries.at(0)?.mccCategoryId ?? null;
     const { actionsMenuProps, debtSettlementAccountTitle } = useSimpleTransactionActionsMenu({
         transaction,
         transactionAccountId: toAccountId,
         transactionType: TransactionTypeEnum.INCOME,
-        categoryEntryCount: simpleTransaction.categoryEntries.length,
+        categoryEntryCount: categoryEntries.length,
         onDelete: simpleTransaction.handleDelete,
         onFeePress: handleFeePress
     });
