@@ -6,9 +6,9 @@ import { monobankCashbackTypeMapper } from './monobank-cashback-type.mapper';
 import { monobankCurrencyCodeMapper } from './monobank-currency-code.mapper';
 
 import type { BankAccountInterface } from '../../core/interface/bank-account.interface';
-import type { MonobankAccountApiInterface } from '../interface/monobank-account-api.interface';
+import type { Account } from '@liaugust/monobank-sdk';
 
-export const monobankAccountMapper = (account: MonobankAccountApiInterface): BankAccountInterface => ({
+export const monobankAccountMapper = (account: Account): BankAccountInterface => ({
     id: account.id,
     provider: BankProviderEnum.MONOBANK,
     currencyCode: monobankCurrencyCodeMapper(account.currencyCode),
