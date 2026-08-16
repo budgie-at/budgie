@@ -279,6 +279,8 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'SplitEntryRow.Amount.0'
+- swipe:
+    direction: UP
 - tapOn:
     id: 'SplitEntryRow.Amount.0'
 - eraseText: 20
@@ -291,12 +293,6 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SplitEntryRow.Amount.1'
 - inputText: '30'
-- pressKey: enter
-- scrollUntilVisible:
-    element:
-      id: 'SplitEntryRow.Category.1'
-    direction: DOWN
-    centerElement: true
 
 - runFlow:
     file: subflows/transactions/select-split-category.flow.yaml
