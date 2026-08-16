@@ -291,6 +291,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SplitEntryRow.Amount.1'
 - inputText: '30'
+- pressKey: enter
 - scrollUntilVisible:
     element:
       id: 'SplitEntryRow.Category.1'
