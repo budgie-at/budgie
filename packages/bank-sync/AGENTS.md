@@ -19,7 +19,6 @@ src/
 ├── index.ts                  # Public exports
 ├── core/                     # Shared infrastructure
 │   ├── client/
-│   │   └── base-bank-provider.client.ts    # Abstract HTTP client
 │   ├── enum/
 │   │   ├── bank-account-type.enum.ts
 │   │   ├── bank-provider.enum.ts
@@ -36,15 +35,11 @@ src/
 │   │   └── bank-transaction.interface.ts
 │   └── service/
 │       └── base-bank-sync.service.ts       # Abstract sync service
-└── monobank/                 # Monobank implementation
+└── monobank/                 # Monobank implementation (wire types come from the SDK)
     ├── client/
     │   └── monobank.client.ts
     ├── constant/
     │   └── monobank-*.constant.ts
-    ├── enum/
-    │   └── monobank-*.enum.ts
-    ├── interface/
-    │   └── monobank-*-api.interface.ts
     ├── mapper/
     │   └── monobank-*.mapper.ts
     └── service/
@@ -70,12 +65,12 @@ Each bank provider has:
 
 ### Supported Providers
 
-| Provider | Status | Implementation |
-|----------|--------|----------------|
-| Monobank | ✅ Implemented | Full support |
-| Privatbank | 📋 Planned | - |
-| Revolut | 📋 Planned | - |
-| Wise | 📋 Planned | - |
+| Provider   | Status         | Implementation |
+| ---------- | -------------- | -------------- |
+| Monobank   | ✅ Implemented | Full support   |
+| Privatbank | 📋 Planned     | -              |
+| Revolut    | 📋 Planned     | -              |
+| Wise       | 📋 Planned     | -              |
 
 ### Provider Parser Pattern
 
@@ -96,53 +91,36 @@ Export each class via a singleton (`export const ersteParser = new ErsteParser()
 
 ```ts
 class ErsteMapper {
-    mapAccount(info: ErsteAccountInfoInterface): BankAccountInterface { /* ... */ }
-    mapTransaction(row: ErsteRowInterface, iban: string): BankTransactionInterface { /* ... */ }
-    private generateExternalId(row, iban): string { /* ... */ }
-    private fnv1aHash(input: string): string { /* ... */ }
+    mapAccount(info: ErsteAccountInfoInterface): BankAccountInterface {
+        /* ... */
+    }
+    mapTransaction(row: ErsteRowInterface, iban: string): BankTransactionInterface {
+        /* ... */
+    }
+    private generateExternalId(row, iban): string {
+        /* ... */
+    }
+    private fnv1aHash(input: string): string {
+        /* ... */
+    }
 }
 export const ersteMapper = new ErsteMapper();
 ```
 
 **Helpers vs classes (root rule 38):** single-operation pure utilities with no shared state and 2+ callers (`parseErsteAmount`) stay as free functions in `util/`. Single-consumer helpers inline as private methods of the consumer class. Multi-step parsing/extraction work goes into a class.
 
-## Base Bank Provider Client
+## Provider Clients
 
-### Abstract Class
+There is no shared HTTP base class. Each provider client implements
+`BankProviderClientInterface` directly and owns its transport:
 
-Extend `BaseBankProviderClient` for new providers:
+- **Monobank** delegates every request to `@liaugust/monobank-sdk`, which supplies
+  the fetch transport, runtime response validation, and typed error classes.
+- **Erste** and **Privatbank** are file-based (PDF/XLSX) and make no HTTP calls.
 
-```typescript
-export abstract class BaseBankProviderClient {
-    protected readonly httpClient: KyInstance;
-
-    constructor(options: BaseBankProviderClientOptions) {
-        this.httpClient = ky.create({
-            prefixUrl: options.baseUrl,
-            retry: { limit: options.retryLimit ?? 3 },
-            timeout: options.timeout ?? 30000,
-        });
-    }
-
-    protected async request<T>(
-        path: string,
-        options?: Options
-    ): Promise<BankSyncResultInterface<T>> {
-        // Handles errors, retries, and result wrapping
-    }
-}
-```
-
-### HTTP Client (ky)
-
-Uses `ky` library with built-in retry support:
-
-```typescript
-const response = await this.httpClient.get('endpoint', {
-    headers: { 'X-Token': token },
-    searchParams: { from, to },
-});
-```
+A new HTTP-backed provider should prefer a maintained SDK for that bank. Only
+hand-roll a transport when none exists, and keep it inside that provider's
+`client/` folder rather than reintroducing a shared abstract client.
 
 ### Error Handling
 
@@ -178,7 +156,7 @@ enum BankSyncErrorCodeEnum {
     ACCOUNT_NOT_FOUND = 'ACCOUNT_NOT_FOUND',
     INVALID_RESPONSE = 'INVALID_RESPONSE',
     UNSUPPORTED_OPERATION = 'UNSUPPORTED_OPERATION',
-    UNKNOWN = 'UNKNOWN',
+    UNKNOWN = 'UNKNOWN'
 }
 ```
 
@@ -193,30 +171,41 @@ throw BankSyncError.rateLimited('Too many requests');
 throw BankSyncError.networkError('Connection timeout');
 throw BankSyncError.invalidResponse('Unexpected API response');
 
-// In try-catch
+// Translating monobank-sdk exceptions at the client boundary
 try {
-    const response = await fetch(...);
+    return await this.personalClient.client.getInfo();
 } catch (error) {
-    if (error instanceof HTTPError) {
-        if (error.response.status === 401) {
-            return { success: false, error: BankSyncError.unauthorized() };
-        }
-        if (error.response.status === 429) {
-            return { success: false, error: BankSyncError.rateLimited() };
-        }
+    if (error instanceof MonobankApiError) {
+        // branch on error.status
     }
-    return { success: false, error: BankSyncError.networkError() };
+    if (error instanceof MonobankNetworkError) {
+        return { success: false, error: BankSyncError.networkError(provider, error) };
+    }
+    // ...
 }
 ```
 
-### HTTP Status Mapping
+### Error Mapping
 
-| Status | Error Code |
-|--------|------------|
-| 401 | UNAUTHORIZED |
-| 429 | RATE_LIMITED |
-| 400 | INVALID_RESPONSE |
-| Timeout | NETWORK_ERROR |
+`@liaugust/monobank-sdk` throws instead of returning results, so `MonobankClient`
+converts each SDK error class into a `BankSyncError`:
+
+| SDK error                         | Condition                        | Error Code       |
+| --------------------------------- | -------------------------------- | ---------------- |
+| `MonobankApiError`                | status 401                       | UNAUTHORIZED     |
+| `MonobankApiError`                | status 429                       | RATE_LIMITED     |
+| `MonobankApiError`                | status 400                       | INVALID_RESPONSE |
+| `MonobankApiError`                | any other status                 | UNKNOWN          |
+| `MonobankNetworkError`            | fetch failure, timeout, abort    | NETWORK_ERROR    |
+| `MonobankResponseValidationError` | payload failed schema validation | INVALID_RESPONSE |
+| `MonobankValidationError`         | bad input caught before fetch    | UNKNOWN          |
+
+`INVALID_RESPONSE` is meaningful: `BaseBankSyncService.fetchTransactions` treats it
+as an empty batch rather than a sync failure.
+
+SDK retry is intentionally left unconfigured. Its retryable status set is fixed and
+includes 429, which is counterproductive against Monobank's 1-request-per-60-seconds
+limit. See [monobank-typescript-sdk#17](https://github.com/liaugust/monobank-typescript-sdk/issues/17).
 
 ## Base Bank Sync Service
 
@@ -261,85 +250,77 @@ Handles both forward and backward sync:
 
 ```typescript
 // Forward sync (new transactions)
-const result = await syncService.syncTransactionsForward(
-    token,
-    accountId,
-    lastSyncDate
-);
+const result = await syncService.syncTransactionsForward(token, accountId, lastSyncDate);
 
 // Backward sync (historical)
-const result = await syncService.syncTransactionsBackward(
-    token,
-    accountId,
-    earliestKnownDate
-);
+const result = await syncService.syncTransactionsBackward(token, accountId, earliestKnownDate);
 ```
 
 ## Monobank Implementation
 
 ### Client
 
+Wraps `MonobankPersonalClient` from `@liaugust/monobank-sdk` and translates its
+exceptions into `BankSyncResultInterface`. Client-info is fetched once and cached
+per instance, since accounts and jars both read from it.
+
 ```typescript
-export class MonobankClient extends BaseBankProviderClient {
-    async getClientInfo(token: string): Promise<BankSyncResultInterface<BankClientInfoInterface>> {
-        return this.request('/personal/client-info', {
-            headers: { 'X-Token': token },
-        });
+export class MonobankClient implements BankProviderClientInterface {
+    private readonly personalClient: MonobankPersonalClient;
+
+    constructor(token: string) {
+        this.personalClient = new MonobankPersonalClient({ timeoutMs: MonobankClient.TIMEOUT_MS, token });
     }
 
-    async getAccounts(token: string): Promise<BankSyncResultInterface<BankAccountInterface[]>> {
-        const result = await this.getClientInfo(token);
-        if (!result.success) return result;
-        return {
-            success: true,
-            data: result.data.accounts.map(monobankAccountMapper),
-        };
-    }
+    async getTransactions(accountId: string, from: number, to?: number): Promise<BankSyncResultInterface<BankTransactionInterface[]>> {
+        try {
+            const statements = await this.personalClient.statements.get({ account: accountId, from, to: to ?? getUnixTime(new Date()) });
 
-    async getTransactions(
-        token: string,
-        accountId: string,
-        from: Date,
-        to: Date
-    ): Promise<BankSyncResultInterface<BankTransactionInterface[]>> {
-        return this.request(`/personal/statement/${accountId}/${fromTs}/${toTs}`, {
-            headers: { 'X-Token': token },
-        });
+            return { success: true, data: statements.map(statement => monobankTransactionMapper(statement, accountId)) };
+        } catch (error) {
+            return this.toFailure(error);
+        }
     }
 }
 ```
 
 ### Constants
 
+The SDK owns the base URL, so only app-level constants remain here:
+
 ```typescript
-// API configuration
-export const MONOBANK_API_BASE_URL = 'https://api.monobank.ua';
 export const MONOBANK_AUTH_URL = 'https://api.monobank.ua/personal/auth';
 
 // Rate limits
-export const MONOBANK_RATE_LIMIT_MS = 60_000;  // 1 request per minute
-export const MONOBANK_MAX_PERIOD_SECONDS = 2_678_400;  // 31 days max range
+export const MONOBANK_RATE_LIMIT_MS = 60_000; // 1 request per minute
+export const MONOBANK_MAX_PERIOD_SECONDS = 2_682_000; // 31 days + 1 hour, the API maximum
 
 // Data conversion
-export const MONOBANK_BALANCE_DIVISOR = 100;  // Amount in kopecks
+export const MONOBANK_BALANCE_DIVISOR = 100; // Amount in kopecks
 ```
 
 ### Mappers
 
-Transform Monobank-specific data to generic interfaces:
+Transform SDK-validated Monobank types into generic interfaces. The SDK is the
+single source of truth for wire shapes — `Account`, `Jar`, `ClientInfo`,
+`StatementItem`, `AccountType`, `CashbackType` — so this package defines no
+Monobank API interfaces or enums of its own:
 
 ```typescript
 // monobank/mapper/monobank-account.mapper.ts
-export const monobankAccountMapper = (
-    account: MonobankAccountApiInterface
-): BankAccountInterface => ({
+import type { Account } from '@liaugust/monobank-sdk';
+
+export const monobankAccountMapper = (account: Account): BankAccountInterface => ({
     id: account.id,
     type: monobankAccountTypeMapper(account.type),
     currencyCode: monobankCurrencyCodeMapper(account.currencyCode),
-    balance: account.balance / MONOBANK_BALANCE_DIVISOR,
+    balance: account.balance / MONOBANK_BALANCE_DIVISOR
     // ...
 });
 ```
+
+Integration fixtures in `tests/bank-sync-tests` build SDK types directly, so a
+schema change upstream surfaces as a compile error in the harness.
 
 ### Rate Limiting
 
@@ -394,12 +375,7 @@ interface BankTransactionInterface {
 interface BankProviderClientInterface {
     getClientInfo(token: string): Promise<BankSyncResultInterface<BankClientInfoInterface>>;
     getAccounts(token: string): Promise<BankSyncResultInterface<BankAccountInterface[]>>;
-    getTransactions(
-        token: string,
-        accountId: string,
-        from: Date,
-        to: Date
-    ): Promise<BankSyncResultInterface<BankTransactionInterface[]>>;
+    getTransactions(token: string, accountId: string, from: Date, to: Date): Promise<BankSyncResultInterface<BankTransactionInterface[]>>;
     setWebhook?(token: string, url: string): Promise<BankSyncResultInterface<void>>;
 }
 ```
@@ -427,14 +403,15 @@ src/
 
 ### 2. Implement Client
 
+Implement `BankProviderClientInterface` and hold the provider's SDK (or, absent
+one, its own transport) as a private field:
+
 ```typescript
-export class NewProviderClient extends BaseBankProviderClient implements BankProviderClientInterface {
-    constructor() {
-        super({
-            baseUrl: NEW_PROVIDER_API_BASE_URL,
-            retryLimit: 3,
-            timeout: 30000,
-        });
+export class NewProviderClient implements BankProviderClientInterface {
+    private readonly providerClient: NewProviderSdkClient;
+
+    constructor(token: string) {
+        this.providerClient = new NewProviderSdkClient({ token, timeoutMs: 30_000 });
     }
 
     async getClientInfo(token: string): Promise<BankSyncResultInterface<BankClientInfoInterface>> {
@@ -466,50 +443,37 @@ export { NewProviderSyncService } from './[provider]/service/[provider]-sync.ser
 
 ### Test Location
 
-Tests should be in the same directory as source:
+Per root rule 27 this package hosts no unit tests. Coverage lives in
+`tests/bank-sync-tests`, which drives the real app sync services against a
+stubbed network:
 
-```
-client/
-├── monobank.client.ts
-└── monobank.client.spec.ts
+```bash
+yarn workspace @budgie-at/bank-sync-tests test
 ```
 
-### Coverage Thresholds
-
-```javascript
-// jest.config.js
-coverageThreshold: {
-    global: {
-        statements: 69,
-        branches: 39,
-        lines: 66,
-        functions: 56
-    }
-}
-```
+> `tests/*-tests` resolve `@budgie/*` through the workspace symlink to **`dist/esm`**,
+> not `src`. Run `yarn workspace @budgie/bank-sync build` after editing this package
+> or the suite silently measures the previous build. Sourcemaps make stale `dist`
+> stack traces look like source runs.
 
 ### Mocking API Calls
 
+msw intercepts at the fetch layer, so the SDK's own transport is exercised end to end:
+
 ```typescript
-import { MonobankClient } from './monobank.client';
-
-jest.mock('ky');
-
-describe('MonobankClient', () => {
-    it('should fetch accounts', async () => {
-        // Mock ky response
-        // Assert mapper is called correctly
-    });
-});
+monobankServer.use(http.get('https://api.monobank.ua/personal/client-info', () => HttpResponse.json(clientInfo)));
 ```
+
+Fixtures come from `buildMonobank` in the harness and are typed as SDK types.
 
 ## Dependencies
 
-| Package | Purpose |
-|---------|---------|
-| `ky` | HTTP client with retry support |
-| `date-fns` | Date manipulation |
-| `@rnw-community/shared` | Type guards |
+| Package                  | Purpose                                                  |
+| ------------------------ | -------------------------------------------------------- |
+| `@liaugust/monobank-sdk` | Monobank Personal API client, schemas, and error classes |
+| `date-fns`               | Date manipulation                                        |
+| `xlsx`                   | Privatbank statement parsing                             |
+| `@rnw-community/shared`  | Type guards                                              |
 
 ## Export Configuration
 
@@ -530,12 +494,19 @@ ESM-only package:
 
 ## Known Issues
 
-1. **Jest config typo** - `displayName: 'banc-sync'` should be `bank-sync`
-2. **Only Monobank implemented** - Other providers in enum are placeholders
+1. **`jars` missing from client-info rejects the whole response** - the SDK's
+   `clientInfoSchema` requires `jars`, `webHookUrl`, and `permissions`, which
+   Monobank's own OpenAPI leaves optional. Tracked in
+   [monobank-typescript-sdk#15](https://github.com/liaugust/monobank-typescript-sdk/issues/15);
+   `jars-missing-does-not-crash-preview` fails until it is fixed.
+2. **No retry on 5xx** - see the retry note under Error Mapping.
+3. **Only Monobank has an API integration** - Erste and Privatbank are file-based,
+   and other providers in the enum are placeholders.
 
 ## Error Recovery
 
 For failed syncs, the app tracks:
+
 - `errorCount` - Number of consecutive failures
 - `lastError` - Last error message
 - `lastSyncedAt` - Last successful sync timestamp
