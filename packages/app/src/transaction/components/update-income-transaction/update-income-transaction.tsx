@@ -6,6 +6,7 @@ import { useWatch } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { useOpenRefundConvert } from '../../hook/use-open-refund-convert.hook';
+import { useOpenTransactionFeeFromSearchParams } from '../../hook/use-open-transaction-fee-from-search-params.hook';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
 import { useUpdateTransactionSharedActions } from '../../hook/use-update-transaction-shared-actions.hook';
 import { buildIncomeEntry } from '../../utils/build-income-entry.util';
@@ -19,6 +20,7 @@ import type { UpdateTransactionFormPropsInterface } from '../../interface/update
 export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const simpleQuickFormRef = useRef<SimpleQuickFormRefInterface>(null);
+    const handleFeePress = useOpenTransactionFeeFromSearchParams(simpleQuickFormRef);
     const transactionId = transaction.id;
     const simpleTransaction = useUpdateSimpleTransaction({
         transaction,
@@ -43,7 +45,6 @@ export const UpdateIncomeTransaction = ({ transaction }: UpdateTransactionFormPr
         transactionType: TransactionTypeEnum.INCOME
     });
     const canConvertToRefund = !simpleTransaction.isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
-    const handleFeePress = () => simpleQuickFormRef.current?.openFee();
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const transferConvertProps = simpleTransaction.categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
     const debtSettlementProps = hasDebtSettlement

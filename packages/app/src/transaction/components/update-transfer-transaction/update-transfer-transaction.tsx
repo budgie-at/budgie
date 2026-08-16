@@ -14,6 +14,7 @@ import { useAccountBalanceQuery } from '../../../account/query/use-account-balan
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
+import { useOpenTransactionFeeFromSearchParams } from '../../hook/use-open-transaction-fee-from-search-params.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
@@ -26,6 +27,7 @@ import type { UpdateTransactionFormPropsInterface } from '../../interface/update
 export const UpdateTransferTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const simpleQuickFormRef = useRef<SimpleQuickFormRefInterface>(null);
+    const handleFeePress = useOpenTransactionFeeFromSearchParams(simpleQuickFormRef);
     const { markForEmbedding } = useEmbeddingGenerator();
     const [openConsolidationSource] = useConsolidationSourceModal();
 
@@ -50,8 +52,6 @@ export const UpdateTransferTransaction = ({ transaction }: UpdateTransactionForm
     const { balance } = useAccountBalanceQuery(fromAccountId ?? 0);
 
     const handleGoBack = () => void goBackOrReplace('/');
-    const handleFeePress = () => simpleQuickFormRef.current?.openFee();
-
     useEffect(() => {
         if (account?.type === AccountTypeEnum.DEBT && amount > balance) {
             form.setError('amount', { type: 'custom', message: t`Amount exceeds debt account balance` });
