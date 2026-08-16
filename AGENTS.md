@@ -503,13 +503,13 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 ## Tech Stack
 
-| Package       | Stack                                                                                                                                                         |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **app**       | Expo 56, React 19 + Compiler, Expo Router 56, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                           |
-| **ai**        | Pure TypeScript, Zod                                                                                                                                          |
-| **contracts** | Drizzle ORM, Zod, drizzle-zod                                                                                                                                 |
-| **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                              |
-| **bank-sync** | ky HTTP client, date-fns                                                                                                                                      |
+| Package       | Stack                                                                                                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **app**       | Expo 56, React 19 + Compiler, Expo Router 56, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                                             |
+| **ai**        | Pure TypeScript, Zod                                                                                                                                                            |
+| **contracts** | Drizzle ORM, Zod, drizzle-zod                                                                                                                                                   |
+| **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                                                |
+| **bank-sync** | @liaugust/monobank-sdk, date-fns                                                                                                                                                |
 | **Build**     | Yarn 4.17.1 (`node-modules` linker), Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.74 JS bridge + 13-rule ESLint 10 fallback |
 
 ## Workflow
