@@ -1,12 +1,13 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
+import { useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useOpenRefundConvert } from '../../hook/use-open-refund-convert.hook';
-import { useTransactionInfoFeeAction } from '../../hook/use-transaction-info-fee-action.hook';
 import { useUpdateTransactionSharedActions } from '../../hook/use-update-transaction-shared-actions.hook';
 import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
+import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
@@ -14,10 +15,10 @@ import type { UpdateTransactionFormPropsInterface } from '../../interface/update
 
 export const IncomeTransactionInfoPage = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const deleteTransaction = useDeleteTransaction();
+    const router = useRouter();
     const isConsolidated = isDefined(transaction.consolidationType);
     const transactionId = transaction.id;
     const editHref = { pathname: '/transactions/[id]/income/edit' as const, params: { id: String(transactionId) } };
-    const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     const canConvertToRefund = !isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
     const handleDelete = () => deleteTransaction(transactionId, { isConsolidated });
     const handleOpenRefundConvert = useOpenRefundConvert(transactionId);
@@ -34,9 +35,10 @@ export const IncomeTransactionInfoPage = ({ transaction }: UpdateTransactionForm
         transactionId,
         transactionType: TransactionTypeEnum.INCOME
     });
-    const handleOpenFee = useTransactionInfoFeeAction(editHref.pathname, transactionId);
+    const handleOpenFee = () => void router.push(getTransactionFeeEditHref(editHref.pathname, transactionId));
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
-    const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
+    const transferConvertProps =
+        getTransactionCategoryEntries(transaction.entries).length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
     const debtSettlementProps = hasDebtSettlement
         ? { onDetachDebtSettlement: handleDetachDebtSettlement }
         : {

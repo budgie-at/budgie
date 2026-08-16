@@ -1,12 +1,13 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
+import { useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
-import { useTransactionInfoFeeAction } from '../../hook/use-transaction-info-fee-action.hook';
 import { useUpdateTransactionSharedActions } from '../../hook/use-update-transaction-shared-actions.hook';
 import { getTransactionCategoryEntries } from '../../utils/get-transaction-category-entries.util';
+import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
@@ -14,6 +15,7 @@ import type { UpdateTransactionFormPropsInterface } from '../../interface/update
 
 export const ExpenseTransactionInfoPage = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const deleteTransaction = useDeleteTransaction();
+    const router = useRouter();
     const [openConsolidationSourceModal] = useConsolidationSourceModal();
     const isConsolidated = isDefined(transaction.consolidationType);
     const transactionId = transaction.id;
@@ -41,7 +43,7 @@ export const ExpenseTransactionInfoPage = ({ transaction }: UpdateTransactionFor
           };
 
     const editHref = { pathname: '/transactions/[id]/expense/edit' as const, params: { id: String(transactionId) } };
-    const handleOpenFee = useTransactionInfoFeeAction(editHref.pathname, transactionId);
+    const handleOpenFee = () => void router.push(getTransactionFeeEditHref(editHref.pathname, transactionId));
     const transferConvertProps = categoryEntries.length === 1 ? { onConvertToTransfer: handleOpenConvert } : {};
     const actionsMenu = (
         <UpdateTransactionActionsMenu

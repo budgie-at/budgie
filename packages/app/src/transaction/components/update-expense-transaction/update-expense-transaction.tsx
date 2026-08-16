@@ -5,7 +5,7 @@ import { useWatch } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
-import { useOpenTransactionFeeFromSearchParams } from '../../hook/use-open-transaction-fee-from-search-params.hook';
+import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
 import { useUpdateTransactionSharedActions } from '../../hook/use-update-transaction-shared-actions.hook';
 import { buildExpenseEntry } from '../../utils/build-expense-entry.util';
@@ -17,7 +17,7 @@ import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
-export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormPropsInterface) => {
+export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const transactionId = transaction.id;
     const simpleTransaction = useUpdateSimpleTransaction({
@@ -25,7 +25,7 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
         transactionId,
         schema: ExpenseTransactionCreateInputSchema
     });
-    const { handleFeePress, setFormRef } = useOpenTransactionFeeFromSearchParams();
+    const { formRef, handleFeePress } = useTransactionFeeFormActions(openFeeOnMount);
 
     const fromAccountId = useWatch({ control: simpleTransaction.form.control, name: 'fromAccountId' });
     const [openConsolidationSourceModal] = useConsolidationSourceModal();
@@ -69,7 +69,7 @@ export const UpdateExpenseTransaction = ({ transaction }: UpdateTransactionFormP
             }
         >
             <SimpleQuickForm
-                ref={setFormRef}
+                ref={formRef}
                 variant="destructive"
                 transactionType={TransactionTypeEnum.EXPENSE}
                 accountFieldName="fromAccountId"

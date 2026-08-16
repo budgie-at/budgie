@@ -5,7 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
-import { useTransactionInfoFeeAction } from '../../hook/use-transaction-info-fee-action.hook';
+import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
@@ -21,7 +21,7 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
     const handleRevert = useRevertConsolidation(transactionId, () => {
         router.back();
     });
-    const handleOpenFee = useTransactionInfoFeeAction(editHref.pathname, transactionId);
+    const handleOpenFee = () => void router.push(getTransactionFeeEditHref(editHref.pathname, transactionId));
     const handleDelete = () => deleteTransaction(transactionId, { isConsolidated });
     const handleConsolidationPress = () => {
         void openConsolidationSource({ transactionId });
