@@ -8,18 +8,16 @@ import { isDefined } from '@rnw-community/shared';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
-import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
 import { TransferQuickForm } from '../transfer-quick-form/transfer-quick-form';
-import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
+import { TransferTransactionActionsMenu } from '../transfer-transaction-actions-menu/transfer-transaction-actions-menu';
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
@@ -33,7 +31,6 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
         transaction.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT)?.amount ?? 0
     );
     const isConsolidated = isDefined(transaction.consolidationType);
-    const handleRevert = useRevertConsolidation(transaction.id, () => void dismissAllOrReplace('/'));
 
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: convertTransactionToInput(transaction),
@@ -66,12 +63,7 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
                         title={t`Edit Transfer`}
                         onGoBack={handleGoBack}
                         right={
-                            <UpdateTransactionActionsMenu
-                                onDelete={handleDelete}
-                                isConsolidated={isConsolidated}
-                                onRevert={handleRevert}
-                                onFeePress={handleFeePress}
-                            />
+                            <TransferTransactionActionsMenu transaction={transaction} onDelete={handleDelete} onFeePress={handleFeePress} />
                         }
                     />
                 }
