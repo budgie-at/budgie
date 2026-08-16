@@ -1344,6 +1344,7 @@ __metadata:
     "@budgie/bank-sync": "workspace:*"
     "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:^"
+    "@liaugust/monobank-sdk": "npm:0.1.0"
     "@rnw-community/shared": "npm:^2.2.0"
     "@types/better-sqlite3": "npm:^7.6.13"
     "@types/node": "npm:22.20.1"
@@ -1502,11 +1503,10 @@ __metadata:
   dependencies:
     "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
+    "@liaugust/monobank-sdk": "npm:0.1.0"
     "@rnw-community/shared": "npm:^2.2.0"
     date-fns: "npm:^4.3.0"
-    ky: "npm:^2.0.2"
     xlsx: "npm:^0.18.5"
-    zod: "npm:4.1.12"
   languageName: unknown
   linkType: soft
 
@@ -4380,6 +4380,15 @@ __metadata:
     react-native:
       optional: true
   checksum: 10/eef5722e99310210d0442a68434386fecb1b8e4555e92b3d7bcfa6bf3436b560b7410a9e3196ddf69a2be4685093b8f63a6adf4126ea92eda4a41ce6a14f358d
+  languageName: node
+  linkType: hard
+
+"@liaugust/monobank-sdk@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@liaugust/monobank-sdk@npm:0.1.0"
+  dependencies:
+    zod: "npm:4.4.3"
+  checksum: 10/b377a7af1ea2a7ac7459bd28aeffd1a02ce936cea96c226a6ae72555fe444a97eefe8800967da23ad6870c35b143c129adcf6d8cfc39841c699ce2a8c3478b87
   languageName: node
   linkType: hard
 
@@ -22619,6 +22628,13 @@ __metadata:
   version: 4.1.12
   resolution: "zod@npm:4.1.12"
   checksum: 10/c5f04e6ac306515c4db6ef73cf7705f521c7a2107c8c8912416a0658d689f361db9bee829b0bf01ef4a22492f1065c5cbcdb523ce532606ac6792fd714f3c326
+  languageName: node
+  linkType: hard
+
+"zod@npm:4.4.3":
+  version: 4.4.3
+  resolution: "zod@npm:4.4.3"
+  checksum: 10/804b9a42aa8f35f2b3c5a8dff906291cb749115f83ee2afe3576d70b5b5c53c965365c7f4967690647a9c54af9838ff232a85ff9577a0a36c44b68bc6cdefe36
   languageName: node
   linkType: hard
 

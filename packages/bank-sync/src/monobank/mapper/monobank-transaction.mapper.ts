@@ -5,12 +5,12 @@ import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.e
 import { MONOBANK_BALANCE_DIVISOR } from '../constant/monobank-balance-divisor.constant';
 
 import type { BankTransactionInterface } from '../../core/interface/bank-transaction.interface';
-import type { MonobankTransactionApiInterface } from '../interface/monobank-transaction-api.type';
+import type { StatementItem } from '@liaugust/monobank-sdk';
 
 const getTransactionType = (amount: number): BankTransactionTypeEnum =>
     isPositiveNumber(amount) ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE;
 
-export const monobankTransactionMapper = (transaction: MonobankTransactionApiInterface, accountId: string): BankTransactionInterface => ({
+export const monobankTransactionMapper = (transaction: StatementItem, accountId: string): BankTransactionInterface => ({
     accountId,
     id: transaction.id,
     provider: BankProviderEnum.MONOBANK,

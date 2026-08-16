@@ -10,7 +10,7 @@ import {
     setupBackwardSweepFixture
 } from '../../harness';
 
-import type { MonobankTransactionApiInterface } from '@budgie/bank-sync';
+import type { StatementItem } from '@liaugust/monobank-sdk';
 
 const SECONDS_PER_DAY = 86_400;
 const MS_PER_SECOND = 1_000;
@@ -25,7 +25,7 @@ describe('monobank/old-transactions-after-dormant-month', () => {
         const bankSync = setupBackwardSweepFixture(sweepStart);
 
         const oldTransactionTimeSeconds = Math.floor(sweepStart.getTime() / MS_PER_SECOND) - OLD_TRANSACTION_AGE_DAYS * SECONDS_PER_DAY;
-        const oldTransaction: MonobankTransactionApiInterface = buildMonobank.transaction({
+        const oldTransaction: StatementItem = buildMonobank.transaction({
             id: 'tx-old-80d',
             amount: OLD_TRANSACTION_AMOUNT_KOPECKS,
             hold: false,

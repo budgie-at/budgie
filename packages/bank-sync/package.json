@@ -29,10 +29,9 @@
     "dependencies": {
         "@budgie/contracts": "workspace:^",
         "@budgie/logger": "workspace:*",
+        "@liaugust/monobank-sdk": "0.1.0",
         "@rnw-community/shared": "^2.2.0",
         "date-fns": "^4.3.0",
-        "ky": "^2.0.2",
-        "xlsx": "^0.18.5",
-        "zod": "4.1.12"
+        "xlsx": "^0.18.5"
     }
 }
