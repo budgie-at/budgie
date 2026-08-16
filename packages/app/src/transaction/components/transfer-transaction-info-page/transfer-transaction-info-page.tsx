@@ -1,3 +1,4 @@
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
@@ -21,7 +22,7 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
     const handleRevert = useRevertConsolidation(transactionId, () => {
         router.back();
     });
-    const handleOpenFee = () => void router.push(getTransactionFeeEditHref(editHref.pathname, transactionId));
+    const handleOpenFee = () => void router.push(getTransactionFeeEditHref(TransactionTypeEnum.TRANSFER, transactionId));
     const handleDelete = () => deleteTransaction(transactionId, { isConsolidated });
     const handleConsolidationPress = () => {
         void openConsolidationSource({ transactionId });
