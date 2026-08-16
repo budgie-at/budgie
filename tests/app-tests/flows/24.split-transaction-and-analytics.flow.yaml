@@ -280,6 +280,9 @@ appId: ${APP_ID}
     visible:
       id: 'SplitEntryRow.Amount.0'
 - tapOn:
+    id: 'SplitEntryRow.Amount.0'
+- inputText: '15'
+- tapOn:
     id: 'SplitEntries.AddItemButton'
 - extendedWaitUntil:
     visible:
