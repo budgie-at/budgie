@@ -27,6 +27,7 @@ import { TransactionInfoPageSelector } from './transaction-info-page.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { Href } from 'expo-router';
+import type { ReactNode } from 'react';
 import type { Edge } from 'react-native-safe-area-context';
 
 const safeEdges: Edge[] = ['bottom', 'top'];
@@ -34,10 +35,7 @@ const safeEdges: Edge[] = ['bottom', 'top'];
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly editHref: Href;
-    readonly onDelete: () => Promise<void> | void;
-    readonly onRevert?: () => void;
-    readonly onConvertToTransfer?: () => void;
-    readonly onConvertToRefund?: () => void;
+    readonly actionsMenu: ReactNode;
     readonly onOpenRefundSources?: () => void;
     readonly onOpenConsolidationSources?: () => void;
 }
@@ -93,16 +91,7 @@ const getRowVisibility = (
 };
 
 export const TransactionInfoPage = (props: Props) => {
-    const {
-        transaction,
-        editHref,
-        onDelete,
-        onRevert,
-        onConvertToTransfer,
-        onConvertToRefund,
-        onOpenRefundSources,
-        onOpenConsolidationSources
-    } = props;
+    const { transaction, editHref, actionsMenu, onOpenRefundSources, onOpenConsolidationSources } = props;
     const router = useRouter();
     const { t } = useLingui();
     const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
@@ -121,16 +110,7 @@ export const TransactionInfoPage = (props: Props) => {
         <ChromePage
             safeEdges={safeEdges}
             contentClassName="px-0"
-            header={
-                <TransactionInfoPageHeader
-                    isConsolidated={rowVisibility.isConsolidated}
-                    onGoBack={handleGoBack}
-                    onDelete={onDelete}
-                    onRevert={onRevert}
-                    onConvertToRefund={onConvertToRefund}
-                    onConvertToTransfer={onConvertToTransfer}
-                />
-            }
+            header={<TransactionInfoPageHeader actionsMenu={actionsMenu} onGoBack={handleGoBack} />}
             footer={
                 <View className="px-5xl pb-md pt-lg">
                     <Button
