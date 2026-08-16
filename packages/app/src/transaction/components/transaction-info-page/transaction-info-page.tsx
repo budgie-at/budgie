@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 
 import { Button } from '../../../@generic/component/button/button';
 import { ChromePage } from '../../../@generic/component/chrome-page/chrome-page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useTransactionInfoMatchingRules } from '../../hook/use-transaction-info-matching-rules.hook';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
@@ -18,7 +19,6 @@ import { TransactionInfoAccountRows } from '../transaction-info-account-rows/tra
 import { TransactionInfoCategoryRows } from '../transaction-info-category-rows/transaction-info-category-rows';
 import { TransactionInfoHero } from '../transaction-info-hero/transaction-info-hero';
 import { TransactionInfoMoneyRows } from '../transaction-info-money-rows/transaction-info-money-rows';
-import { TransactionInfoPageHeader } from '../transaction-info-page-header/transaction-info-page-header';
 import { TransactionInfoSimilarCard } from '../transaction-info-similar-card/transaction-info-similar-card';
 import { TransactionInfoSourceRows } from '../transaction-info-source-rows/transaction-info-source-rows';
 import { TransactionInfoTagsSection } from '../transaction-info-tags-section/transaction-info-tags-section';
@@ -110,7 +110,7 @@ export const TransactionInfoPage = (props: Props) => {
         <ChromePage
             safeEdges={safeEdges}
             contentClassName="px-0"
-            header={<TransactionInfoPageHeader actionsMenu={actionsMenu} onGoBack={handleGoBack} />}
+            header={<PageHeader title="" size="md" onGoBack={handleGoBack} right={actionsMenu} />}
             footer={
                 <View className="px-5xl pb-md pt-lg">
                     <Button
