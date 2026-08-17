@@ -153,23 +153,20 @@ export class MonobankClient implements BankProviderClientInterface {
     }
 
     private toApiFailureError(error: MonobankApiError): BankSyncError {
-        if (error.status === HTTP_STATUS_UNAUTHORIZED) {
-            return BankSyncError.unauthorized(BankProviderEnum.MONOBANK, error);
+        switch (error.status) {
+            case HTTP_STATUS_UNAUTHORIZED:
+                return BankSyncError.unauthorized(BankProviderEnum.MONOBANK, error);
+            case HTTP_STATUS_TOO_MANY_REQUESTS:
+                return BankSyncError.rateLimited(BankProviderEnum.MONOBANK, error);
+            case HTTP_STATUS_BAD_REQUEST:
+                return BankSyncError.invalidResponse(BankProviderEnum.MONOBANK, error);
+            default:
+                return new BankSyncError(
+                    BankSyncErrorCodeEnum.UNKNOWN,
+                    `HTTP ${String(error.status)}: ${error.message}`,
+                    BankProviderEnum.MONOBANK,
+                    error
+                );
         }
-
-        if (error.status === HTTP_STATUS_TOO_MANY_REQUESTS) {
-            return BankSyncError.rateLimited(BankProviderEnum.MONOBANK, error);
-        }
-
-        if (error.status === HTTP_STATUS_BAD_REQUEST) {
-            return BankSyncError.invalidResponse(BankProviderEnum.MONOBANK, error);
-        }
-
-        return new BankSyncError(
-            BankSyncErrorCodeEnum.UNKNOWN,
-            `HTTP ${String(error.status)}: ${error.message}`,
-            BankProviderEnum.MONOBANK,
-            error
-        );
     }
 }
