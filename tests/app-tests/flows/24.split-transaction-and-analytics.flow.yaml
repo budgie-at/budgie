@@ -302,6 +302,10 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'SplitEntries.ConfirmButton'
+- extendedWaitUntil:
+    notVisible:
+      id: 'SplitEntries.ConfirmButton'
+    timeout: 5000
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
