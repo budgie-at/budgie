@@ -77,7 +77,7 @@ export class MonobankClient implements BankProviderClientInterface {
             return result;
         }
 
-        return { success: true, data: result.data.jars.map(monobankJarMapper) };
+        return { success: true, data: (result.data.jars ?? []).map(monobankJarMapper) };
     }
 
     @Log(
