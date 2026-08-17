@@ -75,6 +75,10 @@ export const SplitEntriesModalContent = (props: Props) => {
 
     const handleAmountChange = (index: number, amount: number) => {
         setEntries(previous => previous.map((entry, entryIndex) => (entryIndex === index ? { ...entry, amount } : entry)));
+
+        if (index === autoFocusIndex) {
+            setAutoFocusIndex(-1);
+        }
     };
 
     const handleCategoryPress = async (index: number) => {
@@ -83,6 +87,11 @@ export const SplitEntriesModalContent = (props: Props) => {
             .filter((_, entryIndex) => entryIndex !== index)
             .map(entry => entry.categoryId)
             .filter(isPositiveNumber);
+
+        if (index === autoFocusIndex) {
+            setAutoFocusIndex(-1);
+        }
+
         const selectedCategoryId = await openCategorySelector({ initialCategoryId: currentCategoryId, excludeCategoryIds, variant });
 
         if (isDefined(selectedCategoryId)) {
