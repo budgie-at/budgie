@@ -494,14 +494,15 @@ ESM-only package:
 
 ## Known Issues
 
-1. **`jars` missing from client-info rejects the whole response** - the SDK's
-   `clientInfoSchema` requires `jars`, `webHookUrl`, and `permissions`, which
-   Monobank's own OpenAPI leaves optional. Tracked in
-   [monobank-typescript-sdk#15](https://github.com/liaugust/monobank-typescript-sdk/issues/15);
-   `jars-missing-does-not-crash-preview` fails until it is fixed.
-2. **No retry on 5xx** - see the retry note under Error Mapping.
+1. **No retry on 5xx** - see the retry note under Error Mapping.
+2. **A second zod copy is bundled** - the SDK depends on `zod@^4.4.3` while this
+   monorepo standardises on `4.1.12`, so the SDK gets a nested copy and `zod/mini`
+   ships twice. Bumping zod repo-wide to `>=4.4.3` would deduplicate it.
 3. **Only Monobank has an API integration** - Erste and Privatbank are file-based,
    and other providers in the enum are placeholders.
+
+`ClientInfo.jars` is optional (`readonly Jar[] | undefined`), because Monobank
+omits it for some tokens. Always read it through a guard, as `getJars()` does.
 
 ## Error Recovery
 
