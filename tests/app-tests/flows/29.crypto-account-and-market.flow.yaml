@@ -57,12 +57,17 @@ appId: ${APP_ID}
       visible:
           id: 'AccountCard.E2E Crypto Vault'
       timeout: 10000
-- extendedWaitUntil:
-      visible:
-          id: 'AccountCard.E2E Binance BTC'
-      timeout: 3000
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+
+# --- Binance sync accounts group under their integration, not the crypto instrument group ---
+- scrollUntilVisible:
+      element:
+          id: 'BankProviderSectionHeader.SettingsButton.1'
+      direction: DOWN
+      timeout: 10000
+- assertVisible:
+      id: 'AccountCard.E2E Binance BTC'
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Binance_BTC.2_BTC'
 
