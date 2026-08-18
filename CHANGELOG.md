@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.1.1](https://github.com/budgie-at/budgie/compare/v6.1.0...v6.1.1) (2026-08-18)
+
+
+### Bug Fixes
+
+* **bank-sync:** upgrade monobank-sdk to 0.3.0 and guard optional jars ([a8097a6](https://github.com/budgie-at/budgie/commit/a8097a611d75865056562bf1f1def8e1f9979e2b)), closes [liaugust/monobank-typescript-sdk#17](https://github.com/liaugust/monobank-typescript-sdk/issues/17)
+
+
+
+
+
 # [6.1.0](https://github.com/budgie-at/budgie/compare/v6.0.9...v6.1.0) (2026-08-13)
 
 
