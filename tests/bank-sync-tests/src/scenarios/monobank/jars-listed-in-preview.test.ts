@@ -4,11 +4,11 @@ import { describe, expect, it } from 'vitest';
 
 import { buildMonobank, monobankStub } from '../../harness';
 
-import type { MonobankClientInfoApiInterface } from '@budgie/bank-sync';
+import type { ClientInfo } from '@liaugust/monobank-sdk';
 
 describe('monobank/jars-listed-in-preview', () => {
     it('surfaces jars from client-info as selectable jar previews alongside cards', async () => {
-        const clientInfo: MonobankClientInfoApiInterface = {
+        const clientInfo: ClientInfo = {
             ...buildMonobank.clientInfoWith(['mono-card']),
             jars: [buildMonobank.jar({ id: 'jar-1', title: 'Студія' })]
         };
