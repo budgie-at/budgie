@@ -1,111 +1,172 @@
+import { Log } from '@budgie/logger';
+import {
+    MonobankApiError,
+    MonobankNetworkError,
+    MonobankPersonalClient,
+    MonobankResponseValidationError,
+    MonobankValidationError
+} from '@liaugust/monobank-sdk';
 import { getUnixTime } from 'date-fns';
 
-import { isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { BaseSyncProviderClient } from '../../core/client/base-sync-provider.client';
+import { SyncErrorCodeEnum } from '../../core/enum/sync-error-code.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
-import { MONOBANK_API_BASE_URL } from '../constant/monobank-api-base-url.constant';
+import { SyncError } from '../../core/error/sync.error';
 import { monobankAccountMapper } from '../mapper/monobank-account.mapper';
 import { monobankJarMapper } from '../mapper/monobank-jar.mapper';
 import { monobankTransactionMapper } from '../mapper/monobank-transaction.mapper';
 
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncClientInfoInterface } from '../../core/interface/sync-client-info.interface';
+import type { SyncProviderClientInterface } from '../../core/interface/sync-provider-client.interface';
 import type { SyncResultInterface } from '../../core/interface/sync-result.type';
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
-import type { MonobankClientInfoApiInterface } from '../interface/monobank-client-info-api.interface';
-import type { MonobankTransactionApiInterface } from '../interface/monobank-transaction-api.type';
+import type { ClientInfo } from '@liaugust/monobank-sdk';
 
-export class MonobankClient extends BaseSyncProviderClient {
-    protected readonly provider = SyncProviderEnum.MONOBANK;
-    protected readonly baseUrl = MONOBANK_API_BASE_URL;
-    private cachedClientInfo: MonobankClientInfoApiInterface | undefined;
+const HTTP_STATUS_BAD_REQUEST = 400;
+const HTTP_STATUS_UNAUTHORIZED = 401;
+const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
 
+export class MonobankClient implements SyncProviderClientInterface {
+    private static readonly TIMEOUT_MS = 30_000;
+
+    private readonly personalClient: MonobankPersonalClient;
+    private cachedClientInfo: ClientInfo | undefined;
+
+    constructor(token: string) {
+        this.personalClient = new MonobankPersonalClient({ timeoutMs: MonobankClient.TIMEOUT_MS, token });
+    }
+
+    @Log('enter', result => `done success=${String(result.success)}`, error => `throw error=${getErrorMessage(error)}`)
     async getClientInfo(): Promise<SyncResultInterface<SyncClientInfoInterface>> {
-        const result = await this.fetchClientInfoApi();
+        const result = await this.fetchClientInfo();
 
         if (!result.success) {
             return result;
         }
 
-        return this.success({
-            id: result.data.clientId,
-            name: result.data.name,
-            provider: this.provider,
-            webHookUrl: result.data.webHookUrl,
-            permissions: result.data.permissions
-        });
-    }
-
-    async getAccounts(): Promise<SyncResultInterface<SyncAccountInterface[]>> {
-        const result = await this.fetchClientInfoApi();
-
-        if (!result.success) {
-            return result;
-        }
-
-        const accounts = result.data.accounts.map(monobankAccountMapper);
-
-        return this.success(accounts);
-    }
-
-    async getJars(): Promise<SyncResultInterface<SyncAccountInterface[]>> {
-        const result = await this.fetchClientInfoApi();
-
-        if (!result.success) {
-            return result;
-        }
-
-        const jars = result.data.jars.map(monobankJarMapper);
-
-        return this.success(jars);
-    }
-
-    async getTransactions(accountId: string, from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        const toTimestamp = to ?? getUnixTime(new Date());
-        const endpoint = `/personal/statement/${accountId}/${from}/${toTimestamp}`;
-        const result = await this.fetchJson<MonobankTransactionApiInterface[]>(endpoint);
-
-        if (!result.success) {
-            return result;
-        }
-
-        const transactions = result.data.map(tx => monobankTransactionMapper(tx, accountId));
-
-        return this.success(transactions);
-    }
-
-    async setWebhook(url: string): Promise<SyncResultInterface<void>> {
-        const result = await this.fetchJson<Record<string, never>>('/personal/webhook', {
-            method: 'POST',
-            body: JSON.stringify({ webHookUrl: url })
-        });
-
-        if (!result.success) {
-            return result;
-        }
-
-        return this.success(void 0);
-    }
-
-    protected getDefaultHeaders(): Record<string, string> {
         return {
-            'X-Token': this.token,
-            'Content-Type': 'application/json'
+            success: true,
+            data: {
+                id: result.data.clientId,
+                name: result.data.name,
+                provider: SyncProviderEnum.MONOBANK,
+                webHookUrl: result.data.webHookUrl,
+                permissions: result.data.permissions
+            }
         };
     }
 
-    private async fetchClientInfoApi(): Promise<SyncResultInterface<MonobankClientInfoApiInterface>> {
+    @Log('enter', result => `done success=${String(result.success)}`, error => `throw error=${getErrorMessage(error)}`)
+    async getAccounts(): Promise<SyncResultInterface<SyncAccountInterface[]>> {
+        const result = await this.fetchClientInfo();
+
+        if (!result.success) {
+            return result;
+        }
+
+        return { success: true, data: result.data.accounts.map(monobankAccountMapper) };
+    }
+
+    @Log('enter', result => `done success=${String(result.success)}`, error => `throw error=${getErrorMessage(error)}`)
+    async getJars(): Promise<SyncResultInterface<SyncAccountInterface[]>> {
+        const result = await this.fetchClientInfo();
+
+        if (!result.success) {
+            return result;
+        }
+
+        return { success: true, data: (result.data.jars ?? []).map(monobankJarMapper) };
+    }
+
+    @Log(
+        (accountId, from, to) => `enter accountId=${accountId} from=${from} to=${to ?? 'now'}`,
+        (result, accountId, from, to) =>
+            `done accountId=${accountId} from=${from} to=${to ?? 'now'} success=${String(result.success)} count=${result.success ? result.data.length : 0}`,
+        (error, accountId, from, to) => `throw accountId=${accountId} from=${from} to=${to ?? 'now'} error=${getErrorMessage(error)}`
+    )
+    async getTransactions(accountId: string, from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
+        try {
+            const statements = await this.personalClient.statements.get({ account: accountId, from, to: to ?? getUnixTime(new Date()) });
+
+            return { success: true, data: statements.map(statement => monobankTransactionMapper(statement, accountId)) };
+        } catch (error) {
+            return this.toFailure(error);
+        }
+    }
+
+    @Log(
+        url => `enter url="${url}"`,
+        (result, url) => `done url="${url}" success=${String(result.success)}`,
+        (error, url) => `throw url="${url}" error=${getErrorMessage(error)}`
+    )
+    async setWebhook(url: string): Promise<SyncResultInterface<void>> {
+        try {
+            await this.personalClient.webhooks.set({ webHookUrl: url });
+
+            return { success: true, data: void 0 };
+        } catch (error) {
+            return this.toFailure(error);
+        }
+    }
+
+    private async fetchClientInfo(): Promise<SyncResultInterface<ClientInfo>> {
         if (isDefined(this.cachedClientInfo)) {
-            return this.success(this.cachedClientInfo);
+            return { success: true, data: this.cachedClientInfo };
         }
 
-        const result = await this.fetchJson<MonobankClientInfoApiInterface>('/personal/client-info');
+        try {
+            const clientInfo = await this.personalClient.client.getInfo();
+            this.cachedClientInfo = clientInfo;
 
-        if (result.success) {
-            this.cachedClientInfo = result.data;
+            return { success: true, data: clientInfo };
+        } catch (error) {
+            return this.toFailure(error);
+        }
+    }
+
+    private toFailure<T>(error: unknown): SyncResultInterface<T> {
+        if (error instanceof MonobankApiError) {
+            return { success: false, error: this.toApiFailureError(error) };
         }
 
-        return result;
+        if (error instanceof MonobankNetworkError) {
+            return {
+                success: false,
+                error: new SyncError(SyncErrorCodeEnum.NETWORK_ERROR, error.message, SyncProviderEnum.MONOBANK, error)
+            };
+        }
+
+        if (error instanceof MonobankResponseValidationError) {
+            return { success: false, error: SyncError.invalidResponse(SyncProviderEnum.MONOBANK, error) };
+        }
+
+        if (error instanceof MonobankValidationError) {
+            return {
+                success: false,
+                error: new SyncError(SyncErrorCodeEnum.UNKNOWN, error.issues.join('; '), SyncProviderEnum.MONOBANK, error)
+            };
+        }
+
+        return { success: false, error: SyncError.networkError(SyncProviderEnum.MONOBANK, error) };
+    }
+
+    private toApiFailureError(error: MonobankApiError): SyncError {
+        switch (error.status) {
+            case HTTP_STATUS_UNAUTHORIZED:
+                return SyncError.unauthorized(SyncProviderEnum.MONOBANK, error);
+            case HTTP_STATUS_TOO_MANY_REQUESTS:
+                return SyncError.rateLimited(SyncProviderEnum.MONOBANK, error);
+            case HTTP_STATUS_BAD_REQUEST:
+                return SyncError.invalidResponse(SyncProviderEnum.MONOBANK, error);
+            default:
+                return new SyncError(
+                    SyncErrorCodeEnum.UNKNOWN,
+                    `HTTP ${String(error.status)}: ${error.message}`,
+                    SyncProviderEnum.MONOBANK,
+                    error
+                );
+        }
     }
 }

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 describe('account/iban-normalization', () => {
     it('returns null for absent, empty and whitespace values', () => {
         expect(normalizeAccountIban(null)).toBeNull();
-        expect(normalizeAccountIban()).toBeNull();
+        expect(normalizeAccountIban(undefined)).toBeNull();
         expect(normalizeAccountIban('')).toBeNull();
         expect(normalizeAccountIban('   ')).toBeNull();
     });

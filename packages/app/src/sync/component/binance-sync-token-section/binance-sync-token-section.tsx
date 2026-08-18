@@ -7,17 +7,19 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useSyncTokenUpdate } from '../../hook/use-sync-token-update.hook';
+import { useSyncToken } from '../../hook/use-sync-token.hook';
 import { BinanceSyncTokenInputs } from '../binance-sync-token-inputs/binance-sync-token-inputs';
 import { BinanceSyncTokenSummary } from '../binance-sync-token-summary/binance-sync-token-summary';
 import { SyncTokenSectionActions } from '../sync-token-section-actions/sync-token-section-actions';
 
 interface Props {
     readonly accountId: number;
-    readonly token: string;
 }
 
-export const BinanceSyncTokenSection = ({ accountId, token }: Props) => {
+export const BinanceSyncTokenSection = ({ accountId }: Props) => {
     const { t } = useLingui();
+
+    const token = useSyncToken(accountId);
 
     const [isEditing, setIsEditing] = useState(false);
     const [apiKey, setApiKey] = useState('');

@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountTypeEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -7,6 +7,8 @@ import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-quer
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { useSettingsContext } from '../../settings/context/settings.context';
+import { buildIntegrationProviderMap } from '../utils/build-integration-provider-map.util';
+import { resolveBankProviderGroup } from '../utils/resolve-bank-provider-group.util';
 
 import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated-at.query';
 
@@ -17,7 +19,7 @@ import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
 const createHomeAccountBalanceSummary = () => ({
     accountTypeTotals: new Map<AccountTypeEnum, number>(),
     balancesByAccountId: new Map<number, HomeAccountBalanceInterface>(),
-    bankProviderTotals: new Map<ExternalSourceEnum, number>(),
+    bankProviderTotals: new Map<number, number>(),
     cryptoCount: 0,
     cryptoTotal: 0,
     debtTypeTotals: new Map<AccountDebtTypeEnum, number>(),
@@ -36,14 +38,9 @@ const addActiveTotal = <Key>(totals: Map<Key, number>, key: Key, amount: number,
     }
 };
 
-const addBankProviderTotal = (
-    totals: Map<ExternalSourceEnum, number>,
-    provider: ExternalSourceEnum | null,
-    amount: number,
-    isActive: boolean
-): void => {
-    if (isActive && isDefined(provider)) {
-        addTotal(totals, provider, amount);
+const addBankProviderTotal = (totals: Map<number, number>, integrationId: number | null, amount: number, isActive: boolean): void => {
+    if (isActive && isDefined(integrationId)) {
+        addTotal(totals, integrationId, amount);
     }
 };
 
@@ -93,9 +90,12 @@ export const useHomePageDataQuery = () => {
 
         return account;
     });
+    const integrationProviders = buildIntegrationProviderMap(
+        data.map(row => ({ integrationId: row.account.integrationId, sync: row.sync }))
+    );
 
     const balanceSummary: HomeAccountBalanceSummaryInterface = data.reduce((summary, row) => {
-        const rowBankProvider = isDefined(row.sync) ? row.sync.provider : null;
+        const bankProviderGroup = resolveBankProviderGroup(row.account.integrationId, integrationProviders);
         const convertedDebtProgressSummary = {
             closedAmount: convertFromMicroUnits(row.convertedDebtClosedAmount),
             creditAmount: convertFromMicroUnits(row.convertedCreditAmount),
@@ -120,7 +120,7 @@ export const useHomePageDataQuery = () => {
             accountId: row.account.id,
             accountType: row.account.type,
             balance: convertFromMicroUnits(row.balance),
-            bankProvider: rowBankProvider,
+            bankProvider: bankProviderGroup?.provider ?? null,
             convertedBalance: convertFromMicroUnits(row.convertedBalance),
             convertedCreditAmount: convertFromMicroUnits(row.convertedCreditAmount),
             convertedDebitAmount: convertFromMicroUnits(row.convertedDebitAmount),
@@ -131,11 +131,11 @@ export const useHomePageDataQuery = () => {
             includeInNetWorth: row.account.includeInNetWorth,
             isActive: row.account.isActive
         };
-        const { accountType, accountId, bankProvider, convertedBalance, isActive } = homeAccountBalance;
+        const { accountType, accountId, convertedBalance, isActive } = homeAccountBalance;
 
         summary.balancesByAccountId.set(accountId, homeAccountBalance);
         addActiveTotal(summary.accountTypeTotals, accountType, convertedBalance, isActive);
-        addBankProviderTotal(summary.bankProviderTotals, bankProvider, convertedBalance, isActive);
+        addBankProviderTotal(summary.bankProviderTotals, bankProviderGroup?.integrationId ?? null, convertedBalance, isActive);
         addDebtTypeTotal(summary.debtTypeTotals, homeAccountBalance);
         addNetWorthAssetTotals(summary, homeAccountBalance);
 

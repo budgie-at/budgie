@@ -2,26 +2,30 @@ import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { fetchSyncById, seed } from '../../harness';
+import { fetchAccountIntegrationToken, fetchSyncById, seed } from '../../harness';
 
 import type { AccountEntityInterface, SyncEntityInterface } from '@budgie/contracts';
 
 const MONOBANK_OLD_TOKEN = 'shared-monobank-old-token';
+const MONOBANK_SEPARATE_TOKEN = 'separate-monobank-token';
 const MONOBANK_NEW_TOKEN = 'monobank-new-token';
 const SELECTED_FORWARD_SYNC_FROM_AT = new Date('2026-04-01T10:00:00.000Z');
 const SHARED_FORWARD_SYNC_FROM_AT = new Date('2026-04-02T10:00:00.000Z');
+const SEPARATE_FORWARD_SYNC_FROM_AT = new Date('2026-04-03T10:00:00.000Z');
 
 interface ExpectedForwardSyncInterface {
     readonly errorCount: number;
     readonly forwardSyncFromAt: Date;
     readonly lastError: string | null;
-    readonly token: string;
 }
 
 interface MonobankRotationScenarioInterface {
     readonly selectedAccount: AccountEntityInterface;
+    readonly sharedAccount: AccountEntityInterface;
+    readonly separateAccount: AccountEntityInterface;
     readonly selectedSync: SyncEntityInterface;
     readonly sharedSync: SyncEntityInterface;
+    readonly separateSync: SyncEntityInterface;
 }
 
 const seedMonobankAccount = (externalId: string): AccountEntityInterface =>
@@ -31,10 +35,16 @@ const seedMonobankAccount = (externalId: string): AccountEntityInterface =>
         type: AccountTypeEnum.BANK_SYNC
     });
 
-const seedFailedForwardSync = (accountId: number, errorCount: number, forwardSyncFromAt: Date, lastError: string): SyncEntityInterface =>
+const seedFailedForwardSync = (
+    accountId: number,
+    token: string,
+    errorCount: number,
+    forwardSyncFromAt: Date,
+    lastError: string
+): SyncEntityInterface =>
     seed.sync({
         accountId,
-        token: MONOBANK_OLD_TOKEN,
+        token,
         provider: ExternalSourceEnum.MONOBANK,
         mode: SyncModeEnum.FORWARD,
         status: SyncStatusEnum.FAILED,
@@ -49,17 +59,32 @@ const seedFailedForwardSync = (accountId: number, errorCount: number, forwardSyn
 const seedMonobankCredentialRotationScenario = (): MonobankRotationScenarioInterface => {
     const selectedAccount = seedMonobankAccount('monobank-selected');
     const sharedAccount = seedMonobankAccount('monobank-shared');
+    const separateAccount = seedMonobankAccount('monobank-separate');
 
     return {
         selectedAccount,
-        selectedSync: seedFailedForwardSync(selectedAccount.id, 2, SELECTED_FORWARD_SYNC_FROM_AT, 'selected monobank failure'),
-        sharedSync: seedFailedForwardSync(sharedAccount.id, 3, SHARED_FORWARD_SYNC_FROM_AT, 'shared monobank failure')
+        sharedAccount,
+        separateAccount,
+        selectedSync: seedFailedForwardSync(
+            selectedAccount.id,
+            MONOBANK_OLD_TOKEN,
+            2,
+            SELECTED_FORWARD_SYNC_FROM_AT,
+            'selected monobank failure'
+        ),
+        sharedSync: seedFailedForwardSync(sharedAccount.id, MONOBANK_OLD_TOKEN, 3, SHARED_FORWARD_SYNC_FROM_AT, 'shared monobank failure'),
+        separateSync: seedFailedForwardSync(
+            separateAccount.id,
+            MONOBANK_SEPARATE_TOKEN,
+            4,
+            SEPARATE_FORWARD_SYNC_FROM_AT,
+            'separate monobank failure'
+        )
     };
 };
 
 const expectForwardSync = (sync: SyncEntityInterface, expected: ExpectedForwardSyncInterface): void => {
     expect(sync).toMatchObject({
-        token: expected.token,
         errorCount: expected.errorCount,
         lastError: expected.lastError,
         mode: SyncModeEnum.FORWARD,
@@ -71,26 +96,36 @@ const expectForwardSync = (sync: SyncEntityInterface, expected: ExpectedForwardS
     expect(sync.backwardSyncedAt).toBeNull();
 };
 
-const expectMonobankCredentialRotationScenario = (scenario: MonobankRotationScenarioInterface): void => {
-    expectForwardSync(fetchSyncById(scenario.selectedSync.id), {
-        errorCount: 0,
-        forwardSyncFromAt: SELECTED_FORWARD_SYNC_FROM_AT,
-        lastError: null,
-        token: MONOBANK_NEW_TOKEN
-    });
-    expectForwardSync(fetchSyncById(scenario.sharedSync.id), {
-        errorCount: 3,
-        forwardSyncFromAt: SHARED_FORWARD_SYNC_FROM_AT,
-        lastError: 'shared monobank failure',
-        token: MONOBANK_OLD_TOKEN
-    });
-};
-
 describe('Monobank credential rotation', () => {
-    it('keeps generic token updates scoped to the selected sync row', async () => {
+    it('rotates the shared integration token for every account in the credential group', async () => {
         const scenario = seedMonobankCredentialRotationScenario();
 
         await monobankSyncService.updateAccountToken(scenario.selectedAccount.id, MONOBANK_NEW_TOKEN);
-        expectMonobankCredentialRotationScenario(scenario);
+
+        expect(fetchAccountIntegrationToken(scenario.selectedAccount.id)).toBe(MONOBANK_NEW_TOKEN);
+        expect(fetchAccountIntegrationToken(scenario.sharedAccount.id)).toBe(MONOBANK_NEW_TOKEN);
+        expect(fetchAccountIntegrationToken(scenario.separateAccount.id)).toBe(MONOBANK_SEPARATE_TOKEN);
+    });
+
+    it('clears sync error state across the credential group and leaves other integrations untouched', async () => {
+        const scenario = seedMonobankCredentialRotationScenario();
+
+        await monobankSyncService.updateAccountToken(scenario.selectedAccount.id, MONOBANK_NEW_TOKEN);
+
+        expectForwardSync(fetchSyncById(scenario.selectedSync.id), {
+            errorCount: 0,
+            forwardSyncFromAt: SELECTED_FORWARD_SYNC_FROM_AT,
+            lastError: null
+        });
+        expectForwardSync(fetchSyncById(scenario.sharedSync.id), {
+            errorCount: 0,
+            forwardSyncFromAt: SHARED_FORWARD_SYNC_FROM_AT,
+            lastError: null
+        });
+        expectForwardSync(fetchSyncById(scenario.separateSync.id), {
+            errorCount: 4,
+            forwardSyncFromAt: SEPARATE_FORWARD_SYNC_FROM_AT,
+            lastError: 'separate monobank failure'
+        });
     });
 });

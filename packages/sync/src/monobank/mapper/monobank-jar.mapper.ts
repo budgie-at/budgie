@@ -6,9 +6,9 @@ import { MONOBANK_BALANCE_DIVISOR } from '../constant/monobank-balance-divisor.c
 import { monobankCurrencyCodeMapper } from './monobank-currency-code.mapper';
 
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
-import type { MonobankJarApiInterface } from '../interface/monobank-jar-api.interface';
+import type { Jar } from '@liaugust/monobank-sdk';
 
-export const monobankJarMapper = (jar: MonobankJarApiInterface): SyncAccountInterface => ({
+export const monobankJarMapper = (jar: Jar): SyncAccountInterface => ({
     id: jar.id,
     provider: SyncProviderEnum.MONOBANK,
     currencyCode: monobankCurrencyCodeMapper(jar.currencyCode),

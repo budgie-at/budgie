@@ -17,6 +17,7 @@ export { fetchExpenseEntries } from './db/fetch-expense-entries';
 export { fetchCanonicalsOfType } from './db/fetch-canonicals-of-type';
 export { fetchPersistedMonobankTransactions } from './db/fetch-persisted-monobank-transactions';
 export { fetchSyncById } from './db/fetch-sync-by-id';
+export { fetchAccountIntegrationToken } from './db/fetch-account-integration-token';
 export { findMccByCode } from './db/find-mcc-by-code';
 export { requireInstrument } from './db/require-instrument';
 export { monobankStub } from './monobank/monobank-stub';

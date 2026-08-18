@@ -16,6 +16,8 @@ import { ResyncAccount } from '../resync-account/resync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
 import { SyncTokenSection } from '../sync-token-section/sync-token-section';
 
+import { AccountSyncCardSelector } from './account-sync-card.selector';
+
 interface Props {
     readonly accountId: number;
 }
@@ -53,9 +55,9 @@ export const AccountSyncCard = ({ accountId }: Props) => {
     const supportsTokenAuth = providerService?.supportsTokenAuth === true;
     const tokenSection =
         sync.provider === ExternalSourceEnum.BINANCE ? (
-            <BinanceSyncTokenSection accountId={accountId} token={sync.token} />
+            <BinanceSyncTokenSection accountId={accountId} />
         ) : (
-            <SyncTokenSection accountId={accountId} token={sync.token} />
+            <SyncTokenSection accountId={accountId} />
         );
 
     return (
@@ -69,7 +71,7 @@ export const AccountSyncCard = ({ accountId }: Props) => {
                     <Text className={statusTextVariants({ status: sync.status })}>{statusLabel}</Text>
                 </View>
                 <View className="content-center">
-                    <ThemedSwitch value={sync.enabled} onValueChange={handleToggle} />
+                    <ThemedSwitch value={sync.enabled} onValueChange={handleToggle} testID={AccountSyncCardSelector.Switch} />
                 </View>
             </View>
 

@@ -1,5 +1,6 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 
+import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
 import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
@@ -110,37 +111,6 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                 targetAccountId,
                 targetAccountTitle,
                 sourceAmount * 1.0 / bridgeAmount as exchangeRate,
-                (
-                    SELECT direct_tx.id
-                    FROM transactions direct_tx
-                    WHERE direct_tx.type = '${TransactionTypeEnum.TRANSFER}'
-                        AND direct_tx.deleted_at IS NULL
-                        AND direct_tx.consolidation_parent_transaction_id IS NULL
-                        AND direct_tx.from_account_id = bridge_candidates.sourceAccountId
-                        AND direct_tx.to_account_id = bridge_candidates.targetAccountId
-                        AND direct_tx.operated_at BETWEEN bridge_candidates.operatedAt - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                            AND bridge_candidates.operatedAt + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                        ${DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER}
-                        AND EXISTS (
-                            SELECT 1
-                            FROM transaction_entries direct_source_entry
-                            WHERE direct_source_entry.transaction_id = direct_tx.id
-                                AND direct_source_entry.deleted_at IS NULL
-                                AND direct_source_entry.original_transaction_id IS NULL
-                                AND direct_source_entry.account_id = bridge_candidates.sourceAccountId
-                                AND direct_source_entry.amount = bridge_candidates.sourceAmount
-                        )
-                        AND EXISTS (
-                            SELECT 1
-                            FROM transaction_entries direct_target_entry
-                            WHERE direct_target_entry.transaction_id = direct_tx.id
-                                AND direct_target_entry.deleted_at IS NULL
-                                AND direct_target_entry.original_transaction_id IS NULL
-                                AND direct_target_entry.account_id = bridge_candidates.targetAccountId
-                                AND direct_target_entry.amount = bridge_candidates.bridgeAmount
-                        )
-                    LIMIT 1
-                ) as existingDirectTransferId,
                 timeDiff
             FROM bridge_candidates
             WHERE NOT EXISTS (
@@ -161,7 +131,8 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                             AND direct_source_entry.deleted_at IS NULL
                             AND direct_source_entry.original_transaction_id IS NULL
                             AND direct_source_entry.account_id = bridge_candidates.sourceAccountId
-                            AND direct_source_entry.amount = bridge_candidates.sourceAmount
+                            AND direct_source_entry.amount > 0
+                            AND ABS(direct_source_entry.amount - bridge_candidates.sourceAmount) / direct_source_entry.amount <= ${IBAN_BRIDGE_CHAIN_FX_TOLERANCE}
                     )
                     AND EXISTS (
                         SELECT 1

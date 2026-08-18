@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.1.1](https://github.com/budgie-at/budgie/compare/v6.1.0...v6.1.1) (2026-08-18)
+
+
+### Bug Fixes
+
+* **bank-sync:** upgrade monobank-sdk to 0.3.0 and guard optional jars ([a8097a6](https://github.com/budgie-at/budgie/commit/a8097a611d75865056562bf1f1def8e1f9979e2b)), closes [liaugust/monobank-typescript-sdk#17](https://github.com/liaugust/monobank-typescript-sdk/issues/17)
+
+
+
+
+
+# [6.1.0](https://github.com/budgie-at/budgie/compare/v6.0.9...v6.1.0) (2026-08-13)
+
+
+### Bug Fixes
+
+* **bank-sync:** clamp forward sync window and guard missing jars payload ([8298973](https://github.com/budgie-at/budgie/commit/8298973d1c7ea5f233d591abf0db302e38101210)), closes [#656](https://github.com/budgie-at/budgie/issues/656) [#657](https://github.com/budgie-at/budgie/issues/657)
+
+
+
+
+
+## [6.0.8](https://github.com/budgie-at/budgie/compare/v6.0.7...v6.0.8) (2026-08-10)
+
+**Note:** Version bump only for package @budgie/bank-sync
+
+
+
+
+
 ## [6.0.6](https://github.com/budgie-at/budgie/compare/v6.0.5...v6.0.6) (2026-08-08)
 
 **Note:** Version bump only for package @budgie/bank-sync

@@ -56,7 +56,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     private static readonly FORWARD_OVERLAP_DAYS = 1;
     private static readonly FIAT_REFRESH_INTERVAL_MS = 23 * 60 * 60 * 1000;
     protected readonly provider = ExternalSourceEnum.BINANCE;
-    protected override readonly updatesTokenByProviderCredentialGroup = true;
     // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
     protected readonly providerTitle = 'Binance';
     protected readonly accountType = AccountTypeEnum.CRYPTO_SYNC;
@@ -145,7 +144,8 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
         }
 
-        const changedCount = await this.runSyncPhases(sync, externalAccountId);
+        const token = await this.resolveSyncToken(sync);
+        const changedCount = await this.runSyncPhases(sync, externalAccountId, token);
         if (isPositiveNumber(changedCount)) {
             await transactionService.updateAllBalances();
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC);
@@ -163,14 +163,14 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     @Log('enter', result => `done changedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    private async runSyncPhases(sync: SyncEntityInterface, externalAccountId: string): Promise<number> {
+    private async runSyncPhases(sync: SyncEntityInterface, externalAccountId: string, token: string): Promise<number> {
         let changedCount = 0;
         try {
-            changedCount += await this.processSources(sync);
+            changedCount += await this.processSources(sync, token);
             await microPause();
-            changedCount += await this.processTransfers(sync, externalAccountId);
+            changedCount += await this.processTransfers(sync, externalAccountId, token);
             await microPause();
-            changedCount += await this.processFiatSource(sync);
+            changedCount += await this.processFiatSource(sync, token);
 
             return changedCount;
         } catch (error) {
@@ -245,13 +245,13 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         await this.createOrUpdateSync(account.id, token);
     }
 
-    private async processTransfers(sync: SyncEntityInterface, externalAccountId: string): Promise<number> {
+    private async processTransfers(sync: SyncEntityInterface, externalAccountId: string, token: string): Promise<number> {
         if (this.transfersSyncedThisRun) {
             return 0;
         }
         this.transfersSyncedThisRun = true;
 
-        const transfers = await this.fetchTransferBatch(sync, externalAccountId);
+        const transfers = await this.fetchTransferBatch(sync, externalAccountId, token);
         if (!isNotEmptyArray(transfers)) {
             return 0;
         }
@@ -262,35 +262,35 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             return 0;
         }
 
-        return this.createSyncedTransfers(newTransfers, sync.token);
+        return this.createSyncedTransfers(newTransfers, token);
     }
 
-    private async processSources(sync: SyncEntityInterface): Promise<number> {
+    private async processSources(sync: SyncEntityInterface, token: string): Promise<number> {
         if (this.sourcesSyncedThisRun) {
             return 0;
         }
 
-        const client = this.getRunSignedClient(sync.token);
+        const client = this.getRunSignedClient(token);
         const fromUnixTime = getUnixTime(this.resolveWindowStart(sync));
 
         let createdCount = 0;
-        createdCount += await this.commitSourceType(sync.token, () => client.getC2cTransactions(fromUnixTime), true);
-        createdCount += await this.commitSourceType(sync.token, () => client.getEarnTransactions(fromUnixTime), false);
-        createdCount += await this.commitSourceType(sync.token, () => client.getCapitalTransactions(fromUnixTime), false);
+        createdCount += await this.commitSourceType(token, () => client.getC2cTransactions(fromUnixTime), true);
+        createdCount += await this.commitSourceType(token, () => client.getEarnTransactions(fromUnixTime), false);
+        createdCount += await this.commitSourceType(token, () => client.getCapitalTransactions(fromUnixTime), false);
 
         return createdCount;
     }
 
-    private async processFiatSource(sync: SyncEntityInterface): Promise<number> {
+    private async processFiatSource(sync: SyncEntityInterface, token: string): Promise<number> {
         if (this.sourcesSyncedThisRun) {
             return 0;
         }
 
         let createdCount = 0;
         if (this.shouldRefreshFiatHistory()) {
-            const client = this.getRunSignedClient(sync.token);
+            const client = this.getRunSignedClient(token);
             const fromUnixTime = getUnixTime(this.resolveWindowStart(sync));
-            createdCount += await this.commitSourceType(sync.token, () => client.getFiatTransactions(fromUnixTime), false);
+            createdCount += await this.commitSourceType(token, () => client.getFiatTransactions(fromUnixTime), false);
             this.fiatSyncedAtMs = Date.now();
         }
         this.sourcesSyncedThisRun = true;
@@ -397,8 +397,12 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         return created.length;
     }
 
-    private async fetchTransferBatch(sync: SyncEntityInterface, externalAccountId: string): Promise<BinanceTransferInterface[]> {
-        const result = await this.getRunSignedClient(sync.token).getTransfers(
+    private async fetchTransferBatch(
+        sync: SyncEntityInterface,
+        externalAccountId: string,
+        token: string
+    ): Promise<BinanceTransferInterface[]> {
+        const result = await this.getRunSignedClient(token).getTransfers(
             externalAccountId,
             getUnixTime(this.resolveWindowStart(sync)),
             null,

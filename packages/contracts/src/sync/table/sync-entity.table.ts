@@ -17,7 +17,6 @@ export const SyncEntityTable = sqliteTable(
         provider: text('provider', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) })
             .$type<ExternalSourceEnum>()
             .notNull(),
-        token: text('token').notNull(),
         enabled: int('enabled', { mode: 'boolean' }).default(true).notNull(),
         mode: text('mode', { enum: convertEnumToDrizzleEnum(SyncModeEnum) })
             .$type<SyncModeEnum>()

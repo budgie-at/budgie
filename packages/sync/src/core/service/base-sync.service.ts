@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { addMonths, addSeconds, fromUnixTime, getUnixTime } from 'date-fns';
+import { addMonths, addSeconds, fromUnixTime, getUnixTime, min } from 'date-fns';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
@@ -30,7 +30,8 @@ export class BaseSyncService {
         (error, accountId, from) => `throw accountId=${accountId} from=${from.toISOString()} error=${getErrorMessage(error)}`
     )
     async syncTransactionsForward(accountId: string, from: Date): Promise<SyncBatchResultInterface> {
-        const to = new Date();
+        const now = new Date();
+        const to = min([now, addSeconds(from, this.options.maxPeriodSeconds)]);
         const transactions = await this.fetchTransactions(accountId, from, to);
 
         const oldestTransaction = transactions.at(-1);
@@ -44,7 +45,9 @@ export class BaseSyncService {
             };
         }
 
-        return { nextFrom: to, nextTo: to, transactions, completed: true };
+        const windowWasCapped = to < now;
+
+        return { nextFrom: to, nextTo: to, transactions, completed: !windowWasCapped };
     }
 
     @Log(

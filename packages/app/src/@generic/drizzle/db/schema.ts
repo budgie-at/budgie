@@ -17,6 +17,8 @@ export {
     TransactionTagsEntityRelations,
     AccountBalanceEntityTable,
     AccountBalanceEntityRelations,
+    BankIntegrationEntityTable,
+    BankIntegrationEntityRelations,
     SyncEntityTable,
     SyncEntityRelations,
     ExchangeRateEntityTable,

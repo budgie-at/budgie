@@ -7,6 +7,7 @@ import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService, SyncAccountTypeEnum } from
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountRepository } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '../../rule/service/rule-engine.service';
@@ -48,6 +49,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         return this.mapAccountsToPreview(bankAccounts);
     }
 
+    @InvalidateDatabaseLiveQuery()
     @Log(
         (token, externalIds) => `enter tokenLen=${token.length} externalIdCount=${externalIds.length}`,
         (result, token, externalIds) => `done tokenLen=${token.length} externalIdCount=${externalIds.length} result=${String(result)}`,
@@ -96,7 +98,8 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
         }
 
-        const result = await this.fetchTransactionBatch(sync, account.externalId);
+        const token = await this.resolveSyncToken(sync);
+        const result = await this.fetchTransactionBatch(sync, account.externalId, token);
         await microPause();
 
         const changedTransactions = await this.processFetchedTransactions(result.transactions, account.id);
@@ -252,14 +255,19 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
     }
 
     @Log(
-        (sync, externalAccountId) => `enter syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId}`,
-        (result, sync, externalAccountId) =>
-            `done syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} transactionCount=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, sync, externalAccountId) =>
-            `throw syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} error=${getErrorMessage(error)}`
+        (sync, externalAccountId, token) =>
+            `enter syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} tokenLen=${token.length}`,
+        (result, sync, externalAccountId, token) =>
+            `done syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} tokenLen=${token.length} transactionCount=${result.transactions.length} completed=${String(result.completed)}`,
+        (error, sync, externalAccountId, token) =>
+            `throw syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} tokenLen=${token.length} error=${getErrorMessage(error)}`
     )
-    private async fetchTransactionBatch(sync: SyncEntityInterface, externalAccountId: string): Promise<SyncBatchResultInterface> {
-        const service = new MonobankSyncService(sync.token);
+    private async fetchTransactionBatch(
+        sync: SyncEntityInterface,
+        externalAccountId: string,
+        token: string
+    ): Promise<SyncBatchResultInterface> {
+        const service = new MonobankSyncService(token);
         const isForward = sync.mode === SyncModeEnum.FORWARD;
 
         return isForward

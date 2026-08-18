@@ -504,8 +504,8 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 | **landing**       | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                              |
 | **logger**        | Shared logging package                                                                                                                                        |
 | **screen-chrome** | Shared screen chrome UI                                                                                                                                       |
-| **sync**          | ky HTTP client, date-fns                                                                                                                                      |
-| **Build**         | Yarn 4.17.1 (`node-modules` linker), Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.74 + ESLint 10 fallback |
+| **sync**          | @liaugust/monobank-sdk, ky HTTP client, date-fns                                                                                                                                      |
+| **Build**         | Yarn 4.17.1 (`node-modules` linker), Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.74 JS bridge + 13-rule ESLint 10 fallback |
 
 ## Workflow
 
@@ -562,7 +562,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 - **Read and analyze every bot comment** - Never skip or silently dismiss review comments from bots (CodeRabbit, Copilot, Vercel Agent, Claude, or any other). Fetch all of them, including inline comments (`gh api repos/<owner>/<repo>/pulls/<n>/comments`) and nitpicks collapsed inside `<details>` blocks, which `gh pr view` truncates. "Only address human feedback" governs what you **change**, not what you **read**.
 - **Validate each bot finding against the codebase before judging it** - Verify the claim by reading the cited code, tracing the actual behavior, and checking the convention the bot invokes against what the repo really does. Bots routinely generalize a rule from one package to another that uses a different convention, cite a guideline that has a documented exception, or flag duplication the repo's own `yarn cpd` gate already passes. State a verdict per finding — valid / partially valid / invalid — with the concrete evidence that settles it.
-- **Report the analysis, then ask before changing anything** - Never fix comments from AI assistants without human confirmation, and never apply a bot's suggested diff just because it is offered as a "quick win". Present verdicts and a recommendation; the human decides what gets applied.
+- **Act on the verdicts: fix valid findings, refute invalid ones — always on the PR thread** - Valid or partially valid → apply the minimal correct fix (address the root cause, not necessarily the bot's literal diff) and reply on the comment thread describing what was fixed. Invalid → reply with the line-level evidence refuting it and resolve the thread. Never apply a bot's suggested diff blindly just because it is offered as a "quick win", and never merge with an unanswered bot thread. When a valid finding would expand the PR's scope, file a follow-up issue instead and say so on the thread.
 - **Never lower a timeout, weaken an assertion, or relax a test on a bot's say-so when the test has not been run** - Guessing toward flakiness is worse than an over-generous wait.
 - **Note when a bot review is incomplete** - Rate limits, partial runs, and reviews that predate the latest commits produce misleadingly short findings lists. Say so rather than implying the PR came back clean.
 - **Review all changes before finishing** - Check for unused imports and unnecessary code

@@ -4,7 +4,7 @@ import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { fetchSyncById, seed, seedCryptoInstrument, testDb } from '../../harness';
+import { fetchAccountIntegrationToken, fetchSyncById, seed, seedCryptoInstrument, testDb } from '../../harness';
 
 import type { AccountEntityInterface, SyncEntityInterface } from '@budgie/contracts';
 
@@ -52,7 +52,6 @@ interface ExpectedForwardSyncInterface {
     readonly forwardSyncedAt: Date | null;
     readonly forwardSyncFromAt: Date;
     readonly lastError: string | null;
-    readonly token: string;
 }
 
 interface SeedFailedForwardSyncInputInterface {
@@ -187,7 +186,6 @@ const seedBinanceCredentialRotationScenario = (): BinanceRotationScenarioInterfa
 
 const expectForwardSync = (sync: SyncEntityInterface, expected: ExpectedForwardSyncInterface): void => {
     expect(sync).toMatchObject({
-        token: expected.token,
         enabled: expected.enabled,
         errorCount: expected.errorCount,
         lastError: expected.lastError,
@@ -202,7 +200,6 @@ const expectForwardSync = (sync: SyncEntityInterface, expected: ExpectedForwardS
 
 const expectBackwardSyncUpdated = (sync: SyncEntityInterface): void => {
     expect(sync).toMatchObject({
-        token: NEW_TOKEN,
         errorCount: 0,
         lastError: null,
         mode: SyncModeEnum.BACKWARD,
@@ -229,8 +226,7 @@ const expectUpdatedBinanceGroup = (syncs: BinanceSyncsInterface): void => {
         errorCount: 0,
         forwardSyncedAt: SELECTED_FORWARD_SYNCED_AT,
         forwardSyncFromAt: SELECTED_FORWARD_SYNC_FROM_AT,
-        lastError: null,
-        token: NEW_TOKEN
+        lastError: null
     });
     expectBackwardSyncUpdated(syncs.sharedSync);
     expectForwardSync(syncs.disabledSync, {
@@ -238,8 +234,7 @@ const expectUpdatedBinanceGroup = (syncs: BinanceSyncsInterface): void => {
         errorCount: 0,
         forwardSyncedAt: null,
         forwardSyncFromAt: DISABLED_FORWARD_SYNC_FROM_AT,
-        lastError: null,
-        token: NEW_TOKEN
+        lastError: null
     });
 };
 
@@ -249,36 +244,42 @@ const expectExcludedBinanceRows = (syncs: BinanceSyncsInterface): void => {
         errorCount: 5,
         forwardSyncedAt: SEPARATE_FORWARD_SYNCED_AT,
         forwardSyncFromAt: SEPARATE_FORWARD_SYNC_FROM_AT,
-        lastError: 'separate failure',
-        token: SEPARATE_OLD_TOKEN
+        lastError: 'separate failure'
     });
     expectForwardSync(syncs.deletedSync, {
         enabled: true,
         errorCount: 7,
         forwardSyncedAt: null,
         forwardSyncFromAt: DELETED_FORWARD_SYNC_FROM_AT,
-        lastError: 'deleted failure',
-        token: SHARED_OLD_TOKEN
+        lastError: 'deleted failure'
     });
     expectForwardSync(syncs.crossProviderSync, {
         enabled: true,
         errorCount: 8,
         forwardSyncedAt: null,
         forwardSyncFromAt: CROSS_PROVIDER_FORWARD_SYNC_FROM_AT,
-        lastError: 'cross provider failure',
-        token: SHARED_OLD_TOKEN
+        lastError: 'cross provider failure'
     });
+};
+
+const expectRotatedIntegrationTokens = (accounts: BinanceAccountsInterface): void => {
+    expect(fetchAccountIntegrationToken(accounts.selectedAccount.id)).toBe(NEW_TOKEN);
+    expect(fetchAccountIntegrationToken(accounts.sharedAccount.id)).toBe(NEW_TOKEN);
+    expect(fetchAccountIntegrationToken(accounts.disabledAccount.id)).toBe(NEW_TOKEN);
+    expect(fetchAccountIntegrationToken(accounts.separateAccount.id)).toBe(SEPARATE_OLD_TOKEN);
+    expect(fetchAccountIntegrationToken(accounts.crossProviderAccount.id)).toBe(SHARED_OLD_TOKEN);
 };
 
 const expectBinanceCredentialRotationScenario = (scenario: BinanceRotationScenarioInterface): void => {
     const syncs = fetchBinanceUpdatedSyncs(scenario.syncs);
 
+    expectRotatedIntegrationTokens(scenario.accounts);
     expectUpdatedBinanceGroup(syncs);
     expectExcludedBinanceRows(syncs);
 };
 
 describe('Binance credential rotation', () => {
-    it('updates every non-deleted Binance sync row that belongs to the same credential group', async () => {
+    it('rotates the shared integration token and clears every non-deleted sync in the credential group', async () => {
         const scenario = seedBinanceCredentialRotationScenario();
 
         markSyncDeleted(scenario.syncs.deletedSync.id);

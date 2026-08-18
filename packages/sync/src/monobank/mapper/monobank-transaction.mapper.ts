@@ -5,12 +5,12 @@ import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.e
 import { MONOBANK_BALANCE_DIVISOR } from '../constant/monobank-balance-divisor.constant';
 
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
-import type { MonobankTransactionApiInterface } from '../interface/monobank-transaction-api.type';
+import type { StatementItem } from '@liaugust/monobank-sdk';
 
 const getTransactionType = (amount: number): SyncTransactionTypeEnum =>
     isPositiveNumber(amount) ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE;
 
-export const monobankTransactionMapper = (transaction: MonobankTransactionApiInterface, accountId: string): SyncTransactionInterface => ({
+export const monobankTransactionMapper = (transaction: StatementItem, accountId: string): SyncTransactionInterface => ({
     accountId,
     id: transaction.id,
     provider: SyncProviderEnum.MONOBANK,

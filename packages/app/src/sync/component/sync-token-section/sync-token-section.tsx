@@ -7,6 +7,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { Input } from '../../../@generic/component/input/input';
 import { useSyncTokenUpdate } from '../../hook/use-sync-token-update.hook';
+import { useSyncToken } from '../../hook/use-sync-token.hook';
 import { PasteTokenButton } from '../paste-token-button/paste-token-button';
 import { SyncTokenSectionActions } from '../sync-token-section-actions/sync-token-section-actions';
 
@@ -14,7 +15,6 @@ import { SyncTokenSectionSelector } from './sync-token-section.selector';
 
 interface Props {
     readonly accountId: number;
-    readonly token: string;
 }
 
 const maskToken = (token: string): string => {
@@ -26,12 +26,14 @@ const maskToken = (token: string): string => {
     return `${token.slice(0, 4)}••••${token.slice(-4)}`;
 };
 
-export const SyncTokenSection = ({ accountId, token }: Props) => {
+export const SyncTokenSection = ({ accountId }: Props) => {
     const { t } = useLingui();
 
     const [isEditing, setIsEditing] = useState(false);
     const [newToken, setNewToken] = useState('');
     const { isSaving, saveAccountSyncToken } = useSyncTokenUpdate();
+
+    const token = useSyncToken(accountId);
 
     const handleEdit = () => {
         setIsEditing(true);

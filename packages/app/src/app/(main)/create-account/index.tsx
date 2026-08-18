@@ -43,6 +43,12 @@ export default function Index() {
                 title={t`Debt Account`}
                 type={AccountTypeEnum.DEBT}
             />
+            <CreateAccountCard
+                description={t`Fixed-term savings with an interest rate`}
+                icon={ACCOUNT_ICON.DEPOSIT}
+                title={t`Deposit Account`}
+                type={AccountTypeEnum.DEPOSIT}
+            />
 
             <Text className="text-secondary-foreground text-sm px-md mt-xl">
                 <Trans>Account Sync</Trans>

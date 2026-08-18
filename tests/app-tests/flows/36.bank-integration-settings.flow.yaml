@@ -1,0 +1,87 @@
+appId: ${APP_ID}
+---
+# 1. Import seed with a Monobank integration (12 linked accounts) and a Privatbank integration (2 linked accounts)
+- runFlow:
+      file: subflows/import/import-database-from-settings.flow.yaml
+      env:
+          FIXTURE_ROW_ID_MATCH: '21.db'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 10000
+
+# 2. Home shows the Monobank integration section with its gear button
+- scrollUntilVisible:
+      element:
+          id: 'BankProviderSectionHeader.SettingsButton.1'
+      direction: DOWN
+- assertVisible:
+      id: 'BankProviderSectionHeader.SettingsButton.1'
+
+# 3. Open the integration settings page
+- tapOn:
+      id: 'BankProviderSectionHeader.SettingsButton.1'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 10000
+
+# 4. Linked account row and its sync toggle are listed
+- assertVisible:
+      id: 'BankIntegration.AccountRow.1'
+- assertVisible:
+      id: 'BankIntegration.AccountRow.1.Toggle'
+- assertVisible:
+      id: 'BankIntegration.AccountRow.1.Toggle'
+      checked: true
+
+# 5. Toggle sync OFF for that account
+- tapOn:
+      id: 'BankIntegration.AccountRow.1.Toggle'
+- assertVisible:
+      id: 'BankIntegration.AccountRow.1.Toggle'
+      checked: false
+
+# 6. Verify the outcome persisted beyond the switch: the account's own edit screen reflects sync disabled
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://account/1/update'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.ScrollView'
+      timeout: 10000
+- assertVisible:
+      id: 'AccountSyncCard.Switch'
+      checked: false
+
+# 7. Back on the integration page, toggle sync back ON
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://bank-integration/1'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 10000
+- assertVisible:
+      id: 'BankIntegration.AccountRow.1.Toggle'
+      checked: false
+- tapOn:
+      id: 'BankIntegration.AccountRow.1.Toggle'
+- assertVisible:
+      id: 'BankIntegration.AccountRow.1.Toggle'
+      checked: true
+
+# 8. Re-verify the restored state on the account edit screen
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://account/1/update'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.ScrollView'
+      timeout: 10000
+- assertVisible:
+      id: 'AccountSyncCard.Switch'
+      checked: true

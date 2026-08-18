@@ -71,13 +71,16 @@ export abstract class AbstractSyncService {
         accounts: SyncAccountInterface[],
         isParked: (account: SyncAccountInterface) => boolean = () => false
     ): Promise<SyncAccountPreviewInterface[]> {
-        const existingAccounts = await accountRepository.findByExternalIds(accounts.map(account => account.id));
-        const existingMap = new Map(existingAccounts.map(account => [account.externalId, account]));
+        const existingByExternalId = await accountRepository.findByExternalIds(accounts.map(account => account.id));
+        const existingByExternalIdMap = new Map(existingByExternalId.map(account => [account.externalId, account]));
+        const existingByIban = await accountRepository.findByIbans(accounts.map(account => account.iban).filter(isNotEmptyString));
+        const existingByIbanMap = new Map(existingByIban.map(account => [account.iban, account]));
         const existingSyncs = await syncRepository.getByProvider(this.provider);
         const syncedAccountIds = new Set(existingSyncs.map(sync => sync.accountId));
 
         return accounts.map(account => {
-            const existingAccount = existingMap.get(account.id);
+            const existingAccount =
+                existingByExternalIdMap.get(account.id) ?? (isNotEmptyString(account.iban) ? existingByIbanMap.get(account.iban) : null);
 
             return {
                 externalId: account.id,

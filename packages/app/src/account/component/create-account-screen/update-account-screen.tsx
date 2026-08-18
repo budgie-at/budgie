@@ -18,7 +18,6 @@ import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/f
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
-import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { AccountActiveToggleField } from '../account-active-toggle-field/account-active-toggle-field';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
@@ -39,7 +38,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
     const { children, account, onSubmit, control, instrumentSymbol, allowNegativeBalance, isSubmitting } = props;
     const { t } = useLingui();
 
-    const variant = account.type === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[account.type];
+    const variant = ACCOUNT_COLOR[account.type];
     const showInstrumentAfterAmount = account.type === AccountTypeEnum.CRYPTO || account.type === AccountTypeEnum.CRYPTO_SYNC;
     const minimumDecimalPlaces = showInstrumentAfterAmount ? MICRO_UNIT_DECIMAL_PLACES : 0;
 

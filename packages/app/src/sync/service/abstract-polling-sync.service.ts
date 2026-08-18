@@ -5,7 +5,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { syncRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, syncRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -14,6 +14,7 @@ import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 
 import { AbstractSyncService } from './abstract-sync.service';
+import { syncIntegrationTokenService } from './sync-integration-token.service';
 import { syncWorkloadService } from './sync-workload.service';
 
 import type { SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/contracts';
@@ -24,8 +25,6 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 15;
 
     override readonly supportsTokenAuth: boolean = true;
-
-    protected readonly updatesTokenByProviderCredentialGroup: boolean = false;
 
     protected runDeadlineAtMs = Number.POSITIVE_INFINITY;
     protected runDeferred = false;
@@ -75,17 +74,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     override async updateAccountToken(accountId: number, token: string): Promise<void> {
         this.validateToken(token);
 
-        const sync = await syncRepository.getByAccountId(accountId);
-        if (!isDefined(sync)) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
-            throw new Error('Bank sync not found');
-        }
-        if (this.updatesTokenByProviderCredentialGroup) {
-            await syncRepository.updateByProviderAndToken(this.provider, sync.token, { token, errorCount: 0, lastError: null });
-
-            return;
-        }
-        await syncRepository.update(sync.id, { token, errorCount: 0, lastError: null });
+        await syncIntegrationTokenService.updateAccountToken(this.provider, accountId, token);
     }
 
     @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
@@ -100,7 +89,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
                 return BackgroundTask.BackgroundTaskResult.Success;
             }
 
-            await this.beforeProcessRun(enabledSyncs[0].token);
+            await this.beforeProcessRun(await this.resolveSyncToken(enabledSyncs[0]));
 
             return await this.processPendingSyncs();
         } catch (error: unknown) {
@@ -167,6 +156,15 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     @Log(
+        sync => `enter syncId=${sync.id} accountId=${sync.accountId}`,
+        (result, sync) => `done syncId=${sync.id} accountId=${sync.accountId} tokenLen=${result.length}`,
+        (error, sync) => `throw syncId=${sync.id} accountId=${sync.accountId} error=${getErrorMessage(error)}`
+    )
+    protected async resolveSyncToken(sync: SyncEntityInterface): Promise<string> {
+        return syncIntegrationTokenService.resolveAccountToken(this.provider, sync.accountId);
+    }
+
+    @Log(
         error => `enter error=${getErrorMessage(error)}`,
         result => `done result=${String(result)}`,
         error => `throw error=${getErrorMessage(error)}`
@@ -187,10 +185,36 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return BackgroundTask.BackgroundTaskResult.Failed;
     }
 
+    @Log(
+        (enabledSyncs, credentialGroupSync) =>
+            `enter enabledSyncIds=${enabledSyncs.map(sync => sync.id).join(',')} credentialGroupSyncId=${credentialGroupSync.id}`,
+        (result, enabledSyncs, credentialGroupSync) =>
+            `done enabledSyncIds=${enabledSyncs.map(sync => sync.id).join(',')} credentialGroupSyncId=${credentialGroupSync.id} groupedSyncIds=${result.map(sync => sync.id).join(',')}`,
+        (error, enabledSyncs, credentialGroupSync) =>
+            `throw enabledSyncIds=${enabledSyncs.map(sync => sync.id).join(',')} credentialGroupSyncId=${credentialGroupSync.id} error=${getErrorMessage(error)}`
+    )
+    private async resolveCredentialGroupSyncs(
+        enabledSyncs: SyncEntityInterface[],
+        credentialGroupSync: SyncEntityInterface
+    ): Promise<SyncEntityInterface[]> {
+        const accounts = await accountRepository.findByIds(enabledSyncs.map(sync => sync.accountId));
+        const integrationIdByAccountId = new Map(accounts.map(account => [account.id, account.integrationId]));
+        const credentialGroupIntegrationId = integrationIdByAccountId.get(credentialGroupSync.accountId);
+
+        if (!isDefined(credentialGroupIntegrationId)) {
+            return [credentialGroupSync];
+        }
+
+        return enabledSyncs.filter(sync => integrationIdByAccountId.get(sync.accountId) === credentialGroupIntegrationId);
+    }
+
     protected async createOrUpdateSync(accountId: number, token: string): Promise<void> {
+        const integration = await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token);
+        await accountRepository.updateById(accountId, { integrationId: integration.id });
+
         const existingSync = await syncRepository.getByAccountId(accountId);
         if (isDefined(existingSync)) {
-            await syncRepository.update(existingSync.id, { token, enabled: true, errorCount: 0, lastError: null });
+            await syncRepository.update(existingSync.id, { enabled: true, errorCount: 0, lastError: null });
 
             return;
         }
@@ -198,7 +222,6 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         const now = new Date();
         const earliestTransactionTime = await transactionService.getEarliestTransactionTimeByAccountId(accountId);
         await syncRepository.create({
-            token,
             accountId,
             provider: this.provider,
             enabled: true,
@@ -267,7 +290,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
     private async disableFailedSyncs(enabledSyncs: SyncEntityInterface[], error: unknown, errorMessage: string): Promise<void> {
         const disableSyncPromises: Array<Promise<unknown>> = [];
-        for (const sync of this.resolveSyncsToDisable(enabledSyncs, error)) {
+        for (const sync of await this.resolveSyncsToDisable(enabledSyncs, error)) {
             disableSyncPromises.push(
                 syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false })
             );
@@ -276,12 +299,10 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         await Promise.all(disableSyncPromises);
     }
 
-    private resolveSyncsToDisable(enabledSyncs: SyncEntityInterface[], error: unknown): SyncEntityInterface[] {
+    private async resolveSyncsToDisable(enabledSyncs: SyncEntityInterface[], error: unknown): Promise<SyncEntityInterface[]> {
         const failedSync = enabledSyncs.find(sync => sync.id === this.failedSyncId);
         if (this.isCredentialWideError(error)) {
-            const credentialGroupSync = failedSync ?? enabledSyncs[0];
-
-            return enabledSyncs.filter(sync => sync.token === credentialGroupSync.token);
+            return this.resolveCredentialGroupSyncs(enabledSyncs, failedSync ?? enabledSyncs[0]);
         }
 
         return isDefined(failedSync) ? [failedSync] : [enabledSyncs[0]];
