@@ -1,11 +1,12 @@
-import { CashbackTypeEnum } from '../../core/enum/cashback-type.enum';
-import { MonobankCashbackTypeEnum } from '../enum/monobank-cashback-type.enum';
+import { CashbackType } from '@liaugust/monobank-sdk';
 
-const monobankCashbackTypeMap = new Map<MonobankCashbackTypeEnum, CashbackTypeEnum>([
-    [MonobankCashbackTypeEnum.NONE, CashbackTypeEnum.NONE],
-    [MonobankCashbackTypeEnum.UAH, CashbackTypeEnum.UAH],
-    [MonobankCashbackTypeEnum.MILES, CashbackTypeEnum.MILES]
+import { CashbackTypeEnum } from '../../core/enum/cashback-type.enum';
+
+const monobankCashbackTypeMap = new Map<CashbackType, CashbackTypeEnum>([
+    [CashbackType.None, CashbackTypeEnum.NONE],
+    [CashbackType.UAH, CashbackTypeEnum.UAH],
+    [CashbackType.Miles, CashbackTypeEnum.MILES]
 ]);
 
-export const monobankCashbackTypeMapper = (type: MonobankCashbackTypeEnum): CashbackTypeEnum =>
+export const monobankCashbackTypeMapper = (type: CashbackType): CashbackTypeEnum =>
     monobankCashbackTypeMap.get(type) ?? CashbackTypeEnum.NONE;

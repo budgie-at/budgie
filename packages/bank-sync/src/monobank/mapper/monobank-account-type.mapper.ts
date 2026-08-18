@@ -1,15 +1,16 @@
-import { BankAccountTypeEnum } from '../../core/enum/bank-account-type.enum';
-import { MonobankAccountTypeEnum } from '../enum/monobank-account-type.enum';
+import { AccountType } from '@liaugust/monobank-sdk';
 
-const monobankAccountTypeMap = new Map<MonobankAccountTypeEnum, BankAccountTypeEnum>([
-    [MonobankAccountTypeEnum.BLACK, BankAccountTypeEnum.BLACK],
-    [MonobankAccountTypeEnum.WHITE, BankAccountTypeEnum.WHITE],
-    [MonobankAccountTypeEnum.PLATINUM, BankAccountTypeEnum.PLATINUM],
-    [MonobankAccountTypeEnum.IRON, BankAccountTypeEnum.IRON],
-    [MonobankAccountTypeEnum.FOP, BankAccountTypeEnum.FOP],
-    [MonobankAccountTypeEnum.YELLOW, BankAccountTypeEnum.YELLOW],
-    [MonobankAccountTypeEnum.EAID, BankAccountTypeEnum.EAID]
+import { BankAccountTypeEnum } from '../../core/enum/bank-account-type.enum';
+
+const monobankAccountTypeMap = new Map<AccountType, BankAccountTypeEnum>([
+    [AccountType.Black, BankAccountTypeEnum.BLACK],
+    [AccountType.White, BankAccountTypeEnum.WHITE],
+    [AccountType.Platinum, BankAccountTypeEnum.PLATINUM],
+    [AccountType.Iron, BankAccountTypeEnum.IRON],
+    [AccountType.Fop, BankAccountTypeEnum.FOP],
+    [AccountType.Yellow, BankAccountTypeEnum.YELLOW],
+    [AccountType.EAid, BankAccountTypeEnum.EAID]
 ]);
 
-export const monobankAccountTypeMapper = (type: MonobankAccountTypeEnum): BankAccountTypeEnum =>
+export const monobankAccountTypeMapper = (type: AccountType): BankAccountTypeEnum =>
     monobankAccountTypeMap.get(type) ?? BankAccountTypeEnum.UNKNOWN;
