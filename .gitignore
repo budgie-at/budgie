@@ -70,3 +70,6 @@ docs/superpowers
 .claude/worktrees/
 .vercel
 .env*.local
+
+# graphify knowledge graph output
+graphify-out/
