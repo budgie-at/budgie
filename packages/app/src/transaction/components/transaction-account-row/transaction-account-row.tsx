@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -41,10 +41,16 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
     useImperativeHandle(ref, () => ({ shake }));
 
     const accountId = useWatch({ control, name: fieldName });
+    const transactionType = useWatch({ control, name: 'type' });
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
 
     const handlePress = async () => {
-        const selectedAccountId = await openAccountSelector({ initialAccountId: accountId, onlyActive: false });
+        const isExpenseSourceAccount = transactionType === TransactionTypeEnum.EXPENSE && fieldName === 'fromAccountId';
+        const selectedAccountId = await openAccountSelector({
+            initialAccountId: accountId,
+            onlyActive: false,
+            ...(isExpenseSourceAccount && { excludeAccountTypes: [AccountTypeEnum.DEPOSIT] })
+        });
 
         if (isDefined(selectedAccountId)) {
             setValue(fieldName, selectedAccountId);

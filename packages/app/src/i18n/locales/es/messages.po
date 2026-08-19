@@ -81,6 +81,10 @@ msgstr "{count, plural, one {Esta etiqueta tiene # transacción. Selecciona otra
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
 
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
+msgstr "{formattedBalance} se transferirá a {destinationAccountTitle} y este depósito se archivará. Puedes restaurarlo en cualquier momento desde Configuración → Cuentas archivadas."
+
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} por asignar"
@@ -217,6 +221,11 @@ msgstr "Cuenta {id} no encontrada"
 msgid "Account Name & Icon"
 msgstr "Nombre e icono de la cuenta"
 
+#. js-lingui-explicit-id
+#: src/transaction/service/transaction.service.ts
+msgid "transaction.accountNotFound"
+msgstr ""
+
 #: src/account/component/create-account-screen/update-account-screen.tsx
 msgid "Account Settings"
 msgstr "Configuración de la cuenta"
@@ -282,9 +291,22 @@ msgstr "Añadir un tope por categoría"
 msgid "Add Account"
 msgstr "Añadir Cuenta"
 
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Add accounts"
+msgstr "Añadir cuentas"
+
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+msgid "Add accounts from bank"
+msgstr "Añadir cuentas del banco"
+
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
 msgstr "Añadir categoría"
+
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Add deposit"
+msgstr "Añadir depósito"
 
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
@@ -334,6 +356,10 @@ msgstr "Aplicación de presupuesto con IA y privacidad total. Todo el procesamie
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "All"
 msgstr "Todos"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "All accounts already added"
+msgstr "Todas las cuentas ya están añadidas"
 
 #: src/app/import-column-mapper.tsx
 msgid "All columns have been assigned"
@@ -480,6 +506,10 @@ msgstr "Ajuste de saldo"
 msgid "Bank"
 msgstr "Banco"
 
+#: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
+msgid "Bank integration settings"
+msgstr "Ajustes de la integración bancaria"
+
 #: src/account/constant/account-type.constant.ts
 msgid "Bank sync"
 msgstr "Sincronización bancaria"
@@ -590,6 +620,7 @@ msgstr "Budgie eliminará de forma reversible {countText}. Tus transacciones man
 #: src/account/component/account-action-card/account-action-card.tsx
 #: src/account/component/archive-account/archive-account.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -702,6 +733,15 @@ msgstr "El portapapeles está vacío"
 msgid "Close"
 msgstr "Cerrar"
 
+#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+msgid "Close Deposit"
+msgstr "Cerrar depósito"
+
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+msgid "Close Deposit?"
+msgstr "¿Cerrar depósito?"
+
 #: src/@generic/component/popover-menu/popover-menu.tsx
 msgid "Close menu"
 msgstr "Cerrar menú"
@@ -782,7 +822,6 @@ msgstr "Error en la conversión"
 msgid "Convert"
 msgstr "Convertir"
 
-#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Refund"
@@ -794,7 +833,6 @@ msgstr "¿Convertir en reembolso?"
 
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
-#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Transfer"
@@ -811,6 +849,10 @@ msgstr "Base de coste"
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Could not activate account."
 msgstr "No se pudo activar la cuenta."
+
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+msgid "Could not add accounts"
+msgstr "No se pudieron añadir las cuentas"
 
 #: src/account/component/archive-account/archive-account.tsx
 msgid "Could not archive account"
@@ -830,6 +872,10 @@ msgstr "No se pudieron comprobar los datos de sincronización bancaria"
 msgid "Could not clear data"
 msgstr "No se pudieron borrar los datos"
 
+#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+msgid "Could not close deposit"
+msgstr "No se pudo cerrar el depósito"
+
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Could not consolidate matches"
 msgstr "No se pudieron consolidar las coincidencias"
@@ -845,6 +891,10 @@ msgstr "No se pudo crear el presupuesto"
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
+
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "Could not create deposit account"
+msgstr "No se pudo crear la cuenta de depósito"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -903,6 +953,10 @@ msgstr "No se pudieron obtener las cuentas"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not import CSV file"
 msgstr "No se pudo importar el archivo CSV"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Could not load accounts from the bank"
+msgstr "No se pudieron cargar las cuentas del banco"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -1131,6 +1185,10 @@ msgstr "Fecha"
 msgid "Day {selectedDay}"
 msgstr "Día {selectedDay}"
 
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Days Remaining"
+msgstr "Días restantes"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/transaction/constant/transaction-type.constant.ts
@@ -1195,6 +1253,26 @@ msgstr "Eliminar regla"
 msgid "Delete Transaction"
 msgstr "Eliminar transacción"
 
+#: src/account/constant/account-type.constant.ts
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "Deposit"
+msgstr "Depósito"
+
+#: src/account/component/create-deposit-account/create-deposit-account.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Deposit Account"
+msgstr "Cuenta de depósito"
+
+#. js-lingui-explicit-id
+#: src/transaction/service/transaction-deposit-safety.service.ts
+msgid "transaction.depositExpenseDisallowed"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/account/service/account-balance-incremental.service.ts
+msgid "account.depositNegativeBalanceDisallowed"
+msgstr ""
+
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
 msgstr "Deseleccionar todo"
@@ -1249,6 +1327,10 @@ msgstr "p. ej. 1000"
 msgid "e.g. 200"
 msgstr "p. ej. 200"
 
+#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+msgid "e.g. 5"
+msgstr "p. ej. 5"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "e.g. Business, Personal, Vacation"
 msgstr "p. ej. Negocios, Personal, Vacaciones"
@@ -1260,6 +1342,10 @@ msgstr "p. ej. Compras, Entretenimiento"
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "e.g. Savings Account"
 msgstr "ej. Cuenta de ahorros"
+
+#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
+msgid "Edit"
+msgstr ""
 
 #: src/account/component/account-card-base/account-card-base.tsx
 msgid "Edit account"
@@ -1424,6 +1510,10 @@ msgstr "Erste"
 msgid "Erste Bank"
 msgstr "Erste Bank"
 
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Every account from this bank is already linked."
+msgstr "Todas las cuentas de este banco ya están vinculadas."
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Everyday transactions and spending"
 msgstr "Transacciones y gastos diarios"
@@ -1439,6 +1529,14 @@ msgstr "Tipo de cambio {sourceInstrumentId}->{targetInstrumentId} no encontrado"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Tipo de cambio: {rateLabel}. Toca para editar el monto a recibir"
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Expected maturity date"
+msgstr "Fecha de vencimiento prevista"
+
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Expected Payout"
+msgstr "Pago esperado"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Expected return date"
@@ -1542,6 +1640,10 @@ msgstr "Filtrar etiquetas"
 msgid "Fix Errors"
 msgstr "Corregir errores"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Fixed-term savings with an interest rate"
+msgstr "Ahorros a plazo fijo con una tasa de interés"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "¿Encontraste un problema o tienes una idea? Abre las plantillas de incidencias de GitHub."
@@ -1583,6 +1685,10 @@ msgstr "Monto origen"
 #: src/app/(tabs)/settings/import.tsx
 msgid "From Currency"
 msgstr "Moneda origen"
+
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "Funding amount"
+msgstr "Importe de financiación"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "General"
@@ -1663,6 +1769,10 @@ msgstr "Importar Erste Bank"
 msgid "Import failed"
 msgstr "Error de importación"
 
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Import file"
+msgstr "Importar archivo"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
 msgstr "Importar Privatbank"
@@ -1731,6 +1841,14 @@ msgstr "Indexando {done} de {total}"
 #: src/market-data/service/historical-market-data-loader.service.ts
 msgid "Instrument not found"
 msgstr "Instrumento no encontrado"
+
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Interest Rate"
+msgstr "Tasa de interés"
+
+#: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
+msgid "Interest Rate % (Optional)"
+msgstr "Tasa de interés % (Opcional)"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
 msgid "Invalid file"
@@ -1919,6 +2037,14 @@ msgstr "coincide"
 msgid "Matches Regex"
 msgstr "Coincide con regex"
 
+#: src/account/component/deposit-details-card/deposit-details-card.tsx
+msgid "Maturity Date"
+msgstr "Fecha de vencimiento"
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Maturity Date (Optional)"
+msgstr "Fecha de vencimiento (Opcional)"
+
 #: src/app/transaction-amount-filter.tsx
 msgid "Maximum amount"
 msgstr ""
@@ -2006,6 +2132,10 @@ msgstr "Nueva cuenta"
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "New borrowed debt"
 msgstr "Nueva deuda pedida prestada"
+
+#: src/account/hooks/use-deposit-create-action.hook.ts
+msgid "New deposit account"
+msgstr "Nueva cuenta de depósito"
 
 #: src/app/(main)/create-transaction/expense.tsx
 msgid "New Expense"
@@ -2341,6 +2471,11 @@ msgstr "El PIN debe tener {PIN_LENGTH} dígitos"
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PINs do not match"
 msgstr "Los PIN no coinciden"
+
+#: src/account/hooks/use-account-entity-form.hook.ts
+#: src/account/hooks/use-account-form.hook.ts
+msgid "Please check the account details"
+msgstr "Por favor, revisa los detalles de la cuenta"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Please enter your Monobank API token"
@@ -2850,6 +2985,10 @@ msgstr "Establecer categoría"
 msgid "Set fee"
 msgstr "Establecer comisión"
 
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "Set Maturity Date"
+msgstr "Establecer fecha de vencimiento"
+
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
 msgstr "Establecer fecha de devolución"
@@ -3289,6 +3428,10 @@ msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 msgid "Try adjusting your filters to see more results"
 msgstr "Intenta ajustar tus filtros para ver más resultados"
 
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Try again"
+msgstr "Inténtalo de nuevo"
+
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 #: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
 msgid "Try Again"
@@ -3349,6 +3492,10 @@ msgstr "Actualizar cuenta"
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"
 msgstr "¿Actualizar regla?"
+
+#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
+msgid "Update the token from any account already syncing with this integration, then try again."
+msgstr "Actualiza el token desde cualquier cuenta que ya esté sincronizada con esta integración y vuelve a intentarlo."
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Updated {formattedDate}"
@@ -3418,6 +3565,10 @@ msgstr "Esperando"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."
 msgstr "Lo reintentaremos en segundo plano."
+
+#: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
+msgid "When does the deposit mature?"
+msgstr "¿Cuándo vence el depósito?"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"

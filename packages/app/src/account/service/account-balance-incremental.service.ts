@@ -1,13 +1,20 @@
+import {
+    AccountTypeEnum,
+    type AccountBalanceCreateEntityInterface,
+    type AccountBalanceEntityInterface,
+    type AccountEntityInterface,
+    type DB,
+    transactionAsync
+} from '@budgie/contracts';
 import { Log } from '@budgie/logger';
+import { i18n } from '@lingui/core';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
-import { accountBalanceRepository, accountRepository } from '../../@generic/drizzle/db/db';
+import { accountBalanceRepository, accountRepository, db } from '../../@generic/drizzle/db/db';
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
-
-import type { AccountBalanceCreateEntityInterface, AccountBalanceEntityInterface, AccountEntityInterface, DB } from '@budgie/contracts';
 
 class AccountBalanceIncrementalService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 7 * 24 * 60;
@@ -18,8 +25,13 @@ class AccountBalanceIncrementalService {
         (error, truncate, tx) => `throw truncate=${String(truncate)} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async updateAllBalances(truncate: boolean, tx?: DB): Promise<void> {
-        const accounts = await accountRepository.getAllActiveAccounts(tx);
-        await this.upsertLatestBalances(accounts, truncate, tx);
+        if (!isDefined(tx)) {
+            await transactionAsync(db, async innerTx => this.updateAllBalancesInTransaction(truncate, innerTx));
+
+            return;
+        }
+
+        await this.updateAllBalancesInTransaction(truncate, tx);
     }
 
     @Log(
@@ -34,15 +46,13 @@ class AccountBalanceIncrementalService {
             return;
         }
 
-        const accounts = await accountRepository.findByIds(uniqueAccountIds, tx);
-        if (isEmptyArray(accounts)) {
+        if (!isDefined(tx)) {
+            await transactionAsync(db, async innerTx => this.updateBalancesByUniqueAccountIdsInTransaction(uniqueAccountIds, innerTx));
+
             return;
         }
 
-        const activeAccountIds = accounts.map(({ id }) => id);
-
-        await accountBalanceRepository.deleteByAccountIds(activeAccountIds, tx);
-        await this.upsertLatestBalances(accounts, false, tx);
+        await this.updateBalancesByUniqueAccountIdsInTransaction(uniqueAccountIds, tx);
     }
 
     @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
@@ -57,7 +67,32 @@ class AccountBalanceIncrementalService {
         });
     }
 
-    private async upsertLatestBalances(accounts: AccountEntityInterface[], truncate: boolean, tx?: DB): Promise<void> {
+    private async updateAllBalancesInTransaction(truncate: boolean, tx: DB): Promise<void> {
+        const accounts = await accountRepository.getAllActiveAccounts(tx);
+        const previousDepositBalances = await this.getPreviousDepositBalances(accounts, tx);
+
+        await this.upsertLatestBalances(accounts, truncate, previousDepositBalances, tx);
+    }
+
+    private async updateBalancesByUniqueAccountIdsInTransaction(uniqueAccountIds: number[], tx: DB): Promise<void> {
+        const accounts = await accountRepository.findByIds(uniqueAccountIds, tx);
+        if (isEmptyArray(accounts)) {
+            return;
+        }
+
+        const activeAccountIds = accounts.map(({ id }) => id);
+        const previousDepositBalances = await this.getPreviousDepositBalances(accounts, tx);
+
+        await accountBalanceRepository.deleteByAccountIds(activeAccountIds, tx);
+        await this.upsertLatestBalances(accounts, false, previousDepositBalances, tx);
+    }
+
+    private async upsertLatestBalances(
+        accounts: AccountEntityInterface[],
+        truncate: boolean,
+        previousDepositBalances: Map<number, number>,
+        tx?: DB
+    ): Promise<void> {
         if (isEmptyArray(accounts)) {
             return;
         }
@@ -73,6 +108,7 @@ class AccountBalanceIncrementalService {
         const balancesToInsert = accounts.map(account => this.buildBalanceInput(account.id, balancesMap, deltaMap));
 
         await this.upsertBalances(balancesToInsert, tx);
+        this.assertDepositBalancesNotWorsened(balancesToInsert, previousDepositBalances);
     }
 
     private buildBalancesMap(balances: AccountBalanceEntityInterface[]) {
@@ -111,6 +147,39 @@ class AccountBalanceIncrementalService {
             await previousBalancePromise;
             await accountBalanceRepository.upsert(balance, tx);
         }, Promise.resolve());
+    }
+
+    private async getPreviousDepositBalances(accounts: AccountEntityInterface[], tx?: DB): Promise<Map<number, number>> {
+        const depositAccountIds = accounts.filter(account => account.type === AccountTypeEnum.DEPOSIT).map(({ id }) => id);
+
+        if (isEmptyArray(depositAccountIds)) {
+            return new Map();
+        }
+
+        const balances = await accountBalanceRepository.getByAccountIds(depositAccountIds, tx);
+        const balancesMap = this.buildBalancesMap(balances);
+
+        return depositAccountIds.reduce((map, accountId) => {
+            map.set(accountId, balancesMap.get(accountId) ?? 0);
+
+            return map;
+        }, new Map<number, number>());
+    }
+
+    private assertDepositBalancesNotWorsened(
+        balances: AccountBalanceCreateEntityInterface[],
+        previousDepositBalances: Map<number, number>
+    ): void {
+        for (const balance of balances) {
+            const previousBalance = previousDepositBalances.get(balance.accountId);
+            const shouldReject = isDefined(previousBalance) && balance.amount < 0 && balance.amount < previousBalance;
+
+            if (shouldReject) {
+                throw new Error(
+                    i18n._({ id: 'account.depositNegativeBalanceDisallowed', message: 'Deposit balance cannot become negative' })
+                );
+            }
+        }
     }
 }
 

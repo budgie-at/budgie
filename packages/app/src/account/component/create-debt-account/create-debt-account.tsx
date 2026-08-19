@@ -5,26 +5,21 @@ import { useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
-import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
-import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
+import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 // jscpd:ignore-end
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { accountDebtOpeningService } from '../../service/account-debt-opening.service';
 import { accountService } from '../../service/account.service';
-import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
+import { CreateAccountCoreFields } from '../create-account-core-fields/create-account-core-fields';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
-import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 import { DebtAccountContactField } from '../debt-account-contact-field/debt-account-contact-field';
 import { DebtAccountTypeField } from '../debt-account-type-field/debt-account-type-field';
 import { DebtOpeningAccountField } from '../debt-opening-account-field/debt-opening-account-field';
-import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 const DEFAULT_ICON = UserIconNameEnum.HandCoins;
 
@@ -63,7 +58,7 @@ export const CreateDebtAccount = () => {
     );
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
     const isOpeningFromAccount = isLentDebt && isDefined(openingAccountId);
-    const variant = ACCOUNT_DEBT_TYPE_COLOR[debtType];
+    const variant = ACCOUNT_COLOR.DEBT;
     const stickyInstrument = useStickyDefinedValue(instrument);
 
     const handleCreateDebtAccountSubmit = () => {
@@ -80,13 +75,7 @@ export const CreateDebtAccount = () => {
 
     return (
         <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleCreateDebtAccountSubmit} isSubmitting={isSubmitting}>
-            <AccountBalanceField variant={variant} instrumentSymbol={stickyInstrument.symbol} control={control} />
-
-            <FormLayoutGroup>
-                <AccountDetailsField variant={variant} control={control} nameInputTestID={CreateAccountScreenSelector.NameInput} />
-
-                <CreateAccountCurrencyField control={control} />
-
+            <CreateAccountCoreFields variant={variant} control={control} instrumentSymbol={stickyInstrument.symbol}>
                 {isLentDebt && <DebtOpeningAccountField accountId={openingAccountId} variant={variant} onChange={setOpeningAccountId} />}
 
                 {!isOpeningFromAccount && <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} />}
@@ -96,9 +85,7 @@ export const CreateDebtAccount = () => {
                 <DebtAccountContactField control={control} />
 
                 <AccountFormDateField control={control} variant={variant} />
-
-                <IncludeInNetWorthField control={control} />
-            </FormLayoutGroup>
+            </CreateAccountCoreFields>
         </CreateAccountScreen>
     );
 };

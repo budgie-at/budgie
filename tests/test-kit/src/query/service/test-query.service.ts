@@ -23,13 +23,28 @@ export class TestQueryService {
     }
 
     fetchTransactionById(id: number): TransactionEntityInterface {
-        const row = this.database.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, id)).all()[0];
+        const row = this.findTransactionById(id);
 
         if (!isDefined(row)) {
             throw new Error(`Transaction ${id} not found`);
         }
 
         return row;
+    }
+
+    findTransactionById(id: number): TransactionEntityInterface | undefined {
+        const [row] = this.database.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, id)).all();
+
+        return row;
+    }
+
+    fetchChildTransactionIds(parentTransactionId: number): number[] {
+        return this.database
+            .select({ id: TransactionEntityTable.id })
+            .from(TransactionEntityTable)
+            .where(eq(TransactionEntityTable.consolidationParentTransactionId, parentTransactionId))
+            .all()
+            .map(row => row.id);
     }
 
     fetchEntriesByTransactionId(transactionId: number): TransactionEntryEntityInterface[] {
@@ -41,11 +56,11 @@ export class TestQueryService {
     }
 
     fetchEntryByExternalId(externalId: string): TransactionEntryEntityInterface {
-        const row = this.database
+        const [row] = this.database
             .select()
             .from(TransactionEntryEntityTable)
             .where(eq(TransactionEntryEntityTable.externalId, externalId))
-            .all()[0];
+            .all();
 
         if (!isDefined(row)) {
             throw new Error(`Transaction entry ${externalId} not found`);
@@ -64,7 +79,7 @@ export class TestQueryService {
     }
 
     findMccByCode(mcc: string): Pick<MccCategoryEntityInterface, 'id' | 'mccGroupId'> {
-        const row = this.database.select().from(MccCategoryEntityTable).where(eq(MccCategoryEntityTable.mcc, mcc)).all()[0];
+        const [row] = this.database.select().from(MccCategoryEntityTable).where(eq(MccCategoryEntityTable.mcc, mcc)).all();
 
         if (!isDefined(row)) {
             throw new Error(`MCC ${mcc} not found`);

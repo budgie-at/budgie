@@ -9,6 +9,7 @@ import * as TaskManager from 'expo-task-manager';
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -23,8 +24,10 @@ import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util'
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 
+import { monobankIntegrationTokenService } from './monobank-integration-token.service';
 import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
+import { transferConsolidationService } from './transfer-consolidation.service';
 
 import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
 import type {
@@ -84,6 +87,7 @@ class AppMonobankSyncService {
         });
     }
 
+    @InvalidateDatabaseLiveQuery()
     @Log(
         (token, externalIds) => `enter tokenLen=${token.length} externalIdCount=${externalIds.length}`,
         (_result, token, externalIds) => `done tokenLen=${token.length} externalIdCount=${externalIds.length}`,
@@ -92,12 +96,14 @@ class AppMonobankSyncService {
     )
     async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
         const bankAccounts = await this.fetchBankAccountsAndJars(token);
+        const integration = await monobankIntegrationTokenService.getOrCreateIntegration(token);
 
         for (const externalId of externalIds) {
             const bankAccount = bankAccounts.find(candidateBankAccount => candidateBankAccount.id === externalId);
             if (isDefined(bankAccount)) {
                 const account = await this.getOrCreateAccount(bankAccount);
-                await this.createOrUpdateBankSync(account.id, token);
+                await accountRepository.updateById(account.id, { integrationId: integration.id });
+                await this.createOrUpdateBankSync(account.id);
             }
         }
 
@@ -105,19 +111,7 @@ class AppMonobankSyncService {
         void this.sync();
     }
 
-    @Log(
-        (accountId, token) => `enter accountId=${accountId} tokenLen=${token.length}`,
-        (_result, accountId, token) => `done accountId=${accountId} tokenLen=${token.length}`,
-        (error, accountId, token) => `throw accountId=${accountId} tokenLen=${token.length} error=${getErrorMessage(error)}`
-    )
-    async updateAccountToken(accountId: number, token: string): Promise<void> {
-        const bankSync = await bankSyncRepository.getByAccountId(accountId);
-        if (!isDefined(bankSync)) {
-            throw new Error('Bank sync not found');
-        }
-        await bankSyncRepository.update(bankSync.id, { token, errorCount: 0, lastError: null });
-    }
-
+    @InvalidateDatabaseLiveQuery()
     @Log(
         (accountId, enabled) => `enter accountId=${accountId} enabled=${enabled}`,
         (_result, accountId, enabled) => `done accountId=${accountId} enabled=${enabled}`,
@@ -280,11 +274,12 @@ class AppMonobankSyncService {
             return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
         }
 
-        const result = await this.fetchTransactionBatch(sync, account.externalId);
+        const token = await monobankIntegrationTokenService.resolveIntegrationToken(account);
+        const result = await this.fetchTransactionBatch(sync, account.externalId, token);
         await microPause();
 
         const changedTransactions = await this.processFetchedTransactions(result.transactions, account.id);
-        this.enqueueConsolidationForChangedTransactions(changedTransactions);
+        await this.reconcileChangedTransactions(changedTransactions);
         await microPause();
 
         return result;
@@ -376,14 +371,19 @@ class AppMonobankSyncService {
     }
 
     @Log(
-        (sync, externalAccountId) => `enter syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId}`,
-        (result, sync, externalAccountId) =>
-            `done syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} transactionCount=${result.transactions.length} completed=${result.completed}`,
-        (error, sync, externalAccountId) =>
-            `throw syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} error=${getErrorMessage(error)}`
+        (sync, externalAccountId, token) =>
+            `enter syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} tokenLen=${token.length}`,
+        (result, sync, externalAccountId, token) =>
+            `done syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} tokenLen=${token.length} transactionCount=${result.transactions.length} completed=${result.completed}`,
+        (error, sync, externalAccountId, token) =>
+            `throw syncId=${sync.id} mode=${sync.mode} externalAccountId=${externalAccountId} tokenLen=${token.length} error=${getErrorMessage(error)}`
     )
-    private async fetchTransactionBatch(sync: BankSyncEntityInterface, externalAccountId: string): Promise<BankSyncBatchResultInterface> {
-        const service = new MonobankSyncService(sync.token);
+    private async fetchTransactionBatch(
+        sync: BankSyncEntityInterface,
+        externalAccountId: string,
+        token: string
+    ): Promise<BankSyncBatchResultInterface> {
+        const service = new MonobankSyncService(token);
         const isForward = sync.mode === BankSyncModeEnum.FORWARD;
 
         return isForward
@@ -415,6 +415,21 @@ class AppMonobankSyncService {
 
     private shouldYieldToQueuedWork(): boolean {
         return syncWorkloadService.hasQueuedWork();
+    }
+
+    private async reconcileChangedTransactions(
+        changedTransactions: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>>
+    ): Promise<void> {
+        const consolidationScope = consolidationScopeService.buildFromTransactions(changedTransactions);
+        if (!isDefined(consolidationScope)) {
+            return;
+        }
+
+        try {
+            await transferConsolidationService.consolidate(consolidationScope);
+        } finally {
+            this.enqueueConsolidationForChangedTransactions(changedTransactions);
+        }
     }
 
     private enqueueConsolidationForChangedTransactions(
@@ -465,10 +480,10 @@ class AppMonobankSyncService {
         return getOrCreateBankAccount(bankAccount);
     }
 
-    private async createOrUpdateBankSync(accountId: number, token: string): Promise<void> {
+    private async createOrUpdateBankSync(accountId: number): Promise<void> {
         const existingSync = await bankSyncRepository.getByAccountId(accountId);
         if (isDefined(existingSync)) {
-            await bankSyncRepository.update(existingSync.id, { token, enabled: true, errorCount: 0, lastError: null });
+            await bankSyncRepository.update(existingSync.id, { enabled: true, errorCount: 0, lastError: null });
 
             return;
         }
@@ -476,7 +491,6 @@ class AppMonobankSyncService {
         const now = new Date();
         const earliestTxTime = await transactionService.getEarliestTransactionTimeByAccountId(accountId);
         await bankSyncRepository.create({
-            token,
             accountId,
             provider: this.provider,
             enabled: true,

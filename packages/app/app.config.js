@@ -4,6 +4,7 @@ const APP_VARIANT = process.env.APP_VARIANT;
 const IS_DEV = APP_VARIANT === 'development';
 const IS_E2E = APP_VARIANT === 'e2e';
 const IS_PREVIEW = APP_VARIANT === 'preview';
+const IS_PRODUCTION = APP_VARIANT === 'production';
 const IS_AI_DISABLED = process.env.EXPO_PUBLIC_AI_DISABLE === 'true';
 const IS_LOGGING_DISABLED = process.env.EXPO_PUBLIC_LOGGING_DISABLE === 'true';
 const IS_PROFILING_ENABLED = process.env.EXPO_PUBLIC_PROFILING_ENABLE === 'true';
@@ -114,6 +115,7 @@ export default ({ config }) => ({
             'expo-build-properties',
             {
                 useHermesV1: true,
+                ...(IS_PRODUCTION && { android: { buildArchs: ['armeabi-v7a', 'arm64-v8a'] } }),
                 ios: {
                     ccacheEnabled: true,
                     usePrecompiledModules: true

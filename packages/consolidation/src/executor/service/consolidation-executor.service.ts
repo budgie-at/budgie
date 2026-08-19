@@ -60,7 +60,7 @@ export class ConsolidationExecutorService {
         (candidate, consolidationPlan) =>
             `enter ibanBridge=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} route=${candidate.sourceAccountId}->${candidate.bridgeAccountId}->${candidate.targetAccountId} rate=${candidate.exchangeRate} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (result, candidate, consolidationPlan) =>
-            `done ibanBridgeResult=${String(result)} direct=${candidate.existingDirectTransferId ?? ''} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
+            `done ibanBridgeResult=${String(result)} bridgeAccountId=${candidate.bridgeAccountId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
         (error, candidate, consolidationPlan) =>
             `throw ibanBridge=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} amount=${candidate.bridgeAmount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
     )

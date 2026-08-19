@@ -4,7 +4,6 @@ import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../ai/hook/use-embedding-generator.hook';
 import { useSuggestRuleDetection } from '../../rule/hooks/use-suggest-rule-detection.hook';
 import { convertTransactionToInput } from '../utils/convert-transaction-to-input.util';
-import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import { useUpdateTransactionForm } from './use-update-transaction-form.hook';
 
@@ -34,7 +33,6 @@ export const useUpdateSimpleTransaction = ({ transaction, transactionId, schema 
         control: form.control
     });
 
-    const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     const handleGoBack = () => void goBackOrReplace('/');
 
     return {
@@ -42,7 +40,6 @@ export const useUpdateSimpleTransaction = ({ transaction, transactionId, schema 
         handleSubmit,
         handleDelete,
         handleGoBack,
-        categoryEntries,
         isConsolidated: isDefined(transaction.consolidationType),
         ruleDetectionMode,
         suggestRuleData,

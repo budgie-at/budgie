@@ -15,6 +15,7 @@ import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding
 import { importedBatchNormalizerService } from './imported-batch-normalizer.service';
 import { refreshedImportedEntriesService } from './refreshed-imported-entries.service';
 import { transactionBatchCreateService } from './transaction-batch-create.service';
+import { transactionDepositSafetyService } from './transaction-deposit-safety.service';
 
 import type { ImportedBatchPreparationInterface } from '../interface/imported-batch-preparation.interface';
 import type { TransactionImportOptionsInterface } from '../interface/transaction-import-options.interface';
@@ -149,6 +150,10 @@ class TransactionImportService {
     ): Promise<TransactionEntityInterface[]> {
         const partition = this.partitionImportedBatch(batch, existingTransactionIdMap);
         const existingTransactionsMap = await this.getExistingTransactionsMap(partition.updateParams, tx);
+
+        await transactionDepositSafetyService.assertNoDepositExpenseInputs(partition.newInputs, tx);
+        await transactionDepositSafetyService.assertNoDepositExpenseTransactions([...existingTransactionsMap.values()], tx);
+
         const createdTransactions = await transactionBatchCreateService.create(partition.newInputs, tx);
         const updatedTransactions = await Promise.all(
             partition.updateParams.map(params =>

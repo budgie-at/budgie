@@ -18,3 +18,4 @@
 31.debt-settlement-attachments.flow.yaml
 33.budget-transactions.flow.yaml
 34.matching-rules-navigation.flow.yaml
+36.bank-integration-settings.flow.yaml

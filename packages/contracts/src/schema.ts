@@ -2,6 +2,8 @@ export { AccountEntityTable } from './account/table/account-entity.table';
 export { AccountEntityRelations } from './account/relations/account-entity.relations';
 export { AccountBalanceEntityTable } from './account-balance/table/account-balance-entity.table';
 export { AccountBalanceEntityRelations } from './account-balance/relations/account-balance-entity.relations';
+export { BankIntegrationEntityTable } from './bank-integration/table/bank-integration-entity.table';
+export { BankIntegrationEntityRelations } from './bank-integration/relations/bank-integration-entity.relations';
 export { BankSyncEntityTable } from './bank-sync/table/bank-sync-entity.table';
 export { BankSyncEntityRelations } from './bank-sync/relations/bank-sync-entity.relations';
 export { CategoryEntityTable } from './category/table/category-entity.table';

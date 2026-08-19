@@ -1,6 +1,6 @@
 {
     "name": "@budgie/screen-chrome",
-    "version": "5.43.0",
+    "version": "6.0.0",
     "private": true,
     "description": "Generic scroll edge fade, blur chrome and collapsible header",
     "sideEffects": false,
