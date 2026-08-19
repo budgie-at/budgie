@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.1.2](https://github.com/budgie-at/budgie/compare/v6.1.1...v6.1.2) (2026-08-19)
+
+
+### Bug Fixes
+
+* **app:** keep edit action eligibility current ([c3d0af2](https://github.com/budgie-at/budgie/commit/c3d0af280a6b0d0c1f112fd3d35778d5d3745cab))
+* **app:** keep split confirmation above the keyboard ([d41301e](https://github.com/budgie-at/budgie/commit/d41301ec14cb30f620d80037af05fde1ff4091dc))
+* **app:** keep transaction detail actions in sync ([2425098](https://github.com/budgie-at/budgie/commit/24250983522ebbe1002d777ad371046536dcfaa0))
+* **app:** prevent restored split focus from blocking confirmation ([04dea61](https://github.com/budgie-at/budgie/commit/04dea61283a8850e45136f351abb5be4890341c4))
+* **app:** prevent split confirmation from being obscured ([52d6930](https://github.com/budgie-at/budgie/commit/52d6930ed2275cbd3af94101de908cc89f69b536))
+
+
+
+
+
 ## [6.1.1](https://github.com/budgie-at/budgie/compare/v6.1.0...v6.1.1) (2026-08-18)
 
 **Note:** Version bump only for package @budgie-at/app
