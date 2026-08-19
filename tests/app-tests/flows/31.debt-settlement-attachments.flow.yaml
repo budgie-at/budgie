@@ -132,11 +132,6 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionInfo.Page'
       timeout: 10000
-- tapOn:
-      id: 'TransactionInfo.EditButton.Label'
-- extendedWaitUntil:
-      visible: 'Edit Income'
-      timeout: 10000
 - waitForAnimationToEnd
 
 - tapOn:
@@ -165,10 +160,31 @@ appId: ${APP_ID}
       notVisible:
           id: 'AccountPickerBottomSheet.Input'
 - waitForAnimationToEnd
-
-- assertVisible: 'Debt · E2E Lent Debt'
-
-- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.DetachDebtSettlementButton'
+- tapOn:
+      id: 'TransactionActionsMenu.DetachDebtSettlementButton'
+- waitForAnimationToEnd
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- tapOn:
+      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountPickerBottomSheet.Input'
+      timeout: 10000
+- runFlow:
+      file: subflows/shared/select-account-by-search.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Lent Debt'
+- tapOn:
+      id: 'PageHeader.BackButton'
 
 - extendedWaitUntil:
       visible:

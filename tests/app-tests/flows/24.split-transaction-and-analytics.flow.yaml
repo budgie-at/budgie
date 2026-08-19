@@ -202,6 +202,16 @@ appId: ${APP_ID}
     timeout: 5000
 
 - tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.DeleteButton'
+- assertNotVisible:
+    id: 'TransactionActionsMenu.ConvertToTransferButton'
+- tapOn:
+    text: 'Close menu'
+
+- tapOn:
     id: 'TransactionFieldIcon.Split'
 - extendedWaitUntil:
     visible:
@@ -218,6 +228,16 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     notVisible: 'Remove split?'
     timeout: 15000
+
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.DeleteButton'
+- assertNotVisible:
+    id: 'TransactionActionsMenu.ConvertToTransferButton'
+- tapOn:
+    text: 'Close menu'
 
 - runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
@@ -244,6 +264,54 @@ appId: ${APP_ID}
     visible:
       id: 'TransactionActionsMenu.DeleteButton'
 - assertVisible:
+    id: 'TransactionActionsMenu.ConvertToTransferButton'
+- tapOn:
+    text: 'Close menu'
+
+- tapOn:
+    id: 'TransactionInfo.EditButton.Label'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFieldIcon.Split'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionFieldIcon.Split'
+- extendedWaitUntil:
+    visible:
+      id: 'SplitEntryRow.Amount.0'
+- swipe:
+    direction: UP
+- tapOn:
+    id: 'SplitEntryRow.Amount.0'
+- eraseText: 20
+- inputText: '15'
+- tapOn:
+    id: 'SplitEntries.AddItemButton'
+- extendedWaitUntil:
+    visible:
+      id: 'SplitEntryRow.Amount.1'
+- tapOn:
+    id: 'SplitEntryRow.Amount.1'
+- inputText: '30'
+
+- runFlow:
+    file: subflows/transactions/select-split-category.flow.yaml
+    env:
+      ENTRY_INDEX: '1'
+      CATEGORY_NAME: 'Restaurants & Cafes'
+
+- tapOn:
+    id: 'SplitEntries.ConfirmButton'
+- extendedWaitUntil:
+    notVisible:
+      id: 'SplitEntries.ConfirmButton'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.DeleteButton'
+- assertNotVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
     text: 'Close menu'

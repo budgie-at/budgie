@@ -1,6 +1,6 @@
 import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -34,7 +34,7 @@ import {
 import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
 
 interface Props {
-    readonly ref?: RefObject<SimpleQuickFormRefInterface | null>;
+    readonly ref?: Ref<SimpleQuickFormRefInterface>;
     readonly variant: ColorPaletteVariant;
     readonly initialDestinationAmount?: number;
     readonly isSubmitting?: boolean;

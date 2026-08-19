@@ -10,7 +10,7 @@ import { TransactionConvertMenuItem } from '../transaction-convert-menu-item/tra
 import type { TransactionActionsMenuPropsInterface } from '../../interface/transaction-actions-menu-props.interface';
 
 interface Props extends Pick<TransactionActionsMenuPropsInterface, 'onDelete' | 'isConsolidated'> {
-    readonly onRevert: () => void;
+    readonly onRevert?: () => void;
     readonly onFeePress?: () => void;
     readonly feeActionLabel?: string;
     readonly onAttachDebtSettlement?: () => void;
