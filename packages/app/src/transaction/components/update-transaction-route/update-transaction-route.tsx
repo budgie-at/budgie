@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const UpdateTransactionRoute = ({ Component }: Props) => {
-    const { id } = useLocalSearchParams<IdParamInterface>();
+    const { id, openFee } = useLocalSearchParams<IdParamInterface & { openFee?: string }>();
     const transactionId = Number(id);
     const { transaction, isLoading } = useGetTransactionByIdQuery(transactionId);
     const parentTransactionId = transaction?.consolidationParentTransactionId ?? 0;
@@ -37,5 +37,5 @@ export const UpdateTransactionRoute = ({ Component }: Props) => {
         return <Redirect href={getTransactionHref(transaction)} />;
     }
 
-    return <Component transaction={transaction} />;
+    return <Component transaction={transaction} openFeeOnMount={openFee === '1'} />;
 };

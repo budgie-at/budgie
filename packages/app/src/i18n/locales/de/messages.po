@@ -831,7 +831,6 @@ msgstr "Konvertierung fehlgeschlagen"
 msgid "Convert"
 msgstr "Umwandeln"
 
-#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Refund"
@@ -843,7 +842,6 @@ msgstr "In Rückerstattung umwandeln?"
 
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
-#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Transfer"

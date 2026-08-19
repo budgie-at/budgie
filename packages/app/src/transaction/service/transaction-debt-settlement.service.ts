@@ -14,6 +14,7 @@ import { t } from '@lingui/core/macro';
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { accountRepository, db, debtEventRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 
@@ -34,6 +35,7 @@ class TransactionDebtSettlementService {
         (error, params) =>
             `throw transactionId=${params.transactionId} debtAccountId=${params.debtAccountId} error=${getErrorMessage(error)}`
     )
+    @InvalidateDatabaseLiveQuery()
     async attach(params: AttachDebtSettlementParamsInterface): Promise<AccountEntityInterface> {
         return await transactionAsync(db, async tx => this.attachInTransaction(params, tx));
     }
@@ -43,6 +45,7 @@ class TransactionDebtSettlementService {
         'done',
         (error, transactionId) => `throw transactionId=${transactionId} error=${getErrorMessage(error)}`
     )
+    @InvalidateDatabaseLiveQuery()
     async detach(transactionId: number): Promise<void> {
         await transactionAsync(db, async tx => {
             const transaction = await this.getTransactionOrFail(transactionId, tx);
