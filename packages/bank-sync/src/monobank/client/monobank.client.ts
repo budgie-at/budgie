@@ -26,16 +26,40 @@ import type { ClientInfo } from '@liaugust/monobank-sdk';
 
 const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_UNAUTHORIZED = 401;
+const HTTP_STATUS_REQUEST_TIMEOUT = 408;
 const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
+const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
+const HTTP_STATUS_BAD_GATEWAY = 502;
+const HTTP_STATUS_SERVICE_UNAVAILABLE = 503;
+const HTTP_STATUS_GATEWAY_TIMEOUT = 504;
 
 export class MonobankClient implements BankProviderClientInterface {
     private static readonly TIMEOUT_MS = 30_000;
+    private static readonly RETRY_BASE_DELAY_MS = 300;
+    private static readonly RETRY_MAX_ATTEMPTS = 4;
+    private static readonly RETRY_MAX_DELAY_MS = 2_000;
+    private static readonly RETRYABLE_STATUS_CODES = [
+        HTTP_STATUS_REQUEST_TIMEOUT,
+        HTTP_STATUS_INTERNAL_SERVER_ERROR,
+        HTTP_STATUS_BAD_GATEWAY,
+        HTTP_STATUS_SERVICE_UNAVAILABLE,
+        HTTP_STATUS_GATEWAY_TIMEOUT
+    ];
 
     private readonly personalClient: MonobankPersonalClient;
     private cachedClientInfo: ClientInfo | undefined;
 
     constructor(token: string) {
-        this.personalClient = new MonobankPersonalClient({ timeoutMs: MonobankClient.TIMEOUT_MS, token });
+        this.personalClient = new MonobankPersonalClient({
+            retry: {
+                baseDelayMs: MonobankClient.RETRY_BASE_DELAY_MS,
+                maxAttempts: MonobankClient.RETRY_MAX_ATTEMPTS,
+                maxDelayMs: MonobankClient.RETRY_MAX_DELAY_MS,
+                retryableStatusCodes: MonobankClient.RETRYABLE_STATUS_CODES
+            },
+            timeoutMs: MonobankClient.TIMEOUT_MS,
+            token
+        });
     }
 
     @Log('enter', result => `done success=${String(result.success)}`, error => `throw error=${getErrorMessage(error)}`)
