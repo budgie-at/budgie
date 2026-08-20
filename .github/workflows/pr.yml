@@ -88,14 +88,6 @@ jobs:
             - name: Maestro selector checks
               run: yarn workspace @budgie-at/app-tests selectors:check
 
-            - name: E2E script self-tests
-              run: |
-                  set -euo pipefail
-                  for t in tests/app-tests/scripts/test-*.sh; do
-                    echo "== $t"
-                    bash "$t"
-                  done
-
             - name: Lint checks
               run: yarn lint
 
@@ -124,6 +116,34 @@ jobs:
                       !**/node_modules/**
                   if-no-files-found: ignore
                   retention-days: 1
+
+    e2e-script-tests:
+        name: E2E script self-tests
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
+
+            - name: Setup Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22.22.1
+
+            - name: Verify sqlite3 is available
+              run: sqlite3 --version
+
+            - name: Run E2E script self-tests
+              run: |
+                  set -euo pipefail
+                  for t in tests/app-tests/scripts/test-*.sh; do
+                    echo "== $t"
+                    bash "$t"
+                  done
 
     codecov:
         if: ${{ needs.code-quality.outputs.coverage-artifact-id != '' }}
