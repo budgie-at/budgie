@@ -58,10 +58,20 @@ declare global {
     var __drizzleDb__: DB | undefined;
 }
 
+const readPinOrNullIfKeychainUnavailable = (): string | null => {
+    try {
+        return SecureStore.getItem(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
+    } catch (secureStoreError) {
+        logger.error('secure-store:read-pin-error', { errorMessage: getErrorMessage(secureStoreError) });
+
+        return null;
+    }
+};
+
 const dbInit = () => {
     global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
 
-    const pin = SecureStore.getItem(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
+    const pin = readPinOrNullIfKeychainUnavailable();
     if (isNotEmptyString(pin)) {
         global.__expoSqliteDb__.execSync(`PRAGMA key = '${pin}';`);
     }
