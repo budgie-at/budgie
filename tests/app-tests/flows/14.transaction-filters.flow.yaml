@@ -129,7 +129,7 @@ appId: ${APP_ID}
 
 - swipe:
       from:
-          id: 'TransactionFilters.DateChip'
+          id: 'TransactionFilters.AmountChip'
       direction: RIGHT
       duration: 500
 - assertVisible:
