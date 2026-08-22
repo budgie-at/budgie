@@ -12,7 +12,6 @@ import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/fil
 import { FormItem } from '../@generic/component/form-item/form-item';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
-import { useSettingsContext } from '../settings/context/settings.context';
 import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionAmountFilterModal } from '../transaction/context/transaction-amount-filter-modal.context';
@@ -25,7 +24,6 @@ export default function TransactionAmountFilterModal() {
     const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
     const { backgroundColor } = useFormsheetListStyles();
-    const { defaultInstrument } = useSettingsContext();
     const [, resolveTransactionAmountFilter, currentParams] = useTransactionAmountFilterModal();
 
     const [fromValue, setFromValue, fromValueRef] = useStateRef<number>(() => currentParams?.value?.from ?? 0);
@@ -61,7 +59,6 @@ export default function TransactionAmountFilterModal() {
                             size="lg"
                             value={fromValue}
                             onChangeValue={setFromValue}
-                            valuePrefix={defaultInstrument.symbol}
                             placeholder={t`Minimum amount`}
                             testID={TransactionFiltersSelector.AmountFromInput}
                             autoFocus
@@ -73,7 +70,6 @@ export default function TransactionAmountFilterModal() {
                             size="lg"
                             value={toValue}
                             onChangeValue={setToValue}
-                            valuePrefix={defaultInstrument.symbol}
                             placeholder={t`Maximum amount`}
                             testID={TransactionFiltersSelector.AmountToInput}
                         />

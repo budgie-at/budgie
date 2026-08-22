@@ -429,11 +429,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return transaction;
     }
 
-    getAll(limit: number, filters: TransactionFilterInterface, language: LanguageEnum) {
-        return this.listOrderedByOperatedAt(limit, language, this.buildWhere(filters));
+    getAll(limit: number, filters: TransactionFilterInterface, language: LanguageEnum, defaultInstrumentId?: number) {
+        return this.listOrderedByOperatedAt(limit, language, this.buildWhere(filters, defaultInstrumentId));
     }
 
-    countUncategorized(filters: TransactionFilterInterface) {
+    countUncategorized(filters: TransactionFilterInterface, defaultInstrumentId?: number) {
         const types = this.getUncategorizedTransactionTypes(filters.types);
 
         return this.db
@@ -447,17 +447,17 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                     )
             })
             .from(TransactionEntityTable)
-            .where(this.buildUncategorizedWhere(filters, types));
+            .where(this.buildUncategorizedWhere(filters, types, defaultInstrumentId));
     }
 
-    countAll(filters: TransactionFilterInterface) {
-        return this.db.select({ value: count() }).from(TransactionEntityTable).where(this.buildWhere(filters));
+    countAll(filters: TransactionFilterInterface, defaultInstrumentId?: number) {
+        return this.db.select({ value: count() }).from(TransactionEntityTable).where(this.buildWhere(filters, defaultInstrumentId));
     }
 
-    getUncategorized(limit: number, filters: TransactionFilterInterface, language: LanguageEnum) {
+    getUncategorized(limit: number, filters: TransactionFilterInterface, language: LanguageEnum, defaultInstrumentId?: number) {
         const types = this.getUncategorizedTransactionTypes(filters.types);
 
-        return this.listOrderedByOperatedAt(limit, language, this.buildUncategorizedWhere(filters, types));
+        return this.listOrderedByOperatedAt(limit, language, this.buildUncategorizedWhere(filters, types, defaultInstrumentId));
     }
 
     async findByIdsWithEntries(ids: number[]): Promise<TransactionWithEntriesMccCategoryEntityInterface[]> {
@@ -875,9 +875,9 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return since;
     }
 
-    private buildWhere({ types, tagIds, categoryIds, accountIds, date, amount }: TransactionFilterInterface) {
+    private buildWhere({ types, tagIds, categoryIds, accountIds, date, amount }: TransactionFilterInterface, defaultInstrumentId?: number) {
         const conditions: SQL[] = [
-            ...this.buildBaseFilterConditions({ accountIds, tagIds, date, amount }),
+            ...this.buildBaseFilterConditions({ accountIds, tagIds, date, amount }, defaultInstrumentId),
             ...(isNotEmptyArray(types) ? [this.buildTypeCondition(types)] : []),
             ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : [])
         ].filter(isDefined);
@@ -885,9 +885,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return and(...conditions);
     }
 
-    private buildUncategorizedWhere({ tagIds, accountIds, date, amount }: TransactionFilterInterface, types: TransactionTypeEnum[]) {
+    private buildUncategorizedWhere(
+        { tagIds, accountIds, date, amount }: TransactionFilterInterface,
+        types: TransactionTypeEnum[],
+        defaultInstrumentId?: number
+    ) {
         const conditions: SQL[] = [
-            ...this.buildBaseFilterConditions({ accountIds, tagIds, date, amount }),
+            ...this.buildBaseFilterConditions({ accountIds, tagIds, date, amount }, defaultInstrumentId),
             this.buildUncategorizedTypeCondition(types),
             this.buildCategoryCondition([])
         ].filter(isDefined);
@@ -895,18 +899,20 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return and(...conditions);
     }
 
-    private buildBaseFilterConditions({
-        accountIds,
-        tagIds,
-        date,
-        amount
-    }: Pick<TransactionFilterInterface, 'accountIds' | 'tagIds' | 'date' | 'amount'>) {
+    private buildBaseFilterConditions(
+        { accountIds, tagIds, date, amount }: Pick<TransactionFilterInterface, 'accountIds' | 'tagIds' | 'date' | 'amount'>,
+        defaultInstrumentId?: number
+    ) {
+        if (isDefined(amount) && !isDefined(defaultInstrumentId)) {
+            throw new Error('Default instrument is required for amount filtering');
+        }
+
         return [
             this.buildVisibleTransactionCondition(),
             ...this.buildAccountCondition(accountIds),
             ...(isDefined(tagIds) ? [this.buildTagCondition(tagIds)] : []),
             ...(isDefined(date) ? [this.buildDateCondition(date)] : []),
-            ...(isDefined(amount) ? [this.buildAmountCondition(amount)] : [])
+            ...(isDefined(amount) && isDefined(defaultInstrumentId) ? [this.buildAmountCondition(amount, defaultInstrumentId)] : [])
         ].filter(isDefined);
     }
 

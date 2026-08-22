@@ -224,7 +224,7 @@ msgstr "Nom et icône du compte"
 #. js-lingui-explicit-id
 #: src/transaction/service/transaction.service.ts
 msgid "transaction.accountNotFound"
-msgstr ""
+msgstr "Compte introuvable"
 
 #: src/account/component/create-account-screen/update-account-screen.tsx
 msgid "Account Settings"
@@ -1266,12 +1266,12 @@ msgstr "Compte de dépôt"
 #. js-lingui-explicit-id
 #: src/transaction/service/transaction-deposit-safety.service.ts
 msgid "transaction.depositExpenseDisallowed"
-msgstr ""
+msgstr "Les comptes de dépôt ne peuvent pas financer des dépenses"
 
 #. js-lingui-explicit-id
 #: src/account/service/account-balance-incremental.service.ts
 msgid "account.depositNegativeBalanceDisallowed"
-msgstr ""
+msgstr "Le solde du dépôt ne peut pas devenir négatif"
 
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
@@ -1345,7 +1345,7 @@ msgstr "ex. Compte d'épargne"
 
 #: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 #: src/account/component/account-card-base/account-card-base.tsx
 msgid "Edit account"
@@ -1626,7 +1626,7 @@ msgstr "Filtrer les comptes"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Filter by amount"
-msgstr ""
+msgstr "Filtrer par montant"
 
 #: src/app/transaction-category-filter.tsx
 msgid "Filter categories"
@@ -1667,7 +1667,7 @@ msgstr "De"
 
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "From {fromText}"
-msgstr ""
+msgstr "À partir de {fromText}"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
@@ -2047,7 +2047,7 @@ msgstr "Date d'échéance (Facultatif)"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Maximum amount"
-msgstr ""
+msgstr "Montant maximum"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
@@ -2080,7 +2080,7 @@ msgstr "Fusionner les virements et remboursements correspondants"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Minimum amount"
-msgstr ""
+msgstr "Montant minimum"
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -3003,7 +3003,7 @@ msgstr "Afficher 1 234,56 $ au lieu de 1 235 $"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show all amounts"
-msgstr ""
+msgstr "Afficher tous les montants"
 
 #: src/app/date-filter.tsx
 msgid "Show all dates"
@@ -3019,7 +3019,7 @@ msgstr "Afficher les centimes"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show only transactions with a total inside this range, in your default currency."
-msgstr ""
+msgstr "Afficher uniquement les transactions dont le total se situe dans cette plage, dans votre devise par défaut."
 
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx
@@ -3283,7 +3283,7 @@ msgstr "Vers"
 
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "To {toText}"
-msgstr ""
+msgstr "Jusqu’à {toText}"
 
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"

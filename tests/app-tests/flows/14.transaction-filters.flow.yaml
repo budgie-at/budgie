@@ -129,7 +129,7 @@ appId: ${APP_ID}
 
 - swipe:
       from:
-          id: 'TransactionFilters.AmountChip'
+          id: 'TransactionFilters.DateChip'
       direction: RIGHT
       duration: 500
 - assertVisible:
@@ -145,6 +145,92 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
+
+- tapOn:
+      id: 'TransactionFilters.AmountChip'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionFilters.AmountFromInput'
+      timeout: 3000
+- tapOn:
+      id: 'TransactionFilters.AmountFromInput'
+- inputText: '20'
+- tapOn:
+      id: 'TransactionFilters.AmountToInput'
+- copyTextFrom:
+      id: 'TransactionFilters.AmountFromInput'
+- assertTrue: ${maestro.copiedText == '20'}
+- inputText: '30'
+- tapOn:
+      id: 'TransactionFilters.AmountFromInput'
+- copyTextFrom:
+      id: 'TransactionFilters.AmountToInput'
+- assertTrue: ${maestro.copiedText == '30'}
+- tapOn:
+      id: 'TransactionFilters.AmountApplyButton'
+
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertVisible: '1 transaction'
+
+- tapOn:
+      id: 'TransactionFilters.ClearAllButton'
+
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
+
+- tapOn:
+      id: 'TransactionFilters.AmountChip'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionFilters.AmountFromInput'
+      timeout: 3000
+- tapOn:
+      id: 'TransactionFilters.AmountToInput'
+- inputText: '6'
+- copyTextFrom:
+      id: 'TransactionFilters.AmountToInput'
+- assertTrue: ${maestro.copiedText == '6'}
+- tapOn:
+      id: 'TransactionFilters.AmountApplyButton'
+
+- assertVisible: 'To 6'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Historical_UAH_2026'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Historical_UAH_2011'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
+- assertVisible: '2 transactions'
+
+- tapOn:
+      id: 'TransactionFilters.ClearAllButton'
+
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
+- assertVisible: '7 transactions'
 
 - runFlow:
       file: subflows/categories/apply-category-filter.flow.yaml

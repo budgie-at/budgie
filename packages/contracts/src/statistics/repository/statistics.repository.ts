@@ -78,7 +78,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     }
 
     getTotalIncomeAndExpenseQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        const baseWhere = this.buildStatisticsWhere(filters);
+        const baseWhere = this.buildStatisticsWhere(filters, defaultInstrumentId);
 
         return this.db
             .select({
@@ -115,7 +115,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
 
     getIncomeByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
         return this.buildCategoryBreakdownQuery(
-            this.buildTransactionIdsQuery(filters, TransactionTypeEnum.INCOME),
+            this.buildTransactionIdsQuery(filters, TransactionTypeEnum.INCOME, defaultInstrumentId),
             defaultInstrumentId,
             language
         );
@@ -126,24 +126,27 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     }
 
     getIncomeByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        return this.buildTagBreakdownQuery(this.buildTransactionIdsQuery(filters, TransactionTypeEnum.INCOME), defaultInstrumentId);
+        return this.buildTagBreakdownQuery(
+            this.buildTransactionIdsQuery(filters, TransactionTypeEnum.INCOME, defaultInstrumentId),
+            defaultInstrumentId
+        );
     }
 
     getExpenseByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
         return this.buildExpenseTagBreakdownQuery(filters, defaultInstrumentId);
     }
 
-    getIncomeTransactionsQuery(filters: TransactionFilterInterface) {
-        return this.buildStatisticsTransactionsQuery(filters, TransactionTypeEnum.INCOME);
+    getIncomeTransactionsQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
+        return this.buildStatisticsTransactionsQuery(filters, TransactionTypeEnum.INCOME, defaultInstrumentId);
     }
 
-    getExpenseTransactionsQuery(filters: TransactionFilterInterface) {
-        return this.buildStatisticsTransactionsQuery(filters, TransactionTypeEnum.EXPENSE);
+    getExpenseTransactionsQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
+        return this.buildStatisticsTransactionsQuery(filters, TransactionTypeEnum.EXPENSE, defaultInstrumentId);
     }
 
     /* jscpd:ignore-start */
-    private buildStatisticsTransactionsQuery(filters: TransactionFilterInterface, type: TransactionTypeEnum) {
-        const baseWhere = this.buildFilterWhere(filters);
+    private buildStatisticsTransactionsQuery(filters: TransactionFilterInterface, type: TransactionTypeEnum, defaultInstrumentId: number) {
+        const baseWhere = this.buildFilterWhere(filters, defaultInstrumentId);
 
         return this.db
             .selectDistinct({ id: TransactionEntityTable.id })
@@ -214,8 +217,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         );
     }
 
-    private buildTransactionIdsQuery(filters: TransactionFilterInterface, type: TransactionTypeEnum) {
-        const baseWhere = this.buildFilterWhere(filters);
+    private buildTransactionIdsQuery(filters: TransactionFilterInterface, type: TransactionTypeEnum, defaultInstrumentId: number) {
+        const baseWhere = this.buildFilterWhere(filters, defaultInstrumentId);
 
         return this.db
             .selectDistinct({ transactionId: TransactionEntityTable.id })
@@ -307,7 +310,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             )
             .where(
                 and(
-                    this.buildStatisticsWhere(filters),
+                    this.buildStatisticsWhere(filters, defaultInstrumentId),
                     this.buildExpenseAnalyticsEntryCondition(),
                     this.buildLedgerEntryCondition(),
                     this.buildPrimaryEntryCondition(),
@@ -333,7 +336,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
             .where(
                 and(
-                    this.buildStatisticsWhere(filters),
+                    this.buildStatisticsWhere(filters, defaultInstrumentId),
                     this.buildExpenseAnalyticsEntryCondition(),
                     this.buildLedgerEntryCondition(),
                     this.buildPrimaryEntryCondition(),
@@ -439,8 +442,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         ), 0)`;
     }
 
-    private buildStatisticsWhere(filters: TransactionFilterInterface) {
-        const baseWhere = this.buildFilterWhere(filters);
+    private buildStatisticsWhere(filters: TransactionFilterInterface, defaultInstrumentId: number) {
+        const baseWhere = this.buildFilterWhere(filters, defaultInstrumentId);
 
         return and(baseWhere, ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT));
     }

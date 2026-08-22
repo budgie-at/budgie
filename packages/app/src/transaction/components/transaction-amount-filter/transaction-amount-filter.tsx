@@ -16,7 +16,7 @@ interface Props {
 
 export const TransactionAmountFilter = ({ value, onChange }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const [openTransactionAmountFilter] = useTransactionAmountFilterModal();
 
@@ -33,8 +33,8 @@ export const TransactionAmountFilter = ({ value, onChange }: Props) => {
     const hasAmountFilterSelected = isDefined(fromAmount) || isDefined(toAmount);
 
     const getLabel = () => {
-        const fromText = isDefined(fromAmount) ? formatDigits(fromAmount, defaultInstrument.symbol) : null;
-        const toText = isDefined(toAmount) ? formatDigits(toAmount, defaultInstrument.symbol) : null;
+        const fromText = isDefined(fromAmount) ? formatDigits(fromAmount) : null;
+        const toText = isDefined(toAmount) ? formatDigits(toAmount) : null;
 
         if (isDefined(fromText) && isDefined(toText)) {
             return `${fromText} – ${toText}`;
