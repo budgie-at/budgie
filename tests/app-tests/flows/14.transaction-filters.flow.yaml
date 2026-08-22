@@ -127,6 +127,13 @@ appId: ${APP_ID}
 # Counter respects the account filter (matches the per-account total shown on the account screen)
 - assertVisible: '2 transactions'
 
+- swipe:
+      from:
+          id: 'TransactionFilters.AmountChip'
+      direction: RIGHT
+      duration: 500
+- assertVisible:
+      id: 'TransactionFilters.ClearAllButton'
 - tapOn:
       id: 'TransactionFilters.ClearAllButton'
 
@@ -151,6 +158,13 @@ appId: ${APP_ID}
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
+- swipe:
+      from:
+          id: 'TransactionFilters.AmountChip'
+      direction: LEFT
+      duration: 500
+- assertVisible:
+      id: 'TransactionFilters.CategoryChip'
 - runFlow:
       file: subflows/categories/apply-category-filter.flow.yaml
       env:
@@ -190,11 +204,13 @@ appId: ${APP_ID}
 # Counter uses the singular form for a single match (only the seeded expense carries this tag)
 - assertVisible: '1 transaction'
 
-- scrollUntilVisible:
-      element:
-          id: 'TransactionFilters.ClearAllButton'
-      direction: LEFT
-      speed: 20
+- swipe:
+      from:
+          id: 'TransactionFilters.AmountChip'
+      direction: RIGHT
+      duration: 500
+- assertVisible:
+      id: 'TransactionFilters.ClearAllButton'
 - tapOn:
       id: 'TransactionFilters.ClearAllButton'
 
