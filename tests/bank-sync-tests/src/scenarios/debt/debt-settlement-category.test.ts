@@ -63,24 +63,29 @@ const createDebtAccount = () =>
         targetBalance: 300 * PRECISION
     });
 
-const createExpenseTransaction = (cashAccountId: number, categoryId: number | null) => {
+const createSettlementTransaction = (
+    type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
+    cashAccountId: number,
+    categoryId: number | null
+) => {
+    const isExpense = type === TransactionTypeEnum.EXPENSE;
     const transaction = insertOne(TransactionEntityTable, {
-        type: TransactionTypeEnum.EXPENSE,
-        title: 'Grocery store',
+        type,
+        title: isExpense ? 'Grocery store' : 'Alex returned money',
         externalId: null,
         externalSource: ExternalSourceEnum.MONOBANK,
         operatedAt: new Date('2026-06-02T12:00:00.000Z'),
         comment: '',
         exchangeRate: 1,
         updatedBy: null,
-        fromAccountId: cashAccountId,
-        toAccountId: null
+        fromAccountId: isExpense ? cashAccountId : null,
+        toAccountId: isExpense ? null : cashAccountId
     } satisfies TransactionCreateEntityInterface);
 
     insertOne(TransactionEntryEntityTable, {
         transactionId: transaction.id,
         accountId: cashAccountId,
-        type: TransactionEntryTypeEnum.CREDIT,
+        type: isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
         kind: TransactionEntryKindEnum.PRIMARY,
         amount: SETTLED_AMOUNT,
         categoryId,
@@ -97,38 +102,31 @@ const createExpenseTransaction = (cashAccountId: number, categoryId: number | nu
     return transaction;
 };
 
-const createIncomeTransaction = (cashAccountId: number, categoryId: number | null) => {
-    const transaction = insertOne(TransactionEntityTable, {
-        type: TransactionTypeEnum.INCOME,
-        title: 'Alex returned money',
-        externalId: null,
-        externalSource: ExternalSourceEnum.MONOBANK,
-        operatedAt: new Date('2026-06-02T12:00:00.000Z'),
-        comment: '',
-        exchangeRate: 1,
-        updatedBy: null,
-        fromAccountId: null,
-        toAccountId: cashAccountId
-    } satisfies TransactionCreateEntityInterface);
+const createUserCategorizedExpenseFixture = async () => {
+    const [userCategory] = testDb.select().from(CategoryEntityTable).all();
+    const cashAccount = createCashAccount();
+    const debtAccount = createDebtAccount();
+    const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, userCategory.id);
 
-    insertOne(TransactionEntryEntityTable, {
-        transactionId: transaction.id,
-        accountId: cashAccountId,
-        type: TransactionEntryTypeEnum.DEBIT,
-        kind: TransactionEntryKindEnum.PRIMARY,
-        amount: SETTLED_AMOUNT,
-        categoryId,
-        mccCategoryId: null,
-        externalId: null,
-        exchangeRate: 1,
-        baseInstrumentId: 1,
-        baseExchangeRate: 1,
-        baseAmount: SETTLED_AMOUNT,
-        toIban: null,
-        originalTransactionId: null
-    } satisfies TransactionEntryCreateEntityInterface);
+    return { debtAccount, transaction, userCategory };
+};
 
-    return transaction;
+const attachAndReadEntry = async (transactionId: number, debtAccountId: number): Promise<TransactionEntryEntityInterface> => {
+    await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
+
+    return fetchPrimaryEntry(transactionId);
+};
+
+const expectUserCategoryPreserved = (entry: TransactionEntryEntityInterface, userCategoryId: number): void => {
+    expect(entry.categoryId).toBe(userCategoryId);
+    expect(entry.categorySource).toBe('USER');
+};
+
+const attachDetachAndReadEntry = async (transactionId: number, debtAccountId: number): Promise<TransactionEntryEntityInterface> => {
+    await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
+    await transactionDebtSettlementService.detach(transactionId);
+
+    return fetchPrimaryEntry(transactionId);
 };
 
 const readExpenseExpenseTotal = (instrumentId: number): number => {
@@ -155,11 +153,9 @@ describe('debt settlement categorization', () => {
     it('assigns the Debt Payments category when attaching an uncategorized expense', async () => {
         const cashAccount = createCashAccount();
         const debtAccount = createDebtAccount();
-        const transaction = createExpenseTransaction(cashAccount.id, null);
+        const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
-
-        const entry = fetchPrimaryEntry(transaction.id);
+        const entry = await attachAndReadEntry(transaction.id, debtAccount.id);
 
         expect(entry.categoryId).toBe(DEBT_PAYMENT_CATEGORY_ID);
         expect(entry.categorySource).toBe('DEBT_SETTLEMENT');
@@ -168,7 +164,7 @@ describe('debt settlement categorization', () => {
     it('moves the attached expense out of Uncategorized without changing the expense total', async () => {
         const cashAccount = createCashAccount();
         const debtAccount = createDebtAccount();
-        const transaction = createExpenseTransaction(cashAccount.id, null);
+        const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
         const expenseBefore = readExpenseExpenseTotal(cashAccount.instrumentId);
 
         await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
@@ -186,27 +182,19 @@ describe('debt settlement categorization', () => {
     });
 
     it('never clobbers an existing category when attaching', async () => {
-        const [userCategory] = testDb.select().from(CategoryEntityTable).all();
-        const cashAccount = createCashAccount();
-        const debtAccount = createDebtAccount();
-        const transaction = createExpenseTransaction(cashAccount.id, userCategory.id);
+        const { debtAccount, transaction, userCategory } = await createUserCategorizedExpenseFixture();
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+        const entry = await attachAndReadEntry(transaction.id, debtAccount.id);
 
-        const entry = fetchPrimaryEntry(transaction.id);
-
-        expect(entry.categoryId).toBe(userCategory.id);
-        expect(entry.categorySource).toBe('USER');
+        expectUserCategoryPreserved(entry, userCategory.id);
     });
 
     it('leaves attached incomes uncategorized', async () => {
         const cashAccount = createCashAccount();
         const debtAccount = createDebtAccount();
-        const transaction = createIncomeTransaction(cashAccount.id, null);
+        const transaction = createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, null);
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
-
-        const entry = fetchPrimaryEntry(transaction.id);
+        const entry = await attachAndReadEntry(transaction.id, debtAccount.id);
 
         expect(entry.categoryId).toBeNull();
     });
@@ -214,29 +202,19 @@ describe('debt settlement categorization', () => {
     it('reverts only the settlement-sourced category on detach', async () => {
         const cashAccount = createCashAccount();
         const debtAccount = createDebtAccount();
-        const transaction = createExpenseTransaction(cashAccount.id, null);
+        const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
-        await transactionDebtSettlementService.detach(transaction.id);
-
-        const entry = fetchPrimaryEntry(transaction.id);
+        const entry = await attachDetachAndReadEntry(transaction.id, debtAccount.id);
 
         expect(entry.categoryId).toBeNull();
         expect(entry.categorySource).toBe('USER');
     });
 
     it('keeps a user category on detach of a categorized expense attachment', async () => {
-        const [userCategory] = testDb.select().from(CategoryEntityTable).all();
-        const cashAccount = createCashAccount();
-        const debtAccount = createDebtAccount();
-        const transaction = createExpenseTransaction(cashAccount.id, userCategory.id);
+        const { debtAccount, transaction, userCategory } = await createUserCategorizedExpenseFixture();
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
-        await transactionDebtSettlementService.detach(transaction.id);
+        const entry = await attachDetachAndReadEntry(transaction.id, debtAccount.id);
 
-        const entry = fetchPrimaryEntry(transaction.id);
-
-        expect(entry.categoryId).toBe(userCategory.id);
-        expect(entry.categorySource).toBe('USER');
+        expectUserCategoryPreserved(entry, userCategory.id);
     });
 });
