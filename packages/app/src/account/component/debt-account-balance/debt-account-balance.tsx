@@ -1,14 +1,12 @@
-import { AccountDebtTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { cva } from 'class-variance-authority';
-import { Text, View, type ViewStyle } from 'react-native';
+import { Text, View } from 'react-native';
 
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
-import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
+import { DebtProgressTrack } from '../debt-progress-track/debt-progress-track';
 
 import { DebtAccountBalanceSelector } from './debt-account-balance.selector';
 
@@ -20,47 +18,46 @@ interface Props {
     readonly summary: DebtAccountProgressSummaryInterface;
 }
 
-const containerVariants = cva('p-5xl border gap-y-md rounded-3xl', {
-    variants: { variant: BACKGROUND_COLOR_PALETTE }
-});
-
-const percentageTextVariants = cva('text-sm font-semibold', {
-    variants: { variant: FOREGROUND_COLOR_PALETTE }
-});
-
-const barVariants = cva('rounded-5xl min-w-0.5 h-2', {
-    variants: {
-        debtType: {
-            [AccountDebtTypeEnum.LENT]: 'bg-positive-foreground',
-            [AccountDebtTypeEnum.BORROW]: 'bg-warning-foreground'
-        }
-    }
-});
-
+// eslint-disable-next-line max-statements -- Debt balance component with many derived labels and test selectors
 export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Props) => {
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const variant = ACCOUNT_DEBT_TYPE_COLOR[debtType];
     const { outstandingAmount, paidAmount, percentage, totalAmount } = summary;
-    const barStyle: ViewStyle = { width: `${percentage}%` };
-    const labels = {
-        balance: debtType === AccountDebtTypeEnum.BORROW ? t`Left to repay` : t`Left to receive`,
-        paid: debtType === AccountDebtTypeEnum.BORROW ? t`Repaid` : t`Returned`,
-        progress: debtType === AccountDebtTypeEnum.BORROW ? t`Repayment Progress` : t`Return Progress`,
-        total: debtType === AccountDebtTypeEnum.BORROW ? t`Borrowed` : t`Lent`
-    };
+
+    const directionLabel = debtType === AccountDebtTypeEnum.BORROW ? t`Left to repay` : t`Left to receive`;
+    const paidLabel = debtType === AccountDebtTypeEnum.BORROW ? t`Repaid` : t`Returned`;
+    const totalLabel = debtType === AccountDebtTypeEnum.BORROW ? t`Borrowed` : t`Lent`;
+    const directionIcon: UserIconNameEnum =
+        debtType === AccountDebtTypeEnum.BORROW ? UserIconNameEnum.ArrowDownLeft : UserIconNameEnum.ArrowUpRight;
+
+    const formattedOutstandingAmount = formatDigits(outstandingAmount, instrumentSymbol);
     const formattedPaidAmount = formatDigits(paidAmount, instrumentSymbol);
     const formattedTotalAmount = formatDigits(totalAmount, instrumentSymbol);
-    const outstandingAmountSelector = DebtAccountBalanceSelector.OutstandingAmount(outstandingAmount);
     const paidAmountSelector = DebtAccountBalanceSelector.PaidAmount(paidAmount);
     const percentageSelector = DebtAccountBalanceSelector.Percentage(percentage);
     const totalAmountSelector = DebtAccountBalanceSelector.TotalAmount(totalAmount);
+    const accessibilityLabel = `${directionLabel}: ${formattedOutstandingAmount}. ${paidLabel}: ${formattedPaidAmount}. ${totalLabel}: ${formattedTotalAmount}. ${percentage}%`;
 
     return (
-        <View className={containerVariants({ variant })}>
-            <Text className="font-medium text-xs uppercase text-secondary-foreground text-center">{labels.balance}</Text>
+        <View
+            accessible
+            accessibilityLabel={accessibilityLabel}
+            className="p-5xl border gap-y-md rounded-3xl border-secondary-corner bg-ghost-background"
+        >
+            <View className="flex-row items-center justify-between">
+                <View className="flex-row items-center gap-x-xs min-w-0">
+                    <Icon icon={directionIcon} size={12} className="text-secondary-foreground" />
+                    <Text className="text-secondary-foreground text-sm uppercase font-medium" numberOfLines={1}>
+                        {directionLabel}
+                    </Text>
+                </View>
+
+                <Text className="text-sm font-semibold text-primary" testID={percentageSelector}>
+                    {percentage}%
+                </Text>
+            </View>
 
             <ProtectedMoney
                 accessible
@@ -68,34 +65,20 @@ export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Prop
                 minFontSize={10}
                 maxFontSize={36}
                 instrumentSymbol={instrumentSymbol}
-                testID={outstandingAmountSelector}
+                testID={DebtAccountBalanceSelector.OutstandingAmount(outstandingAmount)}
             >
                 {outstandingAmount}
             </ProtectedMoney>
 
-            <View className="my-3xl h-px bg-secondary-corner" />
+            <DebtProgressTrack percentage={percentage} className="h-2.5" />
 
-            <View className="gap-y-xl">
-                <View className="flex-row items-center justify-between">
-                    <Text className="text-secondary-foreground text-sm uppercase font-medium">{labels.progress}</Text>
-
-                    <Text className={percentageTextVariants({ variant })} testID={percentageSelector}>
-                        {percentage}%
-                    </Text>
-                </View>
-
-                <View className="rounded-5xl bg-secondary-background overflow-hidden">
-                    <View className={barVariants({ debtType })} style={barStyle} />
-                </View>
-
-                <View className="flex-row items-center justify-between">
-                    <Text className="text-secondary-foreground text-sm" testID={paidAmountSelector}>
-                        {labels.paid}: {formattedPaidAmount}
-                    </Text>
-                    <Text className="text-secondary-foreground text-sm" testID={totalAmountSelector}>
-                        {labels.total}: {formattedTotalAmount}
-                    </Text>
-                </View>
+            <View className="flex-row items-center justify-between">
+                <Text className="text-secondary-foreground text-sm" testID={paidAmountSelector}>
+                    {paidLabel}: {formattedPaidAmount}
+                </Text>
+                <Text className="text-secondary-foreground text-sm" testID={totalAmountSelector}>
+                    {totalLabel}: {formattedTotalAmount}
+                </Text>
             </View>
         </View>
     );
