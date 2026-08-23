@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.1.3](https://github.com/budgie-at/budgie/compare/v6.1.2...v6.1.3) (2026-08-23)
+
+
+### Bug Fixes
+
+* **consolidation:** stand down bridge family on existing same-pair canonical ([21a9ea0](https://github.com/budgie-at/budgie/commit/21a9ea0b147692690fa0cf0cfcdd033484ac66b9))
+
+
+
+
+
 ## [6.1.2](https://github.com/budgie-at/budgie/compare/v6.1.1...v6.1.2) (2026-08-19)
 
 
