@@ -1906,10 +1906,12 @@ msgid "Left"
 msgstr "Залишилось"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Left to receive"
 msgstr "Залишилось отримати"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Left to repay"
 msgstr "Залишилось повернути"
 
@@ -2653,10 +2655,6 @@ msgstr "Виправити"
 msgid "Repair Bank Sync Data"
 msgstr "Виправити дані банківської синхронізації"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Repayment Progress"
-msgstr "Прогрес погашення"
-
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/app/(tabs)/settings/index.tsx
 msgid "Report a Bug"
@@ -2686,10 +2684,6 @@ msgstr "Відновити з файлу резервної копії"
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Return Progress"
-msgstr "Прогрес повернення"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Returned"

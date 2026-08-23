@@ -1906,10 +1906,12 @@ msgid "Left"
 msgstr "Restant"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Left to receive"
 msgstr "Reste à recevoir"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Left to repay"
 msgstr "Reste à rembourser"
 
@@ -2653,10 +2655,6 @@ msgstr "Réparer"
 msgid "Repair Bank Sync Data"
 msgstr "Réparer les données de synchro bancaire"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Repayment Progress"
-msgstr "Progression du remboursement"
-
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/app/(tabs)/settings/index.tsx
 msgid "Report a Bug"
@@ -2686,10 +2684,6 @@ msgstr "Restaurer à partir d'un fichier de sauvegarde"
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "Resuming AI…"
 msgstr "Reprise de l'IA…"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Return Progress"
-msgstr "Progression du retour"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Returned"
