@@ -1,7 +1,6 @@
 import { AccountDebtTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { cva } from 'class-variance-authority';
+import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
-import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -11,6 +10,7 @@ import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { buildDebtAccountProgressSummary } from '../../utils/build-debt-account-progress-summary.util';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
+import { DebtProgressTrack } from '../debt-progress-track/debt-progress-track';
 
 import type { DebtAccountProgressSummaryInterface } from '../../interface/debt-account-progress-summary.interface';
 import type { AccountEntityInterface } from '@budgie/contracts';
@@ -21,15 +21,6 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'createdAt' | 'title
     readonly debtProgressSummary?: DebtAccountProgressSummaryInterface;
     readonly instrumentSymbol: string;
 }
-
-const progressVariants = cva('absolute bottom-0 left-0 h-1', {
-    variants: {
-        debtType: {
-            [AccountDebtTypeEnum.LENT]: 'bg-positive-foreground',
-            [AccountDebtTypeEnum.BORROW]: 'bg-warning-foreground'
-        }
-    }
-});
 
 const getDeadlinePriority = (createdAt: Date, deadline: Date): 'high' | 'normal' => {
     const totalMs = deadline.getTime() - createdAt.getTime();
@@ -46,6 +37,7 @@ export const DebtAccountCard = (props: Props) => {
     const { id, createdAt, title, icon, balance, debtType, targetBalance, deadline, className, debtProgressSummary, instrumentSymbol } =
         props;
 
+    const { t } = useLingui();
     const { formatCompactFullDate } = useFormatDate();
 
     const fallbackSummary = buildDebtAccountProgressSummary({
@@ -67,7 +59,9 @@ export const DebtAccountCard = (props: Props) => {
         totalAmount: fallbackSummary.totalAmount
     };
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
-    const progressStyle: ViewStyle = { width: `${summary.percentage}%` };
+
+    const directionLabel = debtType === AccountDebtTypeEnum.BORROW ? t`Left to repay` : t`Left to receive`;
+    const directionIcon = debtType === AccountDebtTypeEnum.BORROW ? UserIconNameEnum.ArrowDownLeft : UserIconNameEnum.ArrowUpRight;
 
     const topRight = isDefined(deadline) ? (
         <View className="flex-row items-center gap-x-xs">
@@ -78,7 +72,6 @@ export const DebtAccountCard = (props: Props) => {
 
     const balanceContent = (
         <DebtAccountCardSummary
-            debtType={debtType}
             instrumentSymbol={instrumentSymbol}
             outstandingAmount={summary.outstandingAmount}
             paidAmount={summary.paidAmount}
@@ -100,7 +93,20 @@ export const DebtAccountCard = (props: Props) => {
             balanceContent={balanceContent}
             className={className}
         >
-            <View className={progressVariants({ debtType })} style={progressStyle} />
+            <View className="gap-y-sm">
+                <View className="flex-row items-center justify-between">
+                    <View className="flex-row items-center gap-x-xxs min-w-0">
+                        <Icon icon={directionIcon} size={10} className="text-secondary-foreground" />
+                        <Text className="text-secondary-foreground text-xxs" numberOfLines={1}>
+                            {directionLabel}
+                        </Text>
+                    </View>
+
+                    <Text className="text-xxs font-semibold text-primary">{summary.percentage}%</Text>
+                </View>
+
+                <DebtProgressTrack percentage={summary.percentage} className="h-1.5" />
+            </View>
         </AccountCardBase>
     );
 };
