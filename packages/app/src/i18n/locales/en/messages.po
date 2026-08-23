@@ -3018,10 +3018,6 @@ msgstr "Show budget on home"
 msgid "Show Cents"
 msgstr "Show Cents"
 
-#: src/app/transaction-amount-filter.tsx
-msgid "Show only transactions with a total inside this range, in your default currency."
-msgstr "Show only transactions with a total inside this range, in your default currency."
-
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
@@ -3030,6 +3026,10 @@ msgstr "Show selected range"
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx
 msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Show transactions when any main amount is inside this range, regardless of currency."
+msgstr "Show transactions when any main amount is inside this range, regardless of currency."
 
 #: src/transaction/components/transaction-info-page/transaction-info-page.tsx
 msgid "Similar transactions"

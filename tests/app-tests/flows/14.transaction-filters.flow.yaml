@@ -16,10 +16,12 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 - assertVisible:
+      id: 'TransactionCard.Label.E2E_Native_Amount_Transfer'
+- assertVisible:
       id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
 
 # Total transaction counter reflects all visible transactions when no filter is applied
-- assertVisible: '7 transactions'
+- assertVisible: '8 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -101,6 +103,7 @@ appId: ${APP_ID}
       timeout: 5000
 - tapOn:
       id: 'TransactionFilters.AccountGroupToggle.CASH'
+- waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'TransactionFilters.AccountOption.E2E Filter Cash A'
@@ -121,11 +124,13 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Expense'
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Native_Amount_Transfer'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Income'
 
-# Counter respects the account filter (matches the per-account total shown on the account screen)
-- assertVisible: '2 transactions'
+# Counter respects the account filter, including transfers into the selected account
+- assertVisible: '3 transactions'
 
 - swipe:
       from:
@@ -171,10 +176,90 @@ appId: ${APP_ID}
 
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Native_Amount_Transfer'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Income'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertVisible: '2 transactions'
+
+- tapOn:
+      id: 'TransactionFilters.ClearAllButton'
+
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Native_Amount_Transfer'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
+
+- tapOn:
+      id: 'TransactionFilters.AmountChip'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionFilters.AmountFromInput'
+      timeout: 3000
+- tapOn:
+      id: 'TransactionFilters.AmountFromInput'
+- inputText: '13'
+- tapOn:
+      id: 'TransactionFilters.AmountToInput'
+- inputText: '13'
+- tapOn:
+      id: 'TransactionFilters.AmountApplyButton'
+
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Native_Amount_Transfer'
+- assertVisible:
+      id: 'TransactionsPage.EmptyState'
+
+- tapOn:
+      id: 'TransactionFilters.ClearAllButton'
+
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Native_Amount_Transfer'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
+
+- tapOn:
+      id: 'TransactionFilters.AmountChip'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionFilters.AmountFromInput'
+      timeout: 3000
+- tapOn:
+      id: 'TransactionFilters.AmountFromInput'
+- inputText: '500'
+- tapOn:
+      id: 'TransactionFilters.AmountToInput'
+- inputText: '1000'
+- copyTextFrom:
+      id: 'TransactionFilters.AmountToInput'
+- assertTrue: ${maestro.copiedText == '1000'}
+- tapOn:
+      id: 'TransactionFilters.AmountApplyButton'
+
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Native_Amount_Transfer'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
 - assertVisible: '1 transaction'
 
 - tapOn:
@@ -188,49 +273,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
-
-- tapOn:
-      id: 'TransactionFilters.AmountChip'
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionFilters.AmountFromInput'
-      timeout: 3000
-- tapOn:
-      id: 'TransactionFilters.AmountToInput'
-- inputText: '6'
-- copyTextFrom:
-      id: 'TransactionFilters.AmountToInput'
-- assertTrue: ${maestro.copiedText == '6'}
-- tapOn:
-      id: 'TransactionFilters.AmountApplyButton'
-
-- assertVisible: 'To 6'
 - assertVisible:
-      id: 'TransactionCard.Label.E2E_Historical_UAH_2026'
-- assertVisible:
-      id: 'TransactionCard.Label.E2E_Historical_UAH_2011'
-- assertNotVisible:
-      id: 'TransactionCard.Label.E2E_Filter_Expense'
-- assertNotVisible:
-      id: 'TransactionCard.Label.E2E_Filter_Income'
-- assertNotVisible:
-      id: 'TransactionCard.Label.E2E_Filter_Transfer'
-- assertNotVisible:
-      id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
-- assertVisible: '2 transactions'
-
-- tapOn:
-      id: 'TransactionFilters.ClearAllButton'
-
-- assertVisible:
-      id: 'TransactionCard.Label.E2E_Filter_Expense'
-- assertVisible:
-      id: 'TransactionCard.Label.E2E_Filter_Income'
-- assertVisible:
-      id: 'TransactionCard.Label.E2E_Filter_Transfer'
-- assertVisible:
-      id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
-- assertVisible: '7 transactions'
+      id: 'TransactionCard.Label.E2E_Native_Amount_Transfer'
+- assertVisible: '8 transactions'
 
 - runFlow:
       file: subflows/categories/apply-category-filter.flow.yaml
@@ -371,6 +416,12 @@ appId: ${APP_ID}
 
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Date_Today_Expense'
+- scrollUntilVisible:
+      element:
+          id: 'TransactionCard.Label.E2E_Filter_Expense'
+      direction: DOWN
+      timeout: 10000
+      speed: 40
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Filter_Expense'
 - assertVisible:
@@ -429,7 +480,7 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.ClearAllButton'
 - assertVisible:
-      id: 'TransactionAnalyticsCard.Amount.Spent.40'
+      id: 'TransactionAnalyticsCard.Amount.Spent.40_294871'
 - assertVisible:
       id: 'CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.40000000'
 - assertNotVisible:
@@ -466,8 +517,8 @@ appId: ${APP_ID}
       timeout: 5000
 
 # Counter on the account screen reflects only this account's transactions
-# (original expense + transfer + the expense created earlier in this flow)
-- assertVisible: '3 transactions'
+# (original expense + transfer + native amount transfer + the expense created earlier in this flow)
+- assertVisible: '4 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'

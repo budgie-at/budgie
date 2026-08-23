@@ -50,7 +50,7 @@ export default function TransactionAmountFilterModal() {
 
             <View className="flex-1 px-7xl" style={contentStyle}>
                 <Text className="text-secondary-foreground text-sm mb-7xl">
-                    <Trans>Show only transactions with a total inside this range, in your default currency.</Trans>
+                    <Trans>Show transactions when any main amount is inside this range, regardless of currency.</Trans>
                 </Text>
 
                 <View className="gap-y-4xl">

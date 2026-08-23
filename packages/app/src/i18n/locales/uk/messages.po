@@ -3017,10 +3017,6 @@ msgstr "Показувати бюджет на головній"
 msgid "Show Cents"
 msgstr "Показати копійки"
 
-#: src/app/transaction-amount-filter.tsx
-msgid "Show only transactions with a total inside this range, in your default currency."
-msgstr "Показувати лише транзакції із загальною сумою в цьому діапазоні у вашій стандартній валюті."
-
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
@@ -3029,6 +3025,10 @@ msgstr "Показати вибраний діапазон"
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx
 msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Show transactions when any main amount is inside this range, regardless of currency."
+msgstr "Показувати транзакції, коли будь-яка основна сума потрапляє в цей діапазон, незалежно від валюти."
 
 #: src/transaction/components/transaction-info-page/transaction-info-page.tsx
 msgid "Similar transactions"
