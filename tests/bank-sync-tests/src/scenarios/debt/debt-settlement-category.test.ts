@@ -103,7 +103,11 @@ const createSettlementTransaction = (
 };
 
 const createUserCategorizedExpenseFixture = async () => {
-    const [userCategory] = testDb.select().from(CategoryEntityTable).all();
+    const userCategory = testDb
+        .select()
+        .from(CategoryEntityTable)
+        .all()
+        .find(row => row.id !== DEBT_PAYMENT_CATEGORY_ID);
     const cashAccount = createCashAccount();
     const debtAccount = createDebtAccount();
     const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, userCategory.id);
