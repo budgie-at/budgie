@@ -18,27 +18,26 @@ interface Props {
     readonly summary: DebtAccountProgressSummaryInterface;
 }
 
-// eslint-disable-next-line max-statements -- Debt balance component with many derived labels and test selectors
+const isBorrowed = (debtType: AccountDebtTypeEnum): boolean => debtType === AccountDebtTypeEnum.BORROW;
+
 export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Props) => {
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const { outstandingAmount, paidAmount, percentage, totalAmount } = summary;
+    const borrowed = isBorrowed(debtType);
 
-    const directionLabel = debtType === AccountDebtTypeEnum.BORROW ? t`Left to repay` : t`Left to receive`;
-    const paidLabel = debtType === AccountDebtTypeEnum.BORROW ? t`Repaid` : t`Returned`;
-    const totalLabel = debtType === AccountDebtTypeEnum.BORROW ? t`Borrowed` : t`Lent`;
-    const directionIcon: UserIconNameEnum =
-        debtType === AccountDebtTypeEnum.BORROW ? UserIconNameEnum.ArrowDownLeft : UserIconNameEnum.ArrowUpRight;
-
+    const labels = {
+        directionIcon: borrowed ? UserIconNameEnum.ArrowDownLeft : UserIconNameEnum.ArrowUpRight,
+        directionLabel: borrowed ? t`Left to repay` : t`Left to receive`,
+        paidLabel: borrowed ? t`Repaid` : t`Returned`,
+        totalLabel: borrowed ? t`Borrowed` : t`Lent`
+    };
     const formattedOutstandingAmount = formatDigits(outstandingAmount, instrumentSymbol);
     const formattedPaidAmount = formatDigits(paidAmount, instrumentSymbol);
     const formattedTotalAmount = formatDigits(totalAmount, instrumentSymbol);
-    const paidAmountSelector = DebtAccountBalanceSelector.PaidAmount(paidAmount);
-    const percentageSelector = DebtAccountBalanceSelector.Percentage(percentage);
-    const totalAmountSelector = DebtAccountBalanceSelector.TotalAmount(totalAmount);
-    const accessibilityLabel = `${directionLabel}: ${formattedOutstandingAmount}. ${paidLabel}: ${formattedPaidAmount}. ${totalLabel}: ${formattedTotalAmount}. ${percentage}%`;
+    const accessibilityLabel = `${labels.directionLabel}: ${formattedOutstandingAmount}. ${labels.paidLabel}: ${formattedPaidAmount}. ${labels.totalLabel}: ${formattedTotalAmount}. ${percentage}%`;
 
     return (
         <View
@@ -46,15 +45,15 @@ export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Prop
             accessibilityLabel={accessibilityLabel}
             className="p-5xl border gap-y-md rounded-3xl border-secondary-corner bg-ghost-background"
         >
-            <View className="flex-row items-center justify-between">
-                <View className="flex-row items-center gap-x-xs min-w-0">
-                    <Icon icon={directionIcon} size={12} className="text-secondary-foreground" />
-                    <Text className="text-secondary-foreground text-sm uppercase font-medium" numberOfLines={1}>
-                        {directionLabel}
+            <View className="flex-row items-center justify-between gap-x-sm">
+                <View className="flex-row flex-1 items-center gap-x-xs min-w-0">
+                    <Icon icon={labels.directionIcon} size={12} className="text-secondary-foreground" />
+                    <Text className="text-secondary-foreground text-sm uppercase font-medium flex-shrink" numberOfLines={1}>
+                        {labels.directionLabel}
                     </Text>
                 </View>
 
-                <Text className="text-sm font-semibold text-primary" testID={percentageSelector}>
+                <Text className="text-sm font-semibold text-primary" testID={DebtAccountBalanceSelector.Percentage(percentage)}>
                     {percentage}%
                 </Text>
             </View>
@@ -73,11 +72,11 @@ export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Prop
             <DebtProgressTrack percentage={percentage} className="h-2.5" />
 
             <View className="flex-row items-center justify-between">
-                <Text className="text-secondary-foreground text-sm" testID={paidAmountSelector}>
-                    {paidLabel}: {formattedPaidAmount}
+                <Text className="text-secondary-foreground text-sm" testID={DebtAccountBalanceSelector.PaidAmount(paidAmount)}>
+                    {labels.paidLabel}: {formattedPaidAmount}
                 </Text>
-                <Text className="text-secondary-foreground text-sm" testID={totalAmountSelector}>
-                    {totalLabel}: {formattedTotalAmount}
+                <Text className="text-secondary-foreground text-sm" testID={DebtAccountBalanceSelector.TotalAmount(totalAmount)}>
+                    {labels.totalLabel}: {formattedTotalAmount}
                 </Text>
             </View>
         </View>
