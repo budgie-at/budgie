@@ -1,5 +1,11 @@
 import { REFUND_TIME_WINDOW_SECONDS, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
+import {
+    AUTO_TITLE_PREFIXES,
+    REJECTED_PAYMENT_FEE_TITLE_PREFIXES,
+    REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES,
+    REVIEW_TITLE_PREFIXES
+} from '../../../shared/constant/refund-title-prefixes.constant';
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
@@ -13,36 +19,6 @@ const REFUND_CEILING_SQL = `CASE WHEN confidenceBucket = 'AUTO_REFUND_REJECTED_P
 
 const AMBIGUITY_RESOLVED_SQL = `(refundCandidateCount = 1 OR (confidenceBucket = 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
     AND expenseAmount = refundAmount AND expenseRank = 1 AND localizedExactAmountMatchCount = 1))`;
-
-const REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES = [
-    'Повернення коштів за забракованим платежем',
-    'ПОВЕРНЕННЯ КОШТІВ ЗА ЗАБРАКОВАНИМ ПЛАТЕЖЕМ'
-] as const;
-
-const REJECTED_PAYMENT_FEE_TITLE_PREFIXES = ['Повернення комісій', 'ПОВЕРНЕННЯ КОМІСІЙ'] as const;
-
-const AUTO_TITLE_PREFIXES = [
-    'Скасування. ',
-    'Скасування.',
-    'Скасування ',
-    'ПОВЕРНЕННЯ КОШТІВ, ',
-    'Повернення коштів, ',
-    'Повернення, ',
-    'Повернення '
-] as const;
-
-const REVIEW_TITLE_PREFIXES = [
-    ...AUTO_TITLE_PREFIXES,
-    'REFUND ',
-    'REFUND',
-    'RETURN ',
-    'RETURN',
-    'REVERSAL ',
-    'REVERSAL',
-    'CHARGEBACK ',
-    'CHARGEBACK',
-    'CR '
-] as const;
 
 const buildStripPrefixesSql = (seedExpression: string, prefixes: readonly string[]): string =>
     `TRIM(${prefixes.reduce((acc, prefix) => `REPLACE(${acc}, '${prefix}', '')`, seedExpression)})`;
@@ -159,7 +135,7 @@ const buildCompatiblePairsSql = (): string => `
                 THEN 'AUTO_REFUND_REJECTED_PAYMENT_FEE_TITLE'
                 WHEN (inc.reviewNormTitle = exp.reviewNormTitle OR inc.reviewMerchantNormTitle = exp.reviewMerchantNormTitle)
                     AND inc.reviewMerchantNormTitle != ''
-                    AND inc.mccCategoryId = exp.mccCategoryId
+                    AND (inc.mccCategoryId = exp.mccCategoryId OR (inc.mccCategoryId IS NULL AND exp.mccCategoryId IS NULL))
                     AND inc.rawNormTitle != exp.rawNormTitle AND inc.operatedAt > exp.operatedAt
                     AND (inc.operatedAt - exp.operatedAt) <= ${MANUAL_REVIEW_TIME_WINDOW_SECONDS}
                 THEN 'REVIEW_REFUND_PREFIX_TITLE_MCC'
