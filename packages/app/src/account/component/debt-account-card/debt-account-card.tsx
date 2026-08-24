@@ -95,7 +95,7 @@ export const DebtAccountCard = (props: Props) => {
         >
             <View className="gap-y-sm">
                 <View className="flex-row items-center justify-between">
-                    <View className="flex-row items-center gap-x-xxs min-w-0">
+                    <View className="flex-row flex-1 items-center gap-x-xxs min-w-0">
                         <Icon icon={directionIcon} size={10} className="text-secondary-foreground" />
                         <Text className="text-secondary-foreground text-xxs" numberOfLines={1}>
                             {directionLabel}
