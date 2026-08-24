@@ -16,7 +16,7 @@ WHERE category_id IS NULL
   AND EXISTS (
       SELECT 1
       FROM debt_events
-      INNER JOIN transactions ON transactions.id = debt_events.transaction_id
+      INNER JOIN transactions ON transactions.id = transaction_entries.transaction_id
       WHERE debt_events.transaction_entry_id = transaction_entries.id
         AND debt_events.deleted_at IS NULL
         AND debt_events.direction = 'CLOSE'
