@@ -108,6 +108,11 @@ const createUserCategorizedExpenseFixture = async () => {
         .from(CategoryEntityTable)
         .all()
         .find(row => row.id !== DEBT_PAYMENT_CATEGORY_ID);
+
+    if (!isDefined(userCategory)) {
+        throw new Error('No non-debt-payment category seeded');
+    }
+
     const cashAccount = createCashAccount();
     const debtAccount = createDebtAccount();
     const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, userCategory.id);
