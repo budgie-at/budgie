@@ -1,11 +1,6 @@
 import { REFUND_TIME_WINDOW_SECONDS, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-import {
-    AUTO_TITLE_PREFIXES,
-    REJECTED_PAYMENT_FEE_TITLE_PREFIXES,
-    REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES,
-    REVIEW_TITLE_PREFIXES
-} from '../../../shared/constant/refund-title-prefixes.constant';
+import { REFUND_TITLE_PREFIXES } from '../../../shared/constant/refund-title-prefixes.constant';
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
@@ -124,11 +119,11 @@ const buildCompatiblePairsSql = (): string => `
                     AND inc.rawNormTitle != exp.rawNormTitle AND inc.operatedAt > exp.operatedAt
                     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
                 THEN 'AUTO_REFUND_LOCALIZED_REFUND_TITLE'
-                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES)} AND inc.accountId = exp.accountId
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REFUND_TITLE_PREFIXES.rejectedPaymentPrincipal)} AND inc.accountId = exp.accountId
                     AND inc.amount = exp.amount AND inc.operatedAt > exp.operatedAt
                     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
                 THEN 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE'
-                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_FEE_TITLE_PREFIXES)} AND inc.accountId = exp.accountId
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REFUND_TITLE_PREFIXES.rejectedPaymentFee)} AND inc.accountId = exp.accountId
                     AND exp.feeAmount IS NOT NULL AND inc.amount = exp.feeAmount
                     AND inc.operatedAt > exp.operatedAt
                     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
@@ -144,8 +139,8 @@ const buildCompatiblePairsSql = (): string => `
             CASE
                 WHEN inc.rawNormTitle = exp.rawNormTitle THEN 'exact-title'
                 WHEN inc.autoNormTitle = exp.autoNormTitle THEN 'localized-refund-title'
-                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES)} THEN 'rejected-payment-principal-title'
-                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REJECTED_PAYMENT_FEE_TITLE_PREFIXES)} THEN 'rejected-payment-fee-title'
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REFUND_TITLE_PREFIXES.rejectedPaymentPrincipal)} THEN 'rejected-payment-principal-title'
+                WHEN ${buildPrefixLikeSql('inc.rawNormTitle', REFUND_TITLE_PREFIXES.rejectedPaymentFee)} THEN 'rejected-payment-fee-title'
                 ELSE 'prefix-title-mcc'
             END AS matchType
         FROM income_entries inc
@@ -223,10 +218,10 @@ const buildFilledCandidatesSql = (): string => `
 `;
 
 const buildRankedCandidateSql = (scope: ConsolidationScanScopeInterface | null): string => {
-    const expenseAutoTitle = buildStripPrefixesSql('UPPER(TRIM(expense_tx.title))', AUTO_TITLE_PREFIXES);
-    const incomeAutoTitle = buildStripPrefixesSql('UPPER(TRIM(income_tx.title))', AUTO_TITLE_PREFIXES);
-    const expenseReviewTitle = buildStripPrefixesSql('UPPER(TRIM(expense_tx.title))', REVIEW_TITLE_PREFIXES);
-    const incomeReviewTitle = buildStripPrefixesSql('UPPER(TRIM(income_tx.title))', REVIEW_TITLE_PREFIXES);
+    const expenseAutoTitle = buildStripPrefixesSql('UPPER(TRIM(expense_tx.title))', REFUND_TITLE_PREFIXES.auto);
+    const incomeAutoTitle = buildStripPrefixesSql('UPPER(TRIM(income_tx.title))', REFUND_TITLE_PREFIXES.auto);
+    const expenseReviewTitle = buildStripPrefixesSql('UPPER(TRIM(expense_tx.title))', REFUND_TITLE_PREFIXES.review);
+    const incomeReviewTitle = buildStripPrefixesSql('UPPER(TRIM(income_tx.title))', REFUND_TITLE_PREFIXES.review);
     const expenseReviewMerchantTitle = buildStripCommaSuffixSql(expenseReviewTitle);
     const incomeReviewMerchantTitle = buildStripCommaSuffixSql(incomeReviewTitle);
 

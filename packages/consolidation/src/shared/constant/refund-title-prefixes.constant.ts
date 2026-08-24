@@ -1,11 +1,4 @@
-export const REJECTED_PAYMENT_PRINCIPAL_TITLE_PREFIXES = [
-    'Повернення коштів за забракованим платежем',
-    'ПОВЕРНЕННЯ КОШТІВ ЗА ЗАБРАКОВАНИМ ПЛАТЕЖЕМ'
-] as const;
-
-export const REJECTED_PAYMENT_FEE_TITLE_PREFIXES = ['Повернення комісій', 'ПОВЕРНЕННЯ КОМІСІЙ'] as const;
-
-export const AUTO_TITLE_PREFIXES = [
+const AUTO_PREFIXES = [
     'Скасування. ',
     'Скасування.',
     'Скасування ',
@@ -25,15 +18,20 @@ export const AUTO_TITLE_PREFIXES = [
     'Платіж '
 ] as const;
 
-export const REVIEW_TITLE_PREFIXES = [
-    ...AUTO_TITLE_PREFIXES,
-    'REFUND ',
-    'REFUND',
-    'RETURN ',
-    'RETURN',
-    'REVERSAL ',
-    'REVERSAL',
-    'CHARGEBACK ',
-    'CHARGEBACK',
-    'CR '
-] as const;
+export const REFUND_TITLE_PREFIXES = {
+    auto: AUTO_PREFIXES,
+    rejectedPaymentFee: ['Повернення комісій', 'ПОВЕРНЕННЯ КОМІСІЙ'] as const,
+    rejectedPaymentPrincipal: ['Повернення коштів за забракованим платежем', 'ПОВЕРНЕННЯ КОШТІВ ЗА ЗАБРАКОВАНИМ ПЛАТЕЖЕМ'] as const,
+    review: [
+        ...AUTO_PREFIXES,
+        'REFUND ',
+        'REFUND',
+        'RETURN ',
+        'RETURN',
+        'REVERSAL ',
+        'REVERSAL',
+        'CHARGEBACK ',
+        'CHARGEBACK',
+        'CR '
+    ] as const
+};

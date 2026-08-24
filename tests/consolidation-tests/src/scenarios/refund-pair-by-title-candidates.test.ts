@@ -1,13 +1,18 @@
+import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
 import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
 
-const LIME_AMOUNT = 898_000_000;
-const POSLUGY_AMOUNT = 85_000_000;
-const COMFY_AMOUNT = 8_378_400_000;
-const OBB_AMOUNT = 3_963_900_000;
+const LIME_AMOUNT_UAH = 898;
+const LIME_AMOUNT = convertToMicroUnits(LIME_AMOUNT_UAH);
+const POSLUGY_AMOUNT_UAH = 85;
+const POSLUGY_AMOUNT = convertToMicroUnits(POSLUGY_AMOUNT_UAH);
+const COMFY_AMOUNT_UAH = 8_378.4;
+const COMFY_AMOUNT = convertToMicroUnits(COMFY_AMOUNT_UAH);
+const OBB_AMOUNT_UAH = 3_963.9;
+const OBB_AMOUNT = convertToMicroUnits(OBB_AMOUNT_UAH);
 const FIRST_OBB_OPERATED_AT = new Date('2024-12-10T19:40:59');
 const SECOND_OBB_OPERATED_AT = new Date('2024-12-10T19:43:29');
 const FIRST_OBB_REFUND_DELAY_SECONDS = 68;

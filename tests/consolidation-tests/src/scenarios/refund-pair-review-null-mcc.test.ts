@@ -1,8 +1,10 @@
+import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { describe, expect, it } from 'vitest';
 
 import { refundPairRepository, testSeedService } from '../harness/test-context';
 
-const COMFY_REVIEW_AMOUNT = 120_000_000;
+const COMFY_REVIEW_AMOUNT_UAH = 120;
+const COMFY_REVIEW_AMOUNT = convertToMicroUnits(COMFY_REVIEW_AMOUNT_UAH);
 
 describe('consolidation/refund-pair-review-null-mcc', () => {
     it('surfaces a prefix-stripped pair without MCC data for manual review', async () => {

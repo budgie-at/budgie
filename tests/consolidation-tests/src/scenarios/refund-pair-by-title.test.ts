@@ -1,4 +1,5 @@
-import { PRECISION, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
+import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
@@ -6,14 +7,15 @@ import { runRefundScenario } from '../harness/run-refund-scenario';
 import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
 
 const APPLE_STORE_AMOUNT_UAH = 120;
-const APPLE_STORE_AMOUNT = APPLE_STORE_AMOUNT_UAH * PRECISION;
+const APPLE_STORE_AMOUNT = convertToMicroUnits(APPLE_STORE_AMOUNT_UAH);
 const LIME_AMOUNT_UAH = 898;
-const LIME_AMOUNT = LIME_AMOUNT_UAH * PRECISION;
+const LIME_AMOUNT = convertToMicroUnits(LIME_AMOUNT_UAH);
 const POSLUGY_AMOUNT_UAH = 85;
-const POSLUGY_AMOUNT = POSLUGY_AMOUNT_UAH * PRECISION;
-const COMFY_AMOUNT = 8_378_400_000;
+const POSLUGY_AMOUNT = convertToMicroUnits(POSLUGY_AMOUNT_UAH);
+const COMFY_AMOUNT_UAH = 8_378.4;
+const COMFY_AMOUNT = convertToMicroUnits(COMFY_AMOUNT_UAH);
 const ROZETKA_AMOUNT_UAH = 1200;
-const ROZETKA_AMOUNT = ROZETKA_AMOUNT_UAH * PRECISION;
+const ROZETKA_AMOUNT = convertToMicroUnits(ROZETKA_AMOUNT_UAH);
 const FIRST_LIME_OPERATED_AT = new Date('2026-01-15T12:00:00');
 const SECOND_LIME_OPERATED_AT = new Date('2026-01-16T12:00:00');
 
