@@ -1,18 +1,13 @@
-import { AccountDebtTypeEnum } from '@budgie/contracts';
-import { cva } from 'class-variance-authority';
 import { View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { abbreviateNumber } from '../../../@generic/utils/abbriviate-number.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 
 import { DebtAccountCardSummarySelector } from './debt-account-card-summary.selector';
 
 interface Props {
-    readonly debtType: AccountDebtTypeEnum;
     readonly instrumentSymbol: string;
     readonly outstandingAmount: number;
     readonly paidAmount: number;
@@ -20,11 +15,7 @@ interface Props {
     readonly totalAmount: number;
 }
 
-const textVariant = cva('text-xxs font-semibold text-right border-b border-b-secondary-corner pb-[2px]', {
-    variants: { variant: FOREGROUND_COLOR_PALETTE }
-});
-
-export const DebtAccountCardSummary = ({ debtType, instrumentSymbol, outstandingAmount, paidAmount, title, totalAmount }: Props) => {
+export const DebtAccountCardSummary = ({ instrumentSymbol, outstandingAmount, paidAmount, title, totalAmount }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatMoney = useFormatDigits(decimalPlaces);
     const amountLeft = formatMoney(outstandingAmount, instrumentSymbol);
@@ -52,7 +43,7 @@ export const DebtAccountCardSummary = ({ debtType, instrumentSymbol, outstanding
             <View className="shrink-0 items-end max-w-[45%]">
                 <ProtectedText
                     adjustsFontSizeToFit
-                    className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}
+                    className="text-xxs font-semibold text-right border-b border-b-primary pb-[2px]"
                     minimumFontScale={0.72}
                     numberOfLines={1}
                     testID={paidAmountSelector}
