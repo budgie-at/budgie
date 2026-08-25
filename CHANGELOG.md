@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.2.1](https://github.com/budgie-at/budgie/compare/v6.2.0...v6.2.1) (2026-08-25)
+
+
+### Bug Fixes
+
+* **app:** categorize debt settlement expenses as Debt Payments ([f5aae05](https://github.com/budgie-at/budgie/commit/f5aae05d67217b826191b42d6a402af9372ac665))
+* **app:** harden debt settlement backfill join and add uncategorized attach e2e ([690b01f](https://github.com/budgie-at/budgie/commit/690b01f85066580b243c4a3c57083b1e37377a42))
+* **bank-sync-tests:** guard seeded category lookup ([379627d](https://github.com/budgie-at/budgie/commit/379627d127c4ea7c15011c6c745e0e9b79df7506))
+* **consolidation:** match Monobank payment refund titles ([#683](https://github.com/budgie-at/budgie/issues/683)) ([a3fc81a](https://github.com/budgie-at/budgie/commit/a3fc81a5f0d04948c0cb85cb9c2e1e39d725341d))
+
+
+
+
+
 # [6.2.0](https://github.com/budgie-at/budgie/compare/v6.1.3...v6.2.0) (2026-08-24)
 
 
