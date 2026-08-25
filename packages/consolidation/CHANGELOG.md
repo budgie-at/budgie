@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.2.1](https://github.com/budgie-at/budgie/compare/v6.2.0...v6.2.1) (2026-08-25)
+
+
+### Bug Fixes
+
+* **consolidation:** match Monobank payment refund titles ([#683](https://github.com/budgie-at/budgie/issues/683)) ([a3fc81a](https://github.com/budgie-at/budgie/commit/a3fc81a5f0d04948c0cb85cb9c2e1e39d725341d))
+
+
+
+
+
 ## [6.1.3](https://github.com/budgie-at/budgie/compare/v6.1.2...v6.1.3) (2026-08-23)
 
 
