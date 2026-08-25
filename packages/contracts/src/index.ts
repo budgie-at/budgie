@@ -164,6 +164,7 @@ export { InstrumentDailyMarketPriceRepository } from './instrument-daily-market-
 export { InstrumentMarketDataJobRepository } from './instrument-market-data-job/repository/instrument-market-data-job.repository';
 
 export { BANK_FEE_CATEGORY_ID } from './category/constant/bank-fee-category-id.constant';
+export { DEBT_PAYMENT_CATEGORY_ID } from './category/constant/debt-payment-category-id.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
 export { CATEGORY_TITLE_MIN_LENGTH } from './category/constant/category-title-min-length.constant';
 
