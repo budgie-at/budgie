@@ -180,6 +180,12 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return this.executeSyncLoop();
         }
 
+        if (this.shouldKeepSyncsEnabledAfterError(error)) {
+            await this.recordSyncsFailedWithoutDisabling(enabledSyncs, errorMessage);
+
+            return BackgroundTask.BackgroundTaskResult.Failed;
+        }
+
         await this.disableFailedSyncs(enabledSyncs, error, errorMessage);
 
         return BackgroundTask.BackgroundTaskResult.Failed;
@@ -260,6 +266,10 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return false;
     }
 
+    protected shouldKeepSyncsEnabledAfterError(_error: unknown): boolean {
+        return false;
+    }
+
     private startSyncRun(deadlineAtMs: number): void {
         this.isRunning = true;
         this.runDeadlineAtMs = deadlineAtMs;
@@ -297,6 +307,15 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         }
 
         await Promise.all(disableSyncPromises);
+    }
+
+    private async recordSyncsFailedWithoutDisabling(enabledSyncs: SyncEntityInterface[], errorMessage: string): Promise<void> {
+        const updateSyncPromises: Array<Promise<unknown>> = [];
+        for (const sync of enabledSyncs) {
+            updateSyncPromises.push(syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage }));
+        }
+
+        await Promise.all(updateSyncPromises);
     }
 
     private async resolveSyncsToDisable(enabledSyncs: SyncEntityInterface[], error: unknown): Promise<SyncEntityInterface[]> {

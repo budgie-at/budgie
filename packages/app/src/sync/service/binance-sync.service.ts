@@ -69,6 +69,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     private runClientToken: string | null = null;
     private runExchangeAccounts: SyncAccountInterface[] | null = null;
     private fiatSyncedAtMs: number | null = null;
+    private providerSourceFailedThisRun = false;
 
     @Log(
         token => `enter keyLen=${token.length}`,
@@ -174,7 +175,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
             return changedCount;
         } catch (error) {
-            if (!this.isDeadlineDeferral(error)) {
+            if (!(error instanceof SyncError && error.code === SyncErrorCodeEnum.DEFERRED)) {
                 throw error;
             }
             this.runDeferred = true;
@@ -213,6 +214,10 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
     protected override isCredentialWideError(error: unknown): boolean {
         return error instanceof SyncError && error.code === SyncErrorCodeEnum.UNAUTHORIZED;
+    }
+
+    protected override shouldKeepSyncsEnabledAfterError(error: unknown): boolean {
+        return this.providerSourceFailedThisRun && error instanceof SyncError && error.code === SyncErrorCodeEnum.INVALID_RESPONSE;
     }
 
     protected override generateAccountTitle(account: SyncAccountInterface): string {
@@ -287,7 +292,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         }
 
         let createdCount = 0;
-        if (this.shouldRefreshFiatHistory()) {
+        if (!isDefined(this.fiatSyncedAtMs) || Date.now() - this.fiatSyncedAtMs >= AppBinanceSyncService.FIAT_REFRESH_INTERVAL_MS) {
             const client = this.getRunSignedClient(token);
             const fromUnixTime = getUnixTime(this.resolveWindowStart(sync));
             createdCount += await this.commitSourceType(token, () => client.getFiatTransactions(fromUnixTime), false);
@@ -296,10 +301,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         this.sourcesSyncedThisRun = true;
 
         return createdCount;
-    }
-
-    private shouldRefreshFiatHistory(): boolean {
-        return !isDefined(this.fiatSyncedAtMs) || Date.now() - this.fiatSyncedAtMs >= AppBinanceSyncService.FIAT_REFRESH_INTERVAL_MS;
     }
 
     private async commitSourceType(
@@ -320,11 +321,10 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         }
 
         const newTransactions = transactions.filter(sourceTransaction => !existingIdMap.has(sourceTransaction.id));
-        if (!isNotEmptyArray(newTransactions)) {
-            return reconciledCount;
-        }
 
-        return reconciledCount + (await this.createSyncedSources(newTransactions, token));
+        return isNotEmptyArray(newTransactions)
+            ? reconciledCount + (await this.createSyncedSources(newTransactions, token))
+            : reconciledCount;
     }
 
     private async enqueueExistingSourceConsolidation(
@@ -392,9 +392,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             return 0;
         }
 
-        const created = await transactionService.bulkCreate(inputs);
-
-        return created.length;
+        return (await transactionService.bulkCreate(inputs)).length;
     }
 
     private async fetchTransferBatch(
@@ -464,10 +462,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         this.runSignedClient = null;
         this.runClientToken = null;
         this.runExchangeAccounts = null;
-    }
-
-    private isDeadlineDeferral(error: unknown): boolean {
-        return error instanceof SyncError && error.code === SyncErrorCodeEnum.DEFERRED;
+        this.providerSourceFailedThisRun = false;
     }
 
     private resolveWindowStart(sync: SyncEntityInterface): Date {
@@ -490,6 +485,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             return result.data;
         }
 
+        this.providerSourceFailedThisRun = true;
         throw SyncError.from(result.error);
     }
 
