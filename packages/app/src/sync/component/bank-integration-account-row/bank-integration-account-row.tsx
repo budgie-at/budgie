@@ -13,7 +13,7 @@ import { useAccountBalanceQuery } from '../../../account/query/use-account-balan
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useAccountSync } from '../../hook/use-account-sync.hook';
-import { monobankSyncService } from '../../service/monobank-sync.service';
+import { syncProviderRegistryService } from '../../service/sync-provider-registry.service';
 
 interface Props {
     readonly account: Pick<AccountWithInstrumentEntityInterface, 'id' | 'title' | 'icon' | AccountAssociationEnum.INSTRUMENT>;
@@ -26,7 +26,10 @@ export const BankIntegrationAccountRow = ({ account, isLiveApi }: Props) => {
     const formatDigits = useDisplayFormatDigits();
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
-    const handleToggle = (enabled: boolean) => void monobankSyncService.setAccountSyncEnabled(account.id, enabled);
+    const handleToggle = (enabled: boolean) =>
+        void syncProviderRegistryService
+            .getServiceForAccount(account.id)
+            .then(service => service?.setAccountSyncEnabled(account.id, enabled));
 
     const toggle =
         isLiveApi && hasSync && isDefined(sync) ? (
