@@ -12,192 +12,24 @@ concurrency:
 permissions:
     contents: read
 
-env:
-    EAS_CLI_VERSION: '20.5.1'
-    APP_VARIANT: e2e
-    EXPO_PUBLIC_AI_DISABLE: 'true'
-    EXPO_PUBLIC_LOGGING_DISABLE: 'true'
-    EXPO_USE_PRECOMPILED_MODULES: '1'
-    RCT_USE_PREBUILT_RNCORE: '1'
-    RCT_USE_RN_DEP: '1'
-    IOS_DERIVED_DATA: ${{ github.workspace }}/.ci-cache/DerivedData/budgie-e2e
-    USE_CCACHE: '1'
-    CCACHE_DIR: ${{ github.workspace }}/.ci-cache/ccache
-    CCACHE_BASEDIR: ${{ github.workspace }}
-    CCACHE_COMPRESS: 'true'
-    CCACHE_MAXSIZE: 2G
-    CCACHE_NOHASHDIR: 'true'
-
 jobs:
     seed:
-        name: Seed fingerprinted native app
-        runs-on: [self-hosted, macOS, ARM64, macos-builder]
-        timeout-minutes: 120
-        steps:
-            - uses: actions/checkout@v5
-              with:
-                  persist-credentials: false
-
-            - name: Setup macOS toolchain PATH
-              shell: bash
-              run: |
-                  echo "$HOME/.rbenv/shims" >> "$GITHUB_PATH"
-                  echo '/opt/homebrew/bin' >> "$GITHUB_PATH"
-                  echo '/opt/homebrew/sbin' >> "$GITHUB_PATH"
-
-            - uses: actions/setup-node@v6
-              with:
-                  node-version: 22.x
-
-            - name: Install dependencies
-              run: yarn install
-
-            - name: Build internal workspace packages
-              run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
-
-            - name: Setup EAS CLI
-              uses: expo/expo-github-action@v9
-              with:
-                  eas-version: ${{ env.EAS_CLI_VERSION }}
-                  token: ${{ secrets.EXPO_TOKEN }}
-
-            - name: Generate native fingerprint
-              id: fingerprint
-              working-directory: packages/app
-              shell: bash
-              run: |
-                  set -euo pipefail
-                  eas fingerprint:generate \
-                    --build-profile e2e \
-                    --platform ios \
-                    --json \
-                    --non-interactive > "$RUNNER_TEMP/ios-fingerprint.json"
-                  hash=$(jq -er '.hash' "$RUNNER_TEMP/ios-fingerprint.json")
-                  echo "hash=$hash" >> "$GITHUB_OUTPUT"
-                  echo "Native fingerprint: $hash"
-
-            - name: Restore canonical native app
-              id: native-app-cache
-              uses: actions/cache/restore@v5
-              with:
-                  path: .ci-cache/ios-native-app
-                  key: ios-native-v1-budgie-e2e-${{ runner.os }}-arm64-xcode26_4_1-17E202-${{ steps.fingerprint.outputs.hash }}
-
-            - name: Report cache hit
-              if: steps.native-app-cache.outputs.cache-hit == 'true'
-              run: echo 'Canonical native app already exists for this fingerprint.'
-
-            - name: Select Xcode 26.4.1
-              if: steps.native-app-cache.outputs.cache-hit != 'true'
-              run: |
-                  XCODE_APP=/Applications/Xcode_26.4.1.app
-                  if [ ! -d "$XCODE_APP" ]; then
-                    echo '::error::Xcode 26.4.1 is not installed on this runner.'
-                    exit 1
-                  fi
-                  echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
-                  xcode_version=$("$XCODE_APP/Contents/Developer/usr/bin/xcodebuild" -version)
-                  printf '%s\n' "$xcode_version"
-                  grep -qx 'Xcode 26.4.1' <<< "$xcode_version"
-                  grep -qx 'Build version 17E202' <<< "$xcode_version"
-
-            - name: Restore CocoaPods cache
-              if: steps.native-app-cache.outputs.cache-hit != 'true'
-              uses: actions/cache/restore@v5
-              with:
-                  path: |
-                      ~/Library/Caches/CocoaPods
-                      ~/.cocoapods
-                  key: pods-${{ runner.os }}-xcode26_4_1-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-                  restore-keys: |
-                      pods-${{ runner.os }}-xcode26_4_1-
-                      pods-${{ runner.os }}-
-
-            - name: Setup ccache
-              if: steps.native-app-cache.outputs.cache-hit != 'true'
-              run: |
-                  mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
-                  if ! command -v ccache >/dev/null; then
-                    command -v brew >/dev/null || {
-                      echo '::error::ccache is not installed and Homebrew is unavailable.'
-                      exit 1
-                    }
-                    brew list ccache >/dev/null 2>&1 || brew install ccache
-                  fi
-                  command -v ccache
-                  ccache --version
-                  ccache --zero-stats || true
-                  if command -v brew >/dev/null; then
-                    echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
-                  fi
-
-            - name: Restore ccache
-              if: steps.native-app-cache.outputs.cache-hit != 'true'
-              uses: actions/cache/restore@v5
-              with:
-                  path: ${{ env.CCACHE_DIR }}
-                  key: ccache-${{ runner.os }}-xcode26_4_1-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-                  restore-keys: |
-                      ccache-${{ runner.os }}-xcode26_4_1-e2e-
-                      ccache-${{ runner.os }}-
-
-            - name: Generate native project
-              if: steps.native-app-cache.outputs.cache-hit != 'true'
-              working-directory: packages/app
-              run: npx expo prebuild -p ios --clean --no-install
-
-            - name: Install pods
-              if: steps.native-app-cache.outputs.cache-hit != 'true'
-              working-directory: packages/app/ios
-              run: |
-                  command -v pod
-                  pod --version
-                  pod install
-
-            - name: Build native Release base
-              if: steps.native-app-cache.outputs.cache-hit != 'true'
-              working-directory: packages/app/ios
-              shell: bash
-              run: |
-                  set -euo pipefail
-                  workspace=$(find . -maxdepth 1 -name '*.xcworkspace' -print -quit)
-                  scheme=$(basename "$workspace" .xcworkspace)
-                  test -n "$workspace"
-                  xcodebuild build \
-                    -workspace "$workspace" \
-                    -scheme "$scheme" \
-                    -sdk iphonesimulator \
-                    -configuration Release \
-                    -derivedDataPath "$IOS_DERIVED_DATA" \
-                    -destination 'generic/platform=iOS Simulator' \
-                    -jobs 5 \
-                    CODE_SIGN_IDENTITY='-' \
-                    AD_HOC_CODE_SIGNING_ALLOWED=YES \
-                    PROVISIONING_PROFILE_SPECIFIER='' \
-                    COMPILER_INDEX_STORE_ENABLE=NO \
-                    ONLY_ACTIVE_ARCH=YES \
-                    ARCHS=arm64 \
-                    EXCLUDED_ARCHS=x86_64
-
-            - name: Validate and package native base
-              if: steps.native-app-cache.outputs.cache-hit != 'true'
-              shell: bash
-              run: |
-                  set -euo pipefail
-                  app_path=$(find "$IOS_DERIVED_DATA" -name '*.app' -path '*Release-iphonesimulator*' -print -quit)
-                  test -n "$app_path"
-                  test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app_path/Info.plist")" = 'com.vitalyiegorov.budgie.e2e'
-                  if /usr/libexec/PlistBuddy -c 'Print :DEV_CLIENT_DEFAULT_LAUNCHER_URL' "$app_path/Info.plist" >/dev/null 2>&1; then
-                    echo '::error::Native E2E base unexpectedly contains a development-client launch URL.'
-                    exit 1
-                  fi
-                  find "$app_path" -name 'main.jsbundle' -type f -print -quit | grep -q .
-                  mkdir -p .ci-cache/ios-native-app
-                  ditto "$app_path" .ci-cache/ios-native-app/Base.app
-
-            - name: Save canonical native app
-              if: steps.native-app-cache.outputs.cache-hit != 'true'
-              uses: actions/cache/save@v5
-              with:
-                  path: .ci-cache/ios-native-app
-                  key: ios-native-v1-budgie-e2e-${{ runner.os }}-arm64-xcode26_4_1-17E202-${{ steps.fingerprint.outputs.hash }}
+        name: Seed native cache
+        permissions:
+            contents: read
+        uses: rnw-community/mobile-ci/.github/workflows/seed-native-cache.yml@v1.9.0 # v1.9.0
+        with:
+            ios-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
+            ios-targets: >-
+                [{"name":"e2e","appDir":"packages/app","workspace":"budgieE2E.xcworkspace","scheme":"budgieE2E",
+                "prebuildCommand":"npx expo prebuild -p ios --clean --no-install"}]
+            android-targets: '[]'
+            ios-cache-profile: ios-e2e-budgie-v2
+            build-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            build-command: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
+            rct-use-prebuilt-rncore: true
+            rct-use-rn-dep: true
+            expo-use-precompiled-modules: true

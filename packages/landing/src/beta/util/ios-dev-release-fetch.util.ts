@@ -1,21 +1,15 @@
 import { z } from 'zod';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { IosDevReleaseSchema } from '../constant/ios-dev-release-schema.constant';
-
-import { findIosDevIpaDownloadUrl } from './find-ios-dev-ipa-download-url.util';
+import { IOS_DEV_BUILD_META_ASSET_NAME, IOS_DEV_RELEASE_TAG_PREFIX } from '../constant/ios-dev-release-tag.constant';
 
 import type { IosDevRelease } from '../constant/ios-dev-release-schema.constant';
 
 const IOS_DEV_RELEASES_URL = 'https://api.github.com/repos/budgie-at/budgie/releases?per_page=20';
-const IOS_DEV_TAG_PATTERN = /^ios-dev-(\d+)$/u;
 
-const parseIosDevRunNumber = (tagName: string): number => {
-    const match = IOS_DEV_TAG_PATTERN.exec(tagName);
-
-    return isDefined(match) ? Number(match[1]) : 0;
-};
+const hasBuildMetaAsset = (release: IosDevRelease): boolean => release.assets.some(asset => asset.name === IOS_DEV_BUILD_META_ASSET_NAME);
 
 export const iosDevReleaseFetchApi = async (requestInit: RequestInit): Promise<IosDevRelease | null> => {
     try {
@@ -33,8 +27,8 @@ export const iosDevReleaseFetchApi = async (requestInit: RequestInit): Promise<I
         }
 
         const iosDevReleases = parseResult.data
-            .filter(release => IOS_DEV_TAG_PATTERN.test(release.tag_name) && isDefined(findIosDevIpaDownloadUrl(release)))
-            .sort((releaseA, releaseB) => parseIosDevRunNumber(releaseB.tag_name) - parseIosDevRunNumber(releaseA.tag_name));
+            .filter(release => !release.draft && release.tag_name.startsWith(IOS_DEV_RELEASE_TAG_PREFIX) && hasBuildMetaAsset(release))
+            .sort((releaseA, releaseB) => Date.parse(releaseB.created_at) - Date.parse(releaseA.created_at));
 
         return isNotEmptyArray(iosDevReleases) ? iosDevReleases[0] : null;
     } catch {
