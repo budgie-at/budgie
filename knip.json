@@ -49,5 +49,5 @@
         "rimraf",
         "@oxlint/migrate"
     ],
-    "ignoreBinaries": ["run", "build"]
+    "ignoreBinaries": ["build"]
 }
