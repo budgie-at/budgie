@@ -1,9 +1,9 @@
-import { EdgeFade } from '@budgie/screen-chrome';
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/animated-backdrop';
+import { EdgeFade } from '../../@generic/component/edge-fade/edge-fade';
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
 import { useCreateActionContext } from '../../@generic/context/create-action.context';
 import { useVoiceInputContext } from '../../ai/context/voice-input.context';
