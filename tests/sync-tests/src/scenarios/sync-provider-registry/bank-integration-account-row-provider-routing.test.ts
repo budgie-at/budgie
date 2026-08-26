@@ -91,9 +91,9 @@ const findToggleCallback = (node: unknown): ((enabled: boolean) => void) | null 
         return null;
     }
 
-    const {props} = node;
+    const { props } = node;
 
-    const {onValueChange} = props;
+    const { onValueChange } = props;
 
     if (isToggleCallback(onValueChange)) {
         return onValueChange;
