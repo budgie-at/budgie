@@ -13,6 +13,18 @@ import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/ba
 import { BankIntegrationAccountRow } from '../bank-integration-account-row/bank-integration-account-row';
 import { BankIntegrationFooter } from '../bank-integration-footer/bank-integration-footer';
 
+const PROVIDER_SUPPORTS_DEPOSIT: Record<ExternalSourceEnum, boolean> = {
+    [ExternalSourceEnum.MANUAL]: false,
+    [ExternalSourceEnum.MONOBANK]: true,
+    [ExternalSourceEnum.PRIVATBANK]: true,
+    [ExternalSourceEnum.ERSTE]: true,
+    [ExternalSourceEnum.REVOLUT]: true,
+    [ExternalSourceEnum.WISE]: true,
+    [ExternalSourceEnum.CSV]: true,
+    [ExternalSourceEnum.BINANCE]: false,
+    [ExternalSourceEnum.COINBASE]: false
+};
+
 interface Props {
     readonly integration: BankIntegrationEntityInterface;
 }
@@ -39,7 +51,7 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     const addAccountsButton = isLiveApi ? (
         <Button
             testID={BankIntegrationSelector.AddAccountsButton}
-            variant="secondary"
+            variant="primary"
             leftIcon={UserIconNameEnum.CloudDownload}
             content={t`Add accounts`}
             onPress={handleAddAccounts}
@@ -49,24 +61,24 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     const importFileButton = canImportFile ? (
         <Button
             testID={BankIntegrationSelector.ImportFileButton}
-            variant="secondary"
+            variant="primary"
             leftIcon={UserIconNameEnum.FileSpreadsheet}
             content={t`Import file`}
             onPress={handleImportFile}
             className="flex-1"
         />
     ) : null;
-    const secondaryAction = addAccountsButton ?? importFileButton;
-    const primaryAction = (
+    const primaryAction = addAccountsButton ?? importFileButton;
+    const secondaryAction = PROVIDER_SUPPORTS_DEPOSIT[integration.provider] ? (
         <Button
             testID={BankIntegrationSelector.AddDepositButton}
-            variant="primary"
+            variant="secondary"
             leftIcon={UserIconNameEnum.Plus}
             content={t`Add deposit`}
             onPress={handleAddDeposit}
             className="flex-1"
         />
-    );
+    ) : null;
 
     return (
         <CollapsibleChromePage
