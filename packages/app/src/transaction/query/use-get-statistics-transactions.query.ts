@@ -12,6 +12,7 @@ const buildTransactionFilter = (filters: StatisticsFilterInterface): Transaction
     accountIds: null,
     categoryIds: filters.categoryIds,
     date: filters.date,
+    amount: null,
     tagIds: filters.tagIds,
     types: isDefined(filters.type) ? [filters.type] : null
 });

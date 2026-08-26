@@ -393,6 +393,7 @@ msgstr "Already syncing"
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "Amount"
 msgstr "Amount"
 
@@ -1624,6 +1625,10 @@ msgstr "Field"
 msgid "Filter accounts"
 msgstr "Filter accounts"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Filter by amount"
+msgstr "Filter by amount"
+
 #: src/app/transaction-category-filter.tsx
 msgid "Filter categories"
 msgstr "Filter categories"
@@ -1656,9 +1661,14 @@ msgstr "French (France)"
 msgid "from"
 msgstr "from"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
 msgstr "From"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "From {fromText}"
+msgstr "From {fromText}"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
@@ -2038,6 +2048,10 @@ msgstr "Maturity Date"
 msgid "Maturity Date (Optional)"
 msgstr "Maturity Date (Optional)"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Maximum amount"
+msgstr "Maximum amount"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
 msgstr "MCC"
@@ -2066,6 +2080,10 @@ msgstr "Merge into another tag"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Merge matching transfers and refunds"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Minimum amount"
+msgstr "Minimum amount"
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -2978,6 +2996,10 @@ msgstr "Settings"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Show all amounts"
+msgstr "Show all amounts"
+
 #: src/app/date-filter.tsx
 msgid "Show all dates"
 msgstr "Show all dates"
@@ -2991,12 +3013,17 @@ msgid "Show Cents"
 msgstr "Show Cents"
 
 #: src/app/date-filter.tsx
+#: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
 msgstr "Show selected range"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx
 msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Show transactions when any main amount is inside this range, regardless of currency."
+msgstr "Show transactions when any main amount is inside this range, regardless of currency."
 
 #: src/transaction/components/transaction-info-page/transaction-info-page.tsx
 msgid "Similar transactions"
@@ -3244,9 +3271,14 @@ msgstr "Title"
 msgid "to"
 msgstr "to"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
 msgstr "To"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "To {toText}"
+msgstr "To {toText}"
 
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
