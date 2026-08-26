@@ -3,21 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.3.0](https://github.com/budgie-at/budgie/compare/v6.2.1...v6.3.0) (2026-08-26)
+
+### Features
+
+- **app:** add amount range filter to transactions list ([#555](https://github.com/budgie-at/budgie/issues/555)) ([26357b3](https://github.com/budgie-at/budgie/commit/26357b35ee85a729fc411c20cf57e4bc3908ac10))
+
+## [6.2.1](https://github.com/budgie-at/budgie/compare/v6.2.0...v6.2.1) (2026-08-25)
+
+**Note:** Version bump only for package @budgie/budget
+
 # [6.1.0](https://github.com/budgie-at/budgie/compare/v6.0.9...v6.1.0) (2026-08-13)
 
 **Note:** Version bump only for package @budgie/budget
 
-
-
-
-
 ## [6.0.8](https://github.com/budgie-at/budgie/compare/v6.0.7...v6.0.8) (2026-08-10)
 
 **Note:** Version bump only for package @budgie/budget
-
-
-
-
 
 ## [6.0.6](https://github.com/budgie-at/budgie/compare/v6.0.5...v6.0.6) (2026-08-08)
 
