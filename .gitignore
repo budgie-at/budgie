@@ -73,6 +73,3 @@ docs/superpowers
 
 # graphify knowledge graph output
 graphify-out/
-
-# Locally built upstream package tarballs (temporary migration installs)
-.local-tarballs/

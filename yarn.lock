@@ -1257,8 +1257,8 @@ __metadata:
     "@lingui/react": "npm:6.5.0"
     "@react-native-masked-view/masked-view": "npm:^0.3.2"
     "@react-native/metro-config": "npm:0.85.3"
-    "@rnw-community/react-native-collapsible-header": "file:../../.local-tarballs/rnw-community-react-native-collapsible-header-2.14.0.tgz"
-    "@rnw-community/react-native-screen-chrome": "file:../../.local-tarballs/rnw-community-react-native-screen-chrome-2.12.10.tgz"
+    "@rnw-community/react-native-collapsible-header": "npm:^2.15.1"
+    "@rnw-community/react-native-screen-chrome": "npm:^2.15.0"
     "@rnw-community/shared": "npm:^2.2.0"
     "@tailwindcss/postcss": "npm:^4.3.0"
     "@types/babel__core": "npm:^7"
@@ -6952,25 +6952,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rnw-community/react-native-collapsible-header@file:../../.local-tarballs/rnw-community-react-native-collapsible-header-2.14.0.tgz::locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp":
-  version: 2.14.0
-  resolution: "@rnw-community/react-native-collapsible-header@file:../../.local-tarballs/rnw-community-react-native-collapsible-header-2.14.0.tgz#../../.local-tarballs/rnw-community-react-native-collapsible-header-2.14.0.tgz::hash=96b594&locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp"
+"@rnw-community/react-native-collapsible-header@npm:^2.15.1":
+  version: 2.15.1
+  resolution: "@rnw-community/react-native-collapsible-header@npm:2.15.1"
   dependencies:
-    "@rnw-community/shared": "npm:^2.13.0"
+    "@rnw-community/shared": "npm:^2.15.0"
     react-compiler-runtime: "npm:^1.0.0"
   peerDependencies:
     react: ">=18"
     react-native: ">=0.72"
     react-native-reanimated: ">=3.17.2 <5"
-  checksum: 10/5465e6e4315cf8cabbe5b11ed93953b612962d25d36c226a173ea63d9f2e219b22e80eee7e6242c4c34dec3c72877cf8b2524691f512510f9ca1203a4a3d2bf7
+  checksum: 10/0118906dc55f5432308ecb2a11429956001985955dfaf8a824160192518bda5dcc04606565a55a06762152d0d413290168675a9536b0ec3dde63431ad836bed5
   languageName: node
   linkType: hard
 
-"@rnw-community/react-native-screen-chrome@file:../../.local-tarballs/rnw-community-react-native-screen-chrome-2.12.10.tgz::locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp":
-  version: 2.12.10
-  resolution: "@rnw-community/react-native-screen-chrome@file:../../.local-tarballs/rnw-community-react-native-screen-chrome-2.12.10.tgz#../../.local-tarballs/rnw-community-react-native-screen-chrome-2.12.10.tgz::hash=b4a95f&locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp"
+"@rnw-community/react-native-screen-chrome@npm:^2.15.0":
+  version: 2.15.0
+  resolution: "@rnw-community/react-native-screen-chrome@npm:2.15.0"
   dependencies:
-    "@rnw-community/shared": "npm:^2.12.10"
+    "@rnw-community/shared": "npm:^2.15.0"
   peerDependencies:
     "@rnw-community/react-native-collapsible-header": ">=2.13.0 <3"
     expo-blur: ">=55 <58"
@@ -6978,14 +6978,14 @@ __metadata:
     react-native: ">=0.72"
     react-native-reanimated: ">=3.17.2 <5"
     react-native-safe-area-context: ">=4 <6"
-  checksum: 10/ba3d86ecd6034570d95ee028d9abcf2bf428468d02e138370d92028950c6f3a4fa12c8ed2ca41e09bbbebe66ba4954da5c7744abb04428d1963406beff04f91b
+  checksum: 10/8bb3f8d87d4201357015f4f947e2f97fd2228b99e5bbc7bece108b2c01ee1cf1779577fd1db86d0e62a2afddedc9f4abcdd25d76ce546b2646a215475488496f
   languageName: node
   linkType: hard
 
-"@rnw-community/shared@npm:^2.12.10, @rnw-community/shared@npm:^2.13.0":
-  version: 2.13.0
-  resolution: "@rnw-community/shared@npm:2.13.0"
-  checksum: 10/78c31db8ecaa851a2ff3fcd10cf84ba7be202e3541243ed31a958e5a8b0f04aa3f0cf7b60867956eef82d8705b1b6ad593a995487a63d3e13310ea8fbaa87070
+"@rnw-community/shared@npm:^2.15.0":
+  version: 2.15.0
+  resolution: "@rnw-community/shared@npm:2.15.0"
+  checksum: 10/e086c6ed033b26afc5fb6799afb11b01c4f0aad7b21f9119ed1080fb742cb36cb1a365d4d22ae6dd1d91ede05931e7f4f3e0fe0af9ba1dbffeb3f3d2f55ec7a8
   languageName: node
   linkType: hard
 
