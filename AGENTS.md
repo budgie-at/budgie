@@ -39,6 +39,7 @@ These rules are vital and apply to every AI agent and orchestrator working in th
 - Set the LOWEST effort level that fits the task; raise effort only for verification/judging stages where correctness is critical.
 - Subagent prompts must be self-contained (paths, rules, constraints, validation steps) so no round-trips are wasted.
 - Do not spawn a top-tier agent for work a cheaper one can verify; prefer cheap execution + targeted verification over expensive single-shot runs.
+- For codebase/architecture questions and cross-cutting sweeps that must not miss a reference (renames, model swaps, copy updates across packages and locales), use the `graphify` skill (`/graphify .`) to build or refresh the project knowledge graph and query it instead of burning tokens on repeated broad greps; confirm results with targeted grep. Keep `graphify-out/` uncommitted.
 
 ## Git Commits And Pull Requests
 
