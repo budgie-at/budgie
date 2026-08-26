@@ -7,9 +7,9 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
-import { BANK_PROVIDER_TITLE } from '../../../account/constant/bank-provider-title.constant';
 import { useGetAccountsByIntegrationIdQuery } from '../../../account/query/use-get-accounts-by-integration-id.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
+import { EXTERNAL_SOURCE } from '../../../rule/constant/external-source.constant';
 import { BankIntegrationAccountRow } from '../bank-integration-account-row/bank-integration-account-row';
 import { BankIntegrationFooter } from '../bank-integration-footer/bank-integration-footer';
 
@@ -43,12 +43,12 @@ export const BankIntegrationPage = ({ integration }: Props) => {
         });
 
     const isLiveApi = isNotEmptyString(integration.token);
+    const canAddAccounts = isLiveApi && integration.provider === ExternalSourceEnum.MONOBANK;
     const canImportFile =
         !isLiveApi && (integration.provider === ExternalSourceEnum.PRIVATBANK || integration.provider === ExternalSourceEnum.ERSTE);
-    const titleDescriptor = BANK_PROVIDER_TITLE[integration.provider];
-    const title = isDefined(titleDescriptor) ? t(titleDescriptor) : integration.provider;
+    const title = t(EXTERNAL_SOURCE[integration.provider]);
 
-    const addAccountsButton = isLiveApi ? (
+    const addAccountsButton = canAddAccounts ? (
         <Button
             testID={BankIntegrationSelector.AddAccountsButton}
             variant="primary"
@@ -79,6 +79,10 @@ export const BankIntegrationPage = ({ integration }: Props) => {
             className="flex-1"
         />
     ) : null;
+    const footer =
+        isDefined(primaryAction) || isDefined(secondaryAction) ? (
+            <BankIntegrationFooter primaryAction={primaryAction} secondaryAction={secondaryAction} />
+        ) : null;
 
     return (
         <CollapsibleChromePage
@@ -86,7 +90,7 @@ export const BankIntegrationPage = ({ integration }: Props) => {
             title={title}
             leading={<HeaderBackButton />}
             contentClassName="gap-y-lg"
-            footer={<BankIntegrationFooter primaryAction={primaryAction} secondaryAction={secondaryAction} />}
+            footer={footer}
         >
             {(accounts ?? []).map(account => (
                 <BankIntegrationAccountRow key={account.id} account={account} isLiveApi={isLiveApi} />
