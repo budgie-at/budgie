@@ -20,6 +20,7 @@ jobs:
       build-profile: production
       submit-profile: production
       asc-key-path: asc_api_key.p8
+      install-command: pnpm install --frozen-lockfile
       publish-env: |
         EXPO_NO_TELEMETRY=1
         APP_VARIANT=production
@@ -62,10 +63,14 @@ jobs:
           persist-credentials: false
           ref: main
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
+          cache: pnpm
 
       - name: Setup Java
         uses: actions/setup-java@v5
@@ -94,16 +99,16 @@ jobs:
           sdkmanager --version
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install --frozen-lockfile
 
       - name: Build internal workspace packages
-        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
+        run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
 
       - name: Generate production Android project
         working-directory: packages/app
         env:
           APP_VARIANT: production
-        run: ../../node_modules/.bin/expo prebuild --platform android --no-install --clean
+        run: pnpm exec expo prebuild --platform android --no-install --clean
 
       # Google Play rejects a release without a 64-bit ABI. There is no Android
       # artifact job in this repository yet, so the guard runs against the
