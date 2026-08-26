@@ -1,0 +1,1 @@
+export const DEBT_PAYMENT_CATEGORY_ID = 17;
