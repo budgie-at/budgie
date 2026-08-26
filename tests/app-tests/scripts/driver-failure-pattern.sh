@@ -3,4 +3,4 @@
 # (kAXErrorInvalidUIElement), driver startup timeouts, and dead driver ports
 # (Maestro issues #3254 / #3318 on iOS 26). Plain assertion/element failures
 # must NOT match — those are real test results.
-export MAESTRO_RECOVERABLE_FAILURE_PATTERN='kAXErrorInvalidUIElement|iOS driver not ready|Connection refused|SocketTimeoutException'
+export MAESTRO_RECOVERABLE_FAILURE_PATTERN='kAXErrorInvalidUIElement|iOS driver not ready|Connection refused|SocketTimeoutException|java\.net\.ConnectException: Failed to connect to /?127\.0\.0\.1(:[0-9]+)?'

@@ -224,7 +224,7 @@ msgstr "Назва і іконка рахунку"
 #. js-lingui-explicit-id
 #: src/transaction/service/transaction.service.ts
 msgid "transaction.accountNotFound"
-msgstr ""
+msgstr "Рахунок не знайдено"
 
 #: src/account/component/create-account-screen/update-account-screen.tsx
 msgid "Account Settings"
@@ -392,6 +392,7 @@ msgstr "Вже синхронізується"
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "Amount"
 msgstr "Сума"
 
@@ -1265,12 +1266,12 @@ msgstr "Депозитний рахунок"
 #. js-lingui-explicit-id
 #: src/transaction/service/transaction-deposit-safety.service.ts
 msgid "transaction.depositExpenseDisallowed"
-msgstr ""
+msgstr "Депозитні рахунки не можуть фінансувати витрати"
 
 #. js-lingui-explicit-id
 #: src/account/service/account-balance-incremental.service.ts
 msgid "account.depositNegativeBalanceDisallowed"
-msgstr ""
+msgstr "Баланс депозиту не може стати відʼємним"
 
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
@@ -1344,7 +1345,7 @@ msgstr "напр. Ощадний рахунок"
 
 #: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
 msgid "Edit"
-msgstr ""
+msgstr "Редагувати"
 
 #: src/account/component/account-card-base/account-card-base.tsx
 msgid "Edit account"
@@ -1623,6 +1624,10 @@ msgstr "Поле"
 msgid "Filter accounts"
 msgstr "Фільтрувати рахунки"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Filter by amount"
+msgstr "Фільтрувати за сумою"
+
 #: src/app/transaction-category-filter.tsx
 msgid "Filter categories"
 msgstr "Фільтрувати категорії"
@@ -1655,9 +1660,14 @@ msgstr "Французька (Франція)"
 msgid "from"
 msgstr "від"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
 msgstr "З"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "From {fromText}"
+msgstr "Від {fromText}"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
@@ -2037,6 +2047,10 @@ msgstr "Дата погашення"
 msgid "Maturity Date (Optional)"
 msgstr "Дата погашення (необов'язково)"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Maximum amount"
+msgstr "Максимальна сума"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
 msgstr "MCC"
@@ -2065,6 +2079,10 @@ msgstr "Об'єднати з іншим тегом"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Об'єднати відповідні перекази та повернення"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Minimum amount"
+msgstr "Мінімальна сума"
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -2977,6 +2995,10 @@ msgstr "Налаштування"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Show all amounts"
+msgstr "Показати всі суми"
+
 #: src/app/date-filter.tsx
 msgid "Show all dates"
 msgstr "Показати всі дати"
@@ -2990,12 +3012,17 @@ msgid "Show Cents"
 msgstr "Показати копійки"
 
 #: src/app/date-filter.tsx
+#: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
 msgstr "Показати вибраний діапазон"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx
 msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Show transactions when any main amount is inside this range, regardless of currency."
+msgstr "Показувати транзакції, коли будь-яка основна сума потрапляє в цей діапазон, незалежно від валюти."
 
 #: src/transaction/components/transaction-info-page/transaction-info-page.tsx
 msgid "Similar transactions"
@@ -3243,9 +3270,14 @@ msgstr "Назва"
 msgid "to"
 msgstr "до"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
 msgstr "На"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "To {toText}"
+msgstr "До {toText}"
 
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
