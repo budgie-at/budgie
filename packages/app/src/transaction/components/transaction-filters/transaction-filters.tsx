@@ -9,6 +9,7 @@ import { DateFilter } from '../../../@generic/component/date-filter/date-filter'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { TransactionAccountFilter } from '../transaction-account-filter/transaction-account-filter';
+import { TransactionAmountFilter } from '../transaction-amount-filter/transaction-amount-filter';
 import { TransactionCategoryFilter } from '../transaction-category-filter/transaction-category-filter';
 import { TransactionTagFilter } from '../transaction-tag-filter/transaction-tag-filter';
 import { TransactionTypeFilter } from '../transaction-type-filter/transaction-type-filter';
@@ -50,6 +51,7 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
 
                 <DateFilter value={filters.date} onChange={createFilterHandler('date')} />
                 {showTypeFilter ? <TransactionTypeFilter value={filters.types} onChange={createFilterHandler('types')} /> : null}
+                <TransactionAmountFilter value={filters.amount} onChange={createFilterHandler('amount')} />
                 <TransactionCategoryFilter value={filters.categoryIds} onChange={createFilterHandler('categoryIds')} />
                 <TransactionTagFilter value={filters.tagIds} onChange={createFilterHandler('tagIds')} />
 

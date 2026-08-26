@@ -3,116 +3,92 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [6.1.0](https://github.com/budgie-at/budgie/compare/v6.0.9...v6.1.0) (2026-08-13)
+# [6.3.0](https://github.com/budgie-at/budgie/compare/v6.2.1...v6.3.0) (2026-08-26)
+
+
+### Features
+
+* **app:** add amount range filter to transactions list ([#555](https://github.com/budgie-at/budgie/issues/555)) ([26357b3](https://github.com/budgie-at/budgie/commit/26357b35ee85a729fc411c20cf57e4bc3908ac10))
+
+
+
+
+
+## [6.2.1](https://github.com/budgie-at/budgie/compare/v6.2.0...v6.2.1) (2026-08-25)
 
 **Note:** Version bump only for package @budgie/ai
 
+# [6.1.0](https://github.com/budgie-at/budgie/compare/v6.0.9...v6.1.0) (2026-08-13)
 
-
-
+**Note:** Version bump only for package @budgie/ai
 
 ## [6.0.8](https://github.com/budgie-at/budgie/compare/v6.0.7...v6.0.8) (2026-08-10)
 
 **Note:** Version bump only for package @budgie/ai
 
-
-
-
-
 ## [6.0.6](https://github.com/budgie-at/budgie/compare/v6.0.5...v6.0.6) (2026-08-08)
 
 **Note:** Version bump only for package @budgie/ai
-
-
-
-
 
 ## [6.0.5](https://github.com/budgie-at/budgie/compare/v6.0.4...v6.0.5) (2026-08-08)
 
 **Note:** Version bump only for package @budgie/ai
 
-
-
-
-
 ## [6.0.3](https://github.com/budgie-at/budgie/compare/v6.0.2...v6.0.3) (2026-08-01)
 
 **Note:** Version bump only for package @budgie/ai
 
-
-
-
-
 # 6.0.0 (2026-07-25)
-
 
 ### Bug Fixes
 
-* address log decorator migration review ([a572138](https://github.com/budgie-at/budgie/commit/a572138bd3d644f88197595e1c3b5d5f9e4cf4d7))
-* **ai,contracts:** replace Buffer with Uint8Array for React Native compatibility ([453c4b0](https://github.com/budgie-at/budgie/commit/453c4b0c9e85cad8be9fc6a94d35eb9abf8fb232))
-* **ai:** deduplicate generated keywords ([6eb0824](https://github.com/budgie-at/budgie/commit/6eb0824fbb3026961dbb5f516caf35f756a20f81))
-* **ai:** prevent concurrent embedding inference and cache results ([21ff786](https://github.com/budgie-at/budgie/commit/21ff7867229fed362f2e13c5b009840e4824f98c))
-* **ai:** relax vec search distance threshold from 0.9 to 1.0 ([2c7f514](https://github.com/budgie-at/budgie/commit/2c7f51435007a347fb94ca59de07e4141f039178))
-* **app,ai,contracts:** address PR review issues and add animated brain progress UI ([f4dda43](https://github.com/budgie-at/budgie/commit/f4dda438796b5dcc56fc33f25750f969586c6d6a))
-* **contracts,app,ai:** address round-1 PR review findings ([4dd0b72](https://github.com/budgie-at/budgie/commit/4dd0b7208afaf087fde60139246d6dff173279a9)), closes [#8](https://github.com/budgie-at/budgie/issues/8)
-* **contracts,app,ai:** MCC suggestion UNION + generated col write guard ([d3c7cd6](https://github.com/budgie-at/budgie/commit/d3c7cd6a111c66f6e28ccf0e171c578db94d358e))
-* include refund consolidation in balances ([#414](https://github.com/budgie-at/budgie/issues/414)) ([a2b7d18](https://github.com/budgie-at/budgie/commit/a2b7d18c073f06a8202cd8c7cfbed3fa2e0aacdd))
-* round-2 review cleanup — type safety, logs, rule compliance ([1f434bf](https://github.com/budgie-at/budgie/commit/1f434bff84e68764235effc73bc84800c213deb5)), closes [#8](https://github.com/budgie-at/budgie/issues/8) [#2](https://github.com/budgie-at/budgie/issues/2) [#14](https://github.com/budgie-at/budgie/issues/14) [#4](https://github.com/budgie-at/budgie/issues/4)
-* simplify lifecycle logging ([03e0047](https://github.com/budgie-at/budgie/commit/03e0047293b1d0a04bd15997b351e06fb361213b))
-
+- address log decorator migration review ([a572138](https://github.com/budgie-at/budgie/commit/a572138bd3d644f88197595e1c3b5d5f9e4cf4d7))
+- **ai,contracts:** replace Buffer with Uint8Array for React Native compatibility ([453c4b0](https://github.com/budgie-at/budgie/commit/453c4b0c9e85cad8be9fc6a94d35eb9abf8fb232))
+- **ai:** deduplicate generated keywords ([6eb0824](https://github.com/budgie-at/budgie/commit/6eb0824fbb3026961dbb5f516caf35f756a20f81))
+- **ai:** prevent concurrent embedding inference and cache results ([21ff786](https://github.com/budgie-at/budgie/commit/21ff7867229fed362f2e13c5b009840e4824f98c))
+- **ai:** relax vec search distance threshold from 0.9 to 1.0 ([2c7f514](https://github.com/budgie-at/budgie/commit/2c7f51435007a347fb94ca59de07e4141f039178))
+- **app,ai,contracts:** address PR review issues and add animated brain progress UI ([f4dda43](https://github.com/budgie-at/budgie/commit/f4dda438796b5dcc56fc33f25750f969586c6d6a))
+- **contracts,app,ai:** address round-1 PR review findings ([4dd0b72](https://github.com/budgie-at/budgie/commit/4dd0b7208afaf087fde60139246d6dff173279a9)), closes [#8](https://github.com/budgie-at/budgie/issues/8)
+- **contracts,app,ai:** MCC suggestion UNION + generated col write guard ([d3c7cd6](https://github.com/budgie-at/budgie/commit/d3c7cd6a111c66f6e28ccf0e171c578db94d358e))
+- include refund consolidation in balances ([#414](https://github.com/budgie-at/budgie/issues/414)) ([a2b7d18](https://github.com/budgie-at/budgie/commit/a2b7d18c073f06a8202cd8c7cfbed3fa2e0aacdd))
+- round-2 review cleanup — type safety, logs, rule compliance ([1f434bf](https://github.com/budgie-at/budgie/commit/1f434bff84e68764235effc73bc84800c213deb5)), closes [#8](https://github.com/budgie-at/budgie/issues/8) [#2](https://github.com/budgie-at/budgie/issues/2) [#14](https://github.com/budgie-at/budgie/issues/14) [#4](https://github.com/budgie-at/budgie/issues/4)
+- simplify lifecycle logging ([03e0047](https://github.com/budgie-at/budgie/commit/03e0047293b1d0a04bd15997b351e06fb361213b))
 
 ### Features
 
-* add aiLog utility to app and ai packages ([96fd3f2](https://github.com/budgie-at/budgie/commit/96fd3f2c5c76b6285102329a7930d03e5ee338ba))
-* **ai,app,contracts:** add nomic-embed-text-v2-moe as dedicated embedding model ([ea2aa09](https://github.com/budgie-at/budgie/commit/ea2aa09730212e23c43e68b6fc6a8ea72bfc2fa1))
-* **ai,app,contracts:** optimize embedding generation with parallel processing and skip redundant translations ([e5829da](https://github.com/budgie-at/budgie/commit/e5829da47c618a5321f8c7ff3445c5932c394e52))
-* **ai:** add chat, embedding, stt invoker interfaces + extract GenerateOptionsInterface ([fdcfc13](https://github.com/budgie-at/budgie/commit/fdcfc131a4893b98fccc6b72ed824b6d0a7ad2f0))
-* **ai:** export invoker interfaces ([1e3babd](https://github.com/budgie-at/budgie/commit/1e3babd998b310461f122e530f26eb7ff94fd62b))
-* **app,ai,contracts:** add non-Latin translation, yield-to-UI progress, and brain icon improvements ([8688b07](https://github.com/budgie-at/budgie/commit/8688b07feefbe4b4af92a3cf1ca5304447114e79))
-* **app,ai,contracts:** migrate to sqlite-vec vector search with AI settings UI ([2d6f9c0](https://github.com/budgie-at/budgie/commit/2d6f9c0aed1997d23616234fcf1a44e2a18b191e))
-* **app,ai:** add source debug labels to suggestion pills ([0d54711](https://github.com/budgie-at/budgie/commit/0d54711e10c341ed0c1ea44a0097c955cc9eaf06))
-* **app,ai:** refactor AI data card UI, add debug logging, fix suggestion visibility ([0588986](https://github.com/budgie-at/budgie/commit/05889868eb5bbff792c6b81c65412f28ce2ac0ea))
-* **app,contracts,ai:** replace embedding patterns with frequency-based suggestions and amount re-ranking ([411fe67](https://github.com/budgie-at/budgie/commit/411fe6710b08be2032eb1c1db53fd57c36de8e5c))
-* **app:** add pulsating brain animation, reuse in transaction form, fix UI glitches ([3034a9e](https://github.com/budgie-at/budgie/commit/3034a9e7c8ba925c485340fa2060fef4365bbe35))
-* **app:** add transaction info page ([#568](https://github.com/budgie-at/budgie/issues/568)) ([9c4fade](https://github.com/budgie-at/budgie/commit/9c4fadeaadbbadce8fb7b2bafb43c24895706764))
-* **app:** decouple embedding suggestions from chat model loading ([56b11e3](https://github.com/budgie-at/budgie/commit/56b11e323dcbc01e0ecfdea837c855451c657191))
-* **app:** migrate STT from react-native-executorch to whisper.rn ([#293](https://github.com/budgie-at/budgie/issues/293)) ([f9ab3d7](https://github.com/budgie-at/budgie/commit/f9ab3d70f700e9efffa913d749f47ca88607a104))
-* **app:** swap chat model to Qwen3 1.7B Q4_K_M ([71d0500](https://github.com/budgie-at/budgie/commit/71d0500665a946bcba68bcf2806499a76fe14d78))
-* **contracts,ai,app:** split title_embeddings into merchant + comment tables ([27ea167](https://github.com/budgie-at/budgie/commit/27ea1679c3b4ec19896753ecbee9da666408eb66))
-
+- add aiLog utility to app and ai packages ([96fd3f2](https://github.com/budgie-at/budgie/commit/96fd3f2c5c76b6285102329a7930d03e5ee338ba))
+- **ai,app,contracts:** add nomic-embed-text-v2-moe as dedicated embedding model ([ea2aa09](https://github.com/budgie-at/budgie/commit/ea2aa09730212e23c43e68b6fc6a8ea72bfc2fa1))
+- **ai,app,contracts:** optimize embedding generation with parallel processing and skip redundant translations ([e5829da](https://github.com/budgie-at/budgie/commit/e5829da47c618a5321f8c7ff3445c5932c394e52))
+- **ai:** add chat, embedding, stt invoker interfaces + extract GenerateOptionsInterface ([fdcfc13](https://github.com/budgie-at/budgie/commit/fdcfc131a4893b98fccc6b72ed824b6d0a7ad2f0))
+- **ai:** export invoker interfaces ([1e3babd](https://github.com/budgie-at/budgie/commit/1e3babd998b310461f122e530f26eb7ff94fd62b))
+- **app,ai,contracts:** add non-Latin translation, yield-to-UI progress, and brain icon improvements ([8688b07](https://github.com/budgie-at/budgie/commit/8688b07feefbe4b4af92a3cf1ca5304447114e79))
+- **app,ai,contracts:** migrate to sqlite-vec vector search with AI settings UI ([2d6f9c0](https://github.com/budgie-at/budgie/commit/2d6f9c0aed1997d23616234fcf1a44e2a18b191e))
+- **app,ai:** add source debug labels to suggestion pills ([0d54711](https://github.com/budgie-at/budgie/commit/0d54711e10c341ed0c1ea44a0097c955cc9eaf06))
+- **app,ai:** refactor AI data card UI, add debug logging, fix suggestion visibility ([0588986](https://github.com/budgie-at/budgie/commit/05889868eb5bbff792c6b81c65412f28ce2ac0ea))
+- **app,contracts,ai:** replace embedding patterns with frequency-based suggestions and amount re-ranking ([411fe67](https://github.com/budgie-at/budgie/commit/411fe6710b08be2032eb1c1db53fd57c36de8e5c))
+- **app:** add pulsating brain animation, reuse in transaction form, fix UI glitches ([3034a9e](https://github.com/budgie-at/budgie/commit/3034a9e7c8ba925c485340fa2060fef4365bbe35))
+- **app:** add transaction info page ([#568](https://github.com/budgie-at/budgie/issues/568)) ([9c4fade](https://github.com/budgie-at/budgie/commit/9c4fadeaadbbadce8fb7b2bafb43c24895706764))
+- **app:** decouple embedding suggestions from chat model loading ([56b11e3](https://github.com/budgie-at/budgie/commit/56b11e323dcbc01e0ecfdea837c855451c657191))
+- **app:** migrate STT from react-native-executorch to whisper.rn ([#293](https://github.com/budgie-at/budgie/issues/293)) ([f9ab3d7](https://github.com/budgie-at/budgie/commit/f9ab3d70f700e9efffa913d749f47ca88607a104))
+- **app:** swap chat model to Qwen3 1.7B Q4_K_M ([71d0500](https://github.com/budgie-at/budgie/commit/71d0500665a946bcba68bcf2806499a76fe14d78))
+- **contracts,ai,app:** split title_embeddings into merchant + comment tables ([27ea167](https://github.com/budgie-at/budgie/commit/27ea1679c3b4ec19896753ecbee9da666408eb66))
 
 ### Performance Improvements
 
-* **app,ai,contracts:** optimize vector embedding queries and data integrity ([2aa63ff](https://github.com/budgie-at/budgie/commit/2aa63ff42f449eec86e713b76ca0b2e4a8e3edbc))
-* **contracts,app,ai:** bulk pre-clear embed flags + add MCC suggestion signal ([182fb5f](https://github.com/budgie-at/budgie/commit/182fb5f18d85430376bc7060e4b905438d9695e7))
-
-
-
-
+- **app,ai,contracts:** optimize vector embedding queries and data integrity ([2aa63ff](https://github.com/budgie-at/budgie/commit/2aa63ff42f449eec86e713b76ca0b2e4a8e3edbc))
+- **contracts,app,ai:** bulk pre-clear embed flags + add MCC suggestion signal ([182fb5f](https://github.com/budgie-at/budgie/commit/182fb5f18d85430376bc7060e4b905438d9695e7))
 
 ## [5.43.5](https://github.com/budgie-at/budgie/compare/v5.43.4...v5.43.5) (2026-07-24)
 
 **Note:** Version bump only for package @budgie/ai
 
-
-
-
-
 ## [5.43.3](https://github.com/budgie-at/budgie/compare/v5.43.2...v5.43.3) (2026-07-20)
 
 **Note:** Version bump only for package @budgie/ai
 
-
-
-
-
 ## [5.43.2](https://github.com/budgie-at/budgie/compare/v5.43.1...v5.43.2) (2026-07-17)
 
 **Note:** Version bump only for package @budgie/ai
-
-
-
-
 
 # [5.43.0](https://github.com/budgie-at/budgie/compare/v5.42.0...v5.43.0) (2026-07-17)
 
