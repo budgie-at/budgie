@@ -15,10 +15,10 @@
     "main": "./src/index.ts",
     "types": "./src/index.ts",
     "scripts": {
-        "clear": "yarn run -T rimraf node_modules/.cache .turbo",
-        "format": "run -T prettier --write src",
-        "lint": "run -T eslint --fix src",
-        "ts": "run -T tsc -p ."
+        "clear": "rimraf node_modules/.cache .turbo",
+        "format": "prettier --write src",
+        "lint": "eslint --fix src",
+        "ts": "tsc -p ."
     },
     "dependencies": {
         "@rnw-community/shared": "^2.2.0",

@@ -10,6 +10,6 @@
       ]
     }
   },
-  "npmClient": "yarn",
+  "npmClient": "pnpm",
   "version": "6.3.0"
 }
