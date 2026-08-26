@@ -5,9 +5,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { CollapsibleHeader } from '../../@generic/component/collapsible-header/collapsible-header';
 import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
+import { NetWorthCollapsibleHeader } from '../../account/component/net-worth-collapsible-header/net-worth-collapsible-header';
 import { HomeSectionKindEnum } from '../../account/enum/home-section-kind.enum';
 import { BankProviderGroupInterface } from '../../account/interface/bank-provider-group.interface';
 import { CryptoCurrencyGroupInterface } from '../../account/interface/crypto-currency-group.interface';
@@ -155,7 +155,7 @@ export default function HomePage() {
 
     return (
         <View className="flex-1 bg-background">
-            <CollapsibleHeader
+            <NetWorthCollapsibleHeader
                 scrollY={scrollY}
                 netWorth={balanceSummary.netWorth}
                 fiatTotal={balanceSummary.fiatTotal}

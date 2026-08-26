@@ -1,22 +1,21 @@
-import {
-    CollapsibleHeader,
-    CollapsibleHeaderBackdrop,
-    CollapsibleHeaderLargeTitle,
-    CollapsibleHeaderLeading,
-    CollapsibleHeaderSmallTitle,
-    CollapsibleHeaderTitleSlot,
-    EdgeFade,
-    ScreenChromeFrame
-} from '@budgie/screen-chrome';
 import { ReactElement, ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import {
+    CollapsibleHeader,
+    CollapsibleHeaderSlot,
+    CollapsibleHeaderTitleSlot,
+    ScreenChromeFrame
+} from '@rnw-community/react-native-screen-chrome';
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
 import { IdInterface } from '../../interface/id.interface';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
+import { CollapsibleHeaderBackdrop } from '../collapsible-header-backdrop/collapsible-header-backdrop';
+import { CollapsibleHeaderLargeTitle } from '../collapsible-header-large-title/collapsible-header-large-title';
+import { EdgeFade } from '../edge-fade/edge-fade';
 import { GoBackButton } from '../go-back-button/go-back-button';
 import { KeyboardStickySearchInput } from '../keyboard-sticky-search-input/keyboard-sticky-search-input';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
@@ -92,21 +91,20 @@ export const SearchablePage = <T extends IdInterface>({
                     <CollapsibleHeaderBackdrop />
 
                     <CollapsibleHeader>
-                        <CollapsibleHeaderLeading>
+                        <CollapsibleHeaderSlot>
                             <GoBackButton onPress={onGoBack} />
-                        </CollapsibleHeaderLeading>
+                        </CollapsibleHeaderSlot>
                         <CollapsibleHeaderTitleSlot>
-                            <CollapsibleHeaderLargeTitle>
+                            <CollapsibleHeaderLargeTitle hasLeadingSlot>
                                 <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
                                     {title}
                                 </Text>
                             </CollapsibleHeaderLargeTitle>
-                        </CollapsibleHeaderTitleSlot>
-                        <CollapsibleHeaderSmallTitle>
                             <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>
                                 {title}
                             </Text>
-                        </CollapsibleHeaderSmallTitle>
+                        </CollapsibleHeaderTitleSlot>
+                        <CollapsibleHeaderSlot />
                     </CollapsibleHeader>
                 </ScreenChromeFrame>
             </ScreenChromeThemeProvider>

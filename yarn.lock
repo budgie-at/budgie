@@ -1245,7 +1245,6 @@ __metadata:
     "@budgie/consolidation": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@budgie/logger": "workspace:*"
-    "@budgie/screen-chrome": "workspace:*"
     "@expo/fingerprint": "npm:~0.20.3"
     "@expo/ui": "npm:~57.0.4"
     "@formatjs/intl": "npm:^4.1.12"
@@ -1256,7 +1255,10 @@ __metadata:
     "@lingui/core": "npm:6.5.0"
     "@lingui/format-po": "npm:6.5.0"
     "@lingui/react": "npm:6.5.0"
+    "@react-native-masked-view/masked-view": "npm:^0.3.2"
     "@react-native/metro-config": "npm:0.85.3"
+    "@rnw-community/react-native-collapsible-header": "file:../../.local-tarballs/rnw-community-react-native-collapsible-header-2.14.0.tgz"
+    "@rnw-community/react-native-screen-chrome": "file:../../.local-tarballs/rnw-community-react-native-screen-chrome-2.12.10.tgz"
     "@rnw-community/shared": "npm:^2.2.0"
     "@tailwindcss/postcss": "npm:^4.3.0"
     "@types/babel__core": "npm:^7"
@@ -1318,6 +1320,7 @@ __metadata:
     react-native: "npm:0.86.0"
     react-native-audio-api: "npm:^0.12.2"
     react-native-css: "npm:^3.0.7"
+    react-native-easing-gradient: "npm:^1.1.1"
     react-native-gesture-handler: "npm:~2.32.0"
     react-native-keyboard-controller: "npm:1.22.0"
     react-native-reanimated: "npm:4.5.1"
@@ -1552,23 +1555,6 @@ __metadata:
   dependencies:
     "@rnw-community/log-decorator": "npm:^2.2.0"
     "@rnw-community/shared": "npm:^2.2.0"
-  languageName: unknown
-  linkType: soft
-
-"@budgie/screen-chrome@workspace:*, @budgie/screen-chrome@workspace:packages/screen-chrome":
-  version: 0.0.0-use.local
-  resolution: "@budgie/screen-chrome@workspace:packages/screen-chrome"
-  dependencies:
-    "@rnw-community/shared": "npm:^2.2.0"
-    react-native-easing-gradient: "npm:^1.1.1"
-  peerDependencies:
-    "@react-native-masked-view/masked-view": ^0.3.2
-    expo-blur: ~56.0.3
-    expo-linear-gradient: ~56.0.4
-    react: 19.2.3
-    react-native: 0.85.3
-    react-native-reanimated: 4.3.1
-    react-native-safe-area-context: ~5.7.0
   languageName: unknown
   linkType: soft
 
@@ -6963,6 +6949,43 @@ __metadata:
     typescript:
       optional: true
   checksum: 10/e95f4bcb3af2264a28eb257e21487e5f03c426a74ade30870a222e6304db514e01bb97cce6ae16082ac8e39a7c7a4173233c49acdf8ae460608bc94180edcd08
+  languageName: node
+  linkType: hard
+
+"@rnw-community/react-native-collapsible-header@file:../../.local-tarballs/rnw-community-react-native-collapsible-header-2.14.0.tgz::locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp":
+  version: 2.14.0
+  resolution: "@rnw-community/react-native-collapsible-header@file:../../.local-tarballs/rnw-community-react-native-collapsible-header-2.14.0.tgz#../../.local-tarballs/rnw-community-react-native-collapsible-header-2.14.0.tgz::hash=96b594&locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp"
+  dependencies:
+    "@rnw-community/shared": "npm:^2.13.0"
+    react-compiler-runtime: "npm:^1.0.0"
+  peerDependencies:
+    react: ">=18"
+    react-native: ">=0.72"
+    react-native-reanimated: ">=3.17.2 <5"
+  checksum: 10/5465e6e4315cf8cabbe5b11ed93953b612962d25d36c226a173ea63d9f2e219b22e80eee7e6242c4c34dec3c72877cf8b2524691f512510f9ca1203a4a3d2bf7
+  languageName: node
+  linkType: hard
+
+"@rnw-community/react-native-screen-chrome@file:../../.local-tarballs/rnw-community-react-native-screen-chrome-2.12.10.tgz::locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp":
+  version: 2.12.10
+  resolution: "@rnw-community/react-native-screen-chrome@file:../../.local-tarballs/rnw-community-react-native-screen-chrome-2.12.10.tgz#../../.local-tarballs/rnw-community-react-native-screen-chrome-2.12.10.tgz::hash=b4a95f&locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp"
+  dependencies:
+    "@rnw-community/shared": "npm:^2.12.10"
+  peerDependencies:
+    "@rnw-community/react-native-collapsible-header": ">=2.13.0 <3"
+    expo-blur: ">=55 <58"
+    react: ">=18"
+    react-native: ">=0.72"
+    react-native-reanimated: ">=3.17.2 <5"
+    react-native-safe-area-context: ">=4 <6"
+  checksum: 10/ba3d86ecd6034570d95ee028d9abcf2bf428468d02e138370d92028950c6f3a4fa12c8ed2ca41e09bbbebe66ba4954da5c7744abb04428d1963406beff04f91b
+  languageName: node
+  linkType: hard
+
+"@rnw-community/shared@npm:^2.12.10, @rnw-community/shared@npm:^2.13.0":
+  version: 2.13.0
+  resolution: "@rnw-community/shared@npm:2.13.0"
+  checksum: 10/78c31db8ecaa851a2ff3fcd10cf84ba7be202e3541243ed31a958e5a8b0f04aa3f0cf7b60867956eef82d8705b1b6ad593a995487a63d3e13310ea8fbaa87070
   languageName: node
   linkType: hard
 
