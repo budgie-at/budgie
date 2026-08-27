@@ -1,13 +1,12 @@
+/* eslint-disable max-lines -- approved by liaugust: one transaction service; merging main's deposit-safety guards pushed it past 500 */
 import {
-    AccountDebtTypeEnum,
     type AccountEntityInterface,
     AccountTypeEnum,
     type DB,
-    DebtEventDirectionEnum,
-    DebtEventSourceEnum,
     ExternalSourceEnum,
     type TransactionCreateInputInterface,
     type TransactionEntityInterface,
+    TransactionEntryCreateEntityInterface,
     type TransactionEntryCreateInputInterface,
     type TransactionEntryEntityInterface,
     TransactionEntryKindEnum,
@@ -26,7 +25,6 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@
 import {
     accountRepository,
     db,
-    debtEventRepository,
     transactionEntryRepository,
     transactionRepository,
     transactionTagsRepository
@@ -46,7 +44,10 @@ import { upsertTransactionEntriesAndTags } from '../utils/upsert-transaction-ent
 
 import { importedTransactionEntryUpdateService } from './imported-transaction-entry-update.service';
 import { transactionBatchCreateService } from './transaction-batch-create.service';
+import { transactionDebtSettlementService } from './transaction-debt-settlement.service';
 import { transactionDepositSafetyService } from './transaction-deposit-safety.service';
+
+import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
 
 class TransactionService {
     @Log(
@@ -129,6 +130,109 @@ class TransactionService {
         });
     }
 
+    @Log(
+        inputs => `enter externalIds=${inputs.map(input => input.externalId).join(',')}`,
+        (result, inputs) =>
+            `done ids=${result.map(transaction => transaction.id).join(',')} externalIds=${inputs.map(input => input.externalId).join(',')}`,
+        (error, inputs) => `throw externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
+    )
+    async createSyncedTransfers(inputs: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
+        if (inputs.some(input => input.exchangeRate !== 1)) {
+            // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal invariant
+            throw new Error('Synced transfer exchange rate must be equal to 1');
+        }
+
+        return await transactionAsync(db, async tx => {
+            const transactions: TransactionEntityInterface[] = [];
+            for (const input of inputs) {
+                // eslint-disable-next-line no-await-in-loop -- Sequential persists share one chunk transaction
+                transactions.push(await this.persistSyncedTransfer(input, tx));
+            }
+
+            await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs(inputs), tx);
+
+            return transactions;
+        });
+    }
+
+    @Log(
+        externalSource => `enter externalSource=${externalSource}`,
+        (result, externalSource) => `done externalSource=${externalSource} externalIdCount=${result.size}`,
+        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
+    )
+    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
+        return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
+    }
+
+    @Log(
+        externalSource => `enter externalSource=${externalSource}`,
+        (result, externalSource) => `done externalSource=${externalSource} idMapSize=${result.size}`,
+        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
+    )
+    async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
+        return transactionRepository.findIdMapByExternalSource(externalSource);
+    }
+
+    @Log(
+        (transactionId, ...[externalId, accountId, isIncome]) =>
+            `enter transactionId=${transactionId} externalId=${externalId} accountId=${accountId} isIncome=${String(isIncome)}`,
+        (result, ...[transactionId, externalId, accountId, isIncome]) =>
+            `done result=${String(result)} transactionId=${transactionId} externalId=${externalId} accountId=${accountId} isIncome=${String(isIncome)}`,
+        (error, ...[transactionId, externalId, accountId, isIncome]) =>
+            `throw transactionId=${transactionId} externalId=${externalId} accountId=${accountId} isIncome=${String(isIncome)} error=${getErrorMessage(error)}`
+    )
+    @InvalidateDatabaseLiveQuery()
+    async moveExternalEntryToAccount(transactionId: number, externalId: string, accountId: number, isIncome: boolean): Promise<boolean> {
+        return transactionAsync(db, async tx => {
+            const existingEntry = await transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId, tx);
+            if (!isDefined(existingEntry) || existingEntry.accountId === accountId) {
+                return false;
+            }
+
+            await transactionEntryRepository.updateById(existingEntry.id, { accountId }, tx);
+            await transactionRepository.updateById(
+                existingEntry.originalTransactionId ?? existingEntry.transactionId,
+                isIncome ? { toAccountId: accountId } : { fromAccountId: accountId },
+                tx
+            );
+            await accountBalanceIncrementalService.updateBalancesByAccountIds([existingEntry.accountId, accountId], tx);
+
+            return true;
+        });
+    }
+
+    @Log(
+        accountId => `enter accountId=${accountId}`,
+        (result, accountId) => `done accountId=${accountId} earliestAt=${result?.toISOString() ?? 'null'}`,
+        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
+    )
+    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
+        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
+    }
+
+    @Log(
+        externalSource => `enter externalSource=${externalSource}`,
+        (result, externalSource) => `done externalSource=${externalSource} earliestAt=${result?.toISOString() ?? 'null'}`,
+        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
+    )
+    async getEarliestTransactionTimeByExternalSource(externalSource: ExternalSourceEnum): Promise<Date | null> {
+        return transactionRepository.getEarliestTransactionTimeByExternalSource(externalSource);
+    }
+
+    @Log(
+        tx => `enter hasTx=${String(isDefined(tx))}`,
+        (_result, tx) => `done hasTx=${String(isDefined(tx))}`,
+        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async updateAllBalances(tx?: DB): Promise<void> {
+        await accountBalanceIncrementalService.updateAllBalances(true, tx);
+    }
+
+    @Log(
+        input => `enter type=${input.type} title="${input.title}"`,
+        (result, input) => `done id=${result.id} type=${input.type} title="${input.title}"`,
+        (error, input) => `throw type=${input.type} title="${input.title}" error=${getErrorMessage(error)}`
+    )
     @InvalidateDatabaseLiveQuery()
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return transactionAsync(db, async tx => {
@@ -138,6 +242,14 @@ class TransactionService {
         });
     }
 
+    @Log(
+        (input, tx) =>
+            `enter type=${input.type} fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} tx=${String(isDefined(tx))}`,
+        (result, input, tx) =>
+            `done id=${result.id} fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} tx=${String(isDefined(tx))}`,
+        (error, input, tx) =>
+            `throw fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     @InvalidateDatabaseLiveQuery((_input, tx) => !isDefined(tx))
     async createInternalTransfer(input: TransactionCreateInputInterface, tx?: DB): Promise<TransactionEntityInterface> {
         if (!isDefined(tx)) {
@@ -147,6 +259,11 @@ class TransactionService {
         return this.createInternalTransferInTransaction(input, tx);
     }
 
+    @Log(
+        (id, input) => `enter id=${id} type=${input.type} title="${input.title}"`,
+        (_result, id, input) => `done id=${id} type=${input.type} title="${input.title}"`,
+        (error, id, input) => `throw id=${id} type=${input.type} title="${input.title}" error=${getErrorMessage(error)}`
+    )
     @InvalidateDatabaseLiveQuery()
     async updateById(id: number, input: TransactionUpdateServiceInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
@@ -192,12 +309,123 @@ class TransactionService {
         });
     }
 
-    async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
-        return transactionRepository.findIdMapByExternalSource(externalSource);
+    private async persistSyncedTransfer(input: TransactionCreateInputInterface, tx: DB): Promise<TransactionEntityInterface> {
+        const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
+        const transaction = await transactionRepository.create({ ...input, exchangeRate: 1 }, tx);
+        await this.persistPrimaryTransfer(
+            transaction,
+            input,
+            fromEntry,
+            toEntry,
+            convertToMicroUnits(fromEntry.amount),
+            convertToMicroUnits(toEntry.amount),
+            tx
+        );
+
+        return transaction;
     }
 
-    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
-        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
+    // eslint-disable-next-line @typescript-eslint/max-params -- Transfer persistence keeps positional arguments instead of a single-consumer param-bag interface
+    private async persistPrimaryTransfer(
+        transaction: TransactionEntityInterface,
+        input: TransactionCreateInputInterface,
+        fromEntry: TransactionEntryCreateInputInterface,
+        toEntry: TransactionEntryCreateInputInterface,
+        fromAmountInMicroUnits: number,
+        toAmountInMicroUnits: number,
+        tx: DB
+    ): Promise<void> {
+        const additionalEntryValuations = await entryBaseValuationService.valueEntries(
+            input.entries,
+            input.operatedAt,
+            input.externalSource,
+            tx
+        );
+        const [fromValuation, toValuation] = await Promise.all([
+            this.valueTransferLeg(fromEntry.accountId, fromAmountInMicroUnits, input, tx),
+            this.valueTransferLeg(toEntry.accountId, toAmountInMicroUnits, input, tx)
+        ]);
+
+        const primaryEntries = [
+            this.buildPrimaryTransferEntry(
+                transaction.id,
+                fromEntry,
+                TransactionEntryTypeEnum.CREDIT,
+                fromAmountInMicroUnits,
+                fromValuation
+            ),
+            this.buildPrimaryTransferEntry(transaction.id, toEntry, TransactionEntryTypeEnum.DEBIT, toAmountInMicroUnits, toValuation)
+        ];
+
+        await this.persistTransfer(transaction, input, primaryEntries, fromEntry, toEntry, additionalEntryValuations, tx);
+    }
+
+    private async valueTransferLeg(
+        accountId: number,
+        amount: number,
+        input: TransactionCreateInputInterface,
+        tx: DB
+    ): Promise<EntryBaseValuationInterface> {
+        return entryBaseValuationService.valueMicroUnitEntry({
+            accountId,
+            amount,
+            operatedAt: input.operatedAt,
+            externalSource: input.externalSource,
+            tx
+        });
+    }
+
+    // eslint-disable-next-line @typescript-eslint/max-params -- Entry construction keeps positional arguments instead of a single-consumer param-bag interface
+    private buildPrimaryTransferEntry(
+        transactionId: number,
+        entry: TransactionEntryCreateInputInterface,
+        type: TransactionEntryTypeEnum,
+        amount: number,
+        valuation: EntryBaseValuationInterface
+    ): TransactionEntryCreateEntityInterface {
+        return {
+            transactionId,
+            accountId: entry.accountId,
+            categoryId: entry.categoryId,
+            mccCategoryId: entry.mccCategoryId,
+            type,
+            amount,
+            externalId: entry.externalId ?? null,
+            exchangeRate: entry.exchangeRate ?? 1,
+            baseInstrumentId: valuation.baseInstrumentId,
+            baseExchangeRate: valuation.baseExchangeRate,
+            baseAmount: valuation.baseAmount,
+            toIban: entry.toIban ?? null
+        };
+    }
+
+    // eslint-disable-next-line @typescript-eslint/max-params -- Transfer persistence keeps positional arguments instead of a single-consumer param-bag interface
+    private async persistTransfer(
+        transaction: TransactionEntityInterface,
+        input: TransactionCreateInputInterface,
+        primaryEntries: readonly TransactionEntryCreateEntityInterface[],
+        fromEntry: TransactionEntryCreateInputInterface,
+        toEntry: TransactionEntryCreateInputInterface,
+        additionalEntryValuations: Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>,
+        tx: DB
+    ): Promise<void> {
+        await transactionEntryRepository.bulkCreate(
+            [
+                ...primaryEntries,
+                ...buildAdditionalTransferEntries({
+                    entries: input.entries,
+                    fromEntry,
+                    toEntry,
+                    transactionId: transaction.id,
+                    valuations: additionalEntryValuations
+                })
+            ],
+            tx
+        );
+
+        if (isNotEmptyArray(input.tagIds)) {
+            await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transaction.id), tx);
+        }
     }
 
     private getAccountIdsFromInputs(inputs: readonly Pick<TransactionCreateInputInterface, 'entries'>[]): number[] {
@@ -240,7 +468,7 @@ class TransactionService {
         );
 
         if (isDebtTransaction) {
-            await this.createDebtEventFromTransfer(transaction, createdEntries, [fromAccount, toAccount], tx);
+            await transactionDebtSettlementService.createFromTransfer(transaction, createdEntries, [fromAccount, toAccount], tx);
         }
 
         await this.finalizeInternalTransfer(input, transaction.id, tx);
@@ -373,53 +601,11 @@ class TransactionService {
         );
 
         if (!isDefined(fromEntry) || !isDefined(toEntry)) {
-            // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error
+            // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
             throw new Error('Transfer must have exactly two entries');
         }
 
         return { fromEntry, toEntry };
-    }
-
-    private async createDebtEventFromTransfer(
-        transaction: TransactionEntityInterface,
-        entries: TransactionEntryEntityInterface[],
-        accounts: readonly AccountEntityInterface[],
-        tx: DB
-    ): Promise<void> {
-        const debtAccount = accounts.find(account => account.type === AccountTypeEnum.DEBT);
-        if (!isDefined(debtAccount)) {
-            return;
-        }
-
-        const debtEntry = entries.find(entry => entry.accountId === debtAccount.id);
-
-        if (!isDefined(debtEntry)) {
-            return;
-        }
-
-        await debtEventRepository.create(
-            {
-                debtAccountId: debtAccount.id,
-                transactionId: transaction.id,
-                transactionEntryId: debtEntry.id,
-                direction: this.getTransferDebtEventDirection(debtAccount.debtType, debtEntry.type),
-                source: DebtEventSourceEnum.TRANSFER,
-                amount: debtEntry.amount,
-                baseInstrumentId: debtEntry.baseInstrumentId,
-                baseExchangeRate: debtEntry.baseExchangeRate,
-                baseAmount: debtEntry.baseAmount,
-                operatedAt: transaction.operatedAt
-            },
-            tx
-        );
-    }
-
-    private getTransferDebtEventDirection(debtType: AccountDebtTypeEnum, entryType: TransactionEntryTypeEnum): DebtEventDirectionEnum {
-        if (debtType === AccountDebtTypeEnum.LENT) {
-            return entryType === TransactionEntryTypeEnum.DEBIT ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
-        }
-
-        return entryType === TransactionEntryTypeEnum.CREDIT ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
     }
 }
 export const transactionService = new TransactionService();

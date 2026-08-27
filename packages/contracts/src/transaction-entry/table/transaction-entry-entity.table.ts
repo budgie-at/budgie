@@ -42,6 +42,11 @@ export const TransactionEntryEntityTable = sqliteTable(
         }),
         baseExchangeRate: real('base_exchange_rate'),
         baseAmount: int('base_amount', { mode: 'number' }),
+        quotedInstrumentId: int('quoted_instrument_id', { mode: 'number' }).references(() => InstrumentEntityTable.id, {
+            onDelete: 'set null'
+        }),
+        quotedAmount: int('quoted_amount', { mode: 'number' }),
+        quotedUnitPrice: int('quoted_unit_price', { mode: 'number' }),
         toIban: text('to_iban'),
         originalTransactionId: int('original_transaction_id', { mode: 'number' }).references(() => TransactionEntityTable.id, {
             onDelete: 'set null'
@@ -73,6 +78,9 @@ export const TransactionEntryEntityTable = sqliteTable(
             .where(sql`${table.categoryId} IS NOT NULL`),
         index('transaction_entries_base_valuation_idx')
             .on(table.baseInstrumentId, table.baseAmount)
-            .where(sql`${table.deletedAt} IS NULL`)
+            .where(sql`${table.deletedAt} IS NULL`),
+        index('transaction_entries_quote_idx')
+            .on(table.quotedInstrumentId, table.quotedAmount)
+            .where(sql`${table.deletedAt} IS NULL AND ${table.quotedInstrumentId} IS NOT NULL AND ${table.quotedAmount} IS NOT NULL`)
     ]
 );

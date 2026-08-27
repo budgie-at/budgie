@@ -1,11 +1,12 @@
 #!/bin/bash
-# Run one shard of the Maestro suite on a single booted simulator. One
-# simulator lane per VM keeps the 4-vCPU guests out of CPU saturation; the
-# two shards run on the two maestro VMs in parallel.
+# Run one shard of the Maestro suite on a single booted simulator, locally or
+# by hand. CI drives the shards through rnw-community/mobile-ci's ios-maestro
+# workflow instead. Shard indices are zero-based (shards/shard-0.txt,
+# shards/shard-1.txt) to match that workflow's shard-manifest-dir contract.
 set -euo pipefail
 
 if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <app-id> <shard-number>"
+    echo "Usage: $0 <app-id> <zero-based-shard-index>"
     exit 1
 fi
 

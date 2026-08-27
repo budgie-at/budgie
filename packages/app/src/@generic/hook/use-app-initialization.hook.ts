@@ -8,6 +8,7 @@ import { authService } from '../../auth/service/auth.service';
 import { budgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
 import { historicalMarketDataLoaderService } from '../../market-data/service/historical-market-data-loader.service';
+import { binanceSyncService } from '../../sync/service/binance-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
@@ -27,6 +28,11 @@ const syncAppData = async (): Promise<void> => {
         return;
     }
 
+    await binanceSyncService.sync().catch(emptyFn);
+    if (syncWorkloadService.hasQueuedUserWork()) {
+        return;
+    }
+
     await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
 };
 
@@ -36,6 +42,7 @@ const initializeAppServices = async (): Promise<void> => {
     await accountBalanceIncrementalService.registerBackgroundTask().catch(emptyFn);
     await transferConsolidationService.registerBackgroundTask().catch(emptyFn);
     await monobankSyncService.registerBackgroundTask().catch(emptyFn);
+    await binanceSyncService.registerBackgroundTask().catch(emptyFn);
     await budgetAlertMonitorService.registerBackgroundTask().catch(emptyFn);
     await syncWorkloadService.run('startup', syncAppData);
     void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);

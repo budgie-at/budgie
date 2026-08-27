@@ -1,0 +1,7 @@
+appId: ${APP_ID}
+---
+# Best-effort recovery run by mobile-ci's ios-maestro `flow-recovery-flow`
+# after every failed flow attempt. Never sharded as a scenario of its own.
+
+- runFlow: reset-app-state.flow.yaml
+- runFlow: prime-deep-links.flow.yaml

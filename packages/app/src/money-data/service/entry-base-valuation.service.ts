@@ -162,7 +162,7 @@ class EntryBaseValuationService {
         sourceInstrumentId: number,
         targetInstrumentId: number
     ): EntryBaseValuationInterface {
-        if (accountType === AccountTypeEnum.CRYPTO) {
+        if (accountType === AccountTypeEnum.CRYPTO || accountType === AccountTypeEnum.CRYPTO_SYNC) {
             return {
                 baseInstrumentId: null,
                 baseExchangeRate: null,

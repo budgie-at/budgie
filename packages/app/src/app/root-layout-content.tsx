@@ -26,7 +26,7 @@ import { CONVERT_TO_REFUND_MODAL_OPTIONS } from '../@generic/constant/convert-to
 import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
-import { COMPACT_FILTER_SHEET_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
+import { AMOUNT_FILTER_SHEET_OPTIONS, COMPACT_FILTER_SHEET_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
 import { RULE_FORM_MODAL_OPTIONS } from '../@generic/constant/rule-form-modal-options.constant';
@@ -57,6 +57,7 @@ import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { historicalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
 import { SettingsProvider } from '../settings/provider/settings.provider';
+import { binanceSyncService } from '../sync/service/binance-sync.service';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../sync/service/sync-workload.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
@@ -79,6 +80,11 @@ const syncForegroundData = async (): Promise<void> => {
     }
 
     await monobankSyncService.sync().catch(emptyFn);
+    if (syncWorkloadService.hasQueuedUserWork()) {
+        return;
+    }
+
+    await binanceSyncService.sync().catch(emptyFn);
     if (syncWorkloadService.hasQueuedUserWork()) {
         return;
     }
@@ -226,6 +232,10 @@ export const RootLayoutContent = () => {
                                                                         <Stack.Screen
                                                                             name="date-filter"
                                                                             options={DATE_FILTER_SHEET_OPTIONS}
+                                                                        />
+                                                                        <Stack.Screen
+                                                                            name="transaction-amount-filter"
+                                                                            options={AMOUNT_FILTER_SHEET_OPTIONS}
                                                                         />
                                                                         <Stack.Screen
                                                                             name="transaction-category-filter"

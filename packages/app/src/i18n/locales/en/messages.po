@@ -13,6 +13,16 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: src/sync/service/consolidation-coordinator.service.ts
+msgid "Binance P2P buy {assetCode}"
+msgstr "Binance P2P buy {assetCode}"
+
+#. js-lingui-explicit-id
+#: src/sync/service/consolidation-coordinator.service.ts
+msgid "Binance P2P sell {assetCode}"
+msgstr "Binance P2P sell {assetCode}"
+
 #: src/ai/service/ai-system-status.service.ts
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} tx queued"
@@ -54,14 +64,6 @@ msgstr "{categoryName}: {threshold}% spent"
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: limit reached"
 
-#: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
-msgid "{count, plural, one {# bank sync item repaired} other {# bank sync items repaired}}"
-msgstr "{count, plural, one {# bank sync item repaired} other {# bank sync items repaired}}"
-
-#: src/settings/utils/get-bank-sync-repair-text.util.ts
-msgid "{count, plural, one {# bank sync repair} other {# bank sync repairs}}"
-msgstr "{count, plural, one {# bank sync repair} other {# bank sync repairs}}"
-
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
@@ -69,6 +71,14 @@ msgstr "{count, plural, one {# existing transaction matches this rule.} other {#
 #: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
 msgid "{count, plural, one {# missing category} other {# missing categories}}"
 msgstr "{count, plural, one {# missing category} other {# missing categories}}"
+
+#: src/settings/hooks/use-sync-repairs-action.hook.ts
+msgid "{count, plural, one {# sync item repaired} other {# sync items repaired}}"
+msgstr "{count, plural, one {# sync item repaired} other {# sync items repaired}}"
+
+#: src/settings/utils/get-sync-repair-text.util.ts
+msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
+msgstr "{count, plural, one {# sync repair} other {# sync repairs}}"
 
 #: src/app/(tabs)/settings/categories.tsx
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -230,6 +240,10 @@ msgstr "Account not found"
 #: src/account/component/create-account-screen/update-account-screen.tsx
 msgid "Account Settings"
 msgstr "Account Settings"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Account Sync"
+msgstr "Account Sync"
 
 #: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Account Type"
@@ -393,6 +407,7 @@ msgstr "Already syncing"
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "Amount"
 msgstr "Amount"
 
@@ -405,7 +420,7 @@ msgstr "Amount exceeds debt account balance"
 msgid "and"
 msgstr "and"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
+#: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "API Token"
 msgstr "API Token"
 
@@ -457,7 +472,7 @@ msgid "Are you sure you want to delete this rule?"
 msgstr "Are you sure you want to delete this rule?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
-#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
+#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Are you sure?"
@@ -514,16 +529,6 @@ msgstr "Bank integration settings"
 msgid "Bank sync"
 msgstr "Bank sync"
 
-#: src/app/(main)/create-account/index.tsx
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
-msgid "Bank Sync"
-msgstr "Bank Sync"
-
-#: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
-msgid "Bank sync data repairs"
-msgstr "Bank sync data repairs"
-
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
 msgstr "Bank sync reset"
@@ -553,6 +558,7 @@ msgstr "Between"
 msgid "Billing Dates"
 msgstr "Billing Dates"
 
+#: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Binance"
 msgstr "Binance"
@@ -591,7 +597,7 @@ msgstr "Budget limit reached"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/settings/components/bank-sync-repairs-intro-card/bank-sync-repairs-intro-card.tsx
+#: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 
@@ -611,7 +617,7 @@ msgstr "Budgie will merge high-confidence transfer and refund matches. Ambiguous
 msgid "Budgie will notify you when it finishes"
 msgstr "Budgie will notify you when it finishes"
 
-#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
+#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 
@@ -631,11 +637,11 @@ msgstr "Budgie will soft-delete {countText}. This keeps your manual transactions
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
-#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
+#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
+#: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
@@ -684,7 +690,8 @@ msgstr "Category limits"
 msgid "Category Name"
 msgstr "Category Name"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
+#: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
+#: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Change"
 msgstr "Change"
 
@@ -692,7 +699,7 @@ msgstr "Change"
 msgid "Change PIN"
 msgstr "Change PIN"
 
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
+#: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
 msgstr "Checking"
 
@@ -780,6 +787,10 @@ msgstr "Confirm Split"
 msgid "Confirm tag selection"
 msgstr "Confirm tag selection"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Connect Binance"
+msgstr "Connect Binance"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Connect Monobank"
@@ -822,7 +833,6 @@ msgstr "Conversion failed"
 msgid "Convert"
 msgstr "Convert"
 
-#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
 #: src/transaction/components/transaction-list-convert-to-refund-menu-item/transaction-list-convert-to-refund-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Refund"
@@ -834,7 +844,6 @@ msgstr "Convert to Refund?"
 
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
-#: src/transaction/components/transaction-info-page-header/transaction-info-page-header.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Convert to Transfer"
@@ -843,6 +852,10 @@ msgstr "Convert to Transfer"
 #: src/app/convert-to-transfer.tsx
 msgid "Convert to Transfer?"
 msgstr "Convert to Transfer?"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Copy the API Key and Secret Key into the fields below"
+msgstr "Copy the API Key and Secret Key into the fields below"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Cost basis"
@@ -866,9 +879,9 @@ msgstr "Could not archive account"
 msgid "Could not attach debt"
 msgstr "Could not attach debt"
 
-#: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
-msgid "Could not check bank sync data"
-msgstr "Could not check bank sync data"
+#: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
+msgid "Could not check sync data"
+msgstr "Could not check sync data"
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Could not clear data"
@@ -948,6 +961,7 @@ msgstr "Could not export CSV"
 msgid "Could not export database"
 msgstr "Could not export database"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Could not fetch accounts"
 msgstr "Could not fetch accounts"
@@ -992,9 +1006,9 @@ msgstr "Could not reassign tag"
 msgid "Could not recalculate balances"
 msgstr "Could not recalculate balances"
 
-#: src/settings/hooks/use-bank-sync-repairs-action.hook.ts
-msgid "Could not repair bank sync data"
-msgstr "Could not repair bank sync data"
+#: src/settings/hooks/use-sync-repairs-action.hook.ts
+msgid "Could not repair sync data"
+msgstr "Could not repair sync data"
 
 #: src/app/resync-window-picker.tsx
 msgid "Could not reset bank sync"
@@ -1028,7 +1042,7 @@ msgstr "Could not select CSV file"
 msgid "Could not select database backup"
 msgstr "Could not select database backup"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+#: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not set up sync"
 msgstr "Could not set up sync"
 
@@ -1050,7 +1064,7 @@ msgstr "Could not update rule"
 msgid "Could not update settings"
 msgstr "Could not update settings"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
+#: src/sync/hook/use-sync-token-update.hook.ts
 msgid "Could not update token"
 msgstr "Could not update token"
 
@@ -1077,17 +1091,29 @@ msgstr "Create a backup of all your data"
 msgid "Create a debt account first."
 msgstr "Create a debt account first."
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Create a new System-generated API key"
+msgstr "Create a new System-generated API key"
+
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
 msgstr "Create a PIN"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Create a read-only API key and secret"
+msgstr "Create a read-only API key and secret"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Create Accounts"
 msgstr "Create Accounts"
 
-#: src/sync/component/get-token-card/get-token-card.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create and copy the personal token"
 msgstr "Create and copy the personal token"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Create and copy your personal API token"
+msgstr "Create and copy your personal API token"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Create and organize transaction tags"
@@ -1135,6 +1161,11 @@ msgstr "Create your budget"
 msgid "Create your first account to start tracking your finances"
 msgstr "Create your first account to start tracking your finances"
 
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Credentials required"
+msgstr "Credentials required"
+
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto"
 msgstr "Crypto"
@@ -1143,6 +1174,10 @@ msgstr "Crypto"
 #: src/app/(main)/create-account/index.tsx
 msgid "Crypto Account"
 msgstr "Crypto Account"
+
+#: src/account/constant/account-type.constant.ts
+msgid "Crypto sync"
+msgstr "Crypto sync"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "CSV"
@@ -1463,7 +1498,7 @@ msgstr "Enter current PIN to disable protection"
 msgid "Enter new PIN"
 msgstr "Enter new PIN"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
+#: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Enter new token"
 msgstr "Enter new token"
 
@@ -1478,6 +1513,14 @@ msgstr "Enter your {PIN_LENGTH}-digit PIN"
 #: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Enter your {PIN_LENGTH}-digit PIN to unlock"
+
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
+msgid "Enter your Binance API key"
+msgstr "Enter your Binance API key"
+
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
+msgid "Enter your Binance API secret"
+msgstr "Enter your Binance API secret"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Enter your Monobank API token"
@@ -1499,7 +1542,7 @@ msgstr "equals"
 msgid "Equals"
 msgstr "Equals"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Errors"
 msgstr "Errors"
 
@@ -1610,11 +1653,12 @@ msgstr "Fee · {formattedFeeAmount}"
 msgid "Fee {formattedAmount}"
 msgstr "Fee {formattedAmount}"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
 msgstr "Fetch Accounts"
 
-#: src/sync/utils/build-bank-sync-status-label.util.ts
+#: src/sync/utils/build-sync-status-label.util.ts
 msgid "Fetching new..."
 msgstr "Fetching new..."
 
@@ -1625,6 +1669,10 @@ msgstr "Field"
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
 msgstr "Filter accounts"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Filter by amount"
+msgstr "Filter by amount"
 
 #: src/app/transaction-category-filter.tsx
 msgid "Filter categories"
@@ -1658,9 +1706,14 @@ msgstr "French (France)"
 msgid "from"
 msgstr "from"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
 msgstr "From"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "From {fromText}"
+msgstr "From {fromText}"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
@@ -1699,7 +1752,11 @@ msgstr "German"
 msgid "German (Germany)"
 msgstr "German (Germany)"
 
-#: src/sync/component/get-token-card/get-token-card.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Get API Key"
+msgstr "Get API Key"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Token"
 msgstr "Get API Token"
 
@@ -1727,9 +1784,13 @@ msgstr "Historical valuation failed"
 msgid "History loading paused"
 msgstr "History loading paused"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "History synced"
 msgstr "History synced"
+
+#: src/sync/component/sync-credentials-step-header/sync-credentials-step-header.tsx
+msgid "How to configure"
+msgstr "How to configure"
 
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "How to export"
@@ -1859,6 +1920,10 @@ msgstr "Italian (Italy)"
 msgid "Jars"
 msgstr "Jars"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
+msgstr "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
+
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Language"
@@ -1875,7 +1940,7 @@ msgstr "Last 7 days"
 msgid "Last 90 days"
 msgstr "Last 90 days"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Last error"
 msgstr "Last error"
 
@@ -1883,7 +1948,7 @@ msgstr "Last error"
 msgid "Last Month"
 msgstr "Last Month"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Last sync"
 msgstr "Last sync"
 
@@ -1909,10 +1974,12 @@ msgid "Left"
 msgstr "Left"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Left to receive"
 msgstr "Left to receive"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Left to repay"
 msgstr "Left to repay"
 
@@ -2038,6 +2105,10 @@ msgstr "Maturity Date"
 msgid "Maturity Date (Optional)"
 msgstr "Maturity Date (Optional)"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Maximum amount"
+msgstr "Maximum amount"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "MCC"
 msgstr "MCC"
@@ -2066,6 +2137,10 @@ msgstr "Merge into another tag"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Merge matching transfers and refunds"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Minimum amount"
+msgstr "Minimum amount"
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Missing categories"
@@ -2155,10 +2230,6 @@ msgstr "No Archived Accounts"
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 msgid "No archived accounts match your search"
 msgstr "No archived accounts match your search"
-
-#: src/settings/components/bank-sync-repairs-empty-state-card/bank-sync-repairs-empty-state-card.tsx
-msgid "No bank sync repairs found."
-msgstr "No bank sync repairs found."
 
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
@@ -2271,6 +2342,10 @@ msgstr "No Rules Yet"
 msgid "No source transactions"
 msgstr "No source transactions"
 
+#: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
+msgid "No sync repairs found."
+msgstr "No sync repairs found."
+
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "No tags found"
@@ -2350,11 +2425,15 @@ msgstr "Only single-entry expenses can be converted"
 msgid "Only single-entry incomes can be converted"
 msgstr "Only single-entry incomes can be converted"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Open Binance to get your API key"
+msgstr "Open Binance to get your API key"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "Open George (Erste Bank online banking)"
 
-#: src/sync/component/get-token-card/get-token-card.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Monobank to get your token"
 msgstr "Open Monobank to get your token"
 
@@ -2429,9 +2508,23 @@ msgstr "Owed to you"
 msgid "Owes you"
 msgstr "Owes you"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Paste the token into the field below"
+msgstr "Paste the token into the field below"
+
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
 msgstr "Paste your API token below:"
+
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
+#: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
+msgid "Paste your Binance API key:"
+msgstr "Paste your Binance API key:"
+
+#: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
+#: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
+msgid "Paste your Binance API secret:"
+msgstr "Paste your Binance API secret:"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
@@ -2461,6 +2554,11 @@ msgstr "PINs do not match"
 #: src/account/hooks/use-account-form.hook.ts
 msgid "Please check the account details"
 msgstr "Please check the account details"
+
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Please enter your Binance API key and secret"
+msgstr "Please enter your Binance API key and secret"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Please enter your Monobank API token"
@@ -2623,7 +2721,7 @@ msgstr "Remove"
 msgid "Remove category limit?"
 msgstr "Remove category limit?"
 
-#: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
+#: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Remove duplicate imported bank transactions"
 msgstr "Remove duplicate imported bank transactions"
 
@@ -2647,18 +2745,14 @@ msgstr "Remove split?"
 msgid "Repaid"
 msgstr "Repaid"
 
-#: src/settings/components/bank-sync-repairs-confirmation-card/bank-sync-repairs-confirmation-card.tsx
+#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Repair"
 msgstr "Repair"
 
-#: src/app/(tabs)/settings/bank-sync-repairs.tsx
-#: src/settings/components/repair-bank-sync-data/repair-bank-sync-data.tsx
-msgid "Repair Bank Sync Data"
-msgstr "Repair Bank Sync Data"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Repayment Progress"
-msgstr "Repayment Progress"
+#: src/app/(tabs)/settings/sync-repairs.tsx
+#: src/settings/components/repair-sync-data/repair-sync-data.tsx
+msgid "Repair Sync Data"
+msgstr "Repair Sync Data"
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -2689,10 +2783,6 @@ msgstr "Restore from a backup file"
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "Resuming AI…"
 msgstr "Resuming AI…"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-msgid "Return Progress"
-msgstr "Return Progress"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 msgid "Returned"
@@ -2731,7 +2821,7 @@ msgid "Rules"
 msgstr "Rules"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx
+#: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
 msgstr "Save"
 
@@ -2986,6 +3076,10 @@ msgstr "Settings"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
+#: src/app/transaction-amount-filter.tsx
+msgid "Show all amounts"
+msgstr "Show all amounts"
+
 #: src/app/date-filter.tsx
 msgid "Show all dates"
 msgstr "Show all dates"
@@ -2999,12 +3093,17 @@ msgid "Show Cents"
 msgstr "Show Cents"
 
 #: src/app/date-filter.tsx
+#: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
 msgstr "Show selected range"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx
 msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
+
+#: src/app/transaction-amount-filter.tsx
+msgid "Show transactions when any main amount is inside this range, regardless of currency."
+msgstr "Show transactions when any main amount is inside this range, regardless of currency."
 
 #: src/transaction/components/transaction-info-page/transaction-info-page.tsx
 msgid "Similar transactions"
@@ -3072,6 +3171,7 @@ msgstr "Start from scratch and set every limit yourself"
 msgid "Start Import"
 msgstr "Start Import"
 
+#: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
@@ -3118,11 +3218,35 @@ msgstr "Swipe to remove this per-category cap from your budget."
 msgid "Switch between light and dark themes"
 msgstr "Switch between light and dark themes"
 
-#: src/sync/utils/build-bank-sync-status-label.util.ts
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Sync"
+msgstr "Sync"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Sync crypto balances and transactions from Binance with a read-only API key"
+msgstr "Sync crypto balances and transactions from Binance with a read-only API key"
+
+#: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
+msgid "Sync data repairs"
+msgstr "Sync data repairs"
+
+#: src/sync/utils/build-sync-status-label.util.ts
 msgid "Sync Failed"
 msgstr "Sync Failed"
 
-#: src/sync/utils/build-bank-sync-status-label.util.ts
+#: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "Sync Repairs"
+msgstr "Sync Repairs"
+
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Sync your Binance balances and transactions"
+msgstr "Sync your Binance balances and transactions"
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "Sync your Monobank accounts and transactions"
+msgstr "Sync your Monobank accounts and transactions"
+
+#: src/sync/utils/build-sync-status-label.util.ts
 msgid "Syncing history..."
 msgstr "Syncing history..."
 
@@ -3154,6 +3278,14 @@ msgstr "Tags"
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Tap \"Get API Key\" above and sign in to Binance"
+msgstr "Tap \"Get API Key\" above and sign in to Binance"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Tap \"Get API Token\" above and log in to Monobank"
+msgstr "Tap \"Get API Token\" above and log in to Monobank"
 
 #: src/app/voice-review.tsx
 msgid "Tap re-record to try again"
@@ -3252,9 +3384,14 @@ msgstr "Title"
 msgid "to"
 msgstr "to"
 
+#: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
 msgstr "To"
+
+#: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
+msgid "To {toText}"
+msgstr "To {toText}"
 
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
@@ -3330,7 +3467,7 @@ msgstr "Transactions"
 msgid "Transactions imported"
 msgstr "Transactions imported"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx
+#: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Transactions synced"
 msgstr "Transactions synced"
 
@@ -3404,7 +3541,7 @@ msgid "Try again"
 msgstr "Try again"
 
 #: src/ai/component/voice-input-error/voice-input-error.tsx
-#: src/settings/components/bank-sync-repairs-error-card/bank-sync-repairs-error-card.tsx
+#: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Try Again"
 msgstr "Try Again"
 
@@ -3448,7 +3585,7 @@ msgstr "Unrealized P&L"
 msgid "Untagged"
 msgstr "Untagged"
 
-#: src/sync/utils/build-bank-sync-status-label.util.ts
+#: src/sync/utils/build-sync-status-label.util.ts
 msgid "Up to date"
 msgstr "Up to date"
 
@@ -3484,6 +3621,10 @@ msgstr "Use Face ID to unlock your app quickly and securely"
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Use Touch ID to unlock your app quickly and securely"
+
+#: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
+msgid "Valuation unavailable"
+msgstr "Valuation unavailable"
 
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
@@ -3529,7 +3670,7 @@ msgstr "View source transactions"
 msgid "Volume"
 msgstr "Volume"
 
-#: src/sync/utils/build-bank-sync-status-label.util.ts
+#: src/sync/utils/build-sync-status-label.util.ts
 msgid "Waiting"
 msgstr "Waiting"
 
@@ -3602,7 +3743,7 @@ msgstr "Your database backup is ready to share."
 msgid "Your holdings"
 msgstr "Your holdings"
 
-#: src/sync/component/token-input-step/token-input-step.tsx
+#: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Your token is stored securely in the database. Sync continues in the background."
 msgstr "Your token is stored securely in the database. Sync continues in the background."
 
