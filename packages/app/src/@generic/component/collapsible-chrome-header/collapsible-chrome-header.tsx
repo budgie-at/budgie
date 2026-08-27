@@ -30,6 +30,9 @@ const collapsibleChromeHeaderStyles = StyleSheet.create({
         left: 0,
         zIndex: HEADER_Z_INDEX
     },
+    header: {
+        pointerEvents: 'box-none'
+    },
     persistentRow: {
         flex: 1,
         flexDirection: 'row',
@@ -108,6 +111,7 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
                 collapsedContent={collapsedContent}
                 persistentContent={persistentContent}
                 motion={motion}
+                headerStyle={collapsibleChromeHeaderStyles.header}
                 expandedContentContainerStyle={collapsibleChromeHeaderStyles.titleLayer}
                 collapsedContentContainerStyle={collapsibleChromeHeaderStyles.titleLayer}
             />
