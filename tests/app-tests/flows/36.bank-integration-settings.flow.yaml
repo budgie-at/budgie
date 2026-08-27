@@ -52,7 +52,7 @@ appId: ${APP_ID}
           id: 'AccountForm.ScrollView'
       timeout: 10000
 - assertVisible:
-      id: 'AccountBankSyncCard.Switch'
+      id: 'AccountSyncCard.Switch'
       checked: false
 
 # 7. Back on the integration page, toggle sync back ON
@@ -83,5 +83,5 @@ appId: ${APP_ID}
           id: 'AccountForm.ScrollView'
       timeout: 10000
 - assertVisible:
-      id: 'AccountBankSyncCard.Switch'
+      id: 'AccountSyncCard.Switch'
       checked: true

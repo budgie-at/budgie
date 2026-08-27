@@ -106,11 +106,9 @@
 3. **eas-update-preview** (hosted `ubuntu-24.04`, mobile-impact changes only):
     - Exports iOS and Android bundles and publishes an EAS Update to the development channel
 
-4. **build-ios-e2e-app** (self-hosted Apple Silicon `macos-builder`, mobile-impact changes after code quality):
-    - Reuses a fingerprinted native app when possible, repacks the current bundle, and falls back to a full native build when required
-
-5. **e2e-ios** (two self-hosted Apple Silicon `macos-maestro` shards, mobile-impact changes only):
-    - Downloads the current E2E app artifact and runs the 40 assigned Maestro entry flows across two shards
+4. **ios-maestro** (`rnw-community/mobile-ci`'s reusable `ios-maestro.yml` workflow, pinned to `v1.7.0`, mobile-impact changes after code quality):
+    - Build job on self-hosted Apple Silicon `macos-builder`: reuses a fingerprinted native app when possible (repacking the current PR's JS bundle into the cached shell via `repack-on-hit`), and falls back to a full native build when required
+    - Test job on two self-hosted Apple Silicon `macos-maestro` shards: downloads the built app and runs the 43 entry flows assigned via `tests/app-tests/shards/shard-0.txt` and `shard-1.txt`
     - There is no Android E2E job in the current PR workflow
 
 ### Main Branch Workflow (.github/workflows/main.yml)
@@ -326,9 +324,9 @@ The root `readme.md` backlog tracks restoring automated `UPPER_CASE` enum-member
 - Use Maestro for React Native testing
 - CI builds the iOS E2E app and runs two Maestro shards only when the mobile-impact gate is true
 - There is no Android E2E job in the current PR workflow
-- Config: tests/app-tests/config.yaml
-- Four checked `tests/app-tests/shards/shard-*.txt` manifest files assign the 40 entry flows exactly once for selector validation
-- The current PR workflow does not consume those four manifest partitions; it dynamically splits the sorted flow list across two jobs by index modulo 2
+- Config: tests/app-tests/config.yaml, passed to every `maestro test` invocation via `ios-maestro.yml`'s `maestro-config` input
+- Two checked `tests/app-tests/shards/shard-*.txt` manifest files, zero-indexed (`shard-0.txt`, `shard-1.txt`), assign the 43 entry flows exactly once for shard coverage validation
+- The PR workflow consumes those two manifest partitions directly via `ios-maestro.yml`'s `shard-manifest-dir` input, preserving the hand-tuned wall-clock balance instead of falling back to a computed index-modulo split
 
 ### Integration Tests
 

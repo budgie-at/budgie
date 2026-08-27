@@ -7,7 +7,7 @@ import { EmptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
+import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 
 import { AddBankIntegrationAccountsContentSelector } from './add-bank-integration-accounts-content.selector';
@@ -15,7 +15,7 @@ import { AddBankIntegrationAccountsContentSelector } from './add-bank-integratio
 interface Props {
     readonly isLoading: boolean;
     readonly fetchErrorMessage: string | null;
-    readonly accountPreviews: BankAccountPreviewInterface[];
+    readonly accountPreviews: SyncAccountPreviewInterface[];
     readonly selectedAccounts: Set<string>;
     readonly onToggle: (externalId: string) => void;
     readonly onSelectAll: EmptyFn;

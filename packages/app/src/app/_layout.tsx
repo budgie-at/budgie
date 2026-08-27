@@ -1,5 +1,5 @@
-import { disableLogging as disableBankSyncLogging } from '@budgie/bank-sync';
 import { disableLogging } from '@budgie/logger';
+import { disableLogging as disableBankSyncLogging } from '@budgie/sync';
 import Constants from 'expo-constants';
 
 import { RootLayoutContent } from './root-layout-content';

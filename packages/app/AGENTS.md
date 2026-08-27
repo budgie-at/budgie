@@ -754,6 +754,6 @@ APP_VARIANT=development EXPO_PUBLIC_AI_DISABLE=true yarn start --port 8082
 
 Also verify the foreground bundle is the dev app (`com.vitalyiegorov.budgie.dev` on iOS), not the E2E app. The E2E build (`com.vitalyiegorov.budgie.e2e`) has `EXPO_PUBLIC_LOGGING_DISABLE=true` baked in, so Metro cannot re-enable service logs for that installed binary. If the wrong app is foreground, launch/reinstall the dev build or rebuild the target variant with logging enabled before debugging logs.
 
-### `packages/bank-sync` exception
+### `packages/sync` exception
 
-`packages/bank-sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/bank-sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.
+`packages/sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.

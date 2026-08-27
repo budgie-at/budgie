@@ -24,9 +24,9 @@
         "i18n:check": "yarn i18n:sync && git diff --name-only --exit-code HEAD -- packages/app/src/i18n/locales packages/landing/src/i18n/locales",
         "i18n:sync": "yarn workspace @budgie-at/app i18n:sync && yarn workspace @budgie-at/landing i18n:sync",
         "lint": "yarn lint:oxlint && yarn lint:eslint",
-        "lint:eslint": "eslint packages/app/src packages/landing packages/ai/src packages/budget/src packages/logger/src packages/bank-sync/src packages/consolidation/src packages/contracts/src",
-        "lint:fix": "oxlint --type-aware --fix packages/app/src packages/landing packages/ai/src packages/budget/src packages/logger/src packages/bank-sync/src packages/consolidation/src packages/contracts/src && eslint --fix packages/app/src packages/landing packages/ai/src packages/budget/src packages/logger/src packages/bank-sync/src packages/consolidation/src packages/contracts/src",
-        "lint:oxlint": "oxlint --type-aware packages/app/src packages/landing packages/ai/src packages/budget/src packages/logger/src packages/bank-sync/src packages/consolidation/src packages/contracts/src",
+        "lint:eslint": "eslint packages/app/src packages/landing packages/ai/src packages/budget/src packages/logger/src packages/sync/src packages/consolidation/src packages/contracts/src",
+        "lint:fix": "oxlint --type-aware --fix packages/app/src packages/landing packages/ai/src packages/budget/src packages/logger/src packages/sync/src packages/consolidation/src packages/contracts/src && eslint --fix packages/app/src packages/landing packages/ai/src packages/budget/src packages/logger/src packages/sync/src packages/consolidation/src packages/contracts/src",
+        "lint:oxlint": "oxlint --type-aware packages/app/src packages/landing packages/ai/src packages/budget/src packages/logger/src packages/sync/src packages/consolidation/src packages/contracts/src",
         "release": "lerna publish --yes --conventional-commits --create-release=github -m \"chore: release %s [skip ci]\"",
         "security": "rnsec scan",
         "test": "turbo run test",
@@ -60,9 +60,9 @@
         "postcss@npm:8.4.31": "8.5.15",
         "react": "19.2.3",
         "react-dom": "19.2.3",
+        "react-native-screens@npm:^4.25.2": "patch:react-native-screens@npm%3A4.26.0#~/.yarn/patches/react-native-screens-npm-4.26.0-54f969441f.patch",
         "typescript": "npm:@typescript/typescript6@6.0.2",
-        "ws@npm:^8.12.1": "8.21.0",
-        "react-native-screens@npm:^4.25.2": "patch:react-native-screens@npm%3A4.26.0#~/.yarn/patches/react-native-screens-npm-4.26.0-54f969441f.patch"
+        "ws@npm:^8.12.1": "8.21.0"
     },
     "devDependencies": {
         "@commitlint/cli": "21.2.1",

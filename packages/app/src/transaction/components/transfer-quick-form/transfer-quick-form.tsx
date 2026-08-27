@@ -125,6 +125,7 @@ export const TransferQuickForm = (props: Props) => {
     const fromCode = fromAccount?.instrument.code ?? '';
     const toCode = toAccount?.instrument.code ?? '';
     const feeCurrencySymbol = fromAccount?.instrument.symbol ?? defaultInstrument.symbol;
+    const feeInstrumentType = fromAccount?.instrument.type ?? defaultInstrument.type;
 
     const display = computeTransferDisplay({
         isEditingDestination,
@@ -183,7 +184,13 @@ export const TransferQuickForm = (props: Props) => {
 
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
     const amountBottomContent = showInlineFeeAction ? (
-        <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} showEmptyState onPress={handleFeePress} />
+        <TransactionFeePill
+            amount={feeAmount}
+            currencySymbol={feeCurrencySymbol}
+            instrumentType={feeInstrumentType}
+            showEmptyState
+            onPress={handleFeePress}
+        />
     ) : null;
 
     const handleConfirm = () => {
