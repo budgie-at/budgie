@@ -57,14 +57,59 @@ appId: ${APP_ID}
       visible:
           id: 'AccountCard.E2E Crypto Vault'
       timeout: 10000
-- extendedWaitUntil:
-      visible:
-          id: 'AccountCard.E2E Binance BTC'
-      timeout: 3000
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+
+# --- Binance sync accounts group under their integration, not the crypto instrument group ---
+- scrollUntilVisible:
+      element:
+          id: 'BankProviderSectionHeader.SettingsButton.1'
+      direction: DOWN
+      timeout: 10000
 - assertVisible:
-      id: 'AccountCard.Balance.E2E_Binance_BTC.2_BTC'
+      id: 'AccountCard.E2E Binance BTC'
+# Provider-grouped rows render as sync cards, so the balance id carries no asset code
+- assertVisible:
+      id: 'AccountCard.Balance.E2E_Binance_BTC.2'
+
+# --- Binance account settings credentials editor ---
+
+- runFlow:
+      file: subflows/accounts/open-account-settings.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Binance BTC'
+
+- scrollUntilVisible:
+      element:
+          id: 'SyncTokenSection.ChangeButton'
+      direction: DOWN
+      timeout: 3000
+- assertNotVisible:
+      id: 'SyncTokenSection.TokenLabel'
+- tapOn:
+      id: 'SyncTokenSection.ChangeButton'
+- extendedWaitUntil:
+      visible:
+          id: 'SyncTokenSection.BinanceApiKeyInput'
+      timeout: 3000
+- assertVisible:
+      id: 'SyncTokenSection.BinanceApiSecretInput'
+- assertNotVisible:
+      id: 'SyncTokenSection.MonobankPasteButton'
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.Page'
+      timeout: 3000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 3000
 
 # --- Market page ---
 

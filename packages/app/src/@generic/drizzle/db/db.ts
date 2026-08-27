@@ -11,7 +11,7 @@ import {
     AccountBalanceRepository,
     AccountRepository,
     BankIntegrationRepository,
-    BankSyncRepository,
+    SyncRepository,
     CategoryRepository,
     CommentEmbeddingRepository,
     DebtEventRepository,
@@ -127,8 +127,8 @@ export const historicalExchangeRateRepository = new HistoricalExchangeRateReposi
 export const instrumentDailyMarketPriceRepository = new InstrumentDailyMarketPriceRepository(db);
 export const instrumentMarketDataJobRepository = new InstrumentMarketDataJobRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
+export const syncRepository = new SyncRepository(db);
 export const debtEventRepository = new DebtEventRepository(db);
-export const bankSyncRepository = new BankSyncRepository(db);
 export const bankIntegrationRepository = new BankIntegrationRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
