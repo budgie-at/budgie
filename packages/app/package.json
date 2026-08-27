@@ -108,6 +108,7 @@
         "@babel/core": "7.29.7",
         "@expo/metro-config": "57.0.6",
         "@lingui/babel-plugin-lingui-macro": "6.5.0",
+        "@lingui/cli": "6.5.0",
         "@lingui/format-po": "6.5.0",
         "@react-native/metro-config": "0.85.3",
         "@tailwindcss/postcss": "^4.3.0",

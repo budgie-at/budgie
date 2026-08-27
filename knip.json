@@ -53,6 +53,9 @@
     "workspaces": {
         "tests/consolidation-tests": {
             "ignoreDependencies": ["better-sqlite3", "drizzle-orm", "@types/better-sqlite3"]
+        },
+        "tests/bank-sync-tests": {
+            "ignoreDependencies": ["@lingui/core"]
         }
     }
 }
