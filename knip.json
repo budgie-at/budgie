@@ -49,5 +49,10 @@
         "rimraf",
         "@oxlint/migrate"
     ],
-    "ignoreBinaries": ["build"]
+    "ignoreBinaries": ["build"],
+    "workspaces": {
+        "tests/consolidation-tests": {
+            "ignoreDependencies": ["better-sqlite3", "drizzle-orm", "@types/better-sqlite3"]
+        }
+    }
 }
