@@ -7,25 +7,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @budgie/logger
 
-
-
-
-
 # 6.0.0 (2026-07-25)
 
 **Note:** Version bump only for package @budgie/logger
 
-
-
-
-
 ## [5.43.2](https://github.com/budgie-at/budgie/compare/v5.43.1...v5.43.2) (2026-07-17)
 
 **Note:** Version bump only for package @budgie/logger
-
-
-
-
 
 ## [5.31.1](https://github.com/budgie-at/budgie/compare/v5.31.0...v5.31.1) (2026-06-02)
 

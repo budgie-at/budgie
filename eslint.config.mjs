@@ -4,6 +4,7 @@ import js from '@eslint/js';
 import { fixupPluginRules } from '@eslint/compat';
 import importPlugin from 'eslint-plugin-import';
 import jestPlugin from 'eslint-plugin-jest';
+import pluginLingui from 'eslint-plugin-lingui';
 import eslintPluginOxlint from 'eslint-plugin-oxlint';
 import promisePlugin from 'eslint-plugin-promise';
 import reactPlugin from 'eslint-plugin-react';
@@ -325,7 +326,7 @@ export default defineConfig(
             'packages/app/src/**/*.{ts,tsx}',
             'packages/contracts/src/**/*.ts',
             'packages/ai/src/**/*.ts',
-            'packages/bank-sync/src/**/*.ts'
+            'packages/sync/src/**/*.ts'
         ],
         rules: {
             'no-restricted-syntax': [
@@ -360,6 +361,10 @@ export default defineConfig(
                 }
             ]
         }
+    },
+    {
+        files: ['packages/app/src/**/*.{ts,tsx}', 'packages/landing/src/**/*.{ts,tsx}'],
+        plugins: { lingui: pluginLingui }
     },
     {
         linterOptions: {

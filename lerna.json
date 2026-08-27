@@ -1,15 +1,11 @@
 {
-  "packages": [
-    "packages/*"
-  ],
-  "command": {
-    "publish": {
-      "conventionalCommits": true,
-      "allowBranch": [
-        "main"
-      ]
-    }
-  },
-  "npmClient": "yarn",
-  "version": "6.3.0"
+    "packages": ["packages/*"],
+    "command": {
+        "publish": {
+            "conventionalCommits": true,
+            "allowBranch": ["main"]
+        }
+    },
+    "npmClient": "yarn",
+    "version": "6.3.0"
 }

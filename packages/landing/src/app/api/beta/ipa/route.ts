@@ -3,19 +3,29 @@ import { NextResponse } from 'next/server';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { findIosDevIpaDownloadUrl } from '../../../../beta/util/find-ios-dev-ipa-download-url.util';
+import { findIosDevReleaseAssetUrl } from '../../../../beta/util/find-ios-dev-release-asset-url.util';
+import { iosDevBuildMetaFetchApi } from '../../../../beta/util/ios-dev-build-meta-fetch.util';
 import { iosDevReleaseFetchApi } from '../../../../beta/util/ios-dev-release-fetch.util';
 
 const NO_STORE_CACHE_CONTROL_HEADER = 'no-store';
 const REDIRECT_STATUS = 302;
 const NOT_FOUND_STATUS = 404;
 
-export const dynamic = 'force-dynamic';
+const resolveIpaDownloadUrl = async (): Promise<string | null> => {
+    const release = await iosDevReleaseFetchApi({ cache: 'no-store' });
+
+    if (!isDefined(release)) {
+        return null;
+    }
+
+    const buildMeta = await iosDevBuildMetaFetchApi(release, { cache: 'no-store' });
+
+    return isDefined(buildMeta) ? findIosDevReleaseAssetUrl(release, buildMeta.assetName) : null;
+};
 
 // eslint-disable-next-line func-style,no-implicit-globals -- Next.js route handlers must be exported functions
 export async function GET(): Promise<NextResponse> {
-    const release = await iosDevReleaseFetchApi({ cache: 'no-store' });
-    const ipaDownloadUrl = isDefined(release) ? findIosDevIpaDownloadUrl(release) : null;
+    const ipaDownloadUrl = await resolveIpaDownloadUrl();
 
     if (!isDefined(ipaDownloadUrl)) {
         return NextResponse.json(
