@@ -7,14 +7,17 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from '../constant/bank-authoritative-account-types.constant';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
+import { ExternalSourceEnum } from '../enum/external-source.enum';
 import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
 
 import type { DB } from '../../@generic/type/db.type';
 import type { AccountEntityInterface } from '../entity/account-entity.interface';
+import type { SQL } from 'drizzle-orm';
 
 export class AccountRepository {
     constructor(private db: DB) {}
@@ -53,6 +56,13 @@ export class AccountRepository {
 
     async getAllActiveAccounts(tx?: DB): Promise<AccountEntityInterface[]> {
         return await (tx ?? this.db).select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
+    }
+
+    async getAllActiveAccountsExceptBankAuthoritative(tx?: DB): Promise<AccountEntityInterface[]> {
+        return await (tx ?? this.db)
+            .select()
+            .from(AccountEntityTable)
+            .where(and(isNull(AccountEntityTable.deletedAt), notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES)));
     }
 
     findBySearchQuery(search: string, filter: AccountFilterInterface = {}) {
@@ -109,13 +119,11 @@ export class AccountRepository {
     }
 
     async findByIds(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
-        if (!isNotEmptyArray(ids)) {
-            return [];
-        }
+        return await this.findActiveByIds(ids, tx);
+    }
 
-        return await (tx ?? this.db).query.AccountEntityTable.findMany({
-            where: and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt))
-        });
+    async findByIdsExceptBankAuthoritative(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
+        return await this.findActiveByIds(ids, tx, notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES));
     }
 
     async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {
@@ -125,6 +133,12 @@ export class AccountRepository {
 
         return await this.db.query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
+        });
+    }
+
+    async findByExternalSource(externalSource: ExternalSourceEnum, tx?: DB): Promise<AccountEntityInterface[]> {
+        return await (tx ?? this.db).query.AccountEntityTable.findMany({
+            where: and(eq(AccountEntityTable.externalSource, externalSource), isNull(AccountEntityTable.deletedAt))
         });
     }
 
@@ -192,6 +206,16 @@ export class AccountRepository {
             .limit(1);
 
         return result[0]?.account;
+    }
+
+    private async findActiveByIds(ids: number[], tx?: DB, typeCondition?: SQL): Promise<AccountEntityInterface[]> {
+        if (!isNotEmptyArray(ids)) {
+            return [];
+        }
+
+        return await (tx ?? this.db).query.AccountEntityTable.findMany({
+            where: and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt), typeCondition)
+        });
     }
 
     private buildSearchWhereClause(search: string, filter: AccountFilterInterface) {

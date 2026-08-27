@@ -8,5 +8,6 @@ export const ACCOUNT_ICON: Record<AccountTypeEnum, UserIconNameEnum> = {
     [AccountTypeEnum.STOCKS]: UserIconNameEnum.CreditCard,
     [AccountTypeEnum.SAVINGS]: UserIconNameEnum.PiggyBank,
     [AccountTypeEnum.DEPOSIT]: UserIconNameEnum.Landmark,
-    [AccountTypeEnum.BANK_SYNC]: UserIconNameEnum.CreditCard
+    [AccountTypeEnum.BANK_SYNC]: UserIconNameEnum.CreditCard,
+    [AccountTypeEnum.CRYPTO_SYNC]: UserIconNameEnum.Bitcoin
 };

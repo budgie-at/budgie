@@ -14,7 +14,7 @@ import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated
 
 import type { HomeAccountBalanceSummaryInterface } from '../interface/home-account-balance-summary.interface';
 import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
-import type { AccountWithBankSyncEntityInterface } from '@budgie/contracts';
+import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
 
 const createHomeAccountBalanceSummary = () => ({
     accountTypeTotals: new Map<AccountTypeEnum, number>(),
@@ -64,7 +64,7 @@ const addNetWorthAssetTotals = (
 
     summary.netWorth += convertedBalance;
 
-    if (accountType === AccountTypeEnum.CRYPTO) {
+    if (accountType === AccountTypeEnum.CRYPTO || accountType === AccountTypeEnum.CRYPTO_SYNC) {
         summary.cryptoCount += 1;
         summary.cryptoTotal += convertedBalance;
 
@@ -82,16 +82,16 @@ export const useHomePageDataQuery = () => {
     const queryDependencies = [defaultInstrument.id, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
     const { data } = useDatabaseLiveQuery(accountBalanceRepository.getHomeAccountRows(defaultInstrument.id), queryDependencies);
     const accounts = data.map(row => {
-        const account: AccountWithBankSyncEntityInterface = {
+        const account: AccountWithSyncEntityInterface = {
             ...row.account,
-            bankSync: row.bankSync,
+            sync: row.sync,
             instrument: row.instrument
         };
 
         return account;
     });
     const integrationProviders = buildIntegrationProviderMap(
-        data.map(row => ({ integrationId: row.account.integrationId, bankSync: row.bankSync }))
+        data.map(row => ({ integrationId: row.account.integrationId, sync: row.sync }))
     );
 
     const balanceSummary: HomeAccountBalanceSummaryInterface = data.reduce((summary, row) => {

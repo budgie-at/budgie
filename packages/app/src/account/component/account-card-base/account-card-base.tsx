@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
-import { OnEventFn } from '@rnw-community/shared';
+import { OnEventFn, isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -25,6 +25,7 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly circleVariant?: ColorPaletteVariant;
     readonly deadlinePriority?: 'high' | 'normal';
     readonly topRight?: ReactNode;
+    readonly bottomRight?: ReactNode;
     readonly balanceContent?: ReactNode;
     readonly children?: ReactNode;
     readonly onLongPress?: OnEventFn;
@@ -53,6 +54,7 @@ export const AccountCardBase = (props: Props) => {
         circleVariant = 'ghost',
         deadlinePriority = 'normal',
         topRight,
+        bottomRight,
         balanceContent,
         children,
         onLongPress
@@ -94,19 +96,23 @@ export const AccountCardBase = (props: Props) => {
                     </HapticPressable>
                 </View>
 
-                <View className="gap-1">
-                    <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1}>
-                        {title}
-                    </Text>
+                <View className="flex-row items-end justify-between gap-2">
+                    <View className="min-w-0 flex-1 gap-1">
+                        <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1}>
+                            {title}
+                        </Text>
 
-                    {balanceContent ?? (
-                        <ProtectedText
-                            className="text-primary font-medium"
-                            testID={AccountCardBaseSelector.Balance(title, accountBalanceTestValue)}
-                        >
-                            {accountBalance}
-                        </ProtectedText>
-                    )}
+                        {balanceContent ?? (
+                            <ProtectedText
+                                className="text-primary font-medium"
+                                testID={AccountCardBaseSelector.Balance(title, accountBalanceTestValue)}
+                            >
+                                {accountBalance}
+                            </ProtectedText>
+                        )}
+                    </View>
+
+                    {isDefined(bottomRight) && <View className="w-[14px] items-center">{bottomRight}</View>}
                 </View>
 
                 {children}

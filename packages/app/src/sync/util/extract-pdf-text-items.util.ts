@@ -1,6 +1,6 @@
 import { requireNativeModule } from 'expo';
 
-import type { PdfTextItemInterface } from '@budgie/bank-sync';
+import type { PdfTextItemInterface } from '@budgie/sync';
 
 interface PdfExtractorNativeModuleInterface {
     extractTextItems(filePath: string): Promise<PdfTextItemInterface[]>;

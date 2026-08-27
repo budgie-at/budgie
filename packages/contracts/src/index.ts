@@ -23,6 +23,7 @@ export { convertAmountToBase } from './@generic/util/convert-amount-to-base.util
 export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
 export { transactionAsync } from './@generic/util/transaction-async.util';
 
+export { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from './account/constant/bank-authoritative-account-types.constant';
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
 export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant';
 
@@ -46,7 +47,7 @@ export type { DepositAccountCreateInputInterface } from './account/input/deposit
 export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
 export type { AccountWithInstrumentEntityInterface } from './account/entity/account-with-instrument-entity.interface';
-export type { AccountWithBankSyncEntityInterface } from './account/entity/account-with-bank-sync-entity.interface';
+export type { AccountWithSyncEntityInterface } from './account/entity/account-with-sync-entity.interface';
 
 export type { AccountFilterInterface } from './account/interface/account-filter.interface';
 
@@ -68,6 +69,10 @@ export type { AccountBalanceCreateEntityInterface } from './account-balance/enti
 export type { AccountBalanceUpdateEntityInterface } from './account-balance/entity/account-balance-update-entity.interface';
 
 export { AccountBalanceRepository } from './account-balance/repository/account-balance.repository';
+
+export { SyncModeEnum } from './sync/enum/sync-mode.enum';
+export { SyncStatusEnum } from './sync/enum/sync-status.enum';
+export { SyncAssociationEnum } from './sync/enum/sync-association.enum';
 
 export { DebtEventDirectionEnum } from './debt-event/enum/debt-event-direction.enum';
 export { DebtEventSourceEnum } from './debt-event/enum/debt-event-source.enum';
@@ -100,22 +105,18 @@ export type { BankIntegrationUpdateEntityInterface } from './bank-integration/en
 
 export { BankIntegrationRepository } from './bank-integration/repository/bank-integration.repository';
 
-export { BankSyncModeEnum } from './bank-sync/enum/bank-sync-mode.enum';
-export { BankSyncStatusEnum } from './bank-sync/enum/bank-sync-status.enum';
-export { BankSyncAssociationEnum } from './bank-sync/enum/bank-sync-association.enum';
+export { SyncEntityTable } from './sync/table/sync-entity.table';
+export { SyncEntityRelations } from './sync/relations/sync-entity.relations';
 
-export { BankSyncEntityTable } from './bank-sync/table/bank-sync-entity.table';
-export { BankSyncEntityRelations } from './bank-sync/relations/bank-sync-entity.relations';
+export { SyncEntitySchema } from './sync/schema/sync-entity.schema';
+export { SyncCreateEntitySchema } from './sync/schema/sync-create-entity.schema';
+export { SyncUpdateEntitySchema } from './sync/schema/sync-update-entity.schema';
 
-export { BankSyncEntitySchema } from './bank-sync/schema/bank-sync-entity.schema';
-export { BankSyncCreateEntitySchema } from './bank-sync/schema/bank-sync-create-entity.schema';
-export { BankSyncUpdateEntitySchema } from './bank-sync/schema/bank-sync-update-entity.schema';
+export type { SyncEntityInterface } from './sync/entity/sync-entity.interface';
+export type { SyncCreateEntityInterface } from './sync/entity/sync-create-entity.interface';
+export type { SyncUpdateEntityInterface } from './sync/entity/sync-update-entity.interface';
 
-export type { BankSyncEntityInterface } from './bank-sync/entity/bank-sync-entity.interface';
-export type { BankSyncCreateEntityInterface } from './bank-sync/entity/bank-sync-create-entity.interface';
-export type { BankSyncUpdateEntityInterface } from './bank-sync/entity/bank-sync-update-entity.interface';
-
-export { BankSyncRepository } from './bank-sync/repository/bank-sync.repository';
+export { SyncRepository } from './sync/repository/sync.repository';
 
 export { TAG_TITLE_MAX_LENGTH } from './tag/constant/tag-title-max-length.constant';
 export { TAG_TITLE_MIN_LENGTH } from './tag/constant/tag-title-min-length.constant';

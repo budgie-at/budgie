@@ -1,17 +1,17 @@
-import { BankAccountTypeEnum } from '@budgie/bank-sync';
+import { SyncAccountTypeEnum } from '@budgie/sync';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
+import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
 import { BankAccountPreviewList } from '../bank-account-preview-list/bank-account-preview-list';
 
 import { AccountSelectionStepSelector } from './account-selection-step.selector';
 
 interface Props {
-    readonly accountPreviews: BankAccountPreviewInterface[];
+    readonly accountPreviews: SyncAccountPreviewInterface[];
     readonly selectedAccounts: Set<string>;
     readonly onToggle: (externalId: string) => void;
     readonly onSelectAll: EmptyFn;
@@ -19,8 +19,8 @@ interface Props {
 }
 
 export const AccountSelectionStep = ({ accountPreviews, selectedAccounts, onToggle, onSelectAll, onDeselectAll }: Props) => {
-    const cardPreviews = accountPreviews.filter(preview => preview.type !== BankAccountTypeEnum.JAR);
-    const jarPreviews = accountPreviews.filter(preview => preview.type === BankAccountTypeEnum.JAR);
+    const cardPreviews = accountPreviews.filter(preview => preview.type !== SyncAccountTypeEnum.JAR);
+    const jarPreviews = accountPreviews.filter(preview => preview.type === SyncAccountTypeEnum.JAR);
     const areAllSelected = isNotEmptyArray(accountPreviews) && selectedAccounts.size === accountPreviews.length;
     const handleToggleAll = areAllSelected ? onDeselectAll : onSelectAll;
     const toggleAllLabel = areAllSelected ? <Trans>Deselect all</Trans> : <Trans>Select all</Trans>;
