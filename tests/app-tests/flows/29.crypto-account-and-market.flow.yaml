@@ -53,10 +53,13 @@ appId: ${APP_ID}
 - tapOn:
       id: 'CryptoGroup.Toggle.BTC'
 - waitForAnimationToEnd
-- extendedWaitUntil:
-      visible:
-          id: 'AccountCard.E2E Crypto Vault'
+- scrollUntilVisible:
+      element:
+          id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+      direction: DOWN
       timeout: 10000
+      visibilityPercentage: 100
+      centerElement: true
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
 
@@ -218,10 +221,6 @@ appId: ${APP_ID}
           - tapOn:
                 id: 'CryptoGroup.Toggle.BTC'
           - waitForAnimationToEnd
-- extendedWaitUntil:
-      visible:
-          id: 'AccountCard.E2E Crypto Vault'
-      timeout: 3000
 - scrollUntilVisible:
       element:
           id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
