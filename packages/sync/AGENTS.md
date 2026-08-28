@@ -220,9 +220,12 @@ converts each SDK error class into a `SyncError`:
 `INVALID_RESPONSE` is meaningful: `BaseSyncService.fetchTransactions` treats it
 as an empty batch rather than a sync failure.
 
-SDK retry is intentionally left unconfigured. Its retryable status set is fixed and
-includes 429, which is counterproductive against Monobank's 1-request-per-60-seconds
-limit. See [monobank-typescript-sdk#17](https://github.com/liaugust/monobank-typescript-sdk/issues/17).
+Retry is scoped to `[408, 500, 502, 503, 504]` via the SDK's `retryableStatusCodes`,
+restoring the status list the previous ky client used. `429` is deliberately excluded:
+Monobank documents these endpoints at one request per 60 seconds, so a rate-limited
+response means the minute's quota is already spent and a short backoff only spends
+more of it. `RATE_LIMITED` is surfaced immediately and the app's own pacing handles it.
+`retry-policy.test.ts` pins both halves of that behaviour.
 
 ## Base Sync Service
 
@@ -511,12 +514,12 @@ ESM-only package:
 
 ## Known Issues
 
-1. **No retry on 5xx for Monobank** - see the retry note under Error Mapping.
-   `BaseSyncProviderClient` does retry 5xx for Binance.
-2. **A second zod copy is bundled** - the SDK depends on `zod@^4.4.3` while this
+1. **A second zod copy is bundled** - the SDK depends on `zod@^4.4.3` while this
    monorepo standardises on `4.1.12`, so the SDK gets a nested copy and `zod/mini`
-   ships twice. Bumping zod repo-wide to `>=4.4.3` would deduplicate it.
-3. **Monobank and Binance are the only API integrations** - Erste and Privatbank
+   ships twice. Bumping zod repo-wide to `>=4.4.3` would deduplicate it, but zod 4.4
+   tightened `.omit()` in a way `convertToCreateEntitySchema` cannot satisfy, so this
+   is blocked on reworking that helper.
+2. **Monobank and Binance are the only API integrations** - Erste and Privatbank
    are file-based, and other providers in the enum are placeholders.
 
 `ClientInfo.jars` is optional (`readonly Jar[] | undefined`), because Monobank

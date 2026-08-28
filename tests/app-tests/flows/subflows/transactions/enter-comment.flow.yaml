@@ -1,9 +1,13 @@
 appId: ${APP_ID}
 ---
-- extendedWaitUntil:
-    visible:
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
       id: 'TransactionForm.CommentInput'
+    direction: DOWN
     timeout: 10000
+    visibilityPercentage: 100
+    centerElement: true
 - tapOn:
     id: 'TransactionForm.CommentInput'
 - extendedWaitUntil:
