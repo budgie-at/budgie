@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.4.1](https://github.com/budgie-at/budgie/compare/v6.4.0...v6.4.1) (2026-08-28)
+
+
+### Bug Fixes
+
+* **app:** repair iOS submit config (API key + App Store ID) ([#686](https://github.com/budgie-at/budgie/issues/686)) ([e03edaa](https://github.com/budgie-at/budgie/commit/e03edaa9b5dc5866b083ab1ebe7728a2a6f5011c))
+
+
+
+
+
 # [6.4.0](https://github.com/budgie-at/budgie/compare/v6.3.0...v6.4.0) (2026-08-28)
 
 
