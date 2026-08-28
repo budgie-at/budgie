@@ -410,6 +410,9 @@ importers:
       '@babel/core':
         specifier: 7.29.7
         version: 7.29.7(supports-color@8.1.1)
+      '@babel/plugin-transform-class-static-block':
+        specifier: 7.28.3
+        version: 7.28.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
       '@expo/metro-config':
         specifier: 57.0.6
         version: 57.0.6(@typescript/typescript6@6.0.2)(expo@57.0.4)(supports-color@8.1.1)
@@ -446,6 +449,9 @@ importers:
       babel-plugin-react-compiler:
         specifier: ^1.0.0
         version: 1.0.0
+      babel-preset-expo:
+        specifier: 57.0.2
+        version: 57.0.2(@babel/core@7.29.7(supports-color@8.1.1))(@babel/runtime@7.29.7)(expo@57.0.4)(react-refresh@0.14.2)(supports-color@8.1.1)
       better-sqlite3:
         specifier: ^12.10.0
         version: 12.10.0

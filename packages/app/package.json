@@ -106,6 +106,7 @@
     },
     "devDependencies": {
         "@babel/core": "7.29.7",
+        "@babel/plugin-transform-class-static-block": "7.28.3",
         "@expo/metro-config": "57.0.6",
         "@lingui/babel-plugin-lingui-macro": "6.5.0",
         "@lingui/cli": "6.5.0",
@@ -118,6 +119,7 @@
         "babel-plugin-inline-import": "^3.0.0",
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-react-compiler": "^1.0.0",
+        "babel-preset-expo": "57.0.2",
         "better-sqlite3": "^12.10.0",
         "drizzle-kit": "^0.31.10",
         "eas-build-cache-provider": "^19.0.0",
