@@ -11,7 +11,7 @@ jobs:
     name: iOS build and publish
     permissions:
       contents: read
-    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@a62c341fd959d317db5b99345011c3c9a07861f4 # TEMP: rnw-community/mobile-ci#99 head — repin to v1.10.0 once released
+    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@v1.10.0 # v1.10.0
     with:
       enable-ios: true
       enable-android: false

@@ -17,7 +17,7 @@ jobs:
         name: Seed native cache
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/seed-native-cache.yml@a62c341fd959d317db5b99345011c3c9a07861f4 # TEMP: rnw-community/mobile-ci#99 head — repin to v1.10.0 once released
+        uses: rnw-community/mobile-ci/.github/workflows/seed-native-cache.yml@v1.10.0 # v1.10.0
         with:
             ios-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             ios-targets: >-
