@@ -223,7 +223,7 @@ jobs:
               run: pnpm install
 
             - name: Build internal workspace packages
-              run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
+              run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
 
             - name: Create preview
               id: create-preview
@@ -266,7 +266,7 @@ jobs:
             test-timeout-minutes: 85
             cache-profile: ios-e2e-budgie-v2
             install-command: pnpm install --frozen-lockfile
-            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
+            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
             expo-use-precompiled-modules: true

@@ -23,6 +23,7 @@ export interface TransferPairCandidateInterface {
         | 'amount'
         | 'operation-amount'
         | 'implied-rate'
+        | 'p2p-fiat'
         | 'same-bank-cross-currency'
         | 'same-bank-hinted-fee'
         | 'interbank-hinted-fee';

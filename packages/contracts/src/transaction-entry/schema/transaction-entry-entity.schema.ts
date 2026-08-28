@@ -23,6 +23,9 @@ export const TransactionEntryEntitySchema = createSelectSchema(TransactionEntryE
     baseInstrumentId: schema => schema.positive().nullable().describe('Id of the base instrument used for analytics valuation'),
     baseExchangeRate: schema => schema.positive().nullable().describe('Exchange rate used to value this entry in the base instrument'),
     baseAmount: schema => schema.positive().nullable().describe('Amount of this entry valued in the base instrument'),
+    quotedInstrumentId: schema => schema.positive().nullable().describe('Id of the provider-reported quote instrument'),
+    quotedAmount: schema => schema.positive().nullable().describe('Provider-reported total amount in the quote instrument'),
+    quotedUnitPrice: schema => schema.positive().nullable().describe('Provider-reported unit price in the quote instrument'),
     toIban: schema => schema.max(34).nullable().default(null).describe('Counter-party IBAN, max 34 chars per ISO 13616'),
     originalTransactionId: schema => schema.positive().nullable().describe('Original transaction id for moved consolidation source entries')
 });

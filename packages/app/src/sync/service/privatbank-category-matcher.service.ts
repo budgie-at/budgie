@@ -1,5 +1,5 @@
-import { PRIVATBANK_CATEGORY_TO_MCC_CODE } from '@budgie/bank-sync';
 import { Log } from '@budgie/logger';
+import { PRIVATBANK_CATEGORY_TO_MCC_CODE } from '@budgie/sync';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -10,7 +10,11 @@ import type { MccCategoryLookupInterface } from '@budgie/contracts';
 class PrivatbankCategoryMatcherService {
     @Log(
         categories => `enter categoryCount=${categories.length}`,
-        (result, categories) => `done categoryCount=${categories.length} matchedCount=${[...result.values()].filter(isDefined).length}`,
+        (result, categories) => {
+            const unmatchedCategories = categories.filter(category => !isDefined(result.get(category)));
+
+            return `done categoryCount=${categories.length} matchedCount=${[...result.values()].filter(isDefined).length} unmatchedCount=${unmatchedCategories.length} unmatchedCategories=${unmatchedCategories.join(',')}`;
+        },
         (error, categories) => `throw categoryCount=${categories.length} error=${getErrorMessage(error)}`
     )
     async match(categories: string[]): Promise<Map<string, MccCategoryLookupInterface | null>> {

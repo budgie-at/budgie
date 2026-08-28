@@ -41,6 +41,7 @@ describe('consolidation/family-priority', () => {
             'IBAN_BRIDGE_CANONICAL_DUPLICATE',
             'IBAN_BRIDGE_TRANSFER',
             'EXISTING_TRANSFER_INCOME_DUPLICATE',
+            'P2P_FIAT_TRANSFER',
             'TRANSFER_PAIR',
             'ATM_CASH_WITHDRAWAL',
             'REFUND'

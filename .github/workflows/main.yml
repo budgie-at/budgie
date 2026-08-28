@@ -128,7 +128,7 @@ jobs:
         run: pnpm install
 
       - name: Build internal workspace packages
-        run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync --filter=@budgie/consolidation --filter=@budgie/budget
+        run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
 
       - name: Publish update
         working-directory: packages/app

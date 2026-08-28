@@ -3,6 +3,7 @@ packages:
   - tests/*
 
 overrides:
+  '@typescript/old@npm:typescript@^6': npm:typescript@6.0.2
   '@expo/metro-config': 57.0.6
   '@lingui/core': 6.5.0
   '@lingui/react': 6.5.0

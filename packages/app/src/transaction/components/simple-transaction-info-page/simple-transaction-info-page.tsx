@@ -10,6 +10,8 @@ import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
 import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
+import type { Href } from 'expo-router';
+
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly transactionType: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME;
@@ -25,7 +27,7 @@ export const SimpleTransactionInfoPage = ({ transaction, transactionType, onOpen
     const transactionAccountId = isExpense ? transaction.fromAccountId : transaction.toAccountId;
     const categoryEntryCount = getTransactionCategoryEntries(transaction.entries).length;
     const pathname = isExpense ? '/transactions/[id]/expense/edit' : '/transactions/[id]/income/edit';
-    const editHref = { pathname, params: { id: String(transactionId) } };
+    const editHref: Href = { pathname, params: { id: String(transactionId) } };
     const handleDelete = () => deleteTransaction(transactionId, { isConsolidated });
     const handleOpenFee = () => void router.push(getTransactionFeeEditHref(transactionType, transactionId));
     const { actionsMenuProps } = useSimpleTransactionActionsMenu({

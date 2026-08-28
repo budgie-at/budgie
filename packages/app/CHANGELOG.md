@@ -3,16 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [6.3.0](https://github.com/budgie-at/budgie/compare/v6.2.1...v6.3.0) (2026-08-26)
+## [6.4.1](https://github.com/budgie-at/budgie/compare/v6.4.0...v6.4.1) (2026-08-28)
+
+
+### Bug Fixes
+
+* **app:** repair iOS submit config (API key + App Store ID) ([#686](https://github.com/budgie-at/budgie/issues/686)) ([e03edaa](https://github.com/budgie-at/budgie/commit/e03edaa9b5dc5866b083ab1ebe7728a2a6f5011c))
+
+
+
+
+
+# [6.4.0](https://github.com/budgie-at/budgie/compare/v6.3.0...v6.4.0) (2026-08-28)
 
 
 ### Features
 
-* **app:** add amount range filter to transactions list ([#555](https://github.com/budgie-at/budgie/issues/555)) ([26357b3](https://github.com/budgie-at/budgie/commit/26357b35ee85a729fc411c20cf57e4bc3908ac10))
+* add Binance account sync with bank↔P2P consolidation ([#561](https://github.com/budgie-at/budgie/issues/561)) ([92fea35](https://github.com/budgie-at/budgie/commit/92fea35f9073011caebda427451de54ccff0cad1))
 
 
 
 
+
+# [6.3.0](https://github.com/budgie-at/budgie/compare/v6.2.1...v6.3.0) (2026-08-26)
+
+### Features
+
+- **app:** add amount range filter to transactions list ([#555](https://github.com/budgie-at/budgie/issues/555)) ([26357b3](https://github.com/budgie-at/budgie/commit/26357b35ee85a729fc411c20cf57e4bc3908ac10))
 
 ## [6.2.1](https://github.com/budgie-at/budgie/compare/v6.2.0...v6.2.1) (2026-08-25)
 

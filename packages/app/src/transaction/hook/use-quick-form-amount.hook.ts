@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface } from '@budgie/contracts';
+import { InstrumentTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { useGetAccountByIdQuery } from '../../account/query/use-get-account-by-id.query';
@@ -15,6 +15,7 @@ interface UseQuickFormAmountResult {
     readonly displayValue: string;
     readonly numericValue: number;
     readonly currencySymbol: string;
+    readonly instrumentType: InstrumentTypeEnum;
     readonly keypadHandlers: ReturnType<typeof useKeypadInput>['handlers'];
     readonly setFromNumeric: (value: number) => void;
 }
@@ -37,6 +38,7 @@ export const useQuickFormAmount = ({ accountFieldName }: UseQuickFormAmountConfi
     const accountId = useWatch({ control, name: accountFieldName });
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
     const currencySymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
+    const instrumentType = account?.instrument.type ?? defaultInstrument.type;
 
-    return { displayValue, numericValue, currencySymbol, keypadHandlers: handlers, setFromNumeric };
+    return { displayValue, numericValue, currencySymbol, instrumentType, keypadHandlers: handlers, setFromNumeric };
 };

@@ -39,8 +39,8 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
     const { t } = useLingui();
 
     const variant = ACCOUNT_COLOR[account.type];
-    const showInstrumentAfterAmount = account.type === AccountTypeEnum.CRYPTO;
-    const minimumDecimalPlaces = account.type === AccountTypeEnum.CRYPTO ? MICRO_UNIT_DECIMAL_PLACES : 0;
+    const showInstrumentAfterAmount = account.type === AccountTypeEnum.CRYPTO || account.type === AccountTypeEnum.CRYPTO_SYNC;
+    const minimumDecimalPlaces = showInstrumentAfterAmount ? MICRO_UNIT_DECIMAL_PLACES : 0;
 
     return (
         <CollapsibleChromePage

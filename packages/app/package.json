@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "6.3.0",
+    "version": "6.4.1",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -26,12 +26,12 @@
     },
     "dependencies": {
         "@budgie/ai": "workspace:^",
-        "@budgie/bank-sync": "workspace:*",
         "@budgie/budget": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/logger": "workspace:*",
         "@budgie/screen-chrome": "workspace:*",
+        "@budgie/sync": "workspace:*",
         "@expo/fingerprint": "~0.20.3",
         "@expo/ui": "~57.0.4",
         "@formatjs/intl": "^4.1.12",
