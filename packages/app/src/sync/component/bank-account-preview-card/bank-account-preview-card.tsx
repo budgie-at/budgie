@@ -5,12 +5,12 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
+import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
 
 import { BankAccountPreviewCardSelector } from './bank-account-preview-card.selector';
 
 interface Props {
-    readonly preview: BankAccountPreviewInterface;
+    readonly preview: SyncAccountPreviewInterface;
     readonly isSelected: boolean;
     readonly onToggle: (externalId: string) => void;
 }
@@ -29,7 +29,7 @@ export const BankAccountPreviewCard = ({ preview, isSelected, onToggle }: Props)
                         {preview.currencyCode}
                         {isNotEmptyString(preview.iban) && ` • ${preview.iban}`}
                     </Text>
-                    {preview.hasBankSync && (
+                    {preview.hasSync && (
                         <Text className="text-xs text-green-600">
                             <Trans>Already syncing</Trans>
                         </Text>

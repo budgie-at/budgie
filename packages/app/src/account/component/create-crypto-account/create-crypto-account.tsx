@@ -11,7 +11,7 @@ export const CreateCryptoAccount = () => {
             type={AccountTypeEnum.CRYPTO}
             title={t`Crypto Account`}
             allowNegative={false}
-            defaultIcon={UserIconNameEnum.Bitcoin}
+            defaultIcon={UserIconNameEnum.Coins}
             instrumentType={InstrumentTypeEnum.CRYPTO}
         />
     );

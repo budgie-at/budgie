@@ -1,10 +1,12 @@
 import { CategorySourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { P2pFiatDirectionEnum } from '../../auto/enum/p2p-fiat-direction.enum';
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
 
+import type { P2pFiatTransferCandidateInterface } from '../../auto/interface/p2p-fiat-transfer-candidate.interface';
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
 import type {
@@ -79,53 +81,39 @@ export class ConsolidationMutationService {
         return canonicalTransaction;
     }
 
-    @Log(
-        (candidate, sourceTransactions, canonicalTransactionId, tx) =>
-            `enter transactionId=${candidate.transactionId} sourceAccountId=${candidate.sourceAccountId} sourceTransactionIds=${sourceTransactions.map(transaction => transaction.id).join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
-        (result, ...inputs) => {
-            const [candidate, sourceTransactions, canonicalTransactionId, tx] = inputs;
-
-            return `done transactionId=${candidate.transactionId} sourceAccountId=${candidate.sourceAccountId} sourceTransactionIds=${sourceTransactions.map(transaction => transaction.id).join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} result=${String(result)}`;
-        },
-        (error, ...inputs) => {
-            const [candidate, sourceTransactions, canonicalTransactionId, tx] = inputs;
-
-            return `throw transactionId=${candidate.transactionId} sourceAccountId=${candidate.sourceAccountId} sourceTransactionIds=${sourceTransactions.map(transaction => transaction.id).join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`;
-        }
-    )
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async createAtmCashWithdrawalFeeEntry(
         candidate: AtmCashWithdrawalCandidateInterface,
         sourceTransactions: TransactionWithEntriesEntityInterface[],
         canonicalTransactionId: number,
         tx: DB
     ): Promise<void> {
-        const feeEntry = this.findAtmCashWithdrawalFeeEntry(candidate, sourceTransactions);
+        const feeEntry = this.findFeeEntries(candidate.sourceAccountId, sourceTransactions).at(0);
 
         if (!isDefined(feeEntry)) {
             return;
         }
 
-        await this.dependencies.transactionEntryRepository.bulkCreate(
-            [
-                {
-                    transactionId: canonicalTransactionId,
-                    accountId: candidate.sourceAccountId,
-                    categoryId: feeEntry.categoryId,
-                    categorySource: feeEntry.categorySource,
-                    mccCategoryId: feeEntry.mccCategoryId,
-                    type: TransactionEntryTypeEnum.FEE,
-                    amount: feeEntry.amount,
-                    externalId: null,
-                    exchangeRate: feeEntry.exchangeRate,
-                    baseInstrumentId: feeEntry.baseInstrumentId,
-                    baseExchangeRate: feeEntry.baseExchangeRate,
-                    baseAmount: feeEntry.baseAmount,
-                    toIban: null,
-                    originalTransactionId: null
-                }
-            ],
-            tx
+        await this.createCanonicalFeeEntries(candidate.sourceAccountId, [feeEntry], canonicalTransactionId, tx);
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async createP2pFiatTransferFeeEntries(
+        candidate: P2pFiatTransferCandidateInterface,
+        sourceTransactions: TransactionWithEntriesEntityInterface[],
+        canonicalTransactionId: number,
+        tx: DB
+    ): Promise<void> {
+        const bankAccountId = candidate.direction === P2pFiatDirectionEnum.BUY ? candidate.fromAccountId : candidate.toAccountId;
+        const feeEntries = this.findFeeEntries(bankAccountId, sourceTransactions).filter(entry =>
+            candidate.bankTransactionIds.includes(entry.transactionId)
         );
+
+        if (!isNotEmptyArray(feeEntries)) {
+            return;
+        }
+
+        await this.createCanonicalFeeEntries(bankAccountId, feeEntries, canonicalTransactionId, tx);
     }
 
     @Log(
@@ -158,15 +146,42 @@ export class ConsolidationMutationService {
         );
     }
 
-    private findAtmCashWithdrawalFeeEntry(
-        candidate: AtmCashWithdrawalCandidateInterface,
+    private async createCanonicalFeeEntries(
+        accountId: number,
+        feeEntries: TransactionEntryEntityInterface[],
+        canonicalTransactionId: number,
+        tx: DB
+    ): Promise<void> {
+        await this.dependencies.transactionEntryRepository.bulkCreate(
+            feeEntries.map(feeEntry => ({
+                transactionId: canonicalTransactionId,
+                accountId,
+                categoryId: feeEntry.categoryId,
+                categorySource: feeEntry.categorySource,
+                mccCategoryId: feeEntry.mccCategoryId,
+                type: TransactionEntryTypeEnum.FEE,
+                amount: feeEntry.amount,
+                externalId: null,
+                exchangeRate: feeEntry.exchangeRate,
+                baseInstrumentId: feeEntry.baseInstrumentId,
+                baseExchangeRate: feeEntry.baseExchangeRate,
+                baseAmount: feeEntry.baseAmount,
+                toIban: null,
+                originalTransactionId: null
+            })),
+            tx
+        );
+    }
+
+    private findFeeEntries(
+        accountId: number,
         sourceTransactions: TransactionWithEntriesEntityInterface[]
-    ): TransactionEntryEntityInterface | undefined {
+    ): TransactionEntryEntityInterface[] {
         return sourceTransactions
             .flatMap(transaction => transaction.entries)
-            .find(
+            .filter(
                 entry =>
-                    entry.accountId === candidate.sourceAccountId &&
+                    entry.accountId === accountId &&
                     (entry.type === TransactionEntryTypeEnum.FEE || entry.categorySource === CategorySourceEnum.FEE) &&
                     isPositiveNumber(entry.amount)
             );

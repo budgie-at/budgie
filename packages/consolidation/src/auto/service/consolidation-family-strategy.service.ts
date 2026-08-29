@@ -24,16 +24,9 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
     }
 
     async process(context: ConsolidationFamilyRunContextInterface): Promise<ConsolidationFamilyRunResultInterface> {
-        const candidates = await this.buildRunnableCandidates(context);
-        const consolidated = await this.processCandidateList(candidates);
-        context.onProgress?.(candidates.length);
-        await this.yieldControl();
+        const blockedSourceTransactionIds = new Set<number>();
 
-        return {
-            blockedSourceTransactionIds: this.buildBlockedSourceTransactionIds(candidates),
-            consolidated,
-            found: candidates.length
-        };
+        return this.processPass(context, blockedSourceTransactionIds, 0, 0);
     }
 
     async processCandidateList(candidates: Candidate[]): Promise<number> {
@@ -53,6 +46,10 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
         return consolidatedPromise;
     }
 
+    protected shouldRepeatAfterSuccessfulPass(): boolean {
+        return false;
+    }
+
     private async buildRunnableCandidates(context: ConsolidationFamilyRunContextInterface): Promise<Candidate[]> {
         const candidates = await this.findCandidates(context.scope);
         await this.yieldControl();
@@ -60,6 +57,35 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
         await this.yieldControl();
 
         return runnableCandidates;
+    }
+
+    private async processPass(
+        context: ConsolidationFamilyRunContextInterface,
+        blockedSourceTransactionIds: Set<number>,
+        consolidated: number,
+        found: number
+    ): Promise<ConsolidationFamilyRunResultInterface> {
+        const candidates = await this.buildRunnableCandidates(context);
+        const nextFound = found + candidates.length;
+
+        this.buildBlockedSourceTransactionIds(candidates).forEach(sourceTransactionId =>
+            blockedSourceTransactionIds.add(sourceTransactionId)
+        );
+
+        const consolidatedInPass = await this.processCandidateList(candidates);
+
+        context.onProgress?.(nextFound);
+        await this.yieldControl();
+
+        if (this.shouldRepeatAfterSuccessfulPass() && consolidatedInPass > 0) {
+            return this.processPass(context, blockedSourceTransactionIds, consolidated + consolidatedInPass, nextFound);
+        }
+
+        return {
+            blockedSourceTransactionIds: [...blockedSourceTransactionIds],
+            consolidated: consolidated + consolidatedInPass,
+            found: nextFound
+        };
     }
 
     private isCandidateRunnable(candidate: Candidate, context: ConsolidationFamilyRunContextInterface): boolean {

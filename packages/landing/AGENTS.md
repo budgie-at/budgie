@@ -5,11 +5,11 @@ Marketing website built with Next.js 16, React 19, Tailwind CSS 4, and Lingui 6.
 ## Commands
 
 ```bash
-yarn start                    # Development server (next dev)
-yarn build                    # Production build
-yarn i18n:sync                # Extract & compile i18n translations
-yarn ts                       # Native TypeScript 7 check
-yarn lint                     # Oxlint + 13-rule ESLint fallback
+pnpm start                    # Development server (next dev)
+pnpm build                    # Production build
+pnpm i18n:sync                # Extract & compile i18n translations
+pnpm ts                       # Native TypeScript 7 check
+pnpm lint                     # Oxlint + 13-rule ESLint fallback
 ```
 
 ## Structure
@@ -173,7 +173,7 @@ Wrap with `LinguiClientProvider`:
 ### After Changes
 
 ```bash
-yarn i18n:sync
+pnpm i18n:sync
 ```
 
 ## Styling (Tailwind CSS 4 + CVA)

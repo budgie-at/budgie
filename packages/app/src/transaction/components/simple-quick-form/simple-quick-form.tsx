@@ -1,5 +1,5 @@
 import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { ReactNode, RefObject, useImperativeHandle, useRef } from 'react';
+import { ReactNode, Ref, useImperativeHandle, useRef } from 'react';
 import { View } from 'react-native';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -22,7 +22,7 @@ import type { TransactionAccountRowRef } from '../transaction-account-row/transa
 import type { TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 
 interface Props {
-    readonly ref?: RefObject<SimpleQuickFormRefInterface | null>;
+    readonly ref?: Ref<SimpleQuickFormRefInterface>;
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
     readonly accountFieldName: QuickFormAccountFieldName;
@@ -48,14 +48,12 @@ const getEntryTypeForTransaction = (transactionType: TransactionTypeEnum): Trans
 export const SimpleQuickForm = (props: Props) => {
     const { debtSettlementAccountTitle = null, ref, rulePillSlotProps, showInlineFeeAction = true, ...formProps } = props;
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
-    const { displayValue, currencySymbol, keypadHandlers, setFromNumeric } = useQuickFormAmount({
-        accountFieldName: props.accountFieldName
-    });
-    const formState = useSimpleQuickFormState({ accountFieldName: props.accountFieldName, setFromNumeric });
-    const entryType = getEntryTypeForTransaction(props.transactionType);
+    const { accountFieldName } = props;
+    const { displayValue, currencySymbol, instrumentType, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
+    const formState = useSimpleQuickFormState({ accountFieldName, setFromNumeric });
     const isSplitActive = formState.splitEntryCount > 1;
     const { feeAmount, handleFeePress } = useQuickFormFee({
-        accountFieldName: props.accountFieldName,
+        accountFieldName,
         currencySymbol,
         entries: formState.entries,
         transactionType: props.transactionType,
@@ -64,9 +62,9 @@ export const SimpleQuickForm = (props: Props) => {
     });
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
     const { handleSplitIconPress } = useQuickFormSplit({
-        accountFieldName: props.accountFieldName,
+        accountFieldName,
         currencySymbol,
-        entryType,
+        entryType: getEntryTypeForTransaction(props.transactionType),
         transactionType: props.transactionType,
         variant: props.variant,
         setFromNumeric
@@ -77,7 +75,7 @@ export const SimpleQuickForm = (props: Props) => {
     const accountRowRef = useRef<TransactionAccountRowRef>(null);
 
     const { handleConfirm } = useQuickFormSubmit({
-        accountFieldName: props.accountFieldName,
+        accountFieldName,
         amountDisplayRef,
         fieldIconsRef,
         accountRowRef,
@@ -87,6 +85,16 @@ export const SimpleQuickForm = (props: Props) => {
         transactionType: props.transactionType,
         onSubmit: props.onSubmit
     });
+    const amountBottomContent = (
+        <SimpleQuickFormAmountBottomContent
+            debtSettlementAccountTitle={debtSettlementAccountTitle}
+            feeAmount={feeAmount}
+            feeCurrencySymbol={currencySymbol}
+            feeInstrumentType={instrumentType}
+            showInlineFeeAction={showInlineFeeAction}
+            onFeePress={handleFeePress}
+        />
+    );
 
     return (
         <View className="flex-1">
@@ -94,15 +102,7 @@ export const SimpleQuickForm = (props: Props) => {
                 {...formProps}
                 {...rulePillSlotProps}
                 amountDisplayRef={amountDisplayRef}
-                amountBottomContent={
-                    <SimpleQuickFormAmountBottomContent
-                        debtSettlementAccountTitle={debtSettlementAccountTitle}
-                        feeAmount={feeAmount}
-                        feeCurrencySymbol={currencySymbol}
-                        showInlineFeeAction={showInlineFeeAction}
-                        onFeePress={handleFeePress}
-                    />
-                }
+                amountBottomContent={amountBottomContent}
                 currencySymbol={currencySymbol}
                 displayValue={displayValue}
                 categoryId={formState.categoryId}

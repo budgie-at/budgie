@@ -68,14 +68,14 @@ class AccountBalanceIncrementalService {
     }
 
     private async updateAllBalancesInTransaction(truncate: boolean, tx: DB): Promise<void> {
-        const accounts = await accountRepository.getAllActiveAccounts(tx);
+        const accounts = await accountRepository.getAllActiveAccountsExceptBankAuthoritative(tx);
         const previousDepositBalances = await this.getPreviousDepositBalances(accounts, tx);
 
         await this.upsertLatestBalances(accounts, truncate, previousDepositBalances, tx);
     }
 
     private async updateBalancesByUniqueAccountIdsInTransaction(uniqueAccountIds: number[], tx: DB): Promise<void> {
-        const accounts = await accountRepository.findByIds(uniqueAccountIds, tx);
+        const accounts = await accountRepository.findByIdsExceptBankAuthoritative(uniqueAccountIds, tx);
         if (isEmptyArray(accounts)) {
             return;
         }
@@ -139,7 +139,7 @@ class AccountBalanceIncrementalService {
             return;
         }
 
-        await accountBalanceRepository.truncate(tx);
+        await accountBalanceRepository.truncateExceptBankAuthoritative(tx);
     }
 
     private async upsertBalances(balances: AccountBalanceCreateEntityInterface[], tx?: DB): Promise<void> {

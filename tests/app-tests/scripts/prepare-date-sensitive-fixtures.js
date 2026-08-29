@@ -29,7 +29,15 @@ const shiftTransactionsFixtureToNow = () => {
     const historicalTimestamp2026 = 1_779_710_400;
     const historicalAmount2011 = 39_975_247;
     const historicalAmount2026 = 220_435_025;
-    const historicalBalance = -(historicalAmount2011 + historicalAmount2026);
+    const nativeAmountTransferSourceAmount = 650_000_000;
+    const nativeAmountTransferTargetAmount = 25_000_000;
+    const nativeAmountTransferFeeAmount = 13_000_000;
+    const historicalBalance = -(
+        historicalAmount2011 +
+        historicalAmount2026 +
+        nativeAmountTransferSourceAmount +
+        nativeAmountTransferFeeAmount
+    );
     const missingRateInstrumentId = 34;
     const missingRateAccountId = 11;
     const missingRateCategoryId = 42;
@@ -201,6 +209,93 @@ const shiftTransactionsFixtureToNow = () => {
             END
         FROM transactions
         WHERE comment IN ('E2E Historical UAH 2011', 'E2E Historical UAH 2026');
+
+        INSERT INTO transactions (
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            comment,
+            from_account_id,
+            to_account_id,
+            exchange_rate
+        )
+        SELECT
+            MAX(operated_at) + 30,
+            MAX(operated_at) + 30,
+            'TRANSFER',
+            '',
+            MAX(operated_at) + 30,
+            'E2E Native Amount Transfer',
+            ${historicalAccountId},
+            1,
+            1.0
+        FROM transactions;
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            created_at,
+            updated_at,
+            'CREDIT',
+            ${historicalAccountId},
+            NULL,
+            id,
+            ${nativeAmountTransferSourceAmount}
+        FROM transactions
+        WHERE id = last_insert_rowid();
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            created_at,
+            updated_at,
+            'DEBIT',
+            1,
+            NULL,
+            id,
+            ${nativeAmountTransferTargetAmount}
+        FROM transactions
+        WHERE comment = 'E2E Native Amount Transfer';
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            created_at,
+            updated_at,
+            'FEE',
+            ${historicalAccountId},
+            NULL,
+            id,
+            ${nativeAmountTransferFeeAmount}
+        FROM transactions
+        WHERE comment = 'E2E Native Amount Transfer';
+
+        UPDATE account_balances
+        SET amount = amount + ${nativeAmountTransferTargetAmount}
+        WHERE account_id = 1;
 
         INSERT INTO instruments (
             id,

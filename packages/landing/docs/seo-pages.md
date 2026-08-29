@@ -385,7 +385,7 @@ When you add a new SEO page:
 2. Create the sibling `metadata.ts` sidecar when the family uses registry/index enumeration.
 3. Import the sidecar into the relevant registry/index aggregator.
 4. Keep body copy in the route page.
-5. Run `yarn i18n:sync` after changing visible or metadata strings.
+5. Run `pnpm i18n:sync` after changing visible or metadata strings.
 
 `SITEMAP_STATIC_LAST_MODIFIED` (`src/generic/constant/sitemap-last-modified.constant.ts`) must be updated manually when the corresponding static page is meaningfully changed.
 
@@ -449,4 +449,4 @@ Check this list before authoring a new SEO component.
 - Adding a new legal page: create `src/app/[lang]/legal/<slug>/page.tsx`; do not add it to a registry or sitemap.
 - Adding a new SEO concern: build a primitive component and have pages compose it as children. Do not bolt body-copy prop bags onto existing wrappers.
 - Interactive widgets such as accordion, scroll sentinel, and search belong in client islands rendered inside server primitives. Keep `"use client"` off the page and off structural primitives.
-- After any visible text or metadata descriptor change: run `yarn i18n:sync` and commit both `.po` and compiled `.ts` locale files.
+- After any visible text or metadata descriptor change: run `pnpm i18n:sync` and commit both `.po` and compiled `.ts` locale files.

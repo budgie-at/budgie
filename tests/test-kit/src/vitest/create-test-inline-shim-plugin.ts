@@ -6,6 +6,8 @@ const VIRTUAL_PREFIX = '\0virtual:';
 
 const VIRTUAL_SHIMS: Record<string, string> = {
     'expo-secure-store': `export const getItem = () => null;`,
+    expo: `export const requireNativeModule = () => ({});`,
+    'expo-file-system': `export const File = class { constructor() {} };`,
     'expo-sqlite': `
         export class SQLiteDatabase {}
         export class SQLiteStatement {}
