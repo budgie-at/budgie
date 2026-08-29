@@ -1,25 +1,13 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { SyncAccountTypeEnum } from '@budgie/sync';
+import { CashbackTypeEnum, MonobankSyncService, SyncAccountTypeEnum } from '@budgie/sync';
 import { AccountType } from '@liaugust/monobank-sdk';
 import { describe, expect, it } from 'vitest';
 
 import { buildMonobank, monobankStub } from '../../harness';
 
-import type { Account, ClientInfo } from '@liaugust/monobank-sdk';
+import type { ClientInfo } from '@liaugust/monobank-sdk';
 
-// The live API returns madeInUkraine cards, omits cashbackType on FOP
-// accounts, and returns goal: null for jars without a target. None of these
-// appear in Monobank's published docs, so this scenario pins the real payload.
-const fopAccountWithoutCashback: Account = {
-    id: 'mono-fop',
-    sendId: 'send-fop',
-    currencyCode: 980,
-    balance: 0,
-    creditLimit: 0,
-    maskedPan: [],
-    type: AccountType.Fop,
-    iban: 'UA000000000000000000000000000'
-};
+const { cashbackType, ...fopAccountWithoutCashback } = buildMonobank.account({ id: 'mono-fop', type: AccountType.Fop });
 
 describe('monobank/live-payload-account-variants', () => {
     it('previews madeInUkraine cards, cashback-less FOP accounts, and goal-less jars', async () => {
@@ -31,13 +19,11 @@ describe('monobank/live-payload-account-variants', () => {
         monobankStub.clientInfo(clientInfo);
 
         const previews = await monobankSyncService.fetchAccountsPreview('test-token');
+        const accounts = await new MonobankSyncService('test-token').syncAccounts();
 
-        const madeInUkrainePreview = previews.find(preview => preview.externalId === 'mono-miu');
-        const fopPreview = previews.find(preview => preview.externalId === 'mono-fop');
-        const jarPreview = previews.find(preview => preview.externalId === 'jar-goalless');
-
-        expect(madeInUkrainePreview?.type).toBe(SyncAccountTypeEnum.MADE_IN_UKRAINE);
-        expect(fopPreview?.type).toBe(SyncAccountTypeEnum.FOP);
-        expect(jarPreview?.type).toBe(SyncAccountTypeEnum.JAR);
+        expect(previews.find(preview => preview.externalId === 'mono-miu')?.type).toBe(SyncAccountTypeEnum.MADE_IN_UKRAINE);
+        expect(previews.find(preview => preview.externalId === 'mono-fop')?.type).toBe(SyncAccountTypeEnum.FOP);
+        expect(previews.find(preview => preview.externalId === 'jar-goalless')?.type).toBe(SyncAccountTypeEnum.JAR);
+        expect(accounts.find(account => account.id === 'mono-fop')?.cashbackType).toBe(CashbackTypeEnum.NONE);
     });
 });
