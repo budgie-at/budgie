@@ -224,15 +224,19 @@ class AccountService {
         const operatedAt = new Date();
         const valuedAccount = await this.updateDebtAccountFields(id, input, operatedAt, tx);
 
-        await this.adjustDebtBalanceIfNeeded(valuedAccount, currentBalance, operatedAt, tx);
-
-        if (this.shouldSyncManualDebtEvents(input)) {
-            const returnedAmount = isNumber(currentBalance)
-                ? convertToMicroUnits(currentBalance)
-                : await this.getDebtReturnedAmount(valuedAccount, tx);
-
-            await this.syncManualDebtEvents(valuedAccount, returnedAmount, operatedAt, tx);
+        if (!this.shouldSyncManualDebtEvents(input)) {
+            return valuedAccount;
         }
+
+        const returnedAmount = isNumber(currentBalance)
+            ? convertToMicroUnits(currentBalance)
+            : await this.getDebtReturnedAmount(valuedAccount, tx);
+        const ledgerBalance = convertFromMicroUnits(
+            getDebtLedgerBalance(returnedAmount, valuedAccount.debtType, valuedAccount.targetBalance)
+        );
+
+        await this.adjustBalanceTo(valuedAccount.id, ledgerBalance, tx, operatedAt);
+        await this.syncManualDebtEvents(valuedAccount, returnedAmount, operatedAt, tx);
 
         return valuedAccount;
     }
@@ -254,23 +258,6 @@ class AccountService {
         }
 
         return updatedAccount;
-    }
-
-    private async adjustDebtBalanceIfNeeded(
-        account: AccountEntityInterface,
-        currentBalance: number | undefined,
-        operatedAt: Date,
-        tx: DB
-    ): Promise<void> {
-        if (!isNumber(currentBalance)) {
-            return;
-        }
-
-        const ledgerBalance = convertFromMicroUnits(
-            getDebtLedgerBalance(convertToMicroUnits(currentBalance), account.debtType, account.targetBalance)
-        );
-
-        await this.adjustBalanceTo(account.id, ledgerBalance, tx, operatedAt);
     }
 
     private shouldSyncManualDebtEvents(input: Partial<DebtAccountCreateInputInterface>): boolean {
