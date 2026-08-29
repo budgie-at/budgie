@@ -16,6 +16,9 @@ export type TransactionEntryUpdateInputInterface = Partial<
         | 'baseInstrumentId'
         | 'baseExchangeRate'
         | 'baseAmount'
+        | 'quotedInstrumentId'
+        | 'quotedAmount'
+        | 'quotedUnitPrice'
         | 'toIban'
         | 'originalTransactionId'
     >

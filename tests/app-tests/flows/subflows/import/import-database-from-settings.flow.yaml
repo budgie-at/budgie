@@ -50,47 +50,7 @@ env:
           - waitForAnimationToEnd
 
           - runFlow:
-                when:
-                    notVisible:
-                        id: 'SettingsPage.Container'
-                file: ../navigation/navigate-to-settings.flow.yaml
-
-          - extendedWaitUntil:
-                visible:
-                    id: 'SettingsPage.Container'
-                timeout: 15000
-
-          - scrollUntilVisible:
-                element:
-                    id: 'SettingsPage.ImportDatabaseCard'
-                direction: UP
-                timeout: 10000
-                centerElement: true
-                waitToSettleTimeoutMs: 1000
-                optional: true
-
-          - runFlow:
-                when:
-                    notVisible:
-                        id: 'SettingsPage.ImportDatabaseCard'
-                commands:
-                    - scrollUntilVisible:
-                          element:
-                              id: 'SettingsPage.ImportDatabaseCard'
-                          direction: DOWN
-                          timeout: 20000
-                          centerElement: true
-                          waitToSettleTimeoutMs: 1000
-                    - waitForAnimationToEnd
-
-          - extendedWaitUntil:
-                visible:
-                    id: 'SettingsPage.ImportDatabaseCard'
-                timeout: 5000
-
-          - tapOn:
-                id: 'SettingsPage.ImportDatabaseCard'
-                retryTapIfNoChange: true
+                file: open-import-database-card.flow.yaml
 
           - runFlow:
                 file: select-file-from-app-provider.flow.yaml
@@ -100,10 +60,39 @@ env:
                     FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
                     FILE_PICKER_REPEAT_TAP: ${FILE_PICKER_REPEAT_TAP}
                     FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT}
+                optional: true
 
           - extendedWaitUntil:
                 visible: 'Importing a database will replace all current data.*'
                 timeout: 3000
+                optional: true
+
+          - runFlow:
+                when:
+                    notVisible: 'Importing a database will replace all current data.*'
+                commands:
+                    - launchApp:
+                          stopApp: true
+                          permissions:
+                              contacts: allow
+                              microphone: allow
+                    - extendedWaitUntil:
+                          visible:
+                              id: 'TabBar.Home'
+                          timeout: 30000
+                    - runFlow:
+                          file: open-import-database-card.flow.yaml
+                    - runFlow:
+                          file: select-file-from-app-provider.flow.yaml
+                          env:
+                              FILE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
+                              FILE_PICKER_INITIAL_SCROLL_SHIFT: ${FILE_PICKER_INITIAL_SCROLL_SHIFT}
+                              FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
+                              FILE_PICKER_REPEAT_TAP: 'true'
+                              FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT}
+                    - extendedWaitUntil:
+                          visible: 'Importing a database will replace all current data.*'
+                          timeout: 5000
 
           - tapOn:
                 text: 'Import Database'
@@ -122,4 +111,4 @@ env:
           - extendedWaitUntil:
                 visible:
                     id: 'HomePage.TotalBalance'
-                timeout: 30000
+                timeout: 60000

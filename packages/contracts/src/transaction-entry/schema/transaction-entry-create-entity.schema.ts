@@ -10,6 +10,9 @@ export const TransactionEntryCreateEntitySchema = convertToCreateEntitySchema(Tr
     baseInstrumentId: true,
     baseExchangeRate: true,
     baseAmount: true,
+    quotedInstrumentId: true,
+    quotedAmount: true,
+    quotedUnitPrice: true,
     toIban: true,
     originalTransactionId: true
 });

@@ -4,9 +4,9 @@ import {
     AccountNatureEnum,
     AccountTypeEnum,
     BankIntegrationEntityTable,
-    BankSyncEntityTable,
-    BankSyncModeEnum,
-    BankSyncStatusEnum,
+    SyncEntityTable,
+    SyncModeEnum,
+    SyncStatusEnum,
     ExternalSourceEnum,
     InstrumentEntityTable,
     InstrumentTypeEnum,
@@ -30,8 +30,8 @@ import type {
     AccountEntityInterface,
     BankIntegrationCreateEntityInterface,
     BankIntegrationEntityInterface,
-    BankSyncCreateEntityInterface,
-    BankSyncEntityInterface,
+    SyncCreateEntityInterface,
+    SyncEntityInterface,
     DB,
     InstrumentCreateEntityInterface,
     InstrumentEntityInterface,
@@ -114,9 +114,9 @@ export class TestSeedService {
         });
     }
 
-    bankSync(
-        input: Partial<BankSyncCreateEntityInterface> & Pick<BankSyncCreateEntityInterface, 'accountId'> & { readonly token?: string }
-    ): BankSyncEntityInterface {
+    sync(
+        input: Partial<SyncCreateEntityInterface> & Pick<SyncCreateEntityInterface, 'accountId'> & { readonly token?: string }
+    ): SyncEntityInterface {
         const provider = input.provider ?? ExternalSourceEnum.MONOBANK;
         const integration = this.bankIntegration({ provider, token: input.token ?? 'test-token' });
         this.database
@@ -126,12 +126,12 @@ export class TestSeedService {
             .run();
 
         const rows = this.database
-            .insert(BankSyncEntityTable)
+            .insert(SyncEntityTable)
             .values({
                 accountId: input.accountId,
                 provider,
-                mode: input.mode ?? BankSyncModeEnum.FORWARD,
-                status: input.status ?? BankSyncStatusEnum.IDLE,
+                mode: input.mode ?? SyncModeEnum.FORWARD,
+                status: input.status ?? SyncStatusEnum.IDLE,
                 enabled: input.enabled ?? true,
                 forwardSyncFromAt: input.forwardSyncFromAt ?? new Date(),
                 forwardSyncedAt: input.forwardSyncedAt ?? null,
@@ -140,7 +140,7 @@ export class TestSeedService {
                 transactionCount: input.transactionCount ?? 0,
                 errorCount: input.errorCount ?? 0,
                 lastError: input.lastError ?? null
-            } satisfies BankSyncCreateEntityInterface)
+            } satisfies SyncCreateEntityInterface)
             .returning()
             .all();
 

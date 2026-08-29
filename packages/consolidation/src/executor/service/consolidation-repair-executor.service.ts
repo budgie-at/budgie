@@ -8,6 +8,7 @@ import { buildIbanBridgeChainCanonicalInput } from '../utils/build-iban-bridge-c
 
 import { ConsolidationEligibilityService } from './consolidation-eligibility.service';
 import { ConsolidationMutationService } from './consolidation-mutation.service';
+import { UnconsolidationService } from './unconsolidation.service';
 
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
@@ -27,9 +28,34 @@ export class ConsolidationRepairExecutorService {
 
     private readonly consolidationMutationService: ConsolidationMutationService;
 
+    private readonly unconsolidationService: UnconsolidationService;
+
     constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {
         this.consolidationEligibilityService = new ConsolidationEligibilityService(dependencies);
         this.consolidationMutationService = new ConsolidationMutationService(dependencies);
+        this.unconsolidationService = new UnconsolidationService(dependencies);
+    }
+
+    @Log(
+        canonicalTransactionId => `enter canonicalTransactionId=${canonicalTransactionId}`,
+        (result, canonicalTransactionId) => `done result=${String(result)} canonicalTransactionId=${canonicalTransactionId}`,
+        (error, canonicalTransactionId) => `throw canonicalTransactionId=${canonicalTransactionId} error=${getErrorMessage(error)}`
+    )
+    async repairP2pFiatCanonical(canonicalTransactionId: number): Promise<boolean> {
+        return this.dependencies.runTransaction(this.dependencies.database, async tx => {
+            const canonical = await this.dependencies.transactionRepository.getByIdRaw(canonicalTransactionId, tx);
+            if (
+                !isDefined(canonical) ||
+                canonical.consolidationType !== TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER ||
+                isDefined(canonical.updatedBy)
+            ) {
+                return false;
+            }
+
+            await this.unconsolidationService.unconsolidateById(canonicalTransactionId, tx);
+
+            return true;
+        });
     }
 
     @Log(

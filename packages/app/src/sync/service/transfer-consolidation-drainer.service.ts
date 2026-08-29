@@ -3,6 +3,8 @@ import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 
@@ -12,10 +14,13 @@ import { transferConsolidationService } from './transfer-consolidation.service';
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 class TransferConsolidationDrainerService {
-    private static readonly DEFAULT_DRAIN_DELAY_MS = 3 * 500;
+    private static readonly FOREGROUND_BUSY_RESCHEDULE_MS = 1000;
+    private static readonly DEFAULT_DRAIN_DELAY_MS = TransferConsolidationDrainerService.FOREGROUND_BUSY_RESCHEDULE_MS + 500;
+
     private static readonly DRAIN_DELAY_MS_BY_REASON: Record<TransferConsolidationDrainReasonEnum, number> = {
-        [TransferConsolidationDrainReasonEnum.FILE_IMPORT]: TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS,
-        [TransferConsolidationDrainReasonEnum.MONOBANK_SYNC]: TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS
+        [TransferConsolidationDrainReasonEnum.MONOBANK_SYNC]: TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS,
+        [TransferConsolidationDrainReasonEnum.BINANCE_SYNC]: TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS,
+        [TransferConsolidationDrainReasonEnum.FILE_IMPORT]: TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS
     };
 
     private static readonly FOLLOW_UP_DRAIN_DELAY_MS = TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS;
@@ -24,6 +29,7 @@ class TransferConsolidationDrainerService {
     private pendingScope: ConsolidationScanScopeInterface | null = null;
     private isRunning = false;
     private timer: ReturnType<typeof setTimeout> | null = null;
+    private timerFiresAt: number | null = null;
     private cancelIdleCallback: (() => void) | null = null;
 
     @Log(
@@ -42,7 +48,13 @@ class TransferConsolidationDrainerService {
             return;
         }
 
-        if (isDefined(this.timer) || isDefined(this.cancelIdleCallback)) {
+        const incomingFiresAt = Date.now() + TransferConsolidationDrainerService.DRAIN_DELAY_MS_BY_REASON[reason];
+
+        if (isDefined(this.cancelIdleCallback)) {
+            return;
+        }
+
+        if (isDefined(this.timer) && isDefined(this.timerFiresAt) && this.timerFiresAt <= incomingFiresAt) {
             return;
         }
 
@@ -58,6 +70,12 @@ class TransferConsolidationDrainerService {
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async run(): Promise<void> {
+        if (foregroundWorkloadService.isActive()) {
+            this.scheduleAfter(TransferConsolidationDrainerService.FOREGROUND_BUSY_RESCHEDULE_MS);
+
+            return;
+        }
+
         if (this.isRunning) {
             return;
         }
@@ -80,8 +98,9 @@ class TransferConsolidationDrainerService {
         const scope = this.pendingScope;
         this.hasPendingRun = false;
         this.pendingScope = null;
-
+        await microPause();
         await syncWorkloadService.run('transfer-consolidation-drain', () => transferConsolidationService.consolidate(scope));
+        await microPause();
     }
 
     private addPendingScope(scope: ConsolidationScanScopeInterface | null): void {
@@ -115,8 +134,10 @@ class TransferConsolidationDrainerService {
     private scheduleAfter(delay: number): void {
         this.cancelScheduledRun();
 
+        this.timerFiresAt = Date.now() + delay;
         this.timer = setTimeout(() => {
             this.timer = null;
+            this.timerFiresAt = null;
             this.cancelIdleCallback = scheduleIdleCallback(() => {
                 this.cancelIdleCallback = null;
                 this.run().catch(emptyFn);
@@ -129,6 +150,8 @@ class TransferConsolidationDrainerService {
             clearTimeout(this.timer);
             this.timer = null;
         }
+
+        this.timerFiresAt = null;
 
         if (isDefined(this.cancelIdleCallback)) {
             this.cancelIdleCallback();

@@ -1,4 +1,4 @@
-import type { BankAccountPreviewInterface } from './bank-account-preview.interface';
+import type { SyncAccountPreviewInterface } from './sync-account-preview.interface';
 import type { UserIconNameEnum } from '@budgie/contracts';
 
 export interface CreateFileBankAccountConfigInterface {
@@ -9,6 +9,6 @@ export interface CreateFileBankAccountConfigInterface {
     readonly fileIcon: UserIconNameEnum;
     readonly fileTypeLabel: string;
     readonly selectFileText: string;
-    readonly importPreview: (uri: string) => Promise<BankAccountPreviewInterface[]>;
+    readonly importPreview: (uri: string) => Promise<SyncAccountPreviewInterface[]>;
     readonly executeImportForSelectedAccounts: (uri: string, selectedAccountIds: string[]) => Promise<void>;
 }

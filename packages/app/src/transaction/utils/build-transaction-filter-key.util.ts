@@ -11,6 +11,8 @@ export const buildTransactionFilterKey = (filters?: TransactionFilterInterface):
 
     const from = filters.date?.from?.getTime() ?? 'null';
     const to = filters.date?.to?.getTime() ?? 'null';
+    const amountFrom = filters.amount?.from ?? 'null';
+    const amountTo = filters.amount?.to ?? 'null';
 
     return [
         buildNullableArrayKey(filters.accountIds),
@@ -18,6 +20,8 @@ export const buildTransactionFilterKey = (filters?: TransactionFilterInterface):
         buildNullableArrayKey(filters.tagIds),
         buildNullableArrayKey(filters.types),
         from,
-        to
+        to,
+        amountFrom,
+        amountTo
     ].join('|');
 };

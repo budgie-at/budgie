@@ -1,5 +1,6 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 
+import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../../shared/constant/canonical-cent-tolerance.constant';
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
@@ -10,11 +11,13 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 const INCOME_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_TRANSFER_INCOME_SCOPE_SQL__';
 const EXPENSE_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_TRANSFER_EXPENSE_SCOPE_SQL__';
 const DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_TRANSFER_DIRECT_SCOPE_SQL__';
+const EXISTING_CANONICAL_SCOPE_SQL_PLACEHOLDER = '__IBAN_BRIDGE_TRANSFER_EXISTING_CANONICAL_SCOPE_SQL__';
 
 const IBAN_BRIDGE_TRANSFER_SCOPE_EXPRESSIONS = new Map([
     [INCOME_SCOPE_SQL_PLACEHOLDER, 'income_tx.operated_at'],
     [EXPENSE_SCOPE_SQL_PLACEHOLDER, 'expense_tx.operated_at'],
-    [DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER, 'direct_tx.operated_at']
+    [DIRECT_TRANSFER_SCOPE_SQL_PLACEHOLDER, 'direct_tx.operated_at'],
+    [EXISTING_CANONICAL_SCOPE_SQL_PLACEHOLDER, 'existing_canonical_tx.operated_at']
 ]);
 
 const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
@@ -142,6 +145,37 @@ const IBAN_BRIDGE_TRANSFER_CANDIDATES_BASE_SQL = `
                             AND direct_target_entry.original_transaction_id IS NULL
                             AND direct_target_entry.account_id = bridge_candidates.targetAccountId
                             AND direct_target_entry.amount = bridge_candidates.bridgeAmount
+                    )
+            )
+            AND NOT EXISTS (
+                SELECT 1
+                FROM transactions existing_canonical_tx
+                WHERE existing_canonical_tx.type = '${TransactionTypeEnum.TRANSFER}'
+                    AND existing_canonical_tx.deleted_at IS NULL
+                    AND existing_canonical_tx.consolidation_parent_transaction_id IS NULL
+                    AND existing_canonical_tx.consolidation_type IS NOT NULL
+                    AND existing_canonical_tx.from_account_id = bridge_candidates.sourceAccountId
+                    AND existing_canonical_tx.to_account_id = bridge_candidates.targetAccountId
+                    AND existing_canonical_tx.operated_at BETWEEN bridge_candidates.operatedAt - ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                        AND bridge_candidates.operatedAt + ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                    ${EXISTING_CANONICAL_SCOPE_SQL_PLACEHOLDER}
+                    AND EXISTS (
+                        SELECT 1
+                        FROM transaction_entries existing_canonical_target_entry
+                        WHERE existing_canonical_target_entry.transaction_id = existing_canonical_tx.id
+                            AND existing_canonical_target_entry.deleted_at IS NULL
+                            AND existing_canonical_target_entry.original_transaction_id IS NULL
+                            AND existing_canonical_target_entry.account_id = bridge_candidates.targetAccountId
+                            AND existing_canonical_target_entry.amount = bridge_candidates.bridgeAmount
+                    )
+                    AND EXISTS (
+                        SELECT 1
+                        FROM transaction_entries existing_canonical_source_entry
+                        WHERE existing_canonical_source_entry.transaction_id = existing_canonical_tx.id
+                            AND existing_canonical_source_entry.deleted_at IS NULL
+                            AND existing_canonical_source_entry.original_transaction_id IS NULL
+                            AND existing_canonical_source_entry.account_id = bridge_candidates.sourceAccountId
+                            AND ABS(existing_canonical_source_entry.amount - bridge_candidates.sourceAmount) <= ${CANONICAL_CENT_TOLERANCE_AMOUNT}
                     )
             )
 `;

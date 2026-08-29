@@ -3,6 +3,7 @@ import { t } from '@lingui/core/macro';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, View } from 'react-native';
+import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -27,6 +28,8 @@ import { SplitEntriesAddItemFooter } from '../split-entries-add-item-footer/spli
 import { SplitEntryRow } from '../split-entry-row/split-entry-row';
 
 import { SplitEntriesModalContentSelector } from './split-entries-modal-content.selector';
+
+const keyboardOffset = { closed: 0, opened: 8 };
 
 interface Props {
     readonly initialEntries: TransactionEntryCreateInputInterface[];
@@ -83,6 +86,7 @@ export const SplitEntriesModalContent = (props: Props) => {
             .filter((_, entryIndex) => entryIndex !== index)
             .map(entry => entry.categoryId)
             .filter(isPositiveNumber);
+
         const selectedCategoryId = await openCategorySelector({ initialCategoryId: currentCategoryId, excludeCategoryIds, variant });
 
         if (isDefined(selectedCategoryId)) {
@@ -175,28 +179,30 @@ export const SplitEntriesModalContent = (props: Props) => {
                 ItemSeparatorComponent={ListItemSeparator}
             />
 
-            <View className="flex-row gap-x-md px-xl pb-xl">
-                {canRemoveSplit ? (
-                    <Button
-                        leftIcon={UserIconNameEnum.X}
-                        variant="destructive"
-                        size="md"
-                        className="aspect-square"
-                        onPress={handleRemoveSplit}
-                        testID={SplitEntriesModalContentSelector.RemoveSplitButton}
-                    />
-                ) : null}
+            <KeyboardStickyView offset={keyboardOffset}>
+                <View className="flex-row gap-x-md px-xl pb-xl">
+                    {canRemoveSplit ? (
+                        <Button
+                            leftIcon={UserIconNameEnum.X}
+                            variant="destructive"
+                            size="md"
+                            className="aspect-square"
+                            onPress={handleRemoveSplit}
+                            testID={SplitEntriesModalContentSelector.RemoveSplitButton}
+                        />
+                    ) : null}
 
-                <Button
-                    className="flex-1"
-                    content={confirmButtonLabel}
-                    variant={confirmButtonVariant}
-                    size="md"
-                    disabled={!canConfirm}
-                    onPress={handleConfirm}
-                    testID={SplitEntriesModalContentSelector.ConfirmButton}
-                />
-            </View>
+                    <Button
+                        className="flex-1"
+                        content={confirmButtonLabel}
+                        variant={confirmButtonVariant}
+                        size="md"
+                        disabled={!canConfirm}
+                        onPress={handleConfirm}
+                        testID={SplitEntriesModalContentSelector.ConfirmButton}
+                    />
+                </View>
+            </KeyboardStickyView>
         </View>
     );
 };

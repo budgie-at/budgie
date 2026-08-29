@@ -14,6 +14,7 @@ must_match=(
     'Error: kAXErrorInvalidUIElement while fetching hierarchy'
     'iOS driver not ready in time'
     'java.net.ConnectException: Connection refused'
+    'java.net.ConnectException: Failed to connect to /127.0.0.1:61655'
     'java.net.SocketTimeoutException: timeout'
 )
 must_not_match=(

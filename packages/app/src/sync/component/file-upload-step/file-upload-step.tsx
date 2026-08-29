@@ -5,6 +5,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { NumberedSteps } from '../numbered-steps/numbered-steps';
 
 interface Props {
     readonly steps: readonly string[];
@@ -15,9 +16,6 @@ interface Props {
     readonly isLoading: boolean;
 }
 
-const STEP_STAGGER_MS = 80;
-const STEP_INITIAL_DELAY_MS = 40;
-const STEP_ANIMATION_DURATION_MS = 240;
 const DROP_ZONE_DELAY_MS = 260;
 const DROP_ZONE_ANIMATION_DURATION_MS = 320;
 const DROP_ZONE_ICON_SIZE = 72;
@@ -30,26 +28,7 @@ export const FileUploadStep = (props: Props) => {
 
     return (
         <View className="gap-y-2xl pt-md">
-            <View className="gap-y-md">
-                <Text className="px-md text-xs font-semibold uppercase tracking-widest text-secondary-foreground">{t`How to export`}</Text>
-
-                <View className="gap-y-sm">
-                    {steps.map((step, index) => (
-                        <Animated.View
-                            key={step}
-                            entering={FadeInDown.delay(STEP_INITIAL_DELAY_MS + STEP_STAGGER_MS * index).duration(
-                                STEP_ANIMATION_DURATION_MS
-                            )}
-                            className="flex-row items-center gap-x-md rounded-2xl bg-secondary-background p-md"
-                        >
-                            <View className="h-7 w-7 items-center justify-center rounded-full bg-primary-reverse">
-                                <Text className="text-sm font-bold text-primary">{index + 1}</Text>
-                            </View>
-                            <Text className="flex-1 text-sm leading-snug text-primary">{step}</Text>
-                        </Animated.View>
-                    ))}
-                </View>
-            </View>
+            <NumberedSteps title={t`How to export`} steps={steps} />
 
             <Animated.View entering={FadeInDown.delay(DROP_ZONE_DELAY_MS).duration(DROP_ZONE_ANIMATION_DURATION_MS)}>
                 <HapticPressable onPress={onSelectFile} disabled={isLoading}>

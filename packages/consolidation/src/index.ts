@@ -3,6 +3,8 @@ export { ConsolidationCandidateService } from './auto/service/consolidation-cand
 export { ConsolidationCoordinatorService } from './auto/service/consolidation-coordinator.service';
 export { ConsolidationFamilyRegistryService } from './auto/service/consolidation-family-registry.service';
 export { consolidationScopeService } from './auto/service/consolidation-scope.service';
+export { P2pFiatDirectionEnum } from './auto/enum/p2p-fiat-direction.enum';
+export { P2P_ORDER_EXTERNAL_ID_MARKER } from './shared/constant/transfer-pair-p2p-fiat.constant';
 export { ConsolidationExecutorService } from './executor/service/consolidation-executor.service';
 export { ConsolidationRepairExecutorService } from './executor/service/consolidation-repair-executor.service';
 export { AtmCashWithdrawalRepository } from './query/repository/atm-cash-withdrawal.repository';

@@ -6,7 +6,7 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
-import { CreateBankSyncCard } from '../../../account/component/create-bank-sync-card/create-bank-sync-card';
+import { CreateSyncCard } from '../../../account/component/create-sync-card/create-sync-card';
 import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 
 export default function Index() {
@@ -15,6 +15,7 @@ export default function Index() {
     const monobankRoute = { pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.MONOBANK } } as const;
     const privatbankRoute = { pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.PRIVATBANK } } as const;
     const ersteRoute = { pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.ERSTE } } as const;
+    const binanceRoute = { pathname: '/create-account/[type]', params: { type: ExternalSourceEnum.BINANCE } } as const;
 
     return (
         <CollapsibleChromePage title={t`New Account`} leading={<HeaderBackButton />} contentClassName="gap-y-xl pb-5xl">
@@ -50,26 +51,32 @@ export default function Index() {
             />
 
             <Text className="text-secondary-foreground text-sm px-md mt-xl">
-                <Trans>Bank Sync</Trans>
+                <Trans>Account Sync</Trans>
             </Text>
 
-            <CreateBankSyncCard
+            <CreateSyncCard
                 description={t`Auto-sync accounts and transactions from Monobank`}
                 title={t`Monobank`}
                 route={monobankRoute}
                 bankProvider={ExternalSourceEnum.MONOBANK}
             />
-            <CreateBankSyncCard
+            <CreateSyncCard
                 description={t`Import accounts and transactions from Privatbank XLSX export`}
                 title={t`Privatbank`}
                 route={privatbankRoute}
                 bankProvider={ExternalSourceEnum.PRIVATBANK}
             />
-            <CreateBankSyncCard
+            <CreateSyncCard
                 description={t`Import accounts and transactions from Erste Bank PDF statement`}
                 title={t`Erste Bank`}
                 route={ersteRoute}
                 bankProvider={ExternalSourceEnum.ERSTE}
+            />
+            <CreateSyncCard
+                description={t`Sync crypto balances and transactions from Binance with a read-only API key`}
+                title={t`Binance`}
+                route={binanceRoute}
+                bankProvider={ExternalSourceEnum.BINANCE}
             />
 
             <MenuSpacer />

@@ -33,7 +33,11 @@ Maestro flows for Budgie.
 
 ## Shards
 
-CI runs the suite as 4 parallel shard jobs. `shards/shard-*.txt` list top-level flow file names; every `flows/*.flow.yaml` must appear in exactly one shard (enforced by `selectors:check` via `scripts/validate-shards.sh`). When adding a flow, add it to the lightest shard; rebalance using the junit durations from the `maestro-ios-artifacts-shard-*` artifacts.
+CI runs the suite as 2 parallel shard jobs, driven by `rnw-community/mobile-ci`'s reusable `ios-maestro.yml` (`shard-count: 2`, `shard-manifest-dir: tests/app-tests/shards`). Shard files are zero-indexed to match mobile-ci's `shard-<index>.txt` contract: `shards/shard-0.txt` and `shards/shard-1.txt`. They list top-level flow file names; every `flows/*.flow.yaml` must appear in exactly one shard (enforced by `selectors:check` via `scripts/validate-shards.sh`, and fail-closed a second time by mobile-ci, which requires a manifest file for every shard index it runs). When adding a flow, add it to the lightest shard; rebalance using the per-flow timing table mobile-ci appends to the job step summary.
+
+Per-flow database seeding is a mobile-ci `pre-flow-command` running `scripts/seed-flow-fixture.sh`, which mirrors `run-maestro-suite.sh`'s `seed_ios_database_fixture_if_needed`: it resolves each flow's `FIXTURE_ROW_ID_MATCH: 'NN.db'` marker (up to three `runFlow` levels deep), copies that fixture over the live database, and contributes `DATABASE_FIXTURE_SEEDED=true` plus `E2E_CSV_FIXTURES_URI` to that one flow's `maestro test` invocation. The once-per-shard fixture install stays a `pre-test-command` running `scripts/setup-ios-e2e-fixtures.sh`.
+
+After a failed flow attempt mobile-ci runs `flows/setup/recover-after-failed-flow.flow.yaml` (app relaunch plus deep-link prime) on a best-effort basis. It must never clear the app data container: `pre-test-command` is the only thing that populates `Documents/E2EFixtures`, and mobile-ci never re-runs it.
 
 ## Flow Design
 

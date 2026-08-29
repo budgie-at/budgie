@@ -4,9 +4,9 @@ Fixture-based benchmarks for the SOTA SQL perf pass.
 
 ## Scripts
 
-- `yarn bench:seed` — generates `.bench/fixture.db` with ~200k transactions, 400k entries, 300 categories, 200 tags.
-- `yarn bench:run` — runs the target queries against the fixture, reports p50/p95.
-- `yarn bench:budget-spent` — seeds an isolated `.bench/budget-fixture.db`, runs the budget overall/per-category spent queries, and checks both correctness and p50/p95 against the gate (also covers the FX-conversion fallback path).
+- `pnpm bench:seed` — generates `.bench/fixture.db` with ~200k transactions, 400k entries, 300 categories, 200 tags.
+- `pnpm bench:run` — runs the target queries against the fixture, reports p50/p95.
+- `pnpm bench:budget-spent` — seeds an isolated `.bench/budget-fixture.db`, runs the budget overall/per-category spent queries, and checks both correctness and p50/p95 against the gate (also covers the FX-conversion fallback path).
 
 ## BEFORE (baseline before SOTA perf pass)
 

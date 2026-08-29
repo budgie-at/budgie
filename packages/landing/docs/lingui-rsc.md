@@ -124,7 +124,7 @@ The `lingui.config.mjs` `sourceLocale` is `en`. Never hardcode the locale list; 
 
 | Code | Language  | Role                                                              |
 | ---- | --------- | ----------------------------------------------------------------- |
-| `en` | English   | **Source locale** (extracted from macros via `yarn i18n:extract`) |
+| `en` | English   | **Source locale** (extracted from macros via `pnpm i18n:extract`) |
 | `uk` | Ukrainian | Translation                                                       |
 | `fr` | French    | Translation                                                       |
 | `de` | German    | Translation                                                       |
@@ -134,25 +134,25 @@ Catalog location: `src/i18n/locales/{locale}/messages.po` + compiled `messages.t
 
 ---
 
-## 8. `yarn i18n:sync` workflow
+## 8. `pnpm i18n:sync` workflow
 
 ```bash
-yarn i18n:sync        # = yarn i18n:extract && yarn i18n:compile
+pnpm i18n:sync        # = pnpm i18n:extract && pnpm i18n:compile
 ```
 
-- `yarn i18n:extract` — scans `src/` for `<Trans>`, `t\`…\``, `msg\`…\``macros and writes/updates all`.po`files (overwrites; cleans stale entries with`--clean`).
-- `yarn i18n:compile` — compiles `.po` → `.ts` (TypeScript message maps) for each locale.
+- `pnpm i18n:extract` — scans `src/` for `<Trans>`, `t\`…\``, `msg\`…\``macros and writes/updates all`.po`files (overwrites; cleans stale entries with`--clean`).
+- `pnpm i18n:compile` — compiles `.po` → `.ts` (TypeScript message maps) for each locale.
 
 **Both `.po` and `.ts` files must be committed.** The `.ts` files are required at runtime; omitting them breaks the build.
 
 After adding or changing any user-visible string:
 
-1. Run `yarn i18n:sync`.
+1. Run `pnpm i18n:sync`.
 2. Open each non-`en` `.po` file and fill in empty `msgstr ""` entries.
-3. Run `yarn i18n:sync` again to recompile.
+3. Run `pnpm i18n:sync` again to recompile.
 4. Commit both `.po` and `.ts` changes.
 
-Run `yarn i18n:compile 2>&1 | tail -5` periodically to validate `.po` syntax after manual edits.
+Run `pnpm i18n:compile 2>&1 | tail -5` periodically to validate `.po` syntax after manual edits.
 
 ---
 

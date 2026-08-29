@@ -5,18 +5,18 @@ Main mobile application built with Expo 56, React 19 + Compiler, Expo Router 56,
 ## Commands
 
 ```bash
-yarn start                    # Expo dev server
-APP_VARIANT=development EXPO_PUBLIC_AI_DISABLE=true yarn start --port 8082
+pnpm start                    # Expo dev server
+APP_VARIANT=development EXPO_PUBLIC_AI_DISABLE=true pnpm start --port 8082
                               # Expo dev server with @budgie/logger service logs enabled
-yarn ios                      # Run on iOS simulator
-yarn android                  # Run on Android emulator
-yarn web                      # Run on web
+pnpm ios                      # Run on iOS simulator
+pnpm android                  # Run on Android emulator
+pnpm web                      # Run on web
 
-yarn db:generate              # Generate Drizzle migrations (after schema changes in contracts)
-yarn i18n:sync                # Extract & compile i18n translations
+pnpm db:generate              # Generate Drizzle migrations (after schema changes in contracts)
+pnpm i18n:sync                # Extract & compile i18n translations
 
 # IMPORTANT: After modifying any user-facing text:
-yarn i18n:sync
+pnpm i18n:sync
 ```
 
 ## Structure
@@ -520,7 +520,7 @@ const FormField = ({ name }: { name: string }) => {
 ### After Changes
 
 ```bash
-yarn i18n:sync
+pnpm i18n:sync
 ```
 
 ## Data Layer
@@ -749,11 +749,11 @@ Free-form `context: string`. Convention: hook/file/component name. No enum.
 When starting Metro to watch service logs, always include `APP_VARIANT=development`, for example:
 
 ```bash
-APP_VARIANT=development EXPO_PUBLIC_AI_DISABLE=true yarn start --port 8082
+APP_VARIANT=development EXPO_PUBLIC_AI_DISABLE=true pnpm start --port 8082
 ```
 
 Also verify the foreground bundle is the dev app (`com.vitalyiegorov.budgie.dev` on iOS), not the E2E app. The E2E build (`com.vitalyiegorov.budgie.e2e`) has `EXPO_PUBLIC_LOGGING_DISABLE=true` baked in, so Metro cannot re-enable service logs for that installed binary. If the wrong app is foreground, launch/reinstall the dev build or rebuild the target variant with logging enabled before debugging logs.
 
-### `packages/bank-sync` exception
+### `packages/sync` exception
 
-`packages/bank-sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/bank-sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.
+`packages/sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.

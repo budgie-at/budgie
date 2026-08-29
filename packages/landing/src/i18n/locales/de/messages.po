@@ -3781,8 +3781,8 @@ msgid "Budgie is native mobile-first, completely offline-capable, and radically 
 msgstr "Budgie ist nativ mobil, vollständig offline-fähig und radikal privat. Ihre Daten leben auf Ihrem Gerät in einer SQLite-Datenbank, die Sie direkt abfragen können. Die Banksynchronisierung nutzt, wenn eingesetzt, Zero-Knowledge-Architektur. Die App ist Open Source, damit Sie jede unserer Behauptungen überprüfen können."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Budgie is open source. The Monobank integration lives in packages/bank-sync/src/monobank/ and the project's release cadence keeps it current."
-msgstr "Budgie ist Open Source. Die Monobank-Integration befindet sich in packages/bank-sync/src/monobank/ und der Veröffentlichungsrhythmus des Projekts hält sie aktuell."
+msgid "Budgie is open source. The Monobank integration lives in packages/sync/src/monobank/ and the project's release cadence keeps it current."
+msgstr "Budgie ist Open Source. Die Monobank-Integration befindet sich in packages/sync/src/monobank/ und der Veröffentlichungsrhythmus des Projekts hält sie aktuell."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Budgie is open source. The privacy claims made in this article are not policy statements — they are architectural facts visible in the codebase. You can verify:"

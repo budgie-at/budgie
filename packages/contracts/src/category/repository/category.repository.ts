@@ -107,6 +107,16 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         return this.buildLocalizedCategoryBaseQuery(language).where(eq(CategoryEntityTable.id, id)).limit(1);
     }
 
+    async findActiveById(id: number, tx?: DB): Promise<CategoryEntityInterface | undefined> {
+        const [category] = await (tx ?? this.db)
+            .select()
+            .from(CategoryEntityTable)
+            .where(and(eq(CategoryEntityTable.id, id), isNull(CategoryEntityTable.deletedAt)))
+            .limit(1);
+
+        return category;
+    }
+
     async deleteById(id: number): Promise<void> {
         await this.db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id));
     }

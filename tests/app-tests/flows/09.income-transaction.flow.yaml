@@ -77,9 +77,6 @@ appId: ${APP_ID}
     id: 'TransactionInfo.Row.Account'
 - assertVisible:
     id: 'TransactionInfo.Row.Category'
-- tapOn:
-    id: 'TransactionInfo.EditButton.Label'
-
 - assertNotVisible: '^Set fee$'
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
@@ -88,6 +85,14 @@ appId: ${APP_ID}
       id: 'TransactionActionsMenu.FeeButton'
 - assertVisible:
     id: 'TransactionActionsMenu.DeleteButton'
+- assertVisible:
+    id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- assertVisible:
+    id: 'TransactionActionsMenu.ConvertToRefundButton'
+- assertVisible:
+    id: 'TransactionActionsMenu.ConvertToTransferButton'
+- assertNotVisible:
+    id: 'TransactionActionsMenu.RevertButton'
 - tapOn:
     id: 'TransactionActionsMenu.FeeButton'
 - extendedWaitUntil:
@@ -99,6 +104,23 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     notVisible:
       id: 'SplitEntryRow.Amount.0'
+- assertVisible: 'Edit Income'
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- assertVisible:
+    id: 'TransactionActionsMenu.FeeButton'
+- assertVisible:
+    id: 'TransactionActionsMenu.DeleteButton'
+- assertVisible:
+    id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- assertVisible:
+    id: 'TransactionActionsMenu.ConvertToRefundButton'
+- assertVisible:
+    id: 'TransactionActionsMenu.ConvertToTransferButton'
+- assertNotVisible:
+    id: 'TransactionActionsMenu.RevertButton'
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
 
 - longPressOn:
     id: 'TransactionKeypad.Backspace'

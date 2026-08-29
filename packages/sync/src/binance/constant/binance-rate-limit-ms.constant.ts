@@ -1,0 +1,1 @@
+export const BINANCE_RATE_LIMIT_MS = 1000;

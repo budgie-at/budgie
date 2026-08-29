@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountTypeEnum, AccountWithBankSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountTypeEnum, AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -35,7 +35,7 @@ const appendAccount = <Key, Value>(groups: Map<Key, Value[]>, key: Key, value: V
 const appendBankProviderGroup = (
     groups: Map<number, BankProviderGroupInterface>,
     bankProviderGroup: NonNullable<ReturnType<typeof resolveBankProviderGroup>>,
-    account: AccountWithBankSyncEntityInterface
+    account: AccountWithSyncEntityInterface
 ): void => {
     const { integrationId, provider } = bankProviderGroup;
     const group = groups.get(integrationId);
@@ -49,7 +49,7 @@ const appendBankProviderGroup = (
     groups.set(integrationId, { integrationId, provider, accounts: [account] });
 };
 
-const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInterface[]): CryptoCurrencyGroupInterface[] => {
+const groupCryptoAccountsByInstrument = (accounts: AccountWithSyncEntityInterface[]): CryptoCurrencyGroupInterface[] => {
     const groups = new Map<number, CryptoCurrencyGroupInterface>();
 
     accounts.forEach(account => {
@@ -71,12 +71,12 @@ const groupCryptoAccountsByInstrument = (accounts: AccountWithBankSyncEntityInte
 };
 
 const buildHomePageSections = (
-    accounts: AccountWithBankSyncEntityInterface[],
+    accounts: AccountWithSyncEntityInterface[],
     integrationProviders: ReadonlyMap<number, ExternalSourceEnum>
 ): HomeSectionInterface[] => {
-    const accountGroups = new Map<AccountTypeEnum, AccountWithBankSyncEntityInterface[]>();
+    const accountGroups = new Map<AccountTypeEnum, AccountWithSyncEntityInterface[]>();
     const providerGroups = new Map<number, BankProviderGroupInterface>();
-    const debtGroups = new Map<DebtSectionInterface['kind'], AccountWithBankSyncEntityInterface[]>();
+    const debtGroups = new Map<DebtSectionInterface['kind'], AccountWithSyncEntityInterface[]>();
     const debtSectionKinds = [
         HomeSectionKindEnum.DEBT_YOU_OWE,
         HomeSectionKindEnum.DEBT_OWED_TO_YOU

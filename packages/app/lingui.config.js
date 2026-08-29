@@ -5,7 +5,7 @@ import { formatter } from '@lingui/format-po';
 
 const babelExtractor = babelExtractorModule.default ?? babelExtractorModule;
 
-const isDirectoryPath = (filename) => {
+const isDirectoryPath = filename => {
     try {
         return lstatSync(filename).isDirectory();
     } catch {
@@ -25,8 +25,8 @@ export default defineConfig({
                 }
                 return babelExtractor.match(filename);
             },
-            extract: babelExtractor.extract.bind(babelExtractor),
-        },
+            extract: babelExtractor.extract.bind(babelExtractor)
+        }
     ],
     catalogs: [
         {

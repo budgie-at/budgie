@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 
 import { Button } from '../../../@generic/component/button/button';
 import { ChromePage } from '../../../@generic/component/chrome-page/chrome-page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useTransactionInfoMatchingRules } from '../../hook/use-transaction-info-matching-rules.hook';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
@@ -18,7 +19,6 @@ import { TransactionInfoAccountRows } from '../transaction-info-account-rows/tra
 import { TransactionInfoCategoryRows } from '../transaction-info-category-rows/transaction-info-category-rows';
 import { TransactionInfoHero } from '../transaction-info-hero/transaction-info-hero';
 import { TransactionInfoMoneyRows } from '../transaction-info-money-rows/transaction-info-money-rows';
-import { TransactionInfoPageHeader } from '../transaction-info-page-header/transaction-info-page-header';
 import { TransactionInfoSimilarCard } from '../transaction-info-similar-card/transaction-info-similar-card';
 import { TransactionInfoSourceRows } from '../transaction-info-source-rows/transaction-info-source-rows';
 import { TransactionInfoTagsSection } from '../transaction-info-tags-section/transaction-info-tags-section';
@@ -27,6 +27,7 @@ import { TransactionInfoPageSelector } from './transaction-info-page.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { Href } from 'expo-router';
+import type { ReactNode } from 'react';
 import type { Edge } from 'react-native-safe-area-context';
 
 const safeEdges: Edge[] = ['bottom', 'top'];
@@ -34,10 +35,7 @@ const safeEdges: Edge[] = ['bottom', 'top'];
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly editHref: Href;
-    readonly onDelete: () => Promise<void> | void;
-    readonly onRevert?: () => void;
-    readonly onConvertToTransfer?: () => void;
-    readonly onConvertToRefund?: () => void;
+    readonly actionsMenu: ReactNode;
     readonly onOpenRefundSources?: () => void;
     readonly onOpenConsolidationSources?: () => void;
 }
@@ -93,16 +91,7 @@ const getRowVisibility = (
 };
 
 export const TransactionInfoPage = (props: Props) => {
-    const {
-        transaction,
-        editHref,
-        onDelete,
-        onRevert,
-        onConvertToTransfer,
-        onConvertToRefund,
-        onOpenRefundSources,
-        onOpenConsolidationSources
-    } = props;
+    const { transaction, editHref, actionsMenu, onOpenRefundSources, onOpenConsolidationSources } = props;
     const router = useRouter();
     const { t } = useLingui();
     const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
@@ -121,16 +110,7 @@ export const TransactionInfoPage = (props: Props) => {
         <ChromePage
             safeEdges={safeEdges}
             contentClassName="px-0"
-            header={
-                <TransactionInfoPageHeader
-                    isConsolidated={rowVisibility.isConsolidated}
-                    onGoBack={handleGoBack}
-                    onDelete={onDelete}
-                    onRevert={onRevert}
-                    onConvertToRefund={onConvertToRefund}
-                    onConvertToTransfer={onConvertToTransfer}
-                />
-            }
+            header={<PageHeader title="" size="md" onGoBack={handleGoBack} right={actionsMenu} />}
             footer={
                 <View className="px-5xl pb-md pt-lg">
                     <Button

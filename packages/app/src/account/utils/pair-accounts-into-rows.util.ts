@@ -1,8 +1,8 @@
-import { AccountWithBankSyncEntityInterface } from '@budgie/contracts';
+import { AccountWithSyncEntityInterface } from '@budgie/contracts';
 
 import { AccountRowInterface } from '../interface/account-row.interface';
 
-export const pairAccountsIntoRows = (accounts: AccountWithBankSyncEntityInterface[]): AccountRowInterface[] => {
+export const pairAccountsIntoRows = (accounts: AccountWithSyncEntityInterface[]): AccountRowInterface[] => {
     const rows: AccountRowInterface[] = [];
 
     for (let index = 0; index < accounts.length; index += 2) {

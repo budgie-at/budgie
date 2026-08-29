@@ -1,6 +1,6 @@
 import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -34,7 +34,7 @@ import {
 import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
 
 interface Props {
-    readonly ref?: RefObject<SimpleQuickFormRefInterface | null>;
+    readonly ref?: Ref<SimpleQuickFormRefInterface>;
     readonly variant: ColorPaletteVariant;
     readonly initialDestinationAmount?: number;
     readonly isSubmitting?: boolean;
@@ -125,6 +125,7 @@ export const TransferQuickForm = (props: Props) => {
     const fromCode = fromAccount?.instrument.code ?? '';
     const toCode = toAccount?.instrument.code ?? '';
     const feeCurrencySymbol = fromAccount?.instrument.symbol ?? defaultInstrument.symbol;
+    const feeInstrumentType = fromAccount?.instrument.type ?? defaultInstrument.type;
 
     const display = computeTransferDisplay({
         isEditingDestination,
@@ -183,7 +184,13 @@ export const TransferQuickForm = (props: Props) => {
 
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
     const amountBottomContent = showInlineFeeAction ? (
-        <TransactionFeePill amount={feeAmount} currencySymbol={feeCurrencySymbol} showEmptyState onPress={handleFeePress} />
+        <TransactionFeePill
+            amount={feeAmount}
+            currencySymbol={feeCurrencySymbol}
+            instrumentType={feeInstrumentType}
+            showEmptyState
+            onPress={handleFeePress}
+        />
     ) : null;
 
     const handleConfirm = () => {

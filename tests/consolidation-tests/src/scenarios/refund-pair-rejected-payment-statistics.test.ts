@@ -1,4 +1,4 @@
-import { StatisticsRepository, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, StatisticsRepository, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -11,9 +11,6 @@ import {
 import { runConsolidation } from '../harness/run-consolidation';
 import { testDb, testQueryService, testSeedService } from '../harness/test-context';
 
-import type { TransactionFilterInterface } from '@budgie/contracts';
-
-const NO_FILTERS: TransactionFilterInterface = { types: null, date: null, categoryIds: null, accountIds: null, tagIds: null };
 const DEFAULT_INSTRUMENT_ID = 1;
 
 describe('consolidation/refund-pair-rejected-payment-statistics', () => {
@@ -34,7 +31,7 @@ describe('consolidation/refund-pair-rejected-payment-statistics', () => {
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
         const statisticsRepository = new StatisticsRepository(testDb);
-        const [totals] = statisticsRepository.getTotalIncomeAndExpenseQuery(NO_FILTERS, DEFAULT_INSTRUMENT_ID).all();
+        const [totals] = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, DEFAULT_INSTRUMENT_ID).all();
 
         expect(totals.expense).toBe(0);
         expect(totals.income).toBe(0);

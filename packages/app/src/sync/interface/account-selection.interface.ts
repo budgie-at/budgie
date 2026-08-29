@@ -1,11 +1,11 @@
 import { EmptyFn } from '@rnw-community/shared';
 
-import { BankAccountPreviewInterface } from './bank-account-preview.interface';
+import { SyncAccountPreviewInterface } from './sync-account-preview.interface';
 
 export interface AccountSelectionInterface {
-    readonly accountPreviews: BankAccountPreviewInterface[];
+    readonly accountPreviews: SyncAccountPreviewInterface[];
     readonly selectedAccounts: Set<string>;
-    readonly setPreviews: (previews: BankAccountPreviewInterface[]) => void;
+    readonly setPreviews: (previews: SyncAccountPreviewInterface[]) => void;
     readonly toggleAccount: (externalId: string) => void;
     readonly selectAllAccounts: EmptyFn;
     readonly deselectAllAccounts: EmptyFn;

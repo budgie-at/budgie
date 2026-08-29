@@ -10,9 +10,10 @@ import { isLikelyMonoToken } from '../../type-guard/is-likely-mono-token.type-gu
 
 interface Props {
     readonly onPaste: (token: string) => void;
+    readonly testID?: string;
 }
 
-export const PasteTokenButton = ({ onPaste }: Props) => {
+export const PasteTokenButton = ({ onPaste, testID }: Props) => {
     const { t } = useLingui();
 
     const handlePress = async () => {
@@ -42,6 +43,7 @@ export const PasteTokenButton = ({ onPaste }: Props) => {
             size="sm"
             variant="secondary"
             onPress={handlePress}
+            testID={testID}
         />
     );
 };

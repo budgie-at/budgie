@@ -1,14 +1,45 @@
+import { transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 
 import type { DB, TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 class ImportedTransactionEntryUpdateService {
+    @Log(
+        (transactionId, externalId) => `enter transactionId=${transactionId} externalId=${externalId}`,
+        (result, transactionId, externalId) => `done result=${String(result)} transactionId=${transactionId} externalId=${externalId}`,
+        (error, transactionId, externalId) =>
+            `throw transactionId=${transactionId} externalId=${externalId} error=${getErrorMessage(error)}`
+    )
+    @InvalidateDatabaseLiveQuery()
+    async updateExternalEntryQuote(
+        transactionId: number,
+        externalId: string,
+        quote: Required<Pick<TransactionEntryCreateInputInterface, 'quotedInstrumentId' | 'quotedAmount' | 'quotedUnitPrice'>>
+    ): Promise<boolean> {
+        return transactionAsync(db, async tx => {
+            const existingEntry = await transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId, tx);
+            if (
+                !isDefined(existingEntry) ||
+                (existingEntry.quotedInstrumentId === quote.quotedInstrumentId &&
+                    existingEntry.quotedAmount === quote.quotedAmount &&
+                    existingEntry.quotedUnitPrice === quote.quotedUnitPrice)
+            ) {
+                return false;
+            }
+
+            await transactionEntryRepository.updateById(existingEntry.id, quote, tx);
+
+            return true;
+        });
+    }
+
     @Log(
         (entries, input, tx) =>
             `enter externalId=${input.externalId} entryExternalIds=${entries.map(entry => entry.externalId).join(',')} hasTx=${String(isDefined(tx))}`,

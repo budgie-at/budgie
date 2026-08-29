@@ -13,74 +13,74 @@
 **Required Versions**:
 
 - Node.js: >= 22.22.1 (configured in package.json engines)
-- Yarn: 4.17.1 (packageManager specified)
-- Yarn uses the `node-modules` linker configured in `.yarnrc.yml`; this repository does not use PnP
+- pnpm: 11.22.0 (packageManager specified)
+- Workspace globs and dependency overrides are configured in `pnpm-workspace.yaml`
 - The root intentionally has 38 development dependencies after removing Prettier and the orphan root Babel tooling; do not add a dependency to satisfy the migration plan's stale count
 
-**IMPORTANT**: Always use `yarn` commands, not `npm`. This repository uses Yarn 4 workspaces.
+**IMPORTANT**: Always use `pnpm` commands, not `npm` or `yarn`. This repository uses pnpm workspaces.
 
 ## Essential Commands (VALIDATED)
 
 ### Bootstrap & Setup
 
-1. **Install dependencies** (ALWAYS run first): `yarn install`
+1. **Install dependencies** (ALWAYS run first): `pnpm install`
     - Downloads and links dependencies into `node_modules`
     - Runs the configured `afterInstall` workspace build
     - Known peer warnings include ESLint 10 compatibility ranges and the contracts package's `expo-sqlite` peers; investigate new warnings
 
 ### Build Commands
 
-2. **Build all configured packages**: `yarn build`
+2. **Build all configured packages**: `pnpm build`
     - Turbo resolves workspace dependencies and caches the seven package build tasks currently in scope
-    - Use `yarn build:force` to bypass Turbo cache
+    - Use `pnpm build:force` to bypass Turbo cache
     - The landing task performs the Next.js production build; library packages emit their configured distributions
 
 ### Validation Commands (Run in this order)
 
-3. **TypeScript check**: `yarn ts`
+3. **TypeScript check**: `pnpm ts`
     - Uses the native TypeScript 7 compiler across all packages; TypeScript 6 remains available for tool API consumers
     - Incremental workspaces write `node_modules/.cache/tsbuildinfo.json`, which Turbo caches; non-incremental workspaces can legitimately report that no configured output was produced
 
-4. **Linting**: `yarn lint`
+4. **Linting**: `pnpm lint`
     - Runs type-aware Oxlint first, including its JavaScript-plugin bridge, then a direct single-process 13-rule syntax-only ESLint fallback
     - Oxlint owns the `typescript/no-unnecessary-condition` diagnostic; ESLint does not build a TypeScript program
     - `eslint-plugin-oxlint` builds its disabling layer from `.oxlintrc.json`, leaving ESLint responsible only for unsupported and project-specific rules
 
-5. **Deadcode detection**: `yarn deadcode`
+5. **Deadcode detection**: `pnpm deadcode`
     - Uses Knip to find unused code and dependencies
     - Clean codebase should show "no issues found"
 
-6. **Copy/paste detection**: `yarn cpd`
+6. **Copy/paste detection**: `pnpm cpd`
     - Uses jscpd to detect code duplication
     - Report saved to `report/jscpd/jscpd-report.html`
 
-7. **Tests**: `yarn test`
+7. **Tests**: `pnpm test`
     - Production package Jest tasks are configured with `--passWithNoTests`
     - The real integration coverage is in three Vitest workspaces under `tests/`, currently 73 test files total
-    - `yarn test:coverage` runs the integration coverage task used by CI
+    - `pnpm test:coverage` runs the integration coverage task used by CI
     - Task 9 measured both root test commands at approximately 28 seconds on the migration workstation; timings are machine- and cache-dependent
 
 ### Package-Specific Commands
 
-- **Integration suites**: `yarn workspace @budgie-at/bank-sync-tests test`, `yarn workspace @budgie-at/budget-tests test`, and `yarn workspace @budgie-at/consolidation-tests test`
+- **Integration suites**: `pnpm --filter @budgie-at/bank-sync-tests test`, `pnpm --filter @budgie-at/budget-tests test`, and `pnpm --filter @budgie-at/consolidation-tests test`
 - **App package**:
-    - `cd packages/app && yarn start` (starts Expo dev server with dev client)
-    - `yarn ios` (runs iOS app) / `yarn android` (runs Android app)
-    - `yarn web` (starts web version)
-    - `yarn prebuild` (generates native iOS/Android projects)
-    - `yarn db:generate` (generates Drizzle migrations)
-    - `yarn i18n:extract` (extracts i18n strings) / `yarn i18n:compile` (compiles catalogs)
-    - `yarn i18n:sync` (extracts and compiles in one command)
+    - `cd packages/app && pnpm start` (starts Expo dev server with dev client)
+    - `pnpm ios` (runs iOS app) / `pnpm android` (runs Android app)
+    - `pnpm web` (starts web version)
+    - `pnpm prebuild` (generates native iOS/Android projects)
+    - `pnpm db:generate` (generates Drizzle migrations)
+    - `pnpm i18n:extract` (extracts i18n strings) / `pnpm i18n:compile` (compiles catalogs)
+    - `pnpm i18n:sync` (extracts and compiles in one command)
 - **Landing package**:
-    - `cd packages/landing && yarn start` (starts Next.js dev server on port 3000)
-    - `yarn i18n:sync` (extracts and compiles Lingui translations)
+    - `cd packages/landing && pnpm start` (starts Next.js dev server on port 3000)
+    - `pnpm i18n:sync` (extracts and compiles Lingui translations)
 
 ### Utility Scripts (Root)
 
-- `yarn format` - Format all TypeScript/TSX files with Oxfmt
-- `yarn deps:check` - Check dependency version consistency across workspace
-- `yarn deps:dedupe` - Deduplicate dependencies
-- `yarn deps:update` - Check for dependency updates with npm-check-updates
+- `pnpm format` - Format all TypeScript/TSX files with Oxfmt
+- `pnpm deps:check` - Check dependency version consistency across workspace
+- `pnpm deps:dedupe` - Deduplicate dependencies
+- `pnpm deps:update` - Check for dependency updates with npm-check-updates
 
 ## CI/CD Pipelines
 
@@ -95,22 +95,20 @@
 2. **code-quality** (self-hosted `linux-tiered` / `linux-large`, 30-minute timeout):
     - Validates PR title with commitlint (conventional commits required)
     - Verifies Lingui catalogs and Maestro selector assignments
-    - Runs `yarn format:check` (Oxfmt)
-    - Runs `yarn ts` (native TypeScript 7 checks)
-    - Runs `yarn lint` (type-aware Oxlint plus the direct-root 13-rule syntax-only ESLint fallback)
-    - Runs `yarn deadcode` (Knip)
-    - Runs `yarn cpd` (jscpd)
+    - Runs `pnpm format:check` (Oxfmt)
+    - Runs `pnpm ts` (native TypeScript 7 checks)
+    - Runs `pnpm lint` (type-aware Oxlint plus the direct-root 13-rule syntax-only ESLint fallback)
+    - Runs `pnpm deadcode` (Knip)
+    - Runs `pnpm cpd` (jscpd)
     - Builds and runs the Vitest integration coverage workspaces
     - Uploads coverage to Codecov
 
 3. **eas-update-preview** (hosted `ubuntu-24.04`, mobile-impact changes only):
     - Exports iOS and Android bundles and publishes an EAS Update to the development channel
 
-4. **build-ios-e2e-app** (self-hosted Apple Silicon `macos-builder`, mobile-impact changes after code quality):
-    - Reuses a fingerprinted native app when possible, repacks the current bundle, and falls back to a full native build when required
-
-5. **e2e-ios** (two self-hosted Apple Silicon `macos-maestro` shards, mobile-impact changes only):
-    - Downloads the current E2E app artifact and runs the 40 assigned Maestro entry flows across two shards
+4. **ios-maestro** (`rnw-community/mobile-ci`'s reusable `ios-maestro.yml` workflow, pinned to `v1.7.0`, mobile-impact changes after code quality):
+    - Build job on self-hosted Apple Silicon `macos-builder`: reuses a fingerprinted native app when possible (repacking the current PR's JS bundle into the cached shell via `repack-on-hit`), and falls back to a full native build when required
+    - Test job on two self-hosted Apple Silicon `macos-maestro` shards: downloads the built app and runs the 43 entry flows assigned via `tests/app-tests/shards/shard-0.txt` and `shard-1.txt`
     - There is no Android E2E job in the current PR workflow
 
 ### Main Branch Workflow (.github/workflows/main.yml)
@@ -205,7 +203,7 @@
 
 ### Equal-Topology Local Benchmark
 
-Baseline `1f07afc` and measured revision `044badce` were benchmarked on 2026-07-14 using Node.js v22.23.0, Yarn 4.17.1, and macOS arm64. Each workload used five interleaved samples, remote caching disabled, and isolated local-only caches. Medians are sorted sample index 2. Sequential validation is `yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd`.
+Baseline `1f07afc` and measured revision `044badce` were benchmarked on 2026-07-14 using Node.js v22.23.0, Yarn 4.17.1, and macOS arm64. Each workload used five interleaved samples, remote caching disabled, and isolated local-only caches. Medians are sorted sample index 2. Sequential validation is `pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd`.
 
 | Workload                             | Baseline elapsed | `044badce` elapsed |                     Elapsed change | Baseline RSS | `044badce` RSS |                         RSS change |
 | ------------------------------------ | ---------------: | -----------------: | ---------------------------------: | -----------: | -------------: | ---------------------------------: |
@@ -224,27 +222,27 @@ RSS is the macOS `/usr/bin/time -l` maximum observed child-process RSS, not aggr
 
 ### Git Hooks (Husky)
 
-- **pre-commit**: Runs `yarn ts` and `yarn lint-staged`
+- **pre-commit**: Runs `pnpm ts` and `pnpm lint-staged`
 - **commit-msg**: Validates commit messages with commitlint (conventional commits)
 
 ### Turbo
 
 - **turbo.json**: Defines task dependencies and caching
     - Tasks: `release`, `ts`, `lint:eslint`, `clear`, `build`, `test`, `test:coverage`, plus root `cpd` and `deadcode`
-    - Package-level `lint:eslint` tasks remain available, while root `yarn lint` runs Oxlint and then one direct-root ESLint fallback process
+    - Package-level `lint:eslint` tasks remain available, while root `pnpm lint` runs Oxlint and then one direct-root ESLint fallback process
     - PR CI enables remote caching through `TURBO_TEAM` and `TURBO_TOKEN`
 
 ## Development Workflow
 
 ### Making Code Changes
 
-1. **ALWAYS start with**: `yarn install` (if fresh clone or after pulling)
+1. **ALWAYS start with**: `pnpm install` (if fresh clone or after pulling)
 2. **Before committing**: Changes are automatically validated by Husky hooks
     - TypeScript check runs automatically
     - Oxlint, the ESLint fallback, and Oxfmt fixes are applied via lint-staged
     - Commit message validated (must follow conventional commits)
-3. **After changes**: Run `yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd`
-4. **For package changes**: Run `yarn build` to ensure downstream packages work
+3. **After changes**: Run `pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd`
+4. **For package changes**: Run `pnpm build` to ensure downstream packages work
 
 ### Commit Message Format
 
@@ -259,7 +257,7 @@ RSS is the macOS `/usr/bin/time -l` maximum observed child-process RSS, not aggr
 
 ### Common Issues & Solutions
 
-**Issue**: Peer dependency warnings during `yarn install`
+**Issue**: Peer dependency warnings during `pnpm install`
 **Solution**: The known migration warnings are ESLint 10 peer ranges and `expo-sqlite` peers exposed through contracts. Compare new warnings with the current baseline instead of treating every warning as safe.
 
 **Issue**: Turbo cache warnings about missing outputs for a TypeScript task
@@ -268,9 +266,9 @@ RSS is the macOS `/usr/bin/time -l` maximum observed child-process RSS, not aggr
 **Issue**: Build fails after dependency update
 **Solution**:
 
-1. Run `yarn dedupe` to resolve version conflicts
-2. Run `yarn build:force` to bypass stale Turbo cache
-3. Clear node_modules: `rm -rf node_modules && yarn install`
+1. Run `pnpm dedupe` to resolve version conflicts
+2. Run `pnpm build:force` to bypass stale Turbo cache
+3. Clear node_modules: `rm -rf node_modules && pnpm install`
 
 **Issue**: A lint rule is not supported by Oxlint
 **Solution**: Keep only the 13 residual syntax-only rules in the ESLint fallback. Put supported plugin families in Oxlint's JavaScript-plugin bridge, and use the official companion to disable overlapping ESLint rules. Keep `typescript/no-unnecessary-condition` in Oxlint.
@@ -278,13 +276,13 @@ RSS is the macOS `/usr/bin/time -l` maximum observed child-process RSS, not aggr
 The root `readme.md` backlog tracks restoring automated `UPPER_CASE` enum-member enforcement when Oxlint supports an equivalent naming-convention rule.
 
 **Issue**: Cannot run Expo app builds locally
-**Solution**: EAS builds require EXPO_TOKEN secret. Use `yarn start` in packages/app for local development with Expo Go or dev client.
+**Solution**: EAS builds require EXPO_TOKEN secret. Use `pnpm start` in packages/app for local development with Expo Go or dev client.
 
 ## Key Architectural Patterns
 
 ### Monorepo Structure
 
-- Uses Yarn workspaces + Lerna for versioning
+- Uses pnpm workspaces + Lerna for versioning
 - TurboRepo for build orchestration and caching
 - Packages share common tooling (Oxlint, residual ESLint 10, native TypeScript 7, TypeScript 6 API, and Oxfmt)
 
@@ -326,14 +324,14 @@ The root `readme.md` backlog tracks restoring automated `UPPER_CASE` enum-member
 - Use Maestro for React Native testing
 - CI builds the iOS E2E app and runs two Maestro shards only when the mobile-impact gate is true
 - There is no Android E2E job in the current PR workflow
-- Config: tests/app-tests/config.yaml
-- Four checked `tests/app-tests/shards/shard-*.txt` manifest files assign the 40 entry flows exactly once for selector validation
-- The current PR workflow does not consume those four manifest partitions; it dynamically splits the sorted flow list across two jobs by index modulo 2
+- Config: tests/app-tests/config.yaml, passed to every `maestro test` invocation via `ios-maestro.yml`'s `maestro-config` input
+- Two checked `tests/app-tests/shards/shard-*.txt` manifest files, zero-indexed (`shard-0.txt`, `shard-1.txt`), assign the 43 entry flows exactly once for shard coverage validation
+- The PR workflow consumes those two manifest partitions directly via `ios-maestro.yml`'s `shard-manifest-dir` input, preserving the hand-tuned wall-clock balance instead of falling back to a computed index-modulo split
 
 ### Integration Tests
 
 - `tests/bank-sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/` are dedicated Vitest integration workspaces
-- They currently contain 73 test files and are the suites executed by root `yarn test` and `yarn test:coverage`
+- They currently contain 73 test files and are the suites executed by root `pnpm test` and `pnpm test:coverage`
 
 ## Coding Standards and Best Practices
 
@@ -425,8 +423,8 @@ The root `readme.md` backlog tracks restoring automated `UPPER_CASE` enum-member
 
 6. **Check CI before merging**: All PR checks must pass (Oxfmt, TypeScript, Oxlint, residual ESLint, tests, deadcode, cpd).
 
-7. **Expo app requires secrets**: Cannot build native apps locally without EXPO_TOKEN. Use `yarn start` for local dev.
+7. **Expo app requires secrets**: Cannot build native apps locally without EXPO_TOKEN. Use `pnpm start` for local dev.
 
 8. **Node version**: Requires Node.js >= 22.22.1. Check with `node --version` if encountering unexpected errors.
 
-9. **Yarn version**: Must use Yarn 4.17.1 with the repository's `node-modules` linker, not PnP, classic Yarn, or npm.
+9. **pnpm version**: Must use pnpm 11.22.0 (the `packageManager` field), not npm or yarn.

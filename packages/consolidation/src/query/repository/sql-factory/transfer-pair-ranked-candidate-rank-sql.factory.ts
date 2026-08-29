@@ -88,6 +88,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                         WHEN ibanMatch = 1 THEN 'iban'
                         WHEN operationAmountMatch = 1 THEN 'operation-amount'
                         WHEN impliedRateMatch = 1 THEN 'implied-rate'
+                        WHEN p2pCrossCurrencyMatch = 1 THEN 'p2p-fiat'
                         WHEN sameBank = 1 AND sameCurrency = 0 THEN 'same-bank-cross-currency'
                         WHEN hintedFeeAmountMatch = 1 THEN 'same-bank-hinted-fee'
                         WHEN interbankHintedFeeAmountMatch = 1 THEN 'interbank-hinted-fee'

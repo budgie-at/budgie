@@ -12,8 +12,8 @@ import { testID } from '../../../@generic/utils/test-id.util';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useAccountBankSync } from '../../hook/use-account-bank-sync.hook';
-import { monobankSyncService } from '../../service/monobank-sync.service';
+import { useAccountSync } from '../../hook/use-account-sync.hook';
+import { syncProviderRegistryService } from '../../service/sync-provider-registry.service';
 
 interface Props {
     readonly account: Pick<AccountWithInstrumentEntityInterface, 'id' | 'title' | 'icon' | AccountAssociationEnum.INSTRUMENT>;
@@ -22,15 +22,18 @@ interface Props {
 
 export const BankIntegrationAccountRow = ({ account, isLiveApi }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
-    const { bankSync, hasBankSync } = useAccountBankSync(account.id);
+    const { sync, hasSync } = useAccountSync(account.id);
     const formatDigits = useDisplayFormatDigits();
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
-    const handleToggle = (enabled: boolean) => void monobankSyncService.setAccountSyncEnabled(account.id, enabled);
+    const handleToggle = (enabled: boolean) =>
+        void syncProviderRegistryService
+            .getServiceForAccount(account.id)
+            .then(service => service?.setAccountSyncEnabled(account.id, enabled));
 
     const toggle =
-        isLiveApi && hasBankSync && isDefined(bankSync) ? (
-            <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} {...testID(rowTestID, TestIDPartEnum.TOGGLE)} />
+        isLiveApi && hasSync && isDefined(sync) ? (
+            <ThemedSwitch value={sync.enabled} onValueChange={handleToggle} {...testID(rowTestID, TestIDPartEnum.TOGGLE)} />
         ) : null;
 
     return (

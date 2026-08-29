@@ -100,9 +100,6 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionInfo.Page'
       timeout: 5000
-- tapOn:
-      id: 'TransactionInfo.EditButton.Label'
-
 - assertNotVisible: '^Set fee$'
 - tapOn:
       id: 'TransactionActionsMenu.TriggerButton'
@@ -111,6 +108,14 @@ appId: ${APP_ID}
           id: 'TransactionActionsMenu.FeeButton'
 - assertVisible:
       id: 'TransactionActionsMenu.DeleteButton'
+- assertNotVisible:
+      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- assertNotVisible:
+      id: 'TransactionActionsMenu.ConvertToRefundButton'
+- assertNotVisible:
+      id: 'TransactionActionsMenu.ConvertToTransferButton'
+- assertNotVisible:
+      id: 'TransactionActionsMenu.RevertButton'
 - tapOn:
       id: 'TransactionActionsMenu.FeeButton'
 - extendedWaitUntil:
@@ -122,6 +127,23 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       notVisible:
           id: 'SplitEntryRow.Amount.0'
+- assertVisible: 'Edit Transfer'
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+- assertVisible:
+      id: 'TransactionActionsMenu.FeeButton'
+- assertVisible:
+      id: 'TransactionActionsMenu.DeleteButton'
+- assertNotVisible:
+      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- assertNotVisible:
+      id: 'TransactionActionsMenu.ConvertToRefundButton'
+- assertNotVisible:
+      id: 'TransactionActionsMenu.ConvertToTransferButton'
+- assertNotVisible:
+      id: 'TransactionActionsMenu.RevertButton'
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
 
 - assertVisible:
       id: 'TransferForm.SelectedFromAccount.E2E Txn Account'

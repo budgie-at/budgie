@@ -1,8 +1,10 @@
 const { execSync } = require('node:child_process');
 const { readFileSync } = require('node:fs');
+const path = require('node:path');
 
-const expoMetroConfigVersion = require('@expo/metro-config/package.json').version;
-const expoMetroSourceMapPath = require.resolve('@expo/metro-config/build/serializer/sourceMap.js');
+const appPackageDir = path.join(__dirname, '..', 'packages', 'app');
+const expoMetroConfigVersion = require(require.resolve('@expo/metro-config/package.json', { paths: [appPackageDir] })).version;
+const expoMetroSourceMapPath = require.resolve('@expo/metro-config/build/serializer/sourceMap.js', { paths: [appPackageDir] });
 const expoMetroSourceMap = readFileSync(expoMetroSourceMapPath, 'utf8');
 
 if (!expoMetroSourceMap.includes('repairInvalidNegativeIndices')) {
@@ -30,6 +32,6 @@ if (process.env.BUDGIE_SKIP_AFTER_INSTALL_BUILD === '1') {
 }
 
 console.log('[after-install] Running workspace build.');
-execSync('yarn build', {
+execSync('pnpm build', {
     stdio: 'inherit',
 });

@@ -11,7 +11,7 @@ import {
     AccountBalanceRepository,
     AccountRepository,
     BankIntegrationRepository,
-    BankSyncRepository,
+    SyncRepository,
     CategoryRepository,
     CommentEmbeddingRepository,
     DebtEventRepository,
@@ -58,10 +58,20 @@ declare global {
     var __drizzleDb__: DB | undefined;
 }
 
+const readPinOrNullIfKeychainUnavailable = (): string | null => {
+    try {
+        return SecureStore.getItem(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
+    } catch (secureStoreError) {
+        logger.error('secure-store:read-pin-error', { errorMessage: getErrorMessage(secureStoreError) });
+
+        return null;
+    }
+};
+
 const dbInit = () => {
     global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
 
-    const pin = SecureStore.getItem(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
+    const pin = readPinOrNullIfKeychainUnavailable();
     if (isNotEmptyString(pin)) {
         global.__expoSqliteDb__.execSync(`PRAGMA key = '${pin}';`);
     }
@@ -117,8 +127,8 @@ export const historicalExchangeRateRepository = new HistoricalExchangeRateReposi
 export const instrumentDailyMarketPriceRepository = new InstrumentDailyMarketPriceRepository(db);
 export const instrumentMarketDataJobRepository = new InstrumentMarketDataJobRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
+export const syncRepository = new SyncRepository(db);
 export const debtEventRepository = new DebtEventRepository(db);
-export const bankSyncRepository = new BankSyncRepository(db);
 export const bankIntegrationRepository = new BankIntegrationRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);

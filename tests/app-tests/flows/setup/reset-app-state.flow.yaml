@@ -1,0 +1,20 @@
+appId: ${APP_ID}
+---
+# Kills the app process and relaunches it, so a flow that failed mid-modal,
+# mid-sheet or inside a native picker cannot strand that state into the next
+# flow. The app data container is deliberately NOT cleared: the once-per-shard
+# pre-test-command is the only thing that populates Documents/E2EFixtures and
+# Documents/E2ECsvFixtures, and mobile-ci never re-runs it, so a clearState
+# here would break every remaining flow in the shard. Per-flow database state
+# is reset by scripts/seed-flow-fixture.sh before each flow instead.
+
+- launchApp:
+      stopApp: true
+      permissions:
+          contacts: allow
+          microphone: allow
+
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Home'
+      timeout: 30000

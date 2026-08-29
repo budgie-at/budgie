@@ -27,7 +27,13 @@ set -euo pipefail
 printf '%s\n' "$*" >> "$MOCK_XCRUN_LOG"
 
 if [ "$1" = simctl ] && [ "$2" = get_app_container ]; then
-    printf '%s\n' "$MOCK_APP_DATA"
+    shutdown_count=$(grep -c '^simctl shutdown ' "$MOCK_XCRUN_LOG" || true)
+
+    if [ -n "${MOCK_APP_DATA_AFTER:-}" ] && [ "$shutdown_count" -gt 0 ]; then
+        printf '%s\n' "$MOCK_APP_DATA_AFTER"
+    else
+        printf '%s\n' "$MOCK_APP_DATA"
+    fi
 fi
 
 exit 0
@@ -46,12 +52,19 @@ for maestro_arg_index in "${!maestro_args[@]}"; do
     fi
 done
 
+current_app_data="$MOCK_APP_DATA"
+shutdown_count=$(grep -c '^simctl shutdown ' "$MOCK_XCRUN_LOG" || true)
+
+if [ -n "${MOCK_APP_DATA_AFTER:-}" ] && [ "$shutdown_count" -gt 0 ]; then
+    current_app_data="$MOCK_APP_DATA_AFTER"
+fi
+
 if [ -n "${MAESTRO_FIRST_FLOW_PREPARED_PATH:-}" ]; then
     if [ ! -d "$MAESTRO_FIRST_FLOW_PREPARED_PATH" ]; then
         echo "First-flow preparation signal missing before Maestro: $MAESTRO_FIRST_FLOW_PREPARED_PATH" >&2
         exit 98
     fi
-    if [ ! -f "$MOCK_APP_DATA/Documents/SQLite/budgie.db" ]; then
+    if [ ! -f "$current_app_data/Documents/SQLite/budgie.db" ]; then
         echo "Database fixture missing before Maestro." >&2
         exit 97
     fi
@@ -69,6 +82,11 @@ for argument in "$@"; do
 done
 
 if [ "$MOCK_FAILURE" = ax ] && [ "$call_count" -eq 1 ]; then
+    printf '%s\n' 'kAXErrorInvalidUIElement'
+    exit 1
+fi
+
+if [ "$MOCK_FAILURE" = ax_relocated_container ] && [ "$call_count" -eq 1 ]; then
     printf '%s\n' 'kAXErrorInvalidUIElement'
     exit 1
 fi
@@ -92,6 +110,13 @@ if [ "$MOCK_FAILURE" = ax_then_fail ]; then
     fi
     exit 1
 fi
+
+if [ "$MOCK_FAILURE" = ax_twice ]; then
+    if [ "$call_count" -lt 3 ]; then
+        printf '%s\n' 'java.net.ConnectException: Failed to connect to /127.0.0.1:61655'
+        exit 1
+    fi
+fi
 EOF
 chmod +x "$TEMP_DIR/bin/maestro"
 
@@ -106,6 +131,8 @@ run_case() {
     local status=0
     local prime_line
     local business_line
+    local mock_app_data_after=""
+    local app_container_lookup_count
 
     mkdir -p "$case_dir"
 
@@ -115,8 +142,14 @@ run_case() {
         prepared_path=""
     fi
 
+    if [ "$failure_kind" = ax_relocated_container ]; then
+        mock_app_data_after="$case_dir/app-data-after"
+        mkdir -p "$mock_app_data_after/Documents/E2EFixtures" "$mock_app_data_after/Documents/E2ECsvFixtures" "$mock_app_data_after/Documents/SQLite"
+    fi
+
     PATH="$TEMP_DIR/bin:$PATH" \
         MOCK_APP_DATA="$TEMP_DIR/app-data" \
+        MOCK_APP_DATA_AFTER="$mock_app_data_after" \
         MOCK_FAILURE="$failure_kind" \
         MOCK_MAESTRO_LOG="$case_dir/maestro.log" \
         MOCK_WRAPPER_PATH="$case_dir/prime-and-business.flow.yaml" \
@@ -129,7 +162,12 @@ run_case() {
     test "$(wc -l < "$case_dir/maestro.log" | tr -d ' ')" -eq "$expected_maestro_calls"
     test "$(grep -c '^--device 00000000-0000-0000-0000-000000000001 test ' "$case_dir/maestro.log")" -eq "$expected_maestro_calls"
     test "$(grep -c '^simctl shutdown ' "$case_dir/xcrun.log" || true)" -eq "$expected_shutdown_calls"
-    test "$(grep -c '^simctl get_app_container ' "$case_dir/xcrun.log" || true)" -eq 1
+    app_container_lookup_count="$(grep -c '^simctl get_app_container ' "$case_dir/xcrun.log" || true)"
+    test "$app_container_lookup_count" -ge "$expected_maestro_calls"
+
+    if [ "$expected_shutdown_calls" -gt 0 ]; then
+        test "$app_container_lookup_count" -gt "$expected_maestro_calls"
+    fi
 
     if ! grep -q 'Refreshing iOS fixtures for com.example.test on 00000000-0000-0000-0000-000000000001 with 3 fixtures' "$case_dir/console.log"; then
         sed -n '1,120p' "$case_dir/console.log"
@@ -162,6 +200,20 @@ run_case() {
         test "$(grep -c -- "--test-output-dir $case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-[12]/test-output-dir/output" "$case_dir/maestro.log")" -eq 2
     fi
 
+    if [ "$failure_kind" = ax_twice ]; then
+        test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/maestro-console.log"
+        test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-2/maestro-console.log"
+        test -f "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-3/maestro-console.log"
+        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/debug-output/output"
+        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-1/test-output-dir/output"
+        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-2/debug-output/output"
+        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-2/test-output-dir/output"
+        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-3/debug-output/output"
+        test -d "$case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-3/test-output-dir/output"
+        test "$(grep -c -- "--debug-output $case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-[123]/debug-output/output" "$case_dir/maestro.log")" -eq 3
+        test "$(grep -c -- "--test-output-dir $case_dir/.maestro-flow-attempts/1-test.flow.yaml/attempt-[123]/test-output-dir/output" "$case_dir/maestro.log")" -eq 3
+    fi
+
     if [ "$failure_kind" = combined ]; then
         test -f "$case_dir/prime-and-business.flow.yaml"
         ruby -ryaml -e '
@@ -181,7 +233,9 @@ run_case() {
 }
 
 run_case ax 0 2 1
+run_case ax_relocated_container 0 2 1
 run_case ax_artifact 0 2 1
+run_case ax_twice 0 3 2
 run_case assertion 1 1 0
 run_case ax_then_fail 1 2 1
 run_case combined 0 1 0

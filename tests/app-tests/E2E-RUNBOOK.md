@@ -35,7 +35,7 @@ MAESTRO_EXIT=$?; echo "MAESTRO_EXIT=$MAESTRO_EXIT"
 
 ## After merging `main` into a fixture-changing branch
 
-E2E fixtures (`tests/app-tests/scripts/prepare-date-sensitive-fixtures.js`) feed hard-coded assertions in the flows. If your branch adds/removes seeded transactions, `main`'s newer count/total assertions drift and `yarn ts/lint/cpd` cannot catch it. Re-run every Maestro flow that touches the changed fixture and reconcile counts against the **regenerated** fixture, e.g.:
+E2E fixtures (`tests/app-tests/scripts/prepare-date-sensitive-fixtures.js`) feed hard-coded assertions in the flows. If your branch adds/removes seeded transactions, `main`'s newer count/total assertions drift and `pnpm ts/lint/cpd` cannot catch it. Re-run every Maestro flow that touches the changed fixture and reconcile counts against the **regenerated** fixture, e.g.:
 
 ```bash
 node tests/app-tests/scripts/prepare-date-sensitive-fixtures.js /tmp/fx

@@ -1,5 +1,12 @@
-import { TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    InstrumentTypeEnum,
+    TRANSFER_PAIR_TIME_WINDOW_SECONDS,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
+import { P2P_FIAT_BANK_ACCOUNT_TYPE_SQL } from '../../../shared/constant/p2p-fiat-bank-account-type-sql.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../../../shared/constant/transfer-mcc-group-id.constant';
 import {
     TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH,
@@ -8,6 +15,7 @@ import {
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_MAX_AMOUNT_DELTA,
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO
 } from '../../../shared/constant/transfer-pair-hinted-fee.constant';
+import { P2P_ORDER_EXTERNAL_ID_MARKER } from '../../../shared/constant/transfer-pair-p2p-fiat.constant';
 import { applyConsolidationScanScopeSql } from '../../utils/apply-consolidation-scan-scope-sql.util';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
@@ -28,13 +36,17 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                     expense_entry.account_id as expenseAccountId,
                     expense_entry.amount as expenseEntryAmount,
                     expense_entry.exchange_rate as expenseEntryExchangeRate,
+                    expense_entry.quoted_instrument_id as expenseQuotedInstrumentId,
                     expense_entry.amount * 1.0 / expense_entry.exchange_rate as expenseOperationAmount,
                     expense_entry.to_iban as expenseEntryToIban,
                     expense_tx.title as expenseTransactionTitle,
                     expense_tx.comment as expenseTransactionComment,
+                    expense_tx.external_id as expenseTransactionExternalId,
                     expense_tx.operated_at as expenseOperatedAt,
                     expense_account.title as expenseAccountTitle,
+                    expense_account.type as expenseAccountType,
                     expense_account.instrument_id as expenseInstrumentId,
+                    expense_instrument.type as expenseInstrumentType,
                     expense_account.external_source as expenseExternalSource,
                     COALESCE(NULLIF(expense_account.external_source, ''), expense_tx.external_source) as expenseBankSource,
                     SUBSTR(expense_account.iban, -${TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH}) as expenseAccountHintSuffix,
@@ -60,6 +72,7 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                 LEFT JOIN mcc_categories expense_mcc ON expense_entry.mcc_category_id = expense_mcc.id
                 WHERE expense_entry.deleted_at IS NULL
                     AND expense_entry.original_transaction_id IS NULL
+                    AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
                     AND expense_entry.exchange_rate > 0
                     ${EXPENSE_SCOPE_SQL_PLACEHOLDER}
             ),
@@ -70,12 +83,16 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                     income_entry.account_id as incomeAccountId,
                     income_entry.amount as incomeEntryAmount,
                     income_entry.exchange_rate as incomeEntryExchangeRate,
+                    income_entry.quoted_instrument_id as incomeQuotedInstrumentId,
                     income_entry.amount / income_entry.exchange_rate as incomeOperationAmount,
                     income_entry.to_iban as incomeEntryToIban,
                     income_tx.title as incomeTransactionTitle,
+                    income_tx.external_id as incomeTransactionExternalId,
                     income_tx.operated_at as incomeOperatedAt,
                     income_account.title as incomeAccountTitle,
+                    income_account.type as incomeAccountType,
                     income_account.instrument_id as incomeInstrumentId,
+                    income_instrument.type as incomeInstrumentType,
                     income_account.external_source as incomeExternalSource,
                     COALESCE(NULLIF(income_account.external_source, ''), income_tx.external_source) as incomeBankSource,
                     SUBSTR(income_account.iban, -${TRANSFER_PAIR_ACCOUNT_HINT_SUFFIX_LENGTH}) as incomeAccountHintSuffix,
@@ -101,6 +118,7 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                 LEFT JOIN mcc_categories income_mcc ON income_entry.mcc_category_id = income_mcc.id
                 WHERE income_entry.deleted_at IS NULL
                     AND income_entry.original_transaction_id IS NULL
+                    AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
                     ${INCOME_SCOPE_SQL_PLACEHOLDER}
             ),
             latest_exchange_rates AS (
@@ -116,9 +134,28 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                 WHERE deleted_at IS NULL
                     AND rate > 0
             ),
+            direct_exchange_rates AS (
+                SELECT base_instrument_id, quote_instrument_id, rate, 0 as direction
+                FROM latest_exchange_rates
+                WHERE exchangeRateRank = 1
+                UNION ALL
+                SELECT quote_instrument_id as base_instrument_id, base_instrument_id as quote_instrument_id, 1.0 / rate as rate, 1 as direction
+                FROM latest_exchange_rates
+                WHERE exchangeRateRank = 1
+            ),
+            base_triangulated_rates AS (
+                SELECT
+                    first_leg.base_instrument_id as base_instrument_id,
+                    second_leg.quote_instrument_id as quote_instrument_id,
+                    first_leg.rate * second_leg.rate as rate, 2 as direction
+                FROM direct_exchange_rates first_leg
+                INNER JOIN direct_exchange_rates second_leg
+                    ON first_leg.quote_instrument_id = second_leg.base_instrument_id
+                WHERE first_leg.quote_instrument_id = (SELECT default_instrument_id FROM settings LIMIT 1)
+                    AND first_leg.base_instrument_id != second_leg.quote_instrument_id
+            ),
             available_exchange_rates AS (
-                SELECT base_instrument_id, quote_instrument_id, rate
-                FROM (
+                SELECT base_instrument_id, quote_instrument_id, rate FROM (
                     SELECT
                         base_instrument_id,
                         quote_instrument_id,
@@ -128,21 +165,9 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                             ORDER BY direction
                         ) as directionRank
                     FROM (
-                        SELECT
-                            base_instrument_id,
-                            quote_instrument_id,
-                            rate,
-                            0 as direction
-                        FROM latest_exchange_rates
-                        WHERE exchangeRateRank = 1
+                        SELECT base_instrument_id, quote_instrument_id, rate, direction FROM direct_exchange_rates
                         UNION ALL
-                        SELECT
-                            quote_instrument_id as base_instrument_id,
-                            base_instrument_id as quote_instrument_id,
-                            1.0 / rate as rate,
-                            1 as direction
-                        FROM latest_exchange_rates
-                        WHERE exchangeRateRank = 1
+                        SELECT base_instrument_id, quote_instrument_id, rate, direction FROM base_triangulated_rates
                     )
                 )
                 WHERE directionRank = 1
@@ -248,7 +273,20 @@ const TRANSFER_PAIR_RANKED_CANDIDATE_BASE_SQL = `
                             AND (expense_entries.expenseEntryAmount - income_entries.incomeEntryAmount) * 1.0 / income_entries.incomeEntryAmount <= ${TRANSFER_PAIR_INTERBANK_HINTED_FEE_MAX_AMOUNT_DELTA_RATIO}
                         THEN 1
                         ELSE 0
-                    END as interbankHintedFeeAmountMatch
+                    END as interbankHintedFeeAmountMatch,
+                    CASE
+                        WHEN expense_entries.expenseInstrumentId != income_entries.incomeInstrumentId
+                            AND expense_entries.expenseEntryAmount > 0
+                            AND income_entries.incomeEntryAmount > 0
+                            AND (
+                                (income_entries.incomeAccountType = '${AccountTypeEnum.CRYPTO_SYNC}' AND income_entries.incomeTransactionExternalId LIKE '%${P2P_ORDER_EXTERNAL_ID_MARKER}%'
+                                    AND expense_entries.expenseAccountType IN (${P2P_FIAT_BANK_ACCOUNT_TYPE_SQL}) AND (expense_entries.expenseInstrumentId = income_entries.incomeQuotedInstrumentId OR (income_entries.incomeQuotedInstrumentId IS NULL AND expense_entries.expenseInstrumentType = '${InstrumentTypeEnum.FIAT}')))
+                                OR (expense_entries.expenseAccountType = '${AccountTypeEnum.CRYPTO_SYNC}' AND expense_entries.expenseTransactionExternalId LIKE '%${P2P_ORDER_EXTERNAL_ID_MARKER}%'
+                                    AND income_entries.incomeAccountType IN (${P2P_FIAT_BANK_ACCOUNT_TYPE_SQL}) AND (income_entries.incomeInstrumentId = expense_entries.expenseQuotedInstrumentId OR (expense_entries.expenseQuotedInstrumentId IS NULL AND income_entries.incomeInstrumentType = '${InstrumentTypeEnum.FIAT}')))
+                            )
+                        THEN 1
+                        ELSE 0
+                    END as p2pCrossCurrencyMatch
                 FROM expense_entries
                 INNER JOIN income_entries ON
                     income_entries.incomeAccountId != expense_entries.expenseAccountId

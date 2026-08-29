@@ -6,5 +6,6 @@ export enum AccountTypeEnum {
     STOCKS = 'STOCKS',
     SAVINGS = 'SAVINGS',
     DEPOSIT = 'DEPOSIT',
-    BANK_SYNC = 'BANK_SYNC'
+    BANK_SYNC = 'BANK_SYNC',
+    CRYPTO_SYNC = 'CRYPTO_SYNC'
 }
