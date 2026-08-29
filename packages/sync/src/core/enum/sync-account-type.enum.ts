@@ -4,6 +4,7 @@ export enum SyncAccountTypeEnum {
     PLATINUM = 'PLATINUM',
     IRON = 'IRON',
     FOP = 'FOP',
+    MADE_IN_UKRAINE = 'MADE_IN_UKRAINE',
     YELLOW = 'YELLOW',
     EAID = 'EAID',
     CHECKING = 'CHECKING',

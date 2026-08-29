@@ -668,8 +668,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@liaugust/monobank-sdk':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.7.0
+        version: 0.7.0
       '@noble/hashes':
         specifier: ^1.8.0
         version: 1.8.0
@@ -759,8 +759,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/sync
       '@liaugust/monobank-sdk':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.7.0
+        version: 0.7.0
       '@rnw-community/shared':
         specifier: ^2.2.0
         version: 2.2.0
@@ -2682,8 +2682,8 @@ packages:
       react-native:
         optional: true
 
-  '@liaugust/monobank-sdk@0.4.0':
-    resolution: {integrity: sha512-Sxjhni8RojZoH3qIu/UqpXV/+LN8LK+JRS9EcArS+lieBpecu22eYeA4x+8QVRdk0c11xwDUDGTZC8x+fl5R4g==}
+  '@liaugust/monobank-sdk@0.7.0':
+    resolution: {integrity: sha512-v0jR6GGriHl+KLbFBMNqG/pB9kZU4Y4njd/8PnOq4hv4OJKtISO3Q4m5hMYrhXgWf8YzlscJoSOdzNIYgQuEYg==}
     engines: {node: '>=22.12.0'}
 
   '@lingui/babel-plugin-extract-messages@6.5.0':
@@ -12690,7 +12690,7 @@ snapshots:
       react-dom: 19.2.3(react@19.2.3)
       react-native: 0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.85.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.17)(react@19.2.3)(supports-color@8.1.1)
 
-  '@liaugust/monobank-sdk@0.4.0':
+  '@liaugust/monobank-sdk@0.7.0':
     dependencies:
       zod: 4.4.3
 

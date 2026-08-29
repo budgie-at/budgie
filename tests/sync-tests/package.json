@@ -14,7 +14,7 @@
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/sync": "workspace:*",
-        "@liaugust/monobank-sdk": "^0.4.0",
+        "@liaugust/monobank-sdk": "^0.7.0",
         "@rnw-community/shared": "^2.2.0",
         "better-sqlite3": "^12.10.0",
         "drizzle-orm": "^0.45.2",
