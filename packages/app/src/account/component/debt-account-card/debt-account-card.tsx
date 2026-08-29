@@ -7,12 +7,11 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
-import { buildDebtAccountProgressSummary } from '../../utils/build-debt-account-progress-summary.util';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { DebtAccountCardFooter } from '../debt-account-card-footer/debt-account-card-footer';
 import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
 
-import type { DebtAccountProgressSummaryInterface } from '../../interface/debt-account-progress-summary.interface';
+import type { DebtAccountProgressSummaryInterface } from '@budgie/contracts';
 import type { AccountEntityInterface } from '@budgie/contracts';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'createdAt' | 'title' | 'icon' | 'debtType' | 'targetBalance' | 'deadline'> {
@@ -42,16 +41,14 @@ export const DebtAccountCard = (props: Props) => {
 
     const isBorrowed = debtType === AccountDebtTypeEnum.BORROW;
     const summary: DebtAccountProgressSummaryInterface = debtProgressSummary ?? {
-        ...buildDebtAccountProgressSummary({
-            balance: 0,
-            closedAmount: 0,
-            debtType,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 0,
-            targetAmount: targetBalance
-        }),
+        closedAmount: 0,
         creditAmount: 0,
-        debitAmount: 0
+        debitAmount: 0,
+        openedAmount: targetBalance,
+        outstandingAmount: targetBalance,
+        paidAmount: 0,
+        percentage: 0,
+        totalAmount: targetBalance
     };
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
 

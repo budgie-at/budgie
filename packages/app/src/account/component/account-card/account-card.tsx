@@ -5,7 +5,7 @@ import { CryptoAccountCard } from '../crypto-account-card/crypto-account-card';
 import { DebtAccountCard } from '../debt-account-card/debt-account-card';
 import { SyncAccountCard } from '../sync-account-card/sync-account-card';
 
-import type { DebtAccountProgressSummaryInterface } from '../../interface/debt-account-progress-summary.interface';
+import type { DebtAccountProgressSummaryInterface } from '@budgie/contracts';
 
 interface Props extends Pick<
     AccountWithSyncEntityInterface,

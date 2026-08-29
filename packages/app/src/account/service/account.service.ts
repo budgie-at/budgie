@@ -1,10 +1,11 @@
 import {
-    AccountDebtTypeEnum,
     AccountNatureEnum,
     DebtEventDirectionEnum,
     DebtEventSourceEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
+    getDebtClosedAmount,
+    getDebtLedgerBalance,
     transactionAsync
 } from '@budgie/contracts';
 
@@ -61,16 +62,13 @@ class AccountService {
         return transactionAsync(db, async tx => {
             const [{ count }] = await accountRepository.count();
             const operatedAt = new Date();
-            const createdAccount = await this.createAccountRecord(
-                { ...input, targetBalance: convertToMicroUnits(input.targetBalance) },
-                count,
-                tx
-            );
+            const targetBalance = convertToMicroUnits(input.targetBalance);
+            const createdAccount = await this.createAccountRecord({ ...input, targetBalance }, count, tx);
             const valuedAccount = await updateDebtTargetBaseValuation(createdAccount, operatedAt, tx);
-            const returnedAmount = Math.abs(input.currentBalance);
-            const debtBalance = this.getDebtBalanceInput(returnedAmount, input.debtType, input.targetBalance);
+            const returnedAmount = convertToMicroUnits(input.currentBalance);
+            const ledgerBalance = convertFromMicroUnits(getDebtLedgerBalance(returnedAmount, input.debtType, targetBalance));
 
-            await this.adjustBalanceTo(createdAccount.id, debtBalance, tx, operatedAt);
+            await this.adjustBalanceTo(createdAccount.id, ledgerBalance, tx, operatedAt);
             await this.syncManualDebtEvents(valuedAccount, returnedAmount, operatedAt, tx);
 
             return valuedAccount;
@@ -230,8 +228,8 @@ class AccountService {
 
         if (this.shouldSyncManualDebtEvents(input)) {
             const returnedAmount = isNumber(currentBalance)
-                ? currentBalance
-                : await this.getManualDebtReturnedAmountInput(valuedAccount, tx);
+                ? convertToMicroUnits(currentBalance)
+                : await this.getDebtReturnedAmount(valuedAccount, tx);
 
             await this.syncManualDebtEvents(valuedAccount, returnedAmount, operatedAt, tx);
         }
@@ -268,9 +266,11 @@ class AccountService {
             return;
         }
 
-        const targetBalance = convertFromMicroUnits(account.targetBalance);
+        const ledgerBalance = convertFromMicroUnits(
+            getDebtLedgerBalance(convertToMicroUnits(currentBalance), account.debtType, account.targetBalance)
+        );
 
-        await this.adjustBalanceTo(account.id, this.getDebtBalanceInput(currentBalance, account.debtType, targetBalance), tx, operatedAt);
+        await this.adjustBalanceTo(account.id, ledgerBalance, tx, operatedAt);
     }
 
     private shouldSyncManualDebtEvents(input: Partial<DebtAccountCreateInputInterface>): boolean {
@@ -325,14 +325,6 @@ class AccountService {
         await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro, updatedAt: new Date() }, tx);
     }
 
-    private getDebtBalanceInput(returnedAmount: number, debtType: AccountDebtTypeEnum, targetBalance: number): number {
-        if (debtType === AccountDebtTypeEnum.LENT) {
-            return returnedAmount;
-        }
-
-        return -Math.max(targetBalance - returnedAmount, 0);
-    }
-
     private async syncManualDebtEvents(account: AccountEntityInterface, returnedAmount: number, operatedAt: Date, tx: DB): Promise<void> {
         await debtEventRepository.deleteByAccountIdAndSource(account.id, DebtEventSourceEnum.MANUAL, tx);
 
@@ -361,7 +353,7 @@ class AccountService {
     }
 
     private getManualDebtCloseEvent(account: AccountEntityInterface, returnedAmount: number, operatedAt: Date) {
-        const amount = this.getManualDebtClosedAmount(account, returnedAmount);
+        const amount = getDebtClosedAmount(returnedAmount, account.targetBalance);
 
         if (!isPositiveNumber(amount)) {
             return [];
@@ -383,12 +375,6 @@ class AccountService {
         ];
     }
 
-    private getManualDebtClosedAmount(account: AccountEntityInterface, returnedAmountInput: number): number {
-        const returnedAmount = convertToMicroUnits(Math.abs(returnedAmountInput));
-
-        return Math.min(returnedAmount, account.targetBalance);
-    }
-
     private getManualDebtBaseAmount(account: AccountEntityInterface, amount: number): number | null {
         if (!isDefined(account.targetBaseExchangeRate)) {
             return null;
@@ -397,14 +383,10 @@ class AccountService {
         return Math.round(amount * account.targetBaseExchangeRate);
     }
 
-    private async getManualDebtReturnedAmountInput(account: AccountEntityInterface, tx: DB): Promise<number> {
+    private async getDebtReturnedAmount(account: AccountEntityInterface, tx: DB): Promise<number> {
         const manualDebtEvents = await debtEventRepository.findByAccountIdAndSource(account.id, DebtEventSourceEnum.MANUAL, tx);
-        const closedAmount = manualDebtEvents.reduce(
-            (sum, event) => (event.direction === DebtEventDirectionEnum.CLOSE ? sum + event.amount : sum),
-            0
-        );
 
-        return convertFromMicroUnits(closedAmount);
+        return manualDebtEvents.reduce((sum, event) => (event.direction === DebtEventDirectionEnum.CLOSE ? sum + event.amount : sum), 0);
     }
 
     private async createAccountRecord(
