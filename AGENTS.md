@@ -6,27 +6,27 @@ Budgie is an offline-first mobile expenses tracker. The production monorepo cont
 
 ```bash
 # Setup
-yarn install                              # Always run first
+pnpm install                              # Always run first
 
 # Build
-yarn build                                # Build all packages
-yarn build:force                          # Build without cache
+pnpm build                                # Build all packages
+pnpm build:force                          # Build without cache
 
 # Validation (run in this order before committing)
-yarn format                               # Oxfmt (run first - may modify files)
-yarn ts                                   # TypeScript check
-yarn lint                                 # Oxlint + 13-rule ESLint fallback (skip during debug sessions)
-yarn deadcode                             # Knip dead code detection
-yarn cpd                                  # Code duplication check
+pnpm format                               # Oxfmt (run first - may modify files)
+pnpm ts                                   # TypeScript check
+pnpm lint                                 # Oxlint + 13-rule ESLint fallback (skip during debug sessions)
+pnpm deadcode                             # Knip dead code detection
+pnpm cpd                                  # Code duplication check
 
 # IMPORTANT: After completing any task, ALWAYS run:
-# During debug sessions (when user says "skip lint"), only run: yarn ts
+# During debug sessions (when user says "skip lint"), only run: pnpm ts
 # Otherwise run full validation:
-yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd
+pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd
 
 # Utilities
-yarn deps:check                           # Check dependency versions
-yarn deps:dedupe                          # Deduplicate dependencies
+pnpm deps:check                           # Check dependency versions
+pnpm deps:dedupe                          # Deduplicate dependencies
 ```
 
 ## Agent Orchestration And Token Economy
@@ -137,10 +137,10 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
-27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `bank-sync`, `budget`, `consolidation`, `logger`) do not host Jest/Vitest/etc. Verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/bank-sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
+27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `bank-sync`, `budget`, `consolidation`, `logger`) do not host Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/bank-sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
 28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
-30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `yarn cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
+30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `pnpm cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
 31. **Every manual condition is reviewed against the canonical `@rnw-community/shared` guard table.** See `Type Guards and Validation → Canonical Mapping` below.
 32. **Class-method lifecycle logs use `@Log` decorator from `@budgie/logger`.** Service, repository, parser, mapper, and other class-owned files must not use module-scope `getLogger`; split the real work into granular public/private class methods and decorate those methods with `@Log`. Free-function, component, and hook files use `getLogger(context)`. Never use `console.*` in service code.
 33. **Do not reshape public method arguments to satisfy lint.** Never convert existing positional arguments into an object, array, tuple/rest tuple, or new interface unless explicitly requested. Prefer splitting implementation into smaller private methods when it improves design; otherwise use a narrow `@typescript-eslint/max-params` lint disable with justification.
@@ -402,16 +402,16 @@ const accountLabel = isExpense ? t`Select destination account` : t`Select source
 Both `.po` (source) and `.ts` (compiled) files are required and must be committed:
 
 - `.po` files - source translations, editable by translators
-- `.ts` files - compiled messages, generated by `yarn i18n:sync`, required at runtime
+- `.ts` files - compiled messages, generated by `pnpm i18n:sync`, required at runtime
 
-After modifying user-facing text, run `yarn i18n:sync` and commit both file types.
+After modifying user-facing text, run `pnpm i18n:sync` and commit both file types.
 
 **Adding missing translations:**
 
-1. Run `yarn i18n:sync` to see which locales have missing translations
+1. Run `pnpm i18n:sync` to see which locales have missing translations
 2. Open `.po` files for each locale (de, es, fr, uk) and find entries with empty `msgstr ""`
 3. Add translations for each missing entry
-4. Run `yarn i18n:sync` again to compile the `.ts` files
+4. Run `pnpm i18n:sync` again to compile the `.ts` files
 5. Commit both `.po` and `.ts` files
 
 ## Logging
@@ -511,13 +511,13 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 | **contracts** | Drizzle ORM, Zod, drizzle-zod                                                                                                                                                   |
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                                                |
 | **bank-sync** | @liaugust/monobank-sdk, date-fns                                                                                                                                                |
-| **Build**     | Yarn 4.17.1 (`node-modules` linker), Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.74 JS bridge + 13-rule ESLint 10 fallback |
+| **Build**     | pnpm 11.22.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.74 JS bridge + 13-rule ESLint 10 fallback |
 
 ## Workflow
 
-1. **Fresh clone:** `yarn install`
-2. **After contracts changes:** `yarn build`
-3. **Before commit:** Husky runs `yarn ts`, then lint-staged applies Oxlint, the 13-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
+1. **Fresh clone:** `pnpm install`
+2. **After contracts changes:** `pnpm build`
+3. **Before commit:** Husky runs `pnpm ts`, then lint-staged applies Oxlint, the 13-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
 4. **Before PR:** Run all validation commands
 5. **Commit after every accepted change.** During interactive/live-tweak sessions, each user-approved fix or feature increment gets its own focused conventional commit immediately (validated via ts + lint first) — do not batch unrelated accepted changes into one commit or leave approved work uncommitted.
 6. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
@@ -568,7 +568,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 ## PR Review
 
 - **Read and analyze every bot comment** - Never skip or silently dismiss review comments from bots (CodeRabbit, Copilot, Vercel Agent, Claude, or any other). Fetch all of them, including inline comments (`gh api repos/<owner>/<repo>/pulls/<n>/comments`) and nitpicks collapsed inside `<details>` blocks, which `gh pr view` truncates. "Only address human feedback" governs what you **change**, not what you **read**.
-- **Validate each bot finding against the codebase before judging it** - Verify the claim by reading the cited code, tracing the actual behavior, and checking the convention the bot invokes against what the repo really does. Bots routinely generalize a rule from one package to another that uses a different convention, cite a guideline that has a documented exception, or flag duplication the repo's own `yarn cpd` gate already passes. State a verdict per finding — valid / partially valid / invalid — with the concrete evidence that settles it.
+- **Validate each bot finding against the codebase before judging it** - Verify the claim by reading the cited code, tracing the actual behavior, and checking the convention the bot invokes against what the repo really does. Bots routinely generalize a rule from one package to another that uses a different convention, cite a guideline that has a documented exception, or flag duplication the repo's own `pnpm cpd` gate already passes. State a verdict per finding — valid / partially valid / invalid — with the concrete evidence that settles it.
 - **Act on the verdicts: fix valid findings, refute invalid ones — always on the PR thread** - Valid or partially valid → apply the minimal correct fix (address the root cause, not necessarily the bot's literal diff) and reply on the comment thread describing what was fixed. Invalid → reply with the line-level evidence refuting it and resolve the thread. Never apply a bot's suggested diff blindly just because it is offered as a "quick win", and never merge with an unanswered bot thread. When a valid finding would expand the PR's scope, file a follow-up issue instead and say so on the thread.
 - **Never lower a timeout, weaken an assertion, or relax a test on a bot's say-so when the test has not been run** - Guessing toward flakiness is worse than an over-generous wait.
 - **Note when a bot review is incomplete** - Rate limits, partial runs, and reviews that predate the latest commits produce misleadingly short findings lists. Say so rather than implying the PR came back clean.
@@ -577,8 +577,8 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 ## Important Notes
 
-- Always use `yarn` (never `npm`)
-- After table changes in contracts: `cd packages/app && yarn db:generate`
+- Always use `pnpm` (never npm or yarn)
+- After table changes in contracts: `cd packages/app && pnpm db:generate`
 - Never modify `.jscpd.json` - fix duplication in source code
 - Each package has its own CLAUDE.md with package-specific rules
 

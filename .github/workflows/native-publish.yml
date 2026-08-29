@@ -11,7 +11,7 @@ jobs:
     name: iOS build and publish
     permissions:
       contents: read
-    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@v1.9.0 # v1.9.0
+    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@v1.10.0 # v1.10.0
     with:
       enable-ios: true
       enable-android: false
@@ -20,6 +20,7 @@ jobs:
       build-profile: production
       submit-profile: production
       asc-key-path: asc_api_key.p8
+      install-command: pnpm install --frozen-lockfile
       publish-env: |
         EXPO_NO_TELEMETRY=1
         APP_VARIANT=production

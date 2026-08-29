@@ -20,7 +20,7 @@
                 "$TURBO_ROOT$/eslint-rules/**",
                 "$TURBO_ROOT$/package.json",
                 "$TURBO_ROOT$/tsconfig*.json",
-                "$TURBO_ROOT$/yarn.lock"
+                "$TURBO_ROOT$/pnpm-lock.yaml"
             ],
             "outputs": []
         },

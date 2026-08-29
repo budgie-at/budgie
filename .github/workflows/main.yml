@@ -32,10 +32,14 @@ jobs:
           fetch-tags: true
           ref: main
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
+          cache: pnpm
 
       - name: Setup Git user
         run: |
@@ -56,12 +60,10 @@ jobs:
           fi
 
       - name: Install dependencies
-        env:
-          YARN_ENABLE_IMMUTABLE_INSTALLS: true
-        run: yarn install
+        run: pnpm install --frozen-lockfile
 
       - name: Sync Lingui catalogs
-        run: yarn i18n:sync
+        run: pnpm i18n:sync
 
       - name: Commit Lingui catalog changes
         run: |
@@ -75,7 +77,7 @@ jobs:
           git push origin HEAD:main
 
       - name: Publish a release
-        run: yarn release
+        run: pnpm release
 
       - name: Push changes
         uses: ad-m/github-push-action@master
@@ -107,10 +109,14 @@ jobs:
           fetch-depth: 2
           ref: main
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
+          cache: pnpm
 
       - name: Setup EAS
         uses: expo/expo-github-action@v9
@@ -119,14 +125,14 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Build internal workspace packages
-        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
+        run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
 
       - name: Publish update
         working-directory: packages/app
         run: |
           COMMIT_MSG=$(git log -1 --pretty=%s)
-          yarn expo export --output-dir dist --dump-assetmap --platform ios --platform android
+          pnpm exec expo export --output-dir dist --dump-assetmap --platform ios --platform android
           eas update --skip-bundler --input-dir dist --channel production --auto --message "${COMMIT_MSG}"
