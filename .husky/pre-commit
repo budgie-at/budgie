@@ -1,2 +1,2 @@
-yarn ts
-yarn lint-staged
+pnpm ts
+pnpm lint-staged

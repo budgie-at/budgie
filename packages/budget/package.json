@@ -1,6 +1,6 @@
 {
     "name": "@budgie/budget",
-    "version": "6.4.0",
+    "version": "6.4.2",
     "private": true,
     "description": "Budget domain services",
     "sideEffects": false,
@@ -30,12 +30,12 @@
     "types": "./dist/esm/index.d.ts",
     "scripts": {
         "build": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json",
-        "build:watch": "yarn build --watch",
-        "clear": "yarn run -T rimraf dist node_modules/.cache .turbo",
-        "format": "run -T oxfmt --write src",
-        "lint": "run -T oxlint --type-aware src && run -T eslint src",
-        "lint:eslint": "run -T eslint src",
-        "lint:fix": "run -T oxlint --type-aware --fix src && run -T eslint --fix src",
+        "build:watch": "pnpm build --watch",
+        "clear": "rimraf dist node_modules/.cache .turbo",
+        "format": "oxfmt --write src",
+        "lint": "oxlint --type-aware src && eslint src",
+        "lint:eslint": "eslint src",
+        "lint:fix": "oxlint --type-aware --fix src && eslint --fix src",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {

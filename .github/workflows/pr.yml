@@ -65,43 +65,47 @@ jobs:
               with:
                   persist-credentials: false
 
+            - name: Setup pnpm
+              uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
             - name: Setup Node
               uses: actions/setup-node@v6
               with:
                   node-version: 22.22.1
+                  cache: pnpm
 
             - name: Install dependencies
-              run: yarn install --immutable
+              run: pnpm install --frozen-lockfile
 
             - name: Lingui catalogs are up to date
-              run: yarn i18n:check
+              run: pnpm i18n:check
 
             - name: Lint the PR Title
               run: printf '%s\n' "$PR_TITLE" | node_modules/.bin/commitlint
 
             - name: Formatting checks
-              run: yarn format:check
+              run: pnpm format:check
 
             - name: Typescript checks
-              run: yarn ts
+              run: pnpm ts
 
             - name: Maestro selector checks
-              run: yarn workspace @budgie-at/app-tests selectors:check
+              run: pnpm --filter @budgie-at/app-tests selectors:check
 
             - name: Lint checks
-              run: yarn lint
+              run: pnpm lint
 
             - name: Deadcode detection
-              run: yarn deadcode
+              run: pnpm deadcode
 
             - name: Copy/Paste detection
-              run: yarn cpd
+              run: pnpm cpd
 
             - name: Build
-              run: yarn build
+              run: pnpm build
 
             - name: Unit tests
-              run: yarn test:coverage
+              run: pnpm test:coverage
 
             - name: Verify generated files are committed
               run: git diff --exit-code
@@ -200,10 +204,14 @@ jobs:
               with:
                   persist-credentials: false
 
+            - name: Setup pnpm
+              uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
             - name: Setup Node
               uses: actions/setup-node@v6
               with:
                   node-version: 22.x
+                  cache: pnpm
 
             - name: Setup EAS
               uses: expo/expo-github-action@v9
@@ -212,10 +220,10 @@ jobs:
                   token: ${{ secrets.EXPO_TOKEN }}
 
             - name: Install dependencies
-              run: yarn install
+              run: pnpm install
 
             - name: Build internal workspace packages
-              run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
+              run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
 
             - name: Create preview
               id: create-preview
@@ -224,7 +232,7 @@ jobs:
                   APP_VARIANT: development
                   USE_CCACHE: '1'
               run: |
-                  yarn expo export --output-dir dist --dump-assetmap --platform ios --platform android
+                  pnpm exec expo export --output-dir dist --dump-assetmap --platform ios --platform android
                   eas update --skip-bundler --input-dir dist --channel development --message "PR #$PR_NUMBER - $PR_TITLE"
 
     ios-maestro:
@@ -233,7 +241,7 @@ jobs:
         name: iOS Maestro E2E
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.9.0 # v1.9.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.10.0 # v1.10.0
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -257,7 +265,8 @@ jobs:
             simulator-device: iPhone 17 Pro
             test-timeout-minutes: 85
             cache-profile: ios-e2e-budgie-v2
-            build-command: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
+            install-command: pnpm install --frozen-lockfile
+            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
             expo-use-precompiled-modules: true
