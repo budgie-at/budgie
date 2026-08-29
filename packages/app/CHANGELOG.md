@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.4.2](https://github.com/budgie-at/budgie/compare/v6.4.1...v6.4.2) (2026-08-29)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.4.1](https://github.com/budgie-at/budgie/compare/v6.4.0...v6.4.1) (2026-08-28)
+
+
+### Bug Fixes
+
+* **app:** repair iOS submit config (API key + App Store ID) ([#686](https://github.com/budgie-at/budgie/issues/686)) ([e03edaa](https://github.com/budgie-at/budgie/commit/e03edaa9b5dc5866b083ab1ebe7728a2a6f5011c))
+
+
+
+
+
+# [6.4.0](https://github.com/budgie-at/budgie/compare/v6.3.0...v6.4.0) (2026-08-28)
+
+
+### Features
+
+* add Binance account sync with bank↔P2P consolidation ([#561](https://github.com/budgie-at/budgie/issues/561)) ([92fea35](https://github.com/budgie-at/budgie/commit/92fea35f9073011caebda427451de54ccff0cad1))
+
+
+
+
+
 # [6.3.0](https://github.com/budgie-at/budgie/compare/v6.2.1...v6.3.0) (2026-08-26)
 
 ### Features

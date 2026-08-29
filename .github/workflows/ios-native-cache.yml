@@ -17,7 +17,7 @@ jobs:
         name: Seed native cache
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/seed-native-cache.yml@v1.9.0 # v1.9.0
+        uses: rnw-community/mobile-ci/.github/workflows/seed-native-cache.yml@v1.10.0 # v1.10.0
         with:
             ios-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             ios-targets: >-
@@ -29,7 +29,8 @@ jobs:
                 APP_VARIANT=e2e
                 EXPO_PUBLIC_AI_DISABLE=true
                 EXPO_PUBLIC_LOGGING_DISABLE=true
-            build-command: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
+            install-command: pnpm install --frozen-lockfile
+            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
             expo-use-precompiled-modules: true
