@@ -9,7 +9,7 @@ import { CreateAccountCurrencyField } from '../../../@generic/component/create-a
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
-import { AccountBankSyncCard } from '../../../sync/component/account-bank-sync-card/account-bank-sync-card';
+import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -54,14 +54,13 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             })
     );
 
+    const stickyInstrument = useStickyDefinedValue(instrument);
     const accountTypeVariant = ACCOUNT_COLOR[account.type];
-    const isBankSyncAccount = account.type === AccountTypeEnum.BANK_SYNC;
+    const isSyncedAccount = account.type === AccountTypeEnum.BANK_SYNC || account.type === AccountTypeEnum.CRYPTO_SYNC;
     const currencyField =
         account.type === AccountTypeEnum.CRYPTO ? (
             <CreateAccountCurrencyField control={control} instrumentType={InstrumentTypeEnum.CRYPTO} />
         ) : null;
-
-    const stickyInstrument = useStickyDefinedValue(instrument);
 
     if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
@@ -69,12 +68,12 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
 
     return (
         <UpdateAccountScreen
-            instrumentSymbol={stickyInstrument.symbol}
-            onSubmit={handleSubmit}
             account={account}
-            control={control}
             allowNegativeBalance
+            control={control}
+            instrumentSymbol={stickyInstrument.symbol}
             isSubmitting={isSubmitting}
+            onSubmit={handleSubmit}
         >
             {currencyField}
             <FormItem label={t`Account Type`}>
@@ -85,7 +84,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
                     </View>
                 </View>
             </FormItem>
-            {isBankSyncAccount ? <AccountBankSyncCard accountId={account.id} /> : null}
+            {isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
             <IncludeInNetWorthField control={control} />
         </UpdateAccountScreen>
     );

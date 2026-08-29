@@ -14,7 +14,7 @@
         "tests/app-tests/scripts/prepare-date-sensitive-fixtures.js",
         "packages/contracts/babel.config.js",
         "packages/ai/babel.config.js",
-        "packages/bank-sync/babel.config.js",
+        "packages/sync/babel.config.js",
         "jest.config.js",
         "metro.config.js",
         "tsconfig.json",
@@ -32,7 +32,7 @@
         "packages/app/scripts/bench-queries.ts",
         "packages/app/scripts/seed-bench-db.ts",
         "packages/app/scripts/snapshot-monthly-patterns.ts",
-        "tests/bank-sync-tests/src/harness/shims/**",
+        "tests/sync-tests/src/harness/shims/**",
         "packages/screen-chrome/src/edge-fade/utils/edge-fade-get-backdrop-filter.util.ts",
         "packages/screen-chrome/src/edge-fade/interface/web-edge-fade-style.interface.ts"
     ],
@@ -43,13 +43,22 @@
         "@expo/fingerprint",
         "metro-minify-terser",
         "react-compiler-runtime",
+        "babel-jest",
+        "@oxlint/migrate",
         "@jest/globals",
         "expo-pdf-text-extract",
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom",
-        "rimraf",
-        "@oxlint/migrate"
+        "rimraf"
     ],
-    "ignoreBinaries": ["run", "build"]
+    "ignoreBinaries": ["build"],
+    "workspaces": {
+        "tests/consolidation-tests": {
+            "ignoreDependencies": ["better-sqlite3", "drizzle-orm", "@types/better-sqlite3"]
+        },
+        "tests/sync-tests": {
+            "ignoreDependencies": ["@lingui/core"]
+        }
+    }
 }

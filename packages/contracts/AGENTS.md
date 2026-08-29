@@ -5,10 +5,10 @@ Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Zod
 ## Commands
 
 ```bash
-yarn build                    # Build package (required after changes)
-yarn test                     # Run Jest task (passes when no package tests exist)
-yarn ts                       # Native TypeScript 7 check
-yarn lint                     # Oxlint + 13-rule ESLint fallback
+pnpm build                    # Build package (required after changes)
+pnpm test                     # Run Jest task (passes when no package tests exist)
+pnpm ts                       # Native TypeScript 7 check
+pnpm lint                     # Oxlint + 13-rule ESLint fallback
 ```
 
 ## Structure
@@ -460,7 +460,7 @@ export { AccountEntityRelations } from './account/relations/account-entity.relat
 After modifying contracts, rebuild for app to see changes:
 
 ```bash
-yarn build
+pnpm build
 # Then in app:
-cd ../app && yarn db:generate  # If table structure changed
+cd ../app && pnpm db:generate  # If table structure changed
 ```

@@ -4,8 +4,8 @@ export { AccountBalanceEntityTable } from './account-balance/table/account-balan
 export { AccountBalanceEntityRelations } from './account-balance/relations/account-balance-entity.relations';
 export { BankIntegrationEntityTable } from './bank-integration/table/bank-integration-entity.table';
 export { BankIntegrationEntityRelations } from './bank-integration/relations/bank-integration-entity.relations';
-export { BankSyncEntityTable } from './bank-sync/table/bank-sync-entity.table';
-export { BankSyncEntityRelations } from './bank-sync/relations/bank-sync-entity.relations';
+export { SyncEntityTable } from './sync/table/sync-entity.table';
+export { SyncEntityRelations } from './sync/relations/sync-entity.relations';
 export { CategoryEntityTable } from './category/table/category-entity.table';
 export { CategoryEntityRelations } from './category/relations/category-entity.relations';
 export { DefaultCategoryTranslationEntityTable } from './category-translation/table/default-category-translation-entity.table';

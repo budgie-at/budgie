@@ -706,6 +706,25 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return null;
     }
 
+    async getEarliestTransactionTimeByExternalSource(externalSource: ExternalSourceEnum): Promise<Date | null> {
+        const result = await this.db
+            .select({ operatedAt: sql<number | null>`MIN(${TransactionEntityTable.operatedAt})` })
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, externalSource),
+                    ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)
+                )
+            );
+
+        const time = result[0]?.operatedAt;
+        if (isPositiveNumber(time)) {
+            return new Date(time * 1000);
+        }
+
+        return null;
+    }
+
     async archiveByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
@@ -917,9 +936,9 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return since;
     }
 
-    private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
+    private buildWhere({ types, tagIds, categoryIds, accountIds, date, amount }: TransactionFilterInterface) {
         const conditions: SQL[] = [
-            ...this.buildBaseFilterConditions({ accountIds, tagIds, date }),
+            ...this.buildBaseFilterConditions({ accountIds, tagIds, date, amount }),
             ...(isNotEmptyArray(types) ? [this.buildTypeCondition(types)] : []),
             ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : [])
         ].filter(isDefined);
@@ -927,9 +946,9 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return and(...conditions);
     }
 
-    private buildUncategorizedWhere({ tagIds, accountIds, date }: TransactionFilterInterface, types: TransactionTypeEnum[]) {
+    private buildUncategorizedWhere({ tagIds, accountIds, date, amount }: TransactionFilterInterface, types: TransactionTypeEnum[]) {
         const conditions: SQL[] = [
-            ...this.buildBaseFilterConditions({ accountIds, tagIds, date }),
+            ...this.buildBaseFilterConditions({ accountIds, tagIds, date, amount }),
             this.buildUncategorizedTypeCondition(types),
             this.buildCategoryCondition([])
         ].filter(isDefined);
@@ -937,12 +956,18 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return and(...conditions);
     }
 
-    private buildBaseFilterConditions({ accountIds, tagIds, date }: Pick<TransactionFilterInterface, 'accountIds' | 'tagIds' | 'date'>) {
+    private buildBaseFilterConditions({
+        accountIds,
+        tagIds,
+        date,
+        amount
+    }: Pick<TransactionFilterInterface, 'accountIds' | 'tagIds' | 'date' | 'amount'>) {
         return [
             this.buildVisibleTransactionCondition(),
             ...this.buildAccountCondition(accountIds),
             ...(isDefined(tagIds) ? [this.buildTagCondition(tagIds)] : []),
-            ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
+            ...(isDefined(date) ? [this.buildDateCondition(date)] : []),
+            ...(isDefined(amount) ? [this.buildAmountCondition(amount)] : [])
         ].filter(isDefined);
     }
 

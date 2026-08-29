@@ -1,7 +1,7 @@
-import type { AccountWithBankSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
+import type { AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 
 export interface BankProviderGroupInterface {
     readonly integrationId: number;
     readonly provider: ExternalSourceEnum;
-    readonly accounts: AccountWithBankSyncEntityInterface[];
+    readonly accounts: AccountWithSyncEntityInterface[];
 }
