@@ -1,11 +1,13 @@
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 
+import { getDebtClosedAmount } from './get-debt-closed-amount.util';
+
 export const getDebtLedgerBalance = (returnedAmount: number, debtType: AccountDebtTypeEnum, targetBalance: number): number => {
+    const closedAmount = getDebtClosedAmount(returnedAmount, targetBalance);
+
     if (debtType === AccountDebtTypeEnum.LENT) {
-        return Math.abs(returnedAmount);
+        return closedAmount;
     }
 
-    const remainingAmount = Math.max(targetBalance - Math.abs(returnedAmount), 0);
-
-    return remainingAmount > 0 ? -remainingAmount : 0;
+    return closedAmount - targetBalance;
 };

@@ -200,6 +200,16 @@ describe('debt settlement statistics', () => {
         expect(balance?.balance).toBe(2_000 * PRECISION);
     });
 
+    it('keeps an overpaid lent debt capped at the target across a target-only update', async () => {
+        const account = await createDebtAccount(AccountDebtTypeEnum.LENT, 20_000, 15_000, 1);
+
+        await accountService.updateDebtById(account.id, { debtType: AccountDebtTypeEnum.LENT, targetBalance: 15_000 });
+
+        const balance = accountBalanceRepository.getByAccountId(account.id).get();
+
+        expect(balance?.balance).toBe(15_000 * PRECISION);
+    });
+
     it('summarizes updated lent debt accounts by treating current balance as an already returned amount', async () => {
         const { balance, summary } = await updateDebtCurrentBalanceAndReadState({
             debtType: AccountDebtTypeEnum.LENT,
