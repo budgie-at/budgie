@@ -5,12 +5,12 @@ Bank integration package for synchronizing accounts and transactions from extern
 ## Commands
 
 ```bash
-yarn build                    # Build package
-yarn ts                       # Native TypeScript 7 check
-yarn lint                     # Oxlint + 13-rule ESLint fallback
+pnpm build                    # Build package
+pnpm ts                       # Native TypeScript 7 check
+pnpm lint                     # Oxlint + 13-rule ESLint fallback
 ```
 
-Integration verification lives in `tests/sync-tests/` and runs from the repository root with `yarn workspace @budgie-at/sync-tests test`.
+Integration verification lives in `tests/sync-tests/` and runs from the repository root with `pnpm --filter @budgie-at/sync-tests test`.
 
 ## Structure
 
@@ -468,11 +468,11 @@ Per root rule 27 this package hosts no unit tests. Coverage lives in
 stubbed network:
 
 ```bash
-yarn workspace @budgie-at/sync-tests test
+pnpm --filter @budgie-at/sync-tests test
 ```
 
 > `tests/*-tests` resolve `@budgie/*` through the workspace symlink to **`dist/esm`**,
-> not `src`. Run `yarn workspace @budgie/sync build` after editing this package
+> not `src`. Run `pnpm --filter @budgie/sync build` after editing this package
 > or the suite silently measures the previous build. Sourcemaps make stale `dist`
 > stack traces look like source runs.
 
