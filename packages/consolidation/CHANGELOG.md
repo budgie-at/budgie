@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.4.2](https://github.com/budgie-at/budgie/compare/v6.4.1...v6.4.2) (2026-08-29)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
 # [6.4.0](https://github.com/budgie-at/budgie/compare/v6.3.0...v6.4.0) (2026-08-28)
 
 
