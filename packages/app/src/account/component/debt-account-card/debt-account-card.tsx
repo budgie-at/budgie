@@ -9,8 +9,8 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { buildDebtAccountProgressSummary } from '../../utils/build-debt-account-progress-summary.util';
 import { AccountCardBase } from '../account-card-base/account-card-base';
+import { DebtAccountCardFooter } from '../debt-account-card-footer/debt-account-card-footer';
 import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
-import { DebtProgressTrack } from '../debt-progress-track/debt-progress-track';
 
 import type { DebtAccountProgressSummaryInterface } from '../../interface/debt-account-progress-summary.interface';
 import type { AccountEntityInterface } from '@budgie/contracts';
@@ -40,28 +40,25 @@ export const DebtAccountCard = (props: Props) => {
     const { t } = useLingui();
     const { formatCompactFullDate } = useFormatDate();
 
-    const fallbackSummary = buildDebtAccountProgressSummary({
-        balance: 0,
-        closedAmount: 0,
-        debtType,
-        openedExtraAmount: 0,
-        openedPrincipalAmount: 0,
-        targetAmount: targetBalance
-    });
+    const isBorrowed = debtType === AccountDebtTypeEnum.BORROW;
     const summary: DebtAccountProgressSummaryInterface = debtProgressSummary ?? {
-        closedAmount: fallbackSummary.closedAmount,
+        ...buildDebtAccountProgressSummary({
+            balance: 0,
+            closedAmount: 0,
+            debtType,
+            openedExtraAmount: 0,
+            openedPrincipalAmount: 0,
+            targetAmount: targetBalance
+        }),
         creditAmount: 0,
-        debitAmount: 0,
-        openedAmount: fallbackSummary.openedAmount,
-        outstandingAmount: fallbackSummary.outstandingAmount,
-        paidAmount: fallbackSummary.paidAmount,
-        percentage: fallbackSummary.percentage,
-        totalAmount: fallbackSummary.totalAmount
+        debitAmount: 0
     };
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
 
-    const directionLabel = debtType === AccountDebtTypeEnum.BORROW ? t`Left to repay` : t`Left to receive`;
-    const directionIcon = debtType === AccountDebtTypeEnum.BORROW ? UserIconNameEnum.ArrowDownLeft : UserIconNameEnum.ArrowUpRight;
+    const labels = {
+        directionIcon: isBorrowed ? UserIconNameEnum.ArrowDownLeft : UserIconNameEnum.ArrowUpRight,
+        directionLabel: isBorrowed ? t`Left to repay` : t`Left to receive`
+    };
 
     const topRight = isDefined(deadline) ? (
         <View className="flex-row items-center gap-x-xs">
@@ -93,20 +90,11 @@ export const DebtAccountCard = (props: Props) => {
             balanceContent={balanceContent}
             className={className}
         >
-            <View className="gap-y-sm">
-                <View className="flex-row items-center justify-between">
-                    <View className="flex-row flex-1 items-center gap-x-xxs min-w-0">
-                        <Icon icon={directionIcon} size={10} className="text-secondary-foreground" />
-                        <Text className="text-secondary-foreground text-xxs" numberOfLines={1}>
-                            {directionLabel}
-                        </Text>
-                    </View>
-
-                    <Text className="text-xxs font-semibold text-primary">{summary.percentage}%</Text>
-                </View>
-
-                <DebtProgressTrack percentage={summary.percentage} className="h-1.5" />
-            </View>
+            <DebtAccountCardFooter
+                directionIcon={labels.directionIcon}
+                directionLabel={labels.directionLabel}
+                percentage={summary.percentage}
+            />
         </AccountCardBase>
     );
 };

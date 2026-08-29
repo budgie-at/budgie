@@ -399,6 +399,14 @@ msgstr "Toutes vos données financières sont stockées localement sur votre app
 msgid "Allocated"
 msgstr "Alloué"
 
+#: src/account/component/create-debt-account/create-debt-account.tsx
+msgid "Already received"
+msgstr "Déjà reçu"
+
+#: src/account/component/create-debt-account/create-debt-account.tsx
+msgid "Already returned"
+msgstr "Déjà remboursé"
+
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
 msgstr "Déjà en cours de synchronisation"
