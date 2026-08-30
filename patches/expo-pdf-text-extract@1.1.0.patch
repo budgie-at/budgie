@@ -1,0 +1,144 @@
+diff --git a/ios/PdfExtractorModule.swift b/ios/PdfExtractorModule.swift
+index 69f777d96dbf8fb45f049141d5b8c74a70a69283..b0a6b8da9c190f629db338189b65718723bbcf50 100644
+--- a/ios/PdfExtractorModule.swift
++++ b/ios/PdfExtractorModule.swift
+@@ -1,6 +1,90 @@
+ import ExpoModulesCore
+ import PDFKit
+ 
++private let pdfRowYTolerance: CGFloat = 3.0
++private let pdfColumnGapThreshold: CGFloat = 12.0
++private let pdfColumnGapSeparator = "    "
++
++private struct PdfVisualLine {
++    let text: String
++    let minX: CGFloat
++    let y: CGFloat
++}
++
++private func collectPdfVisualLines(on page: PDFPage) -> [PdfVisualLine] {
++    let pageBounds = page.bounds(for: .mediaBox)
++    guard let pageSelection = page.selection(for: pageBounds) else { return [] }
++    let lineSelections = pageSelection.selectionsByLine()
++    return lineSelections.compactMap { selection in
++        guard let text = selection.string, !text.isEmpty else { return nil }
++        let bounds = selection.bounds(for: page)
++        return PdfVisualLine(text: text, minX: bounds.minX, y: bounds.midY)
++    }
++}
++
++private func renderPdfRow(_ parts: [PdfVisualLine]) -> String {
++    var rendered = ""
++    var previousMinX: CGFloat?
++    for (index, part) in parts.enumerated() {
++        if let previous = previousMinX, part.minX - previous > pdfColumnGapThreshold {
++            rendered.append(pdfColumnGapSeparator)
++        } else if index > 0 && !rendered.hasSuffix(" ") {
++            rendered.append(" ")
++        }
++        rendered.append(part.text)
++        previousMinX = part.minX
++    }
++    return rendered
++}
++
++private func extractPageLayoutText(_ page: PDFPage) -> String {
++    let visualLines = collectPdfVisualLines(on: page)
++    let sorted = visualLines.sorted { lhs, rhs in
++        if abs(lhs.y - rhs.y) <= pdfRowYTolerance { return lhs.minX < rhs.minX }
++        return lhs.y > rhs.y
++    }
++
++    var renderedLines: [String] = []
++    var rowY: CGFloat?
++    var rowParts: [PdfVisualLine] = []
++
++    for line in sorted {
++        let isSameRow = rowY.map { abs($0 - line.y) <= pdfRowYTolerance } ?? false
++        if !isSameRow {
++            if !rowParts.isEmpty {
++                renderedLines.append(renderPdfRow(rowParts))
++            }
++            rowParts = []
++            rowY = line.y
++        }
++        rowParts.append(line)
++    }
++
++    if !rowParts.isEmpty {
++        renderedLines.append(renderPdfRow(rowParts))
++    }
++
++    return renderedLines.joined(separator: "\n")
++}
++
++private func extractPageTextItems(_ page: PDFPage, pageNumber: Int) -> [[String: Any]] {
++    let pageBounds = page.bounds(for: .mediaBox)
++    guard let pageSelection = page.selection(for: pageBounds) else { return [] }
++    let lineSelections = pageSelection.selectionsByLine()
++    return lineSelections.compactMap { selection in
++        guard let text = selection.string, !text.isEmpty else { return nil }
++        let bounds = selection.bounds(for: page)
++        return [
++            "text": text,
++            "x": Double(bounds.minX),
++            "y": Double(bounds.minY),
++            "width": Double(bounds.width),
++            "height": Double(bounds.height),
++            "page": pageNumber
++        ]
++    }
++}
++
+ /**
+  * PdfExtractorModule - Native module for extracting text from PDF files on iOS
+  *
+@@ -34,6 +118,10 @@ public class PdfExtractorModule: Module {
+       self.extractTextFromPage(filePath: filePath, pageNumber: pageNumber, password: password, promise: promise)
+     }
+ 
++    AsyncFunction("extractTextItems") { (filePath: String, promise: Promise) in
++      self.extractTextItems(filePath: filePath, promise: promise)
++    }
++
+     AsyncFunction("isPasswordProtected") { (filePath: String, promise: Promise) in
+       self.isPasswordProtected(filePath: filePath, promise: promise)
+     }
+@@ -81,9 +169,8 @@ public class PdfExtractorModule: Module {
+ 
+       var fullText = ""
+       for pageIndex in 0..<document.pageCount {
+-        if let page = document.page(at: pageIndex),
+-           let pageText = page.string {
+-          fullText += pageText
++        if let page = document.page(at: pageIndex) {
++          fullText += extractPageLayoutText(page)
+           if pageIndex < document.pageCount - 1 {
+             fullText += "\n"
+           }
+@@ -120,7 +207,24 @@ public class PdfExtractorModule: Module {
+         return
+       }
+ 
+-      promise.resolve(page.string ?? "")
++      promise.resolve(extractPageLayoutText(page))
++    }
++  }
++
++  private func extractTextItems(filePath: String, promise: Promise) {
++    DispatchQueue.global(qos: .userInitiated).async {
++      guard let document = self.openAndUnlock(filePath: filePath, password: nil, promise: promise) else {
++        return
++      }
++
++      var allItems: [[String: Any]] = []
++      for pageIndex in 0..<document.pageCount {
++        if let page = document.page(at: pageIndex) {
++          allItems.append(contentsOf: extractPageTextItems(page, pageNumber: pageIndex + 1))
++        }
++      }
++
++      promise.resolve(allItems)
+     }
+   }
+ 
