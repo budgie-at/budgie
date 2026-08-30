@@ -10,7 +10,7 @@ import { DebtProgressTrack } from '../debt-progress-track/debt-progress-track';
 
 import { DebtAccountBalanceSelector } from './debt-account-balance.selector';
 
-import type { DebtAccountProgressSummaryInterface } from '../../interface/debt-account-progress-summary.interface';
+import type { DebtAccountProgressSummaryInterface } from '@budgie/contracts';
 
 interface Props {
     readonly debtType: AccountDebtTypeEnum;
