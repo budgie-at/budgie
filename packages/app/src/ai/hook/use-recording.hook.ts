@@ -227,10 +227,9 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
                     handleAudioBuffer(samples, sessionId);
                 }
             });
-            recorder.start().then(() => {
-                logger.log('recorder:start', { sessionId });
-            }).catch((error: unknown) => {
+            recorder.start().catch((error: unknown) => {
                 logger.error('recorder:start', { errorMessage: getErrorMessage(error) });
+
                 if (sessionId === sessionIdRef.current) {
                     cleanup();
                 }
