@@ -1,6 +1,6 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 
-import type { DebtAccountProgressSummaryInterface } from './debt-account-progress-summary.interface';
+import type { DebtAccountProgressSummaryInterface } from '@budgie/contracts';
 
 export interface HomeAccountBalanceInterface {
     readonly accountId: number;

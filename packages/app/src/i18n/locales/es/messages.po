@@ -399,6 +399,14 @@ msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. S
 msgid "Allocated"
 msgstr "Asignado"
 
+#: src/account/component/create-debt-account/create-debt-account.tsx
+msgid "Already received"
+msgstr "Ya recibido"
+
+#: src/account/component/create-debt-account/create-debt-account.tsx
+msgid "Already returned"
+msgstr "Ya devuelto"
+
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
 msgstr "Ya sincronizando"
