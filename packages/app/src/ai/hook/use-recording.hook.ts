@@ -11,7 +11,7 @@ import { getLogger } from '@budgie/logger';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { AudioRecorder } from 'react-native-audio-api';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useAudioManager } from './use-audio-manager.hook';
 
@@ -71,7 +71,9 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
 
     const stopRecorder = () => {
         try {
-            recorderRef.current?.stop();
+            recorderRef.current?.stop().catch((error: unknown) => {
+                logger.error('recorder:stop', { errorMessage: getErrorMessage(error) });
+            });
         } finally {
             recorderRef.current = null;
         }
@@ -225,7 +227,9 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
                     handleAudioBuffer(samples, sessionId);
                 }
             });
-            recorder.start();
+            recorder.start().catch((error: unknown) => {
+                logger.error('recorder:start', { errorMessage: getErrorMessage(error) });
+            });
             logger.log('recorder:start', { sessionId });
             resetSilenceTimeout(sessionId);
         }, RECORDER_INIT_DELAY_MS);

@@ -12,7 +12,7 @@
     "dependencies": {
         "@budgie/budget": "workspace:*",
         "@rnw-community/shared": "^2.2.0",
-        "vitest": "^4.1.7"
+        "vitest": "^4.1.11"
     },
     "devDependencies": {
         "@types/node": "22.20.1",
