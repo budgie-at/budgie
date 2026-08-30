@@ -227,10 +227,14 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
                     handleAudioBuffer(samples, sessionId);
                 }
             });
-            recorder.start().catch((error: unknown) => {
+            recorder.start().then(() => {
+                logger.log('recorder:start', { sessionId });
+            }).catch((error: unknown) => {
                 logger.error('recorder:start', { errorMessage: getErrorMessage(error) });
+                if (sessionId === sessionIdRef.current) {
+                    cleanup();
+                }
             });
-            logger.log('recorder:start', { sessionId });
             resetSilenceTimeout(sessionId);
         }, RECORDER_INIT_DELAY_MS);
     };
