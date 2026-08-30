@@ -1,6 +1,6 @@
 # App Package (React Native)
 
-Main mobile application built with Expo 56, React 19 + Compiler, Expo Router 56, Drizzle ORM, NativeWind 5, and Lingui 6.5.
+Main mobile application built with Expo 57, React 19 + Compiler, Expo Router 57, Drizzle ORM, NativeWind 5, and Lingui 6.5.
 
 ## Commands
 
