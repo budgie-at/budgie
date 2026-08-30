@@ -73,6 +73,7 @@ msgstr "#vacation, #shared, #reimbursable — quantified."
 msgid "© {date} Budgie. All rights reserved."
 msgstr "© {date} Budgie. All rights reserved."
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
@@ -2280,6 +2281,10 @@ msgstr "A project that ignores security issues or dismisses user concerns is sen
 msgid "A public-domain FX feed. No vendor account, no rate broker; the rate per day is auditable on your device."
 msgstr "A public-domain FX feed. No vendor account, no rate broker; the rate per day is auditable on your device."
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/metadata.ts
+msgid "A simple Apple Pay Shortcuts setup guide for Budgie, with a quick checklist, first-payment verification, troubleshooting, privacy notes, and platform limits."
+msgstr "A simple Apple Pay Shortcuts setup guide for Budgie, with a quick checklist, first-payment verification, troubleshooting, privacy notes, and platform limits."
+
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "A source-available license that lets you read, fork, and modify the code. The official app builds remain ours to monetize, which keeps development sustainable."
 msgstr "A source-available license that lets you read, fork, and modify the code. The official app builds remain ours to monetize, which keeps development sustainable."
@@ -2435,6 +2440,14 @@ msgstr "Actual is a privacy-focused budgeting tool with a strong local-first app
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Add tests for new functionality"
 msgstr "Add tests for new functionality"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Add the Budgie action"
+msgstr "Add the Budgie action"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Add the Budgie action and bind the Wallet transaction fields."
+msgstr "Add the Budgie action and bind the Wallet transaction fields."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Additive interface — suggestions sit alongside the text field, never replacing it"
@@ -2811,6 +2824,15 @@ msgstr "App-switcher blur on iOS — passersby see only a smudge"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Apple Notes and Reminders"
 msgstr "Apple Notes and Reminders"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/opengraph-image.tsx
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Apple Pay"
+msgstr "Apple Pay"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Apple Pay availability, trigger names, and confirmation options can vary by iOS version and region."
+msgstr "Apple Pay availability, trigger names, and confirmation options can vary by iOS version and region."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Apple Silicon and modern Android processors include dedicated neural processing hardware. These chips run matrix multiplications — the dominant computation in transformer inference — far more efficiently than a general CPU. Inference that would take seconds on a CPU takes milliseconds on a neural engine."
@@ -3444,6 +3466,7 @@ msgstr "Blazing Fast"
 msgid "Block, the parent company of Cash App, disclosed that a former employee downloaded internal reports containing customer data for over 8 million users. The breach included full names, brokerage account numbers, portfolio values, and stock trading activity."
 msgstr "Block, the parent company of Cash App, disclosed that a former employee downloaded internal reports containing customer data for over 8 million users. The breach included full names, brokerage account numbers, portfolio values, and stock trading activity."
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
@@ -3574,6 +3597,18 @@ msgstr "Budgie (Offline-First)"
 msgid "Budgie AI"
 msgstr "Budgie AI"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Budgie Apple Pay capture review screen"
+msgstr "Budgie Apple Pay capture review screen"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Budgie Apple Pay capture settings screen"
+msgstr "Budgie Apple Pay capture settings screen"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Budgie Apple Pay capture setup screen"
+msgstr "Budgie Apple Pay capture setup screen"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie auto-detects recurring patterns and surfaces them on a dedicated calendar tab. See the Recurring Payments Calendar feature for details."
 msgstr "Budgie auto-detects recurring patterns and surfaces them on a dedicated calendar tab. See the Recurring Payments Calendar feature for details."
@@ -3585,6 +3620,14 @@ msgstr "Budgie auto-detects subscription and recurring-payment patterns from you
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie automatically attempts to match categories and can learn from your corrections to improve future categorization."
 msgstr "Budgie automatically attempts to match categories and can learn from your corrections to improve future categorization."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Budgie cannot create the personal automation for you. iOS requires you to save it in Shortcuts."
+msgstr "Budgie cannot create the personal automation for you. iOS requires you to save it in Shortcuts."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Budgie cannot import past Wallet history. Only future eligible automation events can be captured."
+msgstr "Budgie cannot import past Wallet history. Only future eligible automation events can be captured."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie Commercial Licensing"
@@ -3602,6 +3645,10 @@ msgstr "Budgie CSV and PDF import parses statement files on your device. No file
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
 msgstr "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Budgie does not read your Wallet history and does not receive a live feed from Apple. The automation runs on your iPhone and sends the selected future payment fields to Budgie. Your Budgie database stays local-first and under your control."
+msgstr "Budgie does not read your Wallet history and does not receive a live feed from Apple. The automation runs on your iPhone and sends the selected future payment fields to Budgie. Your Budgie database stays local-first and under your control."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie embodies this transparent approach. Every line of code is public. Every decision is documented. Every claim is verifiable. We don’t ask you to trust us because we say so. We ask you to trust us because you can see exactly what we do."
@@ -4846,6 +4893,10 @@ msgstr "Concern"
 msgid "Configurable per-screen — disable for receipts you actually want to share, leave on for the home screen."
 msgstr "Configurable per-screen — disable for receipts you actually want to share, leave on for the home screen."
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Confirm Apple Pay capture is enabled in Budgie, the Shortcuts automation is saved, the Budgie action is in the automation, and each Wallet transaction field is bound to the matching Budgie field."
+msgstr "Confirm Apple Pay capture is enabled in Budgie, the Shortcuts automation is saved, the Budgie action is in the automation, and each Wallet transaction field is bound to the matching Budgie field."
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Confirm or correct the pre-filled form, then save"
 msgstr "Confirm or correct the pre-filled form, then save"
@@ -5057,6 +5108,10 @@ msgstr "Create a Deposit account manually or from a bank integration. Add its cu
 msgid "Create a feature branch for your changes"
 msgstr "Create a feature branch for your changes"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Create a personal automation that runs after a Wallet transaction."
+msgstr "Create a personal automation that runs after a Wallet transaction."
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Deposit, Crypto, Stocks, Debt. Reorder, rename, archive, or permanently delete from the account detail page."
 msgstr "Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Deposit, Crypto, Stocks, Debt. Reorder, rename, archive, or permanently delete from the account detail page."
@@ -5064,6 +5119,14 @@ msgstr "Create accounts manually or via bank sync. Each account belongs to one o
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Create an account in Budgie for each bank account or credit card you track. Set the correct currency for each account. You do not need to connect anything to your bank at this stage — the accounts are just containers for imported transactions."
 msgstr "Create an account in Budgie for each bank account or credit card you track. Set the correct currency for each account. You do not need to connect anything to your bank at this stage — the accounts are just containers for imported transactions."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Create one iOS Shortcuts automation so future eligible Apple Pay taps can arrive in Budgie for review."
+msgstr "Create one iOS Shortcuts automation so future eligible Apple Pay taps can arrive in Budgie for review."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Create the Shortcuts automation"
+msgstr "Create the Shortcuts automation"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Create unlimited categories with custom names, icons, and colors"
@@ -7147,6 +7210,7 @@ msgid "Holdings roll up into net worth alongside fiat accounts"
 msgstr "Holdings roll up into net worth alongside fiat accounts"
 
 #: src/app/[lang]/ai-features/page.tsx
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
@@ -7576,6 +7640,12 @@ msgstr "How to Evaluate a Budgeting App’s Privacy"
 msgid "How to Export Your Mint Data (Before It’s Too Late)"
 msgstr "How to Export Your Mint Data (Before It’s Too Late)"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/metadata.ts
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/opengraph-image.tsx
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "How to Set Up Apple Pay Capture with Shortcuts"
+msgstr "How to Set Up Apple Pay Capture with Shortcuts"
+
 #: src/generic/component/ai-section-details/ai-section-details.tsx
 msgid "I analyzed your spending and found you spent $450 more than usual this month. The main culprits: $280 on entertainment and $170 on impulse purchases. Want me to show you the breakdown?"
 msgstr "I analyzed your spending and found you spent $450 more than usual this month. The main culprits: $280 on entertainment and $170 on impulse purchases. Want me to show you the breakdown?"
@@ -7700,6 +7770,30 @@ msgstr "If you’ve landed on this article, you’re probably wondering: <0>What
 msgid "If your bank exports CSV, yes. The flexible column mapper accommodates any column order, separator, and date format — set up once, save as a preset."
 msgstr "If your bank exports CSV, yes. The flexible column mapper accommodates any column order, separator, and date format — set up once, save as a preset."
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Illustration of binding Wallet transaction fields to the Budgie action"
+msgstr "Illustration of binding Wallet transaction fields to the Budgie action"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Illustration of saving the Apple Pay Shortcuts automation"
+msgstr "Illustration of saving the Apple Pay Shortcuts automation"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Illustration of selecting the Wallet transaction trigger in Shortcuts"
+msgstr "Illustration of selecting the Wallet transaction trigger in Shortcuts"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Illustration: choose the Wallet transaction trigger so iOS starts the automation after a payment."
+msgstr "Illustration: choose the Wallet transaction trigger so iOS starts the automation after a payment."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Illustration: pass the Wallet transaction fields into the Budgie action instead of typing fixed values."
+msgstr "Illustration: pass the Wallet transaction fields into the Budgie action instead of typing fixed values."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Illustration: save the personal automation after the Budgie action is connected."
+msgstr "Illustration: save the personal automation after the Budgie action is connected."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Immediate Actions"
 msgstr "Immediate Actions"
@@ -7809,6 +7903,10 @@ msgstr "In December 2023, Intuit announced they were shutting down Mint after 17
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "In practice, for most personal applications, this is rarely visible to users. Sync is fast enough that inconsistency windows are short. But your code should not assume instant consistency."
 msgstr "In practice, for most personal applications, this is rarely visible to users. Sync is fast enough that inconsistency windows are short. But your code should not assume instant consistency."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "In the automation action list, search for Budgie. Add the action that records an Apple Pay capture. Bind the Wallet transaction amount, merchant, and card fields, then choose the Budgie account for the payment."
+msgstr "In the automation action list, search for Budgie. Add the action that records an Apple Pay capture. Bind the Wallet transaction amount, merchant, and card fields, then choose the Budgie account for the payment."
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "In the vendor cloud"
@@ -7937,6 +8035,10 @@ msgstr "Investment tracking matters"
 #: src/generic/component/hero-section/hero-section-header.tsx
 msgid "iOS & Android"
 msgstr "iOS & Android"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "iOS automation"
+msgstr "iOS automation"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Is “subscription-free” really durable?"
@@ -8205,6 +8307,10 @@ msgstr "License"
 msgid "License Choice and Why"
 msgstr "License Choice and Why"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Limitations"
+msgstr "Limitations"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Limited API compared to developer-focused options"
 msgstr "Limited API compared to developer-focused options"
@@ -8455,9 +8561,17 @@ msgstr "Maintain the security of your password and device"
 msgid "Major features are discussed in public GitHub issues before implementation"
 msgstr "Major features are discussed in public GitHub issues before implementation"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Make a small Apple Pay payment after the automation is saved. Open Budgie and review the captured payment before it becomes a regular transaction. Confirm the merchant, amount, account, and card."
+msgstr "Make a small Apple Pay payment after the automation is saved. Open Budgie and review the captured payment before it becomes a regular transaction. Confirm the merchant, amount, account, and card."
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Make a transfer between the debt account and a real cash/bank account. The debt balance hits zero; archive the account if you want it off the home screen."
 msgstr "Make a transfer between the debt account and a real cash/bank account. The debt balance hits zero; archive the account if you want it off the home screen."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Make one small test payment, then review the capture in Budgie."
+msgstr "Make one small test payment, then review the capture in Budgie."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Make your changes with clear, descriptive commit messages"
@@ -9554,6 +9668,10 @@ msgstr "Nothing"
 msgid "Nothing — there's nothing to stop. The unlock is one-time, not a subscription."
 msgstr "Nothing — there's nothing to stop. The unlock is one-time, not a subscription."
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Nothing appeared in Budgie. What should I check?"
+msgstr "Nothing appeared in Budgie. What should I check?"
+
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Nothing changes. On-device AI is inherently offline. All AI features work identically whether you have network connectivity or not. This is one of the core advantages of the architecture."
 msgstr "Nothing changes. On-device AI is inherently offline. All AI features work identically whether you have network connectivity or not. This is one of the core advantages of the architecture."
@@ -9641,6 +9759,7 @@ msgstr "offline expense tracker"
 msgid "Offline use"
 msgstr "Offline use"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/opengraph-image.tsx
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
@@ -9993,9 +10112,21 @@ msgstr "Open Banking regulations in the EU and UK, along with voluntary API prog
 msgid "Open Budgie and go to Settings, then Import Data"
 msgstr "Open Budgie and go to Settings, then Import Data"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Open Budgie and turn on Apple Pay capture in Settings."
+msgstr "Open Budgie and turn on Apple Pay capture in Settings."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Open Budgie, go to Settings, then Apple Pay Capture. Choose the account where Apple Pay card payments should appear. Keep this screen available while you create the automation."
+msgstr "Open Budgie, go to Settings, then Apple Pay Capture. Choose the account where Apple Pay card payments should appear. Keep this screen available while you create the automation."
+
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "Open privat24.ua in a browser, go to Statements, pick the date range, and use the XLSX export button. Save the file and import via Budgie's Import → PrivatBank flow."
 msgstr "Open privat24.ua in a browser, go to Statements, pick the date range, and use the XLSX export button. Save the file and import via Budgie's Import → PrivatBank flow."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Open Shortcuts, choose Automation, then create a personal automation for Wallet transactions. Select the card you use with Apple Pay and set the automation to run immediately when iOS offers that option."
+msgstr "Open Shortcuts, choose Automation, then create a personal automation for Wallet transactions. Select the card you use with Apple Pay and set the automation to run immediately when iOS offers that option."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -10525,6 +10656,10 @@ msgstr "Primary Tag — Quick-Scan Transaction Labeling — Budgie"
 msgid "privacy"
 msgstr "privacy"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Privacy"
+msgstr "Privacy"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Privacy advocates can verify we’re not collecting telemetry"
 msgstr "Privacy advocates can verify we’re not collecting telemetry"
@@ -10788,6 +10923,10 @@ msgstr "Published audit reports from recognized security firms"
 msgid "Quantization"
 msgstr "Quantization"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Quick checklist"
+msgstr "Quick checklist"
+
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Quick Edit Transaction App — Long-Press Menu — Budgie"
 msgstr "Quick Edit Transaction App — Long-Press Menu — Budgie"
@@ -11033,6 +11172,10 @@ msgstr "Remaining-budget pill shows what's left to allocate as you build the spl
 msgid "Remove, alter, or obscure any proprietary notices or labels"
 msgstr "Remove, alter, or obscure any proprietary notices or labels"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Reopen the Shortcuts action and make sure you used Wallet transaction variables, not typed sample text or fixed numbers."
+msgstr "Reopen the Shortcuts action and make sure you used Wallet transaction variables, not typed sample text or fixed numbers."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Report bugs and usability issues"
 msgstr "Report bugs and usability issues"
@@ -11134,6 +11277,10 @@ msgstr "Reversible audit trail — Revert restores the original income and expen
 msgid "Reversible: split a transfer back into two separate transactions if needed"
 msgstr "Reversible: split a transfer back into two separate transactions if needed"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Review catches duplicates, lets you choose the right action, and keeps imported Apple Pay events under your control before they affect reports."
+msgstr "Review catches duplicates, lets you choose the right action, and keeps imported Apple Pay events under your control before they affect reports."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Review Dependencies"
 msgstr "Review Dependencies"
@@ -11149,6 +11296,14 @@ msgstr "Review our commit history and development process"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Review our cryptographic implementations"
 msgstr "Review our cryptographic implementations"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Review the automation, turn off extra confirmation prompts when iOS allows it, and save. The automation only affects future eligible Apple Pay taps."
+msgstr "Review the automation, turn off extra confirmation prompts when iOS allows it, and save. The automation only affects future eligible Apple Pay taps."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Review the first capture in Budgie so duplicates, merchant, amount, account, and card are correct."
+msgstr "Review the first capture in Budgie so duplicates, merchant, amount, account, and card are correct."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Review the import preview"
@@ -11201,6 +11356,10 @@ msgstr "Save a per-bank preset and never re-map again"
 #: src/generic/component/integrations-section/integrations-section-csv-card.tsx
 msgid "Save Presets"
 msgstr "Save Presets"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Save the automation"
+msgstr "Save the automation"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Save through the OS share sheet — Files, iCloud, Drive, anything"
@@ -11453,6 +11612,14 @@ msgstr "Set target balances and due dates"
 msgid "Set up accounts to match your banks"
 msgstr "Set up accounts to match your banks"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/metadata.ts
+msgid "Set up Budgie Apple Pay capture with iOS Shortcuts, verify the first payment, and understand privacy, troubleshooting, and Apple platform limitations."
+msgstr "Set up Budgie Apple Pay capture with iOS Shortcuts, verify the first payment, and understand privacy, troubleshooting, and Apple platform limitations."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Set up Budgie first"
+msgstr "Set up Budgie first"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Set up your new app with current balances"
 msgstr "Set up your new app with current balances"
@@ -11492,6 +11659,11 @@ msgstr "Setup time"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Several production-ready libraries provide local-first infrastructure:"
 msgstr "Several production-ready libraries provide local-first infrastructure:"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/opengraph-image.tsx
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Shortcuts"
+msgstr "Shortcuts"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Shortcuts integration allows some automation"
@@ -11817,6 +11989,10 @@ msgstr "Stage 2: LLM-Based Semantic Categorization"
 #: src/generic/component/open-source-section/open-source-visual-stats.tsx
 msgid "Stars"
 msgstr "Stars"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Start in Budgie Settings. Apple Pay capture must be enabled before Shortcuts sends payments."
+msgstr "Start in Budgie Settings. Apple Pay capture must be enabled before Shortcuts sends payments."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Start Simple"
@@ -12231,6 +12407,10 @@ msgstr "The Aggregator Persistence Problem"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Alternative: Offline-First Architecture"
 msgstr "The Alternative: Offline-First Architecture"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "The amount or merchant looks wrong. What should I change?"
+msgstr "The amount or merchant looks wrong. What should I change?"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The answer varies by company, but the patterns are consistent:"
@@ -12695,6 +12875,14 @@ msgstr "The service won’t be shut down"
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "The Service, including its original content, features, and functionality, is owned by Budgie and is protected by international copyright, trademark, patent, trade secret, and other intellectual property laws. Our trademarks and trade dress may not be used without our prior written permission."
 msgstr "The Service, including its original content, features, and functionality, is owned by Budgie and is protected by international copyright, trademark, patent, trade secret, and other intellectual property laws. Our trademarks and trade dress may not be used without our prior written permission."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "The setup screen shows which account Budgie will use when a Shortcuts event arrives."
+msgstr "The setup screen shows which account Budgie will use when a Shortcuts event arrives."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "The Shortcuts visuals in this guide are labeled illustrations, not physical-device screenshots."
+msgstr "The Shortcuts visuals in this guide are labeled illustrations, not physical-device screenshots."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "The shutdown was not a surprise to anyone paying attention. It was the predictable end of an ad-supported, cloud-hosted service that was never designed around user ownership of data."
@@ -13293,6 +13481,10 @@ msgstr "Travel internationally without roaming fears"
 msgid "Treated as expenses"
 msgstr "Treated as expenses"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Troubleshooting"
+msgstr "Troubleshooting"
+
 #: src/app/[lang]/features/dark-mode/opengraph-image.tsx
 msgid "True black. OLED-friendly. No white flash."
 msgstr "True black. OLED-friendly. No white flash."
@@ -13456,6 +13648,10 @@ msgstr "Untagged bucket surfaces every transaction missing a label — drill in 
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 msgstr "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Use an iPhone with Apple Pay and the Shortcuts app installed."
+msgstr "Use an iPhone with Apple Pay and the Shortcuts app installed."
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice"
 msgstr "Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice"
@@ -13527,6 +13723,10 @@ msgstr "Verifiable in source"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Verify that the fix actually addresses the issue"
 msgstr "Verify that the fix actually addresses the issue"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Verify the first payment"
+msgstr "Verify the first payment"
 
 #: src/generic/component/blog-section/blog-section.tsx
 msgid "View All Articles"
@@ -14554,6 +14754,10 @@ msgstr "Why direct API matters more than convenience"
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Why do other apps charge monthly?"
 msgstr "Why do other apps charge monthly?"
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Why does Budgie ask me to review captures?"
+msgstr "Why does Budgie ask me to review captures?"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Why does this matter? Consider these scenarios:"

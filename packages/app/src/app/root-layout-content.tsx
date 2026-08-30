@@ -61,6 +61,8 @@ import { binanceSyncService } from '../sync/service/binance-sync.service';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../sync/service/sync-workload.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
+import { walletCaptureAccountMirrorService } from '../wallet-capture/service/wallet-capture-account-mirror.service';
+import { walletCaptureImportService } from '../wallet-capture/service/wallet-capture-import.service';
 
 enableScreens();
 enableFreeze();
@@ -91,10 +93,11 @@ const syncForegroundData = async (): Promise<void> => {
 
     await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
     void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
+    await Promise.all([walletCaptureAccountMirrorService.refresh().catch(emptyFn), walletCaptureImportService.drain().catch(emptyFn)]);
 };
 
-const handleAppStateChange = (isActive: boolean): void => {
-    if (isActive) {
+const handleAppStateChange = (isReady: boolean, isActive: boolean): void => {
+    if (isReady && isActive) {
         void syncWorkloadService.run('foreground', syncForegroundData).catch(emptyFn);
     }
 };
@@ -104,7 +107,7 @@ export const RootLayoutContent = () => {
     const { success } = useMigrations(db, migrations);
 
     useAppInitialization(success);
-    useAppState(handleAppStateChange);
+    useAppState(isActive => void handleAppStateChange(success, isActive));
 
     if (!success) {
         return null;

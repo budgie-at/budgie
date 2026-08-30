@@ -28,6 +28,8 @@ const getUniqueIdentifier = isAndroid => {
     return prefix;
 };
 
+const getWalletCaptureAppGroupIdentifier = () => `group.${getUniqueIdentifier(false)}.wallet-capture`;
+
 const getAppName = () => {
     if (IS_DEV) {
         return 'budgie (Dev)';
@@ -60,6 +62,9 @@ export default ({ config }) => ({
             usesNonExemptEncryption: false
         },
         associatedDomains: ['applinks:budgie.at'],
+        infoPlist: {
+            LSApplicationQueriesSchemes: ['shortcuts']
+        },
         entitlements: {
             'com.apple.developer.kernel.extended-virtual-addressing': true,
             'com.apple.developer.kernel.increased-memory-limit': true
@@ -122,6 +127,7 @@ export default ({ config }) => ({
                 }
             }
         ],
+        ['./modules/apple-wallet-capture/app.plugin.js', { appGroupIdentifier: getWalletCaptureAppGroupIdentifier() }],
         './plugins/with-vec-xcframework-fix',
         'expo-asset',
         'expo-image',

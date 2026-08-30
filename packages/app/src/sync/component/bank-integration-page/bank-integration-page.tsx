@@ -15,6 +15,7 @@ import { BankIntegrationFooter } from '../bank-integration-footer/bank-integrati
 
 const PROVIDER_SUPPORTS_DEPOSIT: Record<ExternalSourceEnum, boolean> = {
     [ExternalSourceEnum.MANUAL]: false,
+    [ExternalSourceEnum.APPLE_PAY_AUTOMATION]: false,
     [ExternalSourceEnum.MONOBANK]: true,
     [ExternalSourceEnum.PRIVATBANK]: true,
     [ExternalSourceEnum.ERSTE]: true,
@@ -33,8 +34,7 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     const { t } = useLingui();
     const { accounts } = useGetAccountsByIntegrationIdQuery(integration.id);
 
-    const handleAddAccounts = () =>
-        void router.push({ pathname: '/bank-integration/[id]/add-accounts', params: { id: String(integration.id) } });
+    const handleAddAccounts = () => void router.push(`/bank-integration/${integration.id}/add-accounts`);
     const handleImportFile = () => void router.push({ pathname: '/create-account/[type]', params: { type: integration.provider } });
     const handleAddDeposit = () =>
         void router.push({

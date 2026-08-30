@@ -12,6 +12,8 @@ import { binanceSyncService } from '../../sync/service/binance-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
+import { walletCaptureAccountMirrorService } from '../../wallet-capture/service/wallet-capture-account-mirror.service';
+import { walletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
 import { scheduleIdleCallback } from '../utils/schedule-idle-callback.util';
 
 const SPLASH_HIDE_DELAY_MS = 200;
@@ -34,6 +36,7 @@ const syncAppData = async (): Promise<void> => {
     }
 
     await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
+    await Promise.all([walletCaptureAccountMirrorService.refresh().catch(emptyFn), walletCaptureImportService.drain().catch(emptyFn)]);
 };
 
 const initializeAppServices = async (): Promise<void> => {

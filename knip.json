@@ -8,6 +8,8 @@
         "packages/app/lingui.config.js",
         "packages/app/fingerprint.config.js",
         "packages/app/plugins/with-vec-xcframework-fix.js",
+        "packages/app/modules/apple-wallet-capture/app.plugin.js",
+        "packages/app/modules/apple-wallet-capture/plugin/with-apple-wallet-capture.js",
         "scripts/after-install.cjs",
         "tests/app-tests/scripts/prepare-date-sensitive-fixtures.js",
         "packages/contracts/babel.config.js",
