@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface } from '@budgie/contracts';
 import { useMemo } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
@@ -23,8 +23,7 @@ interface Props {
 export const UpdateDebtAccount = ({ account }: Props) => {
     const debtProgressSummary = useDebtAccountProgressSummaryQuery(account.id);
     const targetBalance = convertFromMicroUnits(account.targetBalance);
-    const currentBalance =
-        account.debtType === AccountDebtTypeEnum.BORROW ? debtProgressSummary.outstandingAmount : debtProgressSummary.paidAmount;
+    const currentBalance = debtProgressSummary.paidAmount;
     const initialValues = useMemo(
         () => ({
             iban: account.iban,

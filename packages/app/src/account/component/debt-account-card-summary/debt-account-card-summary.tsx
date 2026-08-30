@@ -43,7 +43,7 @@ export const DebtAccountCardSummary = ({ instrumentSymbol, outstandingAmount, pa
             <View className="shrink-0 items-end max-w-[45%]">
                 <ProtectedText
                     adjustsFontSizeToFit
-                    className="text-xxs font-semibold text-right border-b border-b-primary pb-[2px]"
+                    className="text-secondary-foreground text-xxs font-medium text-right border-b border-b-primary pb-[2px]"
                     minimumFontScale={0.72}
                     numberOfLines={1}
                     testID={paidAmountSelector}
@@ -52,7 +52,7 @@ export const DebtAccountCardSummary = ({ instrumentSymbol, outstandingAmount, pa
                 </ProtectedText>
                 <ProtectedText
                     adjustsFontSizeToFit
-                    className="text-secondary-foreground text-xxs font-medium text-right"
+                    className="text-primary text-xxs font-semibold text-right"
                     minimumFontScale={0.72}
                     numberOfLines={1}
                     testID={totalAmountSelector}

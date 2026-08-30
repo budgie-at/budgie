@@ -1,6 +1,6 @@
-import { AccountDebtTypeEnum } from '@budgie/contracts';
-
 import { isPositiveNumber } from '@rnw-community/shared';
+
+import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 
 import type { DebtAccountProgressSummaryParamsInterface } from '../interface/debt-account-progress-summary-params.interface';
 
@@ -96,7 +96,7 @@ export const buildDebtAccountProgressSummary = ({
         openedAmount,
         outstandingAmount,
         paidAmount,
-        totalAmount,
-        percentage
+        percentage,
+        totalAmount
     };
 };

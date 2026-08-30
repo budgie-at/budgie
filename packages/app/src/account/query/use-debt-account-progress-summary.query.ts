@@ -6,7 +6,7 @@ import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-quer
 import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated-at.query';
 import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
 
-import type { DebtAccountProgressSummaryInterface } from '../interface/debt-account-progress-summary.interface';
+import type { DebtAccountProgressSummaryInterface } from '@budgie/contracts';
 
 const EMPTY_DEBT_ACCOUNT_PROGRESS_SUMMARY: DebtAccountProgressSummaryInterface = {
     closedAmount: 0,

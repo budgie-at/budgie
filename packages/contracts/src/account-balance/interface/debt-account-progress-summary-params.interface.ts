@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 
 export interface DebtAccountProgressSummaryParamsInterface {
     readonly balance: number;

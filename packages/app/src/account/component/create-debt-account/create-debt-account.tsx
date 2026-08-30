@@ -60,6 +60,7 @@ export const CreateDebtAccount = () => {
     const isOpeningFromAccount = isLentDebt && isDefined(openingAccountId);
     const variant = ACCOUNT_COLOR.DEBT;
     const stickyInstrument = useStickyDefinedValue(instrument);
+    const balanceFieldLabel = isLentDebt ? t`Already received` : t`Already returned`;
 
     const handleCreateDebtAccountSubmit = () => {
         if (isOpeningFromAccount) {
@@ -75,7 +76,12 @@ export const CreateDebtAccount = () => {
 
     return (
         <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleCreateDebtAccountSubmit} isSubmitting={isSubmitting}>
-            <CreateAccountCoreFields variant={variant} control={control} instrumentSymbol={stickyInstrument.symbol}>
+            <CreateAccountCoreFields
+                variant={variant}
+                control={control}
+                instrumentSymbol={stickyInstrument.symbol}
+                balanceFieldLabel={balanceFieldLabel}
+            >
                 {isLentDebt && <DebtOpeningAccountField accountId={openingAccountId} variant={variant} onChange={setOpeningAccountId} />}
 
                 {!isOpeningFromAccount && <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} />}

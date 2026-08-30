@@ -11,10 +11,10 @@ import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-un
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { accountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import { accountService } from '@app/account/service/account.service';
-import { buildDebtAccountProgressSummary } from '@app/account/utils/build-debt-account-progress-summary.util';
 import { transactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
 import {
     AccountEntityTable,
+    buildDebtAccountProgressSummary,
     AccountDebtTypeEnum,
     AccountTypeEnum,
     CategoryEntityTable,
@@ -198,6 +198,16 @@ describe('debt settlement statistics', () => {
         });
 
         expect(balance?.balance).toBe(2_000 * PRECISION);
+    });
+
+    it('keeps an overpaid lent debt capped at the target across a target-only update', async () => {
+        const account = await createDebtAccount(AccountDebtTypeEnum.LENT, 20_000, 15_000, 1);
+
+        await accountService.updateDebtById(account.id, { debtType: AccountDebtTypeEnum.LENT, targetBalance: 15_000 });
+
+        const balance = accountBalanceRepository.getByAccountId(account.id).get();
+
+        expect(balance?.balance).toBe(15_000 * PRECISION);
     });
 
     it('summarizes updated lent debt accounts by treating current balance as an already returned amount', async () => {
@@ -533,14 +543,14 @@ describe('debt settlement statistics', () => {
         expectDebtProgressSummary(summary, 44_900 * PRECISION, 100 * PRECISION, 45_000 * PRECISION, 0.22);
     });
 
-    it('creates borrowed debt accounts with a negative outstanding balance', async () => {
+    it('creates borrowed debt accounts by treating current balance as an already returned amount', async () => {
         const account = await createDebtAccount(AccountDebtTypeEnum.BORROW, 8_066, 45_000, 1);
         const balance = accountBalanceRepository.getByAccountId(account.id).get();
 
-        expect(balance?.balance).toBe(-8_066 * PRECISION);
+        expect(balance?.balance).toBe(-36_934 * PRECISION);
     });
 
-    it('updates borrowed debt accounts with a negative outstanding balance', async () => {
+    it('updates borrowed debt accounts by treating current balance as an already returned amount', async () => {
         const { balance } = await updateDebtCurrentBalanceAndReadState({
             debtType: AccountDebtTypeEnum.BORROW,
             initialCurrentBalance: 8_066,
@@ -548,7 +558,7 @@ describe('debt settlement statistics', () => {
             targetBalance: 15_000
         });
 
-        expect(balance?.balance).toBe(-1_900 * PRECISION);
+        expect(balance?.balance).toBe(-13_100 * PRECISION);
     });
 
     it('tracks borrowed repayments through transfers without expense analytics', () => {
@@ -873,7 +883,7 @@ const createLentDebtIncomeSettlementScenario = async ({
 const createBorrowedDebtSettlementScenario = async () => {
     const [category] = testDb.select().from(CategoryEntityTable).all();
     const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-    const debtAccount = await createDebtAccount(AccountDebtTypeEnum.BORROW, 15_000, 15_000, cashAccount.instrumentId);
+    const debtAccount = await createDebtAccount(AccountDebtTypeEnum.BORROW, 0, 15_000, cashAccount.instrumentId);
 
     createDebtTransferTransaction(cashAccount.id, debtAccount.id, 2_000 * PRECISION, 'Return money to Alex');
     const additionalBorrowing = createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
