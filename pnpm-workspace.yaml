@@ -39,3 +39,6 @@ allowBuilds:
   nx: false
   sharp: false
   unrs-resolver: false
+
+patchedDependencies:
+  expo-pdf-text-extract@1.1.0: patches/expo-pdf-text-extract@1.1.0.patch
