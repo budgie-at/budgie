@@ -22,6 +22,7 @@ interface Props<
     readonly control: Control<T>;
     readonly variant: ColorPaletteVariant;
     readonly instrumentSymbol: string;
+    readonly balanceFieldLabel?: string;
     readonly children?: ReactNode;
 }
 
@@ -37,10 +38,11 @@ export const CreateAccountCoreFields = <
     control,
     variant,
     instrumentSymbol,
+    balanceFieldLabel,
     children
 }: Props<T>) => (
     <>
-        <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} />
+        <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} label={balanceFieldLabel} />
 
         <FormLayoutGroup>
             <AccountDetailsField variant={variant} control={control} nameInputTestID={CreateAccountScreenSelector.NameInput} />

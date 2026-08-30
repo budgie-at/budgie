@@ -43,3 +43,6 @@ allowBuilds:
 
 patchedDependencies:
   expo-pdf-text-extract@1.1.0: patches/expo-pdf-text-extract@1.1.0.patch
+
+minimumReleaseAgeExclude:
+  - '@liaugust/monobank-sdk@0.7.0'

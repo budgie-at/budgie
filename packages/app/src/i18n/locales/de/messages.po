@@ -399,6 +399,14 @@ msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Keine C
 msgid "Allocated"
 msgstr "Zugewiesen"
 
+#: src/account/component/create-debt-account/create-debt-account.tsx
+msgid "Already received"
+msgstr "Bereits erhalten"
+
+#: src/account/component/create-debt-account/create-debt-account.tsx
+msgid "Already returned"
+msgstr "Bereits zurückgezahlt"
+
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
 msgstr "Synchronisiert bereits"

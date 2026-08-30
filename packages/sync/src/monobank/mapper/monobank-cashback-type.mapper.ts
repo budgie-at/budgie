@@ -10,10 +10,6 @@ const monobankCashbackTypeMap = new Map<CashbackType, CashbackTypeEnum>([
     [CashbackType.Miles, CashbackTypeEnum.MILES]
 ]);
 
-export const monobankCashbackTypeMapper = (type?: CashbackType): CashbackTypeEnum => {
-    if (!isDefined(type)) {
-        return CashbackTypeEnum.NONE;
-    }
-
-    return monobankCashbackTypeMap.get(type) ?? CashbackTypeEnum.NONE;
-};
+// Live FOP accounts omit `cashbackType` entirely, so absence maps to NONE.
+export const monobankCashbackTypeMapper = (type: CashbackType | undefined): CashbackTypeEnum =>
+    isDefined(type) ? (monobankCashbackTypeMap.get(type) ?? CashbackTypeEnum.NONE) : CashbackTypeEnum.NONE;

@@ -399,6 +399,14 @@ msgstr "Усі ваші фінансові дані зберігаються л�
 msgid "Allocated"
 msgstr "Розподілено"
 
+#: src/account/component/create-debt-account/create-debt-account.tsx
+msgid "Already received"
+msgstr "Вже отримано"
+
+#: src/account/component/create-debt-account/create-debt-account.tsx
+msgid "Already returned"
+msgstr "Вже повернуто"
+
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
 msgstr "Вже синхронізується"
