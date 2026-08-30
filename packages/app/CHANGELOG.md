@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.5.1](https://github.com/budgie-at/budgie/compare/v6.5.0...v6.5.1) (2026-08-30)
+
+
+### Bug Fixes
+
+* **app:** unify debt balance semantics and rework debt tile rendering ([#689](https://github.com/budgie-at/budgie/issues/689)) ([7b0f95a](https://github.com/budgie-at/budgie/commit/7b0f95a97fa86b68d24c423ee2f139a0fdb279b9))
+
+
+
+
+
 # [6.5.0](https://github.com/budgie-at/budgie/compare/v6.4.2...v6.5.0) (2026-08-29)
 
 **Note:** Version bump only for package @budgie-at/app
