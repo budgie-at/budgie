@@ -93,7 +93,7 @@
         "react-native-css": "^3.0.7",
         "react-native-easing-gradient": "^1.1.1",
         "react-native-gesture-handler": "~2.32.0",
-        "react-native-keyboard-controller": "1.21.9",
+        "react-native-keyboard-controller": "1.22.0",
         "react-native-reanimated": "4.5.1",
         "react-native-safe-area-context": "~5.7.0",
         "react-native-screens": "4.26.0",
