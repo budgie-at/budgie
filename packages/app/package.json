@@ -89,7 +89,7 @@
         "react-dom": "19.2.3",
         "react-hook-form": "^7.76.1",
         "react-native": "0.86.3",
-        "react-native-audio-api": "^0.13.3",
+        "react-native-audio-api": "^0.12.2",
         "react-native-css": "^3.0.7",
         "react-native-easing-gradient": "^1.1.1",
         "react-native-gesture-handler": "~2.32.0",
