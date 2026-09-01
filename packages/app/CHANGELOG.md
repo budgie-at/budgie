@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.5.2](https://github.com/budgie-at/budgie/compare/v6.5.1...v6.5.2) (2026-09-01)
+
+
+### Bug Fixes
+
+* **app:** let taps fall through the collapsible header shell ([20e1227](https://github.com/budgie-at/budgie/commit/20e12277af0bd0b51123311884922cdb22bbdc6b)), closes [rnw-community#621](https://github.com/rnw-community/issues/621)
+* **app:** pin lightningcss 1.30.1 for nativewind native bundling ([9ea3a89](https://github.com/budgie-at/budgie/commit/9ea3a8948837ee22300dc71c2b5a33cdac2fb10f))
+* **app:** position collapsible chrome header below the safe area ([d73b207](https://github.com/budgie-at/budgie/commit/d73b207672754701f54cfc1e025ec0e604c50a82)), closes [rnw-community#618](https://github.com/rnw-community/issues/618) [rnw-community#619](https://github.com/rnw-community/issues/619)
+* **app:** reset recording state when recorder start rejects ([28b3085](https://github.com/budgie-at/budgie/commit/28b3085f8d458e0be857de37ae30b7dee45f5492))
+* **app:** restore keyboard-controller 1.22.0 ([8d001e9](https://github.com/budgie-at/budgie/commit/8d001e9f9f85c5472b23fd950990a9c0f61294e8))
+* **app:** restore react-native-worklets 0.10.2 ([0006efa](https://github.com/budgie-at/budgie/commit/0006efa657d2f992c745fdf0a090425596018e68))
+* **app:** satisfy promise always-return in recorder start handler ([25dcc72](https://github.com/budgie-at/budgie/commit/25dcc72d0b5015dd70dcf71a876a4e42d290d5bc))
+
+
+
+
+
 ## [6.5.1](https://github.com/budgie-at/budgie/compare/v6.5.0...v6.5.1) (2026-08-30)
 
 
