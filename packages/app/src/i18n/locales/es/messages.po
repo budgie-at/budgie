@@ -3426,7 +3426,7 @@ msgstr "Token requerido"
 msgid "Total"
 msgstr "Total"
 
-#: src/@generic/component/collapsible-header/collapsible-header.tsx
+#: src/account/component/net-worth-collapsible-header/net-worth-collapsible-header.tsx
 msgid "Total Balance"
 msgstr "Saldo total"
 

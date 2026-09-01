@@ -3426,7 +3426,7 @@ msgstr "Потрібен токен"
 msgid "Total"
 msgstr "Загалом"
 
-#: src/@generic/component/collapsible-header/collapsible-header.tsx
+#: src/account/component/net-worth-collapsible-header/net-worth-collapsible-header.tsx
 msgid "Total Balance"
 msgstr "Загальний баланс"
 

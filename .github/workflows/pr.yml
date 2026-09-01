@@ -25,7 +25,7 @@ jobs:
         steps:
             - name: Compute mobile-impact gate
               id: gate
-              uses: actions/github-script@v8
+              uses: actions/github-script@v9
               with:
                   script: |
                       let mobile = true;
@@ -61,15 +61,15 @@ jobs:
             coverage-artifact-id: ${{ steps.upload-coverage.outputs.artifact-id }}
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v7
               with:
                   persist-credentials: false
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
 
             - name: Setup Node
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version: 22.22.1
                   cache: pnpm
@@ -112,7 +112,7 @@ jobs:
 
             - name: Upload coverage artifact
               id: upload-coverage
-              uses: actions/upload-artifact@v6
+              uses: actions/upload-artifact@v7
               with:
                   name: coverage-reports
                   path: |
@@ -129,12 +129,12 @@ jobs:
             contents: read
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v7
               with:
                   persist-credentials: false
 
             - name: Setup Node
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version: 22.22.1
 
@@ -160,18 +160,18 @@ jobs:
             id-token: write
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v7
               with:
                   persist-credentials: false
 
             - name: Download coverage artifact
-              uses: actions/download-artifact@v6
+              uses: actions/download-artifact@v8
               with:
                   name: coverage-reports
                   path: coverage-reports
 
             - name: Upload coverage reports to Codecov
-              uses: codecov/codecov-action@v5
+              uses: codecov/codecov-action@v7
               with:
                   directory: coverage-reports
                   use_oidc: true
@@ -200,15 +200,15 @@ jobs:
               run: test "$(uname -m)" = 'x86_64'
 
             - name: Checkout repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v7
               with:
                   persist-credentials: false
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
 
             - name: Setup Node
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version: 22.x
                   cache: pnpm
@@ -241,7 +241,7 @@ jobs:
         name: iOS Maestro E2E
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.10.0 # v1.10.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.11.0 # v1.11.0
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
