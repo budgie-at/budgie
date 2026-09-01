@@ -514,12 +514,7 @@ ESM-only package:
 
 ## Known Issues
 
-1. **A second zod copy is bundled** - the SDK depends on `zod@^4.4.3` while this
-   monorepo standardises on `4.1.12`, so the SDK gets a nested copy and `zod/mini`
-   ships twice. Bumping zod repo-wide to `>=4.4.3` would deduplicate it, but zod 4.4
-   tightened `.omit()` in a way `convertToCreateEntitySchema` cannot satisfy, so this
-   is blocked on reworking that helper.
-2. **Monobank and Binance are the only API integrations** - Erste and Privatbank
+1. **Monobank and Binance are the only API integrations** - Erste and Privatbank
    are file-based, and other providers in the enum are placeholders.
 
 `ClientInfo.jars` is optional (`readonly Jar[] | undefined`), because Monobank

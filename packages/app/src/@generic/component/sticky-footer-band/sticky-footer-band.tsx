@@ -1,8 +1,9 @@
-import { EdgeFade } from '@budgie/screen-chrome';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { EdgeFade } from '../edge-fade/edge-fade';
 
 import type { ViewStyle } from 'react-native';
 

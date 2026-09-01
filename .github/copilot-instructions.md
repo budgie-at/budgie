@@ -6,14 +6,14 @@
 **Type**: Monorepo with React Native (Expo) mobile app, Next.js landing page, and shared contracts
 **Size**: Large TypeScript monorepo spanning production, integration-test, and E2E workspaces
 **Languages**: TypeScript, React/React Native
-**Key Technologies**: Expo 56, React 19, Next.js 16, TurboRepo, Lerna, SQLite, Drizzle ORM
+**Key Technologies**: Expo 57, React 19, Next.js 16, TurboRepo, Lerna, SQLite, Drizzle ORM
 
 ## Build & Development Requirements
 
 **Required Versions**:
 
 - Node.js: >= 22.22.1 (configured in package.json engines)
-- pnpm: 11.22.0 (packageManager specified)
+- pnpm: 12.1.0 (packageManager specified)
 - Workspace globs and dependency overrides are configured in `pnpm-workspace.yaml`
 - The root intentionally has 38 development dependencies after removing Prettier and the orphan root Babel tooling; do not add a dependency to satisfy the migration plan's stale count
 
@@ -288,7 +288,7 @@ The root `readme.md` backlog tracks restoring automated `UPPER_CASE` enum-member
 
 ### Mobile App (packages/app)
 
-- **Framework**: Expo 56 with SDK features (Router, SQLite, Updates)
+- **Framework**: Expo 57 with SDK features (Router, SQLite, Updates)
 - **Navigation**: Expo Router (file-based routing in src/app/)
 - **State**: React Context + hooks (no Redux/MobX)
 - **Database**: SQLite via Drizzle ORM + expo-sqlite
@@ -427,4 +427,4 @@ The root `readme.md` backlog tracks restoring automated `UPPER_CASE` enum-member
 
 8. **Node version**: Requires Node.js >= 22.22.1. Check with `node --version` if encountering unexpected errors.
 
-9. **pnpm version**: Must use pnpm 11.22.0 (the `packageManager` field), not npm or yarn.
+9. **pnpm version**: Must use pnpm 12.1.0 (the `packageManager` field), not npm or yarn.

@@ -18,8 +18,8 @@
         "@rnw-community/shared": "^2.2.0",
         "better-sqlite3": "^12.10.0",
         "drizzle-orm": "^0.45.2",
-        "msw": "^2.14.6",
-        "vitest": "^4.1.7"
+        "msw": "^2.15.0",
+        "vitest": "^4.1.11"
     },
     "devDependencies": {
         "@lingui/core": "6.5.0",

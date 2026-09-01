@@ -5,7 +5,8 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     experimental: {
         inlineCss: true,
-        swcPlugins: [['@lingui/swc-plugin', {}]]
+        swcPlugins: [['@lingui/swc-plugin', {}]],
+        useTypeScriptCli: false
     },
     async headers() {
         return [

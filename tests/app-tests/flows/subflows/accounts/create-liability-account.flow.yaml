@@ -51,6 +51,8 @@ appId: ${APP_ID}
 - inputText: ${ACCOUNT_AMOUNT}
 - tapOn:
       text: 'ACCOUNT NAME & ICON'
+- waitForAnimationToEnd
+
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.SubmitButton'

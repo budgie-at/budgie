@@ -1,10 +1,10 @@
-import { EdgeFade } from '@budgie/screen-chrome';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { cn } from '../../utils/cn.util';
+import { EdgeFade } from '../edge-fade/edge-fade';
 import { PAGE_DEFAULT_SAFE_EDGES, pageGetSafeEdgeStyle } from '../page/utils/page-get-safe-edge-style.util';
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 

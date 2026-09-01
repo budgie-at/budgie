@@ -88,7 +88,7 @@ Use the repo package scopes without the npm namespace prefix:
 
 ```
 packages/
-├── app/                # React Native (Expo 56) - main mobile app
+├── app/                # React Native (Expo 57) - main mobile app
 ├── ai/                 # Pure TypeScript AI/LLM services
 ├── budget/             # Budget domain logic
 ├── consolidation/      # Transaction consolidation
@@ -506,12 +506,12 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 | Package       | Stack                                                                                                                                                                           |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **app**       | Expo 56, React 19 + Compiler, Expo Router 56, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                                             |
+| **app**       | Expo 57, React 19 + Compiler, Expo Router 57, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                                             |
 | **ai**        | Pure TypeScript, Zod                                                                                                                                                            |
 | **contracts** | Drizzle ORM, Zod, drizzle-zod                                                                                                                                                   |
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                                                |
 | **bank-sync** | @liaugust/monobank-sdk, date-fns                                                                                                                                                |
-| **Build**     | pnpm 11.22.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.4, native TypeScript 7 + TypeScript 6 API, Oxlint 1.74 JS bridge + 13-rule ESLint 10 fallback |
+| **Build**     | pnpm 12.1.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.12, native TypeScript 7 + TypeScript 6 API, Oxlint 1.80 JS bridge + 13-rule ESLint 10 fallback |
 
 ## Workflow
 
