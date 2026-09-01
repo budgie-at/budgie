@@ -96,12 +96,11 @@ appId: ${APP_ID}
       element:
           id: 'AccountForm.TargetBalanceInput'
       direction: UP
+- waitForAnimationToEnd
 - tapOn:
       id: 'AccountForm.TargetBalanceInput'
 - eraseText: 100
 - inputText: ${TARGET_BALANCE}
-- tapOn:
-      text: 'Debt Account'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
