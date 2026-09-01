@@ -30,10 +30,13 @@ fastlane ios ios_screenshots   # deliver the composed set
 ```
 
 `store_preflight` resolves the active variant, reports how many screenshots each
-locale carries, and fails when any PNG's pixel size matches no App Store slot.
-Run it after touching the Fastfile or the compose script.
+locale carries, and fails when a locale folder is missing or when any PNG's pixel
+size matches no App Store slot. Run it after touching the Fastfile or the compose
+script.
 
-`ios_screenshots` runs `deliver` with `skip_binary_upload`, `skip_metadata`,
+`ios_screenshots` re-runs both of those gates against the set it is about to
+upload, so a variant missing a locale can never reach `deliver`. It then runs
+`deliver` with `skip_binary_upload`, `skip_metadata`,
 `overwrite_screenshots`, `run_precheck_before_submit: false` and
 `submit_for_review: false`, so it only replaces the screenshot set on the
 editable version and never touches copy, the binary, or review state.
