@@ -1,0 +1,14 @@
+/* Budgie - App Store screenshot headlines (en-US)
+ * One short headline per scene, rendered as a single unwrapped line. Keep them
+ * under roughly 22 characters: compose-screenshots.sh shrinks the point size to
+ * fit 90% of the canvas width, so a long headline is set small rather than
+ * clipped, and a set of headlines that vary wildly in size reads as an
+ * accident. */
+
+"01-home" = "Money at a glance.";
+"02-transactions" = "Every expense, filed.";
+"03-analytics" = "See where it goes.";
+"04-budget" = "Budgets that hold.";
+"05-add-expense" = "Logged in seconds.";
+"06-account" = "Multi-currency accounts.";
+"07-settings" = "Offline first.";
