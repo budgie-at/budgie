@@ -4,6 +4,8 @@ on:
     workflow_dispatch:
     push:
         branches: [main]
+    schedule:
+        - cron: '0 3 * * *'
 
 concurrency:
     group: ios-native-cache-main
@@ -30,6 +32,7 @@ jobs:
                 EXPO_PUBLIC_AI_DISABLE=true
                 EXPO_PUBLIC_LOGGING_DISABLE=true
             install-command: pnpm install --frozen-lockfile
+            package-manager: pnpm
             build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
