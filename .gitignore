@@ -67,3 +67,10 @@ docs/superpowers
 
 # graphify knowledge graph output
 graphify-out/
+
+# Fastlane store screenshots
+packages/app/fastlane/screenshots/raw/
+packages/app/fastlane/screenshots/variants/ci/
+packages/app/fastlane/screenshots/**/*.staging*
+packages/app/fastlane/report.xml
+packages/app/fastlane/Preview.html
