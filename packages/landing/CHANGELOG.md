@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.8.0](https://github.com/budgie-at/budgie/compare/v6.7.0...v6.8.0) (2026-09-02)
+
+
+### Bug Fixes
+
+* address CodeRabbit review findings on PR 719 ([0564ef4](https://github.com/budgie-at/budgie/commit/0564ef483f8447dd8f253202438a7164ca7cf1bd))
+
+
+
+
+
 # [6.7.0](https://github.com/budgie-at/budgie/compare/v6.6.0...v6.7.0) (2026-09-02)
 
 

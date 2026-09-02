@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.8.0](https://github.com/budgie-at/budgie/compare/v6.7.0...v6.8.0) (2026-09-02)
+
+
+### Features
+
+* **app:** compose landing stills and clips from the store capture runner ([735c0f0](https://github.com/budgie-at/budgie/commit/735c0f03bd8cde2e34a6d03615ee4d8533e00e29))
+
+
+
+
+
 # [6.6.0](https://github.com/budgie-at/budgie/compare/v6.5.2...v6.6.0) (2026-09-02)
 
 
