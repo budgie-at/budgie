@@ -8,7 +8,10 @@ env:
 # script: split an expense -> add rows -> the remaining pill counts down to zero -> Done
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: split-entries.flow.yaml
+- runFlow:
+      file: split-entries.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

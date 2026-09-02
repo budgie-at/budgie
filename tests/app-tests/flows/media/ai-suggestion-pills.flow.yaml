@@ -1,5 +1,7 @@
 appId: ${APP_ID}
 env:
+    SCENE_ID: ${SCENE_ID || 'ai-auto-categorization-1'}
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
     MERCHANT_TITLE: ${MERCHANT_TITLE || 'Whole Foods Market'}
 ---
 # Expense form with a merchant title typed in, holding on the moment the on-device
@@ -25,3 +27,13 @@ env:
 - pressKey: enter
 
 - waitForAnimationToEnd
+
+# Capture-mode switch. Run on its own as a still scene the flow ends in the single
+# takeScreenshot mobile-ci requires per flow cell. Callers that compose it - the
+# record wrappers and the continuation scene flows - pass IS_COMPOSED='true', so a
+# composed cell still emits exactly one screenshot, and a recording emits none.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

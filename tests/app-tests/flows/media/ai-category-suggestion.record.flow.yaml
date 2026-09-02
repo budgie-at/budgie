@@ -8,7 +8,10 @@ env:
 # script: expense form -> type a merchant -> suggestion pills appear -> accept the category
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: ai-suggestion-pills.flow.yaml
+- runFlow:
+      file: ai-suggestion-pills.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

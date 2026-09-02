@@ -1,0 +1,28 @@
+appId: ${APP_ID}
+env:
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
+    SCENE_ID: ${SCENE_ID || 'voice-transaction-entry-2'}
+---
+# Voice review screen: the transcript parsed into an amount, a category and an
+# account, all pre-filled and unconfirmed. Continues voice-listening.flow.yaml.
+#
+# FOLLOW-UP: the voice review screen carries no stable testID, so the flow cannot
+# wait on the parsed rows and settles on the overlay instead. Blocked on app-side
+# selectors:
+#   VoiceReviewSelector.{Page,Amount,Category,Account,SaveButton}
+#       -> app/voice-review.tsx
+- runFlow:
+      file: voice-listening.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
+
+- waitForAnimationToEnd
+
+# Continuation scene. mobile-ci collects exactly one takeScreenshot per flow cell, so
+# the state this flow adds on top of voice-listening.flow.yaml is its own
+# scene rather than a second screenshot in that flow.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

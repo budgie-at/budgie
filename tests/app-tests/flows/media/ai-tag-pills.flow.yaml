@@ -1,5 +1,7 @@
 appId: ${APP_ID}
 env:
+    SCENE_ID: ${SCENE_ID || 'ai-tag-suggestions-1'}
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
     CATEGORY_NAME: ${CATEGORY_NAME || 'Groceries'}
 ---
 # Expense form after a category is picked, holding on the suggested tag pills.
@@ -39,3 +41,13 @@ env:
       notVisible:
           id: 'CategoryPickerBottomSheet.Input'
       timeout: 5000
+
+# Capture-mode switch. Run on its own as a still scene the flow ends in the single
+# takeScreenshot mobile-ci requires per flow cell. Callers that compose it - the
+# record wrappers and the continuation scene flows - pass IS_COMPOSED='true', so a
+# composed cell still emits exactly one screenshot, and a recording emits none.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

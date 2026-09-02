@@ -1,5 +1,7 @@
 appId: ${APP_ID}
 env:
+    SCENE_ID: ${SCENE_ID || 'statistics-tags-tab-1'}
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
     TAG_STATISTICS_ID: ${TAG_STATISTICS_ID || 'TagStatisticsCard.Work'}
 ---
 # Statistics -> Tags. The tab is local component state, not a route param, so it
@@ -21,3 +23,13 @@ env:
       visible:
           id: '${TAG_STATISTICS_ID}'
       timeout: 10000
+
+# Capture-mode switch. Run on its own as a still scene the flow ends in the single
+# takeScreenshot mobile-ci requires per flow cell. Callers that compose it - the
+# record wrappers and the continuation scene flows - pass IS_COMPOSED='true', so a
+# composed cell still emits exactly one screenshot, and a recording emits none.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

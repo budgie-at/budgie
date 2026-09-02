@@ -10,13 +10,65 @@ top-level flows. Nothing here changes app behaviour, and no flow adds a `launchA
 
 | File | Purpose |
 | --- | --- |
-| `<name>.flow.yaml` | 26 interaction flows — the app states a deep link alone cannot express. Reused by both the still captures and the clips. |
+| `<name>.flow.yaml` | 32 scene flows — the app states a deep link alone cannot express. Each is a still scene in `.github/landing-media.config.json` and is reused by the clips. |
 | `<clip>.record.flow.yaml` | 39 record wrappers, one per storyboard clip. `startRecording` -> the interaction -> settle -> `stopRecording`. |
 | `clip-routes.json` | Clip map: owning landing route slug, trim window, poster timestamp, aliases, encode settings and byte budgets. |
 
 Every wrapper is parameterised by `APP_ID`, `LOCALE` and `APPEARANCE`, which the runner
 passes with `-e`, and names its recording `<clip>-<locale>-<appearance>` so a stray file
 is self-identifying.
+
+### Scene flows
+
+26 base flows:
+
+`voice-listening`, `ai-suggestion-pills`, `ai-tag-pills`, `cross-currency-transfer`,
+`csv-column-mapper`, `erste-pdf-preview`, `privatbank-xlsx-preview`, `category-form`,
+`category-form-translation`, `export-share`, `date-filter`, `bank-token-entry`,
+`pin-locked-cold-open`, `analytics-drilldown`, `analytics-tags-tab`,
+`transactions-recurring-tab`, `long-press-menu`, `tags-selector-open`,
+`uncategorized-pill`, `net-worth-drilldown`, `split-entries`, `consolidation-review`,
+`resync-window-picker`, `transaction-fee-sheet`, `convert-to-refund-picker`,
+`language-selector`
+
+6 continuation scenes. mobile-ci's capture action collects **exactly one**
+`takeScreenshot` per flow cell, so a storyboard scene that is "the same flow, one step
+further" cannot be a second screenshot inside the base flow — it is its own flow that
+composes the base one:
+
+| Flow | Scene | Continues |
+| --- | --- | --- |
+| `voice-review` | `voice-transaction-entry-2` | `voice-listening` |
+| `ai-history-suggestions` | `ai-transaction-suggestions-1` | stands alone — the pills are shown with nothing typed, which `ai-suggestion-pills` cannot do |
+| `uncategorized-cleanup-page` | `uncategorized-transactions-2` | `uncategorized-pill` |
+| `recurring-day-detail` | `recurring-payments-calendar-2` | `transactions-recurring-tab` |
+| `analytics-untagged-drilldown` | `tag-analytics-1` | `analytics-tags-tab` |
+| `convert-to-transfer-picker` | `convert-to-transfer-1` | `long-press-menu` |
+
+Splitting those out moved the trailing step of `uncategorized-pill`,
+`transactions-recurring-tab` and `long-press-menu` into the continuation flow, so their
+own scene shows the state the storyboard actually asks for (the pill with its count, the
+month grid, the context menu) instead of the state after it. The `uncategorized-cleanup`,
+`recurring-calendar` and `long-press-menu` clips therefore run the continuation flow, so
+no clip lost a beat.
+
+### Capture-mode switch
+
+Every scene flow ends in:
+
+```yaml
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}
+```
+
+Run on its own — which is how the capture action invokes it — the flow emits the single
+screenshot the cell requires, named by its `SCENE_ID` default. Every caller that composes
+it (a record wrapper, or a continuation scene) passes `IS_COMPOSED: 'true'`, so a
+composed still cell still emits exactly one screenshot and a recording emits none.
+`scripts/test-record-media-clips.sh` resolves the whole `runFlow` graph and asserts both.
 
 ## Record
 
@@ -106,8 +158,8 @@ has to be added app-side first. Adding them is out of scope here (no app-code ch
 
 | Surface | Missing selectors | Blocks |
 | --- | --- | --- |
-| Voice entry | `CreateTransactionMenuSelector.AiButton`, `VoiceInputOverlaySelector.{Container,RecordButton,Waveform,Transcript}`, `VoiceReviewSelector.{Page,Amount,Category,Account,SaveButton}` | `voice-listening`, `voice-entry` |
-| AI suggestion pills | `SuggestionPillSelector.{Row,Pill}` | `ai-suggestion-pills`, `ai-tag-pills`, `ai-category-suggestion` |
+| Voice entry | `CreateTransactionMenuSelector.AiButton`, `VoiceInputOverlaySelector.{Container,RecordButton,Waveform,Transcript}`, `VoiceReviewSelector.{Page,Amount,Category,Account,SaveButton}` | `voice-listening`, `voice-review`, `voice-entry` |
+| AI suggestion pills | `SuggestionPillSelector.{Row,Pill}` | `ai-suggestion-pills`, `ai-history-suggestions`, `ai-tag-pills`, `ai-category-suggestion` |
 | CSV column mapper | `ImportColumnMapperSelector.{Page,Field,Option,PreviewRow,DecimalSeparator,DateFormat,PresetNameInput}` | `csv-column-mapper`, `csv-import` |
 | AI translation fields | `AiTranslationFieldsSelector.{Container,EnglishTitleInput,KeywordsInput,RegenerateButton}` | `category-form-translation`, `merchant-translation` |
 | Re-sync window picker | `ResyncWindowPickerSelector.{Page,Preset,CustomRangeRow,ConfirmButton}` | `resync-window-picker`, `resync-window` |
@@ -121,4 +173,7 @@ the app translates system category names at render time, so any `testID` derived
 title differs per locale. Flows therefore prefer id-derived selectors
 (`TransactionCard.103`, `BudgetDetails.CategoryRow.11`, `BankIntegration.AccountRow.1`)
 and, where only a title-derived selector exists, take it as an `env` parameter with the
-English default. Non-English cells pass the translated value with `-e`.
+English default. Non-English cells pass the translated value with `-e`. The parameters
+in play are `ACCOUNT_NAME`, `CATEGORY_NAME`, `TAG_ONE`/`TAG_TWO`/`TAG_THREE`,
+`CATEGORY_STATISTICS_ID`, `TAG_STATISTICS_ID`, `UNTAGGED_STATISTICS_ID`,
+`MERGE_SOURCE_CATEGORY`/`MERGE_TARGET_CATEGORY` and `SHARE_SHEET_LABEL`.

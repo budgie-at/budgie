@@ -1,5 +1,7 @@
 appId: ${APP_ID}
 env:
+    SCENE_ID: ${SCENE_ID || 'multi-language-app-1'}
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
     TARGET_LOCALE: ${TARGET_LOCALE || 'uk'}
 ---
 # Settings -> General -> Language -> pick another locale. The whole UI re-renders in
@@ -24,3 +26,13 @@ env:
       visible:
           id: 'SettingsPage.LanguageCard.${TARGET_LOCALE}'
       timeout: 10000
+
+# Capture-mode switch. Run on its own as a still scene the flow ends in the single
+# takeScreenshot mobile-ci requires per flow cell. Callers that compose it - the
+# record wrappers and the continuation scene flows - pass IS_COMPOSED='true', so a
+# composed cell still emits exactly one screenshot, and a recording emits none.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

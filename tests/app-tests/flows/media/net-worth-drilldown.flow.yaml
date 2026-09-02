@@ -1,4 +1,7 @@
 appId: ${APP_ID}
+env:
+    SCENE_ID: ${SCENE_ID || 'multi-currency-1'}
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
 ---
 # Home at rest -> scroll so the net-worth header collapses to the compact total ->
 # tap the aggregated figure -> the per-currency leg breakdown.
@@ -25,3 +28,13 @@ appId: ${APP_ID}
       id: 'NetWorthAssetChips.Fiat'
 
 - waitForAnimationToEnd
+
+# Capture-mode switch. Run on its own as a still scene the flow ends in the single
+# takeScreenshot mobile-ci requires per flow cell. Callers that compose it - the
+# record wrappers and the continuation scene flows - pass IS_COMPOSED='true', so a
+# composed cell still emits exactly one screenshot, and a recording emits none.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

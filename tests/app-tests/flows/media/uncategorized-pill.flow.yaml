@@ -1,9 +1,12 @@
 appId: ${APP_ID}
 env:
+    SCENE_ID: ${SCENE_ID || 'uncategorized-transactions-1'}
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
     ACCOUNT_NAME: ${ACCOUNT_NAME || 'Main Checking'}
 ---
 # Transactions -> apply an account filter -> the filter-aware missing-category pill
-# -> the focused cleanup list behind it.
+# above the list, reading its exact count. Tapping through to the cleanup page is
+# the continuation scene, uncategorized-cleanup-page.flow.yaml.
 - runFlow:
       file: ../subflows/navigation/open-deep-link.flow.yaml
       env:
@@ -35,7 +38,12 @@ env:
           id: 'UncategorizedTransactionsPill.Button'
       timeout: 10000
 
-- tapOn:
-      id: 'UncategorizedTransactionsPill.Button'
-
-- waitForAnimationToEnd
+# Capture-mode switch. Run on its own as a still scene the flow ends in the single
+# takeScreenshot mobile-ci requires per flow cell. Callers that compose it - the
+# record wrappers and the continuation scene flows - pass IS_COMPOSED='true', so a
+# composed cell still emits exactly one screenshot, and a recording emits none.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

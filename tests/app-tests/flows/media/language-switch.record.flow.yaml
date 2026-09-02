@@ -8,7 +8,10 @@ env:
 # script: Settings -> General -> Language -> pick a locale -> the UI re-renders in place
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: language-selector.flow.yaml
+- runFlow:
+      file: language-selector.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

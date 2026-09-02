@@ -1,0 +1,40 @@
+appId: ${APP_ID}
+env:
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
+    SCENE_ID: ${SCENE_ID || 'tag-analytics-1'}
+    UNTAGGED_STATISTICS_ID: ${UNTAGGED_STATISTICS_ID || 'TagStatisticsCard.Untagged'}
+---
+# The drill-down list behind the Untagged bucket: transactions carrying no tags at
+# all. Continues analytics-tags-tab.flow.yaml, which holds on the tag rows.
+#
+# UNTAGGED_STATISTICS_ID is title-derived and therefore locale-dependent, so the
+# non-English cells pass the translated bucket label.
+- runFlow:
+      file: analytics-tags-tab.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
+
+- scrollUntilVisible:
+      element:
+          id: '${UNTAGGED_STATISTICS_ID}'
+      direction: DOWN
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+- waitForAnimationToEnd
+
+- tapOn:
+      id: '${UNTAGGED_STATISTICS_ID}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'PageHeader.BackButton'
+      timeout: 10000
+
+# Continuation scene. mobile-ci collects exactly one takeScreenshot per flow cell, so
+# the state this flow adds on top of analytics-tags-tab.flow.yaml is its own
+# scene rather than a second screenshot in that flow.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

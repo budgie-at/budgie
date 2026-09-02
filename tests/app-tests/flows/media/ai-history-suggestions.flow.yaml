@@ -1,0 +1,34 @@
+appId: ${APP_ID}
+env:
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
+    SCENE_ID: ${SCENE_ID || 'ai-transaction-suggestions-1'}
+---
+# Expense form opened cold, with the pill row already offering a category, tags, a
+# comment, an amount and an account from history - nothing typed. That "nothing
+# typed" is what separates this scene from ai-suggestion-pills.flow.yaml, which types
+# a merchant first, so the two cannot share a flow.
+#
+# FOLLOW-UP: the suggestion pills carry no stable testID, so the flow settles on the
+# form instead of waiting on the pill row. Blocked on app-side selectors:
+#   SuggestionPillSelector.{Row,Pill}
+#       -> transaction/components/suggestion-pill, transaction/components/suggestion-row
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://create-transaction/expense'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionForm.Page'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+# Continuation scene. mobile-ci collects exactly one takeScreenshot per flow cell, so
+# the state this flow adds on top of ai-suggestion-pills.flow.yaml is its own
+# scene rather than a second screenshot in that flow.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

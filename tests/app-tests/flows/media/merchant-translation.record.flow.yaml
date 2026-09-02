@@ -8,7 +8,10 @@ env:
 # script: Settings -> Categories -> a non-Latin category -> its English title and keywords
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: category-form-translation.flow.yaml
+- runFlow:
+      file: category-form-translation.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

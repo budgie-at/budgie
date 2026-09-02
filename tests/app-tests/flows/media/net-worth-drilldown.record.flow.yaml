@@ -8,7 +8,10 @@ env:
 # script: Home at rest -> scroll -> header collapses -> tap the total -> per-currency legs
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: net-worth-drilldown.flow.yaml
+- runFlow:
+      file: net-worth-drilldown.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

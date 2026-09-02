@@ -94,6 +94,66 @@ else
     FAILURES=$((FAILURES + 1))
 fi
 
+# mobile-ci's capture action collects exactly one takeScreenshot per flow cell and
+# fails the cell otherwise, so a still scene flow must emit exactly one and a record
+# wrapper none - after resolving the whole runFlow graph, since the continuation
+# scenes compose the base flow they extend.
+SCREENSHOT_REPORT=$(python3 - "$FLOWS_DIR" <<'PYEOF'
+import glob
+import os
+import re
+import sys
+
+base = sys.argv[1]
+
+
+def parse(path):
+    text = open(path).read()
+    has_gate = "IS_COMPOSED: ${IS_COMPOSED || 'false'}" in text
+    own = len(re.findall(r'takeScreenshot:', text))
+    children = []
+    for match in re.finditer(r'- runFlow:\n\s+file: ([a-z0-9-]+\.flow\.yaml)\n(\s+env:\n((?:\s{10,}.*\n)+))?', text):
+        children.append((match.group(1), "IS_COMPOSED: 'true'" in (match.group(3) or '')))
+    for match in re.finditer(r'- runFlow: ([a-z0-9-]+\.flow\.yaml)\n', text):
+        children.append((match.group(1), False))
+    return has_gate, own, children
+
+
+def shots(name, composed):
+    has_gate, own, children = parse(os.path.join(base, name))
+    total = 0 if (composed and has_gate) else own
+    for child, child_composed in children:
+        total += shots(child, child_composed)
+    return total
+
+
+for path in sorted(glob.glob(os.path.join(base, '*.flow.yaml'))):
+    name = os.path.basename(path)
+    expected = 0 if name.endswith('.record.flow.yaml') else 1
+    count = shots(name, composed=False)
+    if count != expected:
+        print('%s: expected %d screenshot(s), got %d' % (name, expected, count))
+PYEOF
+)
+if [ -z "$SCREENSHOT_REPORT" ]; then
+    echo 'ok   every still scene flow emits exactly one takeScreenshot and every record wrapper none'
+else
+    printf '%s\n' "$SCREENSHOT_REPORT"
+    echo 'FAIL a flow cell would emit the wrong number of screenshots'
+    FAILURES=$((FAILURES + 1))
+fi
+
+# The still scenes are addressed by name from .github/landing-media.config.json, so a
+# scene flow without a SCENE_ID default would capture into an unnamed file.
+MISSING_SCENE_ID=$(grep -L 'SCENE_ID' $(find "$FLOWS_DIR" -name '*.flow.yaml' -not -name '*.record.flow.yaml') || true)
+if [ -z "$MISSING_SCENE_ID" ]; then
+    echo 'ok   every scene flow declares a SCENE_ID default'
+else
+    printf '%s\n' "$MISSING_SCENE_ID"
+    echo 'FAIL a scene flow has no SCENE_ID default'
+    FAILURES=$((FAILURES + 1))
+fi
+
 CONFIG="$WORK_DIR/landing-media.config.json"
 cat > "$CONFIG" <<'JSON'
 {

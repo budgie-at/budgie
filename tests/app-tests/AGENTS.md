@@ -69,22 +69,30 @@ Capture-only flows for the landing site's motion assets live in `flows/media/` a
 deliberately outside the E2E suite: `config.yaml` globs `flows/*.flow.yaml`, which does
 not descend into `media/`, and `validate-shards.sh` only enumerates top-level flows.
 
-1. `flows/media/<name>.flow.yaml` are the 26 interaction flows - the app states a deep
-   link alone cannot express. `flows/media/<clip>.record.flow.yaml` are the 39 record
-   wrappers: `startRecording` -> the interaction -> settle -> `stopRecording`.
-2. Media flows follow the same selector rules as the suite: `testID` and text selectors
+1. `flows/media/<name>.flow.yaml` are the 32 scene flows - the app states a deep link
+   alone cannot express, each also a still scene in `.github/landing-media.config.json`.
+   `flows/media/<clip>.record.flow.yaml` are the 39 record wrappers: `startRecording`
+   -> the interaction -> settle -> `stopRecording`.
+2. mobile-ci's capture action collects exactly one `takeScreenshot` per flow cell, so a
+   storyboard scene that is the same flow one step further is its own flow composing the
+   base one, never a second screenshot inside it. Every scene flow ends in a
+   `takeScreenshot: ${SCENE_ID}` gated on `IS_COMPOSED != 'true'`, and every caller that
+   composes it passes `IS_COMPOSED: 'true'`. Never add an ungated `takeScreenshot` to a
+   media flow - `test-record-media-clips.sh` resolves the `runFlow` graph and fails on a
+   cell that would emit the wrong number.
+3. Media flows follow the same selector rules as the suite: `testID` and text selectors
    only, deep-link first through the shared navigation subflows, wait for the
    destination identity once. Where a storyboard control has no stable `testID`, the
    flow stops at the last addressable state and carries a `FOLLOW-UP` comment naming the
    selector to add; never hand-build coordinates and never change app code for a capture.
-3. Never add `launchApp`, `stopApp` or a relaunch to a media flow. `record-media-clips.sh`
+4. Never add `launchApp`, `stopApp` or a relaunch to a media flow. `record-media-clips.sh`
    terminates and relaunches per cell, so a wrapper already starts from a cold app, and a
    relaunch inside the recording would put a launch frame at the head of the clip.
-4. Prefer id-derived selectors over title-derived ones. The `showcase.db` locale overlays
+5. Prefer id-derived selectors over title-derived ones. The `showcase.db` locale overlays
    translate account, tag, budget and merchant titles, so a title-derived `testID` differs
    per locale; where only a title selector exists, take it as an `env` parameter with the
    English default and let the runner pass the translated value.
-5. `record-media-clips.sh` mirrors `capture-store-screenshots.sh` cell for cell;
+6. `record-media-clips.sh` mirrors `capture-store-screenshots.sh` cell for cell;
    `encode-media-clips.sh` reads every per-clip decision from `flows/media/clip-routes.json`.
    Raw recordings land in the gitignored `packages/landing/public/media-src/`; only the
    encoded delivery set under `packages/landing/public/media/` is an asset. GIF is never

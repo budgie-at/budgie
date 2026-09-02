@@ -8,7 +8,10 @@ env:
 # script: transfer form -> pick both legs -> the dual-amount conversion row expands
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: cross-currency-transfer.flow.yaml
+- runFlow:
+      file: cross-currency-transfer.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

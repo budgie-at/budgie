@@ -8,7 +8,10 @@ env:
 # script: Transactions -> date pill -> preset list -> apply -> the list re-queries
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: date-filter.flow.yaml
+- runFlow:
+      file: date-filter.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

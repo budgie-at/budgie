@@ -8,7 +8,10 @@ env:
 # script: Transactions -> account filter -> the missing-category pill -> the cleanup list
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: uncategorized-pill.flow.yaml
+- runFlow:
+      file: uncategorized-cleanup-page.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

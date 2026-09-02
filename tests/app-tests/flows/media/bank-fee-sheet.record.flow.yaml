@@ -8,7 +8,10 @@ env:
 # script: open a transfer -> Add fee -> the compact fee sheet -> type the amount
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: transaction-fee-sheet.flow.yaml
+- runFlow:
+      file: transaction-fee-sheet.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

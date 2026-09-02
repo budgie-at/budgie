@@ -8,7 +8,10 @@ env:
 # script: cold open -> lock screen -> four digits -> unlock -> Home with balances
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: pin-locked-cold-open.flow.yaml
+- runFlow:
+      file: pin-locked-cold-open.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

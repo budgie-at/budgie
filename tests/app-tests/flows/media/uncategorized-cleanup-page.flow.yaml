@@ -1,0 +1,31 @@
+appId: ${APP_ID}
+env:
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
+    SCENE_ID: ${SCENE_ID || 'uncategorized-transactions-2'}
+---
+# The focused cleanup page behind the missing-category pill: only uncategorised
+# matches, with the account filter from uncategorized-pill.flow.yaml preserved in the
+# header.
+- runFlow:
+      file: uncategorized-pill.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
+
+- tapOn:
+      id: 'UncategorizedTransactionsPill.Button'
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 10000
+
+# Continuation scene. mobile-ci collects exactly one takeScreenshot per flow cell, so
+# the state this flow adds on top of uncategorized-pill.flow.yaml is its own
+# scene rather than a second screenshot in that flow.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

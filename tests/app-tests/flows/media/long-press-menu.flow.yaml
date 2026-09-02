@@ -1,9 +1,12 @@
 appId: ${APP_ID}
 env:
+    SCENE_ID: ${SCENE_ID || 'transaction-long-press-menu-1'}
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
     TRANSACTION_ID: ${TRANSACTION_ID || '103'}
 ---
-# Transactions -> long-press a card -> the context menu animates open anchored to
-# it -> Convert to Transfer -> the counter-account picker.
+# Transactions -> long-press a card -> the context menu animates open anchored to it,
+# list dimmed behind. Tapping through to the counter-account picker is the
+# continuation scene, convert-to-transfer-picker.flow.yaml.
 - runFlow:
       file: ../subflows/navigation/open-deep-link.flow.yaml
       env:
@@ -19,7 +22,20 @@ env:
           id: 'TransactionCard.${TRANSACTION_ID}'
       timeout: 10000
 
+- longPressOn:
+      id: 'TransactionCard.${TRANSACTION_ID}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionContextMenu.ConvertToTransferButton'
+      timeout: 10000
+
+# Capture-mode switch. Run on its own as a still scene the flow ends in the single
+# takeScreenshot mobile-ci requires per flow cell. Callers that compose it - the
+# record wrappers and the continuation scene flows - pass IS_COMPOSED='true', so a
+# composed cell still emits exactly one screenshot, and a recording emits none.
 - runFlow:
-      file: ../subflows/transactions/long-press-convert-to-transfer.flow.yaml
-      env:
-          TRANSACTION_CARD_ID: 'TransactionCard.${TRANSACTION_ID}'
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

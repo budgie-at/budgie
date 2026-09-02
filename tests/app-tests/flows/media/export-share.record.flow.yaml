@@ -8,7 +8,10 @@ env:
 # script: Settings -> Data -> Export CSV -> the OS share sheet rises with the file
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: export-share.flow.yaml
+- runFlow:
+      file: export-share.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

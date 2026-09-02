@@ -8,7 +8,10 @@ env:
 # script: open the create menu -> AI voice entry -> waveform -> parsed review -> save
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: voice-listening.flow.yaml
+- runFlow:
+      file: voice-listening.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

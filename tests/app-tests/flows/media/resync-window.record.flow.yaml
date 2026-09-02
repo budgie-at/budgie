@@ -8,7 +8,10 @@ env:
 # script: Account detail -> Re-sync -> the window picker -> the diff preview
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: resync-window-picker.flow.yaml
+- runFlow:
+      file: resync-window-picker.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

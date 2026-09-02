@@ -1,5 +1,7 @@
 appId: ${APP_ID}
 env:
+    SCENE_ID: ${SCENE_ID || 'convert-to-refund-1'}
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
     INCOME_TRANSACTION_ID: ${INCOME_TRANSACTION_ID || '201'}
     REFUND_CANDIDATE_ID: ${REFUND_CANDIDATE_ID || '103'}
 ---
@@ -36,3 +38,13 @@ env:
       visible:
           id: 'ConvertToRefund.ConvertButton'
       timeout: 5000
+
+# Capture-mode switch. Run on its own as a still scene the flow ends in the single
+# takeScreenshot mobile-ci requires per flow cell. Callers that compose it - the
+# record wrappers and the continuation scene flows - pass IS_COMPOSED='true', so a
+# composed cell still emits exactly one screenshot, and a recording emits none.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

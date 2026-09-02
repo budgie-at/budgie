@@ -8,7 +8,10 @@ env:
 # script: press and hold a card -> the menu opens -> Convert to Transfer -> the picker
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: long-press-menu.flow.yaml
+- runFlow:
+      file: convert-to-transfer-picker.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

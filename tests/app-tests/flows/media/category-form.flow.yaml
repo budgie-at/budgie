@@ -1,5 +1,7 @@
 appId: ${APP_ID}
 env:
+    SCENE_ID: ${SCENE_ID || 'custom-categories-2'}
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
     CATEGORY_NAME: ${CATEGORY_NAME || 'Groceries'}
 ---
 # Settings -> Organization -> Categories -> open one category and expand the icon
@@ -39,3 +41,13 @@ env:
       visible:
           id: 'IconSelector.SearchInput'
       timeout: 10000
+
+# Capture-mode switch. Run on its own as a still scene the flow ends in the single
+# takeScreenshot mobile-ci requires per flow cell. Callers that compose it - the
+# record wrappers and the continuation scene flows - pass IS_COMPOSED='true', so a
+# composed cell still emits exactly one screenshot, and a recording emits none.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}

@@ -8,7 +8,10 @@ env:
 # script: Settings -> Consolidate transfers -> the review queue -> the two legs side by side
 - startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
 
-- runFlow: consolidation-review.flow.yaml
+- runFlow:
+      file: consolidation-review.flow.yaml
+      env:
+          IS_COMPOSED: 'true'
 
 - waitForAnimationToEnd
 

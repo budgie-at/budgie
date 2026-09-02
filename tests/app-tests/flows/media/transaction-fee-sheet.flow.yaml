@@ -1,5 +1,7 @@
 appId: ${APP_ID}
 env:
+    SCENE_ID: ${SCENE_ID || 'bank-fee-tracking-1'}
+    IS_COMPOSED: ${IS_COMPOSED || 'false'}
     TRANSFER_TRANSACTION_ID: ${TRANSFER_TRANSACTION_ID || '301'}
 ---
 # A transfer's fee sheet: the compact sheet rises over the transfer, the fee amount
@@ -36,3 +38,13 @@ env:
       id: 'TransactionKeypad.Digit.0'
 
 - waitForAnimationToEnd
+
+# Capture-mode switch. Run on its own as a still scene the flow ends in the single
+# takeScreenshot mobile-ci requires per flow cell. Callers that compose it - the
+# record wrappers and the continuation scene flows - pass IS_COMPOSED='true', so a
+# composed cell still emits exactly one screenshot, and a recording emits none.
+- runFlow:
+      when:
+          true: ${IS_COMPOSED != 'true'}
+      commands:
+          - takeScreenshot: ${SCENE_ID}
