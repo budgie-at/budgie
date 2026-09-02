@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -130,19 +130,24 @@ if (errors.length > 0) {
 const source = renderManifestSource(assets);
 
 if (process.argv.includes('--check')) {
-    const scratchPath = join(mkdtempSync(join(tmpdir(), 'budgie-media-')), 'media-manifest.constant.ts');
+    const scratchDirectory = mkdtempSync(join(tmpdir(), 'budgie-media-'));
+    const scratchPath = join(scratchDirectory, 'media-manifest.constant.ts');
 
-    writeFileSync(scratchPath, source, 'utf8');
+    try {
+        writeFileSync(scratchPath, source, 'utf8');
 
-    const rendered = formatSource(scratchPath);
-    const committed = existsSync(MANIFEST_PATH) ? readFileSync(MANIFEST_PATH, 'utf8') : '';
+        const rendered = formatSource(scratchPath);
+        const committed = existsSync(MANIFEST_PATH) ? readFileSync(MANIFEST_PATH, 'utf8') : '';
 
-    if (rendered !== committed) {
-        process.stderr.write('media:manifest  manifest is stale, run pnpm media:manifest\n');
-        process.exit(1);
+        if (rendered !== committed) {
+            process.stderr.write('media:manifest  manifest is stale, run pnpm media:manifest\n');
+            process.exit(1);
+        }
+
+        process.stdout.write(`media:manifest  ${assets.length} asset(s) verified\n`);
+    } finally {
+        rmSync(scratchDirectory, { recursive: true, force: true });
     }
-
-    process.stdout.write(`media:manifest  ${assets.length} asset(s) verified\n`);
 } else {
     writeFileSync(MANIFEST_PATH, source, 'utf8');
     formatSource(MANIFEST_PATH);

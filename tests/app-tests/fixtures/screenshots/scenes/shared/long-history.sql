@@ -67,7 +67,9 @@ SELECT
     transaction_entries.category_source,
     'PRIMARY'
 FROM overlay_clone
-INNER JOIN transaction_entries ON transaction_entries.transaction_id = overlay_clone.source_id;
+INNER JOIN transaction_entries
+    ON transaction_entries.transaction_id = overlay_clone.source_id
+   AND transaction_entries.deleted_at IS NULL;
 
 DROP TABLE overlay_clone;
 DROP TABLE overlay_source;

@@ -38,12 +38,6 @@ assert_equals() {
     pass "$description"
 }
 
-if ! command -v sqlite3 >/dev/null 2>&1; then
-    echo "test-seed-screenshot-scene: sqlite3 was not found in PATH, skipping"
-
-    exit 0
-fi
-
 bash -n "$SEED_SCRIPT"
 
 MISSING_REFERENCE_COUNT=0
@@ -58,6 +52,12 @@ for SCENE_FILE in "$SCENES_DIR"/*.sql; do
 done
 
 assert_equals 'every .read shared/<x>.sql reference resolves to a committed file' 0 "$MISSING_REFERENCE_COUNT"
+
+if ! command -v sqlite3 >/dev/null 2>&1; then
+    echo "test-seed-screenshot-scene: sqlite3 was not found in PATH, skipping database checks"
+
+    exit 0
+fi
 
 STORE_DATABASE_PATH="$TEMP_DIR/01-home.db"
 
