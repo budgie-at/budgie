@@ -22,8 +22,16 @@
 # Before the first cell the same prime flow is run once against the target
 # simulator. On a fresh install iOS raises its "Open in <app>?" trust alert for
 # the first custom-scheme open and it lands in every deep-link capture until it
-# is granted; only Maestro can tap it. Use --skip-prime on a simulator that has
-# already been trusted.
+# is granted; only Maestro can tap it. Every fresh simulator needs this, iPhone
+# and iPad alike, and the iPad additionally queues the alert across relaunch, so
+# `xcrun simctl erase` an iPad that is already stranded on it and let this run
+# reinstall. Use --skip-prime on a simulator that has already been trusted.
+#
+# Failed cells are retried once, exactly like the action: the app is terminated
+# and the cell replayed. A failed seed and a flow cell that emitted the wrong
+# number of screenshots are terminal and never retried. The simulator is shut
+# down when its device finishes so a capture run does not leave a booted
+# simulator - and its CoreSimulator worker processes - behind.
 #
 # Output layout is CI's fixed layout and is not configurable:
 #   <output>/raw/ios/<device-slug>/<locale>/<appearance>/<scene>.png
@@ -40,6 +48,7 @@
 #   --scenes <a,b>          override the manifest scenes
 #   --settle <seconds>      override settle-seconds
 #   --skip-prime            skip the deep-link trust priming flow (already-trusted sim)
+#   --keep-booted           leave the simulator booted instead of shutting it down
 #   --status-bar real|override   default override (9:41, full bars, 100% battery)
 #   --os-locale ci|regional      AppleLocale passed at launch; ci (default) matches mobile-ci
 #   --output <dir>          screenshots root (default packages/app/fastlane/screenshots)
@@ -65,8 +74,15 @@ STATUS_BAR_MODE=''
 OS_LOCALE_MODE='ci'
 SKIP_INSTALL='false'
 SKIP_PRIME='false'
+KEEP_BOOTED='false'
 DRY_RUN='false'
 MAESTRO_WORK_DIR=''
+
+# mobile-ci's own bounds: one retry per cell, a wedged simulator gives up after
+# five minutes, and the closing shutdown never blocks a run for more than 30s.
+MAX_CELL_ATTEMPTS=2
+BOOTSTATUS_TIMEOUT_SECONDS=300
+SHUTDOWN_TIMEOUT_SECONDS=30
 
 # App locale -> regional OS locale identifier, used only by --os-locale regional.
 # mobile-ci launches with the bare app locale, so `ci` is the default and the
@@ -103,8 +119,9 @@ while [ "$#" -gt 0 ]; do
         --output) OUTPUT_ROOT="${2:-}"; shift 2 ;;
         --skip-install) SKIP_INSTALL='true'; shift ;;
         --skip-prime) SKIP_PRIME='true'; shift ;;
+        --keep-booted) KEEP_BOOTED='true'; shift ;;
         --dry-run) DRY_RUN='true'; shift ;;
-        -h | --help) sed -n '2,48p' "$0"; exit 0 ;;
+        -h | --help) sed -n '2,57p' "$0"; exit 0 ;;
         *) fail "unknown argument '$1'" ;;
     esac
 done
@@ -131,9 +148,10 @@ else
 fi
 
 # mobile-ci accepts ios-target either as a config key or as a `with:` input on
-# the caller workflow, and Budgie's caller passes it as an input, so the config
-# file may carry no app id at all. Fall back to the E2E bundle id the capture
-# build always uses - the same one tests/app-tests' test:ios script pins.
+# the caller workflow. Budgie keeps it in the config file, so it is read from
+# there; a caller that still passes it as an input leaves no app id here, so
+# fall back to the E2E bundle id the capture build always uses - the same one
+# tests/app-tests' test:ios script pins.
 if [ -z "$APP_ID" ]; then
     APP_ID=$(jq -r '."ios-target" // empty | if type == "string" then fromjson else . end | .appId // empty' "$CONFIG_PATH")
 fi
@@ -290,9 +308,38 @@ resolve_device_udid() {
     printf '%s\n' "$candidates" | awk -F'\t' -v runtime="$newest" '$1 == runtime { print $2 }'
 }
 
+# `simctl bootstatus` blocks forever on a wedged simulator, so it is bounded the
+# same way the action bounds it - with perl's alarm, since macOS ships no
+# `timeout`. Exit 142 is the alarm firing.
 boot_simulator() {
-    xcrun simctl boot "$1" 2>/dev/null || true
-    xcrun simctl bootstatus "$1" -b >/dev/null
+    local udid="$1" bootstatus_exit=0
+
+    command -v perl >/dev/null 2>&1 || fail "'perl' is required to bound 'xcrun simctl bootstatus'"
+    xcrun simctl boot "$udid" 2>/dev/null || true
+    perl -e 'alarm shift; exec @ARGV' "$BOOTSTATUS_TIMEOUT_SECONDS" xcrun simctl bootstatus "$udid" -b >/dev/null ||
+        bootstatus_exit=$?
+    [ "$bootstatus_exit" -eq 0 ] && return 0
+    if [ "$bootstatus_exit" -eq 142 ]; then
+        fail "xcrun simctl bootstatus timed out after ${BOOTSTATUS_TIMEOUT_SECONDS}s waiting for simulator '$udid'; it is wedged"
+    fi
+
+    fail "xcrun simctl bootstatus failed for simulator '$udid' (exit $bootstatus_exit)"
+}
+
+# A simulator left booted keeps its whole launchd_sim/CoreSimulator worker tree
+# alive, and a multi-device matrix leaks one tree per device, so each device is
+# shut down when it finishes - bounded, and never fatal to an otherwise good run.
+shutdown_simulator() {
+    local udid="$1"
+
+    [ "$KEEP_BOOTED" = 'false' ] || return 0
+    command -v perl >/dev/null 2>&1 || {
+        echo "warning: 'perl' is not on PATH; leaving simulator '$udid' booted" >&2
+
+        return 0
+    }
+    perl -e 'alarm shift; exec @ARGV' "$SHUTDOWN_TIMEOUT_SECONDS" xcrun simctl shutdown "$udid" >/dev/null 2>&1 ||
+        echo "warning: xcrun simctl shutdown timed out or failed for simulator '$udid'" >&2
 }
 
 apply_status_bar() {
@@ -364,7 +411,7 @@ capture_flow_cell() {
     if [ "$shot_count" -ne 1 ]; then
         echo "  $locale/$appearance/$scene: expected exactly 1 takeScreenshot PNG, found $shot_count" >&2
 
-        return 1
+        return 2
     fi
 
     mkdir -p "$(dirname "$final_path")"
@@ -426,7 +473,8 @@ capture_cell() {
     xcrun simctl terminate "$udid" "$APP_ID" 2>/dev/null || true
     run_seed_command "$scene" "$locale" "$appearance" "$device_slug" "$udid" || {
         echo "  $locale/$appearance/$scene: seed-failed" >&2
-        return 1
+
+        return 2
     }
     xcrun simctl ui "$udid" appearance "$appearance"
     if [ -n "$flow" ]; then
@@ -443,6 +491,7 @@ capture_cell() {
 capture_device() {
     local device_name="$1"
     local slug udid locales appearances failures locale appearance scene deep_link flow settle scene_source
+    local attempts cell_rc cell_started cell_duration
     slug=$(device_slug "$device_name")
 
     locales="$(split_list "${LOCALES_OVERRIDE:-$(manifest_locales "$device_name" | tr '\n' ' ')}")"
@@ -505,10 +554,24 @@ capture_device() {
                 if [ -n "$flow" ]; then
                     require_maestro "flow-backed scene '$scene'"
                 fi
-                if capture_cell "$udid" "$slug" "$locale" "$appearance" "$scene" "$deep_link" "$flow" "$settle"; then
-                    echo "  $locale/$appearance/$scene: captured"
+                attempts=0
+                cell_rc=1
+                cell_started=$(date +%s)
+                while [ "$attempts" -lt "$MAX_CELL_ATTEMPTS" ]; do
+                    attempts=$((attempts + 1))
+                    if [ "$attempts" -gt 1 ]; then
+                        xcrun simctl terminate "$udid" "$APP_ID" 2>/dev/null || true
+                    fi
+                    cell_rc=0
+                    capture_cell "$udid" "$slug" "$locale" "$appearance" "$scene" "$deep_link" "$flow" "$settle" || cell_rc=$?
+                    [ "$cell_rc" -eq 0 ] && break
+                    [ "$cell_rc" -eq 2 ] && break
+                done
+                cell_duration=$(( $(date +%s) - cell_started ))
+                if [ "$cell_rc" -eq 0 ]; then
+                    echo "  $locale/$appearance/$scene: captured (${cell_duration}s, attempt $attempts)"
                 else
-                    echo "  $locale/$appearance/$scene: failed" >&2
+                    echo "  $locale/$appearance/$scene: failed (${cell_duration}s, $attempts attempt(s))" >&2
                     failures=$((failures + 1))
                 fi
             done <<< "$(scene_rows "$locale" "$appearance")"
@@ -519,6 +582,7 @@ capture_device() {
     if [ "$STATUS_BAR_MODE" = 'override' ]; then
         xcrun simctl status_bar "$udid" clear || true
     fi
+    shutdown_simulator "$udid"
 
     if [ "$failures" -gt 0 ]; then
         fail "$failures cell(s) failed for '$device_name'"

@@ -14,10 +14,10 @@ variants/<appearance>/ios/<asc-locale>/<NN>_<device>_<scene>.png
 scenes, locales, appearances and devices — the local capture script reads it
 with `jq` rather than keeping its own copy.
 
-| Device               | Slug                  | Capture size | Store slot   |
-| -------------------- | --------------------- | ------------ | ------------ |
-| iPhone 17 Pro Max    | `iphone-17-pro-max`   | 1320x2868    | iPhone 6.9"  |
-| iPad Pro 13-inch (M4)| `ipad-pro-13-inch-m4` | 2064x2752    | iPad 13"     |
+| Device                | Slug                  | Capture size | Store slot  |
+| --------------------- | --------------------- | ------------ | ----------- |
+| iPhone 17 Pro Max     | `iphone-17-pro-max`   | 1320x2868    | iPhone 6.9" |
+| iPad Pro 13-inch (M4) | `ipad-pro-13-inch-m4` | 2064x2752    | iPad 13"    |
 
 | App locale | ASC folder | Regional OS locale |
 | ---------- | ---------- | ------------------ |
@@ -51,9 +51,16 @@ settles, and captures. A scene declared with a `flow` instead of a `deepLink`
 runs through Maestro instead, from a scratch CWD with `-e APP_ID/LOCALE/
 APPEARANCE` and the workspace `--config`, exactly as the action does.
 
+Failed cells are retried once, exactly like the action; a failed seed hook and a
+flow cell that emitted the wrong number of screenshots are terminal and are not
+retried. Each device's simulator is shut down when it finishes, so a matrix run
+does not leave a booted simulator — and its CoreSimulator worker processes —
+behind for the next one. Pass `--keep-booted` to keep a simulator you are also
+using for something else.
+
 Useful flags: `--device`, `--udid`, `--locales`, `--appearances`, `--scenes`,
 `--settle`, `--status-bar real|override`, `--output`, `--skip-install`,
-`--skip-prime`, `--dry-run`.
+`--skip-prime`, `--keep-booted`, `--dry-run`.
 
 Like CI, a run clears `raw/ios/<device-slug>` before its first cell, so a
 partial re-capture (`--scenes 03-analytics`, or a single `--locales`) leaves the
@@ -87,6 +94,11 @@ that runs the E2E suite's `prime-deep-links.flow.yaml` and adds the single
   like a real cell, and discards its screenshot. It needs `maestro` on `PATH`
   (`~/.maestro/bin`) and fails loudly without it. Pass `--skip-prime` on a
   simulator that has already granted the trust; `xcrun simctl erase` revokes it.
+
+Every fresh simulator needs this, iPhone and iPad alike — the alert is not an
+iPad-only quirk. The iPad additionally queues the alert across relaunch, so an
+iPad already stranded on it stays stranded: `xcrun simctl erase` it, then let a
+normal `--app` run reinstall and re-prime.
 
 ## Compose
 
