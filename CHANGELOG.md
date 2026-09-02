@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.7.0](https://github.com/budgie-at/budgie/compare/v6.6.0...v6.7.0) (2026-09-02)
+
+
+### Bug Fixes
+
+* **landing:** validate AVIF variants and asset slugs in the media manifest builder ([47a8434](https://github.com/budgie-at/budgie/commit/47a84345fca86736d3d97f90c002b1ae1c51b2a2))
+
+
+### Features
+
+* **landing:** add feature pages for budget planning, rules, Binance, and bank connections ([c706deb](https://github.com/budgie-at/budgie/commit/c706deb2b92a02f45d8b6b880cecf1ebabc8f8dd)), closes [#426](https://github.com/budgie-at/budgie/issues/426) [#322](https://github.com/budgie-at/budgie/issues/322) [#449](https://github.com/budgie-at/budgie/issues/449) [#506](https://github.com/budgie-at/budgie/issues/506) [#520](https://github.com/budgie-at/budgie/issues/520) [#561](https://github.com/budgie-at/budgie/issues/561) [#650](https://github.com/budgie-at/budgie/issues/650)
+* **landing:** add media asset contract and theme-aware media components ([b5e279b](https://github.com/budgie-at/budgie/commit/b5e279bfabd7a479fd345104be064bc3efe104db)), closes [#695](https://github.com/budgie-at/budgie/issues/695)
+* **landing:** refresh feature copy for jar sync, amount filter, debt, crypto, and transaction detail ([af7000e](https://github.com/budgie-at/budgie/commit/af7000e02c3f6d6d24dc8c437337115dad99dec3)), closes [#512](https://github.com/budgie-at/budgie/issues/512) [#531](https://github.com/budgie-at/budgie/issues/531) [#555](https://github.com/budgie-at/budgie/issues/555) [#567](https://github.com/budgie-at/budgie/issues/567) [#543](https://github.com/budgie-at/budgie/issues/543) [#568](https://github.com/budgie-at/budgie/issues/568)
+
+
+
+
+
 # [6.6.0](https://github.com/budgie-at/budgie/compare/v6.5.2...v6.6.0) (2026-09-02)
 
 
