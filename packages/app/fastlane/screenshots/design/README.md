@@ -101,3 +101,116 @@ under it speak the same language.
 Keep headlines under roughly 22 characters. They are set as a single unwrapped
 line, so a long one is set small rather than clipped, and a set of headlines
 that vary wildly in size reads as an accident rather than a system.
+
+## Landing media (web variant)
+
+`compose-web-media.sh` is the web sibling of `compose-screenshots.sh`. Both
+source `frame-device.sh` for the frameit cache lookup, the two device frame
+geometries, the ASC → app locale mapping and the capture-into-cutout step, so
+the frame is identical in both sets and neither script carries its own copy.
+Everything after the frame differs:
+
+| | `compose-screenshots.sh` (store) | `compose-web-media.sh` (landing) |
+| --- | --- | --- |
+| Background | opaque palette plate | **transparent** — the landing supplies its own gradient |
+| Caption | burned-in headline + descriptor | **none** — the landing renders copy in HTML so it stays translatable and indexable |
+| Drop shadow | soft, baked in | **none** — CSS owns it |
+| Size | exact capture size | exact capture size |
+| Output | `variants/<appearance>/ios/<asc-locale>/*.png` | `packages/landing/public/media/<group>/<locale>/<theme>/<scene>@2x.png` |
+
+```bash
+pnpm media:capture     # capture the landing manifest into fastlane/screenshots/landing-raw
+pnpm media:compose     # frame + stage the PNGs into packages/landing/public/media
+pnpm media:encode      # PNG -> AVIF + WebP at @2x, under the byte budgets
+```
+
+`--frame raw` skips the device frame and emits the capture at its own size with
+an optional rounded-corner alpha mask (`--radius auto|0|<px>`), for the cropped
+close-ups the landing insets into copy.
+
+### Capture manifest
+
+`.github/landing-media.config.json` is a sibling of
+`.github/store-screenshots.config.json` in the same mobile-ci
+`store-screenshots` schema: same `ios-target`, `seed-command`, `maestro-config`,
+`build-env` and `cache-profile`, `status-bar-override: true`, all 5 landing
+locales in light and dark on iPhone 17 Pro Max and iPad Pro 13-inch (M4). It
+carries **no** `apple-screenshot-slots`, `upload-command` or `asc-*` key —
+nothing here goes to App Store Connect — and its `screenshots-download-dir`
+points at `fastlane/screenshots/landing-raw` so a landing run can never
+overwrite the store's `raw/`.
+
+There is no forked capture runner: `capture-store-screenshots.sh` already takes
+`--config` and `--output`, which is all `pnpm media:capture` passes.
+
+Three details are worth knowing before editing the manifest:
+
+- **`screenshots-dir` stays `tests/app-tests`.** In `direct` mode that key is
+  the root flow-backed scenes resolve against, not an output directory. The
+  output root is the runner's `--output`.
+- **A flow cell must emit exactly one `takeScreenshot`.** Two scenes therefore
+  cannot share one flow file, which is why the storyboard's "continuation of the
+  same flow" rows each get their own flow (`voice-review`,
+  `ai-history-suggestions`, `uncategorized-cleanup-page`, `recurring-day-detail`,
+  `analytics-untagged-drilldown`, `convert-to-transfer-picker`) on top of the 26
+  interaction flows the storyboard names.
+- **`capture-scenes` has no per-device filter.** The schema is
+  `additionalProperties: false` and a scene can only be narrowed by `platforms`,
+  `locales` and `appearances`. The five iPad scenes are therefore selected at
+  capture time (`--device 'iPad Pro 13-inch (M4)' --scenes …`) and at compose
+  time by the group map's `devices` field, not in the manifest.
+
+### Scene → route slug map
+
+`web-media-groups.json` maps each scene to the landing route slugs it feeds:
+
+```json
+"pin-app-lock-1": { "groups": ["pin-app-lock", "privacy", "security", "home"] }
+```
+
+A scene is captured once and copied into every group it lists, which is how the
+storyboard's hubs and reuse rows cost zero extra capture cells, and it is why a
+landing page can resolve its own media from its own route slug with no alias
+table. `devices` defaults to `["iphone"]`; a scene listing `"ipad"` also
+composes the iPad capture as `<scene>-ipad@2x.png`. `budget` (`hero` |
+`feature`, default `feature`) picks the encode ceiling.
+
+The map lives here rather than as a `group` field on `capture-scenes` because
+mobile-ci's schema is `additionalProperties: false` on scenes; adding the field
+there would fail the workflow's own allowlist.
+
+`test-landing-media-config.sh` keeps the manifest and the map in sync: every
+captured scene must be mapped, every mapped scene must be captured, every group
+slug must be a real landing route, and every feature scene must publish into its
+own page slug.
+
+### Encoding and byte budgets
+
+`encode-web-media.sh` downscales each staged PNG (900px wide for framed iPhone
+shots, 1024px for iPad) and encodes AVIF + WebP with `avifenc` and `cwebp` when
+they are on PATH, falling back to ImageMagick's own delegates otherwise. It is
+idempotent — an asset is re-encoded only when the staged PNG is newer — prints a
+size table, and exits non-zero listing every asset over its ceiling.
+
+| Class | AVIF | WebP |
+| --- | --- | --- |
+| Hero still @2x | 180 KB | 288 KB (`1.6x`) |
+| Feature still @2x | 120 KB | 192 KB (`1.6x`) |
+
+Only the encoded binaries are committed; the staged PNGs and
+`fastlane/screenshots/landing-raw/` are gitignored build intermediates.
+
+### Per-scene seed overlays
+
+Both manifests run the same `seed-screenshot-scene.sh` hook, which receives
+`SCENE` alongside `LOCALE` and `APPEARANCE`. The landing scenes need showcase
+states `showcase.db` does not contain (budget at 95%, multi-currency, debt,
+deposit, crypto, connected bank sync, PIN enabled, …); resolving `SCENE` to
+those overlays is owned by the seed issue, not by this directory. Scenes here
+only have to be named exactly as the storyboard names them, because the scene id
+is the key that lookup uses.
+
+Deep links that address an overlay-seeded row by id (`budgie://account/7/details`
+for the debt account, `account/8` deposit, `account/9` crypto,
+`transactions/9001/expense/edit` for the MCC-synced transaction) are pinned to
+the ids the overlays assign — update them here if an overlay renumbers.

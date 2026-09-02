@@ -70,7 +70,13 @@ graphify-out/
 
 # Fastlane store screenshots
 packages/app/fastlane/screenshots/raw/
+packages/app/fastlane/screenshots/landing-raw/
 packages/app/fastlane/screenshots/variants/ci/
 packages/app/fastlane/screenshots/**/*.staging*
 packages/app/fastlane/report.xml
 packages/app/fastlane/Preview.html
+
+# Landing media staging: compose-web-media.sh writes PNG intermediates that
+# encode-web-media.sh turns into the committed AVIF/WebP pair. Only the encoded
+# binaries are carried by the repo.
+packages/landing/public/media/**/*.png

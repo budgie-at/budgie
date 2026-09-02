@@ -11,10 +11,18 @@ fastlane/
 ├── Fastfile                   # store_preflight + ios ios_screenshots
 └── screenshots/
     ├── deployed-variant.json  # which appearance the store currently carries
-    ├── design/                # captions, palette and the composition script
-    ├── raw/                   # gitignored capture output
+    ├── design/                # captions, palette and the composition scripts
+    ├── raw/                   # gitignored store capture output
+    ├── landing-raw/           # gitignored landing capture output
     └── variants/<appearance>/ios/<asc-locale>/*.png
 ```
+
+`design/` hosts two compose scripts over one shared `frame-device.sh`:
+`compose-screenshots.sh` for this App Store set, and `compose-web-media.sh` for
+the landing site's transparent, caption-free product imagery (with
+`encode-web-media.sh` and `web-media-groups.json` beside it). The landing set is
+captured from `.github/landing-media.config.json` and never touches App Store
+Connect — see [screenshots/design/README.md](screenshots/design/README.md).
 
 `Appfile` carries the **production** bundle id `com.vitalyiegorov.budgie` — the
 listing `deliver` writes to. Screenshots are captured against the E2E build
