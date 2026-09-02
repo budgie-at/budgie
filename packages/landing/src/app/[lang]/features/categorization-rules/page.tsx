@@ -40,7 +40,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     });
 }
 
-export default async function DebtTrackingFeaturePage(props: PageLangParam) {
+export default async function CategorizationRulesFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
@@ -69,30 +69,32 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
             />
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Debt & Loan Tracking</Trans>}
+                heading={<Trans>Categorization Rules — Deterministic, Not Guesswork</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        That €200 you lent your sister, the €1500 you owe a friend — first-class accounts with target balances, return
-                        dates, and contact assignment.
+                        Write the rule once and every future import obeys it: match on what the transaction actually says, then set the
+                        category, add a tag, or turn it into a transfer.
                     </Trans>
                 }
             />
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why inter-personal debt deserves its own account type</Trans>
+                    <Trans>Some categorization should be a rule, not a suggestion</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Inter-personal debt is invisible to most apps. Budgie has Debt as a real account type, with explicit &quot;I
-                        owe&quot; / &quot;owes me&quot; direction, optional contact, target return date, and target balance.
+                        Your landlord&apos;s transfer, your gym membership, the corner shop you visit twice a week — you already know where
+                        those belong. A rule states that once, in plain conditions, and the app stops asking.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Net worth respects debt direction: liabilities reduce, receivables increase. Settling the debt is just a transfer to
-                        or from the debt account; balance hits zero, you can archive.
+                        Conditions can look at the title, the comment, the amount, the merchant category code, the account, the transaction
+                        type, or the import source it came from. Combine them with &quot;match all&quot; or &quot;match any&quot;, and pick
+                        the operator that fits: equals, contains, does not contain, greater than, less than, between, in a list, or a
+                        regular expression. Text comparisons ignore letter case.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -103,55 +105,63 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Explicit direction: &quot;I owe&quot; vs &quot;owes me&quot; — net worth signs them correctly</Trans>
+                        <Trans>Conditions on title, comment, amount, MCC, account, transaction type, and import source</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Optional contact name — track inter-personal loans without spreadsheets</Trans>
+                        <Trans>Match all or match any, with contains, equals, comparison, list, and regular-expression operators</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Target balance and return date for closing the loop</Trans>
+                        <Trans>Actions that set a category, add a tag, or convert the transaction into a transfer</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Settle by transfer to a real account — no awkward &quot;expense&quot; workarounds</Trans>
+                        <Trans>Rules run automatically on Monobank sync, bank file sync, and CSV import</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Archive when settled — debt drops off the home screen but stays in history</Trans>
+                        <Trans>Saving a rule applies it retroactively to matching transactions you already have</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
-                        <Trans>
-                            Attach an existing income or expense to a debt as a settlement, without inventing a second transaction
-                        </Trans>
+                        <Trans>A dedicated Rules screen with search across conditions, actions, categories, tags, and accounts</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
-                        <Trans>Debts in another currency are valued with the exchange rate from the day the money actually moved</Trans>
+                        <Trans>Every rule can be switched off without being deleted</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={7}>
+                        <Trans>A &quot;matching rules&quot; pill on a transaction shows which rules apply to it</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Attach a repayment you already recorded</Trans>
+                    <Trans>The Quick rule pill writes the rule for you</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income long
-                        before you think about the debt. Instead of deleting it and re-entering a transfer, attach that transaction to the
-                        debt: it is recorded as a settlement against the debt account and the balance moves accordingly, while the original
-                        transaction stays exactly where your bank put it.
+                        Right after you change the category or tags of an existing transaction, a Quick rule pill slides into the edit
+                        screen with a ready-made rule. It builds the conditions from the merchant name — stripping reference numbers,
+                        amounts, dates, and company suffixes, falling back to the comment, and refusing to build anything from generic
+                        titles like a bare card purchase — and it pins the merchant category code when the transaction has one.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        If one of your existing rules already covers that merchant, the pill offers to extend that rule instead of creating
+                        a near-duplicate, and warns you when the edit you just made contradicts a rule you already have. Accept it, swipe it
+                        away, or open it and adjust every condition first.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Cross-currency debts valued at the right moment</Trans>
+                    <Trans>Rules and on-device AI do different jobs</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        A loan made in another currency is worth what it was worth on the day it was made, not what today&apos;s rate says.
-                        Budgie stores the exchange rate used for a debt&apos;s target balance along with the converted amount, looking up
-                        the rate for the operation date — or the closest earlier one it has — and bridging through your base currency when
-                        there is no direct pair.
+                        Rules are deterministic: the same conditions produce the same category every single time, which is what you want for
+                        rent, salary, subscriptions, and anything with a stable merchant name. On-device AI categorization is the opposite
+                        tool — it guesses sensibly for merchants you have never seen before. They are separate systems, and most setups end
+                        up using both.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -162,64 +172,56 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Account type Debt with sub-type &quot;I owe&quot; or &quot;owes me&quot;. Linked to a contact name (optional).
-                        Settlement happens as transfers between the debt account and a real cash/bank account.
+                        Open Settings, then Rules. Add conditions, choose match all or match any, attach one or more actions, and save.
+                        Incoming bank and import transactions are evaluated before they are written, and existing transactions are updated
+                        in the background in batches so the app stays responsive.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
-                    question={<Trans>What&apos;s the difference between &quot;I owe&quot; and &quot;owes me&quot;?</Trans>}
+                    question={<Trans>Do rules apply to transactions I type in myself?</Trans>}
                     answer={
                         <Trans>
-                            Direction. &quot;I owe&quot; is a liability — your net worth subtracts it. &quot;Owes me&quot; is a receivable —
-                            your net worth adds it. Same account type, opposite sign.
+                            Automatic evaluation runs on Monobank sync, bank file sync, and CSV import. For everything else, saving or
+                            editing a rule re-applies it across your existing transactions, which covers manual entries too.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can I link a debt to a contact?</Trans>}
+                    question={<Trans>Can one rule do more than one thing?</Trans>}
                     answer={
                         <Trans>
-                            Yes — each debt account has an optional contact name. Useful for tracking inter-personal loans without
-                            spreadsheets.
+                            Yes. A rule holds several actions, so the same match can set the category and add a tag, or convert the
+                            transaction into a transfer to a chosen account.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>How do I settle a debt?</Trans>}
+                    question={<Trans>What happens when I already have a lot of rules?</Trans>}
                     answer={
                         <Trans>
-                            Make a transfer between the debt account and a real cash/bank account. The debt balance hits zero; archive the
-                            account if you want it off the home screen.
+                            The Rules screen has a ranked search that looks at every condition, every action, and the related category, tag,
+                            and account names, so you can find the rule responsible for a category in a couple of keystrokes.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>My friend repaid me by bank transfer — do I have to re-enter it?</Trans>}
+                    question={<Trans>Is this the same as the AI categorization?</Trans>}
                     answer={
                         <Trans>
-                            No. Attach the income that already arrived to the debt and it counts as a settlement against that debt account.
-                            The transaction itself is untouched.
+                            No. Rules are explicit conditions you wrote and can read back. AI categorization is a separate on-device
+                            suggestion engine for merchants no rule covers yet.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What if the loan was in a different currency?</Trans>}
+                    question={<Trans>Can I turn a rule off temporarily?</Trans>}
                     answer={
                         <Trans>
-                            The converted value is stored together with the exchange rate for the date of the operation, so an old loan
-                            keeps the valuation it had when it was made instead of drifting with today&apos;s rate.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Does the target return date trigger a reminder?</Trans>}
-                    answer={
-                        <Trans>
-                            Currently it&apos;s informational — surfaced in the account detail and recurring view. Push reminders are on the
-                            roadmap.
+                            Yes — each rule has its own switch in the Rules list, and swiping a row deletes it when you no longer need it at
+                            all.
                         </Trans>
                     }
                 />

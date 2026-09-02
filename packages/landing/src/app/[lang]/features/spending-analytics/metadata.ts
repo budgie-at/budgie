@@ -21,6 +21,7 @@ export const FEATURE_METADATA = {
         'mobile finance dashboard'
     ],
     relatedFeatureSlugs: [
+        'budget-planning',
         'tag-analytics',
         'custom-categories',
         'uncategorized-transactions',

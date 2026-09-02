@@ -90,8 +90,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Instruments cover crypto, stocks, ETFs, and commodities. Manual price updates are fine for low-frequency tracking;
-                        live updates plug in via your own brokerage CSV.
+                        Instruments cover crypto, stocks, ETFs, and commodities. Manual price updates are fine for low-frequency tracking,
+                        and the major crypto assets come with real daily market history built in.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -114,9 +114,39 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         <Trans>Multi-currency aware — euro-denominated ETF + dollar stocks + UAH cash all reconcile</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>No live ticker telemetry — fully offline-compatible</Trans>
+                        <Trans>A market screen per instrument with a price card, a sparkline, and period metrics</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>
+                            A year of daily prices for BTC, ETH, BNB, SOL, XRP, TRX, USDT, USDC, and HYPE ships with the app, in euro and
+                            dollar
+                        </Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={6}>
+                        <Trans>Charts read from your own database, so they keep working with no connection</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Market history without a live ticker</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        Each crypto instrument has its own market screen: the current price, a sparkline of where it has been, metrics for
+                        the period, and your holding valued against it. The app ships with a year of daily prices for the nine largest
+                        crypto assets, quoted in both euro and dollar, so the charts have something to show the moment you open them.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        Beyond that seed, history is filled in from CoinGecko&apos;s public market data — but only for crypto accounts you
+                        actually hold, one day at a time, in a background queue that fetches just the days you are missing and stops. There
+                        is no ticker connection, no streaming feed, and no account: the chart you look at is read from your own database, so
+                        it renders offline once the days are there.
+                    </Trans>
+                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
@@ -125,8 +155,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Account type Crypto or Stocks. Each holding is an instrument + quantity. Price feeds in via manual edit or imported
-                        export. Net-worth converts via the latest price snapshot.
+                        Account type Crypto or Stocks. Each holding is an instrument + quantity. Prices come from the built-in daily history
+                        for major crypto assets, or from your own manual edits. Net-worth converts via the latest price snapshot.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -145,8 +175,17 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     question={<Trans>Where do prices come from?</Trans>}
                     answer={
                         <Trans>
-                            Manual update or imported brokerage CSV. Live ticker feeds are opt-in to keep the offline-first guarantee — no
-                            telemetry needed.
+                            The nine largest crypto assets ship with a year of daily prices in euro and dollar. Longer history is pulled
+                            from CoinGecko&apos;s public market data for the crypto accounts you hold, and everything else you set by hand.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Do the charts work offline?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Prices are stored in your local database, so the market screen renders from what you already have. A
+                            connection is only needed to extend the history further back.
                         </Trans>
                     }
                 />

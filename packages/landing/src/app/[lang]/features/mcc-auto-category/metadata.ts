@@ -22,6 +22,7 @@ export const FEATURE_METADATA = {
     ],
     relatedFeatureSlugs: [
         'ai-auto-categorization',
+        'categorization-rules',
         'uncategorized-transactions',
         'privatbank-import',
         'erste-bank-pdf-import',

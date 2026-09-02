@@ -20,7 +20,7 @@ export const FEATURE_METADATA = {
         'interest payout calculator app',
         'net worth deposit account'
     ],
-    relatedFeatureSlugs: ['account-management', 'net-worth-tracker', 'account-transfers', 'debt-tracking'],
+    relatedFeatureSlugs: ['account-management', 'bank-integration-management', 'net-worth-tracker', 'account-transfers', 'debt-tracking'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
     publishedAt: '2026-08-13',
     updatedAt: '2026-08-13',

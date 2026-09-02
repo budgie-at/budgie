@@ -20,7 +20,7 @@ export const FEATURE_METADATA = {
         'Ukrainian bank import',
         'PrivatBank statement parser'
     ],
-    relatedFeatureSlugs: ['csv-import', 'erste-bank-pdf-import', 'monobank-sync', 'mcc-auto-category'],
+    relatedFeatureSlugs: ['csv-import', 'erste-bank-pdf-import', 'monobank-sync', 'bank-integration-management', 'mcc-auto-category'],
     relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
     publishedAt: '2026-02-02',
     updatedAt: '2026-05-03',

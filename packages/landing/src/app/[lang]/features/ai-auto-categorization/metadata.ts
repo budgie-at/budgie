@@ -24,6 +24,7 @@ export const FEATURE_METADATA = {
         'offline-first-expense-tracker',
         'voice-transaction-entry',
         'mcc-auto-category',
+        'categorization-rules',
         'custom-categories',
         'uncategorized-transactions',
         'recurring-payments-calendar'
