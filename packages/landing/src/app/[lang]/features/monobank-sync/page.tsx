@@ -128,6 +128,9 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     <FeaturePageBenefitGridItem index={6}>
                         <Trans>Imported commissions become bank-fee entries, so fees stay in analytics after transfer consolidation</Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={7}>
+                        <Trans>Jars sync next to your cards, each one selectable on its own, with top-ups merged into transfers</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -148,6 +151,26 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                         When you transfer between two banks, both legs are automatically detected via counter-IBAN and exchange-rate
                         matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup
                         needed.
+                    </Trans>
+                </FeaturePageProse>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Jars are accounts, not a footnote</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        Monobank jars sync in the same pass as your cards. During setup they get their own section in the account picker, so
+                        you can bring in the holiday fund and leave the rest behind, and each imported jar becomes a real account with its
+                        own balance, history, and place in net worth.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        Because a jar is a normal account, moving money from your card into it is a transfer between two accounts you own —
+                        and the same consolidation that merges cross-bank transfers merges the two legs of a jar top-up into one entry
+                        instead of an expense that never happened.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -220,6 +243,16 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     question={<Trans>Can I use multiple Monobank accounts?</Trans>}
                     answer={<Trans>Yes — one token grants access to all your Monobank accounts. Pick which to import per account.</Trans>}
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Do jars sync as well?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Jars are fetched alongside your cards and listed in their own section during setup, so you choose them one
+                            by one. Topping a jar up from a card is detected as a transfer between your own accounts rather than counted as
+                            spending.
+                        </Trans>
+                    }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>What if Monobank&apos;s API changes?</Trans>}
