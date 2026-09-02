@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.6.0](https://github.com/budgie-at/budgie/compare/v6.5.2...v6.6.0) (2026-09-02)
+
+
+### Bug Fixes
+
+* **app:** gate store screenshot upload on locale coverage ([e986e7a](https://github.com/budgie-at/budgie/commit/e986e7aa835c1cda4795500b97a2871f7245c578))
+* **app:** recompose the French home screenshots for the new title ([f584983](https://github.com/budgie-at/budgie/commit/f58498323d1032e54bd68c7fdcde3354eae76fab))
+* **app:** use the French ligature in the home screenshot title ([6f760c2](https://github.com/budgie-at/budgie/commit/6f760c28efe01ed2716b4d20948869ee7707e26c))
+
+
+### Features
+
+* **app:** add fastlane store screenshots for all locales ([d291de3](https://github.com/budgie-at/budgie/commit/d291de382658a3bd22f687c6baa21bb97978dbf9))
+
+
+
+
+
 ## [6.5.2](https://github.com/budgie-at/budgie/compare/v6.5.1...v6.5.2) (2026-09-01)
 
 
