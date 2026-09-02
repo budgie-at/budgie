@@ -26,6 +26,7 @@ jobs:
       keep-releases: '5'
       asc-key-path: asc_api_key.p8
       install-command: pnpm install --frozen-lockfile
+      package-manager: pnpm
       publish-env: |
         EXPO_NO_TELEMETRY=1
         APP_VARIANT=development

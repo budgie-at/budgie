@@ -106,10 +106,17 @@
 3. **eas-update-preview** (hosted `ubuntu-24.04`, mobile-impact changes only):
     - Exports iOS and Android bundles and publishes an EAS Update to the development channel
 
-4. **ios-maestro** (`rnw-community/mobile-ci`'s reusable `ios-maestro.yml` workflow, pinned to `v1.7.0`, mobile-impact changes after code quality):
+4. **ios-maestro** (`rnw-community/mobile-ci`'s reusable `ios-maestro.yml` workflow, pinned to `v1.11.0`, mobile-impact changes after code quality):
     - Build job on self-hosted Apple Silicon `macos-builder`: reuses a fingerprinted native app when possible (repacking the current PR's JS bundle into the cached shell via `repack-on-hit`), and falls back to a full native build when required
     - Test job on two self-hosted Apple Silicon `macos-maestro` shards: downloads the built app and runs the 43 entry flows assigned via `tests/app-tests/shards/shard-0.txt` and `shard-1.txt`
     - There is no Android E2E job in the current PR workflow
+
+5. **store-screenshots-gallery** (hosted `ubuntu-24.04`, same-repo PRs only):
+    - Lists the PR's changed files and, when any `packages/app/fastlane/screenshots/variants/**/*.png` are touched, upserts one sticky PR comment (marker `<!-- budgie-store-screenshots-gallery -->`) with iPhone thumbnails grouped by appearance and locale, linking out to the iPad folder instead of inlining it
+
+### Store Screenshots Workflow (.github/workflows/store-screenshots.yml)
+
+`workflow_dispatch`-only pipeline that captures localized App Store screenshots via `rnw-community/mobile-ci`'s reusable `store-screenshots.yml` (pinned `v1.11.0`), driven by the checked-in `.github/store-screenshots.config.json` (capture manifest, deep-link scenes, seed command, and upload/dedupe settings — every app-shaped input lives there instead of the caller's `with:` block). It builds the same `e2e` iOS target and reuses the same `ios-e2e-budgie-v2` native-app cache profile as `pr.yml`'s `ios-maestro` job and `ios-native-cache.yml`. The `upload` dispatch input (default `false`) maps to the reusable workflow's `upload-screenshots`; when true, the upload job runs `fastlane ios ios_screenshots` from `packages/app` and dedupes App Store Connect via `asc-dedupe-screenshots`. See `.github/workflows/asc-dedupe-screenshots.yml` for the standalone dedupe-only workflow and `.github/workflows/pr-closed-cleanup.yml` for the reusable queued-run cleanup on PR close.
 
 ### Main Branch Workflow (.github/workflows/main.yml)
 
