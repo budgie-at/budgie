@@ -261,7 +261,7 @@ jobs:
             pre-test-command: bash tests/app-tests/scripts/setup-ios-e2e-fixtures.sh "$SIMULATOR_UDID" "$APP_ID"
             pre-flow-command: bash tests/app-tests/scripts/seed-flow-fixture.sh
             flow-retries: '1'
-            maestro-version: '2.8.0'
+            maestro-version: '2.6.1'
             simulator-device: iPhone 17 Pro
             test-timeout-minutes: 85
             cache-profile: ios-e2e-budgie-v2
