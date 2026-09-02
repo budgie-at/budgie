@@ -97,6 +97,18 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                         tagline={<Trans>One encrypted file. No account. Restore on any device in seconds.</Trans>}
                         title={<Trans>Database Backup &amp; Restore</Trans>}
                     />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/bank-integration-management`}
+                        index={4}
+                        tagline={<Trans>One credential per bank, shared by every account on it — so rotating a token is one edit.</Trans>}
+                        title={<Trans>Bank Connections</Trans>}
+                    />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/binance-sync`}
+                        index={5}
+                        tagline={<Trans>Read-only API keys signed on your device. No custody, no trading, no withdrawals.</Trans>}
+                        title={<Trans>Binance Sync</Trans>}
+                    />
                 </PillarHubFeatureGrid>
             </PillarHubSection>
 

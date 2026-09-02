@@ -40,7 +40,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     });
 }
 
-export default async function DebtTrackingFeaturePage(props: PageLangParam) {
+export default async function BankIntegrationManagementFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
@@ -69,30 +69,32 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
             />
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Debt & Loan Tracking</Trans>}
+                heading={<Trans>Bank Connections — One Credential, Many Accounts</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        That €200 you lent your sister, the €1500 you owe a friend — first-class accounts with target balances, return
-                        dates, and contact assignment.
+                        Your card, your jars, and the deposit you opened last month all hang off one connection — so renewing a token is a
+                        single edit, not a rebuild.
                     </Trans>
                 }
             />
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why inter-personal debt deserves its own account type</Trans>
+                    <Trans>Why the credential deserves its own object</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Inter-personal debt is invisible to most apps. Budgie has Debt as a real account type, with explicit &quot;I
-                        owe&quot; / &quot;owes me&quot; direction, optional contact, target return date, and target balance.
+                        A bank token is not a property of one account — it is a property of your relationship with the bank. Budgie models
+                        it that way: a connection holds the provider and the credential, and every account you sync from that bank points at
+                        it.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Net worth respects debt direction: liabilities reduce, receivables increase. Settling the debt is just a transfer to
-                        or from the debt account; balance hits zero, you can archive.
+                        The payoff shows up the day your token expires. Enter the new one once and every account on that connection is back
+                        online together, with their error counters cleared. If the token you paste already belongs to another connection,
+                        the account is moved onto it instead of quietly creating a duplicate.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -103,55 +105,45 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Explicit direction: &quot;I owe&quot; vs &quot;owes me&quot; — net worth signs them correctly</Trans>
+                        <Trans>One connection behind many accounts — cards, jars, and deposits from the same bank</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Optional contact name — track inter-personal loans without spreadsheets</Trans>
+                        <Trans>Change the token once and every account on that connection follows</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Target balance and return date for closing the loop</Trans>
+                        <Trans>A connection screen listing its accounts with their balances and a per-account sync switch</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Settle by transfer to a real account — no awkward &quot;expense&quot; workarounds</Trans>
+                        <Trans>Add more accounts from the bank later without re-entering credentials, with duplicates filtered out</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Archive when settled — debt drops off the home screen but stays in history</Trans>
+                        <Trans>Open a deposit straight from the connection, so it inherits the bank it belongs to</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
-                        <Trans>
-                            Attach an existing income or expense to a debt as a settlement, without inventing a second transaction
-                        </Trans>
+                        <Trans>Statement-based banks get a connection too, so imported accounts group under one roof</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
-                        <Trans>Debts in another currency are valued with the exchange rate from the day the money actually moved</Trans>
+                        <Trans>Archiving or deleting one account leaves the rest of the connection syncing untouched</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Attach a repayment you already recorded</Trans>
+                    <Trans>One screen per bank</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income long
-                        before you think about the debt. Instead of deleting it and re-entering a transfer, attach that transaction to the
-                        debt: it is recorded as a settlement against the debt account and the balance moves accordingly, while the original
-                        transaction stays exactly where your bank put it.
+                        Each bank section on the home screen has a shortcut into its connection. Inside you get the accounts that belong to
+                        it, each with its icon, title, and current balance, and a switch to pause syncing for that account alone while its
+                        siblings keep going.
                     </Trans>
                 </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Cross-currency debts valued at the right moment</Trans>
-                </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        A loan made in another currency is worth what it was worth on the day it was made, not what today&apos;s rate says.
-                        Budgie stores the exchange rate used for a debt&apos;s target balance along with the converted amount, looking up
-                        the rate for the operation date — or the closest earlier one it has — and bridging through your base currency when
-                        there is no direct pair.
+                        What the screen offers next depends on the bank. Connections that talk to a live API can pull the bank&apos;s
+                        account list and add whatever you left out the first time. Statement-based banks offer an import action instead.
+                        Both can open a new deposit account that starts out attached to the same bank.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -162,64 +154,56 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Account type Debt with sub-type &quot;I owe&quot; or &quot;owes me&quot;. Linked to a contact name (optional).
-                        Settlement happens as transfers between the debt account and a real cash/bank account.
+                        Connect a bank once and the credential is stored as a connection for that provider. Any account you create from it —
+                        during setup or months later — records which connection it came from, and sync resolves the token through that link
+                        rather than keeping a copy per account.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
-                    question={<Trans>What&apos;s the difference between &quot;I owe&quot; and &quot;owes me&quot;?</Trans>}
+                    question={<Trans>Do I have to re-add every account when my token expires?</Trans>}
                     answer={
                         <Trans>
-                            Direction. &quot;I owe&quot; is a liability — your net worth subtracts it. &quot;Owes me&quot; is a receivable —
-                            your net worth adds it. Same account type, opposite sign.
+                            No. The token lives on the connection, so updating it from any account&apos;s sync settings restores every
+                            account sharing that connection at once.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can I link a debt to a contact?</Trans>}
+                    question={<Trans>Can jars and deposits sit on the same connection as my card?</Trans>}
                     answer={
                         <Trans>
-                            Yes — each debt account has an optional contact name. Useful for tracking inter-personal loans without
-                            spreadsheets.
+                            Yes — cards, jars, and deposit accounts from the same bank all attach to one connection and appear together on
+                            its screen.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>How do I settle a debt?</Trans>}
+                    question={<Trans>What happens if I close one of the accounts?</Trans>}
                     answer={
                         <Trans>
-                            Make a transfer between the debt account and a real cash/bank account. The debt balance hits zero; archive the
-                            account if you want it off the home screen.
+                            Only that account is affected. Archiving or deleting it never removes the connection, so its siblings keep
+                            syncing with the same credential.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>My friend repaid me by bank transfer — do I have to re-enter it?</Trans>}
+                    question={<Trans>Does this work for banks I import statements from?</Trans>}
                     answer={
                         <Trans>
-                            No. Attach the income that already arrived to the debt and it counts as a settlement against that debt account.
-                            The transaction itself is untouched.
+                            Yes. File-based banks get their own connection as well, which is where the import action lives and what keeps
+                            their accounts grouped together.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What if the loan was in a different currency?</Trans>}
+                    question={<Trans>Can I open a deposit from any connection?</Trans>}
                     answer={
                         <Trans>
-                            The converted value is stored together with the exchange rate for the date of the operation, so an old loan
-                            keeps the valuation it had when it was made instead of drifting with today&apos;s rate.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Does the target return date trigger a reminder?</Trans>}
-                    answer={
-                        <Trans>
-                            Currently it&apos;s informational — surfaced in the account detail and recurring view. Push reminders are on the
-                            roadmap.
+                            From bank connections, yes. Crypto exchange connections do not offer deposit accounts, since the concept does
+                            not map onto them.
                         </Trans>
                     }
                 />

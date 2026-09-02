@@ -119,7 +119,29 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                             &ldquo;Last Month&rdquo; always means the most-recent COMPLETED month — never the half-finished current one
                         </Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>An amount-range chip in the same filter row, with a From value, a To value, or both</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Narrow by amount, not just by date</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set a
+                        From value to hunt down the large purchases, a To value to sweep up the small ones, or both to look at a band. The
+                        chip shows the range you picked, and clearing it is one tap.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        Combined with the date presets it turns &quot;where did the money go last month?&quot; into a two-chip question:
+                        Last Month plus everything above a threshold, and the list in front of you is the answer.
+                    </Trans>
+                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
@@ -145,6 +167,15 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                         <Trans>
                             Yes. One picker component is reused across analytics tabs, the transaction list, and the recurring calendar.
                             Filters apply consistently.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I filter by amount too?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes — the filter row has an amount-range chip beside the date one. Give it a From value, a To value, or both,
+                            and it stacks with every other active filter.
                         </Trans>
                     }
                 />

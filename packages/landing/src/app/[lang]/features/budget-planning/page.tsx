@@ -6,6 +6,7 @@ import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadc
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
 import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
 import { FeaturePageBreadcrumbsJsonLd } from '../../../../feature/component/feature-page-breadcrumbs-json-ld/feature-page-breadcrumbs-json-ld';
+import { FeaturePageComparisonTable } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import { FeaturePageCta } from '../../../../feature/component/feature-page-cta/feature-page-cta';
 import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
@@ -40,7 +41,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     });
 }
 
-export default async function DebtTrackingFeaturePage(props: PageLangParam) {
+export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
@@ -69,30 +70,31 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
             />
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Debt & Loan Tracking</Trans>}
+                heading={<Trans>Budget Planning — Limits That Match Your Payday</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        That €200 you lent your sister, the €1500 you owe a friend — first-class accounts with target balances, return
-                        dates, and contact assignment.
+                        Set one overall monthly limit, add per-category limits, cap everything else, and watch the cycle fill up from your
+                        home screen. Every number is computed on your device.
                     </Trans>
                 }
             />
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why inter-personal debt deserves its own account type</Trans>
+                    <Trans>A budget cycle should start when your money arrives</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Inter-personal debt is invisible to most apps. Budgie has Debt as a real account type, with explicit &quot;I
-                        owe&quot; / &quot;owes me&quot; direction, optional contact, target return date, and target balance.
+                        Most budget apps assume the first of the month. Budgie lets you pick any start day for the cycle, or anchor it to
+                        the last day of each month, so the period you plan against is the period you actually get paid for.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Net worth respects debt direction: liabilities reduce, receivables increase. Settling the debt is just a transfer to
-                        or from the debt account; balance hits zero, you can archive.
+                        A budget is one overall limit plus as many per-category limits as you want, and a single cap for everything that
+                        falls outside those categories. The form shows how much you have allocated, how much is left, and warns you the
+                        moment your category limits exceed the overall limit.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -103,55 +105,53 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Explicit direction: &quot;I owe&quot; vs &quot;owes me&quot; — net worth signs them correctly</Trans>
+                        <Trans>An overall monthly limit, per-category limits, and one cap for everything else</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Optional contact name — track inter-personal loans without spreadsheets</Trans>
+                        <Trans>Payday-aligned cycles — start on any day of the month or anchor to the last day</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Target balance and return date for closing the loop</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Settle by transfer to a real account — no awkward &quot;expense&quot; workarounds</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Archive when settled — debt drops off the home screen but stays in history</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
                         <Trans>
-                            Attach an existing income or expense to a debt as a settlement, without inventing a second transaction
+                            Home-screen widget with the period dates, an overall progress bar, and your closest-to-the-limit categories
                         </Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={3}>
+                        <Trans>Opt-in on-device notifications when a limit reaches 80% and again at 100%, once per period</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={4}>
+                        <Trans>
+                            Start from a template built out of your own recent spending, from a generic starter budget, or from an empty
+                            canvas
+                        </Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>Tap any category row to open exactly the transactions behind that number for this period</Trans>
+                    </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
-                        <Trans>Debts in another currency are valued with the exchange rate from the day the money actually moved</Trans>
+                        <Trans>Refunds reduce what you have spent, so a returned purchase gives the budget its money back</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={7}>
+                        <Trans>Spending on accounts in other currencies is converted into your budget currency</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Attach a repayment you already recorded</Trans>
+                    <Trans>Alerts that never leave your phone</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income long
-                        before you think about the debt. Instead of deleting it and re-entering a transfer, attach that transaction to the
-                        debt: it is recorded as a settlement against the debt account and the balance moves accordingly, while the original
-                        transaction stays exactly where your bank put it.
+                        Budget alerts are off until you turn them on. Once enabled, a background task periodically compares what you have
+                        spent against your overall limit, each category limit, and the cap for everything else, and posts a local
+                        notification the first time a limit reaches 80% and again when it reaches 100%.
                     </Trans>
                 </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Cross-currency debts valued at the right moment</Trans>
-                </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        A loan made in another currency is worth what it was worth on the day it was made, not what today&apos;s rate says.
-                        Budgie stores the exchange rate used for a debt&apos;s target balance along with the converted amount, looking up
-                        the rate for the operation date — or the closest earlier one it has — and bridging through your base currency when
-                        there is no direct pair.
+                        Which alerts have already fired is remembered in on-device key-value storage, keyed by budget and period start, so
+                        you get each warning once per cycle instead of a stream of duplicates. There is no server in the loop: nothing about
+                        your budget, your categories, or your spending is uploaded to send these notifications.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -162,64 +162,85 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Account type Debt with sub-type &quot;I owe&quot; or &quot;owes me&quot;. Linked to a contact name (optional).
-                        Settlement happens as transfers between the debt account and a real cash/bank account.
+                        Create a budget, pick the day the cycle starts, and set an overall limit in your default currency. Add limits to the
+                        categories you care about and a cap for the rest. The detail screen breaks the period down category by category; the
+                        home widget keeps the headline numbers one glance away, and can be hidden from Settings whenever you want the home
+                        screen quiet.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Subscription budget apps vs. Budgie</Trans>
+                </FeaturePageHeading>
+                <FeaturePageComparisonTable rivalLabel={<Trans>Cloud budget app</Trans>}>
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>Any start day, or the last day of the month</Trans>}
+                        concern={<Trans>Cycle start</Trans>}
+                        rival={<Trans>Usually locked to the 1st</Trans>}
+                    />
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>Computed on-device from your local database</Trans>}
+                        concern={<Trans>Where progress is calculated</Trans>}
+                        rival={<Trans>On a server that mirrors your transactions</Trans>}
+                    />
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>Local notifications, opt-in, deduped per period</Trans>}
+                        concern={<Trans>Limit alerts</Trans>}
+                        rival={<Trans>Server-side push tied to an account</Trans>}
+                    />
+                    <FeaturePageComparisonTable.Row
+                        budgie={<Trans>Free, no account, no subscription</Trans>}
+                        concern={<Trans>Cost of budgeting</Trans>}
+                        rival={<Trans>Often the paid tier</Trans>}
+                    />
+                </FeaturePageComparisonTable>
+            </FeaturePageSection>
+
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
-                    question={<Trans>What&apos;s the difference between &quot;I owe&quot; and &quot;owes me&quot;?</Trans>}
+                    question={<Trans>Which budget periods are supported?</Trans>}
                     answer={
                         <Trans>
-                            Direction. &quot;I owe&quot; is a liability — your net worth subtracts it. &quot;Owes me&quot; is a receivable —
-                            your net worth adds it. Same account type, opposite sign.
+                            Monthly. What you choose is where the month begins — any day of the month, or the last day — so the cycle can
+                            follow your payday instead of the calendar.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can I link a debt to a contact?</Trans>}
+                    question={<Trans>Do the alerts need an internet connection?</Trans>}
                     answer={
                         <Trans>
-                            Yes — each debt account has an optional contact name. Useful for tracking inter-personal loans without
-                            spreadsheets.
+                            No. They are local notifications scheduled by the app itself from data already on your device. Nothing is sent
+                            to a server, and no account is required.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>How do I settle a debt?</Trans>}
+                    question={<Trans>What happens with accounts in another currency?</Trans>}
                     answer={
                         <Trans>
-                            Make a transfer between the debt account and a real cash/bank account. The debt balance hits zero; archive the
-                            account if you want it off the home screen.
+                            The budget itself is kept in your default currency, and spending recorded on accounts in other currencies is
+                            converted into it using the exchange rates stored on your device.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>My friend repaid me by bank transfer — do I have to re-enter it?</Trans>}
+                    question={<Trans>Do I have to build the whole budget by hand?</Trans>}
                     answer={
                         <Trans>
-                            No. Attach the income that already arrived to the debt and it counts as a settlement against that debt account.
-                            The transaction itself is untouched.
+                            Only if you want to. Budgie can suggest a starting budget derived from your own recent transactions, offer a
+                            generic starter split across common categories, or hand you an empty canvas.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What if the loan was in a different currency?</Trans>}
+                    question={<Trans>Can I see what is behind a category number?</Trans>}
                     answer={
                         <Trans>
-                            The converted value is stored together with the exchange rate for the date of the operation, so an old loan
-                            keeps the valuation it had when it was made instead of drifting with today&apos;s rate.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Does the target return date trigger a reminder?</Trans>}
-                    answer={
-                        <Trans>
-                            Currently it&apos;s informational — surfaced in the account detail and recurring view. Push reminders are on the
-                            roadmap.
+                            Yes — tapping a category row on the budget detail screen opens the transaction list filtered to that category
+                            and that exact budget period.
                         </Trans>
                     }
                 />
