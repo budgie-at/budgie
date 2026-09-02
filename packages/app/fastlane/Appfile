@@ -1,0 +1,3 @@
+app_identifier("com.vitalyiegorov.budgie")
+apple_id("vitalyiegorov@gmail.com")
+team_id(ENV.fetch("FASTLANE_TEAM_ID", "3R8589YV24"))
