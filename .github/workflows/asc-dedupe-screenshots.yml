@@ -2,6 +2,9 @@ name: Dedupe App Store screenshots
 
 on:
     workflow_dispatch:
+    workflow_run:
+        workflows: [Build and Publish to Stores]
+        types: [completed]
 
 permissions:
     contents: read
@@ -9,6 +12,7 @@ permissions:
 jobs:
     dedupe:
         name: Delete duplicate App Store screenshots
+        if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
         runs-on: ubuntu-latest
         timeout-minutes: 15
         steps:
