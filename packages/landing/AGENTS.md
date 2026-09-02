@@ -8,6 +8,8 @@ Marketing website built with Next.js 16, React 19, Tailwind CSS 4, and Lingui 6.
 pnpm start                    # Development server (next dev)
 pnpm build                    # Production build
 pnpm i18n:sync                # Extract & compile i18n translations
+pnpm media:manifest           # Rescan public/media and regenerate the committed media manifest
+pnpm media:check              # Verify manifest freshness, asset budgets and <AppShot>/<AppClip> usages
 pnpm ts                       # Native TypeScript 7 check
 pnpm lint                     # Oxlint + 13-rule ESLint fallback
 ```
@@ -48,6 +50,7 @@ Before starting any of the work areas below, read the corresponding doc first.
 | Blog articles, feature pages, pillar hubs, legal pages, sitemap entries, `generateMetadata`, JSON-LD helpers, anything SEO-related     | `docs/seo-pages.md`  |
 | `<Trans>` / `t` / `msg`, `generateMetadata` i18n strings, catalog `.po`/`.ts` files, RSC i18n setup, dispatching translation subagents | `docs/lingui-rsc.md` |
 | IndexNow key file, GSC/Bing sitemap submission, merge-to-main URL submission, API/root `.txt` proxy bypass rules                       | `docs/indexnow.md`   |
+| Product screenshots and motion clips, `public/media/**`, `<AppShot>`/`<AppClip>`, the generated media manifest, `media:manifest`/`media:check` | `docs/media.md`      |
 
 ---
 

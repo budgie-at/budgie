@@ -47,7 +47,7 @@ export default async function LandingPage(props: PageLangParam) {
             <JsonLd data={softwareApplication} />
 
             {/* Hero + Trust */}
-            <HeroSection />
+            <HeroSection locale={lang} />
             <TrustBanner />
 
             {/* Problem & Solution */}
