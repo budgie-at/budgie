@@ -232,6 +232,36 @@ else
     FAILURES=$((FAILURES + 1))
 fi
 
+# A flow-backed scene that also records a clip keeps the single mp4 alongside
+# the PNG, at the same final path with an .mp4 extension.
+CLIP_BIN="$WORK_DIR/clip-bin"
+mkdir -p "$CLIP_BIN"
+cp "$STUB_BIN/xcrun" "$CLIP_BIN/xcrun"
+cat > "$CLIP_BIN/maestro" <<EOF
+#!/bin/bash
+: > "\$PWD/stub-shot.png"
+: > "\$PWD/stub-clip.mp4"
+EOF
+chmod +x "$CLIP_BIN/maestro"
+
+CLIP_OUTPUT="$WORK_DIR/clip-output"
+PATH="$CLIP_BIN:$PATH" bash "$TARGET" \
+    --config "$RUN_CONFIG" \
+    --device 'iPhone 17 Pro Max' \
+    --locales en \
+    --appearances dark \
+    --scenes 00-prime \
+    --output "$CLIP_OUTPUT" \
+    --skip-install \
+    --skip-prime >/dev/null
+
+if [ -f "$CLIP_OUTPUT/raw/ios/iphone-17-pro-max/en/dark/00-prime.mp4" ]; then
+    echo 'ok   a single recorded clip is moved alongside the PNG'
+else
+    echo 'FAIL the recorded clip did not land alongside the PNG'
+    FAILURES=$((FAILURES + 1))
+fi
+
 # mobile-ci retries a failed cell once, so a screenshot that fails on the first
 # attempt and succeeds on the second must still produce a passing cell.
 FLAKY_BIN="$WORK_DIR/flaky-bin"
