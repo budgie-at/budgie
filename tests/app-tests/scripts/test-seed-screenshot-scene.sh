@@ -166,4 +166,325 @@ JOURNAL_MIGRATION_COUNT=$(node -e '
 ' "$WORKSPACE_DIR/../../packages/app/drizzle/meta/_journal.json")
 assert_equals 'showcase.db is at the current migration head' "$JOURNAL_MIGRATION_COUNT" "$(sqlite3 "$SCREENSHOTS_DIR/showcase.db" 'SELECT COUNT(*) FROM __drizzle_migrations;')"
 
+# ---------------------------------------------------------------------------
+# Scene overlay contract
+# ---------------------------------------------------------------------------
+
+SCENES_DIR="$SCREENSHOTS_DIR/scenes"
+SCENE_OVERLAYS_MAP_PATH="$SCENES_DIR/scene-overlays.json"
+
+# Tables an overlay is allowed to grow. Everything else must stay untouched, so
+# a typo in one overlay cannot quietly reshape the base dataset.
+COUNTED_TABLES="accounts account_balances bank_integrations bank_syncs budgets budget_category_limits categories debt_events exchange_rates instrument_daily_market_prices rule_actions rule_conditions rules settings tags transactions transaction_entries transaction_tags"
+
+# The store scenes are the 8 cells .github/store-screenshots.config.json
+# captures. Their seeded database must not move by a single byte.
+STORE_SCENE_NAMES="00-prime 01-home 02-transactions 03-analytics 04-budget 05-add-expense 06-account 07-settings"
+
+test -f "$SCENE_OVERLAYS_MAP_PATH"
+
+list_overlay_files() {
+    node -e '
+        const fs = require("fs");
+
+        process.stdout.write(
+            fs
+                .readdirSync(process.argv[1])
+                .filter(name => name.endsWith(".sql"))
+                .map(name => name.slice(0, -4))
+                .sort()
+                .join("\n")
+        );
+    ' "$SCENES_DIR"
+}
+
+list_scene_names() {
+    node -e '
+        const fs = require("fs");
+
+        process.stdout.write(Object.keys(JSON.parse(fs.readFileSync(process.argv[1], "utf8"))).sort().join("\n"));
+    ' "$SCENE_OVERLAYS_MAP_PATH"
+}
+
+list_declared_overlays() {
+    node -e '
+        const fs = require("fs");
+        const map = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+
+        process.stdout.write([...new Set(Object.values(map).flat())].sort().join("\n"));
+    ' "$SCENE_OVERLAYS_MAP_PATH"
+}
+
+# `settings.updated_at` and the exchange-rate freshness stamps are written from
+# `now`, so two runs a second apart differ on them and nothing else. Zeroing
+# them is what makes the byte-identity comparison below meaningful.
+normalize_database() {
+    sqlite3 "$1" 'UPDATE settings SET updated_at = 0; UPDATE exchange_rates SET created_at = 0, updated_at = 0;'
+}
+
+dump_database() {
+    normalize_database "$1"
+    sqlite3 "$1" '.dump'
+}
+
+count_signature() {
+    local database_path="$1"
+    local table_name
+
+    for table_name in $COUNTED_TABLES; do
+        echo "$table_name=$(sqlite3 "$database_path" "SELECT COUNT(*) FROM $table_name;")"
+    done
+}
+
+table_count() {
+    sqlite3 "$1" "SELECT COUNT(*) FROM $2;"
+}
+
+# The tables each overlay claims to grow. Asserted to actually grow, so an
+# overlay that silently stops inserting is a test failure, not a blank screen
+# discovered during a 7-hour capture run.
+overlay_grown_tables() {
+    case "$1" in
+        archived) echo 'accounts account_balances transactions transaction_entries' ;;
+        bank-fees) echo 'transactions transaction_entries' ;;
+        bank-sync-connected) echo 'accounts account_balances bank_integrations bank_syncs transactions transaction_entries' ;;
+        budget-near-limit) echo 'transactions transaction_entries' ;;
+        crypto) echo 'accounts account_balances instrument_daily_market_prices transactions transaction_entries' ;;
+        cyrillic-taxonomy) echo 'categories tags' ;;
+        debt) echo 'accounts account_balances debt_events transactions transaction_entries' ;;
+        deposit) echo 'accounts account_balances transactions transaction_entries' ;;
+        import-presets) echo 'accounts account_balances bank_integrations transactions transaction_entries' ;;
+        long-history) echo 'transactions transaction_entries' ;;
+        multi-currency) echo 'accounts account_balances transactions transaction_entries' ;;
+        net-worth-full) echo '' ;;
+        recurring) echo 'transactions transaction_entries' ;;
+        refund) echo 'transactions transaction_entries' ;;
+        rules) echo 'rule_actions rule_conditions rules' ;;
+        security-locked) echo '' ;;
+        split-transaction) echo 'transactions transaction_entries' ;;
+        tags-rich) echo 'tags transactions transaction_entries transaction_tags' ;;
+        transfer-pair) echo 'transactions transaction_entries' ;;
+        uncategorized) echo 'transactions transaction_entries' ;;
+        *) fail "overlay '$1' has no declared table list in overlay_grown_tables" ;;
+    esac
+}
+
+OVERLAY_FILE_NAMES=$(list_overlay_files)
+SCENE_NAMES=$(list_scene_names)
+DECLARED_OVERLAY_NAMES=$(list_declared_overlays)
+
+# The map and the overlay files must describe the same set: a scene pointing at
+# a missing file fails the capture, an unclaimed overlay file is dead weight.
+assert_equals 'every declared overlay has a committed .sql file, and every file is claimed' "$OVERLAY_FILE_NAMES" "$DECLARED_OVERLAY_NAMES"
+
+# ---------------------------------------------------------------------------
+# The 7 store scenes must be byte-identical to the pre-overlay pipeline
+# ---------------------------------------------------------------------------
+
+# The seed pipeline exactly as it was before scene overlays existed. If the hook
+# ever starts touching a store scene's database, this diverges.
+build_legacy_database() {
+    local locale_code="$1"
+    local theme_name="$2"
+    local database_path="$3"
+
+    cp "$SCREENSHOTS_DIR/showcase.db" "$database_path"
+    rm -f "$database_path-wal" "$database_path-shm"
+
+    sqlite3 "$database_path" < "$SCREENSHOTS_DIR/$locale_code.sql"
+    sqlite3 "$database_path" < "$SCREENSHOTS_DIR/shift-dates.sql"
+    sqlite3 "$database_path" "
+        UPDATE settings
+        SET
+            language = '$locale_code',
+            theme = '$theme_name',
+            is_screenshot_protection_enabled = 0,
+            is_pin_enabled = 0,
+            is_biometric_enabled = 0,
+            is_budget_push_enabled = 0,
+            updated_at = unixepoch('now');
+    "
+    sqlite3 "$database_path" 'PRAGMA wal_checkpoint(TRUNCATE);' >/dev/null
+    rm -f "$database_path-wal" "$database_path-shm"
+}
+
+for LOCALE_CODE in en fr uk de es; do
+    LEGACY_DATABASE_PATH="$TEMP_DIR/legacy-$LOCALE_CODE.db"
+
+    build_legacy_database "$LOCALE_CODE" LIGHT "$LEGACY_DATABASE_PATH"
+    dump_database "$LEGACY_DATABASE_PATH" > "$TEMP_DIR/legacy-$LOCALE_CODE.sql"
+
+    for STORE_SCENE_NAME in $STORE_SCENE_NAMES; do
+        STORE_DATABASE_PATH="$TEMP_DIR/store-$STORE_SCENE_NAME-$LOCALE_CODE.db"
+
+        SCENE="$STORE_SCENE_NAME" \
+            LOCALE="$LOCALE_CODE" \
+            APPEARANCE=light \
+            bash "$SEED_SCRIPT" --dry-run --output "$STORE_DATABASE_PATH" >/dev/null
+
+        dump_database "$STORE_DATABASE_PATH" > "$TEMP_DIR/store-$STORE_SCENE_NAME-$LOCALE_CODE.sql"
+
+        if ! diff -q "$TEMP_DIR/legacy-$LOCALE_CODE.sql" "$TEMP_DIR/store-$STORE_SCENE_NAME-$LOCALE_CODE.sql" >/dev/null; then
+            fail "store scene $STORE_SCENE_NAME/$LOCALE_CODE diverged from the pre-overlay pipeline"
+        fi
+
+        assert_equals \
+            "store scene $STORE_SCENE_NAME/$LOCALE_CODE keeps the lock flags off" \
+            '0|0|0' \
+            "$(sqlite3 "$STORE_DATABASE_PATH" "SELECT is_pin_enabled || '|' || is_biometric_enabled || '|' || is_screenshot_protection_enabled FROM settings;")"
+
+        rm -f "$STORE_DATABASE_PATH" "$TEMP_DIR/store-$STORE_SCENE_NAME-$LOCALE_CODE.sql"
+    done
+done
+
+# ---------------------------------------------------------------------------
+# Every overlay, on its own, against every locale
+# ---------------------------------------------------------------------------
+
+# A sandbox copy of the fixtures lets the self-test point scenes at single
+# overlays and at a deliberately missing one without polluting the committed
+# map that the capture pipeline reads.
+SANDBOX_DIR="$TEMP_DIR/sandbox"
+
+mkdir -p "$SANDBOX_DIR/scripts" "$SANDBOX_DIR/fixtures"
+cp -R "$SCREENSHOTS_DIR" "$SANDBOX_DIR/fixtures/screenshots"
+cp "$SEED_SCRIPT" "$SANDBOX_DIR/scripts/seed-screenshot-scene.sh"
+
+SANDBOX_SEED_SCRIPT="$SANDBOX_DIR/scripts/seed-screenshot-scene.sh"
+
+node -e '
+    const fs = require("fs");
+    const [mapPath, sandboxMapPath] = process.argv.slice(1);
+    const map = JSON.parse(fs.readFileSync(mapPath, "utf8"));
+
+    for (const overlayName of new Set(Object.values(map).flat())) {
+        map[`selftest-${overlayName}`] = [overlayName];
+    }
+
+    map["selftest-missing-overlay"] = ["overlay-that-does-not-exist"];
+
+    fs.writeFileSync(sandboxMapPath, JSON.stringify(map, null, 4));
+' "$SCENE_OVERLAYS_MAP_PATH" "$SANDBOX_DIR/fixtures/screenshots/scenes/scene-overlays.json"
+
+if SCENE=selftest-missing-overlay LOCALE=en APPEARANCE=light bash "$SANDBOX_SEED_SCRIPT" --dry-run --output "$TEMP_DIR/missing.db" >/dev/null 2>&1; then
+    fail 'a scene declaring a missing overlay file was accepted'
+fi
+
+for LOCALE_CODE in en fr uk de es; do
+    BASE_DATABASE_PATH="$TEMP_DIR/base-$LOCALE_CODE.db"
+
+    env -u SCENE LOCALE="$LOCALE_CODE" APPEARANCE=light \
+        bash "$SANDBOX_SEED_SCRIPT" --dry-run --output "$BASE_DATABASE_PATH" >/dev/null
+
+    count_signature "$BASE_DATABASE_PATH" > "$TEMP_DIR/base-$LOCALE_CODE.counts"
+
+    while IFS= read -r OVERLAY_NAME; do
+        OVERLAY_DATABASE_PATH="$TEMP_DIR/overlay-$OVERLAY_NAME-$LOCALE_CODE.db"
+
+        SCENE="selftest-$OVERLAY_NAME" \
+            LOCALE="$LOCALE_CODE" \
+            APPEARANCE=light \
+            bash "$SANDBOX_SEED_SCRIPT" --dry-run --output "$OVERLAY_DATABASE_PATH" >/dev/null
+
+        assert_equals "integrity check ($OVERLAY_NAME/$LOCALE_CODE)" ok "$(sqlite3 "$OVERLAY_DATABASE_PATH" 'PRAGMA integrity_check;')"
+        assert_equals "foreign key check ($OVERLAY_NAME/$LOCALE_CODE)" '' "$(sqlite3 "$OVERLAY_DATABASE_PATH" 'PRAGMA foreign_key_check;')"
+        assert_equals "settings rows ($OVERLAY_NAME/$LOCALE_CODE)" 1 "$(table_count "$OVERLAY_DATABASE_PATH" settings)"
+        assert_equals \
+            "settings language ($OVERLAY_NAME/$LOCALE_CODE)" \
+            "$LOCALE_CODE" \
+            "$(sqlite3 "$OVERLAY_DATABASE_PATH" 'SELECT language FROM settings;')"
+        assert_equals \
+            "transactions after today ($OVERLAY_NAME/$LOCALE_CODE)" \
+            0 \
+            "$(sqlite3 "$OVERLAY_DATABASE_PATH" "SELECT COUNT(*) FROM transactions WHERE date(operated_at, 'unixepoch') > date('now');")"
+        assert_equals \
+            "orphan entries ($OVERLAY_NAME/$LOCALE_CODE)" \
+            0 \
+            "$(sqlite3 "$OVERLAY_DATABASE_PATH" 'SELECT COUNT(*) FROM transaction_entries WHERE transaction_id NOT IN (SELECT id FROM transactions);')"
+        assert_equals \
+            "entryless transactions ($OVERLAY_NAME/$LOCALE_CODE)" \
+            0 \
+            "$(sqlite3 "$OVERLAY_DATABASE_PATH" 'SELECT COUNT(*) FROM transactions WHERE id NOT IN (SELECT transaction_id FROM transaction_entries);')"
+
+        GROWN_TABLE_NAMES=$(overlay_grown_tables "$OVERLAY_NAME")
+
+        for GROWN_TABLE_NAME in $GROWN_TABLE_NAMES; do
+            BASE_ROW_COUNT=$(grep "^$GROWN_TABLE_NAME=" "$TEMP_DIR/base-$LOCALE_CODE.counts" | cut -d= -f2)
+            OVERLAY_ROW_COUNT=$(table_count "$OVERLAY_DATABASE_PATH" "$GROWN_TABLE_NAME")
+
+            assert_positive \
+                "$OVERLAY_NAME/$LOCALE_CODE grows $GROWN_TABLE_NAME" \
+                "$((OVERLAY_ROW_COUNT - BASE_ROW_COUNT))"
+        done
+
+        # Re-running an overlay must be a no-op, matching shift-dates.sql's
+        # guarantee, so a scene stack that lists an overlay twice is harmless.
+        count_signature "$OVERLAY_DATABASE_PATH" > "$TEMP_DIR/overlay-$OVERLAY_NAME-$LOCALE_CODE.counts"
+        sqlite3 "$OVERLAY_DATABASE_PATH" < "$SCENES_DIR/$OVERLAY_NAME.sql"
+        count_signature "$OVERLAY_DATABASE_PATH" > "$TEMP_DIR/overlay-$OVERLAY_NAME-$LOCALE_CODE.repeat"
+
+        if ! diff -q "$TEMP_DIR/overlay-$OVERLAY_NAME-$LOCALE_CODE.counts" "$TEMP_DIR/overlay-$OVERLAY_NAME-$LOCALE_CODE.repeat" >/dev/null; then
+            fail "overlay $OVERLAY_NAME/$LOCALE_CODE is not idempotent"
+        fi
+
+        rm -f "$OVERLAY_DATABASE_PATH"
+    done <<< "$OVERLAY_FILE_NAMES"
+done
+
+# `security-locked` is the reason the hook's lock flags became scene-conditional.
+SECURITY_DATABASE_PATH="$TEMP_DIR/security-locked.db"
+
+SCENE=pin-app-lock-1 LOCALE=en APPEARANCE=light \
+    bash "$SEED_SCRIPT" --dry-run --output "$SECURITY_DATABASE_PATH" >/dev/null
+
+assert_equals \
+    'security-locked turns the lock flags on' \
+    '1|1|1' \
+    "$(sqlite3 "$SECURITY_DATABASE_PATH" "SELECT is_pin_enabled || '|' || is_biometric_enabled || '|' || is_screenshot_protection_enabled FROM settings;")"
+
+# `net-worth-full` only updates rows, so it is asserted on its effect rather
+# than on a row-count delta: the home hero has to show every asset section.
+NET_WORTH_DATABASE_PATH="$TEMP_DIR/net-worth-full.db"
+
+SCENE=home-hero-1 LOCALE=en APPEARANCE=light \
+    bash "$SEED_SCRIPT" --dry-run --output "$NET_WORTH_DATABASE_PATH" >/dev/null
+
+assert_equals \
+    'net-worth-full leaves no live account out of net worth' \
+    0 \
+    "$(sqlite3 "$NET_WORTH_DATABASE_PATH" 'SELECT COUNT(*) FROM accounts WHERE deleted_at IS NULL AND (include_in_net_worth = 0 OR is_active = 0);')"
+assert_equals \
+    'net-worth-full covers every home account section' \
+    'BANK,CASH,CRYPTO,DEBT,DEPOSIT,SAVINGS' \
+    "$(sqlite3 "$NET_WORTH_DATABASE_PATH" "SELECT GROUP_CONCAT(type) FROM (SELECT DISTINCT type FROM accounts WHERE deleted_at IS NULL ORDER BY type);")"
+assert_equals \
+    'net-worth-full keeps both debt directions' \
+    2 \
+    "$(sqlite3 "$NET_WORTH_DATABASE_PATH" "SELECT COUNT(DISTINCT debt_type) FROM accounts WHERE type = 'DEBT' AND deleted_at IS NULL;")"
+
+# ---------------------------------------------------------------------------
+# Every scene the committed map declares, against every locale
+# ---------------------------------------------------------------------------
+
+for LOCALE_CODE in en fr uk de es; do
+    while IFS= read -r SCENE_NAME; do
+        SCENE_DATABASE_PATH="$TEMP_DIR/scene.db"
+
+        SCENE="$SCENE_NAME" \
+            LOCALE="$LOCALE_CODE" \
+            APPEARANCE=light \
+            bash "$SEED_SCRIPT" --dry-run --output "$SCENE_DATABASE_PATH" >/dev/null
+
+        assert_equals "integrity check (scene $SCENE_NAME/$LOCALE_CODE)" ok "$(sqlite3 "$SCENE_DATABASE_PATH" 'PRAGMA integrity_check;')"
+        assert_equals "foreign key check (scene $SCENE_NAME/$LOCALE_CODE)" '' "$(sqlite3 "$SCENE_DATABASE_PATH" 'PRAGMA foreign_key_check;')"
+        assert_equals "settings rows (scene $SCENE_NAME/$LOCALE_CODE)" 1 "$(table_count "$SCENE_DATABASE_PATH" settings)"
+        assert_equals \
+            "transactions after today (scene $SCENE_NAME/$LOCALE_CODE)" \
+            0 \
+            "$(sqlite3 "$SCENE_DATABASE_PATH" "SELECT COUNT(*) FROM transactions WHERE date(operated_at, 'unixepoch') > date('now');")"
+
+        rm -f "$SCENE_DATABASE_PATH"
+    done <<< "$SCENE_NAMES"
+done
+
 echo "test-seed-screenshot-scene: ok"
