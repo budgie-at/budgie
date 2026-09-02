@@ -10,11 +10,18 @@ export const MANIFEST_PATH = join(LANDING_ROOT, 'src', 'generic', 'constant', 'm
 export const MEDIA_THEMES = ['light', 'dark'];
 export const MEDIA_LOCALES = ['en', 'uk', 'fr', 'de', 'es', 'neutral'];
 
-const STILL_AVIF_SUFFIX = '@2x.avif';
-const STILL_WEBP_SUFFIX = '@2x.webp';
-const POSTER_SUFFIX = '-poster@2x.webp';
-const WEBM_SUFFIX = '.webm';
-const MP4_SUFFIX = '.mp4';
+const MEDIA_VARIANTS = [
+    { key: 'poster', suffix: '-poster@2x.webp' },
+    { key: 'avif', suffix: '@2x.avif' },
+    { key: 'webp', suffix: '@2x.webp' },
+    { key: 'webm', suffix: '.webm' },
+    { key: 'mp4', suffix: '.mp4' }
+];
+const MEDIA_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const AVIF_BRANDS = ['avif', 'avis'];
+const FTYP_BRANDS_OFFSET = 16;
+const ISPE_BOX_LENGTH = 16;
+const WEBP_HEADER_LENGTH = 30;
 
 const listDirectories = directory =>
     readdirSync(directory, { withFileTypes: true })
@@ -29,6 +36,10 @@ const listFiles = directory =>
         .sort();
 
 const readWebpSize = buffer => {
+    if (buffer.length < WEBP_HEADER_LENGTH || buffer.toString('ascii', 0, 4) !== 'RIFF' || buffer.toString('ascii', 8, 12) !== 'WEBP') {
+        return null;
+    }
+
     const fourCc = buffer.toString('ascii', 12, 16);
 
     if (fourCc === 'VP8X') {
@@ -49,9 +60,20 @@ const readWebpSize = buffer => {
 };
 
 const readAvifSize = buffer => {
+    if (buffer.length < FTYP_BRANDS_OFFSET || buffer.toString('ascii', 4, 8) !== 'ftyp') {
+        return null;
+    }
+
+    const brandsEnd = Math.min(buffer.readUInt32BE(0), buffer.length);
+    const brands = [buffer.toString('ascii', 8, 12)];
+
+    for (let offset = FTYP_BRANDS_OFFSET; offset + 4 <= brandsEnd; offset += 4) {
+        brands.push(buffer.toString('ascii', offset, offset + 4));
+    }
+
     const index = buffer.indexOf('ispe', 0, 'ascii');
 
-    if (index < 0) {
+    if (!brands.some(brand => AVIF_BRANDS.includes(brand)) || index < 0 || index + ISPE_BOX_LENGTH > buffer.length) {
         return null;
     }
 
@@ -81,22 +103,22 @@ const buildScenes = (group, locale, theme, directory, errors) => {
     };
 
     for (const fileName of listFiles(directory)) {
-        const filePath = join(directory, fileName);
         const relativePath = `${publicPrefix}/${fileName}`;
+        const variant = MEDIA_VARIANTS.find(candidate => fileName.endsWith(candidate.suffix));
 
-        if (fileName.endsWith(POSTER_SUFFIX)) {
-            ensure(fileName.slice(0, -POSTER_SUFFIX.length)).files.poster = { relativePath, filePath };
-        } else if (fileName.endsWith(STILL_AVIF_SUFFIX)) {
-            ensure(fileName.slice(0, -STILL_AVIF_SUFFIX.length)).files.avif = { relativePath, filePath };
-        } else if (fileName.endsWith(STILL_WEBP_SUFFIX)) {
-            ensure(fileName.slice(0, -STILL_WEBP_SUFFIX.length)).files.webp = { relativePath, filePath };
-        } else if (fileName.endsWith(WEBM_SUFFIX)) {
-            ensure(fileName.slice(0, -WEBM_SUFFIX.length)).files.webm = { relativePath, filePath };
-        } else if (fileName.endsWith(MP4_SUFFIX)) {
-            ensure(fileName.slice(0, -MP4_SUFFIX.length)).files.mp4 = { relativePath, filePath };
-        } else {
-            errors.push(`${publicPrefix}/${fileName} does not match the media naming contract`);
+        if (variant === undefined) {
+            errors.push(`${relativePath} does not match the media naming contract`);
+            continue;
         }
+
+        const scene = fileName.slice(0, -variant.suffix.length);
+
+        if (!MEDIA_NAME_PATTERN.test(scene)) {
+            errors.push(`${relativePath} has a scene id that is not kebab-case`);
+            continue;
+        }
+
+        ensure(scene).files[variant.key] = { relativePath, filePath: join(directory, fileName) };
     }
 
     return [...scenes.values()];
@@ -109,15 +131,30 @@ const toStillAsset = (base, files, errors) => {
         return null;
     }
 
-    const size = readImageSize(files.webp.filePath);
+    const avifSize = readImageSize(files.avif.filePath);
+    const webpSize = readImageSize(files.webp.filePath);
 
-    if (size === null) {
+    if (avifSize === null) {
+        errors.push(`${files.avif.relativePath} is not a readable AVIF file`);
+
+        return null;
+    }
+
+    if (webpSize === null) {
         errors.push(`${files.webp.relativePath} is not a readable WebP file`);
 
         return null;
     }
 
-    return { ...base, kind: 'still', ...size, avifPath: files.avif.relativePath, webpPath: files.webp.relativePath };
+    if (avifSize.width !== webpSize.width || avifSize.height !== webpSize.height) {
+        errors.push(
+            `${files.avif.relativePath} is ${avifSize.width}x${avifSize.height} but ${files.webp.relativePath} is ${webpSize.width}x${webpSize.height}`
+        );
+
+        return null;
+    }
+
+    return { ...base, kind: 'still', ...webpSize, avifPath: files.avif.relativePath, webpPath: files.webp.relativePath };
 };
 
 const toMotionAsset = (base, files, errors) => {
@@ -154,6 +191,11 @@ export const collectMediaAssets = () => {
     }
 
     for (const group of listDirectories(MEDIA_ROOT)) {
+        if (!MEDIA_NAME_PATTERN.test(group)) {
+            errors.push(`media/${group} is not a kebab-case group slug`);
+            continue;
+        }
+
         for (const locale of listDirectories(join(MEDIA_ROOT, group))) {
             if (!MEDIA_LOCALES.includes(locale)) {
                 errors.push(`media/${group}/${locale} is not one of ${MEDIA_LOCALES.join(', ')}`);

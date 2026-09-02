@@ -11,7 +11,7 @@ Every pixel of app UI on the landing is a real capture of the real build. Assets
 
 ## 1. Folder and naming contract
 
-```
+```text
 packages/landing/public/media/<group>/<locale>/<theme>/<scene>@2x.avif
                                                       <scene>@2x.webp
                                                       <scene>.webm
@@ -29,6 +29,11 @@ packages/landing/public/media/<group>/<locale>/<theme>/<scene>@2x.avif
 A **still** scene is the `@2x.avif` + `@2x.webp` pair. A **motion** scene is `.webm` + `.mp4` + `-poster@2x.webp`.
 Partial sets are an error, not a silent skip. `@2x` means the file holds device pixels; the manifest records those pixel
 dimensions and the components emit them as `width`/`height` so the browser reserves the right aspect ratio.
+
+Both still variants are decoded before the scene enters the manifest: the AVIF must be a real AVIF container and the
+WebP a real RIFF/WEBP one, and the two must report identical pixel dimensions. `<group>` and `<scene>` must be
+kebab-case (`[a-z0-9]` with single dashes) — anything else is rejected instead of being written into the generated
+manifest source.
 
 ### Byte budgets
 
@@ -79,7 +84,7 @@ mis-named asset fails the build (and the Vercel deploy) rather than shipping a b
 `resolveMediaAsset` (`src/generic/util/resolve-media-asset.util.ts`) takes `{ group, scene, locale, kind }` plus a theme
 and walks the locale chain:
 
-```
+```text
 requested locale  →  en  →  neutral
 ```
 
