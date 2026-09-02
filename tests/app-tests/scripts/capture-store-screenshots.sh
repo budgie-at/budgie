@@ -381,11 +381,13 @@ maestro_work_dir() {
 }
 
 # mobile-ci's capture_flow_cell, one for one: absolute flow path, a fresh scratch
-# CWD, the always-passed APP_ID/LOCALE/APPEARANCE, the workspace --config, and a
-# single collected takeScreenshot PNG moved to the cell's final path.
+# CWD, the always-passed APP_ID/LOCALE/APPEARANCE, the workspace --config, a
+# single collected takeScreenshot PNG moved to the cell's final path, and any
+# single recorded clip moved alongside it.
 capture_flow_cell() {
     local udid="$1" locale="$2" appearance="$3" scene="$4" flow="$5" final_path="$6"
     local flow_path test_output_dir shot_cwd shot_count=0 shot_file='' candidate
+    local clip_count=0 clip_file=''
 
     [ -n "$SCREENSHOTS_DIR" ] || fail "scene '$scene' declares a flow but the config has no screenshots-dir"
     flow_path="$SCREENSHOTS_DIR/$flow"
@@ -416,6 +418,18 @@ capture_flow_cell() {
 
     mkdir -p "$(dirname "$final_path")"
     mv "$shot_file" "$final_path"
+
+    while IFS= read -r candidate; do
+        clip_count=$((clip_count + 1))
+        clip_file="$candidate"
+    done < <(find "$shot_cwd" -type f -name '*.mp4'; find "$test_output_dir" -type f -name '*.mp4' -not -path "$shot_cwd/*")
+    [ "$clip_count" -eq 0 ] && return 0
+    if [ "$clip_count" -ne 1 ]; then
+        echo "  $locale/$appearance/$scene: expected at most 1 recorded clip, found $clip_count" >&2
+
+        return 2
+    fi
+    mv "$clip_file" "${final_path%.png}.mp4"
 }
 
 # On a fresh install iOS raises its "Open in <app>?" trust alert the first time a
