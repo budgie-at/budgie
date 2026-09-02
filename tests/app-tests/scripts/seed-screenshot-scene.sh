@@ -18,10 +18,14 @@
 #   APP_PATH        packaged .app path
 #
 # The database is assembled from fixtures/screenshots:
-#   showcase.db     curated dataset, anchored on a fixed date
-#   <LOCALE>.sql    locale overlay (strings + display currency)
-#   shift-dates.sql re-anchors every date on the capture day
-# and the hook itself owns `language`, `theme` and the lock/screenshot flags.
+#   showcase.db         curated dataset, anchored on a fixed date
+#   <LOCALE>.sql         locale overlay (strings + display currency)
+#   shift-dates.sql      re-anchors every date on the capture day
+#   scenes/<scene>.sql   optional per-scene state overlay, applied last
+# and the hook itself owns `language`, `theme` and the lock/screenshot flags,
+# unless the scene overlay overrides them. A scene overlay is resolved by
+# filename convention: scenes/$SCENE.sql, else scenes/<SCENE minus -N>.sql,
+# else none.
 #
 # Offline mode, used by test-seed-screenshot-scene.sh and for local inspection:
 #   LOCALE=de APPEARANCE=dark scripts/seed-screenshot-scene.sh --dry-run --output /tmp/de.db
@@ -32,6 +36,8 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 SCREENSHOTS_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/../fixtures/screenshots" && pwd)
 SHOWCASE_DATABASE_PATH="$SCREENSHOTS_DIR/showcase.db"
 SHIFT_DATES_SQL_PATH="$SCREENSHOTS_DIR/shift-dates.sql"
+SCENES_DIR="$SCREENSHOTS_DIR/scenes"
+SCENE_OVERLAY_PATH=""
 
 IS_DRY_RUN=false
 OUTPUT_DATABASE_PATH=""
@@ -122,6 +128,23 @@ trap cleanup EXIT
 
 PREPARED_DATABASE_PATH="$WORK_DIR/budgie.db"
 
+resolve_scene_overlay_path() {
+    local route_slug
+
+    if [ -z "${SCENE:-}" ]; then
+        return 0
+    fi
+
+    route_slug="${SCENE%-*}"
+    route_slug="${route_slug%-clip}"
+
+    if [ -f "$SCENES_DIR/$SCENE.sql" ]; then
+        SCENE_OVERLAY_PATH="$SCENES_DIR/$SCENE.sql"
+    elif [ -f "$SCENES_DIR/$route_slug.sql" ]; then
+        SCENE_OVERLAY_PATH="$SCENES_DIR/$route_slug.sql"
+    fi
+}
+
 # Builds the seeded database for the current LOCALE/APPEARANCE cell. Every step
 # writes into a scratch copy, so the committed fixtures stay untouched and the
 # hook is safe to re-run for every cell of the capture matrix.
@@ -143,6 +166,12 @@ prepare_database() {
             is_budget_push_enabled = 0,
             updated_at = unixepoch('now');
     "
+
+    resolve_scene_overlay_path
+
+    if [ -n "$SCENE_OVERLAY_PATH" ]; then
+        ( cd "$SCENES_DIR" && sqlite3 "$PREPARED_DATABASE_PATH" < "$SCENE_OVERLAY_PATH" )
+    fi
 
     sqlite3 "$PREPARED_DATABASE_PATH" 'PRAGMA wal_checkpoint(TRUNCATE);' >/dev/null
     rm -f "$PREPARED_DATABASE_PATH-wal" "$PREPARED_DATABASE_PATH-shm"
@@ -187,7 +216,14 @@ verify_database() {
     assert_single_row 'settings table' 'SELECT COUNT(*) FROM settings;'
     assert_single_row \
         "settings row for locale=$LOCALE theme=$THEME" \
-        "SELECT COUNT(*) FROM settings WHERE language = '$LOCALE' AND theme = '$THEME' AND is_screenshot_protection_enabled = 0 AND is_pin_enabled = 0 AND is_biometric_enabled = 0;"
+        "SELECT COUNT(*) FROM settings WHERE language = '$LOCALE' AND theme = '$THEME';"
+
+    if [ -z "$SCENE_OVERLAY_PATH" ]; then
+        assert_single_row \
+            'settings row with lock flags off' \
+            'SELECT COUNT(*) FROM settings WHERE is_screenshot_protection_enabled = 0 AND is_pin_enabled = 0 AND is_biometric_enabled = 0;'
+    fi
+
     assert_single_row 'main account (deep link budgie://account/1/details)' 'SELECT COUNT(*) FROM accounts WHERE id = 1 AND deleted_at IS NULL;'
 
     today_transaction_count=$(sqlite3 "$PREPARED_DATABASE_PATH" "SELECT COUNT(*) FROM transactions WHERE date(operated_at, 'unixepoch') = date('now');")
@@ -208,7 +244,13 @@ verify_database() {
 }
 
 report_database() {
-    echo "seed-screenshot-scene: scene=${SCENE:-} locale=$LOCALE appearance=$APPEARANCE theme=$THEME"
+    local scene_overlay_basename=none
+
+    if [ -n "$SCENE_OVERLAY_PATH" ]; then
+        scene_overlay_basename=$(basename "$SCENE_OVERLAY_PATH")
+    fi
+
+    echo "seed-screenshot-scene: scene=${SCENE:-} locale=$LOCALE appearance=$APPEARANCE theme=$THEME overlay=$scene_overlay_basename"
     sqlite3 "$PREPARED_DATABASE_PATH" "
         SELECT 'accounts=' || (SELECT COUNT(*) FROM accounts)
             || ' transactions=' || (SELECT COUNT(*) FROM transactions)
