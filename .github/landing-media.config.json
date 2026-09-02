@@ -1,0 +1,235 @@
+{
+    "ios-target": {
+        "name": "e2e",
+        "appDir": "packages/app",
+        "workspace": "budgieE2E.xcworkspace",
+        "scheme": "budgieE2E",
+        "appId": "com.vitalyiegorov.budgie.e2e",
+        "prebuildCommand": "npx expo prebuild -p ios --clean --no-install"
+    },
+    "capture-mode": "direct",
+    "capture-manifest": [
+        {
+            "platform": "ios",
+            "device": "iPhone 17 Pro Max",
+            "locales": [
+                "en",
+                "fr",
+                "uk",
+                "de",
+                "es"
+            ],
+            "appearances": [
+                "light",
+                "dark"
+            ]
+        }
+    ],
+    "capture-scenes": [
+        {
+            "name": "00-prime",
+            "flow": "flows/setup/prime-deep-links-scene.flow.yaml"
+        },
+        {
+            "name": "home-hero-1",
+            "deepLink": "budgie://"
+        },
+        {
+            "name": "home-hero-2",
+            "deepLink": "budgie://budget"
+        },
+        {
+            "name": "ai-auto-categorization-2",
+            "deepLink": "budgie://settings?anchor=ai"
+        },
+        {
+            "name": "on-device-ai-budget-app-1",
+            "deepLink": "budgie://settings?anchor=ai"
+        },
+        {
+            "name": "monobank-sync-1",
+            "deepLink": "budgie://bank-integration/1"
+        },
+        {
+            "name": "monobank-sync-2",
+            "deepLink": "budgie://"
+        },
+        {
+            "name": "net-worth-tracker-1",
+            "deepLink": "budgie://"
+        },
+        {
+            "name": "offline-first-expense-tracker-1",
+            "deepLink": "budgie://transactions"
+        },
+        {
+            "name": "offline-first-expense-tracker-2",
+            "deepLink": "budgie://settings?anchor=general"
+        },
+        {
+            "name": "private-budget-app-alternative-1",
+            "deepLink": "budgie://settings"
+        },
+        {
+            "name": "subscription-free-budget-app-1",
+            "deepLink": "budgie://settings"
+        },
+        {
+            "name": "expense-tracking-1",
+            "deepLink": "budgie://create-transaction/expense"
+        },
+        {
+            "name": "expense-tracking-2",
+            "deepLink": "budgie://transactions"
+        },
+        {
+            "name": "account-management-1",
+            "deepLink": "budgie://"
+        },
+        {
+            "name": "account-management-2",
+            "deepLink": "budgie://settings/archived"
+        },
+        {
+            "name": "biometric-authentication-1",
+            "deepLink": "budgie://settings/pin?mode=CHANGE"
+        },
+        {
+            "name": "csv-import-1",
+            "deepLink": "budgie://settings/import"
+        },
+        {
+            "name": "custom-categories-1",
+            "deepLink": "budgie://settings/categories"
+        },
+        {
+            "name": "categorization-rules-1",
+            "deepLink": "budgie://settings/rules"
+        },
+        {
+            "name": "database-backup-1",
+            "deepLink": "budgie://settings?anchor=data"
+        },
+        {
+            "name": "open-source-budget-app-mobile-1",
+            "deepLink": "budgie://settings"
+        },
+        {
+            "name": "pin-app-lock-2",
+            "deepLink": "budgie://settings?anchor=security"
+        },
+        {
+            "name": "spending-analytics-1",
+            "deepLink": "budgie://analytics"
+        },
+        {
+            "name": "transaction-tags-2",
+            "deepLink": "budgie://transactions"
+        },
+        {
+            "name": "multi-currency-2",
+            "deepLink": "budgie://currency/1"
+        },
+        {
+            "name": "debt-tracking-1",
+            "deepLink": "budgie://"
+        },
+        {
+            "name": "debt-tracking-2",
+            "deepLink": "budgie://account/7/details"
+        },
+        {
+            "name": "deposit-tracking-1",
+            "deepLink": "budgie://account/8/details"
+        },
+        {
+            "name": "transfer-pair-detection-1",
+            "deepLink": "budgie://transactions"
+        },
+        {
+            "name": "bank-fee-tracking-2",
+            "deepLink": "budgie://analytics"
+        },
+        {
+            "name": "mcc-auto-category-1",
+            "deepLink": "budgie://transactions/9001/expense/edit"
+        },
+        {
+            "name": "crypto-investment-tracking-1",
+            "deepLink": "budgie://"
+        },
+        {
+            "name": "crypto-investment-tracking-2",
+            "deepLink": "budgie://account/9/details"
+        },
+        {
+            "name": "primary-tag-1",
+            "deepLink": "budgie://transactions"
+        },
+        {
+            "name": "screenshot-protection-1",
+            "deepLink": "budgie://settings?anchor=security"
+        },
+        {
+            "name": "voice-transaction-entry-clip-1",
+            "flow": "flows/media/voice-transaction-entry-clip-1.flow.yaml",
+            "locales": [
+                "en"
+            ]
+        },
+        {
+            "name": "ai-auto-categorization-clip-1",
+            "flow": "flows/media/ai-auto-categorization-clip-1.flow.yaml",
+            "locales": [
+                "en"
+            ]
+        },
+        {
+            "name": "monobank-sync-clip-1",
+            "flow": "flows/media/monobank-sync-clip-1.flow.yaml",
+            "locales": [
+                "en"
+            ]
+        },
+        {
+            "name": "csv-import-clip-1",
+            "flow": "flows/media/csv-import-clip-1.flow.yaml",
+            "locales": [
+                "en"
+            ]
+        },
+        {
+            "name": "pin-app-lock-clip-1",
+            "flow": "flows/media/pin-app-lock-clip-1.flow.yaml",
+            "locales": [
+                "en"
+            ]
+        },
+        {
+            "name": "spending-analytics-clip-1",
+            "flow": "flows/media/spending-analytics-clip-1.flow.yaml",
+            "locales": [
+                "en"
+            ]
+        },
+        {
+            "name": "home-hero-clip-1",
+            "flow": "flows/media/home-hero-clip-1.flow.yaml",
+            "locales": [
+                "en"
+            ]
+        }
+    ],
+    "screenshots-dir": "tests/app-tests",
+    "maestro-config": "tests/app-tests/config.yaml",
+    "seed-command": "bash tests/app-tests/scripts/seed-screenshot-scene.sh",
+    "settle-seconds": 6,
+    "status-bar-override": true,
+    "build-env": "APP_VARIANT=e2e\nEXPO_PUBLIC_AI_DISABLE=true\nEXPO_PUBLIC_LOGGING_DISABLE=true\n",
+    "install-command": "pnpm install --frozen-lockfile",
+    "cache-profile": "ios-e2e-budgie-v2",
+    "rct-use-prebuilt-rncore": true,
+    "rct-use-rn-dep": true,
+    "repack-on-hit": true,
+    "screenshots-download-dir": "fastlane/screenshots/landing-raw"
+}
