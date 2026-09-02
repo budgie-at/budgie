@@ -37,13 +37,18 @@ jobs:
                           pull_number: context.issue.number,
                           per_page: 100,
                         });
-                        const landingOnly = files.length > 0 && files.every(({ filename }) =>
+                        const mobileSuiteExempt = files.length > 0 && files.every(({ filename }) =>
                           filename.startsWith('packages/landing/') ||
                           filename.startsWith('docs/') ||
                           filename === 'README.md' ||
-                          filename === 'LICENSE'
+                          filename === 'LICENSE' ||
+                          filename.startsWith('tests/app-tests/flows/media/') ||
+                          filename.startsWith('tests/app-tests/fixtures/screenshots/') ||
+                          filename.startsWith('packages/app/fastlane/') ||
+                          filename === '.github/landing-media.config.json' ||
+                          (filename.startsWith('tests/app-tests/scripts/') && filename.includes('media'))
                         );
-                        mobile = !landingOnly;
+                        mobile = !mobileSuiteExempt;
                         core.info(`Inspected ${files.length} changed files; mobile affected: ${mobile}`);
                       } catch (error) {
                         core.warning(`Could not inspect PR files; defaulting to mobile=true: ${error.message}`);

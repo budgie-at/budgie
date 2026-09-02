@@ -1,0 +1,28 @@
+appId: ${APP_ID}
+---
+- extendedWaitUntil:
+      visible:
+          id: 'PinPage.Container'
+      timeout: 30000
+
+- takeScreenshot: poster
+
+- startRecording: clip
+
+- tapOn:
+      id: 'PinPage.Digit.1'
+- tapOn:
+      id: 'PinPage.Digit.2'
+- tapOn:
+      id: 'PinPage.Digit.3'
+- tapOn:
+      id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- stopRecording
