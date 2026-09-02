@@ -1,0 +1,31 @@
+appId: ${APP_ID}
+env:
+    CSV_ROW_ID_MATCH: ${CSV_ROW_ID_MATCH || 'e2e-budgie-import(, csv)?'}
+---
+- runFlow: ../subflows/import/open-csv-import-picker.flow.yaml
+
+- takeScreenshot: poster
+
+- startRecording: clip
+
+- runFlow:
+      file: ../subflows/import/select-file-from-app-provider.flow.yaml
+      env:
+          FILE_ROW_ID_MATCH: ${CSV_ROW_ID_MATCH}
+
+- extendedWaitUntil:
+      visible:
+          id: 'ImportScreen.PresetChip.Budgie'
+      timeout: 15000
+
+- tapOn:
+      id: 'ImportScreen.PresetChip.Budgie'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CsvPage.StartImportButton'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- stopRecording

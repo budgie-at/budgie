@@ -1,35 +1,36 @@
-import { mediaFrameVariants } from '../../constant/media-frame-variants.constant';
+import { MEDIA_ASSET_HEIGHT, MEDIA_ASSET_WIDTH } from '../../constant/media-size.constant';
+import { cn } from '../../util/cn.util';
+import { resolveMediaAssetPath } from '../../util/resolve-media-asset-path.util';
 
-import type { MediaFrameEnum } from '../../enum/media-frame.enum';
-import type { MediaStillAssetInterface } from '../../interface/media-still-asset.interface';
+import type { MediaAssetInterface } from '../../interface/media-asset.interface';
 
 interface Props {
-    asset: MediaStillAssetInterface;
+    asset: MediaAssetInterface;
     alt: string;
     className: string;
-    frame: MediaFrameEnum;
     priority: boolean;
     sizes?: string;
 }
 
-export const AppShotPicture = ({ asset, alt, className, frame, priority, sizes }: Props) => {
+export const AppShotPicture = ({ asset, alt, className, priority, sizes }: Props) => {
+    const basePath = resolveMediaAssetPath(asset);
     const loading = priority ? 'eager' : 'lazy';
     const fetchPriority = priority ? 'high' : 'auto';
 
     return (
         <picture>
-            <source srcSet={asset.avifPath} type="image/avif" />
-            <source srcSet={asset.webpPath} type="image/webp" />
+            <source srcSet={`${basePath}@2x.avif`} type="image/avif" />
+            <source srcSet={`${basePath}@2x.webp`} type="image/webp" />
             <img
                 alt={alt}
-                className={mediaFrameVariants({ className, frame })}
+                className={cn('h-auto w-full', className)}
                 decoding="async"
                 fetchPriority={fetchPriority}
-                height={asset.height}
+                height={MEDIA_ASSET_HEIGHT}
                 loading={loading}
                 sizes={sizes}
-                src={asset.webpPath}
-                width={asset.width}
+                src={`${basePath}@2x.webp`}
+                width={MEDIA_ASSET_WIDTH}
             />
         </picture>
     );
