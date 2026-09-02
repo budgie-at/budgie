@@ -11,8 +11,8 @@
         "lint": "oxlint --type-aware . && eslint .",
         "lint:eslint": "eslint .",
         "lint:fix": "oxlint --type-aware --fix . && eslint --fix .",
-        "media:check": "node scripts/check-landing-media.mjs",
-        "media:manifest": "node scripts/generate-media-manifest.mjs",
+        "media:check": "node scripts/media-manifest.mjs --check",
+        "media:manifest": "node scripts/media-manifest.mjs",
         "release:start": "next start",
         "start": "next dev",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
