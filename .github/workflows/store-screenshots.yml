@@ -1,5 +1,11 @@
 name: Store screenshots
 
+# App-shaped config (ios-target, capture manifest/scenes, build env, cache
+# profile, upload command, ASC dedupe settings, ...) lives in
+# .github/store-screenshots.config.json and is loaded via config-path. Only the
+# inputs mobile-ci cannot load from that file stay here: the plan-time runner
+# labels, the keys outside its allowed-keys allowlist, and the dispatch-driven
+# upload gate.
 on:
     workflow_dispatch:
         inputs:
@@ -23,20 +29,8 @@ jobs:
         uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@v1.11.0 # v1.11.0
         with:
             config-path: .github/store-screenshots.config.json
-            ios-target: >-
-                {"name":"e2e","appDir":"packages/app","workspace":"budgieE2E.xcworkspace","scheme":"budgieE2E",
-                "appId":"com.vitalyiegorov.budgie.e2e","prebuildCommand":"npx expo prebuild -p ios --clean --no-install"}
-            build-env: |
-                APP_VARIANT=e2e
-                EXPO_PUBLIC_AI_DISABLE=true
-                EXPO_PUBLIC_LOGGING_DISABLE=true
-            cache-profile: ios-e2e-budgie-v2
-            install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
-            rct-use-prebuilt-rncore: true
-            rct-use-rn-dep: true
             expo-use-precompiled-modules: true
-            repack-on-hit: true
             maestro-version: '2.8.0'
             # The 00-prime scene is a Maestro flow whose only job is to grant iOS's
             # one-per-install "Open in budgie?" deep-link trust; mobile-ci requires

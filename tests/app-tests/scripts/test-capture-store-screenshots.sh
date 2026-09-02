@@ -174,6 +174,7 @@ assert_contains "$XCRUN_CALLS" 'simctl ui NEW-UDID appearance light' 'appearance
 assert_contains "$XCRUN_CALLS" 'simctl launch NEW-UDID com.vitalyiegorov.budgie.e2e -AppleLanguages ("de") -AppleLocale de' 'launch carries the bare locale like mobile-ci'
 assert_contains "$XCRUN_CALLS" 'simctl openurl NEW-UDID budgie://transactions' 'the deep link is opened'
 assert_contains "$XCRUN_CALLS" "simctl io NEW-UDID screenshot $RUN_OUTPUT/raw/ios/iphone-17-pro-max/de/light/02-transactions.png" 'the screenshot lands in the fixed layout'
+assert_contains "$XCRUN_CALLS" 'simctl shutdown NEW-UDID' 'the simulator is shut down so its CoreSimulator workers are reclaimed'
 
 REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 MAESTRO_CALLS=$(cat "$MAESTRO_LOG")
@@ -194,6 +195,24 @@ else
     FAILURES=$((FAILURES + 1))
 fi
 
+KEPT_BOOTED_BIN="$WORK_DIR/kept-booted-bin"
+KEPT_BOOTED_LOG="$WORK_DIR/kept-booted-xcrun.log"
+mkdir -p "$KEPT_BOOTED_BIN"
+sed "s#$XCRUN_LOG#$KEPT_BOOTED_LOG#" "$STUB_BIN/xcrun" > "$KEPT_BOOTED_BIN/xcrun"
+chmod +x "$KEPT_BOOTED_BIN/xcrun"
+cp "$STUB_BIN/maestro" "$KEPT_BOOTED_BIN/maestro"
+PATH="$KEPT_BOOTED_BIN:$PATH" bash "$TARGET" \
+    --config "$RUN_CONFIG" \
+    --device 'iPhone 17 Pro Max' \
+    --locales de \
+    --appearances light \
+    --scenes 02-transactions \
+    --output "$WORK_DIR/kept-booted-output" \
+    --skip-install \
+    --skip-prime \
+    --keep-booted >/dev/null
+assert_missing "$(cat "$KEPT_BOOTED_LOG")" 'simctl shutdown' '--keep-booted leaves the simulator running'
+
 # A flow-backed scene captures through Maestro into the same fixed layout.
 FLOW_OUTPUT="$WORK_DIR/flow-output"
 PATH="$STUB_BIN:$PATH" bash "$TARGET" \
@@ -212,6 +231,62 @@ else
     echo 'FAIL the flow-backed scene is missing from the fixed output path'
     FAILURES=$((FAILURES + 1))
 fi
+
+# mobile-ci retries a failed cell once, so a screenshot that fails on the first
+# attempt and succeeds on the second must still produce a passing cell.
+FLAKY_BIN="$WORK_DIR/flaky-bin"
+FLAKY_LOG="$WORK_DIR/flaky-xcrun.log"
+mkdir -p "$FLAKY_BIN"
+sed "s#$XCRUN_LOG#$FLAKY_LOG#" "$STUB_BIN/xcrun" > "$FLAKY_BIN/xcrun"
+python3 - "$FLAKY_BIN/xcrun" "$WORK_DIR/shot-attempts" <<'PYEOF'
+import sys
+
+path, counter = sys.argv[1], sys.argv[2]
+source = open(path).read()
+open(path, 'w').write(
+    source.replace(
+        '    io)\n',
+        '    io)\n'
+        '        printf x >> "%s"\n'
+        '        if [ "$(wc -c < "%s")" -le 1 ]; then\n'
+        '            exit 1\n'
+        '        fi\n' % (counter, counter),
+    )
+)
+PYEOF
+chmod +x "$FLAKY_BIN/xcrun"
+cp "$STUB_BIN/maestro" "$FLAKY_BIN/maestro"
+
+FLAKY_OUTPUT_DIR="$WORK_DIR/flaky-output"
+FLAKY_OUTPUT=$(PATH="$FLAKY_BIN:$PATH" bash "$TARGET" \
+    --config "$RUN_CONFIG" \
+    --device 'iPhone 17 Pro Max' \
+    --locales de \
+    --appearances light \
+    --scenes 02-transactions \
+    --output "$FLAKY_OUTPUT_DIR" \
+    --skip-install \
+    --skip-prime 2>&1)
+assert_contains "$FLAKY_OUTPUT" 'attempt 2' 'a failed cell is retried once and reported with its attempt count'
+
+# A seed failure is terminal in mobile-ci: the cell is marked failed without a
+# capture and is never retried.
+FAILING_SEED="$WORK_DIR/failing-seed.sh"
+printf '#!/bin/bash\nexit 1\n' > "$FAILING_SEED"
+chmod +x "$FAILING_SEED"
+SEED_FAIL_CONFIG="$WORK_DIR/seed-fail.config.json"
+sed "s#bash tests/app-tests/scripts/seed-screenshot-scene.sh#bash $FAILING_SEED#" "$CONFIG" > "$SEED_FAIL_CONFIG"
+SEED_FAIL_OUTPUT=$(PATH="$STUB_BIN:$PATH" bash "$TARGET" \
+    --config "$SEED_FAIL_CONFIG" \
+    --device 'iPhone 17 Pro Max' \
+    --locales de \
+    --appearances light \
+    --scenes 02-transactions \
+    --output "$WORK_DIR/seed-fail-output" \
+    --skip-install \
+    --skip-prime 2>&1 || true)
+assert_contains "$SEED_FAIL_OUTPUT" 'seed-failed' 'a failed seed is reported'
+assert_contains "$SEED_FAIL_OUTPUT" '1 attempt(s)' 'a failed seed is not retried'
 
 # Priming is the one step that cannot fall back to simctl, so a missing Maestro
 # must fail loudly instead of capturing the iOS Open confirmation into every PNG.
