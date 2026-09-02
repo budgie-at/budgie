@@ -1,0 +1,29 @@
+appId: ${APP_ID}
+env:
+    CATEGORY_STATISTICS_ID: ${CATEGORY_STATISTICS_ID || 'CategoryStatisticsCard.Groceries'}
+---
+# Statistics -> Categories -> tap a slice row -> the drill-down transaction list.
+# CATEGORY_STATISTICS_ID is title-derived, so the non-English cells pass the
+# translated id from the locale overlay.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://analytics'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AnalyticsPage.Tab.Categories'
+      timeout: 15000
+
+- extendedWaitUntil:
+      visible:
+          id: '${CATEGORY_STATISTICS_ID}'
+      timeout: 10000
+
+- tapOn:
+      id: '${CATEGORY_STATISTICS_ID}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'PageHeader.BackButton'
+      timeout: 10000

@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+env:
+    TAG_STATISTICS_ID: ${TAG_STATISTICS_ID || 'TagStatisticsCard.Work'}
+---
+# Statistics -> Tags. The tab is local component state, not a route param, so it
+# cannot be deep-linked and has to be tapped.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://analytics'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AnalyticsPage.Tab.Categories'
+      timeout: 15000
+
+- tapOn:
+      id: 'AnalyticsPage.Tab.Tags'
+
+- extendedWaitUntil:
+      visible:
+          id: '${TAG_STATISTICS_ID}'
+      timeout: 10000

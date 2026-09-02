@@ -1,0 +1,39 @@
+appId: ${APP_ID}
+env:
+    FROM_ACCOUNT_NAME: ${FROM_ACCOUNT_NAME || 'Main Checking'}
+    TO_ACCOUNT_NAME: ${TO_ACCOUNT_NAME || 'Emergency Savings'}
+---
+# Transfer form with both legs picked and the dual-amount conversion row expanded.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://create-transaction/transfer'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionForm.Page'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.7'
+- tapOn:
+      id: 'TransactionKeypad.Digit.5'
+
+- tapOn:
+      id: 'TransferForm.FromAccount'
+- runFlow:
+      file: ../subflows/shared/select-account-by-search.flow.yaml
+      env:
+          ACCOUNT_NAME: ${FROM_ACCOUNT_NAME}
+
+- tapOn:
+      id: 'TransferForm.ToAccount'
+- runFlow:
+      file: ../subflows/shared/select-account-by-search.flow.yaml
+      env:
+          ACCOUNT_NAME: ${TO_ACCOUNT_NAME}
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransferForm.ConversionRow'
+      timeout: 10000

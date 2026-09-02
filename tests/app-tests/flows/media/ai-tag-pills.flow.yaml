@@ -1,0 +1,41 @@
+appId: ${APP_ID}
+env:
+    CATEGORY_NAME: ${CATEGORY_NAME || 'Groceries'}
+---
+# Expense form after a category is picked, holding on the suggested tag pills.
+#
+# FOLLOW-UP: the tag suggestion pills carry no stable testID, so the flow cannot tap
+# one. Blocked on app-side selectors:
+#   SuggestionPillSelector.Pill -> transaction/components/tag-suggestion-row
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://create-transaction/expense'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionForm.Page'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionForm.CategorySelector'
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPickerBottomSheet.Input'
+      timeout: 5000
+- tapOn:
+      id: 'CategoryPickerBottomSheet.Input'
+- inputText: ${CATEGORY_NAME}
+- pressKey: enter
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+      timeout: 15000
+- tapOn:
+      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+      retryTapIfNoChange: true
+
+- extendedWaitUntil:
+      notVisible:
+          id: 'CategoryPickerBottomSheet.Input'
+      timeout: 5000

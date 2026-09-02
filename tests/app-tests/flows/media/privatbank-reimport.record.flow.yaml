@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'privatbank-reimport'
+---
+# clip: privatbank-reimport | target length: 6s | poster scene: privatbank-import-1 | seed: PrivatBank XLSX fixture
+# script: Import -> PrivatBank XLSX -> parsed rows preview -> import, duplicates skipped
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: privatbank-xlsx-preview.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'transfer-pair-review'
+---
+# clip: transfer-pair-review | target length: 5s | poster scene: transfer-pair-detection-2 | seed: transfer-pair + refund
+# script: Settings -> Consolidate transfers -> the review queue -> the two legs side by side
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: consolidation-review.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

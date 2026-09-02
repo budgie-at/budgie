@@ -1,0 +1,44 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'mcc-category'
+    SYNCED_TRANSACTION_ID: ${SYNCED_TRANSACTION_ID || '101'}
+---
+# clip: mcc-category | target length: 4s | poster scene: mcc-auto-category-1 | seed: bank-sync-connected
+# script: a synced row -> the MCC provenance row -> edit -> change the category
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/${SYNCED_TRANSACTION_ID}/expense'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 15000
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Row.MerchantCode'
+      timeout: 10000
+
+- tapOn:
+      id: 'TransactionInfo.EditButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionForm.CategorySelector'
+      timeout: 10000
+- tapOn:
+      id: 'TransactionForm.CategorySelector'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPickerBottomSheet.Input'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- stopRecording

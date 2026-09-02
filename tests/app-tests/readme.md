@@ -36,6 +36,21 @@ Android:
 sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e
 ```
 
+## Landing Media Clips
+
+`flows/media/` holds capture-only recording flows for the landing site's motion assets.
+They are excluded from the E2E suite by construction (the suite globs `flows/*.flow.yaml`
+only).
+
+```bash
+pnpm --filter @budgie-at/app-tests media:record -- --udid <udid> --skip-install \
+    --locales en --appearances light,dark --clips theme-toggle
+pnpm --filter @budgie-at/app-tests media:encode -- --clips theme-toggle
+```
+
+Recording, encoding, byte budgets, the clip map and the outstanding selector follow-ups
+are documented in [flows/media/README.md](./flows/media/README.md).
+
 ## CI/CD
 
 E2E tests run automatically on pull requests via the GitHub Actions workflow (`.github/workflows/pr.yml`).

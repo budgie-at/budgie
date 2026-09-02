@@ -1,0 +1,50 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'backup-restore'
+    SHARE_SHEET_LABEL: ${SHARE_SHEET_LABEL || 'Save to Files'}
+---
+# clip: backup-restore | target length: 6s | poster scene: database-backup-1 | seed: showcase
+# script: Settings -> Data -> Export database -> the file is written -> Import database
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=data'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 15000
+
+- scrollUntilVisible:
+      element:
+          id: 'SettingsPage.ExportDatabaseCard'
+      direction: DOWN
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+- waitForAnimationToEnd
+
+- tapOn:
+      id: 'SettingsPage.ExportDatabaseCard'
+      retryTapIfNoChange: true
+
+- extendedWaitUntil:
+      visible: '${SHARE_SHEET_LABEL}'
+      timeout: 15000
+
+- swipe:
+      from: '${SHARE_SHEET_LABEL}'
+      direction: DOWN
+
+- extendedWaitUntil:
+      notVisible: '${SHARE_SHEET_LABEL}'
+      timeout: 5000
+
+- runFlow: ../subflows/import/open-import-database-card.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

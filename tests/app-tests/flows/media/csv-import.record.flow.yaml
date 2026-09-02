@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'csv-import'
+---
+# clip: csv-import | target length: 8s | poster scene: csv-import-2 | seed: import-presets + CSV fixture
+# script: Import -> CSV -> pick the fixture -> preset applied -> preview ready to import
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: csv-column-mapper.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

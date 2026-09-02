@@ -1,0 +1,38 @@
+appId: ${APP_ID}
+env:
+    INCOME_TRANSACTION_ID: ${INCOME_TRANSACTION_ID || '201'}
+    REFUND_CANDIDATE_ID: ${REFUND_CANDIDATE_ID || '103'}
+---
+# An income row -> Convert to Refund -> the same-currency expense picker with the
+# matching expense highlighted.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/${INCOME_TRANSACTION_ID}/income'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.TriggerButton'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.ConvertToRefundButton'
+      timeout: 5000
+- tapOn:
+      id: 'TransactionActionsMenu.ConvertToRefundButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'ConvertToRefund.Page'
+      timeout: 10000
+
+- tapOn:
+      id: 'ConvertToRefund.CandidateRow.${REFUND_CANDIDATE_ID}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'ConvertToRefund.ConvertButton'
+      timeout: 5000

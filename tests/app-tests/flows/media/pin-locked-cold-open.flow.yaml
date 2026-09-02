@@ -1,0 +1,30 @@
+appId: ${APP_ID}
+env:
+    PIN_DIGIT_ONE: ${PIN_DIGIT_ONE || '1'}
+    PIN_DIGIT_TWO: ${PIN_DIGIT_TWO || '2'}
+    PIN_DIGIT_THREE: ${PIN_DIGIT_THREE || '3'}
+    PIN_DIGIT_FOUR: ${PIN_DIGIT_FOUR || '4'}
+---
+# Lock screen on the cold open the capture runner already produces (it terminates
+# and relaunches the app per cell), then the four keypad digits and the unlock.
+#
+# No launchApp here on purpose: the runner owns the cold start, the flow only
+# drives the keypad.
+- extendedWaitUntil:
+      visible:
+          id: 'PinPage.Container'
+      timeout: 30000
+
+- tapOn:
+      id: 'PinPage.Digit.${PIN_DIGIT_ONE}'
+- tapOn:
+      id: 'PinPage.Digit.${PIN_DIGIT_TWO}'
+- tapOn:
+      id: 'PinPage.Digit.${PIN_DIGIT_THREE}'
+- tapOn:
+      id: 'PinPage.Digit.${PIN_DIGIT_FOUR}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000

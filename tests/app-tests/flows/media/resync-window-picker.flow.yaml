@@ -1,0 +1,31 @@
+appId: ${APP_ID}
+env:
+    BANK_INTEGRATION_ID: ${BANK_INTEGRATION_ID || '1'}
+    BANK_ACCOUNT_ROW_ID: ${BANK_ACCOUNT_ROW_ID || '1'}
+---
+# Bank integration detail -> the synced account row that owns the re-sync window.
+#
+# FOLLOW-UP: the re-sync window picker carries no stable testID, so the 7/30/90-day
+# presets, the custom range row and the diff preview cannot be driven. Blocked on
+# app-side selectors:
+#   ResyncWindowPickerSelector.{Page,Preset,CustomRangeRow,ConfirmButton}
+#       -> app/resync-window-picker.tsx, sync/component/resync-account
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://bank-integration/${BANK_INTEGRATION_ID}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 15000
+
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.AccountRow.${BANK_ACCOUNT_ROW_ID}'
+      timeout: 10000
+
+- tapOn:
+      id: 'BankIntegration.AccountRow.${BANK_ACCOUNT_ROW_ID}'
+
+- waitForAnimationToEnd

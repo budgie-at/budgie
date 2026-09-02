@@ -63,6 +63,33 @@ After a failed flow attempt mobile-ci runs `flows/setup/recover-after-failed-flo
 2. iOS Files handoff is a valid narrow retry case. If the picker drops out of app state, re-establish Home and Settings, reopen `SettingsPage.ImportDatabaseCard`, and retry the picker once instead of scattering ad hoc retries in callers.
 3. After database import, prefer the current app state if Home is already visible. If not, use the shared relaunch-and-wait subflow to recover to `TabBar.Home`.
 
+## Landing Media Flows
+
+Capture-only flows for the landing site's motion assets live in `flows/media/` and are
+deliberately outside the E2E suite: `config.yaml` globs `flows/*.flow.yaml`, which does
+not descend into `media/`, and `validate-shards.sh` only enumerates top-level flows.
+
+1. `flows/media/<name>.flow.yaml` are the 26 interaction flows - the app states a deep
+   link alone cannot express. `flows/media/<clip>.record.flow.yaml` are the 39 record
+   wrappers: `startRecording` -> the interaction -> settle -> `stopRecording`.
+2. Media flows follow the same selector rules as the suite: `testID` and text selectors
+   only, deep-link first through the shared navigation subflows, wait for the
+   destination identity once. Where a storyboard control has no stable `testID`, the
+   flow stops at the last addressable state and carries a `FOLLOW-UP` comment naming the
+   selector to add; never hand-build coordinates and never change app code for a capture.
+3. Never add `launchApp`, `stopApp` or a relaunch to a media flow. `record-media-clips.sh`
+   terminates and relaunches per cell, so a wrapper already starts from a cold app, and a
+   relaunch inside the recording would put a launch frame at the head of the clip.
+4. Prefer id-derived selectors over title-derived ones. The `showcase.db` locale overlays
+   translate account, tag, budget and merchant titles, so a title-derived `testID` differs
+   per locale; where only a title selector exists, take it as an `env` parameter with the
+   English default and let the runner pass the translated value.
+5. `record-media-clips.sh` mirrors `capture-store-screenshots.sh` cell for cell;
+   `encode-media-clips.sh` reads every per-clip decision from `flows/media/clip-routes.json`.
+   Raw recordings land in the gitignored `packages/landing/public/media-src/`; only the
+   encoded delivery set under `packages/landing/public/media/` is an asset. GIF is never
+   produced. Full workflow: [flows/media/README.md](./flows/media/README.md).
+
 ## Build Rules
 
 1. Preserve the app URL scheme in E2E builds. Do not delete `CFBundleURLTypes`; deep-link-based flows depend on `budgie://...`.

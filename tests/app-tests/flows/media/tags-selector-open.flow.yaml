@@ -1,0 +1,39 @@
+appId: ${APP_ID}
+env:
+    EXPENSE_TRANSACTION_ID: ${EXPENSE_TRANSACTION_ID || '103'}
+    TAG_ONE: ${TAG_ONE || 'Work'}
+    TAG_TWO: ${TAG_TWO || 'Weekend'}
+    TAG_THREE: ${TAG_THREE || 'Health'}
+---
+# Transaction edit form -> tag selector -> three tags picked. The selector is
+# reopened per tag, which is the shared subflow's proven single-select shape.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/${EXPENSE_TRANSACTION_ID}/expense/edit'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionForm.TagsSelector'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionForm.TagsSelector'
+- runFlow:
+      file: ../subflows/shared/select-tag-by-search.flow.yaml
+      env:
+          TAG_NAME: ${TAG_ONE}
+
+- tapOn:
+      id: 'TransactionForm.TagsSelector'
+- runFlow:
+      file: ../subflows/shared/select-tag-by-search.flow.yaml
+      env:
+          TAG_NAME: ${TAG_TWO}
+
+- tapOn:
+      id: 'TransactionForm.TagsSelector'
+- runFlow:
+      file: ../subflows/shared/select-tag-by-search.flow.yaml
+      env:
+          TAG_NAME: ${TAG_THREE}

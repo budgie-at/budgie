@@ -1,0 +1,37 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'budget-drilldown'
+    BUDGET_CATEGORY_ID: ${BUDGET_CATEGORY_ID || '11'}
+---
+# clip: budget-drilldown | target length: 4s | poster scene: home-hero-2 | seed: budget-near-limit
+# script: Budget details -> the overall ring animates -> tap a limit row -> its transactions
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://budget'
+
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetDetails.SpentLabel'
+      timeout: 15000
+
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetDetails.CategoryRow.${BUDGET_CATEGORY_ID}'
+      timeout: 10000
+
+- tapOn:
+      id: 'BudgetDetails.CategoryRow.${BUDGET_CATEGORY_ID}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'PageHeader.BackButton'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- stopRecording

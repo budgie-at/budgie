@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'recurring-calendar'
+---
+# clip: recurring-calendar | target length: 5s | poster scene: recurring-payments-calendar-1 | seed: recurring + long-history
+# script: Transactions -> Recurring tab -> the month grid draws -> tap a marked day
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: transactions-recurring-tab.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

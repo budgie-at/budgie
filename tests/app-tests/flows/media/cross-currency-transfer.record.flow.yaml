@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'cross-currency-transfer'
+---
+# clip: cross-currency-transfer | target length: 6s | poster scene: account-transfers-1 | seed: multi-currency
+# script: transfer form -> pick both legs -> the dual-amount conversion row expands
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: cross-currency-transfer.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

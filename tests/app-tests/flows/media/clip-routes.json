@@ -1,0 +1,346 @@
+{
+    "version": 1,
+    "output": {
+        "root": "packages/landing/public/media",
+        "path": "<route>/<locale>/<theme>/<clip>.<ext>"
+    },
+    "input": {
+        "root": "packages/landing/public/media-src/clips",
+        "path": "<clip>/<locale>/<appearance>/raw.mp4"
+    },
+    "budgets": {
+        "webmBytes": 1258291,
+        "mp4Bytes": 1887436,
+        "posterBytes": 61440
+    },
+    "encode": {
+        "width": 900,
+        "av1Crf": 34,
+        "vp9Crf": 34,
+        "h264Crf": 26,
+        "loopCrossfadeMs": 150,
+        "posterQuality": 82,
+        "animatedWebpQuality": 70
+    },
+    "clips": {
+        "voice-entry": {
+            "route": "voice-transaction-entry",
+            "durationSeconds": 6,
+            "trimStartSeconds": 0,
+            "posterSeconds": 4.2,
+            "posterScene": "voice-transaction-entry-2",
+            "aliases": ["ai-features"]
+        },
+        "ai-category-suggestion": {
+            "route": "ai-auto-categorization",
+            "durationSeconds": 4,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.4,
+            "posterScene": "ai-auto-categorization-1",
+            "aliases": ["ai-transaction-suggestions", "on-device-ai-budget-app", "ai-features", "home"]
+        },
+        "ai-tag-pills": {
+            "route": "ai-tag-suggestions",
+            "durationSeconds": 4,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.4,
+            "posterScene": "ai-tag-suggestions-1",
+            "aliases": ["ai-features"]
+        },
+        "bank-sync": {
+            "route": "monobank-sync",
+            "durationSeconds": 6,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3.6,
+            "posterScene": "monobank-sync-1",
+            "aliases": ["home"]
+        },
+        "net-worth-drilldown": {
+            "route": "net-worth-tracker",
+            "durationSeconds": 4,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.4,
+            "posterScene": "net-worth-tracker-1",
+            "aliases": ["multi-currency"]
+        },
+        "offline-add": {
+            "route": "offline-first-expense-tracker",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3,
+            "posterScene": "offline-first-expense-tracker-1",
+            "aliases": ["offline-first"]
+        },
+        "pin-unlock": {
+            "route": "pin-app-lock",
+            "durationSeconds": 4,
+            "trimStartSeconds": 0,
+            "posterSeconds": 1.6,
+            "posterScene": "pin-app-lock-1",
+            "aliases": ["private-budget-app-alternative", "privacy"]
+        },
+        "quick-expense-entry": {
+            "route": "expense-tracking",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.5,
+            "posterScene": "expense-tracking-1",
+            "aliases": [
+                "subscription-free-budget-app",
+                "open-source-budget-app-mobile",
+                "no-bank-login-budget-app",
+                "self-hosted-finance-app-mobile",
+                "open-source"
+            ]
+        },
+        "budget-drilldown": {
+            "route": "home",
+            "durationSeconds": 4,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.4,
+            "posterScene": "home-hero-2",
+            "aliases": ["budget"]
+        },
+        "account-create": {
+            "route": "account-management",
+            "durationSeconds": 6,
+            "trimStartSeconds": 0,
+            "posterSeconds": 4.2,
+            "posterScene": "account-management-1",
+            "aliases": []
+        },
+        "cross-currency-transfer": {
+            "route": "account-transfers",
+            "durationSeconds": 6,
+            "trimStartSeconds": 0,
+            "posterSeconds": 4.2,
+            "posterScene": "account-transfers-1",
+            "aliases": []
+        },
+        "biometric-unlock": {
+            "route": "biometric-authentication",
+            "durationSeconds": 3,
+            "trimStartSeconds": 0,
+            "posterSeconds": 1.2,
+            "posterScene": "biometric-authentication-1",
+            "aliases": ["security"]
+        },
+        "csv-import": {
+            "route": "csv-import",
+            "durationSeconds": 8,
+            "trimStartSeconds": 0,
+            "posterSeconds": 5,
+            "posterScene": "csv-import-2",
+            "aliases": ["offline-first"]
+        },
+        "category-merge": {
+            "route": "custom-categories",
+            "durationSeconds": 6,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3.6,
+            "posterScene": "custom-categories-1",
+            "aliases": []
+        },
+        "backup-restore": {
+            "route": "database-backup",
+            "durationSeconds": 6,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3,
+            "posterScene": "database-backup-1",
+            "aliases": ["self-hosted-finance-app-mobile", "privacy", "security", "offline-first"]
+        },
+        "export-share": {
+            "route": "data-export",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3.5,
+            "posterScene": "data-export-1",
+            "aliases": ["privacy"]
+        },
+        "date-preset-switch": {
+            "route": "date-filter-presets",
+            "durationSeconds": 4,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.4,
+            "posterScene": "date-filter-presets-1",
+            "aliases": []
+        },
+        "erste-pdf-import": {
+            "route": "erste-bank-pdf-import",
+            "durationSeconds": 7,
+            "trimStartSeconds": 0,
+            "posterSeconds": 4.5,
+            "posterScene": "erste-bank-pdf-import-1",
+            "aliases": ["offline-first"]
+        },
+        "privatbank-reimport": {
+            "route": "privatbank-import",
+            "durationSeconds": 6,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3.6,
+            "posterScene": "privatbank-import-1",
+            "aliases": []
+        },
+        "analytics-period": {
+            "route": "spending-analytics",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3,
+            "posterScene": "spending-analytics-1",
+            "aliases": ["home"]
+        },
+        "long-press-menu": {
+            "route": "transaction-long-press-menu",
+            "durationSeconds": 4,
+            "trimStartSeconds": 0,
+            "posterSeconds": 1.8,
+            "posterScene": "transaction-long-press-menu-1",
+            "aliases": ["convert-to-transfer"]
+        },
+        "tag-multi-select": {
+            "route": "transaction-tags",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3,
+            "posterScene": "transaction-tags-1",
+            "aliases": []
+        },
+        "uncategorized-cleanup": {
+            "route": "uncategorized-transactions",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.5,
+            "posterScene": "uncategorized-transactions-1",
+            "aliases": []
+        },
+        "debt-settle": {
+            "route": "debt-tracking",
+            "durationSeconds": 6,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3.6,
+            "posterScene": "debt-tracking-1",
+            "aliases": ["home"]
+        },
+        "deposit-close": {
+            "route": "deposit-tracking",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.5,
+            "posterScene": "deposit-tracking-1",
+            "aliases": []
+        },
+        "recurring-calendar": {
+            "route": "recurring-payments-calendar",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.5,
+            "posterScene": "recurring-payments-calendar-1",
+            "aliases": []
+        },
+        "split-transaction": {
+            "route": "split-transactions",
+            "durationSeconds": 6,
+            "trimStartSeconds": 0,
+            "posterSeconds": 4.2,
+            "posterScene": "split-transactions-1",
+            "aliases": []
+        },
+        "analytics-tags-tab": {
+            "route": "statistics-tags-tab",
+            "durationSeconds": 4,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.4,
+            "posterScene": "statistics-tags-tab-1",
+            "aliases": ["tag-analytics"]
+        },
+        "transfer-pair-review": {
+            "route": "transfer-pair-detection",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3,
+            "posterScene": "transfer-pair-detection-2",
+            "aliases": []
+        },
+        "resync-window": {
+            "route": "bank-resync-window",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.5,
+            "posterScene": "bank-resync-window-1",
+            "aliases": []
+        },
+        "bank-fee-sheet": {
+            "route": "bank-fee-tracking",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3,
+            "posterScene": "bank-fee-tracking-1",
+            "aliases": []
+        },
+        "mcc-category": {
+            "route": "mcc-auto-category",
+            "durationSeconds": 4,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2,
+            "posterScene": "mcc-auto-category-1",
+            "aliases": ["ai-features"]
+        },
+        "merchant-translation": {
+            "route": "ai-merchant-translation",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.5,
+            "posterScene": "ai-merchant-translation-1",
+            "aliases": ["ai-features"]
+        },
+        "crypto-price-update": {
+            "route": "crypto-investment-tracking",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 3,
+            "posterScene": "crypto-investment-tracking-1",
+            "aliases": []
+        },
+        "convert-to-refund": {
+            "route": "convert-to-refund",
+            "durationSeconds": 5,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2.5,
+            "posterScene": "convert-to-refund-1",
+            "aliases": []
+        },
+        "primary-tag-rotate": {
+            "route": "primary-tag",
+            "durationSeconds": 3,
+            "trimStartSeconds": 0,
+            "posterSeconds": 1.5,
+            "posterScene": "primary-tag-1",
+            "aliases": []
+        },
+        "language-switch": {
+            "route": "multi-language-app",
+            "durationSeconds": 4,
+            "trimStartSeconds": 0,
+            "posterSeconds": 2,
+            "posterScene": "multi-language-app-1",
+            "aliases": []
+        },
+        "screenshot-protection": {
+            "route": "screenshot-protection",
+            "durationSeconds": 4,
+            "trimStartSeconds": 0,
+            "posterSeconds": 1.6,
+            "posterScene": "screenshot-protection-1",
+            "aliases": ["privacy", "security"]
+        },
+        "theme-toggle": {
+            "route": "dark-mode",
+            "durationSeconds": 2,
+            "trimStartSeconds": 0,
+            "posterSeconds": 0.8,
+            "posterScene": "expense-tracking-2",
+            "animatedWebp": true,
+            "aliases": []
+        }
+    }
+}

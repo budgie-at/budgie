@@ -1,0 +1,31 @@
+appId: ${APP_ID}
+env:
+    BANK_INTEGRATION_ID: ${BANK_INTEGRATION_ID || '1'}
+---
+# Bank integration detail held on the personal-token section: no OAuth webview, no
+# bank credentials, just the device-keystore token row.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://bank-integration/${BANK_INTEGRATION_ID}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 15000
+
+- scrollUntilVisible:
+      element:
+          id: 'SyncTokenSection.TokenLabel'
+      direction: DOWN
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+- waitForAnimationToEnd
+
+- tapOn:
+      id: 'SyncTokenSection.ChangeButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SyncTokenSection.MonobankPasteButton'
+      timeout: 10000

@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'bank-fee-sheet'
+---
+# clip: bank-fee-sheet | target length: 5s | poster scene: bank-fee-tracking-1 | seed: bank-fees
+# script: open a transfer -> Add fee -> the compact fee sheet -> type the amount
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: transaction-fee-sheet.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

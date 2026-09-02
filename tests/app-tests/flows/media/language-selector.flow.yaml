@@ -1,0 +1,26 @@
+appId: ${APP_ID}
+env:
+    TARGET_LOCALE: ${TARGET_LOCALE || 'uk'}
+---
+# Settings -> General -> Language -> pick another locale. The whole UI re-renders in
+# place, no relaunch.
+- runFlow: ../subflows/navigation/navigate-to-settings.flow.yaml
+
+- runFlow:
+      file: ../subflows/navigation/open-settings-card.flow.yaml
+      env:
+          CARD_ID: 'SettingsPage.LanguageCard'
+          DESTINATION_ID: 'LanguageSelector.SearchInput'
+
+- tapOn:
+      id: 'LanguageSelector.Option.${TARGET_LOCALE}'
+
+- extendedWaitUntil:
+      notVisible:
+          id: 'LanguageSelector.SearchInput'
+      timeout: 5000
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.LanguageCard.${TARGET_LOCALE}'
+      timeout: 10000

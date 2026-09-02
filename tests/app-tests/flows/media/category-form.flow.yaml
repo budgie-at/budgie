@@ -1,0 +1,41 @@
+appId: ${APP_ID}
+env:
+    CATEGORY_NAME: ${CATEGORY_NAME || 'Groceries'}
+---
+# Settings -> Organization -> Categories -> open one category and expand the icon
+# picker grid, which is the frame the custom-categories scene and the neutral
+# icon-grid crop are taken from.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings/categories'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPage.SearchInput'
+      timeout: 15000
+
+- tapOn:
+      id: 'CategoryPage.SearchInput'
+- inputText: ${CATEGORY_NAME}
+- pressKey: enter
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryCard.${CATEGORY_NAME}'
+      timeout: 10000
+- tapOn:
+      id: 'CategoryCard.${CATEGORY_NAME}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryForm.IconTrigger'
+      timeout: 10000
+- tapOn:
+      id: 'CategoryForm.IconTrigger'
+
+- extendedWaitUntil:
+      visible:
+          id: 'IconSelector.SearchInput'
+      timeout: 10000

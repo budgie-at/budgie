@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'date-preset-switch'
+---
+# clip: date-preset-switch | target length: 4s | poster scene: date-filter-presets-1 | seed: long-history
+# script: Transactions -> date pill -> preset list -> apply -> the list re-queries
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: date-filter.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

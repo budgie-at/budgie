@@ -1,0 +1,44 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'debt-settle'
+    SETTLEMENT_TRANSACTION_ID: ${SETTLEMENT_TRANSACTION_ID || '103'}
+    DEBT_ACCOUNT_NAME: ${DEBT_ACCOUNT_NAME || 'Emergency Savings'}
+---
+# clip: debt-settle | target length: 6s | poster scene: debt-tracking-1 | seed: debt
+# script: open the settling transaction -> attach it to the debt account -> the debt drops
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/${SETTLEMENT_TRANSACTION_ID}/expense'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.TriggerButton'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+      timeout: 5000
+- tapOn:
+      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+
+- runFlow:
+      file: ../subflows/shared/select-account-by-search.flow.yaml
+      env:
+          ACCOUNT_NAME: ${DEBT_ACCOUNT_NAME}
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- stopRecording

@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'ai-tag-pills'
+---
+# clip: ai-tag-pills | target length: 4s | poster scene: ai-tag-suggestions-1 | seed: tags-rich (AI-enabled build)
+# script: expense form -> pick a category -> suggested tag pills fade in -> tap two
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: ai-tag-pills.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

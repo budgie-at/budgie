@@ -1,0 +1,43 @@
+appId: ${APP_ID}
+env:
+    CATEGORY_NAME: ${CATEGORY_NAME || 'Groceries'}
+---
+# Category form for a non-Latin-titled category, scrolled to the AI translation
+# fields (generated English title plus keyword list). Seeded by the
+# cyrillic-taxonomy overlay, so no inference runs during capture.
+#
+# FOLLOW-UP: the translation fields carry no stable testID, so the flow stops at
+# the form scroll view. Blocked on app-side selectors:
+#   AiTranslationFieldsSelector.{Container,EnglishTitleInput,KeywordsInput,RegenerateButton}
+#       -> @generic/component/ai-translation-fields
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings/categories'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPage.SearchInput'
+      timeout: 15000
+
+- tapOn:
+      id: 'CategoryPage.SearchInput'
+- inputText: ${CATEGORY_NAME}
+- pressKey: enter
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryCard.${CATEGORY_NAME}'
+      timeout: 10000
+- tapOn:
+      id: 'CategoryCard.${CATEGORY_NAME}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryForm.ScrollView'
+      timeout: 10000
+
+- scroll
+
+- waitForAnimationToEnd

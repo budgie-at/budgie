@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'analytics-period'
+---
+# clip: analytics-period | target length: 5s | poster scene: spending-analytics-1 | seed: long-history
+# script: Statistics -> Categories -> tap a slice -> the drill-down list slides in
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: analytics-drilldown.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

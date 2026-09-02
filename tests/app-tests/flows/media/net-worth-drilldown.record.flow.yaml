@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'net-worth-drilldown'
+---
+# clip: net-worth-drilldown | target length: 4s | poster scene: net-worth-tracker-1 | seed: net-worth-full
+# script: Home at rest -> scroll -> header collapses -> tap the total -> per-currency legs
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: net-worth-drilldown.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

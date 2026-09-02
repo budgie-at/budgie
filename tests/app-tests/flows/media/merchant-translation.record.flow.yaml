@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'merchant-translation'
+---
+# clip: merchant-translation | target length: 5s | poster scene: ai-merchant-translation-1 | seed: cyrillic-taxonomy
+# script: Settings -> Categories -> a non-Latin category -> its English title and keywords
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: category-form-translation.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

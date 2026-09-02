@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'convert-to-refund'
+---
+# clip: convert-to-refund | target length: 5s | poster scene: convert-to-refund-1 | seed: refund
+# script: an income row -> Convert to Refund -> the expense picker -> the match highlighted
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: convert-to-refund-picker.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

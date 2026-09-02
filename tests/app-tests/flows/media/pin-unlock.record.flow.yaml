@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'pin-unlock'
+---
+# clip: pin-unlock | target length: 4s | poster scene: pin-app-lock-1 | seed: security-locked
+# script: cold open -> lock screen -> four digits -> unlock -> Home with balances
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: pin-locked-cold-open.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

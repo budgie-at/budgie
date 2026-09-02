@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'long-press-menu'
+---
+# clip: long-press-menu | target length: 4s | poster scene: transaction-long-press-menu-1 | seed: transfer-pair
+# script: press and hold a card -> the menu opens -> Convert to Transfer -> the picker
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: long-press-menu.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

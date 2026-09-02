@@ -3,6 +3,8 @@
     "version": "1.18.0",
     "private": true,
     "scripts": {
+        "media:encode": "bash ./scripts/encode-media-clips.sh",
+        "media:record": "bash ./scripts/record-media-clips.sh",
         "screenshots:capture": "bash ./scripts/capture-store-screenshots.sh",
         "screenshots:compose": "bash ../../packages/app/fastlane/screenshots/design/compose-screenshots.sh",
         "selectors:check": "sh ./scripts/validate-maestro-selectors.sh && sh ./scripts/validate-shards.sh",

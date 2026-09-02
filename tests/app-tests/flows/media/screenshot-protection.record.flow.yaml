@@ -1,0 +1,48 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'screenshot-protection'
+---
+# clip: screenshot-protection | target length: 4s | poster scene: screenshot-protection-1 | seed: security-locked
+# script: Settings -> Security -> flip Screenshot Protection -> Home -> back to Settings
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=security'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 15000
+
+- scrollUntilVisible:
+      element:
+          id: 'SettingsPage.ScreenshotProtectionCard'
+      direction: DOWN
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+- waitForAnimationToEnd
+
+- tapOn:
+      id: 'SettingsPage.ScreenshotProtectionSwitch'
+
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- tapOn:
+      id: 'TabBar.Settings'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- stopRecording

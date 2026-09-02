@@ -1,0 +1,52 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'offline-add'
+---
+# clip: offline-add | target length: 5s | poster scene: offline-first-expense-tracker-1 | seed: showcase (simulator network link disabled)
+# script: quick entry with the network down -> Save -> the row appears with no spinner
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 15000
+
+- runFlow: ../subflows/transactions/open-action-menu.flow.yaml
+
+- tapOn:
+      id: 'ActionItem.Expense.Label'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionForm.Page'
+      timeout: 10000
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.1'
+- tapOn:
+      id: 'TransactionKeypad.Digit.2'
+- tapOn:
+      id: 'TransactionKeypad.Digit.4'
+- tapOn:
+      id: 'TransactionKeypad.Digit.0'
+
+- tapOn:
+      id: 'TransactionForm.SubmitButton'
+      enabled: true
+      retryTapIfNoChange: true
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- stopRecording

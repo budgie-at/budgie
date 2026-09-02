@@ -1,0 +1,49 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'bank-sync'
+    BANK_INTEGRATION_ID: ${BANK_INTEGRATION_ID || '1'}
+    BANK_ACCOUNT_ROW_ID: ${BANK_ACCOUNT_ROW_ID || '1'}
+---
+# clip: bank-sync | target length: 6s | poster scene: monobank-sync-1 | seed: bank-sync-connected
+# script: Home -> the bank provider group -> integration detail -> refresh -> rows stream in
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- scrollUntilVisible:
+      element:
+          id: 'BankProviderSectionHeader.SettingsButton.${BANK_INTEGRATION_ID}'
+      direction: DOWN
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+- waitForAnimationToEnd
+
+- tapOn:
+      id: 'BankProviderSectionHeader.SettingsButton.${BANK_INTEGRATION_ID}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 15000
+
+- swipe:
+      direction: DOWN
+
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.AccountRow.${BANK_ACCOUNT_ROW_ID}'
+      timeout: 30000
+
+- waitForAnimationToEnd
+
+- stopRecording

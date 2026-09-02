@@ -1,0 +1,32 @@
+appId: ${APP_ID}
+env:
+    CSV_ROW_ID_MATCH: ${CSV_ROW_ID_MATCH || 'e2e-budgie-import(, csv)?'}
+    IMPORT_PRESET_ID: ${IMPORT_PRESET_ID || 'ImportScreen.PresetChip.Budgie'}
+---
+# Settings -> Data -> Import CSV, file picked, saved preset applied and the parsed
+# preview ready to import.
+#
+# FOLLOW-UP: the column mapper itself carries no stable testID, so the per-column
+# assignment, decimal separator, date format and preview rows cannot be driven.
+# Blocked on app-side selectors:
+#   ImportColumnMapperSelector.{Page,Field,Option,PreviewRow,DecimalSeparator,DateFormat,PresetNameInput}
+#       -> app/import-column-mapper.tsx, import/components/import-column-mapper
+- runFlow: ../subflows/import/open-csv-import-picker.flow.yaml
+
+- runFlow:
+      file: ../subflows/import/select-file-from-app-provider.flow.yaml
+      env:
+          FILE_ROW_ID_MATCH: ${CSV_ROW_ID_MATCH}
+
+- extendedWaitUntil:
+      visible:
+          id: '${IMPORT_PRESET_ID}'
+      timeout: 15000
+
+- tapOn:
+      id: '${IMPORT_PRESET_ID}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CsvPage.StartImportButton'
+      timeout: 10000

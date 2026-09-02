@@ -74,3 +74,6 @@ packages/app/fastlane/screenshots/variants/ci/
 packages/app/fastlane/screenshots/**/*.staging*
 packages/app/fastlane/report.xml
 packages/app/fastlane/Preview.html
+
+# Raw landing media recordings (re-recorded, never committed; see tests/app-tests/flows/media/README.md)
+packages/landing/public/media-src/

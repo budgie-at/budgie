@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+---
+# Opens the AI voice-entry surface from the Home create menu.
+#
+# FOLLOW-UP: the voice controls carry no stable testID, so this flow stops at the
+# create menu rather than hand-building coordinates. Blocked on app-side selectors:
+#   CreateTransactionMenuSelector.AiButton
+#       -> transaction/components/create-transaction-menu/create-transaction-menu.selector.ts
+#   VoiceInputOverlaySelector.{Container,RecordButton,Waveform,Transcript}
+#       -> ai/component/voice-input-overlay
+#   VoiceReviewSelector.{Page,Amount,Category,Account,SaveButton}
+#       -> app/voice-review.tsx
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- runFlow: ../subflows/transactions/open-action-menu.flow.yaml

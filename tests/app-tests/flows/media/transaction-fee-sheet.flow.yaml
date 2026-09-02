@@ -1,0 +1,38 @@
+appId: ${APP_ID}
+env:
+    TRANSFER_TRANSACTION_ID: ${TRANSFER_TRANSACTION_ID || '301'}
+---
+# A transfer's fee sheet: the compact sheet rises over the transfer, the fee amount
+# is typed on the keypad and the parent transaction stays a transfer above it.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/${TRANSFER_TRANSACTION_ID}/transfer'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.TriggerButton'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.FeeButton'
+      timeout: 5000
+- tapOn:
+      id: 'TransactionActionsMenu.FeeButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SplitEntryRow.Amount.0'
+      timeout: 10000
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.1'
+- tapOn:
+      id: 'TransactionKeypad.Digit.5'
+- tapOn:
+      id: 'TransactionKeypad.Digit.0'
+
+- waitForAnimationToEnd

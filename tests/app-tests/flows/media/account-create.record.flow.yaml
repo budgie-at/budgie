@@ -1,0 +1,67 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'account-create'
+    NEW_ACCOUNT_NAME: ${NEW_ACCOUNT_NAME || 'Term Deposit'}
+    NEW_ACCOUNT_INTEREST_RATE: ${NEW_ACCOUNT_INTEREST_RATE || '4.5'}
+---
+# clip: account-create | target length: 6s | poster scene: account-management-1 | seed: net-worth-full
+# script: Home -> + -> account type picker -> Deposit -> name and terms -> Save
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- runFlow: ../subflows/accounts/open-new-account.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'CreateAccount.DEPOSIT'
+      timeout: 10000
+- tapOn:
+      id: 'CreateAccount.DEPOSIT'
+      retryTapIfNoChange: true
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.NameInput'
+      timeout: 10000
+- tapOn:
+      id: 'AccountForm.NameInput'
+- inputText: ${NEW_ACCOUNT_NAME}
+
+- scrollUntilVisible:
+      element:
+          id: 'AccountForm.InterestRateInput'
+      direction: DOWN
+      centerElement: true
+- tapOn:
+      id: 'AccountForm.InterestRateInput'
+- inputText: ${NEW_ACCOUNT_INTEREST_RATE}
+
+- scrollUntilVisible:
+      element:
+          id: 'AccountForm.SubmitButton'
+          enabled: true
+      direction: DOWN
+- tapOn:
+      id: 'AccountForm.SubmitButton'
+      enabled: true
+      retryTapIfNoChange: true
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- stopRecording

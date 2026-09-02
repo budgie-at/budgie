@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'analytics-tags-tab'
+---
+# clip: analytics-tags-tab | target length: 4s | poster scene: statistics-tags-tab-1 | seed: tags-rich + long-history
+# script: Statistics -> Tags -> the tag rows animate in with income/expense/net
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: analytics-tags-tab.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

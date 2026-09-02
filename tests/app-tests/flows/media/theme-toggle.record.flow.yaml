@@ -1,0 +1,38 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'theme-toggle'
+---
+# clip: theme-toggle | target length: 2s | poster scene: expense-tracking-2 | seed: showcase
+# script: Settings -> Appearance -> flip the theme -> the screen re-themes in place
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=appearance'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 15000
+
+- scrollUntilVisible:
+      element:
+          id: 'SettingsPage.DarkModeCard'
+      direction: DOWN
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+- waitForAnimationToEnd
+
+- tapOn:
+      id: 'SettingsPage.DarkModeSwitch'
+- waitForAnimationToEnd
+
+- tapOn:
+      id: 'SettingsPage.DarkModeSwitch'
+
+- waitForAnimationToEnd
+
+- stopRecording

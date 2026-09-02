@@ -1,0 +1,59 @@
+appId: ${APP_ID}
+env:
+    EXPENSE_TRANSACTION_ID: ${EXPENSE_TRANSACTION_ID || '103'}
+    FIRST_SPLIT_AMOUNT: ${FIRST_SPLIT_AMOUNT || '61.40'}
+    FIRST_SPLIT_CATEGORY: ${FIRST_SPLIT_CATEGORY || 'Groceries'}
+    SECOND_SPLIT_AMOUNT: ${SECOND_SPLIT_AMOUNT || '19.90'}
+    SECOND_SPLIT_CATEGORY: ${SECOND_SPLIT_CATEGORY || 'Electronics & Gadgets'}
+---
+# One expense broken into several category rows, held on the remaining-budget pill
+# reaching zero with Done enabled.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/${EXPENSE_TRANSACTION_ID}/expense/edit'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionFieldIcon.Split'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionFieldIcon.Split'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SplitEntryRow.Amount.0'
+      timeout: 10000
+
+- tapOn:
+      id: 'SplitEntryRow.Amount.0'
+- inputText: ${FIRST_SPLIT_AMOUNT}
+
+- runFlow:
+      file: ../subflows/transactions/select-split-category.flow.yaml
+      env:
+          ENTRY_INDEX: '0'
+          CATEGORY_NAME: ${FIRST_SPLIT_CATEGORY}
+
+- tapOn:
+      id: 'SplitEntries.AddItemButton'
+- extendedWaitUntil:
+      visible:
+          id: 'SplitEntryRow.Amount.1'
+      timeout: 5000
+
+- tapOn:
+      id: 'SplitEntryRow.Amount.1'
+- inputText: ${SECOND_SPLIT_AMOUNT}
+
+- runFlow:
+      file: ../subflows/transactions/select-split-category.flow.yaml
+      env:
+          ENTRY_INDEX: '1'
+          CATEGORY_NAME: ${SECOND_SPLIT_CATEGORY}
+
+- extendedWaitUntil:
+      visible:
+          id: 'SplitEntries.ConfirmButton'
+      timeout: 5000

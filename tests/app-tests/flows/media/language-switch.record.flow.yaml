@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'language-switch'
+---
+# clip: language-switch | target length: 4s | poster scene: multi-language-app-1 | seed: showcase
+# script: Settings -> General -> Language -> pick a locale -> the UI re-renders in place
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: language-selector.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

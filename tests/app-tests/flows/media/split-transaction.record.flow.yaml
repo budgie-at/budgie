@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'split-transaction'
+---
+# clip: split-transaction | target length: 6s | poster scene: split-transactions-1 | seed: split-transaction
+# script: split an expense -> add rows -> the remaining pill counts down to zero -> Done
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: split-entries.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

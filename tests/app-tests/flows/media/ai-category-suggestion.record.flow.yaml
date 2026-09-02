@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'ai-category-suggestion'
+---
+# clip: ai-category-suggestion | target length: 4s | poster scene: ai-auto-categorization-1 | seed: showcase (AI-enabled build)
+# script: expense form -> type a merchant -> suggestion pills appear -> accept the category
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: ai-suggestion-pills.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

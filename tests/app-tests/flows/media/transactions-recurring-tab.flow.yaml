@@ -1,0 +1,31 @@
+appId: ${APP_ID}
+env:
+    RECURRING_DAY: ${RECURRING_DAY || 'Today'}
+---
+# Transactions -> Recurring. The tab is local component state, not a route param,
+# so it cannot be deep-linked and has to be tapped.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionsPage.Tab.Recurring'
+
+- extendedWaitUntil:
+      visible:
+          id: 'RecurringCalendar.Container'
+      timeout: 10000
+
+- tapOn:
+      id: 'RecurringCalendar.Day.${RECURRING_DAY}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'RecurringCalendar.SelectedDayHeader'
+      timeout: 10000

@@ -1,0 +1,39 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'deposit-close'
+    DEPOSIT_ACCOUNT_ID: ${DEPOSIT_ACCOUNT_ID || '5'}
+    DEPOSIT_DESTINATION_ACCOUNT: ${DEPOSIT_DESTINATION_ACCOUNT || 'Main Checking'}
+---
+# clip: deposit-close | target length: 5s | poster scene: deposit-tracking-1 | seed: deposit
+# script: Deposit detail at maturity -> Close Deposit -> destination picker -> confirm
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://account/${DEPOSIT_ACCOUNT_ID}/details'
+
+- extendedWaitUntil:
+      visible:
+          id: 'DepositDetailsCard.Container'
+      timeout: 15000
+
+- tapOn:
+      id: 'DepositAccountActionsMenu.TriggerButton'
+- extendedWaitUntil:
+      visible:
+          id: 'DepositAccountActionsMenu.CloseDepositButton'
+      timeout: 5000
+- tapOn:
+      id: 'DepositAccountActionsMenu.CloseDepositButton'
+
+- runFlow:
+      file: ../subflows/shared/select-account-by-search.flow.yaml
+      env:
+          ACCOUNT_NAME: ${DEPOSIT_DESTINATION_ACCOUNT}
+
+- waitForAnimationToEnd
+
+- stopRecording

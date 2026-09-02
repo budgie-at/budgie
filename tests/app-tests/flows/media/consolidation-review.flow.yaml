@@ -1,0 +1,12 @@
+appId: ${APP_ID}
+---
+# Settings -> Consolidate transfers -> the ambiguous-match review queue with the two
+# legs of a candidate pair shown side by side.
+- runFlow: ../subflows/settings/consolidate-matches.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'ConsolidationSourceModal.Row.0'
+      timeout: 15000
+
+- waitForAnimationToEnd

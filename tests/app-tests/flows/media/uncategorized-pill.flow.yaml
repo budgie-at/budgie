@@ -1,0 +1,41 @@
+appId: ${APP_ID}
+env:
+    ACCOUNT_NAME: ${ACCOUNT_NAME || 'Main Checking'}
+---
+# Transactions -> apply an account filter -> the filter-aware missing-category pill
+# -> the focused cleanup list behind it.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionFilters.AccountChip'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionFilters.AccountOption.${ACCOUNT_NAME}'
+      timeout: 5000
+- tapOn:
+      id: 'TransactionFilters.AccountOption.${ACCOUNT_NAME}'
+- tapOn:
+      id: 'TransactionFilters.AccountApplyButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionFilters.AccountChipActive'
+      timeout: 5000
+
+- extendedWaitUntil:
+      visible:
+          id: 'UncategorizedTransactionsPill.Button'
+      timeout: 10000
+
+- tapOn:
+      id: 'UncategorizedTransactionsPill.Button'
+
+- waitForAnimationToEnd

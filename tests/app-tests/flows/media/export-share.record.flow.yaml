@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'export-share'
+---
+# clip: export-share | target length: 5s | poster scene: data-export-1 | seed: showcase
+# script: Settings -> Data -> Export CSV -> the OS share sheet rises with the file
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: export-share.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

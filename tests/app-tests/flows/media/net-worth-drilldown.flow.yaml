@@ -1,0 +1,27 @@
+appId: ${APP_ID}
+---
+# Home at rest -> scroll so the net-worth header collapses to the compact total ->
+# tap the aggregated figure -> the per-currency leg breakdown.
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- scroll
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'NetWorthAssetChips.Fiat'
+      timeout: 10000
+
+- tapOn:
+      id: 'NetWorthAssetChips.Fiat'
+
+- waitForAnimationToEnd

@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'voice-entry'
+---
+# clip: voice-entry | target length: 6s | poster scene: voice-transaction-entry-2 | seed: showcase (AI-enabled build)
+# script: open the create menu -> AI voice entry -> waveform -> parsed review -> save
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow: voice-listening.flow.yaml
+
+- waitForAnimationToEnd
+
+- stopRecording

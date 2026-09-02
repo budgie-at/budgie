@@ -1,0 +1,46 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'crypto-price-update'
+    CRYPTO_INSTRUMENT_CODE: ${CRYPTO_INSTRUMENT_CODE || 'BTC'}
+---
+# clip: crypto-price-update | target length: 5s | poster scene: crypto-investment-tracking-1 | seed: crypto
+# script: Home -> the crypto group -> the instrument market page -> the price snapshot
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- extendedWaitUntil:
+      visible:
+          id: 'CryptoGroup.Market.${CRYPTO_INSTRUMENT_CODE}'
+      timeout: 15000
+
+- tapOn:
+      id: 'CryptoGroup.Toggle.${CRYPTO_INSTRUMENT_CODE}'
+- waitForAnimationToEnd
+
+- tapOn:
+      id: 'CryptoGroup.Market.${CRYPTO_INSTRUMENT_CODE}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CurrencyMarket.Header.${CRYPTO_INSTRUMENT_CODE}'
+      timeout: 15000
+
+- extendedWaitUntil:
+      visible:
+          id: 'CurrencyMarket.Holdings.Value.${CRYPTO_INSTRUMENT_CODE}'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- stopRecording

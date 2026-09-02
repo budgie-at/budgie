@@ -1,0 +1,35 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'primary-tag-rotate'
+    PRIMARY_TAG_NAME: ${PRIMARY_TAG_NAME || 'Work'}
+---
+# clip: primary-tag-rotate | target length: 3s | poster scene: primary-tag-1 | seed: tags-rich
+# script: Transactions -> the corner-star primary badge reading across a dense list
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 15000
+
+# FOLLOW-UP: rotating the primary tag from the list has no stable testID, so the
+# clip stops at the badge state. Blocked on an app-side selector:
+#   TransactionCardSelector.PrimaryTagBadge
+#       -> transaction/components/transaction-card/transaction-card.selector.ts
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Tag.${PRIMARY_TAG_NAME}'
+      timeout: 10000
+
+- scroll
+
+- waitForAnimationToEnd
+
+- stopRecording

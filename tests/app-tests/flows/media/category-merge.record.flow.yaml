@@ -1,0 +1,68 @@
+appId: ${APP_ID}
+env:
+    LOCALE: ${LOCALE || 'en'}
+    APPEARANCE: ${APPEARANCE || 'light'}
+    CLIP_ID: 'category-merge'
+    MERGE_SOURCE_CATEGORY: ${MERGE_SOURCE_CATEGORY || 'Restaurants & Cafes'}
+    MERGE_TARGET_CATEGORY: ${MERGE_TARGET_CATEGORY || 'Groceries'}
+---
+# clip: category-merge | target length: 6s | poster scene: custom-categories-1 | seed: showcase
+# script: Categories -> open a category -> Merge -> pick the target -> the list collapses
+- startRecording: '${CLIP_ID}-${LOCALE}-${APPEARANCE}'
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings/categories'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPage.SearchInput'
+      timeout: 15000
+
+- tapOn:
+      id: 'CategoryPage.SearchInput'
+- inputText: ${MERGE_SOURCE_CATEGORY}
+- pressKey: enter
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryCard.${MERGE_SOURCE_CATEGORY}'
+      timeout: 10000
+- tapOn:
+      id: 'CategoryCard.${MERGE_SOURCE_CATEGORY}'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryForm.Merge'
+      timeout: 10000
+- tapOn:
+      id: 'CategoryForm.Merge'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPickerBottomSheet.Input'
+      timeout: 10000
+- tapOn:
+      id: 'CategoryPickerBottomSheet.Input'
+- inputText: ${MERGE_TARGET_CATEGORY}
+- pressKey: enter
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryPickerBottomSheet.Card.${MERGE_TARGET_CATEGORY}'
+      timeout: 15000
+- tapOn:
+      id: 'CategoryPickerBottomSheet.Card.${MERGE_TARGET_CATEGORY}'
+      retryTapIfNoChange: true
+
+- extendedWaitUntil:
+      notVisible:
+          id: 'CategoryPickerBottomSheet.Input'
+      timeout: 5000
+
+- waitForAnimationToEnd
+
+- stopRecording
