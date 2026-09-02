@@ -1,40 +1,43 @@
-import { mediaFrameVariants } from '../../constant/media-frame-variants.constant';
+import { MEDIA_ASSET_HEIGHT, MEDIA_ASSET_WIDTH } from '../../constant/media-size.constant';
+import { resolveMediaAssetPath } from '../../util/resolve-media-asset-path.util';
 
-import type { MediaFrameEnum } from '../../enum/media-frame.enum';
-import type { MediaMotionAssetInterface } from '../../interface/media-motion-asset.interface';
+import type { MediaAssetInterface } from '../../interface/media-asset.interface';
 
 interface Props {
-    asset: MediaMotionAssetInterface;
+    asset: MediaAssetInterface;
     alt: string;
-    frame: MediaFrameEnum;
 }
 
-export const AppClipMedia = ({ asset, alt, frame }: Props) => (
-    <>
-        <video
-            aria-label={alt}
-            autoPlay
-            className={mediaFrameVariants({ className: 'block motion-reduce:hidden', frame })}
-            height={asset.height}
-            loop
-            muted
-            playsInline
-            poster={asset.posterPath}
-            preload="metadata"
-            width={asset.width}
-        >
-            <source src={asset.webmPath} type="video/webm" />
-            <source src={asset.mp4Path} type="video/mp4" />
-        </video>
+export const AppClipMedia = ({ asset, alt }: Props) => {
+    const basePath = resolveMediaAssetPath(asset);
 
-        <img
-            alt={alt}
-            className={mediaFrameVariants({ className: 'hidden motion-reduce:block', frame })}
-            decoding="async"
-            height={asset.height}
-            loading="lazy"
-            src={asset.posterPath}
-            width={asset.width}
-        />
-    </>
-);
+    return (
+        <>
+            <video
+                aria-label={alt}
+                autoPlay
+                className="block h-auto w-full motion-reduce:hidden"
+                height={MEDIA_ASSET_HEIGHT}
+                loop
+                muted
+                playsInline
+                poster={`${basePath}-poster.webp`}
+                preload="metadata"
+                width={MEDIA_ASSET_WIDTH}
+            >
+                <source src={`${basePath}.webm`} type="video/webm" />
+                <source src={`${basePath}.mp4`} type="video/mp4" />
+            </video>
+
+            <img
+                alt={alt}
+                className="hidden h-auto w-full motion-reduce:block"
+                decoding="async"
+                height={MEDIA_ASSET_HEIGHT}
+                loading="lazy"
+                src={`${basePath}-poster.webp`}
+                width={MEDIA_ASSET_WIDTH}
+            />
+        </>
+    );
+};

@@ -1,5 +1,5 @@
 export enum MediaThemeEnum {
-    // Lowercase values mirror the `public/media/<group>/<locale>/<theme>` folder names on disk.
+    // Lowercase values mirror the `public/media/<slug>/<locale>/<theme>` folder names on disk.
     DARK = 'dark',
     LIGHT = 'light'
 }

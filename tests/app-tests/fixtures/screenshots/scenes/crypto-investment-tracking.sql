@@ -1,0 +1,1 @@
+.read shared/crypto.sql
