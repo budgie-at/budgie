@@ -3,7 +3,7 @@
     "version": "6.5.2",
     "private": true,
     "scripts": {
-        "build": "next build",
+        "build": "pnpm media:check && next build",
         "clear": "rimraf dist .next node_modules/.cache .turbo",
         "i18n:compile": "lingui compile --typescript",
         "i18n:extract": "lingui extract --overwrite --clean",
@@ -11,6 +11,8 @@
         "lint": "oxlint --type-aware . && eslint .",
         "lint:eslint": "eslint .",
         "lint:fix": "oxlint --type-aware --fix . && eslint --fix .",
+        "media:check": "node scripts/check-landing-media.mjs",
+        "media:manifest": "node scripts/generate-media-manifest.mjs",
         "release:start": "next start",
         "start": "next dev",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
