@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import Image from 'next/image';
 
+import { AppClip } from '../app-clip/app-clip';
 import { AppShot } from '../app-shot/app-shot';
 import { Motion } from '../motion/motion';
 
@@ -24,23 +25,31 @@ export const HeroSectionImage = ({ locale }: Props) => {
             transition={transitionMotionImage}
         >
             <div className="rounded-2xl overflow-hidden shadow-2xl border border-border/40 bg-linear-to-b from-background to-muted/20">
-                <AppShot
+                <AppClip
                     alt={alt}
                     fallback={
-                        <Image
+                        <AppShot
                             alt={alt}
-                            className="w-full h-auto"
-                            height={720}
+                            fallback={
+                                <Image
+                                    alt={alt}
+                                    className="w-full h-auto"
+                                    height={720}
+                                    priority
+                                    src="/images/design-mode/ai-budgeting-app-4x.jpg"
+                                    width={1280}
+                                />
+                            }
+                            locale={locale}
                             priority
-                            src="/images/design-mode/ai-budgeting-app-4x.jpg"
-                            width={1280}
+                            scene="home-hero-1"
+                            sizes="(min-width: 768px) 42rem, 100vw"
+                            slug="home-hero"
                         />
                     }
-                    group="home"
                     locale={locale}
-                    priority
-                    scene="hero"
-                    sizes="(min-width: 768px) 42rem, 100vw"
+                    scene="home-hero-clip-1"
+                    slug="home-hero"
                 />
 
                 <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10 dark:ring-white/10" />
