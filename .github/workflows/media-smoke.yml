@@ -40,7 +40,6 @@ jobs:
             shard-count: 1
             maestro-config: tests/app-tests/config.yaml
             pre-run-flow: tests/app-tests/flows/setup/prime-deep-links.flow.yaml
-            pre-test-command: bash tests/app-tests/scripts/setup-ios-e2e-fixtures.sh "$SIMULATOR_UDID" "$APP_ID"
             pre-flow-command: SCENE="${FLOW_NAME%.flow.yaml}" LOCALE=en APPEARANCE=dark bash tests/app-tests/scripts/seed-screenshot-scene.sh
             flow-retries: '0'
             maestro-version: '2.8.0'
