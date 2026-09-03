@@ -5,7 +5,7 @@ set -euo pipefail
 DESIGN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$DESIGN_DIR/frame-device.sh"
 SCREENSHOTS_DIR="$(cd "$DESIGN_DIR/.." && pwd)"
-REPO_ROOT="$(cd "$SCREENSHOTS_DIR/../../.." && pwd)"
+REPO_ROOT="$(cd "$SCREENSHOTS_DIR/../../../.." && pwd)"
 
 RAW_ROOT="$SCREENSHOTS_DIR/landing-raw"
 OUTPUT_ROOT="$REPO_ROOT/packages/landing/public/media"

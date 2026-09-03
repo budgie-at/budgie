@@ -68,8 +68,18 @@ A scene may carry a state overlay on top of the showcase database:
 usually just `.read shared/<state>.sql`.
 
 To add a scene: one `capture-scenes` entry (`deepLink` for a still, `flow`
-for a clip — one `takeScreenshot` before its `startRecording`/`stopRecording`
-pair) plus an overlay `.sql` file only if the default data isn't enough.
+when the state needs interaction) plus an overlay `.sql` file only if the
+default data isn't enough. A flow takes exactly one `takeScreenshot`; a clip
+adds one `startRecording`/`stopRecording` pair after it and is named
+`<slug>-clip-<n>`. Flows reach their state by `runFlow`ing the E2E subflows
+under `flows/subflows/`, never by re-implementing navigation.
+
+`.github/workflows/media-smoke.yml` runs every `flows/media/*.flow.yaml` once
+per PR touching them and nightly, on one shard, seeding each flow's scene
+(`en`/`dark`) through `seed-screenshot-scene.sh` as mobile-ci's
+`pre-flow-command`. `pr.yml`'s `detect-mobile-impact` keeps those same paths
+out of the full iOS suite. `pin-app-lock-clip-1` is excluded until #697 makes
+the seed hook produce a SQLCipher database for lock-flag scenes.
 
 ## Future Test Coverage
 

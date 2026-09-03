@@ -171,6 +171,42 @@
             "deepLink": "budgie://settings?anchor=security"
         },
         {
+            "name": "multi-language-app-1",
+            "flow": "flows/media/multi-language-app-1.flow.yaml"
+        },
+        {
+            "name": "recurring-payments-calendar-1",
+            "flow": "flows/media/recurring-payments-calendar-1.flow.yaml"
+        },
+        {
+            "name": "statistics-tags-tab-1",
+            "flow": "flows/media/statistics-tags-tab-1.flow.yaml"
+        },
+        {
+            "name": "transaction-tags-1",
+            "flow": "flows/media/transaction-tags-1.flow.yaml"
+        },
+        {
+            "name": "date-filter-presets-1",
+            "flow": "flows/media/date-filter-presets-1.flow.yaml"
+        },
+        {
+            "name": "transaction-long-press-menu-1",
+            "flow": "flows/media/transaction-long-press-menu-1.flow.yaml"
+        },
+        {
+            "name": "convert-to-transfer-1",
+            "flow": "flows/media/convert-to-transfer-1.flow.yaml"
+        },
+        {
+            "name": "uncategorized-transactions-1",
+            "deepLink": "budgie://transactions"
+        },
+        {
+            "name": "uncategorized-transactions-2",
+            "flow": "flows/media/uncategorized-transactions-2.flow.yaml"
+        },
+        {
             "name": "voice-transaction-entry-clip-1",
             "flow": "flows/media/voice-transaction-entry-clip-1.flow.yaml",
             "locales": [

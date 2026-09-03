@@ -9,8 +9,10 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionForm.Page'
+          id: 'TransactionForm.CommentInput'
       timeout: 15000
+
+- waitForAnimationToEnd
 
 - takeScreenshot: poster
 
