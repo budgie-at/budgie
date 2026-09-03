@@ -9,6 +9,10 @@ command -v ffmpeg >/dev/null 2>&1 || {
     echo "skip test-compose-web-clips: 'ffmpeg' is not installed"
     exit 0
 }
+command -v ffprobe >/dev/null 2>&1 || {
+    echo "skip test-compose-web-clips: 'ffprobe' is not installed"
+    exit 0
+}
 command -v magick >/dev/null 2>&1 || {
     echo "skip test-compose-web-clips: ImageMagick 7 ('magick') is not installed"
     exit 0
@@ -24,6 +28,17 @@ assert_file() {
         echo "ok   $label"
     else
         echo "FAIL $label: no file at $path"
+        FAILURES=$((FAILURES + 1))
+    fi
+}
+
+assert_frame_rate() {
+    local label="$1" path="$2" expected="$3" actual
+    actual="$(ffprobe -v error -select_streams v:0 -show_entries stream=r_frame_rate -of csv=p=0 "$path")"
+    if [ "$actual" = "$expected" ]; then
+        echo "ok   $label"
+    else
+        echo "FAIL $label: expected '$expected', got '$actual'"
         FAILURES=$((FAILURES + 1))
     fi
 }
@@ -44,6 +59,8 @@ DEST="$OUT_DIR/voice-transaction-entry/en/light"
 assert_file 'the -clip-<n> segment strips to the route slug (webm)' "$DEST/voice-transaction-entry-clip-1.webm"
 assert_file 'the -clip-<n> segment strips to the route slug (mp4)' "$DEST/voice-transaction-entry-clip-1.mp4"
 assert_file 'the -clip-<n> segment strips to the route slug (poster)' "$DEST/voice-transaction-entry-clip-1-poster.webp"
+assert_frame_rate 'the webm is normalized to 24 fps' "$DEST/voice-transaction-entry-clip-1.webm" '24/1'
+assert_frame_rate 'the mp4 is normalized to 24 fps' "$DEST/voice-transaction-entry-clip-1.mp4" '24/1'
 
 NO_POSTER_RAW="$WORK_DIR/raw-no-poster/ios/iphone-17-pro-max/en/light"
 mkdir -p "$NO_POSTER_RAW"
