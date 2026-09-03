@@ -79,7 +79,9 @@ per PR touching them and nightly, on one shard, seeding each flow's scene
 (`en`/`dark`) through `seed-screenshot-scene.sh` as mobile-ci's
 `pre-flow-command`. `pr.yml`'s `detect-mobile-impact` keeps those same paths
 out of the full iOS suite. `pin-app-lock-clip-1` is excluded until #697 makes
-the seed hook produce a SQLCipher database for lock-flag scenes.
+the seed hook produce a SQLCipher database for lock-flag scenes. There is no
+CSV import clip: the flow recorded the iOS Files picker, which both needs
+E2EFixtures on the CI runner and exposes `01.db`…`09.db` fixture filenames.
 
 ## Future Test Coverage
 
