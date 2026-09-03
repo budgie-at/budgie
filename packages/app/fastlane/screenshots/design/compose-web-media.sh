@@ -15,6 +15,17 @@ DRY_RUN=0
 OUTPUT_WIDTH=900
 OUTPUT_HEIGHT=1955
 
+# Measured on 3 real framed store screenshots downscaled to 900 wide (SSIM
+# against the source PNG, ImageMagick 'compare -metric SSIM' distortion
+# converted to similarity): avifenc -s 4 --min 0 --max 63 -a end-usage=q -a
+# cq-level=30 -a tune=ssim averages 26,982 bytes at SSIM 0.998 (current
+# --qcolor 80 --qalpha 80 averages 50,732 bytes at SSIM 0.999); cwebp/magick
+# -quality 75 -define webp:method=6 averages 40,553 bytes at SSIM 0.996
+# (current -quality 80 averages 46,961 bytes at SSIM 0.998). Both stay far
+# above the 0.97 SSIM floor. Per-still averages, not a hard cap - scene
+# content varies - test-compose-web-media.sh asserts a budget derived from
+# these numbers on its own synthetic fixture.
+
 fail() {
     echo "error: $*" >&2
     exit 1
@@ -59,14 +70,14 @@ slug_for_scene() {
 encode_still() {
     local src="$1" avif_out="$2" webp_out="$3"
     if command -v avifenc >/dev/null 2>&1; then
-        avifenc --qcolor 80 --qalpha 80 "$src" "$avif_out" >/dev/null
+        avifenc -s 4 --min 0 --max 63 -a end-usage=q -a cq-level=30 -a tune=ssim "$src" "$avif_out" >/dev/null
     else
-        magick "$src" -quality 80 "$avif_out"
+        magick "$src" -quality 60 "$avif_out"
     fi
     if command -v cwebp >/dev/null 2>&1; then
-        cwebp -quiet -q 80 "$src" -o "$webp_out"
+        cwebp -quiet -q 75 -m 6 "$src" -o "$webp_out"
     else
-        magick "$src" -quality 80 "$webp_out"
+        magick "$src" -quality 75 -define webp:method=6 "$webp_out"
     fi
 }
 
