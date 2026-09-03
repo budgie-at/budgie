@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-max-depth */
-import { i18n } from '@lingui/core';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -54,7 +53,6 @@ import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
 import { exchangeRatesSyncService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
-import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { historicalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { binanceSyncService } from '../sync/service/binance-sync.service';
@@ -64,8 +62,6 @@ import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
 enableFreeze();
-
-i18n.activate(i18nGetOSLocale());
 
 void SplashScreen.preventAutoHideAsync();
 
