@@ -1,6 +1,5 @@
 /* eslint-disable max-classes-per-file -- Four tiers of base service class co-located here; separating into four files would hide the inheritance chain */
 import { Log } from '@budgie/logger';
-import { LlamaContext } from 'llama.rn';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
@@ -10,6 +9,8 @@ import { LlamaConfigInterface } from '../interface/llama-config.interface';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
 import { SnapshotWithStatusInterface } from '../interface/snapshot-with-status.interface';
 import { loadLlamaContext } from '../util/load-llama-context.util';
+
+import type { LlamaContext } from 'llama.rn';
 
 export abstract class SnapshotStore<TSnapshot> {
     protected snapshot: TSnapshot;

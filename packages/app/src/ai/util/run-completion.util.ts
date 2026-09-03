@@ -1,9 +1,10 @@
 import { GenerateOptionsInterface, stripThinkingTags } from '@budgie/ai';
-import { LlamaContext } from 'llama.rn';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { DEFAULT_MAX_TOKENS, GENERATION_CONFIG, STOP_TOKENS } from './ai-constants.util';
+
+import type { LlamaContext } from 'llama.rn';
 
 export const runCompletion = async (
     context: LlamaContext,

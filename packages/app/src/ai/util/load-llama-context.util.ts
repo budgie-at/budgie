@@ -1,12 +1,15 @@
 import { getLogger } from '@budgie/logger';
-import { LlamaContext, initLlama } from 'llama.rn';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { GPU_LAYERS } from './ai-constants.util';
 import { downloadModel } from './download-model.util';
 
+import type { LlamaContext } from 'llama.rn';
+
 const logger = getLogger('loadLlamaContext');
+
+let llamaModulePromise: Promise<typeof import('llama.rn')> | null = null;
 
 interface LoadLlamaContextParamsInterface {
     readonly domain: string;
@@ -20,6 +23,14 @@ interface LoadLlamaContextParamsInterface {
     readonly onInitBegin: () => void;
 }
 
+const loadLlamaModule = (): Promise<typeof import('llama.rn')> => {
+    if (!isDefined(llamaModulePromise)) {
+        llamaModulePromise = import('llama.rn');
+    }
+
+    return llamaModulePromise;
+};
+
 export const loadLlamaContext = async (params: LoadLlamaContextParamsInterface): Promise<LlamaContext> => {
     params.onDownloadBegin();
     logger.log(`${params.domain}:download:begin`, { url: params.modelUrl, filename: params.modelFilename });
@@ -29,6 +40,7 @@ export const loadLlamaContext = async (params: LoadLlamaContextParamsInterface):
 
     params.onInitBegin();
     logger.log(`${params.domain}:init:begin`);
+    const { initLlama } = await loadLlamaModule();
     const initStarted = Date.now();
     const context = await initLlama({
         model: modelPath,

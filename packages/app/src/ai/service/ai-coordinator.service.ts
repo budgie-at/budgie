@@ -4,6 +4,7 @@ import { AppState } from 'react-native';
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
+import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { AiCoordinatorSnapshotInterface } from '../interface/ai-coordinator-snapshot.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { translationProgressStore } from '../store/translation-progress.store';
@@ -25,6 +26,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     private started = false;
     private releaseTimer: ReturnType<typeof setTimeout> | null = null;
     private appStateSubscription: { remove: () => void } | null = null;
+    private scheduledStartCancel: (() => void) | null = null;
 
     constructor() {
         super({ isAvailable: isAiEnabled(), isSuspended: false });
@@ -47,7 +49,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         const { currentState } = AppState;
         if (currentState === 'active' || currentState === 'unknown') {
             this.setSnapshot({ isSuspended: false });
-            void this.startSubsystems().catch(emptyFn);
+            this.scheduleStartSubsystems();
         } else {
             this.setSnapshot({ isSuspended: true });
         }
@@ -58,6 +60,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
             return;
         }
         this.started = false;
+        this.cancelScheduledStart();
         this.clearReleaseTimer();
         this.appStateSubscription?.remove();
         this.appStateSubscription = null;
@@ -86,7 +89,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
             }
             if (this.snapshot.isSuspended) {
                 this.setSnapshot({ isSuspended: false });
-                void this.startSubsystems().catch(emptyFn);
+                this.scheduleStartSubsystems();
             }
 
             return;
@@ -105,6 +108,21 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         this.releaseTimer = null;
         this.setSnapshot({ isSuspended: true });
         void this.stopSubsystems().catch(emptyFn);
+    }
+
+    private scheduleStartSubsystems(): void {
+        this.cancelScheduledStart();
+        this.scheduledStartCancel = scheduleIdleCallback(() => {
+            this.scheduledStartCancel = null;
+            void this.startSubsystems().catch(emptyFn);
+        });
+    }
+
+    private cancelScheduledStart(): void {
+        if (isDefined(this.scheduledStartCancel)) {
+            this.scheduledStartCancel();
+            this.scheduledStartCancel = null;
+        }
     }
 
     private async startSubsystems(): Promise<void> {
