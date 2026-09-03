@@ -4,6 +4,8 @@ env:
 ---
 - runFlow: ../subflows/import/open-csv-import-picker.flow.yaml
 
+- waitForAnimationToEnd
+
 - takeScreenshot: poster
 
 - startRecording: clip
