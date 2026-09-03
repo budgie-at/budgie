@@ -1,5 +1,6 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 import Animated, { LinearTransition, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
@@ -7,7 +8,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
 import { light } from '../../../theme/provider/theme.provider';
 import { TagVariantType } from '../../type/tag-variant.type';
 
