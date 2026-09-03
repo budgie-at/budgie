@@ -1,7 +1,9 @@
 import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie/consolidation';
 import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
-import { getUnixTime, subDays, subYears } from 'date-fns';
+import { getUnixTime } from 'date-fns/getUnixTime';
+import { subDays } from 'date-fns/subDays';
+import { subYears } from 'date-fns/subYears';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 

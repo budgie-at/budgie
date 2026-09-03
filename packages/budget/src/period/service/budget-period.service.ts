@@ -1,5 +1,13 @@
 import { Log } from '@budgie/logger';
-import { addMonths, endOfMonth, getMonth, getYear, lastDayOfMonth, setDate, startOfDay, startOfMonth, subMonths } from 'date-fns';
+import { addMonths } from 'date-fns/addMonths';
+import { endOfMonth } from 'date-fns/endOfMonth';
+import { getMonth } from 'date-fns/getMonth';
+import { getYear } from 'date-fns/getYear';
+import { lastDayOfMonth } from 'date-fns/lastDayOfMonth';
+import { setDate } from 'date-fns/setDate';
+import { startOfDay } from 'date-fns/startOfDay';
+import { startOfMonth } from 'date-fns/startOfMonth';
+import { subMonths } from 'date-fns/subMonths';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 

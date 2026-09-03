@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { isValid } from 'date-fns';
+import { isValid } from 'date-fns/isValid';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
