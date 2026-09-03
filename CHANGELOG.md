@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.9.0](https://github.com/budgie-at/budgie/compare/v6.8.0...v6.9.0) (2026-09-03)
+
+
+### Features
+
+* **app:** tighten landing media encoding budgets ([a3c92ed](https://github.com/budgie-at/budgie/commit/a3c92edfdb119cfca848da6aae0fb61626c0a993))
+
+
+
+
+
 # [6.8.0](https://github.com/budgie-at/budgie/compare/v6.7.0...v6.8.0) (2026-09-02)
 
 
