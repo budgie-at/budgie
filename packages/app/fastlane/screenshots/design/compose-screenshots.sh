@@ -171,13 +171,32 @@ trap 'rm -rf "$WORK_ROOT" "$STAGE_ROOT"' EXIT
 
 OUT_DIR=''
 
+# Lossless recompression only - never palette-quantizing tools like pngquant,
+# which would band the two-tier caption gradient. Prefers oxipng (zopfli
+# deflate, same filter/color-type search magick can't do) and falls back to
+# ImageMagick's own max zlib level when oxipng isn't on PATH. Both leave the
+# IHDR width/height/color-type/bit-depth untouched, which is what deliver's
+# slot matching and the apple-screenshot-slots gate key on.
+optimize_png() {
+    local png="$1"
+    if command -v oxipng >/dev/null 2>&1; then
+        oxipng -o 4 --strip safe -q "$png"
+    else
+        magick "$png" -strip -define png:compression-level=9 -define png:compression-filter=5 -define png:exclude-chunk=all "$png"
+    fi
+}
+
 publish_stage() {
-    local final_dir="$1" staged_count
+    local final_dir="$1" staged_count png
     staged_count="$(find "$OUT_DIR" -maxdepth 1 -name '*.png' | wc -l | tr -d ' ')"
     if [[ "$staged_count" == "0" ]]; then
         echo "error: nothing composed for $final_dir, keeping the published set" >&2
         exit 1
     fi
+
+    for png in "$OUT_DIR"/*.png; do
+        optimize_png "$png"
+    done
 
     mkdir -p "$final_dir"
     rm -f "$final_dir"/*.png

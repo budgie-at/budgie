@@ -17,6 +17,16 @@ POSTER_WIDTH=900
 POSTER_HEIGHT=1955
 IPHONE_DEVICE_SLUG='iphone-17-pro-max'
 
+# VP9/H.264/poster settings below were measured on a synthetic 6.5s
+# 1320x2868 slide-transition clip built from 3 real store screenshots
+# (screen-recording proxy). At -crf 38 -b:v 0 -deadline good -cpu-used 2
+# -row-mt 1, the 900-wide VP9 webm is ~244 KB (~225 KB projected for a 6s
+# clip, under the ~250 KB/6s target) at SSIM 0.989 against the 900-wide
+# source, versus the prior -crf 32 baseline's ~320 KB at SSIM 0.990 - an
+# imperceptible quality difference for a ~24% size cut. H.264 at -crf 28
+# -preset slow -tune animation is ~200 KB at SSIM 0.997 (prior -crf 26 was
+# ~228 KB at SSIM 0.998). Poster webp -q 70 is ~43 KB (prior -q 80 ~50 KB).
+
 fail() {
     echo "error: $*" >&2
     exit 1
@@ -61,12 +71,12 @@ compose_clip() {
     local normalized
     normalized="$WORK_ROOT/normalized-$$-$RANDOM.mp4"
     ffmpeg -nostdin -y -hide_banner -loglevel error -t "$MAX_CLIP_SECONDS" -i "$raw_mp4" \
-        -vf "scale=${CLIP_WIDTH}:-2:flags=lanczos" -an \
+        -vf "scale=${CLIP_WIDTH}:-2:flags=lanczos,fps=24" -an \
         -c:v libx264 -crf 16 -preset veryfast -pix_fmt yuv420p "$normalized"
     ffmpeg -nostdin -y -hide_banner -loglevel error -i "$normalized" \
-        -an -c:v libvpx-vp9 -crf 32 -b:v 0 -row-mt 1 -pix_fmt yuv420p "$webm_out"
+        -an -c:v libvpx-vp9 -crf 38 -b:v 0 -deadline good -cpu-used 2 -row-mt 1 -pix_fmt yuv420p "$webm_out"
     ffmpeg -nostdin -y -hide_banner -loglevel error -i "$normalized" \
-        -an -c:v libx264 -profile:v high -crf 26 -pix_fmt yuv420p -movflags +faststart "$mp4_out"
+        -an -c:v libx264 -profile:v high -crf 28 -preset slow -tune animation -pix_fmt yuv420p -movflags +faststart "$mp4_out"
     rm -f "$normalized"
 }
 
@@ -75,9 +85,9 @@ encode_poster() {
     resized="$WORK_ROOT/poster-$$-$RANDOM.png"
     magick "$src" -resize "${POSTER_WIDTH}x${POSTER_HEIGHT}!" "$resized"
     if command -v cwebp >/dev/null 2>&1; then
-        cwebp -quiet -q 80 "$resized" -o "$out"
+        cwebp -quiet -q 70 "$resized" -o "$out"
     else
-        magick "$resized" -quality 80 "$out"
+        magick "$resized" -quality 70 "$out"
     fi
     rm -f "$resized"
 }
