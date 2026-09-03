@@ -9,6 +9,14 @@ command -v magick >/dev/null 2>&1 || {
     echo "skip test-compose-web-media: ImageMagick 7 ('magick') is not installed"
     exit 0
 }
+command -v avifenc >/dev/null 2>&1 || {
+    echo "skip test-compose-web-media: 'avifenc' is not installed - the byte budgets below are tuned for its output, not the ImageMagick fallback"
+    exit 0
+}
+command -v cwebp >/dev/null 2>&1 || {
+    echo "skip test-compose-web-media: 'cwebp' is not installed - the byte budgets below are tuned for its output, not the ImageMagick fallback"
+    exit 0
+}
 
 WORK_DIR=$(mktemp -d)
 trap 'rm -rf "$WORK_DIR"' EXIT
