@@ -1,7 +1,6 @@
+import { cn } from 'cn';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { cn } from '../../utils/cn.util';
 
 import { PAGE_DEFAULT_SAFE_EDGES, pageGetSafeEdgeStyle } from './utils/page-get-safe-edge-style.util';
 

@@ -1,10 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
 import { AiSystemUmbrellaStateEnum } from '../../enum/ai-system-umbrella-state.enum';
 import { useAiSystemUmbrella } from '../../hook/use-ai-system-umbrella.hook';
 

@@ -32,7 +32,7 @@ src/
 │   ├── provider/             # Context providers
 │   ├── service/              # App service
 │   ├── type/                 # Type definitions
-│   └── utils/                # Utility functions (cn, date, etc.)
+│   └── utils/                # Utility functions (date, etc.)
 ├── app/                      # Expo Router screens (30 routes)
 │   ├── _layout.tsx           # Root layout with providers
 │   ├── (tabs)/               # Tab navigation (main screens)
@@ -438,10 +438,10 @@ Available variants: `default`, `destructive`, `warning`, `dark-warning`, `positi
 
 ### Utility Function
 
-Use `cn()` from `@generic/utils/` for combining classes:
+Use `cn()` from the `cn` package for combining classes:
 
 ```typescript
-import { cn } from '../../utils/cn/cn';
+import { cn } from 'cn';
 className={cn('base-classes', classNameFromProps)}
 ```
 

@@ -1,7 +1,7 @@
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
     readonly label: string;

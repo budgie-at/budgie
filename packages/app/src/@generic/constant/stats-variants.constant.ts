@@ -1,5 +1,5 @@
 import { cva } from 'class-variance-authority';
-import { ClassValue } from 'clsx';
+import { ClassValue } from 'cn';
 
 import { ColorPaletteVariant } from '../type/color-palette-variant.type';
 
