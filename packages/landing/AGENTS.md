@@ -214,10 +214,10 @@ const buttonVariants = cva('inline-flex items-center justify-center rounded-md f
 
 ### Utility Function
 
-Use `cn()` for conditional classes:
+Use `cn()` from the `cn` package for conditional classes:
 
 ```typescript
-import { cn } from '../lib/utils';
+import { cn } from 'cn';
 
 className={cn('base-classes', isActive && 'active-classes', className)}
 ```

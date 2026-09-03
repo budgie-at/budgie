@@ -1,6 +1,5 @@
 import { type VariantProps, cva } from 'class-variance-authority';
-
-import { cn } from '../generic/util/cn.util';
+import { cn } from 'cn';
 
 import type { HTMLAttributes, ReactElement } from 'react';
 

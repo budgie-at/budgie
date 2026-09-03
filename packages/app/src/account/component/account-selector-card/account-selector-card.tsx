@@ -1,13 +1,13 @@
 import { AccountAssociationEnum, AccountTypeEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { cn } from '../../../@generic/utils/cn.util';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
