@@ -52,7 +52,7 @@ export default ({ config }) => ({
     version: rootPkg.version,
     orientation: 'portrait',
     userInterfaceStyle: 'automatic',
-    assetBundlePatterns: ['**/*'],
+    assetBundlePatterns: ['assets/icons/*'],
     ios: {
         supportsTablet: true,
         bundleIdentifier: getUniqueIdentifier(false),
@@ -216,79 +216,7 @@ export default ({ config }) => ({
                       }
                   ]
               ]
-            : []),
-        [
-            'expo-font',
-            {
-                fonts: [
-                    './assets/fonts/FixelDisplay-Regular.ttf',
-                    './assets/fonts/FixelDisplay-RegularItalic.ttf',
-                    './assets/fonts/FixelDisplay-Medium.ttf',
-                    './assets/fonts/FixelDisplay-MediumItalic.ttf',
-                    './assets/fonts/FixelDisplay-SemiBold.ttf',
-                    './assets/fonts/FixelDisplay-SemiBoldItalic.ttf',
-                    './assets/fonts/FixelDisplay-Bold.ttf',
-                    './assets/fonts/FixelDisplay-BoldItalic.ttf'
-                ],
-                android: {
-                    fonts: [
-                        {
-                            fontFamily: 'FixelDisplay',
-                            fontDefinitions: [
-                                {
-                                    path: './assets/fonts/FixelDisplay-Regular.ttf',
-                                    weight: 400
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-RegularItalic.ttf',
-                                    weight: 400,
-                                    style: 'italic'
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-Medium.ttf',
-                                    weight: 500
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-MediumItalic.ttf',
-                                    weight: 500,
-                                    style: 'italic'
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-SemiBold.ttf',
-                                    weight: 600
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-SemiBoldItalic.ttf',
-                                    weight: 600,
-                                    style: 'italic'
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-Bold.ttf',
-                                    weight: 700
-                                },
-                                {
-                                    path: './assets/fonts/FixelDisplay-BoldItalic.ttf',
-                                    weight: 700,
-                                    style: 'italic'
-                                }
-                            ]
-                        }
-                    ]
-                },
-                ios: {
-                    fonts: [
-                        './assets/fonts/FixelDisplay-Regular.ttf',
-                        './assets/fonts/FixelDisplay-RegularItalic.ttf',
-                        './assets/fonts/FixelDisplay-Medium.ttf',
-                        './assets/fonts/FixelDisplay-MediumItalic.ttf',
-                        './assets/fonts/FixelDisplay-SemiBold.ttf',
-                        './assets/fonts/FixelDisplay-SemiBoldItalic.ttf',
-                        './assets/fonts/FixelDisplay-Bold.ttf',
-                        './assets/fonts/FixelDisplay-BoldItalic.ttf'
-                    ]
-                }
-            }
-        ]
+            : [])
     ],
     experiments: {
         typedRoutes: true,
