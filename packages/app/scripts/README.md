@@ -60,3 +60,10 @@ the 12-month window; six CTEs with window functions over that data costs ~390 ms
 design-spec target of <50 ms applies to a typical library (~500 recurring merchants → ~1.4k rows),
 where the query runs in <5 ms. PatternCacheService (Task 13) ensures this query fires at most once
 per change event, so wall-clock impact in the real app is negligible.
+
+## Cold-start measurement
+
+- `bash scripts/measure-boot-android.sh [runs=5]` — cold start on a connected Android device/emulator with the preview app (`com.vitaliiyehorov.budgie.preview`) already installed. Per run: force-stop, 2s sleep, `adb shell am start -W`; reports the system `TotalTime` (activity launch → first frame displayed). Prints every run and the median.
+- `bash scripts/measure-ios-boot.sh [bundle=com.vitalyiegorov.budgie.preview] [runs=5]` — cold start on a booted iOS Simulator with the app already installed (build/install out of scope). Per run: terminate, 2s sleep, timed `xcrun simctl launch`; the duration is log-derived — the span from the SpringBoard `Running <bundle> for <pid>` event to the app process' first log event — or, when that marker pair is absent, the `simctl launch` wall clock (process spawn only), labelled as a fallback in the output. Prints every run, the median, and a note if any run fell back.
+
+Both scripts are measurement-only: neither builds nor installs the app.
