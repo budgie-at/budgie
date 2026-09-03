@@ -46,7 +46,9 @@ jobs:
                           filename.startsWith('tests/app-tests/fixtures/screenshots/') ||
                           filename.startsWith('packages/app/fastlane/') ||
                           filename === '.github/landing-media.config.json' ||
-                          (filename.startsWith('tests/app-tests/scripts/') && filename.includes('media'))
+                          filename === '.github/store-screenshots.config.json' ||
+                          (filename.startsWith('tests/app-tests/scripts/') &&
+                            (/^test-|media|compose/.test(filename.slice('tests/app-tests/scripts/'.length))))
                         );
                         mobile = !mobileSuiteExempt;
                         core.info(`Inspected ${files.length} changed files; mobile affected: ${mobile}`);
