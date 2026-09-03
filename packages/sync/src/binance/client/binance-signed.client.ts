@@ -3,7 +3,7 @@ import { Log } from '@budgie/logger';
 import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
-import { subMonths } from 'date-fns';
+import { subMonths } from 'date-fns/subMonths';
 import { z } from 'zod';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';

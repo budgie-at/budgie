@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns/getUnixTime';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 

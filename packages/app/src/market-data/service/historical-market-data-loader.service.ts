@@ -1,6 +1,10 @@
 import { AccountTypeEnum, InstrumentPriceProviderEnum, InstrumentTypeEnum, transactionAsync } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import { addDays, format, isAfter, parseISO, subDays } from 'date-fns';
+import { addDays } from 'date-fns/addDays';
+import { format } from 'date-fns/format';
+import { isAfter } from 'date-fns/isAfter';
+import { parseISO } from 'date-fns/parseISO';
+import { subDays } from 'date-fns/subDays';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
