@@ -1,4 +1,4 @@
-import { SyncAccountTypeEnum } from '@budgie/sync';
+import type { SyncAccountTypeEnum } from '@budgie/sync';
 
 export interface SyncAccountPreviewInterface {
     readonly externalId: string;

@@ -5,7 +5,6 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -13,24 +12,17 @@ import type { MccCategoryLookupInterface, TransactionCreateInputInterface, Trans
 import type { SyncTransactionInterface } from '@budgie/sync';
 
 const FEE_ENTRY_EXTERNAL_ID_SUFFIX = ':fee';
-const SYNC_PROVIDER_EXTERNAL_SOURCE_MAP: Record<SyncProviderEnum, ExternalSourceEnum> = {
-    [SyncProviderEnum.BINANCE]: ExternalSourceEnum.BINANCE,
-    [SyncProviderEnum.ERSTE]: ExternalSourceEnum.ERSTE,
-    [SyncProviderEnum.MONOBANK]: ExternalSourceEnum.MONOBANK,
-    [SyncProviderEnum.PRIVATBANK]: ExternalSourceEnum.PRIVATBANK,
-    [SyncProviderEnum.REVOLUT]: ExternalSourceEnum.REVOLUT,
-    [SyncProviderEnum.WISE]: ExternalSourceEnum.WISE
-};
 
 const getExchangeRate = (mainAmount: number, operationAmount: number): number =>
     isPositiveNumber(operationAmount) && mainAmount !== operationAmount ? mainAmount / operationAmount : 1;
 
-export const mapBankTransactionToCreateInput = (
+export const mapBankTransactionToCreateInput = async (
     bankTransaction: SyncTransactionInterface,
     accountId: number,
     mccCategoryLookup: MccCategoryLookupInterface | null,
-    provider?: ExternalSourceEnum
-): TransactionCreateInputInterface => {
+    provider: ExternalSourceEnum
+): Promise<TransactionCreateInputInterface> => {
+    const { SyncTransactionTypeEnum } = await import('@budgie/sync');
     const isIncome = bankTransaction.type === SyncTransactionTypeEnum.INCOME;
     const amount = Math.abs(bankTransaction.amount);
     const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
@@ -40,7 +32,6 @@ export const mapBankTransactionToCreateInput = (
     const mainAmount = hasFee ? amount - feeAmount : amount;
     const exchangeRate = getExchangeRate(mainAmount, Math.abs(bankTransaction.operationAmount));
     const externalIdAliases = bankTransaction.legacyExternalIds ?? [];
-    const externalSource = provider ?? SYNC_PROVIDER_EXTERNAL_SOURCE_MAP[bankTransaction.provider];
 
     const mainEntry: TransactionEntryCreateInputInterface = {
         accountId,
@@ -76,7 +67,7 @@ export const mapBankTransactionToCreateInput = (
         externalId: bankTransaction.id,
         ...(isNotEmptyArray(externalIdAliases) && { externalIdAliases: [...externalIdAliases] }),
         updatedBy: null,
-        externalSource,
+        externalSource: provider,
         fromAccountId: isIncome ? null : accountId,
         toAccountId: isIncome ? accountId : null,
         tagIds: [],
