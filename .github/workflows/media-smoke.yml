@@ -1,0 +1,56 @@
+name: Media smoke
+
+on:
+    pull_request:
+        paths:
+            - 'tests/app-tests/flows/media/**'
+            - 'tests/app-tests/fixtures/screenshots/**'
+            - 'tests/app-tests/scripts/seed-screenshot-scene.sh'
+            - 'tests/app-tests/scripts/capture-store-screenshots.sh'
+            - '.github/landing-media.config.json'
+            - '.github/workflows/media-smoke.yml'
+    schedule:
+        - cron: '0 3 * * *'
+
+concurrency:
+    group: media-smoke-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+jobs:
+    media-flows:
+        name: Landing media flows
+        permissions:
+            contents: read
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.11.0 # v1.11.0
+        with:
+            build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
+            test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
+            targets: >-
+                [{"name":"e2e","appDir":"packages/app","workspace":"budgieE2E.xcworkspace","scheme":"budgieE2E",
+                "appId":"com.vitalyiegorov.budgie.e2e","prebuildCommand":"npx expo prebuild -p ios --clean --no-install"}]
+            build-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            flows-dir: tests/app-tests/flows/media
+            flows-exclude-pattern: 'pin-app-lock-clip-1.flow.yaml'
+            shard-count: 1
+            maestro-config: tests/app-tests/config.yaml
+            pre-run-flow: tests/app-tests/flows/setup/prime-deep-links.flow.yaml
+            pre-test-command: bash tests/app-tests/scripts/setup-ios-e2e-fixtures.sh "$SIMULATOR_UDID" "$APP_ID"
+            pre-flow-command: SCENE="${FLOW_NAME%.flow.yaml}" LOCALE=en APPEARANCE=dark bash tests/app-tests/scripts/seed-screenshot-scene.sh
+            flow-retries: '0'
+            maestro-version: '2.8.0'
+            simulator-device: iPhone 17 Pro
+            test-timeout-minutes: 25
+            cache-profile: ios-e2e-budgie-v2
+            install-command: pnpm install --frozen-lockfile
+            package-manager: pnpm
+            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
+            rct-use-prebuilt-rncore: true
+            rct-use-rn-dep: true
+            expo-use-precompiled-modules: true
+            repack-on-hit: true

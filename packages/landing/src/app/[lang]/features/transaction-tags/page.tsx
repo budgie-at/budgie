@@ -11,12 +11,14 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
+import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
+import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -79,6 +81,15 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                 }
             />
 
+            <FeaturePageMedia>
+                <AppShot
+                    alt={t(i18n)`Budgie tag selector attaching several tags to a single transaction`}
+                    locale={lang}
+                    scene="transaction-tags-1"
+                    slug="transaction-tags"
+                />
+            </FeaturePageMedia>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>Why categories alone are not enough</Trans>
@@ -133,6 +144,15 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
+
+            <FeaturePageMedia>
+                <AppShot
+                    alt={t(i18n)`Budgie transaction list with tag chips shown on every tagged row`}
+                    locale={lang}
+                    scene="transaction-tags-2"
+                    slug="transaction-tags"
+                />
+            </FeaturePageMedia>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
