@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 env:
     BANK_INTEGRATION_ID: ${BANK_INTEGRATION_ID || '1'}
-    BANK_ACCOUNT_ROW_ID: ${BANK_ACCOUNT_ROW_ID || '1'}
+    BANK_ACCOUNT_ROW_ID: ${BANK_ACCOUNT_ROW_ID || '12'}
 ---
 - runFlow:
       file: ../subflows/navigation/open-deep-link.flow.yaml
