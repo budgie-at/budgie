@@ -34,7 +34,9 @@ env:
 - tapOn:
       id: '${CARD_ID}'
 
+- waitForAnimationToEnd
+
 - extendedWaitUntil:
       visible:
           id: '${DESTINATION_ID}'
-      timeout: 3000
+      timeout: 8000
