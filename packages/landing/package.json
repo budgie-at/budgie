@@ -27,7 +27,7 @@
         "@rnw-community/shared": "^2.2.0",
         "autoprefixer": "^10.5.4",
         "class-variance-authority": "^0.7.1",
-        "clsx": "^2.1.1",
+        "cn": "0.2.4",
         "date-fns": "^4.3.0",
         "framer-motion": "^12.43.0",
         "lucide-react": "^1.35.0",
@@ -38,7 +38,6 @@
         "react-dom": "19.2.3",
         "redis": "^5.11.0",
         "server-only": "^0.0.1",
-        "tailwind-merge": "^3.6.0",
         "tailwindcss-animate": "^1.0.7",
         "zod": "4.5.1"
     },

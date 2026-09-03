@@ -1,8 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { cn } from 'cn';
 import { Pressable, Text } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
     readonly header: string;

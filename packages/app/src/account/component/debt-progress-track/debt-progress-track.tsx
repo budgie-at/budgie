@@ -1,6 +1,5 @@
+import { cn } from 'cn';
 import { View, type ViewStyle } from 'react-native';
-
-import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
     readonly percentage: number;
