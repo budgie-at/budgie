@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.10.1](https://github.com/budgie-at/budgie/compare/v6.10.0...v6.10.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **landing:** anchor the asset exclusion against the full locale proxy path ([8aaf6e0](https://github.com/budgie-at/budgie/commit/8aaf6e0e8cf42e9c9a1962293f4a8492e2db3e9f))
+* **landing:** let all static asset paths bypass the locale redirect ([c9b9df9](https://github.com/budgie-at/budgie/commit/c9b9df9d1a3dca2df86ab55a2dffa6391acce7b3))
+
+
+
+
+
 # [6.10.0](https://github.com/budgie-at/budgie/compare/v6.9.1...v6.10.0) (2026-09-03)
 
 
