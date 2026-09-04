@@ -1,9 +1,13 @@
 import { isDefined } from '@rnw-community/shared';
 
-import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
+import { BASE_URL, OG_LOCALE_MAP, TITLE_TEMPLATE_SUFFIX } from '../../generic/constant/seo.constant';
 import { buildAlternates } from '../../generic/util/build-alternates.util';
+import { fitText } from '../../generic/util/fit-text.util';
 
 import type { Metadata } from 'next';
+
+const MAX_RENDERED_TITLE_CHARS = 60;
+const MAX_DESCRIPTION_CHARS = 160;
 
 interface BuildBlogArticleMetadataInput {
     locale: string;
@@ -25,30 +29,35 @@ export const buildBlogArticleMetadata = ({
     image,
     date,
     author
-}: BuildBlogArticleMetadataInput): Metadata => ({
-    title,
-    description,
-    keywords,
-    authors: [{ name: author }],
-    alternates: buildAlternates(locale, `/blog/${slug}`),
-    openGraph: {
-        title,
-        description,
-        type: 'article',
-        url: `${BASE_URL}/${locale}/blog/${slug}`,
-        locale: OG_LOCALE_MAP[locale] ?? 'en_US',
-        publishedTime: date,
-        authors: [author],
-        ...(isDefined(image) && { images: [{ url: `${BASE_URL}${image}`, width: 1200, height: 630 }] })
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title,
-        description,
-        ...(isDefined(image) && { images: [`${BASE_URL}${image}`] }),
+}: BuildBlogArticleMetadataInput): Metadata => {
+    const fittedTitle = fitText(title, MAX_RENDERED_TITLE_CHARS - TITLE_TEMPLATE_SUFFIX.length);
+    const fittedDescription = fitText(description, MAX_DESCRIPTION_CHARS);
 
-        site: '@budgie_at',
+    return {
+        title: fittedTitle,
+        description: fittedDescription,
+        keywords,
+        authors: [{ name: author }],
+        alternates: buildAlternates(locale, `/blog/${slug}`),
+        openGraph: {
+            title: fittedTitle,
+            description: fittedDescription,
+            type: 'article',
+            url: `${BASE_URL}/${locale}/blog/${slug}`,
+            locale: OG_LOCALE_MAP[locale] ?? 'en_US',
+            publishedTime: date,
+            authors: [author],
+            ...(isDefined(image) && { images: [{ url: `${BASE_URL}${image}`, width: 1200, height: 630 }] })
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: fittedTitle,
+            description: fittedDescription,
+            ...(isDefined(image) && { images: [`${BASE_URL}${image}`] }),
 
-        creator: '@budgie_at'
-    }
-});
+            site: '@budgie_at',
+
+            creator: '@budgie_at'
+        }
+    };
+};
