@@ -14,7 +14,9 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
 
     return createFeatureOgImage(
         t(i18n)`Tags Tab in Statistics — Per-Tag Income, Expense, and Net`,
-        t(i18n)`A dedicated Tags tab in Statistics with sortable per-tag totals and a drillable Untagged bucket that surfaces every transaction missing a label.`,
+        t(
+            i18n
+        )`A dedicated Tags tab in Statistics with sortable per-tag totals and a drillable Untagged bucket that surfaces every transaction missing a label.`,
         [t(i18n)`analytics`, t(i18n)`tags`, t(i18n)`statistics`]
     );
 };

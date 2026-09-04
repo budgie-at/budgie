@@ -3,6 +3,8 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
     poweredByHeader: false,
     reactCompiler: true,
+    cacheComponents: true,
+    partialPrefetching: true,
     images: {
         formats: ['image/avif', 'image/webp']
     },

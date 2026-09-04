@@ -14,7 +14,9 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
 
     return createFeatureOgImage(
         t(i18n)`Smart Transaction Suggestions — Tap and Done`,
-        t(i18n)`Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, amount, account, all pre-filled.`,
+        t(
+            i18n
+        )`Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, amount, account, all pre-filled.`,
         [t(i18n)`ai`, t(i18n)`suggestions`, t(i18n)`expense-tracking`]
     );
 };

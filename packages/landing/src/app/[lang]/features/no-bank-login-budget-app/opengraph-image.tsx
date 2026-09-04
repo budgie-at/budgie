@@ -14,7 +14,9 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
 
     return createFeatureOgImage(
         t(i18n)`Budget App Without Bank Login — Direct API or Statement Import`,
-        t(i18n)`Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to your bank directly via tokens or imports statements you download yourself.`,
+        t(
+            i18n
+        )`Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to your bank directly via tokens or imports statements you download yourself.`,
         [t(i18n)`privacy`, t(i18n)`aggregator`, t(i18n)`bank-sync`]
     );
 };

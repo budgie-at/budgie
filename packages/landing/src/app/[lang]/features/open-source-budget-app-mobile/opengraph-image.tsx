@@ -14,7 +14,9 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
 
     return createFeatureOgImage(
         t(i18n)`Source-Available Budget App for Mobile — Audit, Fork, Trust`,
-        t(i18n)`Closed-source finance apps ask you to trust marketing. Budgie's mobile app has public source, so the privacy and security claims are auditable line by line.`,
+        t(
+            i18n
+        )`Closed-source finance apps ask you to trust marketing. Budgie's mobile app has public source, so the privacy and security claims are auditable line by line.`,
         [t(i18n)`open-source`, t(i18n)`transparency`, t(i18n)`github`]
     );
 };

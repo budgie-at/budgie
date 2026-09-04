@@ -14,7 +14,9 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
 
     return createFeatureOgImage(
         t(i18n)`Automatic Tag Suggestions — Tap, Don't Type`,
-        t(i18n)`After picking a category, the on-device LLM proposes up to three tags as tappable pills. Embedding-first fallback when the LLM is busy.`,
+        t(
+            i18n
+        )`After picking a category, the on-device LLM proposes up to three tags as tappable pills. Embedding-first fallback when the LLM is busy.`,
         [t(i18n)`ai`, t(i18n)`tags`, t(i18n)`suggestions`]
     );
 };
