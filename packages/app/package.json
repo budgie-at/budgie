@@ -35,6 +35,7 @@
         "@expo/fingerprint": "~0.20.11",
         "@expo/ui": "~57.0.14",
         "@formatjs/intl": "^4.1.19",
+        "@formatjs/intl-pluralrules": "^6.3.13",
         "@hookform/resolvers": "^5.9.1",
         "@legendapp/list": "^3.3.9",
         "@lingui/core": "6.5.0",
