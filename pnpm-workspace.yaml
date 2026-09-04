@@ -46,3 +46,4 @@ patchedDependencies:
 
 minimumReleaseAgeExclude:
   - '@liaugust/monobank-sdk@0.7.0'
+  - cn@0.2.4

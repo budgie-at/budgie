@@ -12,6 +12,8 @@ env:
           id: 'TransactionForm.CommentInput'
       timeout: 15000
 
+- waitForAnimationToEnd
+
 - takeScreenshot: poster
 
 - startRecording: clip

@@ -1,9 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { cn } from 'cn';
 import React, { ComponentProps } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 import { PageHeaderSelector } from '../page-header/page-header.selector';

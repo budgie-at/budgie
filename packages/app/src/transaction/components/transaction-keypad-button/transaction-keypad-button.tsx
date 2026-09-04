@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
+import { cn, type ClassValue } from 'cn';
 import { Text } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
@@ -9,10 +10,8 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { cn } from '../../../@generic/utils/cn.util';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import type { ClassValue } from 'clsx';
 
 type KeypadButtonVariant = 'digit' | 'action' | 'confirm' | 'cancel';
 
