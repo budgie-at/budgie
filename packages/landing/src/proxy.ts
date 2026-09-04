@@ -31,9 +31,12 @@ export function proxy(request: NextRequest) {
 
     const locale = getRequestLocale(request.headers);
     request.nextUrl.pathname = `/${locale}${pathname}`;
+    const response = NextResponse.redirect(request.nextUrl, PERMANENT_REDIRECT_STATUS);
+    // oxlint-disable-next-line lingui/no-unlocalized-strings
+    response.headers.set('Vary', 'Accept-Language');
 
     // eslint-disable-next-line consistent-return
-    return NextResponse.redirect(request.nextUrl, PERMANENT_REDIRECT_STATUS);
+    return response;
 }
 
 export const config = {
