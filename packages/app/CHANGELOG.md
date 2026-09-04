@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.10.2](https://github.com/budgie-at/budgie/compare/v6.10.1...v6.10.2) (2026-09-04)
+
+
+### Bug Fixes
+
+* **app:** harden ai lifecycle, i18n gate, ota asset config per review ([b15a6c4](https://github.com/budgie-at/budgie/commit/b15a6c4810ad3f112e0641666194b1b38d3f2e77))
+* **app:** restore guarded intl-pluralrules polyfill for hermes v1 ([bf29856](https://github.com/budgie-at/budgie/commit/bf298564bee04fa4bce022a3f953c50dce71132e))
+
+
+### Performance Improvements
+
+* **app:** defer llama and whisper module eval past first frame ([b13a358](https://github.com/budgie-at/budgie/commit/b13a358f134d6c40fe47c988bd4dbaed75deed7f))
+* **app:** defer lucide icon evaluation via per-icon lazy imports ([2d1c8a0](https://github.com/budgie-at/budgie/commit/2d1c8a0e4deb7b34427fef481353e530ff679bd6))
+* **app:** defer sync services and background task registration off boot path ([9e782bb](https://github.com/budgie-at/budgie/commit/9e782bbc390ee0c651dc30fd794a64917e0a8a7c))
+* **app:** drop intl-pluralrules polyfill dead on hermes v1 ([b614f45](https://github.com/budgie-at/budgie/commit/b614f45a21521a2250f41564a7f19aff386bca43))
+* **app:** drop unreferenced embedded fonts and tighten ota asset pattern ([e18a686](https://github.com/budgie-at/budgie/commit/e18a686dd8adfd76988bd0200987eb1c7489f0ba))
+* **app:** lazy-load lingui catalogs behind activation gate ([7808a09](https://github.com/budgie-at/budgie/commit/7808a093598173bd1467874d2c1241318cfc2b23))
+* convert date-fns barrel imports to deep subpaths ([f8ffe99](https://github.com/budgie-at/budgie/commit/f8ffe99c0b58dfcfb39b887020adc5a2ca88dafc))
+
+
+
+
+
 # [6.10.0](https://github.com/budgie-at/budgie/compare/v6.9.1...v6.10.0) (2026-09-03)
 
 
