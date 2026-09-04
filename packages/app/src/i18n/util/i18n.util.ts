@@ -51,6 +51,10 @@ export const i18nEnsureLanguageActivated = async (language: LanguageEnum): Promi
     }
 };
 
+export const i18nActivateFallback = (): void => {
+    i18n.activate(LanguageEnum.EN);
+};
+
 export const i18nGetOSLocale = (): LanguageEnum => {
     const locales = getLocales();
 

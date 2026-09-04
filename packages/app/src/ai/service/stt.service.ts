@@ -83,8 +83,10 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         try {
             await this.stopActiveStream(false).catch(emptyFn);
             this.context = null;
-            const { releaseAllWhisper } = await this.loadWhisperModule();
-            await releaseAllWhisper();
+            if (isDefined(this.whisperModulePromise)) {
+                const { releaseAllWhisper } = await this.loadWhisperModule();
+                await releaseAllWhisper();
+            }
             this.setSnapshot({
                 status: AiSubsystemStatusEnum.SUSPENDED,
                 downloadProgress: 0,
