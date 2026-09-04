@@ -8,7 +8,6 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'budgie-offline-financial-data',
     date: '2025-02-10',
     author: 'Budgie Team',
-    image: '/images/design-mode/ai-budgeting-app-4x.jpg',
     readingTimeMinutes: 15,
     title: msg`How Budgie Keeps Your Financial Data Off the Cloud`,
     description: msg`A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private.`,

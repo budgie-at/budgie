@@ -4,7 +4,7 @@ export interface ArticleRegistryEntryInterface {
     readonly slug: string;
     readonly date: string;
     readonly author: string;
-    readonly image: string;
+    readonly image?: string;
     readonly readingTimeMinutes: number;
     readonly title: MessageDescriptor;
     readonly description: MessageDescriptor;

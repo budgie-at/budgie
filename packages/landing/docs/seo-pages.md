@@ -144,6 +144,8 @@ Do not rebuild page body content from registries in listing components.
 
 Every `page.tsx` SEO route (feature page, blog article, hub) must ship a sibling `opengraph-image.tsx`. Build it with the shared OG image builders (`createFeatureOgImage` / `createBlogOgImage`) instead of hand-rolling a new OG renderer.
 
+The metadata builders never set `openGraph.images` / `twitter.images` — config-based images override file-based conventions, and the file must own `og:image`. When a route has no file yet, the root layout's static fallback applies.
+
 App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`. Never commit binary icon variants next to them.
 
 ### 12. Metadata char budgets

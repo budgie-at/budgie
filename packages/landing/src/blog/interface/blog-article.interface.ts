@@ -5,7 +5,6 @@ export interface BlogArticleInterface {
     date: string;
     author: string;
     tags: string[];
-    image?: string;
     seo: {
         keywords: string[];
         metaDescription: string;
