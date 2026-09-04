@@ -39,7 +39,6 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
         author: ARTICLE_METADATA.author,
         date: ARTICLE_METADATA.date,
         description: i18n._(ARTICLE_METADATA.seoDescription),
-        image: ARTICLE_METADATA.image,
         keywords: t(i18n)`local-first software, offline-first architecture, CRDTs explained, sync engines, local-first personal finance`,
         locale: lang,
         slug: ARTICLE_METADATA.slug,
@@ -59,14 +58,14 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                 date={ARTICLE_METADATA.date}
                 description={i18n._(ARTICLE_METADATA.description)}
                 homeLabel={t(i18n)`Home`}
-                image={ARTICLE_METADATA.image}
+                image={`/${lang}/blog/${ARTICLE_METADATA.slug}/opengraph-image`}
                 keywords={ARTICLE_METADATA.seoKeywords.join(', ')}
                 locale={lang}
                 slug={ARTICLE_METADATA.slug}
                 title={i18n._(ARTICLE_METADATA.title)}
             />
 
-            <BlogArticleHero image={ARTICLE_METADATA.image} imageAlt={i18n._(ARTICLE_METADATA.title)}>
+            <BlogArticleHero image={`/${lang}/blog/${ARTICLE_METADATA.slug}/opengraph-image`} imageAlt={i18n._(ARTICLE_METADATA.title)}>
                 <Link
                     className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
                     href={`/${lang}/blog`}

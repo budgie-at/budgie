@@ -358,6 +358,22 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
 Add JSON-LD for rich snippets where appropriate.
 
+## Platform & SEO Invariants
+
+**Viewport theme colors.** `export const viewport` in `src/app/[lang]/layout.tsx` keeps dual `themeColor` (light `#ffffff`, dark `#09090b`) plus `viewportFit: 'cover'`, and the manifest `theme_color` must match the light page background. Safari/WebKit paints the rubber-band overscroll and browser chrome from manifest `theme_color` / meta theme-color when the meta tag is missing — never reintroduce a decorative color there.
+
+**Locale redirect matcher.** The matcher in `src/proxy.ts` excludes asset paths with the generic `.*\.\w+$` alternative. Do not add per-extension entries when new asset types appear. Every locale redirect response sets `Vary: Accept-Language` — without it, CDNs can cache a 301 for one locale and serve it to everyone.
+
+**Security header baseline.** Set in `next.config.ts`: `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, HSTS `max-age=63072000; includeSubDomains` (no preload), `Permissions-Policy` denying camera/microphone/geolocation/payment, and `X-Permitted-Cross-Domain-Policies: none`. Preserve all of it when editing config.
+
+**OG image coverage.** Every `page.tsx` SEO route (feature page, blog article, hub) must have a sibling `opengraph-image.tsx` using the shared builders (`createFeatureOgImage` / `createBlogOgImage`). App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`; never commit binary icon variants next to them.
+
+**Metadata char budgets.** Titles fit 60 chars including the ` | Budgie` template suffix; descriptions fit 160 chars. The `fitText` util (`src/generic/util/fit-text.util.ts`) is applied inside the metadata builders, so page copy in sidecars may be longer — the builder clamps. Page-author details: `docs/seo-pages.md`.
+
+**IndexNow is automated.** `.github/workflows/landing-indexnow.yml` submits sitemap URLs to `https://budgie.at/api/indexnow` (Bearer `ADMIN_SECRET`) after a 5-minute deploy wait, with 3 retries. Manual submission is only for emergency re-crawl requests.
+
+**Next.js 16 caching flags.** `cacheComponents` and `partialPrefetching` are enabled top-level in `next.config.ts`, alongside `reactCompiler`. Metadata and route code must stay SSG-safe; if a page truly needs request-time IO, use `await connection()` per the Next 16 cacheComponents rules.
+
 ## SOTA Bar — Next.js 16+ / React 19+
 
 **Server components are async functions.** A page is `export default async function Page(props)`. No HOF page builders, no service classes wrapping single helpers.

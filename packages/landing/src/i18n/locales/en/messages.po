@@ -70,8 +70,8 @@ msgid "#vacation, #shared, #reimbursable — quantified."
 msgstr "#vacation, #shared, #reimbursable — quantified."
 
 #: src/generic/component/footer/footer.tsx
-msgid "© {date} Budgie. All rights reserved."
-msgstr "© {date} Budgie. All rights reserved."
+msgid "© {year} Budgie. All rights reserved."
+msgstr "© {year} Budgie. All rights reserved."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
@@ -2253,6 +2253,7 @@ msgid "A dedicated Tags tab in analytics with per-tag totals and a drillable Unt
 msgstr "A dedicated Tags tab in analytics with per-tag totals and a drillable Untagged bucket that surfaces every gap in your labeling."
 
 #: src/app/[lang]/features/statistics-tags-tab/metadata.ts
+#: src/app/[lang]/features/statistics-tags-tab/opengraph-image.tsx
 msgid "A dedicated Tags tab in Statistics with sortable per-tag totals and a drillable Untagged bucket that surfaces every transaction missing a label."
 msgstr "A dedicated Tags tab in Statistics with sortable per-tag totals and a drillable Untagged bucket that surfaces every transaction missing a label."
 
@@ -2406,6 +2407,7 @@ msgstr "Account type Debt with sub-type \"I owe\" or \"owes me\". Linked to a co
 
 #: src/app/[lang]/features/account-management/opengraph-image.tsx
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx
+#: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx
 msgid "accounts"
 msgstr "accounts"
@@ -2525,6 +2527,7 @@ msgid "After evaluating all these options, we built Budgie because none of them 
 msgstr "After evaluating all these options, we built Budgie because none of them fully satisfied what we wanted as developers."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/metadata.ts
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/opengraph-image.tsx
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "After Mint: A Private, Offline Alternative That Actually Sticks Around"
 msgstr "After Mint: A Private, Offline Alternative That Actually Sticks Around"
@@ -2535,12 +2538,17 @@ msgstr "After Mint’s shutdown, developers need a finance app that respects dat
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/metadata.ts
+#: src/app/[lang]/features/ai-tag-suggestions/opengraph-image.tsx
 msgid "After picking a category, the on-device LLM proposes up to three tags as tappable pills. Embedding-first fallback when the LLM is busy."
 msgstr "After picking a category, the on-device LLM proposes up to three tags as tappable pills. Embedding-first fallback when the LLM is busy."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "After selecting a category, the on-device LLM proposes up to three tags as tappable pill chips — with an embedding fallback that stays instant even when the model is still warming up."
 msgstr "After selecting a category, the on-device LLM proposes up to three tags as tappable pill chips — with an embedding fallback that stays instant even when the model is still warming up."
+
+#: src/app/[lang]/features/no-bank-login-budget-app/opengraph-image.tsx
+msgid "aggregator"
+msgstr "aggregator"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Aggregator (often paid tier)"
@@ -2568,6 +2576,7 @@ msgid "aggregators"
 msgstr "aggregators"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/metadata.ts
+#: src/app/[lang]/features/no-bank-login-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to your bank directly via tokens or imports statements you download yourself."
 msgstr "Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to your bank directly via tokens or imports statements you download yourself."
@@ -2578,6 +2587,9 @@ msgstr "Aggregators sit between you and your bank, mirroring transactions to the
 
 #: src/app/[lang]/features/ai-auto-categorization/opengraph-image.tsx
 #: src/app/[lang]/features/ai-merchant-translation/opengraph-image.tsx
+#: src/app/[lang]/features/ai-tag-suggestions/opengraph-image.tsx
+#: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
+#: src/app/[lang]/features/on-device-ai-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/voice-transaction-entry/opengraph-image.tsx
 msgid "ai"
 msgstr "ai"
@@ -2634,6 +2646,10 @@ msgstr "AI-generated insights and recommendations"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "AI-powered insights"
 msgstr "AI-powered insights"
+
+#: src/app/[lang]/features/budget-planning/opengraph-image.tsx
+msgid "alerts"
+msgstr "alerts"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Alerts that never leave your phone"
@@ -2698,6 +2714,10 @@ msgstr "Allow reasonable time for fixes before public disclosure"
 msgid "Allow you to delete your data completely if you leave"
 msgstr "Allow you to delete your data completely if you leave"
 
+#: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
+msgid "alternative"
+msgstr "alternative"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "alternatives"
@@ -2759,8 +2779,12 @@ msgstr "An open-source project is more than just public code. It’s a community
 msgid "An overall monthly limit, per-category limits, and one cap for everything else"
 msgstr "An overall monthly limit, per-category limits, and one cap for everything else"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
+#: src/app/[lang]/features/bank-fee-tracking/opengraph-image.tsx
+#: src/app/[lang]/features/convert-to-refund/opengraph-image.tsx
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx
+#: src/app/[lang]/features/statistics-tags-tab/opengraph-image.tsx
 #: src/app/[lang]/features/tag-analytics/opengraph-image.tsx
 #: src/app/[lang]/features/transaction-tags/opengraph-image.tsx
 #: src/app/[lang]/features/uncategorized-transactions/opengraph-image.tsx
@@ -3083,6 +3107,7 @@ msgstr "Automatic screenshot blur hides balances in the iOS and Android app swit
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/metadata.ts
+#: src/app/[lang]/features/ai-tag-suggestions/opengraph-image.tsx
 msgid "Automatic Tag Suggestions — Tap, Don't Type"
 msgstr "Automatic Tag Suggestions — Tap, Don't Type"
 
@@ -3105,6 +3130,10 @@ msgstr "Automatically hide sensitive balances when taking screenshots. Share you
 #: src/generic/component/integrations-section/integrations-section-header.tsx
 msgid "Automatically sync transactions from your favorite banks, fintech apps, and crypto exchanges. Or import your data via CSV—we support it all."
 msgstr "Automatically sync transactions from your favorite banks, fintech apps, and crypto exchanges. Or import your data via CSV—we support it all."
+
+#: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
+msgid "automation"
+msgstr "automation"
 
 #: src/app/[lang]/features/data-export/opengraph-image.tsx
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
@@ -3172,6 +3201,7 @@ msgid "Bank Connections"
 msgstr "Bank Connections"
 
 #: src/app/[lang]/features/bank-integration-management/metadata.ts
+#: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Bank Connections — One Credential, Many Accounts"
 msgstr "Bank Connections — One Credential, Many Accounts"
@@ -3189,11 +3219,13 @@ msgid "bank data safety"
 msgstr "bank data safety"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/metadata.ts
+#: src/app/[lang]/blog/offline-first-bank-data-safety/opengraph-image.tsx
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Bank Data Safety: Why Offline-First Is the Only Honest Answer"
 msgstr "Bank Data Safety: Why Offline-First Is the Only Honest Answer"
 
 #: src/app/[lang]/features/bank-fee-tracking/metadata.ts
+#: src/app/[lang]/features/bank-fee-tracking/opengraph-image.tsx
 msgid "Bank Fee Tracking"
 msgstr "Bank Fee Tracking"
 
@@ -3234,6 +3266,7 @@ msgid "Bank statements from Ukrainian, Greek, or Arabic-script banks come back f
 msgstr "Bank statements from Ukrainian, Greek, or Arabic-script banks come back full of unreadable merchant names — useless for search or analytics. Budgie's on-device normalizer runs each merchant string through the LLM, gets a clean Latin name plus search keywords, and stores both."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
+#: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
 #: src/app/[lang]/features/bank-resync-window/opengraph-image.tsx
 #: src/app/[lang]/features/mcc-auto-category/opengraph-image.tsx
 #: src/app/[lang]/features/monobank-sync/opengraph-image.tsx
@@ -3297,6 +3330,10 @@ msgstr "Bank Sync Without Surveillance"
 msgid "Bank synchronization data"
 msgstr "Bank synchronization data"
 
+#: src/app/[lang]/blog/offline-first-bank-data-safety/opengraph-image.tsx
+msgid "bank-data-safety"
+msgstr "bank-data-safety"
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Bank-fee entries are included in category analytics even when attached to transfers"
 msgstr "Bank-fee entries are included in category analytics even when attached to transfers"
@@ -3327,6 +3364,11 @@ msgstr "Bank-level only"
 #: src/generic/component/security-section/security-section-header.tsx
 msgid "Bank-Level Security Without the Bank"
 msgstr "Bank-Level Security Without the Bank"
+
+#: src/app/[lang]/features/bank-fee-tracking/opengraph-image.tsx
+#: src/app/[lang]/features/no-bank-login-budget-app/opengraph-image.tsx
+msgid "bank-sync"
+msgstr "bank-sync"
 
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Bank-sync imports create fee entries instead of fake split expenses"
@@ -3489,6 +3531,10 @@ msgstr "Beyond the 2022 settlement, Plaid has faced ongoing scrutiny:"
 msgid "Beyond the architecture itself, how we develop and maintain Budgie matters for your security."
 msgstr "Beyond the architecture itself, how we develop and maintain Budgie matters for your security."
 
+#: src/app/[lang]/features/binance-sync/opengraph-image.tsx
+msgid "binance"
+msgstr "binance"
+
 #: src/app/[lang]/features/binance-sync/metadata.ts
 msgid "Binance Account Sync — Budgie"
 msgstr "Binance Account Sync — Budgie"
@@ -3498,6 +3544,7 @@ msgid "Binance Sync"
 msgstr "Binance Sync"
 
 #: src/app/[lang]/features/binance-sync/metadata.ts
+#: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Binance Sync — Read-Only Keys, Real Balances"
 msgstr "Binance Sync — Read-Only Keys, Real Balances"
@@ -3640,6 +3687,10 @@ msgstr "Browse All Features"
 msgid "Browse the source code online"
 msgstr "Browse the source code online"
 
+#: src/app/[lang]/features/budget-planning/opengraph-image.tsx
+msgid "budget"
+msgstr "budget"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Budget alerts are off until you turn them on. Once enabled, a background task periodically compares what you have spent against your overall limit, each category limit, and the cap for everything else, and posts a local notification the first time a limit reaches 80% and again when it reaches 100%."
 msgstr "Budget alerts are off until you turn them on. Once enabled, a background task periodically compares what you have spent against your overall limit, each category limit, and the cap for everything else, and posts a local notification the first time a limit reaches 80% and again when it reaches 100%."
@@ -3653,6 +3704,7 @@ msgid "Budget App No Subscription — Free Core, One-Time Pro — Budgie"
 msgstr "Budget App No Subscription — Free Core, One-Time Pro — Budgie"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/metadata.ts
+#: src/app/[lang]/features/no-bank-login-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Budget App Without Bank Login — Direct API or Statement Import"
 msgstr "Budget App Without Bank Login — Direct API or Statement Import"
@@ -3670,6 +3722,7 @@ msgid "Budget Planning"
 msgstr "Budget Planning"
 
 #: src/app/[lang]/features/budget-planning/metadata.ts
+#: src/app/[lang]/features/budget-planning/opengraph-image.tsx
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Budget Planning — Limits That Match Your Payday"
 msgstr "Budget Planning — Limits That Match Your Payday"
@@ -3681,6 +3734,7 @@ msgstr "Budget settings and categories"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/opengraph-image.tsx
 msgid "budgeting"
 msgstr "budgeting"
 
@@ -4705,6 +4759,7 @@ msgid "Capture your entire Budgie database in one encrypted file. Save to iCloud
 msgstr "Capture your entire Budgie database in one encrypted file. Save to iCloud or Drive on your terms; restore on a new device with one tap and your PIN."
 
 #: src/app/[lang]/features/bank-integration-management/metadata.ts
+#: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
 msgid "Cards, jars, and deposits share a single connection, so a token change is a one-time job."
 msgstr "Cards, jars, and deposits share a single connection, so a token change is a one-time job."
 
@@ -4745,6 +4800,7 @@ msgstr "Categories tab: per-category totals, with drill-down to every transactio
 msgid "Categories tell you what kind of expense. Tags tell you for what purpose — \"Italy trip total\", \"shared rent\", \"reimbursable meals\". Switch to the Tags tab in Analytics and every tag becomes its own row with income, expense, and net broken out separately."
 msgstr "Categories tell you what kind of expense. Tags tell you for what purpose — \"Italy trip total\", \"shared rent\", \"reimbursable meals\". Switch to the Tags tab in Analytics and every tag becomes its own row with income, expense, and net broken out separately."
 
+#: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 #: src/app/[lang]/features/mcc-auto-category/opengraph-image.tsx
 msgid "categorization"
 msgstr "categorization"
@@ -4754,6 +4810,7 @@ msgid "Categorization and suggestions work in any language because they are driv
 msgstr "Categorization and suggestions work in any language because they are driven by your own history. Voice entry supports English, Ukrainian, German, French, and Spanish as primary languages, with Whisper-small providing broader coverage for other languages."
 
 #: src/app/[lang]/features/categorization-rules/metadata.ts
+#: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Categorization Rules — Deterministic, Not Guesswork"
 msgstr "Categorization Rules — Deterministic, Not Guesswork"
@@ -4871,6 +4928,7 @@ msgstr "Clean, focused interface"
 msgid "Clean, modern codebase built with React Native and Expo"
 msgstr "Clean, modern codebase built with React Native and Expo"
 
+#: src/app/[lang]/features/convert-to-refund/opengraph-image.tsx
 #: src/app/[lang]/features/uncategorized-transactions/opengraph-image.tsx
 msgid "cleanup"
 msgstr "cleanup"
@@ -4904,6 +4962,7 @@ msgid "Closed-source budget apps"
 msgstr "Closed-source budget apps"
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/metadata.ts
+#: src/app/[lang]/features/open-source-budget-app-mobile/opengraph-image.tsx
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Closed-source finance apps ask you to trust marketing. Budgie's mobile app has public source, so the privacy and security claims are auditable line by line."
 msgstr "Closed-source finance apps ask you to trust marketing. Budgie's mobile app has public source, so the privacy and security claims are auditable line by line."
@@ -4925,6 +4984,7 @@ msgid "Cloud AI apps expose: your income, rent, debts, and every purchase you ma
 msgstr "Cloud AI apps expose: your income, rent, debts, and every purchase you make"
 
 #: src/app/[lang]/features/on-device-ai-budget-app/metadata.ts
+#: src/app/[lang]/features/on-device-ai-budget-app/opengraph-image.tsx
 msgid "Cloud AI assistants for budgeting send every transaction to a remote server for \"intelligence\". Budgie runs the LLM and embeddings on your phone — your data never leaves."
 msgstr "Cloud AI assistants for budgeting send every transaction to a remote server for \"intelligence\". Budgie runs the LLM and embeddings on your phone — your data never leaves."
 
@@ -5026,6 +5086,7 @@ msgid "Cloud-based means your data is on their servers"
 msgstr "Cloud-based means your data is on their servers"
 
 #: src/app/[lang]/features/private-budget-app-alternative/metadata.ts
+#: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure."
 msgstr "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure."
@@ -5155,6 +5216,8 @@ msgid "Compare this to traditional bank sync, where:"
 msgstr "Compare this to traditional bank sync, where:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+#: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
+#: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 msgid "comparison"
 msgstr "comparison"
 
@@ -5336,6 +5399,7 @@ msgid "Convert Expense to Transfer Between Accounts — Budgie"
 msgstr "Convert Expense to Transfer Between Accounts — Budgie"
 
 #: src/app/[lang]/features/convert-to-refund/metadata.ts
+#: src/app/[lang]/features/convert-to-refund/opengraph-image.tsx
 msgid "Convert Income to Refund"
 msgstr "Convert Income to Refund"
 
@@ -5465,6 +5529,10 @@ msgstr "Create, merge, reassign, and reorder categories until they match how you
 msgid "Create, merge, reassign, and reorder until the tree matches how you actually think about money."
 msgstr "Create, merge, reassign, and reorder until the tree matches how you actually think about money."
 
+#: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
+msgid "credentials"
+msgstr "credentials"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Credit Karma is a legitimate company owned by Intuit. However, their business model relies on monetizing your financial data through targeted product recommendations. If privacy is a priority, it’s not the best choice. If you just want free credit monitoring and don’t mind targeted ads, it works fine."
 msgstr "Credit Karma is a legitimate company owned by Intuit. However, their business model relies on monetizing your financial data through targeted product recommendations. If privacy is a priority, it’s not the best choice. If you just want free credit monitoring and don’t mind targeted ads, it works fine."
@@ -5525,6 +5593,7 @@ msgstr "Cross-currency, dual-amount, exact."
 msgid "Cross-currency: $1000 → €925 within 3 days matches when the FX rate is plausible"
 msgstr "Cross-currency: $1000 → €925 within 3 days matches when the FX rate is plausible"
 
+#: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 msgid "crypto"
 msgstr "crypto"
@@ -6789,6 +6858,10 @@ msgstr "Exchange rates are fetched and cached locally when you have connectivity
 msgid "Exchange rates are fetched anonymously"
 msgstr "Exchange rates are fetched anonymously"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
+msgid "exchange-rates"
+msgstr "exchange-rates"
+
 #: src/app/[lang]/features/offline-first-expense-tracker/opengraph-image.tsx
 msgid "expense tracker"
 msgstr "expense tracker"
@@ -6797,6 +6870,7 @@ msgstr "expense tracker"
 msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 msgstr "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 
+#: src/app/[lang]/blog/opengraph-image.tsx
 #: src/app/[lang]/features/expense-tracking/opengraph-image.tsx
 msgid "expense tracking"
 msgstr "expense tracking"
@@ -6813,6 +6887,10 @@ msgstr "Expense Tracking, Reimagined"
 #: src/app/[lang]/features/expense-tracking/metadata.ts
 msgid "Expense Tracking, Reimagined — Budgie"
 msgstr "Expense Tracking, Reimagined — Budgie"
+
+#: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
+msgid "expense-tracking"
+msgstr "expense-tracking"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Expensive at $14/month"
@@ -7020,6 +7098,10 @@ msgstr "Fee pills keep the transaction list readable without hiding the cost"
 msgid "Fee Tracking"
 msgstr "Fee Tracking"
 
+#: src/app/[lang]/features/bank-fee-tracking/opengraph-image.tsx
+msgid "fees"
+msgstr "fees"
+
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Fees work on expenses, income, and transfers — not only card purchases"
 msgstr "Fees work on expenses, income, and transfers — not only card purchases"
@@ -7088,6 +7170,7 @@ msgstr "Financial management is inherently personal. Unlike collaborative docume
 msgid "financial privacy"
 msgstr "financial privacy"
 
+#: src/app/[lang]/blog/opengraph-image.tsx
 #: src/app/[lang]/blog/page.tsx
 msgid "Financial Privacy Blog & Insights"
 msgstr "Financial Privacy Blog & Insights"
@@ -7473,6 +7556,10 @@ msgstr "Gesture detection activates after approximately 300 milliseconds of sust
 msgid "Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer"
 msgstr "Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer"
 
+#: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
+msgid "gestures"
+msgstr "gestures"
+
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx
 msgid "Get Budgie from the app store. No registration required—your privacy starts immediately."
 msgstr "Get Budgie from the app store. No registration required—your privacy starts immediately."
@@ -7488,6 +7575,10 @@ msgstr "Get the privacy of self-hosted finance apps without running a server. Bu
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Getting Started with Local-First Development"
 msgstr "Getting Started with Local-First Development"
+
+#: src/app/[lang]/features/open-source-budget-app-mobile/opengraph-image.tsx
+msgid "github"
+msgstr "github"
 
 #: src/generic/component/footer/footer.tsx
 msgid "GitHub"
@@ -7598,6 +7689,7 @@ msgid "Historical data isn’t critical for your goals"
 msgstr "Historical data isn’t critical for your goals"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/metadata.ts
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Historical Exchange Rates in Budget Analytics"
 msgstr "Historical Exchange Rates in Budget Analytics"
@@ -8109,6 +8201,7 @@ msgid "If the Service requires account creation, you are responsible for maintai
 msgstr "If the Service requires account creation, you are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to:"
 
 #: src/app/[lang]/features/categorization-rules/metadata.ts
+#: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 msgid "If the title contains this and the MCC is that, set the category, add the tag, or make it a transfer."
 msgstr "If the title contains this and the MCC is that, set the category, add the tag, or make it a transfer."
 
@@ -8598,6 +8691,7 @@ msgid "Keep ATM fees, transfer fees, and card commissions visible in analytics w
 msgstr "Keep ATM fees, transfer fees, and card commissions visible in analytics without turning every transfer into an expense."
 
 #: src/app/[lang]/features/bank-fee-tracking/metadata.ts
+#: src/app/[lang]/features/bank-fee-tracking/opengraph-image.tsx
 msgid "Keep ATM fees, transfer fees, and card commissions visible without polluting transfers."
 msgstr "Keep ATM fees, transfer fees, and card commissions visible without polluting transfers."
 
@@ -8733,6 +8827,10 @@ msgstr "Limited mobile experience"
 msgid "Limited or none"
 msgstr "Limited or none"
 
+#: src/app/[lang]/features/budget-planning/opengraph-image.tsx
+msgid "limits"
+msgstr "limits"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Linear"
 msgstr "Linear"
@@ -8750,6 +8848,7 @@ msgid "Lingui-driven message catalogs ship at install. Settings → Language swi
 msgstr "Lingui-driven message catalogs ship at install. Settings → Language switches the runtime locale; the app re-renders without reload. Locale-bound formatting (numbers, dates) follows device defaults."
 
 #: src/app/[lang]/features/convert-to-refund/metadata.ts
+#: src/app/[lang]/features/convert-to-refund/opengraph-image.tsx
 msgid "Link refund income back to the expense it reverses — full or partial, automatic or manual, always reversible."
 msgstr "Link refund income back to the expense it reverses — full or partial, automatic or manual, always reversible."
 
@@ -8838,6 +8937,10 @@ msgstr "local-first software, offline-first architecture, CRDTs explained, sync 
 msgid "Local-first systems choose availability. You can always work, even offline. The system uses CRDTs or similar techniques to ensure that when partitions heal, all changes can be merged without conflicts. The trade-off is eventual consistency: different devices might temporarily see different states, converging over time."
 msgstr "Local-first systems choose availability. You can always work, even offline. The system uses CRDTs or similar techniques to ensure that when partitions heal, all changes can be merged without conflicts. The trade-off is eventual consistency: different devices might temporarily see different states, converging over time."
 
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/opengraph-image.tsx
+msgid "local-llm"
+msgstr "local-llm"
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Locale-aware week start (Monday in EU, Sunday in en-US)"
 msgstr "Locale-aware week start (Monday in EU, Sunday in en-US)"
@@ -8899,6 +9002,7 @@ msgid "Long-press any transaction card for a native context menu — edit, delet
 msgstr "Long-press any transaction card for a native context menu — edit, delete, split, convert to transfer, or convert income to a refund without opening the full edit form."
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
+#: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "Long-press any transaction card to edit, delete, split, convert to transfer, or convert income to a refund — no full edit form required."
 msgstr "Long-press any transaction card to edit, delete, split, convert to transfer, or convert income to a refund — no full edit form required."
 
@@ -8907,6 +9011,7 @@ msgid "Long-press any transaction in Budgie for a native context menu: edit, del
 msgstr "Long-press any transaction in Budgie for a native context menu: edit, delete, split, convert to transfer, or convert income to refund. Two taps where the rest of the market needs five."
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
+#: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "Long-Press Quick Actions on Every Transaction"
 msgstr "Long-Press Quick Actions on Every Transaction"
 
@@ -9274,6 +9379,10 @@ msgstr "Mint shutdown alternative, private Mint replacement, offline budget app 
 msgid "Mint Shutdown: Where Developers Are Moving Their Finances"
 msgstr "Mint Shutdown: Where Developers Are Moving Their Finances"
 
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/opengraph-image.tsx
+msgid "mint-alternatives"
+msgstr "mint-alternatives"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Mint’s export format was a CSV file with these columns:"
 msgstr "Mint’s export format was a CSV file with these columns:"
@@ -9562,6 +9671,7 @@ msgstr "Multi-Account Money Management"
 msgid "Multi-Account Money Management — Budgie"
 msgstr "Multi-Account Money Management — Budgie"
 
+#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx
@@ -9961,6 +10071,10 @@ msgstr "No Way to Verify Security Claims"
 msgid "No white flash on cold launch — native splash respects the OS theme"
 msgstr "No white flash on cold launch — native splash respects the OS theme"
 
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
+msgid "no-server"
+msgstr "no-server"
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "No. Add as many as you need — the home screen organizes them by type and provider so the list stays scannable."
 msgstr "No. Add as many as you need — the home screen organizes them by type and provider so the list stays scannable."
@@ -10208,7 +10322,9 @@ msgstr "Offline use"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/opengraph-image.tsx
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+#: src/app/[lang]/blog/offline-first-bank-data-safety/opengraph-image.tsx
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
@@ -10354,6 +10470,7 @@ msgstr "On your phone"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/opengraph-image.tsx
+#: src/app/[lang]/features/on-device-ai-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/voice-transaction-entry/opengraph-image.tsx
 msgid "on-device"
 msgstr "on-device"
@@ -10392,6 +10509,7 @@ msgid "On-Device AI Auto-Categorization — Budgie"
 msgstr "On-Device AI Auto-Categorization — Budgie"
 
 #: src/app/[lang]/features/on-device-ai-budget-app/metadata.ts
+#: src/app/[lang]/features/on-device-ai-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "On-Device AI Budget App — Local LLM, No Cloud Inference"
 msgstr "On-Device AI Budget App — Local LLM, No Cloud Inference"
@@ -10422,6 +10540,7 @@ msgid "On-Device AI Finance App — Private AI — Budgie"
 msgstr "On-Device AI Finance App — Private AI — Budgie"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/metadata.ts
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/opengraph-image.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "On-Device AI in Your Budget App: How It Works and Why It Matters"
 msgstr "On-Device AI in Your Budget App: How It Works and Why It Matters"
@@ -10449,6 +10568,10 @@ msgstr "On-device LLM extracts amount, merchant, date, and category from natural
 #: src/generic/component/ai-section-features/ai-section-feature-list.tsx
 msgid "On-Device Voice Transcription"
 msgstr "On-Device Voice Transcription"
+
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/opengraph-image.tsx
+msgid "on-device-ai"
+msgstr "on-device-ai"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "One account per asset, so each coin has its own balance, history, and place in net worth"
@@ -10506,6 +10629,7 @@ msgid "One of the most powerful aspects of open-source software is the ability t
 msgstr "One of the most powerful aspects of open-source software is the ability to verify privacy claims against actual implementation. While you may not be able to read code yourself, you can look for:"
 
 #: src/app/[lang]/features/budget-planning/metadata.ts
+#: src/app/[lang]/features/budget-planning/opengraph-image.tsx
 msgid "One overall limit, per-category limits, and a cap for everything else — with a home-screen widget and on-device alerts."
 msgstr "One overall limit, per-category limits, and a cap for everything else — with a home-screen widget and on-device alerts."
 
@@ -10663,6 +10787,7 @@ msgstr "Open Statistics and tap the Tags tab. Each tag becomes a sortable row sh
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
+#: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
 msgid "Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, amount, account, all pre-filled."
 msgstr "Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, amount, account, all pre-filled."
 
@@ -10683,6 +10808,7 @@ msgid "Open Transactions or an account's transaction list. Apply any filters you
 msgstr "Open Transactions or an account's transaction list. Apply any filters you need. If Budgie finds matching transactions without categories, the missing-category pill appears above the list. Tap it to open a focused cleanup page that preserves those filters."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+#: src/app/[lang]/features/open-source-budget-app-mobile/opengraph-image.tsx
 msgid "open-source"
 msgstr "open-source"
 
@@ -11118,6 +11244,10 @@ msgstr "Preview every parsed transaction before write — no surprises"
 msgid "Preview every row before write so you can spot mis-mappings instantly"
 msgstr "Preview every row before write so you can spot mis-mappings instantly"
 
+#: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
+msgid "pricing"
+msgstr "pricing"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Pricing"
 msgstr "Pricing"
@@ -11141,19 +11271,27 @@ msgstr "Primary Tag — Quick-Scan Transaction Labeling — Budgie"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/opengraph-image.tsx
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+#: src/app/[lang]/blog/offline-first-bank-data-safety/opengraph-image.tsx
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/opengraph-image.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/opengraph-image.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/opengraph-image.tsx
 #: src/app/[lang]/features/monobank-sync/opengraph-image.tsx
+#: src/app/[lang]/features/no-bank-login-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/offline-first-expense-tracker/opengraph-image.tsx
+#: src/app/[lang]/features/on-device-ai-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/opengraph-image.tsx
+#: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
 #: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
 msgid "privacy"
 msgstr "privacy"
 
@@ -11309,6 +11447,7 @@ msgid "Private Beta"
 msgstr "Private Beta"
 
 #: src/app/[lang]/features/private-budget-app-alternative/metadata.ts
+#: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Private Budget App — A Cloud-Free Alternative"
 msgstr "Private Budget App — A Cloud-Free Alternative"
@@ -11333,6 +11472,10 @@ msgstr "Private Expense Tracker — On-Device — Budgie"
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "Product manager"
 msgstr "Product manager"
+
+#: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
+msgid "productivity"
+msgstr "productivity"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Professional penetration testers and security consultants"
@@ -11605,6 +11748,7 @@ msgid "Recurring entries show in your home currency on the calendar; tap any ent
 msgstr "Recurring entries show in your home currency on the calendar; tap any entry to see the original amount and currency."
 
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
+#: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own."
 msgstr "Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own."
@@ -11628,6 +11772,10 @@ msgstr "Reduced Infrastructure Costs"
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Refund income should reduce the expense it reverses, not inflate your income. Link it back to the original purchase in one tap."
 msgstr "Refund income should reduce the expense it reverses, not inflate your income. Link it back to the original purchase in one tap."
+
+#: src/app/[lang]/features/convert-to-refund/opengraph-image.tsx
+msgid "refunds"
+msgstr "refunds"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Refunds are subject to the policies of the app store (Apple App Store or Google Play Store)"
@@ -11829,6 +11977,10 @@ msgstr "Roughly 1 GB combined. The download is one-time, opt-in, and only trigge
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Rule-based automation for categorization"
 msgstr "Rule-based automation for categorization"
+
+#: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
+msgid "rules"
+msgstr "rules"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Rules and on-device AI do different jobs"
@@ -12051,11 +12203,16 @@ msgstr "Selector reorders by your usage frequency — the categories you tap mos
 msgid "Selector stays open across multi-selections; commit with a Done pill"
 msgstr "Selector stays open across multi-selections; commit with a Done pill"
 
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
+msgid "self-hosted"
+msgstr "self-hosted"
+
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
 msgid "Self-Hosted Budget App Mobile — No Server Needed — Budgie"
 msgstr "Self-Hosted Budget App Mobile — No Server Needed — Budgie"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Self-Hosted Finance App on Mobile — Without Running a Server"
 msgstr "Self-Hosted Finance App on Mobile — Without Running a Server"
@@ -12077,6 +12234,7 @@ msgid "Self-hosting means you’re responsible for backups and security"
 msgstr "Self-hosting means you’re responsible for backups and security"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops — your phone is the server."
 msgstr "Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops — your phone is the server."
@@ -12271,6 +12429,7 @@ msgstr "Smart Tags"
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
+#: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
 msgid "Smart Transaction Suggestions — Tap and Done"
 msgstr "Smart Transaction Suggestions — Tap and Done"
 
@@ -12352,6 +12511,7 @@ msgid "Source-Available"
 msgstr "Source-Available"
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/metadata.ts
+#: src/app/[lang]/features/open-source-budget-app-mobile/opengraph-image.tsx
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Source-Available Budget App for Mobile — Audit, Fork, Trust"
 msgstr "Source-Available Budget App for Mobile — Audit, Fork, Trust"
@@ -12499,6 +12659,7 @@ msgid "Spot trades and Convert land as transfers between two of your asset accou
 msgstr "Spot trades and Convert land as transfers between two of your asset accounts, not as fake income"
 
 #: src/app/[lang]/features/binance-sync/metadata.ts
+#: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 msgid "Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — signed with a read-only API key."
 msgstr "Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — signed with a read-only API key."
 
@@ -12561,6 +12722,10 @@ msgstr "Statements never leave the device — no OpenAI, no remote inference, ev
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Static, plus your data trains their model"
 msgstr "Static, plus your data trains their model"
+
+#: src/app/[lang]/features/statistics-tags-tab/opengraph-image.tsx
+msgid "statistics"
+msgstr "statistics"
 
 #: src/app/[lang]/blog/page.tsx
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
@@ -12690,7 +12855,12 @@ msgstr "Subscription pricing"
 msgid "Subscription required ($10/month)"
 msgstr "Subscription required ($10/month)"
 
+#: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
+msgid "subscription-free"
+msgstr "subscription-free"
+
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
+#: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Subscription-Free Budget App — Pay Once or Free"
 msgstr "Subscription-Free Budget App — Pay Once or Free"
@@ -12719,6 +12889,11 @@ msgstr "Suggest features and improvements"
 msgid "Suggestion quality"
 msgstr "Suggestion quality"
 
+#: src/app/[lang]/features/ai-tag-suggestions/opengraph-image.tsx
+#: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
+msgid "suggestions"
+msgstr "suggestions"
+
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Suggestions are powered by two complementary on-device systems. The first is a SQL pattern engine that scans your weekly and monthly transaction history to surface the most likely category, amount, and account for a given merchant name. The second is a 768-dimensional embedding lookup that encodes the current title and finds the nearest historical entries in vector space — catching name variations and abbreviations that a keyword match would miss."
 msgstr "Suggestions are powered by two complementary on-device systems. The first is a SQL pattern engine that scans your weekly and monthly transaction history to surface the most likely category, amount, and account for a given merchant name. The second is a 768-dimensional embedding lookup that encodes the current title and finds the nearest historical entries in vector space — catching name variations and abbreviations that a keyword match would miss."
@@ -12742,6 +12917,10 @@ msgstr "Switch to the Tags tab in Statistics for sortable per-tag totals — inc
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Switching to Budgie CSV import eliminates the aggregator entirely. Download your statement from your bank website as you normally would and import it into Budgie. You gain full transaction history without any ongoing credential exposure to a third party."
 msgstr "Switching to Budgie CSV import eliminates the aggregator entirely. Download your statement from your bank website as you normally would and import it into Budgie. You gain full transaction history without any ongoing credential exposure to a third party."
+
+#: src/app/[lang]/features/binance-sync/opengraph-image.tsx
+msgid "sync"
+msgstr "sync"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "sync engines"
@@ -12795,7 +12974,9 @@ msgstr "Tag-based analytics: per-tag totals plus an “Untagged” bucket"
 msgid "Tag-Based Spending Analytics"
 msgstr "Tag-Based Spending Analytics"
 
+#: src/app/[lang]/features/ai-tag-suggestions/opengraph-image.tsx
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
+#: src/app/[lang]/features/statistics-tags-tab/opengraph-image.tsx
 #: src/app/[lang]/features/tag-analytics/opengraph-image.tsx
 #: src/app/[lang]/features/transaction-tags/opengraph-image.tsx
 msgid "tags"
@@ -12818,6 +12999,7 @@ msgid "Tags are the most powerful dimension in Budgie analytics — they let you
 msgstr "Tags are the most powerful dimension in Budgie analytics — they let you slice spending by project, trip, person, or purpose rather than just merchant or category. But their value only materializes when tagging is consistent. Keyboards are slow, spelling varies, and the right tag name is easy to forget. The result is an analytics view full of labeling gaps that make the data less actionable."
 
 #: src/app/[lang]/features/statistics-tags-tab/metadata.ts
+#: src/app/[lang]/features/statistics-tags-tab/opengraph-image.tsx
 msgid "Tags Tab in Statistics — Per-Tag Income, Expense, and Net"
 msgstr "Tags Tab in Statistics — Per-Tag Income, Expense, and Net"
 
@@ -14038,6 +14220,7 @@ msgstr "Transmit viruses, malware, or any malicious code"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/features/open-source-budget-app-mobile/opengraph-image.tsx
 msgid "transparency"
 msgstr "transparency"
 
@@ -14279,6 +14462,10 @@ msgstr "Users notice the difference immediately. Applications feel “snappy“ 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Usually locked to the 1st"
 msgstr "Usually locked to the 1st"
+
+#: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
+msgid "ux"
+msgstr "ux"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Vendor can be compelled"

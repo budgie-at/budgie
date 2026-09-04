@@ -31,13 +31,16 @@ export function proxy(request: NextRequest) {
 
     const locale = getRequestLocale(request.headers);
     request.nextUrl.pathname = `/${locale}${pathname}`;
+    const response = NextResponse.redirect(request.nextUrl, PERMANENT_REDIRECT_STATUS);
+    // oxlint-disable-next-line lingui/no-unlocalized-strings
+    response.headers.set('Vary', 'Accept-Language');
 
     // eslint-disable-next-line consistent-return
-    return NextResponse.redirect(request.nextUrl, PERMANENT_REDIRECT_STATUS);
+    return response;
 }
 
 export const config = {
     matcher: [
-        '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|ota/manifest\\.plist|.well-known|.*\\.\\w+$).*)'
+        '/((?!api|_next/static|_next/image|favicon.ico|icon$|apple-icon$|robots.txt|sitemap.xml|manifest.webmanifest|ota/manifest\\.plist|.well-known|.*\\.\\w+$).*)'
     ]
 };
