@@ -1,9 +1,8 @@
+import { cn } from 'cn';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
-
-import { cn } from '../../utils/cn.util';
 
 interface Props {
     readonly label?: string;

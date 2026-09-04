@@ -5,10 +5,12 @@ import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadc
 import { FeaturePageBreadcrumbsJsonLd } from '../../../../feature/component/feature-page-breadcrumbs-json-ld/feature-page-breadcrumbs-json-ld';
 import { FeaturePageCta } from '../../../../feature/component/feature-page-cta/feature-page-cta';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
+import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
+import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -73,6 +75,15 @@ export default async function BankFeeTrackingFeaturePage(props: PageLangParam) {
                     </Trans>
                 }
             />
+
+            <FeaturePageMedia>
+                <AppShot
+                    alt={t(i18n)`Budgie analytics screen ranking spending by category, bank fees and charges among them`}
+                    locale={lang}
+                    scene="bank-fee-tracking-2"
+                    slug="bank-fee-tracking"
+                />
+            </FeaturePageMedia>
 
             <BankFeeTrackingOverviewSection />
             <BankFeeTrackingBenefitsSection />

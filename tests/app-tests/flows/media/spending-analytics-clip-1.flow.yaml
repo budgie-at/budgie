@@ -17,6 +17,8 @@ env:
           id: '${CATEGORY_STATISTICS_ID}'
       timeout: 10000
 
+- waitForAnimationToEnd
+
 - takeScreenshot: poster
 
 - startRecording: clip

@@ -1,5 +1,6 @@
+import { cn } from 'cn';
+
 import { MEDIA_ASSET_HEIGHT, MEDIA_ASSET_WIDTH } from '../../constant/media-size.constant';
-import { cn } from '../../util/cn.util';
 import { resolveMediaAssetPath } from '../../util/resolve-media-asset-path.util';
 
 import type { MediaAssetInterface } from '../../interface/media-asset.interface';

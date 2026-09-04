@@ -1,3 +1,4 @@
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
@@ -6,7 +7,6 @@ import { isDefined } from '@rnw-community/shared';
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 import { TestIDPartEnum } from '../../enum/test-id-part.enum';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
-import { cn } from '../../utils/cn.util';
 import { testID as testIDProps } from '../../utils/test-id.util';
 import { ChromeKeyboardScrollView } from '../chrome-keyboard-scroll-view/chrome-keyboard-scroll-view';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';

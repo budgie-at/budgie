@@ -3714,6 +3714,22 @@ msgstr "Budgie (Offline-First)"
 msgid "Budgie AI"
 msgstr "Budgie KI"
 
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "Budgie analytics screen ranking spending by category, bank fees and charges among them"
+msgstr "Budgie-Auswertungen mit den nach Kategorie sortierten Ausgaben, darunter auch Bankgebühren und -entgelte"
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Budgie analytics screen with the spent, income and balance totals above the per-category spending bars"
+msgstr "Budgie-Auswertungen mit den Summen für Ausgaben, Einnahmen und Saldo über den Ausgabenbalken der einzelnen Kategorien"
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Budgie analytics tags tab ranking income and spending by tag over the selected period"
+msgstr "Budgie-Auswertungen im Tags-Tab mit den nach Tag sortierten Einnahmen und Ausgaben im gewählten Zeitraum"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Budgie archived accounts screen listing accounts hidden from the main balance view"
+msgstr "Budgie-Bildschirm für archivierte Konten mit allen Konten, die in der Hauptübersicht ausgeblendet sind"
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Budgie asks for an API key and secret, and the setup screen tells you exactly how to create it: keep only \"Enable Reading\" switched on, never trading, never withdrawals. Every request is signed on your device with HMAC-SHA256 over the query string, and the app only ever calls read endpoints — there is no order or withdrawal code in it to call."
 msgstr "Budgie fragt nach einem API-Schlüssel und einem Secret, und der Einrichtungsbildschirm zeigt genau, wie Sie ihn erstellen: Lassen Sie nur „Enable Reading“ aktiviert, niemals Trading, niemals Withdrawals. Jede Anfrage wird auf Ihrem Gerät mit HMAC-SHA256 über den Query-String signiert, und die App ruft ausschließlich Lese-Endpunkte auf — es gibt keinen Order- oder Withdrawal-Code, der aufgerufen werden könnte."
@@ -3730,6 +3746,18 @@ msgstr "Budgie erkennt automatisch Abonnements und wiederkehrende Zahlungsmuster
 msgid "Budgie automatically attempts to match categories and can learn from your corrections to improve future categorization."
 msgstr "Budgie versucht automatisch, Kategorien zuzuordnen und kann aus Ihren Korrekturen lernen, um die zukünftige Kategorisierung zu verbessern."
 
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Budgie Bitcoin wallet screen with the coin balance above its purchase history"
+msgstr "Budgie-Bitcoin-Wallet mit dem Coin-Bestand über dem Kaufverlauf"
+
+#: src/generic/component/usp-pillars-section/usp-pillars-section-image.tsx
+msgid "Budgie budget details screen with the monthly progress bar above the per-category limit cards"
+msgstr "Budgie-Budgetdetails mit dem Monatsfortschrittsbalken über den Limitkarten der einzelnen Kategorien"
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Budgie categorization rules screen listing the merchant rules that assign categories automatically"
+msgstr "Budgie-Bildschirm für Kategorisierungsregeln mit den Händlerregeln, die automatisch Kategorien zuweisen"
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie Commercial Licensing"
 msgstr ""
@@ -3739,13 +3767,33 @@ msgstr ""
 msgid "Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review."
 msgstr "Budgie konsolidiert eindeutige Überweisungen und Händlererstattungen automatisch und lässt mehrdeutige Treffer zur Prüfung offen."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Budgie convert to transfer screen with the destination account picker open"
+msgstr "Budgie-Bildschirm zum Umwandeln in eine Überweisung mit geöffneter Zielkontoauswahl"
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Budgie CSV and PDF import parses statement files on your device. No file content is uploaded to any server during import. The parser runs locally, extracts transactions, and writes them to the local database. Deduplication ensures that importing overlapping date ranges does not create duplicate records."
 msgstr "Budgies CSV- und PDF-Import analysiert Kontoauszugsdateien auf Ihrem Gerät. Beim Import wird kein Dateiinhalt auf einen Server hochgeladen. Der Parser läuft lokal, extrahiert Transaktionen und schreibt sie in die lokale Datenbank. Duplikatserkennung stellt sicher, dass das Importieren überlappender Datumsbereiche keine doppelten Einträge erstellt."
 
 #: src/app/[lang]/features/csv-import/page.tsx
+msgid "Budgie CSV column mapping screen with the saved bank import presets above the field selectors"
+msgstr "Budgie-Bildschirm zur CSV-Spaltenzuordnung mit den gespeicherten Bank-Importvorlagen über den Feldauswahlen"
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Budgie data management settings with the import, export, backup and restore actions"
+msgstr "Budgie-Einstellungen zur Datenverwaltung mit den Aktionen Importieren, Exportieren, Sichern und Wiederherstellen"
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Budgie debt account screen with the amount left to receive above the repayment history"
+msgstr "Budgie-Schuldenkonto mit dem noch ausstehenden Betrag über dem Rückzahlungsverlauf"
+
+#: src/app/[lang]/features/csv-import/page.tsx
 msgid "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
 msgstr "Budgie dedupliziert anhand der Transaktions-ID. Vorhandene Zeilen werden übersprungen; nur neue werden eingefügt. Ein erneuter Import ist sicher."
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Budgie edit expense screen with the category already filled in from the bank MCC code"
+msgstr "Budgie-Bearbeitungsmaske für eine Ausgabe mit der bereits aus dem MCC-Code der Bank übernommenen Kategorie"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie embodies this transparent approach. Every line of code is public. Every decision is documented. Every claim is verifiable. We don’t ask you to trust us because we say so. We ask you to trust us because you can see exactly what we do."
@@ -3786,6 +3834,26 @@ msgstr "Budgie hat einen kostenlosen Tarif, der die grundlegende Ausgabenverfolg
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie has a minimal learning curve with a familiar interface and quick setup. Actual Budget is moderate as envelope budgeting takes adjustment. Firefly III has a steep curve but is powerful and feature-rich. Lunch Money is low with a clean, intuitive interface. YNAB is moderate to steep as the methodology requires commitment. Monarch provides a low curve with a very Mint-like experience."
 msgstr "Budgie ist schnell gelernt, weil es sich wie eine normale Mobile-App anfühlt. Actual Budget braucht mehr Eingewöhnung, wenn Envelope Budgeting neu für dich ist. Firefly III ist am steilsten, aber auch am tiefsten. Lunch Money ist mit einer klaren Weboberfläche leicht zu starten. YNAB verlangt Commitment zur Methode. Monarch fühlt sich vertraut an, wenn du Mint mochtest."
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Budgie home screen with a crypto section showing the Bitcoin holding converted to the base currency"
+msgstr "Budgie-Startbildschirm mit einem Krypto-Bereich, der den Bitcoin-Bestand umgerechnet in die Basiswährung zeigt"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Budgie home screen with the bank, cash and savings accounts and their balances"
+msgstr "Budgie-Startbildschirm mit den Bank-, Bargeld- und Sparkonten und ihren Salden"
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Budgie home screen with the net balance across the bank, cash and savings account sections"
+msgstr "Budgie-Startbildschirm mit dem Nettosaldo über die Bereiche für Bank-, Bargeld- und Sparkonten"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Budgie home screen with the synced card balances above the cash and savings sections"
+msgstr "Budgie-Startbildschirm mit den synchronisierten Kartensalden über den Bargeld- und Sparbereichen"
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Budgie home screen with the total balance header above every account section"
+msgstr "Budgie-Startbildschirm mit der Gesamtsaldo-Kopfzeile über allen Kontobereichen"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Budgie implements offline-first architecture with no compromises:"
@@ -3896,6 +3964,10 @@ msgstr "Budgie ist unser Beitrag zu dieser Zukunft: eine App für persönliche F
 msgid "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
 msgstr "Budgie ist nicht die einzige Open-Source-Option für Finanzmanagement. Ein gesundes Ökosystem von Alternativen existiert, und wir halten es für richtig, diese fair zu erwähnen. Verschiedene Tools passen zu verschiedenen Bedürfnissen, und die beste Wahl hängt von Ihren spezifischen Anforderungen ab."
 
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Budgie language selector offering English, French, Ukrainian, German and Spanish"
+msgstr "Budgie-Sprachauswahl mit Englisch, Französisch, Ukrainisch, Deutsch und Spanisch"
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Budgie leaves the base value empty until a suitable rate exists. That is safer than inventing a value, because analytics can identify unvalued rows instead of silently mixing guessed totals with real totals."
 msgstr ""
@@ -3920,9 +3992,21 @@ msgstr "Budgie gleicht die beiden Seiten automatisch ab. Bevorzugt werden die Fi
 msgid "Budgie merges obvious transfer pairs and merchant refunds so bank imports do not inflate spending or income. Counter-IBAN, amount, date, and title matching run on-device."
 msgstr "Budgie führt eindeutige Überweisungspaare und Händlererstattungen zusammen, damit Bankimporte Ausgaben oder Einnahmen nicht aufblähen. Gegen-IBAN, Betrag, Datum und Titel werden direkt auf dem Gerät abgeglichen."
 
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Budgie missing categories screen listing only the transactions that still need a category"
+msgstr "Budgie-Bildschirm für fehlende Kategorien, der nur die Transaktionen auflistet, die noch eine Kategorie benötigen"
+
 #: src/generic/component/hero-section/hero-section-image.tsx
 msgid "Budgie mobile app interface showing balance overview with multi-currency bank accounts including Monobank cards and various account types"
 msgstr "Budgie Mobile-App-Interface mit Saldoübersicht mit Multi-Währungs-Bankkonten einschließlich Monobank-Karten und verschiedenen Kontotypen"
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Budgie Monobank screen listing the connected Black, White and Jar cards with their balances"
+msgstr "Budgie-Monobank-Bildschirm mit den verbundenen Black-, White- und Jar-Karten und ihren Salden"
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts"
+msgstr "Budgie-Bildschirm für eine neue Ausgabe mit Betragstastatur, Kontoauswahl und den Schnellzugriffen für Datum, Notiz, Tags und Kategorie"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie offers full offline functionality. Actual Budget works offline when self-hosted locally. Firefly III works offline on your local network. All cloud-based options (Lunch Money, YNAB, Monarch, Copilot) require internet connectivity for full functionality."
@@ -3939,6 +4023,10 @@ msgstr ""
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie parses and categorizes the transactions locally"
 msgstr "Budgie analysiert und kategorisiert die Transaktionen lokal"
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Budgie PIN entry screen shown on launch while the app lock is enabled"
+msgstr "Budgie-PIN-Eingabe, die beim Start bei aktivierter App-Sperre erscheint"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Budgie presents a pre-filled transaction form with the extracted amount and suggested category for your review before saving."
@@ -3960,6 +4048,10 @@ msgstr "Budgie schützt Ihre Finanzen mit AES-256-verschlüsseltem SQLite, biome
 msgid "Budgie proves that you don’t have to choose between powerful features and privacy. You can have:"
 msgstr "Budgie baut auf eine einfache Wette: Nützliche Finanztools und Privatsphäre können in derselben App leben. Du bekommst:"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Budgie recurring payments calendar with the monthly total above the upcoming subscriptions"
+msgstr "Budgie-Kalender für wiederkehrende Zahlungen mit der Monatssumme über den anstehenden Abos"
+
 #: src/app/[lang]/features/on-device-ai-budget-app/metadata.ts
 msgid "Budgie runs a 1.7B-parameter LLM and 768-dim embedding model on your phone for categorization, tag suggestions, and voice entry. No cloud AI, ever."
 msgstr "Budgie führt ein LLM mit 1,7 Mrd. Parametern und ein 768-dim Embedding-Modell auf Ihrem Smartphone aus – für Kategorisierung, Tag-Vorschläge und Spracheingabe. Niemals Cloud-KI."
@@ -3975,6 +4067,26 @@ msgstr "Budgie führt Qwen3 1.7B + ein 768-dim Embedding-Modell auf Ihrem Smartp
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "Budgie runs Qwen3 1.7B and a 768-dim embedding model locally. AI auto-categorization, voice transaction entry, and merchant translation without sending data to the cloud."
 msgstr "Budgie führt Qwen3 1.7B und ein 768-dim Embedding-Modell lokal aus. KI-Autokategorisierung, Sprach-Transaktionseingabe und Händlerübersetzung ohne Datenversand in die Cloud."
+
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "Budgie settings screen listing the privacy, security and general options the app ships with"
+msgstr "Budgie-Einstellungen mit den enthaltenen Optionen zu Datenschutz, Sicherheit und Grundeinstellungen"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Budgie settings screen showing the full option set with no paywall and no subscription prompt"
+msgstr "Budgie-Einstellungen mit dem vollständigen Funktionsumfang, ohne Bezahlschranke und ohne Abo-Aufforderung"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Budgie settings screen stating that every piece of financial data stays on the device with no cloud sync or tracking"
+msgstr "Budgie-Einstellungen mit dem Hinweis, dass alle Finanzdaten auf dem Gerät bleiben, ohne Cloud-Synchronisierung und ohne Tracking"
+
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "Budgie settings screen with the app lock, language, currency and default account options"
+msgstr "Budgie-Einstellungen mit den Optionen für App-Sperre, Sprache, Währung und Standardkonto"
+
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle"
+msgstr "Budgie-Einstellungen mit dem Offline- und Datenschutzhinweis über dem Schalter für die automatische MCC-Kategoriezuweisung"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Budgie ships historical daily exchange-rate seeds in the local database migration."
@@ -4028,6 +4140,10 @@ msgstr "Budgie unterstützt Sprach-Transaktionseingabe auf Basis von Whisper.rn 
 msgid "Budgie surfaces missing categories directly inside your filtered transaction list, then opens a focused cleanup view with the same account, date, tag, and type filters."
 msgstr "Budgie zeigt fehlende Kategorien direkt in Ihrer gefilterten Transaktionsliste an und öffnet dann eine fokussierte Bereinigungsansicht mit denselben Konto-, Datums-, Tag- und Typfiltern."
 
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Budgie tag selector attaching several tags to a single transaction"
+msgstr "Budgie-Tag-Auswahl, die mehrere Tags an eine einzelne Transaktion anfügt"
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie takes a different approach to bank data import."
 msgstr "Budgie verfolgt beim Bankdatenimport einen anderen Ansatz."
@@ -4056,9 +4172,45 @@ msgstr "Budgie nimmt Offline-First ernst. So schützen wir Ihre finanzielle Priv
 msgid "Budgie Team"
 msgstr "Budgie-Team"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Budgie term deposit screen with the interest rate, maturity date and expected payout"
+msgstr "Budgie-Bildschirm einer Festgeld-Einlage mit Zinssatz, Fälligkeitsdatum und erwarteter Auszahlung"
+
 #: src/app/[lang]/legal/terms-of-service/metadata.ts
 msgid "Budgie Terms of Service - Read our terms and conditions for using our privacy-first expense tracking app"
 msgstr "Budgie Terms of Service - Bedingungen für die Nutzung von Budgie, der privaten Ausgaben-App"
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Budgie transaction date filter with the month grid above the preset range buttons"
+msgstr "Budgie-Datumsfilter für Transaktionen mit dem Monatsraster über den Schaltflächen für voreingestellte Zeiträume"
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Budgie transaction list grouped by month with the category, tag and account on every row"
+msgstr "Budgie-Transaktionsliste, nach Monaten gruppiert, mit Kategorie, Tag und Konto in jeder Zeile"
+
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "Budgie transaction list rendered straight from the on-device database with no network call"
+msgstr "Budgie-Transaktionsliste, die ohne Netzwerkabruf direkt aus der Datenbank auf dem Gerät dargestellt wird"
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Budgie transaction list where a matched incoming transfer is shown as a single transfer row"
+msgstr "Budgie-Transaktionsliste, in der eine erkannte eingehende Überweisung als einzelne Überweisungszeile erscheint"
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "Budgie transaction list where every row shows its primary tag next to the category"
+msgstr "Budgie-Transaktionsliste, in der jede Zeile ihren wichtigsten Tag neben der Kategorie zeigt"
+
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Budgie transaction list with tag chips shown on every tagged row"
+msgstr "Budgie-Transaktionsliste mit Tag-Chips in jeder getaggten Zeile"
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Budgie transaction list with the missing categories pill above the uncategorised rows"
+msgstr "Budgie-Transaktionsliste mit dem Chip für fehlende Kategorien über den nicht kategorisierten Zeilen"
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Budgie transaction long-press menu with the edit, convert, attach debt and delete actions"
+msgstr "Budgie-Menü nach langem Drücken auf eine Transaktion mit den Aktionen Bearbeiten, Umwandeln, Schuld zuordnen und Löschen"
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports partial refunds, and keeps the audit trail visible from the transaction detail screen."
@@ -11750,6 +11902,14 @@ msgstr "Eine lange Transaktionsliste nach einem Tag zu scannen ist schwierig. Bu
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Scheduled transactions"
 msgstr "Geplante Transaktionen"
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Screen recording of Budgie opening a spending category from the analytics screen and going back"
+msgstr "Bildschirmaufnahme von Budgie beim Öffnen einer Ausgabenkategorie aus den Auswertungen und dem Zurückgehen"
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Screen recording of Budgie opening the Monobank integration from the home account list"
+msgstr "Bildschirmaufnahme von Budgie beim Öffnen der Monobank-Integration aus der Kontoliste des Startbildschirms"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Screen scraping means a third party can do anything you can do in your bank account. They choose not to, but the technical capability exists."

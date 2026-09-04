@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "6.9.0",
+    "version": "6.10.0",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -46,7 +46,7 @@
         "@rnw-community/shared": "^2.2.0",
         "@vnaidin/react-native-cryptocurrency-icons": "0.0.36",
         "class-variance-authority": "^0.7.1",
-        "clsx": "^2.1.1",
+        "cn": "0.2.4",
         "date-fns": "^4.3.0",
         "dotenv": "^17.4.2",
         "drizzle-orm": "^0.45.2",
@@ -103,7 +103,6 @@
         "react-native-web": "^0.21.0",
         "react-native-webview": "13.16.1",
         "react-native-worklets": "^0.10.4",
-        "tailwind-merge": "^3.6.0",
         "whisper.rn": "^0.7.4",
         "zod": "4.5.1"
     },

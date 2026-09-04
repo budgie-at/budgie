@@ -1,6 +1,7 @@
 import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
+import { cn } from 'cn';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
@@ -13,7 +14,6 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { cn } from '../../../@generic/utils/cn.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import { AccountCardBaseSelector } from './account-card-base.selector';

@@ -11,12 +11,15 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
+import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
+import { AppClip } from '../../../../generic/component/app-clip/app-clip';
+import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -79,6 +82,15 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 }
             />
 
+            <FeaturePageMedia>
+                <AppShot
+                    alt={t(i18n)`Budgie analytics screen with the spent, income and balance totals above the per-category spending bars`}
+                    locale={lang}
+                    scene="spending-analytics-1"
+                    slug="spending-analytics"
+                />
+            </FeaturePageMedia>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>Why most expense charts are useless</Trans>
@@ -135,6 +147,15 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
+
+            <FeaturePageMedia>
+                <AppClip
+                    alt={t(i18n)`Screen recording of Budgie opening a spending category from the analytics screen and going back`}
+                    locale={lang}
+                    scene="spending-analytics-clip-1"
+                    slug="spending-analytics"
+                />
+            </FeaturePageMedia>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem

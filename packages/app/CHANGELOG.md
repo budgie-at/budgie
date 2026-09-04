@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.10.0](https://github.com/budgie-at/budgie/compare/v6.9.1...v6.10.0) (2026-09-03)
+
+
+### Features
+
+* **landing:** add captured product media for feature pages ([641e42a](https://github.com/budgie-at/budgie/commit/641e42aa370176c958c97fdbcee7aacf794a3af4))
+
+
+
+
+
+## [6.9.1](https://github.com/budgie-at/budgie/compare/v6.9.0...v6.9.1) (2026-09-03)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
 # [6.9.0](https://github.com/budgie-at/budgie/compare/v6.8.0...v6.9.0) (2026-09-03)
 
 

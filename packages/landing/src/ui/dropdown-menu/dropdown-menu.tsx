@@ -2,11 +2,10 @@
 'use client';
 
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { cn } from 'cn';
 import { Check, ChevronRight, Circle } from 'lucide-react';
 import * as React from 'react';
 import { forwardRef } from 'react';
-
-import { cn } from '../../generic/util/cn.util';
 
 import type { ComponentPropsWithoutRef, ElementRef, HTMLAttributes } from 'react';
 

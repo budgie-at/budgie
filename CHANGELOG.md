@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.10.1](https://github.com/budgie-at/budgie/compare/v6.10.0...v6.10.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **landing:** anchor the asset exclusion against the full locale proxy path ([8aaf6e0](https://github.com/budgie-at/budgie/commit/8aaf6e0e8cf42e9c9a1962293f4a8492e2db3e9f))
+* **landing:** let all static asset paths bypass the locale redirect ([c9b9df9](https://github.com/budgie-at/budgie/commit/c9b9df9d1a3dca2df86ab55a2dffa6391acce7b3))
+
+
+
+
+
+# [6.10.0](https://github.com/budgie-at/budgie/compare/v6.9.1...v6.10.0) (2026-09-03)
+
+
+### Bug Fixes
+
+* keep media-only script edits out of the full mobile suite gate ([69c9fe9](https://github.com/budgie-at/budgie/commit/69c9fe971f31b91fa81ca7fd5998e7c7a2a0257f))
+* **landing:** unignore committed media mp4 siblings ([d80a187](https://github.com/budgie-at/budgie/commit/d80a18789ba5d3553ca269a61df6f02b80f662cc))
+
+
+### Features
+
+* **landing:** add captured product media for feature pages ([641e42a](https://github.com/budgie-at/budgie/commit/641e42aa370176c958c97fdbcee7aacf794a3af4))
+* **landing:** render product media on home and feature pages ([f13050e](https://github.com/budgie-at/budgie/commit/f13050eaf71a7ca3fe5e6555defa6ea2d770a0c3))
+
+
+
+
+
+## [6.9.1](https://github.com/budgie-at/budgie/compare/v6.9.0...v6.9.1) (2026-09-03)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
 # [6.9.0](https://github.com/budgie-at/budgie/compare/v6.8.0...v6.9.0) (2026-09-03)
 
 

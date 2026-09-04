@@ -6,6 +6,7 @@ import { Badge } from '../../../ui/badge';
 import { Motion } from '../motion/motion';
 
 import { UspPillar } from './usp-pillar';
+import { UspPillarsSectionImage } from './usp-pillars-section-image';
 
 const initialMotion = { opacity: 0, y: 20 };
 const animatedMotion = { opacity: 1, y: 0 };
@@ -93,6 +94,8 @@ export const UspPillarsSection = ({ locale }: Props) => (
                     />
                 </Link>
             </div>
+
+            <UspPillarsSectionImage locale={locale} />
         </div>
     </section>
 );

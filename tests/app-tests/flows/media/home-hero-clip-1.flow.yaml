@@ -10,6 +10,8 @@ appId: ${APP_ID}
           id: 'HomePage.TotalBalance'
       timeout: 15000
 
+- waitForAnimationToEnd
+
 - takeScreenshot: poster
 
 - startRecording: clip
