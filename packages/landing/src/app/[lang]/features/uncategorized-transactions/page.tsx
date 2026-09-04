@@ -37,7 +37,6 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
         title: i18n._(FEATURE_METADATA.metaTitle),
         description: i18n._(FEATURE_METADATA.metaDescription),
         keywords: FEATURE_METADATA.seoKeywords.join(', '),
-        image: `/${lang}/features/${FEATURE_METADATA.slug}/opengraph-image`,
         publishedAt: FEATURE_METADATA.publishedAt,
         updatedAt: FEATURE_METADATA.updatedAt
     });

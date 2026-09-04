@@ -22,7 +22,7 @@
         "vitest": "^4.1.11"
     },
     "devDependencies": {
-        "@lingui/core": "6.5.0",
+        "@lingui/core": "6.6.0",
         "@types/better-sqlite3": "^7.6.13",
         "@types/node": "22.20.1",
         "typescript": "npm:@typescript/typescript6@6.0.2"

@@ -18,13 +18,22 @@ jobs:
     name: Submit IndexNow
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: [self-hosted, linux-tiered, linux-small]
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Wait for Vercel deploy to propagate
-        run: sleep 90
+        run: sleep 300
       - name: Submit canonical URLs to IndexNow
         run: |
-          code=$(curl -s -o /tmp/out.json -w '%{http_code}' -X POST https://budgie.at/api/indexnow \
-            -H "Authorization: Bearer ${{ secrets.ADMIN_SECRET }}")
-          echo "HTTP $code"; cat /tmp/out.json
-          test "$code" = "200"
+          for attempt in 1 2 3; do
+            echo "Attempt $attempt"
+            if curl --fail --silent --show-error --max-time 30 -o /tmp/out.json -X POST https://budgie.at/api/indexnow \
+              -H "Authorization: Bearer ${{ secrets.ADMIN_SECRET }}"; then
+              cat /tmp/out.json
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              sleep 60
+            fi
+          done
+          cat /tmp/out.json 2>/dev/null || true
+          exit 1

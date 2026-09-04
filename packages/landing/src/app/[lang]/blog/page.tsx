@@ -6,21 +6,28 @@ import { BlogBrowser } from '../../../blog/component/blog-browser/blog-browser';
 import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../generic/component/motion/motion';
-import { BASE_URL, OG_LOCALE_MAP } from '../../../generic/constant/seo.constant';
+import { BASE_URL, OG_LOCALE_MAP, TITLE_TEMPLATE_SUFFIX } from '../../../generic/constant/seo.constant';
 import { buildAlternates } from '../../../generic/util/build-alternates.util';
+import { fitText } from '../../../generic/util/fit-text.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
 import type { Metadata } from 'next';
+
+const MAX_RENDERED_TITLE_CHARS = 60;
+const MAX_DESCRIPTION_CHARS = 160;
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
     const { lang } = await props.params;
     const i18n = getI18nInstance(lang);
 
-    const title = i18n._(msg`Financial Privacy Blog & Insights`);
-    const description = i18n._(
-        msg`Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking.`
+    const title = fitText(i18n._(msg`Financial Privacy Blog & Insights`), MAX_RENDERED_TITLE_CHARS - TITLE_TEMPLATE_SUFFIX.length);
+    const description = fitText(
+        i18n._(
+            msg`Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking.`
+        ),
+        MAX_DESCRIPTION_CHARS
     );
 
     return {
@@ -34,8 +41,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
             description,
             type: 'website',
             url: `${BASE_URL}/${lang}/blog`,
-            locale: OG_LOCALE_MAP[lang] ?? 'en_US',
-            images: [{ url: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`, width: 1200, height: 630 }]
+            locale: OG_LOCALE_MAP[lang] ?? 'en_US'
         },
         twitter: {
             card: 'summary_large_image',
