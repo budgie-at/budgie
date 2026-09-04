@@ -41,8 +41,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
             description,
             type: 'website',
             url: `${BASE_URL}/${lang}/blog`,
-            locale: OG_LOCALE_MAP[lang] ?? 'en_US',
-            images: [{ url: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`, width: 1200, height: 630 }]
+            locale: OG_LOCALE_MAP[lang] ?? 'en_US'
         },
         twitter: {
             card: 'summary_large_image',
