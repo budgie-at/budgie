@@ -14,6 +14,7 @@ import { SUPPORTED_LOCALES } from '../../i18n/supported-locales.constant.mjs';
 import { ThemeProvider } from '../../providers/theme-provider';
 
 import type { ReactNode } from 'react';
+import type { Viewport } from 'next';
 
 const fixelDisplay = localFont({
     src: [
@@ -69,6 +70,16 @@ interface Props extends PageLangParam {
 export async function generateStaticParams() {
     return SUPPORTED_LOCALES.map(lang => ({ lang }));
 }
+
+export const viewport: Viewport = {
+    themeColor: [
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
+        { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
+        { media: '(prefers-color-scheme: dark)', color: '#09090b' }
+    ],
+    viewportFit: 'cover'
+};
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: Props) {
