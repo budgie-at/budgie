@@ -14,7 +14,9 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
 
     return createFeatureOgImage(
         t(i18n)`Self-Hosted Finance App on Mobile — Without Running a Server`,
-        t(i18n)`Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops — your phone is the server.`,
+        t(
+            i18n
+        )`Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops — your phone is the server.`,
         [t(i18n)`self-hosted`, t(i18n)`privacy`, t(i18n)`no-server`]
     );
 };

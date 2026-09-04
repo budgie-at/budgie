@@ -14,7 +14,9 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
 
     return createFeatureOgImage(
         t(i18n)`Subscription-Free Budget App — Pay Once or Free`,
-        t(i18n)`Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own.`,
+        t(
+            i18n
+        )`Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own.`,
         [t(i18n)`pricing`, t(i18n)`comparison`, t(i18n)`subscription-free`]
     );
 };

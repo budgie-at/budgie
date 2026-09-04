@@ -39,7 +39,7 @@
         "@eslint/compat": "2.1.0",
         "@eslint/js": "10.0.1",
         "@jest/globals": "30.4.1",
-        "@lingui/cli": "6.5.0",
+        "@lingui/cli": "6.6.0",
         "@oxlint/migrate": "1.80.0",
         "@rnw-community/eslint-plugin": "2.0.0",
         "@stylistic/eslint-plugin": "5.10.0",

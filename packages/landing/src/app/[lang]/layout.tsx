@@ -13,8 +13,8 @@ import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
 import { SUPPORTED_LOCALES } from '../../i18n/supported-locales.constant.mjs';
 import { ThemeProvider } from '../../providers/theme-provider';
 
-import type { ReactNode } from 'react';
 import type { Viewport } from 'next';
+import type { ReactNode } from 'react';
 
 const fixelDisplay = localFont({
     src: [

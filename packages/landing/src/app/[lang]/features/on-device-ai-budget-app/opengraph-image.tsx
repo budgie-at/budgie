@@ -14,7 +14,9 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
 
     return createFeatureOgImage(
         t(i18n)`On-Device AI Budget App — Local LLM, No Cloud Inference`,
-        t(i18n)`Cloud AI assistants for budgeting send every transaction to a remote server for "intelligence". Budgie runs the LLM and embeddings on your phone — your data never leaves.`,
+        t(
+            i18n
+        )`Cloud AI assistants for budgeting send every transaction to a remote server for "intelligence". Budgie runs the LLM and embeddings on your phone — your data never leaves.`,
         [t(i18n)`ai`, t(i18n)`on-device`, t(i18n)`privacy`]
     );
 };
