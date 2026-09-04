@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { ClassValue } from 'clsx';
+import { ClassValue, cn } from 'cn';
 import { ComponentProps, ReactNode } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
@@ -11,7 +11,6 @@ import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palett
 import { TestIDPartEnum } from '../../enum/test-id-part.enum';
 import { ButtonSizeType } from '../../type/button-size.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { cn } from '../../utils/cn.util';
 import { testID as testIDProps } from '../../utils/test-id.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';

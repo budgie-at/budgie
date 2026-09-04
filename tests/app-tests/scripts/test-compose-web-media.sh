@@ -9,6 +9,14 @@ command -v magick >/dev/null 2>&1 || {
     echo "skip test-compose-web-media: ImageMagick 7 ('magick') is not installed"
     exit 0
 }
+command -v avifenc >/dev/null 2>&1 || {
+    echo "skip test-compose-web-media: 'avifenc' is not installed - the byte budgets below are tuned for its output, not the ImageMagick fallback"
+    exit 0
+}
+command -v cwebp >/dev/null 2>&1 || {
+    echo "skip test-compose-web-media: 'cwebp' is not installed - the byte budgets below are tuned for its output, not the ImageMagick fallback"
+    exit 0
+}
 
 WORK_DIR=$(mktemp -d)
 trap 'rm -rf "$WORK_DIR"' EXIT
@@ -30,6 +38,17 @@ assert_file() {
         echo "ok   $label"
     else
         echo "FAIL $label: no file at $path"
+        FAILURES=$((FAILURES + 1))
+    fi
+}
+
+assert_under_budget() {
+    local label="$1" path="$2" budget="$3" actual
+    actual="$(stat -c '%s' "$path")"
+    if [ "$actual" -le "$budget" ]; then
+        echo "ok   $label ($actual <= $budget bytes)"
+    else
+        echo "FAIL $label: $actual bytes exceeds the $budget byte budget"
         FAILURES=$((FAILURES + 1))
     fi
 }
@@ -63,6 +82,15 @@ assert_file 'the trailing -<n> is stripped to derive the route slug' "$AVIF_OUT"
 assert_file 'webp ships alongside avif' "$WEBP_OUT"
 assert_equals 'output is the landing contract 900x1955 size' "$(magick identify -format "%wx%h" "$AVIF_OUT")" '900x1955'
 assert_equals 'the webp copy matches the same fixed size' "$(magick identify -format "%wx%h" "$WEBP_OUT")" '900x1955'
+
+# Budgets are ~25% headroom over this fixture's own measured output at the
+# tuned encoder settings (avifenc -s 4 --min 0 --max 63 -a end-usage=q -a
+# cq-level=30 -a tune=ssim; webp -q 75 -m 6), not the real-screenshot
+# averages documented in compose-web-media.sh - the flat gradient fixture
+# compresses far smaller than real UI content, so this only guards against a
+# settings regression on the fixture itself.
+assert_under_budget 'avif stays within the tuned-setting byte budget' "$AVIF_OUT" 2600
+assert_under_budget 'webp stays within the tuned-setting byte budget' "$WEBP_OUT" 9000
 
 if HOME="$FAKE_HOME" bash "$TARGET" --raw-dir "$WORK_DIR/empty-raw" --output "$WORK_DIR/never" >/dev/null 2>&1; then
     echo "FAIL an empty raw tree should exit non-zero"

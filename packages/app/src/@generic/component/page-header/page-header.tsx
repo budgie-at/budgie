@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { ClassValue } from 'clsx';
+import { ClassValue, cn } from 'cn';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
@@ -8,7 +8,6 @@ import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { PageHeaderSize } from '../../type/page-header-size.type';
-import { cn } from '../../utils/cn.util';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { GoBackButton } from '../go-back-button/go-back-button';
 
