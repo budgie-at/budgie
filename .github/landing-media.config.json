@@ -228,13 +228,6 @@
             ]
         },
         {
-            "name": "csv-import-clip-1",
-            "flow": "flows/media/csv-import-clip-1.flow.yaml",
-            "locales": [
-                "en"
-            ]
-        },
-        {
             "name": "pin-app-lock-clip-1",
             "flow": "flows/media/pin-app-lock-clip-1.flow.yaml",
             "locales": [
