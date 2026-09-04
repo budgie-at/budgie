@@ -16,7 +16,8 @@ import {
     UserIconNameEnum
 } from '@budgie/contracts';
 import { getLogger } from '@budgie/logger';
-import { isValid, parse } from 'date-fns';
+import { isValid } from 'date-fns/isValid';
+import { parse } from 'date-fns/parse';
 import Papa, { ParseStepResult } from 'papaparse';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';

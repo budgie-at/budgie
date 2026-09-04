@@ -1,5 +1,7 @@
 import { Log } from '@budgie/logger';
-import { getMonth, getYear, subMonths } from 'date-fns';
+import { getMonth } from 'date-fns/getMonth';
+import { getYear } from 'date-fns/getYear';
+import { subMonths } from 'date-fns/subMonths';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 

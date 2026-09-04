@@ -6,7 +6,7 @@ import {
     MonobankResponseValidationError,
     MonobankValidationError
 } from '@liaugust/monobank-sdk';
-import { getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns/getUnixTime';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 

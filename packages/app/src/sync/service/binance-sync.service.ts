@@ -1,18 +1,9 @@
 import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie/consolidation';
 import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
-import {
-    BINANCE_RATE_LIMIT_MS,
-    BinanceCredentialsSchema,
-    BinanceSignedClient,
-    SyncAccountBalanceStateEnum,
-    SyncError,
-    SyncErrorCodeEnum,
-    SyncTransactionTypeEnum,
-    binanceMapper,
-    decodeBinanceAccountId
-} from '@budgie/sync';
-import { getUnixTime, subDays, subYears } from 'date-fns';
+import { getUnixTime } from 'date-fns/getUnixTime';
+import { subDays } from 'date-fns/subDays';
+import { subYears } from 'date-fns/subYears';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
@@ -29,6 +20,7 @@ import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolida
 import { BinanceResolvableAccountInterface } from '../interface/binance-resolvable-account.interface';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { BinanceTransferInputMapper } from '../mapper/binance-transfer-input.mapper';
+import { getSyncModule, loadSyncModule } from '../util/load-sync-module.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
@@ -43,6 +35,7 @@ import type {
     TransactionCreateInputInterface
 } from '@budgie/contracts';
 import type {
+    BinanceSignedClient,
     BinanceTransferInterface,
     SyncAccountInterface,
     SyncBatchResultInterface,
@@ -59,7 +52,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
     protected readonly providerTitle = 'Binance';
     protected readonly accountType = AccountTypeEnum.CRYPTO_SYNC;
-    protected readonly rateLimitMs = BINANCE_RATE_LIMIT_MS;
+    protected rateLimitMs = 0;
     protected readonly backgroundTaskName = BINANCE_SYNC_TASK;
 
     private transfersSyncedThisRun = false;
@@ -175,7 +168,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
             return changedCount;
         } catch (error) {
-            if (!(error instanceof SyncError && error.code === SyncErrorCodeEnum.DEFERRED)) {
+            if (!(error instanceof getSyncModule().SyncError && error.code === getSyncModule().SyncErrorCodeEnum.DEFERRED)) {
                 throw error;
             }
             this.runDeferred = true;
@@ -185,11 +178,16 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     protected override validateToken(token: string): void {
-        BinanceCredentialsSchema.parse(JSON.parse(token));
+        getSyncModule().BinanceCredentialsSchema.parse(JSON.parse(token));
     }
 
     protected override async beforeSyncRun(): Promise<void> {
+        this.rateLimitMs = (await loadSyncModule()).BINANCE_RATE_LIMIT_MS;
         this.resetRunState();
+    }
+
+    protected override async beforeUpdateAccountToken(): Promise<void> {
+        await loadSyncModule();
     }
 
     protected override async afterSyncRun(): Promise<void> {
@@ -201,23 +199,25 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     protected override isRetryableError(error: unknown): boolean {
+        const { SyncError, SyncErrorCodeEnum } = getSyncModule();
+
         if (!(error instanceof SyncError)) {
             return true;
         }
 
-        return (
-            error.code === SyncErrorCodeEnum.NETWORK_ERROR ||
-            error.code === SyncErrorCodeEnum.RATE_LIMITED ||
-            error.code === SyncErrorCodeEnum.UNKNOWN
-        );
+        return [SyncErrorCodeEnum.NETWORK_ERROR, SyncErrorCodeEnum.RATE_LIMITED, SyncErrorCodeEnum.UNKNOWN].includes(error.code);
     }
 
     protected override isCredentialWideError(error: unknown): boolean {
-        return error instanceof SyncError && error.code === SyncErrorCodeEnum.UNAUTHORIZED;
+        return error instanceof getSyncModule().SyncError && error.code === getSyncModule().SyncErrorCodeEnum.UNAUTHORIZED;
     }
 
     protected override shouldKeepSyncsEnabledAfterError(error: unknown): boolean {
-        return this.providerSourceFailedThisRun && error instanceof SyncError && error.code === SyncErrorCodeEnum.INVALID_RESPONSE;
+        return (
+            this.providerSourceFailedThisRun &&
+            error instanceof getSyncModule().SyncError &&
+            error.code === getSyncModule().SyncErrorCodeEnum.INVALID_RESPONSE
+        );
     }
 
     protected override generateAccountTitle(account: SyncAccountInterface): string {
@@ -229,6 +229,8 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private async fetchExchangeAccounts(token: string): Promise<SyncAccountInterface[]> {
+        const { SyncError } = await loadSyncModule();
+
         if (isDefined(this.runExchangeAccounts) && this.runClientToken === token) {
             return this.runExchangeAccounts;
         }
@@ -244,7 +246,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
     private async setupResolvedAccount(resolvableAccount: BinanceResolvableAccountInterface, token: string): Promise<void> {
         const account = await this.getOrCreateAccount(resolvableAccount.exchangeAccount, resolvableAccount.instrumentId);
-        if (resolvableAccount.exchangeAccount.balanceState === SyncAccountBalanceStateEnum.REPRESENTABLE) {
+        if (resolvableAccount.exchangeAccount.balanceState === getSyncModule().SyncAccountBalanceStateEnum.REPRESENTABLE) {
             await this.anchorAccountBalance(account.id, resolvableAccount.exchangeAccount.balance);
         }
         await this.createOrUpdateSync(account.id, token);
@@ -372,7 +374,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
                 transactionId,
                 transaction.id,
                 account.id,
-                transaction.type === SyncTransactionTypeEnum.INCOME
+                transaction.type === getSyncModule().SyncTransactionTypeEnum.INCOME
             );
             const quote = await binanceSourceQuoteService.resolve(transaction);
             const quoteChanged =
@@ -409,7 +411,8 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         if (result.success) {
             return result.data;
         }
-        throw SyncError.from(result.error);
+
+        throw getSyncModule().SyncError.from(result.error);
     }
 
     private async createSyncedTransfers(transfers: BinanceTransferInterface[], token: string): Promise<number> {
@@ -445,7 +448,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         let anchoredCount = 0;
         for (const account of accounts) {
             const exchangeAccount = isNotEmptyString(account.externalId) ? exchangeAccountByExternalId.get(account.externalId) : null;
-            if (!isDefined(exchangeAccount) || exchangeAccount.balanceState === SyncAccountBalanceStateEnum.REPRESENTABLE) {
+            if (!isDefined(exchangeAccount) || exchangeAccount.balanceState === getSyncModule().SyncAccountBalanceStateEnum.REPRESENTABLE) {
                 // eslint-disable-next-line no-await-in-loop -- Balance anchors persist sequentially per account
                 await this.anchorAccountBalance(account.id, exchangeAccount?.balance ?? 0);
                 anchoredCount += 1;
@@ -486,7 +489,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         }
 
         this.providerSourceFailedThisRun = true;
-        throw SyncError.from(result.error);
+        throw getSyncModule().SyncError.from(result.error);
     }
 
     private async buildSourceCreateInput(
@@ -498,7 +501,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             return null;
         }
 
-        const input = mapBankTransactionToCreateInput(transaction, account.id, null, this.provider);
+        const input = await mapBankTransactionToCreateInput(transaction, account.id, null, this.provider);
 
         return binanceSourceQuoteService.applyToInput(input, transaction);
     }
@@ -525,7 +528,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
     private getRunSignedClient(token: string): BinanceSignedClient {
         if (!isDefined(this.runSignedClient) || this.runClientToken !== token) {
-            this.runSignedClient = new BinanceSignedClient(token, this.runDeadlineAtMs);
+            this.runSignedClient = new (getSyncModule().BinanceSignedClient)(token, this.runDeadlineAtMs);
             this.runClientToken = token;
             this.runExchangeAccounts = null;
         }
@@ -552,11 +555,11 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
             let resolvedExchangeAccount = exchangeAccounts.get(codecAccountId);
             if (!isDefined(resolvedExchangeAccount)) {
-                const decoded = decodeBinanceAccountId(codecAccountId);
+                const decoded = getSyncModule().decodeBinanceAccountId(codecAccountId);
                 if (!isDefined(decoded)) {
                     return null;
                 }
-                resolvedExchangeAccount = binanceMapper.mapBalanceToAccount(decoded.asset, decoded.wallet, 0);
+                resolvedExchangeAccount = getSyncModule().binanceMapper.mapBalanceToAccount(decoded.asset, decoded.wallet, 0);
             }
 
             const instrument = this.resolveInstrument(resolvedExchangeAccount, await instrumentsPromise);

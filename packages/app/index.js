@@ -1,13 +1,2 @@
-import '@formatjs/intl-pluralrules/polyfill.js';
-import '@formatjs/intl-pluralrules/locale-data/de.js';
-import '@formatjs/intl-pluralrules/locale-data/en.js';
-import '@formatjs/intl-pluralrules/locale-data/es.js';
-import '@formatjs/intl-pluralrules/locale-data/fr.js';
-import '@formatjs/intl-pluralrules/locale-data/uk.js';
-import './src/account/task/account-balance-incremental.task';
-import './src/budget/task/budget-alert-monitor.task';
-import './src/exchange-rate/task/exchange-rate-sync.task';
-import './src/sync/task/monobank-sync.task';
-import './src/sync/task/binance-sync.task';
-import './src/sync/task/transfer-consolidation.task';
+import './src/@generic/util/intl-polyfill';
 import 'expo-router/entry';

@@ -2,7 +2,6 @@
 import { consolidationScopeService } from '@budgie/consolidation';
 import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
-import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService, SyncAccountTypeEnum } from '@budgie/sync';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
@@ -16,6 +15,7 @@ import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
+import { getSyncModule, loadSyncModule } from '../util/load-sync-module.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
@@ -30,7 +30,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
     // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
     protected readonly providerTitle = 'Monobank';
     protected readonly accountType = AccountTypeEnum.BANK_SYNC;
-    protected readonly rateLimitMs = MONOBANK_RATE_LIMIT_MS;
+    protected rateLimitMs = 0;
     protected readonly backgroundTaskName = MONOBANK_SYNC_TASK;
 
     private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
@@ -41,6 +41,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         (error, token) => `throw tokenLen=${token.length} error=${getErrorMessage(error)}`
     )
     async fetchAccountsPreview(token: string): Promise<SyncAccountPreviewInterface[]> {
+        await loadSyncModule();
         const bankAccounts = await this.fetchBankAccountsAndJars(token);
         if (!isNotEmptyArray(bankAccounts)) {
             return [];
@@ -57,6 +58,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             `throw tokenLen=${token.length} externalIdCount=${externalIds.length} error=${getErrorMessage(error)}`
     )
     override async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
+        await loadSyncModule();
         const bankAccounts = await this.fetchBankAccountsAndJars(token);
 
         for (const externalId of externalIds) {
@@ -112,6 +114,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     protected override async beforeSyncRun(): Promise<void> {
+        this.rateLimitMs = (await loadSyncModule()).MONOBANK_RATE_LIMIT_MS;
         await this.loadMccCategories();
     }
 
@@ -214,11 +217,13 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             return [];
         }
 
-        const inputs = newTransactions.map(bankTransaction => {
-            const lookup = this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null;
+        const inputs = await Promise.all(
+            newTransactions.map(async bankTransaction => {
+                const lookup = this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null;
 
-            return mapBankTransactionToCreateInput(bankTransaction, accountId, lookup, this.provider);
-        });
+                return mapBankTransactionToCreateInput(bankTransaction, accountId, lookup, this.provider);
+            })
+        );
         const prepared = await ruleEngineService.prepareCreateInputsForRules(inputs);
         const createdTransactions = await transactionService.bulkCreate(prepared.transactionInputs);
         const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
@@ -247,7 +252,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         }
 
         for (const bankTransaction of existingTransactions) {
-            await transactionService.update(mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider));
+            await transactionService.update(await mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider));
             await microPause();
         }
 
@@ -267,6 +272,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         externalAccountId: string,
         token: string
     ): Promise<SyncBatchResultInterface> {
+        const { MonobankSyncService } = await loadSyncModule();
         const service = new MonobankSyncService(token);
         const isForward = sync.mode === SyncModeEnum.FORWARD;
 
@@ -281,6 +287,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         (error, token) => `throw tokenLen=${token.length} error=${getErrorMessage(error)}`
     )
     private async fetchBankAccountsAndJars(token: string): Promise<SyncAccountInterface[]> {
+        const { MonobankSyncService } = await loadSyncModule();
         const service = new MonobankSyncService(token);
         const accounts = await service.syncAccounts();
         const jars = await service.syncJars();
@@ -289,6 +296,8 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
     }
 
     protected override generateAccountTitle(account: SyncAccountInterface): string {
+        const { SyncAccountTypeEnum } = getSyncModule();
+
         if (account.type === SyncAccountTypeEnum.JAR && isNotEmptyString(account.title)) {
             return `${this.providerTitle} «${account.title}»`;
         }
@@ -305,6 +314,8 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
     }
 
     protected override accountIcon(account: SyncAccountInterface): UserIconNameEnum {
+        const { SyncAccountTypeEnum } = getSyncModule();
+
         return account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : super.accountIcon(account);
     }
 }

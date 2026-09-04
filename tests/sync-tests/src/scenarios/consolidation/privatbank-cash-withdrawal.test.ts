@@ -28,7 +28,7 @@ const importPrivatbankCashWithdrawal = async (privatbankAccountId: number): Prom
         balanceCurrency: 'UAH'
     });
     const mccCategoryLookup = categoryMap.get(PRIVATBANK_CASH_WITHDRAWAL_CATEGORY) ?? null;
-    const input = mapBankTransactionToCreateInput(transaction, privatbankAccountId, mccCategoryLookup);
+    const input = await mapBankTransactionToCreateInput(transaction, privatbankAccountId, mccCategoryLookup, ExternalSourceEnum.PRIVATBANK);
     const [imported] = await transactionImportService.bulkUpsertImported([input], new Map());
 
     return imported.id;
