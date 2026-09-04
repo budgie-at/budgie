@@ -58,7 +58,12 @@ const importPrivatbankTransfer = async (privatbankAccountId: number, privatbankC
         balanceCurrency: 'UAH'
     });
     const privatbankMccCategoryId = categoryMap.get(PRIVATBANK_TRANSFER_CATEGORY) ?? null;
-    const privatbankInput = mapBankTransactionToCreateInput(privatbankTransaction, privatbankAccountId, privatbankMccCategoryId);
+    const privatbankInput = await mapBankTransactionToCreateInput(
+        privatbankTransaction,
+        privatbankAccountId,
+        privatbankMccCategoryId,
+        ExternalSourceEnum.PRIVATBANK
+    );
 
     return transactionImportService.bulkUpsertImported([privatbankInput], new Map());
 };
