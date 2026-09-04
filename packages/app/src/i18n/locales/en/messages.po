@@ -1804,6 +1804,10 @@ msgstr "How to configure"
 msgid "How to export"
 msgstr "How to export"
 
+#: src/@generic/component/icon/icon.tsx
+msgid "Icon importer not found: {icon}"
+msgstr "Icon importer not found: {icon}"
+
 #: src/app/(main)/create-account/index.tsx
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"

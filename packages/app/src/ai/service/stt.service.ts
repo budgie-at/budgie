@@ -1,5 +1,4 @@
 import { Log } from '@budgie/logger';
-import { TranscribeOptions, WhisperContext, initWhisper, releaseAllWhisper } from 'whisper.rn';
 
 import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -14,11 +13,14 @@ import { SttSnapshotInterface } from '../interface/stt-snapshot.interface';
 import { BaseSubsystemService } from './base-subsystem.service';
 import { whisperModelService } from './whisper-model.service';
 
+import type { TranscribeOptions, WhisperContext } from 'whisper.rn';
+
 class SttService extends BaseSubsystemService<SttSnapshotInterface> implements AiSubsystemServiceInterface<SttSnapshotInterface> {
     private context: WhisperContext | null = null;
     private audioStream: ManualAudioStreamAdapter | null = null;
     private stopStreamPromise: Promise<string> | null = null;
     private streamLanguage: string | null = null;
+    private whisperModulePromise: Promise<typeof import('whisper.rn')> | null = null;
 
     constructor() {
         super(AiSubsystemNameEnum.STT, {
@@ -66,6 +68,7 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
                 this.setSnapshot({ downloadProgress });
             });
             this.setSnapshot({ status: AiSubsystemStatusEnum.INITIALIZING });
+            const { initWhisper } = await this.loadWhisperModule();
             this.context = await initWhisper({ filePath: modelPath });
             this.setSnapshot({ status: AiSubsystemStatusEnum.READY, errorMessage: null });
         } catch (error: unknown) {
@@ -80,7 +83,10 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         try {
             await this.stopActiveStream(false).catch(emptyFn);
             this.context = null;
-            await releaseAllWhisper();
+            if (isDefined(this.whisperModulePromise)) {
+                const { releaseAllWhisper } = await this.loadWhisperModule();
+                await releaseAllWhisper();
+            }
             this.setSnapshot({
                 status: AiSubsystemStatusEnum.SUSPENDED,
                 downloadProgress: 0,
@@ -101,6 +107,14 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
 
     protected override async beforeRetry(): Promise<void> {
         await this.streamCancel().catch(emptyFn);
+    }
+
+    private loadWhisperModule(): Promise<typeof import('whisper.rn')> {
+        if (!isDefined(this.whisperModulePromise)) {
+            this.whisperModulePromise = import('whisper.rn');
+        }
+
+        return this.whisperModulePromise;
     }
 
     private stopActiveStream(commitFinalText: boolean): Promise<string> {

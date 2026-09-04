@@ -1,4 +1,4 @@
-import { subDays } from 'date-fns';
+import { subDays } from 'date-fns/subDays';
 import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInArray, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';

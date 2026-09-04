@@ -1,7 +1,7 @@
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 

@@ -1,4 +1,5 @@
-import { isToday, isYesterday } from 'date-fns';
+import { isToday } from 'date-fns/isToday';
+import { isYesterday } from 'date-fns/isYesterday';
 
 interface FormatOperatedAtParams {
     readonly date: Date;

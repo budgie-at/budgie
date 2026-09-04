@@ -7,13 +7,14 @@ import { CountryFlag } from '../../../@generic/component/country-flag/country-fl
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { LANGUAGES } from '../../../i18n/constant/languages.constant';
 import { useLanguageSelectorModal } from '../../../i18n/context/language-selector-modal.context';
+import { i18nEnsureLanguageActivated } from '../../../i18n/util/i18n.util';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsCard } from '../settings-card/settings-card';
 
 export const LanguageSelector = () => {
     const language = useSetting('language');
-    const { i18n, t } = useLingui();
+    const { t } = useLingui();
     const [openLanguageSelector] = useLanguageSelectorModal();
 
     const selectedLanguage = LANGUAGES.find(({ code }) => code === language);
@@ -22,7 +23,7 @@ export const LanguageSelector = () => {
         const result = await openLanguageSelector({ selectedLanguage: language });
         if (isDefined(result)) {
             await updateSettingsMutation({ language: result });
-            i18n.activate(result);
+            await i18nEnsureLanguageActivated(result);
         }
     };
 

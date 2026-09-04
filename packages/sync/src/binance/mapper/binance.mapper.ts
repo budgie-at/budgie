@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- File owns the single BinanceMapper class; package rule mandates one mapper class per provider, splitting would fragment it -- approved by human */
 import { Log } from '@budgie/logger';
-import { getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns/getUnixTime';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
