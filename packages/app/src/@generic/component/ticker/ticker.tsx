@@ -1,3 +1,4 @@
+import { cn } from 'cn';
 import { styled } from 'nativewind';
 import { ReactNode, useState } from 'react';
 import { LayoutChangeEvent, View, type ViewProps } from 'react-native';
@@ -5,7 +6,6 @@ import { LayoutChangeEvent, View, type ViewProps } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { calculateOptimalTextSize } from '../../utils/calculate-optimal-text-size.util';
-import { cn } from '../../utils/cn.util';
 
 import { StaticChar } from './static-char';
 import { Tick } from './tick';

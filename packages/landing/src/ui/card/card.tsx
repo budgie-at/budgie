@@ -1,6 +1,5 @@
+import { cn } from 'cn';
 import { forwardRef } from 'react';
-
-import { cn } from '../../generic/util/cn.util';
 
 import type { HTMLAttributes } from 'react';
 

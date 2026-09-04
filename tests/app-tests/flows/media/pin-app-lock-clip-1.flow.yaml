@@ -5,6 +5,8 @@ appId: ${APP_ID}
           id: 'PinPage.Container'
       timeout: 30000
 
+- waitForAnimationToEnd
+
 - takeScreenshot: poster
 
 - startRecording: clip

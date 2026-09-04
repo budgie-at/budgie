@@ -1,12 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { ClassValue } from 'clsx';
+import { ClassValue, cn } from 'cn';
 import { Text, View } from 'react-native';
 
 import { IconSelectorModalSelector } from '../../../app/icon-selector-modal.selector';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { cn } from '../../utils/cn.util';
 import { typedObjectEntries } from '../../utils/typed-object-entries.util';
 import { typedObjectFromEntries } from '../../utils/typed-object-from-entries.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
