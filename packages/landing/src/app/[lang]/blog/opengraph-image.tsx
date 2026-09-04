@@ -12,11 +12,7 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createBlogOgImage(t(i18n)`Financial Privacy Blog & Insights`, [
-        t(i18n)`privacy`,
-        t(i18n)`expense tracking`,
-        t(i18n)`budgeting`
-    ]);
+    return createBlogOgImage(t(i18n)`Financial Privacy Blog & Insights`, [t(i18n)`privacy`, t(i18n)`expense tracking`, t(i18n)`budgeting`]);
 };
 
 export default OgImage;

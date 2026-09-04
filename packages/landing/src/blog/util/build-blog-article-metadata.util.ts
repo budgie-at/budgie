@@ -1,4 +1,3 @@
-
 import { BASE_URL, OG_LOCALE_MAP, TITLE_TEMPLATE_SUFFIX } from '../../generic/constant/seo.constant';
 import { buildAlternates } from '../../generic/util/build-alternates.util';
 import { fitText } from '../../generic/util/fit-text.util';
