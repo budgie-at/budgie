@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.11.0](https://github.com/budgie-at/budgie/compare/v6.10.2...v6.11.0) (2026-09-04)
+
+
+### Bug Fixes
+
+* **landing:** align browser chrome and overscroll tint with the page theme ([ad40ff0](https://github.com/budgie-at/budgie/commit/ad40ff0393df71110f6086e04cfa9d077e9e5c24))
+* **landing:** blog hub og image comes from its generated convention ([8db4216](https://github.com/budgie-at/budgie/commit/8db4216dacccf8a0aa987cc62eea5cae989ecf2d))
+* **landing:** exempt next generated icon routes from the locale redirect ([ae53e5b](https://github.com/budgie-at/budgie/commit/ae53e5bbfc21ffef7e8ca2905364bb359c90037d))
+* **landing:** let file conventions own og images on every route ([574c685](https://github.com/budgie-at/budgie/commit/574c6852202c66e64131350c9552f809af1c5e1a))
+* **landing:** vary locale redirects by accept-language and harden security headers ([e5c9929](https://github.com/budgie-at/budgie/commit/e5c992921d0093e0d2c5448dbe05d4b84c7b7958))
+
+
+### Features
+
+* **landing:** clamp seo metadata titles and descriptions to search budgets ([6335315](https://github.com/budgie-at/budgie/commit/6335315a33500078eca45d0fcbdd890c7d82a45b))
+* **landing:** generate open graph images and app icons for every seo route ([c4e2163](https://github.com/budgie-at/budgie/commit/c4e216355be670c97030f47440d413f22d2419e2))
+* **landing:** share pages with their own generated og image ([82ae33d](https://github.com/budgie-at/budgie/commit/82ae33d883ebdacb9c69d5874c10b126a80aefec))
+
+
+
+
+
 ## [6.10.1](https://github.com/budgie-at/budgie/compare/v6.10.0...v6.10.1) (2026-09-04)
 
 
