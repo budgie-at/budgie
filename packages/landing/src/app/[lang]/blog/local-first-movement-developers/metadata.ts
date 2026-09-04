@@ -8,7 +8,6 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'local-first-movement-developers',
     date: '2025-01-29',
     author: 'Budgie Team',
-    image: '/images/design-mode/ai-budgeting-app-4x.jpg',
     readingTimeMinutes: 18,
     title: msg`The Local-First Movement: Why Developers Are Building Offline Apps`,
     description: msg`Explore the local-first movement, CRDTs, sync engines, and why developers are choosing offline-first architecture for privacy-sensitive applications.`,

@@ -1,4 +1,3 @@
-import { isDefined } from '@rnw-community/shared';
 
 import { BASE_URL, OG_LOCALE_MAP, TITLE_TEMPLATE_SUFFIX } from '../../generic/constant/seo.constant';
 import { buildAlternates } from '../../generic/util/build-alternates.util';
@@ -15,7 +14,6 @@ interface BuildBlogArticleMetadataInput {
     title: string;
     description: string;
     keywords: string;
-    image?: string;
     date: string;
     author: string;
 }
@@ -26,7 +24,6 @@ export const buildBlogArticleMetadata = ({
     title,
     description,
     keywords,
-    image,
     date,
     author
 }: BuildBlogArticleMetadataInput): Metadata => {
@@ -46,15 +43,12 @@ export const buildBlogArticleMetadata = ({
             url: `${BASE_URL}/${locale}/blog/${slug}`,
             locale: OG_LOCALE_MAP[locale] ?? 'en_US',
             publishedTime: date,
-            authors: [author],
-            ...(isDefined(image) && { images: [{ url: `${BASE_URL}${image}`, width: 1200, height: 630 }] })
+            authors: [author]
         },
         twitter: {
             card: 'summary_large_image',
             title: fittedTitle,
             description: fittedDescription,
-            ...(isDefined(image) && { images: [`${BASE_URL}${image}`] }),
-
             site: '@budgie_at',
 
             creator: '@budgie_at'

@@ -8,7 +8,6 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'mint-alternatives-developers',
     date: '2025-02-05',
     author: 'Budgie Team',
-    image: '/images/design-mode/ai-budgeting-app-4x.jpg',
     readingTimeMinutes: 18,
     title: msg`Mint Shutdown: Where Developers Are Moving Their Finances`,
     description: msg`A comprehensive developer's guide to Mint alternatives after the shutdown. Detailed comparison of Budgie, Actual Budget, Firefly III, Lunch Money, YNAB, and more.`,

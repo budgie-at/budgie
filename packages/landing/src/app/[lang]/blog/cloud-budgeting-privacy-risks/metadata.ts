@@ -8,7 +8,6 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'cloud-budgeting-privacy-risks',
     date: '2025-01-27',
     author: 'Budgie Team',
-    image: '/images/design-mode/ai-budgeting-app-4x.jpg',
     readingTimeMinutes: 16,
     title: msg`Why Cloud Budgeting Apps Are a Privacy Nightmare`,
     description: msg`A detailed technical analysis of how cloud-based budgeting apps collect, share, and expose your financial data through Plaid integrations, data breaches, and third-party aggregation.`,
