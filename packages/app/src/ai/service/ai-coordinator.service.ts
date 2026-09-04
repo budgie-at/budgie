@@ -27,6 +27,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     private releaseTimer: ReturnType<typeof setTimeout> | null = null;
     private appStateSubscription: { remove: () => void } | null = null;
     private scheduledStartCancel: (() => void) | null = null;
+    private startGeneration = 0;
 
     constructor() {
         super({ isAvailable: isAiEnabled(), isSuspended: false });
@@ -106,6 +107,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private handleReleaseTimer(): void {
         this.releaseTimer = null;
+        this.cancelScheduledStart();
         this.setSnapshot({ isSuspended: true });
         void this.stopSubsystems().catch(emptyFn);
     }
@@ -126,7 +128,15 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     }
 
     private async startSubsystems(): Promise<void> {
+        this.startGeneration += 1;
+        const generation = this.startGeneration;
+
         await this.bootModels();
+
+        if (generation !== this.startGeneration || !this.started || this.snapshot.isSuspended) {
+            return;
+        }
+
         translationDrainerService.start();
         embeddingDrainerService.start();
         aiUmbrellaStatusService.start();

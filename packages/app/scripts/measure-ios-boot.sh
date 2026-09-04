@@ -13,8 +13,13 @@ fi
 DEVICE=$(xcrun simctl list devices booted | sed -n 's/^[[:space:]]*\(.*\) ([A-F0-9-]\{36\}).*/\1/p' | head -1)
 echo "device=$DEVICE udid=$UDID bundle=$BUNDLE runs=$RUNS"
 
+computeMedian() {
+    printf '%s\n' "$@" | sort -n | awk '{a[NR]=$1} END {print (NR % 2) ? a[int(NR/2)+1] : (a[NR/2]+a[NR/2+1])/2}'
+}
+
 TIMES=()
-SOURCES=()
+LOG_TIMES=()
+WALL_TIMES=()
 for i in $(seq 1 "$RUNS"); do
     xcrun simctl terminate "$UDID" "$BUNDLE" 2>/dev/null || true
     sleep 2
@@ -69,17 +74,23 @@ else:
     TIME="${RESULT%%|*}"
     SOURCE="${RESULT##*|}"
     TIMES+=("$TIME")
-    SOURCES+=("$SOURCE")
     if [ "$SOURCE" = "log" ]; then
+        LOG_TIMES+=("$TIME")
         echo "run $i: ${TIME}ms (log: SpringBoard launch -> first app-process event)"
     else
+        WALL_TIMES+=("$TIME")
         echo "run $i: ${TIME}ms (wall-clock fallback: simctl launch process spawn, no log marker found)"
     fi
 done
 
 echo ""
 echo "runs: ${TIMES[*]}"
-echo "median: $(printf '%s\n' "${TIMES[@]}" | sort -n | awk '{a[NR]=$1} END {print (NR % 2) ? a[int(NR/2)+1] : (a[NR/2]+a[NR/2+1])/2}')ms"
-if printf '%s\n' "${SOURCES[@]}" | grep -q '^wall$'; then
+LOG_COUNT=${#LOG_TIMES[@]}
+WALL_COUNT=${#WALL_TIMES[@]}
+if [ "$LOG_COUNT" -gt 0 ]; then
+    echo "log-derived median: $(computeMedian "${LOG_TIMES[@]}")ms (runs: $LOG_COUNT)"
+fi
+if [ "$WALL_COUNT" -gt 0 ]; then
+    echo "wall-clock fallback median: $(computeMedian "${WALL_TIMES[@]}")ms (runs: $WALL_COUNT)"
     echo "note: some runs used the wall-clock fallback (simctl launch process spawn only)"
 fi
