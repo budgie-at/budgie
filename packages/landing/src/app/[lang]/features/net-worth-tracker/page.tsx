@@ -12,14 +12,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -82,14 +81,84 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Watch the number add up</Trans>}>
+                    <Trans>Four screens, from the total on your home screen to the account sitting behind it.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>One number, everything in it</Trans>}>
+                    <Trans>Bank, cash, crypto and debt are already inside the figure at the top of Home.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
                     alt={t(i18n)`Budgie home screen with the total balance header above every account section`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="net-worth-tracker-1"
                     slug="net-worth-tracker"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.145}>
+                        <Trans>Total in your base currency</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.208}>
+                        <Trans>Fiat and crypto, split out</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Every asset class in one list</Trans>}>
+                    <Trans>Bank, cash and crypto share a single scroll, and each group carries its own subtotal.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie home screen scrolled through the bank, cash and crypto groups with a subtotal on each one`}
+                    index={1}
+                    locale={lang}
+                    scene="crypto-investment-tracking-1"
+                    slug="crypto-investment-tracking"
+                >
+                    <FeatureStory.Callout y={0.415}>
+                        <Trans>A subtotal per group</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.735}>
+                        <Trans>Crypto, grouped like a bank</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Native units, converted value</Trans>}>
+                    <Trans>A wallet keeps its own units. The total on Home counts what those units are worth today.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Bitcoin wallet screen in Budgie showing the balance in BTC above two purchase transactions`}
+                    index={2}
+                    locale={lang}
+                    scene="crypto-investment-tracking-2"
+                    slug="crypto-investment-tracking"
+                >
+                    <FeatureStory.Callout y={0.198}>
+                        <Trans>Balance stays in its own unit</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.398}>
+                        <Trans>Every buy keeps its rate</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={3} title={<Trans>Debt counts, both directions</Trans>}>
+                    <Trans>What you lent adds to your net worth. What you owe subtracts from it, down to the last repayment.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie debt account screen showing the amount left to receive above two repayment transfers`}
+                    index={3}
+                    locale={lang}
+                    scene="debt-tracking-2"
+                    slug="debt-tracking"
+                >
+                    <FeatureStory.Callout y={0.19}>
+                        <Trans>Left to receive, live</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.615}>
+                        <Trans>Each repayment is a transfer</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -130,19 +199,6 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                         <Trans>Tap any aggregated number to drill into the per-leg native amounts</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Each account carries a type (Bank, Cash, Crypto, Stocks, Debt), a currency, and an &ldquo;include in net
-                        worth&rdquo; toggle. The home screen sums every included account&apos;s balance, converts to your base currency, and
-                        shows the trendline alongside.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
