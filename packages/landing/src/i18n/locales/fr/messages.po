@@ -2330,6 +2330,10 @@ msgstr "Une licence à source disponible qui vous permet de lire, bifurquer et m
 msgid "A spending report should compare what money meant on the day you spent it. Budgie values each imported and newly saved transaction in your base currency using the exchange rate from the transaction date."
 msgstr ""
 
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "A subtotal per group"
+msgstr "Un sous-total par groupe"
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
 msgid "A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
 msgstr "Un aperçu technique de l’architecture offline-first de Budgie : SQLite, chiffrement AES-256 et synchronisation d’appareil à appareil pour garder vos données financières sur votre appareil."
@@ -2341,6 +2345,10 @@ msgstr "Un aperçu technique de l’architecture offline-first de Budgie : SQLit
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction so you can label them retroactively."
 msgstr "Une étiquette virtuelle qui regroupe chaque transaction sans étiquette. En appuyant dessus, chaque transaction concernée est listée pour que vous puissiez les libeller rétroactivement."
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "A wallet keeps its own units. The total on Home counts what those units are worth today."
+msgstr "Un portefeuille garde ses propres unités. Le total sur l'accueil compte ce qu'elles valent aujourd'hui."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "A year of daily prices for BTC, ETH, BNB, SOL, XRP, TRX, USDT, USDC, and HYPE ships with the app, in euro and dollar"
@@ -3169,6 +3177,10 @@ msgstr "Les sauvegardes vont dans votre stockage cloud personnel — iCloud Driv
 msgid "Backups to your own iCloud Drive, Google Drive, or Dropbox"
 msgstr "Sauvegardes vers votre propre iCloud Drive, Google Drive ou Dropbox"
 
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Balance stays in its own unit"
+msgstr "Le solde reste dans son unité"
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Balances taken from Binance itself, covering Spot, Funding, and Flexible and Locked Simple Earn"
 msgstr "Des soldes récupérés directement chez Binance, couvrant Spot, Funding, ainsi que Simple Earn Flexible et Locked"
@@ -3391,9 +3403,17 @@ msgstr "Les transactions synchronisées comportent des codes de catégorie march
 msgid "Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically. Per-MCC overrides for personal preferences."
 msgstr "Les transactions synchronisées comportent des codes de catégorie marchand ; Budgie les associe automatiquement à votre arborescence. Remplacements par MCC pour les préférences personnelles."
 
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Bank, cash and crypto share a single scroll, and each group carries its own subtotal."
+msgstr "Banque, espèces et crypto partagent une seule liste, et chaque groupe porte son sous-total."
+
 #: src/app/[lang]/features/account-management/opengraph-image.tsx
 msgid "Bank, cash, crypto — all on one screen."
 msgstr "Banque, espèces, crypto — tout sur un seul écran."
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Bank, cash, crypto and debt are already inside the figure at the top of Home."
+msgstr "Banque, espèces, crypto et dettes sont déjà dans le chiffre en haut de l'accueil."
 
 #: src/generic/component/features-section/features-section-grid.tsx
 msgid "Bank, cash, crypto, stocks, debt — one number on your home screen with daily FX conversion."
@@ -3609,6 +3629,10 @@ msgstr "Du Bitcoin aux ETFs dans un seul tableau de bord, aux côtés de vos com
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 msgid "Bitcoin to ETFs in one dashboard."
 msgstr "Du Bitcoin aux ETFs dans un seul tableau de bord."
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Bitcoin wallet screen in Budgie showing the balance in BTC above two purchase transactions"
+msgstr "Écran du portefeuille Bitcoin dans Budgie avec le solde en BTC au-dessus de deux achats"
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx
 msgid "Blazing Fast"
@@ -3837,6 +3861,10 @@ msgstr "Écran de correspondance des colonnes CSV de Budgie avec les préréglag
 msgid "Budgie data management settings with the import, export, backup and restore actions"
 msgstr "Paramètres de gestion des données de Budgie avec les actions d’import, d’export, de sauvegarde et de restauration"
 
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Budgie debt account screen showing the amount left to receive above two repayment transfers"
+msgstr "Écran de compte de dette Budgie avec le montant restant dû au-dessus de deux remboursements"
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie debt account screen with the amount left to receive above the repayment history"
 msgstr "Écran du compte de dette de Budgie avec le montant restant à recevoir au-dessus de l’historique de remboursement"
@@ -3888,6 +3916,10 @@ msgstr "Budgie dispose d'un niveau gratuit qui couvre le suivi de base des dépe
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie has a minimal learning curve with a familiar interface and quick setup. Actual Budget is moderate as envelope budgeting takes adjustment. Firefly III has a steep curve but is powerful and feature-rich. Lunch Money is low with a clean, intuitive interface. YNAB is moderate to steep as the methodology requires commitment. Monarch provides a low curve with a very Mint-like experience."
 msgstr "Budgie se prend vite en main parce qu’elle ressemble à une app mobile normale. Actual Budget demande plus d’adaptation si le budget par enveloppes est nouveau pour vous. Firefly III est le plus exigeant, mais aussi le plus profond. Lunch Money démarre facilement avec une interface web claire. YNAB demande de s’engager dans sa méthode. Monarch semble familier si vous aimiez Mint."
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Budgie home screen scrolled through the bank, cash and crypto groups with a subtotal on each one"
+msgstr "Écran d'accueil Budgie faisant défiler les groupes banque, espèces et crypto avec un sous-total sur chacun"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie home screen with a crypto section showing the Bitcoin holding converted to the base currency"
@@ -5633,6 +5665,10 @@ msgstr "Suivi de portefeuille crypto"
 msgid "Crypto tracking"
 msgstr "Suivi crypto"
 
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Crypto, grouped like a bank"
+msgstr "La crypto, groupée comme une banque"
+
 #: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Crypto, Stocks, ETFs — All In One Place"
@@ -5959,6 +5995,10 @@ msgstr "Suivi des dettes et prêts — Budgie"
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Debt and loan information"
 msgstr ""
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Debt counts, both directions"
+msgstr "Les dettes comptent dans les deux sens"
 
 #: src/generic/component/features-section/features-section-grid.tsx
 msgid "Debt Payoff"
@@ -6454,10 +6494,6 @@ msgstr "Échéance 15 fév. 2025"
 msgid "Due Jan 30, 2025"
 msgstr "Échéance 30 janv. 2025"
 
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Each account carries a type (Bank, Cash, Crypto, Stocks, Debt), a currency, and an “include in net worth” toggle. The home screen sums every included account's balance, converts to your base currency, and shows the trendline alongside."
-msgstr "Chaque compte porte un type (Banque, Espèces, Crypto, Actions, Dette), une devise et une bascule « inclure dans le patrimoine net ». L'écran d'accueil additionne le solde de chaque compte inclus, le convertit dans votre devise principale et affiche la courbe de tendance."
-
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Each account has a fixed currency. The exchange-rate service stores daily snapshots; the home/analytics screens read the latest rate when summing. Cross-currency transfers preserve both legs and the rate at the time."
 msgstr "Chaque compte a une devise fixe. Le service de taux de change stocke des instantanés quotidiens ; les écrans d'accueil et d'analytiques lisent le dernier taux lors de l'addition. Les virements multi-devises préservent les deux legs et le taux au moment de l'opération."
@@ -6489,6 +6525,10 @@ msgstr "Le titre de chaque nouvelle transaction passe par une file de traduction
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Each of these groups brings different perspectives, skills, and motivations. A privacy researcher might notice data collection patterns that a security auditor overlooks. A developer integrating with the project might discover edge cases the original authors missed. This diversity of attention is a strength no single security team can replicate."
 msgstr "Chacun de ces groupes apporte des perspectives, des compétences et des motivations différentes. Un chercheur en protection de la vie privée pourrait remarquer des schémas de collecte de données qu'un auditeur de sécurité ne verrait pas. Un développeur intégrant le projet pourrait découvrir des cas limites que les auteurs originaux ont manqués. Cette diversité d'attention est une force qu'aucune équipe de sécurité isolée ne peut reproduire."
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Each repayment is a transfer"
+msgstr "Chaque remboursement est un transfert"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Each source type is committed to your local database as soon as it completes, so the work already done is kept and the next run picks up from there instead of starting over."
@@ -6737,9 +6777,17 @@ msgstr "Meme si vous supprimez votre compte dans une application de budget, l'ag
 msgid "Every AI correction improves future suggestions via on-device learning"
 msgstr "Chaque correction IA améliore les futures suggestions via l'apprentissage sur l'appareil"
 
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Every asset class in one list"
+msgstr "Chaque classe d'actifs dans une liste"
+
 #: src/app/[lang]/features/page.tsx
 msgid "Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and encrypted backups — all 100% offline-first."
 msgstr "Toutes les fonctionnalités de Budgie en un seul endroit : synchronisation bancaire, IA sur l'appareil, saisie vocale, multi-devises, détection des récurrences et sauvegardes chiffrées — tout 100% hors ligne d'abord."
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Every buy keeps its rate"
+msgstr "Chaque achat garde son cours"
 
 #: src/app/[lang]/features/page.tsx
 msgid "Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI categorization — in one place."
@@ -7107,6 +7155,10 @@ msgstr ""
 msgid "Fees work on expenses, income, and transfers — not only card purchases"
 msgstr "Les frais fonctionnent sur les dépenses, les revenus et les transferts — pas seulement sur les achats par carte"
 
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Fiat and crypto, split out"
+msgstr "Fiat et crypto, séparés"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Figma"
 msgstr "Figma"
@@ -7421,6 +7473,10 @@ msgstr "Forkable"
 #: src/generic/component/open-source-section/open-source-visual-stats.tsx
 msgid "Forks"
 msgstr "Forks"
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Four screens, from the total on your home screen to the account sitting behind it."
+msgstr "Quatre écrans, du total sur votre accueil au compte qui se cache derrière."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Free core, optional one-time unlock"
@@ -8055,7 +8111,6 @@ msgstr "En quoi est-ce différent de la page Analyses d'étiquettes ?"
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/multi-language-app/page.tsx
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 #: src/app/[lang]/features/primary-tag/page.tsx
@@ -8774,6 +8829,10 @@ msgstr "Découvrez pourquoi le code source public compte pour les logiciels fina
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Learning curve for the methodology"
 msgstr "Courbe d'apprentissage pour la méthodologie"
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Left to receive, live"
+msgstr "Reste à recevoir, en direct"
 
 #: src/app/[lang]/legal/layout.tsx
 #: src/generic/component/footer/footer.tsx
@@ -9770,6 +9829,10 @@ msgstr "Interface native de la plateforme — menu contextuel système sur iPad,
 msgid "Native PrivatBank24 XLSX schema parser — no manual column mapping"
 msgstr "Parseur natif du schéma XLSX PrivatBank24 — sans mapping de colonnes manuel"
 
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Native units, converted value"
+msgstr "Unités natives, valeur convertie"
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Need bank synchronization? Budgie uses a zero-knowledge architecture:"
 msgstr "Besoin de synchronisation bancaire ? Budgie utilise une architecture à connaissance zéro :"
@@ -10612,6 +10675,10 @@ msgstr "Une seule devise, souvent codée en dur"
 #: src/app/[lang]/security/page.tsx
 msgid "One encrypted file. No account. Restore on any device in seconds."
 msgstr "Un fichier chiffré. Sans compte. Restaurez sur n’importe quel appareil en quelques secondes."
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "One number, everything in it"
+msgstr "Un seul chiffre, tout dedans"
 
 #: src/app/[lang]/features/net-worth-tracker/opengraph-image.tsx
 msgid "One number. Every account, every currency."
@@ -14055,6 +14122,10 @@ msgstr "Des outils comme le graphe de dépendances et les alertes de sécurité 
 msgid "Total — no provider exists"
 msgstr "Total — aucun fournisseur n'existe"
 
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Total in your base currency"
+msgstr "Total dans votre devise de base"
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Track accounts in multiple currencies without compromising privacy:"
 msgstr "Suivez les comptes en plusieurs devises sans compromettre la confidentialité :"
@@ -14586,6 +14657,10 @@ msgstr "Voix vers dépense, sur l'appareil — Budgie"
 #: src/generic/component/problem-solution-section/problem-items.tsx
 msgid "Vulnerable to data breaches"
 msgstr "Vulnérable aux violations de données"
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Watch the number add up"
+msgstr "Voyez le chiffre se former"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "We are exploring options for assisted bank import that would maintain privacy guarantees. This might include local parsing of bank emails, integration with open banking APIs that use OAuth without credential sharing, or partnerships with privacy-focused financial data providers that operate under strict data handling agreements."
@@ -15144,6 +15219,10 @@ msgstr "Ce a quoi vous renoncez"
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "What you keep when you stop paying"
 msgstr "Ce que vous conservez quand vous arrêtez de payer"
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "What you lent adds to your net worth. What you owe subtracts from it, down to the last repayment."
+msgstr "Ce que vous avez prêté augmente votre patrimoine. Ce que vous devez le réduit, jusqu'au dernier remboursement."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "What's an “Untagged” bucket?"
