@@ -83,7 +83,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Watch the number add up</Trans>}>
-                    <Trans>Four screens, from the total on your home screen to the account sitting behind it.</Trans>
+                    <Trans>Three screens, from the total on your home screen down to what you owe and what you are owed.</Trans>
                 </FeatureStory.Intro>
 
                 <FeatureStory.Step index={0} title={<Trans>One number, everything in it</Trans>}>
@@ -105,57 +105,39 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Every asset class in one list</Trans>}>
-                    <Trans>Bank, cash and crypto share a single scroll, and each group carries its own subtotal.</Trans>
+                <FeatureStory.Step index={1} title={<Trans>Every currency, one total</Trans>}>
+                    <Trans>A euro account keeps its own currency. The figure on Home counts what it is worth in yours today.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(i18n)`Budgie home screen scrolled through the bank, cash and crypto groups with a subtotal on each one`}
+                    alt={t(i18n)`Budgie home screen with a euro-denominated account listed under a total balance shown in dollars`}
                     index={1}
                     locale={lang}
-                    scene="crypto-investment-tracking-1"
-                    slug="crypto-investment-tracking"
+                    scene="multi-currency-1"
+                    slug="multi-currency"
                 >
-                    <FeatureStory.Callout y={0.415}>
-                        <Trans>A subtotal per group</Trans>
+                    <FeatureStory.Callout y={0.168}>
+                        <Trans>Converted to your base currency</Trans>
                     </FeatureStory.Callout>
-                    <FeatureStory.Callout y={0.735}>
-                        <Trans>Crypto, grouped like a bank</Trans>
+                    <FeatureStory.Callout y={0.64}>
+                        <Trans>The account keeps its own</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Native units, converted value</Trans>}>
-                    <Trans>A wallet keeps its own units. The total on Home counts what those units are worth today.</Trans>
-                </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(i18n)`Bitcoin wallet screen in Budgie showing the balance in BTC above two purchase transactions`}
-                    index={2}
-                    locale={lang}
-                    scene="crypto-investment-tracking-2"
-                    slug="crypto-investment-tracking"
-                >
-                    <FeatureStory.Callout y={0.198}>
-                        <Trans>Balance stays in its own unit</Trans>
-                    </FeatureStory.Callout>
-                    <FeatureStory.Callout y={0.398}>
-                        <Trans>Every buy keeps its rate</Trans>
-                    </FeatureStory.Callout>
-                </FeatureStory.Shot>
-
-                <FeatureStory.Step index={3} title={<Trans>Debt counts, both directions</Trans>}>
+                <FeatureStory.Step index={2} title={<Trans>Debt counts, both directions</Trans>}>
                     <Trans>What you lent adds to your net worth. What you owe subtracts from it, down to the last repayment.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(i18n)`Budgie debt account screen showing the amount left to receive above two repayment transfers`}
-                    index={3}
+                    alt={t(i18n)`Budgie home screen scrolled to the savings, you owe and owed to you groups with a subtotal on each one`}
+                    index={2}
                     locale={lang}
-                    scene="debt-tracking-2"
-                    slug="debt-tracking"
+                    scene="net-worth-tracker-2"
+                    slug="net-worth-tracker"
                 >
-                    <FeatureStory.Callout y={0.19}>
-                        <Trans>Left to receive, live</Trans>
+                    <FeatureStory.Callout y={0.392}>
+                        <Trans>What you owe subtracts</Trans>
                     </FeatureStory.Callout>
-                    <FeatureStory.Callout y={0.615}>
-                        <Trans>Each repayment is a transfer</Trans>
+                    <FeatureStory.Callout y={0.596}>
+                        <Trans>What you lent adds back</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
@@ -194,9 +176,6 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>Crypto, stocks, ETFs, and commodities sit alongside fiat with the same UX</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Tap any aggregated number to drill into the per-leg native amounts</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
