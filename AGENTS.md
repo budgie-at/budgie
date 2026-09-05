@@ -629,7 +629,7 @@ Label taxonomy (one line per prefix — see label descriptions in the repo for e
 
 Claiming an issue: post a comment in this exact format, then set `status:in-progress` and `agent:<model>`.
 
-```
+```text
 CLAIM <UTC timestamp> — model: <model> — session: <session id>
 Scope: <what you will and will not do>
 Files: <files you expect to touch>
