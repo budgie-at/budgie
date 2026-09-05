@@ -1,4 +1,4 @@
-import { getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns/getUnixTime';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 

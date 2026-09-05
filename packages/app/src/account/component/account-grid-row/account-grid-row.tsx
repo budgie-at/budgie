@@ -1,9 +1,9 @@
 import { AccountTypeEnum } from '@budgie/contracts';
+import { cn } from 'cn';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { cn } from '../../../@generic/utils/cn.util';
 import { AccountGridItem } from '../account-grid-item/account-grid-item';
 
 import type { AccountRowInterface } from '../../interface/account-row.interface';

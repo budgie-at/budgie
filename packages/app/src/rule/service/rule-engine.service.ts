@@ -180,12 +180,10 @@ class RuleEngineService {
 
         const batchIds = transactionIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
         const matches = batchIds
-            .map(
-                (transactionId, offset): RuleTransactionMatchInterface => ({
-                    transactionId,
-                    matchingRules: rules.filter(rule => ruleMatcherService.evaluateRule(rule, evaluationInputs[batchStart + offset]))
-                })
-            )
+            .map((transactionId, offset): RuleTransactionMatchInterface => ({
+                transactionId,
+                matchingRules: rules.filter(rule => ruleMatcherService.evaluateRule(rule, evaluationInputs[batchStart + offset]))
+            }))
             .filter(match => isNotEmptyArray(match.matchingRules));
 
         if (!isNotEmptyArray(matches)) {

@@ -1,0 +1,54 @@
+{
+    "ios-target": {
+        "name": "e2e",
+        "appDir": "packages/app",
+        "workspace": "budgieE2E.xcworkspace",
+        "scheme": "budgieE2E",
+        "appId": "com.vitalyiegorov.budgie.e2e",
+        "prebuildCommand": "npx expo prebuild -p ios --clean --no-install"
+    },
+    "capture-mode": "direct",
+    "capture-manifest": [
+        {
+            "platform": "ios",
+            "device": "iPhone 17 Pro Max",
+            "locales": ["en", "fr", "uk", "de", "es"],
+            "appearances": ["light", "dark"]
+        },
+        {
+            "platform": "ios",
+            "device": "iPad Pro 13-inch (M4)",
+            "locales": ["en", "fr", "uk", "de", "es"],
+            "appearances": ["light", "dark"]
+        }
+    ],
+    "capture-scenes": [
+        { "name": "00-prime", "flow": "flows/setup/prime-deep-links-scene.flow.yaml" },
+        { "name": "01-home", "deepLink": "budgie://" },
+        { "name": "02-transactions", "deepLink": "budgie://transactions" },
+        { "name": "03-analytics", "deepLink": "budgie://analytics" },
+        { "name": "04-budget", "deepLink": "budgie://budget" },
+        { "name": "05-add-expense", "deepLink": "budgie://create-transaction/expense" },
+        { "name": "06-account", "deepLink": "budgie://account/1/details" },
+        { "name": "07-settings", "deepLink": "budgie://settings" }
+    ],
+    "screenshots-dir": "tests/app-tests",
+    "maestro-config": "tests/app-tests/config.yaml",
+    "seed-command": "bash tests/app-tests/scripts/seed-screenshot-scene.sh",
+    "settle-seconds": 6,
+    "status-bar-override": true,
+    "apple-screenshot-slots": {
+        "1320x2868": "iPhone 6.9\"",
+        "2064x2752": "iPad 13\""
+    },
+    "build-env": "APP_VARIANT=e2e\nEXPO_PUBLIC_AI_DISABLE=true\nEXPO_PUBLIC_LOGGING_DISABLE=true\n",
+    "install-command": "pnpm install --frozen-lockfile",
+    "cache-profile": "ios-e2e-budgie-v2",
+    "rct-use-prebuilt-rncore": true,
+    "rct-use-rn-dep": true,
+    "repack-on-hit": true,
+    "upload-command": "export PATH=\"$HOME/.rbenv/shims:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH\"\nexport SCREENSHOT_VARIANT=ci\nfastlane ios ios_screenshots\n",
+    "screenshots-download-dir": "fastlane/screenshots/raw",
+    "asc-dedupe-screenshots": true,
+    "asc-dedupe-app-id": "com.vitalyiegorov.budgie"
+}

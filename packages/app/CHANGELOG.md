@@ -3,6 +3,113 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.11.0](https://github.com/budgie-at/budgie/compare/v6.10.2...v6.11.0) (2026-09-04)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.10.2](https://github.com/budgie-at/budgie/compare/v6.10.1...v6.10.2) (2026-09-04)
+
+
+### Bug Fixes
+
+* **app:** harden ai lifecycle, i18n gate, ota asset config per review ([b15a6c4](https://github.com/budgie-at/budgie/commit/b15a6c4810ad3f112e0641666194b1b38d3f2e77))
+* **app:** restore guarded intl-pluralrules polyfill for hermes v1 ([bf29856](https://github.com/budgie-at/budgie/commit/bf298564bee04fa4bce022a3f953c50dce71132e))
+
+
+### Performance Improvements
+
+* **app:** defer llama and whisper module eval past first frame ([b13a358](https://github.com/budgie-at/budgie/commit/b13a358f134d6c40fe47c988bd4dbaed75deed7f))
+* **app:** defer lucide icon evaluation via per-icon lazy imports ([2d1c8a0](https://github.com/budgie-at/budgie/commit/2d1c8a0e4deb7b34427fef481353e530ff679bd6))
+* **app:** defer sync services and background task registration off boot path ([9e782bb](https://github.com/budgie-at/budgie/commit/9e782bbc390ee0c651dc30fd794a64917e0a8a7c))
+* **app:** drop intl-pluralrules polyfill dead on hermes v1 ([b614f45](https://github.com/budgie-at/budgie/commit/b614f45a21521a2250f41564a7f19aff386bca43))
+* **app:** drop unreferenced embedded fonts and tighten ota asset pattern ([e18a686](https://github.com/budgie-at/budgie/commit/e18a686dd8adfd76988bd0200987eb1c7489f0ba))
+* **app:** lazy-load lingui catalogs behind activation gate ([7808a09](https://github.com/budgie-at/budgie/commit/7808a093598173bd1467874d2c1241318cfc2b23))
+* convert date-fns barrel imports to deep subpaths ([f8ffe99](https://github.com/budgie-at/budgie/commit/f8ffe99c0b58dfcfb39b887020adc5a2ca88dafc))
+
+
+
+
+
+# [6.10.0](https://github.com/budgie-at/budgie/compare/v6.9.1...v6.10.0) (2026-09-03)
+
+
+### Features
+
+* **landing:** add captured product media for feature pages ([641e42a](https://github.com/budgie-at/budgie/commit/641e42aa370176c958c97fdbcee7aacf794a3af4))
+
+
+
+
+
+## [6.9.1](https://github.com/budgie-at/budgie/compare/v6.9.0...v6.9.1) (2026-09-03)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+# [6.9.0](https://github.com/budgie-at/budgie/compare/v6.8.0...v6.9.0) (2026-09-03)
+
+
+### Features
+
+* **app:** tighten landing media encoding budgets ([a3c92ed](https://github.com/budgie-at/budgie/commit/a3c92edfdb119cfca848da6aae0fb61626c0a993))
+
+
+
+
+
+# [6.8.0](https://github.com/budgie-at/budgie/compare/v6.7.0...v6.8.0) (2026-09-02)
+
+
+### Features
+
+* **app:** compose landing stills and clips from the store capture runner ([735c0f0](https://github.com/budgie-at/budgie/commit/735c0f03bd8cde2e34a6d03615ee4d8533e00e29))
+
+
+
+
+
+# [6.6.0](https://github.com/budgie-at/budgie/compare/v6.5.2...v6.6.0) (2026-09-02)
+
+
+### Bug Fixes
+
+* **app:** gate store screenshot upload on locale coverage ([e986e7a](https://github.com/budgie-at/budgie/commit/e986e7aa835c1cda4795500b97a2871f7245c578))
+* **app:** recompose the French home screenshots for the new title ([f584983](https://github.com/budgie-at/budgie/commit/f58498323d1032e54bd68c7fdcde3354eae76fab))
+* **app:** use the French ligature in the home screenshot title ([6f760c2](https://github.com/budgie-at/budgie/commit/6f760c28efe01ed2716b4d20948869ee7707e26c))
+
+
+### Features
+
+* **app:** add fastlane store screenshots for all locales ([d291de3](https://github.com/budgie-at/budgie/commit/d291de382658a3bd22f687c6baa21bb97978dbf9))
+
+
+
+
+
+## [6.5.2](https://github.com/budgie-at/budgie/compare/v6.5.1...v6.5.2) (2026-09-01)
+
+
+### Bug Fixes
+
+* **app:** let taps fall through the collapsible header shell ([20e1227](https://github.com/budgie-at/budgie/commit/20e12277af0bd0b51123311884922cdb22bbdc6b)), closes [rnw-community#621](https://github.com/rnw-community/issues/621)
+* **app:** pin lightningcss 1.30.1 for nativewind native bundling ([9ea3a89](https://github.com/budgie-at/budgie/commit/9ea3a8948837ee22300dc71c2b5a33cdac2fb10f))
+* **app:** position collapsible chrome header below the safe area ([d73b207](https://github.com/budgie-at/budgie/commit/d73b207672754701f54cfc1e025ec0e604c50a82)), closes [rnw-community#618](https://github.com/rnw-community/issues/618) [rnw-community#619](https://github.com/rnw-community/issues/619)
+* **app:** reset recording state when recorder start rejects ([28b3085](https://github.com/budgie-at/budgie/commit/28b3085f8d458e0be857de37ae30b7dee45f5492))
+* **app:** restore keyboard-controller 1.22.0 ([8d001e9](https://github.com/budgie-at/budgie/commit/8d001e9f9f85c5472b23fd950990a9c0f61294e8))
+* **app:** restore react-native-worklets 0.10.2 ([0006efa](https://github.com/budgie-at/budgie/commit/0006efa657d2f992c745fdf0a090425596018e68))
+* **app:** satisfy promise always-return in recorder start handler ([25dcc72](https://github.com/budgie-at/budgie/commit/25dcc72d0b5015dd70dcf71a876a4e42d290d5bc))
+
+
+
+
+
 ## [6.5.1](https://github.com/budgie-at/budgie/compare/v6.5.0...v6.5.1) (2026-08-30)
 
 

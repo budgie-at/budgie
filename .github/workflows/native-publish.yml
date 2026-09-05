@@ -2,6 +2,11 @@ name: Build and Publish to Stores
 
 on:
   workflow_dispatch:
+    inputs:
+      push_screenshots:
+        description: 'Also upload the committed store screenshots'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -11,7 +16,7 @@ jobs:
     name: iOS build and publish
     permissions:
       contents: read
-    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@v1.10.0 # v1.10.0
+    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@v1.11.0 # v1.11.0
     with:
       enable-ios: true
       enable-android: false
@@ -21,6 +26,7 @@ jobs:
       submit-profile: production
       asc-key-path: asc_api_key.p8
       install-command: pnpm install --frozen-lockfile
+      package-manager: pnpm
       publish-env: |
         EXPO_NO_TELEMETRY=1
         APP_VARIANT=production
@@ -29,6 +35,12 @@ jobs:
         EXPO_USE_PRECOMPILED_MODULES=1
         RCT_USE_PREBUILT_RNCORE=1
         RCT_USE_RN_DEP=1
+        PUSH_SCREENSHOTS=${{ inputs.push_screenshots }}
+      ios-post-submit-command: |
+        export PATH="$HOME/.rbenv/shims:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+        if [ "$PUSH_SCREENSHOTS" = 'true' ]; then
+          fastlane ios ios_screenshots
+        fi
     secrets:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       ASC_API_KEY: ${{ secrets.EXPO_IOS_ASC_API_KEY }}

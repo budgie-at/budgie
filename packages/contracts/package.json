@@ -1,6 +1,6 @@
 {
     "name": "@budgie/contracts",
-    "version": "6.5.1",
+    "version": "6.10.2",
     "private": true,
     "description": "Contracts",
     "sideEffects": false,
@@ -35,7 +35,7 @@
         "date-fns": "^4.3.0",
         "drizzle-orm": "^0.45.2",
         "drizzle-zod": "^0.8.3",
-        "expo-sqlite": "~57.0.0",
-        "zod": "4.1.12"
+        "expo-sqlite": "~57.0.2",
+        "zod": "4.5.1"
     }
 }

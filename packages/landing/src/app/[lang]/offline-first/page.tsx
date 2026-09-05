@@ -103,6 +103,16 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                         tagline={<Trans>One encrypted file. No account. Restore on any device in seconds.</Trans>}
                         title={<Trans>Database Backup &amp; Restore</Trans>}
                     />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/budget-planning`}
+                        index={5}
+                        tagline={
+                            <Trans>
+                                Monthly limits, a home-screen widget, and 80% / 100% alerts computed and deduplicated on your device.
+                            </Trans>
+                        }
+                        title={<Trans>Budget Planning</Trans>}
+                    />
                 </PillarHubFeatureGrid>
             </PillarHubSection>
 

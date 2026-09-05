@@ -1,5 +1,5 @@
 import { LanguageEnum, MonthlyPatternRawRowInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { getDaysInMonth } from 'date-fns';
+import { getDaysInMonth } from 'date-fns/getDaysInMonth';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 

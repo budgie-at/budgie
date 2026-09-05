@@ -1,0 +1,48 @@
+name: Store screenshots
+
+# App-shaped config (ios-target, capture manifest/scenes, build env, cache
+# profile, upload command, ASC dedupe settings, ...) lives in
+# .github/store-screenshots.config.json and is loaded via config-path. Only the
+# inputs mobile-ci cannot load from that file stay here: the plan-time runner
+# labels, the keys outside its allowed-keys allowlist, and the dispatch-driven
+# upload gate.
+on:
+    workflow_dispatch:
+        inputs:
+            upload:
+                description: Upload captured screenshots to App Store Connect
+                type: boolean
+                default: false
+
+concurrency:
+    group: store-screenshots-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+jobs:
+    screenshots:
+        name: Capture and upload store screenshots
+        permissions:
+            contents: read
+        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@v1.11.0 # v1.11.0
+        with:
+            config-path: .github/store-screenshots.config.json
+            package-manager: pnpm
+            expo-use-precompiled-modules: true
+            maestro-version: '2.8.0'
+            # The 00-prime scene is a Maestro flow whose only job is to grant iOS's
+            # one-per-install "Open in budgie?" deep-link trust; mobile-ci requires
+            # every flow-backed scene to emit exactly one takeScreenshot, so its PNG
+            # is dropped here - before the raw artifact is uploaded - and never
+            # reaches the download dir, the apple-screenshot-slots gate or deliver.
+            post-capture-command: find "$SCREENSHOTS_OUTPUT_DIR/raw" -name '00-prime.png' -delete
+            build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
+            capture-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
+            upload-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
+            upload-screenshots: ${{ inputs.upload }}
+        secrets:
+            ASC_API_KEY: ${{ secrets.EXPO_IOS_ASC_API_KEY }}
+            ASC_KEY_ID: ${{ secrets.EXPO_IOS_ASC_KEY_ID }}
+            ASC_ISSUER_ID: ${{ secrets.EXPO_IOS_ASC_ISSUER_ID }}

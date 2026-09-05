@@ -72,6 +72,8 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     )
     @InvalidateDatabaseLiveQuery()
     override async updateAccountToken(accountId: number, token: string): Promise<void> {
+        await this.beforeUpdateAccountToken();
+
         this.validateToken(token);
 
         await syncIntegrationTokenService.updateAccountToken(this.provider, accountId, token);
@@ -241,6 +243,10 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     protected async beforeProcessRun(_firstSyncToken: string): Promise<void> {
+        return Promise.resolve();
+    }
+
+    protected async beforeUpdateAccountToken(): Promise<void> {
         return Promise.resolve();
     }
 

@@ -1,5 +1,9 @@
 import { Log } from '@budgie/logger';
-import { addMonths, addSeconds, fromUnixTime, getUnixTime, min } from 'date-fns';
+import { addMonths } from 'date-fns/addMonths';
+import { addSeconds } from 'date-fns/addSeconds';
+import { fromUnixTime } from 'date-fns/fromUnixTime';
+import { getUnixTime } from 'date-fns/getUnixTime';
+import { min } from 'date-fns/min';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 

@@ -8,6 +8,8 @@ Marketing website built with Next.js 16, React 19, Tailwind CSS 4, and Lingui 6.
 pnpm start                    # Development server (next dev)
 pnpm build                    # Production build
 pnpm i18n:sync                # Extract & compile i18n translations
+pnpm media:manifest           # Rescan public/media and regenerate the committed media manifest
+pnpm media:check              # Verify manifest freshness, asset budgets and <AppShot>/<AppClip> usages
 pnpm ts                       # Native TypeScript 7 check
 pnpm lint                     # Oxlint + 13-rule ESLint fallback
 ```
@@ -48,6 +50,7 @@ Before starting any of the work areas below, read the corresponding doc first.
 | Blog articles, feature pages, pillar hubs, legal pages, sitemap entries, `generateMetadata`, JSON-LD helpers, anything SEO-related     | `docs/seo-pages.md`  |
 | `<Trans>` / `t` / `msg`, `generateMetadata` i18n strings, catalog `.po`/`.ts` files, RSC i18n setup, dispatching translation subagents | `docs/lingui-rsc.md` |
 | IndexNow key file, GSC/Bing sitemap submission, merge-to-main URL submission, API/root `.txt` proxy bypass rules                       | `docs/indexnow.md`   |
+| Product screenshots and motion clips, `public/media/**`, `<AppShot>`/`<AppClip>`, the generated media manifest, `media:manifest`/`media:check` | `tests/app-tests/readme.md` |
 
 ---
 
@@ -211,10 +214,10 @@ const buttonVariants = cva('inline-flex items-center justify-center rounded-md f
 
 ### Utility Function
 
-Use `cn()` for conditional classes:
+Use `cn()` from the `cn` package for conditional classes:
 
 ```typescript
-import { cn } from '../lib/utils';
+import { cn } from 'cn';
 
 className={cn('base-classes', isActive && 'active-classes', className)}
 ```
@@ -354,6 +357,22 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 ### Structured Data
 
 Add JSON-LD for rich snippets where appropriate.
+
+## Platform & SEO Invariants
+
+**Viewport theme colors.** `export const viewport` in `src/app/[lang]/layout.tsx` keeps dual `themeColor` (light `#ffffff`, dark `#09090b`) plus `viewportFit: 'cover'`, and the manifest `theme_color` must match the light page background. Safari/WebKit paints the rubber-band overscroll and browser chrome from manifest `theme_color` / meta theme-color when the meta tag is missing — never reintroduce a decorative color there.
+
+**Locale redirect matcher.** The matcher in `src/proxy.ts` excludes asset paths with the generic `.*\.\w+$` alternative. Do not add per-extension entries when new asset types appear. Every locale redirect response sets `Vary: Accept-Language` — without it, CDNs can cache a 301 for one locale and serve it to everyone.
+
+**Security header baseline.** Set in `next.config.ts`: `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, HSTS `max-age=63072000; includeSubDomains` (no preload), `Permissions-Policy` denying camera/microphone/geolocation/payment, and `X-Permitted-Cross-Domain-Policies: none`. Preserve all of it when editing config.
+
+**OG image coverage.** Every `page.tsx` SEO route (feature page, blog article, hub) must have a sibling `opengraph-image.tsx` using the shared builders (`createFeatureOgImage` / `createBlogOgImage`). App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`; never commit binary icon variants next to them.
+
+**Metadata char budgets.** Titles fit 60 chars including the ` | Budgie` template suffix; descriptions fit 160 chars. The `fitText` util (`src/generic/util/fit-text.util.ts`) is applied inside the metadata builders, so page copy in sidecars may be longer — the builder clamps. Page-author details: `docs/seo-pages.md`.
+
+**IndexNow is automated.** `.github/workflows/landing-indexnow.yml` submits sitemap URLs to `https://budgie.at/api/indexnow` (Bearer `ADMIN_SECRET`) after a 5-minute deploy wait, with 3 retries. Manual submission is only for emergency re-crawl requests.
+
+**Next.js 16 caching flags.** `cacheComponents` and `partialPrefetching` are enabled top-level in `next.config.ts`, alongside `reactCompiler`. Metadata and route code must stay SSG-safe; if a page truly needs request-time IO, use `await connection()` per the Next 16 cacheComponents rules.
 
 ## SOTA Bar — Next.js 16+ / React 19+
 

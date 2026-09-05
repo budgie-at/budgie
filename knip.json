@@ -25,14 +25,13 @@
         "packages/contracts/src/**/*.enum.ts",
         "packages/app/src/category/enum/system-category-id.enum.ts",
         "packages/app/scripts/bench-budget-spent.ts",
+        "packages/app/scripts/generate-icons-constant.ts",
         "packages/app/scripts/bench-budget-alerts.ts",
         "packages/app/scripts/bench-util.ts",
         "packages/app/scripts/bench-queries.ts",
         "packages/app/scripts/seed-bench-db.ts",
         "packages/app/scripts/snapshot-monthly-patterns.ts",
-        "tests/sync-tests/src/harness/shims/**",
-        "packages/screen-chrome/src/edge-fade/utils/edge-fade-get-backdrop-filter.util.ts",
-        "packages/screen-chrome/src/edge-fade/interface/web-edge-fade-style.interface.ts"
+        "tests/sync-tests/src/harness/shims/**"
     ],
     "ignoreDependencies": [
         "husky",

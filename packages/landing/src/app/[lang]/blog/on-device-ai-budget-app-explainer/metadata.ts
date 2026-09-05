@@ -8,7 +8,6 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'on-device-ai-budget-app-explainer',
     date: '2026-05-07',
     author: 'Budgie Team',
-    image: '/images/design-mode/ai-budgeting-app-4x.jpg',
     readingTimeMinutes: 11,
     title: msg`On-Device AI in Your Budget App: How It Works and Why It Matters`,
     description: msg`Cloud AI assistants process your spending data on remote servers. On-device AI keeps every inference local. Here's how a 1.7B-param model, offline embeddings, and Whisper speech recognition work together in Budgie.`,

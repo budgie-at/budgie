@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://analytics'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AnalyticsPage.Tab.Tags'
+      timeout: 15000
+
+- tapOn:
+      id: 'AnalyticsPage.Tab.Tags'
+
+- extendedWaitUntil:
+      visible:
+          id: '^TagStatisticsCard[.].+$'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

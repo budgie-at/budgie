@@ -1,26 +1,69 @@
+import { LanguageEnum } from '@budgie/contracts';
 import { createIntl, createIntlCache } from '@formatjs/intl';
 import { i18n } from '@lingui/core';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
-import { useSetting } from '../../settings/hook/use-setting.hook';
+import { isDefined } from '@rnw-community/shared';
+
+import { useSettingsContext } from '../../settings/context/settings.context';
 import { I18nContext, I18nContextInterface } from '../context/i18n.context';
+import { i18nActivateFallback, i18nEnsureLanguageActivated, i18nGetOSLocale } from '../util/i18n.util';
 import { languageToLocale } from '../util/language-to-locale.util';
 
 interface Props {
     readonly children: ReactNode;
 }
 
+const intlCache = createIntlCache();
+
 export const I18nProvider = ({ children }: Props) => {
-    const language = useSetting('language');
-    const locale = languageToLocale(language);
+    const { settings, isLoading: isSettingsLoading } = useSettingsContext();
+    const { language } = settings;
+    const [activatedLanguage, setActivatedLanguage] = useState<LanguageEnum | null>(null);
+    const [isFallbackActivated, setIsFallbackActivated] = useState(false);
 
-    useEffect(() => void i18n.activate(language), [language]);
+    useEffect(() => {
+        let isSubscribed = true;
+        const targetLanguage = isSettingsLoading ? i18nGetOSLocale() : language;
 
-    const cache = createIntlCache();
-    const intl = createIntl({ locale }, cache);
+        const handleActivationSuccess = () => {
+            if (isSubscribed) {
+                setIsFallbackActivated(false);
+                setActivatedLanguage(targetLanguage);
+            }
+        };
+
+        const handleActivationFailure = () => {
+            if (isSubscribed) {
+                i18nActivateFallback();
+                setIsFallbackActivated(true);
+                setActivatedLanguage(LanguageEnum.EN);
+            }
+        };
+
+        void i18nEnsureLanguageActivated(targetLanguage).then(handleActivationSuccess, handleActivationFailure);
+
+        return () => {
+            isSubscribed = false;
+        };
+    }, [isSettingsLoading, language]);
+
+    const locale = languageToLocale(isDefined(activatedLanguage) ? activatedLanguage : language);
+
+    const intl = createIntl({ locale }, intlCache);
 
     const value: I18nContextInterface = { intl };
+
+    if (!isDefined(activatedLanguage)) {
+        return null;
+    }
+
+    const isLanguageSwitchPending = !isFallbackActivated && !isSettingsLoading && activatedLanguage !== language;
+
+    if (isLanguageSwitchPending) {
+        return null;
+    }
 
     return (
         <I18nContext.Provider value={value}>

@@ -37,6 +37,7 @@ packages/app/ios
 
 .maestro
 *.mp4
+!packages/landing/public/media/**/*.mp4
 report.xml
 build-*.tar.gz
 *.app
@@ -67,3 +68,11 @@ docs/superpowers
 
 # graphify knowledge graph output
 graphify-out/
+
+# Fastlane store screenshots
+packages/app/fastlane/screenshots/raw/
+packages/app/fastlane/screenshots/variants/ci/
+packages/app/fastlane/screenshots/**/*.staging*
+packages/app/fastlane/screenshots/landing-raw/
+packages/app/fastlane/report.xml
+packages/app/fastlane/Preview.html

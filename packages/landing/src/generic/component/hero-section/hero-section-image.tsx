@@ -1,14 +1,21 @@
 import { useLingui } from '@lingui/react/macro';
 import Image from 'next/image';
 
+import { AppClip } from '../app-clip/app-clip';
+import { AppShot } from '../app-shot/app-shot';
 import { Motion } from '../motion/motion';
 
 const initialMotionImage = { opacity: 0, y: 40 };
 const animatedMotionImage = { opacity: 1, y: 0 };
 const transitionMotionImage = { duration: 0.7, delay: 0.2 };
 
-export const HeroSectionImage = () => {
+interface Props {
+    locale: string;
+}
+
+export const HeroSectionImage = ({ locale }: Props) => {
     const { t } = useLingui();
+    const alt = t`Budgie mobile app interface showing balance overview with multi-currency bank accounts including Monobank cards and various account types`;
 
     return (
         <Motion
@@ -18,13 +25,31 @@ export const HeroSectionImage = () => {
             transition={transitionMotionImage}
         >
             <div className="rounded-2xl overflow-hidden shadow-2xl border border-border/40 bg-linear-to-b from-background to-muted/20">
-                <Image
-                    alt={t`Budgie mobile app interface showing balance overview with multi-currency bank accounts including Monobank cards and various account types`}
-                    className="w-full h-auto"
-                    height={720}
-                    priority
-                    src="/images/design-mode/ai-budgeting-app-4x.jpg"
-                    width={1280}
+                <AppClip
+                    alt={alt}
+                    fallback={
+                        <AppShot
+                            alt={alt}
+                            fallback={
+                                <Image
+                                    alt={alt}
+                                    className="w-full h-auto"
+                                    height={720}
+                                    priority
+                                    src="/images/design-mode/ai-budgeting-app-4x.jpg"
+                                    width={1280}
+                                />
+                            }
+                            locale={locale}
+                            priority
+                            scene="home-hero-1"
+                            sizes="(min-width: 768px) 42rem, 100vw"
+                            slug="home-hero"
+                        />
+                    }
+                    locale={locale}
+                    scene="home-hero-clip-1"
+                    slug="home-hero"
                 />
 
                 <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10 dark:ring-white/10" />

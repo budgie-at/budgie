@@ -11,12 +11,14 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
+import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
+import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -79,6 +81,15 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                 }
             />
 
+            <FeaturePageMedia>
+                <AppShot
+                    alt={t(i18n)`Budgie transaction date filter with the month grid above the preset range buttons`}
+                    locale={lang}
+                    scene="date-filter-presets-1"
+                    slug="date-filter-presets"
+                />
+            </FeaturePageMedia>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>Why a date picker should never be the bottleneck</Trans>
@@ -119,7 +130,29 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                             &ldquo;Last Month&rdquo; always means the most-recent COMPLETED month — never the half-finished current one
                         </Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>An amount-range chip in the same filter row, with a From value, a To value, or both</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Narrow by amount, not just by date</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set a
+                        From value to hunt down the large purchases, a To value to sweep up the small ones, or both to look at a band. The
+                        chip shows the range you picked, and clearing it is one tap.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        Combined with the date presets it turns &quot;where did the money go last month?&quot; into a two-chip question:
+                        Last Month plus everything above a threshold, and the list in front of you is the answer.
+                    </Trans>
+                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
@@ -145,6 +178,15 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                         <Trans>
                             Yes. One picker component is reused across analytics tabs, the transaction list, and the recurring calendar.
                             Filters apply consistently.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I filter by amount too?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes — the filter row has an amount-range chip beside the date one. Give it a From value, a To value, or both,
+                            and it stacks with every other active filter.
                         </Trans>
                     }
                 />

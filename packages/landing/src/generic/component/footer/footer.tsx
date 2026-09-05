@@ -3,8 +3,8 @@
 import { Trans } from '@lingui/react/macro';
 import { GitBranch } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo } from 'react';
 
+import { getCurrentYear } from '../../util/get-current-year.util';
 import { Logo } from '../logo/logo';
 
 interface Props {
@@ -12,8 +12,8 @@ interface Props {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export const Footer = ({ lang }: Props) => {
-    const date = useMemo(() => new Date().getFullYear(), []);
+export const Footer = async ({ lang }: Props) => {
+    const year = await getCurrentYear();
 
     return (
         <footer className="w-full border-t bg-background/95 backdrop-blur-xs">
@@ -229,7 +229,7 @@ export const Footer = ({ lang }: Props) => {
 
                 <div className="flex flex-col gap-4 sm:flex-row justify-between items-center border-t border-border/40 pt-8">
                     <p className="text-xs text-muted-foreground">
-                        <Trans>&copy; {date} Budgie. All rights reserved.</Trans>
+                        <Trans>&copy; {year} Budgie. All rights reserved.</Trans>
                     </p>
 
                     <div className="flex gap-4">

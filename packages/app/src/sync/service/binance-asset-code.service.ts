@@ -1,17 +1,17 @@
-import { BINANCE_ASSET_ALIAS } from '@budgie/sync';
-
 import { isDefined } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { getSyncModule, loadSyncModule } from '../util/load-sync-module.util';
 
 import type { ExternalSourceEnum } from '@budgie/contracts';
 
 class BinanceAssetCodeService {
     resolveInstrumentCode(asset: string): string {
-        return BINANCE_ASSET_ALIAS[asset] ?? asset;
+        return getSyncModule().BINANCE_ASSET_ALIAS[asset] ?? asset;
     }
 
     async resolveEligibleSoldOffBaseAssets(provider: ExternalSourceEnum): Promise<string[]> {
+        const { BINANCE_ASSET_ALIAS } = await loadSyncModule();
         const assetCodes = new Set<string>();
         const accountInstrumentIds = new Set((await accountRepository.findByExternalSource(provider)).map(account => account.instrumentId));
 

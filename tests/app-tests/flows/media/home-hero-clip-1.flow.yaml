@@ -1,0 +1,37 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: poster
+
+- startRecording: clip
+
+- tapOn:
+      id: 'TabBar.Analytics'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AnalyticsPage.Tab.Categories'
+      timeout: 10000
+
+- tapOn:
+      id: 'TabBar.Home'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- stopRecording

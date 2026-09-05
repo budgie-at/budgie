@@ -1,0 +1,193 @@
+default_platform(:ios)
+
+skip_docs
+
+# fastlane runs lane bodies from the fastlane folder but actions from the
+# package folder, so every path a lane resolves itself is anchored here instead
+# of relying on the working directory.
+FASTLANE_DIR = File.expand_path(__dir__)
+APP_DIR = File.expand_path("..", FASTLANE_DIR)
+SCREENSHOTS_DIR = File.join(FASTLANE_DIR, "screenshots")
+COMPOSE_SCRIPT = File.join(SCREENSHOTS_DIR, "design", "compose-screenshots.sh")
+
+# deliver assigns App Store screenshot slots by resolution, so a set captured at
+# the wrong size uploads alongside the existing store images instead of
+# replacing them.
+APPLE_SCREENSHOT_SLOTS = {
+  [1320, 2868] => 'iPhone 6.9"',
+  [1290, 2796] => 'iPhone 6.9"',
+  [1284, 2778] => 'iPhone 6.5"',
+  [1242, 2688] => 'iPhone 6.5"',
+  [1206, 2622] => 'iPhone 6.3"',
+  [1179, 2556] => 'iPhone 6.1"',
+  [2064, 2752] => 'iPad 13"',
+  [2752, 2064] => 'iPad 13"',
+  [2048, 2732] => 'iPad 12.9"',
+  [2732, 2048] => 'iPad 12.9"'
+}.freeze
+REQUIRED_IOS_SCREENSHOT_SLOT = 'iPhone 6.9"'
+
+# App Store Connect locale folders the design set carries, in the order they are
+# composed. A variant missing one of them would upload a partial set and leave
+# that locale's store listing on its previous screenshots, so both lanes treat a
+# missing folder as an error rather than a warning.
+ASC_LOCALES = %w[en-US fr-FR uk de-DE es-ES].freeze
+
+# deliver writes into the editable App Store version, and a freshly uploaded
+# build does not create one on its own. Naming the version explicitly makes
+# deliver select or create it instead of failing with "could not find an
+# editable version".
+def app_store_version
+  JSON.parse(File.read(File.join(APP_DIR, "package.json"))).fetch("version")
+end
+
+def screenshot_variant
+  deployed = JSON.parse(File.read(File.join(SCREENSHOTS_DIR, "deployed-variant.json")))
+
+  ENV.fetch("SCREENSHOT_VARIANT", deployed.fetch("ios"))
+end
+
+def ios_screenshots_path(variant)
+  File.join(SCREENSHOTS_DIR, "variants", variant, "ios")
+end
+
+# The App Store Connect API key reaches this lane by three different routes and
+# none of them is guaranteed:
+#
+# - locally, exported ASC_API_KEY_PATH / ASC_KEY_ID / ASC_ISSUER_ID;
+# - from mobile-ci's store-screenshots upload job, which writes the .p8 to
+#   $RUNNER_TEMP (see runner_temp_asc_key_path below) but hands upload-command
+#   no key path or ids — Budgie's store-screenshots.yml never sets
+#   EAS_EXTRA_ENV or `asc-key-path`;
+# - from eas.json's submit profile, whose ascApiKeyPath/ascApiKeyId/
+#   ascApiKeyIssuerId are the same credentials `eas submit` already uses.
+#
+# eas.json is therefore the real fallback for ids in CI, so a local run needs
+# no exports at all beyond the key file itself. See fastlane/README.md's "CI
+# contract" section for the full picture.
+def eas_submit_profile
+  JSON.parse(File.read(File.join(APP_DIR, "eas.json"))).dig("submit", "production", "ios") || {}
+end
+
+
+# Where mobile-ci's upload job writes the .p8 when the config sets no
+# `asc-key-path`. The absolute path is not exported to `upload-command`, so it is
+# reconstructed here rather than guessed at by the caller.
+def runner_temp_asc_key_path
+  runner_temp = ENV["RUNNER_TEMP"]
+
+  return nil if runner_temp.to_s.empty?
+
+  candidate = File.join(runner_temp, "store-screenshots", "asc-api-key.p8")
+
+  File.file?(candidate) ? candidate : nil
+end
+
+def asc_api_key_settings
+  profile = eas_submit_profile
+  key_path = ENV["ASC_API_KEY_PATH"] || ENV["EXPO_ASC_API_KEY_PATH"] || runner_temp_asc_key_path || profile["ascApiKeyPath"]
+  key_id = ENV["ASC_KEY_ID"] || ENV["EXPO_ASC_KEY_ID"] || profile["ascApiKeyId"]
+  issuer_id = ENV["ASC_ISSUER_ID"] || ENV["EXPO_ASC_ISSUER_ID"] || profile["ascApiKeyIssuerId"]
+
+  UI.user_error!("No App Store Connect API key id (set ASC_KEY_ID)") if key_id.to_s.empty?
+  UI.user_error!("No App Store Connect API issuer id (set ASC_ISSUER_ID)") if issuer_id.to_s.empty?
+  UI.user_error!("No App Store Connect API key path (set ASC_API_KEY_PATH)") if key_path.to_s.empty?
+
+  absolute_key_path = File.absolute_path(key_path, APP_DIR)
+  UI.user_error!("App Store Connect API key not found at #{absolute_key_path}") unless File.file?(absolute_key_path)
+
+  { key_id: key_id, issuer_id: issuer_id, key_filepath: absolute_key_path }
+end
+
+# mobile-ci's store-screenshots workflow downloads every capture job's artifact
+# into screenshots-download-dir, iOS under its own ios/ subdirectory, which is
+# exactly the raw layout compose-screenshots.sh reads. The `ci` variant is
+# therefore composed on the upload runner rather than committed, so CI ships the
+# same framed set a local run produces instead of bare captures.
+def compose_ci_variant
+  raw_root = File.join(SCREENSHOTS_DIR, "raw", "ios")
+  UI.user_error!("No downloaded raw captures at #{raw_root}") unless Dir.exist?(raw_root)
+
+  deployed_appearance = JSON.parse(File.read(File.join(SCREENSHOTS_DIR, "deployed-variant.json"))).fetch("ios")
+
+  FileUtils.rm_rf(ios_screenshots_path("ci"))
+  ASC_LOCALES.each do |locale|
+    sh(
+      { "PUBLISH_VARIANT_NAME" => "ci" },
+      "bash", COMPOSE_SCRIPT, locale, deployed_appearance,
+      log: false
+    )
+  end
+end
+
+def png_dimensions(path)
+  File.binread(path, 24)[16, 8].unpack("N2")
+end
+
+def verify_ios_screenshot_slots(path)
+  screenshots = Dir.glob(File.join(path, "**", "*.png")).sort
+  UI.user_error!("No screenshots found under #{path}") if screenshots.empty?
+
+  slot_counts = Hash.new(0)
+
+  screenshots.each do |screenshot|
+    width, height = png_dimensions(screenshot)
+    slot = APPLE_SCREENSHOT_SLOTS[[width, height]]
+    UI.user_error!("#{screenshot} is #{width}x#{height}, which matches no App Store screenshot size") if slot.nil?
+
+    slot_counts[slot] += 1
+  end
+
+  slot_counts.sort.each { |slot, count| UI.success("  #{slot}: #{count}") }
+
+  unless slot_counts.key?(REQUIRED_IOS_SCREENSHOT_SLOT)
+    UI.important("No #{REQUIRED_IOS_SCREENSHOT_SLOT} set; these upload into their own slots and leave the current store images in place")
+  end
+end
+
+def verify_locale_coverage(path)
+  present = Dir.exist?(path) ? Dir.children(path).sort : []
+  missing = ASC_LOCALES - present
+  UI.user_error!("No composed screenshots for #{missing.join(', ')}") unless missing.empty?
+
+  present.each { |locale| UI.success("  #{locale}: #{Dir.glob(File.join(path, locale, '*.png')).count}") }
+end
+
+lane :store_preflight do
+  variant = screenshot_variant
+  path = ios_screenshots_path(variant)
+
+  UI.success("App Store version: #{app_store_version}")
+  UI.success("Screenshot variant: #{variant}")
+  UI.user_error!("iOS screenshots are missing at #{path}") unless Dir.exist?(path)
+  UI.user_error!("iOS screenshots have no locales at #{path}") if Dir.children(path).empty?
+
+  verify_locale_coverage(path)
+  verify_ios_screenshot_slots(path)
+end
+
+platform :ios do
+  lane :ios_screenshots do
+    variant = screenshot_variant
+    compose_ci_variant if variant == "ci"
+
+    path = ios_screenshots_path(variant)
+    verify_locale_coverage(path)
+    verify_ios_screenshot_slots(path)
+
+    app_store_connect_api_key(**asc_api_key_settings)
+
+    deliver(
+      app_version: app_store_version,
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_screenshots: false,
+      overwrite_screenshots: true,
+      run_precheck_before_submit: false,
+      submit_for_review: false,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      screenshots_path: path
+    )
+  end
+end

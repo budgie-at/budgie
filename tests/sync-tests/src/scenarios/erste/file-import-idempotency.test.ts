@@ -66,12 +66,12 @@ const buildErsteRow = (): ErsteRowInterface => ({
 
 const buildMappedErsteTransaction = (): SyncTransactionInterface => ersteMapper.mapTransaction(buildErsteRow(), ERSTE_ACCOUNT_ID);
 
-const buildLegacyErsteInput = (
+const buildLegacyErsteInput = async (
     bankTransaction: SyncTransactionInterface,
     accountId: number,
     externalId: string
-): TransactionCreateInputInterface => {
-    const input = mapBankTransactionToCreateInput(bankTransaction, accountId, null);
+): Promise<TransactionCreateInputInterface> => {
+    const input = await mapBankTransactionToCreateInput(bankTransaction, accountId, null, ExternalSourceEnum.ERSTE);
 
     return {
         ...input,
@@ -224,7 +224,7 @@ describe('erste/file-import-idempotency', () => {
         const account = seed.account({ externalId: ERSTE_ACCOUNT_ID, externalSource: ExternalSourceEnum.ERSTE });
         const bankTransaction = buildMappedErsteTransaction();
         const [legacyTransaction] = await transactionImportService.bulkUpsertImported(
-            [buildLegacyErsteInput(bankTransaction, account.id, ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID)],
+            [await buildLegacyErsteInput(bankTransaction, account.id, ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID)],
             new Map()
         );
         if (!isDefined(legacyTransaction)) {
