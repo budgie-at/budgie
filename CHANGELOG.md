@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.11.1](https://github.com/budgie-at/budgie/compare/v6.11.0...v6.11.1) (2026-09-05)
+
+
+### Bug Fixes
+
+* **app:** keep Binance sync accounts in provider section ([38ac971](https://github.com/budgie-at/budgie/commit/38ac9719bc30a3401971765388fe238c791738e8))
+* **app:** keep regular crypto outside Binance grouping ([1ddc27b](https://github.com/budgie-at/budgie/commit/1ddc27bec036dbff687b814910182ddd99066e96))
+
+
+
+
+
 # [6.11.0](https://github.com/budgie-at/budgie/compare/v6.10.2...v6.11.0) (2026-09-04)
 
 
