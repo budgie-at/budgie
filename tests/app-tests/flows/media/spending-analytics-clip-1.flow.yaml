@@ -23,13 +23,15 @@ env:
 
 - startRecording: clip
 
+- waitForAnimationToEnd
+
 - tapOn:
       id: '${CATEGORY_STATISTICS_ID}'
 
 - extendedWaitUntil:
       visible:
           id: 'PageHeader.BackButton'
-      timeout: 10000
+      timeout: 15000
 
 - waitForAnimationToEnd
 
