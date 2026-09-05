@@ -39,12 +39,20 @@
             "deepLink": "budgie://budget"
         },
         {
+            "name": "budget-planning-2",
+            "flow": "flows/media/budget-planning-2.flow.yaml"
+        },
+        {
             "name": "ai-auto-categorization-2",
             "deepLink": "budgie://settings?anchor=ai"
         },
         {
             "name": "on-device-ai-budget-app-1",
             "deepLink": "budgie://settings?anchor=ai"
+        },
+        {
+            "name": "no-bank-login-budget-app-1",
+            "flow": "flows/media/no-bank-login-budget-app-1.flow.yaml"
         },
         {
             "name": "monobank-sync-1",
@@ -57,6 +65,10 @@
         {
             "name": "net-worth-tracker-1",
             "deepLink": "budgie://"
+        },
+        {
+            "name": "net-worth-tracker-2",
+            "flow": "flows/media/net-worth-tracker-2.flow.yaml"
         },
         {
             "name": "offline-first-expense-tracker-1",
@@ -125,6 +137,10 @@
         {
             "name": "transaction-tags-2",
             "deepLink": "budgie://transactions"
+        },
+        {
+            "name": "multi-currency-1",
+            "deepLink": "budgie://"
         },
         {
             "name": "multi-currency-2",
