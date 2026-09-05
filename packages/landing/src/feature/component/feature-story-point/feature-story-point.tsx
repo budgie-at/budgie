@@ -7,7 +7,9 @@ interface Props {
 
 export const FeatureStoryPoint = ({ index, children }: Props) => (
     <div className="story-step" data-index={index} data-story-step>
-        <span aria-hidden="true" className="block h-1.5 w-1.5 rounded-full bg-primary/70" />
-        <p className="mt-3 max-w-md text-base md:text-lg leading-relaxed text-pretty">{children}</p>
+        <span aria-hidden="true" className="story-step-ordinal">
+            <span className="story-step-rule" />
+        </span>
+        <p className="story-step-body">{children}</p>
     </div>
 );
