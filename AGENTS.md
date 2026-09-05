@@ -612,6 +612,36 @@ Example:
 export const MyFormComponent = (props: Props) => { ... };
 ```
 
+## Issue Tracking
+
+Work is tracked as GitHub issues linked as **native sub-issues** of the relevant epic — never as task-list checkboxes; checkboxes in an epic body are a reading aid, not the source of truth. GitHub caps sub-issues at 100 per epic, so a program that outgrows that splits into milestone/phase epics rather than flattening into one.
+
+Every issue states acceptance criteria, including the validation commands required to close it.
+
+Label taxonomy (one line per prefix — see label descriptions in the repo for exact wording):
+
+- `status:*` — `ready` | `in-progress` | `blocked` | `review`
+- `kind:*` — `bug` | `feat` | `test` | `docs` | `perf` | `regression`
+- `priority:*` — `P0` blocker | `P1` schedule now | `P2` do when the area is open | `P3` nice to have
+- `needs:*` — `decision` | `repro` | `triage`
+- `agent:*` — which agent/model claimed the issue (e.g. `agent:claude`)
+- `area:*` — one per package plus cross-cutting areas (`e2e`, `ci`, `media`)
+
+Claiming an issue: post a comment in this exact format, then set `status:in-progress` and `agent:<model>`.
+
+```
+CLAIM <UTC timestamp> — model: <model> — session: <session id>
+Scope: <what you will and will not do>
+Files: <files you expect to touch>
+Expires: <timestamp ~4h out>
+```
+
+An expired claim is void — anyone may reclaim the issue. When a PR opens against the issue, set `status:review` and comment with the PR reference. One PR per issue. Branch names mirror the commit type: `type/kebab-slug`. PR titles follow the same `type(scope): description` convention as commits. Close the issue with evidence: the merged PR plus the validation output that proves the acceptance criteria pass.
+
+The coordinator (main/orchestrating agent) runs builds, gates, and git operations; subagents keep their edits scoped to the files listed in their claim.
+
+`CLAUDE.md` is a symlink to this file — no separate copy to keep in sync (`readlink CLAUDE.md` to confirm before assuming otherwise).
+
 ## Local Documentation
 
 The `docs/plans/` and `docs/superpowers/` folders contain design documents, specs, and implementation plans (including those produced by the superpowers brainstorming and writing-plans skills). These folders are gitignored for local-only usage — plans and specs are working documents that don't need version control.
