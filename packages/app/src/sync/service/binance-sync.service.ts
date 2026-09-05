@@ -34,6 +34,7 @@ import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
 import { binanceAssetCodeService } from './binance-asset-code.service';
 import { binanceSourceQuoteService } from './binance-source-quote.service';
+import { syncIntegrationTokenService } from './sync-integration-token.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
 import type {
@@ -243,7 +244,8 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private async setupResolvedAccount(resolvableAccount: BinanceResolvableAccountInterface, token: string): Promise<void> {
-        const account = await this.getOrCreateAccount(resolvableAccount.exchangeAccount, resolvableAccount.instrumentId);
+        const integrationId = (await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token)).id;
+        const account = await this.getOrCreateAccount(resolvableAccount.exchangeAccount, resolvableAccount.instrumentId, integrationId);
         if (resolvableAccount.exchangeAccount.balanceState === SyncAccountBalanceStateEnum.REPRESENTABLE) {
             await this.anchorAccountBalance(account.id, resolvableAccount.exchangeAccount.balance);
         }
@@ -441,7 +443,12 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         const exchangeAccounts = await this.fetchExchangeAccounts(token);
         const exchangeAccountByExternalId = new Map(exchangeAccounts.map(exchangeAccount => [exchangeAccount.id, exchangeAccount]));
         const accounts = await accountRepository.findByExternalSource(this.provider);
-
+        const integrationId = (await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token)).id;
+        await Promise.all(
+            accounts
+                .filter(account => !isDefined(account.integrationId))
+                .map(async account => accountRepository.updateById(account.id, { integrationId }))
+        );
         let anchoredCount = 0;
         for (const account of accounts) {
             const exchangeAccount = isNotEmptyString(account.externalId) ? exchangeAccountByExternalId.get(account.externalId) : null;
@@ -535,13 +542,12 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
     private async buildRunAccountResolver(token: string): Promise<(codecAccountId: string) => Promise<AccountEntityInterface | null>> {
         const exchangeAccounts = await this.fetchExchangeAccounts(token);
+        const integrationId = (await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token)).id;
 
-        return this.buildTransferAccountResolver(new Map(exchangeAccounts.map(exchangeAccount => [exchangeAccount.id, exchangeAccount])));
+        return this.buildTransferAccountResolver(new Map(exchangeAccounts.map(account => [account.id, account])), integrationId);
     }
 
-    private buildTransferAccountResolver(
-        exchangeAccounts: Map<string, SyncAccountInterface>
-    ): (codecAccountId: string) => Promise<AccountEntityInterface | null> {
+    private buildTransferAccountResolver(exchangeAccounts: Map<string, SyncAccountInterface>, integrationId: number) {
         const instrumentsPromise = instrumentRepository.getAll();
 
         return async (codecAccountId: string): Promise<AccountEntityInterface | null> => {
@@ -549,7 +555,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             if (isDefined(existingAccount)) {
                 return existingAccount;
             }
-
             let resolvedExchangeAccount = exchangeAccounts.get(codecAccountId);
             if (!isDefined(resolvedExchangeAccount)) {
                 const decoded = decodeBinanceAccountId(codecAccountId);
@@ -561,14 +566,11 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
             const instrument = this.resolveInstrument(resolvedExchangeAccount, await instrumentsPromise);
 
-            return isDefined(instrument) ? this.getOrCreateAccount(resolvedExchangeAccount, instrument.id) : null;
+            return isDefined(instrument) ? this.getOrCreateAccount(resolvedExchangeAccount, instrument.id, integrationId) : null;
         };
     }
 
-    private resolveInstrument(
-        exchangeAccount: SyncAccountInterface,
-        instruments: InstrumentEntityInterface[]
-    ): InstrumentEntityInterface | null {
+    private resolveInstrument(exchangeAccount: SyncAccountInterface, instruments: InstrumentEntityInterface[]) {
         const instrumentCode = binanceAssetCodeService.resolveInstrumentCode(exchangeAccount.currencyCode);
 
         return instruments.find(instrument => instrument.code === instrumentCode) ?? null;
@@ -578,14 +580,13 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         await accountBalanceRepository.upsert({ accountId, amount: convertToMicroUnits(balance), updatedAt: new Date() });
     }
 
-    private async getOrCreateAccount(exchangeAccount: SyncAccountInterface, instrumentId: number): Promise<AccountEntityInterface> {
+    private async getOrCreateAccount(exchangeAccount: SyncAccountInterface, instrumentId: number, integrationId: number) {
         const existingByExternalId = await accountRepository.findByExternalIds([exchangeAccount.id]);
         const existingAccount = existingByExternalId.at(0);
         if (isDefined(existingAccount)) {
             return existingAccount;
         }
-
-        const input = this.mapAccountToCreateInput(exchangeAccount, instrumentId);
+        const input = { ...this.mapAccountToCreateInput(exchangeAccount, instrumentId), integrationId };
         const createdAccount = Object.values(await accountService.bulkCreate([input])).at(0);
         if (!isDefined(createdAccount)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, never user-facing
