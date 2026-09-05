@@ -446,7 +446,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         const integrationId = (await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token)).id;
         await Promise.all(
             accounts
-                .filter(account => !isDefined(account.integrationId))
+                .filter(account => account.type === AccountTypeEnum.CRYPTO_SYNC && !isDefined(account.integrationId))
                 .map(async account => accountRepository.updateById(account.id, { integrationId }))
         );
         let anchoredCount = 0;
