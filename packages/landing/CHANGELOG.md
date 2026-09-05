@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.12.0](https://github.com/budgie-at/budgie/compare/v6.11.1...v6.12.0) (2026-09-05)
+
+
+### Bug Fixes
+
+* **landing:** correct debt-direction and rate translations in feature story copy ([2e9e62c](https://github.com/budgie-at/budgie/commit/2e9e62c5e8f17bd4f83f38cf470e060e4077a3f6))
+* **landing:** stop sections from clipping sticky children ([44c3c14](https://github.com/budgie-at/budgie/commit/44c3c143f604146a14899db691a6dd67452b6d80))
+
+
+### Features
+
+* **landing:** add scroll-driven feature story components ([27e9775](https://github.com/budgie-at/budgie/commit/27e977553060fe0b6cd8846f66ee9ca0a5cbee95))
+* **landing:** tell the net-worth tracker story in steps ([e9a9263](https://github.com/budgie-at/budgie/commit/e9a9263acd121fddae98266a1da1e9aa4b13d8d8))
+
+
+
+
+
 # [6.11.0](https://github.com/budgie-at/budgie/compare/v6.10.2...v6.11.0) (2026-09-04)
 
 
