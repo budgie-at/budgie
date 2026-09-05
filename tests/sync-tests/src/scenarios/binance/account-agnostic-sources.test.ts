@@ -129,6 +129,28 @@ describe('binance/account-agnostic-sources', () => {
         expect(repairedAccount.integrationId).toBe(seededAccount.integrationId);
     });
 
+    it('leaves regular crypto accounts outside the Binance integration', async () => {
+        const instrument = seedCryptoInstrument('ETH');
+        const regularCryptoAccount = seed.account({
+            type: AccountTypeEnum.CRYPTO,
+            instrumentId: instrument.id,
+            externalSource: ExternalSourceEnum.BINANCE
+        });
+        const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+        stubEmptyBinanceBalances();
+
+        await binanceSyncService.sync();
+
+        const [syncedRegularCryptoAccount] = testDb
+            .select()
+            .from(AccountEntityTable)
+            .where(eq(AccountEntityTable.id, regularCryptoAccount.id))
+            .all();
+        const [binanceAccount] = fetchAccountByExternalId(externalId);
+        expect(syncedRegularCryptoAccount.integrationId).toBeNull();
+        expect(binanceAccount.integrationId).not.toBeNull();
+    });
+
     it('creates C2C, earn, fiat, deposit and withdrawal transactions for all assets in a single backward run, not just the first account', async () => {
         const { eurExternalId, usdtFundingAccount } = seedAccountAgnosticAccounts();
         const { previousMonth, currentMonth } = stubAccountAgnosticSourceResponses();
