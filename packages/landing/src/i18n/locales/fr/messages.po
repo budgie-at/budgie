@@ -3863,7 +3863,7 @@ msgstr "Paramètres de gestion des données de Budgie avec les actions d’impor
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie debt account screen showing the amount left to receive above two repayment transfers"
-msgstr "Écran de compte de dette Budgie avec le montant restant dû au-dessus de deux remboursements"
+msgstr "Écran de compte de dette Budgie avec le montant restant à recevoir au-dessus de deux remboursements"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie debt account screen with the amount left to receive above the repayment history"
