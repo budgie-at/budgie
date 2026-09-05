@@ -3,6 +3,102 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.11.0](https://github.com/budgie-at/budgie/compare/v6.10.2...v6.11.0) (2026-09-04)
+
+
+### Bug Fixes
+
+* **landing:** align browser chrome and overscroll tint with the page theme ([ad40ff0](https://github.com/budgie-at/budgie/commit/ad40ff0393df71110f6086e04cfa9d077e9e5c24))
+* **landing:** blog hub og image comes from its generated convention ([8db4216](https://github.com/budgie-at/budgie/commit/8db4216dacccf8a0aa987cc62eea5cae989ecf2d))
+* **landing:** exempt next generated icon routes from the locale redirect ([ae53e5b](https://github.com/budgie-at/budgie/commit/ae53e5bbfc21ffef7e8ca2905364bb359c90037d))
+* **landing:** let file conventions own og images on every route ([574c685](https://github.com/budgie-at/budgie/commit/574c6852202c66e64131350c9552f809af1c5e1a))
+* **landing:** vary locale redirects by accept-language and harden security headers ([e5c9929](https://github.com/budgie-at/budgie/commit/e5c992921d0093e0d2c5448dbe05d4b84c7b7958))
+
+
+### Features
+
+* **landing:** clamp seo metadata titles and descriptions to search budgets ([6335315](https://github.com/budgie-at/budgie/commit/6335315a33500078eca45d0fcbdd890c7d82a45b))
+* **landing:** generate open graph images and app icons for every seo route ([c4e2163](https://github.com/budgie-at/budgie/commit/c4e216355be670c97030f47440d413f22d2419e2))
+* **landing:** share pages with their own generated og image ([82ae33d](https://github.com/budgie-at/budgie/commit/82ae33d883ebdacb9c69d5874c10b126a80aefec))
+
+
+
+
+
+## [6.10.1](https://github.com/budgie-at/budgie/compare/v6.10.0...v6.10.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **landing:** anchor the asset exclusion against the full locale proxy path ([8aaf6e0](https://github.com/budgie-at/budgie/commit/8aaf6e0e8cf42e9c9a1962293f4a8492e2db3e9f))
+* **landing:** let all static asset paths bypass the locale redirect ([c9b9df9](https://github.com/budgie-at/budgie/commit/c9b9df9d1a3dca2df86ab55a2dffa6391acce7b3))
+
+
+
+
+
+# [6.10.0](https://github.com/budgie-at/budgie/compare/v6.9.1...v6.10.0) (2026-09-03)
+
+
+### Bug Fixes
+
+* **landing:** unignore committed media mp4 siblings ([d80a187](https://github.com/budgie-at/budgie/commit/d80a18789ba5d3553ca269a61df6f02b80f662cc))
+
+
+### Features
+
+* **landing:** add captured product media for feature pages ([641e42a](https://github.com/budgie-at/budgie/commit/641e42aa370176c958c97fdbcee7aacf794a3af4))
+* **landing:** render product media on home and feature pages ([f13050e](https://github.com/budgie-at/budgie/commit/f13050eaf71a7ca3fe5e6555defa6ea2d770a0c3))
+
+
+
+
+
+## [6.9.1](https://github.com/budgie-at/budgie/compare/v6.9.0...v6.9.1) (2026-09-03)
+
+**Note:** Version bump only for package @budgie-at/landing
+
+
+
+
+
+# [6.8.0](https://github.com/budgie-at/budgie/compare/v6.7.0...v6.8.0) (2026-09-02)
+
+
+### Bug Fixes
+
+* address CodeRabbit review findings on PR 719 ([0564ef4](https://github.com/budgie-at/budgie/commit/0564ef483f8447dd8f253202438a7164ca7cf1bd))
+
+
+
+
+
+# [6.7.0](https://github.com/budgie-at/budgie/compare/v6.6.0...v6.7.0) (2026-09-02)
+
+
+### Bug Fixes
+
+* **landing:** validate AVIF variants and asset slugs in the media manifest builder ([47a8434](https://github.com/budgie-at/budgie/commit/47a84345fca86736d3d97f90c002b1ae1c51b2a2))
+
+
+### Features
+
+* **landing:** add feature pages for budget planning, rules, Binance, and bank connections ([c706deb](https://github.com/budgie-at/budgie/commit/c706deb2b92a02f45d8b6b880cecf1ebabc8f8dd)), closes [#426](https://github.com/budgie-at/budgie/issues/426) [#322](https://github.com/budgie-at/budgie/issues/322) [#449](https://github.com/budgie-at/budgie/issues/449) [#506](https://github.com/budgie-at/budgie/issues/506) [#520](https://github.com/budgie-at/budgie/issues/520) [#561](https://github.com/budgie-at/budgie/issues/561) [#650](https://github.com/budgie-at/budgie/issues/650)
+* **landing:** add media asset contract and theme-aware media components ([b5e279b](https://github.com/budgie-at/budgie/commit/b5e279bfabd7a479fd345104be064bc3efe104db)), closes [#695](https://github.com/budgie-at/budgie/issues/695)
+* **landing:** refresh feature copy for jar sync, amount filter, debt, crypto, and transaction detail ([af7000e](https://github.com/budgie-at/budgie/commit/af7000e02c3f6d6d24dc8c437337115dad99dec3)), closes [#512](https://github.com/budgie-at/budgie/issues/512) [#531](https://github.com/budgie-at/budgie/issues/531) [#555](https://github.com/budgie-at/budgie/issues/555) [#567](https://github.com/budgie-at/budgie/issues/567) [#543](https://github.com/budgie-at/budgie/issues/543) [#568](https://github.com/budgie-at/budgie/issues/568)
+
+
+
+
+
+## [6.5.2](https://github.com/budgie-at/budgie/compare/v6.5.1...v6.5.2) (2026-09-01)
+
+**Note:** Version bump only for package @budgie-at/landing
+
+
+
+
+
 ## [6.4.2](https://github.com/budgie-at/budgie/compare/v6.4.1...v6.4.2) (2026-08-29)
 
 **Note:** Version bump only for package @budgie-at/landing

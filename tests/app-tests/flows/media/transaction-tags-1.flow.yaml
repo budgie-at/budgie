@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://create-transaction/expense'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionForm.TagsSelector'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionForm.TagsSelector'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TagPickerBottomSheet.Input'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

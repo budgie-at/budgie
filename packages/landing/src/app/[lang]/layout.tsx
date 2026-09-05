@@ -13,6 +13,7 @@ import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
 import { SUPPORTED_LOCALES } from '../../i18n/supported-locales.constant.mjs';
 import { ThemeProvider } from '../../providers/theme-provider';
 
+import type { Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 const fixelDisplay = localFont({
@@ -70,6 +71,16 @@ export async function generateStaticParams() {
     return SUPPORTED_LOCALES.map(lang => ({ lang }));
 }
 
+export const viewport: Viewport = {
+    themeColor: [
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
+        { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+        // oxlint-disable-next-line lingui/no-unlocalized-strings
+        { media: '(prefers-color-scheme: dark)', color: '#09090b' }
+    ],
+    viewportFit: 'cover'
+};
+
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: Props) {
     const { lang } = await props.params;
@@ -104,14 +115,12 @@ export async function generateMetadata(props: Props) {
             description: shortDescription,
             type: 'website',
             url: `${BASE_URL}/${lang}`,
-            locale: OG_LOCALE_MAP[lang] ?? 'en_US',
-            images: [{ url: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`, width: 1200, height: 630 }]
+            locale: OG_LOCALE_MAP[lang] ?? 'en_US'
         },
         twitter: {
             card: 'summary_large_image',
             title: siteTitle,
             description: shortDescription,
-            images: [`${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`],
 
             site: '@budgie_at',
 

@@ -1,10 +1,10 @@
-import { useScreenChrome } from '@budgie/screen-chrome';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactElement, ReactNode } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { isDefined } from '@rnw-community/shared';
 
 import {
@@ -50,7 +50,7 @@ export const SearchablePageList = <T extends IdInterface>({
     sizing
 }: Props<T>) => {
     const [notify] = useVibration();
-    const { scrollY } = useScreenChrome();
+    const { scrollY } = useCollapsibleHeaderScroll();
     const insets = useSafeAreaInsets();
     const contentContainerStyle = {
         gap: LEGEND_LIST_CONTENT_GAP,

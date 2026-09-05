@@ -58,6 +58,7 @@ export default defineConfig(
 
             '**/messages.po',
             '**/messages.ts',
+            '**/media-manifest.constant.ts',
             '**/babel.config.js',
             '**/fingerprint.config.js',
             'packages/app/scripts/**',

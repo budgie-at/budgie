@@ -11,12 +11,14 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
+import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
+import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -78,6 +80,17 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                 }
             />
 
+            <FeaturePageMedia>
+                <AppShot
+                    alt={t(
+                        i18n
+                    )`Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts`}
+                    locale={lang}
+                    scene="expense-tracking-1"
+                    slug="expense-tracking"
+                />
+            </FeaturePageMedia>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>Why entry friction kills expense trackers</Trans>
@@ -117,7 +130,34 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Comments grow vertically up to two lines so receipts and references fit without truncation</Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>Tapping a transaction opens a read-only detail view — editing is a deliberate second step</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={6}>
+                        <Trans>Six monthly bars on that view show what you usually spend at the same place, in the same category</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Read first, edit on purpose</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        Opening a transaction no longer drops you into a form. You get a read-only Transaction Info view — amount, account,
+                        category, tags, comment, and the details the bank sent — with editing behind an explicit button. Looking something
+                        up stops being a chance to change it by accident.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        That view also answers the question a single number never can: is this normal? Six monthly bars show what you spent
+                        on the same thing — same account, same category, same merchant title — over the six months leading up to this
+                        transaction, with the monthly totals, a total, and an average. It appears only when there is more than one match, so
+                        one-off purchases stay uncluttered.
+                    </Trans>
+                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
@@ -131,6 +171,15 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
+
+            <FeaturePageMedia>
+                <AppShot
+                    alt={t(i18n)`Budgie transaction list grouped by month with the category, tag and account on every row`}
+                    locale={lang}
+                    scene="expense-tracking-2"
+                    slug="expense-tracking"
+                />
+            </FeaturePageMedia>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
@@ -146,8 +195,19 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     question={<Trans>Can I edit a transaction after saving?</Trans>}
                     answer={
                         <Trans>
-                            Always. Long-press the row in the list for a context menu with Edit, Delete, Split, Convert to Transfer, and
-                            Convert to Refund actions when they apply.
+                            Always. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list
+                            gives you a context menu with Edit, Delete, Split, Convert to Transfer, and Convert to Refund actions when they
+                            apply.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What do the monthly bars on a transaction mean?</Trans>}
+                    answer={
+                        <Trans>
+                            They are your own spending on comparable transactions — the same account, the same category, and the same
+                            merchant title — across the six months leading up to the one you are looking at, with a total and an average
+                            underneath.
                         </Trans>
                     }
                 />

@@ -11,12 +11,14 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
+import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
+import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -79,6 +81,15 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 }
             />
 
+            <FeaturePageMedia>
+                <AppShot
+                    alt={t(i18n)`Budgie debt account screen with the amount left to receive above the repayment history`}
+                    locale={lang}
+                    scene="debt-tracking-2"
+                    slug="debt-tracking"
+                />
+            </FeaturePageMedia>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>Why inter-personal debt deserves its own account type</Trans>
@@ -117,7 +128,43 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Archive when settled — debt drops off the home screen but stays in history</Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>
+                            Attach an existing income or expense to a debt as a settlement, without inventing a second transaction
+                        </Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={6}>
+                        <Trans>Debts in another currency are valued with the exchange rate from the day the money actually moved</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Attach a repayment you already recorded</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income long
+                        before you think about the debt. Instead of deleting it and re-entering a transfer, attach that transaction to the
+                        debt: it is recorded as a settlement against the debt account and the balance moves accordingly, while the original
+                        transaction stays exactly where your bank put it.
+                    </Trans>
+                </FeaturePageProse>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Cross-currency debts valued at the right moment</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        A loan made in another currency is worth what it was worth on the day it was made, not what today&apos;s rate says.
+                        Budgie stores the exchange rate used for a debt&apos;s target balance along with the converted amount, looking up
+                        the rate for the operation date — or the closest earlier one it has — and bridging through your base currency when
+                        there is no direct pair.
+                    </Trans>
+                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
@@ -131,6 +178,15 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
+
+            <FeaturePageMedia>
+                <AppShot
+                    alt={t(i18n)`Budgie home screen with the net balance across the bank, cash and savings account sections`}
+                    locale={lang}
+                    scene="debt-tracking-1"
+                    slug="debt-tracking"
+                />
+            </FeaturePageMedia>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
@@ -157,6 +213,24 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         <Trans>
                             Make a transfer between the debt account and a real cash/bank account. The debt balance hits zero; archive the
                             account if you want it off the home screen.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>My friend repaid me by bank transfer — do I have to re-enter it?</Trans>}
+                    answer={
+                        <Trans>
+                            No. Attach the income that already arrived to the debt and it counts as a settlement against that debt account.
+                            The transaction itself is untouched.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What if the loan was in a different currency?</Trans>}
+                    answer={
+                        <Trans>
+                            The converted value is stored together with the exchange rate for the date of the operation, so an old loan
+                            keeps the valuation it had when it was made instead of drifting with today&apos;s rate.
                         </Trans>
                     }
                 />

@@ -1,23 +1,20 @@
-import {
-    CollapsibleHeader,
-    CollapsibleHeaderBackdrop,
-    CollapsibleHeaderLargeTitle,
-    CollapsibleHeaderLeading,
-    CollapsibleHeaderSmallTitle,
-    CollapsibleHeaderTitleSlot,
-    CollapsibleHeaderTrailing,
-    ScreenChromeFrame
-} from '@budgie/screen-chrome';
-import { ComponentProps, ReactNode } from 'react';
+import { cn } from 'cn';
 import { Text, View } from 'react-native';
 
+import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
+import { TestIDPartEnum } from '../../enum/test-id-part.enum';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
-import { cn } from '../../utils/cn.util';
+import { testID as testIDProps } from '../../utils/test-id.util';
 import { ChromeKeyboardScrollView } from '../chrome-keyboard-scroll-view/chrome-keyboard-scroll-view';
+import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
+import { CollapsibleHeaderBackdrop } from '../collapsible-header-backdrop/collapsible-header-backdrop';
+import { CollapsibleHeaderLargeTitle } from '../collapsible-header-large-title/collapsible-header-large-title';
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
+
+import type { ComponentProps, ReactNode } from 'react';
 
 type TitleProps =
     | { readonly title: string; readonly subtitle?: string; readonly largeTitle?: never; readonly smallTitle?: never }
@@ -80,6 +77,12 @@ export const CollapsibleChromePage = ({
         </View>
     );
 
+    const largeTitleLayer = (
+        <CollapsibleHeaderLargeTitle hasLeadingSlot={isDefined(leading)} hasTrailingSlot={isDefined(trailing)}>
+            {resolvedLargeTitle}
+        </CollapsibleHeaderLargeTitle>
+    );
+
     return (
         <ScreenChromeThemeProvider>
             <ScreenChromeFrame>
@@ -96,14 +99,13 @@ export const CollapsibleChromePage = ({
 
                 <CollapsibleHeaderBackdrop />
 
-                <CollapsibleHeader>
-                    {isDefined(leading) ? <CollapsibleHeaderLeading>{leading}</CollapsibleHeaderLeading> : null}
-                    <CollapsibleHeaderTitleSlot>
-                        <CollapsibleHeaderLargeTitle>{resolvedLargeTitle}</CollapsibleHeaderLargeTitle>
-                    </CollapsibleHeaderTitleSlot>
-                    {isDefined(trailing) ? <CollapsibleHeaderTrailing>{trailing}</CollapsibleHeaderTrailing> : null}
-                    <CollapsibleHeaderSmallTitle>{resolvedSmallTitle}</CollapsibleHeaderSmallTitle>
-                </CollapsibleHeader>
+                <CollapsibleChromeHeader
+                    {...testIDProps(testID, TestIDPartEnum.HEADER)}
+                    leading={leading}
+                    trailing={trailing}
+                    expandedTitle={largeTitleLayer}
+                    collapsedTitle={resolvedSmallTitle}
+                />
 
                 {isDefined(footer) ? <StickyFooterBand>{footer}</StickyFooterBand> : null}
             </ScreenChromeFrame>

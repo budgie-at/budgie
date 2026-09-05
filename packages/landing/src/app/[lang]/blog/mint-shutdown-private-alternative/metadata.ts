@@ -8,7 +8,6 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     slug: 'mint-shutdown-private-alternative',
     date: '2026-05-07',
     author: 'Budgie Team',
-    image: '/images/design-mode/ai-budgeting-app-4x.jpg',
     readingTimeMinutes: 12,
     title: msg`After Mint: A Private, Offline Alternative That Actually Sticks Around`,
     description: msg`Mint shut down in 2024 and most replacements are still cloud-based. Here's why an offline-first, on-device tracker is the most durable answer for financial privacy.`,

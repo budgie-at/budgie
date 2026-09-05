@@ -39,7 +39,6 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
         author: ARTICLE_METADATA.author,
         date: ARTICLE_METADATA.date,
         description: i18n._(ARTICLE_METADATA.seoDescription),
-        image: ARTICLE_METADATA.image,
         keywords: t(i18n)`offline-first privacy, financial app security, private budget app`,
         locale: lang,
         slug: ARTICLE_METADATA.slug,
@@ -59,14 +58,14 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                 date={ARTICLE_METADATA.date}
                 description={t(i18n)`Discover why offline-first architecture is the only truly private approach for financial apps.`}
                 homeLabel={t(i18n)`Home`}
-                image={ARTICLE_METADATA.image}
+                image={`/${lang}/blog/${ARTICLE_METADATA.slug}/opengraph-image`}
                 keywords={t(i18n)`offline-first privacy, financial app security, private budget app`}
                 locale={lang}
                 slug={ARTICLE_METADATA.slug}
                 title={i18n._(ARTICLE_METADATA.title)}
             />
 
-            <BlogArticleHero image={ARTICLE_METADATA.image} imageAlt={i18n._(ARTICLE_METADATA.title)}>
+            <BlogArticleHero image={`/${lang}/blog/${ARTICLE_METADATA.slug}/opengraph-image`} imageAlt={i18n._(ARTICLE_METADATA.title)}>
                 <Link
                     className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
                     href={`/${lang}/blog`}

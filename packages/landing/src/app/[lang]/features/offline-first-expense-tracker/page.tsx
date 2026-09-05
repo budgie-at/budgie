@@ -12,12 +12,14 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
+import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
+import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -79,6 +81,15 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                     </Trans>
                 }
             />
+
+            <FeaturePageMedia>
+                <AppShot
+                    alt={t(i18n)`Budgie transaction list rendered straight from the on-device database with no network call`}
+                    locale={lang}
+                    scene="offline-first-expense-tracker-1"
+                    slug="offline-first-expense-tracker"
+                />
+            </FeaturePageMedia>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -163,6 +174,15 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                     />
                 </FeaturePageComparisonTable>
             </FeaturePageSection>
+
+            <FeaturePageMedia>
+                <AppShot
+                    alt={t(i18n)`Budgie settings screen with the app lock, language, currency and default account options`}
+                    locale={lang}
+                    scene="offline-first-expense-tracker-2"
+                    slug="offline-first-expense-tracker"
+                />
+            </FeaturePageMedia>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem

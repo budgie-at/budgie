@@ -4,6 +4,7 @@ env:
 ---
 - longPressOn:
     id: ${TRANSACTION_CARD_ID}
+    index: 0
 - extendedWaitUntil:
     visible:
       id: 'TransactionContextMenu.ConvertToTransferButton'

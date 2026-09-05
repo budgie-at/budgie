@@ -96,11 +96,13 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
         if (!isNotEmptyArray(transactions)) {
             return { newTransactions: [], parsedTransactionCount: 0 };
         }
-        const transactionInputs = transactions.map(transaction => {
-            const lookup = context.mccCategoryLookupMap.get(transaction.category ?? '') ?? null;
+        const transactionInputs = await Promise.all(
+            transactions.map(async transaction => {
+                const lookup = context.mccCategoryLookupMap.get(transaction.category ?? '') ?? null;
 
-            return mapBankTransactionToCreateInput(transaction, account.id, lookup, this.provider);
-        });
+                return mapBankTransactionToCreateInput(transaction, account.id, lookup, this.provider);
+            })
+        );
         const prepared = transactionImportService.prepareImportedInputs(transactionInputs, context.existingTransactionIdMap);
 
         const upsertedTransactions = await transactionImportService.bulkUpsertPreparedImported(prepared, context.tx, {
