@@ -105,6 +105,16 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
     { slug: 'bank-fee-tracking', locale: 'fr', scene: 'bank-fee-tracking-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'bank-fee-tracking', locale: 'uk', scene: 'bank-fee-tracking-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
     { slug: 'bank-fee-tracking', locale: 'uk', scene: 'bank-fee-tracking-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'budget-planning', locale: 'de', scene: 'budget-planning-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'budget-planning', locale: 'de', scene: 'budget-planning-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'budget-planning', locale: 'en', scene: 'budget-planning-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'budget-planning', locale: 'en', scene: 'budget-planning-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'budget-planning', locale: 'es', scene: 'budget-planning-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'budget-planning', locale: 'es', scene: 'budget-planning-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'budget-planning', locale: 'fr', scene: 'budget-planning-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'budget-planning', locale: 'fr', scene: 'budget-planning-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'budget-planning', locale: 'uk', scene: 'budget-planning-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'budget-planning', locale: 'uk', scene: 'budget-planning-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'categorization-rules', locale: 'de', scene: 'categorization-rules-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
     { slug: 'categorization-rules', locale: 'de', scene: 'categorization-rules-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'categorization-rules', locale: 'en', scene: 'categorization-rules-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
@@ -399,6 +409,16 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
     { slug: 'monobank-sync', locale: 'uk', scene: 'monobank-sync-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'monobank-sync', locale: 'en', scene: 'monobank-sync-clip-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.MOTION },
     { slug: 'monobank-sync', locale: 'en', scene: 'monobank-sync-clip-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.MOTION },
+    { slug: 'multi-currency', locale: 'de', scene: 'multi-currency-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'multi-currency', locale: 'de', scene: 'multi-currency-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'multi-currency', locale: 'en', scene: 'multi-currency-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'multi-currency', locale: 'en', scene: 'multi-currency-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'multi-currency', locale: 'es', scene: 'multi-currency-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'multi-currency', locale: 'es', scene: 'multi-currency-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'multi-currency', locale: 'fr', scene: 'multi-currency-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'multi-currency', locale: 'fr', scene: 'multi-currency-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'multi-currency', locale: 'uk', scene: 'multi-currency-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'multi-currency', locale: 'uk', scene: 'multi-currency-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'multi-language-app', locale: 'de', scene: 'multi-language-app-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
     { slug: 'multi-language-app', locale: 'de', scene: 'multi-language-app-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'multi-language-app', locale: 'en', scene: 'multi-language-app-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
@@ -419,6 +439,86 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
     { slug: 'net-worth-tracker', locale: 'fr', scene: 'net-worth-tracker-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'net-worth-tracker', locale: 'uk', scene: 'net-worth-tracker-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
     { slug: 'net-worth-tracker', locale: 'uk', scene: 'net-worth-tracker-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'net-worth-tracker', locale: 'de', scene: 'net-worth-tracker-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'net-worth-tracker', locale: 'de', scene: 'net-worth-tracker-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'net-worth-tracker', locale: 'en', scene: 'net-worth-tracker-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'net-worth-tracker', locale: 'en', scene: 'net-worth-tracker-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'net-worth-tracker', locale: 'es', scene: 'net-worth-tracker-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'net-worth-tracker', locale: 'es', scene: 'net-worth-tracker-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'net-worth-tracker', locale: 'fr', scene: 'net-worth-tracker-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'net-worth-tracker', locale: 'fr', scene: 'net-worth-tracker-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'net-worth-tracker', locale: 'uk', scene: 'net-worth-tracker-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'net-worth-tracker', locale: 'uk', scene: 'net-worth-tracker-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    {
+        slug: 'no-bank-login-budget-app',
+        locale: 'de',
+        scene: 'no-bank-login-budget-app-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'no-bank-login-budget-app',
+        locale: 'de',
+        scene: 'no-bank-login-budget-app-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'no-bank-login-budget-app',
+        locale: 'en',
+        scene: 'no-bank-login-budget-app-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'no-bank-login-budget-app',
+        locale: 'en',
+        scene: 'no-bank-login-budget-app-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'no-bank-login-budget-app',
+        locale: 'es',
+        scene: 'no-bank-login-budget-app-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'no-bank-login-budget-app',
+        locale: 'es',
+        scene: 'no-bank-login-budget-app-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'no-bank-login-budget-app',
+        locale: 'fr',
+        scene: 'no-bank-login-budget-app-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'no-bank-login-budget-app',
+        locale: 'fr',
+        scene: 'no-bank-login-budget-app-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'no-bank-login-budget-app',
+        locale: 'uk',
+        scene: 'no-bank-login-budget-app-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'no-bank-login-budget-app',
+        locale: 'uk',
+        scene: 'no-bank-login-budget-app-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
     {
         slug: 'offline-first-expense-tracker',
         locale: 'de',
