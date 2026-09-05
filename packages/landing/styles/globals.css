@@ -57,6 +57,12 @@
     --radius-md: calc(var(--radius) - 0.25rem);
     --radius-sm: calc(var(--radius) - 0.5rem);
 
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --dur-fast: 160ms;
+    --dur-base: 260ms;
+    --dur-slow: 400ms;
+
     --animate-accordion-down: accordion-down 0.2s ease-out;
     --animate-accordion-up: accordion-up 0.2s ease-out;
 
@@ -166,7 +172,7 @@
     }
 
     section {
-        overflow: hidden;
+        overflow-x: clip;
     }
 }
 
@@ -182,5 +188,272 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+.story-grid {
+    --story-accent: hsl(var(--primary));
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3rem;
+}
+
+.story-rail {
+    display: none;
+}
+
+.story-frame {
+    position: relative;
+    width: min(88vw, 19rem);
+    margin-inline: auto;
+}
+
+.story-bloom {
+    position: absolute;
+    inset: -14% -22%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--story-accent) 24%, transparent), transparent 100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-slow) var(--ease-out);
+}
+
+.story-stage[data-active] .story-bloom {
+    opacity: 1;
+}
+
+.story-callout {
+    position: absolute;
+    inset-inline: 0;
+    translate: 0.5rem -50%;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity var(--dur-base) var(--ease-out) 120ms,
+        translate var(--dur-base) var(--ease-out) 120ms;
+}
+
+.story-callout + .story-callout {
+    transition-delay: 180ms;
+}
+
+.story-callout[data-shown],
+.story-grid:not([data-ready]) .story-stage[data-index='0'] .story-callout {
+    opacity: 1;
+    translate: 0 -50%;
+}
+
+.story-callout-band {
+    display: block;
+    height: 2px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--story-accent) 80%, transparent);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--story-accent) 45%, transparent);
+}
+
+.story-callout-label {
+    position: absolute;
+    bottom: 0.55rem;
+    left: 0.75rem;
+    display: inline-block;
+    width: max-content;
+    max-width: 74%;
+    text-wrap: balance;
+}
+
+@media (min-width: 1024px) {
+    .story-grid {
+        --story-frame-width: min(18rem, 31vh);
+        --story-frame-height: calc(var(--story-frame-width) * 2.1722);
+
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        column-gap: 2rem;
+        row-gap: 0;
+    }
+
+    .story-intro {
+        grid-column: 1 / -1;
+        margin-bottom: 3rem;
+    }
+
+    .story-step {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        grid-column: 1 / span 5;
+        min-height: 88vh;
+    }
+
+    .story-step-title {
+        color: hsl(var(--muted-foreground));
+        transition: color var(--dur-slow) var(--ease-out);
+    }
+
+    .story-step[data-active] .story-step-title,
+    .story-grid:not([data-ready]) .story-step-title {
+        color: hsl(var(--foreground));
+    }
+
+    .story-step[data-active] .story-step-ordinal {
+        color: hsl(var(--foreground));
+    }
+
+    .story-rail {
+        display: block;
+        position: relative;
+        grid-column: 6;
+        grid-row: 2 / span 20;
+        justify-self: center;
+        width: 1px;
+        margin-block: 4rem;
+        border-radius: 2px;
+        background: color-mix(in srgb, hsl(var(--foreground)) 8%, transparent);
+    }
+
+    .story-rail-progress {
+        display: block;
+        height: 100%;
+        border-radius: 2px;
+        background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--story-accent) 55%, transparent));
+        transform-origin: top;
+        scale: 1 0;
+    }
+
+    .story-stage {
+        position: sticky;
+        grid-column: 7 / span 6;
+        grid-row: 2 / span 20;
+        align-self: start;
+        top: max(5.5rem, calc((100vh - var(--story-frame-height)) / 2));
+        opacity: 0;
+        transform: scale(0.985);
+        pointer-events: none;
+        transition:
+            opacity var(--dur-base) var(--ease-out),
+            transform var(--dur-base) var(--ease-out);
+    }
+
+    .story-stage[data-active],
+    .story-grid:not([data-ready]) .story-stage[data-index='0'] {
+        opacity: 1;
+        transform: none;
+    }
+
+    .story-frame {
+        width: var(--story-frame-width);
+        margin-inline: 0;
+    }
+
+    .story-callout-label {
+        top: 50%;
+        bottom: auto;
+        left: 100%;
+        translate: 0.9rem -50%;
+        max-width: 11rem;
+    }
+
+    .story-callout-label::before {
+        content: '';
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        width: 0.9rem;
+        height: 1px;
+        background: color-mix(in srgb, var(--story-accent) 60%, transparent);
+    }
+}
+
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) and (max-width: 1023.98px) {
+        .story-step {
+            animation: story-rise linear both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 28%;
+        }
+
+        .story-stage {
+            animation: story-enter linear both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
+        }
+    }
+
+    @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+        .story-frame {
+            animation: story-parallax linear both;
+            animation-timeline: view();
+            animation-range: cover;
+        }
+
+        .story-rail-progress {
+            animation: story-rail linear both;
+            animation-timeline: view();
+            animation-range: cover;
+        }
+    }
+}
+
+@keyframes story-rise {
+    from {
+        translate: 0 14px;
+    }
+    to {
+        translate: 0 0;
+    }
+}
+
+@keyframes story-enter {
+    from {
+        opacity: 0;
+        translate: 0 12px;
+    }
+    to {
+        opacity: 1;
+        translate: 0 0;
+    }
+}
+
+@keyframes story-parallax {
+    from {
+        translate: 0 14px;
+    }
+    to {
+        translate: 0 -14px;
+    }
+}
+
+@keyframes story-rail {
+    from {
+        scale: 1 0;
+    }
+    to {
+        scale: 1 1;
+    }
+}
+
+@media (prefers-reduced-data: reduce) {
+    .story-bloom {
+        display: none;
+    }
+}
+
+.story-grid[data-save-data] .story-bloom {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .story-stage {
+        transform: none;
+        transition: opacity 150ms linear;
+    }
+
+    .story-callout {
+        translate: 0 -50%;
+        transition: opacity 150ms linear;
+    }
+
+    .story-step-title {
+        transition: none;
     }
 }

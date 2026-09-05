@@ -148,7 +148,17 @@ The metadata builders never set `openGraph.images` / `twitter.images` — config
 
 App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`. Never commit binary icon variants next to them.
 
-### 12. Metadata char budgets
+### 12. Feature-page scroll stories
+
+A feature page carries at most one `FeatureStory`, with **2–5 steps** (steps variant) or **one shot plus 2–4 points** (basic variant). Step titles, value copy, and callout labels are inline `<Trans>` in the route page; `alt` uses `t(i18n)`. Passing steps as `steps={[…]}`, as a registry field, or as any array of copy is prohibited — it is the same violation as §2 and §6.
+
+Scene ids, `slug`, `locale`, and callout `y` values are page-local literals. They never enter `metadata.ts` or the feature registry; the allowed registry field list is unchanged. A callout `y` is the vertical centre of the highlight band as a fraction of the framed screenshot height — one number, no `x`, so a translated label never collides with UI.
+
+The story renders a server compound root; only its inner observer island is `"use client"`, it renders `{children}`, and it holds no translatable text, so every step string stays server-rendered in the SSG'd HTML for all five locales. `FeaturePageMedia` is retained only for a supplementary single shot; a page with a story does not also open with a `FeaturePageMedia` hero shot, and it drops its "How it works" prose section.
+
+Reference implementation: `src/app/[lang]/features/net-worth-tracker/page.tsx`.
+
+### 13. Metadata char budgets
 
 Titles must fit 60 characters including the ` | Budgie` template suffix; descriptions must fit 160 characters. The `fitText` util (`src/generic/util/fit-text.util.ts`) is applied inside the metadata builders, so page copy in `metadata.ts` sidecars may be longer — the builder clamps it. Do not add per-page clamping logic.
 
@@ -442,6 +452,13 @@ Check this list before authoring a new SEO component.
 | Related feature cards       | `FeaturePageRelated features locale`                                    |
 | Related blog articles       | `FeaturePageRelatedArticles locale slugs`                               |
 | Bottom CTA                  | `FeaturePageCta locale`                                                 |
+| Scroll story wrapper        | `FeatureStory` (compound root; the observer island carries no strings)  |
+| Story heading + lede        | `FeatureStory.Intro heading` + children                                 |
+| Narration step              | `FeatureStory.Step index title` + children                              |
+| Sticky screenshot           | `FeatureStory.Shot index slug scene locale alt priority` + callouts     |
+| Sticky motion clip          | `FeatureStory.Clip index slug scene locale alt` + callouts              |
+| Screenshot highlight        | `FeatureStory.Callout y index` + children                               |
+| Basic-variant bullet        | `FeatureStory.Point index` + children                                   |
 
 ### Generic primitives
 
@@ -456,7 +473,7 @@ Check this list before authoring a new SEO component.
 ## When extending
 
 - Adding a new blog article: create `src/app/[lang]/blog/<slug>/page.tsx`, create sibling `metadata.ts`, import the sidecar into the article registry/index aggregator, and optionally add `opengraph-image.tsx`.
-- Adding a new feature page: create `src/app/[lang]/features/<slug>/page.tsx`, create sibling `metadata.ts`, import the sidecar into the feature registry/index aggregator, and optionally add `opengraph-image.tsx`.
+- Adding a new feature page: create `src/app/[lang]/features/<slug>/page.tsx`, create sibling `metadata.ts`, import the sidecar into the feature registry/index aggregator, compose a `FeatureStory` with 2–5 steps referencing only scene ids present in the generated media manifest, and optionally add `opengraph-image.tsx`.
 - Adding a new pillar hub: create `src/app/[lang]/<slug>/page.tsx`, create sibling metadata if the family is enumerated, and keep visible hub copy in the page or a page-owned explicit JSX component.
 - Adding a new legal page: create `src/app/[lang]/legal/<slug>/page.tsx`; do not add it to a registry or sitemap.
 - Adding a new SEO concern: build a primitive component and have pages compose it as children. Do not bolt body-copy prop bags onto existing wrappers.
