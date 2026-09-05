@@ -3863,7 +3863,7 @@ msgstr "Ajustes de gestión de datos de Budgie con las acciones de importar, exp
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie debt account screen showing the amount left to receive above two repayment transfers"
-msgstr "Pantalla de cuenta de deuda en Budgie con el importe pendiente sobre dos transferencias de devolución"
+msgstr "Pantalla de cuenta de deuda en Budgie con el importe pendiente de cobro sobre dos transferencias de devolución"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie debt account screen with the amount left to receive above the repayment history"
@@ -6787,7 +6787,7 @@ msgstr "Todas las funciones de Budgie en un solo lugar: sincronización bancaria
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Every buy keeps its rate"
-msgstr "Cada compra guarda su tipo"
+msgstr "Cada compra guarda su tipo de cambio"
 
 #: src/app/[lang]/features/page.tsx
 msgid "Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI categorization — in one place."

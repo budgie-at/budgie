@@ -3863,7 +3863,7 @@ msgstr "Budgie-Einstellungen zur Datenverwaltung mit den Aktionen Importieren, E
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie debt account screen showing the amount left to receive above two repayment transfers"
-msgstr "Budgie-Schuldenkonto mit dem offenen Betrag über zwei Rückzahlungs-Transfers"
+msgstr "Budgie-Schuldenkonto mit dem noch ausstehenden Betrag über zwei Rückzahlungs-Transfers"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie debt account screen with the amount left to receive above the repayment history"
@@ -8832,7 +8832,7 @@ msgstr "Lernkurve für die Methodik"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Left to receive, live"
-msgstr "Offener Betrag, live"
+msgstr "Noch ausstehender Betrag, live"
 
 #: src/app/[lang]/legal/layout.tsx
 #: src/generic/component/footer/footer.tsx

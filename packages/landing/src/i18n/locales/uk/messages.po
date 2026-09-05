@@ -3863,7 +3863,7 @@ msgstr "Налаштування керування даними Budgie з ді�
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie debt account screen showing the amount left to receive above two repayment transfers"
-msgstr "Екран боргового рахунку Budgie із сумою до повернення над двома переказами-погашеннями"
+msgstr "Екран боргового рахунку Budgie із сумою, яку залишилося отримати, над двома переказами-погашеннями"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie debt account screen with the amount left to receive above the repayment history"
@@ -15222,7 +15222,7 @@ msgstr "Що ви зберігаєте, коли припиняєте плати
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "What you lent adds to your net worth. What you owe subtracts from it, down to the last repayment."
-msgstr "Те, що ви позичили, додається до капіталу. Те, що винні ви, віднімається, аж до останнього погашення."
+msgstr "Те, що ви дали в борг, додається до чистого капіталу. Те, що ви винні, віднімається від нього до останнього погашення."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "What's an “Untagged” bucket?"
