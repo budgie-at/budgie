@@ -5720,12 +5720,12 @@ msgid "CSV Bank Statement Import"
 msgstr "CSV Bank Statement Import"
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "CSV columns map cleanly to most spreadsheet pivots: date, account, category, tags, amount, currency, comment. The database backup carries the SQLCipher key wrapped in your PIN — restore on any device."
-msgstr "CSV columns map cleanly to most spreadsheet pivots: date, account, category, tags, amount, currency, comment. The database backup carries the SQLCipher key wrapped in your PIN — restore on any device."
+msgid "CSV columns map cleanly to most spreadsheet pivots: title, both account legs with their amounts and currencies, category, MCC, date, comment, and the bank's own transaction id. The database backup carries the SQLCipher key wrapped in your PIN — restore on any device."
+msgstr "CSV columns map cleanly to most spreadsheet pivots: title, both account legs with their amounts and currencies, category, MCC, date, comment, and the bank's own transaction id. The database backup carries the SQLCipher key wrapped in your PIN — restore on any device."
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "CSV export with date, account, category, tags, amount, currency, comment columns"
-msgstr "CSV export with date, account, category, tags, amount, currency, comment columns"
+msgid "CSV export with title, both account legs and amounts, currencies, category, MCC, date, comment, and the bank's transaction id"
+msgstr "CSV export with title, both account legs and amounts, currencies, category, MCC, date, comment, and the bank's transaction id"
 
 #: src/app/[lang]/features/data-export/opengraph-image.tsx
 msgid "CSV for spreadsheets. Encrypted backup for restore."
@@ -7184,10 +7184,6 @@ msgstr "Figma"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Figma’s real-time collaboration is powered by CRDTs under the hood. Multiple designers can work on the same file simultaneously because Figma’s data model is designed for concurrent modification. Changes merge automatically without conflicts."
 msgstr "Figma’s real-time collaboration is powered by CRDTs under the hood. Multiple designers can work on the same file simultaneously because Figma’s data model is designed for concurrent modification. Changes merge automatically without conflicts."
-
-#: src/app/[lang]/features/data-export/page.tsx
-msgid "Filter by date range before exporting — last month, this year, or anything custom"
-msgstr "Filter by date range before exporting — last month, this year, or anything custom"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Filter-aware count for missing categories under the current account, date, tag, and transaction type"
@@ -10762,6 +10758,10 @@ msgstr "One settings screen, and the thing worth noticing is the row that never 
 msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
 msgstr "One tag per transaction can be promoted to “primary” with a corner-star badge"
 
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
+msgstr "One tap exports the whole history — no range to pick, no partial file to reconcile later"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "One uncategorized grocery run can make your food budget look better than it is. A few missing categories across income and expenses can distort category charts, month-end reviews, and spending trends."
 msgstr "One uncategorized grocery run can make your food budget look better than it is. A few missing categories across income and expenses can distort category charts, month-end reviews, and spending trends."
@@ -12445,8 +12445,8 @@ msgid "Settings → Export → Backup. Budgie writes a .db file with SQLCipher e
 msgstr "Settings → Export → Backup. Budgie writes a .db file with SQLCipher encryption intact. To restore, install Budgie on the new device, tap Restore on the welcome screen, point at the file, enter the PIN."
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "Settings → Export. Pick CSV or Database. Pick a date range. Save through the OS share sheet to Files, iCloud Drive, Google Drive, or any storage app."
-msgstr "Settings → Export. Pick CSV or Database. Pick a date range. Save through the OS share sheet to Files, iCloud Drive, Google Drive, or any storage app."
+msgid "Settings → Export. Pick CSV or Database. Every transaction goes into the file. Save through the OS share sheet to Files, iCloud Drive, Google Drive, or any storage app."
+msgstr "Settings → Export. Pick CSV or Database. Every transaction goes into the file. Save through the OS share sheet to Files, iCloud Drive, Google Drive, or any storage app."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Settings → Privacy → Screenshot protection. Toggle individual screens. The runtime applies FLAG_SECURE on Android and a blur layer on iOS in app-switcher state."
