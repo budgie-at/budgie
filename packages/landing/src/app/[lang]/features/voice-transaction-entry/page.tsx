@@ -104,7 +104,9 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>whisper.rn (whisper.cpp backend) runs Whisper-small locally for accurate, multilingual transcription</Trans>
+                        <Trans>
+                            whisper.rn (whisper.cpp backend) runs Whisper large-v3-turbo locally for accurate, multilingual transcription
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>On-device LLM extracts amount, merchant, date, and category from natural speech</Trans>
@@ -156,8 +158,9 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     question={<Trans>Which languages does voice entry support?</Trans>}
                     answer={
                         <Trans>
-                            whisper.rn ships the Whisper-small model, which covers English, Ukrainian, German, French, and Spanish as
-                            primary languages, plus dozens more. Transcription quality scales with language coverage in the model.
+                            Budgie downloads the Whisper large-v3-turbo model once and caches it on the device. It covers English,
+                            Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with
+                            language coverage in the model.
                         </Trans>
                     }
                 />
