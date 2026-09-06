@@ -250,7 +250,7 @@ jobs:
         name: iOS Maestro E2E
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.11.0 # v1.11.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@25b80d752225bbee05eba4453a86ba67562180ee # mobile-ci main (simslim verify, pre-v1.13.0)
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -272,6 +272,9 @@ jobs:
             flow-retries: '1'
             maestro-version: '2.6.1'
             simulator-device: iPhone 17 Pro
+            simulator-slim-profile: tests/app-tests/simslim.ci.json
+            simulator-slim-repair: 'true'
+            simulator-requires: push,universal-links
             test-timeout-minutes: 85
             cache-profile: ios-e2e-budgie-v2
             install-command: pnpm install --frozen-lockfile
