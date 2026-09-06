@@ -79,7 +79,11 @@ per PR touching them and nightly, on one shard, seeding each flow's scene
 (`en`/`dark`) through `seed-screenshot-scene.sh` as mobile-ci's
 `pre-flow-command`. `pr.yml`'s `detect-mobile-impact` keeps those same paths
 out of the full iOS suite. `pin-app-lock-clip-1` is excluded until #697 makes
-the seed hook produce a SQLCipher database for lock-flag scenes. There is no
+the seed hook produce a SQLCipher database for lock-flag scenes. `ai-auto-categorization-clip-1`
+is excluded because the smoke job's e2e build sets `EXPO_PUBLIC_AI_DISABLE=true`
+(see #700), which cannot exercise the on-device AI categorization the clip
+records; it stays in `landing-media.config.json` for local capture against an
+AI-enabled build (see #718). There is no
 CSV import clip: the flow recorded the iOS Files picker, which both needs
 E2EFixtures on the CI runner and exposes `01.db`…`09.db` fixture filenames.
 

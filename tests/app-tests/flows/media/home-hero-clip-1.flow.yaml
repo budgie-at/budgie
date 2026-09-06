@@ -16,13 +16,15 @@ appId: ${APP_ID}
 
 - startRecording: clip
 
+- waitForAnimationToEnd
+
 - tapOn:
       id: 'TabBar.Analytics'
 
 - extendedWaitUntil:
       visible:
           id: 'AnalyticsPage.Tab.Categories'
-      timeout: 10000
+      timeout: 15000
 
 - tapOn:
       id: 'TabBar.Home'
