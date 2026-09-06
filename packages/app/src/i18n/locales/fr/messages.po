@@ -227,6 +227,10 @@ msgstr "Compte {accountId} introuvable"
 msgid "Account {id} not found"
 msgstr "Compte {id} introuvable"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Account actions"
+msgstr "Actions du compte"
+
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
 msgstr "Nom et icône du compte"
@@ -318,7 +322,7 @@ msgstr "Ajouter des comptes depuis la banque"
 msgid "Add category"
 msgstr "Ajouter une catégorie"
 
-#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Add deposit"
 msgstr "Ajouter un dépôt"
 
@@ -457,11 +461,12 @@ msgstr "Appliquer les catégories par défaut selon les codes de catégorie des 
 msgid "Apply to existing transactions?"
 msgstr "Appliquer aux transactions existantes ?"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/account/hooks/use-archive-account.hook.ts
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Archive"
 msgstr "Archiver"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/account/hooks/use-archive-account.hook.ts
 msgid "Archive Account?"
 msgstr "Archiver le compte ?"
 
@@ -631,9 +636,9 @@ msgstr "Budgie supprimera de façon réversible {countText}. Vos transactions ma
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
-#: src/account/component/archive-account/archive-account.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -876,7 +881,7 @@ msgstr "Impossible d'activer le compte."
 msgid "Could not add accounts"
 msgstr "Impossible d'ajouter les comptes"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/account/hooks/use-archive-account.hook.ts
 msgid "Could not archive account"
 msgstr "Impossible d'archiver le compte"
 
@@ -976,6 +981,10 @@ msgstr "Impossible de récupérer les comptes"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not import CSV file"
 msgstr "Impossible d'importer le fichier CSV"
+
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "Could not load accounts"
+msgstr "Impossible de charger les comptes"
 
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Could not load accounts from the bank"
@@ -1325,6 +1334,10 @@ msgstr "Tout désélectionner"
 msgid "Detach debt"
 msgstr "Dissocier la dette"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Details"
+msgstr "Détails"
+
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
 msgstr "Désactiver le verrouillage"
@@ -1388,6 +1401,7 @@ msgid "e.g. Savings Account"
 msgstr "ex. Compte d'épargne"
 
 #: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Edit"
 msgstr "Modifier"
 
@@ -1581,6 +1595,10 @@ msgstr "Taux de change {sourceInstrumentId}->{targetInstrumentId} introuvable"
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Taux de change : {rateLabel}. Appuyez pour modifier le montant reçu"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Excluded from file imports"
+msgstr "Exclu des imports de fichiers"
 
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Expected maturity date"
@@ -1779,6 +1797,10 @@ msgstr "Retour"
 msgid "Greater Than"
 msgstr "Supérieur à"
 
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Hidden from Home"
+msgstr "Masqué de l'Accueil"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Masquer les soldes des comptes et la valeur nette lors des captures d'écran"
@@ -1871,9 +1893,18 @@ msgstr "Inactif"
 msgid "Inactive Accounts"
 msgstr "Comptes inactifs"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Include in file imports"
+msgstr "Inclure dans les imports de fichiers"
+
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
 msgid "Include in Net Worth"
 msgstr "Inclure dans la valeur nette"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Included in file imports"
+msgstr "Inclus dans les imports de fichiers"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -2224,6 +2255,10 @@ msgstr "Nouveau transfert"
 #: src/app/transaction-account-filter.tsx
 msgid "No accounts found"
 msgstr "Aucun compte trouvé"
+
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "No accounts in this integration yet"
+msgstr "Aucun compte pour le moment dans cette intégration"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
@@ -3230,6 +3265,7 @@ msgid "Switch between light and dark themes"
 msgstr "Basculer entre les thèmes clair et sombre"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync"
 msgstr "Synchronisation"
 
@@ -3244,6 +3280,10 @@ msgstr "Réparations des données de synchronisation"
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Sync Failed"
 msgstr "Échec de la synchronisation"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Sync paused"
+msgstr "Synchronisation en pause"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Sync Repairs"
@@ -3315,7 +3355,7 @@ msgstr "Appuyez pour sélectionner"
 msgid "Target balance"
 msgstr "Solde cible"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 msgstr "Ce compte sera masqué de votre vue principale et ne sera pas inclus dans les totaux. Vous pouvez le restaurer à tout moment depuis Paramètres → Comptes archivés."
 

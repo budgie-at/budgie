@@ -227,6 +227,10 @@ msgstr "Рахунок {accountId} не знайдено"
 msgid "Account {id} not found"
 msgstr "Рахунок {id} не знайдено"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Account actions"
+msgstr "Дії з рахунком"
+
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
 msgstr "Назва і іконка рахунку"
@@ -318,7 +322,7 @@ msgstr "Додати рахунки з банку"
 msgid "Add category"
 msgstr "Додати категорію"
 
-#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Add deposit"
 msgstr "Додати депозит"
 
@@ -457,11 +461,12 @@ msgstr "Застосовувати типові категорії на осно
 msgid "Apply to existing transactions?"
 msgstr "Застосувати до наявних транзакцій?"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/account/hooks/use-archive-account.hook.ts
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Archive"
 msgstr "Архівувати"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/account/hooks/use-archive-account.hook.ts
 msgid "Archive Account?"
 msgstr "Архівувати рахунок?"
 
@@ -631,9 +636,9 @@ msgstr "Budgie позначить як видалені такі записи: {
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
-#: src/account/component/archive-account/archive-account.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -876,7 +881,7 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not add accounts"
 msgstr "Не вдалося додати рахунки"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/account/hooks/use-archive-account.hook.ts
 msgid "Could not archive account"
 msgstr "Не вдалося архівувати рахунок"
 
@@ -976,6 +981,10 @@ msgstr "Не вдалося отримати рахунки"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
+
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "Could not load accounts"
+msgstr "Не вдалося завантажити рахунки"
 
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Could not load accounts from the bank"
@@ -1325,6 +1334,10 @@ msgstr "Скасувати вибір"
 msgid "Detach debt"
 msgstr "Відкріпити борг"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Details"
+msgstr "Деталі"
+
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
@@ -1388,6 +1401,7 @@ msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
 #: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Edit"
 msgstr "Редагувати"
 
@@ -1581,6 +1595,10 @@ msgstr "Обмінний курс {sourceInstrumentId}->{targetInstrumentId} н�
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Курс обміну: {rateLabel}. Натисніть, щоб редагувати суму отримання"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Excluded from file imports"
+msgstr "Виключено з імпортів файлів"
 
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Expected maturity date"
@@ -1779,6 +1797,10 @@ msgstr "Назад"
 msgid "Greater Than"
 msgstr "Більше ніж"
 
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Hidden from Home"
+msgstr "Приховано з Головної"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
@@ -1871,9 +1893,18 @@ msgstr "Неактивний"
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Include in file imports"
+msgstr "Враховувати в імпортах файлів"
+
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
 msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Included in file imports"
+msgstr "Враховується в імпортах файлів"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -2224,6 +2255,10 @@ msgstr "Новий переказ"
 #: src/app/transaction-account-filter.tsx
 msgid "No accounts found"
 msgstr "Рахунків не знайдено"
+
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "No accounts in this integration yet"
+msgstr "У цій інтеграції ще немає рахунків"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
@@ -3230,6 +3265,7 @@ msgid "Switch between light and dark themes"
 msgstr "Перемикайтеся між світлою та темною темами"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync"
 msgstr "Синхронізація"
 
@@ -3244,6 +3280,10 @@ msgstr "Виправлення даних синхронізації"
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Sync Failed"
 msgstr "Синхронізація не вдалась"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Sync paused"
+msgstr "Синхронізацію призупинено"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Sync Repairs"
@@ -3315,7 +3355,7 @@ msgstr "Торкніться для вибору"
 msgid "Target balance"
 msgstr "Цільовий баланс"
 
-#: src/account/component/archive-account/archive-account.tsx
+#: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 msgstr "Цей рахунок буде приховано з головного екрану і не враховуватиметься в загальних підсумках. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
 

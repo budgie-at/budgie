@@ -24,6 +24,16 @@ const VIRTUAL_SHIMS: Record<string, string> = {
         export const defineTask = () => undefined;
         export const unregisterTaskAsync = async () => undefined;
     `,
+    'expo-router': `
+        export const useRouter = () => ({ push: () => undefined, navigate: () => undefined, replace: () => undefined });
+        export const router = { push: () => undefined, navigate: () => undefined, replace: () => undefined };
+    `,
+    '@lingui/core/macro': `
+        export const t = parts => (Array.isArray(parts) ? parts.join('') : String(parts));
+    `,
+    '@lingui/react/macro': `
+        export const useLingui = () => ({ t: parts => (Array.isArray(parts) ? parts.join('') : String(parts)) });
+    `,
     'react-native': `
         export const InteractionManager = {
             runAfterInteractions(cb) {

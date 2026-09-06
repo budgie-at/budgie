@@ -26,6 +26,8 @@ import type { MccCategoryLookupInterface, SyncEntityInterface, TransactionEntity
 import type { SyncAccountInterface, SyncBatchResultInterface } from '@budgie/sync';
 
 class AppMonobankSyncService extends AbstractPollingSyncService {
+    override readonly supportsAddAccounts: boolean = true;
+
     protected readonly provider = ExternalSourceEnum.MONOBANK;
     // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
     protected readonly providerTitle = 'Monobank';
