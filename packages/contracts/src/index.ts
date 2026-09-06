@@ -72,10 +72,8 @@ export { AccountBalanceRepository } from './account-balance/repository/account-b
 
 export { getDebtLedgerBalance } from './account-balance/util/get-debt-ledger-balance.util';
 export { getDebtClosedAmount } from './account-balance/util/get-debt-closed-amount.util';
-export { buildDebtAccountProgressSummary } from './account-balance/util/build-debt-account-progress-summary.util';
 
 export type { DebtAccountProgressSummaryInterface } from './account-balance/interface/debt-account-progress-summary.interface';
-export type { DebtAccountProgressSummaryParamsInterface } from './account-balance/interface/debt-account-progress-summary-params.interface';
 
 export { SyncModeEnum } from './sync/enum/sync-mode.enum';
 export { SyncStatusEnum } from './sync/enum/sync-status.enum';

@@ -14,7 +14,6 @@ import { accountService } from '@app/account/service/account.service';
 import { transactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
 import {
     AccountEntityTable,
-    buildDebtAccountProgressSummary,
     AccountDebtTypeEnum,
     AccountTypeEnum,
     CategoryEntityTable,
@@ -44,6 +43,7 @@ import { seed } from '../../harness/seed/seed';
 
 import type {
     AccountEntityInterface,
+    DebtAccountProgressSummaryInterface,
     DebtEventCreateEntityInterface,
     TransactionCreateEntityInterface,
     TransactionEntryCreateEntityInterface,
@@ -228,45 +228,6 @@ describe('debt settlement statistics', () => {
         expectDebtProgressSummary(summary, 12_891 * PRECISION, 2_109 * PRECISION, 15_000 * PRECISION, 14.06);
     });
 
-    it('uses lent ledger entries instead of a stale signed balance when debt activity exists', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.LENT,
-            balance: 2_000 * PRECISION,
-            closedAmount: 109 * PRECISION,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 0,
-            targetAmount: 15_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 12_891 * PRECISION, 2_109 * PRECISION, 15_000 * PRECISION, 14.06);
-    });
-
-    it('uses borrowed ledger entries instead of a stale signed balance when debt activity exists', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.BORROW,
-            balance: -15_000 * PRECISION,
-            closedAmount: 2_109 * PRECISION,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 0,
-            targetAmount: 15_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 12_891 * PRECISION, 2_109 * PRECISION, 15_000 * PRECISION, 14.06);
-    });
-
-    it('treats a positive borrowed balance as already repaid when debt activity exists', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.BORROW,
-            balance: 4_100 * PRECISION,
-            closedAmount: 3_966 * PRECISION,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 0,
-            targetAmount: 45_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 36_934 * PRECISION, 8_066 * PRECISION, 45_000 * PRECISION, 17.92);
-    });
-
     it('summarizes lent debt after correcting returned amount and attaching income', async () => {
         const { summary } = await createLentDebtIncomeSettlementScenario({
             initialCurrentBalance: 0,
@@ -313,23 +274,6 @@ describe('debt settlement statistics', () => {
         expect(row.percentage).toBe(14.06);
     });
 
-    it('summarizes lent debt progress against the original target amount', () => {
-        expectOriginalTargetDebtProgressSummary(AccountDebtTypeEnum.LENT);
-    });
-
-    it('keeps the lent target amount as the denominator when ledger activity partially settles the debt', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.LENT,
-            balance: 0,
-            closedAmount: 2_100 * PRECISION,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 100 * PRECISION,
-            targetAmount: 15_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 12_900 * PRECISION, 2_100 * PRECISION, 15_000 * PRECISION, 14);
-    });
-
     it('keeps target-backed lent debt partially outstanding when ledger entries exist without a returned snapshot', async () => {
         const [category] = testDb.select().from(CategoryEntityTable).all();
         const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
@@ -352,33 +296,7 @@ describe('debt settlement statistics', () => {
         });
         await createDebtReturnIncome(cashAccount.id, debtAccount.id, category.id, 6_000 * PRECISION);
 
-        expectTargetBackedDebtProgress(debtAccount, cashAccount, AccountDebtTypeEnum.LENT);
-    });
-
-    it('summarizes a lent debt target as outstanding before any ledger entries exist', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.LENT,
-            balance: 0,
-            closedAmount: 0,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 0,
-            targetAmount: 13_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 13_000 * PRECISION, 0, 13_000 * PRECISION, 0);
-    });
-
-    it('summarizes lent debt from the returned balance when no ledger entries exist', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.LENT,
-            balance: 2_000 * PRECISION,
-            closedAmount: 0,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 0,
-            targetAmount: 15_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 13_000 * PRECISION, 2_000 * PRECISION, 15_000 * PRECISION, 13.33);
+        expectTargetBackedDebtProgress(debtAccount, cashAccount);
     });
 
     it('stores historical base valuation on debt account adjustment entries at creation', async () => {
@@ -414,19 +332,6 @@ describe('debt settlement statistics', () => {
         expect(row.convertedDebtTotalAmount).toBe(12_000 * PRECISION);
     });
 
-    it('summarizes lent debt as complete when signed balance is negative and no ledger entries exist', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.LENT,
-            balance: -100 * PRECISION,
-            closedAmount: 0,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 0,
-            targetAmount: 15_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 0, 15_000 * PRECISION, 15_000 * PRECISION, 100);
-    });
-
     it('summarizes target-only debt from home account rows before any ledger entries exist', () => {
         const debtAccount = seed.account({
             title: 'Target only debt',
@@ -451,33 +356,6 @@ describe('debt settlement statistics', () => {
         expect(row.convertedDebtOutstandingAmount).toBe(13_000 * PRECISION);
         expect(row.convertedDebtPaidAmount).toBe(0);
         expect(row.convertedDebtTotalAmount).toBe(13_000 * PRECISION);
-        const summary = buildDebtAccountProgressSummary({
-            debtType: row.account.debtType,
-            balance: convertFromMicroUnits(row.convertedBalance),
-            closedAmount: 0,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 0,
-            targetAmount: convertFromMicroUnits(row.convertedTargetBalance)
-        });
-
-        expectDebtProgressSummary(summary, 13_000, 0, 13_000, 0);
-    });
-
-    it('summarizes borrowed debt progress against the original target amount', () => {
-        expectOriginalTargetDebtProgressSummary(AccountDebtTypeEnum.BORROW);
-    });
-
-    it('keeps the borrowed target amount as the denominator when ledger activity partially settles the debt', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.BORROW,
-            balance: 0,
-            closedAmount: 8_066 * PRECISION,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 8_066 * PRECISION,
-            targetAmount: 45_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 36_934 * PRECISION, 8_066 * PRECISION, 45_000 * PRECISION, 17.92);
     });
 
     it('keeps target-backed borrowed debt partially outstanding when principal and repayment ledger entries exist without a snapshot', () => {
@@ -501,46 +379,7 @@ describe('debt settlement statistics', () => {
         createDebtTransferTransaction(debtAccount.id, cashAccount.id, 500 * PRECISION, 'Borrow extra money from Alex');
         createDebtTransferTransaction(cashAccount.id, debtAccount.id, 6_000 * PRECISION, 'Return money to Alex');
 
-        expectTargetBackedDebtProgress(debtAccount, cashAccount, AccountDebtTypeEnum.BORROW);
-    });
-
-    it('summarizes a borrowed debt target as outstanding before any ledger entries exist', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.BORROW,
-            balance: 0,
-            closedAmount: 0,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 0,
-            targetAmount: 45_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 45_000 * PRECISION, 0, 45_000 * PRECISION, 0);
-    });
-
-    it('summarizes borrowed debt from the signed balance when no ledger entries exist', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.BORROW,
-            balance: -8_066 * PRECISION,
-            closedAmount: 0,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 0,
-            targetAmount: 45_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 8_066 * PRECISION, 36_934 * PRECISION, 45_000 * PRECISION, 82.08);
-    });
-
-    it('summarizes borrowed debt from the already repaid balance when no ledger entries exist', () => {
-        const summary = buildDebtAccountProgressSummary({
-            debtType: AccountDebtTypeEnum.BORROW,
-            balance: 100 * PRECISION,
-            closedAmount: 0,
-            openedExtraAmount: 0,
-            openedPrincipalAmount: 0,
-            targetAmount: 45_000 * PRECISION
-        });
-
-        expectDebtProgressSummary(summary, 44_900 * PRECISION, 100 * PRECISION, 45_000 * PRECISION, 0.22);
+        expectTargetBackedDebtProgress(debtAccount, cashAccount);
     });
 
     it('creates borrowed debt accounts by treating current balance as an already returned amount', async () => {
@@ -627,7 +466,7 @@ describe('debt settlement statistics', () => {
 
         await transactionDebtSettlementService.attach({ transactionId: additionalBorrowing.id, debtAccountId: debtAccount.id });
 
-        const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.BORROW);
+        const summary = buildSummaryFromDebtAccount(debtAccount);
 
         expectDebtProgressSummary(summary, 13_109 * PRECISION, 2_000 * PRECISION, 15_109 * PRECISION, 13.24);
         expectBorrowedDebtSettlementHomeRow(debtAccount.id, cashAccount.instrumentId);
@@ -663,7 +502,7 @@ describe('debt settlement statistics', () => {
 
         await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
 
-        const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.LENT);
+        const summary = buildSummaryFromDebtAccount(debtAccount);
 
         expectDebtProgressSummary(summary, 0, 300 * PRECISION, 300 * PRECISION, 100);
     });
@@ -685,7 +524,7 @@ describe('debt settlement statistics', () => {
             },
             cashAccount.id
         );
-        const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.LENT);
+        const summary = buildSummaryFromDebtAccount(debtAccount);
         const adjustmentEntry = findAdjustmentEntry(debtAccount.id);
 
         expect(adjustmentEntry).toBeUndefined();
@@ -715,7 +554,7 @@ describe('debt settlement statistics', () => {
 
         await transactionDebtSettlementService.attach({ transactionId: additionalIncome.id, debtAccountId: debtAccount.id });
 
-        const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.BORROW);
+        const summary = buildSummaryFromDebtAccount(debtAccount);
         const adjustmentEntry = findAdjustmentEntry(debtAccount.id);
 
         expect(adjustmentEntry).toBeUndefined();
@@ -813,19 +652,6 @@ const expectDebtSettlementAnalyticsState = ({
     expect(debtAccountTransactionCount?.value).toBe(2);
 };
 
-const expectOriginalTargetDebtProgressSummary = (debtType: AccountDebtTypeEnum): void => {
-    const summary = buildDebtAccountProgressSummary({
-        debtType,
-        balance: 0,
-        closedAmount: 2_100 * PRECISION,
-        openedExtraAmount: 0,
-        openedPrincipalAmount: 10_000 * PRECISION,
-        targetAmount: 15_000 * PRECISION
-    });
-
-    expectDebtProgressSummary(summary, 12_900 * PRECISION, 2_100 * PRECISION, 15_000 * PRECISION, 14);
-};
-
 const updateDebtCurrentBalanceAndReadState = async ({
     debtType,
     initialCurrentBalance,
@@ -846,7 +672,7 @@ const updateDebtCurrentBalanceAndReadState = async ({
     });
 
     const balance = accountBalanceRepository.getByAccountId(account.id).get();
-    const summary = buildSummaryFromDebtAccount(account, debtType);
+    const summary = buildSummaryFromDebtAccount(account);
 
     return { account, balance, summary };
 };
@@ -875,7 +701,7 @@ const createLentDebtIncomeSettlementScenario = async ({
     await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
 
     const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
-    const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.LENT);
+    const summary = buildSummaryFromDebtAccount(debtAccount);
 
     return { cashAccount, debtAccount, row, summary };
 };
@@ -893,7 +719,7 @@ const createBorrowedDebtSettlementScenario = async () => {
     const remainingBorrowedDebt = accountBalanceRepository
         .getTotalRemainingDebtByType(cashAccount.instrumentId, AccountDebtTypeEnum.BORROW)
         .get();
-    const summary = buildSummaryFromDebtAccount(debtAccount, AccountDebtTypeEnum.BORROW);
+    const summary = buildSummaryFromDebtAccount(debtAccount);
 
     return { cashAccount, debtAccount, remainingBorrowedDebt, summary };
 };
@@ -915,18 +741,14 @@ const createBorrowedDebtCoveredOpeningScenario = () => {
     return { debtAccount, row };
 };
 
-const buildSummaryFromDebtAccount = (debtAccount: Pick<AccountEntityInterface, 'id' | 'targetBalance'>, debtType: AccountDebtTypeEnum) => {
-    const openedAmount = getDebtEventAmount(debtAccount.id, DebtEventDirectionEnum.OPEN);
-    const closedAmount = getDebtEventAmount(debtAccount.id, DebtEventDirectionEnum.CLOSE);
+const buildSummaryFromDebtAccount = (debtAccount: Pick<AccountEntityInterface, 'id'>): DebtAccountProgressSummaryInterface => {
+    const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
 
-    return buildDebtAccountProgressSummary({
-        debtType,
-        balance: 0,
-        closedAmount,
-        openedExtraAmount: 0,
-        openedPrincipalAmount: openedAmount,
-        targetAmount: debtAccount.targetBalance
-    });
+    if (!isDefined(progress)) {
+        throw new Error(`No debt progress row for account ${debtAccount.id}`);
+    }
+
+    return progress;
 };
 
 const findHomeRow = (accountId: number, instrumentId: number) =>
@@ -936,11 +758,10 @@ const findHomeRow = (accountId: number, instrumentId: number) =>
         .find(row => row.account.id === accountId);
 
 const expectTargetBackedDebtProgress = (
-    debtAccount: Pick<AccountEntityInterface, 'id' | 'targetBalance'>,
-    cashAccount: Pick<AccountEntityInterface, 'instrumentId'>,
-    debtType: AccountDebtTypeEnum
+    debtAccount: Pick<AccountEntityInterface, 'id'>,
+    cashAccount: Pick<AccountEntityInterface, 'instrumentId'>
 ): void => {
-    const summary = buildSummaryFromDebtAccount(debtAccount, debtType);
+    const summary = buildSummaryFromDebtAccount(debtAccount);
     const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
     const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();
 
@@ -1017,16 +838,8 @@ const findAdjustmentEntry = (accountId: number) => {
         });
 };
 
-const getDebtEventAmount = (debtAccountId: number, direction: DebtEventDirectionEnum): number =>
-    testDb
-        .select()
-        .from(DebtEventEntityTable)
-        .all()
-        .filter(event => event.debtAccountId === debtAccountId && event.direction === direction && !isDefined(event.deletedAt))
-        .reduce((total, event) => total + event.amount, 0);
-
 const expectDebtProgressSummary = (
-    summary: Pick<ReturnType<typeof buildDebtAccountProgressSummary>, 'outstandingAmount' | 'paidAmount' | 'percentage' | 'totalAmount'>,
+    summary: Pick<DebtAccountProgressSummaryInterface, 'outstandingAmount' | 'paidAmount' | 'percentage' | 'totalAmount'>,
     outstandingAmount: number,
     paidAmount: number,
     totalAmount: number,
