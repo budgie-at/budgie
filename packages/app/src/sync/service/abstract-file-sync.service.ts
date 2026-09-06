@@ -29,6 +29,8 @@ import type { AccountEntityInterface, DB, MccCategoryLookupInterface } from '@bu
 import type { SyncAccountInterface } from '@budgie/sync';
 
 export abstract class AbstractFileSyncService extends AbstractSyncService {
+    override readonly supportsFileImport: boolean = true;
+
     private importQueue: Promise<unknown> = Promise.resolve();
 
     @Log(

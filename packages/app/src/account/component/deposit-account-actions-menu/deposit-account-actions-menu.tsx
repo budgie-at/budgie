@@ -20,7 +20,7 @@ interface Props {
 export const DepositAccountActionsMenu = ({ accountId, balance, instrumentSymbol }: Props) => {
     const { t } = useLingui();
     const closeAction = useDepositCloseAction(accountId, balance, instrumentSymbol);
-    const menu = useDepositAccountActionsMenu(accountId, closeAction.isLoading, closeAction.handleCloseDeposit);
+    const menu = useDepositAccountActionsMenu(accountId, closeAction.handleCloseDeposit);
 
     return (
         <View>
