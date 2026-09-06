@@ -10025,6 +10025,10 @@ msgstr "No limit. Add as many split rows as you need; the total must equal the o
 msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” for the at-a-glance badge on the transaction list."
 msgstr "No limit. Layer as many as you need; one of them can be promoted to “primary” for the at-a-glance badge on the transaction list."
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "No lock icons, no tiers"
+msgstr "No lock icons, no tiers"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "No mobile app experience"
 msgstr "No mobile app experience"
@@ -10100,6 +10104,10 @@ msgstr "No Third-Party SDKs with Tracking"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No tracking or analytics"
 msgstr "No tracking or analytics"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "No upgrade banner here"
+msgstr "No upgrade banner here"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No user profiles or advertising IDs"
@@ -10711,6 +10719,10 @@ msgstr "One receipt, multiple categories."
 msgid "One screen per bank"
 msgstr "One screen per bank"
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "One settings screen, and the thing worth noticing is the row that never appears on it."
+msgstr "One settings screen, and the thing worth noticing is the row that never appears on it."
+
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
 msgstr "One tag per transaction can be promoted to “primary” with a corner-star badge"
@@ -11042,6 +11054,10 @@ msgstr "Partial and full refunds — Budgie compares the refund amount with the 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone — then merges your P2P buys with the bank payment that funded them."
 msgstr "Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone — then merges your P2P buys with the bank payment that funded them."
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
+msgstr "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Payday-aligned cycles — start on any day of the month or anchor to the last day"
@@ -11461,6 +11477,10 @@ msgstr "Privacy-first finance tools are usually English-only. Budgie ships full 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Privacy-focused organizations and advocacy groups"
 msgstr "Privacy-focused organizations and advocacy groups"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Privacy, Security, General and every group under them open in full, with no upgrade row in between."
+msgstr "Privacy, Security, General and every group under them open in full, with no upgrade row in between."
 
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "privatbank"
@@ -13847,6 +13867,10 @@ msgstr "There is no background sync silently uploading your data. There is no an
 msgid "There is no Budgie server holding your financial data. We do not have access to your transactions because we never receive them."
 msgstr "There is no Budgie server holding your financial data. We do not have access to your transactions because we never receive them."
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
+msgstr "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."
 msgstr "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."
@@ -15127,6 +15151,10 @@ msgstr "What Intuit Mint Actually Was"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "What Is Local-First Software?"
 msgstr "What Is Local-First Software?"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "What is not on this screen"
+msgstr "What is not on this screen"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "What Is On-Device AI?"

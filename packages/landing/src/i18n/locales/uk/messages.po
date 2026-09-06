@@ -10026,6 +10026,10 @@ msgstr "Без обмежень. Додайте стільки рядків ро
 msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” for the at-a-glance badge on the transaction list."
 msgstr "Без обмежень. Накладайте стільки, скільки потрібно; один із них можна підвищити до «первинного» для значка швидкого перегляду в списку транзакцій."
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "No lock icons, no tiers"
+msgstr "Без значків замка і тарифних рівнів"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "No mobile app experience"
 msgstr "Без досвіду мобільного додатку"
@@ -10101,6 +10105,10 @@ msgstr "Жодних сторонніх SDK з відстеженням"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No tracking or analytics"
 msgstr "Немає відстеження або аналітики"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "No upgrade banner here"
+msgstr "Тут немає банера з пропозицією перейти на платний план"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No user profiles or advertising IDs"
@@ -10712,6 +10720,10 @@ msgstr "Один чек, кілька категорій."
 msgid "One screen per bank"
 msgstr "Один екран на банк"
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "One settings screen, and the thing worth noticing is the row that never appears on it."
+msgstr "Один екран налаштувань, і найпримітніше тут — рядок, якого на ньому ніколи немає."
+
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
 msgstr "Один тег на транзакцію може бути підвищений до «первинного» зі значком зірки в куті"
@@ -11043,6 +11055,10 @@ msgstr "Часткові та повні повернення — Budgie пор�
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone — then merges your P2P buys with the bank payment that funded them."
 msgstr "Вставте API-ключ лише для читання, і Budgie завантажить ваші баланси та історію Binance прямо на телефон — а потім об'єднає ваші P2P-покупки з банківським платежем, що їх профінансував."
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
+msgstr "Заплатіть один раз за банківську синхронізацію та ШІ на пристрої, якщо вони вам потрібні. Сам трекер не має терміну дії."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Payday-aligned cycles — start on any day of the month or anchor to the last day"
@@ -11462,6 +11478,10 @@ msgstr "Фінансові інструменти з приватністю за
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Privacy-focused organizations and advocacy groups"
 msgstr "Організації та групи захисту конфіденційності"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Privacy, Security, General and every group under them open in full, with no upgrade row in between."
+msgstr "Конфіденційність, Безпека, Загальне і кожна група під ними відкриваються повністю, без жодного рядка з пропозицією перейти на платний план."
 
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "privatbank"
@@ -13848,6 +13868,10 @@ msgstr "Немає фонової синхронізації, що тихо за
 msgid "There is no Budgie server holding your financial data. We do not have access to your transactions because we never receive them."
 msgstr "Немає сервера Budgie, який зберігає ваші фінансові дані. Ми не маємо доступу до ваших транзакцій, тому що ми їх ніколи не отримуємо."
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
+msgstr "У трекері немає підписки-paywall; необовʼязкові функції розблоковуються одноразовою покупкою."
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."
 msgstr ""
@@ -15128,6 +15152,10 @@ msgstr "Чим насправді був Intuit Mint"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "What Is Local-First Software?"
 msgstr "Що таке Local-First програмне забезпечення?"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "What is not on this screen"
+msgstr "Чого немає на цьому екрані"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "What Is On-Device AI?"
