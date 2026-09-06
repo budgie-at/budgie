@@ -3078,8 +3078,7 @@ msgstr "Set Return Date"
 msgid "Settings"
 msgstr "Settings"
 
-#: src/account/component/debt-account-card-footer/debt-account-card-footer.tsx
-#: src/account/component/debt-account-card-percentage-footer/debt-account-card-percentage-footer.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Settled"
 msgstr "Settled"
 

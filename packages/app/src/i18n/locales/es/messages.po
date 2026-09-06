@@ -3077,8 +3077,7 @@ msgstr "Establecer fecha de devolución"
 msgid "Settings"
 msgstr "Configuración"
 
-#: src/account/component/debt-account-card-footer/debt-account-card-footer.tsx
-#: src/account/component/debt-account-card-percentage-footer/debt-account-card-percentage-footer.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Settled"
 msgstr "Saldado"
 

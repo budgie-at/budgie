@@ -9,16 +9,13 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
-import { DEBT_CARD_FOOTER_VARIANT } from '../../constant/debt-card-footer-variant.constant';
 import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
 import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
 import { DebtAccountCardContext } from '../../context/debt-account-card.context';
-import { DebtCardFooterVariantEnum } from '../../enum/debt-card-footer-variant.enum';
 import { isDebtDeadlineUrgent } from '../../utils/is-debt-deadline-urgent.util';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { DebtAccountCardEmpty } from '../debt-account-card-empty/debt-account-card-empty';
 import { DebtAccountCardFooter } from '../debt-account-card-footer/debt-account-card-footer';
-import { DebtAccountCardPercentageFooter } from '../debt-account-card-percentage-footer/debt-account-card-percentage-footer';
 import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
 
 import type { AccountEntityInterface, DebtAccountProgressSummaryInterface } from '@budgie/contracts';
@@ -82,12 +79,7 @@ export const DebtAccountCard = (props: Props) => {
                 topRight={topRight}
                 className={cn(className, isUrgent && 'border-dark-warning-corner')}
             >
-                {hasDebt &&
-                    (DEBT_CARD_FOOTER_VARIANT === DebtCardFooterVariantEnum.STRIP ? (
-                        <DebtAccountCardFooter />
-                    ) : (
-                        <DebtAccountCardPercentageFooter />
-                    ))}
+                {hasDebt && <DebtAccountCardFooter />}
             </AccountCardBase>
         </DebtAccountCardContext.Provider>
     );
