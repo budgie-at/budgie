@@ -71,11 +71,11 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
             />
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Crypto, Stocks, ETFs — All In One Place</Trans>}
+                heading={<Trans>Crypto Holdings Alongside Your Cash</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Track Bitcoin, Ethereum, AAPL, an S&amp;P 500 ETF, and gold alongside your bank accounts in a single net-worth view.
+                        Track Bitcoin, Ethereum, and two hundred crypto assets alongside your bank accounts in a single net-worth view.
                     </Trans>
                 }
             />
@@ -95,14 +95,15 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Most expense apps end at fiat. Budgie has investment instruments as first-class — each holding has a quantity, an
-                        instrument symbol, and a live or manual price. Net worth rolls them all up.
+                        Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, an
+                        instrument symbol, and a daily price. Net worth rolls them all up.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Instruments cover crypto, stocks, ETFs, and commodities. Manual price updates are fine for low-frequency tracking,
-                        and the major crypto assets come with real daily market history built in.
+                        Two hundred crypto instruments ship with the app, ranked by market cap. Manual price updates are fine for
+                        low-frequency tracking, and the major assets come with real daily market history built in. Stocks and ETFs are not
+                        supported yet.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -113,7 +114,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>First-class instrument types: crypto, stocks, ETFs, commodities</Trans>
+                        <Trans>Crypto holdings are first-class instruments: symbol, quantity, and a daily price</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Manual or imported price updates — your call on cadence and source</Trans>
@@ -122,7 +123,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         <Trans>Holdings roll up into net worth alongside fiat accounts</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Multi-currency aware — euro-denominated ETF + dollar stocks + UAH cash all reconcile</Trans>
+                        <Trans>Multi-currency aware — euro-priced coins, dollar-priced coins, and UAH cash all reconcile</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>A market screen per instrument with a price card, a sparkline, and period metrics</Trans>
@@ -166,8 +167,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Account type Crypto or Stocks. Each holding is an instrument + quantity. Prices come from the built-in daily history
-                        for major crypto assets, or from your own manual edits. Net-worth converts via the latest price snapshot.
+                        Account type Crypto. Each holding is an instrument + quantity. Prices come from the built-in daily history for major
+                        crypto assets, or from your own manual edits. Net-worth converts via the latest price snapshot.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -186,8 +187,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     question={<Trans>Which assets can I track?</Trans>}
                     answer={
                         <Trans>
-                            Crypto (Bitcoin, Ethereum, others), stocks (any ticker), ETFs, and commodities. Each holding is a row of
-                            (instrument, quantity, price).
+                            Crypto today — two hundred assets ship with the app, each holding a row of (instrument, quantity, price).
+                            Stocks, ETFs, and commodities are not supported yet.
                         </Trans>
                     }
                 />
