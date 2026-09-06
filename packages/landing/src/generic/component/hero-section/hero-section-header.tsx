@@ -89,7 +89,7 @@ export const HeroSectionHeader = () => (
 
                 <span className="font-medium">4.9/5</span>
 
-                <span className="text-muted-foreground/60">
+                <span className="text-muted-foreground">
                     <Trans>(Beta testers)</Trans>
                 </span>
             </div>
