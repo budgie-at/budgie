@@ -1,0 +1,21 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://budget'
+
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetDetails.SpentLabel'
+      timeout: 15000
+
+- scrollUntilVisible:
+      element:
+          id: '^BudgetDetails[.]CategoryRow[.][0-9]+$'
+      direction: DOWN
+      speed: 20
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene
