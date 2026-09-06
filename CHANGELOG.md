@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.17.1](https://github.com/budgie-at/budgie/compare/v6.17.0...v6.17.1) (2026-09-06)
+
+
+### Bug Fixes
+
+* **landing:** keep shared chrome inside the viewport and fix its heading order ([aa22516](https://github.com/budgie-at/budgie/commit/aa22516456cafbe9d81a1f54d951efa771fc40e7))
+
+
+### Performance Improvements
+
+* **landing:** ship a client-only message catalog and drop unused italic fonts ([ac6a582](https://github.com/budgie-at/budgie/commit/ac6a582ae2f871a48487bacd349e9008df971188))
+
+
+
+
+
 # [6.17.0](https://github.com/budgie-at/budgie/compare/v6.16.0...v6.17.0) (2026-09-06)
 
 
