@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.21.3](https://github.com/budgie-at/budgie/compare/v6.21.2...v6.21.3) (2026-09-06)
+
+
+### Performance Improvements
+
+* **landing:** emit only the active theme's media in AppShot and AppClip ([b6c9e1f](https://github.com/budgie-at/budgie/commit/b6c9e1f35eda87d5d0031b46ef0212b39beff367)), closes [#853](https://github.com/budgie-at/budgie/issues/853) [#852](https://github.com/budgie-at/budgie/issues/852) [#818](https://github.com/budgie-at/budgie/issues/818)
+
+
+
+
+
 ## [6.21.2](https://github.com/budgie-at/budgie/compare/v6.21.1...v6.21.2) (2026-09-06)
 
 
