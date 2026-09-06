@@ -107,7 +107,7 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 </FeatureStory.Shot>
 
                 <FeatureStory.Point index={1}>
-                    <Trans>There is no paywall screen to show you, because the app ships no purchase surface at all.</Trans>
+                    <Trans>There is no subscription paywall in the tracker; optional features use a one-time unlock instead.</Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
                     <Trans>Pay once for bank sync and on-device AI if you want them. The tracker itself never expires.</Trans>

@@ -11058,7 +11058,7 @@ msgstr "Pega una clave API de solo lectura y Budgie trae tus saldos e historial 
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
-msgstr "Paga una sola vez por la sincronización bancaria y la IA en el dispositivo, si las quieres. El registro en sí nunca caduca."
+msgstr "Paga una sola vez por la sincronización bancaria y la IA en el dispositivo, si las quieres. La aplicación de seguimiento en sí nunca caduca."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Payday-aligned cycles — start on any day of the month or anchor to the last day"
@@ -11481,7 +11481,7 @@ msgstr "Organizaciones y grupos de defensa enfocados en la privacidad"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Privacy, Security, General and every group under them open in full, with no upgrade row in between."
-msgstr "Privacidad, Seguridad, General y todos los grupos siguientes se abren por completo, sin ninguna fila de mejora de por medio."
+msgstr "Privacidad, Seguridad, General y todos los grupos dentro de ellas se abren por completo, sin ninguna fila de mejora de por medio."
 
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "privatbank"
@@ -13869,8 +13869,8 @@ msgid "There is no Budgie server holding your financial data. We do not have acc
 msgstr "No hay un servidor de Budgie almacenando tus datos financieros. No tenemos acceso a tus transacciones porque nunca las recibimos."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "There is no paywall screen to show you, because the app ships no purchase surface at all."
-msgstr "No hay ninguna pantalla de pago que mostrarte, porque la app no incluye ninguna superficie de compra."
+msgid "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
+msgstr "No hay paywall de suscripción en el rastreador; las funciones opcionales usan un desbloqueo único en su lugar."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."

@@ -10108,7 +10108,7 @@ msgstr "Pas de suivi ou d'analyse"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No upgrade banner here"
-msgstr "Aucune bannière de mise à niveau"
+msgstr "Aucune bannière de mise à niveau ici"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No user profiles or advertising IDs"
@@ -13869,8 +13869,8 @@ msgid "There is no Budgie server holding your financial data. We do not have acc
 msgstr "Il n'y a pas de serveur Budgie détenant vos données financières. Nous n'avons pas accès à vos transactions car nous ne les recevons jamais."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "There is no paywall screen to show you, because the app ships no purchase surface at all."
-msgstr "Il n’y a aucun écran payant à vous montrer : l’application ne contient aucune surface d’achat."
+msgid "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
+msgstr "Il n’y a pas de paywall d’abonnement dans le tracker ; les fonctionnalités optionnelles utilisent un déverrouillage unique à la place."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."
