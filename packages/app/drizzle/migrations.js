@@ -46,6 +46,7 @@ import m0042 from './0042_backfill_file_import_integrations.sql';
 import m0043 from './0043_update_default_account_icons.sql';
 import m0044 from './0044_categorize_debt_settlement_expenses.sql';
 import m0045 from './0045_add_transaction_entry_quote.sql';
+import m0046 from './0046_repoint_debt_event_entries.sql';
 import journal from './meta/_journal.json';
 
 export default {
@@ -96,6 +97,7 @@ export default {
         m0042,
         m0043,
         m0044,
-        m0045
+        m0045,
+        m0046
     }
 };
