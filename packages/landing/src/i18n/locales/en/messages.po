@@ -2410,8 +2410,8 @@ msgid "Account Transfers — Done Right"
 msgstr "Account Transfers — Done Right"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Account type Crypto or Stocks. Each holding is an instrument + quantity. Prices come from the built-in daily history for major crypto assets, or from your own manual edits. Net-worth converts via the latest price snapshot."
-msgstr "Account type Crypto or Stocks. Each holding is an instrument + quantity. Prices come from the built-in daily history for major crypto assets, or from your own manual edits. Net-worth converts via the latest price snapshot."
+msgid "Account type Crypto. Each holding is an instrument + quantity. Prices come from the built-in daily history for major crypto assets, or from your own manual edits. Net-worth converts via the latest price snapshot."
+msgstr "Account type Crypto. Each holding is an instrument + quantity. Prices come from the built-in daily history for major crypto assets, or from your own manual edits. Net-worth converts via the latest price snapshot."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Account type Debt with sub-type \"I owe\" or \"owes me\". Linked to a contact name (optional). Settlement happens as transfers between the debt account and a real cash/bank account."
@@ -3205,8 +3205,8 @@ msgid "Bank + aggregator + app"
 msgstr "Bank + aggregator + app"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Bank + cash + crypto + stocks + ETFs + debt"
-msgstr "Bank + cash + crypto + stocks + ETFs + debt"
+msgid "Bank + cash + deposit + crypto + debt"
+msgstr "Bank + cash + deposit + crypto + debt"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Bank account synchronization"
@@ -3430,13 +3430,13 @@ msgstr "Bank, cash, crypto and debt are already inside the figure at the top of 
 msgid "Bank, cash, crypto, stocks, debt — one number on your home screen with daily FX conversion."
 msgstr "Bank, cash, crypto, stocks, debt — one number on your home screen with daily FX conversion."
 
-#: src/app/[lang]/features/net-worth-tracker/metadata.ts
-msgid "Bank, cash, crypto, stocks, debt — one number on your home screen."
-msgstr "Bank, cash, crypto, stocks, debt — one number on your home screen."
-
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Bank, cash, crypto, stocks, ETFs, and debt — all roll up into a single net-worth number on your home screen, with multi-currency conversion baked in."
-msgstr "Bank, cash, crypto, stocks, ETFs, and debt — all roll up into a single net-worth number on your home screen, with multi-currency conversion baked in."
+msgid "Bank, cash, deposit, crypto, and debt accounts all roll up into a single net-worth number on your home screen, with multi-currency conversion baked in."
+msgstr "Bank, cash, deposit, crypto, and debt accounts all roll up into a single net-worth number on your home screen, with multi-currency conversion baked in."
+
+#: src/app/[lang]/features/net-worth-tracker/metadata.ts
+msgid "Bank, cash, deposit, crypto, debt — one number on your home screen."
+msgstr "Bank, cash, deposit, crypto, debt — one number on your home screen."
 
 #: src/app/[lang]/features/account-management/metadata.ts
 msgid "Bank, cash, deposit, crypto, stocks, debt — all on one home screen."
@@ -3629,17 +3629,13 @@ msgstr "Biometrics are the right balance for an expense app you open ten times a
 msgid "Biometrics unlock a key fragment in the platform Secure Enclave / Keystore that combines with your PIN-derived key. The platform vouches for biometric matching using the same hardware your bank app uses."
 msgstr "Biometrics unlock a key fragment in the platform Secure Enclave / Keystore that combines with your PIN-derived key. The platform vouches for biometric matching using the same hardware your bank app uses."
 
+#: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
+msgid "bitcoin"
+msgstr "bitcoin"
+
 #: src/generic/component/integrations-section/integrations-section-investments-card.tsx
 msgid "Bitcoin"
 msgstr "Bitcoin"
-
-#: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
-msgid "Bitcoin to ETFs in one dashboard, alongside your bank accounts."
-msgstr "Bitcoin to ETFs in one dashboard, alongside your bank accounts."
-
-#: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
-msgid "Bitcoin to ETFs in one dashboard."
-msgstr "Bitcoin to ETFs in one dashboard."
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx
 msgid "Blazing Fast"
@@ -5650,15 +5646,6 @@ msgstr "Cross-currency: $1000 → €925 within 3 days matches when the FX rate 
 msgid "crypto"
 msgstr "crypto"
 
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Crypto (Bitcoin, Ethereum, others), stocks (any ticker), ETFs, and commodities. Each holding is a row of (instrument, quantity, price)."
-msgstr "Crypto (Bitcoin, Ethereum, others), stocks (any ticker), ETFs, and commodities. Each holding is a row of (instrument, quantity, price)."
-
-#: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
-msgid "Crypto & Investment Tracking — Budgie"
-msgstr "Crypto & Investment Tracking — Budgie"
-
-#: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 #: src/generic/component/features-section/features-section-grid.tsx
 #: src/generic/component/integrations-section/integrations-section-investments-card.tsx
 msgid "Crypto & Investments"
@@ -5676,22 +5663,38 @@ msgstr "Crypto and stock tracking"
 msgid "Crypto and stock tracking included"
 msgstr "Crypto and stock tracking included"
 
+#: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Crypto Holdings Alongside Your Cash"
+msgstr "Crypto Holdings Alongside Your Cash"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Crypto holdings are first-class instruments: symbol, quantity, and a daily price"
+msgstr "Crypto holdings are first-class instruments: symbol, quantity, and a daily price"
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Crypto holdings sit alongside your fiat accounts with the same UX"
+msgstr "Crypto holdings sit alongside your fiat accounts with the same UX"
+
+#: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
+msgid "Crypto Portfolio"
+msgstr "Crypto Portfolio"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Crypto portfolio tracking"
 msgstr "Crypto portfolio tracking"
 
+#: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
+msgid "Crypto Portfolio Tracking — Budgie"
+msgstr "Crypto Portfolio Tracking — Budgie"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Crypto today — two hundred assets ship with the app, each holding a row of (instrument, quantity, price). Stocks, ETFs, and commodities are not supported yet."
+msgstr "Crypto today — two hundred assets ship with the app, each holding a row of (instrument, quantity, price). Stocks, ETFs, and commodities are not supported yet."
+
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Crypto tracking"
 msgstr "Crypto tracking"
-
-#: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Crypto, Stocks, ETFs — All In One Place"
-msgstr "Crypto, Stocks, ETFs — All In One Place"
-
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Crypto, stocks, ETFs, and commodities sit alongside fiat with the same UX"
-msgstr "Crypto, stocks, ETFs, and commodities sit alongside fiat with the same UX"
 
 #: src/app/[lang]/features/csv-import/opengraph-image.tsx
 #: src/app/[lang]/features/data-export/opengraph-image.tsx
@@ -6772,10 +6775,6 @@ msgstr "Erste Bank PDF Import"
 msgid "Erste Bank PDF Import — Budgie"
 msgstr "Erste Bank PDF Import — Budgie"
 
-#: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
-msgid "etf"
-msgstr "etf"
-
 #: src/generic/component/integrations-section/integrations-section-investments-card.tsx
 msgid "Ethereum"
 msgstr "Ethereum"
@@ -7300,10 +7299,6 @@ msgstr "Firefly III: Self-Hosted Financial Management"
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "First-class — subtract from net worth"
 msgstr "First-class — subtract from net worth"
-
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "First-class instrument types: crypto, stocks, ETFs, commodities"
-msgstr "First-class instrument types: crypto, stocks, ETFs, commodities"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "First-class Transfer transaction type — never confused with expense or income"
@@ -8564,10 +8559,6 @@ msgstr "Instant Spending Analysis"
 msgid "Instant Spending Insights"
 msgstr "Instant Spending Insights"
 
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Instruments cover crypto, stocks, ETFs, and commodities. Manual price updates are fine for low-frequency tracking, and the major crypto assets come with real daily market history built in."
-msgstr "Instruments cover crypto, stocks, ETFs, and commodities. Manual price updates are fine for low-frequency tracking, and the major crypto assets come with real daily market history built in."
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Integration with spreadsheets or databases"
 msgstr "Integration with spreadsheets or databases"
@@ -9696,8 +9687,8 @@ msgid "Most expense apps"
 msgstr "Most expense apps"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Most expense apps end at fiat. Budgie has investment instruments as first-class — each holding has a quantity, an instrument symbol, and a live or manual price. Net worth rolls them all up."
-msgstr "Most expense apps end at fiat. Budgie has investment instruments as first-class — each holding has a quantity, an instrument symbol, and a live or manual price. Net worth rolls them all up."
+msgid "Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, an instrument symbol, and a daily price. Net worth rolls them all up."
+msgstr "Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, an instrument symbol, and a daily price. Net worth rolls them all up."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Most expense apps stop at “this month's spending.” Budgie gives you the full balance-sheet view — assets, liabilities, and the line they form between them — without spreadsheets."
@@ -9784,8 +9775,8 @@ msgid "Multi-Currency Accounts With Live Rates"
 msgstr "Multi-Currency Accounts With Live Rates"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Multi-currency aware — euro-denominated ETF + dollar stocks + UAH cash all reconcile"
-msgstr "Multi-currency aware — euro-denominated ETF + dollar stocks + UAH cash all reconcile"
+msgid "Multi-currency aware — euro-priced coins, dollar-priced coins, and UAH cash all reconcile"
+msgstr "Multi-currency aware — euro-priced coins, dollar-priced coins, and UAH cash all reconcile"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Multi-currency budgets fail quietly when they convert old spending with today’s rate. A coffee bought in hryvnia ten years ago, a rent payment in dollars last month, and a bank import from yesterday cannot be added together fairly unless every row carries a value in the same reporting currency."
@@ -9862,6 +9853,7 @@ msgstr "Need bank synchronization? Budgie uses a zero-knowledge architecture:"
 msgid "Need for Reliable Access"
 msgstr "Need for Reliable Access"
 
+#: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 #: src/app/[lang]/features/net-worth-tracker/opengraph-image.tsx
 msgid "net worth"
 msgstr "net worth"
@@ -12096,8 +12088,8 @@ msgid "Roadmap Transparency"
 msgstr "Roadmap Transparency"
 
 #: src/app/[lang]/features/net-worth-tracker/metadata.ts
-msgid "Roll up every bank account, cash wallet, crypto holding, stock position, and liability into a single net-worth number. Multi-currency conversion baked in."
-msgstr "Roll up every bank account, cash wallet, crypto holding, stock position, and liability into a single net-worth number. Multi-currency conversion baked in."
+msgid "Roll up every bank account, cash wallet, deposit, crypto holding, and liability into a single net-worth number. Multi-currency conversion baked in."
+msgstr "Roll up every bank account, cash wallet, deposit, crypto holding, and liability into a single net-worth number. Multi-currency conversion baked in."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Roughly 1 GB combined: Qwen3 1.7B Q4 for the language model and a 768-dim Nomic embedding model. The download happens on first use of AI features and is fully optional — you can keep using Budgie without AI."
@@ -12919,10 +12911,6 @@ msgstr "Step 5: Optional — Enable Direct Bank Sync"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 5: Run Parallel for One Month"
 msgstr "Step 5: Run Parallel for One Month"
-
-#: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
-msgid "stocks"
-msgstr "stocks"
 
 #: src/generic/component/integrations-section/integrations-section-investments-card.tsx
 msgid "Stocks & ETFs"
@@ -14254,13 +14242,13 @@ msgstr "Track bank fees as first-class transaction entries. ATM fees, transfer f
 msgid "Track bank, cash, deposit, crypto, stocks, and debt accounts in one private app. Multi-currency, offline-first, with per-account net worth control."
 msgstr "Track bank, cash, deposit, crypto, stocks, and debt accounts in one private app. Multi-currency, offline-first, with per-account net worth control."
 
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Track Bitcoin, Ethereum, AAPL, an S&P 500 ETF, and gold alongside your bank accounts in a single net-worth view."
-msgstr "Track Bitcoin, Ethereum, AAPL, an S&P 500 ETF, and gold alongside your bank accounts in a single net-worth view."
-
 #: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
-msgid "Track Bitcoin, Ethereum, AAPL, S&P 500 ETFs, and gold alongside bank accounts in a single net-worth view. Major crypto assets ship with a year of daily market history, price cards, and sparklines."
-msgstr "Track Bitcoin, Ethereum, AAPL, S&P 500 ETFs, and gold alongside bank accounts in a single net-worth view. Major crypto assets ship with a year of daily market history, price cards, and sparklines."
+msgid "Track Bitcoin, Ethereum, and 200 crypto assets alongside your bank accounts in one net-worth view. The largest ship with a year of daily price history."
+msgstr "Track Bitcoin, Ethereum, and 200 crypto assets alongside your bank accounts in one net-worth view. The largest ship with a year of daily price history."
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Track Bitcoin, Ethereum, and two hundred crypto assets alongside your bank accounts in a single net-worth view."
+msgstr "Track Bitcoin, Ethereum, and two hundred crypto assets alongside your bank accounts in a single net-worth view."
 
 #: src/generic/component/features-section/features-section-grid.tsx
 msgid "Track Bitcoin, Ethereum, stocks, and ETFs alongside cash accounts. Manual or CSV imports."
@@ -14488,6 +14476,18 @@ msgstr "Two debits aren't a transfer. Budgie knows."
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Two engines, zero cloud round-trips"
 msgstr "Two engines, zero cloud round-trips"
+
+#: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
+msgid "Two hundred crypto assets in one dashboard, alongside your bank accounts."
+msgstr "Two hundred crypto assets in one dashboard, alongside your bank accounts."
+
+#: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
+msgid "Two hundred crypto assets in one dashboard."
+msgstr "Two hundred crypto assets in one dashboard."
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Two hundred crypto instruments ship with the app, ranked by market cap. Manual price updates are fine for low-frequency tracking, and the major assets come with real daily market history built in. Stocks and ETFs are not supported yet."
+msgstr "Two hundred crypto instruments ship with the app, ranked by market cap. Manual price updates are fine for low-frequency tracking, and the major assets come with real daily market history built in. Stocks and ETFs are not supported yet."
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/metadata.ts
