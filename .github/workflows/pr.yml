@@ -55,8 +55,13 @@ jobs:
                             (/^test-|media|compose/.test(filename.slice('tests/app-tests/scripts/'.length))))
                         );
                         mobile = !mobileSuiteExempt;
-                        landingOnly = files.length > 0 && files.every(({ filename }) => filename.startsWith('packages/landing/'));
-                        core.info(`Inspected ${files.length} changed files; mobile affected: ${mobile}; landing only: ${landingOnly}`);
+                        const totalFiles = context.payload.pull_request.changed_files;
+                        const isFileListComplete = files.length === totalFiles;
+                        landingOnly = isFileListComplete && files.length > 0 && files.every(({ filename, previous_filename }) =>
+                          filename.startsWith('packages/landing/') &&
+                          (previous_filename === undefined || previous_filename.startsWith('packages/landing/'))
+                        );
+                        core.info(`Inspected ${files.length}/${totalFiles} changed files; mobile affected: ${mobile}; landing only: ${landingOnly}`);
                       } catch (error) {
                         core.warning(`Could not inspect PR files; defaulting to mobile=true: ${error.message}`);
                       }
