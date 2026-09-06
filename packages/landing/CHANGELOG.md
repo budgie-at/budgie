@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.18.0](https://github.com/budgie-at/budgie/compare/v6.17.1...v6.18.0) (2026-09-06)
+
+
+### Bug Fixes
+
+* **landing:** address CodeRabbit review on subscription-free story ([94b49c2](https://github.com/budgie-at/budgie/commit/94b49c2628eb99524cdeb63db559b5699cf05b5e))
+
+
+### Features
+
+* **landing:** tell the subscription-free budget app story ([96dd7b5](https://github.com/budgie-at/budgie/commit/96dd7b58f6e4f6f210741c3da41add4457bec425))
+
+
+
+
+
 ## [6.17.1](https://github.com/budgie-at/budgie/compare/v6.17.0...v6.17.1) (2026-09-06)
 
 
