@@ -10,13 +10,11 @@ export const DebtAccountCardFooter = () => {
 
     return (
         <View className="gap-y-sm">
-            <View className="flex-row items-baseline justify-between gap-x-sm">
-                <Text className="shrink text-secondary-foreground text-xxs" numberOfLines={2}>
-                    {settledLabel}
-                </Text>
+            <View className="flex-row flex-wrap items-baseline justify-between gap-x-sm">
+                <Text className="text-secondary-foreground text-xxs">{settledLabel}</Text>
 
                 <Text
-                    className="text-secondary-foreground text-xxs font-medium tabular-nums"
+                    className="ml-auto text-secondary-foreground text-xxs font-medium tabular-nums"
                     testID={DebtAccountCardFooterSelector.Percentage(title, displayPercentage)}
                 >
                     {`${displayPercentage}%`}
