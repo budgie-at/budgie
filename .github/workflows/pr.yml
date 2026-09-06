@@ -15,13 +15,14 @@ on: pull_request
 jobs:
     detect-mobile-impact:
         name: Detect mobile impact
-        runs-on: [self-hosted, linux-tiered, linux-medium]
+        runs-on: ubuntu-24.04
         timeout-minutes: 15
         permissions:
             contents: read
             pull-requests: read
         outputs:
             mobile: ${{ steps.gate.outputs.mobile }}
+            landing-only: ${{ steps.gate.outputs.landing-only }}
         steps:
             - name: Compute mobile-impact gate
               id: gate
@@ -29,6 +30,7 @@ jobs:
               with:
                   script: |
                       let mobile = true;
+                      let landingOnly = false;
 
                       try {
                         const files = await github.paginate(github.rest.pulls.listFiles, {
@@ -53,16 +55,21 @@ jobs:
                             (/^test-|media|compose/.test(filename.slice('tests/app-tests/scripts/'.length))))
                         );
                         mobile = !mobileSuiteExempt;
-                        core.info(`Inspected ${files.length} changed files; mobile affected: ${mobile}`);
+                        landingOnly = files.length > 0 && files.every(({ filename }) => filename.startsWith('packages/landing/'));
+                        core.info(`Inspected ${files.length} changed files; mobile affected: ${mobile}; landing only: ${landingOnly}`);
                       } catch (error) {
                         core.warning(`Could not inspect PR files; defaulting to mobile=true: ${error.message}`);
                       }
 
                       core.setOutput('mobile', mobile ? 'true' : 'false');
+                      core.setOutput('landing-only', landingOnly ? 'true' : 'false');
 
     code-quality:
+        needs: [detect-mobile-impact]
         name: Code quality checks
-        runs-on: [self-hosted, linux-tiered, linux-large]
+        # Landing-only pull requests route to a hosted runner so they never queue
+        # behind the Mac mini fleet, whose Linux envelope is shared with iOS Maestro.
+        runs-on: ${{ needs.detect-mobile-impact.outputs.landing-only == 'true' && 'ubuntu-24.04' || fromJSON('["self-hosted","linux-tiered","linux-large"]') }}
         timeout-minutes: 60
         permissions:
             contents: read
