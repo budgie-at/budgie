@@ -1985,16 +1985,6 @@ msgid "Left"
 msgstr "Залишилось"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
-#: src/account/component/debt-account-card/debt-account-card.tsx
-msgid "Left to receive"
-msgstr "Залишилось отримати"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-#: src/account/component/debt-account-card/debt-account-card.tsx
-msgid "Left to repay"
-msgstr "Залишилось повернути"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Позичено"
@@ -2282,6 +2272,10 @@ msgstr "Не знайдено жодної валюти"
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No Custom Categories"
 msgstr "Немає власних категорій"
+
+#: src/account/component/debt-account-card-empty/debt-account-card-empty.tsx
+msgid "No debt yet"
+msgstr "Боргу немає"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No enabled accounts were found in this file"
@@ -2752,7 +2746,7 @@ msgstr "Прибрати розділення"
 msgid "Remove split?"
 msgstr "Прибрати розділення?"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/constant/debt-settled-label.constant.ts
 msgid "Repaid"
 msgstr "Погашено"
 
@@ -2795,7 +2789,7 @@ msgstr "Відновити з файлу резервної копії"
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/constant/debt-settled-label.constant.ts
 msgid "Returned"
 msgstr "Повернено"
 
@@ -3082,6 +3076,11 @@ msgstr "Встановити дату повернення"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
 msgstr "Налаштування"
+
+#: src/account/component/debt-account-card-footer/debt-account-card-footer.tsx
+#: src/account/component/debt-account-card-percentage-footer/debt-account-card-percentage-footer.tsx
+msgid "Settled"
+msgstr "Закрито"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show $1,234.56 instead of $1,235"
@@ -3416,6 +3415,14 @@ msgstr "На рахунок"
 msgid "To Currency"
 msgstr "Валюта на"
 
+#: src/account/constant/debt-remaining-label.constant.ts
+msgid "To receive"
+msgstr "До отримання"
+
+#: src/account/constant/debt-remaining-label.constant.ts
+msgid "To repay"
+msgstr "До сплати"
+
 #: src/@generic/constant/date-period.constant.ts
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Today"
@@ -3425,6 +3432,8 @@ msgstr "Сьогодні"
 msgid "Token required"
 msgstr "Потрібен токен"
 
+#: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
