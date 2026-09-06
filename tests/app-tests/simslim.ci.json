@@ -1,0 +1,5 @@
+{
+  "name": "ci",
+  "description": "Maestro e2e and store-screenshot simulators. Keeps App Store/push (apsd for expo-notifications) and Safari/web services (swcd for applinks:budgie.at universal links); everything else is off.",
+  "except": ["store", "web"]
+}
