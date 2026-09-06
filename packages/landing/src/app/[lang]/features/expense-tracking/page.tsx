@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -80,16 +79,70 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>From an empty sheet to a list you can read</Trans>}>
+                    <Trans>Three screens: saving an expense, coming back to one you already saved, and the list they all land in.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Two taps to saved</Trans>}>
+                    <Trans>Plus, amount, save. The account, today&apos;s date and the likely category are already filled in for you.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
                     alt={t(
                         i18n
                     )`Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="expense-tracking-1"
                     slug="expense-tracking"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.29}>
+                        <Trans>Type the amount</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.87}>
+                        <Trans>Then tap save</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Every action on a long-press</Trans>}>
+                    <Trans>
+                        Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by
+                        accident.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie transaction list with a long-press context menu offering edit, convert to transfer, attach debt and delete`}
+                    index={1}
+                    locale={lang}
+                    scene="transaction-long-press-menu-1"
+                    slug="transaction-long-press-menu"
+                >
+                    <FeatureStory.Callout y={0.47}>
+                        <Trans>Long-press for every action</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>The list stays scannable</Trans>}>
+                    <Trans>Rows group under the month, each one carrying its category icon, its tags and the account it came from.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie transaction list grouped by month with the category, tag and account on every row`}
+                    index={2}
+                    locale={lang}
+                    scene="expense-tracking-2"
+                    slug="expense-tracking"
+                >
+                    <FeatureStory.Callout y={0.235}>
+                        <Trans>Grouped by month</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.42}>
+                        <Trans>Amounts aligned right</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -159,27 +212,6 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Three transaction types: expense (debits an account), income (credits an account), transfer (moves between two of
-                        your accounts). Categories are user-defined, optionally MCC-backed when imported via bank sync.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie transaction list grouped by month with the category, tag and account on every row`}
-                    locale={lang}
-                    scene="expense-tracking-2"
-                    slug="expense-tracking"
-                />
-            </FeaturePageMedia>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem

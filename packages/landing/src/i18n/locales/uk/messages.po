@@ -2772,6 +2772,10 @@ msgstr "Зіставлення за сумою і часовим вікном з
 msgid "Amount first, no form"
 msgstr "Спершу сума, без форми"
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Amounts aligned right"
+msgstr "Суми вирівняні праворуч"
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "An amount-range chip in the same filter row, with a From value, a To value, or both"
 msgstr "Чіп діапазону суми в тому самому рядку фільтрів — зі значенням «Від», «До» або обома одразу"
@@ -4289,6 +4293,10 @@ msgstr "Список транзакцій Budgie, де знайдений вхі
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Budgie transaction list where every row shows its primary tag next to the category"
 msgstr "Список транзакцій Budgie, де в кожному рядку поряд із категорією показано основний тег"
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Budgie transaction list with a long-press context menu offering edit, convert to transfer, attach debt and delete"
+msgstr "Список транзакцій Budgie з контекстним меню за довгим натисканням: редагувати, перетворити на переказ, прикріпити борг і видалити"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie transaction list with tag chips shown on every tagged row"
@@ -6558,6 +6566,10 @@ msgstr "Учасники раннього доступу отримують 50% 
 msgid "Easy to make formula errors"
 msgstr "Легко зробити помилки у формулах"
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by accident."
+msgstr "Редагувати, перетворити на переказ, прикріпити борг або видалити. Звичайне натискання лише відкриває запис для перегляду, тож нічого не зміниться випадково."
+
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Edit, Delete, Split, Convert to Transfer, and Convert to Refund. The exact set depends on the transaction type — only income can become a refund, for example."
 msgstr "Редагувати, Видалити, Розділити, Перетворити на переказ і Перетворити на повернення. Точний набір залежить від типу транзакції — наприклад, лише дохід може стати поверненням."
@@ -6772,6 +6784,10 @@ msgstr "Навіть якщо хтось перехопить з'єднання,
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Even if you delete your account with a budgeting app, the aggregator (Plaid, Yodlee, etc.) may retain your data. You have a relationship with the app and a separate relationship with the aggregator. Deleting one does not necessarily affect the other."
 msgstr "Навіть якщо ви видалите свій акаунт у бюджетному додатку, агрегатор (Plaid, Yodlee тощо) може зберегти ваші дані. У вас є відносини з додатком і окремі відносини з агрегатором. Видалення одних не обов'язково впливає на інші."
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Every action on a long-press"
+msgstr "Усі дії — за довгим натисканням"
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Every AI correction improves future suggestions via on-device learning"
@@ -7505,6 +7521,10 @@ msgstr "Фриланс-дизайнер"
 msgid "Frequently Asked Questions"
 msgstr "Часті запитання"
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "From an empty sheet to a list you can read"
+msgstr "Від порожньої форми до списку, який легко читати"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "From bank connections, yes. Crypto exchange connections do not offer deposit accounts, since the concept does not map onto them."
 msgstr "Так, для банківських підключень. Підключення до криптобірж не пропонують депозитних рахунків, оскільки це поняття до них не застосовується."
@@ -7688,6 +7708,10 @@ msgstr "Державні органи не запитуватимуть дост
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "Graduate student"
 msgstr "Аспірант"
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Grouped by month"
+msgstr "Згруповано за місяцем"
 
 #: src/generic/component/security-section/security-section-cards.tsx
 msgid "Hardware-Backed Encryption Key"
@@ -8098,7 +8122,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/debt-tracking/page.tsx
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
-#: src/app/[lang]/features/expense-tracking/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
@@ -9056,6 +9079,10 @@ msgstr "Натисніть і утримуйте будь-яку картку т
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Long-press any transaction in Budgie for a native context menu: edit, delete, split, convert to transfer, or convert income to refund. Two taps where the rest of the market needs five."
 msgstr "Затисніть будь-яку транзакцію в Budgie, щоб відкрити нативне контекстне меню: редагувати, видалити, розділити, перетворити на переказ або перетворити дохід на повернення. Типові правки займають лише кілька дотиків."
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Long-press for every action"
+msgstr "Довге натискання — усі дії"
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
@@ -11275,6 +11302,10 @@ msgstr "Будь ласка, введіть дійсну електронну а
 msgid "Please report it responsibly by emailing security@budgie.at"
 msgstr ""
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Plus, amount, save. The account, today's date and the likely category are already filled in for you."
+msgstr "Плюс, сума, зберегти. Рахунок, сьогоднішня дата й найімовірніша категорія вже заповнені за вас."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "PostgreSQL or MySQL backend (your choice)"
 msgstr "Бекенд на PostgreSQL або MySQL (на ваш вибір)"
@@ -12052,6 +12083,10 @@ msgstr "Приблизно 1 ГБ разом: Qwen3 1.7B Q4 для мовної 
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Roughly 1 GB combined. The download is one-time, opt-in, and only triggers if you turn on AI features."
 msgstr "Приблизно 1 ГБ разом. Завантаження є одноразовим, необов'язковим і запускається лише якщо ви вмикаєте AI-функції."
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Rows group under the month, each one carrying its category icon, its tags and the account it came from."
+msgstr "Записи групуються за місяцем, і кожен несе піктограму категорії, свої теги та рахунок, з якого він походить."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Rule-based automation for categorization"
@@ -13480,6 +13515,10 @@ msgstr "Мовна модель та модель вкладень разом в
 msgid "The lifecycle of your financial data extends far beyond your active use of an app."
 msgstr "Життєвий цикл ваших фінансових даних виходить далеко за межі вашого активного використання додатку."
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "The list stays scannable"
+msgstr "Список легко проглянути"
+
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "The LLM is slower than the embedding lookup but handles novel inputs well. It understands that a charge from a pharmacy should go under healthcare, even if it has never seen that specific merchant before, because it has learned the semantic relationship between merchant types and spending categories."
 msgstr "LLM є повільнішим за пошук вкладень, але добре обробляє нові введення. Він розуміє, що платіж від аптеки має відноситися до охорони здоров'я, навіть якщо ніколи не бачив цього конкретного продавця раніше, оскільки навчився семантичному зв'язку між типами продавців і категоріями витрат."
@@ -13852,6 +13891,10 @@ msgstr "тема"
 msgid "Then layer sync on top. Modern sync engines make this incremental approach practical. You do not need to design for distributed systems from day one."
 msgstr "Потім нашаруйте синхронізацію зверху. Сучасні синхронізаційні рушії роблять цей поступовий підхід практичним. Вам не потрібно проєктувати для розподілених систем з першого дня."
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Then tap save"
+msgstr "Далі — зберегти"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Then things started to deteriorate."
 msgstr "Потім ситуація почала погіршуватися."
@@ -14084,13 +14127,13 @@ msgstr "Три екрани, за якими нічого немає — спи�
 msgid "Three screens, from the total on your home screen down to what you owe and what you are owed."
 msgstr "Три екрани — від загальної суми на головному екрані до того, що ви винні та що винні вам."
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
+msgstr "Три екрани: збереження витрати, повернення до вже збереженої витрати та список, у якому вони всі опиняються."
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Three steps from speech to saved"
 msgstr "Три кроки від мовлення до збереження"
-
-#: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Three transaction types: expense (debits an account), income (credits an account), transfer (moves between two of your accounts). Categories are user-defined, optionally MCC-backed when imported via bank sync."
-msgstr "Три типи транзакцій: витрата (дебетує рахунок), дохід (кредитує рахунок), переказ (переміщення між двома вашими рахунками). Категорії визначаються користувачем, опціонально підкріплені MCC при імпорті через банківську синхронізацію."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Time series"
@@ -14452,6 +14495,10 @@ msgstr "Два дотики від відкриття до збереження 
 msgid "Two taps from open to saved."
 msgstr "Два дотики від відкриття до збереження."
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Two taps to saved"
+msgstr ""
+
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Two-stage categorization flow"
 msgstr "Двоетапний потік категоризації"
@@ -14459,6 +14506,10 @@ msgstr "Двоетапний потік категоризації"
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Two-tap entry: smart defaults for account, category, and date pick the right values out of the box"
 msgstr "Введення двома дотиками: розумні параметри за замовчуванням для рахунку, категорії та дати вибирають правильні значення без налаштування"
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Type the amount"
+msgstr "Введіть суму"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "TypeScript codebase, easy to contribute to"
