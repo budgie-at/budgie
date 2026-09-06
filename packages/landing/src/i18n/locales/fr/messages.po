@@ -2748,10 +2748,6 @@ msgstr "Toujours. Chaque transaction vous permet d'accepter, modifier ou rejeter
 msgid "Always. Imported transactions are normal Budgie transactions — edit, split, tag, or convert to transfer just like manual entries."
 msgstr "Toujours. Les transactions importées sont des transactions Budgie normales — modifiez, divisez, étiquetez ou convertissez en virement comme pour les saisies manuelles."
 
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Always. Tap any aggregated number to drill into the per-leg native amounts."
-msgstr "Toujours. Touchez n'importe quel nombre agrégé pour explorer les montants natifs par leg."
-
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Always. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list gives you a context menu with Edit, Delete, Split, Convert to Transfer, and Convert to Refund actions when they apply."
 msgstr "Toujours. Toucher une ligne ouvre sa vue de détail en lecture seule avec un bouton Modifier, et un appui long dans la liste affiche un menu contextuel avec les actions Modifier, Supprimer, Diviser, Convertir en virement et Convertir en remboursement lorsqu'elles s'appliquent."
@@ -6852,6 +6848,10 @@ msgstr "Chaque transaction dans votre base de données. Utile pour les analytiqu
 msgid "Every transaction is stored locally. No Wi-Fi required to add expenses, view balances, or import bank data. Works anywhere."
 msgstr "Chaque transaction est stockée localement. Pas de Wi-Fi requis pour ajouter des dépenses, voir les soldes ou importer des données bancaires. Fonctionne partout."
 
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Every transaction is valued at the rate of the day it happened, not today's rate"
+msgstr "Chaque transaction est valorisée au taux du jour où elle a eu lieu, et non au taux du jour actuel"
+
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Every transaction lives on your device. No cloud account, no sign-up — your finances stay in your pocket, even on a plane or in a tunnel."
 msgstr "Chaque transaction réside sur votre appareil. Sans compte cloud, sans inscription — vos finances restent dans votre poche, même dans un avion ou un tunnel."
@@ -7597,8 +7597,8 @@ msgid "FX preserved"
 msgstr "Taux de change préservé"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
-msgid "FX rates are pulled once a day from a public-domain source. Conversions are reversible — tap any aggregated number to see the per-leg native amounts."
-msgstr "Les taux de change sont récupérés une fois par jour depuis une source de données publique. Les conversions sont réversibles — touchez n'importe quel nombre agrégé pour voir les montants natifs par leg."
+msgid "FX rates are pulled once a day from a public-domain source. Nothing is converted in place: every account, transaction, and transfer leg keeps its original currency and amount, and the base-currency figure is derived on top of it."
+msgstr "Les taux de change sont récupérés une fois par jour depuis une source du domaine public. Rien n'est converti à la place de l'original : chaque compte, chaque transaction et chaque volet de virement conserve sa devise et son montant d'origine, et le montant dans votre devise de référence en est dérivé."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "FX support"
@@ -13165,10 +13165,6 @@ msgstr "Prenez le controle de votre confidentialite financiere"
 msgid "Tap a calendar day to see the transactions due. The forecasted upcoming list extends out into the next 60 days. Cross-currency recurring shows in your home currency; original amount on tap."
 msgstr "Touchez un jour du calendrier pour voir les transactions dues. La liste prévisionnelle s'étend jusqu'aux 60 prochains jours. Les récurrences multi-devises s'affichent dans votre devise principale ; montant d'origine sur toucher."
 
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Tap any aggregated number to drill into the per-leg native amounts"
-msgstr "Touchez n'importe quel nombre agrégé pour explorer les montants natifs par leg"
-
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Tap any category row to open exactly the transactions behind that number for this period"
 msgstr "Touchez n'importe quelle ligne de catégorie pour ouvrir exactement les transactions derrière ce chiffre pour cette période"
@@ -16201,6 +16197,10 @@ msgstr "Oui — par défaut, aucune n'est principale. Le badge apparaît uniquem
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Yes — cards, jars, and deposit accounts from the same bank all attach to one connection and appear together on its screen."
 msgstr "Oui — les cartes, les cagnottes et les comptes de dépôt d'une même banque se rattachent tous à une seule connexion et apparaissent ensemble sur son écran."
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Yes — each account, transaction, and transfer leg keeps its original currency and amount, and that is what you see on the account and transaction screens. Only the aggregated totals are shown in your base currency."
+msgstr "Oui : chaque compte, chaque transaction et chaque volet de virement conserve sa devise et son montant d'origine, et c'est ce que vous voyez sur les écrans de comptes et de transactions. Seuls les totaux agrégés sont affichés dans votre devise de référence."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Yes — each asset is a normal account, so it rolls into net worth next to your bank accounts, deposits, and debts."
