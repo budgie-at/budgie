@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.21.0](https://github.com/budgie-at/budgie/compare/v6.20.0...v6.21.0) (2026-09-06)
+
+
+### Features
+
+* **landing:** tell the source-available budget app story ([86644f4](https://github.com/budgie-at/budgie/commit/86644f40dbe1698a1b3d667c6626f1344f545eda))
+
+
+### Performance Improvements
+
+* **landing:** keep the feature and article registries out of client bundles ([6084e01](https://github.com/budgie-at/budgie/commit/6084e01c911803fe6034a8dfdef68220697da81a))
+
+
+
+
+
 # [6.20.0](https://github.com/budgie-at/budgie/compare/v6.19.0...v6.20.0) (2026-09-06)
 
 
