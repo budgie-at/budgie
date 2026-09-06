@@ -1,3 +1,4 @@
 export const AccountSyncCardSelector = {
-    Switch: 'AccountSyncCard.Switch'
+    Switch: 'AccountSyncCard.Switch',
+    ResyncButton: 'AccountSyncCard.ResyncButton'
 } as const;

@@ -10,10 +10,11 @@ interface Props {
     readonly maxWidth?: string;
     readonly children: ReactNode;
     readonly onPress: () => void;
+    readonly testID?: string;
 }
 
 export const SuggestionPill = (props: Props) => {
-    const { index, animationDuration, staggerDelay, maxWidth = 'max-w-44', children, onPress } = props;
+    const { index, animationDuration, staggerDelay, maxWidth = 'max-w-44', children, onPress, testID } = props;
 
     return (
         <Animated.View
@@ -23,6 +24,7 @@ export const SuggestionPill = (props: Props) => {
             <HapticPressable
                 className={`flex-row items-center gap-xxs px-sm py-xs bg-ghost-background rounded-xl shadow-sm ${maxWidth}`}
                 onPress={onPress}
+                testID={testID}
             >
                 {children}
             </HapticPressable>

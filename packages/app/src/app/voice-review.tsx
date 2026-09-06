@@ -15,6 +15,8 @@ import { useCategorySelectorModal } from '../category/context/category-selector-
 import { useSettingsContext } from '../settings/context/settings.context';
 import { SplitEntryRow } from '../transaction/components/split-entry-row/split-entry-row';
 
+import { VoiceReviewSelector } from './voice-review.selector';
+
 const SCROLL_BOTTOM_PADDING = 16;
 const SCROLL_CONTENT_STYLE = { paddingBottom: SCROLL_BOTTOM_PADDING } as const;
 
@@ -104,7 +106,7 @@ export default function VoiceReviewModal() {
     const containerStyle = { flex: 1, backgroundColor };
 
     return (
-        <View style={containerStyle} collapsable={false}>
+        <View style={containerStyle} collapsable={false} testID={VoiceReviewSelector.Page}>
             {isNotEmptyString(originalText) ? (
                 <View className="mx-lg mb-lg mt-2xl flex-row gap-x-md rounded-2xl bg-secondary-background px-lg py-md">
                     <View className="w-[2px] rounded-full bg-secondary-foreground/30" />

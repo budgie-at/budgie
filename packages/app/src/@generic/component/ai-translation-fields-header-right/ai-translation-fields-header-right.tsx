@@ -5,6 +5,7 @@ import Animated, { FadeInUp, type SharedValue, useAnimatedStyle } from 'react-na
 
 import { isDefined } from '@rnw-community/shared';
 
+import { AiTranslationFieldsSelector } from '../ai-translation-fields/ai-translation-fields.selector';
 import { Icon } from '../icon/icon';
 
 interface ModelStatusInterface {
@@ -67,7 +68,7 @@ export const AiTranslationFieldsHeaderRight = (props: Props) => {
     }
 
     return (
-        <Pressable onPress={onRegenerate} disabled={isRegenerating} hitSlop={12}>
+        <Pressable onPress={onRegenerate} disabled={isRegenerating} hitSlop={12} testID={AiTranslationFieldsSelector.RegenerateButton}>
             <Animated.View style={rotatingStyle}>
                 <Icon icon={UserIconNameEnum.RefreshCw} size={16} className="text-primary" />
             </Animated.View>

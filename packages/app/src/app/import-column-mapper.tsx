@@ -12,6 +12,8 @@ import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styl
 import { ImportColumnMapperOption } from '../import/components/import-column-mapper-option/import-column-mapper-option';
 import { useImportColumnMapperModal } from '../import/context/import-column-mapper-modal.context';
 
+import { ImportColumnMapperModalSelector } from './import-column-mapper.selector';
+
 const sortHeaders = (first: string, second: string): number => first.localeCompare(second);
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
@@ -62,6 +64,7 @@ export default function ImportColumnMapperModal() {
                     <Pressable
                         onPress={handleClear}
                         className="p-3xl rounded-xl bg-positive-background/10 border border-positive-corner flex-row items-center justify-between"
+                        testID={ImportColumnMapperModalSelector.ClearSelected}
                     >
                         <Text className="text-primary text-sm font-semibold">{currentValue}</Text>
                         <View className="flex-row items-center gap-x-sm">
@@ -83,6 +86,7 @@ export default function ImportColumnMapperModal() {
                                 header={header}
                                 isSelected={header === currentValue}
                                 onSelect={handleSelect(header)}
+                                testID={ImportColumnMapperModalSelector.Header(header)}
                             />
                         ))}
                     </View>
@@ -94,7 +98,7 @@ export default function ImportColumnMapperModal() {
             </ScrollView>
 
             <Footer>
-                <Button content={t`Done`} variant="secondary" onPress={handleDone} />
+                <Button content={t`Done`} variant="secondary" onPress={handleDone} testID={ImportColumnMapperModalSelector.Done} />
             </Footer>
         </View>
     );

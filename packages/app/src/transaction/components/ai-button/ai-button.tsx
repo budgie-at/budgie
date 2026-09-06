@@ -17,6 +17,7 @@ interface Props {
     readonly isLoading?: boolean;
     readonly isInitializing?: boolean;
     readonly downloadProgress?: number;
+    readonly testID?: string;
 }
 
 const ICON_SIZE = 32;
@@ -35,7 +36,7 @@ const MIN_OPACITY = 0.4;
 const MAX_OPACITY = 1;
 
 export const AiButton = (props: Props) => {
-    const { onPress, isAnimating = true, isLoading = false, isInitializing = false, downloadProgress = 0 } = props;
+    const { onPress, isAnimating = true, isLoading = false, isInitializing = false, downloadProgress = 0, testID } = props;
 
     const [, hapticImpact] = useVibration();
 
@@ -135,6 +136,7 @@ export const AiButton = (props: Props) => {
                     style={buttonStyle}
                     onPress={handlePress}
                     disabled={isDisabled}
+                    testID={testID}
                 >
                     <Icon className="text-primary-reverse" icon={UserIconNameEnum.Mic} size={ICON_SIZE} />
                 </HapticPressable>
