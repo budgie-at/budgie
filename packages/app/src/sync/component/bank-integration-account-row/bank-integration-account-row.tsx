@@ -47,6 +47,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
             singleLine
             onPress={handlePress}
             accessible={false}
+            onTitlePress={handlePress}
             left={<CircleIcon icon={account.icon} variant="ghost" size={46} iconSize={20} border={false} />}
             title={account.title}
             description={description}
