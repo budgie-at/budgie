@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.16.0](https://github.com/budgie-at/budgie/compare/v6.15.0...v6.16.0) (2026-09-06)
+
+
+### Features
+
+* **landing:** add AI merchant translation media ([1f51979](https://github.com/budgie-at/budgie/commit/1f519796ec67cb26e5bfcb882cedbbbf7545fc14))
+
+
+
+
+
 # [6.15.0](https://github.com/budgie-at/budgie/compare/v6.14.0...v6.15.0) (2026-09-06)
 
 
