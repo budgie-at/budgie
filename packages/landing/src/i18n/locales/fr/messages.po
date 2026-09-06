@@ -3849,6 +3849,14 @@ msgstr ""
 msgid "Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review."
 msgstr "Budgie consolide automatiquement les virements et remboursements marchands évidents, puis laisse les correspondances ambiguës à vérifier."
 
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Budgie context menu open over the dimmed transaction list, with delete last and marked in red"
+msgstr "Menu contextuel de Budgie ouvert sur la liste des transactions assombrie, avec supprimer en dernier et en rouge"
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Budgie convert to transfer screen with the amount prefilled and the account picker open over the from and to selectors"
+msgstr "Écran Convertir en virement de Budgie avec le montant prérempli et le sélecteur de comptes ouvert au-dessus des champs source et destination"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Budgie convert to transfer screen with the destination account picker open"
 msgstr "Écran de conversion en virement de Budgie avec le sélecteur de compte de destination ouvert"
@@ -4294,6 +4302,10 @@ msgstr "Liste des transactions de Budgie où un virement entrant rapproché appa
 msgid "Budgie transaction list where every row shows its primary tag next to the category"
 msgstr "Liste des transactions de Budgie où chaque ligne affiche son étiquette principale à côté de la catégorie"
 
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete"
+msgstr "Liste des transactions de Budgie avec un menu contextuel sur une carte : modifier, convertir en virement, associer une dette, supprimer"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie transaction list with a long-press context menu offering edit, convert to transfer, attach debt and delete"
 msgstr "Liste des transactions Budgie avec un menu contextuel par appui long proposant de modifier, de convertir en virement, d'associer une dette et de supprimer"
@@ -4305,10 +4317,6 @@ msgstr "Liste des transactions de Budgie avec les pastilles d'étiquettes affich
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Budgie transaction list with the missing categories pill above the uncategorised rows"
 msgstr "Liste des transactions de Budgie avec la pastille des catégories manquantes au-dessus des lignes sans catégorie"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Budgie transaction long-press menu with the edit, convert, attach debt and delete actions"
-msgstr "Menu d’appui long sur une transaction dans Budgie avec les actions modifier, convertir, associer une dette et supprimer"
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports partial refunds, and keeps the audit trail visible from the transaction detail screen."
@@ -5452,9 +5460,17 @@ msgstr "Convertir un revenu en remboursement"
 msgid "Convert Income to Refund in Expense App — Budgie"
 msgstr "Convertir un revenu en remboursement dans l’app de dépenses — Budgie"
 
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Convert it to a transfer"
+msgstr "Convertissez-la en virement"
+
 #: src/app/[lang]/features/convert-to-transfer/opengraph-image.tsx
 msgid "Convert to Transfer"
 msgstr "Convertir en virement"
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Convert to Transfer opens with the amount already carried over. Pick the account on the other side and you are back on the list."
+msgstr "Convertir en virement s'ouvre avec le montant déjà repris. Choisissez le compte de l'autre côté et vous revenez à la liste."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Converted to your base currency"
@@ -6578,6 +6594,10 @@ msgid "Edit, convert to a transfer, attach a debt or delete. A plain tap only op
 msgstr "Modifier, convertir en virement, associer une dette ou supprimer. Un simple appui ouvre la ligne en lecture seule : rien ne change par accident."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Edit, convert to a transfer, attach a debt, or delete — every one of them starts from the list."
+msgstr "Modifier, convertir en virement, associer une dette ou supprimer : tout part de la liste."
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Edit, Delete, Split, Convert to Transfer, and Convert to Refund. The exact set depends on the transaction type — only income can become a refund, for example."
 msgstr "Modifier, Supprimer, Diviser, Convertir en virement et Convertir en remboursement. L’ensemble exact dépend du type de transaction — seuls les revenus peuvent devenir un remboursement, par exemple."
 
@@ -6803,6 +6823,10 @@ msgstr "Toutes les fonctionnalités de Budgie en un seul endroit : synchronisati
 #: src/app/[lang]/features/page.tsx
 msgid "Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI categorization — in one place."
 msgstr "Toutes les fonctionnalités du gestionnaire de dépenses hors ligne Budgie — de la synchronisation bancaire à la catégorisation par IA sur l'appareil — en un seul endroit."
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Every change starts on the list"
+msgstr "Tout changement part de la liste"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Every cloud-based service is a potential target. In 2023 alone, over 5.5 billion personal records were exposed in data breaches worldwide."
@@ -7489,6 +7513,10 @@ msgstr "Forkable"
 msgid "Forks"
 msgstr "Forks"
 
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Four actions, no form"
+msgstr "Quatre actions, aucun formulaire"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Free core, optional one-time unlock"
 msgstr "Gratuit de base, déblocage optionnel unique"
@@ -7619,10 +7647,6 @@ msgstr "Générez un jeton API personnel depuis l'application Monobank, collez-l
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Genuine Offline Capability"
 msgstr "Une véritable capacité hors ligne"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Gesture detection activates after approximately 300 milliseconds of sustained contact on a transaction card. The menu appears anchored to the card, listing only the actions that are valid for that specific transaction type. Expense cards show Edit, Delete, Convert to Transfer, and Split. Income cards can also show Convert to Refund when they are not already consolidated. Transfer cards omit Convert to Transfer since they are already transfers. Split transactions expose a Merge Back option instead. This context-aware filtering prevents presenting actions that would be no-ops or errors for the current entry type."
-msgstr "La détection du geste s’active après environ 300 millisecondes de contact continu sur une carte de transaction. Le menu apparaît ancré à la carte et liste uniquement les actions valides pour ce type de transaction. Les cartes de dépense affichent Modifier, Supprimer, Convertir en virement et Diviser. Les cartes de revenu peuvent aussi afficher Convertir en remboursement lorsqu’elles ne sont pas déjà consolidées. Les cartes de virement omettent Convertir en virement puisqu’elles sont déjà des virements. Les transactions divisées affichent plutôt une option Fusionner à nouveau. Ce filtrage contextuel évite de présenter des actions inutiles ou erronées pour l’entrée actuelle."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer"
@@ -7781,6 +7805,10 @@ msgstr "Gérez des comptes dans n'importe quelle devise. Une tâche nocturne en 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Hold accounts in any currency. A nightly background task fetches fresh FX rates so your dashboards always show in your home currency."
 msgstr "Gérez des comptes dans n'importe quelle devise. Une tâche nocturne en arrière-plan récupère les derniers taux de change pour que vos tableaux de bord s'affichent toujours dans votre devise principale."
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Hold any transaction card"
+msgstr "Maintenez une carte appuyée"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Holdings roll up into net worth alongside fiat accounts"
@@ -8147,10 +8175,6 @@ msgstr "Comment ça fonctionne"
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx
 msgid "How It Works"
 msgstr "Comment ça marche"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "How it works under the hood"
-msgstr "Comment ça fonctionne sous le capot"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How Keys Are Managed Locally"
@@ -10747,6 +10771,10 @@ msgstr "Un reçu, plusieurs catégories."
 msgid "One screen per bank"
 msgstr "Un écran par banque"
 
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "One screen to finish it"
+msgstr "Un écran et c'est fini"
+
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "One settings screen, and a public repository where every line of it can be checked."
 msgstr "Un seul écran de réglages, et un dépôt public où chaque ligne peut être vérifiée."
@@ -11187,6 +11215,10 @@ msgstr "Choisissez une fenêtre : 7 derniers jours, 30, 90, ou une plage personn
 msgid "Pick source account, pick destination account, enter amount. If currencies differ, the dual-amount input opens automatically. Counter-FX is preserved per-leg so balance reconciliation stays exact."
 msgstr "Choisissez le compte source, le compte de destination, saisissez le montant. Si les devises diffèrent, la saisie double montant s’ouvre automatiquement. Le taux de change est préservé par leg pour une réconciliation exacte du solde."
 
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Pick the destination account"
+msgstr "Choisissez le compte de destination"
+
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "pin"
 msgstr "pin"
@@ -11345,6 +11377,10 @@ msgstr "Préserve davantage de votre structure de catégories"
 #: src/app/[lang]/features/date-filter-presets/opengraph-image.tsx
 msgid "presets"
 msgstr "préréglages"
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Press and hold a row"
+msgstr "Appuyez longuement sur une ligne"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Press and hold any transaction card for about 300ms. The native context menu appears anchored to the card."
@@ -13295,6 +13331,10 @@ msgstr "Le probleme de persistance de l'agregateur"
 msgid "The Alternative: Offline-First Architecture"
 msgstr "L'alternative : l'architecture Offline-First"
 
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "The amount carries over"
+msgstr "Le montant est repris"
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The answer varies by company, but the patterns are consistent:"
 msgstr "La reponse varie selon l'entreprise, mais les schemas sont les memes :"
@@ -13564,6 +13604,14 @@ msgstr "Le mouvement local-first représente une véritable évolution dans notr
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The Local-First Movement: Why Developers Are Building Offline Apps"
 msgstr "Le mouvement Local-First : pourquoi les développeurs créent des applications hors ligne"
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "The menu opens anchored to the card you pressed, and the rest of the list dims behind it."
+msgstr "Le menu s'ouvre ancré à la carte que vous avez pressée, et le reste de la liste s'assombrit."
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "The menu opens right there"
+msgstr "Le menu s'ouvre juste là"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually."
@@ -14146,6 +14194,10 @@ msgstr "Trois écrans, du total sur l'accueil jusqu'à ce que vous devez et ce q
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
 msgstr "Trois écrans : enregistrer une dépense, revenir sur une dépense déjà saisie, et la liste où toutes atterrissent."
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Three screens: the press that opens the menu, the four actions behind it, and the one screen a conversion needs."
+msgstr "Trois écrans : l'appui qui ouvre le menu, les quatre actions derrière lui, et le seul écran qu'une conversion demande."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Three steps from speech to saved"

@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -81,14 +80,72 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie transaction long-press menu with the edit, convert, attach debt and delete actions`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Every change starts on the list</Trans>}>
+                    <Trans>
+                        Three screens: the press that opens the menu, the four actions behind it, and the one screen a conversion needs.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Press and hold a row</Trans>}>
+                    <Trans>The menu opens anchored to the card you pressed, and the rest of the list dims behind it.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="transaction-long-press-menu-1"
+                    slug="transaction-long-press-menu"
+                >
+                    <FeatureStory.Callout y={0.3}>
+                        <Trans>Hold any transaction card</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.408}>
+                        <Trans>The menu opens right there</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Four actions, no form</Trans>}>
+                    <Trans>Edit, convert to a transfer, attach a debt, or delete — every one of them starts from the list.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie context menu open over the dimmed transaction list, with delete last and marked in red`}
+                    index={1}
                     locale={lang}
                     scene="transaction-long-press-menu-1"
                     slug="transaction-long-press-menu"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.449}>
+                        <Trans>Convert it to a transfer</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>One screen to finish it</Trans>}>
+                    <Trans>
+                        Convert to Transfer opens with the amount already carried over. Pick the account on the other side and you are back
+                        on the list.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie convert to transfer screen with the amount prefilled and the account picker open over the from and to selectors`}
+                    index={2}
+                    locale={lang}
+                    scene="convert-to-transfer-1"
+                    slug="convert-to-transfer"
+                >
+                    <FeatureStory.Callout y={0.3}>
+                        <Trans>The amount carries over</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.79}>
+                        <Trans>Pick the destination account</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -107,22 +164,6 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                         The context menu uses native platform APIs — the system menu component on iPadOS and a bottom sheet on iPhone and
                         Android — so the interaction is immediately familiar. There is no modal, no full-screen form, and no intermediate
                         navigation step for the common actions.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works under the hood</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Gesture detection activates after approximately 300 milliseconds of sustained contact on a transaction card. The
-                        menu appears anchored to the card, listing only the actions that are valid for that specific transaction type.
-                        Expense cards show Edit, Delete, Convert to Transfer, and Split. Income cards can also show Convert to Refund when
-                        they are not already consolidated. Transfer cards omit Convert to Transfer since they are already transfers. Split
-                        transactions expose a Merge Back option instead. This context-aware filtering prevents presenting actions that would
-                        be no-ops or errors for the current entry type.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
