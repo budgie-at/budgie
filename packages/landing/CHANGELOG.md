@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.14.0](https://github.com/budgie-at/budgie/compare/v6.13.0...v6.14.0) (2026-09-06)
+
+
+### Features
+
+* **landing:** polish the feature story stage, callouts and typography ([b3a0e31](https://github.com/budgie-at/budgie/commit/b3a0e31f423ecbb585cb25515555f5f355a96aac))
+
+
+
+
+
 # [6.13.0](https://github.com/budgie-at/budgie/compare/v6.12.0...v6.13.0) (2026-09-06)
 
 
