@@ -10026,6 +10026,10 @@ msgstr "Kein Limit. Fügen Sie so viele Aufteilungszeilen hinzu, wie Sie benöti
 msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” for the at-a-glance badge on the transaction list."
 msgstr "Kein Limit. Schichten Sie so viele auf, wie Sie benötigen; einer davon kann zum „primären“ für das Auf-einen-Blick-Abzeichen in der Transaktionsliste befördert werden."
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "No lock icons, no tiers"
+msgstr "Keine Schlosssymbole, keine Tarife"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "No mobile app experience"
 msgstr "Keine mobile App-Erfahrung"
@@ -10101,6 +10105,10 @@ msgstr "Keine Drittanbieter-SDKs mit Tracking"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No tracking or analytics"
 msgstr "Kein Tracking oder Analytics"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "No upgrade banner here"
+msgstr "Hier kein Upgrade-Banner"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No user profiles or advertising IDs"
@@ -10712,6 +10720,10 @@ msgstr "Ein Beleg, mehrere Kategorien."
 msgid "One screen per bank"
 msgstr "Ein Bildschirm pro Bank"
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "One settings screen, and the thing worth noticing is the row that never appears on it."
+msgstr "Ein Einstellungsbildschirm — und das Bemerkenswerteste daran ist die Zeile, die dort nie auftaucht."
+
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
 msgstr "Ein Tag pro Transaktion kann mit einem Eckstern-Abzeichen zum „primären“ befördert werden"
@@ -11043,6 +11055,10 @@ msgstr "Teil- und Vollrückerstattungen – Budgie vergleicht den Rückerstattun
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone — then merges your P2P buys with the bank payment that funded them."
 msgstr "Fügen Sie einen Nur-Lese-API-Schlüssel ein, und Budgie holt Ihre Binance-Salden und -Historie direkt auf Ihr Smartphone — und führt anschließend Ihre P2P-Käufe mit der Bankzahlung zusammen, die sie finanziert hat."
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
+msgstr "Zahlen Sie einmal für Bankabgleich und geräteinterne KI, wenn Sie sie möchten. Der Tracker selbst läuft nie ab."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Payday-aligned cycles — start on any day of the month or anchor to the last day"
@@ -11462,6 +11478,10 @@ msgstr "Standardmäßig private Finanztools sind oft nur auf Englisch verfügbar
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Privacy-focused organizations and advocacy groups"
 msgstr "Datenschutzorientierte Organisationen und Interessengruppen"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Privacy, Security, General and every group under them open in full, with no upgrade row in between."
+msgstr "Privatsphäre, Sicherheit, Allgemein und jede Gruppe darunter öffnen sich vollständig — ohne eine einzige Upgrade-Zeile dazwischen."
 
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "privatbank"
@@ -13848,6 +13868,10 @@ msgstr "Es gibt keine Hintergrundsynchronisierung, die stillschweigend Ihre Date
 msgid "There is no Budgie server holding your financial data. We do not have access to your transactions because we never receive them."
 msgstr "Es gibt keinen Budgie-Server, der Ihre Finanzdaten hält. Wir haben keinen Zugang zu Ihren Transaktionen, weil wir sie nie erhalten."
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "There is no paywall screen to show you, because the app ships no purchase surface at all."
+msgstr "Es gibt keinen Paywall-Bildschirm zu zeigen, denn die App enthält überhaupt keine Kaufoberfläche."
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."
 msgstr ""
@@ -15128,6 +15152,10 @@ msgstr "Was Intuit Mint wirklich war"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "What Is Local-First Software?"
 msgstr "Was ist Local-First-Software?"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "What is not on this screen"
+msgstr "Was auf diesem Bildschirm fehlt"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "What Is On-Device AI?"

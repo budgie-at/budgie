@@ -12,14 +12,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -82,14 +81,38 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>What is not on this screen</Trans>}>
+                    <Trans>One settings screen, and the thing worth noticing is the row that never appears on it.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Point index={0}>
+                    <Trans>Privacy, Security, General and every group under them open in full, with no upgrade row in between.</Trans>
+                </FeatureStory.Point>
+
+                <FeatureStory.Shot
                     alt={t(i18n)`Budgie settings screen showing the full option set with no paywall and no subscription prompt`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="subscription-free-budget-app-1"
                     slug="subscription-free-budget-app"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout index={0} y={0.125}>
+                        <Trans>No upgrade banner here</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.678}>
+                        <Trans>No lock icons, no tiers</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Point index={1}>
+                    <Trans>There is no paywall screen to show you, because the app ships no purchase surface at all.</Trans>
+                </FeatureStory.Point>
+                <FeatureStory.Point index={2}>
+                    <Trans>Pay once for bank sync and on-device AI if you want them. The tracker itself never expires.</Trans>
+                </FeatureStory.Point>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
