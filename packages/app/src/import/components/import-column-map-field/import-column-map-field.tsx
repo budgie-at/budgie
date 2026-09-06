@@ -5,6 +5,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { ImportColumnMapFormValues } from '../../schema/import-column-map.schema';
 import { ImportColumnMapper } from '../import-column-mapper/import-column-mapper';
+import { ImportColumnMapperSelector } from '../import-column-mapper/import-column-mapper.selector';
 
 interface Props {
     readonly control: Control<ImportColumnMapFormValues>;
@@ -29,6 +30,7 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
                     onSelect={onChange}
                     onClear={handleClear}
                     hasError={isNotEmptyString(error)}
+                    testID={ImportColumnMapperSelector.Row(name)}
                 />
             </FormItem>
         );

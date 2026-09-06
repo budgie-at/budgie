@@ -15,6 +15,7 @@ import { getPatternComments } from '../../utils/get-pattern-comments.util';
 import { getPatternTagIds } from '../../utils/get-pattern-tag-ids.util';
 import { mergePatternCategories } from '../../utils/merge-pattern-categories.util';
 import { IconTitleSuggestionRow } from '../icon-title-suggestion-row/icon-title-suggestion-row';
+import { IconTitleSuggestionRowSelector } from '../icon-title-suggestion-row/icon-title-suggestion-row.selector';
 import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
 
 interface Props extends SuggestionOrchestratorSharedProps {
@@ -143,6 +144,7 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
                 getKey={getPatternCategoryKey}
                 getIcon={getPatternCategoryIcon}
                 getTitle={getPatternCategoryTitle}
+                testIDPrefix={IconTitleSuggestionRowSelector.PatternCategory}
             />
         );
     }
@@ -157,6 +159,7 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
                 getKey={getPatternTagKey}
                 getIcon={getPatternTagIcon}
                 getTitle={getPatternTagTitle}
+                testIDPrefix={IconTitleSuggestionRowSelector.PatternTag}
             />
         );
     }
@@ -171,6 +174,7 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
                 getKey={getPatternCommentKey}
                 getIcon={getPatternCommentIcon}
                 getTitle={getPatternCommentTitle}
+                testIDPrefix={IconTitleSuggestionRowSelector.PatternComment}
             />
         );
     }

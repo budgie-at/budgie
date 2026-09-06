@@ -1,15 +1,11 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 
 import { useTagSuggestion } from '../../../ai/hook/use-tag-suggestion.hook';
+import { CategoryScopedSuggestionRowPropsInterface } from '../../interface/category-scoped-suggestion-row-props.interface';
 import { IconTitleSuggestionRow } from '../icon-title-suggestion-row/icon-title-suggestion-row';
+import { IconTitleSuggestionRowSelector } from '../icon-title-suggestion-row/icon-title-suggestion-row.selector';
 
-interface Props {
-    readonly transactionTitle: string;
-    readonly categoryId: number;
-    readonly mccCategoryId: number | null;
-    readonly comment: string;
-    readonly aiContext: string;
-    readonly enabled: boolean;
+interface Props extends CategoryScopedSuggestionRowPropsInterface {
     readonly onSelect: (tagId: number) => void;
 }
 
@@ -42,6 +38,7 @@ export const TagSuggestionRow = (props: Props) => {
             getKey={getTagKey}
             getIcon={getTagIcon}
             getTitle={getTagTitle}
+            testIDPrefix={IconTitleSuggestionRowSelector.Tag}
         />
     );
 };
