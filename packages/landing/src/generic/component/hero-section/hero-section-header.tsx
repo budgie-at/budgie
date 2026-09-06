@@ -9,7 +9,7 @@ export const HeroSectionHeader = () => (
             <Trans>Private beta</Trans>
         </Badge>
 
-        <h1 className="hero-enter hero-title text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-balance">
+        <h1 className="hero-enter hero-title text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-balance">
             <Trans>Your money. Your phone. Nobody else&apos;s server.</Trans>
         </h1>
 

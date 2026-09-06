@@ -354,15 +354,15 @@
         grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
         justify-items: start;
-        gap: 4rem;
-        max-width: 62rem;
+        gap: 3rem;
+        max-width: 68rem;
         margin-inline: auto;
     }
 
     .hero-copy {
         align-items: start;
         order: 1;
-        max-width: 36rem;
+        max-width: 46rem;
         text-align: left;
     }
 
