@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.19.0](https://github.com/budgie-at/budgie/compare/v6.18.0...v6.19.0) (2026-09-06)
+
+
+### Features
+
+* **landing:** pin the story stage and move callouts outside the frame on every device ([3205f3d](https://github.com/budgie-at/budgie/commit/3205f3d68601f3da49622c62cc6684240bdf68d0))
+
+
+
+
+
 # [6.18.0](https://github.com/budgie-at/budgie/compare/v6.17.1...v6.18.0) (2026-09-06)
 
 
