@@ -7554,7 +7554,7 @@ msgstr "Bei Bankverbindungen ja. Krypto-Börsen-Verbindungen bieten keine Festge
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "From one token to your home screen"
-msgstr "Von einem Token auf Ihren Startbildschirm"
+msgstr "Von einem Token zu Ihrem Startbildschirm"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "From there, edit the transactions, apply your custom categories, accept AI category suggestions, or rely on MCC mapping for bank-synced rows. The goal is simple: every report should explain where your money actually went."
