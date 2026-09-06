@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.21.1](https://github.com/budgie-at/budgie/compare/v6.21.0...v6.21.1) (2026-09-06)
+
+
+### Bug Fixes
+
+* **landing:** scope crypto page claims to crypto and fiat ([62b66e4](https://github.com/budgie-at/budgie/commit/62b66e40585b20c8bb63d3ca5056891587fef491))
+
+
+
+
+
 # [6.21.0](https://github.com/budgie-at/budgie/compare/v6.20.0...v6.21.0) (2026-09-06)
 
 
