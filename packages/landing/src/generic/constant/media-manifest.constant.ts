@@ -95,6 +95,76 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },
+    {
+        slug: 'ai-merchant-translation',
+        locale: 'de',
+        scene: 'ai-merchant-translation-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-merchant-translation',
+        locale: 'de',
+        scene: 'ai-merchant-translation-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-merchant-translation',
+        locale: 'en',
+        scene: 'ai-merchant-translation-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-merchant-translation',
+        locale: 'en',
+        scene: 'ai-merchant-translation-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-merchant-translation',
+        locale: 'es',
+        scene: 'ai-merchant-translation-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-merchant-translation',
+        locale: 'es',
+        scene: 'ai-merchant-translation-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-merchant-translation',
+        locale: 'fr',
+        scene: 'ai-merchant-translation-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-merchant-translation',
+        locale: 'fr',
+        scene: 'ai-merchant-translation-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-merchant-translation',
+        locale: 'uk',
+        scene: 'ai-merchant-translation-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-merchant-translation',
+        locale: 'uk',
+        scene: 'ai-merchant-translation-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
     { slug: 'bank-fee-tracking', locale: 'de', scene: 'bank-fee-tracking-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
     { slug: 'bank-fee-tracking', locale: 'de', scene: 'bank-fee-tracking-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'bank-fee-tracking', locale: 'en', scene: 'bank-fee-tracking-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },

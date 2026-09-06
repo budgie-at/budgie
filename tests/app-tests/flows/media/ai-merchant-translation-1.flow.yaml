@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings/categories'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryCard.Сільпо'
+      timeout: 15000
+
+- tapOn:
+      id: 'CategoryCard.Сільпо'
+
+- extendedWaitUntil:
+      visible:
+          id: 'CategoryForm.ScrollView'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene
