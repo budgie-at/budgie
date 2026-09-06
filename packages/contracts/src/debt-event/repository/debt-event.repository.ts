@@ -52,6 +52,22 @@ export class DebtEventRepository {
         });
     }
 
+    async updateById(
+        id: number,
+        input: Partial<
+            Pick<
+                DebtEventCreateEntityInterface,
+                'transactionEntryId' | 'direction' | 'amount' | 'baseInstrumentId' | 'baseExchangeRate' | 'baseAmount' | 'operatedAt'
+            >
+        >,
+        tx?: DB
+    ): Promise<void> {
+        await (tx ?? this.db)
+            .update(DebtEventEntityTable)
+            .set({ ...input, updatedAt: new Date() })
+            .where(eq(DebtEventEntityTable.id, id));
+    }
+
     async deleteByTransactionId(transactionId: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(DebtEventEntityTable).where(eq(DebtEventEntityTable.transactionId, transactionId));
     }
