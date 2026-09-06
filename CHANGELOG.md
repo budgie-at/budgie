@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.17.0](https://github.com/budgie-at/budgie/compare/v6.16.0...v6.17.0) (2026-09-06)
+
+
+### Features
+
+* **app:** add stable testIDs for voice, AI, import and export controls ([0e7e16a](https://github.com/budgie-at/budgie/commit/0e7e16ad9268d915d54dcb1a56e62c6fdf0b1f45))
+
+
+
+
+
 # [6.16.0](https://github.com/budgie-at/budgie/compare/v6.15.0...v6.16.0) (2026-09-06)
 
 
