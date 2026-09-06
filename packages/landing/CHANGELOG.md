@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.21.4](https://github.com/budgie-at/budgie/compare/v6.21.3...v6.21.4) (2026-09-06)
+
+
+### Bug Fixes
+
+* **landing:** name the Whisper model the app actually downloads ([1ad4065](https://github.com/budgie-at/budgie/commit/1ad406556a3684c66e49ce2355a41241ab88e408))
+
+
+
+
+
 ## [6.21.3](https://github.com/budgie-at/budgie/compare/v6.21.2...v6.21.3) (2026-09-06)
 
 
