@@ -91,8 +91,9 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        FX rates are pulled once a day from a public-domain source. Conversions are reversible — tap any aggregated number
-                        to see the per-leg native amounts.
+                        FX rates are pulled once a day from a public-domain source. Nothing is converted in place: every account,
+                        transaction, and transfer leg keeps its original currency and amount, and the base-currency figure is derived on top
+                        of it.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -112,7 +113,7 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                         <Trans>Home and analytics screens convert to your base currency automatically</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Tap any aggregated number to drill into the per-leg native amounts</Trans>
+                        <Trans>Every transaction is valued at the rate of the day it happened, not today&apos;s rate</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Cross-currency transfers preserve both legs and the FX rate at transfer time</Trans>
@@ -151,7 +152,12 @@ export default async function MultiCurrencyFeaturePage(props: PageLangParam) {
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can I see the original currency?</Trans>}
-                    answer={<Trans>Always. Tap any aggregated number to drill into the per-leg native amounts.</Trans>}
+                    answer={
+                        <Trans>
+                            Yes — each account, transaction, and transfer leg keeps its original currency and amount, and that is what you
+                            see on the account and transaction screens. Only the aggregated totals are shown in your base currency.
+                        </Trans>
+                    }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>What happens during a cross-currency transfer?</Trans>}
