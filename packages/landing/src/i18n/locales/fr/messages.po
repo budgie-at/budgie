@@ -2844,6 +2844,10 @@ msgstr ""
 msgid "Analytics, charts, and reports work entirely on-device"
 msgstr "Analyses, graphiques et rapports fonctionnent entièrement sur l'appareil"
 
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "And the lock that enforces it"
+msgstr "Et le verrouillage qui l’applique"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Annual cost over 5 years"
 msgstr "Coût annuel sur 5 ans"
@@ -6829,6 +6833,10 @@ msgstr "Chaque entrée contient montant, compte, catégorie, tags, commentaire e
 msgid "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
 msgstr ""
 
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "Every promise here has a file behind it"
+msgstr "Chaque promesse affichée ici a un fichier derrière elle"
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Every rule can be switched off without being deleted"
 msgstr "Chaque règle peut être désactivée sans être supprimée"
@@ -7473,6 +7481,10 @@ msgstr "Normaliseur de noms de commerçants étrangers — Budgie"
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Foreign merchant names from Cyrillic, Greek, or Arabic bank statements get normalized to readable Latin — on your device, without sending anything to a server."
 msgstr "Les noms de commerçants étrangers provenant de relevés bancaires en cyrillique, grec ou arabe sont normalisés en latin lisible — sur votre appareil, sans rien envoyer à un serveur."
+
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "Fork it if we disappear. The database format and the app are both yours to keep."
+msgstr "Forkez-le si nous disparaissons. Le format de la base de données et l’application vous appartiennent."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Fork the repository on GitHub"
@@ -10747,6 +10759,10 @@ msgstr "Un reçu, plusieurs catégories."
 msgid "One screen per bank"
 msgstr "Un écran par banque"
 
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "One settings screen, and a public repository where every line of it can be checked."
+msgstr "Un seul écran de réglages, et un dépôt public où chaque ligne peut être vérifiée."
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "One settings screen, and the thing worth noticing is the row that never appears on it."
 msgstr "Un écran de réglages, et ce qui mérite l’attention, c’est la ligne qui n’y apparaît jamais."
@@ -11749,6 +11765,14 @@ msgstr "Lire d'abord, modifier volontairement"
 msgid "Read More on the Blog"
 msgstr "Lire plus sur le blog"
 
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "Read the code behind this claim"
+msgstr "Lisez le code derrière cette affirmation"
+
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "Read the code that holds your money. The repository is the product, and nothing about how Budgie stores or protects your data is compiled in secret."
+msgstr "Lisez le code qui détient votre argent. Le dépôt est le produit, et rien de la façon dont Budgie stocke ou protège vos données n’est compilé en secret."
+
 #: src/app/[lang]/open-source/page.tsx
 msgid "Read the Code, Verify the Claims"
 msgstr "Lisez le code, vérifiez les affirmations"
@@ -12214,6 +12238,10 @@ msgstr "captures d’écran"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Scroll down to “Export Budget”"
 msgstr "Faites défiler jusqu'à \"Export Budget\""
+
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "Scroll Settings end to end and there is no analytics group, because there is no telemetry to switch off."
+msgstr "Parcourez les Réglages de bout en bout : aucun groupe analytique, parce qu’il n’y a aucune télémétrie à désactiver."
 
 #: src/blog/component/blog-search/blog-search.tsx
 msgid "Search articles..."
