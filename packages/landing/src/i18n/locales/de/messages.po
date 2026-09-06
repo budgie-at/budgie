@@ -2169,6 +2169,10 @@ msgstr ""
 msgid "8.3 Price Changes"
 msgstr ""
 
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "81 transactions, no request"
+msgstr "81 Transaktionen, keine Anfrage"
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "9. Data Retention"
 msgstr ""
@@ -2317,6 +2321,10 @@ msgstr "Ein Marktbildschirm pro Instrument mit Preiskarte, Sparkline und Kennzah
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "A P2P purchase and the bank payment behind it merge into one cross-currency transfer"
 msgstr "Ein P2P-Kauf und die dahinterstehende Bankzahlung verschmelzen zu einer einzigen währungsübergreifenden Überweisung"
+
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "A PIN, not a login"
+msgstr "Eine PIN, kein Login"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "A project that ignores security issues or dismisses user concerns is sending clear signals about its priorities. Conversely, a project with thoughtful, timely responses to concerns demonstrates genuine commitment to its users."
@@ -2652,6 +2660,10 @@ msgstr ""
 msgid "AI-powered insights"
 msgstr "KI-gestützte Erkenntnisse"
 
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "Airplane mode changes nothing"
+msgstr "Flugmodus ändert nichts"
+
 #: src/app/[lang]/features/budget-planning/opengraph-image.tsx
 msgid "alerts"
 msgstr ""
@@ -2755,6 +2767,10 @@ msgstr "Amount"
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Amount + time-window matching catches transfers and refunds without perfect bank metadata"
 msgstr "Betrags- und Zeitfensterabgleich erkennt Überweisungen und Rückerstattungen auch ohne perfekte Bankmetadaten"
+
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "Amount first, no form"
+msgstr "Erst der Betrag, kein Formular"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "An amount-range chip in the same filter row, with a From value, a To value, or both"
@@ -4074,6 +4090,10 @@ msgstr "Budgie Mobile-App-Interface mit Saldoübersicht mit Multi-Währungs-Bank
 msgid "Budgie Monobank screen listing the connected Black, White and Jar cards with their balances"
 msgstr "Budgie-Monobank-Bildschirm mit den verbundenen Black-, White- und Jar-Karten und ihren Salden"
 
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "Budgie new expense screen with the amount keypad, account row and confirm button"
+msgstr "Budgie-Bildschirm für neue Ausgabe mit Zifferntastatur für den Betrag, Kontozeile und Bestätigungsschaltfläche"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts"
 msgstr "Budgie-Bildschirm für eine neue Ausgabe mit Betragstastatur, Kontoauswahl und den Schnellzugriffen für Datum, Notiz, Tags und Kategorie"
@@ -4151,8 +4171,8 @@ msgid "Budgie settings screen stating that every piece of financial data stays o
 msgstr "Budgie-Einstellungen mit dem Hinweis, dass alle Finanzdaten auf dem Gerät bleiben, ohne Cloud-Synchronisierung und ohne Tracking"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
-msgid "Budgie settings screen with the app lock, language, currency and default account options"
-msgstr "Budgie-Einstellungen mit den Optionen für App-Sperre, Sprache, Währung und Standardkonto"
+msgid "Budgie settings screen with security, language, currency and default account rows and no sign-in row"
+msgstr "Budgie-Einstellungen mit Zeilen für Sicherheit, Sprache, Währung und Standardkonto und ohne Zeile zum Anmelden"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle"
@@ -4259,8 +4279,8 @@ msgid "Budgie transaction list grouped by month with the category, tag and accou
 msgstr "Budgie-Transaktionsliste, nach Monaten gruppiert, mit Kategorie, Tag und Konto in jeder Zeile"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
-msgid "Budgie transaction list rendered straight from the on-device database with no network call"
-msgstr "Budgie-Transaktionsliste, die ohne Netzwerkabruf direkt aus der Datenbank auf dem Gerät dargestellt wird"
+msgid "Budgie transaction list showing eighty-one transactions read straight from the on-device database"
+msgstr "Budgie-Transaktionsliste mit einundachtzig Transaktionen, direkt aus der Datenbank auf dem Gerät gelesen"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Budgie transaction list where a matched incoming transfer is shown as a single transfer row"
@@ -8083,7 +8103,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/multi-language-app/page.tsx
-#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 #: src/app/[lang]/features/primary-tag/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
@@ -9911,6 +9930,10 @@ msgstr "Kein Konto erforderlich"
 msgid "No account required to start tracking"
 msgstr "Kein Konto erforderlich, um mit dem Tracking zu beginnen"
 
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "No account row anywhere in Settings — because there is no account."
+msgstr "Nirgendwo in den Einstellungen gibt es eine Zeile für ein Benutzerkonto — weil es keines gibt."
+
 #: src/app/[lang]/privacy/page.tsx
 msgid "No account. No aggregator. No telemetry. Six features that make Budgie the most private expense tracker on iOS and Android."
 msgstr "Kein Konto. Kein Aggregator. Keine Telemetrie. Sechs Funktionen, die Budgie zum privatesten Ausgaben-Tracker auf iOS und Android machen."
@@ -9950,6 +9973,10 @@ msgstr "Noch kein Build verfügbar"
 #: src/app/[lang]/privacy/metadata.ts
 msgid "no cloud budget app"
 msgstr ""
+
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "No cloud sync, no tracking"
+msgstr "Keine Cloud-Sync, kein Tracking"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "No company can shut down your spreadsheet"
@@ -10272,6 +10299,10 @@ msgstr "Nichts passiert – Ihre Daten sind sicher auf dem Gerät. Sie können w
 msgid "Nothing happens to your data because Budgie does not have your data. Everything is stored locally on your device. If Budgie as a company ceased to exist, your app would continue to function with all your data intact. You can export data at any time in standard formats. There is no server to shut down, no migration to worry about, no acquisition that could change data handling. Your data remains yours permanently."
 msgstr "Mit deinen Daten passiert nichts, weil Budgie deine Daten nicht hat. Alles wird lokal auf deinem Gerät gespeichert. Wenn Budgie als Unternehmen aufhören würde zu existieren, würde deine App mit allen Daten intakt weiter funktionieren. Du kannst Daten jederzeit in Standardformaten exportieren. Es gibt keinen Server zum Abschalten, keine Migration, um die du dich sorgen musst, keine Übernahme, die den Umgang mit Daten ändern könnte. Deine Daten bleiben dauerhaft deine."
 
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "Nothing to sign into"
+msgstr "Nichts, wo man sich anmeldet"
+
 #: src/app/[lang]/legal/license/metadata.ts
 #: src/app/[lang]/legal/privacy-policy/metadata.ts
 #: src/app/[lang]/legal/terms-of-service/metadata.ts
@@ -10474,10 +10505,6 @@ msgstr "Beim Bankimport wird der MCC jeder Transaktion aus der Quelle gelesen. B
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "On every consolidation run, Budgie scans new entries against existing ones for matching counter-IBAN, amount, sign, title, and time window. Transfer matches become one transfer. Refund matches link income back to the expense they reverse."
 msgstr "Bei jedem Konsolidierungslauf gleicht Budgie neue Einträge mit bestehenden anhand von Gegen-IBAN, Betrag, Vorzeichen, Titel und Zeitfenster ab. Überweisungstreffer werden zu einer Überweisung. Rückerstattungstreffer verknüpfen Einnahmen mit der Ausgabe, die sie umkehren."
-
-#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
-msgid "On first launch, Budgie creates an encrypted SQLite database in your app sandbox. Every transaction, category, account, and tag becomes a row in that file. The optional bank sync fetches statements directly from your bank's API to your device — never via a third-party data aggregator. AI category suggestions run on a 1.7B-parameter model loaded into memory on your phone."
-msgstr "Beim ersten Start erstellt Budgie eine verschlüsselte SQLite-Datenbank in Ihrer App-Sandbox. Jede Transaktion, Kategorie, jedes Konto und jeder Tag wird zu einer Zeile in dieser Datei. Der optionale Bank-Sync ruft Kontoauszüge direkt von der API Ihrer Bank auf Ihr Gerät ab – niemals über einen Drittanbieter-Datenaggregator. KI-Kategorievorschläge laufen auf einem 1,7-Milliarden-Parameter-Modell, das in den Speicher Ihres Telefons geladen wird."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept, edit, or reject) feeds back into the embedding index without any network call."
@@ -12062,6 +12089,10 @@ msgstr "Diesen Monat gespart"
 msgid "Saving a rule applies it retroactively to matching transactions you already have"
 msgstr "Das Speichern einer Regel wendet sie rückwirkend auf passende Transaktionen an, die Sie bereits haben"
 
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "Saving is instant"
+msgstr "Speichern ist sofort"
+
 #: src/generic/component/integrations-section/integrations-section-features.tsx
 msgid "Savings Accounts"
 msgstr "Sparkonten"
@@ -13385,6 +13416,10 @@ msgstr ""
 msgid "The following uses require explicit permission or a separate commercial license:"
 msgstr ""
 
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "The full list renders with the radio off. No spinner, no retry."
+msgstr "Die vollständige Liste erscheint mit abgeschaltetem Funk. Kein Ladekreis, kein erneuter Versuch."
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "The fundamental difference is where your data lives. Cloud apps store your transaction history on company servers. Budgie stores it in an encrypted database on your device. That difference determines who controls your financial data, who can access it, and what happens when the company changes its mind about the product."
 msgstr "Der grundlegende Unterschied liegt darin, wo Ihre Daten leben. Cloud-Apps speichern Ihre Transaktionshistorie auf Unternehmensservern. Budgie speichert sie in einer verschlüsselten Datenbank auf Ihrem Gerät. Dieser Unterschied bestimmt, wer Ihre Finanzdaten kontrolliert, wer darauf zugreifen kann und was passiert, wenn das Unternehmen seine Meinung über das Produkt ändert."
@@ -13629,6 +13664,10 @@ msgstr ""
 msgid "The risky approach"
 msgstr "Der riskante Ansatz"
 
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "The row lands and the balance updates before a network app finishes its request."
+msgstr "Die Zeile steht und der Saldo ist aktualisiert, bevor eine Netzwerk-App ihre Anfrage beendet hat."
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Rule: Store Original Truth and Reporting Value"
 msgstr ""
@@ -13776,6 +13815,10 @@ msgstr "Die Nicht-markiert-Gesamtsumme wird live neu berechnet, wenn Sie Transak
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Upgrade Flow"
 msgstr ""
+
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "The whole list, no spinner"
+msgstr "Die ganze Liste, kein Ladekreis"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The write completes locally with no network activity"
@@ -14008,6 +14051,10 @@ msgstr "Diese Transparenz ermöglicht es Ihnen, fundierte Entscheidungen darübe
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three first-class transaction types: expense, income, transfer — never confused, never miscounted"
 msgstr "Drei erstklassige Transaktionstypen: Ausgabe, Einnahme, Überweisung – nie verwechselt, nie falsch gezählt"
+
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "Three screens with nothing behind them — the list, the entry, and a Settings page with no account on it."
+msgstr "Drei Bildschirme ohne Server dahinter — die Liste, die Eingabe und Einstellungen ohne Benutzerkonto."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Three screens, from the total on your home screen down to what you owe and what you are owed."
@@ -14327,6 +14374,10 @@ msgstr "Echte Privatsphäre, nicht nur Versprechen"
 #: src/blog/component/blog-browser/blog-browser.tsx
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Versuchen Sie, Ihre Suchanfrage anzupassen oder alle Artikel zu durchsuchen."
+
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "Turn the radio off, nothing changes"
+msgstr "Funk aus, nichts ändert sich"
 
 #: src/generic/component/footer/footer.tsx
 msgid "Twitter"
@@ -16003,6 +16054,10 @@ msgstr "Funktioniert ohne Internetverbindung"
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Write the rule once and every future import obeys it: match on what the transaction actually says, then set the category, add a tag, or turn it into a transfer."
 msgstr "Schreiben Sie die Regel einmal, und jeder zukünftige Import befolgt sie: Abgleich anhand dessen, was die Transaktion tatsächlich aussagt, dann Kategorie setzen, Tag hinzufügen oder in eine Überweisung umwandeln."
+
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "Writes straight to the device"
+msgstr "Schreibt direkt auf das Gerät"
 
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "xlsx"
