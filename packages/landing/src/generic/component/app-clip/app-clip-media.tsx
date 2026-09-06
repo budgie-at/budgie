@@ -9,22 +9,30 @@ interface Props {
     asset: MediaAssetInterface;
     alt: string;
     className: string;
+    priority: boolean;
 }
 
-export const AppClipMedia = ({ asset, alt, className }: Props) => {
+export const AppClipMedia = ({ asset, alt, className, priority }: Props) => {
     const basePath = resolveMediaAssetPath(asset);
     // oxlint-disable-next-line lingui/no-unlocalized-strings
-    const playableMedia = `(prefers-color-scheme: ${asset.theme}) and (prefers-reduced-motion: no-preference)`;
+    const colorScheme = `(prefers-color-scheme: ${asset.theme})`;
+    // oxlint-disable-next-line lingui/no-unlocalized-strings
+    const playableMedia = `${colorScheme} and (prefers-reduced-motion: no-preference)`;
+    const posterSrc = `${basePath}-poster.webp`;
+    const fetchPriority = priority ? 'high' : 'auto';
 
     return (
         <div className={cn('relative', className)}>
+            {priority ? <link as="image" fetchPriority="high" href={posterSrc} media={colorScheme} rel="preload" /> : null}
+
             <img
                 alt={alt}
                 className="h-auto w-full"
                 decoding="async"
+                fetchPriority={fetchPriority}
                 height={MEDIA_ASSET_HEIGHT}
                 loading="lazy"
-                src={`${basePath}-poster.webp`}
+                src={posterSrc}
                 width={MEDIA_ASSET_WIDTH}
             />
 

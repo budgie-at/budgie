@@ -191,6 +191,191 @@
     }
 }
 
+.hero-section {
+    --hero-frame-width: min(52vw, calc(46svh / 2.1722));
+
+    position: relative;
+    width: 100%;
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
+}
+
+.hero-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -10;
+    background-image:
+        linear-gradient(to right, #f0f0f0 1px, transparent 1px), linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
+    background-size: 4rem 4rem;
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 110%);
+}
+
+.dark .hero-backdrop {
+    background-image:
+        linear-gradient(to right, #1f1f1f 1px, transparent 1px), linear-gradient(to bottom, #1f1f1f 1px, transparent 1px);
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 1.25rem;
+}
+
+.hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.875rem;
+    order: 2;
+    max-width: 34rem;
+    text-align: center;
+}
+
+.hero-action {
+    --hero-enter-delay: 180ms;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.hero-stage {
+    --hero-enter-duration: 420ms;
+    --hero-enter-from: 12px;
+
+    position: relative;
+    order: 1;
+    width: var(--hero-frame-width);
+}
+
+.hero-frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    outline: 1px solid color-mix(in srgb, hsl(var(--foreground)) 12%, transparent);
+    outline-offset: -1px;
+    box-shadow: 0 1.5rem 3rem -1rem color-mix(in srgb, hsl(var(--foreground)) 30%, transparent);
+}
+
+.hero-bloom {
+    position: absolute;
+    top: calc(var(--hero-frame-width) * -0.2);
+    left: 50%;
+    z-index: -1;
+    width: calc(var(--hero-frame-width) * 2.4);
+    height: calc(var(--hero-frame-width) * 2.6);
+    translate: -50% 0;
+    border-radius: 9999px;
+    background: radial-gradient(closest-side, color-mix(in srgb, hsl(var(--primary)) 22%, transparent), transparent);
+    filter: blur(2.5rem);
+}
+
+.hero-enter {
+    opacity: 1;
+    translate: 0 0;
+    transition:
+        opacity var(--hero-enter-duration, 320ms) var(--ease-out) var(--hero-enter-delay, 0ms),
+        translate var(--hero-enter-duration, 320ms) var(--ease-out) var(--hero-enter-delay, 0ms);
+}
+
+@starting-style {
+    .hero-enter {
+        opacity: 0;
+        translate: 0 var(--hero-enter-from, 8px);
+    }
+}
+
+.hero-title {
+    --hero-enter-delay: 60ms;
+}
+
+.hero-lede {
+    --hero-enter-delay: 120ms;
+}
+
+.hero-badge {
+    --hero-enter-delay: 40ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-enter {
+        transition: opacity 150ms var(--ease-out);
+    }
+
+    @starting-style {
+        .hero-enter {
+            opacity: 0;
+            translate: 0 0;
+        }
+    }
+}
+
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        .hero-grid {
+            view-timeline-name: --hero-scroll;
+        }
+
+        .hero-frame {
+            animation: hero-parallax linear both;
+            animation-timeline: --hero-scroll;
+            animation-range: exit 0% exit 100%;
+            will-change: translate;
+        }
+    }
+}
+
+@keyframes hero-parallax {
+    from {
+        translate: 0 0;
+    }
+    to {
+        translate: 0 -20px;
+    }
+}
+
+@media (min-width: 768px) {
+    .hero-section {
+        --hero-frame-width: min(38vw, calc(52svh / 2.1722));
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-section {
+        --hero-frame-width: min(30vw, calc(62svh / 2.1722));
+
+        padding-top: 4rem;
+        padding-bottom: 3.5rem;
+    }
+
+    .hero-grid {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        justify-items: start;
+        gap: 3rem;
+        max-width: 68rem;
+        margin-inline: auto;
+    }
+
+    .hero-copy {
+        align-items: start;
+        order: 1;
+        max-width: 46rem;
+        text-align: left;
+    }
+
+    .hero-action {
+        align-items: start;
+    }
+
+    .hero-stage {
+        order: 2;
+        justify-self: end;
+    }
+}
+
 .story-grid {
     --story-accent: hsl(var(--primary));
     --story-ink: hsl(var(--foreground));
