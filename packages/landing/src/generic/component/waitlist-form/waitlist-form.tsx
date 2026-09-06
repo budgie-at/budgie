@@ -55,7 +55,7 @@ const countTextVariants = cva('flex items-center gap-2 text-sm', {
 const disclaimerVariants = cva('text-xs', {
     variants: {
         variant: {
-            hero: 'text-muted-foreground/70',
+            hero: 'text-muted-foreground',
             cta: 'text-white/50'
         }
     }

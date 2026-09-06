@@ -5,7 +5,7 @@
     "scripts": {
         "build": "pnpm media:check && next build",
         "clear": "rimraf dist .next node_modules/.cache .turbo",
-        "i18n:compile": "lingui compile --typescript",
+        "i18n:compile": "lingui compile --typescript && node scripts/i18n-client-catalog.mjs",
         "i18n:extract": "lingui extract --overwrite --clean",
         "i18n:sync": "pnpm i18n:extract && pnpm i18n:compile",
         "lint": "oxlint --type-aware . && eslint .",
