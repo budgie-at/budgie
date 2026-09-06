@@ -171,8 +171,8 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Categorization and suggestions work in any language because they are driven by your own history. Voice entry
-                            supports English, Ukrainian, German, French, and Spanish as primary languages, with Whisper-small providing
-                            broader coverage for other languages.
+                            supports English, Ukrainian, German, French, and Spanish as primary languages, with Whisper large-v3-turbo
+                            providing broader coverage for other languages.
                         </Trans>
                     }
                     question={<Trans>What languages does the AI support?</Trans>}

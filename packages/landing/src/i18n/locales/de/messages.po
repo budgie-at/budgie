@@ -3873,6 +3873,10 @@ msgstr "Budgie-Schuldenkonto mit dem noch ausstehenden Betrag über dem Rückzah
 msgid "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
 msgstr "Budgie dedupliziert anhand der Transaktions-ID. Vorhandene Zeilen werden übersprungen; nur neue werden eingefügt. Ein erneuter Import ist sicher."
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Budgie downloads the Whisper large-v3-turbo model once and caches it on the device. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with language coverage in the model."
+msgstr "Budgie lädt das Modell Whisper large-v3-turbo einmalig herunter und speichert es auf dem Gerät. Es deckt Englisch, Ukrainisch, Deutsch, Französisch und Spanisch als Hauptsprachen ab, dazu Dutzende weitere. Die Transkriptionsqualität hängt davon ab, wie gut die jeweilige Sprache im Modell abgedeckt ist."
+
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Budgie edit expense screen with the category already filled in from the bank MCC code"
 msgstr "Budgie-Bearbeitungsmaske für eine Ausgabe mit der bereits aus dem MCC-Code der Bank übernommenen Kategorie"
@@ -4851,8 +4855,8 @@ msgid "categorization"
 msgstr "Kategorisierung"
 
 #: src/app/[lang]/ai-features/page.tsx
-msgid "Categorization and suggestions work in any language because they are driven by your own history. Voice entry supports English, Ukrainian, German, French, and Spanish as primary languages, with Whisper-small providing broader coverage for other languages."
-msgstr "Kategorisierung und Vorschläge funktionieren in jeder Sprache, da sie von Ihrer eigenen Historie angetrieben werden. Spracheingabe unterstützt Englisch, Ukrainisch, Deutsch, Französisch und Spanisch als Hauptsprachen, wobei Whisper-small eine breitere Abdeckung für andere Sprachen bietet."
+msgid "Categorization and suggestions work in any language because they are driven by your own history. Voice entry supports English, Ukrainian, German, French, and Spanish as primary languages, with Whisper large-v3-turbo providing broader coverage for other languages."
+msgstr "Kategorisierung und Vorschläge funktionieren in jeder Sprache, weil sie auf Ihrer eigenen Historie beruhen. Die Spracheingabe unterstützt Englisch, Ukrainisch, Deutsch, Französisch und Spanisch als Hauptsprachen, und Whisper large-v3-turbo deckt darüber hinaus weitere Sprachen ab."
 
 #: src/app/[lang]/features/categorization-rules/metadata.ts
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
@@ -12092,10 +12096,6 @@ msgstr "Transparenz der Roadmap"
 msgid "Roll up every bank account, cash wallet, deposit, crypto holding, and liability into a single net-worth number. Multi-currency conversion baked in."
 msgstr "Fassen Sie jedes Bankkonto, jedes Bargeld-Wallet, jede Einlage, jeden Krypto-Bestand und jede Verbindlichkeit zu einer einzigen Nettovermögenszahl zusammen. Mehrwährungsumrechnung inklusive."
 
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "Roughly 1 GB combined: Qwen3 1.7B Q4 for the language model and a 768-dim Nomic embedding model. The download happens on first use of AI features and is fully optional — you can keep using Budgie without AI."
-msgstr "Zusammen etwa 1 GB: Qwen3 1.7B Q4 für das Sprachmodell und ein 768-dim Nomic-Embedding-Modell. Der Download erfolgt beim ersten Gebrauch der KI-Funktionen und ist vollständig optional – Sie können Budgie weiterhin ohne KI nutzen."
-
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Roughly 1 GB combined. The download is one-time, opt-in, and only triggers if you turn on AI features."
 msgstr "Zusammen etwa 1 GB. Der Download ist einmalig, opt-in und wird nur ausgelöst, wenn Sie KI-Funktionen einschalten."
@@ -14147,6 +14147,10 @@ msgstr "Drei Bildschirme – von der Summe auf der Startseite bis zu dem, was du
 msgid "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
 msgstr "Drei Bildschirme: eine Ausgabe speichern, zu einer bereits gespeicherten zurückkehren und die Liste, in der alle landen."
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI."
+msgstr "Drei separate Dateien, die jeweils beim ersten Einsatz der zugehörigen Funktion geladen werden: rund 1,1 GB für das Sprachmodell Qwen3 1.7B Q4, 0,5 GB für das 768-dimensionale Nomic-Embedding-Modell und weitere 0,9 GB für Whisper large-v3-turbo, wenn Sie die Spracheingabe aktivieren. Jede davon ist optional — Sie können Budgie auch ohne KI nutzen."
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Three steps from speech to saved"
 msgstr "Drei Schritte von der Sprache bis zum Speichern"
@@ -15686,16 +15690,12 @@ msgid "Whisper transcribes the audio locally, producing a text string."
 msgstr "Whisper transkribiert das Audio lokal und produziert eine Textzeichenkette."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "whisper.rn (whisper.cpp backend) runs Whisper-small locally for accurate, multilingual transcription"
-msgstr "whisper.rn (whisper.cpp-Backend) führt Whisper-small lokal für genaue, mehrsprachige Transkription aus"
+msgid "whisper.rn (whisper.cpp backend) runs Whisper large-v3-turbo locally for accurate, multilingual transcription"
+msgstr "whisper.rn (whisper.cpp-Backend) führt Whisper large-v3-turbo lokal aus — für präzise, mehrsprachige Transkription"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Whisper.rn for Voice: Offline Speech-to-Text"
 msgstr "Whisper.rn für Sprache: Offline-Spracherkennungs-Text"
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "whisper.rn ships the Whisper-small model, which covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with language coverage in the model."
-msgstr "whisper.rn liefert das Whisper-small-Modell, das Englisch, Ukrainisch, Deutsch, Französisch und Spanisch als Hauptsprachen abdeckt, plus Dutzende weitere. Die Transkriptionsqualität skaliert mit der Sprachabdeckung im Modell."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Who has access to it"
