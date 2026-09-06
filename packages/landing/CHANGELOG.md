@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.13.0](https://github.com/budgie-at/budgie/compare/v6.12.0...v6.13.0) (2026-09-06)
+
+
+### Features
+
+* **landing:** add P0 captured product media ([e2ef0fd](https://github.com/budgie-at/budgie/commit/e2ef0fdae328d8591ce55db4a868638e27dc634c))
+
+
+
+
+
 # [6.12.0](https://github.com/budgie-at/budgie/compare/v6.11.1...v6.12.0) (2026-09-05)
 
 
