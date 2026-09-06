@@ -13868,8 +13868,8 @@ msgid "There is no Budgie server holding your financial data. We do not have acc
 msgstr "There is no Budgie server holding your financial data. We do not have access to your transactions because we never receive them."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "There is no paywall screen to show you, because the app ships no purchase surface at all."
-msgstr "There is no paywall screen to show you, because the app ships no purchase surface at all."
+msgid "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
+msgstr "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."

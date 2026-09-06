@@ -10028,7 +10028,7 @@ msgstr "Без обмежень. Накладайте стільки, скіль
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No lock icons, no tiers"
-msgstr "Без замків і тарифів"
+msgstr "Без значків замка і тарифних рівнів"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "No mobile app experience"
@@ -10108,7 +10108,7 @@ msgstr "Немає відстеження або аналітики"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No upgrade banner here"
-msgstr "Тут немає банера оновлення"
+msgstr "Тут немає банера з пропозицією перейти на платний план"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No user profiles or advertising IDs"
@@ -11058,7 +11058,7 @@ msgstr "Вставте API-ключ лише для читання, і Budgie з
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
-msgstr "Заплатіть один раз за банківську синхронізацію та ШІ на пристрої, якщо вони вам потрібні. Сам трекер ніколи не припиняє працювати."
+msgstr "Заплатіть один раз за банківську синхронізацію та ШІ на пристрої, якщо вони вам потрібні. Сам трекер не має терміну дії."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Payday-aligned cycles — start on any day of the month or anchor to the last day"
@@ -11481,7 +11481,7 @@ msgstr "Організації та групи захисту конфіденц
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Privacy, Security, General and every group under them open in full, with no upgrade row in between."
-msgstr "Конфіденційність, Безпека, Загальне і кожна група під ними відкриваються повністю, без жодного рядка оновлення між ними."
+msgstr "Конфіденційність, Безпека, Загальне і кожна група під ними відкриваються повністю, без жодного рядка з пропозицією перейти на платний план."
 
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "privatbank"
@@ -13869,8 +13869,8 @@ msgid "There is no Budgie server holding your financial data. We do not have acc
 msgstr "Немає сервера Budgie, який зберігає ваші фінансові дані. Ми не маємо доступу до ваших транзакцій, тому що ми їх ніколи не отримуємо."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "There is no paywall screen to show you, because the app ships no purchase surface at all."
-msgstr "Немає екрана з платним доступом, який можна було б показати, — у застосунку взагалі немає місця для покупок."
+msgid "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
+msgstr "У трекері немає підписки-paywall; необовʼязкові функції розблоковуються одноразовою покупкою."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."
